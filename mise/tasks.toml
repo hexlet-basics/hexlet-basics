@@ -222,6 +222,22 @@ kc=(kubeconform -strict -summary -ignore-missing-schemas)
 helm lint "$chart" "${set[@]}"
 helm template codebasics "$chart" "${set[@]}" | "${kc[@]}"
 helm template codebasics "$chart" "${set[@]}" --set migrate.baseline=20260727053619 | "${kc[@]}"
+
+# Routing (ADR-0020): every `full` host sends the MCP and OAuth paths to the Go
+# api service ahead of the `/` catch-all, and a host without `full` sends only
+# `/` (web). Paths of one host, in order, as "<host> <path> <service>" lines.
+paths=$(helm template codebasics "$chart" "${set[@]}" --show-only templates/ingress.yaml | awk '
+  /^  name: / { main = ($2 == "\"codebasics-ingress\"") }
+  /^    - host: / { host = substr($3, 2, length($3) - 2) }
+  /^ *- path: / { path = substr($3, 2, length($3) - 2) }
+  /^ *name: .*-service"/ { svc = substr($2, 2, length($2) - 2); sub(/^codebasics-/, "", svc); if (main) print host, path, svc }')
+want='/api/lessons/[0-9]+/check api-check-service /api/ api-service /mcp api-service /\.well-known/oauth-authorization-server api-service /\.well-known/openid-configuration api-service /\.well-known/oauth-protected-resource api-service /\.well-known/oauth-protected-resource/mcp api-service /oauth/ api-service / web-service'
+for host in '*.code-basics.com' code-basics.com; do
+  got=$(awk -v h="$host" '$1 == h { print $2, $3 }' <<<"$paths" | paste -sd' ' -)
+  [ "$got" = "$want" ] || { echo "ingress routes of $host changed: $got"; exit 1; }
+done
+got=$(awk '$1 == "code-basics.ru" { print $2, $3 }' <<<"$paths" | paste -sd' ' -)
+[ "$got" = "/ web-service" ] || { echo "code-basics.ru must route only / to web, got: $got"; exit 1; }
 '''
 
 ["lint:infra"]

@@ -74,7 +74,7 @@ func (h *APIErrorHandler) NewError(ctx context.Context, err error) *api.ProblemD
 	h.report(ctx, nil, status, err)
 	return &api.ProblemDetailsStatusCode{
 		StatusCode: status,
-		Response:   h.problem(ctx, status),
+		Response:   h.problem(ctx, status, err),
 	}
 }
 
@@ -93,7 +93,7 @@ func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *h
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(status)
 	encoder := new(jx.Encoder)
-	problem := h.problem(ctx, status)
+	problem := h.problem(ctx, status, err)
 	problem.Encode(encoder)
 	if _, writeErr := encoder.WriteTo(w); writeErr != nil {
 		h.logger.ErrorContext(ctx, "writing error response", "err", writeErr)
@@ -125,12 +125,27 @@ func errorStatus(err error) int {
 	}
 }
 
-func (h *APIErrorHandler) problem(ctx context.Context, status int) api.ProblemDetails {
-	return api.ProblemDetails{
+// problem builds the response body. A refusal (self-protection and the like)
+// adds its localized explanation as `detail`; every other error stays a bare
+// status, so nothing internal is exposed.
+func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) api.ProblemDetails {
+	problem := api.ProblemDetails{
 		Type:   "about:blank",
 		Title:  h.translator.StatusText(ctx, status),
 		Status: int32(status),
 	}
+	var refused *refusal
+	if errors.As(err, &refused) {
+		data := make(map[string]any, len(refused.data))
+		for key, value := range refused.data {
+			if message, ok := value.(localization.Message); ok {
+				value = h.translator.Text(ctx, message)
+			}
+			data[key] = value
+		}
+		problem.Detail = api.NewOptString(h.translator.TextWith(ctx, refused.message, data))
+	}
+	return problem
 }
 
 func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status int, err error) {

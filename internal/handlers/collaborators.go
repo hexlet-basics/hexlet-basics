@@ -5,7 +5,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/progress"
@@ -23,6 +22,7 @@ type ProgressTracker interface {
 	StartLesson(ctx context.Context, learner progress.Learner, lessonID int, locale string) (*progress.CourseState, error)
 	CheckSolution(ctx context.Context, check progress.Check) (*progress.CheckResult, error)
 	CourseState(ctx context.Context, learner progress.Learner, courseID int) (*progress.CourseState, error)
+	LearnerCourse(ctx context.Context, userID int, courseSlug string) (*progress.LearnerCourse, error)
 	MergeGuest(ctx context.Context, userID int, guest progress.GuestProgress, locale string) error
 }
 
@@ -31,9 +31,9 @@ type SitemapReader interface {
 	Read(ctx context.Context) (*sitemap.Page, error)
 }
 
-// PermissionWriter replaces a role's permission matrix.
+// PermissionWriter writes what a role may do: its grants.
 type PermissionWriter interface {
-	Apply(ctx context.Context, roleID int, permissions []api.RolePermissionInput) error
+	Apply(ctx context.Context, roleID int, grants []string) error
 }
 
 // CourseLister assembles the learner's dashboard courses.

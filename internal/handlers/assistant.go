@@ -53,7 +53,7 @@ func (s *Server) CreateAssistantMessage(
 	switch {
 	case errors.Is(err, assistant.ErrQuotaExceeded):
 		// A declared outcome, not a failure: it never reaches the reporting path.
-		problem := api.CreateAssistantMessageTooManyRequests(s.errors.problem(ctx, http.StatusTooManyRequests))
+		problem := api.CreateAssistantMessageTooManyRequests(s.errors.problem(ctx, http.StatusTooManyRequests, nil))
 		return &problem, nil
 	case ent.IsNotFound(err):
 		return s.lessonNotFound(ctx), nil

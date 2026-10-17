@@ -1,6 +1,25 @@
 export default {
   translation: {
     account: {
+      connected_apps: {
+        confirm_label: "Disconnect",
+        confirm_text:
+          "The application loses access to your account immediately. You can connect it again later.",
+        confirm_title: "Disconnect “{{client}}”?",
+        connected_at: "Connected {{date}}",
+        empty: "You have not connected any applications.",
+        error: "Could not disconnect the application. Please try again.",
+        host: "Identified by {{host}}",
+        intro:
+          "These applications can act on your behalf with the permissions below. An application you have not used for 30 days is disconnected automatically.",
+        meta: {
+          description: "Applications you have allowed to use your Code Basics account",
+        },
+        permissions: "Permissions:",
+        revoke: "Disconnect",
+        revoked: "The application was disconnected",
+        title: "Connected apps",
+      },
       profiles: {
         edit: {
           delete: "Delete account",
@@ -211,6 +230,7 @@ export default {
     },
     admin: {
       resources: {
+        audit: "Audit trail",
         banners: "Banners",
         blogPosts: "Blog Posts",
         courseCategories: "Course Categories",
@@ -225,6 +245,60 @@ export default {
         roles: "Roles",
         staffMembers: "Staff Members",
         users: "Users",
+      },
+      audit: {
+        channel: {
+          mcp: "MCP",
+          web: "Website",
+        },
+        columns: {
+          actor: "User",
+          channel: "Channel",
+          entity: "Entity",
+          occurredAt: "When",
+          operation: "Operation",
+          outcome: "Outcome",
+        },
+        details: {
+          address: "Address",
+          changes: "Changes",
+          connectedApp: "Connected App",
+          field: "Field",
+          locale: "Locale",
+          new: "New value",
+          old: "Old value",
+          open: "Details",
+          readCount_one: "Rows read: {{count}}",
+          readCount_other: "Rows read: {{count}}",
+          reads: "Reads of personal data",
+          requestId: "Request",
+          secret: "Secret value, not recorded",
+          token: "Token",
+          userAgent: "User agent",
+        },
+        filters: {
+          actorUserId: "User id",
+          anyChannel: "Any channel",
+          apply: "Apply",
+          channel: "Channel",
+          entityId: "Entity id",
+          entityType: "Entity type",
+          from: "From",
+          operation: "Operation",
+          reset: "Reset",
+          to: "To",
+          windowHint:
+            "Shows the last 30 days unless a period is picked; a period may be at most 92 days. An entity id needs its entity type.",
+        },
+        forbidden: {
+          body: "Reading the audit trail needs the audit.read permission on your role, even for an administrator.",
+          title: "No access to the audit trail",
+        },
+        outcome: {
+          failed: "Failed",
+          forbidden: "Refused",
+          succeeded: "Done",
+        },
       },
       crud: {
         cancel: "Cancel",
@@ -271,15 +345,28 @@ export default {
         versionQueued: "Version build started",
       },
       permissions: {
-        canCreate: "Create",
-        canDestroy: "Delete",
-        canIndex: "View",
-        canUpdate: "Update",
+        capability: "Explicit grant only",
+        kindRead: "Read",
+        kindWrite: "Write",
         title: "Permissions",
+      },
+      publicationState: {
+        archive: "Archive",
+        changeError: "Could not change the state",
+        changed: "State changed",
+        publish: "Publish",
+        unpublish: "Unpublish",
       },
       qna: {
         add: "Add question",
         title: "FAQ",
+      },
+      readiness: {
+        changeError: "Could not change the readiness",
+        changed: "Readiness changed",
+        markCompleted: "Mark as completed",
+        markDraft: "Mark as draft",
+        markInDevelopment: "Mark as in development",
       },
       banners: {
         edit: {
@@ -740,6 +827,30 @@ export default {
           truncate: "&hellip;",
         },
       },
+    },
+    connect: {
+      account: "Signed in as {{account}}",
+      approve: "Allow",
+      deny: "Deny",
+      error: "Could not send your decision. Please try again.",
+      intro: "The application “{{client}}” asks for access to your account.",
+      localhost_warning:
+        "This application will receive your approval on this computer only ({{host}}). If you did not start connecting an application on this computer, deny the request.",
+      meta: {
+        description: "Approve an application's access to your Code Basics account",
+      },
+      not_found:
+        "This request is invalid or has already been handled. Go back to the application and start connecting again.",
+      redirect: "After you decide, you will be sent back to {{host}}.",
+      scopes: {
+        admin: "Act in the admin panel on your behalf",
+        catalog_read: "Read the course catalog",
+        offline_access: "Keep access until you revoke it",
+        openid: "Learn who you are",
+        progress_read: "Read your progress in courses",
+      },
+      scopes_title: "The application asks to:",
+      title: "Connect an application",
     },
     enums: {
       course: {
@@ -1338,6 +1449,7 @@ export default {
           cases: "Cases",
           categories: "Categories",
           community: "Community",
+          connected_apps: "Connected apps",
           courses: "Courses",
           courses_with_employment: "Курсы с трудоустройством",
           courses_with_employment_description: "Обучим программированию, аналитике и тестированию",

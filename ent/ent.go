@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -33,11 +34,15 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthauthrequest"
+	"hexletbasics/ent/oauthclient"
+	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
-	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
@@ -113,6 +118,7 @@ func checkColumn(t, c string) error {
 			aichat.Table:                    aichat.ValidColumn,
 			aimessage.Table:                 aimessage.ValidColumn,
 			attachment.Table:                attachment.ValidColumn,
+			auditrecord.Table:               auditrecord.ValidColumn,
 			banner.Table:                    banner.ValidColumn,
 			blogpost.Table:                  blogpost.ValidColumn,
 			blogpostlike.Table:              blogpostlike.ValidColumn,
@@ -135,11 +141,15 @@ func checkColumn(t, c string) error {
 			landingpageqnaitem.Table:        landingpageqnaitem.ValidColumn,
 			lead.Table:                      lead.ValidColumn,
 			lessonprogress.Table:            lessonprogress.ValidColumn,
+			oauthaccesstoken.Table:          oauthaccesstoken.ValidColumn,
+			oauthauthrequest.Table:          oauthauthrequest.ValidColumn,
+			oauthclient.Table:               oauthclient.ValidColumn,
+			oauthrefreshtoken.Table:         oauthrefreshtoken.ValidColumn,
 			review.Table:                    review.ValidColumn,
 			session.Table:                   session.ValidColumn,
 			staffmember.Table:               staffmember.ValidColumn,
 			staffrole.Table:                 staffrole.ValidColumn,
-			staffrolepermission.Table:       staffrolepermission.ValidColumn,
+			staffrolegrant.Table:            staffrolegrant.ValidColumn,
 			tag.Table:                       tag.ValidColumn,
 			tagging.Table:                   tagging.ValidColumn,
 			user.Table:                      user.ValidColumn,

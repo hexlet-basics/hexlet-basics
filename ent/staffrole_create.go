@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/staffrole"
-	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/staffrolegrant"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -71,19 +71,19 @@ func (_c *StaffRoleCreate) SetNillableDescription(v *string) *StaffRoleCreate {
 	return _c
 }
 
-// AddPermissionIDs adds the "permissions" edge to the StaffRolePermission entity by IDs.
-func (_c *StaffRoleCreate) AddPermissionIDs(ids ...int) *StaffRoleCreate {
-	_c.mutation.AddPermissionIDs(ids...)
+// AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by IDs.
+func (_c *StaffRoleCreate) AddGrantIDs(ids ...int) *StaffRoleCreate {
+	_c.mutation.AddGrantIDs(ids...)
 	return _c
 }
 
-// AddPermissions adds the "permissions" edges to the StaffRolePermission entity.
-func (_c *StaffRoleCreate) AddPermissions(v ...*StaffRolePermission) *StaffRoleCreate {
+// AddGrants adds the "grants" edges to the StaffRoleGrant entity.
+func (_c *StaffRoleCreate) AddGrants(v ...*StaffRoleGrant) *StaffRoleCreate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddPermissionIDs(ids...)
+	return _c.AddGrantIDs(ids...)
 }
 
 // Mutation returns the StaffRoleMutation object of the builder.
@@ -185,15 +185,15 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 		_spec.SetField(staffrole.FieldDescription, field.TypeString, value)
 		_node.Description = &value
 	}
-	if nodes := _c.mutation.PermissionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.GrantsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   staffrole.PermissionsTable,
-			Columns: []string{staffrole.PermissionsColumn},
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

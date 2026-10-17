@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -38,11 +39,15 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthauthrequest"
+	"hexletbasics/ent/oauthclient"
+	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
-	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
@@ -69,6 +74,8 @@ type Client struct {
 	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
+	// AuditRecord is the client for interacting with the AuditRecord builders.
+	AuditRecord *AuditRecordClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
 	// BlogPost is the client for interacting with the BlogPost builders.
@@ -113,6 +120,14 @@ type Client struct {
 	Lead *LeadClient
 	// LessonProgress is the client for interacting with the LessonProgress builders.
 	LessonProgress *LessonProgressClient
+	// OAuthAccessToken is the client for interacting with the OAuthAccessToken builders.
+	OAuthAccessToken *OAuthAccessTokenClient
+	// OAuthAuthRequest is the client for interacting with the OAuthAuthRequest builders.
+	OAuthAuthRequest *OAuthAuthRequestClient
+	// OAuthClient is the client for interacting with the OAuthClient builders.
+	OAuthClient *OAuthClientClient
+	// OAuthRefreshToken is the client for interacting with the OAuthRefreshToken builders.
+	OAuthRefreshToken *OAuthRefreshTokenClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
 	// Session is the client for interacting with the Session builders.
@@ -121,8 +136,8 @@ type Client struct {
 	StaffMember *StaffMemberClient
 	// StaffRole is the client for interacting with the StaffRole builders.
 	StaffRole *StaffRoleClient
-	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
-	StaffRolePermission *StaffRolePermissionClient
+	// StaffRoleGrant is the client for interacting with the StaffRoleGrant builders.
+	StaffRoleGrant *StaffRoleGrantClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// Tagging is the client for interacting with the Tagging builders.
@@ -147,6 +162,7 @@ func (c *Client) init() {
 	c.AiChat = NewAiChatClient(c.config)
 	c.AiMessage = NewAiMessageClient(c.config)
 	c.Attachment = NewAttachmentClient(c.config)
+	c.AuditRecord = NewAuditRecordClient(c.config)
 	c.Banner = NewBannerClient(c.config)
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.BlogPostLike = NewBlogPostLikeClient(c.config)
@@ -169,11 +185,15 @@ func (c *Client) init() {
 	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
 	c.Lead = NewLeadClient(c.config)
 	c.LessonProgress = NewLessonProgressClient(c.config)
+	c.OAuthAccessToken = NewOAuthAccessTokenClient(c.config)
+	c.OAuthAuthRequest = NewOAuthAuthRequestClient(c.config)
+	c.OAuthClient = NewOAuthClientClient(c.config)
+	c.OAuthRefreshToken = NewOAuthRefreshTokenClient(c.config)
 	c.Review = NewReviewClient(c.config)
 	c.Session = NewSessionClient(c.config)
 	c.StaffMember = NewStaffMemberClient(c.config)
 	c.StaffRole = NewStaffRoleClient(c.config)
-	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
+	c.StaffRoleGrant = NewStaffRoleGrantClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.Tagging = NewTaggingClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -275,6 +295,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AiChat:                    NewAiChatClient(cfg),
 		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
+		AuditRecord:               NewAuditRecordClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
@@ -297,11 +318,15 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
 		LessonProgress:            NewLessonProgressClient(cfg),
+		OAuthAccessToken:          NewOAuthAccessTokenClient(cfg),
+		OAuthAuthRequest:          NewOAuthAuthRequestClient(cfg),
+		OAuthClient:               NewOAuthClientClient(cfg),
+		OAuthRefreshToken:         NewOAuthRefreshTokenClient(cfg),
 		Review:                    NewReviewClient(cfg),
 		Session:                   NewSessionClient(cfg),
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
@@ -330,6 +355,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AiChat:                    NewAiChatClient(cfg),
 		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
+		AuditRecord:               NewAuditRecordClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
@@ -352,11 +378,15 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
 		LessonProgress:            NewLessonProgressClient(cfg),
+		OAuthAccessToken:          NewOAuthAccessTokenClient(cfg),
+		OAuthAuthRequest:          NewOAuthAuthRequestClient(cfg),
+		OAuthClient:               NewOAuthClientClient(cfg),
+		OAuthRefreshToken:         NewOAuthRefreshTokenClient(cfg),
 		Review:                    NewReviewClient(cfg),
 		Session:                   NewSessionClient(cfg),
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
@@ -391,13 +421,14 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.Attachment, c.AuditRecord, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
 		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
 		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
 		c.CourseModule, c.CourseModuleTranslation, c.CourseModuleVersion,
 		c.CourseVersion, c.Enrollment, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
-		c.Review, c.Session, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag,
+		c.OAuthAccessToken, c.OAuthAuthRequest, c.OAuthClient, c.OAuthRefreshToken,
+		c.Review, c.Session, c.StaffMember, c.StaffRole, c.StaffRoleGrant, c.Tag,
 		c.Tagging, c.User, c.UserAccount,
 	} {
 		n.Use(hooks...)
@@ -409,13 +440,14 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.Attachment, c.AuditRecord, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
 		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
 		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
 		c.CourseModule, c.CourseModuleTranslation, c.CourseModuleVersion,
 		c.CourseVersion, c.Enrollment, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
-		c.Review, c.Session, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag,
+		c.OAuthAccessToken, c.OAuthAuthRequest, c.OAuthClient, c.OAuthRefreshToken,
+		c.Review, c.Session, c.StaffMember, c.StaffRole, c.StaffRoleGrant, c.Tag,
 		c.Tagging, c.User, c.UserAccount,
 	} {
 		n.Intercept(interceptors...)
@@ -435,6 +467,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AiMessage.mutate(ctx, m)
 	case *AttachmentMutation:
 		return c.Attachment.mutate(ctx, m)
+	case *AuditRecordMutation:
+		return c.AuditRecord.mutate(ctx, m)
 	case *BannerMutation:
 		return c.Banner.mutate(ctx, m)
 	case *BlogPostMutation:
@@ -479,6 +513,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Lead.mutate(ctx, m)
 	case *LessonProgressMutation:
 		return c.LessonProgress.mutate(ctx, m)
+	case *OAuthAccessTokenMutation:
+		return c.OAuthAccessToken.mutate(ctx, m)
+	case *OAuthAuthRequestMutation:
+		return c.OAuthAuthRequest.mutate(ctx, m)
+	case *OAuthClientMutation:
+		return c.OAuthClient.mutate(ctx, m)
+	case *OAuthRefreshTokenMutation:
+		return c.OAuthRefreshToken.mutate(ctx, m)
 	case *ReviewMutation:
 		return c.Review.mutate(ctx, m)
 	case *SessionMutation:
@@ -487,8 +529,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffMember.mutate(ctx, m)
 	case *StaffRoleMutation:
 		return c.StaffRole.mutate(ctx, m)
-	case *StaffRolePermissionMutation:
-		return c.StaffRolePermission.mutate(ctx, m)
+	case *StaffRoleGrantMutation:
+		return c.StaffRoleGrant.mutate(ctx, m)
 	case *TagMutation:
 		return c.Tag.mutate(ctx, m)
 	case *TaggingMutation:
@@ -1228,6 +1270,139 @@ func (c *AttachmentClient) mutate(ctx context.Context, m *AttachmentMutation) (V
 		return (&AttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Attachment mutation op: %q", m.Op())
+	}
+}
+
+// AuditRecordClient is a client for the AuditRecord schema.
+type AuditRecordClient struct {
+	config
+}
+
+// NewAuditRecordClient returns a client for the AuditRecord from the given config.
+func NewAuditRecordClient(c config) *AuditRecordClient {
+	return &AuditRecordClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `auditrecord.Hooks(f(g(h())))`.
+func (c *AuditRecordClient) Use(hooks ...Hook) {
+	c.hooks.AuditRecord = append(c.hooks.AuditRecord, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `auditrecord.Intercept(f(g(h())))`.
+func (c *AuditRecordClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AuditRecord = append(c.inters.AuditRecord, interceptors...)
+}
+
+// Create returns a builder for creating a AuditRecord entity.
+func (c *AuditRecordClient) Create() *AuditRecordCreate {
+	mutation := newAuditRecordMutation(c.config, OpCreate)
+	return &AuditRecordCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuditRecord entities.
+func (c *AuditRecordClient) CreateBulk(builders ...*AuditRecordCreate) *AuditRecordCreateBulk {
+	return &AuditRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AuditRecordClient) MapCreateBulk(slice any, setFunc func(*AuditRecordCreate, int)) *AuditRecordCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AuditRecordCreateBulk{err: fmt.Errorf("calling to AuditRecordClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AuditRecordCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AuditRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuditRecord.
+func (c *AuditRecordClient) Update() *AuditRecordUpdate {
+	mutation := newAuditRecordMutation(c.config, OpUpdate)
+	return &AuditRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuditRecordClient) UpdateOne(_m *AuditRecord) *AuditRecordUpdateOne {
+	mutation := newAuditRecordMutation(c.config, OpUpdateOne, withAuditRecord(_m))
+	return &AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuditRecordClient) UpdateOneID(id int) *AuditRecordUpdateOne {
+	mutation := newAuditRecordMutation(c.config, OpUpdateOne, withAuditRecordID(id))
+	return &AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuditRecord.
+func (c *AuditRecordClient) Delete() *AuditRecordDelete {
+	mutation := newAuditRecordMutation(c.config, OpDelete)
+	return &AuditRecordDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AuditRecordClient) DeleteOne(_m *AuditRecord) *AuditRecordDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AuditRecordClient) DeleteOneID(id int) *AuditRecordDeleteOne {
+	builder := c.Delete().Where(auditrecord.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuditRecordDeleteOne{builder}
+}
+
+// Query returns a query builder for AuditRecord.
+func (c *AuditRecordClient) Query() *AuditRecordQuery {
+	return &AuditRecordQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAuditRecord},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AuditRecord entity by its id.
+func (c *AuditRecordClient) Get(ctx context.Context, id int) (*AuditRecord, error) {
+	return c.Query().Where(auditrecord.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuditRecordClient) GetX(ctx context.Context, id int) *AuditRecord {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AuditRecordClient) Hooks() []Hook {
+	return c.hooks.AuditRecord
+}
+
+// Interceptors returns the client interceptors.
+func (c *AuditRecordClient) Interceptors() []Interceptor {
+	return c.inters.AuditRecord
+}
+
+func (c *AuditRecordClient) mutate(ctx context.Context, m *AuditRecordMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AuditRecordCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AuditRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AuditRecordDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AuditRecord mutation op: %q", m.Op())
 	}
 }
 
@@ -4589,6 +4764,538 @@ func (c *LessonProgressClient) mutate(ctx context.Context, m *LessonProgressMuta
 	}
 }
 
+// OAuthAccessTokenClient is a client for the OAuthAccessToken schema.
+type OAuthAccessTokenClient struct {
+	config
+}
+
+// NewOAuthAccessTokenClient returns a client for the OAuthAccessToken from the given config.
+func NewOAuthAccessTokenClient(c config) *OAuthAccessTokenClient {
+	return &OAuthAccessTokenClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthaccesstoken.Hooks(f(g(h())))`.
+func (c *OAuthAccessTokenClient) Use(hooks ...Hook) {
+	c.hooks.OAuthAccessToken = append(c.hooks.OAuthAccessToken, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthaccesstoken.Intercept(f(g(h())))`.
+func (c *OAuthAccessTokenClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OAuthAccessToken = append(c.inters.OAuthAccessToken, interceptors...)
+}
+
+// Create returns a builder for creating a OAuthAccessToken entity.
+func (c *OAuthAccessTokenClient) Create() *OAuthAccessTokenCreate {
+	mutation := newOAuthAccessTokenMutation(c.config, OpCreate)
+	return &OAuthAccessTokenCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OAuthAccessToken entities.
+func (c *OAuthAccessTokenClient) CreateBulk(builders ...*OAuthAccessTokenCreate) *OAuthAccessTokenCreateBulk {
+	return &OAuthAccessTokenCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OAuthAccessTokenClient) MapCreateBulk(slice any, setFunc func(*OAuthAccessTokenCreate, int)) *OAuthAccessTokenCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OAuthAccessTokenCreateBulk{err: fmt.Errorf("calling to OAuthAccessTokenClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OAuthAccessTokenCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OAuthAccessTokenCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OAuthAccessToken.
+func (c *OAuthAccessTokenClient) Update() *OAuthAccessTokenUpdate {
+	mutation := newOAuthAccessTokenMutation(c.config, OpUpdate)
+	return &OAuthAccessTokenUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OAuthAccessTokenClient) UpdateOne(_m *OAuthAccessToken) *OAuthAccessTokenUpdateOne {
+	mutation := newOAuthAccessTokenMutation(c.config, OpUpdateOne, withOAuthAccessToken(_m))
+	return &OAuthAccessTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OAuthAccessTokenClient) UpdateOneID(id string) *OAuthAccessTokenUpdateOne {
+	mutation := newOAuthAccessTokenMutation(c.config, OpUpdateOne, withOAuthAccessTokenID(id))
+	return &OAuthAccessTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OAuthAccessToken.
+func (c *OAuthAccessTokenClient) Delete() *OAuthAccessTokenDelete {
+	mutation := newOAuthAccessTokenMutation(c.config, OpDelete)
+	return &OAuthAccessTokenDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OAuthAccessTokenClient) DeleteOne(_m *OAuthAccessToken) *OAuthAccessTokenDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OAuthAccessTokenClient) DeleteOneID(id string) *OAuthAccessTokenDeleteOne {
+	builder := c.Delete().Where(oauthaccesstoken.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OAuthAccessTokenDeleteOne{builder}
+}
+
+// Query returns a query builder for OAuthAccessToken.
+func (c *OAuthAccessTokenClient) Query() *OAuthAccessTokenQuery {
+	return &OAuthAccessTokenQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOAuthAccessToken},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OAuthAccessToken entity by its id.
+func (c *OAuthAccessTokenClient) Get(ctx context.Context, id string) (*OAuthAccessToken, error) {
+	return c.Query().Where(oauthaccesstoken.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OAuthAccessTokenClient) GetX(ctx context.Context, id string) *OAuthAccessToken {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OAuthAccessTokenClient) Hooks() []Hook {
+	return c.hooks.OAuthAccessToken
+}
+
+// Interceptors returns the client interceptors.
+func (c *OAuthAccessTokenClient) Interceptors() []Interceptor {
+	return c.inters.OAuthAccessToken
+}
+
+func (c *OAuthAccessTokenClient) mutate(ctx context.Context, m *OAuthAccessTokenMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OAuthAccessTokenCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OAuthAccessTokenUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OAuthAccessTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OAuthAccessTokenDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OAuthAccessToken mutation op: %q", m.Op())
+	}
+}
+
+// OAuthAuthRequestClient is a client for the OAuthAuthRequest schema.
+type OAuthAuthRequestClient struct {
+	config
+}
+
+// NewOAuthAuthRequestClient returns a client for the OAuthAuthRequest from the given config.
+func NewOAuthAuthRequestClient(c config) *OAuthAuthRequestClient {
+	return &OAuthAuthRequestClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthauthrequest.Hooks(f(g(h())))`.
+func (c *OAuthAuthRequestClient) Use(hooks ...Hook) {
+	c.hooks.OAuthAuthRequest = append(c.hooks.OAuthAuthRequest, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthauthrequest.Intercept(f(g(h())))`.
+func (c *OAuthAuthRequestClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OAuthAuthRequest = append(c.inters.OAuthAuthRequest, interceptors...)
+}
+
+// Create returns a builder for creating a OAuthAuthRequest entity.
+func (c *OAuthAuthRequestClient) Create() *OAuthAuthRequestCreate {
+	mutation := newOAuthAuthRequestMutation(c.config, OpCreate)
+	return &OAuthAuthRequestCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OAuthAuthRequest entities.
+func (c *OAuthAuthRequestClient) CreateBulk(builders ...*OAuthAuthRequestCreate) *OAuthAuthRequestCreateBulk {
+	return &OAuthAuthRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OAuthAuthRequestClient) MapCreateBulk(slice any, setFunc func(*OAuthAuthRequestCreate, int)) *OAuthAuthRequestCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OAuthAuthRequestCreateBulk{err: fmt.Errorf("calling to OAuthAuthRequestClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OAuthAuthRequestCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OAuthAuthRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OAuthAuthRequest.
+func (c *OAuthAuthRequestClient) Update() *OAuthAuthRequestUpdate {
+	mutation := newOAuthAuthRequestMutation(c.config, OpUpdate)
+	return &OAuthAuthRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OAuthAuthRequestClient) UpdateOne(_m *OAuthAuthRequest) *OAuthAuthRequestUpdateOne {
+	mutation := newOAuthAuthRequestMutation(c.config, OpUpdateOne, withOAuthAuthRequest(_m))
+	return &OAuthAuthRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OAuthAuthRequestClient) UpdateOneID(id string) *OAuthAuthRequestUpdateOne {
+	mutation := newOAuthAuthRequestMutation(c.config, OpUpdateOne, withOAuthAuthRequestID(id))
+	return &OAuthAuthRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OAuthAuthRequest.
+func (c *OAuthAuthRequestClient) Delete() *OAuthAuthRequestDelete {
+	mutation := newOAuthAuthRequestMutation(c.config, OpDelete)
+	return &OAuthAuthRequestDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OAuthAuthRequestClient) DeleteOne(_m *OAuthAuthRequest) *OAuthAuthRequestDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OAuthAuthRequestClient) DeleteOneID(id string) *OAuthAuthRequestDeleteOne {
+	builder := c.Delete().Where(oauthauthrequest.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OAuthAuthRequestDeleteOne{builder}
+}
+
+// Query returns a query builder for OAuthAuthRequest.
+func (c *OAuthAuthRequestClient) Query() *OAuthAuthRequestQuery {
+	return &OAuthAuthRequestQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOAuthAuthRequest},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OAuthAuthRequest entity by its id.
+func (c *OAuthAuthRequestClient) Get(ctx context.Context, id string) (*OAuthAuthRequest, error) {
+	return c.Query().Where(oauthauthrequest.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OAuthAuthRequestClient) GetX(ctx context.Context, id string) *OAuthAuthRequest {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OAuthAuthRequestClient) Hooks() []Hook {
+	return c.hooks.OAuthAuthRequest
+}
+
+// Interceptors returns the client interceptors.
+func (c *OAuthAuthRequestClient) Interceptors() []Interceptor {
+	return c.inters.OAuthAuthRequest
+}
+
+func (c *OAuthAuthRequestClient) mutate(ctx context.Context, m *OAuthAuthRequestMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OAuthAuthRequestCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OAuthAuthRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OAuthAuthRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OAuthAuthRequestDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OAuthAuthRequest mutation op: %q", m.Op())
+	}
+}
+
+// OAuthClientClient is a client for the OAuthClient schema.
+type OAuthClientClient struct {
+	config
+}
+
+// NewOAuthClientClient returns a client for the OAuthClient from the given config.
+func NewOAuthClientClient(c config) *OAuthClientClient {
+	return &OAuthClientClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthclient.Hooks(f(g(h())))`.
+func (c *OAuthClientClient) Use(hooks ...Hook) {
+	c.hooks.OAuthClient = append(c.hooks.OAuthClient, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthclient.Intercept(f(g(h())))`.
+func (c *OAuthClientClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OAuthClient = append(c.inters.OAuthClient, interceptors...)
+}
+
+// Create returns a builder for creating a OAuthClient entity.
+func (c *OAuthClientClient) Create() *OAuthClientCreate {
+	mutation := newOAuthClientMutation(c.config, OpCreate)
+	return &OAuthClientCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OAuthClient entities.
+func (c *OAuthClientClient) CreateBulk(builders ...*OAuthClientCreate) *OAuthClientCreateBulk {
+	return &OAuthClientCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OAuthClientClient) MapCreateBulk(slice any, setFunc func(*OAuthClientCreate, int)) *OAuthClientCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OAuthClientCreateBulk{err: fmt.Errorf("calling to OAuthClientClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OAuthClientCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OAuthClientCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OAuthClient.
+func (c *OAuthClientClient) Update() *OAuthClientUpdate {
+	mutation := newOAuthClientMutation(c.config, OpUpdate)
+	return &OAuthClientUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OAuthClientClient) UpdateOne(_m *OAuthClient) *OAuthClientUpdateOne {
+	mutation := newOAuthClientMutation(c.config, OpUpdateOne, withOAuthClient(_m))
+	return &OAuthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OAuthClientClient) UpdateOneID(id int) *OAuthClientUpdateOne {
+	mutation := newOAuthClientMutation(c.config, OpUpdateOne, withOAuthClientID(id))
+	return &OAuthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OAuthClient.
+func (c *OAuthClientClient) Delete() *OAuthClientDelete {
+	mutation := newOAuthClientMutation(c.config, OpDelete)
+	return &OAuthClientDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OAuthClientClient) DeleteOne(_m *OAuthClient) *OAuthClientDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OAuthClientClient) DeleteOneID(id int) *OAuthClientDeleteOne {
+	builder := c.Delete().Where(oauthclient.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OAuthClientDeleteOne{builder}
+}
+
+// Query returns a query builder for OAuthClient.
+func (c *OAuthClientClient) Query() *OAuthClientQuery {
+	return &OAuthClientQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOAuthClient},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OAuthClient entity by its id.
+func (c *OAuthClientClient) Get(ctx context.Context, id int) (*OAuthClient, error) {
+	return c.Query().Where(oauthclient.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OAuthClientClient) GetX(ctx context.Context, id int) *OAuthClient {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OAuthClientClient) Hooks() []Hook {
+	return c.hooks.OAuthClient
+}
+
+// Interceptors returns the client interceptors.
+func (c *OAuthClientClient) Interceptors() []Interceptor {
+	return c.inters.OAuthClient
+}
+
+func (c *OAuthClientClient) mutate(ctx context.Context, m *OAuthClientMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OAuthClientCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OAuthClientUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OAuthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OAuthClientDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OAuthClient mutation op: %q", m.Op())
+	}
+}
+
+// OAuthRefreshTokenClient is a client for the OAuthRefreshToken schema.
+type OAuthRefreshTokenClient struct {
+	config
+}
+
+// NewOAuthRefreshTokenClient returns a client for the OAuthRefreshToken from the given config.
+func NewOAuthRefreshTokenClient(c config) *OAuthRefreshTokenClient {
+	return &OAuthRefreshTokenClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthrefreshtoken.Hooks(f(g(h())))`.
+func (c *OAuthRefreshTokenClient) Use(hooks ...Hook) {
+	c.hooks.OAuthRefreshToken = append(c.hooks.OAuthRefreshToken, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthrefreshtoken.Intercept(f(g(h())))`.
+func (c *OAuthRefreshTokenClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OAuthRefreshToken = append(c.inters.OAuthRefreshToken, interceptors...)
+}
+
+// Create returns a builder for creating a OAuthRefreshToken entity.
+func (c *OAuthRefreshTokenClient) Create() *OAuthRefreshTokenCreate {
+	mutation := newOAuthRefreshTokenMutation(c.config, OpCreate)
+	return &OAuthRefreshTokenCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OAuthRefreshToken entities.
+func (c *OAuthRefreshTokenClient) CreateBulk(builders ...*OAuthRefreshTokenCreate) *OAuthRefreshTokenCreateBulk {
+	return &OAuthRefreshTokenCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OAuthRefreshTokenClient) MapCreateBulk(slice any, setFunc func(*OAuthRefreshTokenCreate, int)) *OAuthRefreshTokenCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OAuthRefreshTokenCreateBulk{err: fmt.Errorf("calling to OAuthRefreshTokenClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OAuthRefreshTokenCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OAuthRefreshTokenCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OAuthRefreshToken.
+func (c *OAuthRefreshTokenClient) Update() *OAuthRefreshTokenUpdate {
+	mutation := newOAuthRefreshTokenMutation(c.config, OpUpdate)
+	return &OAuthRefreshTokenUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OAuthRefreshTokenClient) UpdateOne(_m *OAuthRefreshToken) *OAuthRefreshTokenUpdateOne {
+	mutation := newOAuthRefreshTokenMutation(c.config, OpUpdateOne, withOAuthRefreshToken(_m))
+	return &OAuthRefreshTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OAuthRefreshTokenClient) UpdateOneID(id string) *OAuthRefreshTokenUpdateOne {
+	mutation := newOAuthRefreshTokenMutation(c.config, OpUpdateOne, withOAuthRefreshTokenID(id))
+	return &OAuthRefreshTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OAuthRefreshToken.
+func (c *OAuthRefreshTokenClient) Delete() *OAuthRefreshTokenDelete {
+	mutation := newOAuthRefreshTokenMutation(c.config, OpDelete)
+	return &OAuthRefreshTokenDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OAuthRefreshTokenClient) DeleteOne(_m *OAuthRefreshToken) *OAuthRefreshTokenDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OAuthRefreshTokenClient) DeleteOneID(id string) *OAuthRefreshTokenDeleteOne {
+	builder := c.Delete().Where(oauthrefreshtoken.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OAuthRefreshTokenDeleteOne{builder}
+}
+
+// Query returns a query builder for OAuthRefreshToken.
+func (c *OAuthRefreshTokenClient) Query() *OAuthRefreshTokenQuery {
+	return &OAuthRefreshTokenQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOAuthRefreshToken},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OAuthRefreshToken entity by its id.
+func (c *OAuthRefreshTokenClient) Get(ctx context.Context, id string) (*OAuthRefreshToken, error) {
+	return c.Query().Where(oauthrefreshtoken.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OAuthRefreshTokenClient) GetX(ctx context.Context, id string) *OAuthRefreshToken {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OAuthRefreshTokenClient) Hooks() []Hook {
+	return c.hooks.OAuthRefreshToken
+}
+
+// Interceptors returns the client interceptors.
+func (c *OAuthRefreshTokenClient) Interceptors() []Interceptor {
+	return c.inters.OAuthRefreshToken
+}
+
+func (c *OAuthRefreshTokenClient) mutate(ctx context.Context, m *OAuthRefreshTokenMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OAuthRefreshTokenCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OAuthRefreshTokenUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OAuthRefreshTokenUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OAuthRefreshTokenDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OAuthRefreshToken mutation op: %q", m.Op())
+	}
+}
+
 // ReviewClient is a client for the Review schema.
 type ReviewClient struct {
 	config
@@ -5160,15 +5867,15 @@ func (c *StaffRoleClient) GetX(ctx context.Context, id int) *StaffRole {
 	return obj
 }
 
-// QueryPermissions queries the permissions edge of a StaffRole.
-func (c *StaffRoleClient) QueryPermissions(_m *StaffRole) *StaffRolePermissionQuery {
-	query := (&StaffRolePermissionClient{config: c.config}).Query()
+// QueryGrants queries the grants edge of a StaffRole.
+func (c *StaffRoleClient) QueryGrants(_m *StaffRole) *StaffRoleGrantQuery {
+	query := (&StaffRoleGrantClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(staffrole.Table, staffrole.FieldID, id),
-			sqlgraph.To(staffrolepermission.Table, staffrolepermission.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.PermissionsTable, staffrole.PermissionsColumn),
+			sqlgraph.To(staffrolegrant.Table, staffrolegrant.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.GrantsTable, staffrole.GrantsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -5201,107 +5908,107 @@ func (c *StaffRoleClient) mutate(ctx context.Context, m *StaffRoleMutation) (Val
 	}
 }
 
-// StaffRolePermissionClient is a client for the StaffRolePermission schema.
-type StaffRolePermissionClient struct {
+// StaffRoleGrantClient is a client for the StaffRoleGrant schema.
+type StaffRoleGrantClient struct {
 	config
 }
 
-// NewStaffRolePermissionClient returns a client for the StaffRolePermission from the given config.
-func NewStaffRolePermissionClient(c config) *StaffRolePermissionClient {
-	return &StaffRolePermissionClient{config: c}
+// NewStaffRoleGrantClient returns a client for the StaffRoleGrant from the given config.
+func NewStaffRoleGrantClient(c config) *StaffRoleGrantClient {
+	return &StaffRoleGrantClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `staffrolepermission.Hooks(f(g(h())))`.
-func (c *StaffRolePermissionClient) Use(hooks ...Hook) {
-	c.hooks.StaffRolePermission = append(c.hooks.StaffRolePermission, hooks...)
+// A call to `Use(f, g, h)` equals to `staffrolegrant.Hooks(f(g(h())))`.
+func (c *StaffRoleGrantClient) Use(hooks ...Hook) {
+	c.hooks.StaffRoleGrant = append(c.hooks.StaffRoleGrant, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `staffrolepermission.Intercept(f(g(h())))`.
-func (c *StaffRolePermissionClient) Intercept(interceptors ...Interceptor) {
-	c.inters.StaffRolePermission = append(c.inters.StaffRolePermission, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `staffrolegrant.Intercept(f(g(h())))`.
+func (c *StaffRoleGrantClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StaffRoleGrant = append(c.inters.StaffRoleGrant, interceptors...)
 }
 
-// Create returns a builder for creating a StaffRolePermission entity.
-func (c *StaffRolePermissionClient) Create() *StaffRolePermissionCreate {
-	mutation := newStaffRolePermissionMutation(c.config, OpCreate)
-	return &StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a StaffRoleGrant entity.
+func (c *StaffRoleGrantClient) Create() *StaffRoleGrantCreate {
+	mutation := newStaffRoleGrantMutation(c.config, OpCreate)
+	return &StaffRoleGrantCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of StaffRolePermission entities.
-func (c *StaffRolePermissionClient) CreateBulk(builders ...*StaffRolePermissionCreate) *StaffRolePermissionCreateBulk {
-	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of StaffRoleGrant entities.
+func (c *StaffRoleGrantClient) CreateBulk(builders ...*StaffRoleGrantCreate) *StaffRoleGrantCreateBulk {
+	return &StaffRoleGrantCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *StaffRolePermissionClient) MapCreateBulk(slice any, setFunc func(*StaffRolePermissionCreate, int)) *StaffRolePermissionCreateBulk {
+func (c *StaffRoleGrantClient) MapCreateBulk(slice any, setFunc func(*StaffRoleGrantCreate, int)) *StaffRoleGrantCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &StaffRolePermissionCreateBulk{err: fmt.Errorf("calling to StaffRolePermissionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &StaffRoleGrantCreateBulk{err: fmt.Errorf("calling to StaffRoleGrantClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*StaffRolePermissionCreate, rv.Len())
+	builders := make([]*StaffRoleGrantCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
+	return &StaffRoleGrantCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Update() *StaffRolePermissionUpdate {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdate)
-	return &StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Update() *StaffRoleGrantUpdate {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdate)
+	return &StaffRoleGrantUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *StaffRolePermissionClient) UpdateOne(_m *StaffRolePermission) *StaffRolePermissionUpdateOne {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermission(_m))
-	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *StaffRoleGrantClient) UpdateOne(_m *StaffRoleGrant) *StaffRoleGrantUpdateOne {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdateOne, withStaffRoleGrant(_m))
+	return &StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *StaffRolePermissionClient) UpdateOneID(id int) *StaffRolePermissionUpdateOne {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermissionID(id))
-	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *StaffRoleGrantClient) UpdateOneID(id int) *StaffRoleGrantUpdateOne {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdateOne, withStaffRoleGrantID(id))
+	return &StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Delete() *StaffRolePermissionDelete {
-	mutation := newStaffRolePermissionMutation(c.config, OpDelete)
-	return &StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Delete() *StaffRoleGrantDelete {
+	mutation := newStaffRoleGrantMutation(c.config, OpDelete)
+	return &StaffRoleGrantDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *StaffRolePermissionClient) DeleteOne(_m *StaffRolePermission) *StaffRolePermissionDeleteOne {
+func (c *StaffRoleGrantClient) DeleteOne(_m *StaffRoleGrant) *StaffRoleGrantDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *StaffRolePermissionClient) DeleteOneID(id int) *StaffRolePermissionDeleteOne {
-	builder := c.Delete().Where(staffrolepermission.ID(id))
+func (c *StaffRoleGrantClient) DeleteOneID(id int) *StaffRoleGrantDeleteOne {
+	builder := c.Delete().Where(staffrolegrant.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &StaffRolePermissionDeleteOne{builder}
+	return &StaffRoleGrantDeleteOne{builder}
 }
 
-// Query returns a query builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Query() *StaffRolePermissionQuery {
-	return &StaffRolePermissionQuery{
+// Query returns a query builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Query() *StaffRoleGrantQuery {
+	return &StaffRoleGrantQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeStaffRolePermission},
+		ctx:    &QueryContext{Type: TypeStaffRoleGrant},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a StaffRolePermission entity by its id.
-func (c *StaffRolePermissionClient) Get(ctx context.Context, id int) (*StaffRolePermission, error) {
-	return c.Query().Where(staffrolepermission.ID(id)).Only(ctx)
+// Get returns a StaffRoleGrant entity by its id.
+func (c *StaffRoleGrantClient) Get(ctx context.Context, id int) (*StaffRoleGrant, error) {
+	return c.Query().Where(staffrolegrant.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *StaffRolePermissionClient) GetX(ctx context.Context, id int) *StaffRolePermission {
+func (c *StaffRoleGrantClient) GetX(ctx context.Context, id int) *StaffRoleGrant {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -5309,15 +6016,15 @@ func (c *StaffRolePermissionClient) GetX(ctx context.Context, id int) *StaffRole
 	return obj
 }
 
-// QueryRole queries the role edge of a StaffRolePermission.
-func (c *StaffRolePermissionClient) QueryRole(_m *StaffRolePermission) *StaffRoleQuery {
+// QueryRole queries the role edge of a StaffRoleGrant.
+func (c *StaffRoleGrantClient) QueryRole(_m *StaffRoleGrant) *StaffRoleQuery {
 	query := (&StaffRoleClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(staffrolepermission.Table, staffrolepermission.FieldID, id),
+			sqlgraph.From(staffrolegrant.Table, staffrolegrant.FieldID, id),
 			sqlgraph.To(staffrole.Table, staffrole.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, staffrolepermission.RoleTable, staffrolepermission.RoleColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, staffrolegrant.RoleTable, staffrolegrant.RoleColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -5326,27 +6033,27 @@ func (c *StaffRolePermissionClient) QueryRole(_m *StaffRolePermission) *StaffRol
 }
 
 // Hooks returns the client hooks.
-func (c *StaffRolePermissionClient) Hooks() []Hook {
-	return c.hooks.StaffRolePermission
+func (c *StaffRoleGrantClient) Hooks() []Hook {
+	return c.hooks.StaffRoleGrant
 }
 
 // Interceptors returns the client interceptors.
-func (c *StaffRolePermissionClient) Interceptors() []Interceptor {
-	return c.inters.StaffRolePermission
+func (c *StaffRoleGrantClient) Interceptors() []Interceptor {
+	return c.inters.StaffRoleGrant
 }
 
-func (c *StaffRolePermissionClient) mutate(ctx context.Context, m *StaffRolePermissionMutation) (Value, error) {
+func (c *StaffRoleGrantClient) mutate(ctx context.Context, m *StaffRoleGrantMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&StaffRoleGrantCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&StaffRoleGrantUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&StaffRoleGrantDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown StaffRolePermission mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown StaffRoleGrant mutation op: %q", m.Op())
 	}
 }
 
@@ -5902,22 +6609,24 @@ func (c *UserAccountClient) mutate(ctx context.Context, m *UserAccountMutation) 
 type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
-		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLandingPage,
-		CourseLesson, CourseLessonReview, CourseLessonTranslation, CourseLessonVersion,
-		CourseModule, CourseModuleTranslation, CourseModuleVersion, CourseVersion,
-		Enrollment, LandingPageQnaItem, Lead, LessonProgress, Review, Session,
-		StaffMember, StaffRole, StaffRolePermission, Tag, Tagging, User,
-		UserAccount []ent.Hook
+		AuditRecord, Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem,
+		BookRequest, CategoryQnaItem, Course, CourseCategory, CourseCategoryItem,
+		CourseLandingPage, CourseLesson, CourseLessonReview, CourseLessonTranslation,
+		CourseLessonVersion, CourseModule, CourseModuleTranslation,
+		CourseModuleVersion, CourseVersion, Enrollment, LandingPageQnaItem, Lead,
+		LessonProgress, OAuthAccessToken, OAuthAuthRequest, OAuthClient,
+		OAuthRefreshToken, Review, Session, StaffMember, StaffRole, StaffRoleGrant,
+		Tag, Tagging, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
-		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLandingPage,
-		CourseLesson, CourseLessonReview, CourseLessonTranslation, CourseLessonVersion,
-		CourseModule, CourseModuleTranslation, CourseModuleVersion, CourseVersion,
-		Enrollment, LandingPageQnaItem, Lead, LessonProgress, Review, Session,
-		StaffMember, StaffRole, StaffRolePermission, Tag, Tagging, User,
-		UserAccount []ent.Interceptor
+		AuditRecord, Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem,
+		BookRequest, CategoryQnaItem, Course, CourseCategory, CourseCategoryItem,
+		CourseLandingPage, CourseLesson, CourseLessonReview, CourseLessonTranslation,
+		CourseLessonVersion, CourseModule, CourseModuleTranslation,
+		CourseModuleVersion, CourseVersion, Enrollment, LandingPageQnaItem, Lead,
+		LessonProgress, OAuthAccessToken, OAuthAuthRequest, OAuthClient,
+		OAuthRefreshToken, Review, Session, StaffMember, StaffRole, StaffRoleGrant,
+		Tag, Tagging, User, UserAccount []ent.Interceptor
 	}
 )

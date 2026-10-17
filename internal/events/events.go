@@ -24,6 +24,7 @@ const (
 	solutionCheckedName = "solution_checked"
 	emailConfirmedName  = "email_confirmed"
 	leadCreatedName     = "lead_created"
+	staffReadName       = "staff_read_personal_data"
 	schemaVersion       = "1"
 )
 
@@ -155,6 +156,33 @@ type LeadCreated struct {
 }
 
 func (LeadCreated) eventName() string { return leadCreatedName }
+
+// StaffReadPersonalData is the fact that a staff member read personal data
+// through the admin surface or over MCP (ADR-0018). The request publishes it and
+// a worker consumer writes the Audit Record, so recording never slows the read.
+//
+// It carries identifiers and a count, never a field value: EntityIDs are the ids
+// of the rows the response held, up to a cap (the whole count is in Count), so
+// the record can say which learners were looked at without repeating what was
+// seen. The rest is who and from where, copied from the request because the
+// consumer has no request.
+type StaffReadPersonalData struct {
+	ActorUserID    *int      `json:"actor_user_id"`
+	Channel        string    `json:"channel"`
+	ConnectedAppID *int      `json:"connected_app_id"`
+	TokenID        *string   `json:"token_id"`
+	Operation      string    `json:"operation"`
+	EntityType     string    `json:"entity_type"`
+	EntityIDs      []string  `json:"entity_ids"`
+	Count          int       `json:"count"`
+	RequestID      string    `json:"request_id"`
+	Address        string    `json:"address"`
+	UserAgent      string    `json:"user_agent"`
+	Locale         string    `json:"locale"`
+	OccurredAt     time.Time `json:"occurred_at"`
+}
+
+func (StaffReadPersonalData) eventName() string { return staffReadName }
 
 // Marshaler encodes events into outbox messages and decodes them back; the
 // stable event name travels in the message metadata. The publisher writes with

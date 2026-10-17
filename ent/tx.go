@@ -22,6 +22,8 @@ type Tx struct {
 	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
+	// AuditRecord is the client for interacting with the AuditRecord builders.
+	AuditRecord *AuditRecordClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
 	// BlogPost is the client for interacting with the BlogPost builders.
@@ -66,6 +68,14 @@ type Tx struct {
 	Lead *LeadClient
 	// LessonProgress is the client for interacting with the LessonProgress builders.
 	LessonProgress *LessonProgressClient
+	// OAuthAccessToken is the client for interacting with the OAuthAccessToken builders.
+	OAuthAccessToken *OAuthAccessTokenClient
+	// OAuthAuthRequest is the client for interacting with the OAuthAuthRequest builders.
+	OAuthAuthRequest *OAuthAuthRequestClient
+	// OAuthClient is the client for interacting with the OAuthClient builders.
+	OAuthClient *OAuthClientClient
+	// OAuthRefreshToken is the client for interacting with the OAuthRefreshToken builders.
+	OAuthRefreshToken *OAuthRefreshTokenClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
 	// Session is the client for interacting with the Session builders.
@@ -74,8 +84,8 @@ type Tx struct {
 	StaffMember *StaffMemberClient
 	// StaffRole is the client for interacting with the StaffRole builders.
 	StaffRole *StaffRoleClient
-	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
-	StaffRolePermission *StaffRolePermissionClient
+	// StaffRoleGrant is the client for interacting with the StaffRoleGrant builders.
+	StaffRoleGrant *StaffRoleGrantClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// Tagging is the client for interacting with the Tagging builders.
@@ -220,6 +230,7 @@ func (tx *Tx) init() {
 	tx.AiChat = NewAiChatClient(tx.config)
 	tx.AiMessage = NewAiMessageClient(tx.config)
 	tx.Attachment = NewAttachmentClient(tx.config)
+	tx.AuditRecord = NewAuditRecordClient(tx.config)
 	tx.Banner = NewBannerClient(tx.config)
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)
@@ -242,11 +253,15 @@ func (tx *Tx) init() {
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.LessonProgress = NewLessonProgressClient(tx.config)
+	tx.OAuthAccessToken = NewOAuthAccessTokenClient(tx.config)
+	tx.OAuthAuthRequest = NewOAuthAuthRequestClient(tx.config)
+	tx.OAuthClient = NewOAuthClientClient(tx.config)
+	tx.OAuthRefreshToken = NewOAuthRefreshTokenClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.Session = NewSessionClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)
 	tx.StaffRole = NewStaffRoleClient(tx.config)
-	tx.StaffRolePermission = NewStaffRolePermissionClient(tx.config)
+	tx.StaffRoleGrant = NewStaffRoleGrantClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
 	tx.Tagging = NewTaggingClient(tx.config)
 	tx.User = NewUserClient(tx.config)

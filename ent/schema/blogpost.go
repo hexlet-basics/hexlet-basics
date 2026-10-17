@@ -37,8 +37,9 @@ func (BlogPost) Fields() []ent.Field {
 		field.String("description").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		field.String("locale").Optional().Nillable(),
-		field.String("state").Optional().Nillable().
-			Annotations(AdminInputField{}),
+		// state is not an input: a post is created as a draft and the state moves
+		// only through the publish, unpublish and archive operations.
+		field.String("state").Optional().Nillable(),
 		field.Text("rich_body").Default("").
 			Annotations(AdminInputField{}),
 		// creator_id is NOT NULL (FK to users); the read model embeds the creator.

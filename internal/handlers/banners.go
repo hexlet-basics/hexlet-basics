@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/transitions"
 )
 
 // GetActiveBanner is the banner the pages that carry one show: the published
@@ -60,14 +61,15 @@ func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerPa
 	return getOne(ctx, int(params.ID), s.db.Banner.Get, s.conv.ToBanner)
 }
 
-// AdminCreateBanner creates a banner. The input-to-builder mapping is the
+// AdminCreateBanner creates a banner, always as a draft (the state is not an
+// input; it moves only through the transition operations). The input-to-builder mapping is the
 // generated SetInput (adminput.tmpl), driven by the schema annotations.
 //
 // Banners carry no uniqueness constraint, so there is no 409 path (unlike the
 // course-category resource). An empty `body` is rejected by the contract's
 // minLength at decode time, surfaced as 400 by the central ErrorHandler.
 func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (api.AdminCreateBannerRes, error) {
-	row, err := s.db.Banner.Create().SetInput(req).Save(ctx)
+	row, err := s.db.Banner.Create().SetInput(req).SetState(string(transitions.Draft)).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -96,4 +98,51 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 		return nil, err
 	}
 	return &api.AdminDeleteBannerNoContent{}, nil
+}
+
+// A state is not an update (ADR-0018, state transitions addendum): the
+// Publication State of a banner moves only through the three operations below,
+// each with its own Permission, and the legal moves are the shared
+// transitions.Publish, Unpublish and Archive. A new banner is a draft (the
+// column default), so it reaches the page only when someone publishes it.
+//
+// The state column is all a transition changes. What the public sees follows
+// from it: GetActiveBanner picks among the published banners of the locale
+// whose window is open, so publishing a banner outside its window shows nothing
+// until the window opens, and the window itself is edited with the banner, not
+// with its state. Legacy kept no cache or stamp behind the banner's state.
+
+// AdminPublishBanner makes a draft or archived banner eligible for the pages.
+func (s *Server) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (api.AdminPublishBannerRes, error) {
+	return s.transitionBanner(ctx, int(params.ID), transitions.Publish)
+}
+
+// AdminUnpublishBanner takes a published banner back to draft.
+func (s *Server) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (api.AdminUnpublishBannerRes, error) {
+	return s.transitionBanner(ctx, int(params.ID), transitions.Unpublish)
+}
+
+// AdminArchiveBanner archives a draft or published banner.
+func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (api.AdminArchiveBannerRes, error) {
+	return s.transitionBanner(ctx, int(params.ID), transitions.Archive)
+}
+
+// transitionBanner checks the move against the table and writes the new state
+// through UpdateOne, so the audit hook records the old and the new state. A
+// missing id surfaces as ent not-found (404), before any write.
+func (s *Server) transitionBanner(ctx context.Context, id int, move transitions.Transition[transitions.PublicationState]) (*api.Banner, error) {
+	row, err := s.db.Banner.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err := refuseTransition(move.Check(transitions.PublicationState(row.State))); err != nil {
+		return nil, err
+	}
+
+	updated, err := s.db.Banner.UpdateOneID(id).SetState(string(move.To)).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	item := s.conv.ToBanner(updated)
+	return &item, nil
 }

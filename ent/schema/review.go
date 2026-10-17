@@ -41,7 +41,10 @@ func (Review) Fields() []ent.Field {
 		field.String("last_name").Optional().Nillable(),
 		field.String("locale").Optional().Nillable().
 			Annotations(AdminInputField{Skip: true}),
-		field.String("state").Optional().Nillable(),
+		// state is not an input: a review is created as a draft and the state moves
+		// only through the publish, unpublish and archive operations.
+		field.String("state").Optional().Nillable().
+			Annotations(AdminInputField{Skip: true}),
 		field.Bool("pinned").Optional().Nillable(),
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/dashboard"
+	"hexletbasics/internal/progress"
 )
 
 // GetMyDashboard returns the learner's courses, split into what they are
@@ -23,9 +24,19 @@ import (
 // scope: the dashboard renders course cards, and a course with no card to
 // render would be a row the client cannot draw.
 func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, error) {
-	u := MustAuthenticatedUser(ctx)
+	dashboard, err := s.MyDashboard(ctx, MustAuthenticatedUser(ctx).ID)
+	if err != nil {
+		return nil, err
+	}
+	return dashboard, nil
+}
 
-	courses, err := s.dashboard.Courses(ctx, u.ID, s.i18n.Locale(ctx))
+// MyDashboard is the dashboard of one user, for callers that identified the
+// user themselves: the MCP learner tool takes the id from its bearer token,
+// where the HTTP operation takes it from the session. It is the same code, so
+// the two cannot answer differently.
+func (s *Server) MyDashboard(ctx context.Context, userID int) (*api.MyDashboard, error) {
+	courses, err := s.dashboard.Courses(ctx, userID, s.i18n.Locale(ctx))
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +61,11 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 // strings, and the client pairs each card with the enrollment's courseId.
 func (s *Server) addCard(out *api.MyDashboard, c dashboard.Course) {
 	out.LandingPagesByCourseId[strconv.Itoa(c.Enrollment.CourseID)] = s.conv.ToCatalogItem(c.Card)
+}
+
+// MyCourseProgress is where the user stands in one Course in the glossary's
+// three conditions, for the MCP learner tools. The progress module computes it
+// from the same rows as the course page, with Started added.
+func (s *Server) MyCourseProgress(ctx context.Context, userID int, courseSlug string) (*progress.LearnerCourse, error) {
+	return s.progress.LearnerCourse(ctx, userID, courseSlug)
 }

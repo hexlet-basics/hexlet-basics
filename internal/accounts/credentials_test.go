@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
@@ -63,7 +64,8 @@ func TestEnsureAnotherAdmin(t *testing.T) {
 	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), "user_second_admin is the other administrator")
 	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "user_blank is not an administrator")
 
-	db.User.UpdateOneID(secondAdmin).SetAdmin(false).ExecX(t.Context())
+	// The fixtures hold a third administrator, the staff member user_admin_staff.
+	db.User.Update().Where(user.IDIn(secondAdmin, fixtures.ID(fixtures.UserAdminStaff))).SetAdmin(false).ExecX(t.Context())
 	assert.ErrorIs(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), accounts.ErrLastAdmin)
 	assert.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "still not an administrator")
 }

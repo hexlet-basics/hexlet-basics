@@ -33,20 +33,20 @@ type StaffRole struct {
 
 // StaffRoleEdges holds the relations/edges for other nodes in the graph.
 type StaffRoleEdges struct {
-	// Permissions holds the value of the permissions edge.
-	Permissions []*StaffRolePermission `json:"permissions,omitempty"`
+	// Grants holds the value of the grants edge.
+	Grants []*StaffRoleGrant `json:"grants,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// PermissionsOrErr returns the Permissions value or an error if the edge
+// GrantsOrErr returns the Grants value or an error if the edge
 // was not loaded in eager-loading.
-func (e StaffRoleEdges) PermissionsOrErr() ([]*StaffRolePermission, error) {
+func (e StaffRoleEdges) GrantsOrErr() ([]*StaffRoleGrant, error) {
 	if e.loadedTypes[0] {
-		return e.Permissions, nil
+		return e.Grants, nil
 	}
-	return nil, &NotLoadedError{edge: "permissions"}
+	return nil, &NotLoadedError{edge: "grants"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -119,9 +119,9 @@ func (_m *StaffRole) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryPermissions queries the "permissions" edge of the StaffRole entity.
-func (_m *StaffRole) QueryPermissions() *StaffRolePermissionQuery {
-	return NewStaffRoleClient(_m.config).QueryPermissions(_m)
+// QueryGrants queries the "grants" edge of the StaffRole entity.
+func (_m *StaffRole) QueryGrants() *StaffRoleGrantQuery {
+	return NewStaffRoleClient(_m.config).QueryGrants(_m)
 }
 
 // Update returns a builder for updating this StaffRole.

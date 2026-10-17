@@ -4,6 +4,10 @@ status: accepted
 
 # Cutover scope, English locale kept until after it, and the `/api` prefix
 
+Amended by [ADR-0020](0020-in-process-oauth-server-for-mcp-clients.md) and
+[ADR-0019](0019-mcp-server.md): `/mcp`, `/oauth/*` and `/.well-known/oauth-*`
+are also served by Go, at the root, not under `/api`.
+
 ADR-0002 commits to a hard cutover at parity, but parity was never pinned down
 against what production actually does. Done means deployable, parity is with
 production rather than the legacy codebase (unused surfaces are not ported),

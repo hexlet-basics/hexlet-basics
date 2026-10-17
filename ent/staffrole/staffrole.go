@@ -22,17 +22,17 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// EdgePermissions holds the string denoting the permissions edge name in mutations.
-	EdgePermissions = "permissions"
+	// EdgeGrants holds the string denoting the grants edge name in mutations.
+	EdgeGrants = "grants"
 	// Table holds the table name of the staffrole in the database.
 	Table = "staff_member_roles"
-	// PermissionsTable is the table that holds the permissions relation/edge.
-	PermissionsTable = "staff_member_role_permissions"
-	// PermissionsInverseTable is the table name for the StaffRolePermission entity.
-	// It exists in this package in order to avoid circular dependency with the "staffrolepermission" package.
-	PermissionsInverseTable = "staff_member_role_permissions"
-	// PermissionsColumn is the table column denoting the permissions relation/edge.
-	PermissionsColumn = "role_id"
+	// GrantsTable is the table that holds the grants relation/edge.
+	GrantsTable = "staff_member_role_grants"
+	// GrantsInverseTable is the table name for the StaffRoleGrant entity.
+	// It exists in this package in order to avoid circular dependency with the "staffrolegrant" package.
+	GrantsInverseTable = "staff_member_role_grants"
+	// GrantsColumn is the table column denoting the grants relation/edge.
+	GrantsColumn = "role_id"
 )
 
 // Columns holds all SQL columns for staffrole fields.
@@ -91,23 +91,23 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByPermissionsCount orders the results by permissions count.
-func ByPermissionsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByGrantsCount orders the results by grants count.
+func ByGrantsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPermissionsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newGrantsStep(), opts...)
 	}
 }
 
-// ByPermissions orders the results by permissions terms.
-func ByPermissions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByGrants orders the results by grants terms.
+func ByGrants(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPermissionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newGrantsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newPermissionsStep() *sqlgraph.Step {
+func newGrantsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PermissionsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, PermissionsTable, PermissionsColumn),
+		sqlgraph.To(GrantsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, GrantsTable, GrantsColumn),
 	)
 }

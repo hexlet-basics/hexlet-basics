@@ -1,6 +1,25 @@
 export default {
   translation: {
     account: {
+      connected_apps: {
+        confirm_label: "Отключить",
+        confirm_text:
+          "Приложение сразу потеряет доступ к вашему аккаунту. Позже его можно подключить снова.",
+        confirm_title: "Отключить «{{client}}»?",
+        connected_at: "Подключено {{date}}",
+        empty: "У вас нет подключённых приложений.",
+        error: "Не удалось отключить приложение. Попробуйте ещё раз.",
+        host: "Определяется по {{host}}",
+        intro:
+          "Эти приложения действуют от вашего имени с перечисленными правами. Приложение, которым вы не пользовались 30 дней, отключается автоматически.",
+        meta: {
+          description: "Приложения, которым вы разрешили доступ к аккаунту Code Basics",
+        },
+        permissions: "Права:",
+        revoke: "Отключить",
+        revoked: "Приложение отключено",
+        title: "Подключённые приложения",
+      },
       profiles: {
         edit: {
           delete: "Удалить аккаунт",
@@ -211,6 +230,7 @@ export default {
     },
     admin: {
       resources: {
+        audit: "Журнал аудита",
         banners: "Баннеры",
         blogPosts: "Посты блога",
         courseCategories: "Категории курсов",
@@ -225,6 +245,62 @@ export default {
         roles: "Роли",
         staffMembers: "Сотрудники",
         users: "Пользователи",
+      },
+      audit: {
+        channel: {
+          mcp: "MCP",
+          web: "Сайт",
+        },
+        columns: {
+          actor: "Пользователь",
+          channel: "Канал",
+          entity: "Сущность",
+          occurredAt: "Когда",
+          operation: "Операция",
+          outcome: "Результат",
+        },
+        details: {
+          address: "Адрес",
+          changes: "Изменения",
+          connectedApp: "Подключённое приложение",
+          field: "Поле",
+          locale: "Язык",
+          new: "Новое значение",
+          old: "Старое значение",
+          open: "Подробнее",
+          readCount_one: "Прочитано записей: {{count}}",
+          readCount_few: "Прочитано записей: {{count}}",
+          readCount_many: "Прочитано записей: {{count}}",
+          readCount_other: "Прочитано записей: {{count}}",
+          reads: "Чтение персональных данных",
+          requestId: "Запрос",
+          secret: "Секретное значение, не сохраняется",
+          token: "Токен",
+          userAgent: "User agent",
+        },
+        filters: {
+          actorUserId: "Id пользователя",
+          anyChannel: "Любой канал",
+          apply: "Применить",
+          channel: "Канал",
+          entityId: "Id сущности",
+          entityType: "Тип сущности",
+          from: "С",
+          operation: "Операция",
+          reset: "Сбросить",
+          to: "По",
+          windowHint:
+            "Без периода показаны последние 30 дней; период не длиннее 92 дней. Id сущности требует указать её тип.",
+        },
+        forbidden: {
+          body: "Чтобы читать журнал аудита, у вашей роли должно быть право audit.read, даже у администратора.",
+          title: "Нет доступа к журналу аудита",
+        },
+        outcome: {
+          failed: "Ошибка",
+          forbidden: "Отказано",
+          succeeded: "Выполнено",
+        },
       },
       crud: {
         cancel: "Отмена",
@@ -271,15 +347,28 @@ export default {
         versionQueued: "Сборка версии запущена",
       },
       permissions: {
-        canCreate: "Создание",
-        canDestroy: "Удаление",
-        canIndex: "Просмотр",
-        canUpdate: "Изменение",
+        capability: "Только по явной выдаче",
+        kindRead: "Чтение",
+        kindWrite: "Запись",
         title: "Права",
+      },
+      publicationState: {
+        archive: "В архив",
+        changeError: "Не удалось изменить состояние",
+        changed: "Состояние изменено",
+        publish: "Опубликовать",
+        unpublish: "Снять с публикации",
       },
       qna: {
         add: "Добавить вопрос",
         title: "FAQ",
+      },
+      readiness: {
+        changeError: "Не удалось изменить готовность",
+        changed: "Готовность изменена",
+        markCompleted: "Отметить завершённым",
+        markDraft: "Отметить черновиком",
+        markInDevelopment: "Отметить в разработке",
       },
       banners: {
         edit: {
@@ -740,6 +829,30 @@ export default {
           truncate: "&hellip;",
         },
       },
+    },
+    connect: {
+      account: "Вы вошли как {{account}}",
+      approve: "Разрешить",
+      deny: "Отклонить",
+      error: "Не удалось передать ваше решение. Попробуйте ещё раз.",
+      intro: "Приложение «{{client}}» просит доступ к вашему аккаунту.",
+      localhost_warning:
+        "Это приложение получит ваше согласие только на этом компьютере ({{host}}). Если вы не подключали приложение на этом компьютере, отклоните запрос.",
+      meta: {
+        description: "Подтверждение доступа приложения к аккаунту Code Basics",
+      },
+      not_found:
+        "Запрос недействителен или уже обработан. Вернитесь в приложение и начните подключение заново.",
+      redirect: "После вашего решения вы вернётесь на {{host}}.",
+      scopes: {
+        admin: "Действовать в админ-панели от вашего имени",
+        catalog_read: "Читать каталог курсов",
+        offline_access: "Сохранять доступ, пока вы его не отзовёте",
+        openid: "Узнать, кто вы",
+        progress_read: "Читать ваш прогресс по курсам",
+      },
+      scopes_title: "Приложение запрашивает право:",
+      title: "Подключить приложение",
     },
     enums: {
       course: {
@@ -1341,6 +1454,7 @@ export default {
           cases: "Решения",
           categories: "Категории",
           community: "Сообщество",
+          connected_apps: "Подключённые приложения",
           courses: "Курсы",
           courses_with_employment: "Курсы с трудоустройством",
           courses_with_employment_description: "Обучим программированию, аналитике и тестированию",

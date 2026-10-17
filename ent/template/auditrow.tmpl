@@ -1,0 +1,47 @@
+{{/*
+auditrow generates (*Client).AuditRow: load one row of any schema type by id and
+return its stored fields by column name. ent has no generic read of a row that is
+about to be deleted (a delete mutation carries only the id), so internal/audit
+calls this from its hook to keep what a delete destroyed in the Audit Record
+(ADR-0018: a change keeps old and new values). Generated, not listed by hand, so
+a new schema type is covered the moment it exists. Secrets are not filtered here:
+the hook consults AuditSecretFields and keeps those by name only.
+*/}}
+
+{{ define "auditrow" }}
+
+{{ template "header" $ }}
+
+import (
+	"context"
+	"fmt"
+)
+
+// AuditRow reads the row of the ent type typeName (Mutation.Type) with the given
+// id and returns its fields keyed by column name. The id has the Go type of the
+// schema's id (int or string); a wrong type or an unknown type is an error.
+func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[string]any, error) {
+	switch typeName {
+{{- range $n := $.Nodes }}
+	{{- if $n.HasOneFieldID }}
+	case {{ printf "%q" $n.Name }}:
+		key, ok := id.({{ $n.ID.Type }})
+		if !ok {
+			return nil, fmt.Errorf("audit row: %s id is %T, want {{ $n.ID.Type }}", typeName, id)
+		}
+		row, err := c.{{ $n.Name }}.Get(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+		return map[string]any{
+			{{- range $f := $n.Fields }}
+			{{ printf "%q" $f.Name }}: row.{{ $f.StructField }},
+			{{- end }}
+		}, nil
+	{{- end }}
+{{- end }}
+	}
+	return nil, fmt.Errorf("audit row: unknown type %q", typeName)
+}
+
+{{ end }}

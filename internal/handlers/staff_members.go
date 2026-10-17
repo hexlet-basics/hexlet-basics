@@ -13,7 +13,7 @@ import (
 func withStaffMemberEdges(q *ent.StaffMemberQuery) *ent.StaffMemberQuery {
 	return q.
 		WithUser().
-		WithRole(func(rq *ent.StaffRoleQuery) { rq.WithPermissions() })
+		WithRole(func(rq *ent.StaffRoleQuery) { rq.WithGrants() })
 }
 
 func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (api.AdminListStaffMembersRes, error) {
@@ -44,6 +44,9 @@ func (s *Server) getAdminStaffMember(ctx context.Context, id int32) (*api.StaffM
 // AdminCreateStaffMember grants a user a role. user_id is unique (one staff
 // record per user), so a duplicate surfaces as 409 via the central handler.
 func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (api.AdminCreateStaffMemberRes, error) {
+	if err := guardStaffRecordChange(ctx, 0, int(req.UserId)); err != nil {
+		return nil, err
+	}
 	row, err := s.db.StaffMember.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -52,6 +55,13 @@ func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMembe
 }
 
 func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (api.AdminUpdateStaffMemberRes, error) {
+	current, err := s.db.StaffMember.Get(ctx, int(params.ID))
+	if err != nil {
+		return nil, err
+	}
+	if err := guardStaffRecordChange(ctx, current.UserID, int(req.UserId)); err != nil {
+		return nil, err
+	}
 	row, err := s.db.StaffMember.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -60,6 +70,13 @@ func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMembe
 }
 
 func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) (api.AdminDeleteStaffMemberRes, error) {
+	current, err := s.db.StaffMember.Get(ctx, int(params.ID))
+	if err != nil {
+		return nil, err
+	}
+	if err := guardStaffRecordChange(ctx, current.UserID, 0); err != nil {
+		return nil, err
+	}
 	if err := s.db.StaffMember.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
 		return nil, err
 	}

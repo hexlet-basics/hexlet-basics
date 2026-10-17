@@ -12,7 +12,7 @@ import { zRoleInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { staffRoleToForm, useStaffRoleFields } from "@/components/admin/resources/staffRole";
-import { RolePermissionsMatrix } from "@/components/admin/RolePermissionsMatrix";
+import { RolePermissions } from "@/components/admin/RolePermissions";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/$id")({
@@ -58,7 +58,7 @@ function EditRole() {
             onCancel={backToList}
             isPending={mutation.isPending}
           />
-          <RolePermissionsMatrix roleId={roleId} />
+          <RolePermissions roleId={roleId} />
         </>
       )}
     </Stack>

@@ -14,31 +14,31 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin edit pages that carry a nested editor under the record's own form,
-// through their real routes under the real admin guard: the role's permission
-// matrix and a category's FAQ. The API is faked at the HTTP boundary; asserted is
+// through their real routes under the real admin guard: the role's permissions
+// and a category's FAQ. The API is faked at the HTTP boundary; asserted is
 // what an admin sees and what the API is sent.
 
 const role: StaffRoleDetail = {
   id: 5,
   name: "Editor",
   description: null,
+  grants: ["blog_posts.read"],
+};
+
+const catalog = {
   permissions: [
-    {
-      id: 1,
-      roleId: 5,
-      resource: "banners",
-      canIndex: true,
-      canCreate: false,
-      canUpdate: false,
-      canDestroy: false,
-    },
+    { name: "audit.read", kind: "read", capability: true },
+    { name: "banners.read", kind: "read", capability: false },
+    { name: "blog_posts.create", kind: "write", capability: false },
+    { name: "blog_posts.read", kind: "read", capability: false },
   ],
 };
 
-test("a role's permissions are saved as the grid the admin ticked", async () => {
+test("a role's permissions are shown by resource and saved as the admin ticked them", async () => {
   let received: RolePermissionsInput | undefined;
   worker.use(
     http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
+    http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
     http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
     http.put("*/admin/management/role_permissions/5", async ({ request }) => {
       received = (await request.json()) as RolePermissionsInput;
@@ -52,20 +52,29 @@ test("a role's permissions are saved as the grid the admin ticked", async () => 
     user: admin,
   });
 
-  // What the role already has is ticked; nothing else is.
-  const viewBanners = page.getByRole("checkbox", { name: "banners canIndex" });
-  await expect.element(viewBanners).toBeChecked();
-  const createBanners = page.getByRole("checkbox", { name: "banners canCreate" });
-  await expect.element(createBanners).not.toBeChecked();
+  // Permissions are listed under the resource they belong to.
+  await expect.element(page.getByText("banners", { exact: true })).toBeVisible();
+  await expect.element(page.getByText("blog_posts", { exact: true })).toBeVisible();
 
-  await createBanners.click();
+  // A capability is offered with its own group and a note that it is explicit only.
+  await expect.element(page.getByText("audit", { exact: true })).toBeVisible();
+  await expect.element(page.getByRole("checkbox", { name: "audit.read" })).not.toBeChecked();
+  await expect.element(page.getByText("Explicit grant only")).toBeVisible();
+
+  // The role reads blog posts and may not create them yet.
+  const read = page.getByRole("checkbox", { name: "blog_posts.read" });
+  await expect.element(read).toBeChecked();
+  const create = page.getByRole("checkbox", { name: "blog_posts.create" });
+  await expect.element(create).not.toBeChecked();
+
+  await create.click();
+  await read.click();
   const save = page.getByRole("button", { name: "Save" }).last();
   await save.click();
 
   const confirmation = page.getByText("Record updated");
   await expect.element(confirmation).toBeVisible();
-  const banners = received?.permissions.find((row) => row.resource === "banners");
-  expect(banners).toMatchObject({ canIndex: true, canCreate: true, canUpdate: false });
+  expect(received?.grants).toEqual(["blog_posts.create"]);
 });
 
 const category: CourseCategory = {

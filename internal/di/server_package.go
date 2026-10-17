@@ -28,6 +28,8 @@ import (
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/mcpserver"
+	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/sessions"
@@ -159,7 +161,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return staffroles.NewPermissions(db), nil
+		tx, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return staffroles.NewPermissions(db, tx), nil
 	}),
 	do.Lazy[*sitemap.Sitemap](func(i do.Injector) (*sitemap.Sitemap, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -245,7 +251,18 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		// A nil *oauthserver.Server must not become a non-nil interface: the
+		// consent operations treat a nil seam as "the OAuth server is off".
+		var consents handlers.OAuthConsents
+		if services.Config.OAuth.Enabled {
+			oauthServer, err := do.Invoke[*oauthserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			consents = oauthServer
+		}
 		return handlers.NewServer(handlers.Deps{
+			OAuth:             consents,
 			DB:                services.DB,
 			Config:            services.Config,
 			Starter:           services.Starter,
@@ -347,13 +364,31 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		// WithMiddleware is the unit of work of every admin write: the
+		// transaction, and the Audit Record written inside it (ADR-0018).
 		// WithErrorHandler installs the central ent-error -> HTTP-status
 		// mapping (404/409), so handlers return raw ent errors instead of
 		// typed DTOs.
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
 		return api.NewServer(
 			handler,
 			handler.Security(),
 			api.WithErrorHandler(errorHandler.Write),
+			// One call: a second WithMiddleware would replace the first. The
+			// second middleware is the staff reads of personal data: the server
+			// only publishes the fact, the worker writes the Audit Record
+			// (ADR-0018, ADR-0010).
+			api.WithMiddleware(
+				handlers.NewAuditMiddleware(txStore, translator, errorHandler),
+				handlers.NewPersonalDataReadMiddleware(publisher, translator, errorHandler),
+			),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
@@ -409,11 +444,127 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		// The OAuth server is mounted only behind its flag (ADR-0020).
+		var oauthHandler http.Handler
+		if cfg.OAuth.Enabled {
+			oauthServer, err := do.Invoke[*oauthserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			oauthHandler = oauthServer.Handler()
+		}
+		// The MCP endpoint is mounted only behind its flag (ADR-0019). A nil
+		// *mcpserver.Server must not become a non-nil http.Handler.
+		var mcpHandler http.Handler
+		if cfg.MCP.Enabled {
+			mcpEndpoint, err := do.Invoke[*mcpserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			mcpHandler = mcpEndpoint.Handler()
+		}
 		return handlers.NewRouter(
 			handler.Security().Pipeline(apiServer),
 			attachmentHandler,
 			webhookHandler,
+			oauthHandler,
+			mcpHandler,
 		), nil
+	}),
+	// The OAuth authorization server (ADR-0020). It receives the application's
+	// half of its seam, who is signed in, from the handlers package; the
+	// package itself never imports handlers. Built only when the flag is on,
+	// since an invalid issuer or a missing key would otherwise stop a
+	// deployment that does not use it.
+	do.Lazy[*oauthserver.Server](func(i do.Injector) (*oauthserver.Server, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		// Off, the service resolves to nil: the router and the consent seam
+		// only ask for it behind the same flag.
+		if !cfg.OAuth.Enabled {
+			return nil, nil
+		}
+		return oauthserver.New(oauthserver.Deps{
+			Config: oauthserver.Config{
+				Issuer:               cfg.OAuth.Issuer,
+				EncryptionKey:        cfg.OAuth.EncryptionKey,
+				RegistrationLimit:    cfg.OAuth.RegistrationLimit,
+				RegistrationWindow:   cfg.OAuth.RegistrationWindow,
+				AccessTokenLifetime:  cfg.OAuth.AccessTokenTTL,
+				RefreshTokenLifetime: cfg.OAuth.RefreshTokenTTL,
+			},
+			DB:            db,
+			Transactor:    txStore,
+			App:           handlers.OAuthSession{},
+			ClientAddress: handlers.ClientIP,
+		})
+	}),
+	// The MCP endpoint (ADR-0019): verifies tokens with the OAuth server and
+	// serves tools through the same handler code as the HTTP operations. Built
+	// only when its flag is on; config validation guarantees OAuth is on then.
+	do.Lazy[*mcpserver.Server](func(i do.Injector) (*mcpserver.Server, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		if !cfg.MCP.Enabled {
+			return nil, nil
+		}
+		oauthServer, err := do.Invoke[*oauthserver.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		handler, err := do.Invoke[*handlers.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		apiServer, err := do.Invoke[*api.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		translator, err := do.Invoke[*localization.Translator](i)
+		if err != nil {
+			return nil, err
+		}
+		return mcpserver.New(mcpserver.Deps{
+			Verifier:  oauthServer,
+			Catalogue: handler,
+			// The generated server with its security handler and audit
+			// middleware: the one checkpoint of every admin tool (ADR-0019).
+			Learner: handler,
+			API:     handlers.NewAdminDispatcher(apiServer, translator),
+			Issuer:  cfg.OAuth.Issuer,
+			Limits: mcpserver.Limits{
+				MaxPageSize:      cfg.MCP.MaxPageSize,
+				MaxResponseBytes: cfg.MCP.MaxResponseBytes,
+				ToolTimeout:      cfg.MCP.ToolTimeout,
+				RateWindow:       cfg.MCP.RateWindow,
+				User: mcpserver.Rates{
+					Catalogue: cfg.MCP.RateUserCatalogue,
+					Personal:  cfg.MCP.RateUserPersonal,
+					Write:     cfg.MCP.RateUserWrite,
+				},
+				Client: mcpserver.Rates{
+					Catalogue: cfg.MCP.RateClientCatalogue,
+					Personal:  cfg.MCP.RateClientPersonal,
+					Write:     cfg.MCP.RateClientWrite,
+				},
+			},
+		})
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
 		translator, err := do.Invoke[*localization.Translator](i)

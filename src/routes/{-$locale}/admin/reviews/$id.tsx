@@ -9,6 +9,7 @@ import {
   adminUpdateReviewMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zReviewInput } from "@/client/zod.gen";
+import { ReviewStatePanel } from "@/components/admin/ReviewStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { reviewToForm, useReviewFields } from "@/components/admin/resources/review";
@@ -46,16 +47,19 @@ function EditReview() {
       {isLoading || !data ? (
         <FormSkeleton />
       ) : (
-        <CrudForm
-          key={data.id}
-          fields={fields}
-          schema={zReviewInput}
-          defaultValues={reviewToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: reviewId }, body: values })}
-          submitLabel={t(($) => $.admin.crud.save)}
-          onCancel={backToList}
-          isPending={mutation.isPending}
-        />
+        <>
+          <CrudForm
+            key={data.id}
+            fields={fields}
+            schema={zReviewInput}
+            defaultValues={reviewToForm(data)}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: reviewId }, body: values })}
+            submitLabel={t(($) => $.admin.crud.save)}
+            onCancel={backToList}
+            isPending={mutation.isPending}
+          />
+          <ReviewStatePanel review={data} />
+        </>
       )}
     </Stack>
   );

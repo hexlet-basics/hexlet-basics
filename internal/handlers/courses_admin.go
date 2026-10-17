@@ -9,6 +9,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/transitions"
 )
 
 // Admin course endpoints. The API embeds the
@@ -44,8 +45,11 @@ func (s *Server) getAdminCourse(ctx context.Context, id int32) (*api.Course, err
 	)
 }
 
+// AdminCreateCourse creates a course, always as a draft: the Readiness is not an
+// input (a state is not an update), so it is set here and moves only through the
+// mark-as operations. A course left without one would be a stateless row.
 func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (api.AdminCreateCourseRes, error) {
-	row, err := s.db.Course.Create().SetInput(req).Save(ctx)
+	row, err := s.db.Course.Create().SetInput(req).SetReadiness(string(transitions.ReadinessDraft)).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +62,52 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 		return nil, err
 	}
 	return s.getAdminCourse(ctx, int32(row.ID))
+}
+
+// A state is not an update (ADR-0018, state transitions addendum): the Readiness
+// of a course moves only through the three operations below, each with its own
+// Permission. Any change between two distinct values is legal, so the tables in
+// internal/transitions differ from the Publication State's, but the refusal of a
+// repeated value is the same 409.
+//
+// The readiness column is all a transition changes. What it controls is read
+// from it by the queries, with nothing copied or cached: the public catalogue,
+// the course category pages, the sitemap and the lessons list ask for completed
+// courses (landingpages.Completed), so marking a course completed lists it and
+// marking it back withdraws it. The course loader writes the readiness of a
+// course version (its spec's `progress`), never the course's.
+
+// AdminMarkCourseDraft takes a course back to a draft.
+func (s *Server) AdminMarkCourseDraft(ctx context.Context, params api.AdminMarkCourseDraftParams) (api.AdminMarkCourseDraftRes, error) {
+	return s.transitionCourse(ctx, int(params.ID), transitions.MarkDraft)
+}
+
+// AdminMarkCourseInDevelopment marks a course as being developed.
+func (s *Server) AdminMarkCourseInDevelopment(ctx context.Context, params api.AdminMarkCourseInDevelopmentParams) (api.AdminMarkCourseInDevelopmentRes, error) {
+	return s.transitionCourse(ctx, int(params.ID), transitions.MarkInDevelopment)
+}
+
+// AdminMarkCourseCompleted marks a course as finished, which lists it publicly.
+func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminMarkCourseCompletedParams) (api.AdminMarkCourseCompletedRes, error) {
+	return s.transitionCourse(ctx, int(params.ID), transitions.MarkCompleted)
+}
+
+// transitionCourse checks the move against the table and writes the new
+// readiness through UpdateOne, so the audit hook records the old and the new
+// value. A missing id surfaces as ent not-found (404), before any write. The
+// answer is the admin course view the update gives.
+func (s *Server) transitionCourse(ctx context.Context, id int, move transitions.Transition[transitions.Readiness]) (*api.Course, error) {
+	row, err := s.db.Course.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err := refuseTransitionNamed(move.Check(transitions.ReadinessOf(row.Readiness)), readinessNames); err != nil {
+		return nil, err
+	}
+	if err := s.db.Course.UpdateOneID(id).SetReadiness(string(move.To)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return s.getAdminCourse(ctx, int32(id))
 }
 
 // AdminCreateCourseVersion starts a build of a new course version: it creates the

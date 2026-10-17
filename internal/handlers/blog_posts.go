@@ -15,6 +15,7 @@ import (
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/transitions"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
@@ -83,7 +84,8 @@ func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, e
 	return &items[0], nil
 }
 
-// AdminCreateBlogPost creates a post. The input-to-builder mapping is the
+// AdminCreateBlogPost creates a post, always as a draft: the state is not part
+// of the input, it moves only through the transition operations. The input-to-builder mapping is the
 // generated SetInput; the creator is the authenticated admin (legacy
 // `blog_post.creator = current_user`). Locale: legacy stamps the admin UI's
 // request locale, which does not reach ogen handlers yet (the known
@@ -96,6 +98,7 @@ func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput
 		SetInput(req).
 		SetCreatorID(creator.ID).
 		SetLocale(defaultAdminLocale).
+		SetState(string(api.BlogPostStateDraft)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -114,6 +117,45 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 		return nil, err
 	}
 	return s.getAdminBlogPost(ctx, row.ID)
+}
+
+// AdminPublishBlogPost makes a draft or archived post public. The state column
+// is all there is to it: legacy kept no published-at stamp and no feed or cache
+// to refresh (the public list, the feeds and the sitemap query the state), so
+// there is no side effect to carry.
+func (s *Server) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (api.AdminPublishBlogPostRes, error) {
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Publish)
+}
+
+// AdminUnpublishBlogPost takes a published post back to draft.
+func (s *Server) AdminUnpublishBlogPost(ctx context.Context, params api.AdminUnpublishBlogPostParams) (api.AdminUnpublishBlogPostRes, error) {
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Unpublish)
+}
+
+// AdminArchiveBlogPost archives a draft or published post.
+func (s *Server) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchiveBlogPostParams) (api.AdminArchiveBlogPostRes, error) {
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Archive)
+}
+
+// transitionBlogPost checks the move against the table and writes the new
+// state through UpdateOne, so the audit hook records the old and the new state.
+// A row with no state (nullable in the legacy schema) counts as a draft, which
+// is what the public queries treat it as: not published.
+func (s *Server) transitionBlogPost(ctx context.Context, id int, move transitions.Transition[transitions.PublicationState]) (*api.BlogPost, error) {
+	// A missing id surfaces as ent not-found (404), before any write.
+	post, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := refuseTransition(move.Check(transitions.CurrentOf(post.State))); err != nil {
+		return nil, err
+	}
+
+	if err := s.db.BlogPost.UpdateOneID(id).SetState(string(move.To)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return s.getAdminBlogPost(ctx, id)
 }
 
 // AdminDeleteBlogPost removes a post with its dependents (the likes and related

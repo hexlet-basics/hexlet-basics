@@ -2,7 +2,9 @@
 package config
 
 import (
+	"net/url"
 	"strings"
+	"time"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
@@ -79,6 +81,10 @@ type Config struct {
 	// apart from GuestCookieSecret so rotating one never invalidates the other: a
 	// leaked email token secret must not force every learner to sign in again.
 	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
+	// AuditRetentionMonths is how long Audit Records are kept (ADR-0018). The
+	// audit table is partitioned by month and retention drops whole partitions,
+	// so a record lives at least this many months and up to one month longer.
+	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24"`
 	// Mail configures account email (ADR-0006).
 	Mail MailConfig `envPrefix:"MAIL_"`
 	// ExerciseRunner bounds what a learner's submission may do to the host
@@ -86,7 +92,81 @@ type Config struct {
 	// legacy runner allowed, and a course that turns out to need more room must
 	// be fixable without a release.
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
+	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0020).
+	OAuth OAuthConfig `envPrefix:"OAUTH_"`
+	// MCP switches on the MCP endpoint at `/mcp` (ADR-0019).
+	MCP MCPConfig `envPrefix:"MCP_"`
 }
+
+// MCPConfig configures the MCP endpoint. It is inert while Enabled is false,
+// which is the default.
+type MCPConfig struct {
+	// Enabled mounts `/mcp` and its protected resource metadata. Every request
+	// to the endpoint needs an OAuth token, so it requires OAUTH_ENABLED: an
+	// endpoint no client could sign in to would only answer 401.
+	Enabled bool `env:"ENABLED" envDefault:"false"`
+	// MaxPageSize caps the records one tool call returns: a larger page size is
+	// clamped to it, and the result says so. An agent that asks for everything
+	// would otherwise fill its own context with one call.
+	MaxPageSize int `env:"MAX_PAGE_SIZE" envDefault:"50"`
+	// MaxResponseBytes caps the structured content of one result. A result over
+	// it is cut at a record boundary and carries a pagination hint, never
+	// invalid JSON.
+	MaxResponseBytes int `env:"MAX_RESPONSE_BYTES" envDefault:"102400"`
+	// ToolTimeout is how long one tool call may run before its context is
+	// cancelled and the agent gets an error.
+	ToolTimeout time.Duration `env:"TOOL_TIMEOUT" envDefault:"30s"`
+	// RateWindow is the period every rate limit below counts over.
+	RateWindow time.Duration `env:"RATE_WINDOW" envDefault:"1m"`
+	// The rate limits are calls per RateWindow, per class of tool, for one user
+	// and for one Connected App (an OAuth client, shared by all its users).
+	// Catalogue reads are public data; reads of personal data and writes are
+	// stricter, and writes the strictest. They are in memory, per replica.
+	RateUserCatalogue int `env:"RATE_USER_CATALOGUE" envDefault:"60"`
+	RateUserPersonal  int `env:"RATE_USER_PERSONAL" envDefault:"30"`
+	RateUserWrite     int `env:"RATE_USER_WRITE" envDefault:"10"`
+	// The Connected App limits are higher than the per-user ones, since an app
+	// speaks for many users; they stop one misbehaving app, not one user.
+	RateClientCatalogue int `env:"RATE_CLIENT_CATALOGUE" envDefault:"600"`
+	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL" envDefault:"300"`
+	RateClientWrite     int `env:"RATE_CLIENT_WRITE" envDefault:"100"`
+}
+
+// MCPMinResponseBytes is the smallest accepted MaxResponseBytes: below it the
+// pagination hint itself would not fit in a cut result.
+const MCPMinResponseBytes = 1024
+
+// OAuthConfig configures the in-process OAuth authorization server. Everything
+// in it is inert while Enabled is false, which is the default: the code ships
+// before the feature is exposed.
+type OAuthConfig struct {
+	// Enabled mounts `/oauth/*` and the well-known metadata documents.
+	Enabled bool `env:"ENABLED" envDefault:"false"`
+	// Issuer is the bare canonical origin (scheme and host, no path) the server
+	// speaks as. It is never derived from the Host header: a forged header must
+	// not change what a token claims, and the value is baked into every
+	// registration and token, so it is expensive to change later.
+	Issuer string `env:"ISSUER"`
+	// EncryptionKey is the secret the access tokens are encrypted under and the
+	// ID-token signing key is derived from. The database stores only token ids,
+	// so this key is what stands between a database leak and a usable token:
+	// rotating it invalidates every access token. At least 32 characters.
+	EncryptionKey string `env:"ENCRYPTION_KEY"`
+	// RegistrationLimit is how many client registrations (Dynamic Client
+	// Registration is anonymous) one address may attempt per RegistrationWindow.
+	RegistrationLimit int `env:"REGISTRATION_LIMIT" envDefault:"10"`
+	// RegistrationWindow is the period RegistrationLimit counts over.
+	RegistrationWindow time.Duration `env:"REGISTRATION_WINDOW" envDefault:"1h"`
+	// AccessTokenTTL is how long an access token lives. Short, because a bearer
+	// token cannot be recalled once stolen except by revoking its row.
+	AccessTokenTTL time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"1h"`
+	// RefreshTokenTTL is how long a refresh token (and so a connection that is not
+	// used) lives. Each refresh issues a new token with a fresh full lifetime.
+	RefreshTokenTTL time.Duration `env:"REFRESH_TOKEN_TTL" envDefault:"720h"`
+}
+
+// OAuthMinKeyLength is the shortest accepted EncryptionKey.
+const OAuthMinKeyLength = 32
 
 // ExerciseRunnerConfig is the isolation budget one submission runs under. The
 // zero values are never used: Load fills them from the hardened defaults.
@@ -159,6 +239,20 @@ func Load() (*Config, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse config from environment")
 	}
+	if err := validateOAuth(cfg.OAuth); err != nil {
+		return nil, oops.Wrapf(err, "validate OAuth config")
+	}
+	if cfg.MCP.Enabled && !cfg.OAuth.Enabled {
+		return nil, oops.Errorf("MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
+	}
+	if err := validateMCP(cfg.MCP); err != nil {
+		return nil, oops.Wrapf(err, "validate MCP config")
+	}
+	if cfg.AuditRetentionMonths < 1 {
+		// Zero would drop the month in progress; the job would refuse it on
+		// every run, so the process refuses to start instead.
+		return nil, oops.Errorf("AUDIT_RETENTION_MONTHS must be at least 1, got %d", cfg.AuditRetentionMonths)
+	}
 	if err := validateProduction(cfg); err != nil {
 		return nil, oops.Wrapf(err, "validate production config")
 	}
@@ -180,6 +274,73 @@ func validateProduction(cfg *Config) error {
 	}
 	if !cfg.Mail.PostboxEnabled() {
 		return oops.Errorf("MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
+	}
+	if cfg.OAuth.Enabled && !strings.HasPrefix(cfg.OAuth.Issuer, "https://") {
+		return oops.Errorf("OAUTH_ISSUER must be an https origin in production")
+	}
+	return nil
+}
+
+// validateMCP refuses a limit that would silently switch a protection off: zero
+// reads as "unlimited" to a person and as "always refused" to the code, and both
+// are wrong. It checks only when the endpoint is on, like validateOAuth.
+func validateMCP(cfg MCPConfig) error {
+	if !cfg.Enabled {
+		return nil
+	}
+	if cfg.MaxPageSize < 1 {
+		return oops.Errorf("MCP_MAX_PAGE_SIZE must be at least 1, got %d", cfg.MaxPageSize)
+	}
+	if cfg.MaxResponseBytes < MCPMinResponseBytes {
+		return oops.Errorf("MCP_MAX_RESPONSE_BYTES must be at least %d, got %d", MCPMinResponseBytes, cfg.MaxResponseBytes)
+	}
+	if cfg.ToolTimeout < time.Second {
+		return oops.Errorf("MCP_TOOL_TIMEOUT must be at least 1s, got %s", cfg.ToolTimeout)
+	}
+	if cfg.RateWindow < time.Second {
+		return oops.Errorf("MCP_RATE_WINDOW must be at least 1s, got %s", cfg.RateWindow)
+	}
+	for name, limit := range map[string]int{
+		"MCP_RATE_USER_CATALOGUE":   cfg.RateUserCatalogue,
+		"MCP_RATE_USER_PERSONAL":    cfg.RateUserPersonal,
+		"MCP_RATE_USER_WRITE":       cfg.RateUserWrite,
+		"MCP_RATE_CLIENT_CATALOGUE": cfg.RateClientCatalogue,
+		"MCP_RATE_CLIENT_PERSONAL":  cfg.RateClientPersonal,
+		"MCP_RATE_CLIENT_WRITE":     cfg.RateClientWrite,
+	} {
+		if limit < 1 {
+			return oops.Errorf("%s must be at least 1, got %d", name, limit)
+		}
+	}
+	return nil
+}
+
+// validateOAuth checks the settings the OAuth server cannot run without. It
+// applies only when the flag is on, so the default configuration needs none of
+// them.
+func validateOAuth(cfg OAuthConfig) error {
+	if !cfg.Enabled {
+		return nil
+	}
+	issuer, err := url.Parse(cfg.Issuer)
+	if err != nil || issuer.Host == "" || (issuer.Scheme != "https" && issuer.Scheme != "http") {
+		return oops.Errorf("OAUTH_ISSUER must be an origin such as https://code-basics.com")
+	}
+	if issuer.Path != "" || issuer.RawQuery != "" || issuer.Fragment != "" {
+		return oops.Errorf("OAUTH_ISSUER must be a bare origin without a path: discovery lives at the root")
+	}
+	if len(cfg.EncryptionKey) < OAuthMinKeyLength {
+		return oops.Errorf("OAUTH_ENCRYPTION_KEY must be at least %d characters", OAuthMinKeyLength)
+	}
+	// Zero would silently mean "no limit" to a reader; refuse it so the limit on
+	// the anonymous registration endpoint cannot be switched off by accident.
+	if cfg.RegistrationLimit < 1 || cfg.RegistrationWindow < time.Second {
+		return oops.Errorf("OAUTH_REGISTRATION_LIMIT must be at least 1 and OAUTH_REGISTRATION_WINDOW at least 1s")
+	}
+	// A shorter access lifetime would issue tokens that are born expired, and a
+	// refresh token that does not outlive its access token could never refresh.
+	if cfg.AccessTokenTTL < time.Minute || cfg.RefreshTokenTTL <= cfg.AccessTokenTTL {
+		return oops.Errorf("OAUTH_ACCESS_TOKEN_TTL must be at least 1m and OAUTH_REFRESH_TOKEN_TTL longer than it")
 	}
 	return nil
 }

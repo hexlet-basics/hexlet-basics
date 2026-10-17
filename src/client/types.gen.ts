@@ -36,6 +36,94 @@ export type AttachmentUploadForm = {
 };
 
 /**
+ * One mutation of one entity inside an operation. A bulk change carries no id.
+ */
+export type AuditChange = {
+  /**
+   * The ent entity type, e.g. `BlogPost`.
+   */
+  entity: string;
+  id?: string;
+  /**
+   * create, update or delete.
+   */
+  op: string;
+  fields?: Array<AuditFieldChange>;
+};
+
+/**
+ * The old and new value of one field an operation changed. `old` is absent on a
+ * create and `new` on a delete. A `secret` field (password material, a token)
+ * carries its name only: no value was ever stored. The values are JSON of any
+ * shape, as the field held them.
+ */
+export type AuditFieldChange = {
+  name: string;
+  old?: unknown;
+  new?: unknown;
+  secret?: boolean;
+};
+
+/**
+ * What a read of personal data touched: how many rows and, up to a cap, their
+ * ids. Identifiers and counts only, never a field value.
+ */
+export type AuditReads = {
+  count: number;
+  ids?: Array<string>;
+};
+
+/**
+ * One Audit Record: who did what, through which channel, to which entity, and
+ * how it ended (legacy: none, the trail is new). A change carries `changes`, a
+ * read of personal data carries `reads`, a refusal carries neither.
+ */
+export type AuditRecord = {
+  id: number;
+  occurredAt: string;
+  /**
+   * Null for a refusal of a caller who was not signed in.
+   */
+  actorUserId: number | null;
+  channel: 'web' | 'mcp';
+  connectedAppId: number | null;
+  tokenId: string | null;
+  requestId: string | null;
+  address: string | null;
+  userAgent: string | null;
+  /**
+   * The operation name, e.g. `AdminUpdateBlogPost`.
+   */
+  operation: string;
+  entityType: string | null;
+  entityId: string | null;
+  locale: string | null;
+  outcome: 'succeeded' | 'forbidden' | 'failed';
+  changes: Array<AuditChange>;
+  reads: AuditReads | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type AuditRecordPage = {
+  items: Array<AuditRecord>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * A site banner (legacy: `Banner`).
  */
 export type Banner = {
@@ -55,8 +143,11 @@ export type Banner = {
  */
 export type BannerBackground = 'cta_gradient' | 'dark' | 'blue';
 
+/**
+ * The input of a banner: never its Publication State. A new banner is a draft and
+ *     the state changes only through the publish, unpublish and archive operations.
+ */
 export type BannerInput = {
-  state: BannerState;
   background: BannerBackground;
   locale: BannerLocale;
   body: string;
@@ -121,11 +212,14 @@ export type BlogPost = {
   createdAt: string;
 };
 
+/**
+ * The input of a post: never its Publication State. A new post is a draft and
+ *     the state changes only through the publish, unpublish and archive operations.
+ */
 export type BlogPostInput = {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
   /**
    * Trusted editor HTML, stored and returned without sanitization.
    */
@@ -203,6 +297,39 @@ export type CheckLessonInput = {
    * The lesson version the code was written against.
    */
   versionId: number;
+};
+
+/**
+ * One application the signed-in user has connected.
+ */
+export type ConnectedApp = {
+  /**
+   * Handle to revoke it by (not the OAuth client_id, which can be a URL).
+   */
+  id: number;
+  /**
+   * Display name the application registered with; untrusted text.
+   */
+  name: string;
+  /**
+   * What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
+   */
+  scopes: Array<string>;
+  /**
+   * When the user first connected it (the oldest grant still on file).
+   */
+  connectedAt: string;
+  /**
+   * Host of the application's client_id when that is a metadata document URL; absent otherwise.
+   */
+  clientHost?: string;
+};
+
+/**
+ * The signed-in user's Connected Apps, newest first.
+ */
+export type ConnectedApps = {
+  items: Array<ConnectedApp>;
 };
 
 /**
@@ -310,10 +437,13 @@ export type CourseCategoryView = {
   qnaItems: Array<QnaItem>;
 };
 
+/**
+ * The input of a course: never its Readiness. A new course is a draft and the
+ *     Readiness changes only through the mark-as operations.
+ */
 export type CourseInput = {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
   /**
@@ -362,6 +492,9 @@ export type CourseLandingPage = {
   enrollmentsCount: number;
 };
 
+/**
+ * The input of a landing page: never its Publication State (see BannerInput).
+ */
 export type CourseLandingPageInput = {
   courseId: number;
   slug: string | null;
@@ -370,7 +503,6 @@ export type CourseLandingPageInput = {
   listed: boolean | null;
   footer: boolean | null;
   footerName: string | null;
-  state: LandingPageState | null;
   order: string | null;
   landingPageToRedirectId: number | null;
   metaTitle: string | null;
@@ -901,6 +1033,15 @@ export type LessonProgressPage = {
 export type Locale = 'ru' | 'en' | 'es';
 
 /**
+ * The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+ * member holds through their Staff Role. The administrator flag adds none, so
+ * the admin menu shows an entry behind a capability only to someone who holds it.
+ */
+export type MyCapabilities = {
+  held: Array<string>;
+};
+
+/**
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export type MyDashboard = {
@@ -922,9 +1063,64 @@ export type NotFoundError = {
 };
 
 /**
- * Admin resources a staff role can be granted permissions on.
+ * What the consent screen shows for one authorization request.
  */
-export type PermissionResource = 'blog_posts' | 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
+export type OAuthConsent = {
+  /**
+   * Name of the application asking for access.
+   */
+  clientName: string;
+  /**
+   * Host the user is sent back to after deciding.
+   */
+  redirectHost: string;
+  /**
+   * What the application asks for: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
+   */
+  scopes: Array<string>;
+  /**
+   * The signed-in account that would grant it.
+   */
+  accountName: string;
+};
+
+/**
+ * Where the browser goes next after the user has decided.
+ */
+export type OAuthDecision = {
+  /**
+   * Absolute URL: the authorization endpoint's callback after approving, the application's redirect URI (with `error=access_denied`) after denying.
+   */
+  redirectUrl: string;
+};
+
+/**
+ * A Permission an admin operation can require, as declared on the operations in
+ * this contract with `x-permission`. The catalog is read from those
+ * declarations, never kept by hand, plus the capability Permissions the contract
+ * lists under `x-capabilities`.
+ */
+export type Permission = {
+  name: string;
+  kind: PermissionKind;
+  /**
+   * True for a capability Permission (MCP, audit): the administrator flag does
+   * not imply it, so a role must be given it explicitly.
+   */
+  capability: boolean;
+};
+
+/**
+ * Every Permission an admin operation can require.
+ */
+export type PermissionCatalog = {
+  permissions: Array<Permission>;
+};
+
+/**
+ * Whether an operation only reads or can change data (ADR-0018).
+ */
+export type PermissionKind = 'read' | 'write';
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
@@ -1024,8 +1220,10 @@ export type Review = {
   createdAt: string;
 };
 
+/**
+ * The input of a review: never its Publication State (see BannerInput).
+ */
 export type ReviewInput = {
-  state: ReviewState | null;
   pinned: boolean | null;
   courseId: number | null;
   userId: number | null;
@@ -1070,21 +1268,14 @@ export type RoleInput = {
 };
 
 /**
- * One permission row to set on a role.
- */
-export type RolePermissionInput = {
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
-};
-
-/**
- * The full permission matrix submitted for a role.
+ * The Permissions submitted for a role.
  */
 export type RolePermissionsInput = {
-  permissions: Array<RolePermissionInput>;
+  /**
+   * The declared Permissions the role holds, replacing its current set. Names
+   * must come from the catalog (`GET /admin/management/permissions`).
+   */
+  grants: Array<string>;
 };
 
 /**
@@ -1190,13 +1381,16 @@ export type StaffRole = {
 };
 
 /**
- * A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+ * A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).
  */
 export type StaffRoleDetail = {
   id: number;
   name: string;
   description: string | null;
-  permissions: Array<StaffRolePermission>;
+  /**
+   * Names of the declared Permissions the role holds (see `Permission`).
+   */
+  grants: Array<string>;
 };
 
 /**
@@ -1217,19 +1411,6 @@ export type StaffRolePage = {
    * Page size used for this response.
    */
   perPage: number;
-};
-
-/**
- * One resource's permission bits for a role (legacy: `StaffRolePermission`).
- */
-export type StaffRolePermission = {
-  id: number;
-  roleId: number;
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
 };
 
 /**
@@ -1297,6 +1478,30 @@ export type ValidationError = {
     [key: string]: Array<string>;
   };
 };
+
+export type AuditRecordQueryActorUserId = number;
+
+export type AuditRecordQueryChannel = 'web' | 'mcp';
+
+export type AuditRecordQueryEntityId = string;
+
+export type AuditRecordQueryEntityType = string;
+
+/**
+ * Start of the window (inclusive).
+ */
+export type AuditRecordQueryFrom = string;
+
+export type AuditRecordQueryOperation = string;
+
+export type AuditRecordQueryPage = number;
+
+export type AuditRecordQueryPerPage = number;
+
+/**
+ * End of the window (exclusive).
+ */
+export type AuditRecordQueryTo = string;
 
 export type ListQueryPage = number;
 
@@ -1691,6 +1896,64 @@ export type AdminUploadAttachmentResponses = {
 
 export type AdminUploadAttachmentResponse = AdminUploadAttachmentResponses[keyof AdminUploadAttachmentResponses];
 
+export type AdminListAuditRecordsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    actorUserId?: number;
+    channel?: 'web' | 'mcp';
+    operation?: string;
+    entityType?: string;
+    entityId?: string;
+    /**
+     * Start of the window (inclusive).
+     */
+    from?: string;
+    /**
+     * End of the window (exclusive).
+     */
+    to?: string;
+  };
+  url: '/api/admin/audit_records';
+};
+
+export type AdminListAuditRecordsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListAuditRecordsError = AdminListAuditRecordsErrors[keyof AdminListAuditRecordsErrors];
+
+export type AdminListAuditRecordsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: AuditRecordPage;
+};
+
+export type AdminListAuditRecordsResponse = AdminListAuditRecordsResponses[keyof AdminListAuditRecordsResponses];
+
 export type AdminListBannersData = {
   body?: never;
   path?: never;
@@ -1887,6 +2150,120 @@ export type AdminUpdateBannerResponses = {
 };
 
 export type AdminUpdateBannerResponse = AdminUpdateBannerResponses[keyof AdminUpdateBannerResponses];
+
+export type AdminArchiveBannerData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/banners/{id}/archive';
+};
+
+export type AdminArchiveBannerErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminArchiveBannerError = AdminArchiveBannerErrors[keyof AdminArchiveBannerErrors];
+
+export type AdminArchiveBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Banner;
+};
+
+export type AdminArchiveBannerResponse = AdminArchiveBannerResponses[keyof AdminArchiveBannerResponses];
+
+export type AdminPublishBannerData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/banners/{id}/publish';
+};
+
+export type AdminPublishBannerErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminPublishBannerError = AdminPublishBannerErrors[keyof AdminPublishBannerErrors];
+
+export type AdminPublishBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Banner;
+};
+
+export type AdminPublishBannerResponse = AdminPublishBannerResponses[keyof AdminPublishBannerResponses];
+
+export type AdminUnpublishBannerData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/banners/{id}/unpublish';
+};
+
+export type AdminUnpublishBannerErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUnpublishBannerError = AdminUnpublishBannerErrors[keyof AdminUnpublishBannerErrors];
+
+export type AdminUnpublishBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Banner;
+};
+
+export type AdminUnpublishBannerResponse = AdminUnpublishBannerResponses[keyof AdminUnpublishBannerResponses];
 
 export type AdminListBlogPostsData = {
   body?: never;
@@ -2097,6 +2474,82 @@ export type AdminUpdateBlogPostResponses = {
 
 export type AdminUpdateBlogPostResponse = AdminUpdateBlogPostResponses[keyof AdminUpdateBlogPostResponses];
 
+export type AdminArchiveBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/archive';
+};
+
+export type AdminArchiveBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminArchiveBlogPostError = AdminArchiveBlogPostErrors[keyof AdminArchiveBlogPostErrors];
+
+export type AdminArchiveBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminArchiveBlogPostResponse = AdminArchiveBlogPostResponses[keyof AdminArchiveBlogPostResponses];
+
+export type AdminPublishBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/publish';
+};
+
+export type AdminPublishBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminPublishBlogPostError = AdminPublishBlogPostErrors[keyof AdminPublishBlogPostErrors];
+
+export type AdminPublishBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminPublishBlogPostResponse = AdminPublishBlogPostResponses[keyof AdminPublishBlogPostResponses];
+
 export type AdminSetBlogPostRelatedCoursesData = {
   body: BlogPostRelatedCoursesInput;
   path: {
@@ -2178,6 +2631,80 @@ export type AdminSuggestBlogPostRelatedCoursesResponses = {
 };
 
 export type AdminSuggestBlogPostRelatedCoursesResponse = AdminSuggestBlogPostRelatedCoursesResponses[keyof AdminSuggestBlogPostRelatedCoursesResponses];
+
+export type AdminUnpublishBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/unpublish';
+};
+
+export type AdminUnpublishBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUnpublishBlogPostError = AdminUnpublishBlogPostErrors[keyof AdminUnpublishBlogPostErrors];
+
+export type AdminUnpublishBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminUnpublishBlogPostResponse = AdminUnpublishBlogPostResponses[keyof AdminUnpublishBlogPostResponses];
+
+export type AdminGetMyCapabilitiesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/capabilities';
+};
+
+export type AdminGetMyCapabilitiesErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetMyCapabilitiesError = AdminGetMyCapabilitiesErrors[keyof AdminGetMyCapabilitiesErrors];
+
+export type AdminGetMyCapabilitiesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: MyCapabilities;
+};
+
+export type AdminGetMyCapabilitiesResponse = AdminGetMyCapabilitiesResponses[keyof AdminGetMyCapabilitiesResponses];
 
 export type AdminListCourseCategoriesData = {
   body?: never;
@@ -2727,6 +3254,120 @@ export type AdminUpdateCourseLandingPageResponses = {
 
 export type AdminUpdateCourseLandingPageResponse = AdminUpdateCourseLandingPageResponses[keyof AdminUpdateCourseLandingPageResponses];
 
+export type AdminArchiveCourseLandingPageData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/course_landing_pages/{id}/archive';
+};
+
+export type AdminArchiveCourseLandingPageErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminArchiveCourseLandingPageError = AdminArchiveCourseLandingPageErrors[keyof AdminArchiveCourseLandingPageErrors];
+
+export type AdminArchiveCourseLandingPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPage;
+};
+
+export type AdminArchiveCourseLandingPageResponse = AdminArchiveCourseLandingPageResponses[keyof AdminArchiveCourseLandingPageResponses];
+
+export type AdminPublishCourseLandingPageData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/course_landing_pages/{id}/publish';
+};
+
+export type AdminPublishCourseLandingPageErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminPublishCourseLandingPageError = AdminPublishCourseLandingPageErrors[keyof AdminPublishCourseLandingPageErrors];
+
+export type AdminPublishCourseLandingPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPage;
+};
+
+export type AdminPublishCourseLandingPageResponse = AdminPublishCourseLandingPageResponses[keyof AdminPublishCourseLandingPageResponses];
+
+export type AdminUnpublishCourseLandingPageData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/course_landing_pages/{id}/unpublish';
+};
+
+export type AdminUnpublishCourseLandingPageErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUnpublishCourseLandingPageError = AdminUnpublishCourseLandingPageErrors[keyof AdminUnpublishCourseLandingPageErrors];
+
+export type AdminUnpublishCourseLandingPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPage;
+};
+
+export type AdminUnpublishCourseLandingPageResponse = AdminUnpublishCourseLandingPageResponses[keyof AdminUnpublishCourseLandingPageResponses];
+
 export type AdminListLandingPageQnaItemsData = {
   body?: never;
   path: {
@@ -3176,6 +3817,120 @@ export type AdminUpdateCourseResponses = {
 
 export type AdminUpdateCourseResponse = AdminUpdateCourseResponses[keyof AdminUpdateCourseResponses];
 
+export type AdminMarkCourseCompletedData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_completed';
+};
+
+export type AdminMarkCourseCompletedErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseCompletedError = AdminMarkCourseCompletedErrors[keyof AdminMarkCourseCompletedErrors];
+
+export type AdminMarkCourseCompletedResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseCompletedResponse = AdminMarkCourseCompletedResponses[keyof AdminMarkCourseCompletedResponses];
+
+export type AdminMarkCourseDraftData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_draft';
+};
+
+export type AdminMarkCourseDraftErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseDraftError = AdminMarkCourseDraftErrors[keyof AdminMarkCourseDraftErrors];
+
+export type AdminMarkCourseDraftResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseDraftResponse = AdminMarkCourseDraftResponses[keyof AdminMarkCourseDraftResponses];
+
+export type AdminMarkCourseInDevelopmentData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_in_development';
+};
+
+export type AdminMarkCourseInDevelopmentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseInDevelopmentError = AdminMarkCourseInDevelopmentErrors[keyof AdminMarkCourseInDevelopmentErrors];
+
+export type AdminMarkCourseInDevelopmentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseInDevelopmentResponse = AdminMarkCourseInDevelopmentResponses[keyof AdminMarkCourseInDevelopmentResponses];
+
 export type AdminReviewCourseData = {
   body?: never;
   path: {
@@ -3354,6 +4109,42 @@ export type AdminListLessonProgressResponses = {
 
 export type AdminListLessonProgressResponse = AdminListLessonProgressResponses[keyof AdminListLessonProgressResponses];
 
+export type AdminListPermissionsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/management/permissions';
+};
+
+export type AdminListPermissionsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListPermissionsError = AdminListPermissionsErrors[keyof AdminListPermissionsErrors];
+
+export type AdminListPermissionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: PermissionCatalog;
+};
+
+export type AdminListPermissionsResponse = AdminListPermissionsResponses[keyof AdminListPermissionsResponses];
+
 export type AdminGetRolePermissionsData = {
   body?: never;
   path: {
@@ -3410,6 +4201,12 @@ export type AdminUpdateRolePermissionsErrors = {
    * The caller is authenticated but lacks permission for this resource.
    */
   403: ProblemDetails;
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -4190,6 +4987,120 @@ export type AdminUpdateReviewResponses = {
 };
 
 export type AdminUpdateReviewResponse = AdminUpdateReviewResponses[keyof AdminUpdateReviewResponses];
+
+export type AdminArchiveReviewData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/reviews/{id}/archive';
+};
+
+export type AdminArchiveReviewErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminArchiveReviewError = AdminArchiveReviewErrors[keyof AdminArchiveReviewErrors];
+
+export type AdminArchiveReviewResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Review;
+};
+
+export type AdminArchiveReviewResponse = AdminArchiveReviewResponses[keyof AdminArchiveReviewResponses];
+
+export type AdminPublishReviewData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/reviews/{id}/publish';
+};
+
+export type AdminPublishReviewErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminPublishReviewError = AdminPublishReviewErrors[keyof AdminPublishReviewErrors];
+
+export type AdminPublishReviewResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Review;
+};
+
+export type AdminPublishReviewResponse = AdminPublishReviewResponses[keyof AdminPublishReviewResponses];
+
+export type AdminUnpublishReviewData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/reviews/{id}/unpublish';
+};
+
+export type AdminUnpublishReviewErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUnpublishReviewError = AdminUnpublishReviewErrors[keyof AdminUnpublishReviewErrors];
+
+export type AdminUnpublishReviewResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Review;
+};
+
+export type AdminUnpublishReviewResponse = AdminUnpublishReviewResponses[keyof AdminUnpublishReviewResponses];
 
 export type ListAssistantMessagesData = {
   body?: never;
@@ -5079,6 +5990,190 @@ export type GetMyDashboardResponses = {
 };
 
 export type GetMyDashboardResponse = GetMyDashboardResponses[keyof GetMyDashboardResponses];
+
+export type ListConnectedAppsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/oauth/connected_apps';
+};
+
+export type ListConnectedAppsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListConnectedAppsError = ListConnectedAppsErrors[keyof ListConnectedAppsErrors];
+
+export type ListConnectedAppsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: ConnectedApps;
+};
+
+export type ListConnectedAppsResponse = ListConnectedAppsResponses[keyof ListConnectedAppsResponses];
+
+export type RevokeConnectedAppData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/oauth/connected_apps/{id}';
+};
+
+export type RevokeConnectedAppErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type RevokeConnectedAppError = RevokeConnectedAppErrors[keyof RevokeConnectedAppErrors];
+
+export type RevokeConnectedAppResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type RevokeConnectedAppResponse = RevokeConnectedAppResponses[keyof RevokeConnectedAppResponses];
+
+export type GetOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}';
+};
+
+export type GetOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetOAuthConsentError = GetOAuthConsentErrors[keyof GetOAuthConsentErrors];
+
+export type GetOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthConsent;
+};
+
+export type GetOAuthConsentResponse = GetOAuthConsentResponses[keyof GetOAuthConsentResponses];
+
+export type ApproveOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}/approve';
+};
+
+export type ApproveOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ApproveOAuthConsentError = ApproveOAuthConsentErrors[keyof ApproveOAuthConsentErrors];
+
+export type ApproveOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthDecision;
+};
+
+export type ApproveOAuthConsentResponse = ApproveOAuthConsentResponses[keyof ApproveOAuthConsentResponses];
+
+export type DenyOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}/deny';
+};
+
+export type DenyOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type DenyOAuthConsentError = DenyOAuthConsentErrors[keyof DenyOAuthConsentErrors];
+
+export type DenyOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthDecision;
+};
+
+export type DenyOAuthConsentResponse = DenyOAuthConsentResponses[keyof DenyOAuthConsentResponses];
 
 export type UpdatePasswordData = {
   body: ResetPasswordInput;

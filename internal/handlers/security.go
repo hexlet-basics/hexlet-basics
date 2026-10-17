@@ -8,7 +8,9 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/audit"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/staffroles"
 )
@@ -50,6 +52,7 @@ func MustAuthenticatedUser(ctx context.Context) *ent.User {
 // server. Both read the user from the session (ADR-0017); neither parses a
 // credential of its own.
 type Security struct {
+	db       *ent.Client
 	sessions *sessions.Manager
 	policy   *staffroles.Policy
 	i18n     *localization.Translator
@@ -59,6 +62,7 @@ type Security struct {
 
 // newSecurity builds the security seam over the session manager.
 func newSecurity(
+	db *ent.Client,
 	manager *sessions.Manager,
 	policy *staffroles.Policy,
 	translator *localization.Translator,
@@ -66,6 +70,7 @@ func newSecurity(
 	guests *guestCookies,
 ) *Security {
 	return &Security{
+		db:       db,
 		sessions: manager,
 		policy:   policy,
 		i18n:     translator,
@@ -135,6 +140,15 @@ func (s *Security) HandleAdminSession(
 	operation api.OperationName,
 	_ api.AdminSession,
 ) (context.Context, error) {
+	// An MCP tool call carries a Principal in its context (never in a header or
+	// a cookie) and takes the branch with the capability check; every other call
+	// is a session. The session cookie value of a tool call's in-process request
+	// is a placeholder nothing reads: this branch is taken before the session is
+	// consulted, and the same request sent over HTTP has no Principal and finds
+	// no session under the placeholder.
+	if principal, ok := mcpserver.PrincipalFrom(ctx); ok {
+		return s.authorizeMCP(ctx, operation, principal)
+	}
 	ctx, err := s.attach(ctx)
 	if err != nil {
 		return ctx, err
@@ -145,9 +159,26 @@ func (s *Security) HandleAdminSession(
 	}
 	err = s.policy.Allow(ctx, u, s.i18n.Locale(ctx), operation)
 	if errors.Is(err, staffroles.ErrForbidden) {
+		s.recordRefusal(ctx, operation)
 		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
 	}
 	return ctx, err
+}
+
+// recordRefusal leaves an Audit Record with outcome forbidden for a call the
+// permission check turned away (ADR-0018, #845). It runs here because a refusal
+// never reaches the audit middleware, and it is a single insert on the pooled
+// client with no ambient transaction (none exists yet at the security stage), so
+// it commits on its own. The record names who, where and which operation and
+// nothing else: the request body is not decoded yet, so no value the caller was
+// not allowed to read or change can end up in it. A record that cannot be
+// written is logged and does not turn a refusal into a different answer.
+func (s *Security) recordRefusal(ctx context.Context, operation string) {
+	ctx = context.WithoutCancel(ctx)
+	entry := auditEntry(ctx, operation, s.i18n, audit.OutcomeForbidden)
+	if err := audit.Write(ctx, s.db, entry, nil); err != nil {
+		s.errors.logger.ErrorContext(ctx, "recording a refused admin call", "operation", operation, "err", err)
+	}
 }
 
 // attach puts the session's user in the context.

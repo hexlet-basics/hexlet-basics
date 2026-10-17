@@ -9,7 +9,7 @@ import (
 )
 
 // StaffRole maps the legacy `staff_member_roles` table — a named admin role with
-// a set of per-resource permissions. The admin surface writes it, so the
+// a set of Permissions (its grants). The admin surface writes it, so the
 // Rails-owned timestamps are supplied by ent. Name uniqueness is enforced by the
 // `staff_member_roles_name_uniq` migration (409 via the central handler). The
 // default plural doesn't match the legacy table name, so it is pinned.
@@ -35,7 +35,8 @@ func (StaffRole) Fields() []ent.Field {
 
 func (StaffRole) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("permissions", StaffRolePermission.Type),
+		// The Permissions the role holds (ADR-0018).
+		edge.To("grants", StaffRoleGrant.Type),
 	}
 }
 

@@ -113,3 +113,24 @@ func TestLoadLogsEmailOutsideProductionWithoutPostbox(t *testing.T) {
 	require.False(t, cfg.Mail.PostboxEnabled())
 	require.Equal(t, "support@hexlet.io", cfg.Mail.From)
 }
+
+func TestAuditRetentionDefaultsToTwoYears(t *testing.T) {
+	setRequiredSecrets(t)
+
+	cfg, err := Load()
+
+	require.NoError(t, err)
+	require.Equal(t, 24, cfg.AuditRetentionMonths)
+}
+
+func TestAuditRetentionCanBeShortenedButNotRemoved(t *testing.T) {
+	setRequiredSecrets(t)
+	t.Setenv("AUDIT_RETENTION_MONTHS", "6")
+	cfg, err := Load()
+	require.NoError(t, err)
+	require.Equal(t, 6, cfg.AuditRetentionMonths)
+
+	t.Setenv("AUDIT_RETENTION_MONTHS", "0")
+	_, err = Load()
+	require.ErrorContains(t, err, "AUDIT_RETENTION_MONTHS")
+}

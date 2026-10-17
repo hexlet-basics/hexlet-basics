@@ -8,6 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AdminArchiveBanner implements adminArchiveBanner operation.
+	//
+	// Archive a draft or published banner.
+	//
+	// POST /api/admin/banners/{id}/archive
+	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error)
+	// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
+	//
+	// Archive a draft or published post.
+	//
+	// POST /api/admin/blog_posts/{id}/archive
+	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
+	// AdminArchiveCourseLandingPage implements adminArchiveCourseLandingPage operation.
+	//
+	// Archive a draft or published landing page.
+	//
+	// POST /api/admin/course_landing_pages/{id}/archive
+	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error)
+	// AdminArchiveReview implements adminArchiveReview operation.
+	//
+	// Archive a draft or published review.
+	//
+	// POST /api/admin/reviews/{id}/archive
+	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error)
 	// AdminCreateBanner implements adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -151,6 +175,12 @@ type Handler interface {
 	//
 	// GET /api/admin/management/users/{id}
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	// AdminGetMyCapabilities implements adminGetMyCapabilities operation.
+	//
+	// The capabilities the caller holds; open to any staff member.
+	//
+	// GET /api/admin/capabilities
+	AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error)
 	// AdminGetReview implements adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -182,6 +212,14 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users/{id}
 	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	// AdminListAuditRecords implements adminListAuditRecords operation.
+	//
+	// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
+	// for an administrator, and is itself recorded as a read of personal data: records carry addresses and
+	// old values.
+	//
+	// GET /api/admin/audit_records
+	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (AdminListAuditRecordsRes, error)
 	// AdminListBanners implements adminListBanners operation.
 	//
 	// List banners (paginated).
@@ -238,6 +276,12 @@ type Handler interface {
 	//
 	// GET /api/admin/messages
 	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
+	// AdminListPermissions implements adminListPermissions operation.
+	//
+	// The catalog of Permissions, generated from the operations' declarations.
+	//
+	// GET /api/admin/management/permissions
+	AdminListPermissions(ctx context.Context) (AdminListPermissionsRes, error)
 	// AdminListReviews implements adminListReviews operation.
 	//
 	// GET /api/admin/reviews
@@ -254,6 +298,58 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	// AdminMarkCourseCompleted implements adminMarkCourseCompleted operation.
+	//
+	// Mark a course as completed: it joins the public catalogue.
+	//
+	// POST /api/admin/courses/{id}/mark_completed
+	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (AdminMarkCourseCompletedRes, error)
+	// AdminMarkCourseDraft implements adminMarkCourseDraft operation.
+	//
+	// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
+	// operation with its own Permission. Any change between two distinct values is legal; repeating the
+	// current value is a 409 with a localized `detail`.
+	//
+	// POST /api/admin/courses/{id}/mark_draft
+	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (AdminMarkCourseDraftRes, error)
+	// AdminMarkCourseInDevelopment implements adminMarkCourseInDevelopment operation.
+	//
+	// Mark a course as in development.
+	//
+	// POST /api/admin/courses/{id}/mark_in_development
+	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (AdminMarkCourseInDevelopmentRes, error)
+	// AdminPublishBanner implements adminPublishBanner operation.
+	//
+	// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/banners/{id}/publish
+	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error)
+	// AdminPublishBlogPost implements adminPublishBlogPost operation.
+	//
+	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
+	// own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/blog_posts/{id}/publish
+	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
+	// AdminPublishCourseLandingPage implements adminPublishCourseLandingPage operation.
+	//
+	// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+	// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+	// 409 with a localized `detail`.
+	//
+	// POST /api/admin/course_landing_pages/{id}/publish
+	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error)
+	// AdminPublishReview implements adminPublishReview operation.
+	//
+	// Publish a draft or archived review. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/reviews/{id}/publish
+	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error)
 	// AdminReviewCourse implements adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
@@ -285,6 +381,30 @@ type Handler interface {
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
 	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	// AdminUnpublishBanner implements adminUnpublishBanner operation.
+	//
+	// Take a published banner back to draft.
+	//
+	// POST /api/admin/banners/{id}/unpublish
+	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error)
+	// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
+	//
+	// Take a published post back to draft.
+	//
+	// POST /api/admin/blog_posts/{id}/unpublish
+	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
+	// AdminUnpublishCourseLandingPage implements adminUnpublishCourseLandingPage operation.
+	//
+	// Take a published landing page back to draft.
+	//
+	// POST /api/admin/course_landing_pages/{id}/unpublish
+	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error)
+	// AdminUnpublishReview implements adminUnpublishReview operation.
+	//
+	// Take a published review back to draft.
+	//
+	// POST /api/admin/reviews/{id}/unpublish
+	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
@@ -363,6 +483,12 @@ type Handler interface {
 	//
 	// POST /api/admin/attachments
 	AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
+	// ApproveOAuthConsent implements approveOAuthConsent operation.
+	//
+	// Grant the request as the signed-in user.
+	//
+	// POST /api/oauth/consents/{requestId}/approve
+	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error)
 	// CheckLesson implements checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -443,6 +569,12 @@ type Handler interface {
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	// DenyOAuthConsent implements denyOAuthConsent operation.
+	//
+	// Refuse the request; the application is told `access_denied`.
+	//
+	// POST /api/oauth/consents/{requestId}/deny
+	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error)
 	// DownloadBook implements downloadBook operation.
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -506,6 +638,13 @@ type Handler interface {
 	//
 	// GET /api/blog_posts/{id}/next
 	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	// GetOAuthConsent implements getOAuthConsent operation.
+	//
+	// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+	// already decided.
+	//
+	// GET /api/oauth/consents/{requestId}
+	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error)
 	// GetProfile implements getProfile operation.
 	//
 	// The editable profile of the current user.
@@ -557,6 +696,13 @@ type Handler interface {
 	//
 	// GET /api/blog_posts
 	ListBlogPosts(ctx context.Context, params ListBlogPostsParams) (*BlogPostPage, error)
+	// ListConnectedApps implements listConnectedApps operation.
+	//
+	// The apps the signed-in user has connected and that can still act for them. An app unused for thirty
+	// days (no refresh) has lapsed and is not listed.
+	//
+	// GET /api/oauth/connected_apps
+	ListConnectedApps(ctx context.Context) (ListConnectedAppsRes, error)
 	// ListCourses implements listCourses operation.
 	//
 	// List the published course catalog.
@@ -575,6 +721,13 @@ type Handler interface {
 	//
 	// GET /api/reviews
 	ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (*ReviewPage, error)
+	// RevokeConnectedApp implements revokeConnectedApp operation.
+	//
+	// Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not
+	// one of the caller's apps.
+	//
+	// DELETE /api/oauth/connected_apps/{id}
+	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error)
 	// StartLesson implements startLesson operation.
 	//
 	// Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson

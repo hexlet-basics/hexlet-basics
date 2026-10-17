@@ -4,6 +4,13 @@
   "auth.email_taken": { "other": "Este correo electrónico ya está en uso" },
   "courses.not_found": { "other": "Curso no encontrado" },
   "lessons.not_found": { "other": "Lección no encontrada" },
+  "oauth.request_not_found": { "other": "Solicitud de autorización no encontrada o ya resuelta" },
+  "audit.window_reversed": { "other": "El final del período debe ser posterior a su inicio" },
+  "audit.window_too_wide": { "other": "El período no puede superar los 92 días" },
+  "audit.entity_id_needs_type": {
+    "other": "El identificador de la entidad requiere indicar su tipo"
+  },
+  "oauth.connected_app_not_found": { "other": "Aplicación conectada no encontrada" },
   "attachments.file_too_large": { "other": "El archivo es demasiado grande" },
   "attachments.unsupported_file_type": { "other": "Tipo de archivo no compatible" },
   "attachments.store_failed": { "other": "No se pudo guardar el archivo" },
@@ -47,5 +54,29 @@
   },
   "assistant.question": {
     "other": "El código del estudiante (su solución del ejercicio): {{.Code}}\n\nEl resultado de ejecutar el código del estudiante con las pruebas del ejercicio: {{.Output}}\n\nLa pregunta del estudiante: {{.Question}}"
-  }
+  },
+  "staff.own_record": {
+    "other": "No puedes cambiar tu propio registro de personal ni tu rol; pide ayuda a otro administrador"
+  },
+  "staff.own_role_grants": {
+    "other": "No puedes cambiar los permisos de tu propio rol de personal; pide ayuda a un administrador"
+  },
+  "users.own_account_deletion": {
+    "other": "No puedes eliminar tu propia cuenta aquí; pide ayuda a otro administrador"
+  },
+  "users.administrator_flag_restricted": {
+    "other": "Solo un administrador puede conceder o quitar la marca de administrador"
+  },
+  "users.last_administrator": {
+    "other": "No se puede eliminar ni degradar al último administrador"
+  },
+  "state.illegal_transition": {
+    "other": "No se puede pasar de «{{.From}}» a «{{.To}}»: el estado actual no lo permite"
+  },
+  "state.draft": { "other": "borrador" },
+  "state.published": { "other": "publicado" },
+  "state.archived": { "other": "archivado" },
+  "readiness.draft": { "other": "borrador" },
+  "readiness.in_development": { "other": "en desarrollo" },
+  "readiness.completed": { "other": "completado" }
 }

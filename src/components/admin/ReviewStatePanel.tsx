@@ -1,0 +1,37 @@
+import { useTranslation } from "react-i18next";
+import {
+  adminArchiveReviewMutation,
+  adminGetReviewQueryKey,
+  adminListReviewsQueryKey,
+  adminPublishReviewMutation,
+  adminUnpublishReviewMutation,
+} from "@/client/@tanstack/react-query.gen";
+import type { Review } from "@/client/types.gen";
+import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
+
+// A review's Publication State and the buttons that change it (see
+// PublicationStatePanel); this one binds the review's three operations. A review
+// with no state counts as a draft, as on the server.
+export function ReviewStatePanel({ review }: { review: Review }) {
+  const { t } = useTranslation();
+  const options = {
+    invalidate: [adminListReviewsQueryKey(), adminGetReviewQueryKey({ path: { id: review.id } })],
+    successMessage: t(($) => $.admin.publicationState.changed),
+    errorMessage: t(($) => $.admin.publicationState.changeError),
+  };
+  const publish = useResourceMutation({ mutation: adminPublishReviewMutation(), ...options });
+  const unpublish = useResourceMutation({ mutation: adminUnpublishReviewMutation(), ...options });
+  const archive = useResourceMutation({ mutation: adminArchiveReviewMutation(), ...options });
+  const state = review.state ?? "draft";
+
+  return (
+    <PublicationStatePanel
+      id={review.id}
+      title={t(($) => $.models.attributes.review.state)}
+      state={state}
+      stateLabel={t(($) => $.models.attributes.review["state/values"][state])}
+      mutations={{ publish, unpublish, archive }}
+    />
+  );
+}

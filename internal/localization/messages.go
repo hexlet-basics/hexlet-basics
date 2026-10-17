@@ -41,6 +41,36 @@ var (
 			Other: "lesson not found",
 		},
 	}
+	OAuthRequestNotFound = Message{
+		value: i18n.Message{
+			ID:    "oauth.request_not_found",
+			Other: "authorization request not found or already decided",
+		},
+	}
+	AuditWindowReversed = Message{
+		value: i18n.Message{
+			ID:    "audit.window_reversed",
+			Other: "the end of the period must be after its start",
+		},
+	}
+	AuditWindowTooWide = Message{
+		value: i18n.Message{
+			ID:    "audit.window_too_wide",
+			Other: "the period may not be longer than 92 days",
+		},
+	}
+	AuditEntityIDNeedsType = Message{
+		value: i18n.Message{
+			ID:    "audit.entity_id_needs_type",
+			Other: "an entity id needs its entity type",
+		},
+	}
+	ConnectedAppNotFound = Message{
+		value: i18n.Message{
+			ID:    "oauth.connected_app_not_found",
+			Other: "connected app not found",
+		},
+	}
 	FileTooLarge = Message{
 		value: i18n.Message{
 			ID:    "attachments.file_too_large",
@@ -153,6 +183,78 @@ var (
 		value: i18n.Message{
 			ID:    "http.internal_server_error",
 			Other: "Internal Server Error",
+		},
+	}
+	OwnStaffRecord = Message{
+		value: i18n.Message{
+			ID:    "staff.own_record",
+			Other: "You cannot change your own staff record or role; ask another administrator",
+		},
+	}
+	OwnRoleGrants = Message{
+		value: i18n.Message{
+			ID:    "staff.own_role_grants",
+			Other: "You cannot change the permissions of your own staff role; ask an administrator",
+		},
+	}
+	OwnAccountDeletion = Message{
+		value: i18n.Message{
+			ID:    "users.own_account_deletion",
+			Other: "You cannot delete your own account here; ask another administrator",
+		},
+	}
+	AdministratorFlagRestricted = Message{
+		value: i18n.Message{
+			ID:    "users.administrator_flag_restricted",
+			Other: "Only an administrator can grant or remove the administrator flag",
+		},
+	}
+	LastAdministrator = Message{
+		value: i18n.Message{
+			ID:    "users.last_administrator",
+			Other: "The last administrator cannot be removed or demoted",
+		},
+	}
+	IllegalStateTransition = Message{
+		value: i18n.Message{
+			ID:    "state.illegal_transition",
+			Other: "Cannot move from {{.From}} to {{.To}}: the current state does not allow it",
+		},
+	}
+	PublicationStateDraft = Message{
+		value: i18n.Message{
+			ID:    "state.draft",
+			Other: "draft",
+		},
+	}
+	PublicationStatePublished = Message{
+		value: i18n.Message{
+			ID:    "state.published",
+			Other: "published",
+		},
+	}
+	PublicationStateArchived = Message{
+		value: i18n.Message{
+			ID:    "state.archived",
+			Other: "archived",
+		},
+	}
+	ReadinessDraft = Message{
+		value: i18n.Message{
+			ID:    "readiness.draft",
+			Other: "draft",
+		},
+	}
+	ReadinessInDevelopment = Message{
+		value: i18n.Message{
+			ID:    "readiness.in_development",
+			Other: "in development",
+		},
+	}
+	ReadinessCompleted = Message{
+		value: i18n.Message{
+			ID:    "readiness.completed",
+			Other: "completed",
 		},
 	}
 )

@@ -46,11 +46,11 @@ test("creates a review", async () => {
 
   await expect.element(page.getByText("Record created")).toBeVisible();
   expect(received).toMatchObject({
-    state: "draft",
     courseId: 42,
     userId: null,
     body: "Great course",
     firstName: "Eva",
   });
+  expect(received).not.toHaveProperty("state"); // a new review is a draft; the state has its own operations
   await expect.poll(() => router.state.location.pathname).toBe("/admin/reviews");
 });

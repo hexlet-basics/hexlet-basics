@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -28,12 +29,16 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthauthrequest"
+	"hexletbasics/ent/oauthclient"
+	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
-	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
 	"time"
@@ -79,6 +84,12 @@ func init() {
 	attachmentDescCreatedAt := attachmentFields[4].Descriptor()
 	// attachment.DefaultCreatedAt holds the default value on creation for the created_at field.
 	attachment.DefaultCreatedAt = attachmentDescCreatedAt.Default.(func() time.Time)
+	auditrecordFields := schema.AuditRecord{}.Fields()
+	_ = auditrecordFields
+	// auditrecordDescOccurredAt is the schema descriptor for occurred_at field.
+	auditrecordDescOccurredAt := auditrecordFields[0].Descriptor()
+	// auditrecord.DefaultOccurredAt holds the default value on creation for the occurred_at field.
+	auditrecord.DefaultOccurredAt = auditrecordDescOccurredAt.Default.(func() time.Time)
 	bannerMixin := schema.Banner{}.Mixin()
 	bannerMixinFields0 := bannerMixin[0].Fields()
 	_ = bannerMixinFields0
@@ -441,6 +452,138 @@ func init() {
 	lessonprogress.DefaultUpdatedAt = lessonprogressDescUpdatedAt.Default.(func() time.Time)
 	// lessonprogress.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	lessonprogress.UpdateDefaultUpdatedAt = lessonprogressDescUpdatedAt.UpdateDefault.(func() time.Time)
+	oauthaccesstokenMixin := schema.OAuthAccessToken{}.Mixin()
+	oauthaccesstokenMixinFields0 := oauthaccesstokenMixin[0].Fields()
+	_ = oauthaccesstokenMixinFields0
+	oauthaccesstokenFields := schema.OAuthAccessToken{}.Fields()
+	_ = oauthaccesstokenFields
+	// oauthaccesstokenDescCreatedAt is the schema descriptor for created_at field.
+	oauthaccesstokenDescCreatedAt := oauthaccesstokenMixinFields0[0].Descriptor()
+	// oauthaccesstoken.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthaccesstoken.DefaultCreatedAt = oauthaccesstokenDescCreatedAt.Default.(func() time.Time)
+	// oauthaccesstokenDescUpdatedAt is the schema descriptor for updated_at field.
+	oauthaccesstokenDescUpdatedAt := oauthaccesstokenMixinFields0[1].Descriptor()
+	// oauthaccesstoken.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	oauthaccesstoken.DefaultUpdatedAt = oauthaccesstokenDescUpdatedAt.Default.(func() time.Time)
+	// oauthaccesstoken.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	oauthaccesstoken.UpdateDefaultUpdatedAt = oauthaccesstokenDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// oauthaccesstokenDescClientID is the schema descriptor for client_id field.
+	oauthaccesstokenDescClientID := oauthaccesstokenFields[1].Descriptor()
+	// oauthaccesstoken.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthaccesstoken.ClientIDValidator = oauthaccesstokenDescClientID.Validators[0].(func(string) error)
+	// oauthaccesstokenDescFamilyID is the schema descriptor for family_id field.
+	oauthaccesstokenDescFamilyID := oauthaccesstokenFields[5].Descriptor()
+	// oauthaccesstoken.FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	oauthaccesstoken.FamilyIDValidator = oauthaccesstokenDescFamilyID.Validators[0].(func(string) error)
+	// oauthaccesstokenDescID is the schema descriptor for id field.
+	oauthaccesstokenDescID := oauthaccesstokenFields[0].Descriptor()
+	// oauthaccesstoken.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	oauthaccesstoken.IDValidator = oauthaccesstokenDescID.Validators[0].(func(string) error)
+	oauthauthrequestMixin := schema.OAuthAuthRequest{}.Mixin()
+	oauthauthrequestMixinFields0 := oauthauthrequestMixin[0].Fields()
+	_ = oauthauthrequestMixinFields0
+	oauthauthrequestFields := schema.OAuthAuthRequest{}.Fields()
+	_ = oauthauthrequestFields
+	// oauthauthrequestDescCreatedAt is the schema descriptor for created_at field.
+	oauthauthrequestDescCreatedAt := oauthauthrequestMixinFields0[0].Descriptor()
+	// oauthauthrequest.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthauthrequest.DefaultCreatedAt = oauthauthrequestDescCreatedAt.Default.(func() time.Time)
+	// oauthauthrequestDescUpdatedAt is the schema descriptor for updated_at field.
+	oauthauthrequestDescUpdatedAt := oauthauthrequestMixinFields0[1].Descriptor()
+	// oauthauthrequest.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	oauthauthrequest.DefaultUpdatedAt = oauthauthrequestDescUpdatedAt.Default.(func() time.Time)
+	// oauthauthrequest.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	oauthauthrequest.UpdateDefaultUpdatedAt = oauthauthrequestDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// oauthauthrequestDescClientID is the schema descriptor for client_id field.
+	oauthauthrequestDescClientID := oauthauthrequestFields[1].Descriptor()
+	// oauthauthrequest.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthauthrequest.ClientIDValidator = oauthauthrequestDescClientID.Validators[0].(func(string) error)
+	// oauthauthrequestDescRedirectURI is the schema descriptor for redirect_uri field.
+	oauthauthrequestDescRedirectURI := oauthauthrequestFields[2].Descriptor()
+	// oauthauthrequest.RedirectURIValidator is a validator for the "redirect_uri" field. It is called by the builders before save.
+	oauthauthrequest.RedirectURIValidator = oauthauthrequestDescRedirectURI.Validators[0].(func(string) error)
+	// oauthauthrequestDescState is the schema descriptor for state field.
+	oauthauthrequestDescState := oauthauthrequestFields[3].Descriptor()
+	// oauthauthrequest.DefaultState holds the default value on creation for the state field.
+	oauthauthrequest.DefaultState = oauthauthrequestDescState.Default.(string)
+	// oauthauthrequestDescCodeChallenge is the schema descriptor for code_challenge field.
+	oauthauthrequestDescCodeChallenge := oauthauthrequestFields[5].Descriptor()
+	// oauthauthrequest.CodeChallengeValidator is a validator for the "code_challenge" field. It is called by the builders before save.
+	oauthauthrequest.CodeChallengeValidator = oauthauthrequestDescCodeChallenge.Validators[0].(func(string) error)
+	// oauthauthrequestDescCodeChallengeMethod is the schema descriptor for code_challenge_method field.
+	oauthauthrequestDescCodeChallengeMethod := oauthauthrequestFields[6].Descriptor()
+	// oauthauthrequest.CodeChallengeMethodValidator is a validator for the "code_challenge_method" field. It is called by the builders before save.
+	oauthauthrequest.CodeChallengeMethodValidator = oauthauthrequestDescCodeChallengeMethod.Validators[0].(func(string) error)
+	// oauthauthrequestDescNonce is the schema descriptor for nonce field.
+	oauthauthrequestDescNonce := oauthauthrequestFields[7].Descriptor()
+	// oauthauthrequest.DefaultNonce holds the default value on creation for the nonce field.
+	oauthauthrequest.DefaultNonce = oauthauthrequestDescNonce.Default.(string)
+	// oauthauthrequestDescResponseType is the schema descriptor for response_type field.
+	oauthauthrequestDescResponseType := oauthauthrequestFields[8].Descriptor()
+	// oauthauthrequest.ResponseTypeValidator is a validator for the "response_type" field. It is called by the builders before save.
+	oauthauthrequest.ResponseTypeValidator = oauthauthrequestDescResponseType.Validators[0].(func(string) error)
+	// oauthauthrequestDescDone is the schema descriptor for done field.
+	oauthauthrequestDescDone := oauthauthrequestFields[10].Descriptor()
+	// oauthauthrequest.DefaultDone holds the default value on creation for the done field.
+	oauthauthrequest.DefaultDone = oauthauthrequestDescDone.Default.(bool)
+	// oauthauthrequestDescID is the schema descriptor for id field.
+	oauthauthrequestDescID := oauthauthrequestFields[0].Descriptor()
+	// oauthauthrequest.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	oauthauthrequest.IDValidator = oauthauthrequestDescID.Validators[0].(func(string) error)
+	oauthclientMixin := schema.OAuthClient{}.Mixin()
+	oauthclientMixinFields0 := oauthclientMixin[0].Fields()
+	_ = oauthclientMixinFields0
+	oauthclientFields := schema.OAuthClient{}.Fields()
+	_ = oauthclientFields
+	// oauthclientDescCreatedAt is the schema descriptor for created_at field.
+	oauthclientDescCreatedAt := oauthclientMixinFields0[0].Descriptor()
+	// oauthclient.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthclient.DefaultCreatedAt = oauthclientDescCreatedAt.Default.(func() time.Time)
+	// oauthclientDescUpdatedAt is the schema descriptor for updated_at field.
+	oauthclientDescUpdatedAt := oauthclientMixinFields0[1].Descriptor()
+	// oauthclient.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	oauthclient.DefaultUpdatedAt = oauthclientDescUpdatedAt.Default.(func() time.Time)
+	// oauthclient.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	oauthclient.UpdateDefaultUpdatedAt = oauthclientDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// oauthclientDescClientID is the schema descriptor for client_id field.
+	oauthclientDescClientID := oauthclientFields[0].Descriptor()
+	// oauthclient.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthclient.ClientIDValidator = oauthclientDescClientID.Validators[0].(func(string) error)
+	// oauthclientDescName is the schema descriptor for name field.
+	oauthclientDescName := oauthclientFields[1].Descriptor()
+	// oauthclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	oauthclient.NameValidator = oauthclientDescName.Validators[0].(func(string) error)
+	oauthrefreshtokenMixin := schema.OAuthRefreshToken{}.Mixin()
+	oauthrefreshtokenMixinFields0 := oauthrefreshtokenMixin[0].Fields()
+	_ = oauthrefreshtokenMixinFields0
+	oauthrefreshtokenFields := schema.OAuthRefreshToken{}.Fields()
+	_ = oauthrefreshtokenFields
+	// oauthrefreshtokenDescCreatedAt is the schema descriptor for created_at field.
+	oauthrefreshtokenDescCreatedAt := oauthrefreshtokenMixinFields0[0].Descriptor()
+	// oauthrefreshtoken.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthrefreshtoken.DefaultCreatedAt = oauthrefreshtokenDescCreatedAt.Default.(func() time.Time)
+	// oauthrefreshtokenDescUpdatedAt is the schema descriptor for updated_at field.
+	oauthrefreshtokenDescUpdatedAt := oauthrefreshtokenMixinFields0[1].Descriptor()
+	// oauthrefreshtoken.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	oauthrefreshtoken.DefaultUpdatedAt = oauthrefreshtokenDescUpdatedAt.Default.(func() time.Time)
+	// oauthrefreshtoken.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	oauthrefreshtoken.UpdateDefaultUpdatedAt = oauthrefreshtokenDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// oauthrefreshtokenDescTokenHash is the schema descriptor for token_hash field.
+	oauthrefreshtokenDescTokenHash := oauthrefreshtokenFields[1].Descriptor()
+	// oauthrefreshtoken.TokenHashValidator is a validator for the "token_hash" field. It is called by the builders before save.
+	oauthrefreshtoken.TokenHashValidator = oauthrefreshtokenDescTokenHash.Validators[0].(func(string) error)
+	// oauthrefreshtokenDescClientID is the schema descriptor for client_id field.
+	oauthrefreshtokenDescClientID := oauthrefreshtokenFields[2].Descriptor()
+	// oauthrefreshtoken.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthrefreshtoken.ClientIDValidator = oauthrefreshtokenDescClientID.Validators[0].(func(string) error)
+	// oauthrefreshtokenDescFamilyID is the schema descriptor for family_id field.
+	oauthrefreshtokenDescFamilyID := oauthrefreshtokenFields[7].Descriptor()
+	// oauthrefreshtoken.FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	oauthrefreshtoken.FamilyIDValidator = oauthrefreshtokenDescFamilyID.Validators[0].(func(string) error)
+	// oauthrefreshtokenDescID is the schema descriptor for id field.
+	oauthrefreshtokenDescID := oauthrefreshtokenFields[0].Descriptor()
+	// oauthrefreshtoken.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	oauthrefreshtoken.IDValidator = oauthrefreshtokenDescID.Validators[0].(func(string) error)
 	reviewMixin := schema.Review{}.Mixin()
 	reviewMixinFields0 := reviewMixin[0].Fields()
 	_ = reviewMixinFields0
@@ -492,37 +635,21 @@ func init() {
 	staffrole.DefaultUpdatedAt = staffroleDescUpdatedAt.Default.(func() time.Time)
 	// staffrole.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	staffrole.UpdateDefaultUpdatedAt = staffroleDescUpdatedAt.UpdateDefault.(func() time.Time)
-	staffrolepermissionMixin := schema.StaffRolePermission{}.Mixin()
-	staffrolepermissionMixinFields0 := staffrolepermissionMixin[0].Fields()
-	_ = staffrolepermissionMixinFields0
-	staffrolepermissionFields := schema.StaffRolePermission{}.Fields()
-	_ = staffrolepermissionFields
-	// staffrolepermissionDescCreatedAt is the schema descriptor for created_at field.
-	staffrolepermissionDescCreatedAt := staffrolepermissionMixinFields0[0].Descriptor()
-	// staffrolepermission.DefaultCreatedAt holds the default value on creation for the created_at field.
-	staffrolepermission.DefaultCreatedAt = staffrolepermissionDescCreatedAt.Default.(func() time.Time)
-	// staffrolepermissionDescUpdatedAt is the schema descriptor for updated_at field.
-	staffrolepermissionDescUpdatedAt := staffrolepermissionMixinFields0[1].Descriptor()
-	// staffrolepermission.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	staffrolepermission.DefaultUpdatedAt = staffrolepermissionDescUpdatedAt.Default.(func() time.Time)
-	// staffrolepermission.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	staffrolepermission.UpdateDefaultUpdatedAt = staffrolepermissionDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// staffrolepermissionDescCanIndex is the schema descriptor for can_index field.
-	staffrolepermissionDescCanIndex := staffrolepermissionFields[2].Descriptor()
-	// staffrolepermission.DefaultCanIndex holds the default value on creation for the can_index field.
-	staffrolepermission.DefaultCanIndex = staffrolepermissionDescCanIndex.Default.(bool)
-	// staffrolepermissionDescCanCreate is the schema descriptor for can_create field.
-	staffrolepermissionDescCanCreate := staffrolepermissionFields[3].Descriptor()
-	// staffrolepermission.DefaultCanCreate holds the default value on creation for the can_create field.
-	staffrolepermission.DefaultCanCreate = staffrolepermissionDescCanCreate.Default.(bool)
-	// staffrolepermissionDescCanUpdate is the schema descriptor for can_update field.
-	staffrolepermissionDescCanUpdate := staffrolepermissionFields[4].Descriptor()
-	// staffrolepermission.DefaultCanUpdate holds the default value on creation for the can_update field.
-	staffrolepermission.DefaultCanUpdate = staffrolepermissionDescCanUpdate.Default.(bool)
-	// staffrolepermissionDescCanDestroy is the schema descriptor for can_destroy field.
-	staffrolepermissionDescCanDestroy := staffrolepermissionFields[5].Descriptor()
-	// staffrolepermission.DefaultCanDestroy holds the default value on creation for the can_destroy field.
-	staffrolepermission.DefaultCanDestroy = staffrolepermissionDescCanDestroy.Default.(bool)
+	staffrolegrantMixin := schema.StaffRoleGrant{}.Mixin()
+	staffrolegrantMixinFields0 := staffrolegrantMixin[0].Fields()
+	_ = staffrolegrantMixinFields0
+	staffrolegrantFields := schema.StaffRoleGrant{}.Fields()
+	_ = staffrolegrantFields
+	// staffrolegrantDescCreatedAt is the schema descriptor for created_at field.
+	staffrolegrantDescCreatedAt := staffrolegrantMixinFields0[0].Descriptor()
+	// staffrolegrant.DefaultCreatedAt holds the default value on creation for the created_at field.
+	staffrolegrant.DefaultCreatedAt = staffrolegrantDescCreatedAt.Default.(func() time.Time)
+	// staffrolegrantDescUpdatedAt is the schema descriptor for updated_at field.
+	staffrolegrantDescUpdatedAt := staffrolegrantMixinFields0[1].Descriptor()
+	// staffrolegrant.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	staffrolegrant.DefaultUpdatedAt = staffrolegrantDescUpdatedAt.Default.(func() time.Time)
+	// staffrolegrant.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	staffrolegrant.UpdateDefaultUpdatedAt = staffrolegrantDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0

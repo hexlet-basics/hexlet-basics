@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/staffrole"
-	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/staffrolegrant"
 	"math"
 
 	"entgo.io/ent"
@@ -20,11 +20,11 @@ import (
 // StaffRoleQuery is the builder for querying StaffRole entities.
 type StaffRoleQuery struct {
 	config
-	ctx             *QueryContext
-	order           []staffrole.OrderOption
-	inters          []Interceptor
-	predicates      []predicate.StaffRole
-	withPermissions *StaffRolePermissionQuery
+	ctx        *QueryContext
+	order      []staffrole.OrderOption
+	inters     []Interceptor
+	predicates []predicate.StaffRole
+	withGrants *StaffRoleGrantQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,9 +61,9 @@ func (_q *StaffRoleQuery) Order(o ...staffrole.OrderOption) *StaffRoleQuery {
 	return _q
 }
 
-// QueryPermissions chains the current query on the "permissions" edge.
-func (_q *StaffRoleQuery) QueryPermissions() *StaffRolePermissionQuery {
-	query := (&StaffRolePermissionClient{config: _q.config}).Query()
+// QueryGrants chains the current query on the "grants" edge.
+func (_q *StaffRoleQuery) QueryGrants() *StaffRoleGrantQuery {
+	query := (&StaffRoleGrantClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,8 +74,8 @@ func (_q *StaffRoleQuery) QueryPermissions() *StaffRolePermissionQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(staffrole.Table, staffrole.FieldID, selector),
-			sqlgraph.To(staffrolepermission.Table, staffrolepermission.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.PermissionsTable, staffrole.PermissionsColumn),
+			sqlgraph.To(staffrolegrant.Table, staffrolegrant.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.GrantsTable, staffrole.GrantsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -270,26 +270,26 @@ func (_q *StaffRoleQuery) Clone() *StaffRoleQuery {
 		return nil
 	}
 	return &StaffRoleQuery{
-		config:          _q.config,
-		ctx:             _q.ctx.Clone(),
-		order:           append([]staffrole.OrderOption{}, _q.order...),
-		inters:          append([]Interceptor{}, _q.inters...),
-		predicates:      append([]predicate.StaffRole{}, _q.predicates...),
-		withPermissions: _q.withPermissions.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]staffrole.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.StaffRole{}, _q.predicates...),
+		withGrants: _q.withGrants.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithPermissions tells the query-builder to eager-load the nodes that are connected to
-// the "permissions" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *StaffRoleQuery) WithPermissions(opts ...func(*StaffRolePermissionQuery)) *StaffRoleQuery {
-	query := (&StaffRolePermissionClient{config: _q.config}).Query()
+// WithGrants tells the query-builder to eager-load the nodes that are connected to
+// the "grants" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *StaffRoleQuery) WithGrants(opts ...func(*StaffRoleGrantQuery)) *StaffRoleQuery {
+	query := (&StaffRoleGrantClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withPermissions = query
+	_q.withGrants = query
 	return _q
 }
 
@@ -372,7 +372,7 @@ func (_q *StaffRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 		nodes       = []*StaffRole{}
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			_q.withPermissions != nil,
+			_q.withGrants != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -393,17 +393,17 @@ func (_q *StaffRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withPermissions; query != nil {
-		if err := _q.loadPermissions(ctx, query, nodes,
-			func(n *StaffRole) { n.Edges.Permissions = []*StaffRolePermission{} },
-			func(n *StaffRole, e *StaffRolePermission) { n.Edges.Permissions = append(n.Edges.Permissions, e) }); err != nil {
+	if query := _q.withGrants; query != nil {
+		if err := _q.loadGrants(ctx, query, nodes,
+			func(n *StaffRole) { n.Edges.Grants = []*StaffRoleGrant{} },
+			func(n *StaffRole, e *StaffRoleGrant) { n.Edges.Grants = append(n.Edges.Grants, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *StaffRoleQuery) loadPermissions(ctx context.Context, query *StaffRolePermissionQuery, nodes []*StaffRole, init func(*StaffRole), assign func(*StaffRole, *StaffRolePermission)) error {
+func (_q *StaffRoleQuery) loadGrants(ctx context.Context, query *StaffRoleGrantQuery, nodes []*StaffRole, init func(*StaffRole), assign func(*StaffRole, *StaffRoleGrant)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*StaffRole)
 	for i := range nodes {
@@ -414,10 +414,10 @@ func (_q *StaffRoleQuery) loadPermissions(ctx context.Context, query *StaffRoleP
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(staffrolepermission.FieldRoleID)
+		query.ctx.AppendFieldOnce(staffrolegrant.FieldRoleID)
 	}
-	query.Where(predicate.StaffRolePermission(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(staffrole.PermissionsColumn), fks...))
+	query.Where(predicate.StaffRoleGrant(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(staffrole.GrantsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

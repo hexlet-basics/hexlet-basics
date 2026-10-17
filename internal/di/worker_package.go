@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/audit"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/emailtokens"
@@ -180,6 +181,8 @@ var workerPackage = do.Package(
 			jobs.AmoCRMLead(amoCRMClient),
 			jobs.AccountEmail(emailSender),
 			jobs.ReapExpiredSessions(manager, logger),
+			jobs.MaintainAuditPartitions(audit.NewPartitions(store.NewDriver(db)), cfg.AuditRetentionMonths, logger),
+			jobs.PurgeOAuthTokens(entClient, logger),
 		}
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
@@ -219,6 +222,15 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return events.NewRuntime(db, logger, eventhandlers.LeadCreated(riverClient))
+		entClient, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return events.NewRuntime(db, logger,
+			eventhandlers.LeadCreated(riverClient),
+			// Writes the Audit Record of a staff read of personal data, which the
+			// server only publishes (ADR-0018).
+			eventhandlers.StaffReadPersonalData(entClient),
+		)
 	}),
 )

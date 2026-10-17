@@ -17,7 +17,12 @@ images:
 # EMAIL_TOKEN_SECRET, MAIL_POSTBOX_ACCESS_KEY_ID, MAIL_POSTBOX_SECRET_ACCESS_KEY,
 # BLOB_BUCKET_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION,
 # GITHUB_WEBHOOK_SECRET, GITHUB_TOKEN, OPENAI_ACCESS_TOKEN, AMOCRM_BASE_URL,
-# AMOCRM_AUTH_TOKEN, YM_COUNTER, SENTRY_DSN, SENTRY_API_TOKEN (notify job).
+# AMOCRM_AUTH_TOKEN, YM_COUNTER, SENTRY_DSN, SENTRY_API_TOKEN (notify job), and
+# OAUTH_ENCRYPTION_KEY (at least 32 random characters; required only once
+# OAUTH_ENABLED is "true"; rotating it invalidates every issued access token).
+# OAUTH_ENCRYPTION_KEY is NOT in the sops file yet: add it to
+# secrets.code_basics.env in legacy/k8s/secrets.yaml (`sops` edit) before
+# switching the OAuth server on.
 goEnv:
   # `production` also switches on config.validateProduction: the committed
   # development guest-cookie/email secrets are refused and a Postbox key is required.
@@ -30,6 +35,29 @@ goEnv:
   MAIL_FROM: support@hexlet.io
   MAIL_POSTBOX_ENDPOINT: https://postbox.cloud.yandex.net
   MAIL_POSTBOX_REGION: ru-central1
+  # MCP endpoint (/mcp, ADR-0019) and its OAuth authorization server (/oauth/*,
+  # the well-known documents, ADR-0020). Both are off by default; while off Go
+  # mounts nothing and every one of those paths answers 404. MCP_ENABLED needs
+  # OAUTH_ENABLED (the process refuses to start otherwise), and OAUTH_ENABLED
+  # needs OAUTH_ENCRYPTION_KEY from the secret. The ingress routes the paths on
+  # every `full` host regardless of the flags (ingress.yaml).
+  OAUTH_ENABLED: "false"
+  MCP_ENABLED: "false"
+  # The canonical issuer: a bare origin (scheme and host, no path, https in
+  # production), the one host the OAuth server and the MCP resource speak as.
+  # It is never derived from the request Host header and is baked into every
+  # client registration and token, so changing it later invalidates them: pick
+  # it once, and keep it equal to a host in ingress.hosts with `full: true`
+  # whose TLS certificate covers it.
+  OAUTH_ISSUER: https://code-basics.com
+  # Anonymous client registration (POST /oauth/register): attempts per client
+  # address per window, counted in memory per api replica. The address is the
+  # first public one in X-Forwarded-For (see the ingress note below).
+  OAUTH_REGISTRATION_LIMIT: "10"
+  OAUTH_REGISTRATION_WINDOW: 1h
+  # Months of Audit Records kept (ADR-0018). The worker's partition maintenance
+  # drops whole monthly partitions, so a record lives up to one month longer.
+  AUDIT_RETENTION_MONTHS: "24"
 
 # Exercise runner settings, read only by api-check (ADR-0013). Everything else
 # keeps the config defaults.
@@ -76,6 +104,20 @@ ingress:
       full: false
     - host: "code-basics.com"
       full: true
+  # full hosts also route /mcp, /oauth/ and the /.well-known/oauth-* and
+  # openid-configuration documents to the Go API (ADR-0020); /connect and
+  # /account/connected_apps stay on web. Hosts without `full` get only /.
+  #
+  # X-Forwarded-For: the registration rate limit (and lead attribution) takes
+  # the client address from this header (handlers.WithClientIP, realip), so the
+  # proxy in front of the pods must set it from the real peer address and never
+  # pass a client-supplied value through. Yandex Cloud ALB adds the connecting
+  # address to the header it forwards; the chart has no ALB setting for it, and
+  # it could not be verified from the repository: confirm on the live ALB (send
+  # a request with a forged X-Forwarded-For and read what the api pod receives)
+  # before OAUTH_ENABLED goes on. The api pods must also stay reachable only
+  # through the ALB, never directly.
+  #
   # Host of the GitHub webhook alias (/webhooks/github -> /api/webhooks/github).
   webhookHost: "code-basics.com"
 

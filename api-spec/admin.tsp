@@ -48,7 +48,10 @@ model AttachmentUploadForm {
 interface AdminAttachments {
   /** Upload a file; returns the attachment to reference from a form. */
   @post
-  @operationId("adminUploadAttachment")
+  // The handler writes to blob storage, so the audit middleware must not hold a
+  // database transaction open around it (ADR-0018, "external calls" addendum).
+  @extension("x-unit-of-work", "standalone")
+  @extension("x-access", "any-staff") @operationId("adminUploadAttachment")
   upload(@header contentType: "multipart/form-data", @multipartBody body: AttachmentUploadForm): {
     @statusCode statusCode: 201;
     @body attachment: Attachment;
@@ -78,21 +81,21 @@ model CourseCategoryInput {
 interface AdminCourseCategories {
   /** List course categories (paginated). */
   @get
-  @operationId("adminListCourseCategories")
+  @extension("x-permission", #{ name: "course_categories.read", kind: "read" }) @operationId("adminListCourseCategories")
   list(...ListQuery): Page<CourseCategory> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course category. A missing id surfaces as 404 via the
       central ent-error handler, not a typed union member. */
   @get
   @route("/{id}")
-  @operationId("adminGetCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.read", kind: "read" }) @operationId("adminGetCourseCategory")
   get(@path id: int32): CourseCategory | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a course category. A uniqueness violation (name/header/slug) is a
       DB constraint, surfaced as 409 by the central ent-error handler. */
   @post
   @useAuth(AdminSession)
-  @operationId("adminCreateCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.create", kind: "write" }) @operationId("adminCreateCourseCategory")
   create(@body body: CourseCategoryInput): {
     @statusCode statusCode: 201;
     @body category: CourseCategory;
@@ -103,14 +106,14 @@ interface AdminCourseCategories {
   @put
   @useAuth(AdminSession)
   @route("/{id}")
-  @operationId("adminUpdateCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.update", kind: "write" }) @operationId("adminUpdateCourseCategory")
   update(@path id: int32, @body body: CourseCategoryInput): CourseCategory | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Delete a course category. */
   @delete
   @useAuth(AdminSession)
   @route("/{id}")
-  @operationId("adminDeleteCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.delete", kind: "write" }) @operationId("adminDeleteCourseCategory")
   delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
@@ -118,8 +121,9 @@ interface AdminCourseCategories {
 // Banners (legacy `/admin/banners`) — full CRUD.
 // ---------------------------------------------------------------------------
 
+/** The input of a banner: never its Publication State. A new banner is a draft and
+    the state changes only through the publish, unpublish and archive operations. */
 model BannerInput {
-  state: BannerState;
   background: BannerBackground;
   locale: BannerLocale;
   @minLength(1) body: string;
@@ -133,25 +137,39 @@ model BannerInput {
 @useAuth(AdminSession)
 interface AdminBanners {
   /** List banners (paginated). */
-  @get @operationId("adminListBanners") list(...ListQuery): Page<Banner> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "banners.read", kind: "read" }) @operationId("adminListBanners") list(...ListQuery): Page<Banner> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single banner. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetBanner") get(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "banners.read", kind: "read" }) @operationId("adminGetBanner") get(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a banner. A body violating the schema (e.g. an empty `body`)
       surfaces as 400 via the central handler; banners carry no uniqueness
       constraint, so there is no 409 path. */
-  @post @useAuth(AdminSession) @operationId("adminCreateBanner") create(@body body: BannerInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "banners.create", kind: "write" }) @operationId("adminCreateBanner") create(@body body: BannerInput): {
     @statusCode statusCode: 201;
     @body banner: Banner;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a banner. A missing id surfaces as 404 via the central handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "banners.update", kind: "write" }) @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Delete a banner. */
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteBanner") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "banners.delete", kind: "write" }) @operationId("adminDeleteBanner") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived banner. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "banners.publish", kind: "write" }) @operationId("adminPublishBanner")
+  publish(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published banner back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "banners.unpublish", kind: "write" }) @operationId("adminUnpublishBanner")
+  unpublish(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published banner. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "banners.archive", kind: "write" }) @operationId("adminArchiveBanner")
+  archive(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -159,11 +177,12 @@ interface AdminBanners {
 // by hand or suggested by the AI job).
 // ---------------------------------------------------------------------------
 
+/** The input of a post: never its Publication State. A new post is a draft and
+    the state changes only through the publish, unpublish and archive operations. */
 model BlogPostInput {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
 
   /** Trusted editor HTML, stored and returned without sanitization. */
   richBody: string;
@@ -181,38 +200,52 @@ model BlogPostRelatedCoursesInput {
 @tag("Admin: Blog Posts")
 @useAuth(AdminSession)
 interface AdminBlogPosts {
-  @get @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
 
   // 404 comes from the shared ApiError response (ent not-found), like every
   // other admin get — so no operation-specific NotFoundError member is needed.
-  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "blog_posts.create", kind: "write" }) @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
     @statusCode statusCode: 201;
     @body post: BlogPost;
   } | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "blog_posts.delete", kind: "write" }) @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Set the related/promoted courses for a post by hand. */
-  @post @useAuth(AdminSession) @route("/{id}/related_courses") @operationId("adminSetBlogPostRelatedCourses")
+  @post @useAuth(AdminSession) @route("/{id}/related_courses") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminSetBlogPostRelatedCourses")
   relatedCourses(@path id: int32, @body body: BlogPostRelatedCoursesInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue the AI pick of the post's related courses (legacy
       FindRelatedCoursesForBlogPostJob); the job replaces the set when done.
       A missing id surfaces as 404 via the central ent-error handler. */
-  @post @useAuth(AdminSession) @route("/{id}/suggest_related_courses") @operationId("adminSuggestBlogPostRelatedCourses")
+  @post @useAuth(AdminSession) @route("/{id}/suggest_related_courses") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminSuggestBlogPostRelatedCourses")
   suggestRelatedCourses(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived post. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "blog_posts.publish", kind: "write" }) @operationId("adminPublishBlogPost")
+  publish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published post back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "blog_posts.unpublish", kind: "write" }) @operationId("adminUnpublishBlogPost")
+  unpublish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published post. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "blog_posts.archive", kind: "write" }) @operationId("adminArchiveBlogPost")
+  archive(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
 // Reviews (legacy `/admin/reviews`) — full CRUD.
 // ---------------------------------------------------------------------------
 
+/** The input of a review: never its Publication State (see BannerInput). */
 model ReviewInput {
-  state: ReviewState | null;
   pinned: boolean | null;
   courseId: int32 | null;
   userId: int32 | null;
@@ -225,22 +258,36 @@ model ReviewInput {
 @tag("Admin: Reviews")
 @useAuth(AdminSession)
 interface AdminReviews {
-  @get @operationId("adminListReviews") list(...ListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminListReviews") list(...ListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single review. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetReview") get(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminGetReview") get(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateReview") create(@body body: ReviewInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "reviews.create", kind: "write" }) @operationId("adminCreateReview") create(@body body: ReviewInput): {
     @statusCode statusCode: 201;
     @body review: Review;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a review. A missing id surfaces as 404 via the central ent-error
       handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "reviews.update", kind: "write" }) @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteReview") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "reviews.delete", kind: "write" }) @operationId("adminDeleteReview") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived review. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "reviews.publish", kind: "write" }) @operationId("adminPublishReview")
+  publish(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published review back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "reviews.unpublish", kind: "write" }) @operationId("adminUnpublishReview")
+  unpublish(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published review. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "reviews.archive", kind: "write" }) @operationId("adminArchiveReview")
+  archive(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -248,10 +295,11 @@ interface AdminReviews {
 // + trigger review + create version.
 // ---------------------------------------------------------------------------
 
+/** The input of a course: never its Readiness. A new course is a draft and the
+    Readiness changes only through the mark-as operations. */
 model CourseInput {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
 
@@ -263,24 +311,39 @@ model CourseInput {
 @tag("Admin: Courses")
 @useAuth(AdminSession)
 interface AdminCourses {
-  @get @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminGetCourse") get(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCourse") create(@body body: CourseInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "courses.create", kind: "write" }) @operationId("adminCreateCourse") create(@body body: CourseInput): {
     @statusCode statusCode: 201;
     @body course: Course;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "courses.update", kind: "write" }) @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as a draft. A state is not an update: each change of Course
+      Readiness is its own operation with its own Permission. Any change between two
+      distinct values is legal; repeating the current value is a 409 with a localized
+      `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/mark_draft") @extension("x-permission", #{ name: "courses.mark_draft", kind: "write" }) @operationId("adminMarkCourseDraft")
+  markDraft(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as in development. */
+  @post @useAuth(AdminSession) @route("/{id}/mark_in_development") @extension("x-permission", #{ name: "courses.mark_in_development", kind: "write" }) @operationId("adminMarkCourseInDevelopment")
+  markInDevelopment(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as completed: it joins the public catalogue. */
+  @post @useAuth(AdminSession) @route("/{id}/mark_completed") @extension("x-permission", #{ name: "courses.mark_completed", kind: "write" }) @operationId("adminMarkCourseCompleted")
+  markCompleted(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI re-review of every current lesson version. */
-  @post @useAuth(AdminSession) @route("/{id}/review") @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
+  @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "courses.review", kind: "write" }) @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Build a new version of the course exercises. */
-  @post @useAuth(AdminSession) @route("/{id}/versions") @operationId("adminCreateCourseVersion")
+  @post @useAuth(AdminSession) @route("/{id}/versions") @extension("x-permission", #{ name: "course_versions.create", kind: "write" }) @operationId("adminCreateCourseVersion")
   createVersion(@path id: int32): {
     @statusCode statusCode: 201;
     @body version: CourseVersion;
@@ -292,6 +355,7 @@ interface AdminCourses {
 // + nested QnA items.
 // ---------------------------------------------------------------------------
 
+/** The input of a landing page: never its Publication State (see BannerInput). */
 model CourseLandingPageInput {
   courseId: int32;
   slug: string | null;
@@ -300,7 +364,6 @@ model CourseLandingPageInput {
   listed: boolean | null;
   footer: boolean | null;
   footerName: string | null;
-  state: LandingPageState | null;
   order: string | null;
   landingPageToRedirectId: int32 | null;
   metaTitle: string | null;
@@ -320,22 +383,36 @@ model CourseLandingPageInput {
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPages {
-  @get @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single landing page. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "course_landing_pages.create", kind: "write" }) @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
     @statusCode statusCode: 201;
     @body landingPage: CourseLandingPage;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a landing page. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.update", kind: "write" }) @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.delete", kind: "write" }) @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived landing page. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "course_landing_pages.publish", kind: "write" }) @operationId("adminPublishCourseLandingPage")
+  publish(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published landing page back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "course_landing_pages.unpublish", kind: "write" }) @operationId("adminUnpublishCourseLandingPage")
+  unpublish(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published landing page. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "course_landing_pages.archive", kind: "write" }) @operationId("adminArchiveCourseLandingPage")
+  archive(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---- Nested QnA items ------------------------------------------------------
@@ -349,36 +426,36 @@ model QnaItemInput {
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPageQnaItems {
-  @get @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_landing_page_qna_items.read", kind: "read" }) @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "course_landing_page_qna_items.create", kind: "write" }) @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_page_qna_items.update", kind: "write" }) @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_page_qna_items.delete", kind: "write" }) @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/course_categories/{categoryId}/qna_items")
 @tag("Admin: Course Categories")
 @useAuth(AdminSession)
 interface AdminCourseCategoryQnaItems {
-  @get @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_category_qna_items.read", kind: "read" }) @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "course_category_qna_items.create", kind: "write" }) @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_category_qna_items.update", kind: "write" }) @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_category_qna_items.delete", kind: "write" }) @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -389,38 +466,92 @@ interface AdminCourseCategoryQnaItems {
 @tag("Admin: Course Lessons")
 @useAuth(AdminSession)
 interface AdminCourseLessons {
-  @get @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_lessons.read", kind: "read" }) @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI review for a single lesson. */
-  @post @useAuth(AdminSession) @route("/{id}/review") @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
+  @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "course_lessons.review", kind: "write" }) @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/lesson_progress")
 @tag("Admin: Lesson Progress")
 @useAuth(AdminSession)
 interface AdminLessonProgress {
-  @get @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "lesson_progress.read", kind: "read" }) @extension("x-personal-data", "LessonProgress") @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/course_lesson_reviews")
 @tag("Admin: Course Lesson Reviews")
 @useAuth(AdminSession)
 interface AdminCourseLessonReviews {
-  @get @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_lesson_reviews.read", kind: "read" }) @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/leads")
 @tag("Admin: Leads")
 @useAuth(AdminSession)
 interface AdminLeads {
-  @get @operationId("adminListLeads") list(...ListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "leads.read", kind: "read" }) @extension("x-personal-data", "Lead") @operationId("adminListLeads") list(...ListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/messages")
 @tag("Admin: Messages")
 @useAuth(AdminSession)
 interface AdminMessages {
-  @get @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @extension("x-personal-data", "AiMessage") @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
+}
+
+/**
+ * The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+ * member holds through their Staff Role. The administrator flag adds none, so
+ * the admin menu shows an entry behind a capability only to someone who holds it.
+ */
+model MyCapabilities {
+  held: string[];
+}
+
+@route("/admin/capabilities")
+@tag("Admin: Audit")
+@useAuth(AdminSession)
+interface AdminCapabilities {
+  /** The capabilities the caller holds; open to any staff member. */
+  @get @extension("x-access", "any-staff") @operationId("adminGetMyCapabilities")
+  get(): MyCapabilities | UnauthorizedError | ForbiddenError | ApiError;
+}
+
+/**
+ * Filters of the audit trail listing. The table is partitioned by month on
+ * `occurred_at`, so every query carries a time window: `from` defaults to 30
+ * days before `to`, `to` defaults to now, and the window may not exceed 92 days
+ * (a wider one is a 422). A narrower window is the way to look further back.
+ */
+model AuditRecordQuery {
+  @query @minValue(1) page?: int32;
+  @query @minValue(1) @maxValue(100) perPage?: int32;
+
+  @query actorUserId?: int32;
+  @query channel?: "web" | "mcp";
+  @query operation?: string;
+  @query entityType?: string;
+  @query entityId?: string;
+
+  /** Start of the window (inclusive). */
+  @query from?: utcDateTime;
+
+  /** End of the window (exclusive). */
+  @query to?: utcDateTime;
+}
+
+@route("/admin/audit_records")
+@tag("Admin: Audit")
+@useAuth(AdminSession)
+interface AdminAuditRecords {
+  /**
+   * The audit trail, newest first. Needs the capability Permission `audit.read`
+   * on the Staff Role even for an administrator, and is itself recorded as a
+   * read of personal data: records carry addresses and old values.
+   */
+  @get @extension("x-permission", #{ name: "audit.read", kind: "read" }) @extension("x-personal-data", "AuditRecord") @operationId("adminListAuditRecords")
+  list(...AuditRecordQuery): Page<AuditRecord> | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -438,27 +569,27 @@ model UserInput {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminUsers {
-  @get @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Typeahead search by name/email. */
-  @get @route("/search") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single user. A missing id surfaces as 404 via the central ent-error
       handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @operationId("adminCreateUser") create(@body body: UserInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "users.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateUser") create(@body body: UserInput): {
     @statusCode statusCode: 201;
     @body user: UserCrud;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a user. 404 (missing) and 409 (duplicate email) both flow through
       the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -474,36 +605,44 @@ model RoleInput {
 @tag("Admin: Roles")
 @useAuth(AdminSession)
 interface AdminRoles {
-  @get @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a role with its permission matrix. A missing id surfaces as 404 via
       the central ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a role. A duplicate name is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @operationId("adminCreateRole") create(@body body: RoleInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_roles.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateRole") create(@body body: RoleInput): {
     @statusCode statusCode: 201;
     @body role: StaffRoleDetail;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
-/** One permission row to set on a role. */
-model RolePermissionInput {
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
-}
-
-/** The full permission matrix submitted for a role. */
+/** The Permissions submitted for a role. */
 model RolePermissionsInput {
-  permissions: RolePermissionInput[];
+  /**
+   * The declared Permissions the role holds, replacing its current set. Names
+   * must come from the catalog (`GET /admin/management/permissions`).
+   */
+  grants: string[];
+}
+
+/** Every Permission an admin operation can require. */
+model PermissionCatalog {
+  permissions: Permission[];
+}
+
+@route("/admin/management/permissions")
+@tag("Admin: Roles")
+@useAuth(AdminSession)
+interface AdminPermissions {
+  /** The catalog of Permissions, generated from the operations' declarations. */
+  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/role_permissions")
@@ -511,10 +650,10 @@ model RolePermissionsInput {
 @useAuth(AdminSession)
 interface AdminRolePermissions {
   /** The permission matrix for a role. */
-  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Replace the permission matrix for a role. */
-  @put @useAuth(AdminSession) @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 model StaffMemberInput {
@@ -527,29 +666,29 @@ model StaffMemberInput {
 @tag("Admin: Staff Members")
 @useAuth(AdminSession)
 interface AdminStaffMembers {
-  @get @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @extension("x-requires-capability", "mcp.manage") @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_members.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
     @body staffMember: StaffMember;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/users")
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminManagementUsers {
-  @get @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 }

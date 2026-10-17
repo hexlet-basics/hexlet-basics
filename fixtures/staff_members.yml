@@ -1,8 +1,19 @@
-# Fixtures for `staff_members`, HAND-CURATED. A single seed: user_staff_editor as
-# staff_role_editor. Deliberately avoids user_blank and staff_role_moderator, which
+# Fixtures for `staff_members`, HAND-CURATED. Two seeds: user_staff_editor as
+# staff_role_editor, and the administrator user_admin_staff, also on that role.
+# Deliberately avoids user_blank and staff_role_moderator, which
 # the user/role delete tests remove — a staff_member FK child would otherwise
 # block those deletes. allowed_locales is a native pg text array, written here as
 # the Postgres array literal. user_id is unique (one staff record per user).
+
+# user_admin_staff: an administrator who is also staff, on the editor role (see
+# users.yml). Written first so it is the oldest record, as the user is.
+- id: {{ id "staff_member_admin_staff" }}
+  user_id: {{ id "user_admin_staff" }}
+  role_id: {{ id "staff_role_editor" }}
+  allowed_locales: '{ru,en}'
+  created_at: '2026-07-26 20:50:44'
+  updated_at: '2026-07-26 20:50:44'
+
 - id: {{ id "staff_member_staff_editor" }}
   user_id: {{ id "user_staff_editor" }}
   role_id: {{ id "staff_role_editor" }}

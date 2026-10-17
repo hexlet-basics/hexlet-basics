@@ -1,0 +1,82 @@
+# Fixtures for `staff_member_role_grants`, HAND-CURATED. The staff_role_editor role
+# may read blog posts and read and create banners: what the migrations made of
+# its former matrix rows (blog_posts index; banners index and create), since
+# fixtures load after migrations and are not converted by them. Unique on
+# (role_id, permission). Permissions are the names the contract declares with
+# `x-permission`.
+- id: {{ id "staff_grant_editor_blog_posts_read" }}
+  role_id: {{ id "staff_role_editor" }}
+  permission: blog_posts.read
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: {{ id "staff_grant_editor_banners_read" }}
+  role_id: {{ id "staff_role_editor" }}
+  permission: banners.read
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+- id: {{ id "staff_grant_editor_banners_create" }}
+  role_id: {{ id "staff_role_editor" }}
+  permission: banners.create
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+# The blog updater edits and cannot publish; the blog publisher publishes and
+# cannot edit: publishing is not an update (ADR-0018).
+- id: {{ id "staff_grant_blog_updater_update" }}
+  role_id: {{ id "staff_role_blog_updater" }}
+  permission: blog_posts.update
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'
+- id: {{ id "staff_grant_blog_publisher_publish" }}
+  role_id: {{ id "staff_role_blog_publisher" }}
+  permission: blog_posts.publish
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'
+# The same split for banners, reviews and landing pages: the updater edits and
+# cannot publish, the publisher publishes and cannot edit.
+- id: {{ id "staff_grant_banner_updater_update" }}
+  role_id: {{ id "staff_role_banner_updater" }}
+  permission: banners.update
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'
+- id: {{ id "staff_grant_banner_publisher_publish" }}
+  role_id: {{ id "staff_role_banner_publisher" }}
+  permission: banners.publish
+  created_at: '2026-07-26 20:50:34'
+  updated_at: '2026-07-26 20:50:34'
+- id: {{ id "staff_grant_review_updater_update" }}
+  role_id: {{ id "staff_role_review_updater" }}
+  permission: reviews.update
+  created_at: '2026-07-26 20:50:35'
+  updated_at: '2026-07-26 20:50:35'
+- id: {{ id "staff_grant_review_publisher_publish" }}
+  role_id: {{ id "staff_role_review_publisher" }}
+  permission: reviews.publish
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "staff_grant_landing_page_updater_update" }}
+  role_id: {{ id "staff_role_landing_page_updater" }}
+  permission: course_landing_pages.update
+  created_at: '2026-07-26 20:50:37'
+  updated_at: '2026-07-26 20:50:37'
+- id: {{ id "staff_grant_landing_page_publisher_publish" }}
+  role_id: {{ id "staff_role_landing_page_publisher" }}
+  permission: course_landing_pages.publish
+  created_at: '2026-07-26 20:50:38'
+  updated_at: '2026-07-26 20:50:38'
+# The same split for a course's readiness: the updater edits and cannot change
+# the readiness, the readiness role changes it and cannot edit.
+- id: {{ id "staff_grant_course_updater_update" }}
+  role_id: {{ id "staff_role_course_updater" }}
+  permission: courses.update
+  created_at: '2026-07-26 20:50:39'
+  updated_at: '2026-07-26 20:50:39'
+- id: {{ id "staff_grant_course_readiness_mark_draft" }}
+  role_id: {{ id "staff_role_course_readiness" }}
+  permission: courses.mark_draft
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "staff_grant_course_readiness_mark_completed" }}
+  role_id: {{ id "staff_role_course_readiness" }}
+  permission: courses.mark_completed
+  created_at: '2026-07-26 20:50:41'
+  updated_at: '2026-07-26 20:50:41'

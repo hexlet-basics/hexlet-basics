@@ -159,7 +159,16 @@ type Harness struct {
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
-	doer   *inProcessDoer
+	// Tx is the transaction behind DB and the handlers, for the test that makes
+	// the storage fail on purpose (renaming a table inside it) to see how an
+	// operation answers a database error. DDL is transactional, so the rollback
+	// at cleanup undoes it.
+	Tx *sql.Tx
+	// Transactor is the savepoint transactor the handlers' modules use, for a
+	// test that drives a piece of the operation layer (the audit middleware)
+	// directly instead of through HTTP.
+	Transactor store.Transactor
+	doer       *inProcessDoer
 }
 
 // HarnessUser reports the user every harness request is authenticated as.
@@ -255,7 +264,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover: blogposts.NewRemover(transactor),
-		Permissions: staffroles.NewPermissions(db),
+		Permissions: staffroles.NewPermissions(db, transactor),
 		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker),
 		Sitemap:     sitemap.New(db),
 	})
@@ -263,6 +272,16 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		handler,
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
+		// The production unit of work, over the savepoint transactor: the audit
+		// record and the change share a savepoint, as they share a commit.
+		// The real publisher beside it: a read of personal data leaves its fact in
+		// the outbox, which Deliver turns into the Audit Record the way the
+		// worker's consumer does. One WithMiddleware call, because a second one
+		// replaces the first.
+		api.WithMiddleware(
+			handlers.NewAuditMiddleware(transactor, translator, errorHandler),
+			handlers.NewPersonalDataReadMiddleware(services.Events, translator, errorHandler),
+		),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
@@ -283,10 +302,33 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	}
 
 	return &Harness{
-		Client: &Client{Client: client}, DB: db, doer: doer,
+		Client: &Client{Client: client}, DB: db, Tx: tx, doer: doer,
 		Services: services, Mocks: mocks,
-		UserID: security.userID,
+		Transactor: transactor,
+		UserID:     security.userID,
 	}
+}
+
+// ActAs is the same stack, over the same transaction, with every request signed
+// in as another fixture user: the second person of a scenario that needs one to
+// act on what the first sees, which a harness of its own could not do because it
+// has a transaction of its own. The caller's harness keeps acting as before.
+func (h *Harness) ActAs(t *testing.T, userLabel fixtures.Label) *Harness {
+	t.Helper()
+	// Sessions live in the database, so a manager of its own over the same client
+	// issues one the harness's pipeline recognises.
+	security := newHarnessSecurity(t, h.DB, sessions.New(h.DB), userLabel)
+	doer := *h.doer
+	doer.session = security.session
+	client, err := api.NewClient("http://test", security, api.WithClient(&doer))
+	if err != nil {
+		t.Fatalf("new api client: %v", err)
+	}
+	other := *h
+	other.Client = &Client{Client: client}
+	other.doer = &doer
+	other.UserID = security.userID
+	return &other
 }
 
 // Mocks are the two external boundaries the harness cannot run for real, preset
@@ -375,6 +417,14 @@ func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 // and the locale decides which translation of a lesson is served.
 func SpeakTo(h *Harness, locale string) {
 	h.doer.locale = locale
+}
+
+// Identify makes every following request carry the given request id and user
+// agent, the way a proxy and a browser would, so a test can read them back off
+// an Audit Record.
+func Identify(h *Harness, requestID, agent string) {
+	h.doer.requestID = requestID
+	h.doer.agent = agent
 }
 
 // ArriveFrom makes every following request come through the ingress on
@@ -466,6 +516,9 @@ type inProcessDoer struct {
 	locale string
 	// realIP is the client address the ingress would forward.
 	realIP string
+	// requestID and agent are what a client or proxy would send; empty leaves
+	// the header to the default.
+	requestID, agent string
 	// setCookies are the raw Set-Cookie headers of the last response.
 	setCookies []string
 }
@@ -487,6 +540,12 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	}
 	if d.realIP != "" {
 		r.Header.Set("X-Real-IP", d.realIP)
+	}
+	if d.requestID != "" {
+		r.Header.Set("X-Request-ID", d.requestID)
+	}
+	if d.agent != "" {
+		r.Header.Set("User-Agent", d.agent)
 	}
 	// A streamed body (the generated multipart encoder writes through a pipe)
 	// has no length on the client side; over a socket net/http sends it chunked

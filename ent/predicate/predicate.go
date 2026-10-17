@@ -21,6 +21,9 @@ type AiMessage func(*sql.Selector)
 // Attachment is the predicate function for attachment builders.
 type Attachment func(*sql.Selector)
 
+// AuditRecord is the predicate function for auditrecord builders.
+type AuditRecord func(*sql.Selector)
+
 // Banner is the predicate function for banner builders.
 type Banner func(*sql.Selector)
 
@@ -87,6 +90,18 @@ type Lead func(*sql.Selector)
 // LessonProgress is the predicate function for lessonprogress builders.
 type LessonProgress func(*sql.Selector)
 
+// OAuthAccessToken is the predicate function for oauthaccesstoken builders.
+type OAuthAccessToken func(*sql.Selector)
+
+// OAuthAuthRequest is the predicate function for oauthauthrequest builders.
+type OAuthAuthRequest func(*sql.Selector)
+
+// OAuthClient is the predicate function for oauthclient builders.
+type OAuthClient func(*sql.Selector)
+
+// OAuthRefreshToken is the predicate function for oauthrefreshtoken builders.
+type OAuthRefreshToken func(*sql.Selector)
+
 // Review is the predicate function for review builders.
 type Review func(*sql.Selector)
 
@@ -99,8 +114,8 @@ type StaffMember func(*sql.Selector)
 // StaffRole is the predicate function for staffrole builders.
 type StaffRole func(*sql.Selector)
 
-// StaffRolePermission is the predicate function for staffrolepermission builders.
-type StaffRolePermission func(*sql.Selector)
+// StaffRoleGrant is the predicate function for staffrolegrant builders.
+type StaffRoleGrant func(*sql.Selector)
 
 // Tag is the predicate function for tag builders.
 type Tag func(*sql.Selector)

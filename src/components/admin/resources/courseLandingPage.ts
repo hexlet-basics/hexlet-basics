@@ -15,7 +15,6 @@ export const emptyCourseLandingPage: CourseLandingPageInput = {
   listed: false,
   footer: false,
   footerName: "",
-  state: "draft",
   order: "",
   landingPageToRedirectId: null,
   metaTitle: "",
@@ -40,7 +39,6 @@ export function courseLandingPageToForm(page: CourseLandingPage): CourseLandingP
     listed: page.listed ?? false,
     footer: page.footer ?? false,
     footerName: page.footerName ?? "",
-    state: page.state,
     order: page.order ?? "",
     landingPageToRedirectId: page.landingPageToRedirectId,
     metaTitle: page.metaTitle,
@@ -73,26 +71,6 @@ export function useCourseLandingPageFields(): CrudFieldSpec<CourseLandingPageInp
       name: "slug",
       label: t(($) => $.models.attributes.course_landing_page.slug),
       required: true,
-    },
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.course_landing_page.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].archived),
-        },
-      ],
     },
     {
       name: "main",

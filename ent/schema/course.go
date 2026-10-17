@@ -33,9 +33,10 @@ func (Course) Fields() []ent.Field {
 		field.String("name").Optional().Nillable(),
 		field.String("learn_as").Optional().Nillable().
 			Annotations(AdminInputField{}),
-		// Course Readiness; the column keeps the retired name.
+		// Course Readiness; the column keeps the retired name. Not an input: a state
+		// is not an update, so it moves only through the mark-as operations.
 		field.String("readiness").StorageKey("progress").Optional().Nillable().
-			Annotations(AdminInputField{}),
+			Annotations(AdminInputField{Skip: true}),
 		field.String("hexlet_program_landing_page").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		// Counters maintained by the app; the baseline columns are NOT NULL

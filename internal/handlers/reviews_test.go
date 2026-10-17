@@ -92,7 +92,6 @@ func TestAdminCreateReview(t *testing.T) {
 	totalReviews := h.DB.Review.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateReview(ctx, &api.ReviewInput{
-		State:     api.NewNilReviewState(api.ReviewStatePublished),
 		Pinned:    api.NewNilBool(false),
 		CourseId:  api.NewNilInt32(fixtures.ID32(fixtures.CourseRuby)),
 		UserId:    api.NewNilInt32(fixtures.ID32(fixtures.UserBlank)),
@@ -104,6 +103,7 @@ func TestAdminCreateReview(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "New review", created.Body.Value)
+	assert.Equal(t, api.ReviewStateDraft, created.State.Value, "a new review is always a draft")
 	assert.Equal(t, "Carol Clark", created.FullName.Value)
 	// The response reloads the embedded associations.
 	assert.Equal(t, "ruby", created.Course.Slug)
@@ -121,7 +121,6 @@ func TestAdminUpdateReview(t *testing.T) {
 	target := reviewByBody(t, h, "Great course")
 
 	updated, err := h.Client.AdminUpdateReview(ctx, &api.ReviewInput{
-		State:     api.NewNilReviewState(api.ReviewStateArchived),
 		Pinned:    api.NewNilBool(true),
 		CourseId:  api.NewNilInt32(target.CourseId),
 		UserId:    api.NewNilInt32(target.UserId),
@@ -132,7 +131,7 @@ func TestAdminUpdateReview(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Edited body", updated.Body.Value)
-	assert.Equal(t, api.ReviewStateArchived, updated.State.Value)
+	assert.Equal(t, api.ReviewStateDraft, updated.State.Value, "update never changes the state")
 	assert.Equal(t, "Jonathan ", updated.FullName.Value) // last name cleared -> trailing space (Ruby join parity)
 
 	row, err := h.DB.Review.Get(ctx, int(target.ID))

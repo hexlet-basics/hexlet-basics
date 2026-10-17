@@ -13,6 +13,42 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AdminArchiveBanner implements adminArchiveBanner operation.
+//
+// Archive a draft or published banner.
+//
+// POST /api/admin/banners/{id}/archive
+func (UnimplementedHandler) AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (r AdminArchiveBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
+//
+// Archive a draft or published post.
+//
+// POST /api/admin/blog_posts/{id}/archive
+func (UnimplementedHandler) AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (r AdminArchiveBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminArchiveCourseLandingPage implements adminArchiveCourseLandingPage operation.
+//
+// Archive a draft or published landing page.
+//
+// POST /api/admin/course_landing_pages/{id}/archive
+func (UnimplementedHandler) AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (r AdminArchiveCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminArchiveReview implements adminArchiveReview operation.
+//
+// Archive a draft or published review.
+//
+// POST /api/admin/reviews/{id}/archive
+func (UnimplementedHandler) AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (r AdminArchiveReviewRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminCreateBanner implements adminCreateBanner operation.
 //
 // Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -240,6 +276,15 @@ func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params A
 	return r, ht.ErrNotImplemented
 }
 
+// AdminGetMyCapabilities implements adminGetMyCapabilities operation.
+//
+// The capabilities the caller holds; open to any staff member.
+//
+// GET /api/admin/capabilities
+func (UnimplementedHandler) AdminGetMyCapabilities(ctx context.Context) (r AdminGetMyCapabilitiesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminGetReview implements adminGetReview operation.
 //
 // Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -283,6 +328,17 @@ func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params Admi
 //
 // GET /api/admin/api/users/{id}
 func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUserParams) (r AdminGetUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListAuditRecords implements adminListAuditRecords operation.
+//
+// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
+// for an administrator, and is itself recorded as a read of personal data: records carry addresses and
+// old values.
+//
+// GET /api/admin/audit_records
+func (UnimplementedHandler) AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (r AdminListAuditRecordsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -381,6 +437,15 @@ func (UnimplementedHandler) AdminListMessages(ctx context.Context, params AdminL
 	return r, ht.ErrNotImplemented
 }
 
+// AdminListPermissions implements adminListPermissions operation.
+//
+// The catalog of Permissions, generated from the operations' declarations.
+//
+// GET /api/admin/management/permissions
+func (UnimplementedHandler) AdminListPermissions(ctx context.Context) (r AdminListPermissionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListReviews implements adminListReviews operation.
 //
 // GET /api/admin/reviews
@@ -406,6 +471,79 @@ func (UnimplementedHandler) AdminListStaffMembers(ctx context.Context, params Ad
 //
 // GET /api/admin/api/users
 func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminListUsersParams) (r AdminListUsersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminMarkCourseCompleted implements adminMarkCourseCompleted operation.
+//
+// Mark a course as completed: it joins the public catalogue.
+//
+// POST /api/admin/courses/{id}/mark_completed
+func (UnimplementedHandler) AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (r AdminMarkCourseCompletedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminMarkCourseDraft implements adminMarkCourseDraft operation.
+//
+// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
+// operation with its own Permission. Any change between two distinct values is legal; repeating the
+// current value is a 409 with a localized `detail`.
+//
+// POST /api/admin/courses/{id}/mark_draft
+func (UnimplementedHandler) AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (r AdminMarkCourseDraftRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminMarkCourseInDevelopment implements adminMarkCourseInDevelopment operation.
+//
+// Mark a course as in development.
+//
+// POST /api/admin/courses/{id}/mark_in_development
+func (UnimplementedHandler) AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (r AdminMarkCourseInDevelopmentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishBanner implements adminPublishBanner operation.
+//
+// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/banners/{id}/publish
+func (UnimplementedHandler) AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (r AdminPublishBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishBlogPost implements adminPublishBlogPost operation.
+//
+// Publish a draft or archived post. A state is not an update: each change of Publication State is its
+// own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/blog_posts/{id}/publish
+func (UnimplementedHandler) AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (r AdminPublishBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishCourseLandingPage implements adminPublishCourseLandingPage operation.
+//
+// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+// 409 with a localized `detail`.
+//
+// POST /api/admin/course_landing_pages/{id}/publish
+func (UnimplementedHandler) AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (r AdminPublishCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishReview implements adminPublishReview operation.
+//
+// Publish a draft or archived review. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/reviews/{id}/publish
+func (UnimplementedHandler) AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (r AdminPublishReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -452,6 +590,42 @@ func (UnimplementedHandler) AdminSetBlogPostRelatedCourses(ctx context.Context, 
 //
 // POST /api/admin/blog_posts/{id}/suggest_related_courses
 func (UnimplementedHandler) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (r AdminSuggestBlogPostRelatedCoursesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishBanner implements adminUnpublishBanner operation.
+//
+// Take a published banner back to draft.
+//
+// POST /api/admin/banners/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (r AdminUnpublishBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
+//
+// Take a published post back to draft.
+//
+// POST /api/admin/blog_posts/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (r AdminUnpublishBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishCourseLandingPage implements adminUnpublishCourseLandingPage operation.
+//
+// Take a published landing page back to draft.
+//
+// POST /api/admin/course_landing_pages/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (r AdminUnpublishCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishReview implements adminUnpublishReview operation.
+//
+// Take a published review back to draft.
+//
+// POST /api/admin/reviews/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (r AdminUnpublishReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -575,6 +749,15 @@ func (UnimplementedHandler) AdminUploadAttachment(ctx context.Context, req *Atta
 	return r, ht.ErrNotImplemented
 }
 
+// ApproveOAuthConsent implements approveOAuthConsent operation.
+//
+// Grant the request as the signed-in user.
+//
+// POST /api/oauth/consents/{requestId}/approve
+func (UnimplementedHandler) ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (r ApproveOAuthConsentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CheckLesson implements checkLesson operation.
 //
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -691,6 +874,15 @@ func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionR
 	return r, ht.ErrNotImplemented
 }
 
+// DenyOAuthConsent implements denyOAuthConsent operation.
+//
+// Refuse the request; the application is told `access_denied`.
+//
+// POST /api/oauth/consents/{requestId}/deny
+func (UnimplementedHandler) DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (r DenyOAuthConsentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DownloadBook implements downloadBook operation.
 //
 // Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -781,6 +973,16 @@ func (UnimplementedHandler) GetNextBlogPost(ctx context.Context, params GetNextB
 	return r, ht.ErrNotImplemented
 }
 
+// GetOAuthConsent implements getOAuthConsent operation.
+//
+// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+// already decided.
+//
+// GET /api/oauth/consents/{requestId}
+func (UnimplementedHandler) GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (r GetOAuthConsentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetProfile implements getProfile operation.
 //
 // The editable profile of the current user.
@@ -856,6 +1058,16 @@ func (UnimplementedHandler) ListBlogPosts(ctx context.Context, params ListBlogPo
 	return r, ht.ErrNotImplemented
 }
 
+// ListConnectedApps implements listConnectedApps operation.
+//
+// The apps the signed-in user has connected and that can still act for them. An app unused for thirty
+// days (no refresh) has lapsed and is not listed.
+//
+// GET /api/oauth/connected_apps
+func (UnimplementedHandler) ListConnectedApps(ctx context.Context) (r ListConnectedAppsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListCourses implements listCourses operation.
 //
 // List the published course catalog.
@@ -880,6 +1092,16 @@ func (UnimplementedHandler) ListPublicCourseCategories(ctx context.Context) (r [
 //
 // GET /api/reviews
 func (UnimplementedHandler) ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (r *ReviewPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RevokeConnectedApp implements revokeConnectedApp operation.
+//
+// Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not
+// one of the caller's apps.
+//
+// DELETE /api/oauth/connected_apps/{id}
+func (UnimplementedHandler) RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (r RevokeConnectedAppRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -82,21 +82,6 @@ enum ReviewState {
   archived: "archived",
 }
 
-/** Admin resources a staff role can be granted permissions on. */
-enum PermissionResource {
-  blogPosts: "blog_posts",
-  banners: "banners",
-  reviews: "reviews",
-  leads: "leads",
-  messages: "messages",
-  courseCategories: "language_categories",
-  courseLessons: "language_lessons",
-  courseLessonReviews: "language_lesson_reviews",
-  lessonProgress: "language_lesson_members",
-  courses: "languages",
-  courseLandingPages: "language_landing_pages",
-}
-
 // ---- Course core ----------------------------------------------------------
 
 /** A build/version of a course's exercises (legacy `LanguageVersion`). */
@@ -392,23 +377,37 @@ model StaffRole {
   createdAt: utcDateTime;
 }
 
-/** A staff role with its full permission matrix (legacy: `StaffRoleCrud`). */
+/** A staff role with the Permissions it holds (legacy: `StaffRoleCrud`). */
 model StaffRoleDetail {
   id: int32;
   name: string;
   description: string | null;
-  permissions: StaffRolePermission[];
+
+  /** Names of the declared Permissions the role holds (see `Permission`). */
+  grants: string[];
 }
 
-/** One resource's permission bits for a role (legacy: `StaffRolePermission`). */
-model StaffRolePermission {
-  id: int32;
-  roleId: int32;
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
+/** Whether an operation only reads or can change data (ADR-0018). */
+enum PermissionKind {
+  read: "read",
+  write: "write",
+}
+
+/**
+ * A Permission an admin operation can require, as declared on the operations in
+ * this contract with `x-permission`. The catalog is read from those
+ * declarations, never kept by hand, plus the capability Permissions the contract
+ * lists under `x-capabilities`.
+ */
+model Permission {
+  name: string;
+  kind: PermissionKind;
+
+  /**
+   * True for a capability Permission (MCP, audit): the administrator flag does
+   * not imply it, so a role must be given it explicitly.
+   */
+  capability: boolean;
 }
 
 /** A staff member: a user bound to a role (legacy: `StaffMember`). */
@@ -493,6 +492,69 @@ model Lead {
   surveyAnswersData: string | null;
   coursesData: string | null;
   createdAt: utcDateTime;
+}
+
+// ---- Audit trail (ADR-0018) -------------------------------------------------
+
+/**
+ * The old and new value of one field an operation changed. `old` is absent on a
+ * create and `new` on a delete. A `secret` field (password material, a token)
+ * carries its name only: no value was ever stored. The values are JSON of any
+ * shape, as the field held them.
+ */
+model AuditFieldChange {
+  name: string;
+  old?: unknown;
+  new?: unknown;
+  secret?: boolean;
+}
+
+/** One mutation of one entity inside an operation. A bulk change carries no id. */
+model AuditChange {
+  /** The ent entity type, e.g. `BlogPost`. */
+  entity: string;
+  id?: string;
+
+  /** create, update or delete. */
+  `op`: string;
+  fields?: AuditFieldChange[];
+}
+
+/**
+ * What a read of personal data touched: how many rows and, up to a cap, their
+ * ids. Identifiers and counts only, never a field value.
+ */
+model AuditReads {
+  count: int32;
+  ids?: string[];
+}
+
+/**
+ * One Audit Record: who did what, through which channel, to which entity, and
+ * how it ended (legacy: none, the trail is new). A change carries `changes`, a
+ * read of personal data carries `reads`, a refusal carries neither.
+ */
+model AuditRecord {
+  id: int64;
+  occurredAt: utcDateTime;
+
+  /** Null for a refusal of a caller who was not signed in. */
+  actorUserId: int32 | null;
+  channel: "web" | "mcp";
+  connectedAppId: int32 | null;
+  tokenId: string | null;
+  requestId: string | null;
+  address: string | null;
+  userAgent: string | null;
+
+  /** The operation name, e.g. `AdminUpdateBlogPost`. */
+  operation: string;
+  entityType: string | null;
+  entityId: string | null;
+  locale: string | null;
+  outcome: "succeeded" | "forbidden" | "failed";
+  changes: AuditChange[];
+  reads: AuditReads | null;
 }
 
 // ---- Sitemap projections --------------------------------------------------

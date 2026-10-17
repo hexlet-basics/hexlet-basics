@@ -4,6 +4,11 @@
   "auth.email_taken": { "other": "Этот адрес электронной почты уже занят" },
   "courses.not_found": { "other": "Курс не найден" },
   "lessons.not_found": { "other": "Урок не найден" },
+  "oauth.request_not_found": { "other": "Запрос на авторизацию не найден или уже обработан" },
+  "audit.window_reversed": { "other": "Конец периода должен быть позже его начала" },
+  "audit.window_too_wide": { "other": "Период не может быть длиннее 92 дней" },
+  "audit.entity_id_needs_type": { "other": "Идентификатор сущности требует указать её тип" },
+  "oauth.connected_app_not_found": { "other": "Подключённое приложение не найдено" },
   "attachments.file_too_large": { "other": "Файл слишком большой" },
   "attachments.unsupported_file_type": { "other": "Неподдерживаемый тип файла" },
   "attachments.store_failed": { "other": "Не удалось сохранить файл" },
@@ -49,5 +54,27 @@
   },
   "assistant.question": {
     "other": "Пользовательский код (решение практики): {{.Code}}\n\nРезультат запуска пользовательского кода (используя тесты задания): {{.Output}}\n\nВопрос пользователя: {{.Question}}"
-  }
+  },
+  "staff.own_record": {
+    "other": "Нельзя изменить собственную запись сотрудника или роль; обратитесь к другому администратору"
+  },
+  "staff.own_role_grants": {
+    "other": "Нельзя изменить права собственной роли сотрудника; обратитесь к администратору"
+  },
+  "users.own_account_deletion": {
+    "other": "Нельзя удалить собственную учётную запись здесь; обратитесь к другому администратору"
+  },
+  "users.administrator_flag_restricted": {
+    "other": "Только администратор может выдать или снять признак администратора"
+  },
+  "users.last_administrator": { "other": "Нельзя удалить или понизить последнего администратора" },
+  "state.illegal_transition": {
+    "other": "Нельзя перевести из состояния «{{.From}}» в «{{.To}}»: текущее состояние этого не допускает"
+  },
+  "state.draft": { "other": "черновик" },
+  "state.published": { "other": "опубликовано" },
+  "state.archived": { "other": "в архиве" },
+  "readiness.draft": { "other": "черновик" },
+  "readiness.in_development": { "other": "в разработке" },
+  "readiness.completed": { "other": "завершён" }
 }

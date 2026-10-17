@@ -113,6 +113,31 @@ var (
 		Columns:    AttachmentsColumns,
 		PrimaryKey: []*schema.Column{AttachmentsColumns[0]},
 	}
+	// AuditRecordsColumns holds the columns for the "audit_records" table.
+	AuditRecordsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "occurred_at", Type: field.TypeTime},
+		{Name: "actor_user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "channel", Type: field.TypeString},
+		{Name: "connected_app_id", Type: field.TypeInt, Nullable: true},
+		{Name: "token_id", Type: field.TypeString, Nullable: true},
+		{Name: "request_id", Type: field.TypeString, Nullable: true},
+		{Name: "address", Type: field.TypeString, Nullable: true},
+		{Name: "user_agent", Type: field.TypeString, Nullable: true},
+		{Name: "operation", Type: field.TypeString},
+		{Name: "entity_type", Type: field.TypeString, Nullable: true},
+		{Name: "entity_id", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "outcome", Type: field.TypeString},
+		{Name: "changes", Type: field.TypeJSON, Nullable: true},
+		{Name: "reads", Type: field.TypeJSON, Nullable: true},
+	}
+	// AuditRecordsTable holds the schema information for the "audit_records" table.
+	AuditRecordsTable = &schema.Table{
+		Name:       "audit_records",
+		Columns:    AuditRecordsColumns,
+		PrimaryKey: []*schema.Column{AuditRecordsColumns[0]},
+	}
 	// BannersColumns holds the columns for the "banners" table.
 	BannersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -688,6 +713,94 @@ var (
 			},
 		},
 	}
+	// OauthAccessTokensColumns holds the columns for the "oauth_access_tokens" table.
+	OauthAccessTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "refresh_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "family_id", Type: field.TypeString},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthAccessTokensTable holds the schema information for the "oauth_access_tokens" table.
+	OauthAccessTokensTable = &schema.Table{
+		Name:       "oauth_access_tokens",
+		Columns:    OauthAccessTokensColumns,
+		PrimaryKey: []*schema.Column{OauthAccessTokensColumns[0]},
+	}
+	// OauthAuthorizationRequestsColumns holds the columns for the "oauth_authorization_requests" table.
+	OauthAuthorizationRequestsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "redirect_uri", Type: field.TypeString},
+		{Name: "state", Type: field.TypeString, Default: ""},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "code_challenge", Type: field.TypeString},
+		{Name: "code_challenge_method", Type: field.TypeString},
+		{Name: "nonce", Type: field.TypeString, Default: ""},
+		{Name: "response_type", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "done", Type: field.TypeBool, Default: false},
+		{Name: "auth_time", Type: field.TypeTime, Nullable: true},
+		{Name: "code_hash", Type: field.TypeString, Nullable: true},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthAuthorizationRequestsTable holds the schema information for the "oauth_authorization_requests" table.
+	OauthAuthorizationRequestsTable = &schema.Table{
+		Name:       "oauth_authorization_requests",
+		Columns:    OauthAuthorizationRequestsColumns,
+		PrimaryKey: []*schema.Column{OauthAuthorizationRequestsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "oauthauthrequest_code_hash",
+				Unique:  true,
+				Columns: []*schema.Column{OauthAuthorizationRequestsColumns[14]},
+			},
+		},
+	}
+	// OauthClientsColumns holds the columns for the "oauth_clients" table.
+	OauthClientsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "redirect_uris", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "metadata_expires_at", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "timestamptz"}},
+	}
+	// OauthClientsTable holds the schema information for the "oauth_clients" table.
+	OauthClientsTable = &schema.Table{
+		Name:       "oauth_clients",
+		Columns:    OauthClientsColumns,
+		PrimaryKey: []*schema.Column{OauthClientsColumns[0]},
+	}
+	// OauthRefreshTokensColumns holds the columns for the "oauth_refresh_tokens" table.
+	OauthRefreshTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "token_hash", Type: field.TypeString, Unique: true},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "auth_time", Type: field.TypeTime},
+		{Name: "access_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "family_id", Type: field.TypeString},
+		{Name: "used_at", Type: field.TypeTime, Nullable: true},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthRefreshTokensTable holds the schema information for the "oauth_refresh_tokens" table.
+	OauthRefreshTokensTable = &schema.Table{
+		Name:       "oauth_refresh_tokens",
+		Columns:    OauthRefreshTokensColumns,
+		PrimaryKey: []*schema.Column{OauthRefreshTokensColumns[0]},
+	}
 	// ReviewsColumns holds the columns for the "reviews" table.
 	ReviewsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -784,27 +897,23 @@ var (
 		Columns:    StaffMemberRolesColumns,
 		PrimaryKey: []*schema.Column{StaffMemberRolesColumns[0]},
 	}
-	// StaffMemberRolePermissionsColumns holds the columns for the "staff_member_role_permissions" table.
-	StaffMemberRolePermissionsColumns = []*schema.Column{
+	// StaffMemberRoleGrantsColumns holds the columns for the "staff_member_role_grants" table.
+	StaffMemberRoleGrantsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "resource", Type: field.TypeString},
-		{Name: "can_index", Type: field.TypeBool, Default: false},
-		{Name: "can_create", Type: field.TypeBool, Default: false},
-		{Name: "can_update", Type: field.TypeBool, Default: false},
-		{Name: "can_destroy", Type: field.TypeBool, Default: false},
+		{Name: "permission", Type: field.TypeString},
 		{Name: "role_id", Type: field.TypeInt},
 	}
-	// StaffMemberRolePermissionsTable holds the schema information for the "staff_member_role_permissions" table.
-	StaffMemberRolePermissionsTable = &schema.Table{
-		Name:       "staff_member_role_permissions",
-		Columns:    StaffMemberRolePermissionsColumns,
-		PrimaryKey: []*schema.Column{StaffMemberRolePermissionsColumns[0]},
+	// StaffMemberRoleGrantsTable holds the schema information for the "staff_member_role_grants" table.
+	StaffMemberRoleGrantsTable = &schema.Table{
+		Name:       "staff_member_role_grants",
+		Columns:    StaffMemberRoleGrantsColumns,
+		PrimaryKey: []*schema.Column{StaffMemberRoleGrantsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "staff_member_role_permissions_staff_member_roles_permissions",
-				Columns:    []*schema.Column{StaffMemberRolePermissionsColumns[8]},
+				Symbol:     "staff_member_role_grants_staff_member_roles_grants",
+				Columns:    []*schema.Column{StaffMemberRoleGrantsColumns[4]},
 				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -882,6 +991,7 @@ var (
 		AiChatsTable,
 		AiMessagesTable,
 		AttachmentsTable,
+		AuditRecordsTable,
 		BannersTable,
 		BlogPostsTable,
 		BlogPostLikesTable,
@@ -904,11 +1014,15 @@ var (
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		LanguageLessonMembersTable,
+		OauthAccessTokensTable,
+		OauthAuthorizationRequestsTable,
+		OauthClientsTable,
+		OauthRefreshTokensTable,
 		ReviewsTable,
 		UserSessionsTable,
 		StaffMembersTable,
 		StaffMemberRolesTable,
-		StaffMemberRolePermissionsTable,
+		StaffMemberRoleGrantsTable,
 		TagsTable,
 		TaggingsTable,
 		UsersTable,
@@ -927,6 +1041,9 @@ func init() {
 	AiChatsTable.ForeignKeys[0].RefTable = LanguageLessonMembersTable
 	AiChatsTable.ForeignKeys[1].RefTable = UsersTable
 	AiMessagesTable.ForeignKeys[0].RefTable = AiChatsTable
+	AuditRecordsTable.Annotation = &entsql.Annotation{
+		Table: "audit_records",
+	}
 	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[0].RefTable = BlogPostsTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[1].RefTable = LanguagesTable
@@ -998,6 +1115,18 @@ func init() {
 	LanguageLessonMembersTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_members",
 	}
+	OauthAccessTokensTable.Annotation = &entsql.Annotation{
+		Table: "oauth_access_tokens",
+	}
+	OauthAuthorizationRequestsTable.Annotation = &entsql.Annotation{
+		Table: "oauth_authorization_requests",
+	}
+	OauthClientsTable.Annotation = &entsql.Annotation{
+		Table: "oauth_clients",
+	}
+	OauthRefreshTokensTable.Annotation = &entsql.Annotation{
+		Table: "oauth_refresh_tokens",
+	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
 	UserSessionsTable.Annotation = &entsql.Annotation{
@@ -1008,9 +1137,9 @@ func init() {
 	StaffMemberRolesTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_roles",
 	}
-	StaffMemberRolePermissionsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
-	StaffMemberRolePermissionsTable.Annotation = &entsql.Annotation{
-		Table: "staff_member_role_permissions",
+	StaffMemberRoleGrantsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
+	StaffMemberRoleGrantsTable.Annotation = &entsql.Annotation{
+		Table: "staff_member_role_grants",
 	}
 	UserAccountsTable.Annotation = &entsql.Annotation{
 		Table: "user_accounts",

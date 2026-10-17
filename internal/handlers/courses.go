@@ -79,12 +79,14 @@ type Server struct {
 	blogPublic *blogposts.Public
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover PostRemover
-	// permissions writes a role's permission matrix.
+	// permissions writes a role's grants.
 	permissions PermissionWriter
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
 	sitemap SitemapReader
+	// oauth serves the consent screen of the OAuth server; nil while it is off.
+	oauth OAuthConsents
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -114,6 +116,7 @@ type Deps struct {
 	Permissions       PermissionWriter
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
+	OAuth             OAuthConsents
 }
 
 // NewServer wires the handler to its dependencies.
@@ -130,7 +133,7 @@ func NewServer(deps Deps) *Server {
 		progress:          deps.Progress,
 		assets:            deps.Assets,
 		sessions:          deps.Sessions,
-		security:          newSecurity(deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
+		security:          newSecurity(deps.DB, deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
 		credentials:       accounts.NewCredentials(deps.DB),
 		registrar:         deps.Registrar,
 		remover:           deps.Remover,
@@ -150,6 +153,7 @@ func NewServer(deps Deps) *Server {
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
+		oauth:             deps.OAuth,
 	}
 }
 

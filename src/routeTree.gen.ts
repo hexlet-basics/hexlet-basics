@@ -13,8 +13,10 @@ import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125BookRouteImport } from './routes/{-$locale}/book'
+import { Route as Char123LocaleChar125ConnectRouteImport } from './routes/{-$locale}/connect'
 import { Route as Char123LocaleChar125MapRouteImport } from './routes/{-$locale}/map'
 import { Route as Char123LocaleChar125MyRouteImport } from './routes/{-$locale}/my'
+import { Route as Char123LocaleChar125AccountConnected_appsRouteImport } from './routes/{-$locale}/account/connected_apps'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125Blog_postsIndexRouteImport } from './routes/{-$locale}/blog_posts/index'
 import { Route as Char123LocaleChar125Blog_postsSlugRouteImport } from './routes/{-$locale}/blog_posts/$slug'
@@ -32,6 +34,7 @@ import { Route as Char123LocaleChar125ReviewsIndexRouteImport } from './routes/{
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 import { Route as Char123LocaleChar125AccountProfileEditRouteImport } from './routes/{-$locale}/account/profile/edit'
+import { Route as Char123LocaleChar125AdminAuditIndexRouteImport } from './routes/{-$locale}/admin/audit/index'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
 import { Route as Char123LocaleChar125AdminBannersIdRouteImport } from './routes/{-$locale}/admin/banners/$id'
 import { Route as Char123LocaleChar125AdminBannersNewRouteImport } from './routes/{-$locale}/admin/banners/new'
@@ -93,6 +96,12 @@ const Char123LocaleChar125BookRoute =
     path: '/book',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125ConnectRoute =
+  Char123LocaleChar125ConnectRouteImport.update({
+    id: '/connect',
+    path: '/connect',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125MapRoute = Char123LocaleChar125MapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -103,6 +112,12 @@ const Char123LocaleChar125MyRoute = Char123LocaleChar125MyRouteImport.update({
   path: '/my',
   getParentRoute: () => Char123LocaleChar125Route,
 } as any)
+const Char123LocaleChar125AccountConnected_appsRoute =
+  Char123LocaleChar125AccountConnected_appsRouteImport.update({
+    id: '/account/connected_apps',
+    path: '/account/connected_apps',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125AdminIndexRoute =
   Char123LocaleChar125AdminIndexRouteImport.update({
     id: '/',
@@ -204,6 +219,12 @@ const Char123LocaleChar125AccountProfileEditRoute =
     id: '/account/profile/edit',
     path: '/account/profile/edit',
     getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AdminAuditIndexRoute =
+  Char123LocaleChar125AdminAuditIndexRouteImport.update({
+    id: '/audit/',
+    path: '/audit/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminBannersIndexRoute =
   Char123LocaleChar125AdminBannersIndexRouteImport.update({
@@ -432,9 +453,11 @@ export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/account/connected_apps': typeof Char123LocaleChar125AccountConnected_appsRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
   '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
@@ -468,6 +491,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -492,9 +516,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/account/connected_apps': typeof Char123LocaleChar125AccountConnected_appsRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
   '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
@@ -528,6 +554,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -555,9 +582,11 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/account/connected_apps': typeof Char123LocaleChar125AccountConnected_appsRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
   '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
@@ -591,6 +620,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -619,9 +649,11 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}/'
+    | '/{-$locale}/account/connected_apps'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
     | '/{-$locale}/language_categories/$slug'
@@ -655,6 +687,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -679,9 +712,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}'
+    | '/{-$locale}/account/connected_apps'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
     | '/{-$locale}/language_categories/$slug'
@@ -715,6 +750,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
     | '/{-$locale}/admin/course_categories'
@@ -741,9 +777,11 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}/'
+    | '/{-$locale}/account/connected_apps'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
     | '/{-$locale}/language_categories/$slug'
@@ -777,6 +815,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -834,6 +873,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125BookRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/connect': {
+      id: '/{-$locale}/connect'
+      path: '/connect'
+      fullPath: '/{-$locale}/connect'
+      preLoaderRoute: typeof Char123LocaleChar125ConnectRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/map': {
       id: '/{-$locale}/map'
       path: '/map'
@@ -846,6 +892,13 @@ declare module '@tanstack/react-router' {
       path: '/my'
       fullPath: '/{-$locale}/my'
       preLoaderRoute: typeof Char123LocaleChar125MyRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/account/connected_apps': {
+      id: '/{-$locale}/account/connected_apps'
+      path: '/account/connected_apps'
+      fullPath: '/{-$locale}/account/connected_apps'
+      preLoaderRoute: typeof Char123LocaleChar125AccountConnected_appsRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/admin/': {
@@ -966,6 +1019,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/{-$locale}/account/profile/edit'
       preLoaderRoute: typeof Char123LocaleChar125AccountProfileEditRouteImport
       parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/admin/audit/': {
+      id: '/{-$locale}/admin/audit/'
+      path: '/audit'
+      fullPath: '/{-$locale}/admin/audit/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminAuditIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/banners/': {
       id: '/{-$locale}/admin/banners/'
@@ -1245,6 +1305,7 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminReviewsNewRoute: typeof Char123LocaleChar125AdminReviewsNewRoute
   Char123LocaleChar125AdminUsersIdRoute: typeof Char123LocaleChar125AdminUsersIdRoute
   Char123LocaleChar125AdminUsersNewRoute: typeof Char123LocaleChar125AdminUsersNewRoute
+  Char123LocaleChar125AdminAuditIndexRoute: typeof Char123LocaleChar125AdminAuditIndexRoute
   Char123LocaleChar125AdminBannersIndexRoute: typeof Char123LocaleChar125AdminBannersIndexRoute
   Char123LocaleChar125AdminBlog_postsIndexRoute: typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   Char123LocaleChar125AdminCourse_categoriesIndexRoute: typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -1297,6 +1358,8 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminUsersIdRoute,
     Char123LocaleChar125AdminUsersNewRoute:
       Char123LocaleChar125AdminUsersNewRoute,
+    Char123LocaleChar125AdminAuditIndexRoute:
+      Char123LocaleChar125AdminAuditIndexRoute,
     Char123LocaleChar125AdminBannersIndexRoute:
       Char123LocaleChar125AdminBannersIndexRoute,
     Char123LocaleChar125AdminBlog_postsIndexRoute:
@@ -1345,9 +1408,11 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125BookRoute: typeof Char123LocaleChar125BookRoute
+  Char123LocaleChar125ConnectRoute: typeof Char123LocaleChar125ConnectRoute
   Char123LocaleChar125MapRoute: typeof Char123LocaleChar125MapRoute
   Char123LocaleChar125MyRoute: typeof Char123LocaleChar125MyRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125AccountConnected_appsRoute: typeof Char123LocaleChar125AccountConnected_appsRoute
   Char123LocaleChar125Blog_postsSlugRoute: typeof Char123LocaleChar125Blog_postsSlugRoute
   Char123LocaleChar125CasesFor_teachersRoute: typeof Char123LocaleChar125CasesFor_teachersRoute
   Char123LocaleChar125Language_categoriesSlugRoute: typeof Char123LocaleChar125Language_categoriesSlugRoute
@@ -1373,9 +1438,12 @@ interface Char123LocaleChar125RouteChildren {
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125BookRoute: Char123LocaleChar125BookRoute,
+  Char123LocaleChar125ConnectRoute: Char123LocaleChar125ConnectRoute,
   Char123LocaleChar125MapRoute: Char123LocaleChar125MapRoute,
   Char123LocaleChar125MyRoute: Char123LocaleChar125MyRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+  Char123LocaleChar125AccountConnected_appsRoute:
+    Char123LocaleChar125AccountConnected_appsRoute,
   Char123LocaleChar125Blog_postsSlugRoute:
     Char123LocaleChar125Blog_postsSlugRoute,
   Char123LocaleChar125CasesFor_teachersRoute:

@@ -1,5 +1,6 @@
-# Fixtures for `staff_member_roles`, HAND-CURATED. Two roles; "editor" owns two
-# permission rows (see staff_member_role_permissions.yml), "moderator" none.
+# Fixtures for `staff_member_roles`, HAND-CURATED. Two roles; "editor" owns one
+# matrix row and one grant (see staff_member_role_permissions.yml and
+# staff_member_role_grants.yml), "moderator" none.
 # Names are unique (staff_member_roles_name_uniq). Ordered by name in the list.
 - id: {{ id "staff_role_editor" }}
   name: editor
@@ -11,3 +12,53 @@
   description:
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+- id: {{ id "staff_role_blog_updater" }}
+  name: blog updater
+  description: Edits blog posts but cannot publish them
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'
+- id: {{ id "staff_role_blog_publisher" }}
+  name: blog publisher
+  description: Publishes blog posts but cannot edit them
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'
+- id: {{ id "staff_role_banner_updater" }}
+  name: banner updater
+  description: Edits banners but cannot publish them
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'
+- id: {{ id "staff_role_banner_publisher" }}
+  name: banner publisher
+  description: Publishes banners but cannot edit them
+  created_at: '2026-07-26 20:50:34'
+  updated_at: '2026-07-26 20:50:34'
+- id: {{ id "staff_role_review_updater" }}
+  name: review updater
+  description: Edits reviews but cannot publish them
+  created_at: '2026-07-26 20:50:35'
+  updated_at: '2026-07-26 20:50:35'
+- id: {{ id "staff_role_review_publisher" }}
+  name: review publisher
+  description: Publishes reviews but cannot edit them
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "staff_role_landing_page_updater" }}
+  name: landing page updater
+  description: Edits course landing pages but cannot publish them
+  created_at: '2026-07-26 20:50:37'
+  updated_at: '2026-07-26 20:50:37'
+- id: {{ id "staff_role_landing_page_publisher" }}
+  name: landing page publisher
+  description: Publishes course landing pages but cannot edit them
+  created_at: '2026-07-26 20:50:38'
+  updated_at: '2026-07-26 20:50:38'
+- id: {{ id "staff_role_course_updater" }}
+  name: course updater
+  description: Edits courses but cannot change their readiness
+  created_at: '2026-07-26 20:50:39'
+  updated_at: '2026-07-26 20:50:39'
+- id: {{ id "staff_role_course_readiness" }}
+  name: course readiness
+  description: Changes the readiness of courses but cannot edit them
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

@@ -30,6 +30,7 @@ import {
   IconHeartHandshake,
   IconLogout2,
   IconMoon,
+  IconPlugConnected,
   IconRocket,
   IconSchool,
   IconSun,
@@ -246,6 +247,12 @@ function AuthLinks() {
           renderRoot={(props) => <Link to="/{-$locale}/account/profile/edit" params {...props} />}
         >
           {t(($) => $.layouts.shared.nav.profile)}
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<IconPlugConnected size={16} />}
+          renderRoot={(props) => <Link to="/{-$locale}/account/connected_apps" params {...props} />}
+        >
+          {t(($) => $.layouts.shared.nav.connected_apps)}
         </Menu.Item>
         {user.canAccessAdmin && (
           <Menu.Item

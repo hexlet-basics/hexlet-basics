@@ -11,6 +11,7 @@ import "./public.tsp";
 import "./auth.tsp";
 import "./admin.tsp";
 import "./lesson-player.tsp";
+import "./oauth.tsp";
 
 using Http;
 using Rest;
@@ -33,7 +34,22 @@ using OpenAPI;
  * contract never collides with a page path and needs no CORS. The prefix is
  * set once here, on the namespace every file reopens, so the operation routes
  * below keep the legacy paths they mirror.
+ *
+ * `x-capabilities` lists the Permissions no operation requires yet but a Staff
+ * Role can be granted: the MCP layer and the audit page check them (ADR-0018).
+ * The administrator flag never implies them.
+ *
+ * `x-requires-capability` on an operation names a capability Permission it
+ * needs over MCP on top of its own Permission and `mcp.read`/`mcp.write`:
+ * `mcp.manage` for every operation on users, staff members, Staff Roles and
+ * their grants (who has access).
  */
 @service(#{ title: "Hexlet Basics API" })
+@extension("x-capabilities", #[
+  #{ name: "mcp.read", kind: "read" },
+  #{ name: "mcp.write", kind: "write" },
+  #{ name: "mcp.manage", kind: "write" },
+  #{ name: "audit.read", kind: "read" }
+])
 @route("/api")
 namespace HexletBasics;

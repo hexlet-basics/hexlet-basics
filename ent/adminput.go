@@ -16,7 +16,6 @@ func (c *BannerCreate) SetInput(i *api.BannerInput) *BannerCreate {
 	c.SetBackground(string(i.Background))
 	c.SetBody(string(i.Body))
 	c.SetLocale(string(i.Locale))
-	c.SetState(string(i.State))
 	c.SetNillableURL(inputconv.StringPtr(i.URL))
 	c.SetNillableStartsAt(inputconv.Ptr(i.StartsAt))
 	c.SetNillableFinishesAt(inputconv.Ptr(i.FinishesAt))
@@ -31,7 +30,6 @@ func (u *BannerUpdateOne) SetInput(i *api.BannerInput) *BannerUpdateOne {
 	u.SetBackground(string(i.Background))
 	u.SetBody(string(i.Body))
 	u.SetLocale(string(i.Locale))
-	u.SetState(string(i.State))
 	if i.URL.Null {
 		u.ClearURL()
 	} else {
@@ -57,7 +55,6 @@ func (c *BlogPostCreate) SetInput(i *api.BlogPostInput) *BlogPostCreate {
 	c.SetNillableName(inputconv.StringPtr(i.Name))
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableDescription(inputconv.StringPtr(i.Description))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetRichBody(string(i.RichBody))
 	return c
 }
@@ -81,11 +78,6 @@ func (u *BlogPostUpdateOne) SetInput(i *api.BlogPostInput) *BlogPostUpdateOne {
 		u.ClearDescription()
 	} else {
 		u.SetDescription(string(i.Description.Value))
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	u.SetRichBody(string(i.RichBody))
 	return u
@@ -116,7 +108,6 @@ func (u *CategoryQnaItemUpdateOne) SetInput(i *api.QnaItemInput) *CategoryQnaIte
 func (c *CourseCreate) SetInput(i *api.CourseInput) *CourseCreate {
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableLearnAs(inputconv.StringPtr(i.LearnAs))
-	c.SetNillableReadiness(inputconv.StringPtr(i.Readiness))
 	c.SetNillableHexletProgramLandingPage(inputconv.StringPtr(i.HexletProgramLandingPage))
 	return c
 }
@@ -135,11 +126,6 @@ func (u *CourseUpdateOne) SetInput(i *api.CourseInput) *CourseUpdateOne {
 		u.ClearLearnAs()
 	} else {
 		u.SetLearnAs(string(i.LearnAs.Value))
-	}
-	if i.Readiness.Null {
-		u.ClearReadiness()
-	} else {
-		u.SetReadiness(string(i.Readiness.Value))
 	}
 	if i.HexletProgramLandingPage.Null {
 		u.ClearHexletProgramLandingPage()
@@ -186,7 +172,6 @@ func (c *CourseLandingPageCreate) SetInput(i *api.CourseLandingPageInput) *Cours
 	c.SetNillableName(inputconv.StringPtr(i.Name))
 	c.SetNillableListed(inputconv.Ptr(i.Listed))
 	c.SetNillableMain(inputconv.Ptr(i.Main))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetNillableOrder(inputconv.StringPtr(i.Order))
 	c.SetNillableMetaTitle(inputconv.StringPtr(i.MetaTitle))
 	c.SetNillableMetaDescription(inputconv.StringPtr(i.MetaDescription))
@@ -231,11 +216,6 @@ func (u *CourseLandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *Co
 		u.ClearMain()
 	} else {
 		u.SetMain(i.Main.Value)
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	if i.Order.Null {
 		u.ClearOrder()
@@ -327,7 +307,6 @@ func (c *ReviewCreate) SetInput(i *api.ReviewInput) *ReviewCreate {
 	c.SetNillableBody(inputconv.StringPtr(i.Body))
 	c.SetNillableFirstName(inputconv.StringPtr(i.FirstName))
 	c.SetNillableLastName(inputconv.StringPtr(i.LastName))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetNillablePinned(inputconv.Ptr(i.Pinned))
 	return c
 }
@@ -357,11 +336,6 @@ func (u *ReviewUpdateOne) SetInput(i *api.ReviewInput) *ReviewUpdateOne {
 		u.ClearLastName()
 	} else {
 		u.SetLastName(string(i.LastName.Value))
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	if i.Pinned.Null {
 		u.ClearPinned()
@@ -412,31 +386,6 @@ func (u *StaffRoleUpdateOne) SetInput(i *api.RoleInput) *StaffRoleUpdateOne {
 	} else {
 		u.SetDescription(string(i.Description.Value))
 	}
-	return u
-}
-
-// SetInput applies the contract RolePermissionInput to the create builder: required
-// contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset, set-only ones apply only when non-null.
-func (c *StaffRolePermissionCreate) SetInput(i *api.RolePermissionInput) *StaffRolePermissionCreate {
-	c.SetResource(string(i.Resource))
-	c.SetCanIndex(i.CanIndex)
-	c.SetCanCreate(i.CanCreate)
-	c.SetCanUpdate(i.CanUpdate)
-	c.SetCanDestroy(i.CanDestroy)
-	return c
-}
-
-// SetInput applies the contract RolePermissionInput to the update builder: required
-// contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a null set-only field leaves the
-// column untouched.
-func (u *StaffRolePermissionUpdateOne) SetInput(i *api.RolePermissionInput) *StaffRolePermissionUpdateOne {
-	u.SetResource(string(i.Resource))
-	u.SetCanIndex(i.CanIndex)
-	u.SetCanCreate(i.CanCreate)
-	u.SetCanUpdate(i.CanUpdate)
-	u.SetCanDestroy(i.CanDestroy)
 	return u
 }
 

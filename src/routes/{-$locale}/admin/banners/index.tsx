@@ -48,6 +48,7 @@ function BannersList() {
     {
       accessorKey: "state",
       header: t(($) => $.models.attributes.banner.state),
+      cell: ({ row }) => t(($) => $.models.attributes.banner["state/values"][row.original.state]),
       enableSorting: false,
     },
     {
