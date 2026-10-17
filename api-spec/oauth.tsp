@@ -17,8 +17,8 @@ namespace HexletBasics;
 // What our own frontend calls is contract-first like everything else: the data
 // behind the consent screen, and approving or denying it. All three are guarded
 // by the session cookie (the two writes also sit behind the pipeline's
-// cross-origin protection, ADR-0017), because the consent screen can only be completed by the signed-in user on the canonical
-// host.
+// cross-origin protection, ADR-0017), because the consent screen can only be
+// completed by the signed-in user on the canonical host.
 // ---------------------------------------------------------------------------
 
 /** What the consent screen shows for one authorization request. */
@@ -69,7 +69,7 @@ interface OAuthConsents {
 // ---------------------------------------------------------------------------
 // Connected Apps (ADR-0019, #848): the OAuth clients the signed-in user has
 // approved, and withdrawing one. Both are session-guarded and show only the
-// caller's own apps; the revoke needs the XSRF header too.
+// caller's own apps; the revoke is also behind the cross-origin protection (ADR-0017).
 // ---------------------------------------------------------------------------
 
 /** One application the signed-in user has connected. */
@@ -107,7 +107,7 @@ interface OAuthConnectedApps {
   /** Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps. */
   @delete
   @route("/{id}")
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @operationId("revokeConnectedApp")
   revoke(@path id: int64): NoContent | UnauthorizedError | NotFoundError | ApiError;
 }

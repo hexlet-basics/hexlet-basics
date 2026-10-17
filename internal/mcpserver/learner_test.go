@@ -19,7 +19,7 @@ import (
 // Alice (user_admin_learner) is enrolled and has finished hello-world; Bob (user_staff_editor) has a
 // finished Enrollment and has only started variables; Carol (user_with_password) has nothing.
 // carol is a fixture user.
-var carol = fixtures.ID("user_with_password")
+var carol = fixtures.ID(fixtures.UserWithPassword)
 
 func learnerSession(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()

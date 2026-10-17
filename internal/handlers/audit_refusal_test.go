@@ -49,7 +49,7 @@ func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
 
 	input := permissionsPostInput("refused-secret")
 	input.RichBody = "<p>a value the record must not keep</p>"
-	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 	require.Error(t, err)
 
 	rows := records(t, h, "AdminUpdateBlogPost")

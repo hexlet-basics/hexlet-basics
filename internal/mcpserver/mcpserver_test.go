@@ -24,7 +24,7 @@ import (
 )
 
 // alice is a fixture user.
-var alice = fixtures.ID("user_admin_learner")
+var alice = fixtures.ID(fixtures.UserAdminLearner)
 
 func body(t *testing.T, res *http.Response) string {
 	t.Helper()
@@ -91,7 +91,6 @@ func TestWebsiteSessionCookieIsNotAcceptedOnTheEndpoint(t *testing.T) {
 
 	res := initialize(t, o, func(r *http.Request) {
 		r.AddCookie(session.Cookie)
-		r.Header.Set("X-XSRF-TOKEN", session.XSRF)
 	})
 	defer func() { _ = res.Body.Close() }()
 

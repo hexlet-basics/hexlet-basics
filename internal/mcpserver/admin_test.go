@@ -21,18 +21,19 @@ import (
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/testsupport"
 )
 
 // The fixtures seed bob (user_staff_editor) as an editor, role staff_role_editor,
 // who may read and create banners in ru and en; alice (user_admin_learner) is an
 // administrator with no Staff Role.
-var editor = fixtures.ID("staff_role_editor")
+var editor = fixtures.ID(fixtures.StaffRoleEditor)
 
 // adminStaff is an administrator who is also a staff member, on the editor role
 // (user_admin_staff): alice has no staff record, and must not (the cases lean on it);
 // a record cannot be made for oneself.
-var adminStaff = fixtures.ID("user_admin_staff")
+var adminStaff = fixtures.ID(fixtures.UserAdminStaff)
 
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
@@ -396,7 +397,6 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 			r.Header.Set("Content-Type", "application/json")
 			r.Header.Set("Accept-Language", "ru")
 			r.AddCookie(cookie.Cookie)
-			r.Header.Set("X-XSRF-TOKEN", cookie.XSRF)
 		})
 		defer func() { _ = res.Body.Close() }()
 		return res.StatusCode, body(t, res)
@@ -512,20 +512,42 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 	return args
 }
 
+// TestSessionPlaceholderOpensNothingOverHTTP pins the property the in-process
+// request rests on (ADR-0018 addendum, #854): the session cookie a tool call's
+// request carries is a placeholder that only satisfies the generated server's
+// security code, and it is worth nothing to a client. Sent over HTTP, where the
+// context holds no Principal, the session lookup finds no session under it and
+// the request is refused before anything runs, for a read and for a write. It
+// fails if the MCP branch of the security handler ever starts to trust a cookie
+// value instead of a Principal in the context.
 func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
+	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
+	bannerID := fixtures.ID(fixtures.BannerRuPublished)
+	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder}
 
-	// What the in-process request carries, sent from outside: there is no
-	// Principal to honour, so the placeholder is a JWT that does not parse.
-	res := o.Do(http.MethodPut, "/api/admin/banners/"+strconv.Itoa(fixtures.ID("banner_ru_published")), nil, func(r *http.Request) {
-		r.AddCookie(&http.Cookie{Name: "JWT", Value: "mcp-in-process"})
-		r.Header.Set("X-XSRF-TOKEN", "anything")
+	read := o.Do(http.MethodGet, "/api/admin/banners", nil, func(r *http.Request) {
+		r.AddCookie(placeholder)
+		r.Header.Set("Accept-Language", "en")
+	})
+	defer func() { _ = read.Body.Close() }()
+	assert.Equal(t, http.StatusUnauthorized, read.StatusCode)
+
+	// What the in-process request carries, sent from outside.
+	write := o.Do(http.MethodPut, "/api/admin/banners/"+strconv.Itoa(bannerID), nil, func(r *http.Request) {
+		r.AddCookie(placeholder)
 		r.Header.Set("Content-Type", "application/json")
+		r.Header.Set("Accept-Language", "en")
 		r.Body = io.NopCloser(strings.NewReader(`{}`))
 	})
+	defer func() { _ = write.Body.Close() }()
+	assert.Equal(t, http.StatusUnauthorized, write.StatusCode)
+	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), bannerID).Body)
+}
 
-	defer func() { _ = res.Body.Close() }()
-	assert.Equal(t, http.StatusUnauthorized, res.StatusCode)
-	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), fixtures.ID("banner_ru_published")).Body)
+// TestThePlaceholderIsTheWebsitesSessionCookie keeps the dispatcher's cookie name
+// equal to the website's session cookie: under any other name the generated
+// server would refuse every tool call before the security handler ran.
+func TestThePlaceholderIsTheWebsitesSessionCookie(t *testing.T) {
+	assert.Equal(t, session.CookieName, mcpserver.SessionCookie)
 }

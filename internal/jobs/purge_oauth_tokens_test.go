@@ -27,7 +27,7 @@ import (
 // rotates theirs, so each has a used token and its child.
 func TestPurgeOAuthTokensJobDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	alice, bob := fixtures.ID("user_admin_learner"), fixtures.ID("user_staff_editor")
+	alice, bob := fixtures.ID(fixtures.UserAdminLearner), fixtures.ID(fixtures.UserStaffEditor)
 	connectAndRotate := func(userID int) {
 		tokens := o.Connect(userID, oauthserver.ScopeCatalogRead)
 		_, res := o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)

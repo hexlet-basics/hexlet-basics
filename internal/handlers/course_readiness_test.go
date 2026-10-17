@@ -20,7 +20,7 @@ import (
 // mark-as operations. Readiness is no workflow, so every change between two
 // distinct values is legal and only repeating the current value is refused.
 
-var readinessCourseID = fixtures.ID("course_go")
+var readinessCourseID = fixtures.ID(fixtures.CourseGo)
 
 var readinessValues = []string{"draft", "in_development", "completed"}
 
@@ -198,7 +198,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 
 	t.Run("update only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, "staff_role_course_updater")
+		actAs(h, fixtures.StaffRoleCourseUpdater)
 
 		require.NoError(t, update(h))
 
@@ -212,7 +212,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 
 	t.Run("readiness only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, "staff_role_course_readiness")
+		actAs(h, fixtures.StaffRoleCourseReadiness)
 
 		shown, err := markCourse(h, "draft")
 		require.NoError(t, err)

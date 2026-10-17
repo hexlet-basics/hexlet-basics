@@ -300,7 +300,7 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 
 	const digest = "$2a$10$brand-new-secret-digest-value"
 	ctx, recorder := audit.WithRecorder(t.Context())
-	user := fixtures.ID("user_with_password")
+	user := fixtures.ID(fixtures.UserWithPassword)
 	require.NoError(t, o.DB.User.UpdateOneID(user).SetPasswordDigest(digest).SetFirstName("Renamed").Exec(ctx))
 	require.NoError(t, audit.Write(t.Context(), o.DB, audit.Entry{
 		Source:    audit.Source{Channel: audit.ChannelWeb},

@@ -16,10 +16,10 @@ import (
 )
 
 var (
-	secondAdmin    = fixtures.ID("user_second_admin")
-	moderator      = fixtures.ID("staff_role_moderator")
-	adminStaffSeat = fixtures.ID("staff_member_admin_staff")
-	bobSeat        = fixtures.ID("staff_member_staff_editor")
+	secondAdmin    = fixtures.ID(fixtures.UserSecondAdmin)
+	moderator      = fixtures.ID(fixtures.StaffRoleModerator)
+	adminStaffSeat = fixtures.ID(fixtures.StaffMemberAdminStaff)
+	bobSeat        = fixtures.ID(fixtures.StaffMemberStaffEditor)
 )
 
 func userBody(email string, admin any) map[string]any {

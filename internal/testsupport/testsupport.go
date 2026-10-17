@@ -313,11 +313,13 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 // in as another fixture user: the second person of a scenario that needs one to
 // act on what the first sees, which a harness of its own could not do because it
 // has a transaction of its own. The caller's harness keeps acting as before.
-func (h *Harness) ActAs(t *testing.T, userLabel string) *Harness {
+func (h *Harness) ActAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	t.Helper()
-	security := newHarnessSecurity(t, h.DB, userLabel)
+	// Sessions live in the database, so a manager of its own over the same client
+	// issues one the harness's pipeline recognises.
+	security := newHarnessSecurity(t, h.DB, session.New(h.DB), userLabel)
 	doer := *h.doer
-	doer.jwt = security.jwt
+	doer.session = security.session
 	client, err := api.NewClient("http://test", security, api.WithClient(&doer))
 	if err != nil {
 		t.Fatalf("new api client: %v", err)
