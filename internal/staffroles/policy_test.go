@@ -11,7 +11,6 @@ import (
 
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/staffroles"
@@ -147,7 +146,6 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 	for name, table := range map[string]string{
 		"staff record":  staffmember.Table,
 		"role's grants": staffrolegrant.Table,
-		"role's matrix": staffrolepermission.Table,
 	} {
 		t.Run(name, func(t *testing.T) {
 			db, tx := testsupport.NewClientWithTx(t)
@@ -156,12 +154,8 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 				`ALTER TABLE "`+table+`" RENAME TO "`+table+`_gone"`)
 			require.NoError(t, err)
 
-			// Each table answers for its own operation: banners declare a
-			// Permission, courses still use the matrix.
-			operation := "AdminListCourses"
-			if table == staffrolegrant.Table {
-				operation = "AdminListBanners"
-			}
+			// The grants are read for an operation that declares a Permission.
+			operation := "AdminListBanners"
 			err = staffroles.NewPolicy(db).Allow(t.Context(), bob, "ru", operation)
 
 			require.Error(t, err)

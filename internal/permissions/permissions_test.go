@@ -2,6 +2,7 @@ package permissions_test
 
 import (
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/samber/lo"
@@ -19,6 +20,49 @@ func TestAnOperationReportsTheDeclaredPermissionAndKind(t *testing.T) {
 	write, ok := permissions.For("AdminSuggestBlogPostRelatedCourses")
 	require.True(t, ok)
 	assert.Equal(t, permissions.Requirement{Permission: "blog_posts.update", Kind: permissions.Write}, write)
+}
+
+// Each admin operation that used to be opened by a bit of the retired
+// create/read/update/delete matrix declares the Permission of that bit, with the
+// legacy resource names replaced by the domain terms.
+func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) {
+	for permission, operations := range map[string][]string{
+		"banners.read":                {"AdminListBanners", "AdminGetBanner"},
+		"banners.create":              {"AdminCreateBanner"},
+		"banners.update":              {"AdminUpdateBanner"},
+		"banners.delete":              {"AdminDeleteBanner"},
+		"reviews.read":                {"AdminListReviews", "AdminGetReview"},
+		"reviews.create":              {"AdminCreateReview"},
+		"reviews.update":              {"AdminUpdateReview"},
+		"reviews.delete":              {"AdminDeleteReview"},
+		"leads.read":                  {"AdminListLeads"},
+		"messages.read":               {"AdminListMessages"},
+		"course_categories.read":      {"AdminListCourseCategories", "AdminGetCourseCategory"},
+		"course_categories.create":    {"AdminCreateCourseCategory"},
+		"course_categories.update":    {"AdminUpdateCourseCategory"},
+		"course_categories.delete":    {"AdminDeleteCourseCategory"},
+		"courses.read":                {"AdminListCourses", "AdminGetCourse"},
+		"courses.create":              {"AdminCreateCourse"},
+		"courses.update":              {"AdminUpdateCourse", "AdminReviewCourse"},
+		"course_lessons.read":         {"AdminListCourseLessons"},
+		"course_lessons.update":       {"AdminReviewCourseLesson"},
+		"course_lesson_reviews.read":  {"AdminListCourseLessonReviews"},
+		"lesson_progress.read":        {"AdminListLessonProgress"},
+		"course_landing_pages.read":   {"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
+		"course_landing_pages.create": {"AdminCreateCourseLandingPage"},
+		"course_landing_pages.update": {"AdminUpdateCourseLandingPage"},
+		"course_landing_pages.delete": {"AdminDeleteCourseLandingPage"},
+	} {
+		wantKind := permissions.Write
+		if strings.HasSuffix(permission, ".read") {
+			wantKind = permissions.Read
+		}
+		for _, operation := range operations {
+			got, ok := permissions.For(operation)
+			require.True(t, ok, operation)
+			assert.Equal(t, permissions.Requirement{Permission: permission, Kind: wantKind}, got, operation)
+		}
+	}
 }
 
 func TestAnOperationWithoutADeclarationHasNoRequirement(t *testing.T) {
