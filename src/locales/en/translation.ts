@@ -1173,6 +1173,8 @@ export default {
             "Be sure to <a>register</a> to ensure you don't lose the results you've achieved",
           solution: "Solution",
           source_code: "Lesson source on GitHub",
+          syntax_error: "Syntax error",
+          syntax_missing: "Missing {{token}}",
           tests: "Tests",
           tips: "Tips",
           title: "{{lesson_name}} | {{language_name}}\n",

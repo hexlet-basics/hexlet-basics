@@ -6,6 +6,7 @@ import type { editor } from "monaco-editor";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
+import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";
 
 // Monaco, loaded in the browser and only after the theory is on screen. It
 // cannot server-render, and it is by far the heaviest thing on the page, so it
@@ -67,7 +68,10 @@ function EditorPane({
     getInitialValueInEffect: false,
   });
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
+  const [monacoApi, setMonacoApi] = useState<Monaco>();
   const settings = getEditorSettings(courseSlug, extension);
+
+  useSyntaxMarkers(instance, monacoApi, settings.language);
 
   // Monaco keeps the callback it is given for the life of the command, so the
   // command calls through a stable ref-backed callback rather than closing over
@@ -77,6 +81,7 @@ function EditorPane({
   const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
     setInstance(mounted);
+    setMonacoApi(monaco);
   };
 
   // A reset replaces the buffer and hands the cursor back, because the learner's

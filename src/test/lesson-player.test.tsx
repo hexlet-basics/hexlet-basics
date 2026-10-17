@@ -1301,15 +1301,3 @@ test("underlines a syntax error in a language monaco has no service of", async (
   await userEvent.keyboard("{ArrowLeft}1");
   await expect.poll(squiggles, editorLoad).toBe(0);
 });
-
-test("TMP js squiggle", async () => {
-  worker.use(
-    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
-  );
-  await renderPlayer("variables");
-  await expect.poll(editorText, editorLoad).toContain("let greeting");
-  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
-  await userEvent.keyboard("{Control>}{End}{/Control}let = = 5;");
-  await new Promise((r) => setTimeout(r, 8000));
-  expect(squiggles()).toBeGreaterThan(0);
-});

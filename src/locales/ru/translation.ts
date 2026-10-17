@@ -1175,6 +1175,8 @@ export default {
             "Чтобы не потерять достигнутые результаты, обязательно <a>зарегистрируйтесь</a>",
           solution: "Решение",
           source_code: "Исходный код урока на GitHub",
+          syntax_error: "Синтаксическая ошибка",
+          syntax_missing: "Пропущено: {{token}}",
           tests: "Тесты",
           tips: "Полезное",
           title: "{{lesson_name}} | Уроки {{language_name}}\n",
