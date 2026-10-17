@@ -17,8 +17,15 @@ export default function Breadcrumbs({
   homeLabel: string;
   children: ReactNode;
 }) {
+  // The separator has no colour of its own and inherits the body's black, so it
+  // is dimmed to match the crumbs.
   return (
-    <MantineBreadcrumbs styles={{ breadcrumb: { whiteSpace: "normal" } }}>
+    <MantineBreadcrumbs
+      styles={{
+        breadcrumb: { whiteSpace: "normal" },
+        separator: { color: "var(--mantine-color-dimmed)" },
+      }}
+    >
       <AnchorLink to="/{-$locale}" size="sm" aria-label={homeLabel}>
         <Center c="dimmed">
           <IconHome size={15} aria-hidden="true" />
