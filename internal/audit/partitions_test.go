@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/testsupport"
 )
@@ -36,12 +37,17 @@ func partitionNames(t *testing.T, tx *sql.Tx) []string {
 	return names
 }
 
+// addRecordAt writes an Audit Record that happened at an instant, through the
+// production writer, and returns the row.
 func addRecordAt(t *testing.T, client *ent.Client, at time.Time) *ent.AuditRecord {
 	t.Helper()
-	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-	return client.AuditRecord.Create().
-		SetOccurredAt(at).SetChannel("web").SetOperation("AdminUpdateBlogPost").SetOutcome("succeeded").
-		SaveX(t.Context())
+	require.NoError(t, audit.Write(t.Context(), client, audit.Entry{
+		OccurredAt: at,
+		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Operation:  "AdminUpdateBlogPost",
+		Outcome:    audit.OutcomeSucceeded,
+	}, nil))
+	return client.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context())
 }
 
 func partitionOf(t *testing.T, tx *sql.Tx, id int) string {
