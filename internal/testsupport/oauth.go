@@ -20,6 +20,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/handlers"
@@ -28,7 +29,9 @@ import (
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/session"
+	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -191,6 +194,12 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		I18n:      translator,
 		Errors:    errorHandler,
 		OAuth:     server,
+		// What the admin operations that are tools reach: the roles screen's
+		// writer, the blog post remover and the related-courses replacer, the
+		// real ones over the test transaction as in NewHarness.
+		Permissions:       staffroles.NewPermissions(db, transactor),
+		PostRemover:       blogposts.NewRemover(transactor),
+		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
 	})
 	apiServer, err := api.NewServer(
 		handler,

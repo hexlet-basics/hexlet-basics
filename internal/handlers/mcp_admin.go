@@ -39,9 +39,10 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 //  1. the admin Scope the user granted the Connected App;
 //  2. the operation's Permission and the locale, by Policy.Allow, which is the
 //     very call the cookie branch makes;
-//  3. the capability Permission matching the operation's kind (mcp.read or
-//     mcp.write), by Policy.HasCapability, which the administrator flag does
-//     not satisfy (ADR-0017).
+//  3. every capability Permission the operation needs (mcp.read or mcp.write
+//     by its kind, plus mcp.manage for an operation on users, staff and roles,
+//     as the contract declares), by Policy.HasCapability, which the
+//     administrator flag does not satisfy (ADR-0017).
 //
 // A failure of any is the refusal HTTP gives: an Audit Record with outcome
 // forbidden (channel mcp, since the tool put its Source in the context) and 403,
@@ -66,8 +67,11 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
 	}
 	err = s.policy.Allow(ctx, u, locale, operation)
-	if err == nil {
-		err = s.policy.HasCapability(ctx, u, permissions.MCPCapability(operation))
+	for _, capability := range permissions.MCPCapabilities(operation) {
+		if err != nil {
+			break
+		}
+		err = s.policy.HasCapability(ctx, u, capability)
 	}
 	if errors.Is(err, staffroles.ErrForbidden) {
 		s.recordRefusal(ctx, operation)

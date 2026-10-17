@@ -20,7 +20,7 @@ import (
 func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 	mcpserver.AllowForTest(t, "adminListUsers", "adminUpdateBanner")
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "users.read", "banners.update", "mcp.read", "mcp.write")
+	o.Grant(editor, "users.read", "banners.update", "mcp.read", "mcp.write", "mcp.manage")
 	session, token := admin(t, o, bob)
 
 	read := call(t, session, "adminListUsers", map[string]any{"locale": "en", "perPage": 2})

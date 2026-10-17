@@ -19,6 +19,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
@@ -82,13 +83,13 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 		}
 	}
 	slices.Sort(names)
-	// Banner create and delete, and every other admin operation, are in the
-	// contract and are not tools until their operationId is listed.
-	assert.Equal(t, []string{"adminListAuditRecords", "adminListBanners", "adminUpdateBanner", "adminUploadAttachment"}, names)
-
-	// Calling one anyway is refused by the endpoint itself: there is no such tool.
+	// The tools are exactly the allowlist: an excluded operation is in the
+	// contract and is not a tool.
+	assert.Equal(t, slices.Sorted(slices.Values(mcpserver.AllowlistedAdminOperations())), names)
+	// Calling an excluded one anyway is refused by the endpoint itself: there is
+	// no such tool.
 	_, err = session.CallTool(t.Context(), &mcp.CallToolParams{
-		Name: "adminDeleteBanner", Arguments: map[string]any{"locale": "en", "id": 1},
+		Name: "adminGetMyCapabilities", Arguments: map[string]any{"locale": "en"},
 	})
 	require.Error(t, err)
 	assert.Equal(t, 5, o.DB.Banner.Query().CountX(t.Context()))
@@ -457,7 +458,10 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 // checkpoint. The arguments are generated from the tool's own input schema, so a
 // tool added to the allowlist is covered with no edit here.
 func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
-	o := testsupport.NewOAuth(t)
+	// One call per tool must reach the checkpoint, so the budgets are not the
+	// subject here.
+	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
 	// A role with nothing: bob's grants are removed, and no mcp.* is held.
 	o.DB.StaffRoleGrant.Delete().ExecX(t.Context())
 	session, _ := admin(t, o, bob)
