@@ -170,6 +170,16 @@ Enrollment plus Lesson Progress rows in the Finished state for exactly those
 Lessons.
 _ru_: гостевой прогресс · _es_: progreso de invitado
 
+### Publication
+
+**Publication State**:
+Where a piece of content stands in its life: a draft nobody but staff sees, published
+for everyone, or archived and withdrawn (`draft`, `published`, `archived`). It
+changes only by publishing, unpublishing or archiving, never by editing the
+content, and each of those is a Permission of its own. Distinct from Course
+Readiness, which describes the Course as a product.
+_ru_: состояние публикации · _es_: estado de publicación
+
 ### Staff access and audit
 
 **Staff Role**:
