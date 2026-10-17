@@ -72,11 +72,12 @@ func NewOAuth(t *testing.T) *OAuth {
 	mocks := NewMocks()
 
 	server, err := oauthserver.New(oauthserver.Deps{
-		Config:     oauthserver.Config{Issuer: OAuthIssuer, EncryptionKey: oauthEncryptionKey},
-		DB:         db,
-		Transactor: transactor,
-		App:        handlers.OAuthSession{},
-		Now:        func() time.Time { return o.now },
+		Config:        oauthserver.Config{Issuer: OAuthIssuer, EncryptionKey: oauthEncryptionKey},
+		DB:            db,
+		Transactor:    transactor,
+		App:           handlers.OAuthSession{},
+		ClientAddress: handlers.ClientIP,
+		Now:           func() time.Time { return o.now },
 	})
 	require.NoError(t, err)
 	o.Server = server
@@ -181,6 +182,8 @@ type Flow struct {
 	o *OAuth
 	// UserID is the user who signs in and decides.
 	UserID int
+	// ClientID is the client the flow runs as.
+	ClientID string
 	// State is the opaque value the client expects echoed back.
 	State string
 	// RequestID is the authorization request id the consent screen is opened with
@@ -212,6 +215,10 @@ type StartOptions struct {
 	Scopes []string
 	// RedirectURIs are what the client registers; the default is OAuthRedirectURI.
 	RedirectURIs []string
+	// ClientID, when set, runs the flow as an already registered client (one that
+	// registered itself through /oauth/register): nothing is seeded and Scopes
+	// and RedirectURIs are only what the request names.
+	ClientID string
 	// Params edits the authorization request's query before it is sent (to add a
 	// resource, change the redirect_uri, or drop a parameter).
 	Params func(url.Values)
@@ -221,14 +228,22 @@ type StartOptions struct {
 func (o *OAuth) StartWith(userID int, opts StartOptions) *Flow {
 	o.t.Helper()
 	scopes := opts.Scopes
-	if opts.RedirectURIs == nil {
+	if opts.RedirectURIs == nil && opts.ClientID == "" {
 		opts.RedirectURIs = []string{OAuthRedirectURI}
 	}
-	o.SeedClientURIs(opts.RedirectURIs, scopes...)
-	f := &Flow{o: o, UserID: userID, State: "state-" + ids.New(), session: SessionFor(o.t, o.DB, userID)}
+	clientID := opts.ClientID
+	if clientID == "" {
+		clientID = OAuthClientID
+		o.SeedClientURIs(opts.RedirectURIs, scopes...)
+	}
+	redirectURI := OAuthRedirectURI
+	if opts.ClientID != "" {
+		redirectURI = opts.RedirectURIs[0]
+	}
+	f := &Flow{o: o, UserID: userID, ClientID: clientID, State: "state-" + ids.New(), session: SessionFor(o.t, o.DB, userID)}
 	query := url.Values{
-		"client_id":             {OAuthClientID},
-		"redirect_uri":          {OAuthRedirectURI},
+		"client_id":             {clientID},
+		"redirect_uri":          {redirectURI},
 		"response_type":         {"code"},
 		"scope":                 {strings.Join(append(append([]string{}, scopes...), "offline_access"), " ")},
 		"state":                 {f.State},
@@ -313,7 +328,7 @@ func (f *Flow) ExchangeWith(code, verifier string, extra url.Values) (Tokens, *h
 	f.o.t.Helper()
 	form := url.Values{
 		"grant_type":    {"authorization_code"},
-		"client_id":     {OAuthClientID},
+		"client_id":     {f.ClientID},
 		"redirect_uri":  {f.RedirectURI},
 		"code":          {code},
 		"code_verifier": {verifier},
@@ -348,4 +363,37 @@ func (o *OAuth) Connect(userID int, scopes ...string) Tokens {
 	tokens, res := f.Exchange(code, PKCEVerifier())
 	require.Equal(o.t, http.StatusOK, res.StatusCode)
 	return tokens
+}
+
+// Register posts a Dynamic Client Registration request (RFC 7591) as an
+// anonymous caller. The body is sent as it is when it is a string or []byte,
+// and as JSON otherwise; mutate edits the request (the client address header,
+// the content type).
+func (o *OAuth) Register(body any, mutate ...func(*http.Request)) *http.Response {
+	o.t.Helper()
+	var raw []byte
+	switch b := body.(type) {
+	case string:
+		raw = []byte(b)
+	case []byte:
+		raw = b
+	default:
+		var err error
+		raw, err = json.Marshal(body)
+		require.NoError(o.t, err)
+	}
+	req := httptest.NewRequestWithContext(o.t.Context(), http.MethodPost, "/oauth/register", strings.NewReader(string(raw)))
+	req.Header.Set("Content-Type", "application/json")
+	for _, m := range mutate {
+		m(req)
+	}
+	rec := httptest.NewRecorder()
+	o.Router.ServeHTTP(rec, req)
+	return rec.Result()
+}
+
+// FromAddress makes a request come from a client address, as the ingress would
+// forward it.
+func FromAddress(ip string) func(*http.Request) {
+	return func(r *http.Request) { r.Header.Set("X-Real-IP", ip) }
 }

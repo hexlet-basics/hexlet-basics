@@ -86,6 +86,10 @@ type Config struct {
 	// EncryptionKey is the secret access tokens are encrypted under and the ID
 	// token signing key is derived from.
 	EncryptionKey string
+	// RegistrationLimit is how many registration attempts one client address may
+	// make per RegistrationWindow; zero values mean the package defaults.
+	RegistrationLimit  int
+	RegistrationWindow time.Duration
 }
 
 // Deps are the collaborators of the Server.
@@ -96,6 +100,11 @@ type Deps struct {
 	DB         *ent.Client
 	Transactor store.Transactor
 	App        Application
+	// ClientAddress names the caller of a request, for the registration rate
+	// limit. The application supplies it from its client-IP middleware, so the
+	// address is never read from a header here; without it every caller shares
+	// one bucket.
+	ClientAddress func(ctx context.Context) (string, bool)
 	// Now is the clock; nil means time.Now. Tests move it to expire things.
 	Now func() time.Time
 }
@@ -105,9 +114,12 @@ type Server struct {
 	issuer   string
 	resource string
 	app      Application
-	storage  *storage
-	provider *op.Provider
-	handler  http.Handler
+	limiter  *limiter
+	// clientAddress is Deps.ClientAddress, never nil.
+	clientAddress func(context.Context) (string, bool)
+	storage       *storage
+	provider      *op.Provider
+	handler       http.Handler
 }
 
 // New builds the Server. It fails on a configuration the provider rejects (an
@@ -177,7 +189,15 @@ func New(deps Deps) (*Server, error) {
 		return nil, fmt.Errorf("oauthserver: build provider: %w", err)
 	}
 
-	s := &Server{issuer: deps.Config.Issuer, resource: st.resource, app: deps.App, storage: st, provider: provider}
+	clientAddress := deps.ClientAddress
+	if clientAddress == nil {
+		clientAddress = func(context.Context) (string, bool) { return "", false }
+	}
+	s := &Server{
+		issuer: deps.Config.Issuer, resource: st.resource, app: deps.App, storage: st, provider: provider,
+		limiter:       newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
+		clientAddress: clientAddress,
+	}
 	s.handler = s.routes()
 	return s, nil
 }
@@ -208,6 +228,9 @@ func (s *Server) routes() http.Handler {
 	mux.HandleFunc(authorizePath, s.authorize)
 	mux.HandleFunc(callbackPath, s.authorizeCallback)
 	mux.HandleFunc(tokenPath, s.token)
+	// Dynamic Client Registration is ours entirely (registration.go): the library
+	// has none.
+	mux.Handle(registerPath, s.registerHandler())
 	mux.Handle("/oauth/", s.provider)
 	return mux
 }

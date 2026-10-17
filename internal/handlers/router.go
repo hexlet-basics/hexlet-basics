@@ -43,6 +43,7 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // applications that carry no session cookie, and the pipeline's cross-origin
 // protection would refuse a web client's legitimate cross-site token request.
 // The consent screen, which does need the session, is a generated operation.
+// WithClientIP resolves the caller's address for its registration rate limit.
 func NewRouter(
 	generated http.Handler,
 	att *AttachmentHandler,
@@ -61,7 +62,7 @@ func NewRouter(
 	transport.HandleFunc("POST /api/webhooks/github", gh.Handle)
 	if oauth != nil {
 		for _, pattern := range oauthserver.Patterns() {
-			transport.Handle(pattern, oauth)
+			transport.Handle(pattern, WithClientIP(oauth))
 		}
 	}
 	transport.Handle("/", generated)

@@ -477,12 +477,15 @@ var serverPackage = do.Package(
 		}
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
-				Issuer:        cfg.OAuth.Issuer,
-				EncryptionKey: cfg.OAuth.EncryptionKey,
+				Issuer:             cfg.OAuth.Issuer,
+				EncryptionKey:      cfg.OAuth.EncryptionKey,
+				RegistrationLimit:  cfg.OAuth.RegistrationLimit,
+				RegistrationWindow: cfg.OAuth.RegistrationWindow,
 			},
-			DB:         db,
-			Transactor: txStore,
-			App:        handlers.OAuthSession{},
+			DB:            db,
+			Transactor:    txStore,
+			App:           handlers.OAuthSession{},
+			ClientAddress: handlers.ClientIP,
 		})
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {

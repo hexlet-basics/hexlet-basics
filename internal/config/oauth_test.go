@@ -2,6 +2,7 @@ package config
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -64,4 +65,20 @@ func TestLoadRejectsAnHTTPIssuerInProduction(t *testing.T) {
 
 	require.Nil(t, cfg)
 	require.ErrorContains(t, err, "OAUTH_ISSUER must be an https origin in production")
+}
+
+func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.T) {
+	setRequiredSecrets(t)
+	t.Setenv("OAUTH_ENABLED", "true")
+	t.Setenv("OAUTH_ISSUER", "https://code-basics.com")
+	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
+
+	cfg, err := Load()
+	require.NoError(t, err)
+	require.Equal(t, 10, cfg.OAuth.RegistrationLimit)
+	require.Equal(t, time.Hour, cfg.OAuth.RegistrationWindow)
+
+	t.Setenv("OAUTH_REGISTRATION_LIMIT", "0")
+	_, err = Load()
+	require.ErrorContains(t, err, "OAUTH_REGISTRATION_LIMIT")
 }
