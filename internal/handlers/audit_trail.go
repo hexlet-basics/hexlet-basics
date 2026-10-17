@@ -27,16 +27,13 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 	// One instant for the check, the count and the page, so the window cannot
 	// shift between them.
 	now := time.Now()
-	if _, err := filter.Query(s.db, now); err != nil {
+	query, err := filter.Query(s.db, now)
+	if err != nil {
 		return s.auditWindowProblem(ctx, err)
 	}
 
 	page, err := listPageWith(ctx, params.Page, params.PerPage,
-		func() *ent.AuditRecordQuery {
-			// Valid: the same filter and instant were accepted above.
-			q, _ := filter.Query(s.db, now)
-			return q
-		},
+		query,
 		func(_ context.Context, rows []*ent.AuditRecord) ([]api.AuditRecord, error) {
 			items := make([]api.AuditRecord, 0, len(rows))
 			for _, row := range rows {

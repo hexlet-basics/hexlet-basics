@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -187,7 +188,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		Starter:   services.Starter,
 		Jobs:      services.Jobs,
 		Progress:  tracker,
-		Dashboard: dashboard.New(db, landingpages.NewCatalog(db), tracker),
+		Dashboard: dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
 		Events:    services.Events,

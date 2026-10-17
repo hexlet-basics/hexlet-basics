@@ -29,10 +29,10 @@ type StaffMember struct {
 func (StaffMember) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		AdminInput{},
-		// The API model embeds the user and the role with its permissions.
+		// The API model embeds the user and the role with its grants.
 		AdminCRUD{Eager: []string{
 			"WithUser()",
-			"WithRole(func(rq *StaffRoleQuery) { rq.WithPermissions() })",
+			"WithRole(func(rq *StaffRoleQuery) { rq.WithGrants() })",
 		}},
 	}
 }

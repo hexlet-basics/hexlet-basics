@@ -75,6 +75,7 @@ var adminOperations = []string{
 	"adminListCourseLandingPages",
 	"adminListCourseLessonReviews",
 	"adminListCourseLessons",
+	"adminListCourseOptions",
 	"adminListCourses",
 	"adminListLandingPageQnaItems",
 	"adminListLeads",

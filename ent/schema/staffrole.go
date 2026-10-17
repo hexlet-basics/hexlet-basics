@@ -23,12 +23,12 @@ func (StaffRole) Annotations() []schema.Annotation {
 		// The contract input is RoleInput, not StaffRoleInput; the default
 		// mapping (name required, description nullable) fits as-is.
 		AdminInput{Type: "RoleInput"},
-		// Legacy `order(:name)`; the list rows carry the permission count, and
-		// the single view is the StaffRoleDetail permission matrix.
+		// Legacy `order(:name)`; the list rows carry the Permission count, and
+		// the single view is the StaffRoleDetail with its grants.
 		AdminCRUD{
 			Detail: "StaffRoleDetail",
 			Order:  []AdminOrder{{Field: "Name"}},
-			Eager:  []string{"WithPermissions()"},
+			Eager:  []string{"WithGrants()"},
 		},
 	}
 }

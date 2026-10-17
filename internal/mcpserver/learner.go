@@ -126,7 +126,7 @@ func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
 	}
 	return result{
 		text: fmt.Sprintf("%d courses in progress, %d finished",
-			len(dashboard.StartedEnrollments), len(dashboard.FinishedEnrollments)),
+			len(dashboard.Started), len(dashboard.Finished)),
 		data: dashboard,
 	}, nil
 }

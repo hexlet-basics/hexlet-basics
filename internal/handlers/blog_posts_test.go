@@ -141,7 +141,6 @@ func TestAdminCreateBlogPostStampsRequestLocale(t *testing.T) {
 		Name:        api.NewNilString("Заметки"),
 		Slug:        api.NewNilString("zametki"),
 		Description: api.NewNilString("Описание"),
-		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
 		RichBody:    "<p>Текст</p>",
 	})
 	require.NoError(t, err)

@@ -75,13 +75,14 @@ func TestDashboardToolAnswersWithTheTokensUsersEnrollments(t *testing.T) {
 	bobBoard := structured(t, callTool(t, learnerSession(t, o, bob), "getMyDashboard", nil))
 	carolBoard := structured(t, callTool(t, learnerSession(t, o, carol), "getMyDashboard", nil))
 
-	assert.Len(t, aliceBoard["startedEnrollments"], 1)
-	assert.Empty(t, aliceBoard["finishedEnrollments"])
-	assert.Equal(t, float64(33), aliceBoard["startedEnrollments"].([]any)[0].(map[string]any)["completion"])
-	assert.Empty(t, bobBoard["startedEnrollments"])
-	assert.Len(t, bobBoard["finishedEnrollments"], 1)
-	assert.Empty(t, carolBoard["startedEnrollments"])
-	assert.Empty(t, carolBoard["finishedEnrollments"])
+	assert.Len(t, aliceBoard["started"], 1)
+	assert.Empty(t, aliceBoard["finished"])
+	progress := aliceBoard["started"].([]any)[0].(map[string]any)["progress"].(map[string]any)
+	assert.Equal(t, float64(33), progress["completion"])
+	assert.Empty(t, bobBoard["started"])
+	assert.Len(t, bobBoard["finished"], 1)
+	assert.Empty(t, carolBoard["started"])
+	assert.Empty(t, carolBoard["finished"])
 }
 
 func TestCourseProgressToolTellsFinishedStartedAndNotStarted(t *testing.T) {
