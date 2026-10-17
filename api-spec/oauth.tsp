@@ -75,7 +75,7 @@ interface OAuthConsents {
 /** One application the signed-in user has connected. */
 model ConnectedApp {
   /** Handle to revoke it by (not the OAuth client_id, which can be a URL). */
-  id: int32;
+  id: int64;
 
   /** Display name the application registered with; untrusted text. */
   name: string;
@@ -109,5 +109,5 @@ interface OAuthConnectedApps {
   @route("/{id}")
   @useAuth([UserSession, XsrfToken])
   @operationId("revokeConnectedApp")
-  revoke(@path id: int32): NoContent | UnauthorizedError | NotFoundError | ApiError;
+  revoke(@path id: int64): NoContent | UnauthorizedError | NotFoundError | ApiError;
 }

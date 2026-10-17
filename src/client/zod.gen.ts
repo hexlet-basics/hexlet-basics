@@ -213,7 +213,7 @@ export const zCheckLessonInput = z.object({
  * One application the signed-in user has connected.
  */
 export const zConnectedApp = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
   name: z.string(),
   scopes: z.array(z.string()),
   connectedAt: z.iso.datetime(),
@@ -2234,7 +2234,7 @@ export const zGetMyDashboardResponse = zMyDashboard;
 export const zListConnectedAppsResponse = zConnectedApps;
 
 export const zRevokeConnectedAppPath = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+  id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 });
 
 /**

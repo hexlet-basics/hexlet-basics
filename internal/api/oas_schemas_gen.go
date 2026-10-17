@@ -1690,7 +1690,7 @@ func (*CheckPasswordResetTokenNoContent) checkPasswordResetTokenRes() {}
 // Ref: #/components/schemas/ConnectedApp
 type ConnectedApp struct {
 	// Handle to revoke it by (not the OAuth client_id, which can be a URL).
-	ID int32 `json:"id"`
+	ID int64 `json:"id"`
 	// Display name the application registered with; untrusted text.
 	Name string `json:"name"`
 	// What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
@@ -1702,7 +1702,7 @@ type ConnectedApp struct {
 }
 
 // GetID returns the value of ID.
-func (s *ConnectedApp) GetID() int32 {
+func (s *ConnectedApp) GetID() int64 {
 	return s.ID
 }
 
@@ -1727,7 +1727,7 @@ func (s *ConnectedApp) GetClientHost() OptString {
 }
 
 // SetID sets the value of ID.
-func (s *ConnectedApp) SetID(val int32) {
+func (s *ConnectedApp) SetID(val int64) {
 	s.ID = val
 }
 
