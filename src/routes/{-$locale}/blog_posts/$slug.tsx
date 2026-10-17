@@ -24,8 +24,7 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
@@ -37,6 +36,7 @@ import CourseBlock from "@/components/CourseBlock";
 import { ActionIconLink, AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { timeAgo } from "@/lib/time-ago";
+import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // A blog post, at its legacy URL, ported from legacy blog_posts/show. Reading on
 // scrolls into the next older post (legacy useInfiniteItems), and the address
@@ -51,8 +51,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
     } catch (error) {
       // A draft, a post in another language and a missing slug are all the
       // same to a visitor: there is no such page.
-      if (isAxiosError(error) && error.response?.status === 404) throw notFound();
-      throw error;
+      rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: the post's name and description, its canonical URL, the cover

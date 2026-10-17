@@ -41,7 +41,6 @@ minimumReleaseAgeExclude:
   - '@tanstack/react-start-rsc@0.1.32 || 0.1.33 || 0.1.34 || 0.1.39 || 0.1.64'
   - '@tanstack/react-start@1.168.33 || 1.168.34 || 1.168.35 || 1.168.40 || 1.169.3'
   - '@vitejs/plugin-react@6.0.5'
-  - axios@1.19.0
   - '@hey-api/codegen-cli@0.0.0-next-20260930190945'
   - '@hey-api/codegen-core@0.0.0-next-20260930190945'
   - '@hey-api/json-schema-ref-parser@0.0.0-next-20260930190945'

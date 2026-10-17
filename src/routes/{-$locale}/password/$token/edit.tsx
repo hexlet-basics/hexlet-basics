@@ -2,13 +2,13 @@ import { Button, Card, Container, Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { getCurrentUserQueryKey, updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
 import { checkPasswordResetToken } from "@/client/sdk.gen";
 import { zResetPasswordInput } from "@/client/zod.gen";
 import { newPasswordInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
+import { isApiError } from "@/lib/api-error";
 
 // Where a refused link lands, from the loader and from a failed submission.
 const refusedLink = (locale: string | undefined) => ({
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
     try {
       await checkPasswordResetToken({ path: { token: params.token }, throwOnError: true });
     } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
+      if (isApiError(error, 404)) {
         throw redirect(refusedLink(params.locale));
       }
       throw error;
@@ -58,7 +58,7 @@ function Edit() {
     onError: (error) => {
       // The link can die between the check and the submission: it expired,
       // or it was already used from another tab.
-      if (isAxiosError(error) && error.response?.status === 404) {
+      if (isApiError(error, 404)) {
         void navigate(refusedLink(locale));
         return;
       }
