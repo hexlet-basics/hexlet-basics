@@ -69,6 +69,7 @@ var operationRolesAdminSession = map[string][]string{
 	AdminGetRolePermissionsOperation:            []string{},
 	AdminGetStaffMemberOperation:                []string{},
 	AdminGetUserOperation:                       []string{},
+	AdminListAuditRecordsOperation:              []string{},
 	AdminListBannersOperation:                   []string{},
 	AdminListBlogPostsOperation:                 []string{},
 	AdminListCategoryQnaItemsOperation:          []string{},

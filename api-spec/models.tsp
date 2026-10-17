@@ -515,6 +515,69 @@ model Lead {
   createdAt: utcDateTime;
 }
 
+// ---- Audit trail (ADR-0017) -------------------------------------------------
+
+/**
+ * The old and new value of one field an operation changed. `old` is absent on a
+ * create and `new` on a delete. A `secret` field (password material, a token)
+ * carries its name only: no value was ever stored. The values are JSON of any
+ * shape, as the field held them.
+ */
+model AuditFieldChange {
+  name: string;
+  old?: unknown;
+  new?: unknown;
+  secret?: boolean;
+}
+
+/** One mutation of one entity inside an operation. A bulk change carries no id. */
+model AuditChange {
+  /** The ent entity type, e.g. `BlogPost`. */
+  entity: string;
+  id?: string;
+
+  /** create, update or delete. */
+  `op`: string;
+  fields?: AuditFieldChange[];
+}
+
+/**
+ * What a read of personal data touched: how many rows and, up to a cap, their
+ * ids. Identifiers and counts only, never a field value.
+ */
+model AuditReads {
+  count: int32;
+  ids?: string[];
+}
+
+/**
+ * One Audit Record: who did what, through which channel, to which entity, and
+ * how it ended (legacy: none, the trail is new). A change carries `changes`, a
+ * read of personal data carries `reads`, a refusal carries neither.
+ */
+model AuditRecord {
+  id: int64;
+  occurredAt: utcDateTime;
+
+  /** Null for a refusal of a caller who was not signed in. */
+  actorUserId: int32 | null;
+  channel: "web" | "mcp";
+  connectedAppId: int32 | null;
+  tokenId: int32 | null;
+  requestId: string | null;
+  address: string | null;
+  userAgent: string | null;
+
+  /** The operation name, e.g. `AdminUpdateBlogPost`. */
+  operation: string;
+  entityType: string | null;
+  entityId: string | null;
+  locale: string | null;
+  outcome: "succeeded" | "forbidden" | "failed";
+  changes: AuditChange[];
+  reads: AuditReads | null;
+}
+
 // ---- Sitemap projections --------------------------------------------------
 
 /** Minimal landing-page row for the sitemap (legacy: `LanguageSitemapLandingPage`). */

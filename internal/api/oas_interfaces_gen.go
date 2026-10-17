@@ -133,6 +133,10 @@ type AdminGetUserRes interface {
 	adminGetUserRes()
 }
 
+type AdminListAuditRecordsRes interface {
+	adminListAuditRecordsRes()
+}
+
 type AdminListBannersRes interface {
 	adminListBannersRes()
 }

@@ -173,6 +173,23 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
 });
 
 /**
+ * The audit trail, newest first. Needs the capability Permission `audit.read`
+ * on the Staff Role even for an administrator, and is itself recorded as a
+ * read of personal data: records carry addresses and old values.
+ */
+export const adminListAuditRecords = <ThrowOnError extends boolean = false>(options?: Options<AdminListAuditRecordsData, ThrowOnError>): RequestResult<AdminListAuditRecordsResponses, AdminListAuditRecordsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListAuditRecordsResponses, AdminListAuditRecordsErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/audit_records',
+  ...options
+});
+
+/**
  * List banners (paginated).
  */
 export const adminListBanners = <ThrowOnError extends boolean = false>(options?: Options<AdminListBannersData, ThrowOnError>): RequestResult<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError>({

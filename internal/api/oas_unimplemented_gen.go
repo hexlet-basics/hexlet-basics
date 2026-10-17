@@ -286,6 +286,17 @@ func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUse
 	return r, ht.ErrNotImplemented
 }
 
+// AdminListAuditRecords implements adminListAuditRecords operation.
+//
+// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
+// for an administrator, and is itself recorded as a read of personal data: records carry addresses and
+// old values.
+//
+// GET /api/admin/audit_records
+func (UnimplementedHandler) AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (r AdminListAuditRecordsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListBanners implements adminListBanners operation.
 //
 // List banners (paginated).

@@ -39,6 +39,7 @@ const (
 	AdminGetRolePermissionsOperation            OperationName = "AdminGetRolePermissions"
 	AdminGetStaffMemberOperation                OperationName = "AdminGetStaffMember"
 	AdminGetUserOperation                       OperationName = "AdminGetUser"
+	AdminListAuditRecordsOperation              OperationName = "AdminListAuditRecords"
 	AdminListBannersOperation                   OperationName = "AdminListBanners"
 	AdminListBlogPostsOperation                 OperationName = "AdminListBlogPosts"
 	AdminListCategoryQnaItemsOperation          OperationName = "AdminListCategoryQnaItems"

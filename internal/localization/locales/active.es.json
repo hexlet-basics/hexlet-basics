@@ -5,6 +5,11 @@
   "courses.not_found": { "other": "Curso no encontrado" },
   "lessons.not_found": { "other": "Lección no encontrada" },
   "oauth.request_not_found": { "other": "Solicitud de autorización no encontrada o ya resuelta" },
+  "audit.window_reversed": { "other": "El final del período debe ser posterior a su inicio" },
+  "audit.window_too_wide": { "other": "El período no puede superar los 92 días" },
+  "audit.entity_id_needs_type": {
+    "other": "El identificador de la entidad requiere indicar su tipo"
+  },
   "attachments.file_too_large": { "other": "El archivo es demasiado grande" },
   "attachments.unsupported_file_type": { "other": "Tipo de archivo no compatible" },
   "attachments.store_failed": { "other": "No se pudo guardar el archivo" },
