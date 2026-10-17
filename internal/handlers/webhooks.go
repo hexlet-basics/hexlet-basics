@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -61,7 +62,11 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxWebhookBytes))
 	if err != nil {
-		http.Error(w, h.i18n.Text(ctx, localization.ReadWebhookBodyFailed), http.StatusBadRequest)
+		status := http.StatusBadRequest
+		if _, tooLarge := errors.AsType[*http.MaxBytesError](err); tooLarge {
+			status = http.StatusRequestEntityTooLarge
+		}
+		http.Error(w, h.i18n.Text(ctx, localization.ReadWebhookBodyFailed), status)
 		return
 	}
 
@@ -122,11 +127,8 @@ func (h *GitHubWebhookHandler) buildTargetSlug(event *github.WorkflowRunEvent) (
 		return "", false
 	}
 	name := repo.GetName()
-	if !strings.HasPrefix(name, coursePrefix) {
-		return "", false
-	}
-	slug := strings.TrimPrefix(name, coursePrefix)
-	if slug == "" {
+	slug, ok := strings.CutPrefix(name, coursePrefix)
+	if !ok || slug == "" {
 		return "", false
 	}
 	return slug, true

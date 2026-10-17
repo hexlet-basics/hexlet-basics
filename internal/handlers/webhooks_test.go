@@ -237,6 +237,6 @@ func TestGitHubWebhookRejectsOversizedBody(t *testing.T) {
 	rec := httptest.NewRecorder()
 	h.Handle(rec, rawWebhookRequest("workflow_run", strings.Repeat("x", (5<<20)+1), "sha256=deadbeef"))
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, http.StatusRequestEntityTooLarge, rec.Code)
 	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
 }
