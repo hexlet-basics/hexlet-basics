@@ -18,7 +18,7 @@ import (
 // another try with a password that fits.
 func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	res, err := h.Client.UpdatePassword(t.Context(),

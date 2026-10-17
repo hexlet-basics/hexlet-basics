@@ -10,6 +10,7 @@ import (
 
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -47,7 +48,7 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 // Lessons may be taken in any order: a learner who finished the third lesson but
 // not the second has exactly those marked, and the course is still unfinished.
 func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, "user_learner_with_a_gap")
+	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerWithAGap)
 	ctx := context.Background()
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})

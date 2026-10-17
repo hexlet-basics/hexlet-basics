@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, isPrefixedLocale, type Locale } from "@/lib/i18n";
 
 // A route can ask for chrome other than the site layout. Declared per route
 // rather than matched on the URL here, so the page that wants a bare shell says
@@ -18,7 +18,7 @@ declare module "@tanstack/react-router" {
 export const Route = createFileRoute("/{-$locale}")({
   beforeLoad: async ({ params, context }) => {
     const prefix = params.locale;
-    if (prefix !== undefined && (prefix === "en" || !isLocale(prefix))) {
+    if (prefix !== undefined && !isPrefixedLocale(prefix)) {
       // `en` is the unprefixed default, so `/en/...` is not a valid URL either.
       throw notFound();
     }

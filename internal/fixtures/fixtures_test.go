@@ -44,8 +44,8 @@ func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
 }
 
 func TestIDResolvesALabelOfTheRepositoryFixtures(t *testing.T) {
-	assert.NotEqual(t, ID("user_admin_learner"), ID("user_blank"))
-	assert.Panics(t, func() { ID("no_such_label") })
+	assert.NotEqual(t, ID(UserAdminLearner), ID(UserBlank))
+	assert.Panics(t, func() { ID(LabelOf("no_such_label")) })
 }
 
 func TestPasswordIsTheCleartextOfTheFixtureDigest(t *testing.T) {

@@ -49,6 +49,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { switchLocale } from "@/client/sdk.gen";
 import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
+import { localize } from "@/lib/locale-path";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
 // Query hooks — the current user from `GET /me` (getCurrentUserOptions) and the
@@ -280,10 +281,7 @@ function LocaleSwitcher() {
   const { i18n } = useTranslation();
   const { pathname, searchStr } = useLocation();
 
-  // Strip any existing locale prefix; `en` is served unprefixed.
-  const base = pathname.replace(/^\/(ru|es)(?=\/|$)/, "") || "/";
-  const hrefFor = (code: Locale) =>
-    (code === "en" ? base : `/${code}${base === "/" ? "" : base}`) + searchStr;
+  const hrefFor = (code: Locale) => localize(pathname, code) + searchStr;
   const switchTo = (code: Locale) => {
     void switchLocale({ query: { locale: code } }).finally(() =>
       window.location.assign(hrefFor(code)),

@@ -26,7 +26,7 @@ func TestAdminListStaffMembers(t *testing.T) {
 	assert.Equal(t, int32(totalStaffMembers), page.Total)
 
 	m := page.Items[0]
-	assert.Equal(t, int32(fixtures.ID("user_staff_editor")), m.UserId)
+	assert.Equal(t, int32(fixtures.ID(fixtures.UserStaffEditor)), m.UserId)
 	assert.Equal(t, "editor", m.Role.Name)
 	assert.Equal(t, "staff-editor@example.com", m.User.Email.Value)
 	// The native pg array round-trips to a plain []string.
@@ -37,7 +37,7 @@ func TestAdminGetStaffMember(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
+	got, err := h.Client.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: fixtures.ID32(fixtures.StaffMemberStaffEditor)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Role.Name)
@@ -60,8 +60,8 @@ func TestAdminCreateStaffMember(t *testing.T) {
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         fixtures.ID32("user_admin_learner"), // user_admin_learner has no staff record yet
-		RoleId:         fixtures.ID32("staff_role_editor"),
+		UserId:         fixtures.ID32(fixtures.UserAdminLearner), // user_admin_learner has no staff record yet
+		RoleId:         fixtures.ID32(fixtures.StaffRoleEditor),
 		AllowedLocales: []string{"ru", "en", "es"},
 	})
 	require.NoError(t, err)
@@ -83,8 +83,8 @@ func TestAdminCreateStaffMemberDuplicateUser(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         fixtures.ID32("user_staff_editor"), // already a staff member (9201)
-		RoleId:         fixtures.ID32("staff_role_editor"),
+		UserId:         fixtures.ID32(fixtures.UserStaffEditor), // already a staff member (9201)
+		RoleId:         fixtures.ID32(fixtures.StaffRoleEditor),
 		AllowedLocales: []string{"ru"},
 	})
 	require.Error(t, err)
@@ -96,10 +96,10 @@ func TestAdminUpdateStaffMember(t *testing.T) {
 	ctx := context.Background()
 
 	updated, err := h.Client.AdminUpdateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         fixtures.ID32("user_staff_editor"),
-		RoleId:         fixtures.ID32("staff_role_moderator"), // reassign to moderator
+		UserId:         fixtures.ID32(fixtures.UserStaffEditor),
+		RoleId:         fixtures.ID32(fixtures.StaffRoleModerator), // reassign to moderator
 		AllowedLocales: []string{"en"},
-	}, api.AdminUpdateStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
+	}, api.AdminUpdateStaffMemberParams{ID: fixtures.ID32(fixtures.StaffMemberStaffEditor)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "moderator", updated.Role.Name)
@@ -111,7 +111,7 @@ func TestAdminDeleteStaffMember(t *testing.T) {
 	ctx := context.Background()
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
-	err := h.Client.AdminDeleteStaffMember(ctx, api.AdminDeleteStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
+	err := h.Client.AdminDeleteStaffMember(ctx, api.AdminDeleteStaffMemberParams{ID: fixtures.ID32(fixtures.StaffMemberStaffEditor)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

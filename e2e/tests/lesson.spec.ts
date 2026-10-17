@@ -1,44 +1,37 @@
-import { expect, test } from "@playwright/test";
-import { learner, signIn, visit } from "../support/app";
+import { learner } from "../support/people";
+import { test } from "../support/test";
 
 // The player titles the lesson with the course's landing page in the request
 // locale; the fixtures give the JavaScript course no English page but "Frontend".
 const lesson = "/languages/javascript/lessons/hello-world";
 
 test("a guest reads a lesson, sees the other lessons as links and is invited to sign in", async ({
-  page,
+  site,
 }) => {
-  await visit(page, lesson);
+  await site.lesson.open(lesson);
 
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Frontend: Hello, World!" }),
-  ).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Lesson", selected: true })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "Code editor" })).toBeAttached();
+  await site.expectHeading("Frontend: Hello, World!", 1);
+  await site.lesson.expectLessonTab();
+  await site.lesson.expectCodeEditor();
 
-  await page.getByRole("tab", { name: "Navigation" }).click();
-  await expect(page.getByRole("link", { name: "Variables" })).toBeVisible();
+  await site.lesson.openNavigation();
+  await site.lesson.expectLinkTo("Variables");
 
-  await page.getByRole("tab", { name: "Assistant" }).click();
-  await expect(page.getByText("please sign up or log in")).toBeVisible();
+  await site.lesson.openAssistant();
+  await site.lesson.expectSignInInvitation();
 });
 
-test("a signed-in learner opens the same lesson and can use the assistant", async ({ page }) => {
-  await signIn(page, learner.email, learner.name);
-  await visit(page, lesson);
+test("a signed-in learner opens the same lesson and can use the assistant", async ({ site }) => {
+  await site.session.signInAs(learner);
+  await site.lesson.open(lesson);
 
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Frontend: Hello, World!" }),
-  ).toBeVisible();
+  await site.expectHeading("Frontend: Hello, World!", 1);
 
-  await page.getByRole("tab", { name: "Assistant" }).click();
-  await expect(page.getByText("please sign up or log in")).toBeHidden();
-  await expect(page.getByText("I'm here to help you with any questions")).toBeVisible();
+  await site.lesson.openAssistant();
+  await site.lesson.expectNoSignInInvitation();
+  await site.lesson.expectAssistantGreeting();
 
-  // The question box is live: Send stays disabled until there is something to
-  // send. Nothing is sent, because no language model is configured in e2e.
-  const send = page.getByRole("button", { name: "Send" });
-  await expect(send).toBeDisabled();
-  await page.getByRole("textbox", { name: "Your question" }).fill("How do I print a line?");
-  await expect(send).toBeEnabled();
+  await site.lesson.expectCannotSend();
+  await site.lesson.typeQuestion("How do I print a line?");
+  await site.lesson.expectCanSend();
 });

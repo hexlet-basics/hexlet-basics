@@ -17,10 +17,10 @@ import (
 func TestReapStuckFailsOnlyBuildsIdlePastThreshold(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
-	stuck := fixtures.ID("version_loadable_stuck")
-	running := fixtures.ID("version_loadable_building")
-	queued := fixtures.ID("version_loadable_queued")
-	built := fixtures.ID("version_loadable_built")
+	stuck := fixtures.ID(fixtures.VersionLoadableStuck)
+	running := fixtures.ID(fixtures.VersionLoadableBuilding)
+	queued := fixtures.ID(fixtures.VersionLoadableQueued)
+	built := fixtures.ID(fixtures.VersionLoadableBuilt)
 
 	// The result quotes the timestamp as stored, before the reap bumps it.
 	staleAt := db.CourseVersion.GetX(ctx, stuck).UpdatedAt
