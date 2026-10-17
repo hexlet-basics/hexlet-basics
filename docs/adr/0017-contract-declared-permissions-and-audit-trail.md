@@ -466,3 +466,46 @@ enqueued and finds no job.
 **Left as is.** Reads of personal data (#850) are not on this path. The stored
 `failed` record carries no reason; adding an error class would need a column and
 a decision on what may be named.
+
+## Addendum: self-protection of staff management (#844)
+
+The rules of the Decision section live in the handlers (`self_protection.go`),
+not in the screen or a transport layer, so the website and the MCP server are
+bound by the same code. A refusal is an error returned by the handler, so the
+audit middleware records it as `failed` (the same as any handler error; only the
+security handler's refusals are `forbidden`), with no changes and no entity.
+
+- **Own Staff Member record.** Creating, updating or deleting the Staff Member
+  record of the caller is refused with 403, administrators included: it covers
+  the role, the locales and the record itself. An update that would move
+  another user's record onto the caller is refused too. Another administrator
+  can make the same change to the caller's record.
+- **Own account.** `adminDeleteUser` on the caller's own id is refused with 403.
+  The profile's own "delete my account" (`DeleteAccount`) is the learner-facing
+  feature, not staff management, and keeps its legacy behaviour; it still
+  refuses the last administrator.
+- **Last administrator.** Clearing the flag of, or deleting, the last
+  administrator is refused with 409, whoever asks (already in place through
+  `accounts.EnsureAnotherAdmin`; the refusal now carries a localized `detail`).
+- **Extension to the list above: own Staff Role grants.** Delegating
+  `staff_roles.update` lets its holder edit the grants of any role, their own
+  included, which is a privilege-escalation path. A non-administrator cannot
+  change the grants (`adminUpdateRolePermissions`) of the Staff Role they hold,
+  403. Administrators may, they can already grant everything. Renaming the role
+  (`adminUpdateRole`) grants nothing and is not restricted.
+- **Extension: the administrator flag.** The hole existed: a staff member
+  holding `users.update` (through `adminUpdateUser` or
+  `adminUpdateManagementUser`) or `users.create` could set the flag on
+  themselves or anyone. Only an administrator may now change the flag, that is
+  create a user with it set or change its value; saving a user with the flag
+  unchanged stays within `users.update`. Refused with 403.
+
+The refusal carries a localized explanation in the RFC 9457 `detail` field
+(`refusal` in `internal/handlers`, messages in the ru, en and es catalogs). The
+contract needed no change: 403 is already declared on these operations and 409
+falls under the shared default error response.
+
+**Left as is.** A holder of `staff_members.update` can still give someone else's
+record a stronger role than their own (two staff members can raise each other);
+removing that would be a hierarchy of roles, a separate decision. The last
+administrator check is not a lock (see `accounts.EnsureAnotherAdmin`).

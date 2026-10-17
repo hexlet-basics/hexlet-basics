@@ -161,6 +161,36 @@ var (
 			Other: "Internal Server Error",
 		},
 	}
+	OwnStaffRecord = Message{
+		value: i18n.Message{
+			ID:    "staff.own_record",
+			Other: "You cannot change your own staff record or role; ask another administrator",
+		},
+	}
+	OwnRoleGrants = Message{
+		value: i18n.Message{
+			ID:    "staff.own_role_grants",
+			Other: "You cannot change the permissions of your own staff role; ask an administrator",
+		},
+	}
+	OwnAccountDeletion = Message{
+		value: i18n.Message{
+			ID:    "users.own_account_deletion",
+			Other: "You cannot delete your own account here; ask another administrator",
+		},
+	}
+	AdministratorFlagRestricted = Message{
+		value: i18n.Message{
+			ID:    "users.administrator_flag_restricted",
+			Other: "Only an administrator can grant or remove the administrator flag",
+		},
+	}
+	LastAdministrator = Message{
+		value: i18n.Message{
+			ID:    "users.last_administrator",
+			Other: "The last administrator cannot be removed or demoted",
+		},
+	}
 )
 
 var statusMessages = map[int]Message{

@@ -86,6 +86,10 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return nil, err
 	}
 
+	if err := s.guardOwnRoleGrants(ctx, roleID); err != nil {
+		return nil, err
+	}
+
 	// A grant must name a Permission the contract declares: a typo would
 	// otherwise be stored and silently open nothing.
 	if unknown := lo.Reject(req.Grants, func(name string, _ int) bool { return permissions.Known(name) }); len(unknown) > 0 {

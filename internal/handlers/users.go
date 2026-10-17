@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"context"
-	"errors"
-	"net/http"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
@@ -63,6 +61,9 @@ func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams
 // violation returns ent's constraint error, mapped to 409 centrally (race-free).
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
 	req.Email = accounts.NormalizeEmail(req.Email)
+	if err := guardAdministratorFlag(ctx, false, !req.Admin.Null && req.Admin.Value); err != nil {
+		return nil, err
+	}
 	row, err := s.db.User.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -90,7 +91,15 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 // at sign-in; clearing the administrator flag is refused for the last one.
 func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*ent.User, error) {
 	req.Email = accounts.NormalizeEmail(req.Email)
-	if req.Admin.Null || !req.Admin.Value {
+	current, err := s.db.User.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	admin := !req.Admin.Null && req.Admin.Value
+	if err := guardAdministratorFlag(ctx, isAdministrator(current), admin); err != nil {
+		return nil, err
+	}
+	if !admin {
 		if err := accounts.EnsureAnotherAdmin(ctx, s.db, id); err != nil {
 			return nil, lastAdminError(err)
 		}
@@ -98,17 +107,12 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*e
 	return s.db.User.UpdateOneID(id).SetInput(req).Save(ctx)
 }
 
-// lastAdminError gives the refusal its 409; any other error passes through.
-func lastAdminError(err error) error {
-	if errors.Is(err, accounts.ErrLastAdmin) {
-		return withHTTPStatus(http.StatusConflict, err)
-	}
-	return err
-}
-
 // AdminDeleteUser removes a user by id. A missing id returns ent's not-found
 // error (mapped to 404 centrally).
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
+	if err := guardOwnAccountDeletion(ctx, int(params.ID)); err != nil {
+		return nil, err
+	}
 	if err := accounts.EnsureAnotherAdmin(ctx, s.db, int(params.ID)); err != nil {
 		return nil, lastAdminError(err)
 	}
