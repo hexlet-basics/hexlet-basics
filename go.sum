@@ -486,8 +486,8 @@ github.com/olekukonko/tablewriter v1.1.5 h1:4LoZSfMySpMQY3PT8RWJsJeuEuMIoo9xGRgv
 github.com/olekukonko/tablewriter v1.1.5/go.mod h1:+kedxuyTtgoZLwif3P1Em4hARJs+mVnzKxmsCL/C5RY=
 github.com/onsi/gomega v1.39.1 h1:1IJLAad4zjPn2PsnhH70V4DKRFlrCzGBNrNaru+Vf28=
 github.com/onsi/gomega v1.39.1/go.mod h1:hL6yVALoTOxeWudERyfppUcZXjMwIMLnuSfruD2lcfg=
-github.com/openai/openai-go/v3 v3.78.0 h1:KdQbpdzY5Y5O5PgnNXeE09J7MHuQuus4DiQz4W9tzyo=
-github.com/openai/openai-go/v3 v3.78.0/go.mod h1:DR+2KZPQo+WIGmWLxmNBEf6LxOqKw4jc2ZqXvQ1oUNE=
+github.com/openai/openai-go/v3 v3.79.0 h1:r9Oe7tjXsez39TtsA6lCzF+SLXuVh9AYoJ/hmwiM41c=
+github.com/openai/openai-go/v3 v3.79.0/go.mod h1:i+lM+NFmWP+Yd+fYKEaPxUINBx+vZtRmY5gaszSfsiQ=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.1.1 h1:y0fUlFfIZhPF1W537XOLg0/fcx6zcHCJwooC2xJA040=
