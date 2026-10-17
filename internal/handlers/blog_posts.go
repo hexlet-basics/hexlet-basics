@@ -179,10 +179,7 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 		return []api.BlogPost{}, nil
 	}
 
-	ids := make([]int, len(posts))
-	for i, p := range posts {
-		ids[i] = p.ID
-	}
+	ids := lo.Map(posts, func(p *ent.BlogPost, _ int) int { return p.ID })
 
 	coverKeyByPost, err := s.blogCoverKeys(ctx, ids)
 	if err != nil {
@@ -235,13 +232,10 @@ func (s *Server) blogCoverKeys(ctx context.Context, ids []int) (map[int]string, 
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[int]string, len(rows))
-	for _, r := range rows {
-		if r.Edges.Blob != nil {
-			out[r.RecordID] = r.Edges.Blob.Key
-		}
-	}
-	return out, nil
+	withBlob := lo.Filter(rows, func(r *ent.ActiveStorageAttachment, _ int) bool { return r.Edges.Blob != nil })
+	return lo.SliceToMap(withBlob, func(r *ent.ActiveStorageAttachment) (int, string) {
+		return r.RecordID, r.Edges.Blob.Key
+	}), nil
 }
 
 // blogRelatedCourseIDs returns each post's promoted-course ids in display
@@ -272,10 +266,11 @@ func (s *Server) blogRelatedCourseIDs(ctx context.Context, ids []int) (map[int][
 // blogLikeCounts returns each post's like count by id via a single grouped
 // aggregate over blog_post_likes.
 func (s *Server) blogLikeCounts(ctx context.Context, ids []int) (map[int]int, error) {
-	var rows []struct {
+	type blogLikeCountRow struct {
 		BlogPostID int `json:"blog_post_id"`
 		Count      int `json:"count"`
 	}
+	var rows []blogLikeCountRow
 	err := s.db.BlogPostLike.Query().
 		Where(blogpostlike.BlogPostIDIn(ids...)).
 		GroupBy(blogpostlike.FieldBlogPostID).
@@ -284,11 +279,7 @@ func (s *Server) blogLikeCounts(ctx context.Context, ids []int) (map[int]int, er
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[int]int, len(rows))
-	for _, r := range rows {
-		out[r.BlogPostID] = r.Count
-	}
-	return out, nil
+	return lo.SliceToMap(rows, func(r blogLikeCountRow) (int, int) { return r.BlogPostID, r.Count }), nil
 }
 
 // nilBlogPostState bridges the nullable ent state string to the API enum.

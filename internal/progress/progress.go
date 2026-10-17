@@ -384,12 +384,11 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 // — so it reads as "this Lesson has none", which is the same answer lesson
 // resolution and the guest merge both need for a Lesson a later build dropped.
 func positionOf(lessons []currentLesson, lessonID int) int {
-	for _, lesson := range lessons {
-		if lesson.lessonID == lessonID {
-			return lesson.position
-		}
+	i := slices.IndexFunc(lessons, func(lesson currentLesson) bool { return lesson.lessonID == lessonID })
+	if i < 0 {
+		return 0
 	}
-	return 0
+	return lessons[i].position
 }
 
 // currentLesson is a Lesson of the current Version with the Position and slug
@@ -561,10 +560,9 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 	if err != nil {
 		return nil, fmt.Errorf("load enrollments: %w", err)
 	}
-	enrollmentState := make(map[int]string, len(enrollments))
-	for _, e := range enrollments {
-		enrollmentState[e.CourseID] = lo.FromPtr(e.State)
-	}
+	enrollmentState := lo.SliceToMap(enrollments, func(e *ent.Enrollment) (int, string) {
+		return e.CourseID, lo.FromPtr(e.State)
+	})
 
 	states := make(map[int]*CourseState, len(courses))
 	for _, crs := range courses {

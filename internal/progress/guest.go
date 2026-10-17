@@ -226,12 +226,9 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 	}
 
 	// In course order, which is the order the facts are published in.
-	var credited []currentLesson
-	for _, lesson := range lessons {
-		if slices.Contains(entry.Lessons, lesson.slug) && !finished[lesson.lessonID] {
-			credited = append(credited, lesson)
-		}
-	}
+	credited := lo.Filter(lessons, func(lesson currentLesson, _ int) bool {
+		return slices.Contains(entry.Lessons, lesson.slug) && !finished[lesson.lessonID]
+	})
 	if len(credited) == 0 {
 		// Nothing the account does not already have — or nothing the current
 		// Version still contains, in which case this Course resets for the guest.
@@ -296,10 +293,7 @@ func (p *Progress) creditLessons(
 	if err != nil {
 		return fmt.Errorf("load lesson progress: %w", err)
 	}
-	isHeld := make(map[int]bool, len(held))
-	for _, row := range held {
-		isHeld[row.LessonID] = true
-	}
+	isHeld := lo.SliceToMap(held, func(row *ent.LessonProgress) (int, bool) { return row.LessonID, true })
 
 	count, err := lessonProgressCount(ctx, db, enrolled.ID)
 	if err != nil {

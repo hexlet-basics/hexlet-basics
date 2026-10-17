@@ -85,10 +85,7 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 // reviewPrompt assembles the legacy user prompt: the lesson content followed by
 // the raw question feed.
 func reviewPrompt(info *ent.CourseLessonTranslation, questions []*ent.AiMessage) string {
-	contents := make([]string, len(questions))
-	for i, q := range questions {
-		contents[i] = lo.FromPtr(q.Content)
-	}
+	contents := lo.Map(questions, func(q *ent.AiMessage, _ int) string { return lo.FromPtr(q.Content) })
 	return strings.Join([]string{
 		"Урок (теория и упражнение): " + lo.FromPtr(info.Theory) + "\n\n" + lo.FromPtr(info.Instructions),
 		"Вопросы пользователей: " + strings.Join(contents, "\n\n"),

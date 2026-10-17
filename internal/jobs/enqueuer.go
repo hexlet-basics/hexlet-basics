@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/riverqueue/river"
+	"github.com/samber/lo"
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
@@ -44,10 +45,9 @@ func (e *Enqueuer) EnqueueTx(ctx context.Context, tx *sql.Tx, args ...river.JobA
 	if len(args) == 0 {
 		return nil
 	}
-	params := make([]river.InsertManyParams, len(args))
-	for i, a := range args {
-		params[i] = river.InsertManyParams{Args: a}
-	}
+	params := lo.Map(args, func(a river.JobArgs, _ int) river.InsertManyParams {
+		return river.InsertManyParams{Args: a}
+	})
 	if _, err := e.river.InsertManyTx(ctx, tx, params); err != nil {
 		return oops.Wrapf(err, "enqueue %s", args[0].Kind())
 	}

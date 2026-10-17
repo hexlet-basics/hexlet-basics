@@ -289,10 +289,8 @@ func (p *Progress) finishCourse(
 	if err != nil {
 		return err
 	}
-	for _, lesson := range open.lessons {
-		if !finished[lesson.lessonID] {
-			return nil
-		}
+	if !lo.EveryBy(open.lessons, func(lesson currentLesson) bool { return finished[lesson.lessonID] }) {
+		return nil
 	}
 
 	if _, err := enrolled.Update().SetState(StateFinished).Save(ctx); err != nil {

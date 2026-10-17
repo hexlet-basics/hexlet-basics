@@ -51,10 +51,7 @@ func (p *Progress) ReevaluateCompletion(
 		return nil
 	}
 
-	lessonIDs := make([]int, 0, len(lessons))
-	for _, lesson := range lessons {
-		lessonIDs = append(lessonIDs, lesson.lessonID)
-	}
+	lessonIDs := lo.Map(lessons, func(lesson currentLesson, _ int) int { return lesson.lessonID })
 
 	completed, err := completedEnrollments(ctx, db, courseID, lessonIDs)
 	if err != nil {
@@ -64,12 +61,8 @@ func (p *Progress) ReevaluateCompletion(
 		return nil
 	}
 
-	enrollmentIDs := make([]int, 0, len(completed))
-	userIDs := make([]int, 0, len(completed))
-	for _, row := range completed {
-		enrollmentIDs = append(enrollmentIDs, row.id)
-		userIDs = append(userIDs, row.userID)
-	}
+	enrollmentIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.id })
+	userIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.userID })
 
 	if err := db.Enrollment.Update().
 		Where(enrollment.IDIn(enrollmentIDs...)).
@@ -121,10 +114,11 @@ type completedEnrollment struct {
 // new Version's Lessons — the same order as the hundreds of content rows the
 // promotion transaction is already writing.
 func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, lessonIDs []int) ([]completedEnrollment, error) {
-	var finishedPerLearner []struct {
+	type finishedPerLearnerRow struct {
 		UserID  int `json:"user_id"`
 		Lessons int `json:"lessons"`
 	}
+	var finishedPerLearner []finishedPerLearnerRow
 	if err := db.LessonProgress.Query().
 		Where(
 			lessonprogress.State(StateFinished),
@@ -138,12 +132,9 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		return nil, fmt.Errorf("count finished lessons per learner: %w", err)
 	}
 
-	var finishers []int
-	for _, row := range finishedPerLearner {
-		if row.Lessons == len(lessonIDs) {
-			finishers = append(finishers, row.UserID)
-		}
-	}
+	finishers := lo.FilterMap(finishedPerLearner, func(row finishedPerLearnerRow, _ int) (int, bool) {
+		return row.UserID, row.Lessons == len(lessonIDs)
+	})
 	if len(finishers) == 0 {
 		return nil, nil
 	}
@@ -159,11 +150,9 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		return nil, fmt.Errorf("select completed enrollments: %w", err)
 	}
 
-	completed := make([]completedEnrollment, 0, len(enrollments))
-	for _, e := range enrollments {
-		completed = append(completed, completedEnrollment{id: e.ID, userID: e.UserID})
-	}
-	return completed, nil
+	return lo.Map(enrollments, func(e *ent.Enrollment, _ int) completedEnrollment {
+		return completedEnrollment{id: e.ID, userID: e.UserID}
+	}), nil
 }
 
 // finishedEnrollmentCounts is each learner's number of finished Enrollments,
