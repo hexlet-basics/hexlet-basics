@@ -159,7 +159,16 @@ type Harness struct {
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
-	doer   *inProcessDoer
+	// Tx is the transaction behind DB and the handlers, for the test that makes
+	// the storage fail on purpose (renaming a table inside it) to see how an
+	// operation answers a database error. DDL is transactional, so the rollback
+	// at cleanup undoes it.
+	Tx *sql.Tx
+	// Transactor is the savepoint transactor the handlers' modules use, for a
+	// test that drives a piece of the operation layer (the audit middleware)
+	// directly instead of through HTTP.
+	Transactor store.Transactor
+	doer       *inProcessDoer
 }
 
 // HarnessUser reports the user every harness request is authenticated as.
@@ -265,7 +274,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		api.WithErrorHandler(errorHandler.Write),
 		// The production unit of work, over the savepoint transactor: the audit
 		// record and the change share a savepoint, as they share a commit.
-		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator)),
+		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator, errorHandler)),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
@@ -286,9 +295,10 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	}
 
 	return &Harness{
-		Client: &Client{Client: client}, DB: db, doer: doer,
+		Client: &Client{Client: client}, DB: db, Tx: tx, doer: doer,
 		Services: services, Mocks: mocks,
-		UserID: security.userID,
+		Transactor: transactor,
+		UserID:     security.userID,
 	}
 }
 

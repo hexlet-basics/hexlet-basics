@@ -381,3 +381,88 @@ looks only at the role's grants, never at the flag, and a name that is not a
 capability is an error of the caller, not a refusal. No operation requires a
 capability yet, so that branch of `Allow` is exercised through `HasCapability`
 alone until #853 declares one.
+
+## Addendum: every admin write, and every refusal or failure (#845)
+
+Settled by the ticket that closed the audit trail. One departure from the text
+above, in the last section: an operation that calls an external service is not
+wrapped in the transaction its record shares.
+
+**Which operations are admin writes.** `permissions.IsAdminWrite`, read from the
+parsed contract, no Go list. An operation is on the admin surface when it
+requires the `AdminSession` security scheme or declares an `x-permission` or
+`x-access`. It is a write when its declared Permission has kind `write`; an
+operation that declares only an `x-access` marker (or, until it is classified,
+nothing) is a write when its HTTP method is not GET, HEAD or OPTIONS. The
+audit middleware acts on exactly that set, so an operation behind an
+`x-access` marker (only the any-staff upload remains since #843 gave the
+administrators-only ones Permissions) is recorded, as those were before the
+change, because the rule never looked at the marker. `TestEveryAdminWriteOperationOfTheContractIsRecorded` runs the
+middleware once for each name `permissions.AdminWrites()` returns and fails if
+one leaves no record, so a new operation is covered by declaring it in TypeSpec.
+
+**Refusals.** A refusal is rejected in `AuthHandler.HandleAdminSession`, before
+any handler or transaction exists. There, a `staffroles.ErrForbidden` writes an
+Audit Record with outcome `forbidden` as one insert on the pooled client, which
+commits on its own, and then answers 403 as before. This covers every admin
+operation, reads included, because a refused read of users or leads is as
+worth seeing as a refused change. A signed-out call (401) is not a refusal by
+the permission check and leaves nothing: it has no actor. A record that cannot
+be written is logged and does not change the answer. The request's user agent
+and request id, which a security handler cannot read from a context, now ride
+in it next to the client address (`WithClientIP`).
+
+**Failures.** When the handler returns an error, or the record cannot be written,
+the transaction rolls back and the middleware then writes an Audit Record with
+outcome `failed` through `store.Transactor` in a transaction of its own, on a
+context stripped of cancellation so a client that went away does not stop the
+record of what was tried. A handler answer of `*api.ValidationError` is a
+response, not an error, and changes nothing; it rolls back and is recorded as
+`failed` too, not as a change that succeeded. The caller still gets that answer.
+
+**What a refusal or failure record holds.** Who, channel, address, user agent,
+request id, locale, operation and outcome; never `changes`, entity or error text.
+The changes did not happen, and a failed call may be one the caller was not
+allowed to make, so values they were not allowed to read cannot reach the record
+through it. A test pins `changes`, `entity_type` and `entity_id` empty for both
+outcomes, with a body the caller sent that must not appear.
+
+**Deletes keep their old values.** ent offers no generic read of a row about to
+be deleted, so an ent template (`ent/template/auditrow.tmpl`) generates
+`(*Client).AuditRow(ctx, typeName, id)`, which loads one row of any schema type
+and returns its columns by name. The hook (`audit.Hook(loader)`, installed with
+the client that owns the hook) calls it before a single-row delete, with the
+delete's own context, so inside the same transaction; each non-empty field
+becomes an `old` value, a secret by name only (`AuditSecretFields`), ent's own
+timestamps skipped. A delete of a row that is not there records nothing. A
+bulk update or delete (`Where`) still has no row to load and records no
+values, which is why the dependents of a post (its likes) show as entity and
+operation only while the post itself is complete.
+
+**Transactions around external calls.** The only admin write that does I/O in
+its handler is the attachment upload (blob storage). The AI related-courses
+suggestion, declared `blog_posts.update`, does not call the model in the handler:
+it enqueues a River job, and the worker calls it later with no request
+transaction. So the middleware's single transaction was held across a storage
+call for the upload alone. The smallest fix is a contract declaration,
+`x-unit-of-work: standalone` (read by `permissions.Standalone`), on that
+operation. A standalone operation runs with no transaction: its writes commit as
+they happen (the handler already compensates the blob on a failed insert), the
+recorder still notes them, and the Audit Record is written afterwards in its own
+short transaction. **This departs from "a change and its record are written in
+the same transaction" for these operations**: a crash between the change and the
+record loses the record. It is accepted for uploads, where the row is metadata
+for a file nobody can reference before the response returns, and the failure
+and refusal paths still record them; every other admin write keeps one
+transaction. Any later operation that calls a mailer, a model or storage inside
+its handler declares the same marker rather than holding a connection across the
+call.
+
+**Jobs.** `jobs.Enqueuer.Enqueue` goes through `Store.WithinTx`, which joins the
+ambient transaction, so a job enqueued by an admin write commits with it and is
+discarded with it. A test makes the record fail after the suggestion job was
+enqueued and finds no job.
+
+**Left as is.** Reads of personal data (#850) are not on this path. The stored
+`failed` record carries no reason; adding an error class would need a column and
+a decision on what may be named.

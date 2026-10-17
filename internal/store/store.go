@@ -55,7 +55,7 @@ func NewDB(dsn string) (*sql.DB, error) {
 // nothing unless the context also carries an audit recorder.
 func NewClient(db *sql.DB) *ent.Client {
 	client := ent.NewClient(ent.Driver(routingDriver{Driver: entsql.OpenDB(dialect.Postgres, db)}))
-	client.Use(audit.Hook)
+	client.Use(audit.Hook(client))
 	return client
 }
 
@@ -64,7 +64,7 @@ func NewClient(db *sql.DB) *ent.Client {
 // prevents ent from trying to own the caller's commit/rollback lifecycle.
 func NewTxClient(tx *sql.Tx) *ent.Client {
 	client := ent.NewClient(ent.Driver(newTxDriver(tx)))
-	client.Use(audit.Hook)
+	client.Use(audit.Hook(client))
 	return client
 }
 

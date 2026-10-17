@@ -376,7 +376,7 @@ var serverPackage = do.Package(
 			handler,
 			handler.Security(),
 			api.WithErrorHandler(errorHandler.Write),
-			api.WithMiddleware(handlers.NewAuditMiddleware(txStore, translator)),
+			api.WithMiddleware(handlers.NewAuditMiddleware(txStore, translator, errorHandler)),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),

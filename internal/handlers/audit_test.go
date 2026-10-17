@@ -169,7 +169,7 @@ func TestAReadLeavesNoAuditRecord(t *testing.T) {
 	assert.Zero(t, total)
 }
 
-func TestAFailedChangeLeavesNoAuditRecordAndNoChange(t *testing.T) {
+func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	name := *h.DB.BlogPost.GetX(t.Context(), 6002).Name
 
@@ -181,7 +181,17 @@ func TestAFailedChangeLeavesNoAuditRecordAndNoChange(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
 
 	assert.Equal(t, name, *h.DB.BlogPost.GetX(t.Context(), 6002).Name, "the write is undone")
-	assert.Empty(t, records(t, h, "AdminUpdateBlogPost"), "and so is its record")
+
+	// The success record went with the rollback; what stays is a record of the
+	// attempt, written on its own, which names no field the failed call tried to
+	// write (the name above, the new body) and no entity.
+	rows := records(t, h, "AdminUpdateBlogPost")
+	require.Len(t, rows, 1)
+	assert.Equal(t, "failed", rows[0].Outcome)
+	assert.Equal(t, h.UserID, *rows[0].ActorUserID)
+	assert.Empty(t, rows[0].Changes)
+	assert.Nil(t, rows[0].EntityType)
+	assert.Nil(t, rows[0].EntityID)
 }
 
 func TestAChangeIsNotCommittedWhenItsRecordCannotBeWritten(t *testing.T) {
