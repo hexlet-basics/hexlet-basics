@@ -14,7 +14,6 @@ import (
 )
 
 // reviews.yml seeds these five.
-const totalReviews = 5
 
 // reviewByBody resolves a fixture review by its body (a stable business key).
 func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review {
@@ -35,6 +34,7 @@ func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review 
 func TestAdminListReviews(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalReviews := h.DB.Review.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListReviews(ctx, api.AdminListReviewsParams{})
 	require.NoError(t, err)
@@ -55,8 +55,8 @@ func TestAdminListReviewsEmbedsCourseAndUser(t *testing.T) {
 	// Embedded course (ruby) is loaded in full.
 	assert.Equal(t, "ruby", r.Course.Slug)
 	assert.Equal(t, r.CourseId, r.Course.ID)
-	// Embedded user (alice) as the public projection: id and display name.
-	assert.Equal(t, "Alice Anderson", r.User.Name.Value)
+	// Embedded user (user_admin_learner) as the public projection: id and display name.
+	assert.Equal(t, "Admin Learner", r.User.Name.Value)
 	// Review's own display name (not the user's).
 	assert.Equal(t, "Ivan Petrov", r.FullName.Value)
 	assert.Equal(t, api.ReviewStatePublished, r.State.Value)
@@ -74,7 +74,7 @@ func TestAdminGetReview(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "John Doe", got.FullName.Value)
 	assert.Equal(t, api.ReviewStateDraft, got.State.Value)
-	assert.Equal(t, "Bob Brown", got.User.Name.Value)
+	assert.Equal(t, "Staff Editor", got.User.Name.Value)
 }
 
 func TestAdminGetReviewNotFound(t *testing.T) {
@@ -89,6 +89,7 @@ func TestAdminGetReviewNotFound(t *testing.T) {
 func TestAdminCreateReview(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalReviews := h.DB.Review.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateReview(ctx, &api.ReviewInput{
 		State:     api.NewNilReviewState(api.ReviewStatePublished),
@@ -106,7 +107,7 @@ func TestAdminCreateReview(t *testing.T) {
 	assert.Equal(t, "Carol Clark", created.FullName.Value)
 	// The response reloads the embedded associations.
 	assert.Equal(t, "ruby", created.Course.Slug)
-	assert.Equal(t, "Carol Clark", created.User.Name.Value)
+	assert.Equal(t, "Blank User", created.User.Name.Value, "the embedded user is the account, not the name typed on the review")
 
 	total, err := h.DB.Review.Query().Count(ctx)
 	require.NoError(t, err)
@@ -142,6 +143,7 @@ func TestAdminUpdateReview(t *testing.T) {
 func TestAdminDeleteReview(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalReviews := h.DB.Review.Query().CountX(ctx)
 
 	target := reviewByBody(t, h, "Great course")
 

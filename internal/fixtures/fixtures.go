@@ -5,6 +5,12 @@
 // fixtures.ID("user_removed"). The label is the only handle a test needs, so
 // no test depends on a literal id or on how many rows a table happens to hold.
 //
+// Ids follow the order the rows are written in. The application reads
+// "oldest first" and "newest first" off the id, so a fixture that is written
+// before another is older than it, and a test of such an order can say so by
+// writing the rows in that order. A label that no row defines is an error, in
+// the YAML and in a test alike, so a typo cannot pass quietly.
+//
 // One loader serves every consumer (the Go test containers, `mise run
 // db:fixtures` and the end-to-end database), because the template functions
 // below are what make the YAML valid; the stock testfixtures CLI cannot
@@ -12,9 +18,14 @@
 package fixtures
 
 import (
+	"bufio"
 	"database/sql"
+	"errors"
 	"fmt"
-	"hash/crc32"
+	"os"
+	"path/filepath"
+	"regexp"
+	"sort"
 	"sync"
 	"text/template"
 
@@ -26,20 +37,117 @@ import (
 // user with a password signs in with it.
 const Password = "password"
 
-// maxID is Rails' ActiveRecord::FixtureSet::MAX_ID. Using the same function as
-// the legacy Rails fixtures keeps every id that was exported from them
-// (`javascript` is 82481401, as it was) stable when its row gets a label.
-const maxID = 1<<30 - 1
+// firstID is the id of the first fixture row. Ids count up from it across all
+// files, so no two rows share one (a reference that points at the wrong table
+// fails instead of matching by accident) and every id stays below the 10000
+// the loader resets the sequences to.
+const firstID = 1001
 
-// ID is the primary key of the fixture row labelled label. It is the same in
-// every table, so a reference to a row is written with the row's label.
+// definition is a row's primary key line: `- id: {{ id "label" }}`.
+var definition = regexp.MustCompile(`^- id: \{\{\s*id\s+"([^"]+)"\s*\}\}\s*$`)
+
+// labels maps every label to its id.
+type labels map[string]int
+
+// scan numbers the rows of every file in dir, files in name order and rows in
+// the order they are written.
+func scan(dir string) (labels, error) {
+	files, err := filepath.Glob(filepath.Join(dir, "*.yml"))
+	if err != nil {
+		return nil, fmt.Errorf("list fixture files: %w", err)
+	}
+	sort.Strings(files)
+
+	found := labels{}
+	next := firstID
+	for _, file := range files {
+		if err := scanFile(file, found, &next); err != nil {
+			return nil, err
+		}
+	}
+	return found, nil
+}
+
+func scanFile(path string, found labels, next *int) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("open fixture file: %w", err)
+	}
+	defer func() { _ = f.Close() }()
+
+	scanner := bufio.NewScanner(f)
+	scanner.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
+	for scanner.Scan() {
+		m := definition.FindStringSubmatch(scanner.Text())
+		if m == nil {
+			continue
+		}
+		if _, dup := found[m[1]]; dup {
+			return fmt.Errorf("fixture label %q is defined twice (again in %s)", m[1], filepath.Base(path))
+		}
+		found[m[1]] = *next
+		*next++
+	}
+	return scanner.Err()
+}
+
+func (l labels) id(label string) (int, error) {
+	id, ok := l[label]
+	if !ok {
+		return 0, fmt.Errorf("fixture label %q is not defined by any row", label)
+	}
+	return id, nil
+}
+
+var (
+	repoOnce   sync.Once
+	repoLabels labels
+	repoErr    error
+)
+
+// ID is the primary key of the fixture row labelled label in the repository's
+// fixtures/ directory. It panics for a label no row defines.
 func ID(label string) int {
-	return int(crc32.ChecksumIEEE([]byte(label)) % maxID)
+	repoOnce.Do(func() {
+		var dir string
+		if dir, repoErr = Dir(); repoErr == nil {
+			repoLabels, repoErr = scan(dir)
+		}
+	})
+	if repoErr != nil {
+		panic(fmt.Sprintf("fixtures: %v", repoErr))
+	}
+	id, err := repoLabels.id(label)
+	if err != nil {
+		panic(fmt.Sprintf("fixtures: %v", err))
+	}
+	return id
 }
 
 // ID32 is ID as the int32 the HTTP contract uses for identifiers.
 func ID32(label string) int32 {
 	return int32(ID(label))
+}
+
+// Dir finds the repository's fixtures/ directory from the working directory
+// upwards, which is where a package's tests run from.
+func Dir() (string, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("get working directory: %w", err)
+	}
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return filepath.Join(dir, "fixtures"), nil
+		} else if !errors.Is(err, os.ErrNotExist) {
+			return "", fmt.Errorf("inspect repository root: %w", err)
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return "", errors.New("find the repository root: go.mod not found")
+		}
+		dir = parent
+	}
 }
 
 var (
@@ -59,24 +167,24 @@ func PasswordDigest() (string, error) {
 	return digest, digestErr
 }
 
-func funcs() template.FuncMap {
-	return template.FuncMap{
-		"id":       ID,
-		"password": PasswordDigest,
-	}
-}
-
 // Load replaces the contents of the tables in dir with the fixture rows. It
 // refuses a database whose name does not contain "test" unless
 // allowAnyDatabase is set, because loading wipes the fixture tables first.
 func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
+	numbered, err := scan(dir)
+	if err != nil {
+		return err
+	}
 	// The template options come before Directory: it reads and renders the files
 	// while the options are applied, in order.
 	options := []func(*testfixtures.Loader) error{
 		testfixtures.Database(db),
 		testfixtures.Dialect("postgres"),
 		testfixtures.Template(),
-		testfixtures.TemplateFuncs(funcs()),
+		testfixtures.TemplateFuncs(template.FuncMap{
+			"id":       numbered.id,
+			"password": PasswordDigest,
+		}),
 		testfixtures.Directory(dir),
 		testfixtures.SkipTableChecksumComputation(),
 	}

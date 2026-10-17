@@ -15,13 +15,13 @@ import (
 
 // staff_member_roles.yml seeds two roles; editor owns two permission rows.
 var (
-	totalRoles   = 2
 	roleEditorID = fixtures.ID32("staff_role_editor")
 )
 
 func TestAdminListRoles(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListRoles(ctx, api.AdminListRolesParams{})
 	require.NoError(t, err)
@@ -93,6 +93,7 @@ func TestAdminUpdateRole(t *testing.T) {
 func TestAdminDeleteRole(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
 
 	// moderator (9002) has no permissions -> no FK children to block delete.
 	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixtures.ID32("staff_role_moderator")})

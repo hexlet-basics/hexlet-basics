@@ -17,6 +17,7 @@ import (
 func TestAdminListManagementUsers(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListManagementUsers(ctx, api.AdminListManagementUsersParams{})
 	require.NoError(t, err)
@@ -31,12 +32,12 @@ func TestAdminGetManagementUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	want := userByEmail(t, h, "alice@example.com")
+	want := userByEmail(t, h, "admin-learner@example.com")
 
 	got, err := h.Client.AdminGetManagementUser(ctx, api.AdminGetManagementUserParams{ID: want.ID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, "Alice", got.FirstName.Value)
+	assert.Equal(t, "Admin", got.FirstName.Value)
 }
 
 func TestAdminGetManagementUserNotFound(t *testing.T) {
@@ -52,10 +53,10 @@ func TestAdminUpdateManagementUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	target := userByEmail(t, h, "carol@example.com")
+	target := userByEmail(t, h, "blank-user@example.com")
 
 	updated, err := h.Client.AdminUpdateManagementUser(ctx, &api.UserInput{
-		Email:     "carol@example.com",
+		Email:     "blank-user@example.com",
 		FirstName: api.NewNilString("Caroline"),
 		LastName:  api.NilString{Null: true}, // clears the column
 		Admin:     api.NewNilBool(true),

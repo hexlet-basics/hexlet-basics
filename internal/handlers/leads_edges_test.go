@@ -47,7 +47,7 @@ func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 			func(ctx context.Context, h *testsupport.Harness) {
 				h.DB.User.UpdateOneID(h.UserID).ClearFirstName().ClearLastName().ExecX(ctx)
 			},
-			func(*testsupport.Harness) string { return "alice@example.com" }},
+			func(*testsupport.Harness) string { return "admin-learner@example.com" }},
 		{"by number when they have neither",
 			func(ctx context.Context, h *testsupport.Harness) {
 				h.DB.User.UpdateOneID(h.UserID).ClearFirstName().ClearLastName().ClearEmail().ExecX(ctx)

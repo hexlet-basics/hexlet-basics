@@ -18,7 +18,7 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	res, err := h.Client.AdminCreateCourseVersion(ctx, api.AdminCreateCourseVersionParams{ID: courseRubyIDA})
+	res, err := h.Client.AdminCreateCourseVersion(ctx, api.AdminCreateCourseVersionParams{ID: int32(courseRubyIDA)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 

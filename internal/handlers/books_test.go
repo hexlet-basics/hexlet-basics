@@ -15,7 +15,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// The harness user, Alice, has no book request; the fixture gives one to Bob.
+// The harness user (user_admin_learner) has no book request; the fixture gives one to user_staff_editor.
 
 func TestGetBookAnswersAVisitor(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)

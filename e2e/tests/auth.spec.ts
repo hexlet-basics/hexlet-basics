@@ -27,7 +27,7 @@ test("a visitor signs up, signs out and signs in again", async ({ page }) => {
 
 test("a wrong password is refused and nobody is signed in", async ({ page }) => {
   await visit(page, "/session/new");
-  await page.getByRole("textbox", { name: "Email" }).fill("bob@example.com");
+  await page.getByRole("textbox", { name: "Email" }).fill("staff-editor@example.com");
   await page.getByRole("textbox", { name: "Password" }).fill(`${password}-wrong`);
   await page.getByRole("button", { name: "Sign In" }).click();
 
@@ -37,6 +37,6 @@ test("a wrong password is refused and nobody is signed in", async ({ page }) => 
 });
 
 test("a fixture learner signs in with the seeded password", async ({ page }) => {
-  await signIn(page, "bob@example.com", "Bob Brown");
+  await signIn(page, "staff-editor@example.com", "Staff Editor");
   await expect(page).toHaveURL("/");
 });

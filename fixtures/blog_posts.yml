@@ -1,11 +1,25 @@
 # Fixtures for `blog_posts`, HAND-CURATED. Admin read maps id, name, slug,
 # description, locale, state, creator_id (embedded creator from users.yml),
 # related_language_items_count, and the trusted rich_body HTML. Covers and likes
-# live in active_storage_* / blog_post_likes. 6001 is the "full" post (rich body
-# + cover + 2 likes); 6002 has none of those. The rest shape the public blog:
-# ru published posts are 6003 (newest), 6001 and 5990 (oldest), so the list,
-# next-post and recommended-post orders are all observable; 6004 is ru but
-# archived and 6005 is en, so the locale and state scopes each exclude one.
+# live in active_storage_* / blog_post_likes. blog_post_hello_world is the "full"
+# post (rich body + cover + 2 likes); blog_post_second_post has none of those.
+# The rest shape the public blog: the ru published posts are
+# blog_post_learning_ruby (newest), blog_post_hello_world and
+# blog_post_oldest_post, so the list, next-post and recommended-post orders are
+# all observable (rows are written oldest first: ids follow that order);
+# blog_post_archived_notes is ru but archived and blog_post_english_post is en,
+# so the locale and state scopes each exclude one.
+- id: {{ id "blog_post_oldest_post" }}
+  name: Oldest post
+  slug: oldest-post
+  description: Where the blog began
+  locale: ru
+  state: published
+  rich_body: '<p>Это самая первая запись блога Code Basics — с неё всё и началось. Тогда у платформы было всего несколько уроков и горстка первых учеников.</p><h2>Первые шаги</h2><p>Мы собирали обратную связь после каждого урока и переписывали задания, пока они не становились понятными с первого прочтения. Многие решения, которые сегодня кажутся очевидными, родились из комментариев студентов.</p><ul><li>Первые курсы вышли за несколько недель</li><li>Проверка кода заработала раньше, чем мы успели написать документацию</li><li>Сообщество появилось само, мы просто дали ему место</li></ul><h2>Чему мы научились</h2><p>Лучший способ учить — давать писать код как можно раньше. Теория нужна ровно настолько, насколько она помогает решить следующее задание.</p><pre><code>puts "Hello, world!"</code></pre><p>Спасибо всем, кто был с нами с самого начала.</p>'
+  creator_id: {{ id "user_admin_learner" }}
+  related_language_items_count: 0
+  created_at: '2026-07-20 10:00:00'
+  updated_at: '2026-07-20 10:00:00'
 - id: {{ id "blog_post_hello_world" }}
   name: Hello world
   slug: hello-world
@@ -39,17 +53,6 @@
   related_language_items_count: 0
   created_at: '2026-07-27 10:00:00'
   updated_at: '2026-07-27 10:00:00'
-- id: {{ id "blog_post_oldest_post" }}
-  name: Oldest post
-  slug: oldest-post
-  description: Where the blog began
-  locale: ru
-  state: published
-  rich_body: '<p>Это самая первая запись блога Code Basics — с неё всё и началось. Тогда у платформы было всего несколько уроков и горстка первых учеников.</p><h2>Первые шаги</h2><p>Мы собирали обратную связь после каждого урока и переписывали задания, пока они не становились понятными с первого прочтения. Многие решения, которые сегодня кажутся очевидными, родились из комментариев студентов.</p><ul><li>Первые курсы вышли за несколько недель</li><li>Проверка кода заработала раньше, чем мы успели написать документацию</li><li>Сообщество появилось само, мы просто дали ему место</li></ul><h2>Чему мы научились</h2><p>Лучший способ учить — давать писать код как можно раньше. Теория нужна ровно настолько, насколько она помогает решить следующее задание.</p><pre><code>puts "Hello, world!"</code></pre><p>Спасибо всем, кто был с нами с самого начала.</p>'
-  creator_id: {{ id "user_admin_learner" }}
-  related_language_items_count: 0
-  created_at: '2026-07-20 10:00:00'
-  updated_at: '2026-07-20 10:00:00'
 - id: {{ id "blog_post_archived_notes" }}
   name: Archived notes
   slug: archived-notes

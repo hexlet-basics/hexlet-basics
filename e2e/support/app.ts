@@ -7,13 +7,13 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export const password = "e2e-password";
 
 /** A fixture user who is an admin. */
-export const admin = { email: "alice@example.com", name: "Alice Anderson" };
+export const admin = { email: "admin-learner@example.com", name: "Admin Learner" };
 
 /** A fixture user who is not (an editor on the staff, so the back office is open to them). */
-export const learner = { email: "bob@example.com", name: "Bob Brown" };
+export const learner = { email: "staff-editor@example.com", name: "Staff Editor" };
 
 /** A fixture user with neither the admin flag nor a staff record. */
-export const outsider = { email: "carol@example.com", name: "Carol Clark" };
+export const outsider = { email: "blank-user@example.com", name: "Carol Clark" };
 
 /**
  * Opens a page and waits for it to settle. The server renders every page, but

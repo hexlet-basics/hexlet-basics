@@ -1,15 +1,19 @@
 package handlers_test
 
 import (
+	"cmp"
 	"context"
+	"maps"
 	"net/http"
 	"slices"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -41,20 +45,26 @@ func TestAdminListCourseLessons(t *testing.T) {
 	require.Len(t, items, 3, "old-version and ru infos must be excluded")
 
 	// Ordered by the Info id DESC (not the lesson id this row reports as `id`).
-	// Fixture info ids: 2003(Variables/1002) > 2002(Hello/1001) > 2001(Strings/
-	// 1003). So names come out Variables, Hello, Strings — and the reported ids
-	// (1002, 1001, 1003) are NOT descending, proving we sort on the info id.
-	assert.Equal(t, "Variables", items[0].Name.Value)
-	assert.Equal(t, "Hello, World!", items[1].Name.Value)
-	assert.Equal(t, "Strings", items[2].Name.Value)
+	infoOf := map[string]string{
+		"variables":   "lesson_version_info_javascript_variables_current_en",
+		"hello-world": "lesson_version_info_javascript_hello_world_current_en",
+		"strings":     "lesson_version_info_javascript_strings_current_en",
+	}
+	got := lo.Map(items, func(item api.CourseLessonListItem, _ int) string { return item.Slug })
+	want := slices.SortedFunc(maps.Keys(infoOf), func(a, b string) int {
+		return cmp.Compare(fixtures.ID(infoOf[b]), fixtures.ID(infoOf[a]))
+	})
+	assert.Equal(t, want, got)
+
+	bySlug := lo.KeyBy(items, func(item api.CourseLessonListItem) string { return item.Slug })
+	assert.Equal(t, "Variables", bySlug["variables"].Name.Value)
+	assert.Equal(t, "Hello, World!", bySlug["hello-world"].Name.Value)
+	assert.Equal(t, "Strings", bySlug["strings"].Name.Value)
 
 	// The reported id is the lesson id and the slug is joined from the lesson.
-	assert.Equal(t, int32(1002), items[0].ID)
-	assert.Equal(t, "variables", items[0].Slug)
-	assert.Equal(t, "Storing values", items[0].Description.Value)
-
-	assert.Equal(t, int32(1001), items[1].ID)
-	assert.Equal(t, "hello-world", items[1].Slug)
+	assert.Equal(t, fixtures.ID32("lesson_javascript_variables"), bySlug["variables"].ID)
+	assert.Equal(t, "Storing values", bySlug["variables"].Description.Value)
+	assert.Equal(t, fixtures.ID32("lesson_javascript_hello_world"), bySlug["hello-world"].ID)
 }
 
 // TestAdminListLessonProgress: newest first, with course/lesson slugs and the
@@ -70,19 +80,19 @@ func TestAdminListLessonProgress(t *testing.T) {
 	assert.Equal(t, int32(2), page.Total)
 	require.Len(t, page.Items, 2)
 
-	// id DESC: row 3002 first, then 3001.
-	assert.Equal(t, int32(3002), page.Items[0].ID)
-	assert.Equal(t, int32(3001), page.Items[1].ID)
+	// id DESC: the newest row first.
+	assert.Greater(t, page.Items[0].ID, page.Items[1].ID)
+	byID := lo.KeyBy(page.Items, func(item api.LessonProgress) int32 { return item.ID })
 
-	first := page.Items[0] // 3002: started, no messages, lesson "variables"
-	assert.Equal(t, int32(1002), first.UserId)
+	first := byID[fixtures.ID32("lesson_progress_staff_editor_javascript_variables")] // started, no messages, lesson "variables"
+	assert.Equal(t, int32(fixtures.ID("user_staff_editor")), first.UserId)
 	assert.Equal(t, api.EnrollmentStateStarted, first.State)
 	assert.True(t, first.MessagesCount.Null, "blank messages_count should be null")
 	assert.Equal(t, "javascript", first.CourseSlug)
 	assert.Equal(t, "variables", first.CourseLessonSlug)
 	assert.Equal(t, "Variables", first.CourseLessonName)
 
-	second := page.Items[1] // 3001: finished, 5 messages, lesson "hello-world"
+	second := byID[fixtures.ID32("lesson_progress_admin_learner_javascript_hello_world")] // finished, 5 messages, lesson "hello-world"
 	assert.Equal(t, api.EnrollmentStateFinished, second.State)
 	assert.Equal(t, int32(5), second.MessagesCount.Value)
 	assert.Equal(t, "hello-world", second.CourseLessonSlug)
@@ -102,20 +112,20 @@ func TestAdminListCourseLessonReviews(t *testing.T) {
 	assert.Equal(t, int32(2), page.Total, "empty-summary and ru reviews must be excluded")
 	require.Len(t, page.Items, 2)
 
-	// id DESC: 4004 first, then 4001.
-	assert.Equal(t, int32(4004), page.Items[0].ID)
-	assert.Equal(t, int32(4001), page.Items[1].ID)
+	// id DESC: the newest row first.
+	assert.Greater(t, page.Items[0].ID, page.Items[1].ID)
+	byID := lo.KeyBy(page.Items, func(item api.CourseLessonReview) int32 { return item.ID })
 
-	first := page.Items[0] // 4004 -> lesson 1003 (strings, natural_order 3)
+	first := byID[fixtures.ID32("lesson_review_javascript_strings_en")] // strings, natural_order 3
 	assert.Equal(t, "en", first.Locale)
 	assert.Equal(t, "Good grasp of concatenation overall.", first.Summary)
 	assert.Equal(t, "strings", first.Slug)
 	assert.Equal(t, int32(3), first.LessonNaturalOrder)
 	assert.Equal(t, "javascript", first.CourseSlug)
-	assert.Equal(t, int32(82481401), first.CourseId)
-	assert.Equal(t, int32(1003), first.CourseLessonId)
+	assert.Equal(t, int32(fixtures.ID("course_javascript")), first.CourseId)
+	assert.Equal(t, int32(fixtures.ID("lesson_javascript_strings")), first.CourseLessonId)
 
-	second := page.Items[1] // 4001 -> lesson 1001 (hello-world, natural_order 1)
+	second := byID[fixtures.ID32("lesson_review_javascript_hello_world_en")] // hello-world, natural_order 1
 	assert.Equal(t, "hello-world", second.Slug)
 	assert.Equal(t, int32(1), second.LessonNaturalOrder)
 }

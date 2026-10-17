@@ -16,6 +16,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -27,8 +28,8 @@ func TestGetProfile(t *testing.T) {
 
 	profile, ok := res.(*api.User)
 	require.True(t, ok, "got %T", res)
-	assert.Equal(t, api.NewNilString("Alice"), profile.FirstName)
-	assert.Equal(t, api.NewNilString("Anderson"), profile.LastName)
+	assert.Equal(t, api.NewNilString("Admin"), profile.FirstName)
+	assert.Equal(t, api.NewNilString("Learner"), profile.LastName)
 }
 
 func TestGetProfileRequiresSignIn(t *testing.T) {
@@ -64,7 +65,7 @@ func TestDeleteAccount(t *testing.T) {
 	u := h.DB.User.UpdateOneID(h.UserID).SetNickname("ally").SetPhone("+10000000001").SaveX(t.Context())
 	h.DB.UserAccount.Create().SetUserID(u.ID).SetProvider("github").SetUID("alice-gh").SaveX(t.Context())
 	other := h.DB.UserAccount.Create().SetUserID(h.DB.User.Query().
-		Where(user.Email("bob@example.com")).OnlyX(t.Context()).ID).
+		Where(user.Email("staff-editor@example.com")).OnlyX(t.Context()).ID).
 		SetProvider("github").SetUID("bob-gh").SaveX(t.Context())
 
 	res, err := h.Client.DeleteAccount(t.Context())
@@ -121,7 +122,7 @@ func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 	require.NoError(t, err)
 
 	res, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
-		FirstName: api.NewNilString("Alice"),
+		FirstName: api.NewNilString("Admin"),
 		Email:     email,
 		Password:  "s3cret-pass",
 	})
@@ -214,11 +215,11 @@ func TestSwitchLocaleRemembersAVisitorsChoiceInACookie(t *testing.T) {
 	assert.Nil(t, h.DB.User.GetX(t.Context(), h.UserID).Locale)
 }
 
-const danaID = 1004
+var danaID = fixtures.ID("user_second_admin")
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	// The fixtures have two administrators, alice (the caller) and dana.
+	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
 	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
 
 	_, err := h.Client.DeleteAccount(t.Context())
@@ -237,7 +238,7 @@ func TestUpdateProfileClearsAFirstNameSentAsNull(t *testing.T) {
 	noFirstName.SetToNull()
 	res, err := h.Client.UpdateProfile(t.Context(), &api.ProfileInput{
 		FirstName: noFirstName,
-		LastName:  api.NewNilProfileName("Anderson"),
+		LastName:  api.NewNilProfileName("Learner"),
 	})
 	require.NoError(t, err)
 
@@ -246,5 +247,5 @@ func TestUpdateProfileClearsAFirstNameSentAsNull(t *testing.T) {
 	assert.True(t, profile.FirstName.Null)
 	u := h.DB.User.GetX(t.Context(), h.UserID)
 	assert.Nil(t, u.FirstName)
-	assert.Equal(t, "Anderson", lo.FromPtr(u.LastName))
+	assert.Equal(t, "Learner", lo.FromPtr(u.LastName))
 }

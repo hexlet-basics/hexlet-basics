@@ -8,27 +8,27 @@
     <description>Автоматизированная система для обучения программированию в браузере. Текстовые курсы + удобный тренажер.</description>
     <picture>https://code-basics.com/images/logo.png</picture>
     <sets>
-      <set id="249612276">
-        <name>Программирование</name>
-        <url>https://code-basics.com/ru/language_categories/programming-ru</url>
-      </set>
-      <set id="413413959">
-        <name>Фронтенд</name>
-        <url>https://code-basics.com/ru/language_categories/frontend-ru</url>
-      </set>
-      <set id="497002795">
+      <set id="1029">
         <name>Верстка</name>
         <url>https://code-basics.com/ru/language_categories/layouting-ru</url>
       </set>
+      <set id="1033">
+        <name>Фронтенд</name>
+        <url>https://code-basics.com/ru/language_categories/frontend-ru</url>
+      </set>
+      <set id="1034">
+        <name>Программирование</name>
+        <url>https://code-basics.com/ru/language_categories/programming-ru</url>
+      </set>
     </sets>
     <offers>
-      <offer id="453566069">
+      <offer id="1245">
         <name>Курс JavaScript</name>
         <url>https://code-basics.com/ru/languages/javascript-ru?utm_campaign=cb-javascript-ru&amp;utm_content=feed_search&amp;utm_medium=organic&amp;utm_source=yandex&amp;utm_term=page_javascript-ru</url>
         <categoryId>101</categoryId>
         <price>0</price>
         <currencyId>RUR</currencyId>
-        <set-ids>413413959</set-ids>
+        <set-ids>1033</set-ids>
         <param name="Продолжительность" unit="месяц">1</param>
         <param name="Формат обучения">Самостоятельно</param>
         <param name="Сложность">Для новичков</param>

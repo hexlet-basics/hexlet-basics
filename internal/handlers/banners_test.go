@@ -32,11 +32,11 @@ func bannerByBody(t *testing.T, h *testsupport.Harness, body string) api.Banner 
 }
 
 // banners.yml seeds these.
-const totalBanners = 5
 
 func TestAdminListBanners(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalBanners := h.DB.Banner.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListBanners(ctx, api.AdminListBannersParams{})
 	require.NoError(t, err)
@@ -53,6 +53,7 @@ func TestAdminListBanners(t *testing.T) {
 func TestAdminListBannersPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalBanners := h.DB.Banner.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListBanners(ctx, api.AdminListBannersParams{
 		Page:    api.NewOptInt32(2),
@@ -93,6 +94,7 @@ func TestAdminGetBannerNotFound(t *testing.T) {
 func TestAdminCreateBanner(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalBanners := h.DB.Banner.Query().CountX(ctx)
 
 	starts := time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC)
 	created, err := h.Client.AdminCreateBanner(ctx, &api.BannerInput{
@@ -171,6 +173,7 @@ func TestAdminUpdateBanner(t *testing.T) {
 func TestAdminDeleteBanner(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalBanners := h.DB.Banner.Query().CountX(ctx)
 
 	target := bannerByBody(t, h, "Black Friday sale")
 

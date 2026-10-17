@@ -18,11 +18,11 @@ import (
 )
 
 // leads.yml seeds these two.
-const totalLeads = 2
 
 func TestAdminListLeads(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalLeads := h.DB.Lead.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListLeads(ctx, api.AdminListLeadsParams{})
 	require.NoError(t, err)
@@ -52,6 +52,7 @@ func TestAdminListLeads(t *testing.T) {
 func TestAdminListLeadsPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalLeads := h.DB.Lead.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListLeads(ctx, api.AdminListLeadsParams{
 		Page:    api.NewOptInt32(2),
@@ -108,8 +109,8 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	published := createdFacts[0]
 	assert.Equal(t, stored.ID, published.LeadID)
 	assert.Equal(t, h.UserID, published.UserID)
-	assert.Equal(t, "Alice Anderson", published.UserName)
-	assert.Equal(t, "alice@example.com", lo.FromPtr(published.Email))
+	assert.Equal(t, "Admin Learner", published.UserName)
+	assert.Equal(t, "admin-learner@example.com", lo.FromPtr(published.Email))
 	assert.Equal(t, "@alice", lo.FromPtr(published.Telegram))
 	assert.Equal(t, "1700000000123456789", lo.FromPtr(published.YMClientID))
 	assert.Equal(t, "vk", lo.FromPtr(published.UTMSource))
@@ -171,6 +172,7 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 
 func TestCreateLeadRequiresASignedInUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
+	totalLeads := h.DB.Lead.Query().CountX(t.Context())
 
 	res, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 	require.NoError(t, err)

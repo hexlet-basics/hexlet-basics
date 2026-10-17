@@ -19,7 +19,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// The harness acts as the fixture admin (alice), who has finished the first
+// The harness acts as the fixture admin (user_admin_learner), who has finished the first
 // lesson of the JavaScript course and is enrolled in it. Lessons are addressed
 // by slug throughout: fixture ids are legacy crc32 values.
 const (

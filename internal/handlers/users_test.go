@@ -13,7 +13,6 @@ import (
 )
 
 // users.yml seeds these three.
-const totalUsers = 4
 
 // userByEmail resolves a fixture user by its email (a stable business key),
 // reading its id back rather than hard-coding it.
@@ -35,6 +34,7 @@ func userByEmail(t *testing.T, h *testsupport.Harness, email string) api.UserCru
 func TestAdminListUsers(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListUsers(ctx, api.AdminListUsersParams{})
 	require.NoError(t, err)
@@ -51,6 +51,7 @@ func TestAdminListUsers(t *testing.T) {
 func TestAdminListUsersPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListUsers(ctx, api.AdminListUsersParams{
 		Page:    api.NewOptInt32(2),
@@ -66,13 +67,14 @@ func TestAdminListUsersPaginated(t *testing.T) {
 func TestAdminSearchUsers(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
-	// Matches on last name, case-insensitive.
-	got, err := h.Client.AdminSearchUsers(ctx, api.AdminSearchUsersParams{Q: "brown"})
+	// Matches on last name, case-insensitive (user_staff_editor is the only Editor).
+	got, err := h.Client.AdminSearchUsers(ctx, api.AdminSearchUsersParams{Q: "editor"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	require.Len(t, got, 1)
-	assert.Equal(t, "bob@example.com", got[0].Email.Value)
+	assert.Equal(t, "staff-editor@example.com", got[0].Email.Value)
 
 	// Matches on email substring.
 	got, err = h.Client.AdminSearchUsers(ctx, api.AdminSearchUsersParams{Q: "example.com"})
@@ -94,12 +96,12 @@ func TestAdminGetUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	want := userByEmail(t, h, "alice@example.com")
+	want := userByEmail(t, h, "admin-learner@example.com")
 
 	got, err := h.Client.AdminGetUser(ctx, api.AdminGetUserParams{ID: want.ID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, "Alice", got.FirstName.Value)
+	assert.Equal(t, "Admin", got.FirstName.Value)
 	assert.True(t, got.Admin.Value)
 }
 
@@ -115,6 +117,7 @@ func TestAdminGetUserNotFound(t *testing.T) {
 func TestAdminCreateUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateUser(ctx, &api.UserInput{
 		Email:     "dave@example.com",
@@ -141,7 +144,7 @@ func TestAdminCreateUserDuplicateEmail(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminCreateUser(ctx, &api.UserInput{
-		Email:     "alice@example.com", // already seeded
+		Email:     "admin-learner@example.com", // already seeded
 		FirstName: api.NilString{Null: true},
 		LastName:  api.NilString{Null: true},
 		Admin:     api.NilBool{Null: true},
@@ -154,10 +157,10 @@ func TestAdminUpdateUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	target := userByEmail(t, h, "bob@example.com")
+	target := userByEmail(t, h, "staff-editor@example.com")
 
 	updated, err := h.Client.AdminUpdateUser(ctx, &api.UserInput{
-		Email:     "bob@example.com",
+		Email:     "staff-editor@example.com",
 		FirstName: api.NewNilString("Robert"),
 		LastName:  api.NilString{Null: true}, // clears the column
 		Admin:     api.NewNilBool(true),
@@ -176,8 +179,9 @@ func TestAdminUpdateUser(t *testing.T) {
 func TestAdminDeleteUser(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalUsers := h.DB.User.Query().CountX(ctx)
 
-	target := userByEmail(t, h, "carol@example.com")
+	target := userByEmail(t, h, "blank-user@example.com")
 
 	err := h.Client.AdminDeleteUser(ctx, api.AdminDeleteUserParams{ID: target.ID})
 	require.NoError(t, err)
@@ -191,10 +195,10 @@ func TestAdminDeleteUser(t *testing.T) {
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	// The fixtures have two administrators, alice (the caller) and dana.
+	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
 	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(ctx)
 	input := &api.UserInput{
-		Email:     "alice@example.com",
+		Email:     "admin-learner@example.com",
 		FirstName: api.NilString{Null: true},
 		LastName:  api.NilString{Null: true},
 		Admin:     api.NewNilBool(false),

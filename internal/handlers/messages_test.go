@@ -13,11 +13,11 @@ import (
 )
 
 // ai_messages.yml seeds these three.
-const totalAssistantMessages = 3
 
 func TestAdminListMessages(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalAssistantMessages := h.DB.AiMessage.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListMessages(ctx, api.AdminListMessagesParams{})
 	require.NoError(t, err)
@@ -56,6 +56,7 @@ func TestAdminListMessages(t *testing.T) {
 func TestAdminListMessagesPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalAssistantMessages := h.DB.AiMessage.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListMessages(ctx, api.AdminListMessagesParams{
 		Page:    api.NewOptInt32(2),

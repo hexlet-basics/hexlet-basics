@@ -30,5 +30,5 @@ go run ./cmd/fixtures -conn "$dsn" -dir fixtures
 # editor and to a user who is neither.
 # shellcheck disable=SC2016 # the dollars are part of the bcrypt digest, not expansions
 digest='$2a$10$igu.GskpHZdOZgUlOQ7.5u/TZus5zank/0OQiVpwIUJkg4bJjL5Ge'
-run -d "$name" -c "update users set password_digest = '$digest' where email in ('alice@example.com', 'bob@example.com', 'carol@example.com')"
+run -d "$name" -c "update users set password_digest = '$digest' where email in ('admin-learner@example.com', 'staff-editor@example.com', 'blank-user@example.com')"
 echo "e2e db ready: $name on $host:$port"

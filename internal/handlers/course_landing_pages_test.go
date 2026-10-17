@@ -9,17 +9,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 // language_landing_pages.yml (exported from legacy) seeds this many rows.
-const totalLandingPages = 22
 
 // go-ru landing page and its course, ruby course — all present in the fixtures.
-const (
-	landingGoRuID = 59175011
-	courseRubyID  = 207281424
-	courseGoID    = 912823128
+var (
+	landingGoRuID = fixtures.ID32("landing_page_go_ru")
+	courseRubyID  = fixtures.ID("course_ruby")
+	courseGoID    = fixtures.ID("course_go")
 )
 
 // fullLandingInput returns a complete CourseLandingPageInput with every nullable
@@ -69,6 +69,7 @@ func landingBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Course
 func TestAdminListCourseLandingPages(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListCourseLandingPages(ctx, api.AdminListCourseLandingPagesParams{
 		PerPage: api.NewOptInt32(100),
@@ -111,8 +112,9 @@ func TestAdminGetCourseLandingPageNotFound(t *testing.T) {
 func TestAdminCreateCourseLandingPage(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
 
-	in := fullLandingInput(courseRubyID)
+	in := fullLandingInput(int32(courseRubyID))
 	in.Slug = api.NewNilString("ruby-extra")
 	in.Name = api.NewNilString("Ruby Extra")
 	in.Main = api.NewNilBool(false)
@@ -165,10 +167,11 @@ func TestAdminUpdateCourseLandingPage(t *testing.T) {
 func TestAdminDeleteCourseLandingPage(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
 
 	// Create a childless landing page, then delete it — avoids FK conflicts with
 	// fixture landing pages that own qna items / category items.
-	in := fullLandingInput(courseRubyID)
+	in := fullLandingInput(int32(courseRubyID))
 	in.Slug = api.NewNilString("to-delete")
 	in.Name = api.NewNilString("Temp")
 	created, err := h.Client.AdminCreateCourseLandingPage(ctx, &in)

@@ -19,11 +19,11 @@ import (
 )
 
 // blog_posts.yml seeds these six (every state and locale: admin lists them all).
-const totalBlogPosts = 6
 
 func TestAdminListBlogPosts(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalBlogPosts := h.DB.BlogPost.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListBlogPosts(ctx, api.AdminListBlogPostsParams{})
 	require.NoError(t, err)

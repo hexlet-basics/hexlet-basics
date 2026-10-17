@@ -9,18 +9,19 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 // languages.yml seeds this many courses; ruby is one of them.
-const (
-	totalCourses  = 13
-	courseRubyIDA = 207281424
+var (
+	courseRubyIDA = fixtures.ID("course_ruby")
 )
 
 func TestAdminListCourses(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCourses := h.DB.Course.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListCourses(ctx, api.AdminListCoursesParams{PerPage: api.NewOptInt32(100)})
 	require.NoError(t, err)
@@ -37,7 +38,7 @@ func TestAdminGetCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: courseRubyIDA})
+	got, err := h.Client.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(courseRubyIDA)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "ruby", got.Slug)
@@ -59,6 +60,7 @@ func TestAdminGetCourseNotFound(t *testing.T) {
 func TestAdminCreateCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCourses := h.DB.Course.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateCourse(ctx, &api.CourseInput{
 		Slug:                     api.NewNilString("haskell"),
@@ -111,7 +113,7 @@ func TestAdminUpdateCourse(t *testing.T) {
 		HexletProgramLandingPage: api.NilString{Null: true}, // clears
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
-	}, api.AdminUpdateCourseParams{ID: courseRubyIDA})
+	}, api.AdminUpdateCourseParams{ID: int32(courseRubyIDA)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness.Value)

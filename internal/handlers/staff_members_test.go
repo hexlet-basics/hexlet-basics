@@ -13,12 +13,12 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_members.yml seeds a single record (9201: bob as editor).
-const totalStaffMembers = 1
+// staff_members.yml seeds a single record (staff_member_staff_editor: user_staff_editor as editor).
 
 func TestAdminListStaffMembers(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListStaffMembers(ctx, api.AdminListStaffMembersParams{})
 	require.NoError(t, err)
@@ -28,7 +28,7 @@ func TestAdminListStaffMembers(t *testing.T) {
 	m := page.Items[0]
 	assert.Equal(t, int32(fixtures.ID("user_staff_editor")), m.UserId)
 	assert.Equal(t, "editor", m.Role.Name)
-	assert.Equal(t, "bob@example.com", m.User.Email.Value)
+	assert.Equal(t, "staff-editor@example.com", m.User.Email.Value)
 	// The native pg array round-trips to a plain []string.
 	assert.Equal(t, []string{"ru", "en"}, m.AllowedLocales)
 }
@@ -41,7 +41,7 @@ func TestAdminGetStaffMember(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Role.Name)
-	assert.Equal(t, "bob@example.com", got.User.Email.Value)
+	assert.Equal(t, "staff-editor@example.com", got.User.Email.Value)
 	assert.Equal(t, []string{"ru", "en"}, got.AllowedLocales)
 }
 
@@ -57,16 +57,17 @@ func TestAdminGetStaffMemberNotFound(t *testing.T) {
 func TestAdminCreateStaffMember(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         fixtures.ID32("user_admin_learner"), // alice has no staff record yet
+		UserId:         fixtures.ID32("user_admin_learner"), // user_admin_learner has no staff record yet
 		RoleId:         fixtures.ID32("staff_role_editor"),
 		AllowedLocales: []string{"ru", "en", "es"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.NotZero(t, created.ID)
-	assert.Equal(t, "alice@example.com", created.User.Email.Value)
+	assert.Equal(t, "admin-learner@example.com", created.User.Email.Value)
 	assert.Equal(t, "editor", created.Role.Name)
 	assert.Equal(t, []string{"ru", "en", "es"}, created.AllowedLocales)
 
@@ -108,6 +109,7 @@ func TestAdminUpdateStaffMember(t *testing.T) {
 func TestAdminDeleteStaffMember(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
 	err := h.Client.AdminDeleteStaffMember(ctx, api.AdminDeleteStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
 	require.NoError(t, err)

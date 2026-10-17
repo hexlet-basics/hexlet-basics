@@ -31,11 +31,11 @@ func categoryBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Cours
 }
 
 // legacy language/categories.yml seeds these six.
-const totalCategories = 6
 
 func TestAdminListCourseCategories(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListCourseCategories(ctx, api.AdminListCourseCategoriesParams{})
 	require.NoError(t, err)
@@ -52,6 +52,7 @@ func TestAdminListCourseCategories(t *testing.T) {
 func TestAdminListCourseCategoriesPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
 
 	page, err := h.Client.AdminListCourseCategories(ctx, api.AdminListCourseCategoriesParams{
 		Page:    api.NewOptInt32(2),
@@ -93,6 +94,7 @@ func TestAdminGetCourseCategoryNotFound(t *testing.T) {
 func TestAdminCreateCourseCategory(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateCourseCategory(ctx, &api.CourseCategoryInput{
 		Name:        "Mobile",
@@ -224,6 +226,7 @@ func TestAdminUpdateCourseCategoryKeepsOwnValues(t *testing.T) {
 func TestAdminDeleteCourseCategory(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
+	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
 
 	target := categoryBySlug(t, h, "layouting-en")
 
