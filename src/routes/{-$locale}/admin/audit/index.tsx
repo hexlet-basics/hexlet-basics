@@ -14,13 +14,13 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { isAxiosError } from "axios";
+import type { PaginationState } from "@tanstack/react-table";
 import { type SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
 import type { AuditRecord } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 
 // The audit trail (ADR-0018): every change a staff member made and every read of
@@ -72,7 +72,6 @@ function AuditTrail() {
   const { t } = useTranslation();
 
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 25 });
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [draft, setDraft] = useState<Filters>(NO_FILTERS);
   const [applied, setApplied] = useState<Filters>(NO_FILTERS);
   const [selected, setSelected] = useState<AuditRecord | null>(null);
@@ -118,7 +117,6 @@ function AuditTrail() {
       id: "occurredAt",
       header: t(($) => $.admin.audit.columns.occurredAt),
       cell: ({ row }) => new Date(row.original.occurredAt).toLocaleString(),
-      enableSorting: false,
     },
     {
       id: "channel",
@@ -128,7 +126,6 @@ function AuditTrail() {
           {t(($) => $.admin.audit.channel[row.original.channel])}
         </Badge>
       ),
-      enableSorting: false,
     },
     {
       id: "outcome",
@@ -138,25 +135,21 @@ function AuditTrail() {
           {t(($) => $.admin.audit.outcome[row.original.outcome])}
         </Badge>
       ),
-      enableSorting: false,
     },
     {
       accessorKey: "operation",
       header: t(($) => $.admin.audit.columns.operation),
-      enableSorting: false,
     },
     {
       id: "entity",
       header: t(($) => $.admin.audit.columns.entity),
       cell: ({ row }) =>
         [row.original.entityType, row.original.entityId].filter(Boolean).join(" #"),
-      enableSorting: false,
     },
     {
       id: "actor",
       header: t(($) => $.admin.audit.columns.actor),
       cell: ({ row }) => row.original.actorUserId ?? "—",
-      enableSorting: false,
     },
     {
       id: "details",
@@ -166,11 +159,10 @@ function AuditTrail() {
           {t(($) => $.admin.audit.details.open)}
         </Button>
       ),
-      enableSorting: false,
     },
   ];
 
-  const forbidden = isAxiosError(error) && error.response?.status === 403;
+  const forbidden = isApiError(error, 403);
   const problems = validationMessages(error);
 
   return (
@@ -242,8 +234,6 @@ function AuditTrail() {
         total={data?.total ?? 0}
         pagination={pagination}
         onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
         isLoading={isLoading}
       />
 

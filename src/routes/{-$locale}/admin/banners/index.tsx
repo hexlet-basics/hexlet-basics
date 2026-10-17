@@ -32,7 +32,7 @@ function BannersList() {
     // The state shows as its label: it moves only through the transition buttons
     // of the edit page, so the list is where it is read.
     ...useGeneratedColumns<Banner>(bannerColumns, ["state", "locale", "background", "body"]).map(
-      (column) =>
+      (column): CrudColumnDef<Banner> =>
         "accessorKey" in column && column.accessorKey === "state"
           ? {
               ...column,
