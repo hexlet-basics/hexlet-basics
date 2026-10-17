@@ -1,6 +1,25 @@
 export default {
   translation: {
     account: {
+      connected_apps: {
+        confirm_label: "Disconnect",
+        confirm_text:
+          "The application loses access to your account immediately. You can connect it again later.",
+        confirm_title: "Disconnect “{{client}}”?",
+        connected_at: "Connected {{date}}",
+        empty: "You have not connected any applications.",
+        error: "Could not disconnect the application. Please try again.",
+        host: "Identified by {{host}}",
+        intro:
+          "These applications can act on your behalf with the permissions below. An application you have not used for 30 days is disconnected automatically.",
+        meta: {
+          description: "Applications you have allowed to use your Code Basics account",
+        },
+        permissions: "Permissions:",
+        revoke: "Disconnect",
+        revoked: "The application was disconnected",
+        title: "Connected apps",
+      },
       profiles: {
         edit: {
           delete: "Delete account",
@@ -1423,6 +1442,7 @@ export default {
           cases: "Cases",
           categories: "Categories",
           community: "Community",
+          connected_apps: "Connected apps",
           courses: "Courses",
           courses_with_employment: "Курсы с трудоустройством",
           courses_with_employment_description: "Обучим программированию, аналитике и тестированию",
