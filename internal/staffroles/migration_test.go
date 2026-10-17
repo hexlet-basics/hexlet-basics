@@ -128,8 +128,8 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	byBit := [][]string{ops.index, ops.create, ops.update, ops.destroy}
 
 	db, tx := testsupport.NewClientWithTx(t)
-	bob := db.User.GetX(t.Context(), editorID)
-	staff := bob.QueryStaffMember().OnlyX(t.Context())
+	editor := db.User.GetX(t.Context(), editorID)
+	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	// Start from the old shape: no grants, and the matrix table as the baseline
 	// made it. The table is long gone from the migrated schema, so the test
 	// recreates it inside its transaction (a no-op while it still exists).
@@ -140,6 +140,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	require.NoError(t, err)
 
 	for mask := 0; mask < 1<<len(byBit); mask++ {
+		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
 		_, err = tx.ExecContext(t.Context(), `INSERT INTO "staff_member_role_permissions"
 			("role_id", "resource", "can_index", "can_create", "can_update", "can_destroy", "created_at", "updated_at")
@@ -161,7 +162,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 		for i, operations := range byBit {
 			for _, operation := range operations {
-				err := policy.Allow(t.Context(), bob, "ru", operation)
+				err := policy.Allow(t.Context(), editor, "ru", operation)
 				if mask&(1<<i) != 0 {
 					assert.NoError(t, err, "bits %04b keep %s", mask, operation)
 				} else {
@@ -181,19 +182,23 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	require.NoError(t, err)
 
 	db, tx := testsupport.NewClientWithTx(t)
-	bob := db.User.GetX(t.Context(), bobID)
-	staff := bob.QueryStaffMember().OnlyX(t.Context())
+	editor := db.User.GetX(t.Context(), editorID)
+	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
 	const holdsCourses, holdsLessons = 1, 2
 	for mask := 0; mask < 4; mask++ {
+		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
 		// A bystander grant must survive untouched.
+		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 		db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.read").ExecX(t.Context())
 		if mask&holdsCourses != 0 {
+			//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.update").ExecX(t.Context())
 		}
 		if mask&holdsLessons != 0 {
+			//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("course_lessons.update").ExecX(t.Context())
 		}
 	}
@@ -206,7 +211,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 
 		check := func(operation string, want bool) {
-			err := policy.Allow(t.Context(), bob, "ru", operation)
+			err := policy.Allow(t.Context(), editor, "ru", operation)
 			if want {
 				assert.NoError(t, err, "combination %02b keeps %s", mask, operation)
 			} else {

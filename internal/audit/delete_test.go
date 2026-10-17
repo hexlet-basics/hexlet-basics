@@ -17,6 +17,7 @@ import (
 func TestADeleteRecordsTheOldValuesOfTheRow(t *testing.T) {
 	client := testsupport.NewClient(t)
 	ctx, recorder := audit.WithRecorder(t.Context())
+	//nolint:forbidigo // an extra account that exists only to be deleted or promoted by the case
 	user := client.User.Create().
 		SetEmail("doomed@example.com").
 		SetFirstName("Doomed").

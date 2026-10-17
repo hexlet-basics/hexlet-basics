@@ -27,6 +27,7 @@ func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation st
 	if mutate != nil {
 		mutate(&entry)
 	}
+	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 	create := h.DB.AuditRecord.Create().
 		SetOccurredAt(at).
 		SetChannel(string(audit.ChannelWeb)).
@@ -52,9 +53,12 @@ func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation st
 func grantAuditRead(t *testing.T, h *testsupport.Harness, withGrant bool) {
 	t.Helper()
 	ctx := context.Background()
+	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 	role := h.DB.StaffRole.Create().SetName("Auditors " + t.Name()).SetDescription("reads the trail").SaveX(ctx)
+	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 	h.DB.StaffMember.Create().SetUserID(h.UserID).SetRoleID(role.ID).SetAllowedLocales([]string{"ru", "en"}).ExecX(ctx)
 	if withGrant {
+		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 		h.DB.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("audit.read").ExecX(ctx)
 	}
 }
@@ -101,7 +105,7 @@ func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
 }
 
 func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
 
@@ -238,10 +242,12 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	grantAuditRead(t, h, true)
 	ctx := context.Background()
 	at := time.Now().Add(-time.Hour)
+	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 	h.DB.AuditRecord.Create().
 		SetOccurredAt(at).SetChannel("web").SetOperation("AdminUpdateBanner").SetOutcome("succeeded").
 		SetChanges([]byte(`[{"entity":"Banner","id":"3","op":"update","fields":[{"name":"title","old":"A","new":"B"},{"name":"token","secret":true}]}]`)).
 		ExecX(ctx)
+	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 	h.DB.AuditRecord.Create().
 		SetOccurredAt(at).SetChannel("web").SetOperation("AdminListUsers").SetOutcome("succeeded").
 		SetReads([]byte(`{"count":2,"ids":["1","2"]}`)).
@@ -336,7 +342,7 @@ func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
 }
 
 func TestAnyStaffMemberMayAskWhatTheyHold(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }

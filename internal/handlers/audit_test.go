@@ -15,6 +15,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -96,19 +97,19 @@ func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
 
 	// Second post: slug and state are re-sent unchanged, name and body change,
 	// description is cleared. Only the changed three belong in the record.
-	before := h.DB.BlogPost.GetX(t.Context(), 6002)
+	before := h.DB.BlogPost.GetX(t.Context(), fixtures.ID("blog_post_second_post"))
 	_, err := h.Client.AdminUpdateBlogPost(context.Background(), &api.BlogPostInput{
 		Name:        api.NewNilString("Renamed"),
 		Slug:        api.NewNilString(*before.Slug),
 		Description: api.NilString{Null: true},
 		State:       api.NewNilBlogPostState(api.BlogPostState(*before.State)),
 		RichBody:    "<p>new</p>",
-	}, api.AdminUpdateBlogPostParams{ID: 6002})
+	}, api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_second_post")})
 	require.NoError(t, err)
 
 	rows := records(t, h, "AdminUpdateBlogPost")
 	require.Len(t, rows, 1)
-	assert.Equal(t, "6002", *rows[0].EntityID)
+	assert.Equal(t, strconv.Itoa(fixtures.ID("blog_post_second_post")), *rows[0].EntityID)
 
 	changes := changesOf(t, rows[0])
 	require.Len(t, changes, 1)
@@ -139,12 +140,12 @@ func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
 func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: 6001}))
+	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")}))
 
 	rows := records(t, h, "AdminDeleteBlogPost")
 	require.Len(t, rows, 1, "the dependents' deletes are part of this one record, not records of their own")
 	assert.Equal(t, "BlogPost", *rows[0].EntityType)
-	assert.Equal(t, "6001", *rows[0].EntityID)
+	assert.Equal(t, strconv.Itoa(fixtures.ID("blog_post_hello_world")), *rows[0].EntityID)
 
 	var entities []string
 	for _, c := range changesOf(t, rows[0]) {
@@ -161,7 +162,7 @@ func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
 func TestAReadLeavesNoAuditRecord(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: 6001})
+	_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 	require.NoError(t, err)
 
 	total, err := h.DB.AuditRecord.Query().Count(t.Context())
@@ -171,16 +172,16 @@ func TestAReadLeavesNoAuditRecord(t *testing.T) {
 
 func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	name := *h.DB.BlogPost.GetX(t.Context(), 6002).Name
+	name := *h.DB.BlogPost.GetX(t.Context(), fixtures.ID("blog_post_second_post")).Name
 
 	// The update itself succeeds, then the handler reads the likes to answer and
 	// that read fails: the operation fails after its write.
 	breakReads(t, h, "blog_post_likes")
-	_, err := h.Client.AdminUpdateBlogPost(context.Background(), blogInput("Never kept", "second-post"), api.AdminUpdateBlogPostParams{ID: 6002})
+	_, err := h.Client.AdminUpdateBlogPost(context.Background(), blogInput("Never kept", "second-post"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_second_post")})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
 
-	assert.Equal(t, name, *h.DB.BlogPost.GetX(t.Context(), 6002).Name, "the write is undone")
+	assert.Equal(t, name, *h.DB.BlogPost.GetX(t.Context(), fixtures.ID("blog_post_second_post")).Name, "the write is undone")
 
 	// The success record went with the rollback; what stays is a record of the
 	// attempt, written on its own, which names no field the failed call tried to

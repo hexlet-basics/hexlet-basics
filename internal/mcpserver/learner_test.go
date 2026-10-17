@@ -9,16 +9,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // The fixtures: JavaScript has the lessons hello-world, variables and strings.
-// Alice (1001) is enrolled and has finished hello-world; Bob (1002) has a
-// finished Enrollment and has only started variables; Carol (1003) has nothing.
+// Alice (user_admin_learner) is enrolled and has finished hello-world; Bob (user_staff_editor) has a
+// finished Enrollment and has only started variables; Carol (user_with_password) has nothing.
 // carol is a fixture user.
-const carol = 1003
+var carol = fixtures.ID("user_with_password")
 
 func learnerSession(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()

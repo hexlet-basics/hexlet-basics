@@ -18,15 +18,15 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
-// The fixtures seed bob (1002) as an editor, role 9001, who may read and create
-// banners in ru and en; alice (1001) is an administrator with no Staff Role.
-const (
-	editor = 9001 // bob (1002, declared with the catalogue tests) is its member
-)
+// The fixtures seed bob (user_staff_editor) as an editor, role staff_role_editor,
+// who may read and create banners in ru and en; alice (user_admin_learner) is an
+// administrator with no Staff Role.
+var editor = fixtures.ID("staff_role_editor")
 
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
@@ -240,7 +240,6 @@ func TestReadIsRefusedWithoutMCPRead(t *testing.T) {
 
 func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	const alice = 1001
 
 	t.Run("no staff record", func(t *testing.T) {
 		session, _ := admin(t, o, alice)
@@ -248,6 +247,7 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	})
 
 	// A staff record whose role holds mcp.read but not mcp.write.
+	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 	o.DB.StaffMember.Create().SetUserID(alice).SetRoleID(editor).SetAllowedLocales([]string{"ru", "en"}).ExecX(t.Context())
 	o.Grant(editor, "mcp.read")
 	session, _ := admin(t, o, alice)
@@ -509,7 +509,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 
 	// What the in-process request carries, sent from outside: there is no
 	// Principal to honour, so the placeholder is a JWT that does not parse.
-	res := o.Do(http.MethodPut, "/api/admin/banners/1", nil, func(r *http.Request) {
+	res := o.Do(http.MethodPut, "/api/admin/banners/"+strconv.Itoa(fixtures.ID("banner_ru_published")), nil, func(r *http.Request) {
 		r.AddCookie(&http.Cookie{Name: "JWT", Value: "mcp-in-process"})
 		r.Header.Set("X-XSRF-TOKEN", "anything")
 		r.Header.Set("Content-Type", "application/json")
@@ -518,5 +518,5 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 
 	defer func() { _ = res.Body.Close() }()
 	assert.Equal(t, http.StatusUnauthorized, res.StatusCode)
-	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), 1).Body)
+	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), fixtures.ID("banner_ru_published")).Body)
 }

@@ -11,15 +11,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
-const (
-	// bob is a fixture user.
-	bob = 1002
+var bob = fixtures.ID("user_staff_editor")
 
+const (
 	// jsLanding is the landing page slug of the JavaScript course in Russian, the
 	// one getCourse takes; jsCourse is the course's own slug, which
 	// getCourseLesson takes.

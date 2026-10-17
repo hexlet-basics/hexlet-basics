@@ -161,7 +161,7 @@ func TestReadingContentLeavesNoRecord(t *testing.T) {
 // A refused read is recorded once, as a refusal, by the security handler; it
 // never reaches the middleware, so no read fact follows it.
 func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
 	require.Error(t, err)

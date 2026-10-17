@@ -38,6 +38,7 @@ func partitionNames(t *testing.T, tx *sql.Tx) []string {
 
 func addRecordAt(t *testing.T, client *ent.Client, at time.Time) *ent.AuditRecord {
 	t.Helper()
+	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 	return client.AuditRecord.Create().
 		SetOccurredAt(at).SetChannel("web").SetOperation("AdminUpdateBlogPost").SetOutcome("succeeded").
 		SaveX(t.Context())

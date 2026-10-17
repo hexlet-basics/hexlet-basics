@@ -10,6 +10,7 @@ import (
 
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -17,7 +18,7 @@ import (
 // handler turns the call away before any handler or transaction exists, and the
 // refusal still leaves an Audit Record of its own.
 func TestARefusedChangeIsRecordedAsForbidden(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	testsupport.ArriveFrom(h, "198.51.100.9")
 	testsupport.Identify(h, "req-refused-1", "Agent/2.0")
 
@@ -44,11 +45,11 @@ func TestARefusedChangeIsRecordedAsForbidden(t *testing.T) {
 // caller was refused because they may not read or change it, and the body they
 // sent was never decoded into anything the record could keep.
 func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	input := permissionsPostInput("refused-secret")
 	input.RichBody = "<p>a value the record must not keep</p>"
-	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: 6001})
+	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 	require.Error(t, err)
 
 	rows := records(t, h, "AdminUpdateBlogPost")
@@ -61,7 +62,7 @@ func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
 
 // A read the role may not do is a refusal too, not only a change.
 func TestARefusedReadIsRecordedAsForbidden(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
 	require.Error(t, err)
