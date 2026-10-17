@@ -746,6 +746,8 @@ export default {
       deny: "Deny",
       error: "Could not send your decision. Please try again.",
       intro: "The application “{{client}}” asks for access to your account.",
+      localhost_warning:
+        "This application will receive your approval on this computer only ({{host}}). If you did not start connecting an application on this computer, deny the request.",
       meta: {
         description: "Approve an application's access to your Code Basics account",
       },

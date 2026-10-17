@@ -55,8 +55,30 @@ test("the consent screen shows who asks, where it returns and what it asks for",
   await expect.element(page.getByText(/Claude Code/)).toBeVisible();
   await expect.element(page.getByText("Read the course catalog")).toBeVisible();
   await expect.element(page.getByText("Read your progress in courses")).toBeVisible();
-  await expect.element(page.getByText(/127\.0\.0\.1:8976/)).toBeVisible();
+  await expect.element(page.getByText(/sent back to 127\.0\.0\.1:8976/)).toBeVisible();
   await expect.element(page.getByText(/Dora/).first()).toBeVisible();
+});
+
+test("a redirect that stays on this computer carries a visible warning", async () => {
+  await openConsent();
+
+  await expect.element(page.getByText(/this computer only/)).toBeVisible();
+});
+
+test("a redirect to another host carries no such warning", async () => {
+  worker.use(
+    http.get("*/api/oauth/consents/req-1", () =>
+      HttpResponse.json({ ...consent, redirectHost: "app.example.com" }),
+    ),
+  );
+  await renderRoute(connectRoute, {
+    path: "/{-$locale}/connect",
+    initialPath: "/connect?id=req-1",
+    user,
+  });
+
+  await expect.element(page.getByText(/sent back to app\.example\.com/)).toBeVisible();
+  await expect.element(page.getByText(/this computer only/)).not.toBeInTheDocument();
 });
 
 test("approving sends the decision for that request", async () => {

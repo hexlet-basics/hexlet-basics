@@ -67,6 +67,18 @@ function useScopeLabel() {
   return (scope: string) => labels[scope] ?? scope;
 }
 
+// A redirect that stays on this computer (RFC 8252 native apps, or a page of a
+// developer) is legitimate, but it is also what a page that wants your approval
+// to land on a program running locally looks like, so the screen says so. The
+// host arrives with its port, and an IPv6 literal is bracketed.
+function isLocalHost(host: string): boolean {
+  const name = host
+    .replace(/:\d+$/, "")
+    .replace(/^\[|\]$/g, "")
+    .toLowerCase();
+  return name === "localhost" || name === "::1" || /^127(\.\d{1,3}){3}$/.test(name);
+}
+
 function Connect() {
   const { t } = useTranslation();
   const { id } = Route.useSearch();
@@ -102,6 +114,11 @@ function Connect() {
               <Text size="sm" c="dimmed">
                 {t(($) => $.connect.redirect, { host: consent.redirectHost })}
               </Text>
+              {isLocalHost(consent.redirectHost) && (
+                <Alert color="yellow" role="alert">
+                  {t(($) => $.connect.localhost_warning, { host: consent.redirectHost })}
+                </Alert>
+              )}
               <Text size="sm" c="dimmed">
                 {t(($) => $.connect.account, { account: consent.accountName })}
               </Text>

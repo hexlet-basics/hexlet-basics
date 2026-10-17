@@ -777,6 +777,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "redirect_uris", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
 		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "metadata_expires_at", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "timestamptz"}},
 	}
 	// OauthClientsTable holds the schema information for the "oauth_clients" table.
 	OauthClientsTable = &schema.Table{

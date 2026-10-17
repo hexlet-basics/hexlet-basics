@@ -40,6 +40,13 @@ func (OAuthClient) Fields() []ent.Field {
 		// be shown, or granted, more than it was registered for.
 		field.Other("scopes", pq.StringArray{}).
 			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+		// Set only for a client that was created from a Client ID Metadata
+		// Document (its client_id is the document's https URL): the instant the
+		// cached copy of the document stops being trusted and is fetched again
+		// at the next authorization request. Null for a statically seeded or
+		// dynamically registered client, which nothing refreshes.
+		field.Time("metadata_expires_at").Optional().Nillable().
+			SchemaType(map[string]string{dialect.Postgres: "timestamptz"}),
 	}
 }
 

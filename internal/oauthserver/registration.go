@@ -186,8 +186,17 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
 		return registration{}, metadataError("the body must be a single JSON object")
 	}
+	return parseMetadata(fields)
+}
+
+// parseMetadata judges a JSON object of client metadata, from a registration
+// request or from a Client ID Metadata Document, by the one allow-list: both are
+// anonymous input describing a client, so both are held to the same constraints.
+// Fields other than those this server understands are refused, never ignored.
+func parseMetadata(fields map[string]json.RawMessage, extraFields ...string) (registration, *registrationError) {
 	for name := range fields {
-		if !slices.Contains(registrationFields, name) && !slices.Contains(ignoredRegistrationFields, name) {
+		if !slices.Contains(registrationFields, name) && !slices.Contains(ignoredRegistrationFields, name) &&
+			!slices.Contains(extraFields, name) {
 			return registration{}, metadataError("the field %q is not accepted", name)
 		}
 	}

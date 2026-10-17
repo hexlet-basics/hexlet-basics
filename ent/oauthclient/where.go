@@ -85,6 +85,11 @@ func Scopes(v pq.StringArray) predicate.OAuthClient {
 	return predicate.OAuthClient(sql.FieldEQ(FieldScopes, v))
 }
 
+// MetadataExpiresAt applies equality check predicate on the "metadata_expires_at" field. It's identical to MetadataExpiresAtEQ.
+func MetadataExpiresAt(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldEQ(FieldMetadataExpiresAt, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.OAuthClient {
 	return predicate.OAuthClient(sql.FieldEQ(FieldCreatedAt, v))
@@ -373,6 +378,56 @@ func ScopesLT(v pq.StringArray) predicate.OAuthClient {
 // ScopesLTE applies the LTE predicate on the "scopes" field.
 func ScopesLTE(v pq.StringArray) predicate.OAuthClient {
 	return predicate.OAuthClient(sql.FieldLTE(FieldScopes, v))
+}
+
+// MetadataExpiresAtEQ applies the EQ predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtEQ(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldEQ(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtNEQ applies the NEQ predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtNEQ(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldNEQ(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtIn applies the In predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtIn(vs ...time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldIn(FieldMetadataExpiresAt, vs...))
+}
+
+// MetadataExpiresAtNotIn applies the NotIn predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtNotIn(vs ...time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldNotIn(FieldMetadataExpiresAt, vs...))
+}
+
+// MetadataExpiresAtGT applies the GT predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtGT(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldGT(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtGTE applies the GTE predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtGTE(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldGTE(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtLT applies the LT predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtLT(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldLT(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtLTE applies the LTE predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtLTE(v time.Time) predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldLTE(FieldMetadataExpiresAt, v))
+}
+
+// MetadataExpiresAtIsNil applies the IsNil predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtIsNil() predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldIsNull(FieldMetadataExpiresAt))
+}
+
+// MetadataExpiresAtNotNil applies the NotNil predicate on the "metadata_expires_at" field.
+func MetadataExpiresAtNotNil() predicate.OAuthClient {
+	return predicate.OAuthClient(sql.FieldNotNull(FieldMetadataExpiresAt))
 }
 
 // And groups predicates with the AND operator between them.

@@ -597,12 +597,13 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			return nil, err
 		}
 		return map[string]any{
-			"created_at":    row.CreatedAt,
-			"updated_at":    row.UpdatedAt,
-			"client_id":     row.ClientID,
-			"name":          row.Name,
-			"redirect_uris": row.RedirectUris,
-			"scopes":        row.Scopes,
+			"created_at":          row.CreatedAt,
+			"updated_at":          row.UpdatedAt,
+			"client_id":           row.ClientID,
+			"name":                row.Name,
+			"redirect_uris":       row.RedirectUris,
+			"scopes":              row.Scopes,
+			"metadata_expires_at": row.MetadataExpiresAt,
 		}, nil
 	case "OAuthRefreshToken":
 		key, ok := id.(string)

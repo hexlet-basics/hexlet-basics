@@ -75,6 +75,20 @@ func (_c *OAuthClientCreate) SetScopes(v pq.StringArray) *OAuthClientCreate {
 	return _c
 }
 
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (_c *OAuthClientCreate) SetMetadataExpiresAt(v time.Time) *OAuthClientCreate {
+	_c.mutation.SetMetadataExpiresAt(v)
+	return _c
+}
+
+// SetNillableMetadataExpiresAt sets the "metadata_expires_at" field if the given value is not nil.
+func (_c *OAuthClientCreate) SetNillableMetadataExpiresAt(v *time.Time) *OAuthClientCreate {
+	if v != nil {
+		_c.SetMetadataExpiresAt(*v)
+	}
+	return _c
+}
+
 // Mutation returns the OAuthClientMutation object of the builder.
 func (_c *OAuthClientCreate) Mutation() *OAuthClientMutation {
 	return _c.mutation
@@ -201,6 +215,10 @@ func (_c *OAuthClientCreate) createSpec() (*OAuthClient, *sqlgraph.CreateSpec) {
 		_spec.SetField(oauthclient.FieldScopes, field.TypeOther, value)
 		_node.Scopes = value
 	}
+	if value, ok := _c.mutation.MetadataExpiresAt(); ok {
+		_spec.SetField(oauthclient.FieldMetadataExpiresAt, field.TypeTime, value)
+		_node.MetadataExpiresAt = &value
+	}
 	return _node, _spec
 }
 
@@ -298,6 +316,24 @@ func (u *OAuthClientUpsert) SetScopes(v pq.StringArray) *OAuthClientUpsert {
 // UpdateScopes sets the "scopes" field to the value that was provided on create.
 func (u *OAuthClientUpsert) UpdateScopes() *OAuthClientUpsert {
 	u.SetExcluded(oauthclient.FieldScopes)
+	return u
+}
+
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (u *OAuthClientUpsert) SetMetadataExpiresAt(v time.Time) *OAuthClientUpsert {
+	u.Set(oauthclient.FieldMetadataExpiresAt, v)
+	return u
+}
+
+// UpdateMetadataExpiresAt sets the "metadata_expires_at" field to the value that was provided on create.
+func (u *OAuthClientUpsert) UpdateMetadataExpiresAt() *OAuthClientUpsert {
+	u.SetExcluded(oauthclient.FieldMetadataExpiresAt)
+	return u
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (u *OAuthClientUpsert) ClearMetadataExpiresAt() *OAuthClientUpsert {
+	u.SetNull(oauthclient.FieldMetadataExpiresAt)
 	return u
 }
 
@@ -402,6 +438,27 @@ func (u *OAuthClientUpsertOne) SetScopes(v pq.StringArray) *OAuthClientUpsertOne
 func (u *OAuthClientUpsertOne) UpdateScopes() *OAuthClientUpsertOne {
 	return u.Update(func(s *OAuthClientUpsert) {
 		s.UpdateScopes()
+	})
+}
+
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (u *OAuthClientUpsertOne) SetMetadataExpiresAt(v time.Time) *OAuthClientUpsertOne {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.SetMetadataExpiresAt(v)
+	})
+}
+
+// UpdateMetadataExpiresAt sets the "metadata_expires_at" field to the value that was provided on create.
+func (u *OAuthClientUpsertOne) UpdateMetadataExpiresAt() *OAuthClientUpsertOne {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.UpdateMetadataExpiresAt()
+	})
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (u *OAuthClientUpsertOne) ClearMetadataExpiresAt() *OAuthClientUpsertOne {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.ClearMetadataExpiresAt()
 	})
 }
 
@@ -672,6 +729,27 @@ func (u *OAuthClientUpsertBulk) SetScopes(v pq.StringArray) *OAuthClientUpsertBu
 func (u *OAuthClientUpsertBulk) UpdateScopes() *OAuthClientUpsertBulk {
 	return u.Update(func(s *OAuthClientUpsert) {
 		s.UpdateScopes()
+	})
+}
+
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (u *OAuthClientUpsertBulk) SetMetadataExpiresAt(v time.Time) *OAuthClientUpsertBulk {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.SetMetadataExpiresAt(v)
+	})
+}
+
+// UpdateMetadataExpiresAt sets the "metadata_expires_at" field to the value that was provided on create.
+func (u *OAuthClientUpsertBulk) UpdateMetadataExpiresAt() *OAuthClientUpsertBulk {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.UpdateMetadataExpiresAt()
+	})
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (u *OAuthClientUpsertBulk) ClearMetadataExpiresAt() *OAuthClientUpsertBulk {
+	return u.Update(func(s *OAuthClientUpsert) {
+		s.ClearMetadataExpiresAt()
 	})
 }
 

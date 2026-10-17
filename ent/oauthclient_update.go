@@ -61,6 +61,26 @@ func (_u *OAuthClientUpdate) SetScopes(v pq.StringArray) *OAuthClientUpdate {
 	return _u
 }
 
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (_u *OAuthClientUpdate) SetMetadataExpiresAt(v time.Time) *OAuthClientUpdate {
+	_u.mutation.SetMetadataExpiresAt(v)
+	return _u
+}
+
+// SetNillableMetadataExpiresAt sets the "metadata_expires_at" field if the given value is not nil.
+func (_u *OAuthClientUpdate) SetNillableMetadataExpiresAt(v *time.Time) *OAuthClientUpdate {
+	if v != nil {
+		_u.SetMetadataExpiresAt(*v)
+	}
+	return _u
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (_u *OAuthClientUpdate) ClearMetadataExpiresAt() *OAuthClientUpdate {
+	_u.mutation.ClearMetadataExpiresAt()
+	return _u
+}
+
 // Mutation returns the OAuthClientMutation object of the builder.
 func (_u *OAuthClientUpdate) Mutation() *OAuthClientMutation {
 	return _u.mutation
@@ -136,6 +156,12 @@ func (_u *OAuthClientUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(oauthclient.FieldScopes, field.TypeOther, value)
 	}
+	if value, ok := _u.mutation.MetadataExpiresAt(); ok {
+		_spec.SetField(oauthclient.FieldMetadataExpiresAt, field.TypeTime, value)
+	}
+	if _u.mutation.MetadataExpiresAtCleared() {
+		_spec.ClearField(oauthclient.FieldMetadataExpiresAt, field.TypeTime)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{oauthclient.Label}
@@ -185,6 +211,26 @@ func (_u *OAuthClientUpdateOne) SetRedirectUris(v pq.StringArray) *OAuthClientUp
 // SetScopes sets the "scopes" field.
 func (_u *OAuthClientUpdateOne) SetScopes(v pq.StringArray) *OAuthClientUpdateOne {
 	_u.mutation.SetScopes(v)
+	return _u
+}
+
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (_u *OAuthClientUpdateOne) SetMetadataExpiresAt(v time.Time) *OAuthClientUpdateOne {
+	_u.mutation.SetMetadataExpiresAt(v)
+	return _u
+}
+
+// SetNillableMetadataExpiresAt sets the "metadata_expires_at" field if the given value is not nil.
+func (_u *OAuthClientUpdateOne) SetNillableMetadataExpiresAt(v *time.Time) *OAuthClientUpdateOne {
+	if v != nil {
+		_u.SetMetadataExpiresAt(*v)
+	}
+	return _u
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (_u *OAuthClientUpdateOne) ClearMetadataExpiresAt() *OAuthClientUpdateOne {
+	_u.mutation.ClearMetadataExpiresAt()
 	return _u
 }
 
@@ -292,6 +338,12 @@ func (_u *OAuthClientUpdateOne) sqlSave(ctx context.Context) (_node *OAuthClient
 	}
 	if value, ok := _u.mutation.Scopes(); ok {
 		_spec.SetField(oauthclient.FieldScopes, field.TypeOther, value)
+	}
+	if value, ok := _u.mutation.MetadataExpiresAt(); ok {
+		_spec.SetField(oauthclient.FieldMetadataExpiresAt, field.TypeTime, value)
+	}
+	if _u.mutation.MetadataExpiresAtCleared() {
+		_spec.ClearField(oauthclient.FieldMetadataExpiresAt, field.TypeTime)
 	}
 	_node = &OAuthClient{config: _u.config}
 	_spec.Assign = _node.assignValues

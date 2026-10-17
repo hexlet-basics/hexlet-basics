@@ -115,6 +115,11 @@ type Server struct {
 	resource string
 	app      Application
 	limiter  *limiter
+	// documents resolves client ids that are metadata document URLs; its own
+	// limiter keeps fetches from spending the registration budget and the other
+	// way round.
+	documents      *documentClients
+	metadataClient *http.Client
 	// clientAddress is Deps.ClientAddress, never nil.
 	clientAddress func(context.Context) (string, bool)
 	storage       *storage
@@ -125,7 +130,7 @@ type Server struct {
 // New builds the Server. It fails on a configuration the provider rejects (an
 // issuer that is not an origin, a missing key) so a misconfigured deployment
 // refuses to start rather than answering with a broken metadata document.
-func New(deps Deps) (*Server, error) {
+func New(deps Deps, opts ...Option) (*Server, error) {
 	if deps.Config.EncryptionKey == "" {
 		return nil, errors.New("oauthserver: encryption key is required")
 	}
@@ -148,7 +153,7 @@ func New(deps Deps) (*Server, error) {
 		signing:  signing,
 	}
 
-	opts := []op.Option{
+	providerOpts := []op.Option{
 		op.WithCustomEndpoints(
 			op.NewEndpoint(authorizePath),
 			op.NewEndpoint(tokenPath),
@@ -175,7 +180,7 @@ func New(deps Deps) (*Server, error) {
 	// http is accepted for the issuer only where the library itself would insist
 	// on https: a development origin. Production configuration rejects it.
 	if issuer.Scheme == "http" {
-		opts = append(opts, op.WithAllowInsecure())
+		providerOpts = append(providerOpts, op.WithAllowInsecure())
 	}
 	provider, err := op.NewProvider(&op.Config{
 		CryptoKey:             key,
@@ -184,7 +189,7 @@ func New(deps Deps) (*Server, error) {
 		SupportedScopes: []string{
 			ScopeCatalogRead, ScopeProgressRead, ScopeAdmin, "offline_access",
 		},
-	}, st, op.StaticIssuer(deps.Config.Issuer), opts...)
+	}, st, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
 	if err != nil {
 		return nil, fmt.Errorf("oauthserver: build provider: %w", err)
 	}
@@ -198,6 +203,10 @@ func New(deps Deps) (*Server, error) {
 		limiter:       newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
 		clientAddress: clientAddress,
 	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	s.documents = newDocumentClients(s.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
 	s.handler = s.routes()
 	return s, nil
 }

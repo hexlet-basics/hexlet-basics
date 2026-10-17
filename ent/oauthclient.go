@@ -29,8 +29,10 @@ type OAuthClient struct {
 	// RedirectUris holds the value of the "redirect_uris" field.
 	RedirectUris pq.StringArray `json:"redirect_uris,omitempty"`
 	// Scopes holds the value of the "scopes" field.
-	Scopes       pq.StringArray `json:"scopes,omitempty"`
-	selectValues sql.SelectValues
+	Scopes pq.StringArray `json:"scopes,omitempty"`
+	// MetadataExpiresAt holds the value of the "metadata_expires_at" field.
+	MetadataExpiresAt *time.Time `json:"metadata_expires_at,omitempty"`
+	selectValues      sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,7 +46,7 @@ func (*OAuthClient) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case oauthclient.FieldClientID, oauthclient.FieldName:
 			values[i] = new(sql.NullString)
-		case oauthclient.FieldCreatedAt, oauthclient.FieldUpdatedAt:
+		case oauthclient.FieldCreatedAt, oauthclient.FieldUpdatedAt, oauthclient.FieldMetadataExpiresAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -103,6 +105,13 @@ func (_m *OAuthClient) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				_m.Scopes = *value
 			}
+		case oauthclient.FieldMetadataExpiresAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field metadata_expires_at", values[i])
+			} else if value.Valid {
+				_m.MetadataExpiresAt = new(time.Time)
+				*_m.MetadataExpiresAt = value.Time
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -156,6 +165,11 @@ func (_m *OAuthClient) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("scopes=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Scopes))
+	builder.WriteString(", ")
+	if v := _m.MetadataExpiresAt; v != nil {
+		builder.WriteString("metadata_expires_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

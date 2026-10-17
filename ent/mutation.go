@@ -27320,19 +27320,20 @@ func (m *OAuthAuthRequestMutation) ResetEdge(name string) error {
 // OAuthClientMutation represents an operation that mutates the OAuthClient nodes in the graph.
 type OAuthClientMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_at    *time.Time
-	updated_at    *time.Time
-	client_id     *string
-	name          *string
-	redirect_uris *pq.StringArray
-	scopes        *pq.StringArray
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*OAuthClient, error)
-	predicates    []predicate.OAuthClient
+	op                  Op
+	typ                 string
+	id                  *int
+	created_at          *time.Time
+	updated_at          *time.Time
+	client_id           *string
+	name                *string
+	redirect_uris       *pq.StringArray
+	scopes              *pq.StringArray
+	metadata_expires_at *time.Time
+	clearedFields       map[string]struct{}
+	done                bool
+	oldValue            func(context.Context) (*OAuthClient, error)
+	predicates          []predicate.OAuthClient
 }
 
 var _ ent.Mutation = (*OAuthClientMutation)(nil)
@@ -27649,6 +27650,55 @@ func (m *OAuthClientMutation) ResetScopes() {
 	m.scopes = nil
 }
 
+// SetMetadataExpiresAt sets the "metadata_expires_at" field.
+func (m *OAuthClientMutation) SetMetadataExpiresAt(t time.Time) {
+	m.metadata_expires_at = &t
+}
+
+// MetadataExpiresAt returns the value of the "metadata_expires_at" field in the mutation.
+func (m *OAuthClientMutation) MetadataExpiresAt() (r time.Time, exists bool) {
+	v := m.metadata_expires_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMetadataExpiresAt returns the old "metadata_expires_at" field's value of the OAuthClient entity.
+// If the OAuthClient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthClientMutation) OldMetadataExpiresAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMetadataExpiresAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMetadataExpiresAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMetadataExpiresAt: %w", err)
+	}
+	return oldValue.MetadataExpiresAt, nil
+}
+
+// ClearMetadataExpiresAt clears the value of the "metadata_expires_at" field.
+func (m *OAuthClientMutation) ClearMetadataExpiresAt() {
+	m.metadata_expires_at = nil
+	m.clearedFields[oauthclient.FieldMetadataExpiresAt] = struct{}{}
+}
+
+// MetadataExpiresAtCleared returns if the "metadata_expires_at" field was cleared in this mutation.
+func (m *OAuthClientMutation) MetadataExpiresAtCleared() bool {
+	_, ok := m.clearedFields[oauthclient.FieldMetadataExpiresAt]
+	return ok
+}
+
+// ResetMetadataExpiresAt resets all changes to the "metadata_expires_at" field.
+func (m *OAuthClientMutation) ResetMetadataExpiresAt() {
+	m.metadata_expires_at = nil
+	delete(m.clearedFields, oauthclient.FieldMetadataExpiresAt)
+}
+
 // Where appends a list predicates to the OAuthClientMutation builder.
 func (m *OAuthClientMutation) Where(ps ...predicate.OAuthClient) {
 	m.predicates = append(m.predicates, ps...)
@@ -27683,7 +27733,7 @@ func (m *OAuthClientMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OAuthClientMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, oauthclient.FieldCreatedAt)
 	}
@@ -27701,6 +27751,9 @@ func (m *OAuthClientMutation) Fields() []string {
 	}
 	if m.scopes != nil {
 		fields = append(fields, oauthclient.FieldScopes)
+	}
+	if m.metadata_expires_at != nil {
+		fields = append(fields, oauthclient.FieldMetadataExpiresAt)
 	}
 	return fields
 }
@@ -27722,6 +27775,8 @@ func (m *OAuthClientMutation) Field(name string) (ent.Value, bool) {
 		return m.RedirectUris()
 	case oauthclient.FieldScopes:
 		return m.Scopes()
+	case oauthclient.FieldMetadataExpiresAt:
+		return m.MetadataExpiresAt()
 	}
 	return nil, false
 }
@@ -27743,6 +27798,8 @@ func (m *OAuthClientMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldRedirectUris(ctx)
 	case oauthclient.FieldScopes:
 		return m.OldScopes(ctx)
+	case oauthclient.FieldMetadataExpiresAt:
+		return m.OldMetadataExpiresAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown OAuthClient field %s", name)
 }
@@ -27794,6 +27851,13 @@ func (m *OAuthClientMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetScopes(v)
 		return nil
+	case oauthclient.FieldMetadataExpiresAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMetadataExpiresAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown OAuthClient field %s", name)
 }
@@ -27823,7 +27887,11 @@ func (m *OAuthClientMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *OAuthClientMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(oauthclient.FieldMetadataExpiresAt) {
+		fields = append(fields, oauthclient.FieldMetadataExpiresAt)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -27836,6 +27904,11 @@ func (m *OAuthClientMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *OAuthClientMutation) ClearField(name string) error {
+	switch name {
+	case oauthclient.FieldMetadataExpiresAt:
+		m.ClearMetadataExpiresAt()
+		return nil
+	}
 	return fmt.Errorf("unknown OAuthClient nullable field %s", name)
 }
 
@@ -27860,6 +27933,9 @@ func (m *OAuthClientMutation) ResetField(name string) error {
 		return nil
 	case oauthclient.FieldScopes:
 		m.ResetScopes()
+		return nil
+	case oauthclient.FieldMetadataExpiresAt:
+		m.ResetMetadataExpiresAt()
 		return nil
 	}
 	return fmt.Errorf("unknown OAuthClient field %s", name)
