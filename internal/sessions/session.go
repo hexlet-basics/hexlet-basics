@@ -4,7 +4,7 @@
 // It owns the cookie, the token's rotation and expiry, and the question "which
 // user does this request belong to". It does not decide who may do what; that is
 // read from the account on every request.
-package session
+package sessions
 
 import (
 	"context"

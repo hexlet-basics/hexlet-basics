@@ -1,4 +1,4 @@
-package session_test
+package sessions_test
 
 import (
 	"os"

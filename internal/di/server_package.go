@@ -30,7 +30,7 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -63,7 +63,7 @@ type handlerServices struct {
 	RelatedCoursesSet *relatedcourses.Replacer  `do:""`
 	Progress          *progress.Progress        `do:""`
 	Assets            *assetstore.Store         `do:""`
-	Sessions          *session.Manager          `do:""`
+	Sessions          *sessions.Manager         `do:""`
 	Registrar         *accounts.Registrar       `do:""`
 	Remover           *accounts.Remover         `do:""`
 	Events            *events.Publisher         `do:""`
@@ -93,7 +93,7 @@ var serverPackage = do.Package(
 	}),
 	// Sessions live in the database; a store failure answers in the API's own
 	// error shape through the same handler everything else uses.
-	do.Lazy[*session.Manager](func(i do.Injector) (*session.Manager, error) {
+	do.Lazy[*sessions.Manager](func(i do.Injector) (*sessions.Manager, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -106,10 +106,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return session.New(
+		return sessions.New(
 			db,
-			session.WithSecure(cfg.SecureCookies()),
-			session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+			sessions.WithSecure(cfg.SecureCookies()),
+			sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 				errorHandler.Write(r.Context(), w, r, err)
 			}),
 		), nil

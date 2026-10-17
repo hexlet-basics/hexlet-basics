@@ -24,11 +24,6 @@ func NotRemoved() predicate.User {
 	return user.Or(user.StateIsNil(), user.StateNEQ(StateRemoved))
 }
 
-// AccountRemover is the account-deletion seam the handlers depend on.
-type AccountRemover interface {
-	Remove(ctx context.Context, userID int) error
-}
-
 // Remover deletes accounts the way legacy `mark_as_removed!` did.
 type Remover struct {
 	store store.Transactor

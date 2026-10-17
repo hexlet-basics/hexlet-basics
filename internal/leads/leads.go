@@ -52,11 +52,6 @@ type Submission struct {
 	IP *string
 }
 
-// Creator is the seam the handler depends on.
-type Creator interface {
-	Create(ctx context.Context, submission Submission) (*ent.Lead, error)
-}
-
 // Recorder atomically stores a lead and its LeadCreated outbox record, so a
 // lead never exists without reaching amoCRM and amoCRM never hears of a lead
 // that was rolled back.

@@ -17,7 +17,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -153,7 +153,7 @@ func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput 
 func startsSession(setCookie []string) bool {
 	for _, raw := range setCookie {
 		cookie, err := http.ParseSetCookie(raw)
-		if err == nil && cookie.Name == session.CookieName && cookie.Value != "" && cookie.MaxAge >= 0 {
+		if err == nil && cookie.Name == sessions.CookieName && cookie.Value != "" && cookie.MaxAge >= 0 {
 			return true
 		}
 	}

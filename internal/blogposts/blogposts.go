@@ -14,11 +14,6 @@ import (
 	"hexletbasics/internal/store"
 )
 
-// PostRemover is the post-deletion seam the handlers depend on.
-type PostRemover interface {
-	Remove(ctx context.Context, postID int) error
-}
-
 // Remover deletes posts with their dependents.
 type Remover struct {
 	store store.Transactor

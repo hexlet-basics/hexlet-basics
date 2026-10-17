@@ -24,7 +24,7 @@ import (
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -63,7 +63,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	cfg := &config.Config{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
-	sessions := session.New(db)
+	manager := sessions.New(db)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
@@ -73,7 +73,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		Jobs:      services.Jobs,
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
 		Assets:    assets,
-		Sessions:  sessions,
+		Sessions:  manager,
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
 		Events:    services.Events,
@@ -100,10 +100,10 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	}
 	u, err := db.User.Get(t.Context(), fixtures.ID(label))
 	require.NoError(t, err)
-	token, err := sessions.Issue(t.Context(), u)
+	token, err := manager.Issue(t.Context(), u)
 	require.NoError(t, err)
 
-	return router, []*http.Cookie{{Name: session.CookieName, Value: token}}
+	return router, []*http.Cookie{{Name: sessions.CookieName, Value: token}}
 }
 
 func newAttachmentRouter(t *testing.T) http.Handler {

@@ -28,21 +28,22 @@ type Courses struct {
 	Finished []Course
 }
 
-// CourseLister is the dashboard seam the handlers depend on.
-type CourseLister interface {
-	Courses(ctx context.Context, userID int, locale string) (Courses, error)
+// CourseProgress is where a learner stands in each of several courses; the one
+// thing the dashboard needs from the progress module.
+type CourseProgress interface {
+	CourseStates(ctx context.Context, userID int, courseIDs []int) (map[int]*progress.CourseState, error)
 }
 
 // Dashboard reads the learner's courses.
 type Dashboard struct {
 	db       *ent.Client
 	catalog  *landingpages.Catalog
-	progress progress.Tracker
+	progress CourseProgress
 }
 
 // New builds the production dashboard over the catalog and the progress module,
 // so the dashboard and the course page report the same progress.
-func New(db *ent.Client, catalog *landingpages.Catalog, tracker progress.Tracker) *Dashboard {
+func New(db *ent.Client, catalog *landingpages.Catalog, tracker CourseProgress) *Dashboard {
 	return &Dashboard{db: db, catalog: catalog, progress: tracker}
 }
 
