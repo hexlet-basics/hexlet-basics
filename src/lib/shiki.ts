@@ -63,6 +63,10 @@ export const supportedLanguages = new Set(Object.keys(languageModules));
 // shiki's built-in "language" that needs no grammar.
 export const plainTextLanguage = "text";
 
+// Likewise built in: shiki colours ANSI escape sequences itself, which is what a
+// test runner's report is made of.
+export const ansiLanguage = "ansi";
+
 // An author asking for plain text explicitly is not an unknown language.
 const plainTextAliases = new Set(["text", "plaintext", "plain", "txt"]);
 

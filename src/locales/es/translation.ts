@@ -1144,6 +1144,8 @@ export default {
           next: "Next →",
           only_for_signed_in_users: "Exercise available only for signed users.",
           output: "Output",
+          output_empty: "Press Run to see the tests output",
+          output_running: "Running the tests…",
           please_sign_in:
             "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
           prev: "← Previous",

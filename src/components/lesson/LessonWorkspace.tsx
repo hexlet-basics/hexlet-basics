@@ -143,7 +143,9 @@ export default function LessonWorkspace({
         value={!phone && tab === "lesson" ? "editor" : tab}
         onChange={setTab}
         display="flex"
-        style={{ flexDirection: "column", flexGrow: 1, minHeight: 0 }}
+        flex={1}
+        mih={0}
+        style={{ flexDirection: "column" }}
         keepMountedMode="display-none"
       >
         <Tabs.List grow>
@@ -173,7 +175,7 @@ export default function LessonWorkspace({
 
         <Tabs.Panel value="editor" h="100%" mih={0}>
           <Stack h="100%" gap={0}>
-            <Box style={{ flexGrow: 1, minHeight: 0 }}>
+            <Box flex={1} mih={0}>
               <LessonEditor
                 // Monaco is handed its buffer once, so moving to another lesson
                 // has to give it a new editor rather than a new prop.
@@ -194,7 +196,7 @@ export default function LessonWorkspace({
               // rendered from the starter code would disagree with it.
               <ClientOnly>
                 <Suspense>
-                  <Box style={{ flexShrink: 0 }}>
+                  <Box flex="none">
                     <LessonPreview code={code} />
                   </Box>
                 </Suspense>
@@ -204,9 +206,12 @@ export default function LessonWorkspace({
         </Tabs.Panel>
 
         <Tabs.Panel value="output" h="100%" mih={0}>
-          <ScrollArea h="100%">
-            <LessonOutput result={result} />
-          </ScrollArea>
+          {/* A plain scrolling box rather than a ScrollArea: the output has to fill
+              the pane, and a ScrollArea's content wrapper is only as tall as its
+              content. */}
+          <Box h="100%" style={{ overflow: "auto" }}>
+            <LessonOutput result={result} running={check.isPending} />
+          </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="tests" h="100%" mih={0}>
@@ -235,7 +240,6 @@ export default function LessonWorkspace({
       <LessonControls
         view={view}
         passed={solutionUnlocked}
-        passedNow={Boolean(result?.passed)}
         onReset={reset}
         onRun={run}
         running={check.isPending}

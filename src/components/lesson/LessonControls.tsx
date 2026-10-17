@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Divider, Group, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
 import {
@@ -8,10 +8,10 @@ import {
   type ValidateLinkOptions,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import type { CourseLessonView } from "@/client/types.gen";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
-import { ButtonLink, TextLink } from "@/components/RouterLink";
+import { ButtonLink } from "@/components/RouterLink";
 
 // The bar under the workspace, where the buttons that act on the exercise live:
 // reset, Previous, Run, Next — legacy's order. It sits below the tabs rather than
@@ -20,7 +20,6 @@ import { ButtonLink, TextLink } from "@/components/RouterLink";
 export default function LessonControls({
   view,
   passed,
-  passedNow,
   onReset,
   onRun,
   running,
@@ -29,9 +28,6 @@ export default function LessonControls({
   // Passed in this visit or finished before it — the same fact that opens the
   // reference solution, so Next and the solution can never disagree.
   passed: boolean;
-  // Passed by a run in this visit, and only that: what the guest prompt is
-  // about is a result just achieved, not one brought along from before.
-  passedNow: boolean;
   onReset: () => void;
   onRun: () => void;
   running: boolean;
@@ -100,13 +96,6 @@ export default function LessonControls({
             <GuestSignUp passed={passed} />
           )}
         </Group>
-
-        {/* The one thing this port adds rather than copies: legacy carried the
-            string and rendered it nowhere. The merge that keeps a guest's
-            progress on sign-up is built, so the promise is now true. It
-            follows a pass in this visit, the moment it is about; a lesson
-            finished earlier opens the sign-up link but says nothing. */}
-        {!user && passedNow && <GuestPrompt />}
       </Box>
     </Stack>
   );
@@ -199,21 +188,5 @@ function StepLink({ enabled, label, linkOptions }: StepLinkProps): ReactNode {
     <Button variant="outline" color="green" disabled>
       {label}
     </Button>
-  );
-}
-
-// The line a guest reads after passing: signing up keeps what they have done.
-function GuestPrompt() {
-  const { t } = useTranslation();
-  const redirect = useLocation({ select: (location) => location.href });
-
-  return (
-    <Text ta="center" size="sm" mt="xs">
-      <Trans
-        t={t}
-        i18nKey={($) => $.courses.lessons.show.sign_up_for_tracking_progress_html}
-        components={{ a: <TextLink to="/{-$locale}/users/new" search={{ redirect }} inherit /> }}
-      />
-    </Text>
   );
 }
