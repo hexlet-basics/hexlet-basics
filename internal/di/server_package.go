@@ -696,8 +696,9 @@ var serverPackage = do.Package(
 			Catalogue: handler,
 			// The generated server with its security handler and audit
 			// middleware: the one checkpoint of every admin tool (ADR-0018).
-			API:    handlers.NewAdminDispatcher(apiServer, translator),
-			Issuer: cfg.OAuth.Issuer,
+			Learner: handler,
+			API:     handlers.NewAdminDispatcher(apiServer, translator),
+			Issuer:  cfg.OAuth.Issuer,
 			Limits: mcpserver.Limits{
 				MaxPageSize:      cfg.MCP.MaxPageSize,
 				MaxResponseBytes: cfg.MCP.MaxResponseBytes,

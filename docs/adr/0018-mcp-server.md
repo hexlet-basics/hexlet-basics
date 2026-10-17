@@ -313,3 +313,32 @@ of both (`TestDispatchedCallsPassBothMiddlewares`: a write leaves its Audit
 Record, a read of users publishes its read fact, both with channel `mcp`, the
 Connected App and the token). The read fact's `TokenID` is a string for the same
 reason as the column.
+
+## Addendum: the learner tools (#852)
+
+- **Tools.** `getMyDashboard` is the operationId of the HTTP operation and returns
+  its contract schema (the handler's code, called with the token's user).
+  `getMyCourseProgress` (argument `courseSlug`) and `getMyLessonProgress`
+  (`courseSlug`, `lessonSlug`) are named wrappers: the contract has no single
+  operation that tells a Lesson that is Started from one that is Not started
+  (`LessonProgressItem` carries only `finished`), so their output schemas are written
+  in `internal/mcpserver/learner.go`, not read from the contract, and the data
+  comes from `progress.Tracker.LearnerCourse`, which builds on `CourseStates` so
+  Completion and the Next Lesson are the numbers the website shows. All need
+  `progress:read` and are read-only.
+- **The subject is the token's.** No argument names a user, and arguments are
+  decoded strictly: one the schema does not declare (a `userId`) is a tool error,
+  not ignored. A course or lesson slug may name anything; the answer is still the
+  token's user's rows (Not started for what they never opened).
+- **Never offered.** Solution code, assistant chat, email and the rest of the
+  profile appear in no schema or result; a test walks every schema and result for
+  those names.
+- **"Result of the last check" is a deviation from the ticket's wording.** The
+  platform stores neither the submitted code nor the check output (a failed
+  attempt only leaves the Lesson started), so there is no last-check record to
+  expose. `getMyLessonProgress` reports `passedCheck`: whether a check of this
+  Lesson has passed (Finished). Exposing output would need a new table and, since
+  output can echo the submission, a decision about solution code; it is left out.
+- **Rate limiting.** The tools register through `addTool` in the `personal` Class
+  of #851 (30 calls per user per window by default), behind the Scope check.
+- **Guest progress** does not exist over MCP: a bearer token always has a user.
