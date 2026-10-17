@@ -1684,10 +1684,6 @@ func decodeAdminGetUserParams(args [1]string, argsEscaped bool, r *http.Request)
 type AdminListBannersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListBannersParams(packed middleware.Parameters) (params AdminListBannersParams) {
@@ -1707,24 +1703,6 @@ func unpackAdminListBannersParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -1798,6 +1776,11 @@ func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -1864,103 +1847,6 @@ func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -1968,10 +1854,6 @@ func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Requ
 type AdminListBlogPostsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListBlogPostsParams(packed middleware.Parameters) (params AdminListBlogPostsParams) {
@@ -1991,24 +1873,6 @@ func unpackAdminListBlogPostsParams(packed middleware.Parameters) (params AdminL
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -2082,6 +1946,11 @@ func decodeAdminListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Re
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -2144,103 +2013,6 @@ func decodeAdminListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Re
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
 			In:   "query",
 			Err:  err,
 		}
@@ -2317,10 +2089,6 @@ func decodeAdminListCategoryQnaItemsParams(args [1]string, argsEscaped bool, r *
 type AdminListCourseCategoriesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseCategoriesParams(packed middleware.Parameters) (params AdminListCourseCategoriesParams) {
@@ -2340,24 +2108,6 @@ func unpackAdminListCourseCategoriesParams(packed middleware.Parameters) (params
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -2431,6 +2181,11 @@ func decodeAdminListCourseCategoriesParams(args [0]string, argsEscaped bool, r *
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -2497,103 +2252,6 @@ func decodeAdminListCourseCategoriesParams(args [0]string, argsEscaped bool, r *
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -2601,10 +2259,6 @@ func decodeAdminListCourseCategoriesParams(args [0]string, argsEscaped bool, r *
 type AdminListCourseLandingPagesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseLandingPagesParams(packed middleware.Parameters) (params AdminListCourseLandingPagesParams) {
@@ -2624,24 +2278,6 @@ func unpackAdminListCourseLandingPagesParams(packed middleware.Parameters) (para
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -2715,6 +2351,11 @@ func decodeAdminListCourseLandingPagesParams(args [0]string, argsEscaped bool, r
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -2781,103 +2422,6 @@ func decodeAdminListCourseLandingPagesParams(args [0]string, argsEscaped bool, r
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -2885,10 +2429,6 @@ func decodeAdminListCourseLandingPagesParams(args [0]string, argsEscaped bool, r
 type AdminListCourseLessonReviewsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseLessonReviewsParams(packed middleware.Parameters) (params AdminListCourseLessonReviewsParams) {
@@ -2908,24 +2448,6 @@ func unpackAdminListCourseLessonReviewsParams(packed middleware.Parameters) (par
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -2999,6 +2521,11 @@ func decodeAdminListCourseLessonReviewsParams(args [0]string, argsEscaped bool, 
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -3065,103 +2592,6 @@ func decodeAdminListCourseLessonReviewsParams(args [0]string, argsEscaped bool, 
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -3169,10 +2599,6 @@ func decodeAdminListCourseLessonReviewsParams(args [0]string, argsEscaped bool, 
 type AdminListCourseLessonsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseLessonsParams(packed middleware.Parameters) (params AdminListCourseLessonsParams) {
@@ -3192,24 +2618,6 @@ func unpackAdminListCourseLessonsParams(packed middleware.Parameters) (params Ad
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -3283,6 +2691,11 @@ func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *htt
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -3349,103 +2762,6 @@ func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *htt
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -3453,10 +2769,6 @@ func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *htt
 type AdminListCoursesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCoursesParams(packed middleware.Parameters) (params AdminListCoursesParams) {
@@ -3476,24 +2788,6 @@ func unpackAdminListCoursesParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -3567,6 +2861,11 @@ func decodeAdminListCoursesParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -3629,103 +2928,6 @@ func decodeAdminListCoursesParams(args [0]string, argsEscaped bool, r *http.Requ
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
 			In:   "query",
 			Err:  err,
 		}
@@ -3802,10 +3004,6 @@ func decodeAdminListLandingPageQnaItemsParams(args [1]string, argsEscaped bool, 
 type AdminListLeadsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListLeadsParams(packed middleware.Parameters) (params AdminListLeadsParams) {
@@ -3825,24 +3023,6 @@ func unpackAdminListLeadsParams(packed middleware.Parameters) (params AdminListL
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -3916,6 +3096,11 @@ func decodeAdminListLeadsParams(args [0]string, argsEscaped bool, r *http.Reques
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -3982,103 +3167,6 @@ func decodeAdminListLeadsParams(args [0]string, argsEscaped bool, r *http.Reques
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -4086,10 +3174,6 @@ func decodeAdminListLeadsParams(args [0]string, argsEscaped bool, r *http.Reques
 type AdminListLessonProgressParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListLessonProgressParams(packed middleware.Parameters) (params AdminListLessonProgressParams) {
@@ -4109,24 +3193,6 @@ func unpackAdminListLessonProgressParams(packed middleware.Parameters) (params A
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -4200,6 +3266,11 @@ func decodeAdminListLessonProgressParams(args [0]string, argsEscaped bool, r *ht
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -4266,103 +3337,6 @@ func decodeAdminListLessonProgressParams(args [0]string, argsEscaped bool, r *ht
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -4370,10 +3344,6 @@ func decodeAdminListLessonProgressParams(args [0]string, argsEscaped bool, r *ht
 type AdminListManagementUsersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListManagementUsersParams(packed middleware.Parameters) (params AdminListManagementUsersParams) {
@@ -4393,24 +3363,6 @@ func unpackAdminListManagementUsersParams(packed middleware.Parameters) (params 
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -4484,6 +3436,11 @@ func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *h
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -4550,103 +3507,6 @@ func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *h
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -4654,10 +3514,6 @@ func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *h
 type AdminListMessagesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListMessagesParams(packed middleware.Parameters) (params AdminListMessagesParams) {
@@ -4677,24 +3533,6 @@ func unpackAdminListMessagesParams(packed middleware.Parameters) (params AdminLi
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -4768,6 +3606,11 @@ func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Req
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -4834,103 +3677,6 @@ func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Req
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -4938,10 +3684,6 @@ func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Req
 type AdminListReviewsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListReviewsParams(packed middleware.Parameters) (params AdminListReviewsParams) {
@@ -4961,24 +3703,6 @@ func unpackAdminListReviewsParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -5052,6 +3776,11 @@ func decodeAdminListReviewsParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -5118,103 +3847,6 @@ func decodeAdminListReviewsParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -5222,10 +3854,6 @@ func decodeAdminListReviewsParams(args [0]string, argsEscaped bool, r *http.Requ
 type AdminListRolesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListRolesParams(packed middleware.Parameters) (params AdminListRolesParams) {
@@ -5245,24 +3873,6 @@ func unpackAdminListRolesParams(packed middleware.Parameters) (params AdminListR
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -5336,6 +3946,11 @@ func decodeAdminListRolesParams(args [0]string, argsEscaped bool, r *http.Reques
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -5402,103 +4017,6 @@ func decodeAdminListRolesParams(args [0]string, argsEscaped bool, r *http.Reques
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -5506,10 +4024,6 @@ func decodeAdminListRolesParams(args [0]string, argsEscaped bool, r *http.Reques
 type AdminListStaffMembersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListStaffMembersParams(packed middleware.Parameters) (params AdminListStaffMembersParams) {
@@ -5529,24 +4043,6 @@ func unpackAdminListStaffMembersParams(packed middleware.Parameters) (params Adm
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -5620,6 +4116,11 @@ func decodeAdminListStaffMembersParams(args [0]string, argsEscaped bool, r *http
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -5686,103 +4187,6 @@ func decodeAdminListStaffMembersParams(args [0]string, argsEscaped bool, r *http
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -5790,10 +4194,6 @@ func decodeAdminListStaffMembersParams(args [0]string, argsEscaped bool, r *http
 type AdminListUsersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListUsersParams(packed middleware.Parameters) (params AdminListUsersParams) {
@@ -5813,24 +4213,6 @@ func unpackAdminListUsersParams(packed middleware.Parameters) (params AdminListU
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -5904,6 +4286,11 @@ func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Reques
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -5966,103 +4353,6 @@ func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
 			In:   "query",
 			Err:  err,
 		}
@@ -8172,10 +6462,6 @@ func decodeListAssistantMessagesParams(args [1]string, argsEscaped bool, r *http
 type ListBlogPostsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackListBlogPostsParams(packed middleware.Parameters) (params ListBlogPostsParams) {
@@ -8195,24 +6481,6 @@ func unpackListBlogPostsParams(packed middleware.Parameters) (params ListBlogPos
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -8286,6 +6554,11 @@ func decodeListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Request
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -8352,103 +6625,6 @@ func decodeListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Request
 			Err:  err,
 		}
 	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	return params, nil
 }
 
@@ -8456,10 +6632,6 @@ func decodeListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Request
 type ListPublicReviewsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
-	// Sort field (ransack `sf`).
-	SortField OptString `json:",omitempty,omitzero"`
-	// Sort order (ransack `so`).
-	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackListPublicReviewsParams(packed middleware.Parameters) (params ListPublicReviewsParams) {
@@ -8479,24 +6651,6 @@ func unpackListPublicReviewsParams(packed middleware.Parameters) (params ListPub
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortField",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortField = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "sortOrder",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -8570,6 +6724,11 @@ func decodeListPublicReviewsParams(args [0]string, argsEscaped bool, r *http.Req
 			Err:  err,
 		}
 	}
+	// Set default value for query: perPage.
+	{
+		val := int32(20)
+		params.PerPage.SetTo(val)
+	}
 	// Decode query: perPage.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -8632,103 +6791,6 @@ func decodeListPublicReviewsParams(args [0]string, argsEscaped bool, r *http.Req
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortField.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortField",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortFieldVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortFieldVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortField.SetTo(paramsDotSortFieldVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortField",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: sortOrder.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "sortOrder",
-			Style:   uri.QueryStyleForm,
-			Explode: false,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortOrderVal ListQuerySortOrder
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSortOrderVal = ListQuerySortOrder(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.SortOrder.SetTo(paramsDotSortOrderVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.SortOrder.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "sortOrder",
 			In:   "query",
 			Err:  err,
 		}

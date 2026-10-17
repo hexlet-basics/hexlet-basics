@@ -1333,16 +1333,6 @@ export type ListQueryPage = number;
 
 export type ListQueryPerPage = number;
 
-/**
- * Sort field (ransack `sf`).
- */
-export type ListQuerySortField = string;
-
-/**
- * Sort order (ransack `so`).
- */
-export type ListQuerySortOrder = 'asc' | 'desc';
-
 export type DeleteAccountData = {
   body?: never;
   path?: never;
@@ -1451,14 +1441,6 @@ export type AdminListUsersData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/api/users';
 };
@@ -1728,14 +1710,6 @@ export type AdminListBannersData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/banners';
 };
@@ -1925,14 +1899,6 @@ export type AdminListBlogPostsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/blog_posts';
 };
@@ -2216,14 +2182,6 @@ export type AdminListCourseCategoriesData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/course_categories';
 };
@@ -2567,14 +2525,6 @@ export type AdminListCourseLandingPagesData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/course_landing_pages';
 };
@@ -2918,14 +2868,6 @@ export type AdminListCourseLessonReviewsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/course_lesson_reviews';
 };
@@ -2965,14 +2907,6 @@ export type AdminListCourseLessonsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/course_lessons';
 };
@@ -3054,14 +2988,6 @@ export type AdminListCoursesData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/courses';
 };
@@ -3297,14 +3223,6 @@ export type AdminListLeadsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/leads';
 };
@@ -3344,14 +3262,6 @@ export type AdminListLessonProgressData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/lesson_progress';
 };
@@ -3467,14 +3377,6 @@ export type AdminListRolesData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/management/roles';
 };
@@ -3664,14 +3566,6 @@ export type AdminListStaffMembersData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/management/staff_members';
 };
@@ -3861,14 +3755,6 @@ export type AdminListManagementUsersData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/management/users';
 };
@@ -3984,14 +3870,6 @@ export type AdminListMessagesData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/messages';
 };
@@ -4031,14 +3909,6 @@ export type AdminListReviewsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/admin/reviews';
 };
@@ -4343,14 +4213,6 @@ export type ListBlogPostsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/blog_posts';
 };
@@ -5228,14 +5090,6 @@ export type ListPublicReviewsData = {
   query?: {
     page?: number;
     perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
   };
   url: '/api/reviews';
 };

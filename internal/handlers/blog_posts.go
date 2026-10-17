@@ -35,29 +35,13 @@ const (
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.BlogPost.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	posts, err := s.db.BlogPost.Query().
-		WithCreator().
-		Order(ent.Desc(blogpost.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	items, err := s.blogPostsToAPI(ctx, posts)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.BlogPostPage{Items: items, Total: int32(total), Page: page.Page, PerPage: page.PerPage}, nil
+	return listPageWith(ctx, params.Page, params.PerPage,
+		s.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID)),
+		s.blogPostsToAPI,
+		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
+			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminGetBlogPost returns one blog post; a missing id surfaces as ent
@@ -95,7 +79,7 @@ func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput
 	row, err := s.db.BlogPost.Create().
 		SetInput(req).
 		SetCreatorID(creator.ID).
-		SetLocale(defaultAdminLocale).
+		SetLocale(s.i18n.Locale(ctx)).
 		Save(ctx)
 	if err != nil {
 		return nil, err

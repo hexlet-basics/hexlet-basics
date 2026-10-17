@@ -1,8 +1,6 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteCourseCategoryMutation,
@@ -11,6 +9,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { CourseCategory } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -26,17 +25,11 @@ function CourseCategoriesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  // Sorting state is held for the engine, but this resource's columns keep it off
-  // until the generic `listPage` honors sortField/sortOrder server-side.
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListCourseCategoriesOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -51,17 +44,14 @@ function CourseCategoriesList() {
     {
       accessorKey: "name",
       header: t(($) => $.models.attributes.course_category.name),
-      enableSorting: false,
     },
     {
       accessorKey: "slug",
       header: t(($) => $.models.attributes.course_category.slug),
-      enableSorting: false,
     },
     {
       accessorKey: "locale",
       header: t(($) => $.models.attributes.course_category.locale),
-      enableSorting: false,
     },
     {
       id: "actions",
@@ -109,10 +99,7 @@ function CourseCategoriesList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>

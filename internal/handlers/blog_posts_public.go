@@ -22,7 +22,7 @@ import (
 // newest first (legacy `order(id: :desc)`, pagy's 20 per page).
 func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error) {
 	return listPageWith(ctx, params.Page, params.PerPage,
-		func() *ent.BlogPostQuery { return s.blogPublic.Query(s.i18n.Locale(ctx)) },
+		s.blogPublic.Query(s.i18n.Locale(ctx)),
 		s.blogPostsToAPI,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
 			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
