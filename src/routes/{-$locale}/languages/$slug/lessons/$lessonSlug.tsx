@@ -3,7 +3,6 @@ import { truncate } from "es-toolkit/compat";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
 import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
-import { readTheoryPercent } from "@/lib/lesson-panes";
 import { seoHead } from "@/lib/seo-head";
 
 // The lesson player, at its legacy URL (ADR-0002) under the optional locale
@@ -18,9 +17,6 @@ import { seoHead } from "@/lib/seo-head";
 // progress begins only through the start command (ADR-0012).
 export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lessonSlug")({
   staticData: { chrome: "bare" },
-  // Read here, not in the page: the context travels with the dehydrated router,
-  // so the server's split is the one the browser hydrates with.
-  beforeLoad: () => ({ theoryPercent: readTheoryPercent() }),
   loader: ({ context, params }) =>
     context.queryClient.query({
       ...getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
@@ -60,15 +56,8 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
 
 function LessonRoute() {
   const { slug, lessonSlug } = Route.useParams();
-  const { user, theoryPercent } = Route.useRouteContext();
-  return (
-    <LessonPage
-      courseSlug={slug}
-      lessonSlug={lessonSlug}
-      signedIn={Boolean(user)}
-      theoryPercent={theoryPercent}
-    />
-  );
+  const { user } = Route.useRouteContext();
+  return <LessonPage courseSlug={slug} lessonSlug={lessonSlug} signedIn={Boolean(user)} />;
 }
 
 // Legacy's description: `[<version name>] — <lesson> — <theory>`, cut by Rails'

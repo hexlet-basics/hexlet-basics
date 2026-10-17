@@ -51,6 +51,7 @@
     "monaco-editor": "^0.57.0",
     "motion": "^14.3.0",
     "react": "^19.3.1",
+    "react-cookie": "^8.1.2",
     "react-dom": "^19.3.1",
     "react-i18next": "^17.0.20",
     "react-markdown": "^10.1.0",

@@ -19,7 +19,7 @@ import LessonAssistant from "@/components/lesson/LessonAssistant";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
-import { writeTheoryPercent } from "@/lib/lesson-panes";
+import { useTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
 
 // The lesson player's shell: theory, the assistant and navigation on the left,
@@ -36,21 +36,21 @@ export default function LessonPage({
   courseSlug,
   lessonSlug,
   signedIn,
-  theoryPercent: initialTheoryPercent,
 }: {
   courseSlug: string;
   lessonSlug: string;
   signedIn: boolean;
-  // Where the learner last left the divider, read where the page is rendered
-  // (see lib/lesson-panes) so the server's markup already has it.
-  theoryPercent: number;
 }) {
   const { t } = useTranslation();
   const { data, isPending, isError } = useQuery(
     getCourseLessonOptions({ path: { courseSlug, slug: lessonSlug } }),
   );
 
-  const [theoryPercent, setTheoryPercent] = useState(initialTheoryPercent);
+  // Where the learner last left the divider. The server renders it from the
+  // request's cookie, so it is the first paint's split; the state follows the
+  // drag, and the cookie is written when the drag ends.
+  const [savedPercent, saveTheoryPercent] = useTheoryPercent();
+  const [theoryPercent, setTheoryPercent] = useState(savedPercent);
 
   // Read in an effect with a desktop default, for the same reason as the sizes
   // above: the server renders the desktop split, and a phone moves to its
@@ -110,7 +110,7 @@ export default function LessonPage({
           if (isDesktop) setTheoryPercent(Number.parseFloat(String(next[0])));
         }}
         onResizeEnd={(_handle, next) => {
-          if (isDesktop) writeTheoryPercent(Number.parseFloat(String(next[0])));
+          if (isDesktop) saveTheoryPercent(Number.parseFloat(String(next[0])));
         }}
         withHandle={isDesktop}
         // The line defaults to the page background, so only the thumb showed.

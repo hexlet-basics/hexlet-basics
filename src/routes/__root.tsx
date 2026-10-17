@@ -8,9 +8,12 @@ import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from "@mantine/c
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import type { QueryClient } from "@tanstack/react-query";
+import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { i18n as I18n } from "i18next";
 import { type ReactNode, useEffect } from "react";
+import { Cookies, CookiesProvider } from "react-cookie";
 import { I18nextProvider } from "react-i18next";
 import { NotFoundPage } from "@/components/ErrorPage";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
@@ -26,6 +29,12 @@ interface RouterContext {
   user: AuthUser | null;
 }
 
+// The incoming request's Cookie header, for the cookie provider below. Server
+// only: in the browser the provider reads document.cookie itself.
+const getRequestCookies = createIsomorphicFn()
+  .server(() => getRequestHeader("cookie"))
+  .client(() => undefined);
+
 export const Route = createRootRouteWithContext<RouterContext>()({
   // Resolve the current user from the httpOnly JWT cookie server-side, so
   // authenticated pages (and the admin guard) render on the server (ADR-0008).
@@ -36,7 +45,12 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   // its 404 would otherwise come out in the `en` default.
   beforeLoad: async ({ context, location }) => {
     await context.i18n.changeLanguage(localeFromPathname(location.pathname));
-    return { user: await resolveCurrentUser(context.queryClient) };
+    return {
+      user: await resolveCurrentUser(context.queryClient),
+      // A string, so it travels with the dehydrated router and the browser's
+      // first render reads the same cookies the server rendered with.
+      cookieHeader: getRequestCookies(),
+    };
   },
   head: () => ({
     meta: [
@@ -59,7 +73,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   // The `{-$locale}` layout has already run changeLanguage in beforeLoad, so
   // i18n.language is the resolved locale by the time the document renders.
-  const { i18n } = Route.useRouteContext();
+  const { i18n, cookieHeader } = Route.useRouteContext();
 
   // Effects run only in the browser, so the first visit is recorded from the
   // page the visitor actually landed on — once, whichever page that is.
@@ -69,9 +83,11 @@ function RootComponent() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <RootDocument lang={i18n.language}>
-        <Outlet />
-      </RootDocument>
+      <CookiesProvider cookies={new Cookies(cookieHeader)}>
+        <RootDocument lang={i18n.language}>
+          <Outlet />
+        </RootDocument>
+      </CookiesProvider>
     </I18nextProvider>
   );
 }
