@@ -28,6 +28,7 @@ import (
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
@@ -445,11 +446,22 @@ var serverPackage = do.Package(
 			}
 			oauthHandler = oauthServer.Handler()
 		}
+		// The MCP endpoint is mounted only behind its flag (ADR-0018). A nil
+		// *mcpserver.Server must not become a non-nil http.Handler.
+		var mcpHandler http.Handler
+		if cfg.MCP.Enabled {
+			mcpEndpoint, err := do.Invoke[*mcpserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			mcpHandler = mcpEndpoint.Handler()
+		}
 		return handlers.NewRouter(
 			handler.Security().Pipeline(apiServer),
 			attachmentHandler,
 			webhookHandler,
 			oauthHandler,
+			mcpHandler,
 		), nil
 	}),
 	// The OAuth authorization server (ADR-0019). It receives the application's
@@ -486,6 +498,31 @@ var serverPackage = do.Package(
 			Transactor:    txStore,
 			App:           handlers.OAuthSession{},
 			ClientAddress: handlers.ClientIP,
+		})
+	}),
+	// The MCP endpoint (ADR-0018): verifies tokens with the OAuth server and
+	// serves tools through the same handler code as the HTTP operations. Built
+	// only when its flag is on; config validation guarantees OAuth is on then.
+	do.Lazy[*mcpserver.Server](func(i do.Injector) (*mcpserver.Server, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		if !cfg.MCP.Enabled {
+			return nil, nil
+		}
+		oauthServer, err := do.Invoke[*oauthserver.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		handler, err := do.Invoke[*handlers.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		return mcpserver.New(mcpserver.Deps{
+			Verifier:  oauthServer,
+			Catalogue: handler,
+			Issuer:    cfg.OAuth.Issuer,
 		})
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {

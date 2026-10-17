@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 )
 
@@ -44,11 +45,14 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // protection would refuse a web client's legitimate cross-site token request.
 // The consent screen, which does need the session, is a generated operation.
 // WithClientIP resolves the caller's address for its registration rate limit.
+// mcp, the MCP endpoint (ADR-0018), is mounted outside `/api` the same way, and is
+// nil while its own flag is off.
 func NewRouter(
 	generated http.Handler,
 	att *AttachmentHandler,
 	gh *GitHubWebhookHandler,
 	oauth http.Handler,
+	mcp http.Handler,
 ) http.Handler {
 	transport := http.NewServeMux()
 	transport.Handle("POST /api/admin/attachments", http.MaxBytesHandler(generated, UploadBodyLimit))
@@ -63,6 +67,15 @@ func NewRouter(
 	if oauth != nil {
 		for _, pattern := range oauthserver.Patterns() {
 			transport.Handle(pattern, WithClientIP(oauth))
+		}
+	}
+	// The MCP endpoint and its resource metadata (ADR-0018), nil while switched
+	// off. It authenticates a bearer token itself, so it sits beside the
+	// generated server and not behind the session pipeline: the website's session
+	// cookie is never read on it, and the generated operations accept no bearer token.
+	if mcp != nil {
+		for _, pattern := range mcpserver.Patterns() {
+			transport.Handle(pattern, mcp)
 		}
 	}
 	transport.Handle("/", generated)

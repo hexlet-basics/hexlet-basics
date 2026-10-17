@@ -85,3 +85,42 @@ real Claude Code and Cursor.
   a tool.
 - Not verified yet: the SDK's exact stateless and middleware API against our
   router, and how real clients behave (ADR-0019).
+
+## Addendum: the tracer slice (#849)
+
+What the first implementation settled, and where it stops short of the text above.
+
+- **SDK API, verified.** `modelcontextprotocol/go-sdk` v1.8.0: stateless mode is
+  `mcp.NewStreamableHTTPHandler(..., &StreamableHTTPOptions{Stateless: true})`; we
+  also set `JSONResponse` because nothing streams. `auth.RequireBearerToken` wraps
+  it with a `TokenVerifier`, and `auth.ProtectedResourceMetadataHandler` serves
+  the metadata. Both work in `handlers.NewRouter` unchanged. Stateless mode
+  answers GET and DELETE with 405.
+- **Switch.** `MCP_ENABLED` (default off); enabling it without `OAUTH_ENABLED` is a
+  configuration error. The package is `internal/mcpserver`; it does not import
+  `internal/handlers`, which imports it to mount `/mcp`.
+- **Verification.** The verifier takes `oauthserver.Server.VerifyAccessToken` and
+  additionally requires `Token.Audience` to contain `Resource()` and the subject
+  to be a user; anything else is a 401 with a `WWW-Authenticate` challenge whose
+  `resource_metadata` is the path-inserted URL. Metadata is served at both
+  `/.well-known/oauth-protected-resource` and `.../mcp`. A failure of our own is a
+  500 whose detail goes to the log, not the body. The library requires a token
+  expiry that `Token` does not carry, so `AllowMissingExpiration` is set: the
+  lookup already refuses an expired token.
+- **Scope check per tool.** The endpoint-wide middleware option would answer 403
+  to a connection lacking one Scope for every tool, so each catalogue tool checks
+  `catalog:read` itself and answers a tool error.
+- **Output schema from the contract.** `internal/mcpserver/contract.go` reads the
+  operation's 200 schema from the embedded OpenAPI document, inlines `$ref` and
+  rewrites `nullable`. Structured content is an object, so the contract's array
+  sits under one key (`{"courses": [...]}`); a test validates real output against
+  the advertised schema.
+- **Tool name.** `listCourses`, the operationId, as admin tools will be.
+- **Not done in this slice.** Paging and the 100 KB / 30 s / rate limits, the
+  locale as a tool argument (the request's `Accept-Language` decides, as for the
+  HTTP operation; a test pins that it reaches the tool), and the `mcp.*` Permission check, which belong to the tickets
+  for the other tools.
+- **Ingress not yet routed.** The Helm ingress (`k8s/app-chart/templates/ingress.yaml`)
+  still sends only `/api/` to Go. `/mcp`, `/.well-known/oauth-protected-resource*`
+  (and `/oauth/*` from ADR-0019) must be added before either flag is switched on.
+  The Vite development proxy already carries them.

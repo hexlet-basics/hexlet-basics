@@ -19,6 +19,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/session"
@@ -107,9 +108,11 @@ func NewOAuth(t *testing.T) *OAuth {
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
 	require.NoError(t, err)
+	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Issuer: OAuthIssuer})
+	require.NoError(t, err)
 	// The attachment and webhook handlers are not under test; their routes are
 	// registered but never requested.
-	o.Router = translator.Middleware(handlers.NewRouter(handler.Security().Pipeline(apiServer), nil, nil, server.Handler()))
+	o.Router = translator.Middleware(handlers.NewRouter(handler.Security().Pipeline(apiServer), nil, nil, server.Handler(), mcpEndpoint.Handler()))
 	return o
 }
 
