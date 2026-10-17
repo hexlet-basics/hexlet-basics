@@ -27,9 +27,13 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/banners"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/coursecategories"
+	"hexletbasics/internal/courselessons"
+	"hexletbasics/internal/courses"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/feeds"
@@ -37,9 +41,12 @@ import (
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
+	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/reviews"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
@@ -256,10 +263,22 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
-		PostRemover: blogposts.NewRemover(transactor),
-		Permissions: staffroles.NewPermissions(db),
-		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
-		Sitemap:     sitemap.New(db),
+		PostRemover:       blogposts.NewRemover(transactor),
+		Permissions:       staffroles.NewPermissions(db),
+		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
+		Sitemap:           sitemap.New(db),
+		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),
+		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
+		LandingPageQna:    qnaitems.NewLandingPage(db),
+		CategoryQna:       qnaitems.NewCategory(db),
+		PostEditor:        blogposts.NewEditor(db),
+		ReviewDirectory:   reviews.NewDirectory(db),
+		CourseDirectory:   courses.NewDirectory(db),
+		LeadDirectory:     leads.NewDirectory(db),
+		MessageDirectory:  assistant.NewDirectory(db),
+		CategoryDirectory: coursecategories.NewDirectory(db),
+		BannerDirectory:   banners.NewDirectory(db),
+		LessonDirectory:   courselessons.NewDirectory(db),
 	})
 	srv, err := api.NewServer(
 		handler,

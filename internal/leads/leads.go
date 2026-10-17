@@ -13,9 +13,11 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/enrollment"
+	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -240,4 +242,19 @@ func userName(u *ent.User) string {
 		return email
 	}
 	return fmt.Sprintf("User #%d", u.ID)
+}
+
+// Directory is the administrators' read side of the leads.
+type Directory struct {
+	db *ent.Client
+}
+
+// NewDirectory builds the directory over an ent client.
+func NewDirectory(db *ent.Client) *Directory {
+	return &Directory{db: db}
+}
+
+// List returns one page of leads, newest first, and how many there are in all.
+func (d *Directory) List(ctx context.Context, page domain.Page) ([]*ent.Lead, int, error) {
+	return domain.Paged(ctx, d.db.Lead.Query().Order(ent.Desc(lead.FieldID)), page)
 }

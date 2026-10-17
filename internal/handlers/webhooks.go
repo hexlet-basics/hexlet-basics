@@ -9,8 +9,7 @@ import (
 
 	"github.com/google/go-github/v89/github"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/course"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 )
 
@@ -32,7 +31,6 @@ const coursePrefix = "exercises-"
 // Building off CI-success (not a raw push) mirrors the legacy invariant that only
 // content which passed the repo's pipeline is ever served.
 type GitHubWebhookHandler struct {
-	db      *ent.Client
 	starter VersionBuildStarter
 	// secret is the shared HMAC secret GitHub signs deliveries with. An empty
 	// secret disables the endpoint (fail closed) — an unauthenticated build
@@ -42,8 +40,8 @@ type GitHubWebhookHandler struct {
 }
 
 // NewGitHubWebhookHandler wires the webhook to its dependencies.
-func NewGitHubWebhookHandler(db *ent.Client, starter VersionBuildStarter, secret string, translator *localization.Translator) *GitHubWebhookHandler {
-	return &GitHubWebhookHandler{db: db, starter: starter, secret: secret, i18n: translator}
+func NewGitHubWebhookHandler(starter VersionBuildStarter, secret string, translator *localization.Translator) *GitHubWebhookHandler {
+	return &GitHubWebhookHandler{starter: starter, secret: secret, i18n: translator}
 }
 
 // Handle processes one delivery. It returns:
@@ -135,19 +133,12 @@ func (h *GitHubWebhookHandler) buildTargetSlug(event *github.WorkflowRunEvent) (
 }
 
 // triggerBuild creates a `created` version for the course with the given slug and
-// enqueues the loader job — the same effect as the admin createVersion action.
+// enqueues the loader job: the same effect as the admin createVersion action.
 // Returns false (no error) when no course matches the slug.
 func (h *GitHubWebhookHandler) triggerBuild(ctx context.Context, slug string) (bool, error) {
-	c, err := h.db.Course.Query().Where(course.Slug(slug)).Only(ctx)
-	if ent.IsNotFound(err) {
+	_, err := h.starter.StartBySlug(ctx, slug)
+	if errors.Is(err, domain.ErrNotFound) {
 		return false, nil
 	}
-	if err != nil {
-		return false, err
-	}
-
-	if _, err := h.starter.Start(ctx, c.ID); err != nil {
-		return false, err
-	}
-	return true, nil
+	return err == nil, err
 }

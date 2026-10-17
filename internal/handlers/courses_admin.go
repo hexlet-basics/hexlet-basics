@@ -2,86 +2,49 @@ package handlers
 
 import (
 	"context"
+	"errors"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/course"
-	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 )
 
-// Admin course endpoints. The API embeds the
-// current version, so reads load it. The cover image (coverAttachmentId) and
-// the derived repositoryUrl are not written here — the cover is deferred until
-// the Attachments uploader lands, and repositoryUrl is computed from the slug on
-// read. There is no delete (parity with legacy).
-
-func withCourseVersion(q *ent.CourseQuery) *ent.CourseQuery {
-	return q.WithCurrentVersion()
-}
+// Admin course endpoints. The API embeds the current version, so the generated
+// reads load it (ent/admincrud.go, from the AdminCRUD annotation). The cover
+// image (coverAttachmentId) and the derived repositoryUrl are not written here:
+// the cover is deferred until the Attachments uploader lands, and repositoryUrl
+// is computed from the slug on read. There is no delete (parity with legacy).
 
 func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (api.AdminListCoursesRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		withCourseVersion(s.db.Course.Query()).Order(ent.Desc(course.FieldID)),
-		s.conv.ToCourses,
-		func(items []api.Course, total, page, perPage int32) *api.CoursePage {
-			return &api.CoursePage{Items: items, Total: total, Page: page, PerPage: perPage}
-		},
-	)
+	return s.db.Course.AdminList(ctx, params.Page, params.PerPage, s.conv.ToCourses)
 }
 
 // AdminListCourseOptions serves selects: every course as id and name, with no
-// page, so a picker cannot silently lose the courses past a page boundary. The
-// order is oldest first, a stable order for a list people scan by name; a
-// course without a name is listed by its slug, the one label every course has.
+// page.
 func (s *Server) AdminListCourseOptions(ctx context.Context) (api.AdminListCourseOptionsRes, error) {
-	rows, err := s.db.Course.Query().
-		Select(course.FieldID, course.FieldSlug, course.FieldName).
-		Order(ent.Asc(course.FieldID)).
-		All(ctx)
+	rows, err := s.courseDirectory.Options(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	options := make(api.AdminListCourseOptionsOKApplicationJSON, 0, len(rows))
 	for _, row := range rows {
-		name := apiconv.StringFromPtr(row.Slug)
-		if row.Name != nil && *row.Name != "" {
-			name = *row.Name
-		}
-		options = append(options, api.CourseOption{ID: int32(row.ID), Name: name})
+		options = append(options, api.CourseOption{ID: int32(row.ID), Name: row.Name})
 	}
 	return &options, nil
 }
 
 func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (api.AdminGetCourseRes, error) {
-	return s.getAdminCourse(ctx, params.ID)
-}
-
-func (s *Server) getAdminCourse(ctx context.Context, id int32) (*api.Course, error) {
-	return getOne(ctx, int(id),
-		func(ctx context.Context, id int) (*ent.Course, error) {
-			return withCourseVersion(s.db.Course.Query().Where(course.ID(id))).Only(ctx)
-		},
-		s.conv.ToCourse,
-	)
+	return s.db.Course.AdminGet(ctx, params.ID, s.conv.ToCourse)
 }
 
 func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (api.AdminCreateCourseRes, error) {
-	row, err := s.db.Course.Create().SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return s.getAdminCourse(ctx, int32(row.ID))
+	return s.db.Course.AdminCreate(ctx, req, s.conv.ToCourse)
 }
 
 func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (api.AdminUpdateCourseRes, error) {
-	row, err := s.db.Course.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return s.getAdminCourse(ctx, int32(row.ID))
+	return s.db.Course.AdminUpdate(ctx, params.ID, req, s.conv.ToCourse)
 }
 
 // AdminCreateCourseVersion starts a build of a new course version: it creates the
@@ -91,15 +54,10 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 // 201 body is the freshly-created (not yet built) version, so the admin UI can
 // poll its state.
 func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminCreateCourseVersionParams) (api.AdminCreateCourseVersionRes, error) {
-	c, err := s.db.Course.Get(ctx, int(params.ID))
-	if ent.IsNotFound(err) {
+	version, err := s.starter.Start(ctx, int(params.ID))
+	if errors.Is(err, domain.ErrNotFound) {
 		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
 	}
-	if err != nil {
-		return nil, err
-	}
-
-	version, err := s.starter.Start(ctx, c.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -108,31 +66,14 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 	return &body, nil
 }
 
-// AdminReviewCourse enqueues an AI review job for every lesson info of the
-// course's current version, all locales included — legacy
-// `language.current_lesson_infos.find_each { ReviewLessonJob.perform_later }`.
-// A course without a current version simply enqueues nothing.
+// AdminReviewCourse asks for an AI review of every lesson of the course's
+// current version, all locales included.
 func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) (api.AdminReviewCourseRes, error) {
-	c, err := s.db.Course.Get(ctx, int(params.ID))
-	if ent.IsNotFound(err) {
+	err := s.lessonReviews.ReviewCourse(ctx, int(params.ID))
+	if errors.Is(err, domain.ErrNotFound) {
 		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
 	}
 	if err != nil {
-		return nil, err
-	}
-
-	var infoIDs []int
-	if c.CurrentVersionID != nil {
-		infoIDs, err = s.db.CourseLessonTranslation.Query().
-			Where(courselessontranslation.CourseVersionID(*c.CurrentVersionID)).
-			Order(ent.Asc(courselessontranslation.FieldID)).
-			IDs(ctx)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if err := s.enqueueLessonReviews(ctx, infoIDs); err != nil {
 		return nil, err
 	}
 	return &api.AdminReviewCourseNoContent{}, nil

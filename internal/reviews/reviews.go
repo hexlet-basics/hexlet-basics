@@ -2,9 +2,12 @@
 package reviews
 
 import (
+	"context"
+
 	"hexletbasics/ent"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/review"
+	"hexletbasics/internal/domain"
 )
 
 // StatePublished is the `state` of a review open to readers; the ent field is a
@@ -31,4 +34,20 @@ func Public(db *ent.Client, locale string) *ent.ReviewQuery {
 	return WithEdges(db.Review.Query()).
 		Where(Published(locale)).
 		Order(ent.Desc(review.FieldID))
+}
+
+// Directory is the read side of the reviews a visitor may see.
+type Directory struct {
+	db *ent.Client
+}
+
+// NewDirectory builds the directory over an ent client.
+func NewDirectory(db *ent.Client) *Directory {
+	return &Directory{db: db}
+}
+
+// Public returns one page of the published reviews of the locale, newest
+// first, and how many there are in all.
+func (d *Directory) Public(ctx context.Context, locale string, page domain.Page) ([]*ent.Review, int, error) {
+	return domain.Paged(ctx, Public(d.db, locale), page)
 }

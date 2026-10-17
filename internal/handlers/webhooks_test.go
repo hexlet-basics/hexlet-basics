@@ -28,7 +28,7 @@ func newWebhookHandler(t *testing.T, secret string) (*handlers.GitHubWebhookHand
 	t.Helper()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
-	return handlers.NewGitHubWebhookHandler(db, services.Starter, secret, testsupport.NewTranslator(t)), db, services
+	return handlers.NewGitHubWebhookHandler(services.Starter, secret, testsupport.NewTranslator(t)), db, services
 }
 
 func rawWebhookRequest(event, body, signature string) *http.Request {

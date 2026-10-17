@@ -93,7 +93,19 @@ type Server struct {
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
-	sitemap SitemapReader
+	sitemap           SitemapReader
+	lessonReviews     LessonReviewScheduler
+	relatedSuggester  RelatedCoursesScheduler
+	landingPageQna    LandingPageQna
+	categoryQna       CategoryQna
+	postEditor        PostEditor
+	reviewDirectory   ReviewDirectory
+	courseDirectory   CourseDirectory
+	leadDirectory     LeadDirectory
+	messageDirectory  MessageDirectory
+	categoryDirectory CategoryDirectory
+	bannerDirectory   BannerDirectory
+	lessonDirectory   LessonDirectory
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -125,6 +137,18 @@ type Deps struct {
 	Permissions       PermissionWriter
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
+	LessonReviews     LessonReviewScheduler
+	RelatedSuggester  RelatedCoursesScheduler
+	LandingPageQna    LandingPageQna
+	CategoryQna       CategoryQna
+	PostEditor        PostEditor
+	ReviewDirectory   ReviewDirectory
+	CourseDirectory   CourseDirectory
+	LeadDirectory     LeadDirectory
+	MessageDirectory  MessageDirectory
+	CategoryDirectory CategoryDirectory
+	BannerDirectory   BannerDirectory
+	LessonDirectory   LessonDirectory
 }
 
 // NewServer wires the handler to its dependencies.
@@ -165,6 +189,18 @@ func NewServer(deps Deps) *Server {
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
+		lessonReviews:     deps.LessonReviews,
+		relatedSuggester:  deps.RelatedSuggester,
+		landingPageQna:    deps.LandingPageQna,
+		categoryQna:       deps.CategoryQna,
+		postEditor:        deps.PostEditor,
+		reviewDirectory:   deps.ReviewDirectory,
+		courseDirectory:   deps.CourseDirectory,
+		leadDirectory:     deps.LeadDirectory,
+		messageDirectory:  deps.MessageDirectory,
+		categoryDirectory: deps.CategoryDirectory,
+		bannerDirectory:   deps.BannerDirectory,
+		lessonDirectory:   deps.LessonDirectory,
 	}
 }
 

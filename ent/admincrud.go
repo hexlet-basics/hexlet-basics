@@ -9,8 +9,10 @@ import (
 	"hexletbasics/internal/paging"
 
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courselandingpage"
+	"hexletbasics/ent/review"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 )
@@ -76,6 +78,69 @@ func (c *BannerClient) AdminUpdate(ctx context.Context, id int32, in *api.Banner
 // AdminDelete removes a Banner by id; a missing id is ent's not-found
 // error.
 func (c *BannerClient) AdminDelete(ctx context.Context, id int32) error {
+	return c.DeleteOneID(int(id)).Exec(ctx)
+}
+
+// adminQuery is the query every admin read of Course starts from: the
+// edges the API model embeds are loaded here once.
+func (c *CourseClient) adminQuery() *CourseQuery {
+	return c.Query().
+		WithCurrentVersion()
+}
+
+// AdminList returns one page of Course in the default admin order. The
+// count runs on a clone of the one scoped query, so the page's offset and
+// limit never leak into it.
+func (c *CourseClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*Course) []api.Course) (*api.CoursePage, error) {
+	w := paging.New(page, perPage)
+	q := c.adminQuery().Order(Desc(course.FieldID))
+
+	total, err := q.Clone().Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := q.Offset(w.Offset()).Limit(w.Limit()).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.CoursePage{Items: conv(rows), Total: int32(total), Page: w.Page, PerPage: w.PerPage}, nil
+}
+
+// AdminGet returns one Course by id; a missing id is ent's not-found
+// error, which the central ErrorHandler maps to 404.
+func (c *CourseClient) AdminGet(ctx context.Context, id int32, conv func(*Course) api.Course) (*api.Course, error) {
+	row, err := c.adminQuery().Where(course.ID(int(id))).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	item := conv(row)
+	return &item, nil
+}
+
+// AdminCreate creates a Course from the contract input.
+func (c *CourseClient) AdminCreate(ctx context.Context, in *api.CourseInput, conv func(*Course) api.Course) (*api.Course, error) {
+	row, err := c.Create().SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+}
+
+// AdminUpdate updates a Course from the contract input; a missing id
+// is ent's not-found error.
+func (c *CourseClient) AdminUpdate(ctx context.Context, id int32, in *api.CourseInput, conv func(*Course) api.Course) (*api.Course, error) {
+	row, err := c.UpdateOneID(int(id)).SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+}
+
+// AdminDelete removes a Course by id; a missing id is ent's not-found
+// error.
+func (c *CourseClient) AdminDelete(ctx context.Context, id int32) error {
 	return c.DeleteOneID(int(id)).Exec(ctx)
 }
 
@@ -203,6 +268,70 @@ func (c *CourseLandingPageClient) AdminUpdate(ctx context.Context, id int32, in 
 // AdminDelete removes a CourseLandingPage by id; a missing id is ent's not-found
 // error.
 func (c *CourseLandingPageClient) AdminDelete(ctx context.Context, id int32) error {
+	return c.DeleteOneID(int(id)).Exec(ctx)
+}
+
+// adminQuery is the query every admin read of Review starts from: the
+// edges the API model embeds are loaded here once.
+func (c *ReviewClient) adminQuery() *ReviewQuery {
+	return c.Query().
+		WithCourse(func(q *CourseQuery) { q.WithCurrentVersion() }).
+		WithUser()
+}
+
+// AdminList returns one page of Review in the default admin order. The
+// count runs on a clone of the one scoped query, so the page's offset and
+// limit never leak into it.
+func (c *ReviewClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*Review) []api.Review) (*api.ReviewPage, error) {
+	w := paging.New(page, perPage)
+	q := c.adminQuery().Order(Desc(review.FieldID))
+
+	total, err := q.Clone().Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := q.Offset(w.Offset()).Limit(w.Limit()).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.ReviewPage{Items: conv(rows), Total: int32(total), Page: w.Page, PerPage: w.PerPage}, nil
+}
+
+// AdminGet returns one Review by id; a missing id is ent's not-found
+// error, which the central ErrorHandler maps to 404.
+func (c *ReviewClient) AdminGet(ctx context.Context, id int32, conv func(*Review) api.Review) (*api.Review, error) {
+	row, err := c.adminQuery().Where(review.ID(int(id))).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	item := conv(row)
+	return &item, nil
+}
+
+// AdminCreate creates a Review from the contract input.
+func (c *ReviewClient) AdminCreate(ctx context.Context, in *api.ReviewInput, conv func(*Review) api.Review) (*api.Review, error) {
+	row, err := c.Create().SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+}
+
+// AdminUpdate updates a Review from the contract input; a missing id
+// is ent's not-found error.
+func (c *ReviewClient) AdminUpdate(ctx context.Context, id int32, in *api.ReviewInput, conv func(*Review) api.Review) (*api.Review, error) {
+	row, err := c.UpdateOneID(int(id)).SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+}
+
+// AdminDelete removes a Review by id; a missing id is ent's not-found
+// error.
+func (c *ReviewClient) AdminDelete(ctx context.Context, id int32) error {
 	return c.DeleteOneID(int(id)).Exec(ctx)
 }
 

@@ -29,6 +29,12 @@ linters:
           msg: creating rows in a test is not arrange; add the case to fixtures/ and look it up with fixtures.ID, or say with a nolint why the creation is the act under test
         - pattern: '^(sql\.Open|store\.NewDB)$'
           msg: creating rows in a test is not arrange; a test does not open its own connection, testsupport hands out one that is rolled back with the test
+        # Handlers only translate the contract; what an operation does lives in a
+        # use-case module (AGENTS.md, "Use-case modules"). The generated admin
+        # helpers (AdminList, AdminGet, AdminCreate, AdminUpdate, AdminDelete)
+        # are the module of an operation with no rules of its own, so they pass.
+        - pattern: '^ent\.\w+Client\.(Query|Create|CreateBulk|MapCreateBulk|Update|UpdateOne|UpdateOneID|Delete|DeleteOne|DeleteOneID|Get|GetX)$'
+          msg: a handler does not build ent queries; put the rule in a use-case module, or generate the admin CRUD from the schema's AdminCRUD annotation
       analyze-types: true
   exclusions:
     paths:
@@ -42,6 +48,14 @@ linters:
       - path-except: _test\.go
         linters: [forbidigo]
         text: creating rows in a test
+      # The handler rule above is for the handlers' own code: the other packages
+      # are the modules that build the queries, and tests arrange through them.
+      - path-except: ^internal/handlers/
+        linters: [forbidigo]
+        text: a handler does not build ent queries
+      - path: _test\.go
+        linters: [forbidigo]
+        text: a handler does not build ent queries
       # The handler tests read responses from httptest.ResponseRecorder, whose
       # body is an in-memory buffer: there is nothing to close.
       - path: internal/handlers/.*_test\.go

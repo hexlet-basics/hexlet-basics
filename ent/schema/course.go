@@ -23,6 +23,8 @@ func (Course) Annotations() []schema.Annotation {
 		// and coverAttachmentId are handled elsewhere (derived on read /
 		// deferred until the Attachments uploader), so they map to nothing.
 		AdminInput{Type: "CourseInput", Explicit: true},
+		// The API model embeds the current version.
+		AdminCRUD{Eager: []string{"WithCurrentVersion()"}},
 	}
 }
 

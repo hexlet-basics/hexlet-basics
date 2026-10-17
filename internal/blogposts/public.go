@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/domain"
 )
 
 // StatePublished is the `state` of a post open to readers. The ent field is a
@@ -41,6 +42,12 @@ func (p *Public) Query(locale string) *ent.BlogPostQuery {
 		Where(Published(locale)).
 		WithCreator().
 		Order(ent.Desc(blogpost.FieldID))
+}
+
+// Page is one page of the published posts of locale, newest first, with the
+// total.
+func (p *Public) Page(ctx context.Context, locale string, page domain.Page) ([]*ent.BlogPost, int, error) {
+	return domain.Paged(ctx, p.Query(locale), page)
 }
 
 // BySlug is the post a reader asked for; a miss is ent not-found.

@@ -15,9 +15,9 @@ import (
 func TestDirectoryListsNewestFirstAndPagesDoNotOverlap(t *testing.T) {
 	directory := accounts.NewDirectory(testsupport.NewClient(t))
 
-	first, total, err := directory.List(t.Context(), accounts.Page{Offset: 0, Limit: 2})
+	first, total, err := directory.List(t.Context(), domain.Page{Offset: 0, Limit: 2})
 	require.NoError(t, err)
-	second, _, err := directory.List(t.Context(), accounts.Page{Offset: 2, Limit: 2})
+	second, _, err := directory.List(t.Context(), domain.Page{Offset: 2, Limit: 2})
 	require.NoError(t, err)
 
 	require.Len(t, first, 2)

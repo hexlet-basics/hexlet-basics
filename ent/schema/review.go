@@ -25,9 +25,16 @@ type Review struct {
 // columns are NOT NULL yet nullable in ReviewInput — SetOnly gives them the
 // legacy semantics (a null means "leave the association as is", never
 // detach), and Rename bridges the legacy column names to the contract's
-// courseId/userId. `locale` is not part of the admin input.
+// courseId/userId. `locale` is not part of the admin input. The API model
+// embeds the course (with its current version) and the user in full.
 func (Review) Annotations() []schema.Annotation {
-	return []schema.Annotation{AdminInput{}}
+	return []schema.Annotation{
+		AdminInput{},
+		AdminCRUD{Eager: []string{
+			"WithCourse(func(q *CourseQuery) { q.WithCurrentVersion() })",
+			"WithUser()",
+		}},
+	}
 }
 
 func (Review) Fields() []ent.Field {

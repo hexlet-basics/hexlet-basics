@@ -329,11 +329,27 @@ other adapter (MCP) call the same code. There is no umbrella `usecases` or
 - **Commands and results:** an operation takes a plain command named
   `<Verb><Noun>` (`UpdateUser`) and never an `internal/api` type (ADR-0001);
   adapters convert in both directions.
-- **Errors:** domain errors named `ErrX` (`ErrNotFound`, `ErrLastAdmin`); the
-  module maps ent errors to them, each adapter maps them to its wire format.
+- **Errors:** domain errors named `ErrX` (`domain.ErrNotFound`,
+  `domain.ErrConflict`, `accounts.ErrLastAdmin`, which is a conflict); the module
+  maps ent errors to them with `domain.FromStore`, which keeps the cause in the
+  chain, and each adapter maps them to its wire format (the HTTP one is
+  `errorStatus`).
 - **Separation:** writes and reads are separate modules or files (admin writes
   apart from the public read model); within a module the command, the result
   and the implementation each have their own file.
+- **Pages:** a module's list takes a `domain.Page` and answers rows and a total;
+  `domain.Paged` runs the count and the window over one scoped, ordered query.
+  The handler wraps them with `listFrom`.
+- **Resources with no rules** (a plain create, read, update, delete of one
+  entity) need no module: annotate the ent schema with `AdminCRUD` and the
+  handler calls the generated `AdminList`/`AdminGet`/`AdminCreate`/`AdminUpdate`/
+  `AdminDelete`, which is the single implementation (they take the contract's
+  input type, because the generated `SetInput` does). The moment an operation
+  has a rule of its own (a creator, a scope, a guard, a job to schedule), it
+  moves to a module.
+- **Enforced:** `forbidigo` rejects an ent query builder (`Query`, `Create`,
+  `Update*`, `Delete*`, `Get`) in `internal/handlers`, so a rule cannot slip
+  back into a handler; the generated `Admin*` helpers pass.
 
 ## Conventional Commits & Releases
 

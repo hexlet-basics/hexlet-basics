@@ -6,7 +6,6 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/inputconv"
-	"hexletbasics/internal/paging"
 )
 
 // The rules around editing users (the stored email, the last administrator)
@@ -22,17 +21,11 @@ func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersPa
 
 // userCrudPage is the list the two admin surfaces over users share.
 func (s *Server) userCrudPage(ctx context.Context, pageParam, perPageParam api.OptInt32) (*api.UserCrudPage, error) {
-	window := paging.New(pageParam, perPageParam)
-	rows, total, err := s.userDirectory.List(ctx, accounts.Page{Offset: window.Offset(), Limit: window.Limit()})
-	if err != nil {
-		return nil, err
-	}
-	return &api.UserCrudPage{
-		Items:   s.conv.ToUserCruds(rows),
-		Total:   int32(total),
-		Page:    window.Page,
-		PerPage: window.PerPage,
-	}, nil
+	return listFrom(ctx, pageParam, perPageParam, s.userDirectory.List, s.conv.ToUserCruds,
+		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
+			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminSearchUsers is the admin typeahead; a blank term returns an empty list.

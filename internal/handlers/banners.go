@@ -2,13 +2,11 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"time"
 
-	"entgo.io/ent/dialect/sql"
-
-	"hexletbasics/ent"
-	"hexletbasics/ent/banner"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 )
 
 // GetActiveBanner is the banner the pages that carry one show: the published
@@ -20,22 +18,9 @@ import (
 // scheduled one. None live is a null banner, not an error: the page just shows
 // nothing.
 func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error) {
-	now := time.Now()
-	row, err := s.db.Banner.Query().
-		Where(
-			banner.StateEQ("published"),
-			banner.LocaleEQ(s.i18n.Locale(ctx)),
-			banner.Or(banner.StartsAtIsNil(), banner.StartsAtLTE(now)),
-			banner.Or(banner.FinishesAtIsNil(), banner.FinishesAtGTE(now)),
-		).
-		Order(
-			banner.ByStartsAt(sql.OrderDesc(), sql.OrderNullsLast()),
-			banner.ByCreatedAt(sql.OrderDesc()),
-			banner.ByID(sql.OrderDesc()),
-		).
-		First(ctx)
+	row, err := s.bannerDirectory.Active(ctx, s.i18n.Locale(ctx), time.Now())
 	switch {
-	case ent.IsNotFound(err):
+	case errors.Is(err, domain.ErrNotFound):
 		return &api.ActiveBanner{Banner: api.NilBanner{Null: true}}, nil
 	case err != nil:
 		return nil, err

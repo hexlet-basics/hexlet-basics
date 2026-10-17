@@ -7,6 +7,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 )
 
 // The public blog (legacy `Web::BlogPostsController`, `Web::BlogPosts::
@@ -19,8 +20,11 @@ import (
 // ListBlogPosts returns a page of published posts in the request locale,
 // newest first (legacy `order(id: :desc)`, pagy's 20 per page).
 func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error) {
-	return listPageWith(ctx, params.Page, params.PerPage,
-		s.blogPublic.Query(s.i18n.Locale(ctx)),
+	locale := s.i18n.Locale(ctx)
+	return listFromWith(ctx, params.Page, params.PerPage,
+		func(ctx context.Context, page domain.Page) ([]*ent.BlogPost, int, error) {
+			return s.blogPublic.Page(ctx, locale, page)
+		},
 		s.blogPostsToAPI,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
 			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
@@ -29,8 +33,7 @@ func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsPara
 }
 
 // GetBlogPost returns the post page: the post, two other posts to read next and
-// the courses it promotes. Keyed by slug, so the id-keyed getOne helper does not
-// fit; a miss is ent not-found, which the central handler maps to 404.
+// the courses it promotes. Keyed by slug; a miss is a 404.
 func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error) {
 	locale := s.i18n.Locale(ctx)
 	row, err := s.blogPublic.BySlug(ctx, locale, params.Slug)

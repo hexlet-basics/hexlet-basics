@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
@@ -37,4 +38,24 @@ func TestStarterCreatesTheVersionAndItsJobTogether(t *testing.T) {
 	duplicate, err := riverClient.InsertTx(ctx, tx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil)
 	require.NoError(t, err)
 	assert.True(t, duplicate.UniqueSkippedAsDuplicate)
+}
+
+// A delivery from a course's repository names the course by slug: the build
+// starts for that course, and an unknown slug starts nothing.
+func TestStartBySlugBuildsTheCourseAndAnUnknownSlugNothing(t *testing.T) {
+	ctx := t.Context()
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	services := testsupport.NewServices(t, tx, transactor)
+	ruby := db.Course.GetX(ctx, fixtures.ID(fixtures.CourseRuby))
+	require.NotNil(t, ruby.Slug)
+
+	version, err := services.Starter.StartBySlug(ctx, *ruby.Slug)
+	require.NoError(t, err)
+	assert.Equal(t, ruby.ID, version.CourseID)
+	assert.Equal(t, version.ID, testsupport.RequireEnqueued(t, services, jobs.ExerciseLoaderArgs{}).VersionID)
+
+	_, err = services.Starter.StartBySlug(ctx, "no-such-course")
+	require.ErrorIs(t, err, domain.ErrNotFound)
+	_, err = services.Starter.Start(ctx, 0)
+	require.ErrorIs(t, err, domain.ErrNotFound)
 }

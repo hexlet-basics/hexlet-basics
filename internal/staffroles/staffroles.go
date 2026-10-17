@@ -8,8 +8,10 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 )
 
 // Permissions writes a role's permission matrix.
@@ -32,6 +34,11 @@ func NewPermissions(db *ent.Client) *Permissions {
 // The input type is the contract's because the ent builders' generated SetInput
 // takes it.
 func (p *Permissions) Apply(ctx context.Context, roleID int, permissions []api.RolePermissionInput) error {
+	// A missing role is domain.ErrNotFound, before any write.
+	if _, err := p.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx); err != nil {
+		return domain.FromStore(err)
+	}
+
 	// A resource listed twice would make the upsert touch one row twice, which
 	// PostgreSQL rejects; the last entry wins, as it did when rows were written
 	// one after another.

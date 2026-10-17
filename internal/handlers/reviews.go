@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/review"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/reviews"
+	"hexletbasics/internal/domain"
 )
 
 // ListPublicReviews is the public reviews page (legacy `Web::ReviewsController
@@ -15,70 +14,44 @@ import (
 // ordered by id alone. Review locales are ru/en only, so an es request gets an
 // empty page, not an error, as legacy's `with_locale` scope gave it.
 func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		reviews.Public(s.db, s.i18n.Locale(ctx)),
+	locale := s.i18n.Locale(ctx)
+	return listFrom(ctx, params.Page, params.PerPage,
+		func(ctx context.Context, page domain.Page) ([]*ent.Review, int, error) {
+			return s.reviewDirectory.Public(ctx, locale, page)
+		},
 		s.conv.ToReviews,
 		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
 			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
 		},
 	)
 }
+
+// The admin operations are generated (ent/admincrud.go, from the AdminCRUD and
+// AdminInput schema annotations): the review is read with its course (and the
+// course's current version) and its user, so a response embeds them in full.
+// courseId and userId are NOT NULL in the DB; a null in the input surfaces as a
+// constraint error (409 centrally), because the schema marks them SetOnly and
+// SetInput skips nulls.
 
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		reviews.WithEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)),
-		s.conv.ToReviews,
-		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
-			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
-		},
-	)
+	return s.db.Review.AdminList(ctx, params.Page, params.PerPage, s.conv.ToReviews)
 }
 
-// AdminGetReview returns a single review by id. A missing id returns ent's
-// not-found error, which the central ErrorHandler maps to 404.
 func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (api.AdminGetReviewRes, error) {
-	return s.getAdminReview(ctx, params.ID)
+	return s.db.Review.AdminGet(ctx, params.ID, s.conv.ToReview)
 }
 
-func (s *Server) getAdminReview(ctx context.Context, id int32) (*api.Review, error) {
-	return getOne(ctx, int(id),
-		func(ctx context.Context, id int) (*ent.Review, error) {
-			return reviews.WithEdges(s.db.Review.Query().Where(review.ID(id))).Only(ctx)
-		},
-		s.conv.ToReview,
-	)
-}
-
-// AdminCreateReview creates a review. courseId (language_id) and userId are
-// NOT NULL in the DB; a null in the input surfaces as a constraint error via
-// the central ErrorHandler (the schema marks them SetOnly, so SetInput skips
-// nulls). The created row is reloaded with its edges so the response carries
-// the full embedded course and user.
 func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (api.AdminCreateReviewRes, error) {
-	row, err := s.db.Review.Create().SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return s.getAdminReview(ctx, int32(row.ID))
+	return s.db.Review.AdminCreate(ctx, req, s.conv.ToReview)
 }
 
-// AdminUpdateReview updates a review. A missing id returns ent's not-found error
-// (mapped to 404 centrally). The generated SetInput keeps the legacy semantics:
-// a null nullable field clears the column, while the course/user associations
-// are only reassigned when a non-null id is supplied (SetOnly).
 func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (api.AdminUpdateReviewRes, error) {
-	row, err := s.db.Review.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return s.getAdminReview(ctx, int32(row.ID))
+	return s.db.Review.AdminUpdate(ctx, params.ID, req, s.conv.ToReview)
 }
 
-// AdminDeleteReview removes a review by id. A missing id returns ent's not-found
-// error (mapped to 404 centrally).
 func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) (api.AdminDeleteReviewRes, error) {
-	if err := s.db.Review.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+	if err := s.db.Review.AdminDelete(ctx, params.ID); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteReviewNoContent{}, nil

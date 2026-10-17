@@ -6,9 +6,9 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/inputconv"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
@@ -20,9 +20,7 @@ import (
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
-	return listPageWith(ctx, params.Page, params.PerPage,
-		s.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID)),
-		s.blogPostsToAPI,
+	return listFrom(ctx, params.Page, params.PerPage, s.blogReader.List, s.conv.ToBlogPosts,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
 			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
 		},
@@ -45,37 +43,35 @@ func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, e
 	return &item, nil
 }
 
-// AdminCreateBlogPost creates a post. The input-to-builder mapping is the
-// generated SetInput; the creator is the authenticated admin (legacy
-// `blog_post.creator = current_user`). Locale: legacy stamps the admin UI's
-// request locale, which does not reach ogen handlers yet (the known
-// admin-locale design gap), so the default locale is pinned like the lesson
-// lists do — thread the request locale through when it lands.
+// AdminCreateBlogPost creates a post by the authenticated admin (legacy
+// `blog_post.creator = current_user`), stamped with the request locale.
 func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput) (api.AdminCreateBlogPostRes, error) {
-	creator := MustAuthenticatedUser(ctx)
-
-	row, err := s.db.BlogPost.Create().
-		SetInput(req).
-		SetCreatorID(creator.ID).
-		SetLocale(s.i18n.Locale(ctx)).
-		Save(ctx)
+	row, err := s.postEditor.Create(ctx, MustAuthenticatedUser(ctx).ID, s.i18n.Locale(ctx), postFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
 	return s.getAdminBlogPost(ctx, row.ID)
 }
 
-// AdminUpdateBlogPost updates a post. The generated SetInput keeps the legacy
-// assign_attributes semantics: a null nullable field clears the column. The
-// stored locale is left untouched (divergence from legacy, which re-stamped
-// the request locale on every update — an accident of its service signature,
-// not behavior worth keeping).
+// AdminUpdateBlogPost updates a post. A null nullable field clears its column;
+// the stored locale is left untouched.
 func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput, params api.AdminUpdateBlogPostParams) (api.AdminUpdateBlogPostRes, error) {
-	row, err := s.db.BlogPost.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
+	row, err := s.postEditor.Update(ctx, int(params.ID), postFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
 	return s.getAdminBlogPost(ctx, row.ID)
+}
+
+// postFieldsOf is the contract's BlogPostInput as the editor's command.
+func postFieldsOf(in *api.BlogPostInput) blogposts.PostFields {
+	return blogposts.PostFields{
+		Name:        inputconv.StringPtr(in.Name),
+		Slug:        inputconv.StringPtr(in.Slug),
+		Description: inputconv.StringPtr(in.Description),
+		State:       inputconv.StringPtr(in.State),
+		RichBody:    in.RichBody,
+	}
 }
 
 // AdminDeleteBlogPost removes a post with its dependents (the likes and related
@@ -104,18 +100,12 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 	return s.getAdminBlogPost(ctx, id)
 }
 
-// AdminSuggestBlogPostRelatedCourses enqueues the AI pick of the post's related
-// courses (legacy `related_courses` member action → FindRelatedCoursesForBlogPostJob).
-// The worker replaces the set asynchronously, so the answer carries no post; a
-// missing id surfaces as ent not-found, which the central handler maps to 404.
+// AdminSuggestBlogPostRelatedCourses asks for the AI pick of the post's related
+// courses (legacy `related_courses` member action →
+// FindRelatedCoursesForBlogPostJob). The worker replaces the set
+// asynchronously, so the answer carries no post; a missing id is a 404.
 func (s *Server) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params api.AdminSuggestBlogPostRelatedCoursesParams) (api.AdminSuggestBlogPostRelatedCoursesRes, error) {
-	id := int(params.ID)
-
-	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
-		return nil, err
-	}
-
-	if err := s.jobs.Enqueue(ctx, jobs.SuggestRelatedCoursesArgs{BlogPostID: id}); err != nil {
+	if err := s.relatedSuggester.Suggest(ctx, int(params.ID)); err != nil {
 		return nil, err
 	}
 	return &api.AdminSuggestBlogPostRelatedCoursesNoContent{}, nil

@@ -4,31 +4,19 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/aimessage"
-	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 )
 
 // AdminListMessages returns a page of in-lesson assistant messages, newest
 // first (legacy `admin/messages#index` over `ai_messages`). The admin surface
-// is read-only (index only). Course and lesson identity is enriched through
-// chat → lesson progress → course/lesson; the lesson's infos are
-// locale-filtered and id-ordered so the converter's "first info" name lookup
-// matches the lesson progress list's convention.
+// is read-only (index only).
 func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (api.AdminListMessagesRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		s.db.AiMessage.Query().
-			WithChat(func(q *ent.AiChatQuery) {
-				q.WithLessonProgress(func(q *ent.LessonProgressQuery) {
-					q.WithCourse().WithLesson(func(q *ent.CourseLessonQuery) {
-						q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
-							q.Where(courselessontranslation.LocaleEQ(s.i18n.Locale(ctx))).
-								Order(ent.Asc(courselessontranslation.FieldID))
-						})
-					})
-				})
-			}).
-			Order(ent.Desc(aimessage.FieldID)),
+	locale := s.i18n.Locale(ctx)
+	return listFrom(ctx, params.Page, params.PerPage,
+		func(ctx context.Context, page domain.Page) ([]*ent.AiMessage, int, error) {
+			return s.messageDirectory.Messages(ctx, locale, page)
+		},
 		s.conv.ToLessonAssistantMessages,
 		func(items []api.LessonAssistantMessage, total, page, perPage int32) *api.LessonAssistantMessagePage {
 			return &api.LessonAssistantMessagePage{Items: items, Total: total, Page: page, PerPage: perPage}

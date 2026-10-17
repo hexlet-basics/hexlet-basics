@@ -3,40 +3,32 @@ package handlers
 import (
 	"context"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/categoryqnaitem"
-	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/qnaitems"
 )
 
 // QnA items are nested resources: every operation is scoped to a parent
 // (a course category or a landing page). List returns a bare array ordered by
-// id (legacy `qna_items.order(:id)`), and update/delete filter by both the
-// parent and the id so an item under a different parent reads as 404 — matching
-// the legacy `parent.qna_items.find(id)` scoping.
+// id, and update/delete are scoped to the parent as well as the id, so an item
+// under a different parent reads as 404. The qnaitems module owns both rules.
+
+func qnaFieldsOf(in *api.QnaItemInput) qnaitems.Fields {
+	return qnaitems.Fields{Question: in.Question, Answer: in.Answer}
+}
 
 // --- Course category QnA items ---------------------------------------------
 
 func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) (api.AdminListCategoryQnaItemsRes, error) {
-	items, err := listAll(ctx,
-		s.db.CategoryQnaItem.Query().
-			Where(categoryqnaitem.CourseCategoryID(int(params.CategoryId))).
-			Order(ent.Asc(categoryqnaitem.FieldID)).
-			All,
-		s.conv.ToCategoryQnaItems,
-	)
+	rows, err := s.categoryQna.List(ctx, int(params.CategoryId))
 	if err != nil {
 		return nil, err
 	}
-	result := api.AdminListCategoryQnaItemsOKApplicationJSON(items)
+	result := api.AdminListCategoryQnaItemsOKApplicationJSON(s.conv.ToCategoryQnaItems(rows))
 	return &result, nil
 }
 
 func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (api.AdminCreateCategoryQnaItemRes, error) {
-	row, err := s.db.CategoryQnaItem.Create().
-		SetCourseCategoryID(int(params.CategoryId)).
-		SetInput(req).
-		Save(ctx)
+	row, err := s.categoryQna.Create(ctx, int(params.CategoryId), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
@@ -45,37 +37,16 @@ func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 }
 
 func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateCategoryQnaItemParams) (api.AdminUpdateCategoryQnaItemRes, error) {
-	// Scoped lookup first: a missing id, or one under a different category,
-	// returns ent's not-found error (404) before any write.
-	row, err := s.db.CategoryQnaItem.Query().
-		Where(
-			categoryqnaitem.ID(int(params.ID)),
-			categoryqnaitem.CourseCategoryID(int(params.CategoryId)),
-		).
-		Only(ctx)
+	row, err := s.categoryQna.Update(ctx, int(params.CategoryId), int(params.ID), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
-
-	updated, err := row.Update().SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToCategoryQnaItem(updated)
+	item := s.conv.ToCategoryQnaItem(row)
 	return &item, nil
 }
 
 func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) (api.AdminDeleteCategoryQnaItemRes, error) {
-	row, err := s.db.CategoryQnaItem.Query().
-		Where(
-			categoryqnaitem.ID(int(params.ID)),
-			categoryqnaitem.CourseCategoryID(int(params.CategoryId)),
-		).
-		Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if err := s.db.CategoryQnaItem.DeleteOne(row).Exec(ctx); err != nil {
+	if err := s.categoryQna.Delete(ctx, int(params.CategoryId), int(params.ID)); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteCategoryQnaItemNoContent{}, nil
@@ -84,25 +55,16 @@ func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.Admi
 // --- Course landing page QnA items -----------------------------------------
 
 func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) (api.AdminListLandingPageQnaItemsRes, error) {
-	items, err := listAll(ctx,
-		s.db.LandingPageQnaItem.Query().
-			Where(landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId))).
-			Order(ent.Asc(landingpageqnaitem.FieldID)).
-			All,
-		s.conv.ToLandingPageQnaItems,
-	)
+	rows, err := s.landingPageQna.List(ctx, int(params.LandingPageId))
 	if err != nil {
 		return nil, err
 	}
-	result := api.AdminListLandingPageQnaItemsOKApplicationJSON(items)
+	result := api.AdminListLandingPageQnaItemsOKApplicationJSON(s.conv.ToLandingPageQnaItems(rows))
 	return &result, nil
 }
 
 func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (api.AdminCreateLandingPageQnaItemRes, error) {
-	row, err := s.db.LandingPageQnaItem.Create().
-		SetCourseLandingPageID(int(params.LandingPageId)).
-		SetInput(req).
-		Save(ctx)
+	row, err := s.landingPageQna.Create(ctx, int(params.LandingPageId), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
@@ -111,35 +73,16 @@ func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.Qna
 }
 
 func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (api.AdminUpdateLandingPageQnaItemRes, error) {
-	row, err := s.db.LandingPageQnaItem.Query().
-		Where(
-			landingpageqnaitem.ID(int(params.ID)),
-			landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId)),
-		).
-		Only(ctx)
+	row, err := s.landingPageQna.Update(ctx, int(params.LandingPageId), int(params.ID), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
-
-	updated, err := row.Update().SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToLandingPageQnaItem(updated)
+	item := s.conv.ToLandingPageQnaItem(row)
 	return &item, nil
 }
 
 func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) (api.AdminDeleteLandingPageQnaItemRes, error) {
-	row, err := s.db.LandingPageQnaItem.Query().
-		Where(
-			landingpageqnaitem.ID(int(params.ID)),
-			landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId)),
-		).
-		Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if err := s.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx); err != nil {
+	if err := s.landingPageQna.Delete(ctx, int(params.LandingPageId), int(params.ID)); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteLandingPageQnaItemNoContent{}, nil

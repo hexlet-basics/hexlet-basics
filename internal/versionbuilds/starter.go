@@ -8,6 +8,8 @@ import (
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/course"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/store"
 )
@@ -27,10 +29,37 @@ func NewStarter(txStore store.Transactor, enqueuer *jobs.Enqueuer) *Starter {
 	return &Starter{store: txStore, jobs: enqueuer}
 }
 
-// Start creates a version in `created` state and schedules its loader job.
-func (s *Starter) Start(ctx context.Context, courseID int) (_ *ent.CourseVersion, err error) {
+// Start creates a version in `created` state and schedules its loader job. A
+// missing course is domain.ErrNotFound, before anything is written.
+func (s *Starter) Start(ctx context.Context, courseID int) (*ent.CourseVersion, error) {
+	return s.start(ctx, func(c *ent.Client) (int, error) {
+		exists, err := c.Course.Query().Where(course.ID(courseID)).Exist(ctx)
+		if err == nil && !exists {
+			return 0, domain.ErrNotFound
+		}
+		return courseID, domain.FromStore(err)
+	})
+}
+
+// StartBySlug is Start for the course with the given slug (what a delivery from
+// the course's repository names). No such course is domain.ErrNotFound.
+func (s *Starter) StartBySlug(ctx context.Context, slug string) (*ent.CourseVersion, error) {
+	return s.start(ctx, func(c *ent.Client) (int, error) {
+		id, err := c.Course.Query().Where(course.Slug(slug)).OnlyID(ctx)
+		return id, domain.FromStore(err)
+	})
+}
+
+// start resolves the course and creates its version and its loader job in one
+// transaction, so neither survives without the other.
+func (s *Starter) start(ctx context.Context, resolve func(*ent.Client) (int, error)) (*ent.CourseVersion, error) {
 	var version *ent.CourseVersion
-	err = s.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
+	err := s.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
+		courseID, err := resolve(txClient)
+		if err != nil {
+			return err
+		}
+
 		version, err = txClient.CourseVersion.Create().
 			SetCourseID(courseID).
 			SetState(stateCreated).

@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 
-	"hexletbasics/ent/staffrole"
 	"hexletbasics/internal/api"
 )
 
@@ -50,15 +49,10 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
-// AdminUpdateRolePermissions applies the submitted matrix; the permissions
-// module upserts it.
+// AdminUpdateRolePermissions applies the submitted matrix; the staffroles
+// module upserts it. A missing role is a 404, before any write.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
-
-	// Ensure the role exists first (404 for a missing id, before any write).
-	if _, err := s.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx); err != nil {
-		return nil, err
-	}
 
 	if err := s.permissions.Apply(ctx, roleID, req.Permissions); err != nil {
 		return nil, err

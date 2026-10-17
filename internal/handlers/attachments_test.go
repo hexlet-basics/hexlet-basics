@@ -89,7 +89,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	)
 	require.NoError(t, err)
 	att := handlers.NewAttachmentHandler(assets, errorHandler)
-	gh := handlers.NewGitHubWebhookHandler(db, services.Starter, "", translator)
+	gh := handlers.NewGitHubWebhookHandler(services.Starter, "", translator)
 	router := translator.Middleware(handlers.NewRouter(handler.Security().Pipeline(apiServer), att, gh))
 
 	// An administrator may upload; a user who is neither an administrator nor

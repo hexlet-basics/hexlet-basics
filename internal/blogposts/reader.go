@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/htmltext"
 )
 
@@ -74,6 +75,16 @@ func (r *Reader) Get(ctx context.Context, id int) (Post, error) {
 		return Post{}, err
 	}
 	return posts[0], nil
+}
+
+// List is one page of posts for the admin, newest first, with the total.
+func (r *Reader) List(ctx context.Context, page domain.Page) ([]Post, int, error) {
+	rows, total, err := domain.Paged(ctx, r.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID)), page)
+	if err != nil {
+		return nil, 0, err
+	}
+	posts, err := r.Assemble(ctx, rows)
+	return posts, total, err
 }
 
 // Assemble builds the posts of rows (loaded with their creator), in the order
