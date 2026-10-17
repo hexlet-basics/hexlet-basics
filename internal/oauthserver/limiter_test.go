@@ -1,12 +1,10 @@
 package oauthserver
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestTheLimiterCountsAnIPv6PrefixAsOneAddress(t *testing.T) {
@@ -34,21 +32,4 @@ func TestTheLimiterSharesOneBucketAmongUnresolvedAddresses(t *testing.T) {
 
 	assert.True(t, first)
 	assert.False(t, second)
-}
-
-func TestTheLimiterStopsTrackingNewAddressesAtItsCapUntilWindowsExpire(t *testing.T) {
-	now := time.Now()
-	l := newLimiter(1, time.Hour, func() time.Time { return now })
-	for i := range maxTrackedAddresses {
-		ok, _ := l.allow(fmt.Sprintf("10.%d.%d.%d", i>>16, (i>>8)&255, i&255))
-		require.True(t, ok)
-	}
-
-	full, _ := l.allow("203.0.113.1")
-	now = now.Add(time.Hour + time.Second)
-	later, _ := l.allow("203.0.113.1")
-
-	assert.False(t, full)
-	assert.True(t, later, "expired windows are pruned to make room")
-	assert.Len(t, l.windows, 1)
 }

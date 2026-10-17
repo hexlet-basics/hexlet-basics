@@ -2,8 +2,9 @@ package oauthserver
 
 import (
 	"net/netip"
-	"sync"
 	"time"
+
+	"hexletbasics/internal/ratelimit"
 )
 
 const (
@@ -13,29 +14,16 @@ const (
 	// few to fill the table from one machine.
 	DefaultRegistrationLimit  = 10
 	DefaultRegistrationWindow = time.Hour
-
-	// maxTrackedAddresses bounds the limiter's memory. A flood from this many
-	// distinct addresses inside one window makes new addresses wait for the
-	// window to pass rather than letting the map grow without limit.
-	maxTrackedAddresses = 100_000
 )
 
-// limiter is a fixed-window counter per client address. It lives in memory, so
-// with several replicas an address gets the limit once per replica; that is a
-// deliberate trade for having no table to clean and no new dependency, and the
-// limit is a brake on abuse, not an exact quota.
+// limiter counts registration attempts per client address, on the fixed-window
+// counter shared with the MCP endpoint (internal/ratelimit). It lives in
+// memory, so with several replicas an address gets the limit once per replica;
+// that is a deliberate trade for having no table to clean and no new
+// dependency, and the limit is a brake on abuse, not an exact quota.
 type limiter struct {
-	limit  int
-	window time.Duration
-	now    func() time.Time
-
-	mu      sync.Mutex
-	windows map[string]*addressWindow
-}
-
-type addressWindow struct {
-	start time.Time
-	count int
+	limit   int
+	counter *ratelimit.Limiter
 }
 
 func newLimiter(limit int, window time.Duration, now func() time.Time) *limiter {
@@ -45,45 +33,13 @@ func newLimiter(limit int, window time.Duration, now func() time.Time) *limiter 
 	if window <= 0 {
 		window = DefaultRegistrationWindow
 	}
-	return &limiter{limit: limit, window: window, now: now, windows: map[string]*addressWindow{}}
+	return &limiter{limit: limit, counter: ratelimit.New(window, now)}
 }
 
 // allow spends one attempt of an address. When it refuses, wait is how long
 // until the address has its budget back.
 func (l *limiter) allow(address string) (ok bool, wait time.Duration) {
-	key := addressKey(address)
-	now := l.now()
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	w := l.windows[key]
-	if w != nil && now.Sub(w.start) >= l.window {
-		delete(l.windows, key)
-		w = nil
-	}
-	if w == nil {
-		if len(l.windows) >= maxTrackedAddresses {
-			l.pruneLocked(now)
-			if len(l.windows) >= maxTrackedAddresses {
-				return false, l.window
-			}
-		}
-		w = &addressWindow{start: now}
-		l.windows[key] = w
-	}
-	if w.count >= l.limit {
-		return false, w.start.Add(l.window).Sub(now)
-	}
-	w.count++
-	return true, 0
-}
-
-func (l *limiter) pruneLocked(now time.Time) {
-	for key, w := range l.windows {
-		if now.Sub(w.start) >= l.window {
-			delete(l.windows, key)
-		}
-	}
+	return l.counter.Allow(ratelimit.Charge{Key: addressKey(address), Limit: l.limit})
 }
 
 // addressKey names the bucket of an address. An IPv6 customer is handed a whole
