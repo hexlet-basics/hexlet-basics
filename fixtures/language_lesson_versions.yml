@@ -63,3 +63,268 @@
   module_version_id: 5
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Starter lessons for every other catalog course, so each course page offers Start/Continue.
+- id: 3000001
+  language_id: 207281424
+  language_version_id: 207281424
+  lesson_id: 1101
+  module_version_id: 4
+  natural_order: 1
+  path_to_code: /exercises-ruby/modules/10-basics/10-hello-world
+  prepared_code: "# Print the greeting\n"
+  original_code: "puts 'Hello, World!'\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000002
+  language_id: 207281424
+  language_version_id: 207281424
+  lesson_id: 1102
+  module_version_id: 4
+  natural_order: 2
+  path_to_code: /exercises-ruby/modules/10-basics/20-greeting
+  prepared_code: "# Print the greeting\n"
+  original_code: "puts 'Hello, Hexlet!'\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000003
+  language_id: 322905520
+  language_version_id: 322905520
+  lesson_id: 1103
+  module_version_id: 11
+  natural_order: 1
+  path_to_code: /exercises-1c/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "Сообщить(\"Hello, World!\");\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000004
+  language_id: 322905520
+  language_version_id: 322905520
+  lesson_id: 1104
+  module_version_id: 11
+  natural_order: 2
+  path_to_code: /exercises-1c/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "Сообщить(\"Hello, Hexlet!\");\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000005
+  language_id: 378610130
+  language_version_id: 378610130
+  lesson_id: 1105
+  module_version_id: 12
+  natural_order: 1
+  path_to_code: /exercises-php/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "<?php\necho \"Hello, World!\\n\";\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000006
+  language_id: 378610130
+  language_version_id: 378610130
+  lesson_id: 1106
+  module_version_id: 12
+  natural_order: 2
+  path_to_code: /exercises-php/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "<?php\necho \"Hello, Hexlet!\\n\";\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000007
+  language_id: 410646757
+  language_version_id: 329547961
+  lesson_id: 1107
+  module_version_id: 13
+  natural_order: 1
+  path_to_code: /exercises-html/modules/10-basics/10-hello-world
+  prepared_code: "<!-- Add the heading -->\n"
+  original_code: "<h1>Hello, World!</h1>\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000008
+  language_id: 410646757
+  language_version_id: 329547961
+  lesson_id: 1108
+  module_version_id: 13
+  natural_order: 2
+  path_to_code: /exercises-html/modules/10-basics/20-greeting
+  prepared_code: "<!-- Add the heading -->\n"
+  original_code: "<h1>Hello, Hexlet!</h1>\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000009
+  language_id: 414575699
+  language_version_id: 522730299
+  lesson_id: 1109
+  module_version_id: 14
+  natural_order: 1
+  path_to_code: /exercises-typescript/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "console.log('Hello, World!');\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000010
+  language_id: 414575699
+  language_version_id: 522730299
+  lesson_id: 1110
+  module_version_id: 14
+  natural_order: 2
+  path_to_code: /exercises-typescript/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "console.log('Hello, Hexlet!');\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000011
+  language_id: 599909531
+  language_version_id: 599909531
+  lesson_id: 1111
+  module_version_id: 15
+  natural_order: 1
+  path_to_code: /exercises-elixir/modules/10-basics/10-hello-world
+  prepared_code: "# Print the greeting\n"
+  original_code: "IO.puts(\"Hello, World!\")\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000012
+  language_id: 599909531
+  language_version_id: 599909531
+  lesson_id: 1112
+  module_version_id: 15
+  natural_order: 2
+  path_to_code: /exercises-elixir/modules/10-basics/20-greeting
+  prepared_code: "# Print the greeting\n"
+  original_code: "IO.puts(\"Hello, Hexlet!\")\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000013
+  language_id: 617920698
+  language_version_id: 617920698
+  lesson_id: 1113
+  module_version_id: 16
+  natural_order: 1
+  path_to_code: /exercises-python/modules/10-basics/10-hello-world
+  prepared_code: "# Print the greeting\n"
+  original_code: "print('Hello, World!')\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000014
+  language_id: 617920698
+  language_version_id: 617920698
+  lesson_id: 1114
+  module_version_id: 16
+  natural_order: 2
+  path_to_code: /exercises-python/modules/10-basics/20-greeting
+  prepared_code: "# Print the greeting\n"
+  original_code: "print('Hello, Hexlet!')\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000015
+  language_id: 912823128
+  language_version_id: 912823128
+  lesson_id: 1115
+  module_version_id: 17
+  natural_order: 1
+  path_to_code: /exercises-go/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000016
+  language_id: 912823128
+  language_version_id: 912823128
+  lesson_id: 1116
+  module_version_id: 17
+  natural_order: 2
+  path_to_code: /exercises-go/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, Hexlet!\")\n}\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000017
+  language_id: 953067225
+  language_version_id: 953067225
+  lesson_id: 1117
+  module_version_id: 18
+  natural_order: 1
+  path_to_code: /exercises-css/modules/10-basics/10-hello-world
+  prepared_code: "/* Style the heading */\n"
+  original_code: "h1 {\n  color: red;\n}\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000018
+  language_id: 953067225
+  language_version_id: 953067225
+  lesson_id: 1118
+  module_version_id: 18
+  natural_order: 2
+  path_to_code: /exercises-css/modules/10-basics/20-greeting
+  prepared_code: "/* Style the paragraph */\n"
+  original_code: "p {\n  color: blue;\n}\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000019
+  language_id: 995840764
+  language_version_id: 995840764
+  lesson_id: 1119
+  module_version_id: 19
+  natural_order: 1
+  path_to_code: /exercises-csharp/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "Console.WriteLine(\"Hello, World!\");\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000020
+  language_id: 995840764
+  language_version_id: 995840764
+  lesson_id: 1120
+  module_version_id: 19
+  natural_order: 2
+  path_to_code: /exercises-csharp/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "Console.WriteLine(\"Hello, Hexlet!\");\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000021
+  language_id: 1058727635
+  language_version_id: 1058727635
+  lesson_id: 1121
+  module_version_id: 20
+  natural_order: 1
+  path_to_code: /exercises-java/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "System.out.println(\"Hello, World!\");\n"
+  test_code: "expect output == \"Hello, World!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3000022
+  language_id: 1058727635
+  language_version_id: 1058727635
+  lesson_id: 1122
+  module_version_id: 20
+  natural_order: 2
+  path_to_code: /exercises-java/modules/10-basics/20-greeting
+  prepared_code: "// Print the greeting\n"
+  original_code: "System.out.println(\"Hello, Hexlet!\");\n"
+  test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

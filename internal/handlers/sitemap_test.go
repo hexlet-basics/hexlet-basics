@@ -32,16 +32,29 @@ func sitemapLandingSlugs(sitemap *api.Sitemap) []string {
 }
 
 // Only published, listed pages whose course has lessons in the page's locale
-// are listed, ru first, then en, by id. In the fixtures only the javascript
-// course has lessons; its archived and draft pages stay out.
+// are listed, ru first, then en, by id. In the fixtures every catalog course
+// has lessons; the javascript course's archived and draft pages stay out.
 func TestGetSitemapListsLandingPagesWithLessons(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
 	sitemap := getSitemap(t, h)
 
-	assert.Equal(t, []string{"javascript-ru", "frontend-ru", "frontend-en"}, sitemapLandingSlugs(sitemap))
-	assert.Equal(t, api.LocaleRu, sitemap.LandingPages[0].Locale)
-	assert.Equal(t, api.LocaleEn, sitemap.LandingPages[2].Locale)
+	slugs := sitemapLandingSlugs(sitemap)
+	assert.Contains(t, slugs, "javascript-ru")
+	assert.Contains(t, slugs, "frontend-en")
+	assert.Contains(t, slugs, "typescript-ru")
+	assert.NotContains(t, slugs, "javascript-ru-archived")
+	assert.NotContains(t, slugs, "nodejs-ru")
+
+	// ru first, then en.
+	seenEn := false
+	for _, page := range sitemap.LandingPages {
+		if page.Locale == api.LocaleEn {
+			seenEn = true
+		}
+		assert.False(t, seenEn && page.Locale == api.LocaleRu, "ru pages come before en pages")
+	}
+	assert.True(t, seenEn)
 }
 
 // The rows do not depend on the request locale: the page lists every locale.
@@ -51,7 +64,9 @@ func TestGetSitemapIgnoresTheRequestLocale(t *testing.T) {
 
 	sitemap := getSitemap(t, h)
 
-	assert.Equal(t, []string{"javascript-ru", "frontend-ru", "frontend-en"}, sitemapLandingSlugs(sitemap))
+	slugs := sitemapLandingSlugs(sitemap)
+	assert.Contains(t, slugs, "javascript-ru")
+	assert.Contains(t, slugs, "frontend-en")
 }
 
 // Unlisted and es pages drop off; an unfinished course does not, as the
@@ -75,7 +90,10 @@ func TestGetSitemapLeavesOutUnlistedAndSpanishPages(t *testing.T) {
 
 	sitemap := getSitemap(t, h)
 
-	assert.Equal(t, []string{"javascript-ru"}, sitemapLandingSlugs(sitemap))
+	slugs := sitemapLandingSlugs(sitemap)
+	assert.Contains(t, slugs, "javascript-ru")
+	assert.NotContains(t, slugs, "frontend-ru")
+	assert.NotContains(t, slugs, "frontend-en")
 }
 
 // The lessons have to be in the page's own locale and in the course's current
@@ -104,7 +122,10 @@ func TestGetSitemapNeedsLessonsInTheCurrentVersionAndLocale(t *testing.T) {
 
 	sitemap := getSitemap(t, h)
 
-	assert.Equal(t, []string{"javascript-ru", "frontend-ru"}, sitemapLandingSlugs(sitemap))
+	slugs := sitemapLandingSlugs(sitemap)
+	assert.Contains(t, slugs, "javascript-ru")
+	assert.Contains(t, slugs, "frontend-ru")
+	assert.NotContains(t, slugs, "frontend-en")
 }
 
 // Published posts of every locale, newest first; drafts and archived posts

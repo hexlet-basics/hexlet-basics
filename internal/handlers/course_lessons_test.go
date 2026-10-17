@@ -3,6 +3,7 @@ package handlers_test
 import (
 	"context"
 	"net/http"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,35 +13,48 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// TestAdminListCourseLessons: the list is the en info of each lesson for the
-// course's CURRENT version. The two negative fixtures (an old-version info and a
-// ru info) must be filtered out, leaving the three current-en lessons.
+// TestAdminListCourseLessons: the list is the en info of each lesson for its
+// course's CURRENT version, across every course. The two negative fixtures (an
+// old-version info and a ru info) must be filtered out of JavaScript's lessons,
+// leaving its three current-en lessons; the other courses' starter lessons are
+// listed beside them, so JavaScript's rows are picked out by slug.
 func TestAdminListCourseLessons(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	page, err := h.Client.AdminListCourseLessons(ctx, api.AdminListCourseLessonsParams{})
+	page, err := h.Client.AdminListCourseLessons(ctx, api.AdminListCourseLessonsParams{
+		PerPage: api.NewOptInt32(100),
+	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
+	assert.Equal(t, int32(len(page.Items)), page.Total)
 
-	assert.Equal(t, int32(3), page.Total, "old-version and ru infos must be excluded")
-	require.Len(t, page.Items, 3)
+	javascript := []string{"variables", "hello-world", "strings"}
+	var items []api.CourseLessonListItem
+	for _, item := range page.Items {
+		assert.NotEqual(t, "Old Hello", item.Name.Value, "old-version infos must be excluded")
+		assert.NotEqual(t, "Привет, мир!", item.Name.Value, "ru infos must be excluded")
+		if slices.Contains(javascript, item.Slug) {
+			items = append(items, item)
+		}
+	}
+	require.Len(t, items, 3, "old-version and ru infos must be excluded")
 
 	// Ordered by the Info id DESC (not the lesson id this row reports as `id`).
 	// Fixture info ids: 2003(Variables/1002) > 2002(Hello/1001) > 2001(Strings/
 	// 1003). So names come out Variables, Hello, Strings — and the reported ids
 	// (1002, 1001, 1003) are NOT descending, proving we sort on the info id.
-	assert.Equal(t, "Variables", page.Items[0].Name.Value)
-	assert.Equal(t, "Hello, World!", page.Items[1].Name.Value)
-	assert.Equal(t, "Strings", page.Items[2].Name.Value)
+	assert.Equal(t, "Variables", items[0].Name.Value)
+	assert.Equal(t, "Hello, World!", items[1].Name.Value)
+	assert.Equal(t, "Strings", items[2].Name.Value)
 
 	// The reported id is the lesson id and the slug is joined from the lesson.
-	assert.Equal(t, int32(1002), page.Items[0].ID)
-	assert.Equal(t, "variables", page.Items[0].Slug)
-	assert.Equal(t, "Storing values", page.Items[0].Description.Value)
+	assert.Equal(t, int32(1002), items[0].ID)
+	assert.Equal(t, "variables", items[0].Slug)
+	assert.Equal(t, "Storing values", items[0].Description.Value)
 
-	assert.Equal(t, int32(1001), page.Items[1].ID)
-	assert.Equal(t, "hello-world", page.Items[1].Slug)
+	assert.Equal(t, int32(1001), items[1].ID)
+	assert.Equal(t, "hello-world", items[1].Slug)
 }
 
 // TestAdminListLessonProgress: newest first, with course/lesson slugs and the
@@ -112,14 +126,19 @@ func TestAdminListCourseLessonsPaginated(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
+	all, err := h.Client.AdminListCourseLessons(ctx, api.AdminListCourseLessonsParams{
+		PerPage: api.NewOptInt32(100),
+	})
+	require.NoError(t, err)
+	require.Greater(t, len(all.Items), 4)
+
 	page, err := h.Client.AdminListCourseLessons(ctx, api.AdminListCourseLessonsParams{
 		Page:    api.NewOptInt32(2),
 		PerPage: api.NewOptInt32(2),
 	})
 	require.NoError(t, err)
 
-	assert.Equal(t, int32(3), page.Total)
+	assert.Equal(t, all.Total, page.Total)
 	assert.Equal(t, int32(2), page.Page)
-	assert.Len(t, page.Items, 1) // 3 rows, page 2 of size 2 -> the 3rd row
-	assert.Equal(t, "Strings", page.Items[0].Name.Value)
+	assert.Equal(t, all.Items[2:4], page.Items) // page 2 of size 2 -> the 3rd and 4th rows
 }

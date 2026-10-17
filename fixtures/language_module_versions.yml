@@ -42,3 +42,74 @@
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Starter lessons for every other catalog course, so each course page offers Start/Continue.
+- id: 11
+  language_id: 322905520
+  language_version_id: 322905520
+  module_id: 11
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 12
+  language_id: 378610130
+  language_version_id: 378610130
+  module_id: 12
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 13
+  language_id: 410646757
+  language_version_id: 329547961
+  module_id: 13
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 14
+  language_id: 414575699
+  language_version_id: 522730299
+  module_id: 14
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 15
+  language_id: 599909531
+  language_version_id: 599909531
+  module_id: 15
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 16
+  language_id: 617920698
+  language_version_id: 617920698
+  module_id: 16
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 17
+  language_id: 912823128
+  language_version_id: 912823128
+  module_id: 17
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 18
+  language_id: 953067225
+  language_version_id: 953067225
+  module_id: 18
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 19
+  language_id: 995840764
+  language_version_id: 995840764
+  module_id: 19
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 20
+  language_id: 1058727635
+  language_version_id: 1058727635
+  module_id: 20
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

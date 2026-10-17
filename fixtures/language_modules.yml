@@ -37,3 +37,74 @@
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Starter lessons for every other catalog course, so each course page offers Start/Continue.
+- id: 11
+  language_id: 322905520
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 12
+  language_id: 378610130
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 13
+  language_id: 410646757
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 14
+  language_id: 414575699
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 15
+  language_id: 599909531
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 16
+  language_id: 617920698
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 17
+  language_id: 912823128
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 18
+  language_id: 953067225
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 19
+  language_id: 995840764
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 20
+  language_id: 1058727635
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

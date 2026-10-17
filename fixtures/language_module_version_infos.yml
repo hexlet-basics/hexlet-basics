@@ -51,3 +51,193 @@
   description: Первая программа на Ruby.
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Starter lessons for every other catalog course, so each course page offers Start/Continue.
+- id: 101
+  language_id: 207281424
+  language_version_id: 207281424
+  version_id: 4
+  locale: en
+  name: "Basics"
+  description: "Your first Ruby program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 102
+  language_id: 322905520
+  language_version_id: 322905520
+  version_id: 11
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на 1C."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 103
+  language_id: 322905520
+  language_version_id: 322905520
+  version_id: 11
+  locale: en
+  name: "Basics"
+  description: "Your first 1C program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 104
+  language_id: 378610130
+  language_version_id: 378610130
+  version_id: 12
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на PHP."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 105
+  language_id: 378610130
+  language_version_id: 378610130
+  version_id: 12
+  locale: en
+  name: "Basics"
+  description: "Your first PHP program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 106
+  language_id: 410646757
+  language_version_id: 329547961
+  version_id: 13
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на HTML."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 107
+  language_id: 410646757
+  language_version_id: 329547961
+  version_id: 13
+  locale: en
+  name: "Basics"
+  description: "Your first HTML program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 108
+  language_id: 414575699
+  language_version_id: 522730299
+  version_id: 14
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на TypeScript."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 109
+  language_id: 414575699
+  language_version_id: 522730299
+  version_id: 14
+  locale: en
+  name: "Basics"
+  description: "Your first TypeScript program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 110
+  language_id: 599909531
+  language_version_id: 599909531
+  version_id: 15
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на Elixir."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 111
+  language_id: 599909531
+  language_version_id: 599909531
+  version_id: 15
+  locale: en
+  name: "Basics"
+  description: "Your first Elixir program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 112
+  language_id: 617920698
+  language_version_id: 617920698
+  version_id: 16
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на Python."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 113
+  language_id: 617920698
+  language_version_id: 617920698
+  version_id: 16
+  locale: en
+  name: "Basics"
+  description: "Your first Python program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 114
+  language_id: 912823128
+  language_version_id: 912823128
+  version_id: 17
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на Go."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 115
+  language_id: 912823128
+  language_version_id: 912823128
+  version_id: 17
+  locale: en
+  name: "Basics"
+  description: "Your first Go program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 116
+  language_id: 953067225
+  language_version_id: 953067225
+  version_id: 18
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на CSS."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 117
+  language_id: 953067225
+  language_version_id: 953067225
+  version_id: 18
+  locale: en
+  name: "Basics"
+  description: "Your first CSS program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 118
+  language_id: 995840764
+  language_version_id: 995840764
+  version_id: 19
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на C#."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 119
+  language_id: 995840764
+  language_version_id: 995840764
+  version_id: 19
+  locale: en
+  name: "Basics"
+  description: "Your first C# program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 120
+  language_id: 1058727635
+  language_version_id: 1058727635
+  version_id: 20
+  locale: ru
+  name: "Основы"
+  description: "Первая программа на Java."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 121
+  language_id: 1058727635
+  language_version_id: 1058727635
+  version_id: 20
+  locale: en
+  name: "Basics"
+  description: "Your first Java program."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

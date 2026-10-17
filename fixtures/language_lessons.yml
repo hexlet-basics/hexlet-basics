@@ -21,3 +21,136 @@
   language_id: 82481401
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Starter lessons for every other catalog course, so each course page offers Start/Continue.
+- id: 1101
+  slug: hello-world-ruby
+  natural_order: 1
+  language_id: 207281424
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1102
+  slug: greeting-ruby
+  natural_order: 2
+  language_id: 207281424
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1103
+  slug: hello-world-1c
+  natural_order: 1
+  language_id: 322905520
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1104
+  slug: greeting-1c
+  natural_order: 2
+  language_id: 322905520
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1105
+  slug: hello-world-php
+  natural_order: 1
+  language_id: 378610130
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1106
+  slug: greeting-php
+  natural_order: 2
+  language_id: 378610130
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1107
+  slug: hello-world-html
+  natural_order: 1
+  language_id: 410646757
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1108
+  slug: greeting-html
+  natural_order: 2
+  language_id: 410646757
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1109
+  slug: hello-world-typescript
+  natural_order: 1
+  language_id: 414575699
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1110
+  slug: greeting-typescript
+  natural_order: 2
+  language_id: 414575699
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1111
+  slug: hello-world-elixir
+  natural_order: 1
+  language_id: 599909531
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1112
+  slug: greeting-elixir
+  natural_order: 2
+  language_id: 599909531
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1113
+  slug: hello-world-python
+  natural_order: 1
+  language_id: 617920698
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1114
+  slug: greeting-python
+  natural_order: 2
+  language_id: 617920698
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1115
+  slug: hello-world-go
+  natural_order: 1
+  language_id: 912823128
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1116
+  slug: greeting-go
+  natural_order: 2
+  language_id: 912823128
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1117
+  slug: hello-world-css
+  natural_order: 1
+  language_id: 953067225
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1118
+  slug: greeting-css
+  natural_order: 2
+  language_id: 953067225
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1119
+  slug: hello-world-csharp
+  natural_order: 1
+  language_id: 995840764
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1120
+  slug: greeting-csharp
+  natural_order: 2
+  language_id: 995840764
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1121
+  slug: hello-world-java
+  natural_order: 1
+  language_id: 1058727635
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1122
+  slug: greeting-java
+  natural_order: 2
+  language_id: 1058727635
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
