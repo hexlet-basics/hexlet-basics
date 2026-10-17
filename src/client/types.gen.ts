@@ -4919,36 +4919,6 @@ export type StartLessonResponses = {
 
 export type StartLessonResponse = StartLessonResponses[keyof StartLessonResponses];
 
-export type SwitchLocaleData = {
-  body?: never;
-  path?: never;
-  query: {
-    locale: Locale;
-  };
-  url: '/api/locale/switch';
-};
-
-export type SwitchLocaleErrors = {
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type SwitchLocaleError = SwitchLocaleErrors[keyof SwitchLocaleErrors];
-
-export type SwitchLocaleResponses = {
-  /**
-   * A remembered locale choice and the cookie that carries it.
-   */
-  204: void;
-};
-
-export type SwitchLocaleResponse = SwitchLocaleResponses[keyof SwitchLocaleResponses];
-
 export type CreateMagicLinkData = {
   body: EmailInput;
   path?: never;

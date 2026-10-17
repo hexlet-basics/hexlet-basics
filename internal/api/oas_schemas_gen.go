@@ -7895,21 +7895,6 @@ type StartLessonNoContent struct{}
 
 func (*StartLessonNoContent) startLessonRes() {}
 
-// SwitchLocaleNoContent is response for SwitchLocale operation.
-type SwitchLocaleNoContent struct {
-	SetCookie []string
-}
-
-// GetSetCookie returns the value of SetCookie.
-func (s *SwitchLocaleNoContent) GetSetCookie() []string {
-	return s.SetCookie
-}
-
-// SetSetCookie sets the value of SetCookie.
-func (s *SwitchLocaleNoContent) SetSetCookie(val []string) {
-	s.SetCookie = val
-}
-
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User
 type User struct {

@@ -1955,15 +1955,6 @@ export const zStartLessonPath = z.object({
  */
 export const zStartLessonResponse = z.void();
 
-export const zSwitchLocaleQuery = z.object({
-  locale: zLocale
-});
-
-/**
- * A remembered locale choice and the cookie that carries it.
- */
-export const zSwitchLocaleResponse = z.void();
-
 export const zCreateMagicLinkBody = zEmailInput;
 
 /**

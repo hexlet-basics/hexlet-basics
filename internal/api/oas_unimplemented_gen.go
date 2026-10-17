@@ -901,16 +901,6 @@ func (UnimplementedHandler) StartLesson(ctx context.Context, params StartLessonP
 	return r, ht.ErrNotImplemented
 }
 
-// SwitchLocale implements switchLocale operation.
-//
-// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
-// the locale it redirects to. The page navigates itself afterwards.
-//
-// GET /api/locale/switch
-func (UnimplementedHandler) SwitchLocale(ctx context.Context, params SwitchLocaleParams) (r *SwitchLocaleNoContent, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
 // UpdatePassword implements updatePassword operation.
 //
 // Set a new password using a reset token; signs the user in.

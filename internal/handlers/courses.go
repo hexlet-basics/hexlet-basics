@@ -66,8 +66,6 @@ type Server struct {
 	emailTokens *emailtokens.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
-	// secure marks cookies Secure when the site is served over https.
-	secure bool
 	// leads stores a lead and raises LeadCreated in one transaction.
 	leads leads.Creator
 	// books stores a book request and raises BookRequested in one transaction.
@@ -142,7 +140,6 @@ func NewServer(deps Deps) *Server {
 		events:            deps.Events,
 		emailTokens:       emailtokens.New(deps.Config.EmailTokenSecret),
 		guests:            guests,
-		secure:            secure,
 		i18n:              deps.I18n,
 		leads:             deps.Leads,
 		books:             deps.Books,

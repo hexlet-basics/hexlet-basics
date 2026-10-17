@@ -3,7 +3,6 @@ package handlers_test
 import (
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
@@ -157,43 +156,6 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 		api.UpdatePasswordParams{Token: token})
 	require.NoError(t, err)
 	assert.IsType(t, &api.NotFoundError{}, res)
-}
-
-func localeCookieFrom(t *testing.T, h *testsupport.Harness) *http.Cookie {
-	t.Helper()
-	for _, raw := range h.ResponseCookies() {
-		cookie, err := http.ParseSetCookie(raw)
-		require.NoError(t, err)
-		if cookie.Name == "locale" {
-			return cookie
-		}
-	}
-	t.Fatalf("no locale cookie in %v", h.ResponseCookies())
-	return nil
-}
-
-func TestSwitchLocaleStoresTheChoiceOnTheUser(t *testing.T) {
-	h := testsupport.NewHarness(t)
-
-	_, err := h.Client.SwitchLocale(t.Context(), api.SwitchLocaleParams{Locale: api.LocaleEs})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-
-	assert.Equal(t, "es", lo.FromPtr(h.DB.User.GetX(t.Context(), h.UserID).Locale))
-	cookie := localeCookieFrom(t, h)
-	assert.Equal(t, "es", cookie.Value)
-	assert.Equal(t, "/", cookie.Path)
-	assert.Greater(t, time.Duration(cookie.MaxAge)*time.Second, 300*24*time.Hour)
-}
-
-func TestSwitchLocaleRemembersAVisitorsChoiceInACookie(t *testing.T) {
-	h := testsupport.NewAnonymousHarness(t)
-
-	_, err := h.Client.SwitchLocale(t.Context(), api.SwitchLocaleParams{Locale: api.LocaleEn})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Equal(t, "en", localeCookieFrom(t, h).Value)
-	assert.Nil(t, h.DB.User.GetX(t.Context(), h.UserID).Locale)
 }
 
 var secondAdminID = fixtures.ID(fixtures.UserSecondAdmin)

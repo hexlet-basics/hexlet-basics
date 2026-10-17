@@ -2,19 +2,8 @@ package handlers
 
 import (
 	"context"
-	"net/http"
-	"time"
 
 	"hexletbasics/internal/api"
-)
-
-// localeCookie remembers the locale a visitor switched to. It stands in for
-// legacy `session[:locale]`: the SSR root reads it to decide whether `/`
-// redirects to a prefixed locale, so a Russian-speaking browser that picked
-// English stays on English. Signed-in users also get the choice on their row.
-const (
-	localeCookie    = "locale"
-	localeCookieTTL = 365 * 24 * time.Hour
 )
 
 // GetProfile returns the signed-in user's editable profile. The contract
@@ -65,28 +54,4 @@ func (s *Server) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error
 		return nil, err
 	}
 	return &api.DeleteAccountNoContent{}, nil
-}
-
-// SwitchLocale remembers the chosen locale (legacy LocalesController#switch).
-// Legacy answered with a redirect to the same page in the new locale; the page
-// knows its own URL, so here it navigates itself once the choice is stored.
-// The contract's Locale enum already refuses anything but en, ru and es.
-func (s *Server) SwitchLocale(ctx context.Context, params api.SwitchLocaleParams) (*api.SwitchLocaleNoContent, error) {
-	locale := string(params.Locale)
-	if u, ok := AuthenticatedUser(ctx); ok {
-		if err := u.Update().SetLocale(locale).Exec(ctx); err != nil {
-			return nil, err
-		}
-	}
-
-	cookie := &http.Cookie{
-		Name:     localeCookie,
-		Value:    locale,
-		Path:     "/",
-		MaxAge:   int(localeCookieTTL.Seconds()),
-		HttpOnly: true,
-		Secure:   s.secure,
-		SameSite: http.SameSiteLaxMode,
-	}
-	return &api.SwitchLocaleNoContent{SetCookie: []string{cookie.String()}}, nil
 }
