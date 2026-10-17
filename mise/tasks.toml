@@ -301,12 +301,13 @@ status=0
 check() {
   local grammar=$1; shift
   local out
-  out=$(git ls-files -z -- "$@" ':!*/app-chart/templates' ':!legacy/sorbet/rbi' ':!legacy/test/fixtures' |
+  out=$(git ls-files -z -- "$@" ':(exclude,glob)**/app-chart/templates/**' ':!legacy/sorbet/rbi' ':!legacy/test/fixtures' |
     xargs -0 -r tree-sitter parse --quiet --grammar-path "node_modules/$grammar" 2>&1 |
     grep -E 'ERROR|MISSING|Error' | grep -v 'parser directories') || true
   if [ -n "$out" ]; then echo "$out"; status=1; fi
 }
-check tree-sitter-typescript/tsx '*.ts' '*.tsx'
+# legacy's TSX carries a bare `&` the TSX grammar rejects.
+check tree-sitter-typescript/tsx '*.ts' '*.tsx' ':!legacy'
 check tree-sitter-javascript '*.js' '*.mjs' '*.cjs' '*.jsx'
 check tree-sitter-python '*.py'
 check tree-sitter-ruby '*.rb' '*.rbi' '*.rake'
