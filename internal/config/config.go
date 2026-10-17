@@ -80,6 +80,10 @@ type Config struct {
 	// apart from GuestCookieSecret so rotating one never invalidates the other: a
 	// leaked email token secret must not force every learner to sign in again.
 	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
+	// AuditRetentionMonths is how long Audit Records are kept (ADR-0017). The
+	// audit table is partitioned by month and retention drops whole partitions,
+	// so a record lives at least this many months and up to one month longer.
+	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24"`
 	// Mail configures account email (ADR-0006).
 	Mail MailConfig `envPrefix:"MAIL_"`
 	// ExerciseRunner bounds what a learner's submission may do to the host
@@ -185,6 +189,11 @@ func Load() (*Config, error) {
 	}
 	if err := validateOAuth(cfg.OAuth); err != nil {
 		return nil, oops.Wrapf(err, "validate OAuth config")
+	}
+	if cfg.AuditRetentionMonths < 1 {
+		// Zero would drop the month in progress; the job would refuse it on
+		// every run, so the process refuses to start instead.
+		return nil, oops.Errorf("AUDIT_RETENTION_MONTHS must be at least 1, got %d", cfg.AuditRetentionMonths)
 	}
 	if err := validateProduction(cfg); err != nil {
 		return nil, oops.Wrapf(err, "validate production config")

@@ -287,3 +287,44 @@ rolls back its own record; `audit.Write` already takes an outcome and an
 `Entry` without a user, so #845 writes `forbidden` and `failed` records from
 the security handler and from the middleware's error path, each in its own short
 transaction. Reads of personal data (#850) go through Watermill, not this path.
+
+## Addendum: monthly partitions and retention of the audit table
+
+Settled by the partitioning ticket (#846). It meets the ADR as written (retention
+by dropping whole partitions, the application unable to touch a single record);
+no departure.
+
+**The table.** A second migration (`partition_audit_records`) turns
+`audit_records` into a table partitioned by month on `occurred_at`: a new
+partitioned parent with the same columns, `(id, occurred_at)` key, checks,
+indexes and row-level append-only trigger, the data copied over, the old table
+dropped. The first migration is untouched. The ent schema and the insert path
+are unchanged: ent inserts into the parent and PostgreSQL routes the row. A
+`audit_records_default` partition is the safety net, so an insert never fails
+for a missing month; it is never dropped by retention.
+
+**Where the DDL lives.** `forbidigo` bans raw SQL in production Go and ent has
+no partition DDL, so the DDL is two SQL functions created by the migration,
+`audit_records_ensure_partition(month)` and
+`audit_records_drop_partitions_ended_before(cutoff)`. `audit.Partitions` calls
+each with one fixed statement (a single `//nolint:forbidigo` with the reason).
+Both take an advisory lock, so two workers cannot race. Considered and not
+chosen: enabling ent's `sql/execquery` feature (regenerates the whole client to
+expose a general raw-SQL door), and DDL assembled as Go strings.
+
+**The job.** `maintain_audit_partitions` is a periodic River job (daily, and on
+start) in the worker process: it creates the current month and the next three
+(`audit.PartitionsAhead`), then drops expired partitions. If rows already sit in
+the default partition for a month being created (the job did not run in time),
+the function moves them into the new partition: PostgreSQL cannot create an
+overlapping partition, so it detaches the default partition (which removes its
+cloned trigger), moves the rows unchanged and reattaches it (which clones the
+trigger back). Only this function can do that; the application has no such
+statement.
+
+**Retention.** `AUDIT_RETENTION_MONTHS` (default 24). A partition is dropped
+only when its whole month ended at or before `now - retention`, so the month
+holding the cutoff is kept whole: a record lives at least the retention and up
+to a month longer, and the month in progress is never dropped. `DROP TABLE` does
+not fire the trigger; it is the one permitted way a record leaves the table.
+Tests prove the trigger still refuses UPDATE and DELETE on rows in a partition.

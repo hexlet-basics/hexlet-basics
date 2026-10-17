@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/audit"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/emailtokens"
@@ -180,6 +181,7 @@ var workerPackage = do.Package(
 			jobs.AmoCRMLead(amoCRMClient),
 			jobs.AccountEmail(emailSender),
 			jobs.ReapExpiredSessions(manager, logger),
+			jobs.MaintainAuditPartitions(audit.NewPartitions(db), cfg.AuditRetentionMonths, logger),
 		}
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
