@@ -25,6 +25,8 @@ func (CourseLandingPage) Annotations() []schema.Annotation {
 		// is deferred until the Attachments uploader lands; `locale` is not
 		// part of the admin input.
 		AdminInput{Type: "CourseLandingPageInput"},
+		// The course supplies courseSlug, duration and membersCount.
+		AdminCRUD{Eager: []string{"WithCourse()"}},
 	}
 }
 

@@ -24,7 +24,7 @@ type Banner struct {
 // adminput.tmpl). The default mapping fits as-is: the NOT NULL columns are
 // required in BannerInput, the nullable ones arrive as Nil* wrappers.
 func (Banner) Annotations() []schema.Annotation {
-	return []schema.Annotation{AdminInput{}}
+	return []schema.Annotation{AdminInput{}, AdminCRUD{}}
 }
 
 func (Banner) Fields() []ent.Field {

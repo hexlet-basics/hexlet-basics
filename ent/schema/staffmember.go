@@ -27,7 +27,14 @@ type StaffMember struct {
 // UserId/RoleId; allowed_locales maps by default, with the generated cast
 // through pq.StringArray.
 func (StaffMember) Annotations() []schema.Annotation {
-	return []schema.Annotation{AdminInput{}}
+	return []schema.Annotation{
+		AdminInput{},
+		// The API model embeds the user and the role with its permissions.
+		AdminCRUD{Eager: []string{
+			"WithUser()",
+			"WithRole(func(rq *StaffRoleQuery) { rq.WithPermissions() })",
+		}},
+	}
 }
 
 func (StaffMember) Fields() []ent.Field {
