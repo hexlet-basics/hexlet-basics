@@ -24,6 +24,19 @@ const (
 	Write Kind = "write"
 )
 
+// Access is the requirement an admin operation declares in place of a
+// Permission, with `x-access` in the TypeSpec. It exists for the operations no
+// Permission opens yet, and is meant to disappear as each one gets a Permission.
+type Access string
+
+const (
+	// Administrators marks an operation only an administrator may perform.
+	Administrators Access = "administrators"
+	// AnyStaff marks an operation any staff member may perform, whatever their
+	// role holds: the upload every form uses.
+	AnyStaff Access = "any-staff"
+)
+
 // Requirement is what one operation declares it needs.
 type Requirement struct {
 	Permission string
@@ -39,9 +52,11 @@ type Permission struct {
 }
 
 // Declarations is what the contract declares: the requirement of each
-// operation, keyed by its ogen name (AdminListBlogPosts), and the catalog.
+// operation, keyed by its ogen name (AdminListBlogPosts), the operations that
+// declare an Access instead, and the catalog.
 type Declarations struct {
 	operations map[string]Requirement
+	access     map[string]Access
 	catalog    []Permission
 }
 
@@ -69,20 +84,33 @@ func Parse(doc []byte) (*Declarations, error) {
 				Name string `yaml:"name"`
 				Kind Kind   `yaml:"kind"`
 			} `yaml:"x-permission"`
+			Access Access `yaml:"x-access"`
 		} `yaml:"paths"`
 	}
 	if err := yaml.Unmarshal(doc, &spec); err != nil {
 		return nil, fmt.Errorf("parse OpenAPI: %w", err)
 	}
 
-	d := &Declarations{operations: map[string]Requirement{}}
+	d := &Declarations{operations: map[string]Requirement{}, access: map[string]Access{}}
 	kinds := map[string]Kind{}
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
+			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
+			if op.Access != "" {
+				if op.Access != Administrators && op.Access != AnyStaff {
+					return nil, fmt.Errorf("%s: x-access %q is neither %s nor %s", where, op.Access, Administrators, AnyStaff)
+				}
+				if op.Permission != nil {
+					return nil, fmt.Errorf("%s: declares both x-permission and x-access", where)
+				}
+				if op.OperationID == "" {
+					return nil, fmt.Errorf("%s: x-access needs an operationId", where)
+				}
+				d.access[operationName(op.OperationID)] = op.Access
+			}
 			if op.Permission == nil {
 				continue
 			}
-			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
 			if op.OperationID == "" || op.Permission.Name == "" {
 				return nil, fmt.Errorf("%s: x-permission needs an operationId and a name", where)
 			}
@@ -111,11 +139,26 @@ func operationName(operationID string) string {
 }
 
 // For reports what the operation (an ogen operation name) declares it needs.
-// ok is false for an operation that declares nothing, which the caller treats
-// as not yet migrated to declared Permissions.
+// ok is false for an operation that declares no Permission; AccessOf says
+// whether it declares an Access instead.
 func For(operation string) (Requirement, bool) {
 	r, ok := declared.operations[operation]
 	return r, ok
+}
+
+// AccessOf reports the Access an operation declares instead of a Permission, and
+// the empty Access for one that declares none.
+func AccessOf(operation string) Access {
+	return declared.access[operation]
+}
+
+// IsClassified reports whether an operation says who may use it: it declares a
+// Permission or an Access. An admin operation that does neither is closed to
+// everyone but administrators by default, and a contract test fails on it so it
+// is never closed by accident.
+func IsClassified(operation string) bool {
+	_, hasPermission := declared.operations[operation]
+	return hasPermission || declared.access[operation] != ""
 }
 
 // Catalog lists every declared Permission once, ordered by name so the roles

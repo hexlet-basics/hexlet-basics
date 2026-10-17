@@ -127,7 +127,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	byBit := [][]string{ops.index, ops.create, ops.update, ops.destroy}
 
 	db, tx := testsupport.NewClientWithTx(t)
-	bob := db.User.GetX(t.Context(), bobID)
+	bob := db.User.GetX(t.Context(), editorID)
 	staff := bob.QueryStaffMember().OnlyX(t.Context())
 	// Start from the old shape: no grants, and the matrix table as the baseline
 	// made it. The table is long gone from the migrated schema, so the test
