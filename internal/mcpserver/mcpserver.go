@@ -13,7 +13,6 @@ package mcpserver
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -59,8 +58,18 @@ type Verifier interface {
 // Catalogue is the read side of the website's public catalogue, as the HTTP
 // operations implement it. Tools call it rather than the database, so a tool and
 // an HTTP read cannot answer differently.
+//
+// The methods are the generated handler's own, with its own result types, so
+// handlers.Server satisfies it as it is and a tool shows exactly what the
+// operation answers a visitor.
 type Catalogue interface {
 	ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error)
+	ListPublicCourseCategories(ctx context.Context) ([]api.CourseCategory, error)
+	GetPublicCourseCategory(ctx context.Context, params api.GetPublicCourseCategoryParams) (api.GetPublicCourseCategoryRes, error)
+	GetCourse(ctx context.Context, params api.GetCourseParams) (api.GetCourseRes, error)
+	GetCourseLesson(ctx context.Context, params api.GetCourseLessonParams) (api.GetCourseLessonRes, error)
+	ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error)
+	GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error)
 }
 
 // Deps are the collaborators of the Server.
@@ -72,12 +81,17 @@ type Deps struct {
 	Issuer string
 	// Logger receives verification failures that are ours, not the caller's.
 	Logger *slog.Logger
+	// Limits are the page, response, timeout and rate limits of the tools; a
+	// zero field takes its default.
+	Limits Limits
 }
 
 // Server is the MCP endpoint.
 type Server struct {
 	deps     Deps
 	resource string
+	limits   Limits
+	meter    *meter
 	handler  http.Handler
 }
 
@@ -88,7 +102,8 @@ func New(deps Deps) (*Server, error) {
 	if deps.Logger == nil {
 		deps.Logger = slog.Default()
 	}
-	s := &Server{deps: deps, resource: deps.Verifier.Resource()}
+	limits := deps.Limits.withDefaults()
+	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
 
 	mcpServer := mcp.NewServer(&mcp.Implementation{Name: "hexlet-basics", Title: "Hexlet Basics"}, nil)
 	if err := s.addCatalogueTools(mcpServer); err != nil {
@@ -181,26 +196,6 @@ func requireScope(req *mcp.CallToolRequest, scope string) (userID int, denied *m
 // way MCP reports a failed call (a protocol error would end the exchange).
 func toolError(message string) *mcp.CallToolResult {
 	return &mcp.CallToolResult{IsError: true, Content: []mcp.Content{&mcp.TextContent{Text: message}}}
-}
-
-// toolResult is a successful result: the structured content, which the output
-// schema describes, and a short text for a client that shows only text.
-func toolResult(text string, structured any) (*mcp.CallToolResult, error) {
-	// Round-trip through JSON so the content is exactly what the contract's
-	// encoders produce (omitted optional fields, null for nullable ones), not
-	// the Go shape of the generated types.
-	raw, err := json.Marshal(structured)
-	if err != nil {
-		return nil, fmt.Errorf("encode tool result: %w", err)
-	}
-	var generic any
-	if err := json.Unmarshal(raw, &generic); err != nil {
-		return nil, fmt.Errorf("decode tool result: %w", err)
-	}
-	return &mcp.CallToolResult{
-		Content:           []mcp.Content{&mcp.TextContent{Text: text}},
-		StructuredContent: generic,
-	}, nil
 }
 
 // summarize is the short text of a list result.

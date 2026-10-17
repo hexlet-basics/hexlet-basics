@@ -124,3 +124,72 @@ What the first implementation settled, and where it stops short of the text abov
   still sends only `/api/` to Go. `/mcp`, `/.well-known/oauth-protected-resource*`
   (and `/oauth/*` from ADR-0019) must be added before either flag is switched on.
   The Vite development proxy already carries them.
+
+## Addendum: catalogue tools, response limits and rate limiting (#851)
+
+- **Catalogue tools.** Seven read-only tools, named after the operationId they
+  mirror, each needing `catalog:read` and calling the same handler method as the
+  HTTP operation (`mcpserver.Catalogue` is satisfied by `handlers.Server`):
+  `listCourses`, `listPublicCourseCategories`, `getPublicCourseCategory`,
+  `getCourse` (a Course with its Lessons; its slug is a landing page's, as
+  `listCourses` returns it), `getCourseLesson` (Lesson content with its Lesson
+  Tests; `courseSlug` is the Course's own), `listBlogPosts` and `getBlogPost`.
+  The output schema is the operation's 200 schema from the contract plus one
+  optional `truncation` property; the two operations that return a bare array
+  (`listCourses`, `listPublicCourseCategories`) are wrapped under `courses` /
+  `categories` with `total`, `page` and `perPage`.
+- **Visitor rules.** A bearer token is not a session, so the handlers answer as
+  they do a signed-out visitor: no Enrollment, progress at the beginning,
+  drafts and archived posts not found. A Lesson's `preparedCode` (Starter Code),
+  `originalCode` (Reference Solution) and `testCode` are in the answer because
+  the HTTP operation gives them to every visitor; the tools add no rule of their
+  own. A test compares a tool's result with the HTTP response for a visitor.
+- **Not exposed.** `getBook` (the book page's state is the caller's own book
+  request, so for a visitor it is always empty, and the PDF itself is behind a
+  sign-in and a request); `getNextBlogPost` (infinite-scroll plumbing, covered
+  by `listBlogPosts`); the Yandex feeds and the sitemap (machine formats for
+  other consumers); everything that writes (`likeBlogPost`, `createLead`...).
+  There is no public read of a book's content in the contract, so "books" has
+  no tool until there is.
+- **Page size: clamp.** A `perPage` above `MCP_MAX_PAGE_SIZE` (50) is clamped,
+  not refused, and the text of the result says so; the schema states the limit
+  in the argument's description, not as a `maximum`, because the limit is
+  configurable. Lists the contract does not page are paged in the tool layer
+  (`page`, `perPage`); `listBlogPosts` passes the clamped size to the handler,
+  which pages in SQL. Lists nested in a record (a Course's Lessons, a
+  category's courses) are not paged and are bounded by the response limit.
+- **Response size: cut at an element, with a hint.** The structured content plus
+  the text is measured against `MCP_MAX_RESPONSE_BYTES` (100 KB). Over it, the
+  largest array (then the largest long string) is shortened, repeatedly, on the
+  decoded value, so the result is always valid JSON, and `truncation` says what
+  was cut. For a list it carries `suggestedPerPage` and `suggestedPage` that
+  continue the reading (the first call may repeat a few records already seen).
+  A result that cannot be shortened to the limit is a tool error naming the
+  limit.
+- **Timeout.** `MCP_TOOL_TIMEOUT` (30 s) becomes the deadline of the context the
+  handler runs with, which is what cancels its queries; the agent gets a tool
+  error.
+- **Rate limit.** Per user and per Connected App (the token's OAuth client id,
+  already in `Token.ClientID`; the `Token` is unchanged), per Class of tool:
+  `catalogue`, `personal` (reads of the user's own data) and `write`, each with
+  its own budget per `MCP_RATE_WINDOW`. Defaults per window, user / app:
+  catalogue 60 / 600, personal 30 / 300, write 10 / 100. A call spends one of
+  both budgets, or neither. A tool declares its Class when it is registered
+  (`addTool`), so #852 and #854 only pick one; only the catalogue class is
+  exercised by a tool today, the others are unit tested. The Scope check comes
+  first, so a call refused for its Scope spends nothing.
+- **Over the limit: a tool error, not HTTP 429.** The Class is known only from
+  the tool name inside the JSON-RPC body, and a 429 on the endpoint would also
+  stop `initialize` and `tools/list`, which cost nothing, and an SDK client
+  takes it for a broken transport rather than a message to the agent. The error
+  text and `_meta.retryAfterSeconds` name the wait.
+- **One limiter.** The counter of `oauthserver`'s registration limit moved to
+  `internal/ratelimit` (a fixed window per string key, `Allow` over several
+  charges atomically) and the OAuth server keeps only the address bucketing. Its
+  tests are kept, minus the cap test, which moved with the counter. It is in
+  memory, per replica: with several replicas a caller gets its budget once per
+  replica, a brake on a runaway agent and not an exact quota.
+- **Configuration.** `MCP_MAX_PAGE_SIZE`, `MCP_MAX_RESPONSE_BYTES`,
+  `MCP_TOOL_TIMEOUT`, `MCP_RATE_WINDOW` and `MCP_RATE_{USER,CLIENT}_{CATALOGUE,
+  PERSONAL,WRITE}`, all with defaults; a value below its minimum is a
+  configuration error when `MCP_ENABLED` is on.
