@@ -746,6 +746,10 @@ var serverPackage = do.Package(
 			Capabilities: handler.Security(),
 			API:          handlers.NewAdminDispatcher(apiServer, translator),
 			Issuer:       cfg.OAuth.Issuer,
+			// The links of search results and fetched records point at the public
+			// site, with the locale prefix of the call.
+			SiteURL: cfg.SiteURL,
+			Locale:  translator.Locale,
 			Limits: mcpserver.Limits{
 				MaxPageSize:      cfg.MCP.MaxPageSize,
 				MaxResponseBytes: cfg.MCP.MaxResponseBytes,

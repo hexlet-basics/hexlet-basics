@@ -134,6 +134,7 @@ func TestEveryCatalogueToolIsReadOnlyAndNamedAfterItsOperation(t *testing.T) {
 	assert.ElementsMatch(t, []string{
 		"listCourses", "listPublicCourseCategories", "getPublicCourseCategory",
 		"getCourse", "getCourseLesson", "listBlogPosts", "getBlogPost",
+		"search", "fetch", // the connector convention's names (search_test.go)
 	}, names)
 }
 

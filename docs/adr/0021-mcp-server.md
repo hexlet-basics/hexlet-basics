@@ -531,3 +531,128 @@ the per-operation checkpoint and its Audit Record. A test pins that no tool is n
 or takes an argument like one, and that `findTools` asked to run `adminCreateBanner`
 refuses the argument and leaves no row and no Audit Record. The name is `findTools`
 and not `search`, which the content search of #877 takes.
+
+## Addendum: catalogue search, and the `search` and `fetch` tools (#877)
+
+Meets the ADR as written; no departure. (The ticket calls this record "ADR-0018",
+its number when the ticket was written.)
+
+**Why these two tools and not a tool-finding tool.** Searching and loading tools
+lazily is a client feature (Claude Code and the Claude API defer tools, and the
+MCP proposals for a server-side search of `tools/list` were closed unmerged), so
+the server cooperates with it and invents nothing: scope-filtered `tools/list`
+stays as it is, and a generic `call_tool(name, args)` or `execute(code)` is not
+built, since it would bypass the per-operation checkpoint and audit (ADR-0020).
+For content, `search` and `fetch` is the de facto convention of ChatGPT
+connectors and deep research, and it is what a client built to it looks for by
+name.
+
+**The operation.** `searchCatalogue` (`GET /search`) is a public contract
+operation: `q` (1 to 200 characters), an optional `type` (`course`, `lesson`,
+`post`) and the usual `page` and `perPage`, in the request locale. It answers a
+`Page` of `SearchResult`: `type`, a typed `id`, `title`, a plain-text `snippet`
+and the page's `path` with the locale prefix and no origin. The HTTP handler and
+the MCP tool run the same method. The business rules are in `internal/search`
+(`SearchCatalogue` command, `Hit` result), per the use-case module rules.
+
+**What is searched, and what a visitor may see.** Only text the authors wrote:
+a landing page's name, header, description and outcomes; a lesson's name,
+description, theory and instructions; a post's name, description and body. The
+records are those the public reads already scope, by the same predicates
+(`landingpages.Listed`, `blogposts.Published`, the course's current Version): a
+listed landing page of a completed Course, a lesson of that Course's current
+build translated into the locale, a published post of the locale. A draft or
+unlisted page, a retired build, an unpublished post and another locale are not
+found, each tested by making the record readable and seeing it appear.
+A lesson is found only while its course has a listed landing page in the
+locale, so a lesson never outlives its course on the list.
+
+**No learner-written text, by construction.** The module reads three tables
+(landing pages, lesson translations, blog posts) and the two it needs for slugs.
+It never touches reviews, assistant messages, leads, users or lesson reviews; a
+test records the statements a search sends and fails if one names such a table,
+and another searches for the words of a fixture review and finds nothing. The
+**prompt-injection note** the research asked for: result text comes from authors
+and not from visitors, which is why it can be shown to a model as the site's own
+copy; but it is still data, not instruction, and a client is expected to treat it
+so. Keeping every user-generated field out of `search` results (and out of
+`fetch`: a post's author name is a Staff Member's public byline) is therefore a
+rule, and adding a field that carries visitor text to either needs this note
+revisited.
+
+**PostgreSQL full-text search, no new service.** One `IMMUTABLE` SQL function,
+`catalogue_search_vector(config, title, summary, body)`, builds the document
+(title weight A, summary B, body C), and a migration creates a GIN index on it
+for each table and for `russian` and `english`. The query writes the
+configuration as a literal chosen from a fixed map (`ru` and `en`; any other
+locale falls back to `simple` and an unindexed scan, which is fine while the
+catalogue has no content in it), so the planner can match the index expression,
+and reads the text with `websearch_to_tsquery`: quotes, `or` and `-word` work and
+no input is a syntax error. The word `Hello` in a Russian post and in an English
+one are the same query under two configurations, which is what the locale scope
+is for. An `EXPLAIN` test records the statements a search sends and shows each
+language's index of each table in the plan. The fixtures are a handful of rows,
+for which PostgreSQL rightly reads the table, so the test turns sequential scans
+off for its transaction, and for the lessons also drops the locale index that
+would otherwise be the cheaper way in (in that transaction only): what it proves
+is that the query's expression is the one the index holds, not that the planner
+picks it at that size. Results are ranked by `ts_rank` (best first, then kind,
+then id, so a page is stable). Each kind is queried for its best
+`page * perPage` rows and the lists are merged; the window is limited to the
+first 1000 hits, because a search is for finding a page and the lists are for
+paging, and an unbounded page number would be an unbounded query. Snippets
+(`ts_headline`) are made in a second query, only for the hits of the window,
+since producing one reads the whole text of the record.
+
+**Typed ids.** `course:<landing page slug>` (the slug `getCourse` takes, so per
+locale), `lesson:<course slug>/<lesson slug>` (the course's own slug, as
+`getCourseLesson` and the lesson page's URL have it) and `post:<slug>`. They are
+made of what the page's URL carries, so they are stable as long as the page is,
+cannot be guessed to reach anything a URL does not, and hold no database id.
+Because a landing page slug depends on the locale, an id of a course or lesson
+is read in the locale of the connection it came from; a `fetch` of a course in
+another locale is "no record has the id", and the error says so.
+
+**The tools.** `search(query, type?, page?, perPage?)` answers `{results: [{id,
+title, url, type, snippet}], total, page, perPage}`; `fetch(id)` answers `{id,
+title, text, url, metadata}`. Both return that JSON as `structuredContent` and,
+identically, as one text block (a flag on the tool result makes the text the JSON
+of the data, written after any cut, so the two cannot differ). Both need
+`catalog:read`, spend the catalogue rate budget, carry `readOnlyHint`, and carry
+`_meta["anthropic/alwaysLoad"]: true` so a client that defers tools still loads
+them first. The `url` is absolute, from the configured site URL (`SITE_URL`,
+`Deps.SiteURL`; the Issuer when it is empty), never from the request, with the
+locale prefix of the call (`Deps.Locale` is the translator's own, so a prefix
+cannot disagree with the content). A result and the record it names carry the
+same URL, tested for all three types. `page` and `perPage` follow the other
+catalogue tools (a size above the limit is clamped).
+
+**`fetch` is the catalogue operations, as one document.** It calls `getCourse`,
+`getCourseLesson` or `getBlogPost` through the `Catalogue` and writes what they
+return as Markdown-ish text: a course's landing copy, lessons (each with the id
+that fetches it), modules and questions; a lesson's theory, exercise, definitions
+and tips; and, as #851 decided for `getCourseLesson`, its starter code,
+reference solution and tests (the HTTP read gives them to every visitor, and
+fetch adds no rule of its own); a post's text with the markup dropped and its
+paragraphs kept, and the courses it promotes. `metadata` holds the kind, slugs,
+position, reading time and the like. The text is held to the response limit of
+#851: the document is in the structured content and in the text block, so each
+gets half of `MCP_MAX_RESPONSE_BYTES`, the longest string is cut with the usual
+`truncation` hint, and the hint says the full text is on the website, at `url`.
+An id that is malformed, or that names nothing a visitor may read (missing,
+draft, archived, in another locale), is a tool error that says which; a landing
+page that was archived and moved says where.
+
+**A finding, not changed here.** `getCourse` and `getCourseLesson` answer a
+request for a landing page that is a draft, or for a lesson of a course that is
+not completed, whatever its state: the website does not link to them, but the
+URL works (`coursepages` checks the slug and the locale, and an archived page's
+redirect, not the state). The HTTP behaviour is not this ticket's to change, so
+`fetch` guards against it instead: a course is fetched only when its landing
+page is published and its Course completed, a lesson only when its Course is
+completed, so `fetch` is never more permissive than `search`. Whether the HTTP
+operations should answer 404 for those is a question for the owner of the
+public course pages.
+
+**Not done here.** The site has no search box; the operation is in the contract
+and the client for whoever builds one. Books have no tool (see #851).

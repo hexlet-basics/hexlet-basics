@@ -26,6 +26,8 @@ type toolSpec struct {
 	output map[string]any
 	scope  string
 	class  Class
+	// meta is the tool's `_meta`, for the hints a client reads (nil for none).
+	meta map[string]any
 }
 
 // call is what a tool's body is given: the subject, and its arguments.
@@ -60,6 +62,11 @@ type result struct {
 	// list is set when data is a page of a list, so a cut can say which page
 	// arguments continue it.
 	list *listInfo
+	// textIsData makes the text block the JSON of data, for the tools whose
+	// contract is that both carry the same document (search and fetch). The pair
+	// is then measured against the response limit as two copies of the JSON, and
+	// the text is written after any cut, so the two never differ.
+	textIsData bool
 }
 
 // userError is a failure the agent can fix or must be told about, answered as a
@@ -82,6 +89,7 @@ func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context
 		InputSchema:  spec.input,
 		OutputSchema: withTruncation(outputShape(spec.output)),
 		Annotations:  annotations(spec.class),
+		Meta:         spec.meta,
 	}
 	s.note(tool, toolNeeds{scope: spec.scope})
 	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -139,11 +147,20 @@ func (s *Server) finish(name string, res result) (*mcp.CallToolResult, error) {
 	if err := json.Unmarshal(raw, &data); err != nil {
 		return nil, fmt.Errorf("decode %s result: %w", name, err)
 	}
-	text := res.text
-	if !fit(data, len(text), s.limits.MaxResponseBytes, res.list) {
+	text, limit, textLen := res.text, s.limits.MaxResponseBytes, len(res.text)
+	if res.textIsData {
+		limit, textLen = limit/2, 0
+	}
+	if !fit(data, textLen, limit, res.list) {
 		return toolError(fmt.Sprintf("the result of %s is larger than the %d byte response limit and cannot be shortened", name, s.limits.MaxResponseBytes)), nil
 	}
-	if _, cutDown := data[truncationKey]; cutDown {
+	if res.textIsData {
+		cutRaw, err := json.Marshal(data)
+		if err != nil {
+			return nil, fmt.Errorf("encode %s text: %w", name, err)
+		}
+		text = string(cutRaw)
+	} else if _, cutDown := data[truncationKey]; cutDown {
 		text += " (cut to fit the response size limit: see the truncation property)"
 	}
 	return &mcp.CallToolResult{
