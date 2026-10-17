@@ -60,23 +60,10 @@ export default function Footer() {
               <Anchor variant="nav" component={Link} to="/{-$locale}/blog_posts" fz="sm">
                 {t(($) => $.layouts.shared.footer.blog)}
               </Anchor>
-              <PageLink id="authors">{t(($) => $.layouts.shared.footer.authors)}</PageLink>
-            </Stack>
-
-            <Stack gap="sm">
-              <Anchor
-                variant="nav"
-                component={Link}
-                to="/{-$locale}/languages"
-                params
-                fw="bold"
-                fz="sm"
-              >
-                {t(($) => $.layouts.shared.all_courses)}
-              </Anchor>
               <Anchor variant="nav" component={Link} to="/{-$locale}/reviews" params fz="sm">
                 {t(($) => $.layouts.shared.footer.reviews)}
               </Anchor>
+              <PageLink id="authors">{t(($) => $.layouts.shared.footer.authors)}</PageLink>
             </Stack>
 
             {landingGroups.map((group, index) => (
@@ -113,7 +100,7 @@ export default function Footer() {
                 fw="bold"
                 fz="sm"
               >
-                {t(($) => $.layouts.shared.footer.course_categories)}
+                {t(($) => $.layouts.shared.footer.categories)}
               </Anchor>
               {(categories ?? []).map((category) => (
                 <Anchor
