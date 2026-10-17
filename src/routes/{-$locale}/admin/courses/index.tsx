@@ -1,8 +1,6 @@
 import { Button, Group, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminCreateCourseVersionMutation,
@@ -12,6 +10,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { Course } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
@@ -26,15 +25,11 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/")({
 function CoursesList() {
   const { t } = useTranslation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListCoursesOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -56,28 +51,23 @@ function CoursesList() {
     {
       accessorKey: "slug",
       header: t(($) => $.models.attributes.course.slug),
-      enableSorting: false,
     },
     {
       accessorKey: "progress",
       header: t(($) => $.models.attributes.course.readiness),
-      enableSorting: false,
     },
     {
       accessorKey: "learnAs",
       header: t(($) => $.models.attributes.course.learn_as),
-      enableSorting: false,
     },
     {
       id: "currentVersion",
       header: t(($) => $.admin.courses.currentVersion),
       cell: ({ row }) => row.original.currentVersion?.state ?? "",
-      enableSorting: false,
     },
     {
       accessorKey: "lessonsCount",
       header: t(($) => $.admin.courses.lessonsCount),
-      enableSorting: false,
     },
     {
       id: "actions",
@@ -129,10 +119,7 @@ function CoursesList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>

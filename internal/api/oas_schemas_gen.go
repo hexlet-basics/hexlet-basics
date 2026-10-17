@@ -5102,47 +5102,6 @@ func (s *LessonRef) SetName(val NilString) {
 	s.Name = val
 }
 
-type ListQuerySortOrder string
-
-const (
-	ListQuerySortOrderAsc  ListQuerySortOrder = "asc"
-	ListQuerySortOrderDesc ListQuerySortOrder = "desc"
-)
-
-// AllValues returns all ListQuerySortOrder values.
-func (ListQuerySortOrder) AllValues() []ListQuerySortOrder {
-	return []ListQuerySortOrder{
-		ListQuerySortOrderAsc,
-		ListQuerySortOrderDesc,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s ListQuerySortOrder) MarshalText() ([]byte, error) {
-	switch s {
-	case ListQuerySortOrderAsc:
-		return []byte(s), nil
-	case ListQuerySortOrderDesc:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ListQuerySortOrder) UnmarshalText(data []byte) error {
-	switch ListQuerySortOrder(data) {
-	case ListQuerySortOrderAsc:
-		*s = ListQuerySortOrderAsc
-		return nil
-	case ListQuerySortOrderDesc:
-		*s = ListQuerySortOrderDesc
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
 // UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
 // Ref: #/components/schemas/Locale
 type Locale string
@@ -6197,52 +6156,6 @@ func (o OptInt32) Get() (v int32, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt32) Or(d int32) int32 {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptListQuerySortOrder returns new OptListQuerySortOrder with value set to v.
-func NewOptListQuerySortOrder(v ListQuerySortOrder) OptListQuerySortOrder {
-	return OptListQuerySortOrder{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptListQuerySortOrder is optional ListQuerySortOrder.
-type OptListQuerySortOrder struct {
-	Value ListQuerySortOrder
-	Set   bool
-}
-
-// IsSet returns true if OptListQuerySortOrder was set.
-func (o OptListQuerySortOrder) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptListQuerySortOrder) Reset() {
-	var v ListQuerySortOrder
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptListQuerySortOrder) SetTo(v ListQuerySortOrder) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptListQuerySortOrder) Get() (v ListQuerySortOrder, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptListQuerySortOrder) Or(d ListQuerySortOrder) ListQuerySortOrder {
 	if v, ok := o.Get(); ok {
 		return v
 	}

@@ -1,8 +1,8 @@
 import { notifications } from "@mantine/notifications";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
 import { getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import { consumeMagicLink } from "@/client/sdk.gen";
+import { isApiError } from "@/lib/api-error";
 
 // The emailed Magic Link (legacy magic_links#show). Following it signs the
 // visitor in and takes them home; a refused link — expired, forged, outlived by
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
         message: context.i18n.t(($) => $.flash.application.base.success),
       });
     } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
+      if (isApiError(error, 404)) {
         throw redirect({
           to: "/{-$locale}/magic_links/new",
           params: { locale: params.locale },

@@ -17,20 +17,18 @@ import (
 // matches the lesson progress list's convention.
 func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (api.AdminListMessagesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.AiMessageQuery {
-			return s.db.AiMessage.Query().
-				WithChat(func(q *ent.AiChatQuery) {
-					q.WithLessonProgress(func(q *ent.LessonProgressQuery) {
-						q.WithCourse().WithLesson(func(q *ent.CourseLessonQuery) {
-							q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
-								q.Where(courselessontranslation.LocaleEQ(defaultAdminLocale)).
-									Order(ent.Asc(courselessontranslation.FieldID))
-							})
+		s.db.AiMessage.Query().
+			WithChat(func(q *ent.AiChatQuery) {
+				q.WithLessonProgress(func(q *ent.LessonProgressQuery) {
+					q.WithCourse().WithLesson(func(q *ent.CourseLessonQuery) {
+						q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
+							q.Where(courselessontranslation.LocaleEQ(s.i18n.Locale(ctx))).
+								Order(ent.Asc(courselessontranslation.FieldID))
 						})
 					})
-				}).
-				Order(ent.Desc(aimessage.FieldID))
-		},
+				})
+			}).
+			Order(ent.Desc(aimessage.FieldID)),
 		s.conv.ToLessonAssistantMessages,
 		func(items []api.LessonAssistantMessage, total, page, perPage int32) *api.LessonAssistantMessagePage {
 			return &api.LessonAssistantMessagePage{Items: items, Total: total, Page: page, PerPage: perPage}

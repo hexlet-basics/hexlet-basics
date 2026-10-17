@@ -14,9 +14,7 @@ import (
 // concept is a course category.
 func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (api.AdminListCourseCategoriesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.CourseCategoryQuery {
-			return s.db.CourseCategory.Query().Order(ent.Desc(coursecategory.FieldID))
-		},
+		s.db.CourseCategory.Query().Order(ent.Desc(coursecategory.FieldID)),
 		s.conv.ToCourseCategories,
 		func(items []api.CourseCategory, total, page, perPage int32) *api.CourseCategoryPage {
 			return &api.CourseCategoryPage{Items: items, Total: total, Page: page, PerPage: perPage}

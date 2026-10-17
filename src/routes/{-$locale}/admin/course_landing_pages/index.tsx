@@ -1,8 +1,6 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteCourseLandingPageMutation,
@@ -11,6 +9,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { CourseLandingPage } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -23,15 +22,11 @@ function CourseLandingPagesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListCourseLandingPagesOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -46,28 +41,23 @@ function CourseLandingPagesList() {
     {
       accessorKey: "name",
       header: t(($) => $.models.attributes.course_landing_page.name),
-      enableSorting: false,
     },
     {
       accessorKey: "slug",
       header: t(($) => $.models.attributes.course_landing_page.slug),
-      enableSorting: false,
     },
     {
       accessorKey: "courseSlug",
       header: t(($) => $.models.attributes.course_landing_page.course_id),
-      enableSorting: false,
     },
     {
       accessorKey: "state",
       header: t(($) => $.models.attributes.course_landing_page.state),
-      enableSorting: false,
     },
     {
       id: "main",
       header: t(($) => $.models.attributes.course_landing_page.main),
       cell: ({ row }) => (row.original.main ? "✓" : ""),
-      enableSorting: false,
     },
     {
       id: "actions",
@@ -115,10 +105,7 @@ function CourseLandingPagesList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>
