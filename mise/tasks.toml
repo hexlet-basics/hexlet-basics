@@ -347,12 +347,12 @@ run = [
 [test]
 description = "Run the Go suite; DB packages start disposable Postgres 18 containers (Docker required). Pass packages/flags after `--`"
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
-run = 'eval "set -- $usage_go_test_args"; go test "$@"'
+run = 'eval "set -- $usage_go_test_args"; go test -shuffle=on "$@"'
 
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (Docker required)"
 run = [
-  "go test ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
+  "go test -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
   "go tool go-test-coverage --config=.testcoverage.yml",
 ]
 
