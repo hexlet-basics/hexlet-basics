@@ -2,12 +2,8 @@ package oauthserver_test
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -16,12 +12,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthclient"
 	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/oauthserver"
-	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
-	"hexletbasics/internal/testsupport/testdb"
 )
 
 // bob is the fixtures' editor, a second user whose grants must stay out of
@@ -71,13 +66,15 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 	laterSignIn := o.Connect(alice, oauthserver.ScopeCatalogRead)
 	otherUser := o.Connect(bob, oauthserver.ScopeCatalogRead)
 
-	// Another client of the same user.
-	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
-	_, err := o.DB.OAuthClient.Create().SetClientID("other-client").SetName("Other").
-		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{oauthserver.ScopeCatalogRead}).Save(t.Context())
-	require.NoError(t, err)
+	// Another client of the same user, which registered itself.
+	res := o.Register(request(func(m map[string]any) {
+		m["redirect_uris"] = []string{"http://127.0.0.1:1/cb"}
+		m["scope"] = oauthserver.ScopeCatalogRead + " offline_access"
+	}))
+	require.Equal(t, http.StatusCreated, res.StatusCode)
+	other := decodeJSON[registered](t, res)
 	flow := o.StartWith(alice, testsupport.StartOptions{
-		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: "other-client", RedirectURIs: []string{"http://127.0.0.1:1/cb"},
+		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: other.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
 	})
 	otherClient, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, res.StatusCode)
@@ -96,7 +93,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 		assert.Equal(t, http.StatusOK, res.StatusCode, name)
 	}
 	assert.True(t, o.Accepts(otherClient.AccessToken), "another client of the same user")
-	_, res = o.Refresh("other-client", otherClient.RefreshToken)
+	_, res = o.Refresh(other.ClientID, otherClient.RefreshToken)
 	assert.Equal(t, http.StatusOK, res.StatusCode)
 }
 
@@ -215,38 +212,26 @@ func TestPurgeDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 // row. Of N exchanges of one token at most one may succeed, and since every
 // loser reads as a replay the family ends revoked: there are never two live
 // children.
+//
+// The client registers itself and the person connects through the real flow;
+// the pool commits all of it, so the client is deleted at the end (its tokens
+// cascade away with it) and nothing of this test is left for the others.
 func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
-	//nolint:forbidigo // the case is about separate connections (concurrent transactions), so the test needs a pool of its own
-	sqlDB, err := store.NewDB(testdb.DatabaseURL())
-	require.NoError(t, err)
-	db := store.NewClient(sqlDB)
-	ctx := t.Context()
-	server, err := oauthserver.New(oauthserver.Deps{
-		Config:     oauthserver.Config{Issuer: testsupport.OAuthIssuer, EncryptionKey: "test-oauth-encryption-key-test-only-test-only"},
-		DB:         db,
-		Transactor: store.New(sqlDB),
-	})
-	require.NoError(t, err)
-
-	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
-	client := db.OAuthClient.Create().SetClientID("race-client").SetName("Race").
-		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{}).SaveX(ctx)
+	o := testsupport.NewOAuth(t, testsupport.OnPool())
+	res := o.Register(request(func(m map[string]any) {
+		m["redirect_uris"] = []string{"http://127.0.0.1:1/cb"}
+		m["scope"] = oauthserver.ScopeCatalogRead + " offline_access"
+	}))
+	require.Equal(t, http.StatusCreated, res.StatusCode)
+	racer := decodeJSON[registered](t, res)
 	t.Cleanup(func() {
-		// Deleting the client cascades its tokens away.
-		_ = db.OAuthClient.DeleteOne(client).Exec(context.Background())
-		_ = sqlDB.Close()
+		_, _ = o.DB.OAuthClient.Delete().Where(oauthclient.ClientID(racer.ClientID)).Exec(context.Background())
 	})
-
-	const secret = "race-refresh-secret"
-	sum := sha256.Sum256([]byte(secret))
-	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
-	db.OAuthAccessToken.Create().SetID("race-access").SetClientID("race-client").SetUserID(alice).
-		SetScopes([]string{}).SetRefreshTokenID("race-refresh").SetFamilyID("race-family").
-		SetExpiresAt(time.Now().Add(time.Hour)).SaveX(ctx)
-	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
-	db.OAuthRefreshToken.Create().SetID("race-refresh").SetTokenHash(hex.EncodeToString(sum[:])).
-		SetClientID("race-client").SetUserID(alice).SetScopes([]string{}).SetAuthTime(time.Now()).
-		SetAccessTokenID("race-access").SetFamilyID("race-family").SetExpiresAt(time.Now().Add(time.Hour)).SaveX(ctx)
+	flow := o.StartWith(alice, testsupport.StartOptions{
+		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: racer.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
+	})
+	tokens, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
+	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	const attempts = 8
 	var wg sync.WaitGroup
@@ -256,13 +241,11 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			req := httptest.NewRequestWithContext(ctx, http.MethodPost, "/oauth/token", strings.NewReader(url.Values{
-				"grant_type": {"refresh_token"}, "client_id": {"race-client"}, "refresh_token": {secret},
-			}.Encode()))
-			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-			rec := httptest.NewRecorder()
-			server.Handler().ServeHTTP(rec, req)
-			if rec.Code == http.StatusOK {
+			res := o.Do(http.MethodPost, "/oauth/token", url.Values{
+				"grant_type": {"refresh_token"}, "client_id": {racer.ClientID}, "refresh_token": {tokens.RefreshToken},
+			})
+			_ = res.Body.Close()
+			if res.StatusCode == http.StatusOK {
 				mu.Lock()
 				succeeded++
 				mu.Unlock()
@@ -271,8 +254,9 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	}
 	wg.Wait()
 
+	ctx := t.Context()
 	assert.LessOrEqual(t, succeeded, 1, "one token buys at most one child")
-	live := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.FamilyID("race-family"), oauthrefreshtoken.UsedAtIsNil()).CountX(ctx)
+	live := o.DB.OAuthRefreshToken.Query().Where(oauthrefreshtoken.ClientID(racer.ClientID), oauthrefreshtoken.UsedAtIsNil()).CountX(ctx)
 	assert.Zero(t, live, "a losing exchange revoked the family, winner's child included")
-	assert.Zero(t, db.OAuthAccessToken.Query().Where(oauthaccesstoken.FamilyID("race-family")).CountX(ctx))
+	assert.Zero(t, o.DB.OAuthAccessToken.Query().Where(oauthaccesstoken.ClientID(racer.ClientID)).CountX(ctx))
 }
