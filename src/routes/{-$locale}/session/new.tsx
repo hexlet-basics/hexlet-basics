@@ -3,18 +3,30 @@ import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 import { createSessionMutation } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
 import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
 // deferred until their backends and routes land. Submits through the generated `createSession`
 // mutation, which starts the session server-side; validation reuses the
 // generated `zSessionInput` schema.
+//
+// `redirect` is where to go once signed in: `requireAuth` sends a guest here with
+// the page they asked for (the OAuth consent screen is one, and loses its request
+// id if the visit is forgotten). Only a path on this site is honoured, so the
+// page cannot be used to bounce a signed-in user off to another origin.
+const signInSearchSchema = z.object({
+  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
+});
+
 export const Route = createFileRoute("/{-$locale}/session/new")({
+  validateSearch: signInSearchSchema,
   component: New,
 });
 
@@ -23,6 +35,7 @@ function New() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { redirect } = Route.useSearch();
 
   const mutation = useMutation({
     ...createSessionMutation(),
@@ -32,7 +45,8 @@ function New() {
         color: "green",
         message: t(($) => $.flash.sessions.create.success),
       });
-      void navigate({ to: "/{-$locale}" });
+      if (redirect) void navigate({ href: redirect });
+      else void navigate({ to: "/{-$locale}" });
     },
     onError: () =>
       notifications.show({

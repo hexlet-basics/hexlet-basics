@@ -332,6 +332,54 @@ func (f LessonProgressFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LessonProgressMutation", m)
 }
 
+// The OAuthAccessTokenFunc type is an adapter to allow the use of ordinary
+// function as OAuthAccessToken mutator.
+type OAuthAccessTokenFunc func(context.Context, *ent.OAuthAccessTokenMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OAuthAccessTokenFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OAuthAccessTokenMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OAuthAccessTokenMutation", m)
+}
+
+// The OAuthAuthRequestFunc type is an adapter to allow the use of ordinary
+// function as OAuthAuthRequest mutator.
+type OAuthAuthRequestFunc func(context.Context, *ent.OAuthAuthRequestMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OAuthAuthRequestFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OAuthAuthRequestMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OAuthAuthRequestMutation", m)
+}
+
+// The OAuthClientFunc type is an adapter to allow the use of ordinary
+// function as OAuthClient mutator.
+type OAuthClientFunc func(context.Context, *ent.OAuthClientMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OAuthClientFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OAuthClientMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OAuthClientMutation", m)
+}
+
+// The OAuthRefreshTokenFunc type is an adapter to allow the use of ordinary
+// function as OAuthRefreshToken mutator.
+type OAuthRefreshTokenFunc func(context.Context, *ent.OAuthRefreshTokenMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OAuthRefreshTokenFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OAuthRefreshTokenMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OAuthRefreshTokenMutation", m)
+}
+
 // The ReviewFunc type is an adapter to allow the use of ordinary
 // function as Review mutator.
 type ReviewFunc func(context.Context, *ent.ReviewMutation) (ent.Value, error)

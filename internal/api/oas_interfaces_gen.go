@@ -281,6 +281,10 @@ type AdminUploadAttachmentRes interface {
 	adminUploadAttachmentRes()
 }
 
+type ApproveOAuthConsentRes interface {
+	approveOAuthConsentRes()
+}
+
 type CheckLessonRes interface {
 	checkLessonRes()
 }
@@ -329,6 +333,10 @@ type DeleteSessionRes interface {
 	deleteSessionRes()
 }
 
+type DenyOAuthConsentRes interface {
+	denyOAuthConsentRes()
+}
+
 type DownloadBookRes interface {
 	downloadBookRes()
 }
@@ -351,6 +359,10 @@ type GetMyDashboardRes interface {
 
 type GetNextBlogPostRes interface {
 	getNextBlogPostRes()
+}
+
+type GetOAuthConsentRes interface {
+	getOAuthConsentRes()
 }
 
 type GetProfileRes interface {

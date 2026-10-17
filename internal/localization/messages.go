@@ -41,6 +41,12 @@ var (
 			Other: "lesson not found",
 		},
 	}
+	OAuthRequestNotFound = Message{
+		value: i18n.Message{
+			ID:    "oauth.request_not_found",
+			Other: "authorization request not found or already decided",
+		},
+	}
 	FileTooLarge = Message{
 		value: i18n.Message{
 			ID:    "attachments.file_too_large",

@@ -33,6 +33,7 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
@@ -376,7 +377,18 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		// A nil *oauthserver.Server must not become a non-nil interface: the
+		// consent operations treat a nil seam as "the OAuth server is off".
+		var consents handlers.OAuthConsents
+		if services.Config.OAuth.Enabled {
+			oauthServer, err := do.Invoke[*oauthserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			consents = oauthServer
+		}
 		return handlers.NewServer(handlers.Deps{
+			OAuth:             consents,
 			DB:                services.DB,
 			Config:            services.Config,
 			Starter:           services.Starter,
@@ -550,11 +562,53 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		// The OAuth server is mounted only behind its flag (ADR-0016).
+		var oauthHandler http.Handler
+		if cfg.OAuth.Enabled {
+			oauthServer, err := do.Invoke[*oauthserver.Server](i)
+			if err != nil {
+				return nil, err
+			}
+			oauthHandler = oauthServer.Handler()
+		}
 		return handlers.NewRouter(
 			handler.Security().Pipeline(apiServer),
 			attachmentHandler,
 			webhookHandler,
+			oauthHandler,
 		), nil
+	}),
+	// The OAuth authorization server (ADR-0016). It receives the application's
+	// half of its seam, who is signed in, from the handlers package; the
+	// package itself never imports handlers. Built only when the flag is on,
+	// since an invalid issuer or a missing key would otherwise stop a
+	// deployment that does not use it.
+	do.Lazy[*oauthserver.Server](func(i do.Injector) (*oauthserver.Server, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return oauthserver.New(oauthserver.Deps{
+			Config: oauthserver.Config{
+				Issuer:        cfg.OAuth.Issuer,
+				EncryptionKey: cfg.OAuth.EncryptionKey,
+			},
+			DB:         db,
+			Transactor: txStore,
+			App:        handlers.OAuthSession{},
+		})
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
 		translator, err := do.Invoke[*localization.Translator](i)

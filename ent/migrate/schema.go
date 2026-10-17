@@ -695,6 +695,90 @@ var (
 			},
 		},
 	}
+	// OauthAccessTokensColumns holds the columns for the "oauth_access_tokens" table.
+	OauthAccessTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "refresh_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthAccessTokensTable holds the schema information for the "oauth_access_tokens" table.
+	OauthAccessTokensTable = &schema.Table{
+		Name:       "oauth_access_tokens",
+		Columns:    OauthAccessTokensColumns,
+		PrimaryKey: []*schema.Column{OauthAccessTokensColumns[0]},
+	}
+	// OauthAuthorizationRequestsColumns holds the columns for the "oauth_authorization_requests" table.
+	OauthAuthorizationRequestsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "redirect_uri", Type: field.TypeString},
+		{Name: "state", Type: field.TypeString, Default: ""},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "code_challenge", Type: field.TypeString},
+		{Name: "code_challenge_method", Type: field.TypeString},
+		{Name: "nonce", Type: field.TypeString, Default: ""},
+		{Name: "response_type", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "done", Type: field.TypeBool, Default: false},
+		{Name: "auth_time", Type: field.TypeTime, Nullable: true},
+		{Name: "code_hash", Type: field.TypeString, Nullable: true},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthAuthorizationRequestsTable holds the schema information for the "oauth_authorization_requests" table.
+	OauthAuthorizationRequestsTable = &schema.Table{
+		Name:       "oauth_authorization_requests",
+		Columns:    OauthAuthorizationRequestsColumns,
+		PrimaryKey: []*schema.Column{OauthAuthorizationRequestsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "oauthauthrequest_code_hash",
+				Unique:  true,
+				Columns: []*schema.Column{OauthAuthorizationRequestsColumns[14]},
+			},
+		},
+	}
+	// OauthClientsColumns holds the columns for the "oauth_clients" table.
+	OauthClientsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "client_id", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "redirect_uris", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+	}
+	// OauthClientsTable holds the schema information for the "oauth_clients" table.
+	OauthClientsTable = &schema.Table{
+		Name:       "oauth_clients",
+		Columns:    OauthClientsColumns,
+		PrimaryKey: []*schema.Column{OauthClientsColumns[0]},
+	}
+	// OauthRefreshTokensColumns holds the columns for the "oauth_refresh_tokens" table.
+	OauthRefreshTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "token_hash", Type: field.TypeString, Unique: true},
+		{Name: "client_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "auth_time", Type: field.TypeTime},
+		{Name: "access_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "expires_at", Type: field.TypeTime},
+	}
+	// OauthRefreshTokensTable holds the schema information for the "oauth_refresh_tokens" table.
+	OauthRefreshTokensTable = &schema.Table{
+		Name:       "oauth_refresh_tokens",
+		Columns:    OauthRefreshTokensColumns,
+		PrimaryKey: []*schema.Column{OauthRefreshTokensColumns[0]},
+	}
 	// ReviewsColumns holds the columns for the "reviews" table.
 	ReviewsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -911,6 +995,10 @@ var (
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		LanguageLessonMembersTable,
+		OauthAccessTokensTable,
+		OauthAuthorizationRequestsTable,
+		OauthClientsTable,
+		OauthRefreshTokensTable,
 		ReviewsTable,
 		UserSessionsTable,
 		StaffMembersTable,
@@ -1004,6 +1092,18 @@ func init() {
 	LanguageLessonMembersTable.ForeignKeys[2].RefTable = LanguageLessonsTable
 	LanguageLessonMembersTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_members",
+	}
+	OauthAccessTokensTable.Annotation = &entsql.Annotation{
+		Table: "oauth_access_tokens",
+	}
+	OauthAuthorizationRequestsTable.Annotation = &entsql.Annotation{
+		Table: "oauth_authorization_requests",
+	}
+	OauthClientsTable.Annotation = &entsql.Annotation{
+		Table: "oauth_clients",
+	}
+	OauthRefreshTokensTable.Annotation = &entsql.Annotation{
+		Table: "oauth_refresh_tokens",
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable

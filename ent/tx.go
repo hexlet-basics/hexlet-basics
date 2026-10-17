@@ -66,6 +66,14 @@ type Tx struct {
 	Lead *LeadClient
 	// LessonProgress is the client for interacting with the LessonProgress builders.
 	LessonProgress *LessonProgressClient
+	// OAuthAccessToken is the client for interacting with the OAuthAccessToken builders.
+	OAuthAccessToken *OAuthAccessTokenClient
+	// OAuthAuthRequest is the client for interacting with the OAuthAuthRequest builders.
+	OAuthAuthRequest *OAuthAuthRequestClient
+	// OAuthClient is the client for interacting with the OAuthClient builders.
+	OAuthClient *OAuthClientClient
+	// OAuthRefreshToken is the client for interacting with the OAuthRefreshToken builders.
+	OAuthRefreshToken *OAuthRefreshTokenClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
 	// Session is the client for interacting with the Session builders.
@@ -242,6 +250,10 @@ func (tx *Tx) init() {
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.LessonProgress = NewLessonProgressClient(tx.config)
+	tx.OAuthAccessToken = NewOAuthAccessTokenClient(tx.config)
+	tx.OAuthAuthRequest = NewOAuthAuthRequestClient(tx.config)
+	tx.OAuthClient = NewOAuthClientClient(tx.config)
+	tx.OAuthRefreshToken = NewOAuthRefreshTokenClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.Session = NewSessionClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)

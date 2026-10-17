@@ -5628,6 +5628,71 @@ func decodeAdminUpdateUserParams(args [1]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// ApproveOAuthConsentParams is parameters of approveOAuthConsent operation.
+type ApproveOAuthConsentParams struct {
+	RequestId string
+}
+
+func unpackApproveOAuthConsentParams(packed middleware.Parameters) (params ApproveOAuthConsentParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "requestId",
+			In:   "path",
+		}
+		params.RequestId = packed[key].(string)
+	}
+	return params
+}
+
+func decodeApproveOAuthConsentParams(args [1]string, argsEscaped bool, r *http.Request) (params ApproveOAuthConsentParams, _ error) {
+	// Decode path: requestId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "requestId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RequestId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "requestId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // CheckLessonParams is parameters of checkLesson operation.
 type CheckLessonParams struct {
 	ID int32
@@ -5881,6 +5946,71 @@ func decodeCreateAssistantMessageParams(args [1]string, argsEscaped bool, r *htt
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "lessonId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DenyOAuthConsentParams is parameters of denyOAuthConsent operation.
+type DenyOAuthConsentParams struct {
+	RequestId string
+}
+
+func unpackDenyOAuthConsentParams(packed middleware.Parameters) (params DenyOAuthConsentParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "requestId",
+			In:   "path",
+		}
+		params.RequestId = packed[key].(string)
+	}
+	return params
+}
+
+func decodeDenyOAuthConsentParams(args [1]string, argsEscaped bool, r *http.Request) (params DenyOAuthConsentParams, _ error) {
+	// Decode path: requestId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "requestId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RequestId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "requestId",
 			In:   "path",
 			Err:  err,
 		}
@@ -6256,6 +6386,71 @@ func decodeGetNextBlogPostParams(args [1]string, argsEscaped bool, r *http.Reque
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetOAuthConsentParams is parameters of getOAuthConsent operation.
+type GetOAuthConsentParams struct {
+	RequestId string
+}
+
+func unpackGetOAuthConsentParams(packed middleware.Parameters) (params GetOAuthConsentParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "requestId",
+			In:   "path",
+		}
+		params.RequestId = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetOAuthConsentParams(args [1]string, argsEscaped bool, r *http.Request) (params GetOAuthConsentParams, _ error) {
+	// Decode path: requestId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "requestId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RequestId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "requestId",
 			In:   "path",
 			Err:  err,
 		}

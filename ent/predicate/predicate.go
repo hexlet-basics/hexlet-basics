@@ -87,6 +87,18 @@ type Lead func(*sql.Selector)
 // LessonProgress is the predicate function for lessonprogress builders.
 type LessonProgress func(*sql.Selector)
 
+// OAuthAccessToken is the predicate function for oauthaccesstoken builders.
+type OAuthAccessToken func(*sql.Selector)
+
+// OAuthAuthRequest is the predicate function for oauthauthrequest builders.
+type OAuthAuthRequest func(*sql.Selector)
+
+// OAuthClient is the predicate function for oauthclient builders.
+type OAuthClient func(*sql.Selector)
+
+// OAuthRefreshToken is the predicate function for oauthrefreshtoken builders.
+type OAuthRefreshToken func(*sql.Selector)
+
 // Review is the predicate function for review builders.
 type Review func(*sql.Selector)
 

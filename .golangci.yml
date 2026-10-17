@@ -56,7 +56,8 @@ linters:
       - path: _test\.go
         linters: [forbidigo]
         text: a handler does not build ent queries
-      # The handler tests read responses from httptest.ResponseRecorder, whose
-      # body is an in-memory buffer: there is nothing to close.
-      - path: internal/handlers/.*_test\.go
+      # The handler and OAuth server tests read responses from
+      # httptest.ResponseRecorder, whose body is an in-memory buffer: there is
+      # nothing to close.
+      - path: internal/(handlers|oauthserver)/.*_test\.go
         linters: [bodyclose]

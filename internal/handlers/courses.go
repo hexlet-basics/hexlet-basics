@@ -106,6 +106,8 @@ type Server struct {
 	categoryDirectory CategoryDirectory
 	bannerDirectory   BannerDirectory
 	lessonDirectory   LessonDirectory
+	// oauth serves the consent screen of the OAuth server; nil while it is off.
+	oauth OAuthConsents
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -149,6 +151,7 @@ type Deps struct {
 	CategoryDirectory CategoryDirectory
 	BannerDirectory   BannerDirectory
 	LessonDirectory   LessonDirectory
+	OAuth             OAuthConsents
 }
 
 // NewServer wires the handler to its dependencies.
@@ -201,6 +204,7 @@ func NewServer(deps Deps) *Server {
 		categoryDirectory: deps.CategoryDirectory,
 		bannerDirectory:   deps.BannerDirectory,
 		lessonDirectory:   deps.LessonDirectory,
+		oauth:             deps.OAuth,
 	}
 }
 
