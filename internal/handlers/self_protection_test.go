@@ -15,11 +15,13 @@ import (
 )
 
 // The fixtures: alice is the first administrator (the harness user), dana the second, bob the editor
-// (role staff_role_editor), carol a plain user, and the moderator role holds no grants.
+// (role staff_role_editor), carol a plain user, and the moderator role holds no grants. A third
+// administrator, user_admin_staff, is also a staff member (staff_member_admin_staff).
 var (
 	aliceID        = fixtures.ID("user_admin_learner")
 	danaID         = fixtures.ID("user_second_admin")
 	danaLabel      = "user_second_admin"
+	adminStaffID   = fixtures.ID("user_admin_staff")
 	carolID        = fixtures.ID("user_with_password")
 	editorID       = fixtures.ID("user_staff_editor")
 	moderator      = fixtures.ID32("staff_role_moderator")
@@ -30,18 +32,26 @@ var (
 // the way an administrator delegating staff management would.
 func delegate(t *testing.T, h *testsupport.Harness, permissions ...string) {
 	t.Helper()
-	for _, p := range permissions {
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		h.DB.StaffRoleGrant.Create().SetRoleID(int(roleEditorID)).SetPermission(p).ExecX(t.Context())
-	}
+	h.Grant(t, int(roleEditorID), permissions...)
 }
 
-// staffRecordOf makes user a staff member with the role and returns the record id.
+// staffRecordOf makes user a staff member with the role and returns the record
+// id, the way an administrator does: through the operation, signed in as the
+// second administrator on the harness's transaction (a record is never made for
+// oneself, and the caller may be a staff member without the right to create).
 func staffRecordOf(t *testing.T, h *testsupport.Harness, userID, roleID int) int {
 	t.Helper()
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	return h.DB.StaffMember.Create().SetUserID(userID).SetRoleID(roleID).
-		SetAllowedLocales([]string{"ru", "en"}).SaveX(t.Context()).ID
+	made, err := h.ActAs(t, danaLabel).Client.AdminCreateStaffMember(t.Context(), staffInput(userID, roleID))
+	require.NoError(t, err)
+	return int(made.ID)
+}
+
+// leaveOnlyAlice makes the first administrator the only one: the cases about
+// the last administrator start from there. The fixtures hold three, dana and
+// the staff member who is also an administrator being the others.
+func leaveOnlyAlice(t *testing.T, h *testsupport.Harness) {
+	t.Helper()
+	h.DB.User.Update().Where(user.IDIn(danaID, adminStaffID)).SetAdmin(false).ExecX(t.Context())
 }
 
 func staffInput(userID, roleID int) *api.StaffMemberInput {
@@ -126,23 +136,21 @@ func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
 }
 
 func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	record := staffRecordOf(t, h, aliceID, int(roleEditorID))
+	h := testsupport.NewHarnessAs(t, "user_admin_staff")
+	record := fixtures.ID("staff_member_admin_staff")
 
-	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(aliceID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(record)})
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(adminStaffID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(record)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	err = h.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: int32(record)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
-	// Dana, another administrator, can make the same changes to alice's record.
-	other := testsupport.NewHarnessAs(t, danaLabel)
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	staff := other.DB.StaffMember.Create().SetUserID(carolID).SetRoleID(int(roleEditorID)).SetAllowedLocales([]string{"ru"}).SaveX(t.Context())
-	_, err = other.Client.AdminUpdateStaffMember(t.Context(), staffInput(carolID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(staff.ID)})
+	// Dana, another administrator, can make the same changes to that record.
+	other := h.ActAs(t, danaLabel)
+	_, err = other.Client.AdminUpdateStaffMember(t.Context(), staffInput(adminStaffID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(record)})
 	require.NoError(t, err)
-	require.NoError(t, other.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: int32(staff.ID)}))
+	require.NoError(t, other.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: int32(record)}))
 }
 
 func TestARefusedSelfChangeIsRecordedAsFailed(t *testing.T) {
@@ -184,17 +192,18 @@ func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) 
 
 func TestAnotherAdministratorMayDeleteAnAdministrator(t *testing.T) {
 	h := testsupport.NewHarnessAs(t, danaLabel)
-	// alice owns content rows that keep her from being deleted, so a third
-	// administrator stands in for the one dana removes.
-	//nolint:forbidigo // an extra account that exists only to be deleted or promoted by the case
-	erin := h.DB.User.Create().SetEmail("erin@example.com").SetAdmin(true).SaveX(t.Context())
+	// alice owns content rows that keep her from being deleted, so an administrator
+	// of the case's own, made the way an administrator makes one, stands in for
+	// the one dana removes.
+	erin, err := h.Client.AdminCreateUser(t.Context(), userInput("erin@example.com", true))
+	require.NoError(t, err)
 
-	require.NoError(t, h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(erin.ID)}))
+	require.NoError(t, h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: erin.ID}))
 }
 
 func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
+	leaveOnlyAlice(t, h)
 
 	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("alice@example.com", false), api.AdminUpdateUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
@@ -210,6 +219,7 @@ func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.
 
 func TestAnAdministratorFlagCanBeClearedWithTwoAdministrators(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	h.DB.User.UpdateOneID(adminStaffID).SetAdmin(false).ExecX(t.Context())
 
 	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("dana@example.com", false), api.AdminUpdateUserParams{ID: int32(danaID)})
 	require.NoError(t, err)
@@ -219,7 +229,7 @@ func TestAnAdministratorFlagCanBeClearedWithTwoAdministrators(t *testing.T) {
 func TestTheLastAdministratorCannotBeDeletedByAStaffMember(t *testing.T) {
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "users.delete")
-	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
+	leaveOnlyAlice(t, h)
 
 	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
@@ -254,8 +264,8 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 }
 
 func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	staffRecordOf(t, h, aliceID, int(roleEditorID))
+	// An administrator who is also staff, on the very role whose grants change.
+	h := testsupport.NewHarnessAs(t, "user_admin_staff")
 
 	updated, err := h.Client.AdminUpdateRolePermissions(t.Context(),
 		&api.RolePermissionsInput{Grants: []string{"blog_posts.read"}},

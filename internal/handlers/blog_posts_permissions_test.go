@@ -100,12 +100,8 @@ func TestARoleWithTheGrantMayUseTheOperation(t *testing.T) {
 	for name, op := range blogPostOperations {
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel)
-			role := h.DB.StaffMember.Query().OnlyX(context.Background()).RoleID
 			// The editor already holds blog_posts.read; every other grant is new.
-			if op.permission != "blog_posts.read" {
-				//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-				h.DB.StaffRoleGrant.Create().SetRoleID(role).SetPermission(op.permission).ExecX(context.Background())
-			}
+			h.Grant(t, int(roleEditorID), op.permission)
 
 			err := op.call(h)
 
