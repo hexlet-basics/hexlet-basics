@@ -625,7 +625,10 @@ them first. The `url` is absolute, from the configured site URL (`SITE_URL`,
 locale prefix of the call (`Deps.Locale` is the translator's own, so a prefix
 cannot disagree with the content). A result and the record it names carry the
 same URL, tested for all three types. `page` and `perPage` follow the other
-catalogue tools (a size above the limit is clamped).
+catalogue tools (a size above the limit is clamped). The two tools bring the whole
+list (#878) to 100 tools and 90 KB; their descriptions are one sentence each, to
+stay within the budget a description is held to, and the detail is in the
+argument descriptions.
 
 **`fetch` is the catalogue operations, as one document.** It calls `getCourse`,
 `getCourseLesson` or `getBlogPost` through the `Catalogue` and writes what they

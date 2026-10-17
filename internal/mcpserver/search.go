@@ -125,9 +125,9 @@ func (s *Server) addSearchTools(server *mcp.Server) error {
 	s.addTool(server, toolSpec{
 		name:  searchTool,
 		title: "Search the catalogue",
-		description: "Searches the Hexlet Basics catalogue (courses, lessons and blog posts) by what they say and returns the best matches, best first, " +
-			"each with an id, a title, a snippet and the page's URL. Only text the site's authors wrote is searched, and only what a visitor can read. " +
-			"Pass an id to fetch to read the whole record. Results are in the language of the connection's locale (Accept-Language).",
+		// The list's budget reads a description from its start, so it is short; the
+		// rest is in the argument descriptions.
+		description: "Searches courses, lessons and blog posts by what they say; returns the best matches with id, title, snippet and URL. Pass an id to fetch.",
 		input:  object(properties, "query"),
 		output: searchOutput,
 		scope:  oauthserver.ScopeCatalogRead,
@@ -137,9 +137,7 @@ func (s *Server) addSearchTools(server *mcp.Server) error {
 	s.addTool(server, toolSpec{
 		name:  fetchTool,
 		title: "Fetch a catalogue record",
-		description: "Reads one record of the catalogue by the id search returned: a course (`course:SLUG`), a lesson (`lesson:COURSE/SLUG`) or a blog post (`post:SLUG`). " +
-			"Returns its title, its text and its URL, and metadata. It is what getCourse, getCourseLesson and getBlogPost answer a visitor, as one document; " +
-			"use those tools for the full structure.",
+		description: "Reads one catalogue record by the id search returned (course:SLUG, lesson:COURSE/SLUG, post:SLUG): its title, text, URL and metadata.",
 		input:  object(map[string]any{"id": map[string]any{"type": "string", "minLength": 1, "description": "An id as search returns it, for example course:javascript-ru, lesson:javascript/hello-world or post:hello-world."}}, "id"),
 		output: fetchOutput,
 		scope:  oauthserver.ScopeCatalogRead,
