@@ -14,6 +14,7 @@ import {
   adminUpdateLandingPageQnaItemMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zCourseLandingPageInput } from "@/client/zod.gen";
+import { CourseLandingPageStatePanel } from "@/components/admin/CourseLandingPageStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { QnaPanel } from "@/components/admin/QnaPanel";
@@ -92,6 +93,7 @@ function EditCourseLandingPage() {
             onCancel={backToList}
             isPending={mutation.isPending}
           />
+          <CourseLandingPageStatePanel page={data} />
           <QnaPanel
             items={qna.data ?? []}
             onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}

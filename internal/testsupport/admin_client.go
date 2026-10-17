@@ -50,6 +50,18 @@ func (c *Client) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 	return noContent[api.AdminDeleteBannerNoContent](c.Client.AdminDeleteBanner(ctx, params))
 }
 
+func (c *Client) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (*api.Banner, error) {
+	return success[api.Banner](c.Client.AdminPublishBanner(ctx, params))
+}
+
+func (c *Client) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (*api.Banner, error) {
+	return success[api.Banner](c.Client.AdminUnpublishBanner(ctx, params))
+}
+
+func (c *Client) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (*api.Banner, error) {
+	return success[api.Banner](c.Client.AdminArchiveBanner(ctx, params))
+}
+
 func (c *Client) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (*api.BlogPostPage, error) {
 	return success[api.BlogPostPage](c.Client.AdminListBlogPosts(ctx, params))
 }
@@ -148,6 +160,18 @@ func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params api.Ad
 	return noContent[api.AdminDeleteCourseLandingPageNoContent](c.Client.AdminDeleteCourseLandingPage(ctx, params))
 }
 
+func (c *Client) AdminPublishCourseLandingPage(ctx context.Context, params api.AdminPublishCourseLandingPageParams) (*api.CourseLandingPage, error) {
+	return success[api.CourseLandingPage](c.Client.AdminPublishCourseLandingPage(ctx, params))
+}
+
+func (c *Client) AdminUnpublishCourseLandingPage(ctx context.Context, params api.AdminUnpublishCourseLandingPageParams) (*api.CourseLandingPage, error) {
+	return success[api.CourseLandingPage](c.Client.AdminUnpublishCourseLandingPage(ctx, params))
+}
+
+func (c *Client) AdminArchiveCourseLandingPage(ctx context.Context, params api.AdminArchiveCourseLandingPageParams) (*api.CourseLandingPage, error) {
+	return success[api.CourseLandingPage](c.Client.AdminArchiveCourseLandingPage(ctx, params))
+}
+
 func (c *Client) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (*api.CourseLessonListItemPage, error) {
 	return success[api.CourseLessonListItemPage](c.Client.AdminListCourseLessons(ctx, params))
 }
@@ -186,6 +210,18 @@ func (c *Client) AdminUpdateReview(ctx context.Context, request *api.ReviewInput
 
 func (c *Client) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) error {
 	return noContent[api.AdminDeleteReviewNoContent](c.Client.AdminDeleteReview(ctx, params))
+}
+
+func (c *Client) AdminPublishReview(ctx context.Context, params api.AdminPublishReviewParams) (*api.Review, error) {
+	return success[api.Review](c.Client.AdminPublishReview(ctx, params))
+}
+
+func (c *Client) AdminUnpublishReview(ctx context.Context, params api.AdminUnpublishReviewParams) (*api.Review, error) {
+	return success[api.Review](c.Client.AdminUnpublishReview(ctx, params))
+}
+
+func (c *Client) AdminArchiveReview(ctx context.Context, params api.AdminArchiveReviewParams) (*api.Review, error) {
+	return success[api.Review](c.Client.AdminArchiveReview(ctx, params))
 }
 
 func (c *Client) AdminListRoles(ctx context.Context, params api.AdminListRolesParams) (*api.StaffRolePage, error) {

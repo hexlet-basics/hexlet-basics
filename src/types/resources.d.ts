@@ -277,15 +277,10 @@ export default interface Resources {
         }
       },
       "blogPosts": {
-        "archive": "В архив",
         "likes": "Лайки",
-        "publish": "Опубликовать",
         "relatedCourses": "Связанные курсы",
-        "stateChangeError": "Не удалось изменить состояние",
-        "stateChanged": "Состояние изменено",
         "suggestQueued": "Подбор курсов запущен — обновите страницу чуть позже",
-        "suggestRelatedCourses": "Подобрать курсы",
-        "unpublish": "Снять с публикации"
+        "suggestRelatedCourses": "Подобрать курсы"
       },
       "blog_posts": {
         "edit": {
@@ -462,6 +457,13 @@ export default interface Resources {
         "kindRead": "Чтение",
         "kindWrite": "Запись",
         "title": "Права"
+      },
+      "publicationState": {
+        "archive": "В архив",
+        "changeError": "Не удалось изменить состояние",
+        "changed": "Состояние изменено",
+        "publish": "Опубликовать",
+        "unpublish": "Снять с публикации"
       },
       "qna": {
         "add": "Добавить вопрос",

@@ -36,7 +36,6 @@ func fullLandingInput(courseID int32) api.CourseLandingPageInput {
 		Listed:                    api.NilBool{Null: true},
 		Footer:                    api.NilBool{Null: true},
 		FooterName:                api.NilString{Null: true},
-		State:                     api.NilLandingPageState{Null: true},
 		Order:                     api.NilString{Null: true},
 		LandingPageToRedirectId:   api.NilInt32{Null: true},
 		MetaTitle:                 api.NilString{Null: true},
@@ -119,7 +118,6 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 	in.Name = api.NewNilString("Ruby Extra")
 	in.Main = api.NewNilBool(false)
 	in.Listed = api.NewNilBool(true)
-	in.State = api.NewNilLandingPageState(api.LandingPageStateDraft)
 	in.Header = api.NewNilString("Extra header")
 	in.MetaTitle = api.NewNilString("Meta")
 	in.MetaDescription = api.NewNilString("Meta desc")
@@ -131,7 +129,7 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "ruby-extra", created.Slug)
 	assert.Equal(t, "ruby", created.CourseSlug) // embedded course reloaded
-	assert.Equal(t, api.LandingPageStateDraft, created.State.Value)
+	assert.Equal(t, api.LandingPageStateDraft, created.State.Value, "a new landing page is always a draft")
 
 	total, err := h.DB.CourseLandingPage.Query().Count(ctx)
 	require.NoError(t, err)
@@ -149,14 +147,13 @@ func TestAdminUpdateCourseLandingPage(t *testing.T) {
 	in.Name = api.NewNilString("Go (updated)")
 	in.Header = api.NewNilString("Новый заголовок")
 	in.Order = api.NilString{Null: true} // clears the column
-	in.State = api.NewNilLandingPageState(api.LandingPageStateArchived)
 	in.Main = api.NewNilBool(false)
 
 	updated, err := h.Client.AdminUpdateCourseLandingPage(ctx, &in, api.AdminUpdateCourseLandingPageParams{ID: target.ID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Новый заголовок", updated.Header)
-	assert.Equal(t, api.LandingPageStateArchived, updated.State.Value)
+	assert.Equal(t, api.LandingPageStatePublished, updated.State.Value, "update never changes the state")
 	assert.True(t, updated.Order.Null)
 
 	row, err := h.DB.CourseLandingPage.Get(ctx, int(target.ID))

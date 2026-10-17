@@ -8,7 +8,6 @@ import type { CrudFieldSpec } from "@/components/admin/CrudForm";
 // directly — no hand-written schema, no per-resource date conversion.
 
 export const emptyBanner: BannerInput = {
-  state: "draft",
   background: "cta_gradient",
   locale: "en",
   body: "",
@@ -22,7 +21,6 @@ export const emptyBanner: BannerInput = {
 // so the text input stays controlled.
 export function bannerToForm(banner: Banner): BannerInput {
   return {
-    state: banner.state,
     background: banner.background,
     locale: banner.locale,
     body: banner.body,
@@ -37,26 +35,6 @@ export function bannerToForm(banner: Banner): BannerInput {
 export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
   const { t } = useTranslation();
   return [
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.banner.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.banner["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.banner["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.banner["state/values"].archived),
-        },
-      ],
-    },
     {
       name: "background",
       label: t(($) => $.models.attributes.banner.background),

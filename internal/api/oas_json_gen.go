@@ -107,6 +107,82 @@ func (s *ActiveBanner) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes AdminArchiveBannerForbidden as json.
+func (s *AdminArchiveBannerForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveBannerForbidden from json.
+func (s *AdminArchiveBannerForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveBannerForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveBannerForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveBannerForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveBannerForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminArchiveBannerUnauthorized as json.
+func (s *AdminArchiveBannerUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveBannerUnauthorized from json.
+func (s *AdminArchiveBannerUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveBannerUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveBannerUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveBannerUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveBannerUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes AdminArchiveBlogPostForbidden as json.
 func (s *AdminArchiveBlogPostForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*ProblemDetails)(s)
@@ -179,6 +255,158 @@ func (s *AdminArchiveBlogPostUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *AdminArchiveBlogPostUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminArchiveCourseLandingPageForbidden as json.
+func (s *AdminArchiveCourseLandingPageForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveCourseLandingPageForbidden from json.
+func (s *AdminArchiveCourseLandingPageForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveCourseLandingPageForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveCourseLandingPageForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveCourseLandingPageForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveCourseLandingPageForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminArchiveCourseLandingPageUnauthorized as json.
+func (s *AdminArchiveCourseLandingPageUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveCourseLandingPageUnauthorized from json.
+func (s *AdminArchiveCourseLandingPageUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveCourseLandingPageUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveCourseLandingPageUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveCourseLandingPageUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveCourseLandingPageUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminArchiveReviewForbidden as json.
+func (s *AdminArchiveReviewForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveReviewForbidden from json.
+func (s *AdminArchiveReviewForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveReviewForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveReviewForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveReviewForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveReviewForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminArchiveReviewUnauthorized as json.
+func (s *AdminArchiveReviewUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminArchiveReviewUnauthorized from json.
+func (s *AdminArchiveReviewUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminArchiveReviewUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminArchiveReviewUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminArchiveReviewUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminArchiveReviewUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -4311,6 +4539,82 @@ func (s *AdminListUsersUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes AdminPublishBannerForbidden as json.
+func (s *AdminPublishBannerForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishBannerForbidden from json.
+func (s *AdminPublishBannerForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishBannerForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishBannerForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishBannerForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishBannerForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminPublishBannerUnauthorized as json.
+func (s *AdminPublishBannerUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishBannerUnauthorized from json.
+func (s *AdminPublishBannerUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishBannerUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishBannerUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishBannerUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishBannerUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes AdminPublishBlogPostForbidden as json.
 func (s *AdminPublishBlogPostForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*ProblemDetails)(s)
@@ -4383,6 +4687,158 @@ func (s *AdminPublishBlogPostUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *AdminPublishBlogPostUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminPublishCourseLandingPageForbidden as json.
+func (s *AdminPublishCourseLandingPageForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishCourseLandingPageForbidden from json.
+func (s *AdminPublishCourseLandingPageForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishCourseLandingPageForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishCourseLandingPageForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishCourseLandingPageForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishCourseLandingPageForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminPublishCourseLandingPageUnauthorized as json.
+func (s *AdminPublishCourseLandingPageUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishCourseLandingPageUnauthorized from json.
+func (s *AdminPublishCourseLandingPageUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishCourseLandingPageUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishCourseLandingPageUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishCourseLandingPageUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishCourseLandingPageUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminPublishReviewForbidden as json.
+func (s *AdminPublishReviewForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishReviewForbidden from json.
+func (s *AdminPublishReviewForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishReviewForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishReviewForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishReviewForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishReviewForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminPublishReviewUnauthorized as json.
+func (s *AdminPublishReviewUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminPublishReviewUnauthorized from json.
+func (s *AdminPublishReviewUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminPublishReviewUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminPublishReviewUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminPublishReviewUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminPublishReviewUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -4817,6 +5273,82 @@ func (s *AdminSuggestBlogPostRelatedCoursesUnauthorized) UnmarshalJSON(data []by
 	return s.Decode(d)
 }
 
+// Encode encodes AdminUnpublishBannerForbidden as json.
+func (s *AdminUnpublishBannerForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishBannerForbidden from json.
+func (s *AdminUnpublishBannerForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishBannerForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishBannerForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishBannerForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishBannerForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminUnpublishBannerUnauthorized as json.
+func (s *AdminUnpublishBannerUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishBannerUnauthorized from json.
+func (s *AdminUnpublishBannerUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishBannerUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishBannerUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishBannerUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishBannerUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes AdminUnpublishBlogPostForbidden as json.
 func (s *AdminUnpublishBlogPostForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*ProblemDetails)(s)
@@ -4889,6 +5421,158 @@ func (s *AdminUnpublishBlogPostUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *AdminUnpublishBlogPostUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminUnpublishCourseLandingPageForbidden as json.
+func (s *AdminUnpublishCourseLandingPageForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishCourseLandingPageForbidden from json.
+func (s *AdminUnpublishCourseLandingPageForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishCourseLandingPageForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishCourseLandingPageForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishCourseLandingPageForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishCourseLandingPageForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminUnpublishCourseLandingPageUnauthorized as json.
+func (s *AdminUnpublishCourseLandingPageUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishCourseLandingPageUnauthorized from json.
+func (s *AdminUnpublishCourseLandingPageUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishCourseLandingPageUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishCourseLandingPageUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishCourseLandingPageUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishCourseLandingPageUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminUnpublishReviewForbidden as json.
+func (s *AdminUnpublishReviewForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishReviewForbidden from json.
+func (s *AdminUnpublishReviewForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishReviewForbidden to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishReviewForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishReviewForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishReviewForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminUnpublishReviewUnauthorized as json.
+func (s *AdminUnpublishReviewUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*ProblemDetails)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminUnpublishReviewUnauthorized from json.
+func (s *AdminUnpublishReviewUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminUnpublishReviewUnauthorized to nil")
+	}
+	var unwrapped ProblemDetails
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminUnpublishReviewUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminUnpublishReviewUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminUnpublishReviewUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -7530,10 +8214,6 @@ func (s *BannerInput) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *BannerInput) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("state")
-		s.State.Encode(e)
-	}
-	{
 		e.FieldStart("background")
 		s.Background.Encode(e)
 	}
@@ -7559,14 +8239,13 @@ func (s *BannerInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfBannerInput = [7]string{
-	0: "state",
-	1: "background",
-	2: "locale",
-	3: "body",
-	4: "url",
-	5: "startsAt",
-	6: "finishesAt",
+var jsonFieldsNameOfBannerInput = [6]string{
+	0: "background",
+	1: "locale",
+	2: "body",
+	3: "url",
+	4: "startsAt",
+	5: "finishesAt",
 }
 
 // Decode decodes BannerInput from json.
@@ -7578,18 +8257,8 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "state":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				if err := s.State.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"state\"")
-			}
 		case "background":
-			requiredBitSet[0] |= 1 << 1
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				if err := s.Background.Decode(d); err != nil {
 					return err
@@ -7599,7 +8268,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"background\"")
 			}
 		case "locale":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				if err := s.Locale.Decode(d); err != nil {
 					return err
@@ -7609,7 +8278,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"locale\"")
 			}
 		case "body":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
 				s.Body = string(v)
@@ -7621,7 +8290,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"body\"")
 			}
 		case "url":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				if err := s.URL.Decode(d); err != nil {
 					return err
@@ -7631,7 +8300,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"url\"")
 			}
 		case "startsAt":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				if err := s.StartsAt.Decode(d, json.DecodeDateTime); err != nil {
 					return err
@@ -7641,7 +8310,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"startsAt\"")
 			}
 		case "finishesAt":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				if err := s.FinishesAt.Decode(d, json.DecodeDateTime); err != nil {
 					return err
@@ -7660,7 +8329,7 @@ func (s *BannerInput) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b01111111,
+		0b00111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -10994,10 +11663,6 @@ func (s *CourseLandingPageInput) encodeFields(e *jx.Encoder) {
 		s.FooterName.Encode(e)
 	}
 	{
-		e.FieldStart("state")
-		s.State.Encode(e)
-	}
-	{
 		e.FieldStart("order")
 		s.Order.Encode(e)
 	}
@@ -11043,7 +11708,7 @@ func (s *CourseLandingPageInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseLandingPageInput = [19]string{
+var jsonFieldsNameOfCourseLandingPageInput = [18]string{
 	0:  "courseId",
 	1:  "slug",
 	2:  "name",
@@ -11051,18 +11716,17 @@ var jsonFieldsNameOfCourseLandingPageInput = [19]string{
 	4:  "listed",
 	5:  "footer",
 	6:  "footerName",
-	7:  "state",
-	8:  "order",
-	9:  "landingPageToRedirectId",
-	10: "metaTitle",
-	11: "metaDescription",
-	12: "header",
-	13: "description",
-	14: "usedInHeader",
-	15: "usedInDescription",
-	16: "outcomesHeader",
-	17: "outcomesDescription",
-	18: "outcomesImageAttachmentId",
+	7:  "order",
+	8:  "landingPageToRedirectId",
+	9:  "metaTitle",
+	10: "metaDescription",
+	11: "header",
+	12: "description",
+	13: "usedInHeader",
+	14: "usedInDescription",
+	15: "outcomesHeader",
+	16: "outcomesDescription",
+	17: "outcomesImageAttachmentId",
 }
 
 // Decode decodes CourseLandingPageInput from json.
@@ -11146,18 +11810,8 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"footerName\"")
 			}
-		case "state":
-			requiredBitSet[0] |= 1 << 7
-			if err := func() error {
-				if err := s.State.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"state\"")
-			}
 		case "order":
-			requiredBitSet[1] |= 1 << 0
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				if err := s.Order.Decode(d); err != nil {
 					return err
@@ -11167,7 +11821,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"order\"")
 			}
 		case "landingPageToRedirectId":
-			requiredBitSet[1] |= 1 << 1
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
 				if err := s.LandingPageToRedirectId.Decode(d); err != nil {
 					return err
@@ -11177,7 +11831,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"landingPageToRedirectId\"")
 			}
 		case "metaTitle":
-			requiredBitSet[1] |= 1 << 2
+			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				if err := s.MetaTitle.Decode(d); err != nil {
 					return err
@@ -11187,7 +11841,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"metaTitle\"")
 			}
 		case "metaDescription":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				if err := s.MetaDescription.Decode(d); err != nil {
 					return err
@@ -11197,7 +11851,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"metaDescription\"")
 			}
 		case "header":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				if err := s.Header.Decode(d); err != nil {
 					return err
@@ -11207,7 +11861,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"header\"")
 			}
 		case "description":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				if err := s.Description.Decode(d); err != nil {
 					return err
@@ -11217,7 +11871,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"description\"")
 			}
 		case "usedInHeader":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				if err := s.UsedInHeader.Decode(d); err != nil {
 					return err
@@ -11227,7 +11881,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"usedInHeader\"")
 			}
 		case "usedInDescription":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				if err := s.UsedInDescription.Decode(d); err != nil {
 					return err
@@ -11237,7 +11891,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"usedInDescription\"")
 			}
 		case "outcomesHeader":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				if err := s.OutcomesHeader.Decode(d); err != nil {
 					return err
@@ -11247,7 +11901,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"outcomesHeader\"")
 			}
 		case "outcomesDescription":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				if err := s.OutcomesDescription.Decode(d); err != nil {
 					return err
@@ -11257,7 +11911,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"outcomesDescription\"")
 			}
 		case "outcomesImageAttachmentId":
-			requiredBitSet[2] |= 1 << 2
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				if err := s.OutcomesImageAttachmentId.Decode(d); err != nil {
 					return err
@@ -11278,7 +11932,7 @@ func (s *CourseLandingPageInput) Decode(d *jx.Decoder) error {
 	for i, mask := range [3]uint8{
 		0b11111111,
 		0b11111111,
-		0b00000111,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -19412,10 +20066,6 @@ func (s *ReviewInput) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *ReviewInput) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("state")
-		s.State.Encode(e)
-	}
-	{
 		e.FieldStart("pinned")
 		s.Pinned.Encode(e)
 	}
@@ -19441,14 +20091,13 @@ func (s *ReviewInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfReviewInput = [7]string{
-	0: "state",
-	1: "pinned",
-	2: "courseId",
-	3: "userId",
-	4: "body",
-	5: "firstName",
-	6: "lastName",
+var jsonFieldsNameOfReviewInput = [6]string{
+	0: "pinned",
+	1: "courseId",
+	2: "userId",
+	3: "body",
+	4: "firstName",
+	5: "lastName",
 }
 
 // Decode decodes ReviewInput from json.
@@ -19460,18 +20109,8 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "state":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				if err := s.State.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"state\"")
-			}
 		case "pinned":
-			requiredBitSet[0] |= 1 << 1
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				if err := s.Pinned.Decode(d); err != nil {
 					return err
@@ -19481,7 +20120,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"pinned\"")
 			}
 		case "courseId":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				if err := s.CourseId.Decode(d); err != nil {
 					return err
@@ -19491,7 +20130,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"courseId\"")
 			}
 		case "userId":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				if err := s.UserId.Decode(d); err != nil {
 					return err
@@ -19501,7 +20140,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"userId\"")
 			}
 		case "body":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				if err := s.Body.Decode(d); err != nil {
 					return err
@@ -19511,7 +20150,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"body\"")
 			}
 		case "firstName":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				if err := s.FirstName.Decode(d); err != nil {
 					return err
@@ -19521,7 +20160,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"firstName\"")
 			}
 		case "lastName":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				if err := s.LastName.Decode(d); err != nil {
 					return err
@@ -19540,7 +20179,7 @@ func (s *ReviewInput) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b01111111,
+		0b00111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

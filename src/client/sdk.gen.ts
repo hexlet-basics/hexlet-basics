@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AdminArchiveBlogPostData, AdminArchiveBlogPostErrors, AdminArchiveBlogPostResponses, AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetMyCapabilitiesData, AdminGetMyCapabilitiesErrors, AdminGetMyCapabilitiesResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListAuditRecordsData, AdminListAuditRecordsErrors, AdminListAuditRecordsResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListPermissionsData, AdminListPermissionsErrors, AdminListPermissionsResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminPublishBlogPostData, AdminPublishBlogPostErrors, AdminPublishBlogPostResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesErrors, AdminSuggestBlogPostRelatedCoursesResponses, AdminUnpublishBlogPostData, AdminUnpublishBlogPostErrors, AdminUnpublishBlogPostResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, ApproveOAuthConsentData, ApproveOAuthConsentErrors, ApproveOAuthConsentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, DenyOAuthConsentData, DenyOAuthConsentErrors, DenyOAuthConsentResponses, DownloadBookData, DownloadBookErrors, DownloadBookResponses, GetActiveBannerData, GetActiveBannerErrors, GetActiveBannerResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetBookData, GetBookErrors, GetBookResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetOAuthConsentData, GetOAuthConsentErrors, GetOAuthConsentResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, GetYandexCoursesFeedData, GetYandexCoursesFeedErrors, GetYandexCoursesFeedResponses, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlErrors, GetYandexCoursesFeedXmlResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, StartLessonData, StartLessonErrors, StartLessonResponses, SwitchLocaleData, SwitchLocaleErrors, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
+import type { AdminArchiveBannerData, AdminArchiveBannerErrors, AdminArchiveBannerResponses, AdminArchiveBlogPostData, AdminArchiveBlogPostErrors, AdminArchiveBlogPostResponses, AdminArchiveCourseLandingPageData, AdminArchiveCourseLandingPageErrors, AdminArchiveCourseLandingPageResponses, AdminArchiveReviewData, AdminArchiveReviewErrors, AdminArchiveReviewResponses, AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetMyCapabilitiesData, AdminGetMyCapabilitiesErrors, AdminGetMyCapabilitiesResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListAuditRecordsData, AdminListAuditRecordsErrors, AdminListAuditRecordsResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListPermissionsData, AdminListPermissionsErrors, AdminListPermissionsResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminPublishBannerData, AdminPublishBannerErrors, AdminPublishBannerResponses, AdminPublishBlogPostData, AdminPublishBlogPostErrors, AdminPublishBlogPostResponses, AdminPublishCourseLandingPageData, AdminPublishCourseLandingPageErrors, AdminPublishCourseLandingPageResponses, AdminPublishReviewData, AdminPublishReviewErrors, AdminPublishReviewResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesErrors, AdminSuggestBlogPostRelatedCoursesResponses, AdminUnpublishBannerData, AdminUnpublishBannerErrors, AdminUnpublishBannerResponses, AdminUnpublishBlogPostData, AdminUnpublishBlogPostErrors, AdminUnpublishBlogPostResponses, AdminUnpublishCourseLandingPageData, AdminUnpublishCourseLandingPageErrors, AdminUnpublishCourseLandingPageResponses, AdminUnpublishReviewData, AdminUnpublishReviewErrors, AdminUnpublishReviewResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, ApproveOAuthConsentData, ApproveOAuthConsentErrors, ApproveOAuthConsentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, DenyOAuthConsentData, DenyOAuthConsentErrors, DenyOAuthConsentResponses, DownloadBookData, DownloadBookErrors, DownloadBookResponses, GetActiveBannerData, GetActiveBannerErrors, GetActiveBannerResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetBookData, GetBookErrors, GetBookResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetOAuthConsentData, GetOAuthConsentErrors, GetOAuthConsentResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, GetYandexCoursesFeedData, GetYandexCoursesFeedErrors, GetYandexCoursesFeedResponses, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlErrors, GetYandexCoursesFeedXmlResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, StartLessonData, StartLessonErrors, StartLessonResponses, SwitchLocaleData, SwitchLocaleErrors, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
   /**
@@ -280,6 +280,53 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
     'Content-Type': 'application/json',
     ...options.headers
   }
+});
+
+/**
+ * Archive a draft or published banner.
+ */
+export const adminArchiveBanner = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveBannerData, ThrowOnError>): RequestResult<AdminArchiveBannerResponses, AdminArchiveBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveBannerResponses, AdminArchiveBannerErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/banners/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived banner. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishBanner = <ThrowOnError extends boolean = false>(options: Options<AdminPublishBannerData, ThrowOnError>): RequestResult<AdminPublishBannerResponses, AdminPublishBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishBannerResponses, AdminPublishBannerErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/banners/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published banner back to draft.
+ */
+export const adminUnpublishBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishBannerData, ThrowOnError>): RequestResult<AdminUnpublishBannerResponses, AdminUnpublishBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishBannerResponses, AdminUnpublishBannerErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/banners/{id}/unpublish',
+  ...options
 });
 
 export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError>({
@@ -663,6 +710,53 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
     'Content-Type': 'application/json',
     ...options.headers
   }
+});
+
+/**
+ * Archive a draft or published landing page.
+ */
+export const adminArchiveCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveCourseLandingPageData, ThrowOnError>): RequestResult<AdminArchiveCourseLandingPageResponses, AdminArchiveCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveCourseLandingPageResponses, AdminArchiveCourseLandingPageErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/course_landing_pages/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived landing page. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminPublishCourseLandingPageData, ThrowOnError>): RequestResult<AdminPublishCourseLandingPageResponses, AdminPublishCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishCourseLandingPageResponses, AdminPublishCourseLandingPageErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/course_landing_pages/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published landing page back to draft.
+ */
+export const adminUnpublishCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishCourseLandingPageData, ThrowOnError>): RequestResult<AdminUnpublishCourseLandingPageResponses, AdminUnpublishCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishCourseLandingPageResponses, AdminUnpublishCourseLandingPageErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/course_landing_pages/{id}/unpublish',
+  ...options
 });
 
 export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError>({
@@ -1195,6 +1289,53 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
     'Content-Type': 'application/json',
     ...options.headers
   }
+});
+
+/**
+ * Archive a draft or published review.
+ */
+export const adminArchiveReview = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveReviewData, ThrowOnError>): RequestResult<AdminArchiveReviewResponses, AdminArchiveReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveReviewResponses, AdminArchiveReviewErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/reviews/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived review. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishReview = <ThrowOnError extends boolean = false>(options: Options<AdminPublishReviewData, ThrowOnError>): RequestResult<AdminPublishReviewResponses, AdminPublishReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishReviewResponses, AdminPublishReviewErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/reviews/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published review back to draft.
+ */
+export const adminUnpublishReview = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishReviewData, ThrowOnError>): RequestResult<AdminUnpublishReviewResponses, AdminUnpublishReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishReviewResponses, AdminUnpublishReviewErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/admin/reviews/{id}/unpublish',
+  ...options
 });
 
 /**

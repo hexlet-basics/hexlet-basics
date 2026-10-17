@@ -32,6 +32,14 @@ func (s *ActiveBanner) SetBanner(val NilBanner) {
 	s.Banner = val
 }
 
+type AdminArchiveBannerForbidden ProblemDetails
+
+func (*AdminArchiveBannerForbidden) adminArchiveBannerRes() {}
+
+type AdminArchiveBannerUnauthorized ProblemDetails
+
+func (*AdminArchiveBannerUnauthorized) adminArchiveBannerRes() {}
+
 type AdminArchiveBlogPostForbidden ProblemDetails
 
 func (*AdminArchiveBlogPostForbidden) adminArchiveBlogPostRes() {}
@@ -39,6 +47,22 @@ func (*AdminArchiveBlogPostForbidden) adminArchiveBlogPostRes() {}
 type AdminArchiveBlogPostUnauthorized ProblemDetails
 
 func (*AdminArchiveBlogPostUnauthorized) adminArchiveBlogPostRes() {}
+
+type AdminArchiveCourseLandingPageForbidden ProblemDetails
+
+func (*AdminArchiveCourseLandingPageForbidden) adminArchiveCourseLandingPageRes() {}
+
+type AdminArchiveCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminArchiveCourseLandingPageUnauthorized) adminArchiveCourseLandingPageRes() {}
+
+type AdminArchiveReviewForbidden ProblemDetails
+
+func (*AdminArchiveReviewForbidden) adminArchiveReviewRes() {}
+
+type AdminArchiveReviewUnauthorized ProblemDetails
+
+func (*AdminArchiveReviewUnauthorized) adminArchiveReviewRes() {}
 
 type AdminCreateBannerForbidden ProblemDetails
 
@@ -522,6 +546,14 @@ type AdminListUsersUnauthorized ProblemDetails
 
 func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 
+type AdminPublishBannerForbidden ProblemDetails
+
+func (*AdminPublishBannerForbidden) adminPublishBannerRes() {}
+
+type AdminPublishBannerUnauthorized ProblemDetails
+
+func (*AdminPublishBannerUnauthorized) adminPublishBannerRes() {}
+
 type AdminPublishBlogPostForbidden ProblemDetails
 
 func (*AdminPublishBlogPostForbidden) adminPublishBlogPostRes() {}
@@ -529,6 +561,22 @@ func (*AdminPublishBlogPostForbidden) adminPublishBlogPostRes() {}
 type AdminPublishBlogPostUnauthorized ProblemDetails
 
 func (*AdminPublishBlogPostUnauthorized) adminPublishBlogPostRes() {}
+
+type AdminPublishCourseLandingPageForbidden ProblemDetails
+
+func (*AdminPublishCourseLandingPageForbidden) adminPublishCourseLandingPageRes() {}
+
+type AdminPublishCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminPublishCourseLandingPageUnauthorized) adminPublishCourseLandingPageRes() {}
+
+type AdminPublishReviewForbidden ProblemDetails
+
+func (*AdminPublishReviewForbidden) adminPublishReviewRes() {}
+
+type AdminPublishReviewUnauthorized ProblemDetails
+
+func (*AdminPublishReviewUnauthorized) adminPublishReviewRes() {}
 
 type AdminReviewCourseForbidden ProblemDetails
 
@@ -614,6 +662,14 @@ type AdminSuggestBlogPostRelatedCoursesUnauthorized ProblemDetails
 
 func (*AdminSuggestBlogPostRelatedCoursesUnauthorized) adminSuggestBlogPostRelatedCoursesRes() {}
 
+type AdminUnpublishBannerForbidden ProblemDetails
+
+func (*AdminUnpublishBannerForbidden) adminUnpublishBannerRes() {}
+
+type AdminUnpublishBannerUnauthorized ProblemDetails
+
+func (*AdminUnpublishBannerUnauthorized) adminUnpublishBannerRes() {}
+
 type AdminUnpublishBlogPostForbidden ProblemDetails
 
 func (*AdminUnpublishBlogPostForbidden) adminUnpublishBlogPostRes() {}
@@ -621,6 +677,22 @@ func (*AdminUnpublishBlogPostForbidden) adminUnpublishBlogPostRes() {}
 type AdminUnpublishBlogPostUnauthorized ProblemDetails
 
 func (*AdminUnpublishBlogPostUnauthorized) adminUnpublishBlogPostRes() {}
+
+type AdminUnpublishCourseLandingPageForbidden ProblemDetails
+
+func (*AdminUnpublishCourseLandingPageForbidden) adminUnpublishCourseLandingPageRes() {}
+
+type AdminUnpublishCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminUnpublishCourseLandingPageUnauthorized) adminUnpublishCourseLandingPageRes() {}
+
+type AdminUnpublishReviewForbidden ProblemDetails
+
+func (*AdminUnpublishReviewForbidden) adminUnpublishReviewRes() {}
+
+type AdminUnpublishReviewUnauthorized ProblemDetails
+
+func (*AdminUnpublishReviewUnauthorized) adminUnpublishReviewRes() {}
 
 type AdminUpdateBannerForbidden ProblemDetails
 
@@ -1453,9 +1525,12 @@ func (s *Banner) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Banner) adminCreateBannerRes() {}
-func (*Banner) adminGetBannerRes()    {}
-func (*Banner) adminUpdateBannerRes() {}
+func (*Banner) adminArchiveBannerRes()   {}
+func (*Banner) adminCreateBannerRes()    {}
+func (*Banner) adminGetBannerRes()       {}
+func (*Banner) adminPublishBannerRes()   {}
+func (*Banner) adminUnpublishBannerRes() {}
+func (*Banner) adminUpdateBannerRes()    {}
 
 // Banner display background.
 // Ref: #/components/schemas/BannerBackground
@@ -1507,20 +1582,16 @@ func (s *BannerBackground) UnmarshalText(data []byte) error {
 	}
 }
 
+// The input of a banner: never its Publication State. A new banner is a draft and the state changes
+// only through the publish, unpublish and archive operations.
 // Ref: #/components/schemas/BannerInput
 type BannerInput struct {
-	State      BannerState      `json:"state"`
 	Background BannerBackground `json:"background"`
 	Locale     BannerLocale     `json:"locale"`
 	Body       string           `json:"body"`
 	URL        NilString        `json:"url"`
 	StartsAt   NilDateTime      `json:"startsAt"`
 	FinishesAt NilDateTime      `json:"finishesAt"`
-}
-
-// GetState returns the value of State.
-func (s *BannerInput) GetState() BannerState {
-	return s.State
 }
 
 // GetBackground returns the value of Background.
@@ -1551,11 +1622,6 @@ func (s *BannerInput) GetStartsAt() NilDateTime {
 // GetFinishesAt returns the value of FinishesAt.
 func (s *BannerInput) GetFinishesAt() NilDateTime {
 	return s.FinishesAt
-}
-
-// SetState sets the value of State.
-func (s *BannerInput) SetState(val BannerState) {
-	s.State = val
 }
 
 // SetBackground sets the value of Background.
@@ -3087,30 +3153,33 @@ func (s *CourseLandingPage) SetEnrollmentsCount(val int32) {
 	s.EnrollmentsCount = val
 }
 
-func (*CourseLandingPage) adminCreateCourseLandingPageRes() {}
-func (*CourseLandingPage) adminGetCourseLandingPageRes()    {}
-func (*CourseLandingPage) adminUpdateCourseLandingPageRes() {}
+func (*CourseLandingPage) adminArchiveCourseLandingPageRes()   {}
+func (*CourseLandingPage) adminCreateCourseLandingPageRes()    {}
+func (*CourseLandingPage) adminGetCourseLandingPageRes()       {}
+func (*CourseLandingPage) adminPublishCourseLandingPageRes()   {}
+func (*CourseLandingPage) adminUnpublishCourseLandingPageRes() {}
+func (*CourseLandingPage) adminUpdateCourseLandingPageRes()    {}
 
+// The input of a landing page: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/CourseLandingPageInput
 type CourseLandingPageInput struct {
-	CourseId                int32               `json:"courseId"`
-	Slug                    NilString           `json:"slug"`
-	Name                    NilString           `json:"name"`
-	Main                    NilBool             `json:"main"`
-	Listed                  NilBool             `json:"listed"`
-	Footer                  NilBool             `json:"footer"`
-	FooterName              NilString           `json:"footerName"`
-	State                   NilLandingPageState `json:"state"`
-	Order                   NilString           `json:"order"`
-	LandingPageToRedirectId NilInt32            `json:"landingPageToRedirectId"`
-	MetaTitle               NilString           `json:"metaTitle"`
-	MetaDescription         NilString           `json:"metaDescription"`
-	Header                  NilString           `json:"header"`
-	Description             NilString           `json:"description"`
-	UsedInHeader            NilString           `json:"usedInHeader"`
-	UsedInDescription       NilString           `json:"usedInDescription"`
-	OutcomesHeader          NilString           `json:"outcomesHeader"`
-	OutcomesDescription     NilString           `json:"outcomesDescription"`
+	CourseId                int32     `json:"courseId"`
+	Slug                    NilString `json:"slug"`
+	Name                    NilString `json:"name"`
+	Main                    NilBool   `json:"main"`
+	Listed                  NilBool   `json:"listed"`
+	Footer                  NilBool   `json:"footer"`
+	FooterName              NilString `json:"footerName"`
+	Order                   NilString `json:"order"`
+	LandingPageToRedirectId NilInt32  `json:"landingPageToRedirectId"`
+	MetaTitle               NilString `json:"metaTitle"`
+	MetaDescription         NilString `json:"metaDescription"`
+	Header                  NilString `json:"header"`
+	Description             NilString `json:"description"`
+	UsedInHeader            NilString `json:"usedInHeader"`
+	UsedInDescription       NilString `json:"usedInDescription"`
+	OutcomesHeader          NilString `json:"outcomesHeader"`
+	OutcomesDescription     NilString `json:"outcomesDescription"`
 	// Attachment id from `POST /admin/attachments`, or null.
 	OutcomesImageAttachmentId NilInt32 `json:"outcomesImageAttachmentId"`
 }
@@ -3148,11 +3217,6 @@ func (s *CourseLandingPageInput) GetFooter() NilBool {
 // GetFooterName returns the value of FooterName.
 func (s *CourseLandingPageInput) GetFooterName() NilString {
 	return s.FooterName
-}
-
-// GetState returns the value of State.
-func (s *CourseLandingPageInput) GetState() NilLandingPageState {
-	return s.State
 }
 
 // GetOrder returns the value of Order.
@@ -3243,11 +3307,6 @@ func (s *CourseLandingPageInput) SetFooter(val NilBool) {
 // SetFooterName sets the value of FooterName.
 func (s *CourseLandingPageInput) SetFooterName(val NilString) {
 	s.FooterName = val
-}
-
-// SetState sets the value of State.
-func (s *CourseLandingPageInput) SetState(val NilLandingPageState) {
-	s.State = val
 }
 
 // SetOrder sets the value of Order.
@@ -7619,24 +7678,22 @@ func (s *Review) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Review) adminCreateReviewRes() {}
-func (*Review) adminGetReviewRes()    {}
-func (*Review) adminUpdateReviewRes() {}
+func (*Review) adminArchiveReviewRes()   {}
+func (*Review) adminCreateReviewRes()    {}
+func (*Review) adminGetReviewRes()       {}
+func (*Review) adminPublishReviewRes()   {}
+func (*Review) adminUnpublishReviewRes() {}
+func (*Review) adminUpdateReviewRes()    {}
 
+// The input of a review: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/ReviewInput
 type ReviewInput struct {
-	State     NilReviewState `json:"state"`
-	Pinned    NilBool        `json:"pinned"`
-	CourseId  NilInt32       `json:"courseId"`
-	UserId    NilInt32       `json:"userId"`
-	Body      NilString      `json:"body"`
-	FirstName NilString      `json:"firstName"`
-	LastName  NilString      `json:"lastName"`
-}
-
-// GetState returns the value of State.
-func (s *ReviewInput) GetState() NilReviewState {
-	return s.State
+	Pinned    NilBool   `json:"pinned"`
+	CourseId  NilInt32  `json:"courseId"`
+	UserId    NilInt32  `json:"userId"`
+	Body      NilString `json:"body"`
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
 }
 
 // GetPinned returns the value of Pinned.
@@ -7667,11 +7724,6 @@ func (s *ReviewInput) GetFirstName() NilString {
 // GetLastName returns the value of LastName.
 func (s *ReviewInput) GetLastName() NilString {
 	return s.LastName
-}
-
-// SetState sets the value of State.
-func (s *ReviewInput) SetState(val NilReviewState) {
-	s.State = val
 }
 
 // SetPinned sets the value of Pinned.

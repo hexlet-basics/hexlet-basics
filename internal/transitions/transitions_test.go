@@ -1,6 +1,7 @@
 package transitions_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,4 +33,30 @@ func TestAnUnknownStateIsRefused(t *testing.T) {
 	assert.True(t, ok)
 	_, ok = transitions.IsIllegal(nil)
 	assert.False(t, ok)
+}
+
+func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {
+	moves := map[string]transitions.Transition[transitions.PublicationState]{
+		"publish": transitions.Publish, "unpublish": transitions.Unpublish, "archive": transitions.Archive,
+	}
+	legal := map[string][]transitions.PublicationState{
+		"publish":   {transitions.Draft, transitions.Archived},
+		"unpublish": {transitions.Published},
+		"archive":   {transitions.Draft, transitions.Published},
+	}
+	for name, move := range moves {
+		for _, from := range []transitions.PublicationState{transitions.Draft, transitions.Published, transitions.Archived} {
+			if slices.Contains(legal[name], from) {
+				assert.NoError(t, move.Check(from), "%s from %s", name, from)
+			} else {
+				assert.Error(t, move.Check(from), "%s from %s", name, from)
+			}
+		}
+	}
+}
+
+func TestARowWithoutAStateIsADraft(t *testing.T) {
+	assert.Equal(t, transitions.Draft, transitions.CurrentOf(nil))
+	published := "published"
+	assert.Equal(t, transitions.Published, transitions.CurrentOf(&published))
 }

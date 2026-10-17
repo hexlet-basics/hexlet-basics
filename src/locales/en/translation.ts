@@ -298,15 +298,10 @@ export default {
         updated: "Record updated",
       },
       blogPosts: {
-        archive: "Archive",
         likes: "Likes",
-        publish: "Publish",
         relatedCourses: "Related courses",
-        stateChangeError: "Could not change the state",
-        stateChanged: "State changed",
         suggestQueued: "Course suggestion started — reload the page shortly",
         suggestRelatedCourses: "Suggest courses",
-        unpublish: "Unpublish",
       },
       courses: {
         edit: {
@@ -335,6 +330,13 @@ export default {
         kindRead: "Read",
         kindWrite: "Write",
         title: "Permissions",
+      },
+      publicationState: {
+        archive: "Archive",
+        changeError: "Could not change the state",
+        changed: "State changed",
+        publish: "Publish",
+        unpublish: "Unpublish",
       },
       qna: {
         add: "Add question",

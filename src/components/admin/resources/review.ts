@@ -7,7 +7,6 @@ import type { CrudFieldSpec } from "@/components/admin/CrudForm";
 // input has no locale — the backend derives it, mirroring legacy.
 
 export const emptyReview: ReviewInput = {
-  state: "draft",
   pinned: false,
   courseId: null,
   userId: null,
@@ -20,7 +19,6 @@ export const emptyReview: ReviewInput = {
 // coalesce nullable strings to "" so the inputs stay controlled.
 export function reviewToForm(review: Review): ReviewInput {
   return {
-    state: review.state,
     pinned: review.pinned ?? false,
     courseId: review.courseId,
     userId: review.userId,
@@ -33,26 +31,6 @@ export function reviewToForm(review: Review): ReviewInput {
 export function useReviewFields(): CrudFieldSpec<ReviewInput>[] {
   const { t } = useTranslation();
   return [
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.review.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.review["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.review["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.review["state/values"].archived),
-        },
-      ],
-    },
     {
       name: "pinned",
       label: t(($) => $.models.attributes.review.pinned),

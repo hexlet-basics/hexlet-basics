@@ -98,7 +98,6 @@ func TestAdminCreateBanner(t *testing.T) {
 
 	starts := time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC)
 	created, err := h.Client.AdminCreateBanner(ctx, &api.BannerInput{
-		State:      api.BannerStatePublished,
 		Background: api.BannerBackgroundBlue,
 		Locale:     api.BannerLocaleEn,
 		Body:       "New course launch",
@@ -111,6 +110,7 @@ func TestAdminCreateBanner(t *testing.T) {
 
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "New course launch", created.Body)
+	assert.Equal(t, api.BannerStateDraft, created.State, "a new banner is always a draft")
 	assert.Equal(t, api.BannerBackgroundBlue, created.Background)
 	assert.True(t, created.FinishesAt.Null, "unset finishesAt should stay null")
 	assert.False(t, created.CreatedAt.IsZero())
@@ -129,7 +129,6 @@ func TestAdminCreateBannerEmptyBody(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminCreateBanner(ctx, &api.BannerInput{
-		State:      api.BannerStateDraft,
 		Background: api.BannerBackgroundCtaGradient,
 		Locale:     api.BannerLocaleRu,
 		Body:       "",
@@ -149,7 +148,6 @@ func TestAdminUpdateBanner(t *testing.T) {
 	target := bannerByBody(t, h, "Скидка 50% на все курсы")
 
 	updated, err := h.Client.AdminUpdateBanner(ctx, &api.BannerInput{
-		State:      api.BannerStateArchived,
 		Background: target.Background,
 		Locale:     target.Locale,
 		Body:       "Промоакция завершена",
@@ -160,7 +158,7 @@ func TestAdminUpdateBanner(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Промоакция завершена", updated.Body)
-	assert.Equal(t, api.BannerStateArchived, updated.State)
+	assert.Equal(t, api.BannerStatePublished, updated.State, "update never changes the state")
 	assert.True(t, updated.URL.Null)
 
 	// A null url clears the column in the database.

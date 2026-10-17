@@ -29,12 +29,30 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// AdminArchiveBanner invokes adminArchiveBanner operation.
+	//
+	// Archive a draft or published banner.
+	//
+	// POST /api/admin/banners/{id}/archive
+	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error)
 	// AdminArchiveBlogPost invokes adminArchiveBlogPost operation.
 	//
 	// Archive a draft or published post.
 	//
 	// POST /api/admin/blog_posts/{id}/archive
 	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
+	// AdminArchiveCourseLandingPage invokes adminArchiveCourseLandingPage operation.
+	//
+	// Archive a draft or published landing page.
+	//
+	// POST /api/admin/course_landing_pages/{id}/archive
+	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error)
+	// AdminArchiveReview invokes adminArchiveReview operation.
+	//
+	// Archive a draft or published review.
+	//
+	// POST /api/admin/reviews/{id}/archive
+	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error)
 	// AdminCreateBanner invokes adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -301,6 +319,14 @@ type Invoker interface {
 	//
 	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	// AdminPublishBanner invokes adminPublishBanner operation.
+	//
+	// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/banners/{id}/publish
+	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error)
 	// AdminPublishBlogPost invokes adminPublishBlogPost operation.
 	//
 	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -309,6 +335,22 @@ type Invoker interface {
 	//
 	// POST /api/admin/blog_posts/{id}/publish
 	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
+	// AdminPublishCourseLandingPage invokes adminPublishCourseLandingPage operation.
+	//
+	// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+	// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+	// 409 with a localized `detail`.
+	//
+	// POST /api/admin/course_landing_pages/{id}/publish
+	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error)
+	// AdminPublishReview invokes adminPublishReview operation.
+	//
+	// Publish a draft or archived review. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/reviews/{id}/publish
+	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error)
 	// AdminReviewCourse invokes adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
@@ -340,12 +382,30 @@ type Invoker interface {
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
 	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	// AdminUnpublishBanner invokes adminUnpublishBanner operation.
+	//
+	// Take a published banner back to draft.
+	//
+	// POST /api/admin/banners/{id}/unpublish
+	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error)
 	// AdminUnpublishBlogPost invokes adminUnpublishBlogPost operation.
 	//
 	// Take a published post back to draft.
 	//
 	// POST /api/admin/blog_posts/{id}/unpublish
 	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
+	// AdminUnpublishCourseLandingPage invokes adminUnpublishCourseLandingPage operation.
+	//
+	// Take a published landing page back to draft.
+	//
+	// POST /api/admin/course_landing_pages/{id}/unpublish
+	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error)
+	// AdminUnpublishReview invokes adminUnpublishReview operation.
+	//
+	// Take a published review back to draft.
+	//
+	// POST /api/admin/reviews/{id}/unpublish
+	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error)
 	// AdminUpdateBanner invokes adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
@@ -731,6 +791,149 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
+// AdminArchiveBanner invokes adminArchiveBanner operation.
+//
+// Archive a draft or published banner.
+//
+// POST /api/admin/banners/{id}/archive
+func (c *Client) AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error) {
+	res, err := c.sendAdminArchiveBanner(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (res AdminArchiveBannerRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminArchiveBanner"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}/archive"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminArchiveBannerOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/banners/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/archive"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminArchiveBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminArchiveBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminArchiveBannerResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // AdminArchiveBlogPost invokes adminArchiveBlogPost operation.
 //
 // Archive a draft or published post.
@@ -867,6 +1070,292 @@ func (c *Client) sendAdminArchiveBlogPost(ctx context.Context, params AdminArchi
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminArchiveBlogPostResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminArchiveCourseLandingPage invokes adminArchiveCourseLandingPage operation.
+//
+// Archive a draft or published landing page.
+//
+// POST /api/admin/course_landing_pages/{id}/archive
+func (c *Client) AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error) {
+	res, err := c.sendAdminArchiveCourseLandingPage(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (res AdminArchiveCourseLandingPageRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminArchiveCourseLandingPage"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}/archive"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminArchiveCourseLandingPageOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/course_landing_pages/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/archive"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminArchiveCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminArchiveCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminArchiveCourseLandingPageResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminArchiveReview invokes adminArchiveReview operation.
+//
+// Archive a draft or published review.
+//
+// POST /api/admin/reviews/{id}/archive
+func (c *Client) AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error) {
+	res, err := c.sendAdminArchiveReview(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (res AdminArchiveReviewRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminArchiveReview"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}/archive"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminArchiveReviewOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/reviews/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/archive"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminArchiveReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminArchiveReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminArchiveReviewResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -8592,6 +9081,151 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 	return result, nil
 }
 
+// AdminPublishBanner invokes adminPublishBanner operation.
+//
+// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/banners/{id}/publish
+func (c *Client) AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error) {
+	res, err := c.sendAdminPublishBanner(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (res AdminPublishBannerRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminPublishBanner"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}/publish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminPublishBannerOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/banners/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/publish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminPublishBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminPublishBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminPublishBannerResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // AdminPublishBlogPost invokes adminPublishBlogPost operation.
 //
 // Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -8730,6 +9364,296 @@ func (c *Client) sendAdminPublishBlogPost(ctx context.Context, params AdminPubli
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminPublishBlogPostResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminPublishCourseLandingPage invokes adminPublishCourseLandingPage operation.
+//
+// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+// 409 with a localized `detail`.
+//
+// POST /api/admin/course_landing_pages/{id}/publish
+func (c *Client) AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error) {
+	res, err := c.sendAdminPublishCourseLandingPage(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (res AdminPublishCourseLandingPageRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminPublishCourseLandingPage"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}/publish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminPublishCourseLandingPageOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/course_landing_pages/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/publish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminPublishCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminPublishCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminPublishCourseLandingPageResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminPublishReview invokes adminPublishReview operation.
+//
+// Publish a draft or archived review. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/reviews/{id}/publish
+func (c *Client) AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error) {
+	res, err := c.sendAdminPublishReview(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (res AdminPublishReviewRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminPublishReview"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}/publish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminPublishReviewOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/reviews/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/publish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminPublishReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminPublishReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminPublishReviewResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -9400,6 +10324,149 @@ func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, par
 	return result, nil
 }
 
+// AdminUnpublishBanner invokes adminUnpublishBanner operation.
+//
+// Take a published banner back to draft.
+//
+// POST /api/admin/banners/{id}/unpublish
+func (c *Client) AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error) {
+	res, err := c.sendAdminUnpublishBanner(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (res AdminUnpublishBannerRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminUnpublishBanner"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}/unpublish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminUnpublishBannerOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/banners/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/unpublish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUnpublishBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUnpublishBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminUnpublishBannerResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // AdminUnpublishBlogPost invokes adminUnpublishBlogPost operation.
 //
 // Take a published post back to draft.
@@ -9536,6 +10603,292 @@ func (c *Client) sendAdminUnpublishBlogPost(ctx context.Context, params AdminUnp
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUnpublishBlogPostResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminUnpublishCourseLandingPage invokes adminUnpublishCourseLandingPage operation.
+//
+// Take a published landing page back to draft.
+//
+// POST /api/admin/course_landing_pages/{id}/unpublish
+func (c *Client) AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error) {
+	res, err := c.sendAdminUnpublishCourseLandingPage(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (res AdminUnpublishCourseLandingPageRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminUnpublishCourseLandingPage"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}/unpublish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminUnpublishCourseLandingPageOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/course_landing_pages/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/unpublish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUnpublishCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUnpublishCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminUnpublishCourseLandingPageResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminUnpublishReview invokes adminUnpublishReview operation.
+//
+// Take a published review back to draft.
+//
+// POST /api/admin/reviews/{id}/unpublish
+func (c *Client) AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error) {
+	res, err := c.sendAdminUnpublishReview(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (res AdminUnpublishReviewRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminUnpublishReview"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}/unpublish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminUnpublishReviewOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/reviews/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/unpublish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUnpublishReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUnpublishReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminUnpublishReviewResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

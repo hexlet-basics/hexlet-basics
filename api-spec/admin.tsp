@@ -121,8 +121,9 @@ interface AdminCourseCategories {
 // Banners (legacy `/admin/banners`) — full CRUD.
 // ---------------------------------------------------------------------------
 
+/** The input of a banner: never its Publication State. A new banner is a draft and
+    the state changes only through the publish, unpublish and archive operations. */
 model BannerInput {
-  state: BannerState;
   background: BannerBackground;
   locale: BannerLocale;
   @minLength(1) body: string;
@@ -155,6 +156,20 @@ interface AdminBanners {
 
   /** Delete a banner. */
   @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "banners.delete", kind: "write" }) @operationId("adminDeleteBanner") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived banner. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "banners.publish", kind: "write" }) @operationId("adminPublishBanner")
+  publish(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published banner back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "banners.unpublish", kind: "write" }) @operationId("adminUnpublishBanner")
+  unpublish(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published banner. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "banners.archive", kind: "write" }) @operationId("adminArchiveBanner")
+  archive(@path id: int32): Banner | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -213,15 +228,15 @@ interface AdminBlogPosts {
   /** Publish a draft or archived post. A state is not an update: each change of
       Publication State is its own operation with its own Permission. An illegal
       move, or repeating the current state, is a 409 with a localized `detail`. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/publish") @extension("x-permission", #{ name: "blog_posts.publish", kind: "write" }) @operationId("adminPublishBlogPost")
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "blog_posts.publish", kind: "write" }) @operationId("adminPublishBlogPost")
   publish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Take a published post back to draft. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/unpublish") @extension("x-permission", #{ name: "blog_posts.unpublish", kind: "write" }) @operationId("adminUnpublishBlogPost")
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "blog_posts.unpublish", kind: "write" }) @operationId("adminUnpublishBlogPost")
   unpublish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Archive a draft or published post. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/archive") @extension("x-permission", #{ name: "blog_posts.archive", kind: "write" }) @operationId("adminArchiveBlogPost")
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "blog_posts.archive", kind: "write" }) @operationId("adminArchiveBlogPost")
   archive(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 }
 
@@ -229,8 +244,8 @@ interface AdminBlogPosts {
 // Reviews (legacy `/admin/reviews`) — full CRUD.
 // ---------------------------------------------------------------------------
 
+/** The input of a review: never its Publication State (see BannerInput). */
 model ReviewInput {
-  state: ReviewState | null;
   pinned: boolean | null;
   courseId: int32 | null;
   userId: int32 | null;
@@ -259,6 +274,20 @@ interface AdminReviews {
   @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "reviews.update", kind: "write" }) @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review | UnauthorizedError | ForbiddenError | ApiError;
 
   @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "reviews.delete", kind: "write" }) @operationId("adminDeleteReview") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived review. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "reviews.publish", kind: "write" }) @operationId("adminPublishReview")
+  publish(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published review back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "reviews.unpublish", kind: "write" }) @operationId("adminUnpublishReview")
+  unpublish(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published review. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "reviews.archive", kind: "write" }) @operationId("adminArchiveReview")
+  archive(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -310,6 +339,7 @@ interface AdminCourses {
 // + nested QnA items.
 // ---------------------------------------------------------------------------
 
+/** The input of a landing page: never its Publication State (see BannerInput). */
 model CourseLandingPageInput {
   courseId: int32;
   slug: string | null;
@@ -318,7 +348,6 @@ model CourseLandingPageInput {
   listed: boolean | null;
   footer: boolean | null;
   footerName: string | null;
-  state: LandingPageState | null;
   order: string | null;
   landingPageToRedirectId: int32 | null;
   metaTitle: string | null;
@@ -354,6 +383,20 @@ interface AdminCourseLandingPages {
   @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.update", kind: "write" }) @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 
   @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.delete", kind: "write" }) @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived landing page. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth(AdminSession) @route("/{id}/publish") @extension("x-permission", #{ name: "course_landing_pages.publish", kind: "write" }) @operationId("adminPublishCourseLandingPage")
+  publish(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published landing page back to draft. */
+  @post @useAuth(AdminSession) @route("/{id}/unpublish") @extension("x-permission", #{ name: "course_landing_pages.unpublish", kind: "write" }) @operationId("adminUnpublishCourseLandingPage")
+  unpublish(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published landing page. */
+  @post @useAuth(AdminSession) @route("/{id}/archive") @extension("x-permission", #{ name: "course_landing_pages.archive", kind: "write" }) @operationId("adminArchiveCourseLandingPage")
+  archive(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---- Nested QnA items ------------------------------------------------------

@@ -32,7 +32,10 @@ func (Banner) Fields() []ent.Field {
 		field.String("background").Default("cta_gradient"),
 		field.String("body"),
 		field.String("locale"),
-		field.String("state").Default("draft"),
+		// state is not an input: a banner is created as a draft and the state moves
+		// only through the publish, unpublish and archive operations.
+		field.String("state").Default("draft").
+			Annotations(AdminInputField{Skip: true}),
 		field.String("url").Optional().Nillable(),
 		field.Time("starts_at").Optional().Nillable(),
 		field.Time("finishes_at").Optional().Nillable(),

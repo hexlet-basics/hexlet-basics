@@ -13,12 +13,39 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AdminArchiveBanner implements adminArchiveBanner operation.
+//
+// Archive a draft or published banner.
+//
+// POST /api/admin/banners/{id}/archive
+func (UnimplementedHandler) AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (r AdminArchiveBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminArchiveBlogPost implements adminArchiveBlogPost operation.
 //
 // Archive a draft or published post.
 //
 // POST /api/admin/blog_posts/{id}/archive
 func (UnimplementedHandler) AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (r AdminArchiveBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminArchiveCourseLandingPage implements adminArchiveCourseLandingPage operation.
+//
+// Archive a draft or published landing page.
+//
+// POST /api/admin/course_landing_pages/{id}/archive
+func (UnimplementedHandler) AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (r AdminArchiveCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminArchiveReview implements adminArchiveReview operation.
+//
+// Archive a draft or published review.
+//
+// POST /api/admin/reviews/{id}/archive
+func (UnimplementedHandler) AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (r AdminArchiveReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -447,6 +474,17 @@ func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminList
 	return r, ht.ErrNotImplemented
 }
 
+// AdminPublishBanner implements adminPublishBanner operation.
+//
+// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/banners/{id}/publish
+func (UnimplementedHandler) AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (r AdminPublishBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminPublishBlogPost implements adminPublishBlogPost operation.
 //
 // Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -455,6 +493,28 @@ func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminList
 //
 // POST /api/admin/blog_posts/{id}/publish
 func (UnimplementedHandler) AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (r AdminPublishBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishCourseLandingPage implements adminPublishCourseLandingPage operation.
+//
+// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+// 409 with a localized `detail`.
+//
+// POST /api/admin/course_landing_pages/{id}/publish
+func (UnimplementedHandler) AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (r AdminPublishCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminPublishReview implements adminPublishReview operation.
+//
+// Publish a draft or archived review. A state is not an update: each change of Publication State is
+// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/reviews/{id}/publish
+func (UnimplementedHandler) AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (r AdminPublishReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -504,12 +564,39 @@ func (UnimplementedHandler) AdminSuggestBlogPostRelatedCourses(ctx context.Conte
 	return r, ht.ErrNotImplemented
 }
 
+// AdminUnpublishBanner implements adminUnpublishBanner operation.
+//
+// Take a published banner back to draft.
+//
+// POST /api/admin/banners/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (r AdminUnpublishBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
 //
 // Take a published post back to draft.
 //
 // POST /api/admin/blog_posts/{id}/unpublish
 func (UnimplementedHandler) AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (r AdminUnpublishBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishCourseLandingPage implements adminUnpublishCourseLandingPage operation.
+//
+// Take a published landing page back to draft.
+//
+// POST /api/admin/course_landing_pages/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (r AdminUnpublishCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishReview implements adminUnpublishReview operation.
+//
+// Take a published review back to draft.
+//
+// POST /api/admin/reviews/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (r AdminUnpublishReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

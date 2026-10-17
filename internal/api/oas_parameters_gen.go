@@ -15,6 +15,71 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// AdminArchiveBannerParams is parameters of adminArchiveBanner operation.
+type AdminArchiveBannerParams struct {
+	ID int32
+}
+
+func unpackAdminArchiveBannerParams(packed middleware.Parameters) (params AdminArchiveBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminArchiveBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminArchiveBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminArchiveBlogPostParams is parameters of adminArchiveBlogPost operation.
 type AdminArchiveBlogPostParams struct {
 	ID int32
@@ -32,6 +97,136 @@ func unpackAdminArchiveBlogPostParams(packed middleware.Parameters) (params Admi
 }
 
 func decodeAdminArchiveBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminArchiveBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminArchiveCourseLandingPageParams is parameters of adminArchiveCourseLandingPage operation.
+type AdminArchiveCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminArchiveCourseLandingPageParams(packed middleware.Parameters) (params AdminArchiveCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminArchiveCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminArchiveCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminArchiveReviewParams is parameters of adminArchiveReview operation.
+type AdminArchiveReviewParams struct {
+	ID int32
+}
+
+func unpackAdminArchiveReviewParams(packed middleware.Parameters) (params AdminArchiveReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminArchiveReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminArchiveReviewParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -6675,6 +6870,71 @@ func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
+// AdminPublishBannerParams is parameters of adminPublishBanner operation.
+type AdminPublishBannerParams struct {
+	ID int32
+}
+
+func unpackAdminPublishBannerParams(packed middleware.Parameters) (params AdminPublishBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminPublishBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminPublishBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminPublishBlogPostParams is parameters of adminPublishBlogPost operation.
 type AdminPublishBlogPostParams struct {
 	ID int32
@@ -6692,6 +6952,136 @@ func unpackAdminPublishBlogPostParams(packed middleware.Parameters) (params Admi
 }
 
 func decodeAdminPublishBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminPublishBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminPublishCourseLandingPageParams is parameters of adminPublishCourseLandingPage operation.
+type AdminPublishCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminPublishCourseLandingPageParams(packed middleware.Parameters) (params AdminPublishCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminPublishCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminPublishCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminPublishReviewParams is parameters of adminPublishReview operation.
+type AdminPublishReviewParams struct {
+	ID int32
+}
+
+func unpackAdminPublishReviewParams(packed middleware.Parameters) (params AdminPublishReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminPublishReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminPublishReviewParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -7057,6 +7447,71 @@ func decodeAdminSuggestBlogPostRelatedCoursesParams(args [1]string, argsEscaped 
 	return params, nil
 }
 
+// AdminUnpublishBannerParams is parameters of adminUnpublishBanner operation.
+type AdminUnpublishBannerParams struct {
+	ID int32
+}
+
+func unpackAdminUnpublishBannerParams(packed middleware.Parameters) (params AdminUnpublishBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUnpublishBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUnpublishBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminUnpublishBlogPostParams is parameters of adminUnpublishBlogPost operation.
 type AdminUnpublishBlogPostParams struct {
 	ID int32
@@ -7074,6 +7529,136 @@ func unpackAdminUnpublishBlogPostParams(packed middleware.Parameters) (params Ad
 }
 
 func decodeAdminUnpublishBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUnpublishBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUnpublishCourseLandingPageParams is parameters of adminUnpublishCourseLandingPage operation.
+type AdminUnpublishCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminUnpublishCourseLandingPageParams(packed middleware.Parameters) (params AdminUnpublishCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUnpublishCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUnpublishCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUnpublishReviewParams is parameters of adminUnpublishReview operation.
+type AdminUnpublishReviewParams struct {
+	ID int32
+}
+
+func unpackAdminUnpublishReviewParams(packed middleware.Parameters) (params AdminUnpublishReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUnpublishReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUnpublishReviewParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]

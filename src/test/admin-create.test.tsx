@@ -70,7 +70,7 @@ const cases: Case[] = [
       ["Name *", "Ruby"],
       ["Slug *", "ruby-landing"],
     ],
-    sent: { courseId: 5, name: "Ruby", slug: "ruby-landing", state: "draft" },
+    sent: { courseId: 5, name: "Ruby", slug: "ruby-landing" },
   },
 ];
 
@@ -99,6 +99,7 @@ test.each(cases)("an admin creates $name and is taken back to the list", async (
   const confirmation = page.getByText("Record created");
   await expect.element(confirmation).toBeVisible();
   expect(received).toMatchObject(c.sent);
+  expect(received).not.toHaveProperty("state"); // a new record is a draft; the state has its own operations
   await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
 });
 

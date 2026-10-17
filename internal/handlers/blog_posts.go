@@ -119,58 +119,36 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 	return s.getAdminBlogPost(ctx, row.ID)
 }
 
-// The legal moves of a blog post's Publication State. Each operation names the
-// states it may start from; repeating the current state is not among them, so it
-// is refused like any illegal move.
-var (
-	publishBlogPost = transitions.Transition[api.BlogPostState]{
-		To:   api.BlogPostStatePublished,
-		From: []api.BlogPostState{api.BlogPostStateDraft, api.BlogPostStateArchived},
-	}
-	unpublishBlogPost = transitions.Transition[api.BlogPostState]{
-		To:   api.BlogPostStateDraft,
-		From: []api.BlogPostState{api.BlogPostStatePublished},
-	}
-	archiveBlogPost = transitions.Transition[api.BlogPostState]{
-		To:   api.BlogPostStateArchived,
-		From: []api.BlogPostState{api.BlogPostStateDraft, api.BlogPostStatePublished},
-	}
-)
-
 // AdminPublishBlogPost makes a draft or archived post public. The state column
 // is all there is to it: legacy kept no published-at stamp and no feed or cache
 // to refresh (the public list, the feeds and the sitemap query the state), so
 // there is no side effect to carry.
 func (s *Server) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (api.AdminPublishBlogPostRes, error) {
-	return s.transitionBlogPost(ctx, int(params.ID), publishBlogPost)
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Publish)
 }
 
 // AdminUnpublishBlogPost takes a published post back to draft.
 func (s *Server) AdminUnpublishBlogPost(ctx context.Context, params api.AdminUnpublishBlogPostParams) (api.AdminUnpublishBlogPostRes, error) {
-	return s.transitionBlogPost(ctx, int(params.ID), unpublishBlogPost)
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Unpublish)
 }
 
 // AdminArchiveBlogPost archives a draft or published post.
 func (s *Server) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchiveBlogPostParams) (api.AdminArchiveBlogPostRes, error) {
-	return s.transitionBlogPost(ctx, int(params.ID), archiveBlogPost)
+	return s.transitionBlogPost(ctx, int(params.ID), transitions.Archive)
 }
 
 // transitionBlogPost checks the move against the table and writes the new
 // state through UpdateOne, so the audit hook records the old and the new state.
 // A row with no state (nullable in the legacy schema) counts as a draft, which
 // is what the public queries treat it as: not published.
-func (s *Server) transitionBlogPost(ctx context.Context, id int, move transitions.Transition[api.BlogPostState]) (*api.BlogPost, error) {
+func (s *Server) transitionBlogPost(ctx context.Context, id int, move transitions.Transition[transitions.PublicationState]) (*api.BlogPost, error) {
 	// A missing id surfaces as ent not-found (404), before any write.
 	post, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	current := api.BlogPostStateDraft
-	if post.State != nil {
-		current = api.BlogPostState(*post.State)
-	}
-	if err := refuseTransition(move.Check(current)); err != nil {
+	if err := refuseTransition(move.Check(transitions.CurrentOf(post.State))); err != nil {
 		return nil, err
 	}
 
