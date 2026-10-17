@@ -7,6 +7,7 @@ import (
 	ent "hexletbasics/ent"
 	api "hexletbasics/internal/api"
 	assetstore "hexletbasics/internal/assetstore"
+	blogposts "hexletbasics/internal/blogposts"
 )
 
 type ConverterImpl struct{}
@@ -44,6 +45,38 @@ func (c *ConverterImpl) ToBanners(source []*ent.Banner) []api.Banner {
 		}
 	}
 	return apiBannerList
+}
+func (c *ConverterImpl) ToBlogPost(source blogposts.Post) api.BlogPost {
+	var apiBlogPost api.BlogPost
+	apiBlogPost.ID = Int32FromInt(source.ID)
+	apiBlogPost.Creator = c.ToPublicUser(source.Creator)
+	apiBlogPost.Name = NilStringFromPtr(source.Name)
+	apiBlogPost.Slug = NilStringFromPtr(source.Slug)
+	apiBlogPost.Description = NilStringFromPtr(source.Description)
+	apiBlogPost.State = NilBlogPostStateFromPtr(source.State)
+	apiBlogPost.Locale = NilStringFromPtr(source.Locale)
+	apiBlogPost.RichBodyHtml = source.RichBody
+	apiBlogPost.ReadingTime = Int32FromInt(source.ReadingTime)
+	apiBlogPost.LikesCount = Int32FromInt(source.LikesCount)
+	if source.RelatedCourseIDs != nil {
+		apiBlogPost.RelatedCourseIds = make([]int32, len(source.RelatedCourseIDs))
+		for i := 0; i < len(source.RelatedCourseIDs); i++ {
+			apiBlogPost.RelatedCourseIds[i] = Int32FromInt(source.RelatedCourseIDs[i])
+		}
+	}
+	apiBlogPost.CoverUrl = NilStringFromEmpty(source.CoverURL)
+	apiBlogPost.CreatedAt = TimeIdentity(source.CreatedAt)
+	return apiBlogPost
+}
+func (c *ConverterImpl) ToBlogPosts(source []blogposts.Post) []api.BlogPost {
+	var apiBlogPostList []api.BlogPost
+	if source != nil {
+		apiBlogPostList = make([]api.BlogPost, len(source))
+		for i := 0; i < len(source); i++ {
+			apiBlogPostList[i] = c.ToBlogPost(source[i])
+		}
+	}
+	return apiBlogPostList
 }
 func (c *ConverterImpl) ToCatalogItem(source *ent.CourseLandingPage) api.CourseCatalogItem {
 	var apiCourseCatalogItem api.CourseCatalogItem

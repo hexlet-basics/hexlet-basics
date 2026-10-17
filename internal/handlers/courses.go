@@ -85,6 +85,10 @@ type Server struct {
 	assistant *assistant.Chat
 	// blogPublic reads the posts a visitor may open.
 	blogPublic *blogposts.Public
+	// blogReader assembles posts (cover, likes, courses, reading time) for the
+	// admin and the public lists alike; blogLikes records a like.
+	blogReader *blogposts.Reader
+	blogLikes  *blogposts.Liker
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover blogposts.PostRemover
 	// permissions writes a role's permission matrix.
@@ -156,6 +160,8 @@ func NewServer(deps Deps) *Server {
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
 		blogPublic:        blogposts.NewPublic(deps.DB),
+		blogReader:        blogposts.NewReader(deps.DB, deps.Config.PublicURL),
+		blogLikes:         blogposts.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
