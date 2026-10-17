@@ -14,8 +14,7 @@ import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
-// Banners admin list — second resource through the CRUD engine; it exercises the
-// select and datetime field types the engine gained for this resource.
+// Banners admin list, rendered through the CRUD engine.
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
   component: BannersList,
 });
