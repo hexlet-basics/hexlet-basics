@@ -23,6 +23,7 @@ package courseloader
 import (
 	"bytes"
 	"cmp"
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -137,19 +138,24 @@ func parseSpec(dir string) (*Spec, error) {
 	}
 	s := doc.Course
 	// Mirror legacy's fetch("...") — a missing key is a hard error, not a blank
-	// build. Report the first offender so the fix is obvious.
-	for k, v := range map[string]string{
-		"name":                   s.Name,
-		"progress":               s.Progress,
-		"learn_as":               s.LearnAs,
-		"docker_image":           s.DockerImage,
-		"extension":              s.Extension,
-		"exercise_filename":      s.ExerciseFilename,
-		"exercise_test_filename": s.ExerciseTestFilename,
+	// build. Every missing key is reported, in file order, so one run shows the
+	// whole fix.
+	var missing []error
+	for _, key := range []struct{ name, value string }{
+		{"name", s.Name},
+		{"progress", s.Progress},
+		{"learn_as", s.LearnAs},
+		{"docker_image", s.DockerImage},
+		{"extension", s.Extension},
+		{"exercise_filename", s.ExerciseFilename},
+		{"exercise_test_filename", s.ExerciseTestFilename},
 	} {
-		if v == "" {
-			return nil, oops.Errorf("spec.yml: language.%s is required", k)
+		if key.value == "" {
+			missing = append(missing, oops.Errorf("spec.yml: language.%s is required", key.name))
 		}
+	}
+	if err := errors.Join(missing...); err != nil {
+		return nil, err
 	}
 	return &s, nil
 }

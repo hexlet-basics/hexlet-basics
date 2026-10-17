@@ -3,6 +3,7 @@ package courseloader
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -59,4 +60,34 @@ definition: typo
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "field definition not found")
+}
+
+// Every missing required key is named, in file order, so one build failure
+// shows the whole fix instead of a random first offender.
+func TestParseSpecReportsEveryMissingKeyInOrder(t *testing.T) {
+	dir := t.TempDir()
+	spec := "language:\n  name: JavaScript\n  extension: js\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "spec.yml"), []byte(spec), 0o644))
+
+	_, err := parseSpec(dir)
+
+	require.Error(t, err)
+	message := err.Error()
+	for _, key := range []string{"progress", "learn_as", "docker_image", "exercise_filename", "exercise_test_filename"} {
+		assert.Contains(t, message, "language."+key+" is required")
+	}
+	assert.NotContains(t, message, "language.name")
+	assert.Less(t, strings.Index(message, "language.progress"), strings.Index(message, "language.exercise_test_filename"))
+}
+
+// Only a reference with a scheme or host is remote: a local image whose name
+// merely starts with "http" must still be uploaded.
+func TestIsRemoteRef(t *testing.T) {
+	assert.True(t, isRemoteRef("https://example.com/a.png"))
+	assert.True(t, isRemoteRef("http://example.com/a.png"))
+	assert.True(t, isRemoteRef("//cdn.example.com/a.png"))
+	assert.True(t, isRemoteRef("data:image/png;base64,AAAA"))
+	assert.False(t, isRemoteRef("http_flow.png"))
+	assert.False(t, isRemoteRef("./assets/a.png"))
+	assert.False(t, isRemoteRef("../assets/a.png"))
 }

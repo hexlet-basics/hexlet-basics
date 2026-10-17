@@ -6,10 +6,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
-	"strings"
 
 	"github.com/samber/oops"
 	"github.com/yuin/goldmark"
@@ -393,7 +393,7 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 		}
 
 		ref := string(image.Destination)
-		if strings.HasPrefix(ref, "http") {
+		if isRemoteRef(ref) {
 			return ast.WalkSkipChildren, nil
 		}
 
@@ -449,6 +449,14 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 		}
 	}
 	return 0, false
+}
+
+// isRemoteRef tells an absolute or scheme-relative reference (https://…,
+// //cdn…, data:…) from a path inside the lesson. A name that merely starts with
+// "http" (http_flow.png) is a local file.
+func isRemoteRef(ref string) bool {
+	u, err := url.Parse(ref)
+	return err == nil && (u.Scheme != "" || u.Host != "")
 }
 
 // uploadImage opens a theory image referenced relative to the locale dir and
