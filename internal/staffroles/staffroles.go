@@ -12,11 +12,6 @@ import (
 	"hexletbasics/internal/api"
 )
 
-// PermissionWriter is the permission-matrix seam the handlers depend on.
-type PermissionWriter interface {
-	Apply(ctx context.Context, roleID int, permissions []api.RolePermissionInput) error
-}
-
 // Permissions writes a role's permission matrix.
 type Permissions struct {
 	db *ent.Client

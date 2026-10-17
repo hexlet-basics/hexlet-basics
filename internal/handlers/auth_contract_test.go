@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 )
 
 type openAPISecurityScheme struct {
@@ -40,9 +40,9 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	}
 	require.NoError(t, yaml.Unmarshal(specData, &spec))
 
-	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: session.CookieName},
+	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: sessions.CookieName},
 		spec.Components.SecuritySchemes["UserSession"])
-	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: session.CookieName},
+	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: sessions.CookieName},
 		spec.Components.SecuritySchemes["AdminSession"])
 	assert.NotContains(t, spec.Components.SecuritySchemes, "XsrfToken",
 		"cross-origin writes are refused from browser headers, not a token (ADR-0017)")

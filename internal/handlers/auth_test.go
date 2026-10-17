@@ -18,7 +18,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
@@ -45,7 +45,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
-		Sessions:  session.New(db),
+		Sessions:  sessions.New(db),
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
 		Events:    services.Events,
@@ -68,7 +68,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 // sessionCookie returns the session cookie from a response, or nil if absent.
 func sessionCookie(resp *http.Response) *http.Cookie {
 	for _, c := range resp.Cookies() {
-		if c.Name == session.CookieName {
+		if c.Name == sessions.CookieName {
 			return c
 		}
 	}

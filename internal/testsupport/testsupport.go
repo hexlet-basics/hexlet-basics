@@ -40,7 +40,7 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -212,7 +212,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	errorHandler := NewAPIErrorHandler(t, translator)
 	// The real session manager over the test's transaction: a test's session rows
 	// are rolled back with everything else.
-	sessions := session.New(db, session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+	manager := sessions.New(db, sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
 	// The real progress module, over the test's transaction: the
@@ -240,7 +240,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
 		Progress:          tracker,
 		Assets:            assets,
-		Sessions:          sessions,
+		Sessions:          manager,
 		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
@@ -270,7 +270,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	security := newHarnessSecurity(t, db, sessions, userLabel)
+	security := newHarnessSecurity(t, db, manager, userLabel)
 	doer := &inProcessDoer{
 		// The production pipeline around the generated server, so a test passes
 		// the same gates a request does.
@@ -425,14 +425,14 @@ type harnessSecurity struct {
 // newHarnessSecurity signs the fixture user in through the real session manager
 // and keeps the cookie value that names the session, which is what a browser
 // would send on every request.
-func newHarnessSecurity(t *testing.T, db *ent.Client, sessions *session.Manager, userLabel fixtures.Label) *harnessSecurity {
+func newHarnessSecurity(t *testing.T, db *ent.Client, manager *sessions.Manager, userLabel fixtures.Label) *harnessSecurity {
 	t.Helper()
 
 	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))
 	if err != nil {
 		t.Fatalf("load harness user: %v", err)
 	}
-	token, err := sessions.Issue(t.Context(), u)
+	token, err := manager.Issue(t.Context(), u)
 	if err != nil {
 		t.Fatalf("issue harness session: %v", err)
 	}
@@ -475,7 +475,7 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	case d.anonymous:
 		r.Header.Del("Cookie")
 	case d.session != "":
-		r.AddCookie(&http.Cookie{Name: session.CookieName, Value: d.session})
+		r.AddCookie(&http.Cookie{Name: sessions.CookieName, Value: d.session})
 	}
 	// Added after the anonymous branch cleared the header: a visitor carries
 	// progress without carrying a session, which is the whole point of it.

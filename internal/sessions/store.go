@@ -1,11 +1,11 @@
-package session
+package sessions
 
 import (
 	"context"
 	"time"
 
 	"hexletbasics/ent"
-	entsession "hexletbasics/ent/session"
+	session "hexletbasics/ent/session"
 )
 
 // store is scs's session store over the application's ent client.
@@ -28,7 +28,7 @@ type store struct {
 // itself is left for deleteExpired.
 func (s *store) FindCtx(ctx context.Context, token string) ([]byte, bool, error) {
 	row, err := s.db.Session.Query().
-		Where(entsession.ID(token), entsession.ExpiryGT(s.clock().UTC())).
+		Where(session.ID(token), session.ExpiryGT(s.clock().UTC())).
 		Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil, false, nil
@@ -47,7 +47,7 @@ func (s *store) CommitCtx(ctx context.Context, token string, data []byte, expiry
 		SetID(token).
 		SetData(data).
 		SetExpiry(expiry.UTC()).
-		OnConflictColumns(entsession.FieldID).
+		OnConflictColumns(session.FieldID).
 		UpdateNewValues().
 		Exec(ctx)
 }
@@ -55,14 +55,14 @@ func (s *store) CommitCtx(ctx context.Context, token string, data []byte, expiry
 // DeleteCtx removes a session. A token that is not there is not an error, as
 // scs requires: signing out twice is not a failure.
 func (s *store) DeleteCtx(ctx context.Context, token string) error {
-	_, err := s.db.Session.Delete().Where(entsession.ID(token)).Exec(ctx)
+	_, err := s.db.Session.Delete().Where(session.ID(token)).Exec(ctx)
 	return err
 }
 
 // deleteExpired removes every session whose expiry has passed and reports how
 // many it removed.
 func (s *store) deleteExpired(ctx context.Context) (int, error) {
-	return s.db.Session.Delete().Where(entsession.ExpiryLTE(s.clock().UTC())).Exec(ctx)
+	return s.db.Session.Delete().Where(session.ExpiryLTE(s.clock().UTC())).Exec(ctx)
 }
 
 // The context-free methods scs's Store interface demands. scs prefers the Ctx

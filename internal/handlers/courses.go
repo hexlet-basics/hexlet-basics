@@ -10,19 +10,14 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/blogposts"
-	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursepages"
-	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/landingpages"
-	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/progress"
-	"hexletbasics/internal/session"
-	"hexletbasics/internal/sitemap"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/staffroles"
 )
 
@@ -49,28 +44,28 @@ type Server struct {
 	// relatedCoursesSet replaces a post's related courses in one transaction.
 	relatedCoursesSet RelatedCoursesReplacer
 	// progress owns what a learner has finished; handlers never derive it.
-	progress progress.Tracker
+	progress ProgressTracker
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
 	// the upload operation only translates its outcome to the contract.
 	assets *assetstore.Store
 	// sessions begins and ends the signed-in visitor's session (ADR-0017);
 	// security is the seam that recognises a request by it.
-	sessions *session.Manager
+	sessions *sessions.Manager
 	security *Security
 	// credentials checks and changes passwords; registrar creates accounts and
 	// remover removes them.
 	credentials *accounts.Credentials
-	registrar   accounts.UserRegistrar
-	remover     accounts.AccountRemover
+	registrar   UserRegistrar
+	remover     AccountRemover
 	events      events.StandalonePublisher
 	// emailTokens verifies the Magic Link and Password Reset links.
 	emailTokens *emailtokens.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
 	// leads stores a lead and raises LeadCreated in one transaction.
-	leads leads.Creator
+	leads LeadCreator
 	// books stores a book request and raises BookRequested in one transaction.
-	books  books.Requester
+	books  BookRequester
 	i18n   *localization.Translator
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
@@ -88,13 +83,13 @@ type Server struct {
 	blogReader *blogposts.Reader
 	blogLikes  *blogposts.Liker
 	// postRemover deletes a post with its dependents in one transaction.
-	postRemover blogposts.PostRemover
+	postRemover PostRemover
 	// permissions writes a role's permission matrix.
-	permissions staffroles.PermissionWriter
+	permissions PermissionWriter
 	// dashboard assembles the learner's courses with cards and progress.
-	dashboard dashboard.CourseLister
+	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
-	sitemap sitemap.Reader
+	sitemap SitemapReader
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -108,22 +103,22 @@ type Deps struct {
 	Starter           VersionBuildStarter
 	Jobs              JobEnqueuer
 	RelatedCoursesSet RelatedCoursesReplacer
-	Progress          progress.Tracker
+	Progress          ProgressTracker
 	Assets            *assetstore.Store
-	Sessions          *session.Manager
-	Registrar         accounts.UserRegistrar
-	Remover           accounts.AccountRemover
+	Sessions          *sessions.Manager
+	Registrar         UserRegistrar
+	Remover           AccountRemover
 	Events            events.StandalonePublisher
-	Leads             leads.Creator
-	Books             books.Requester
+	Leads             LeadCreator
+	Books             BookRequester
 	I18n              *localization.Translator
 	Errors            *APIErrorHandler
 	YandexFeed        *feeds.Yandex
 	Assistant         *assistant.Chat
-	PostRemover       blogposts.PostRemover
-	Permissions       staffroles.PermissionWriter
-	Dashboard         dashboard.CourseLister
-	Sitemap           sitemap.Reader
+	PostRemover       PostRemover
+	Permissions       PermissionWriter
+	Dashboard         CourseLister
+	Sitemap           SitemapReader
 }
 
 // NewServer wires the handler to its dependencies.

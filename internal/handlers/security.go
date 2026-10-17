@@ -9,7 +9,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/staffroles"
 )
 
@@ -50,7 +50,7 @@ func MustAuthenticatedUser(ctx context.Context) *ent.User {
 // server. Both read the user from the session (ADR-0017); neither parses a
 // credential of its own.
 type Security struct {
-	sessions *session.Manager
+	sessions *sessions.Manager
 	policy   *staffroles.Policy
 	i18n     *localization.Translator
 	errors   *APIErrorHandler
@@ -59,14 +59,14 @@ type Security struct {
 
 // newSecurity builds the security seam over the session manager.
 func newSecurity(
-	sessions *session.Manager,
+	manager *sessions.Manager,
 	policy *staffroles.Policy,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 	guests *guestCookies,
 ) *Security {
 	return &Security{
-		sessions: sessions,
+		sessions: manager,
 		policy:   policy,
 		i18n:     translator,
 		errors:   errorHandler,
@@ -158,7 +158,7 @@ func (s *Security) HandleAdminSession(
 // an operation that declares none.
 func (s *Security) attach(ctx context.Context) (context.Context, error) {
 	u, err := s.sessions.User(ctx)
-	if errors.Is(err, session.ErrUnauthenticated) {
+	if errors.Is(err, sessions.ErrUnauthenticated) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {

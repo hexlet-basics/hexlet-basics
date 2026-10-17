@@ -25,7 +25,7 @@ import (
 	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/store"
 )
 
@@ -167,7 +167,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		sessions, err := do.Invoke[*session.Manager](i)
+		manager, err := do.Invoke[*sessions.Manager](i)
 		if err != nil {
 			return nil, err
 		}
@@ -179,7 +179,7 @@ var workerPackage = do.Package(
 			jobs.ReapStuckVersionBuilds(loader, logger),
 			jobs.AmoCRMLead(amoCRMClient),
 			jobs.AccountEmail(emailSender),
-			jobs.ReapExpiredSessions(sessions, logger),
+			jobs.ReapExpiredSessions(manager, logger),
 		}
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
@@ -199,12 +199,12 @@ var workerPackage = do.Package(
 	}),
 	// The worker never serves a request, so it has no use for the session's
 	// cookie; it holds the manager only to remove expired sessions.
-	do.Lazy[*session.Manager](func(i do.Injector) (*session.Manager, error) {
+	do.Lazy[*sessions.Manager](func(i do.Injector) (*sessions.Manager, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return session.New(db), nil
+		return sessions.New(db), nil
 	}),
 	do.Lazy[*events.Runtime](func(i do.Injector) (*events.Runtime, error) {
 		db, err := do.Invoke[*sql.DB](i)

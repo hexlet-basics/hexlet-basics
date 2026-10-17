@@ -36,16 +36,6 @@ const (
 	StateFinished = "finished"
 )
 
-// Tracker is the seam handlers depend on, so no handler learns where progress
-// is stored.
-type Tracker interface {
-	StartLesson(ctx context.Context, learner Learner, lessonID int, locale string) (*CourseState, error)
-	CheckSolution(ctx context.Context, check Check) (*CheckResult, error)
-	CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error)
-	CourseStates(ctx context.Context, userID int, courseIDs []int) (map[int]*CourseState, error)
-	MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error
-}
-
 // CourseState is where a learner stands in one Course, computed against its
 // current Version.
 type CourseState struct {

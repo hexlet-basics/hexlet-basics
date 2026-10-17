@@ -296,7 +296,35 @@ Change the source, run the generator, commit the output. Never hand-edit or
   mirror that density on non-obvious logic, e.g. why an ordering has a specific
   tie-breaker), constructors return concrete types, errors wrapped with context.
 - Return early on errors; don't swallow them. Keep DB access in handlers/ent and
-  API types at the boundary — convert via `apiconv`.
+  API types at the boundary — convert via `apiconv`. The business rules behind an operation
+  live in a use-case module (next section), not in the handler.
+
+### Use-case modules
+
+The business rules behind an operation live in a package named for the concept
+(`internal/<concept>/`), never in a handler body, so the HTTP handlers and any
+other adapter (MCP) call the same code. There is no umbrella `usecases` or
+`services` package. The rules below apply to every such module.
+
+- **Package:** one concept, plural, lowercase (`accounts`, `blogposts`). Plural
+  because ent generates a singular package per entity (`ent/blogpost`), and a
+  file that needs both must not alias one; a mass noun (`progress`, `dashboard`)
+  stays as it is.
+- **Constructor:** `New(...)` returns the concrete type.
+- **Interfaces:** the caller declares the small interface it needs (handlers
+  and the MCP adapter each declare their own; see `handlers/collaborators.go`);
+  the module exports none. The exception is a seam to the outside with a real
+  second adapter, such as the LLM, the exercise runner, the mailer, or the
+  course fetcher: the module that owns the boundary declares it, and `testsupport`
+  mocks it.
+- **Commands and results:** an operation takes a plain command named
+  `<Verb><Noun>` (`UpdateUser`) and never an `internal/api` type (ADR-0001);
+  adapters convert in both directions.
+- **Errors:** domain errors named `ErrX` (`ErrNotFound`, `ErrLastAdmin`); the
+  module maps ent errors to them, each adapter maps them to its wire format.
+- **Separation:** writes and reads are separate modules or files (admin writes
+  apart from the public read model); within a module the command, the result
+  and the implementation each have their own file.
 
 ## Conventional Commits & Releases
 

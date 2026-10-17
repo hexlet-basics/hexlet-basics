@@ -1,4 +1,4 @@
-package session_test
+package sessions_test
 
 import (
 	"net/http"
@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
-	entsession "hexletbasics/ent/session"
+	session "hexletbasics/ent/session"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/fixtures"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -29,25 +29,25 @@ func (c *clock) advance(d time.Duration) { c.now = c.now.Add(d) }
 type app struct {
 	t        *testing.T
 	db       *ent.Client
-	sessions *session.Manager
+	sessions *sessions.Manager
 	handler  http.Handler
 }
 
-func newApp(t *testing.T, clk *clock, opts ...session.Option) *app {
+func newApp(t *testing.T, clk *clock, opts ...sessions.Option) *app {
 	t.Helper()
 	db := testsupport.NewClient(t)
-	sessions := session.New(db, append([]session.Option{session.WithClock(clk.Now)}, opts...)...)
-	a := &app{t: t, db: db, sessions: sessions}
+	manager := sessions.New(db, append([]sessions.Option{sessions.WithClock(clk.Now)}, opts...)...)
+	a := &app{t: t, db: db, sessions: manager}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /signin/{label}", func(w http.ResponseWriter, r *http.Request) {
 		u := db.User.GetX(r.Context(), fixtures.ID(fixtures.LabelOf(r.PathValue("label"))))
-		if err := sessions.Begin(r.Context(), u); err != nil {
+		if err := manager.Begin(r.Context(), u); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
 	mux.HandleFunc("GET /me", func(w http.ResponseWriter, r *http.Request) {
-		u, err := sessions.User(r.Context())
+		u, err := manager.User(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
@@ -55,11 +55,11 @@ func newApp(t *testing.T, clk *clock, opts ...session.Option) *app {
 		_, _ = w.Write([]byte(strconv.Itoa(u.ID)))
 	})
 	mux.HandleFunc("POST /signout", func(w http.ResponseWriter, r *http.Request) {
-		if err := sessions.End(r.Context()); err != nil {
+		if err := manager.End(r.Context()); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
-	a.handler = sessions.Middleware(mux)
+	a.handler = manager.Middleware(mux)
 	return a
 }
 
@@ -84,7 +84,7 @@ func (a *app) signIn(label fixtures.Label, with ...*http.Cookie) *http.Cookie {
 	}
 	rec := a.do(http.MethodPost, "/signin/"+label.String(), planted)
 	require.Equal(a.t, http.StatusOK, rec.Code)
-	return cookieNamed(rec.Result(), session.CookieName)
+	return cookieNamed(rec.Result(), sessions.CookieName)
 }
 
 func (a *app) me(cookie *http.Cookie) int {
@@ -134,7 +134,7 @@ func TestSigningInStartsASessionTheCookieNames(t *testing.T) {
 	// The cookie's lifetime is the session's maximum and never changes after
 	// sign-in, so a page rendered by a server that does not relay cookies cannot
 	// leave the browser holding a stale one.
-	assert.InDelta(t, int(session.MaxLifetime.Seconds()), cookie.MaxAge, 5)
+	assert.InDelta(t, int(sessions.MaxLifetime.Seconds()), cookie.MaxAge, 5)
 	assert.Equal(t, fixtures.ID(fixtures.UserWithPassword), a.me(cookie))
 }
 
@@ -145,7 +145,7 @@ func TestTheStoredSessionIsKeyedByADigestOfTheToken(t *testing.T) {
 
 	cookie := a.signIn(fixtures.UserWithPassword)
 
-	exists := a.db.Session.Query().Where(entsession.ID(cookie.Value)).ExistX(t.Context())
+	exists := a.db.Session.Query().Where(session.ID(cookie.Value)).ExistX(t.Context())
 	assert.False(t, exists, "the token itself is not stored")
 	assert.Equal(t, 1, a.rows())
 }
@@ -169,7 +169,7 @@ func TestSigningOutEndsTheSessionNotJustTheCookie(t *testing.T) {
 	rec := a.do(http.MethodPost, "/signout", cookie)
 	require.Equal(t, http.StatusOK, rec.Code)
 
-	cleared := cookieNamed(rec.Result(), session.CookieName)
+	cleared := cookieNamed(rec.Result(), sessions.CookieName)
 	require.NotNil(t, cleared)
 	assert.Negative(t, cleared.MaxAge)
 	assert.Zero(t, a.me(cookie), "a copy of the cookie opens nothing")
@@ -207,10 +207,10 @@ func TestASessionNobodyUsesEndsAfterTheIdleWeek(t *testing.T) {
 	a := newApp(t, clk)
 	cookie := a.signIn(fixtures.UserWithPassword)
 
-	clk.advance(session.IdleTimeout - time.Hour)
+	clk.advance(sessions.IdleTimeout - time.Hour)
 	require.Equal(t, fixtures.ID(fixtures.UserWithPassword), a.me(cookie))
 
-	clk.advance(session.IdleTimeout + time.Hour)
+	clk.advance(sessions.IdleTimeout + time.Hour)
 	assert.Zero(t, a.me(cookie))
 }
 
@@ -260,7 +260,7 @@ func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	a.signIn(fixtures.UserBlank)
 	require.Equal(t, 2, a.rows())
 
-	clk.advance(session.MaxLifetime - time.Hour)
+	clk.advance(sessions.MaxLifetime - time.Hour)
 	removed, err := a.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, removed, "a session within its lifetime stays, used or not")
@@ -273,7 +273,7 @@ func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 }
 
 func TestTheCookieIsSecureWhereTheSiteIsHTTPS(t *testing.T) {
-	a := newApp(t, newClock(), session.WithSecure(true))
+	a := newApp(t, newClock(), sessions.WithSecure(true))
 
 	cookie := a.signIn(fixtures.UserWithPassword)
 

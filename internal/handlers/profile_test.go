@@ -14,7 +14,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/fixtures"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -76,7 +76,7 @@ func TestDeleteAccount(t *testing.T) {
 		require.NoError(t, err)
 		expired[cookie.Name] = cookie.MaxAge < 0 || cookie.Value == ""
 	}
-	assert.Equal(t, map[string]bool{session.CookieName: true}, expired)
+	assert.Equal(t, map[string]bool{sessions.CookieName: true}, expired)
 
 	// The row stays, removed and erased; what is not identifying is kept.
 	removed := h.DB.User.GetX(t.Context(), u.ID)

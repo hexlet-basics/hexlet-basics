@@ -28,11 +28,6 @@ type Page struct {
 	Categories   []*ent.CourseCategory
 }
 
-// Reader is the sitemap seam the handlers depend on.
-type Reader interface {
-	Read(ctx context.Context) (*Page, error)
-}
-
 // Sitemap reads the sitemap rows.
 type Sitemap struct {
 	db *ent.Client

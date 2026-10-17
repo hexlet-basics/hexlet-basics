@@ -22,17 +22,6 @@ const (
 	StateDownloaded = "downloaded"
 )
 
-// Requester is the seam the handlers depend on: the whole funnel, from the
-// request to the download.
-type Requester interface {
-	Request(ctx context.Context, userID int, locale string) error
-	// Requested reports whether the user has requested the book, in any state.
-	Requested(ctx context.Context, userID int) (bool, error)
-	// MarkDownloaded records a download and reports whether the user had
-	// requested the book; one who had not has nothing to mark.
-	MarkDownloaded(ctx context.Context, userID int) (bool, error)
-}
-
 // Recorder atomically stores a user's first book request and its
 // BookRequested outbox record, so the fact is raised exactly once per user.
 type Recorder struct {

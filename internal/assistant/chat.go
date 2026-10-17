@@ -49,13 +49,20 @@ type Streamer interface {
 	Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error)
 }
 
+// LessonStarter marks the lesson a question is asked about as started for the
+// learner, as the lesson page does. It is the one thing the chat needs from the
+// progress module.
+type LessonStarter interface {
+	StartLesson(ctx context.Context, learner progress.Learner, lessonID int, locale string) (*progress.CourseState, error)
+}
+
 // Chat is the in-lesson assistant: a learner's conversation per lesson, over
 // the legacy ai_chats/ai_messages tables, answered synchronously as a stream —
 // no job, no out-of-band delivery (see the assistant port design).
 type Chat struct {
 	db      *ent.Client
 	tx      store.Transactor
-	lessons progress.Tracker
+	lessons LessonStarter
 	quota   *Quota
 	llm     Streamer
 	i18n    *localization.Translator
@@ -79,7 +86,7 @@ func WithClock(now func() time.Time) Option {
 func NewChat(
 	db *ent.Client,
 	txStore store.Transactor,
-	lessons progress.Tracker,
+	lessons LessonStarter,
 	llm Streamer,
 	translator *localization.Translator,
 	opts ...Option,

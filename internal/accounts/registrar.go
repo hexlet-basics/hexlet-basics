@@ -24,13 +24,6 @@ type Registration struct {
 	Locale    string
 }
 
-// UserRegistrar is the small account-registration interface shared by handlers
-// and tests. The production Registrar hides hashing, transaction management,
-// persistence, and domain-event publication behind this seam.
-type UserRegistrar interface {
-	Register(ctx context.Context, input Registration) (*ent.User, error)
-}
-
 // Registrar atomically creates an account and its UserSignedUp outbox record.
 type Registrar struct {
 	store     store.Transactor

@@ -40,11 +40,17 @@ var ErrNotFound error = &ent.NotFoundError{}
 
 const stateArchived = "archived"
 
+// progressReader is what the pages need from the progress module: where a
+// learner stands in a course, in the order the course gives its lessons.
+type progressReader interface {
+	CourseState(ctx context.Context, learner progress.Learner, courseID int) (*progress.CourseState, error)
+}
+
 // Pages reads the course page and the lesson page.
 type Pages struct {
 	db       *ent.Client
 	catalog  *landingpages.Catalog
-	progress progress.Tracker
+	progress progressReader
 	// sourceBase is the content organisation under which each course's exercises
 	// repository lives.
 	sourceBase string
@@ -53,7 +59,7 @@ type Pages struct {
 // New builds the reader. The catalog owns the main-page rule and the progress
 // tracker owns the order of a course's lessons, so the page and the learner's
 // standing cannot drift apart.
-func New(db *ent.Client, catalog *landingpages.Catalog, tracker progress.Tracker, sourceBase string) *Pages {
+func New(db *ent.Client, catalog *landingpages.Catalog, tracker progressReader, sourceBase string) *Pages {
 	return &Pages{db: db, catalog: catalog, progress: tracker, sourceBase: sourceBase}
 }
 
