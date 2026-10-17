@@ -1,7 +1,7 @@
 import { Breadcrumbs as MantineBreadcrumbs, Center, Text } from "@mantine/core";
 import { IconHome } from "@tabler/icons-react";
 import type { ReactNode } from "react";
-import { TextLink } from "@/components/RouterLink";
+import { AnchorLink } from "@/components/RouterLink";
 
 // Breadcrumb trail, ported from legacy's XBreadcrumb. The home crumb is always
 // first and is an icon; the last crumb is the current page and is not a link.
@@ -19,11 +19,11 @@ export default function Breadcrumbs({
 }) {
   return (
     <MantineBreadcrumbs styles={{ breadcrumb: { whiteSpace: "normal" } }}>
-      <TextLink to="/{-$locale}" size="sm" aria-label={homeLabel}>
+      <AnchorLink to="/{-$locale}" size="sm" aria-label={homeLabel}>
         <Center c="dimmed">
           <IconHome size={15} aria-hidden="true" />
         </Center>
-      </TextLink>
+      </AnchorLink>
       {children}
     </MantineBreadcrumbs>
   );

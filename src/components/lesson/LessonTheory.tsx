@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { CourseLessonView } from "@/client/types.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import MarkdownViewer from "@/components/MarkdownViewer";
-import { TextLink } from "@/components/RouterLink";
+import { AnchorLink } from "@/components/RouterLink";
 
 // Everything a learner reads: where they are, the theory, what they are asked to
 // do, the tips, the questions everyone asks, and the way to fix what they just
@@ -30,13 +30,17 @@ export default function LessonTheory({ view }: { view: CourseLessonView }) {
     <Box p="lg">
       <Breadcrumbs homeLabel={t(($) => $.courses.lessons.show.to_home_title)}>
         {landingPage ? (
-          <TextLink to="/{-$locale}/languages/$slug" params={{ slug: landingPage.slug }} size="sm">
+          <AnchorLink
+            to="/{-$locale}/languages/$slug"
+            params={{ slug: landingPage.slug }}
+            size="sm"
+          >
             {landingPage.header ?? courseName}
-          </TextLink>
+          </AnchorLink>
         ) : (
-          <TextLink to="/{-$locale}/languages" size="sm">
+          <AnchorLink to="/{-$locale}/languages" size="sm">
             {courseName}
-          </TextLink>
+          </AnchorLink>
         )}
         <CurrentCrumb>{lesson.name}</CurrentCrumb>
       </Breadcrumbs>

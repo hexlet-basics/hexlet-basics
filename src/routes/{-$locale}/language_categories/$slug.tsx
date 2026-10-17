@@ -7,7 +7,7 @@ import { getPublicCourseCategoryOptions } from "@/client/@tanstack/react-query.g
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
 import QnaBlock from "@/components/QnaBlock";
-import { TextLink } from "@/components/RouterLink";
+import { AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
 // A course category, at its legacy URL, ported from legacy
@@ -55,9 +55,9 @@ function Show() {
     <Container size="lg" my="xl">
       <Stack mb="xl">
         <Breadcrumbs homeLabel={t(($) => $.courses.show.to_home_title)}>
-          <TextLink to="/{-$locale}/language_categories" size="sm">
+          <AnchorLink to="/{-$locale}/language_categories" size="sm">
             {t(($) => $.course_categories.index.header)}
-          </TextLink>
+          </AnchorLink>
           <CurrentCrumb>{category.header}</CurrentCrumb>
         </Breadcrumbs>
         <Title order={1}>{category.header}</Title>

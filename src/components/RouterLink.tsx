@@ -1,5 +1,7 @@
 import {
   ActionIcon,
+  Anchor,
+  type AnchorProps,
   type ActionIconProps,
   Button,
   type ButtonProps,
@@ -55,6 +57,21 @@ const TextLinkCreated = createLink(TextLinkBase);
 
 export const TextLink: LinkComponent<typeof TextLinkBase> = (props) => (
   <TextLinkCreated preload="intent" {...props} />
+);
+
+// An Anchor rather than TextLink's bare Text: Mantine styles Anchor with the
+// theme's link colour and underline rules, which `Text component="a"` skips (it
+// shows the browser's default blue). Used where a link should look like one.
+type AnchorLinkProps = Omit<AnchorProps, "href">;
+
+const AnchorLinkBase = forwardRef<HTMLAnchorElement, AnchorLinkProps>((props, ref) => (
+  <Anchor ref={ref} {...props} />
+));
+
+const AnchorLinkCreated = createLink(AnchorLinkBase);
+
+export const AnchorLink: LinkComponent<typeof AnchorLinkBase> = (props) => (
+  <AnchorLinkCreated preload="intent" {...props} />
 );
 
 type NavLinkLinkProps = Omit<NavLinkProps, "href">;

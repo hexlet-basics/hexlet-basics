@@ -1402,7 +1402,7 @@ export default function CookiePolicyEn() {
         </li>
         <li>
           <a
-            href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop?redirectslug=enable-and-disable-cookies-website-preferences&redirectlocale=en-US"
+            href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop?redirectslug=enable-and-disable-cookies-website-preferences&amp;redirectlocale=en-US"
             target="_blank"
             rel="noreferrer"
           >
@@ -1445,7 +1445,7 @@ export default function CookiePolicyEn() {
 
       <ul>
         <li>
-          <a href="https://optout.aboutads.info/?c=2&lang=EN" target="_blank" rel="noreferrer">
+          <a href="https://optout.aboutads.info/?c=2&amp;lang=EN" target="_blank" rel="noreferrer">
             Digital Advertising Alliance
           </a>
         </li>

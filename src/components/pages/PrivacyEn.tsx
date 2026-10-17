@@ -515,7 +515,7 @@ export default function PrivacyEn() {
         </a>
         . For more information on the privacy practices of Google, please visit the{" "}
         <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-          Google Privacy & Terms page.
+          Google Privacy &amp; Terms page.
         </a>
       </p>
 
@@ -1159,7 +1159,7 @@ export default function PrivacyEn() {
             <a href="mailto:PAIAComplaints@inforegulator.org.za">
               PAIAComplaints@inforegulator.org.za
             </a>{" "}
-            &{" "}
+            &amp;{" "}
             <a href="mailto:POPIAComplaints@inforegulator.org.za">
               POPIAComplaints@inforegulator.org.za
             </a>

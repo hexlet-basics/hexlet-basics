@@ -34,7 +34,7 @@ import type { BlogPost, CourseCatalogItem } from "@/client/types.gen";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
-import { ActionIconLink, TextLink } from "@/components/RouterLink";
+import { ActionIconLink, AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { timeAgo } from "@/lib/time-ago";
 
@@ -102,7 +102,15 @@ const NO_COVER = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAAC
 function Show() {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
-  const { data } = useQuery(getBlogPostOptions({ path: { slug } }));
+  // The chain rewrites the address bar as the reader moves on, and the router
+  // sees that as a navigation: `slug` changes under us. Following it would tear
+  // the chain down and jump the page back to a single post, so the page stays
+  // anchored to the post it was opened on and adopts a new slug only when it
+  // is not one the chain itself wrote (a real navigation, e.g. a recommended post).
+  const [chainSlugs, setChainSlugs] = useState<string[]>([]);
+  const [anchor, setAnchor] = useState(slug);
+  if (slug !== anchor && !chainSlugs.includes(slug)) setAnchor(slug);
+  const { data } = useQuery(getBlogPostOptions({ path: { slug: anchor } }));
   if (!data) return null;
   const { post, recommendedPosts, relatedLandingPages } = data;
 
@@ -111,9 +119,9 @@ function Show() {
       <Container size="lg" my="xl">
         <Stack>
           <Breadcrumbs homeLabel={t(($) => $.blog_posts.show.to_home_title)}>
-            <TextLink to="/{-$locale}/blog_posts" size="sm">
+            <AnchorLink to="/{-$locale}/blog_posts" size="sm">
               {t(($) => $.blog_posts.index.header)}
-            </TextLink>
+            </AnchorLink>
             <CurrentCrumb>{post.name}</CurrentCrumb>
           </Breadcrumbs>
           <Title order={1} ta="center">
@@ -126,6 +134,7 @@ function Show() {
       <PostChain
         key={post.id}
         first={post}
+        onChainSlugs={setChainSlugs}
         recommendedPosts={recommendedPosts}
         relatedLandingPages={relatedLandingPages}
       />
@@ -138,10 +147,12 @@ function Show() {
 // courses and recommendations (they are page-level data).
 function PostChain({
   first,
+  onChainSlugs,
   recommendedPosts,
   relatedLandingPages,
 }: {
   first: BlogPost;
+  onChainSlugs: (slugs: string[]) => void;
   recommendedPosts: BlogPost[];
   relatedLandingPages: CourseCatalogItem[];
 }) {
@@ -172,6 +183,14 @@ function PostChain({
   }, [nearEnd, isFetching, isError, fetchNextPage]);
 
   const posts = [first, ...(next.data?.pages ?? [])];
+
+  // Tells the page which slugs are this chain's own, so it can tell the address
+  // bar following the reader from a real navigation. Reported as soon as a post
+  // is loaded — well before the reader scrolls to it and the URL changes.
+  const loadedSlugs = posts.map((post) => post.slug ?? "").join("\n");
+  useEffect(() => {
+    onChainSlugs(loadedSlugs.split("\n"));
+  }, [loadedSlugs, onChainSlugs]);
 
   // Keeps the address bar on the post crossing a line a quarter down the
   // viewport (the issue #587 geometry of legacy useInfiniteItems). The URL is
