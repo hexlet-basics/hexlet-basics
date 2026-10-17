@@ -14,6 +14,7 @@ import {
   useDisclosure,
   useLocalStorage,
   useMediaQuery,
+  useMounted,
 } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -73,6 +74,11 @@ export default function LessonPage({
   // Whether a phone shows the theory pane rather than the workspace. The
   // workspace comes first, as in legacy: it is where the learner acts, and its
   // own theory tab keeps the reading one tap away.
+  // The stored split and the viewport are both read in effects, so the first
+  // frame is the server's 40/60 whatever the learner chose: shown, the divider
+  // would jump once those effects land. Mounted flips in the same flush as they
+  // do, so the panes appear once, already at their size.
+  const mounted = useMounted();
   const [theoryOpened, { toggle: togglePanes }] = useDisclosure(false);
 
   // The outcome of the last check: the workspace renders it, the assistant is
@@ -112,6 +118,7 @@ export default function LessonPage({
           the controlled sizes stay where the burger put them. */}
       <Splitter
         h="100%"
+        style={{ visibility: mounted ? "visible" : "hidden" }}
         sizes={sizes}
         onSizeChange={(next) => {
           if (isDesktop) setPaneSizes(next);
