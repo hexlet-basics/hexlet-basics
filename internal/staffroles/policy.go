@@ -3,6 +3,7 @@ package staffroles
 import (
 	"context"
 	"errors"
+	"fmt"
 	"slices"
 	"strings"
 
@@ -18,13 +19,18 @@ import (
 var ErrForbidden = errors.New("staff permission is required")
 
 // Policy decides which admin operations a user may perform. An administrator
-// may do everything. A staff member may do what their role is granted, in the
-// locales their record lists — legacy `authorize_staff_locale!`.
+// may do every operation. A staff member may do what their role is granted, in
+// the locales their record lists — legacy `authorize_staff_locale!`.
 //
 // What an operation needs is the Permission it declares in the contract, which
-// the role must hold as a grant (ADR-0017). Anything that declares none, apart
-// from the operations declared open to any staff member, is for administrators
-// only, so a new admin operation is closed until someone classifies it.
+// the role must hold as a grant (ADR-0017). An administrator passes every
+// operation Permission without a grant, except the capability Permissions
+// (mcp.read, audit.read, ...): those must be granted explicitly to the role of
+// whoever uses them, an administrator included, because they open channels
+// (MCP, the audit trail) the administrator flag was never meant to cover.
+// Anything that declares no Permission, apart from the operations declared open
+// to any staff member, is for administrators only, so a new admin operation is
+// closed until someone classifies it.
 type Policy struct {
 	db *ent.Client
 }
@@ -37,7 +43,9 @@ func NewPolicy(db *ent.Client) *Policy {
 // Allow reports nil when u may perform operation (an ogen operation name) in
 // locale, and ErrForbidden otherwise.
 func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation string) error {
-	if lo.FromPtr(u.Admin) {
+	required, declares := permissions.For(operation)
+	admin := lo.FromPtr(u.Admin)
+	if admin && (!declares || !permissions.IsCapability(required.Permission)) {
 		return nil
 	}
 
@@ -45,31 +53,56 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 	if err != nil {
 		return err
 	}
-	if staff == nil || !slices.Contains(staff.AllowedLocales, locale) {
+	// An administrator is not held to the locales of a staff record.
+	if staff == nil || (!admin && !slices.Contains(staff.AllowedLocales, locale)) {
 		return ErrForbidden
 	}
 
-	if required, ok := permissions.For(operation); ok {
-		held, err := p.db.StaffRoleGrant.Query().
-			Where(
-				staffrolegrant.RoleID(staff.RoleID),
-				staffrolegrant.Permission(required.Permission),
-			).
-			Exist(ctx)
-		if err != nil {
-			return err
-		}
-		if !held {
-			return ErrForbidden
-		}
-		return nil
+	if declares {
+		return p.requireGrant(ctx, staff, required.Permission)
 	}
 
 	if permissions.AccessOf(operation) == permissions.AnyStaff {
 		return nil
 	}
-	// Administrators-only, or declaring nothing: closed.
+	// Declaring nothing: closed.
 	return ErrForbidden
+}
+
+// HasCapability reports nil when u holds the capability Permission (mcp.read,
+// mcp.write, mcp.manage, audit.read) through their staff role, and
+// ErrForbidden otherwise. The administrator flag does not count: the grant is
+// the only way in. It is the check the MCP layer makes before it serves a call.
+// A name that is not a capability is an error of the caller, not a refusal.
+func (p *Policy) HasCapability(ctx context.Context, u *ent.User, capability string) error {
+	if !permissions.IsCapability(capability) {
+		return fmt.Errorf("%q is not a capability Permission", capability)
+	}
+	staff, err := p.staffMember(ctx, u)
+	if err != nil {
+		return err
+	}
+	if staff == nil {
+		return ErrForbidden
+	}
+	return p.requireGrant(ctx, staff, capability)
+}
+
+// requireGrant is nil when the staff member's role holds the Permission.
+func (p *Policy) requireGrant(ctx context.Context, staff *ent.StaffMember, permission string) error {
+	held, err := p.db.StaffRoleGrant.Query().
+		Where(
+			staffrolegrant.RoleID(staff.RoleID),
+			staffrolegrant.Permission(permission),
+		).
+		Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !held {
+		return ErrForbidden
+	}
+	return nil
 }
 
 // staffMember is the user's staff record, nil for someone who is not an

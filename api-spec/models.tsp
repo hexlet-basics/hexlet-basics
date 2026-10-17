@@ -396,11 +396,18 @@ enum PermissionKind {
 /**
  * A Permission an admin operation can require, as declared on the operations in
  * this contract with `x-permission`. The catalog is read from those
- * declarations, never kept by hand.
+ * declarations, never kept by hand, plus the capability Permissions the contract
+ * lists under `x-capabilities`.
  */
 model Permission {
   name: string;
   kind: PermissionKind;
+
+  /**
+   * True for a capability Permission (MCP, audit): the administrator flag does
+   * not imply it, so a role must be given it explicitly.
+   */
+  capability: boolean;
 }
 
 /** A staff member: a user bound to a role (legacy: `StaffMember`). */

@@ -25,13 +25,11 @@ const (
 )
 
 // Access is the requirement an admin operation declares in place of a
-// Permission, with `x-access` in the TypeSpec. It exists for the operations no
-// Permission opens yet, and is meant to disappear as each one gets a Permission.
+// Permission, with `x-access` in the TypeSpec. Every operation that used to be
+// administrators-only now declares a Permission, so what remains is the upload.
 type Access string
 
 const (
-	// Administrators marks an operation only an administrator may perform.
-	Administrators Access = "administrators"
 	// AnyStaff marks an operation any staff member may perform, whatever their
 	// role holds: the upload every form uses.
 	AnyStaff Access = "any-staff"
@@ -49,15 +47,19 @@ type Requirement struct {
 type Permission struct {
 	Name string
 	Kind Kind
+	// Capability marks a Permission listed under `x-capabilities`, which the
+	// administrator flag does not imply.
+	Capability bool
 }
 
 // Declarations is what the contract declares: the requirement of each
 // operation, keyed by its ogen name (AdminListBlogPosts), the operations that
-// declare an Access instead, and the catalog.
+// declare an Access instead, the capability Permissions, and the catalog.
 type Declarations struct {
-	operations map[string]Requirement
-	access     map[string]Access
-	catalog    []Permission
+	operations   map[string]Requirement
+	access       map[string]Access
+	capabilities map[string]Kind
+	catalog      []Permission
 }
 
 // declared is read once from the embedded contract. A contract that cannot be
@@ -78,6 +80,12 @@ func mustParse(doc []byte) *Declarations {
 // exported so tests can feed it malformed documents.
 func Parse(doc []byte) (*Declarations, error) {
 	var spec struct {
+		// Capabilities is the root-level `x-capabilities` list: Permissions
+		// nothing in the contract requires yet (mcp.read, audit.read).
+		Capabilities []struct {
+			Name string `yaml:"name"`
+			Kind Kind   `yaml:"kind"`
+		} `yaml:"x-capabilities"`
 		Paths map[string]map[string]struct {
 			OperationID string `yaml:"operationId"`
 			Permission  *struct {
@@ -91,14 +99,24 @@ func Parse(doc []byte) (*Declarations, error) {
 		return nil, fmt.Errorf("parse OpenAPI: %w", err)
 	}
 
-	d := &Declarations{operations: map[string]Requirement{}, access: map[string]Access{}}
+	d := &Declarations{operations: map[string]Requirement{}, access: map[string]Access{}, capabilities: map[string]Kind{}}
 	kinds := map[string]Kind{}
+	for _, c := range spec.Capabilities {
+		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
+			return nil, fmt.Errorf("x-capabilities: %q needs a name and a kind of read or write", c.Name)
+		}
+		if _, dup := kinds[c.Name]; dup {
+			return nil, fmt.Errorf("x-capabilities: %s is listed twice", c.Name)
+		}
+		kinds[c.Name] = c.Kind
+		d.capabilities[c.Name] = c.Kind
+	}
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
 			if op.Access != "" {
-				if op.Access != Administrators && op.Access != AnyStaff {
-					return nil, fmt.Errorf("%s: x-access %q is neither %s nor %s", where, op.Access, Administrators, AnyStaff)
+				if op.Access != AnyStaff {
+					return nil, fmt.Errorf("%s: x-access %q is not %s", where, op.Access, AnyStaff)
 				}
 				if op.Permission != nil {
 					return nil, fmt.Errorf("%s: declares both x-permission and x-access", where)
@@ -126,7 +144,8 @@ func Parse(doc []byte) (*Declarations, error) {
 	}
 
 	for name, kind := range kinds {
-		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind})
+		_, capability := d.capabilities[name]
+		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind, Capability: capability})
 	}
 	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
 	return d, nil
@@ -165,6 +184,14 @@ func IsClassified(operation string) bool {
 // screen and the tests see a stable list.
 func Catalog() []Permission {
 	return slices.Clone(declared.catalog)
+}
+
+// IsCapability reports whether name is a capability Permission, one the
+// contract lists under `x-capabilities`. The administrator flag does not imply
+// these: a role must be given them explicitly, administrators' included.
+func IsCapability(name string) bool {
+	_, ok := declared.capabilities[name]
+	return ok
 }
 
 // Known reports whether name is in the catalog. Grants are validated against it

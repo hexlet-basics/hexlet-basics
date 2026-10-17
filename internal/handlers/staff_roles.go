@@ -106,6 +106,6 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 func (s *Server) AdminListPermissions(context.Context) (api.AdminListPermissionsRes, error) {
 	catalog := permissions.Catalog()
 	return &api.PermissionCatalog{Permissions: lo.Map(catalog, func(p permissions.Permission, _ int) api.Permission {
-		return api.Permission{Name: p.Name, Kind: api.PermissionKind(p.Kind)}
+		return api.Permission{Name: p.Name, Kind: api.PermissionKind(p.Kind), Capability: p.Capability}
 	})}, nil
 }

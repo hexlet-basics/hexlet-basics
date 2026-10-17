@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/testsupport"
 )
@@ -88,9 +89,9 @@ var cutovers = []cutover{
 			"languages": {
 				index:  []string{"AdminListCourses", "AdminGetCourse"},
 				create: []string{"AdminCreateCourse"},
-				update: []string{"AdminUpdateCourse", "AdminReviewCourse"},
+				update: []string{"AdminUpdateCourse"},
 			},
-			"language_lessons":        {index: []string{"AdminListCourseLessons"}, update: []string{"AdminReviewCourseLesson"}},
+			"language_lessons":        {index: []string{"AdminListCourseLessons"}},
 			"language_lesson_reviews": {index: []string{"AdminListCourseLessonReviews"}},
 			"language_lesson_members": {index: []string{"AdminListLessonProgress"}},
 			"language_landing_pages": {
@@ -169,4 +170,56 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 			}
 		}
 	}
+}
+
+// TestReviewMigrationKeepsEveryRolesAccess runs the review migration over a role
+// for every combination of holding courses.update and course_lessons.update, and
+// asks the policy about update and review: nobody gains or loses an operation,
+// because review used to be opened by update.
+func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
+	migration, err := os.ReadFile("../../migrations/20261018100000_review_permissions.sql")
+	require.NoError(t, err)
+
+	db, tx := testsupport.NewClientWithTx(t)
+	bob := db.User.GetX(t.Context(), bobID)
+	staff := bob.QueryStaffMember().OnlyX(t.Context())
+	db.StaffRoleGrant.Delete().ExecX(t.Context())
+
+	const holdsCourses, holdsLessons = 1, 2
+	for mask := 0; mask < 4; mask++ {
+		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
+		// A bystander grant must survive untouched.
+		db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.read").ExecX(t.Context())
+		if mask&holdsCourses != 0 {
+			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.update").ExecX(t.Context())
+		}
+		if mask&holdsLessons != 0 {
+			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("course_lessons.update").ExecX(t.Context())
+		}
+	}
+	_, err = tx.ExecContext(t.Context(), string(migration))
+	require.NoError(t, err)
+
+	policy := staffroles.NewPolicy(db)
+	for mask := 0; mask < 4; mask++ {
+		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
+		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
+
+		check := func(operation string, want bool) {
+			err := policy.Allow(t.Context(), bob, "ru", operation)
+			if want {
+				assert.NoError(t, err, "combination %02b keeps %s", mask, operation)
+			} else {
+				assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %02b still refuses %s", mask, operation)
+			}
+		}
+		check("AdminListCourses", true)
+		check("AdminUpdateCourse", mask&holdsCourses != 0)
+		check("AdminReviewCourse", mask&holdsCourses != 0)
+		check("AdminReviewCourseLesson", mask&holdsLessons != 0)
+	}
+
+	dead, err := db.StaffRoleGrant.Query().Where(staffrolegrant.Permission("course_lessons.update")).Count(t.Context())
+	require.NoError(t, err)
+	assert.Zero(t, dead, "the grant that names no operation is replaced")
 }

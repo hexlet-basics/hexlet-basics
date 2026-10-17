@@ -6358,11 +6358,15 @@ func (o OptString) Or(d string) string {
 }
 
 // A Permission an admin operation can require, as declared on the operations in this contract with
-// `x-permission`. The catalog is read from those declarations, never kept by hand.
+// `x-permission`. The catalog is read from those declarations, never kept by hand, plus the capability
+// Permissions the contract lists under `x-capabilities`.
 // Ref: #/components/schemas/Permission
 type Permission struct {
 	Name string         `json:"name"`
 	Kind PermissionKind `json:"kind"`
+	// True for a capability Permission (MCP, audit): the administrator flag does not imply it, so a role
+	// must be given it explicitly.
+	Capability bool `json:"capability"`
 }
 
 // GetName returns the value of Name.
@@ -6375,6 +6379,11 @@ func (s *Permission) GetKind() PermissionKind {
 	return s.Kind
 }
 
+// GetCapability returns the value of Capability.
+func (s *Permission) GetCapability() bool {
+	return s.Capability
+}
+
 // SetName sets the value of Name.
 func (s *Permission) SetName(val string) {
 	s.Name = val
@@ -6383,6 +6392,11 @@ func (s *Permission) SetName(val string) {
 // SetKind sets the value of Kind.
 func (s *Permission) SetKind(val PermissionKind) {
 	s.Kind = val
+}
+
+// SetCapability sets the value of Capability.
+func (s *Permission) SetCapability(val bool) {
+	s.Capability = val
 }
 
 // Every Permission an admin operation can require.

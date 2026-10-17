@@ -173,5 +173,11 @@ func TestAdminListPermissions(t *testing.T) {
 		{Name: "blog_posts.update", Kind: api.PermissionKindWrite},
 		{Name: "leads.read", Kind: api.PermissionKindRead},
 		{Name: "reviews.delete", Kind: api.PermissionKindWrite},
+		{Name: "users.read", Kind: api.PermissionKindRead},
+		{Name: "courses.review", Kind: api.PermissionKindWrite},
+		{Name: "mcp.read", Kind: api.PermissionKindRead, Capability: true},
+		{Name: "mcp.write", Kind: api.PermissionKindWrite, Capability: true},
+		{Name: "mcp.manage", Kind: api.PermissionKindWrite, Capability: true},
+		{Name: "audit.read", Kind: api.PermissionKindRead, Capability: true},
 	})
 }

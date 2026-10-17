@@ -43,9 +43,10 @@ func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) 
 		"course_categories.delete":    {"AdminDeleteCourseCategory"},
 		"courses.read":                {"AdminListCourses", "AdminGetCourse"},
 		"courses.create":              {"AdminCreateCourse"},
-		"courses.update":              {"AdminUpdateCourse", "AdminReviewCourse"},
+		"courses.update":              {"AdminUpdateCourse"},
+		"courses.review":              {"AdminReviewCourse"},
 		"course_lessons.read":         {"AdminListCourseLessons"},
-		"course_lessons.update":       {"AdminReviewCourseLesson"},
+		"course_lessons.review":       {"AdminReviewCourseLesson"},
 		"course_lesson_reviews.read":  {"AdminListCourseLessonReviews"},
 		"lesson_progress.read":        {"AdminListLessonProgress"},
 		"course_landing_pages.read":   {"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
@@ -65,9 +66,66 @@ func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) 
 	}
 }
 
+// The operations that were administrators-only declare Permissions a role can
+// hold, named with the GLOSSARY terms.
+func TestFormerAdministratorsOnlyOperationsDeclarePermissions(t *testing.T) {
+	for permission, operations := range map[string][]string{
+		"users.read":                           {"AdminListUsers", "AdminSearchUsers", "AdminGetUser", "AdminListManagementUsers", "AdminGetManagementUser"},
+		"users.create":                         {"AdminCreateUser"},
+		"users.update":                         {"AdminUpdateUser", "AdminUpdateManagementUser"},
+		"users.delete":                         {"AdminDeleteUser"},
+		"staff_members.read":                   {"AdminListStaffMembers", "AdminGetStaffMember"},
+		"staff_members.create":                 {"AdminCreateStaffMember"},
+		"staff_members.update":                 {"AdminUpdateStaffMember"},
+		"staff_members.delete":                 {"AdminDeleteStaffMember"},
+		"staff_roles.read":                     {"AdminListRoles", "AdminGetRole", "AdminListPermissions", "AdminGetRolePermissions"},
+		"staff_roles.create":                   {"AdminCreateRole"},
+		"staff_roles.update":                   {"AdminUpdateRole", "AdminUpdateRolePermissions"},
+		"staff_roles.delete":                   {"AdminDeleteRole"},
+		"course_landing_page_qna_items.read":   {"AdminListLandingPageQnaItems"},
+		"course_landing_page_qna_items.create": {"AdminCreateLandingPageQnaItem"},
+		"course_landing_page_qna_items.update": {"AdminUpdateLandingPageQnaItem"},
+		"course_landing_page_qna_items.delete": {"AdminDeleteLandingPageQnaItem"},
+		"course_category_qna_items.read":       {"AdminListCategoryQnaItems"},
+		"course_category_qna_items.create":     {"AdminCreateCategoryQnaItem"},
+		"course_category_qna_items.update":     {"AdminUpdateCategoryQnaItem"},
+		"course_category_qna_items.delete":     {"AdminDeleteCategoryQnaItem"},
+		"course_versions.create":               {"AdminCreateCourseVersion"},
+	} {
+		wantKind := permissions.Write
+		if strings.HasSuffix(permission, ".read") {
+			wantKind = permissions.Read
+		}
+		for _, operation := range operations {
+			got, ok := permissions.For(operation)
+			require.True(t, ok, operation)
+			assert.Equal(t, permissions.Requirement{Permission: permission, Kind: wantKind}, got, operation)
+			assert.Empty(t, permissions.AccessOf(operation), operation)
+		}
+	}
+}
+
 func TestAnOperationWithoutADeclarationHasNoRequirement(t *testing.T) {
-	_, ok := permissions.For("AdminListUsers")
+	_, ok := permissions.For("AdminInventedOperation")
 	assert.False(t, ok)
+}
+
+// The capability Permissions are listed once in the contract, which no operation
+// requires yet: they are in the catalog with their kinds, and are told apart
+// from the operation Permissions.
+func TestTheCatalogHoldsTheCapabilityPermissions(t *testing.T) {
+	assert.Subset(t, permissions.Catalog(), []permissions.Permission{
+		{Name: "mcp.read", Kind: permissions.Read, Capability: true},
+		{Name: "mcp.write", Kind: permissions.Write, Capability: true},
+		{Name: "mcp.manage", Kind: permissions.Write, Capability: true},
+		{Name: "audit.read", Kind: permissions.Read, Capability: true},
+	})
+	for _, name := range []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"} {
+		assert.True(t, permissions.IsCapability(name), name)
+		assert.True(t, permissions.Known(name), name)
+	}
+	assert.False(t, permissions.IsCapability("blog_posts.read"))
+	assert.False(t, permissions.IsCapability("mcp.invented"))
 }
 
 func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
@@ -86,7 +144,7 @@ func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
 }
 
 func TestAnOperationReportsTheAccessItDeclaresInsteadOfAPermission(t *testing.T) {
-	assert.Equal(t, permissions.Administrators, permissions.AccessOf("AdminListRoles"))
+	assert.Empty(t, permissions.AccessOf("AdminListRoles"), "no operation is administrators-only any more")
 	assert.Equal(t, permissions.AnyStaff, permissions.AccessOf("AdminUploadAttachment"))
 	assert.Empty(t, permissions.AccessOf("AdminListBanners"), "a Permission is not an Access")
 
@@ -125,13 +183,34 @@ paths:
     get:
       operationId: adminListX
       x-access: everyone`,
+		"the retired administrators access": `
+paths:
+  /api/admin/x:
+    get:
+      operationId: adminListX
+      x-access: administrators`,
+		"capability without a kind": `
+x-capabilities:
+  - {name: mcp.read}`,
+		"capability listed twice": `
+x-capabilities:
+  - {name: mcp.read, kind: read}
+  - {name: mcp.read, kind: read}`,
+		"capability and operation disagree on the kind": `
+x-capabilities:
+  - {name: audit.read, kind: read}
+paths:
+  /api/admin/x:
+    post:
+      operationId: adminCreateX
+      x-permission: {name: audit.read, kind: write}`,
 		"permission and access together": `
 paths:
   /api/admin/x:
     get:
       operationId: adminListX
       x-permission: {name: x.read, kind: read}
-      x-access: administrators`,
+      x-access: any-staff`,
 		"declaration without a name": `
 paths:
   /api/admin/x:

@@ -328,3 +328,56 @@ holding the cutoff is kept whole: a record lives at least the retention and up
 to a month longer, and the month in progress is never dropped. `DROP TABLE` does
 not fire the trigger; it is the one permitted way a record leaves the table.
 Tests prove the trigger still refuses UPDATE and DELETE on rows in a partition.
+
+## Addendum: delegable Permissions, review, and capability Permissions
+
+Settled by the delegation ticket (#843). It meets the ADR as written; no departure.
+
+**Administrators-only is gone.** Every operation that declared
+`x-access: administrators` declares an `x-permission` now: `users.*` (users and
+the management users), `staff_members.*`, `staff_roles.*` (roles, the Permission
+catalog and a role's grants), `course_landing_page_qna_items.*`,
+`course_category_qna_items.*` and `course_versions.create`. The parser accepts
+only `any-staff` as an `x-access` (the attachment upload); `administrators` is a
+parse error. An operation that declares nothing is still closed to staff, so a
+new one is closed until classified. Only administrators held these operations
+before, so no grant is migrated and no role gains anything; a test shows the
+seeded editor role is refused every one of them, and an administrator keeps them.
+Delegating `staff_roles.update` lets its holder edit any role's grants: that is
+the point of delegating it, and it is a Permission to hand out with care.
+
+**Review is separate from update.** The contract has no publish operation (blog
+posts publish through the update), so only review is split: `courses.review`
+(`AdminReviewCourse`) and `course_lessons.review` (`AdminReviewCourseLesson`).
+The migration `review_permissions` grants each to every role holding the matching
+update, so nobody gains or loses access; `course_lessons.update`, which opened
+only the review, is replaced by the review grant instead of left as a right that
+names nothing. A test runs the migration over each combination of the two update
+grants and asks the policy about update and review. A publish Permission arrives
+with the first publish operation.
+
+**How capability Permissions are declared.** A Permission nothing requires yet
+cannot be read off an operation, so the TypeSpec service lists them under a
+root-level extension on the `HexletBasics` namespace, emitted at the root of
+`openapi.yaml`:
+
+```
+@extension("x-capabilities", #[#{ name: "mcp.read", kind: "read" }, ...])
+```
+
+`permissions.Parse` reads it into the same catalog as the operation Permissions
+(kind checked, a duplicate or a clash with an operation's kind is a parse error),
+so the roles screen and the grant validation need nothing new. The catalog's
+`Permission` carries `capability: true` for them, which the screen shows as an
+"explicit grant only" badge. The four are `mcp.read`, `mcp.write`, `mcp.manage`
+and `audit.read`; #854 (MCP) and #853 (audit page) require them.
+
+**The administrator flag does not imply a capability.** `Policy.Allow` lets an
+administrator through every operation Permission, but an operation that declares
+a capability Permission (the audit page later) needs the grant on the user's
+staff role even from an administrator, who then needs a staff record to hold it.
+`Policy.HasCapability(ctx, user, capability)` is the check the MCP layer calls: it
+looks only at the role's grants, never at the flag, and a name that is not a
+capability is an error of the caller, not a refusal. No operation requires a
+capability yet, so that branch of `Allow` is exercised through `HasCapability`
+alone until #853 declares one.

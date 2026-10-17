@@ -91,6 +91,11 @@ function PermissionsForm({
                   label={permission.name}
                   onChange={() => toggleGrant(permission.name)}
                 />
+                {permission.capability && (
+                  <Badge variant="outline" color="red">
+                    {t(($) => $.admin.permissions.capability)}
+                  </Badge>
+                )}
                 <Badge variant="light" color={permission.kind === "read" ? "gray" : "orange"}>
                   {permission.kind === "read"
                     ? t(($) => $.admin.permissions.kindRead)

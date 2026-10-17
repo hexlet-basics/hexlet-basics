@@ -271,6 +271,7 @@ export default {
         versionQueued: "Сборка версии запущена",
       },
       permissions: {
+        capability: "Только по явной выдаче",
         kindRead: "Чтение",
         kindWrite: "Запись",
         title: "Права",
