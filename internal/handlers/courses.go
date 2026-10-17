@@ -168,7 +168,7 @@ func NewServer(deps Deps) *Server {
 		progress:          deps.Progress,
 		assets:            deps.Assets,
 		sessions:          deps.Sessions,
-		security:          newSecurity(deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
+		security:          newSecurity(deps.DB, deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
 		credentials:       accounts.NewCredentials(deps.DB),
 		registrar:         deps.Registrar,
 		remover:           deps.Remover,
