@@ -1,16 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import {
-  Anchor,
-  Box,
-  Button,
-  Center,
-  Group,
-  Loader,
-  Paper,
-  Stack,
-  Text,
-  Textarea,
-} from "@mantine/core";
+import { Anchor, Box, Button, Group, Paper, Skeleton, Stack, Text, Textarea } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -61,9 +50,11 @@ export default function LessonAssistant({
 
   if (history.isPending) {
     return (
-      <Center p="lg">
-        <Loader />
-      </Center>
+      <Stack p="lg" gap="sm">
+        <Skeleton h={14} w="70%" />
+        <Skeleton h={14} />
+        <Skeleton h={14} w="40%" />
+      </Stack>
     );
   }
 

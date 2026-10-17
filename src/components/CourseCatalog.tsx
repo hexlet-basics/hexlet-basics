@@ -5,8 +5,8 @@ import {
   Center,
   Container,
   List,
-  Loader,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
   Title,
@@ -26,9 +26,14 @@ export default function CourseCatalog() {
 
   if (isPending)
     return (
-      <Center h="100vh">
-        <Loader />
-      </Center>
+      <Container my="xl">
+        <Skeleton h={40} w="40%" mb="xl" />
+        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
+          {Array.from({ length: 8 }, (_, index) => (
+            <Skeleton key={index} h={220} />
+          ))}
+        </SimpleGrid>
+      </Container>
     );
 
   if (isError || !data)
@@ -45,7 +50,7 @@ export default function CourseCatalog() {
       </Title>
 
       <Box mb={48}>
-        <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
+        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
           {data.map((item) => (
             <CourseBlock key={item.id} lazy item={item} />
           ))}

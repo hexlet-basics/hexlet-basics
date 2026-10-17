@@ -2,9 +2,10 @@ import { CodeHighlightAdapterProvider } from "@mantine/code-highlight";
 import {
   Burger,
   Center,
-  Loader,
   ScrollArea,
+  Skeleton,
   Splitter,
+  Stack,
   Tabs,
   Text,
   useMantineTheme,
@@ -70,9 +71,13 @@ export default function LessonPage({
 
   if (isPending) {
     return (
-      <Center h="100%">
-        <Loader />
-      </Center>
+      <Stack p="md" gap="sm">
+        <Skeleton h={32} w="50%" />
+        <Skeleton h={14} />
+        <Skeleton h={14} />
+        <Skeleton h={14} w="80%" />
+        <Skeleton h={160} mt="md" />
+      </Stack>
     );
   }
 

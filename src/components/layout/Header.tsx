@@ -416,7 +416,7 @@ function SolutionsMenu() {
           <Text fw="bold">{t(($) => $.layouts.shared.nav.for_whom)}</Text>
         </Group>
         <Divider mb="lg" />
-        <SimpleGrid cols={2} spacing="md" px="md" mb="md">
+        <SimpleGrid cols={2} px="md" mb="md">
           {links}
         </SimpleGrid>
       </HoverCard.Dropdown>

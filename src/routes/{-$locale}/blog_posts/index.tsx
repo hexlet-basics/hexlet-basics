@@ -46,7 +46,7 @@ function Index() {
       {posts.length === 0 ? (
         <Text c="dimmed">{t(($) => $.blog_posts.index.empty)}</Text>
       ) : (
-        <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {posts.map((post) => (
             <BlogPostBlock key={post.id} post={post} />
           ))}

@@ -1,4 +1,4 @@
-import { Button, Card, Center, Group, Loader, MultiSelect, Stack, Title } from "@mantine/core";
+import { Button, Card, Group, MultiSelect, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import {
   adminUpdateBlogPostMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zBlogPostInput } from "@/client/zod.gen";
+import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { blogPostToForm, useBlogPostFields } from "@/components/admin/resources/blogPost";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -46,9 +47,7 @@ function EditBlogPost() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.edit)}</Title>
       {isLoading || !data ? (
-        <Center py="xl">
-          <Loader />
-        </Center>
+        <FormSkeleton />
       ) : (
         <>
           <CrudForm

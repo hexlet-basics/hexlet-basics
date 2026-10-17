@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   Button,
-  type ButtonProps,
   Card,
   Center,
   Container,
@@ -11,14 +10,15 @@ import {
   Grid,
   Group,
   Image,
-  Loader,
   NumberFormatter,
   Paper,
   Progress,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
   Title,
+  type ButtonProps,
 } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
@@ -112,9 +112,11 @@ function Show() {
 
   if (isPending) {
     return (
-      <Center h="50vh">
-        <Loader />
-      </Center>
+      <Container my="xl">
+        <Skeleton h={48} w="50%" mb="md" />
+        <Skeleton h={16} w="70%" mb="xl" />
+        <Skeleton h={280} />
+      </Container>
     );
   }
 

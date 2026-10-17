@@ -1,4 +1,4 @@
-import { Center, Loader, Stack, Title } from "@mantine/core";
+import { Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import {
   adminUpdateCourseMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zCourseInput } from "@/client/zod.gen";
+import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { courseToForm, useCourseFields } from "@/components/admin/resources/course";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -42,9 +43,7 @@ function EditCourse() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.edit)}</Title>
       {isLoading || !data ? (
-        <Center py="xl">
-          <Loader />
-        </Center>
+        <FormSkeleton />
       ) : (
         <CrudForm
           key={data.id}

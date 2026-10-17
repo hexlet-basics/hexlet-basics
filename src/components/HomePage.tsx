@@ -143,7 +143,7 @@ export default function HomePage() {
           {t(($) => $.home.courses.courses)}
         </Title>
 
-        <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
+        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
           {(courses ?? []).map((item) => (
             <CourseBlock key={item.id} lazy item={item} />
           ))}
@@ -156,7 +156,7 @@ export default function HomePage() {
           <Divider />
         </Box>
 
-        <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
+        <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
           {SHOWCASE.map(({ id, avatar }) => {
             const review = reviews[id];
             return (
@@ -185,7 +185,7 @@ export default function HomePage() {
             <Title order={2}>{t(($) => $.home.index.blog_posts)}</Title>
             <Divider />
           </Box>
-          <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
+          <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
             {posts.map((post) => (
               <BlogPostBlock key={post.id} post={post} lazy />
             ))}

@@ -1,4 +1,4 @@
-import { Center, Loader, Stack, Title } from "@mantine/core";
+import { Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import {
   adminUpdateBannerMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zBannerInput } from "@/client/zod.gen";
+import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { bannerToForm, useBannerFields } from "@/components/admin/resources/banner";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -42,9 +43,7 @@ function EditBanner() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.edit)}</Title>
       {isLoading || !data ? (
-        <Center py="xl">
-          <Loader />
-        </Center>
+        <FormSkeleton />
       ) : (
         <CrudForm
           key={data.id}

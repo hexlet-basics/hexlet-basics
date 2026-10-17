@@ -1,13 +1,4 @@
-import {
-  Center,
-  Group,
-  Loader,
-  Pagination,
-  Stack,
-  Table,
-  Text,
-  UnstyledButton,
-} from "@mantine/core";
+import { Group, Pagination, Skeleton, Stack, Table, Text, UnstyledButton } from "@mantine/core";
 import {
   type ColumnDef,
   flexRender,
@@ -117,13 +108,15 @@ export function CrudList<T extends RowData>({
           </Table.Thead>
           <Table.Tbody>
             {isLoading ? (
-              <Table.Tr>
-                <Table.Td colSpan={columns.length}>
-                  <Center py="xl">
-                    <Loader />
-                  </Center>
-                </Table.Td>
-              </Table.Tr>
+              Array.from({ length: 5 }, (_, row) => (
+                <Table.Tr key={row}>
+                  {columns.map((_column, column) => (
+                    <Table.Td key={column}>
+                      <Skeleton h={16} />
+                    </Table.Td>
+                  ))}
+                </Table.Tr>
+              ))
             ) : data.length === 0 ? (
               <Table.Tr>
                 <Table.Td colSpan={columns.length}>

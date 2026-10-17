@@ -1,4 +1,4 @@
-import { Center, Loader, Stack, Title } from "@mantine/core";
+import { Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import {
   adminUpdateStaffMemberMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zStaffMemberInput } from "@/client/zod.gen";
+import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { staffMemberToForm, useStaffMemberFields } from "@/components/admin/resources/staffMember";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -45,9 +46,7 @@ function EditStaffMember() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.edit)}</Title>
       {isLoading || !data ? (
-        <Center py="xl">
-          <Loader />
-        </Center>
+        <FormSkeleton />
       ) : (
         <CrudForm
           key={data.id}
