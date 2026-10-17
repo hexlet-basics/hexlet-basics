@@ -1,5 +1,5 @@
-import { Alert, Box, Stack, useComputedColorScheme } from "@mantine/core";
-import { useCallbackRef, useLocalStorage, useMediaQuery } from "@mantine/hooks";
+import { Box, Stack, useComputedColorScheme } from "@mantine/core";
+import { useCallbackRef, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
@@ -59,22 +59,13 @@ function EditorPane({
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false });
   // Legacy asks the server whether the browser is a mobile one; the payload here
-  // carries no such flag, and a touch screen is what the two behaviours below
-  // actually turn on: there is no Tab key to advertise, and taking focus opens
-  // an on-screen keyboard over half the exercise. Read on the first render —
-  // this whole pane is client-only, so there is no server markup to match, and
-  // reading it late would paint the hint and then take it away again.
+  // carries no such flag, and a touch screen is what the behaviour below actually
+  // turns on: taking focus opens an on-screen keyboard over half the exercise.
+  // Read on the first render — this whole pane is client-only, so there is no
+  // server markup to match.
   const isTouchScreen = useMediaQuery("(pointer: coarse)", false, {
     getInitialValueInEffect: false,
   });
-  // Autocomplete is not a feature people find on their own, so it is advertised
-  // once — and never again, which is what makes it worth reading the first time.
-  const [hintDismissed, setHintDismissed] = useLocalStorage({
-    key: "lesson-editor-autocomplete-hint-dismissed",
-    defaultValue: false,
-    getInitialValueInEffect: false,
-  });
-
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
   const settings = getEditorSettings(courseSlug, extension);
 
@@ -128,19 +119,6 @@ function EditorPane({
 
   return (
     <Stack h="100%" gap={0}>
-      {!isTouchScreen && !hintDismissed && (
-        <Alert
-          variant="light"
-          py="xs"
-          radius={0}
-          withCloseButton
-          closeButtonLabel={t(($) => $.courses.lessons.show.hint_close)}
-          onClose={() => setHintDismissed(true)}
-        >
-          {t(($) => $.courses.lessons.show.autocomplete_hint)}
-        </Alert>
-      )}
-
       <Box style={{ flexGrow: 1, minHeight: 0 }}>
         <Suspense>
           <MonacoEditor

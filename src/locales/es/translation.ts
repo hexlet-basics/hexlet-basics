@@ -1082,8 +1082,6 @@ export default {
       lessons: {
         show: {
           assistant: "Asistente",
-          autocomplete_hint:
-            "El editor sugiere comandos mientras escribes. Pulsa Tab para aceptar una sugerencia y usa las teclas ↑ y ↓ para desplazarte por la lista.",
           breadcrumb: "breadcrumb",
           chat: {
             community: "Pregunta a la comunidad",
@@ -1135,7 +1133,6 @@ export default {
           editor_aria_label: "Editor de código",
           finish: "Finalizar",
           finished: "Completada",
-          hint_close: "Cerrar",
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
           instructions: "Instructions",
