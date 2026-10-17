@@ -136,7 +136,7 @@ func (s *Server) ListConnectedApps(ctx context.Context) (api.ListConnectedAppsRe
 	items := make([]api.ConnectedApp, 0, len(apps))
 	for _, a := range apps {
 		item := api.ConnectedApp{
-			ID:          int32(a.ID), //nolint:gosec // a row id of a table that never nears 2^31
+			ID:          int64(a.ID),
 			Name:        a.Name,
 			Scopes:      a.Scopes,
 			ConnectedAt: a.ConnectedAt,

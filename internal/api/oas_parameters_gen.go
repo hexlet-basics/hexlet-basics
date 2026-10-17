@@ -10253,7 +10253,7 @@ func decodeListPublicReviewsParams(args [0]string, argsEscaped bool, r *http.Req
 
 // RevokeConnectedAppParams is parameters of revokeConnectedApp operation.
 type RevokeConnectedAppParams struct {
-	ID int32
+	ID int64
 }
 
 func unpackRevokeConnectedAppParams(packed middleware.Parameters) (params RevokeConnectedAppParams) {
@@ -10262,7 +10262,7 @@ func unpackRevokeConnectedAppParams(packed middleware.Parameters) (params Revoke
 			Name: "id",
 			In:   "path",
 		}
-		params.ID = packed[key].(int32)
+		params.ID = packed[key].(int64)
 	}
 	return params
 }
@@ -10292,7 +10292,7 @@ func decodeRevokeConnectedAppParams(args [1]string, argsEscaped bool, r *http.Re
 					return err
 				}
 
-				c, err := conv.ToInt32(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}

@@ -9791,7 +9791,7 @@ func (s *ConnectedApp) Encode(e *jx.Encoder) {
 func (s *ConnectedApp) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int32(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -9837,8 +9837,8 @@ func (s *ConnectedApp) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int32()
-				s.ID = int32(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}

@@ -16705,7 +16705,7 @@ func (c *Client) sendRevokeConnectedApp(ctx context.Context, params RevokeConnec
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.Int32ToString(params.ID))
+			return e.EncodeValue(conv.Int64ToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}

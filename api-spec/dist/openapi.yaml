@@ -4279,7 +4279,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
@@ -5139,7 +5139,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
           description: Handle to revoke it by (not the OAuth client_id, which can be a URL).
         name:
           type: string
