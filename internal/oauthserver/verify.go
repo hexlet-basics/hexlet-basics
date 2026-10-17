@@ -76,7 +76,7 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 // the subject; every other case is ErrInvalidToken.
 func (s *storage) liveAccessToken(ctx context.Context, id, subject string) (*ent.OAuthAccessToken, error) {
 	userID, err := strconv.Atoi(subject)
-	if err != nil {
+	if err != nil || !validTokenID(id) {
 		return nil, ErrInvalidToken
 	}
 	row, err := s.db.OAuthAccessToken.Query().

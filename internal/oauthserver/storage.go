@@ -58,6 +58,29 @@ func randomToken(n int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
+// validTokenID reports whether id could be one randomToken minted: the base64url
+// alphabet and a sane length. The library hands the storage ids it recovered by
+// decrypting a string a client presented, and its decryption falls back to AES
+// in CFB mode, which does not authenticate: a string that was never ours
+// "decrypts" to arbitrary bytes, and when those happen to hold one colon they
+// are split into an id and a subject. Such bytes are not valid UTF-8, so looking
+// them up makes PostgreSQL fail (22021) and the request would answer 500, where
+// revoking an unknown token is 200 (RFC 7009) and presenting one is 401.
+func validTokenID(id string) bool {
+	if id == "" || len(id) > 128 {
+		return false
+	}
+	for i := 0; i < len(id); i++ {
+		c := id[i]
+		switch {
+		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9', c == '-', c == '_':
+		default:
+			return false
+		}
+	}
+	return true
+}
+
 // digest is what the database keeps in place of a code or refresh token: enough
 // to recognise one that is presented, never enough to reproduce it. Both are
 // 128-bit-plus random values, so a fast hash is sufficient.
@@ -457,6 +480,11 @@ func (s *storage) GetRefreshTokenInfo(ctx context.Context, _ string, token strin
 // included. A token that is already gone is not an error: the caller wanted it
 // dead and it is. Only the client the token was issued to may revoke it.
 func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc.Error {
+	if !validTokenID(id) {
+		// Nothing of ours has this id (see validTokenID), so there is nothing to
+		// end, and RFC 7009 answers 200 for a token that is not there.
+		return nil
+	}
 	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		access, err := db.OAuthAccessToken.Get(ctx, id)
 		switch {
