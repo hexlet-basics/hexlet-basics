@@ -1274,3 +1274,42 @@ test("switches the assistant off when the server refuses a question over the quo
 
   await expect.element(page.getByText(/reached today's message limit/)).toBeVisible();
 });
+
+// What the learner sees underlined: monaco paints a marker as a squiggle.
+function squiggles() {
+  return document.querySelectorAll(".squiggly-error").length;
+}
+
+test("underlines a syntax error in a language monaco has no service of", async () => {
+  // C has no language service in monaco, so the underline can only come from the
+  // syntax check.
+  const c = lessonView({
+    lesson: { ...lesson, exerciseExtension: "c", preparedCode: "int main(void) { return 0; }\n" },
+  });
+  worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(c)));
+
+  await renderPlayer("variables");
+  await expect.poll(editorText, editorLoad).toContain("int main(void)");
+  expect(squiggles()).toBe(0);
+
+  // A declaration with no value. No bracket, so monaco's auto-closing stays out of it.
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("{Control>}{End}{/Control}int x = ;");
+  await expect.poll(squiggles, editorLoad).toBeGreaterThan(0);
+
+  // Giving it one clears the underline.
+  await userEvent.keyboard("{ArrowLeft}1");
+  await expect.poll(squiggles, editorLoad).toBe(0);
+});
+
+test("TMP js squiggle", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+  await renderPlayer("variables");
+  await expect.poll(editorText, editorLoad).toContain("let greeting");
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("{Control>}{End}{/Control}let = = 5;");
+  await new Promise((r) => setTimeout(r, 8000));
+  expect(squiggles()).toBeGreaterThan(0);
+});
