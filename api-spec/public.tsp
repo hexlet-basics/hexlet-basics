@@ -33,15 +33,13 @@ model CourseView {
    */
   movedTo: string | null;
 
-  lessons: CourseLessonListItem[];
+  lessons: LearnerLesson[];
 
   /**
    * The modules of the course's current version in the request locale, in
-   * course order — the learning program's accordion. Each names its lessons by
-   * slug, joined to `lessons` for names, so the flat list stays the one source
-   * of lesson rows the page and the player share.
+   * course order — the learning program's accordion, each with its lessons.
    */
-  modules: CourseModuleListItem[];
+  modules: CourseModule[];
 
   /** The landing page's questions and answers, oldest first; empty without a
       landing page. */
@@ -122,20 +120,19 @@ model CourseLessonView {
   landingPage: CourseLandingPage | null;
 
   /**
-   * Every Lesson of the course's current version, in course order — the same
-   * list the course landing read returns.
-   *
-   * The player's navigation tab is this list joined to `progress.lessons` by
-   * slug: names and order from here, checks from there. Both screens
-   * render from the same two arrays, which is what keeps the Course page's list
-   * and the player's from disagreeing.
+   * Every Lesson of the course's current version, in course order, each with
+   * the visitor's standing in it — the same list the course landing read
+   * returns, so the Course page and the player cannot disagree.
    */
-  lessons: CourseLessonListItem[];
+  lessons: LearnerLesson[];
+
+  /** The Lessons before and after this one in course order, for back/forward. */
+  adjacent: AdjacentLessons;
 
   /**
    * Where the visitor stands in the course this lesson belongs to — the same
    * payload the course landing read returns, for a signed-in learner and a
-   * guest alike. The player reads `nextLessonSlug` for where "next" goes.
+   * guest alike.
    *
    * Null only for a course with no built version.
    */

@@ -4,8 +4,7 @@ import { page } from "vitest/browser";
 import type {
   Course,
   CourseCatalogItem,
-  CourseProgress,
-  Enrollment,
+  DashboardCourse,
   MyDashboard,
   User,
 } from "@/client/types.gen";
@@ -60,16 +59,20 @@ function catalogItem(id: number, slug: string, name: string): CourseCatalogItem 
   };
 }
 
-function enrollment(id: number, courseId: number, state: "started" | "finished"): Enrollment {
-  const progress = { state, completion: state === "finished" ? 100 : 40 } as CourseProgress;
+// A dashboard row: the enrollment, where the learner stands, and the card to draw.
+function dashboardCourse(
+  id: number,
+  card: CourseCatalogItem,
+  state: "started" | "finished",
+): DashboardCourse {
   return {
-    id,
-    userId: 1,
-    courseId,
-    state,
-    completion: progress.completion,
-    nextLessonName: state === "started" ? "Variables" : null,
-    progress,
+    enrollment: { id, userId: 1, courseId: card.id, state },
+    progress: {
+      state,
+      completion: state === "finished" ? 100 : 40,
+      nextLesson: state === "started" ? { id: 5, slug: "variables", name: "Variables" } : null,
+    },
+    card,
   };
 }
 
@@ -79,22 +82,15 @@ function openMy(dashboard: MyDashboard, visitor: User | null = user) {
 }
 
 test("a guest is sent to sign in first", async () => {
-  const { router } = await openMy(
-    { startedEnrollments: [], finishedEnrollments: [], landingPagesByCourseId: {} },
-    null,
-  );
+  const { router } = await openMy({ started: [], finished: [] }, null);
 
   await expect.poll(() => router.state.location.pathname).toBe("/session/new");
 });
 
 test("the dashboard shows courses in progress with where to resume, and finished ones", async () => {
   await openMy({
-    startedEnrollments: [enrollment(1, 1, "started")],
-    finishedEnrollments: [enrollment(2, 2, "finished")],
-    landingPagesByCourseId: {
-      "1": catalogItem(1, "javascript", "JavaScript"),
-      "2": catalogItem(2, "python", "Python"),
-    },
+    started: [dashboardCourse(1, catalogItem(1, "javascript", "JavaScript"), "started")],
+    finished: [dashboardCourse(2, catalogItem(2, "python", "Python"), "finished")],
   });
 
   await expect.element(page.getByRole("heading", { name: "JavaScript" })).toBeVisible();
@@ -103,7 +99,7 @@ test("the dashboard shows courses in progress with where to resume, and finished
 });
 
 test("a learner with no courses sees an empty state under both headings", async () => {
-  await openMy({ startedEnrollments: [], finishedEnrollments: [], landingPagesByCourseId: {} });
+  await openMy({ started: [], finished: [] });
 
   await expect.element(page.getByText("Empty").first()).toBeVisible();
   expect(page.getByText("Empty").elements()).toHaveLength(2);

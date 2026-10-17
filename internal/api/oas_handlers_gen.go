@@ -19462,8 +19462,9 @@ func (s *Server) handleListPublicReviewsRequest(args [0]string, argsEscaped bool
 // Idempotent: starting an already-started or already-finished lesson succeeds and changes nothing. Any
 // lesson may be started, in any order.
 //
-// Public, because a guest progresses the same way. For them it returns where they stand without
-// storing anything: their state is the signed cookie, and only a check moves it.
+// Public, because a guest progresses the same way. For them it stores nothing: their state is the
+// signed cookie, and only a check moves it. It answers with nothing: where the learner stands is the
+// course and lesson reads' business, and the page they go to next reads it from there.
 //
 // POST /api/lessons/{id}/start
 func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

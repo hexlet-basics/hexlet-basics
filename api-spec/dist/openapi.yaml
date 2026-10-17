@@ -3999,9 +3999,10 @@ paths:
         Idempotent: starting an already-started or already-finished lesson
         succeeds and changes nothing. Any lesson may be started, in any order.
 
-        Public, because a guest progresses the same way. For them it returns where
-        they stand without storing anything: their state is the signed cookie, and
-        only a check moves it.
+        Public, because a guest progresses the same way. For them it stores
+        nothing: their state is the signed cookie, and only a check moves it. It
+        answers with nothing: where the learner stands is the course and lesson
+        reads' business, and the page they go to next reads it from there.
       parameters:
         - name: id
           in: path
@@ -4010,12 +4011,8 @@ paths:
             type: integer
             format: int32
       responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CourseProgress'
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
         '404':
           description: A resource was not found.
           content:
@@ -4566,6 +4563,23 @@ components:
             - $ref: '#/components/schemas/Banner'
           nullable: true
       description: The banner shown above the pages that carry one, or null when none is live.
+    AdjacentLessons:
+      type: object
+      required:
+        - previous
+        - next
+      properties:
+        previous:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/LessonRef'
+          nullable: true
+        next:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/LessonRef'
+          nullable: true
+      description: The Lessons on either side of one Lesson in course order. Not the Next Lesson.
     AssistantMessageInput:
       type: object
       required:
@@ -5619,6 +5633,7 @@ components:
         - lesson
         - landingPage
         - lessons
+        - adjacent
         - progress
       properties:
         lesson:
@@ -5642,15 +5657,15 @@ components:
         lessons:
           type: array
           items:
-            $ref: '#/components/schemas/CourseLessonListItem'
+            $ref: '#/components/schemas/LearnerLesson'
           description: |-
-            Every Lesson of the course's current version, in course order — the same
-            list the course landing read returns.
-
-            The player's navigation tab is this list joined to `progress.lessons` by
-            slug: names and order from here, checks from there. Both screens
-            render from the same two arrays, which is what keeps the Course page's list
-            and the player's from disagreeing.
+            Every Lesson of the course's current version, in course order, each with
+            the visitor's standing in it — the same list the course landing read
+            returns, so the Course page and the player cannot disagree.
+        adjacent:
+          allOf:
+            - $ref: '#/components/schemas/AdjacentLessons'
+          description: The Lessons before and after this one in course order, for back/forward.
         progress:
           type: object
           allOf:
@@ -5659,17 +5674,17 @@ components:
           description: |-
             Where the visitor stands in the course this lesson belongs to — the same
             payload the course landing read returns, for a signed-in learner and a
-            guest alike. The player reads `nextLessonSlug` for where "next" goes.
+            guest alike.
 
             Null only for a course with no built version.
       description: 'The lesson page: the lesson itself, and where the visitor stands in it.'
-    CourseModuleListItem:
+    CourseModule:
       type: object
       required:
         - id
         - name
         - description
-        - lessonSlugs
+        - lessons
       properties:
         id:
           type: integer
@@ -5681,11 +5696,11 @@ components:
         description:
           type: string
           nullable: true
-        lessonSlugs:
+        lessons:
           type: array
           items:
-            type: string
-          description: The module's lessons in this version, in course order, by slug.
+            $ref: '#/components/schemas/LearnerLesson'
+          description: The module's lessons in this version, in course order.
       description: |-
         A module of a course version in one locale (legacy:
         `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
@@ -5721,8 +5736,7 @@ components:
       required:
         - state
         - completion
-        - nextLessonSlug
-        - lessons
+        - nextLesson
       properties:
         state:
           allOf:
@@ -5732,14 +5746,16 @@ components:
           type: integer
           format: int32
           description: The share of the Course's current Lessons finished (0–100).
-        nextLessonSlug:
-          type: string
+        nextLesson:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/LessonRef'
           nullable: true
-          description: The first unfinished Lesson in course order — where the learner resumes.
-        lessons:
-          type: array
-          items:
-            $ref: '#/components/schemas/LessonProgressItem'
+          description: |-
+            The Next Lesson: the first unfinished Lesson in course order, where the
+            learner resumes. Null when there is none to offer: the Course is finished or
+            has no lessons, or that lesson has no translation in the request locale and
+            so no page there.
       description: |-
         Where a learner stands in one Course, computed against its current Version:
         which Lessons they have finished, in whatever order they took them.
@@ -5812,16 +5828,14 @@ components:
         lessons:
           type: array
           items:
-            $ref: '#/components/schemas/CourseLessonListItem'
+            $ref: '#/components/schemas/LearnerLesson'
         modules:
           type: array
           items:
-            $ref: '#/components/schemas/CourseModuleListItem'
+            $ref: '#/components/schemas/CourseModule'
           description: |-
             The modules of the course's current version in the request locale, in
-            course order — the learning program's accordion. Each names its lessons by
-            slug, joined to `lessons` for names, so the flat list stays the one source
-            of lesson rows the page and the player share.
+            course order — the learning program's accordion, each with its lessons.
         qnaItems:
           type: array
           items:
@@ -5858,6 +5872,22 @@ components:
             - $ref: '#/components/schemas/User'
           nullable: true
       description: The current user resolved from the session cookie (null when anonymous).
+    DashboardCourse:
+      type: object
+      required:
+        - enrollment
+        - progress
+        - card
+      properties:
+        enrollment:
+          $ref: '#/components/schemas/Enrollment'
+        progress:
+          $ref: '#/components/schemas/CourseProgress'
+        card:
+          allOf:
+            - $ref: '#/components/schemas/CourseCatalogItem'
+          description: The course's main catalog entry in the request locale.
+      description: 'One course on the dashboard: the enrollment, where the learner stands, and the card to draw.'
     EmailInput:
       type: object
       required:
@@ -5873,9 +5903,6 @@ components:
         - userId
         - courseId
         - state
-        - completion
-        - nextLessonName
-        - progress
       properties:
         id:
           type: integer
@@ -5890,18 +5917,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/EnrollmentState'
           nullable: true
-        completion:
-          type: integer
-          format: int32
-          description: "Completion: the share of the course's current lessons finished (0–100)."
-        nextLessonName:
-          type: string
-          nullable: true
-        progress:
-          allOf:
-            - $ref: '#/components/schemas/CourseProgress'
-          description: Where the learner stands, and what they may take next.
-      description: A learner's enrollment in a course (table `language_members`).
+      description: |-
+        A learner's record of where they are in one course (table `language_members`).
+        It remembers; what it adds up to (Completion, the Next Lesson) is computed
+        against the current Version and travels as CourseProgress.
     EnrollmentState:
       type: string
       enum:
@@ -6050,6 +6069,38 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
+    LearnerLesson:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - description
+        - position
+        - finished
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        position:
+          type: integer
+          format: int32
+          description: Position in the current Version, 1..N across the whole Course.
+        finished:
+          type: boolean
+          description: Whether the visitor has finished it (a guest's cookie counts).
+      description: |-
+        A Lesson as the course page and the player list it, with the visitor's
+        standing in it. The checkmark travels with the row, so no screen has to join
+        two lists.
     LessonAssistantChat:
       type: object
       required:
@@ -6203,22 +6254,6 @@ components:
       description: |-
         A learner's progress through one lesson (legacy: `LanguageLessonMember`,
         table `language_lesson_members`).
-    LessonProgressItem:
-      type: object
-      required:
-        - slug
-        - position
-        - finished
-      properties:
-        slug:
-          type: string
-        position:
-          type: integer
-          format: int32
-          description: Position in the current Version, 1..N across the whole Course.
-        finished:
-          type: boolean
-      description: 'Per-Lesson state for the course and lesson pages: the checkmarks.'
     LessonProgressPage:
       type: object
       required:
@@ -6246,6 +6281,24 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
+    LessonRef:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        name:
+          type: string
+          nullable: true
+      description: |-
+        A lesson named for a link or a button: how to address it, to open it or start
+        it, and what to call it.
     Locale:
       type: string
       enum:
@@ -6256,23 +6309,19 @@ components:
     MyDashboard:
       type: object
       required:
-        - startedEnrollments
-        - finishedEnrollments
-        - landingPagesByCourseId
+        - started
+        - finished
       properties:
-        startedEnrollments:
+        started:
           type: array
           items:
-            $ref: '#/components/schemas/Enrollment'
-        finishedEnrollments:
+            $ref: '#/components/schemas/DashboardCourse'
+          description: Courses in progress, newest enrollment first.
+        finished:
           type: array
           items:
-            $ref: '#/components/schemas/Enrollment'
-        landingPagesByCourseId:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/CourseCatalogItem'
-          description: Landing page (catalog item) keyed by course id, for each enrollment.
+            $ref: '#/components/schemas/DashboardCourse'
+          description: Finished courses, newest enrollment first.
       description: "The signed-in user's dashboard (legacy: `MyController#show`)."
     NotFoundError:
       type: object

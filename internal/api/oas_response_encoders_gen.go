@@ -3959,15 +3959,8 @@ func encodeListPublicReviewsResponse(response *ReviewPage, w http.ResponseWriter
 
 func encodeStartLessonResponse(response StartLessonRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *CourseProgress:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	case *StartLessonNoContent:
+		w.WriteHeader(204)
 
 		return nil
 

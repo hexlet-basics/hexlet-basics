@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"strconv"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
@@ -19,9 +18,9 @@ import (
 // rather than served their own dashboard. The contract declares the session, so
 // ogen refuses the request before this handler runs.
 //
-// Only courses with a listed, main catalogue entry appear, matching the legacy
-// scope: the dashboard renders course cards, and a course with no card to
-// render would be a row the client cannot draw.
+// Only courses with a main catalogue entry appear, matching the legacy scope:
+// the dashboard renders course cards, so a course with none is not listed and
+// each listed course is complete.
 func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, error) {
 	u := MustAuthenticatedUser(ctx)
 
@@ -30,24 +29,26 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 		return nil, err
 	}
 
-	dashboard := &api.MyDashboard{
-		StartedEnrollments:     []api.Enrollment{},
-		FinishedEnrollments:    []api.Enrollment{},
-		LandingPagesByCourseId: api.MyDashboardLandingPagesByCourseId{},
-	}
-	for _, c := range courses.Started {
-		dashboard.StartedEnrollments = append(dashboard.StartedEnrollments, apiconv.ToEnrollment(c.Enrollment, c.State))
-		s.addCard(dashboard, c)
-	}
-	for _, c := range courses.Finished {
-		dashboard.FinishedEnrollments = append(dashboard.FinishedEnrollments, apiconv.ToEnrollment(c.Enrollment, c.State))
-		s.addCard(dashboard, c)
-	}
-	return dashboard, nil
+	return &api.MyDashboard{
+		Started:  s.dashboardCourses(courses.Started),
+		Finished: s.dashboardCourses(courses.Finished),
+	}, nil
 }
 
-// addCard keys the course's card by course id as a string: JSON object keys are
-// strings, and the client pairs each card with the enrollment's courseId.
-func (s *Server) addCard(out *api.MyDashboard, c dashboard.Course) {
-	out.LandingPagesByCourseId[strconv.Itoa(c.Enrollment.CourseID)] = s.conv.ToCatalogItem(c.Card)
+// dashboardCourses projects each course: the enrollment, where the learner
+// stands in it, and the card to draw.
+func (s *Server) dashboardCourses(courses []dashboard.Course) []api.DashboardCourse {
+	items := make([]api.DashboardCourse, 0, len(courses))
+	for _, c := range courses {
+		next := api.NilLessonRef{Null: true}
+		if c.NextLesson != nil {
+			next = apiconv.NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
+		}
+		items = append(items, api.DashboardCourse{
+			Enrollment: apiconv.ToEnrollment(c.Enrollment),
+			Progress:   apiconv.ToCourseProgress(c.State, next),
+			Card:       s.conv.ToCatalogItem(c.Card),
+		})
+	}
+	return items
 }

@@ -3,6 +3,9 @@ import { http, HttpResponse } from "msw";
 import { afterAll, afterEach, beforeEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type {
+  AdjacentLessons,
+  LearnerLesson,
+  LessonRef,
   Course,
   CourseLandingPage,
   CourseLesson,
@@ -98,26 +101,47 @@ const lesson: CourseLesson = {
   createdAt: "2026-01-01T00:00:00Z",
 };
 
+// The course's lessons in course order, each marked or not.
+function lessonRows(finished: string[] = []): LearnerLesson[] {
+  return [
+    { slug: "hello-world", name: "Hello, World!" },
+    { slug: "variables", name: "Variables" },
+    { slug: "strings", name: "Strings" },
+  ].map(({ slug, name }, index) => ({
+    id: 1001 + index,
+    name,
+    description: null,
+    slug,
+    position: index + 1,
+    finished: finished.includes(slug),
+  }));
+}
+
+const lessonRef = (slug: string): LessonRef => {
+  const row = lessonRows().find((item) => item.slug === slug) as LearnerLesson;
+  return { id: row.id, slug, name: row.name };
+};
+
+// The lessons on either side of one, in course order: the server's answer.
+function adjacentTo(slug: string): AdjacentLessons {
+  const slugs = lessonRows().map((item) => item.slug);
+  const index = slugs.indexOf(slug);
+  const previous = slugs[index - 1];
+  const next = slugs[index + 1];
+  return {
+    previous: previous ? lessonRef(previous) : null,
+    next: next ? lessonRef(next) : null,
+  };
+}
+
 // A learner who has finished the first lesson: the second is next.
 function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView {
   return {
     lesson,
     landingPage,
-    lessons: [
-      { id: 1001, name: "Hello, World!", description: null, slug: "hello-world" },
-      { id: 1002, name: "Variables", description: null, slug: "variables" },
-      { id: 1003, name: "Strings", description: null, slug: "strings" },
-    ],
-    progress: {
-      state: "started",
-      completion: 33,
-      nextLessonSlug: "variables",
-      lessons: [
-        { slug: "hello-world", position: 1, finished: true },
-        { slug: "variables", position: 2, finished: false },
-        { slug: "strings", position: 3, finished: false },
-      ],
-    },
+    lessons: lessonRows(["hello-world"]),
+    adjacent: adjacentTo((overrides.lesson ?? lesson).slug),
+    progress: { state: "started", completion: 33, nextLesson: lessonRef("variables") },
     ...overrides,
   };
 }
@@ -235,16 +259,8 @@ test("lists every lesson in course order, marking the finished ones", async () =
 
 test("serves a visitor any lesson in full", async () => {
   const visitor = lessonView({
-    progress: {
-      state: null,
-      completion: 0,
-      nextLessonSlug: "hello-world",
-      lessons: [
-        { slug: "hello-world", position: 1, finished: false },
-        { slug: "variables", position: 2, finished: false },
-        { slug: "strings", position: 3, finished: false },
-      ],
-    },
+    lessons: lessonRows(),
+    progress: { state: null, completion: 0, nextLesson: lessonRef("hello-world") },
   });
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(visitor)),
@@ -686,16 +702,8 @@ test("keeps the reference solution behind a wait until the lesson is passed", as
 
 test("opens the reference solution straight away on a lesson already finished", async () => {
   const finished = lessonView({
-    progress: {
-      state: "started",
-      completion: 66,
-      nextLessonSlug: "strings",
-      lessons: [
-        { slug: "hello-world", position: 1, finished: true },
-        { slug: "variables", position: 2, finished: true },
-        { slug: "strings", position: 3, finished: false },
-      ],
-    },
+    lessons: lessonRows(["hello-world", "variables"]),
+    progress: { state: "started", completion: 66, nextLesson: lessonRef("strings") },
   });
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
@@ -787,16 +795,8 @@ test("leaves a program course's editor without a preview", async () => {
 function lastLessonView(): CourseLessonView {
   return lessonView({
     lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings" },
-    progress: {
-      state: "started",
-      completion: 66,
-      nextLessonSlug: "strings",
-      lessons: [
-        { slug: "hello-world", position: 1, finished: true },
-        { slug: "variables", position: 2, finished: true },
-        { slug: "strings", position: 3, finished: false },
-      ],
-    },
+    lessons: lessonRows(["hello-world", "variables"]),
+    progress: { state: "started", completion: 66, nextLesson: lessonRef("strings") },
   });
 }
 
@@ -844,7 +844,7 @@ test("moves a learner on: Next waits for the pass, then starts the next lesson b
     http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
     http.post("*/lessons/:id/start", ({ params }) => {
       requests.push(`start ${String(params.id)}`);
-      return HttpResponse.json(strings.progress);
+      return new HttpResponse(null, { status: 204 });
     }),
     http.get("*/languages/javascript/lessons/strings", () => {
       requests.push("read strings");
@@ -872,7 +872,8 @@ test("moves a learner on: Next waits for the pass, then starts the next lesson b
 });
 
 test("lets a learner revisiting a finished lesson move on straight away", async () => {
-  const finished = lessonView({ progress: lastLessonView().progress });
+  const { lessons, progress } = lastLessonView();
+  const finished = lessonView({ lessons, progress });
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
   );
@@ -894,15 +895,7 @@ function courseView(state: EnrollmentState): CourseView {
     lessons: [],
     modules: [],
     qnaItems: [],
-    enrollment: progress && {
-      id: 5,
-      userId: learner.id,
-      courseId: course.id,
-      state,
-      completion: progress.completion,
-      nextLessonName: null,
-      progress,
-    },
+    enrollment: progress && { id: 5, userId: learner.id, courseId: course.id, state },
     progress,
   };
 }
@@ -1004,7 +997,8 @@ test("offers a guest sign-up in place of Next, and tells them it keeps their pro
 });
 
 test("tells a guest nothing on a lesson they finished before, but lets them sign up", async () => {
-  const finished = lessonView({ progress: lastLessonView().progress });
+  const { lessons, progress } = lastLessonView();
+  const finished = lessonView({ lessons, progress });
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
   );

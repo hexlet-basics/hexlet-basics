@@ -12,6 +12,14 @@ export type ActiveBanner = {
 };
 
 /**
+ * The Lessons on either side of one Lesson in course order. Not the Next Lesson.
+ */
+export type AdjacentLessons = {
+  previous: LessonRef | null;
+  next: LessonRef | null;
+};
+
+/**
  * A prompt to the in-lesson assistant, carrying the editor context.
  */
 export type AssistantMessageInput = {
@@ -534,19 +542,19 @@ export type CourseLessonView = {
    */
   landingPage: CourseLandingPage | null;
   /**
-   * Every Lesson of the course's current version, in course order — the same
-   * list the course landing read returns.
-   *
-   * The player's navigation tab is this list joined to `progress.lessons` by
-   * slug: names and order from here, checks from there. Both screens
-   * render from the same two arrays, which is what keeps the Course page's list
-   * and the player's from disagreeing.
+   * Every Lesson of the course's current version, in course order, each with
+   * the visitor's standing in it — the same list the course landing read
+   * returns, so the Course page and the player cannot disagree.
    */
-  lessons: Array<CourseLessonListItem>;
+  lessons: Array<LearnerLesson>;
+  /**
+   * The Lessons before and after this one in course order, for back/forward.
+   */
+  adjacent: AdjacentLessons;
   /**
    * Where the visitor stands in the course this lesson belongs to — the same
    * payload the course landing read returns, for a signed-in learner and a
-   * guest alike. The player reads `nextLessonSlug` for where "next" goes.
+   * guest alike.
    *
    * Null only for a course with no built version.
    */
@@ -557,7 +565,7 @@ export type CourseLessonView = {
  * A module of a course version in one locale (legacy:
  * `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
  */
-export type CourseModuleListItem = {
+export type CourseModule = {
   /**
    * The module's stable id, as legacy's resource exposed it.
    */
@@ -565,9 +573,9 @@ export type CourseModuleListItem = {
   name: string | null;
   description: string | null;
   /**
-   * The module's lessons in this version, in course order, by slug.
+   * The module's lessons in this version, in course order.
    */
-  lessonSlugs: Array<string>;
+  lessons: Array<LearnerLesson>;
 };
 
 /**
@@ -601,10 +609,12 @@ export type CourseProgress = {
    */
   completion: number;
   /**
-   * The first unfinished Lesson in course order — where the learner resumes.
+   * The Next Lesson: the first unfinished Lesson in course order, where the
+   * learner resumes. Null when there is none to offer: the Course is finished or
+   * has no lessons, or that lesson has no translation in the request locale and
+   * so no page there.
    */
-  nextLessonSlug: string | null;
-  lessons: Array<LessonProgressItem>;
+  nextLesson: LessonRef | null;
 };
 
 /**
@@ -644,14 +654,12 @@ export type CourseView = {
    * one. Null for a live page.
    */
   movedTo: string | null;
-  lessons: Array<CourseLessonListItem>;
+  lessons: Array<LearnerLesson>;
   /**
    * The modules of the course's current version in the request locale, in
-   * course order — the learning program's accordion. Each names its lessons by
-   * slug, joined to `lessons` for names, so the flat list stays the one source
-   * of lesson rows the page and the player share.
+   * course order — the learning program's accordion, each with its lessons.
    */
-  modules: Array<CourseModuleListItem>;
+  modules: Array<CourseModule>;
   /**
    * The landing page's questions and answers, oldest first; empty without a
    *       landing page.
@@ -678,27 +686,32 @@ export type CurrentUser = {
   user: User | null;
 };
 
+/**
+ * One course on the dashboard: the enrollment, where the learner stands, and the card to draw.
+ */
+export type DashboardCourse = {
+  enrollment: Enrollment;
+  progress: CourseProgress;
+  /**
+   * The course's main catalog entry in the request locale.
+   */
+  card: CourseCatalogItem;
+};
+
 export type EmailInput = {
   email: string;
 };
 
 /**
- * A learner's enrollment in a course (table `language_members`).
+ * A learner's record of where they are in one course (table `language_members`).
+ * It remembers; what it adds up to (Completion, the Next Lesson) is computed
+ * against the current Version and travels as CourseProgress.
  */
 export type Enrollment = {
   id: number;
   userId: number;
   courseId: number;
   state: EnrollmentState | null;
-  /**
-   * Completion: the share of the course's current lessons finished (0–100).
-   */
-  completion: number;
-  nextLessonName: string | null;
-  /**
-   * Where the learner stands, and what they may take next.
-   */
-  progress: CourseProgress;
 };
 
 /**
@@ -776,6 +789,26 @@ export type LeadPage = {
    * Page size used for this response.
    */
   perPage: number;
+};
+
+/**
+ * A Lesson as the course page and the player list it, with the visitor's
+ * standing in it. The checkmark travels with the row, so no screen has to join
+ * two lists.
+ */
+export type LearnerLesson = {
+  id: number;
+  slug: string;
+  name: string | null;
+  description: string | null;
+  /**
+   * Position in the current Version, 1..N across the whole Course.
+   */
+  position: number;
+  /**
+   * Whether the visitor has finished it (a guest's cookie counts).
+   */
+  finished: boolean;
 };
 
 /**
@@ -864,18 +897,6 @@ export type LessonProgress = {
 };
 
 /**
- * Per-Lesson state for the course and lesson pages: the checkmarks.
- */
-export type LessonProgressItem = {
-  slug: string;
-  /**
-   * Position in the current Version, 1..N across the whole Course.
-   */
-  position: number;
-  finished: boolean;
-};
-
-/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -896,6 +917,16 @@ export type LessonProgressPage = {
 };
 
 /**
+ * A lesson named for a link or a button: how to address it, to open it or start
+ * it, and what to call it.
+ */
+export type LessonRef = {
+  id: number;
+  slug: string;
+  name: string | null;
+};
+
+/**
  * UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
  */
 export type Locale = 'ru' | 'en' | 'es';
@@ -904,14 +935,14 @@ export type Locale = 'ru' | 'en' | 'es';
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export type MyDashboard = {
-  startedEnrollments: Array<Enrollment>;
-  finishedEnrollments: Array<Enrollment>;
   /**
-   * Landing page (catalog item) keyed by course id, for each enrollment.
+   * Courses in progress, newest enrollment first.
    */
-  landingPagesByCourseId: {
-    [key: string]: CourseCatalogItem;
-  };
+  started: Array<DashboardCourse>;
+  /**
+   * Finished courses, newest enrollment first.
+   */
+  finished: Array<DashboardCourse>;
 };
 
 /**
@@ -4881,9 +4912,9 @@ export type StartLessonError = StartLessonErrors[keyof StartLessonErrors];
 
 export type StartLessonResponses = {
   /**
-   * The request has succeeded.
+   * Empty 204 response for deletes and other content-less successes.
    */
-  200: CourseProgress;
+  204: void;
 };
 
 export type StartLessonResponse = StartLessonResponses[keyof StartLessonResponses];

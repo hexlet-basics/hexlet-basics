@@ -8,6 +8,8 @@ import type {
   CourseLessonView,
   CourseProgress,
   CourseView,
+  LearnerLesson,
+  LessonRef,
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
 import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index";
@@ -66,71 +68,81 @@ const landingPage: CourseLandingPage = {
   enrollmentsCount: 0,
 };
 
+// One standing, as the server sends it: the course's own progress, and which of
+// its lessons carry a check. The page is expected to render them as given.
+type Standing = { progress: CourseProgress; finished: string[] };
+
+const lessonRef = (id: number, slug: string, name: string): LessonRef => ({ id, slug, name });
+
+// The course's lessons in course order, each marked or not.
+const lessonRows = (finished: string[]): LearnerLesson[] => [
+  {
+    id: 1001,
+    name: "Hello, World!",
+    description: null,
+    slug: "hello-world",
+    position: 1,
+    finished: finished.includes("hello-world"),
+  },
+  {
+    id: 1002,
+    name: "Variables",
+    description: null,
+    slug: "variables",
+    position: 2,
+    finished: finished.includes("variables"),
+  },
+  {
+    id: 1003,
+    name: "Strings",
+    description: null,
+    slug: "strings",
+    position: 3,
+    finished: finished.includes("strings"),
+  },
+];
+
 // Three payloads the server can send, each a fact about where the visitor
-// stands. The page is expected to render them as given.
+// stands.
 
 // Has finished the first lesson: the second is next.
-const midCourse: CourseProgress = {
-  state: "started",
-  completion: 33,
-  nextLessonSlug: "variables",
-  lessons: [
-    { slug: "hello-world", position: 1, finished: true },
-    { slug: "variables", position: 2, finished: false },
-    { slug: "strings", position: 3, finished: false },
-  ],
+const midCourse: Standing = {
+  progress: {
+    state: "started",
+    completion: 33,
+    nextLesson: lessonRef(1002, "variables", "Variables"),
+  },
+  finished: ["hello-world"],
 };
 
 // Has finished everything: there is no Next Lesson.
-const finished: CourseProgress = {
-  state: "finished",
-  completion: 100,
-  nextLessonSlug: null,
-  lessons: [
-    { slug: "hello-world", position: 1, finished: true },
-    { slug: "variables", position: 2, finished: true },
-    { slug: "strings", position: 3, finished: true },
-  ],
+const finished: Standing = {
+  progress: { state: "finished", completion: 100, nextLesson: null },
+  finished: ["hello-world", "variables", "strings"],
 };
 
 // Has never been here: nothing finished, the first lesson is next.
-const firstVisit: CourseProgress = {
-  state: null,
-  completion: 0,
-  nextLessonSlug: "hello-world",
-  lessons: [
-    { slug: "hello-world", position: 1, finished: false },
-    { slug: "variables", position: 2, finished: false },
-    { slug: "strings", position: 3, finished: false },
-  ],
+const firstVisit: Standing = {
+  progress: {
+    state: null,
+    completion: 0,
+    nextLesson: lessonRef(1001, "hello-world", "Hello, World!"),
+  },
+  finished: [],
 };
 
 // `enrolled` is a learner who has started the course: only they have a completion
 // to show on its landing page.
-function courseView(progress: CourseProgress, enrolled = false): CourseView {
+function courseView(standing: Standing, enrolled = false): CourseView {
   return {
     course,
     landingPage,
     movedTo: null,
-    lessons: [
-      { id: 1001, name: "Hello, World!", description: null, slug: "hello-world" },
-      { id: 1002, name: "Variables", description: null, slug: "variables" },
-      { id: 1003, name: "Strings", description: null, slug: "strings" },
-    ],
+    lessons: lessonRows(standing.finished),
     modules: [],
     qnaItems: [],
-    enrollment: enrolled
-      ? {
-          id: 1,
-          userId: 7,
-          courseId: course.id,
-          state: "started",
-          completion: progress.completion,
-          nextLessonName: null,
-          progress,
-        }
-      : null,
-    progress,
+    enrollment: enrolled ? { id: 1, userId: 7, courseId: course.id, state: "started" } : null,
+    progress: standing.progress,
   };
 }
 
@@ -162,7 +174,7 @@ async function renderCourse(
   worker.use(
     http.post("*/lessons/:id/start", ({ params }) => {
       starts.push({ id: String(params.id), pathname: pathname() });
-      return HttpResponse.json(midCourse);
+      return new HttpResponse(null, { status: 204 });
     }),
   );
 
@@ -251,9 +263,14 @@ test("lays the program out by module, the first one open, and answers the landin
         id: 1,
         name: "Basics",
         description: "The first program and variables.",
-        lessonSlugs: ["hello-world", "variables"],
+        lessons: lessonRows(midCourse.finished).slice(0, 2),
       },
-      { id: 3, name: "Text", description: "Working with strings.", lessonSlugs: ["strings"] },
+      {
+        id: 3,
+        name: "Text",
+        description: "Working with strings.",
+        lessons: lessonRows(midCourse.finished).slice(2),
+      },
     ],
     qnaItems: [{ id: 8001, question: "Is it free?", answer: "Yes, **entirely**." }],
   };
@@ -396,9 +413,9 @@ test("stays on the course page when the start command fails", async () => {
   expect(router.state.location.pathname).toBe("/languages/javascript");
 });
 
-// The Next Lesson as the lesson player reads it, with the standing `progress`
-// carries: the marks are what the pass the start followed has changed.
-function variablesView(progress: CourseProgress): CourseLessonView {
+// The Next Lesson as the lesson player reads it, with the standing it carries:
+// the marks are what the pass the start followed has changed.
+function variablesView(standing: Standing): CourseLessonView {
   return {
     lesson: {
       course,
@@ -423,8 +440,12 @@ function variablesView(progress: CourseProgress): CourseLessonView {
       createdAt: "2026-01-01T00:00:00Z",
     },
     landingPage,
-    lessons: courseView(progress).lessons,
-    progress,
+    lessons: lessonRows(standing.finished),
+    adjacent: {
+      previous: lessonRef(1001, "hello-world", "Hello, World!"),
+      next: lessonRef(1003, "strings", "Strings"),
+    },
+    progress: standing.progress,
   };
 }
 

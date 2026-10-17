@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { CourseLessonView } from "@/client/types.gen";
+import type { CourseLessonView, LessonRef } from "@/client/types.gen";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import { ButtonLink } from "@/components/RouterLink";
 
@@ -36,12 +36,10 @@ export default function LessonControls({
   const user = useRouteContext({ from: "__root__", select: (context) => context.user });
   const courseSlug = view.lesson.course.slug;
 
-  // Neighbours come from the ordered lesson list the payload already carries,
-  // not from dedicated fields: the list is the course order, and deriving both
-  // ends from it keeps Previous, Next and the navigation tab in agreement.
-  const index = view.lessons.findIndex((item) => item.slug === view.lesson.slug);
-  const prevLesson = index > 0 ? view.lessons[index - 1] : undefined;
-  const nextLesson = index >= 0 ? view.lessons[index + 1] : undefined;
+  // The neighbours in course order are the server's answer, with the course's
+  // own order behind it, not something derived here from a position in a list.
+  const prevLesson = view.adjacent.previous ?? undefined;
+  const nextLesson = view.adjacent.next ?? undefined;
 
   // Resetting throws away whatever the learner has written, and there is no undo
   // once the buffer is overwritten — so it asks first.
@@ -111,7 +109,7 @@ function ForwardButton({
   passed,
 }: {
   view: CourseLessonView;
-  nextLesson: CourseLessonView["lessons"][number] | undefined;
+  nextLesson: LessonRef | undefined;
   passed: boolean;
 }) {
   const { t } = useTranslation();

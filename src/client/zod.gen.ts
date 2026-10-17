@@ -221,17 +221,6 @@ export const zCourseLessonReviewPage = z.object({
 });
 
 /**
- * A module of a course version in one locale (legacy:
- * `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
- */
-export const zCourseModuleListItem = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  name: z.string().nullable(),
-  description: z.string().nullable(),
-  lessonSlugs: z.array(z.string())
-});
-
-/**
  * Publication/readiness state of a course.
  */
 export const zCourseReadiness = z.enum([
@@ -319,6 +308,18 @@ export const zEmailInput = z.object({
  * Enrollment and lesson-progress lifecycle (legacy `MemberState`).
  */
 export const zEnrollmentState = z.enum(['started', 'finished']);
+
+/**
+ * A learner's record of where they are in one course (table `language_members`).
+ * It remembers; what it adds up to (Completion, the Next Lesson) is computed
+ * against the current Version and travels as CourseProgress.
+ */
+export const zEnrollment = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  state: zEnrollmentState.nullable()
+});
 
 /**
  * The first visit's traffic source, as recorded by the browser.
@@ -447,6 +448,31 @@ export const zLeadPage = z.object({
 });
 
 /**
+ * A Lesson as the course page and the player list it, with the visitor's
+ * standing in it. The checkmark travels with the row, so no screen has to join
+ * two lists.
+ */
+export const zLearnerLesson = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  slug: z.string(),
+  name: z.string().nullable(),
+  description: z.string().nullable(),
+  position: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  finished: z.boolean()
+});
+
+/**
+ * A module of a course version in one locale (legacy:
+ * `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
+ */
+export const zCourseModule = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string().nullable(),
+  description: z.string().nullable(),
+  lessons: z.array(zLearnerLesson)
+});
+
+/**
  * One message in the in-lesson AI chat (legacy: `AiMessage`).
  */
 export const zLessonAssistantMessage = z.object({
@@ -547,12 +573,32 @@ export const zLessonProgress = z.object({
 });
 
 /**
- * Per-Lesson state for the course and lesson pages: the checkmarks.
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
  */
-export const zLessonProgressItem = z.object({
+export const zLessonProgressPage = z.object({
+  items: z.array(zLessonProgress),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * A lesson named for a link or a button: how to address it, to open it or start
+ * it, and what to call it.
+ */
+export const zLessonRef = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   slug: z.string(),
-  position: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  finished: z.boolean()
+  name: z.string().nullable()
+});
+
+/**
+ * The Lessons on either side of one Lesson in course order. Not the Next Lesson.
+ */
+export const zAdjacentLessons = z.object({
+  previous: zLessonRef.nullable(),
+  next: zLessonRef.nullable()
 });
 
 /**
@@ -562,8 +608,7 @@ export const zLessonProgressItem = z.object({
 export const zCourseProgress = z.object({
   state: zEnrollmentState.nullable(),
   completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nextLessonSlug: z.string().nullable(),
-  lessons: z.array(zLessonProgressItem)
+  nextLesson: zLessonRef.nullable()
 });
 
 /**
@@ -572,32 +617,18 @@ export const zCourseProgress = z.object({
 export const zCourseLessonView = z.object({
   lesson: zCourseLesson,
   landingPage: zCourseLandingPage.nullable(),
-  lessons: z.array(zCourseLessonListItem),
+  lessons: z.array(zLearnerLesson),
+  adjacent: zAdjacentLessons,
   progress: zCourseProgress.nullable()
 });
 
 /**
- * A learner's enrollment in a course (table `language_members`).
+ * One course on the dashboard: the enrollment, where the learner stands, and the card to draw.
  */
-export const zEnrollment = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  state: zEnrollmentState.nullable(),
-  completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nextLessonName: z.string().nullable(),
-  progress: zCourseProgress
-});
-
-/**
- * A page of results. Generic envelope reused by every admin list so the CRUD
- * engine (TanStack Table) can read pagination uniformly.
- */
-export const zLessonProgressPage = z.object({
-  items: z.array(zLessonProgress),
-  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+export const zDashboardCourse = z.object({
+  enrollment: zEnrollment,
+  progress: zCourseProgress,
+  card: zCourseCatalogItem
 });
 
 /**
@@ -613,9 +644,8 @@ export const zLocale = z.enum([
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export const zMyDashboard = z.object({
-  startedEnrollments: z.array(zEnrollment),
-  finishedEnrollments: z.array(zEnrollment),
-  landingPagesByCourseId: z.record(z.string(), zCourseCatalogItem)
+  started: z.array(zDashboardCourse),
+  finished: z.array(zDashboardCourse)
 });
 
 /**
@@ -748,8 +778,8 @@ export const zCourseView = z.object({
   course: zCourse,
   landingPage: zCourseLandingPage.nullable(),
   movedTo: z.string().nullable(),
-  lessons: z.array(zCourseLessonListItem),
-  modules: z.array(zCourseModuleListItem),
+  lessons: z.array(zLearnerLesson),
+  modules: z.array(zCourseModule),
   qnaItems: z.array(zQnaItem),
   enrollment: zEnrollment.nullable(),
   progress: zCourseProgress.nullable()
@@ -1921,9 +1951,9 @@ export const zStartLessonPath = z.object({
 });
 
 /**
- * The request has succeeded.
+ * Empty 204 response for deletes and other content-less successes.
  */
-export const zStartLessonResponse = zCourseProgress;
+export const zStartLessonResponse = z.void();
 
 export const zSwitchLocaleQuery = z.object({
   locale: zLocale

@@ -16,7 +16,7 @@ import { IconBooks, IconMessage2 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { getMyDashboardOptions } from "@/client/@tanstack/react-query.gen";
-import type { CourseCatalogItem, Enrollment } from "@/client/types.gen";
+import type { DashboardCourse } from "@/client/types.gen";
 import CourseBlock from "@/components/CourseBlock";
 import { requireAuth } from "@/lib/auth";
 
@@ -34,13 +34,8 @@ export const Route = createFileRoute("/{-$locale}/my")({
   component: My,
 });
 
-function StartedCourse({
-  enrollment,
-  landingPage,
-}: {
-  enrollment: Enrollment;
-  landingPage: CourseCatalogItem;
-}) {
+function StartedCourse({ course }: { course: DashboardCourse }) {
+  const { card: landingPage, progress } = course;
   const title = landingPage.header ?? landingPage.name ?? landingPage.course.slug;
 
   return (
@@ -70,13 +65,10 @@ function StartedCourse({
         <Stack w="100%" p="sm" gap="xs">
           <Title order={3}>{title}</Title>
 
-          {enrollment.nextLessonName && <Text>{enrollment.nextLessonName} →</Text>}
+          {progress.nextLesson?.name && <Text>{progress.nextLesson.name} →</Text>}
 
           <Progress.Root mt="auto">
-            <Progress.Section
-              aria-label={`${enrollment.completion}%`}
-              value={enrollment.completion}
-            />
+            <Progress.Section aria-label={`${progress.completion}%`} value={progress.completion} />
           </Progress.Root>
         </Stack>
       </Group>
@@ -86,31 +78,26 @@ function StartedCourse({
 
 function My() {
   const { t, i18n } = useTranslation();
-  const { startedEnrollments, finishedEnrollments, landingPagesByCourseId } = Route.useLoaderData();
+  const { started, finished } = Route.useLoaderData();
 
   return (
     <Container>
       <Title order={2} my="xl">
         {t(($) => $.my.show.started)}
       </Title>
-      {startedEnrollments.length === 0 && (
-        <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
-      )}
+      {started.length === 0 && <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />}
 
       <SimpleGrid cols={{ base: 1, xs: 2 }}>
-        {startedEnrollments.map((enrollment) => {
-          const landingPage = landingPagesByCourseId[enrollment.courseId];
-          return landingPage ? (
-            <StartedCourse key={enrollment.id} enrollment={enrollment} landingPage={landingPage} />
-          ) : null;
-        })}
+        {started.map((course) => (
+          <StartedCourse key={course.enrollment.id} course={course} />
+        ))}
       </SimpleGrid>
 
       <Title my="xl" order={2}>
         {t(($) => $.my.show.finished)}
       </Title>
 
-      {finishedEnrollments.length > 0 && i18n.language === "ru" && (
+      {finished.length > 0 && i18n.language === "ru" && (
         <Alert icon={<IconMessage2 />} mb="xl" px="xl">
           <Trans
             t={t}
@@ -128,15 +115,14 @@ function My() {
         </Alert>
       )}
 
-      {finishedEnrollments.length === 0 && (
+      {finished.length === 0 && (
         <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
       )}
 
       <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
-        {finishedEnrollments.map((enrollment) => {
-          const landingPage = landingPagesByCourseId[enrollment.courseId];
-          return landingPage ? <CourseBlock key={enrollment.id} item={landingPage} /> : null;
-        })}
+        {finished.map((course) => (
+          <CourseBlock key={course.enrollment.id} item={course.card} />
+        ))}
       </SimpleGrid>
     </Container>
   );

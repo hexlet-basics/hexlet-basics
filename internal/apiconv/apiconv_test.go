@@ -97,3 +97,51 @@ func TestCourseDurationIsWholeHoursOfFifteenMinuteLessons(t *testing.T) {
 	assert.Equal(t, int32(0), courseDuration(&ent.Course{LessonsCount: 3}))
 	assert.Equal(t, int32(2), courseDuration(&ent.Course{LessonsCount: 9}))
 }
+
+// The lessons on either side of one are decided from the list's order alone.
+func TestAdjacentLessonsAreTheNeighboursInTheGivenOrder(t *testing.T) {
+	lessons := []api.LearnerLesson{
+		{Slug: "a", Name: api.NewNilString("A")},
+		{Slug: "b", Name: api.NewNilString("B")},
+		{Slug: "c", Name: api.NewNilString("C")},
+	}
+
+	middle := AdjacentLessons("b", lessons)
+	assert.Equal(t, "a", middle.Previous.Value.Slug)
+	assert.Equal(t, "C", middle.Next.Value.Name.Value, "named, not just addressed")
+
+	first := AdjacentLessons("a", lessons)
+	assert.True(t, first.Previous.Null)
+	assert.Equal(t, "b", first.Next.Value.Slug)
+
+	last := AdjacentLessons("c", lessons)
+	assert.Equal(t, "b", last.Previous.Value.Slug)
+	assert.True(t, last.Next.Null)
+}
+
+// A lesson that is not in the list, or the only one in it, has no neighbours:
+// both ends are null rather than a guess.
+func TestAdjacentLessonsOfALoneOrUnlistedLessonAreNull(t *testing.T) {
+	lone := AdjacentLessons("a", []api.LearnerLesson{{Slug: "a"}})
+	assert.True(t, lone.Previous.Null)
+	assert.True(t, lone.Next.Null)
+
+	unlisted := AdjacentLessons("z", []api.LearnerLesson{{Slug: "a"}, {Slug: "b"}})
+	assert.True(t, unlisted.Previous.Null)
+	assert.True(t, unlisted.Next.Null)
+}
+
+// The Next Lesson is named, and addressed, from the list; with no slug, or a
+// lesson the list does not have (no translation in the locale: no page there),
+// there is nothing to point at.
+func TestNextLessonRefIsNamedFromTheList(t *testing.T) {
+	lessons := []api.LearnerLesson{{ID: 7, Slug: "a", Name: api.NewNilString("A")}}
+
+	assert.True(t, NextLessonRef(nil, lessons).Null, "a finished course has none")
+
+	named := NextLessonRef(lo.ToPtr("a"), lessons).Value
+	assert.Equal(t, int32(7), named.ID)
+	assert.Equal(t, "A", named.Name.Value)
+
+	assert.True(t, NextLessonRef(lo.ToPtr("z"), lessons).Null)
+}

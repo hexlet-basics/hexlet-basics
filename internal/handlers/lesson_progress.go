@@ -5,19 +5,17 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
 
-// StartLesson marks a lesson started and answers with where the learner now
-// stands. What starting means lives in the progress module; this handler only
-// translates its outcome to the contract's responses.
+// StartLesson marks a lesson started. What starting means lives in the progress
+// module; this handler only translates its outcome to the contract's responses.
 //
-// A guest reaches it too, and gets the same payload with nothing stored: their
-// state is the signed cookie, and only a check moves it.
+// A guest reaches it too, and nothing is stored for them: their state is the
+// signed cookie, and only a check moves it.
 func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) (api.StartLessonRes, error) {
-	state, err := s.progress.StartLesson(
+	_, err := s.progress.StartLesson(
 		ctx,
 		currentLearner(ctx),
 		int(params.ID),
@@ -31,8 +29,7 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 		return nil, err
 	}
 
-	progressView := apiconv.ToCourseProgress(state)
-	return &progressView, nil
+	return &api.StartLessonNoContent{}, nil
 }
 
 // CheckLesson runs a submitted solution and reports what it changed.

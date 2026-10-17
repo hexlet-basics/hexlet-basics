@@ -1354,15 +1354,12 @@ export const checkLesson = <ThrowOnError extends boolean = false>(options: Optio
  * Idempotent: starting an already-started or already-finished lesson
  * succeeds and changes nothing. Any lesson may be started, in any order.
  *
- * Public, because a guest progresses the same way. For them it returns where
- * they stand without storing anything: their state is the signed cookie, and
- * only a check moves it.
+ * Public, because a guest progresses the same way. For them it stores
+ * nothing: their state is the signed cookie, and only a check moves it. It
+ * answers with nothing: where the learner stands is the course and lesson
+ * reads' business, and the page they go to next reads it from there.
  */
-export const startLesson = <ThrowOnError extends boolean = false>(options: Options<StartLessonData, ThrowOnError>): RequestResult<StartLessonResponses, StartLessonErrors, ThrowOnError> => (options.client ?? client).post<StartLessonResponses, StartLessonErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/lessons/{id}/start',
-  ...options
-});
+export const startLesson = <ThrowOnError extends boolean = false>(options: Options<StartLessonData, ThrowOnError>): RequestResult<StartLessonResponses, StartLessonErrors, ThrowOnError> => (options.client ?? client).post<StartLessonResponses, StartLessonErrors, ThrowOnError>({ url: '/api/lessons/{id}/start', ...options });
 
 /**
  * Remember the chosen UI locale: on the signed-in user, and in a cookie the

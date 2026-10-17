@@ -312,15 +312,14 @@ function Show() {
 // The learning program, as legacy's accordion laid it out: a panel per module,
 // the first one open, each with its lessons beside the module's description.
 //
-// A lesson in the panel is a link carrying its mark. Checks come from
-// `progress`, names and order from `lessons`, joined by slug — the same pair
-// the player's list renders; a module names its lessons by slug the same way.
-// A lesson no module in this locale claims is listed after the panels rather
-// than dropped, and a course with no modules is the flat list alone.
+// A lesson in the panel is a link carrying its mark; each row already knows
+// whether it is finished, so nothing is joined here. A lesson no module in this
+// locale claims is listed after the panels rather than dropped, and a course
+// with no modules is the flat list alone.
 function LearningProgram({ view }: { view: CourseView }) {
-  const lessonBySlug = new Map(view.lessons.map((item) => [item.slug, item]));
-  const stateBySlug = new Map(view.progress?.lessons.map((item) => [item.slug, item]) ?? []);
-  const claimed = new Set(view.modules.flatMap((module) => module.lessonSlugs));
+  const claimed = new Set(
+    view.modules.flatMap((module) => module.lessons.map((item) => item.slug)),
+  );
   const unclaimed = view.lessons.filter((item) => !claimed.has(item.slug));
 
   const lessonLinks = (lessons: CourseView["lessons"]) =>
@@ -330,7 +329,7 @@ function LearningProgram({ view }: { view: CourseView }) {
         to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
         params={{ slug: view.course.slug, lessonSlug: item.slug }}
         label={item.name}
-        leftSection={<LessonMark state={stateBySlug.get(item.slug)} />}
+        leftSection={<LessonMark finished={item.finished} />}
       />
     ));
 
@@ -345,11 +344,7 @@ function LearningProgram({ view }: { view: CourseView }) {
               </Accordion.Control>
               <Accordion.Panel>
                 <Grid>
-                  <Grid.Col span={{ base: 12, xs: 4 }}>
-                    {lessonLinks(
-                      module.lessonSlugs.flatMap((slug) => lessonBySlug.get(slug) ?? []),
-                    )}
-                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, xs: 4 }}>{lessonLinks(module.lessons)}</Grid.Col>
                   <Grid.Col span={{ base: 12, xs: 8 }}>{module.description}</Grid.Col>
                 </Grid>
               </Accordion.Panel>
@@ -381,7 +376,10 @@ function CourseAction({ view }: { view: CourseView }) {
 
   if (!progress) return null;
 
-  if (progress.nextLessonSlug === null) {
+  if (progress.nextLesson === null) {
+    // No lesson to offer is the end of the course only when it is finished: a
+    // next lesson with no page in this locale is no button, not a finish.
+    if (progress.state !== "finished") return null;
     return (
       <Group>
         <Text size="lg" fw="bold">
@@ -402,14 +400,13 @@ function CourseAction({ view }: { view: CourseView }) {
     );
   }
 
-  const lesson = view.lessons.find((item) => item.slug === progress.nextLessonSlug);
-  if (!lesson) return null;
+  const lesson = progress.nextLesson;
 
   // Navigation waits on the command's success: the lesson is entered started or
   // not at all.
   return (
     <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
-      {progress.lessons.some((item) => item.finished)
+      {view.lessons.some((item) => item.finished)
         ? t(($) => $.courses.show.continue)
         : t(($) => $.courses.show.try)}
     </Button>
@@ -422,8 +419,7 @@ function CourseAction({ view }: { view: CourseView }) {
 // way in that skips the start.
 function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
   const { enter, isPending } = useEnterLesson(view.course.slug);
-  const next = view.progress?.nextLessonSlug;
-  const lesson = view.lessons.find((item) => item.slug === next) ?? view.lessons[0];
+  const lesson = view.progress?.nextLesson ?? view.lessons[0];
   if (!lesson) return null;
   return <Button {...props} loading={isPending} onClick={() => enter(lesson)} />;
 }
