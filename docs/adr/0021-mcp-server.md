@@ -447,3 +447,87 @@ schema is inlined), and a test fails if it passes 300 KB; trimming it (for
 instance by advertising shared output shapes once) is left for a ticket of its
 own. The test harness (`testsupport.NewOAuth`) now wires the roles writer, the
 blog post remover and the related-courses replacer, which the new tools reach.
+
+## Addendum: a cheap, discoverable tool list (#878)
+
+Loading and searching tools lazily is a client feature (Claude Code and the
+Claude API defer tools; the MCP proposals for server-side search of `tools/list`
+were closed unmerged), so the server cooperates instead of inventing a
+mechanism: it says early what it has, keeps the list small, stable and
+per-caller, and offers one lookup for a client that cannot defer. It does not
+offer a way to run a tool by name.
+
+**Measured.** The admin tools (87) were 228,757 bytes of JSON (about 57K
+tokens): 166 KB of output schemas, 38 KB of input schemas, 8 KB of descriptions.
+They are now 79,086 bytes (about 20K tokens), 65% less: 25 KB, 33 KB and 5 KB.
+The whole list for a caller who sees everything (98 tools: admin, catalogue,
+learner, `findTools`) is 88 KB, and a test fails past 100 KB; the admin tools
+alone are held to 90 KB. The budget is a decision to make on purpose.
+
+**What was cut.**
+- *Output schemas* are advertised as a shape (`shape.go`): the result's own
+  fields by type, one level (`items: array`, `id: integer`), without prose,
+  enums, formats or `required`. A client reads values and does not validate
+  them against ours, and every reduction accepts more than the contract's
+  schema, so a real result still validates (the existing test that checks
+  results against the advertised schema holds). The root is always a plain
+  object: a root `anyOf`/`oneOf` is dropped, because Claude Code flattens it and
+  loses the enforcement. The `truncation` property is its name and type only; what
+  the hint contains is told once, in the instructions.
+- *Input schemas* keep their constraints (an agent that sees `minLength` or an
+  enum writes a valid call first time) and lose titles, examples, vendor
+  extensions, number widths and the long part of every description (a property
+  keeps its first sentence, at most 100 characters). The generated server still
+  validates against the full contract, so nothing is loosened where it counts.
+- *Descriptions* are the contract's first sentence (at most 140 characters)
+  plus what the call needs; the rest of the contract's text said how errors
+  surface, which a refusal says when it matters. The hand-written catalogue and
+  learner descriptions were shortened the same way. A tool's `title` is gone
+  where it only repeated the name.
+- *Hints*: every tool sets all four annotations (`hints` in `tool.go`), since the
+  protocol's defaults (destructive, open-world) are the unsafe ones. Nothing here
+  reaches beyond the site's own data, so `openWorldHint` is false everywhere, and
+  reads are `destructiveHint: false`, `idempotentHint: true`.
+
+**Instructions.** About 1.9 KB (the limit is 4 KB, where Claude Code cuts): the
+domains (catalogue, learner progress, content administration, access management,
+audit), what each needs, when to call `findTools`, the rule that a state change is
+its own tool, and the shape of a cut result.
+
+**Names are not renamed.** The ticket asks for resource prefixes so that one
+search matches a group. A tool's name is its operationId (this ADR, above) and the
+names are a public surface that clients cache, so they stay: every admin name
+starts with `admin` and carries its resource (`adminListBanners`,
+`adminPublishBanner`), so a search for "banner" matches the group, which a test
+checks. Order is deterministic: by name, the same on every call.
+
+**The list is per caller; the call is judged all the same.** `tools/list` goes
+through a receiving middleware that shows a connection a tool only when its token
+holds the tool's Scope and, for an admin tool, the user's Staff Role holds every
+capability Permission the tool needs (`mcp.read` or `mcp.write` by kind,
+`mcp.manage`, `audit.read`). The capabilities come from `Deps.Capabilities`
+(`Security.HeldCapabilities`, which asks `Policy.HasCapability`, the check
+`authorizeMCP` makes), read on each listing; nothing is cached, so a grant taken
+away shows at the next list. The operation's own Permission and locale are not
+used to hide a tool (they depend on the call). If the capabilities cannot be
+read the list is narrowed by Scope only: showing a tool costs one refusal and
+hiding is not authorization. A test calls a hidden tool by name (no admin Scope,
+no `mcp.write`) and gets the same 403 as before, with no succeeded Audit Record;
+`TestNoRegisteredAdminToolRunsWithoutTheCheck` now takes its tools from the
+contract, not from the filtered list, so it still calls every one. List results
+are `cacheScope: private` (`SetCacheable`), since they differ by caller; the TTL
+is left at zero so a change of grants is seen.
+
+**The discovery tool: `findTools`.** Measured, the list is still about 20K tokens
+for a client that cannot defer tools, so the one lookup the ticket allows was added.
+It is read-only and looks at a registry of the tools and what each needs; it holds
+no handler of any other tool, so there is nothing in it that could run one. Arguments:
+`query` (words that must all match a name or description), `detail` (`name`,
+`description`, the default, with the Permission each needs, or `schema` with the
+full input schema) and `limit` (20, at most 50). It shows only what the caller's
+`tools/list` shows, needs no Scope and spends the catalogue rate budget. There is
+no `call_tool(name, args)` and no `execute(code)`: either would bypass or flatten
+the per-operation checkpoint and its Audit Record. A test pins that no tool is named
+or takes an argument like one, and that `findTools` asked to run `adminCreateBanner`
+refuses the argument and leaves no row and no Audit Record. The name is `findTools`
+and not `search`, which the content search of #877 takes.
