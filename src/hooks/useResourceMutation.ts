@@ -5,6 +5,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { isValidationError } from "@/lib/server-validation";
 
 // The three things every admin CRUD mutation repeats — invalidate the affected
 // list/detail queries, toast on success, toast on failure — collapse into
@@ -16,6 +17,10 @@ interface ResourceMutationOptions<TData, TError, TVars, TCtx> {
   mutation: UseMutationOptions<TData, TError, TVars, TCtx>;
   // Query keys invalidated after success (list query, edited detail query).
   invalidate?: QueryKey[];
+  // For a mutation a form submits: a 422 is then shown at the form's fields
+  // (submitWithServerErrors), so it gets no toast of its own. Left off for
+  // mutations with no form, where the toast is the only feedback.
+  fieldErrors?: boolean;
   successMessage: string;
   errorMessage: string;
   // Extra success work — navigation, mostly — run after invalidation.
@@ -25,6 +30,7 @@ interface ResourceMutationOptions<TData, TError, TVars, TCtx> {
 export function useResourceMutation<TData, TError, TVars, TCtx>({
   mutation,
   invalidate,
+  fieldErrors,
   successMessage,
   errorMessage,
   onDone,
@@ -40,6 +46,9 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
       notifications.show({ color: "green", message: successMessage });
       onDone?.(data, variables);
     },
-    onError: () => notifications.show({ color: "red", message: errorMessage }),
+    onError: (error) => {
+      if (fieldErrors && isValidationError(error)) return;
+      notifications.show({ color: "red", message: errorMessage });
+    },
   });
 }

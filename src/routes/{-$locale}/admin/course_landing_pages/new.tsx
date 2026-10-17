@@ -28,6 +28,7 @@ function NewCourseLandingPage() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseLandingPageMutation(),
+    fieldErrors: true,
     invalidate: [adminListCourseLandingPagesQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -41,7 +42,7 @@ function NewCourseLandingPage() {
         fields={fields}
         schema={zCourseLandingPageInput}
         defaultValues={emptyCourseLandingPage}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

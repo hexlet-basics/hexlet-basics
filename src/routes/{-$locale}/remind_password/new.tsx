@@ -1,6 +1,8 @@
 import { Alert, Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createPasswordReminderMutation } from "@/client/@tanstack/react-query.gen";
@@ -21,7 +23,22 @@ function New() {
   const { t } = useTranslation();
   const { invalid } = Route.useSearch();
 
-  const mutation = useMutation(createPasswordReminderMutation());
+  const mutation = useMutation({
+    ...createPasswordReminderMutation(),
+    onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
+  });
+
+  // The refused-link notice is a flash, so it is shown once on arrival like the
+  // other flashes; the id keeps StrictMode's double effect from stacking two.
+  useEffect(() => {
+    if (invalid) {
+      notifications.show({
+        id: "invalid-link",
+        color: "red",
+        message: t(($) => $.flash.passwords.edit.error),
+      });
+    }
+  }, [invalid, t]);
 
   const form = useAppForm({
     defaultValues: { email: "" },
@@ -49,9 +66,6 @@ function New() {
                 void form.handleSubmit();
               }}
             >
-              {invalid && <Alert color="red">{t(($) => $.flash.passwords.edit.error)}</Alert>}
-              {mutation.isError && <Alert color="red">{t(($) => $.common.errors.network)}</Alert>}
-
               <form.AppField name="email">
                 {(field) => (
                   <field.TextField

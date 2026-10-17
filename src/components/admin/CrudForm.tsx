@@ -2,6 +2,7 @@ import { Button, Card, Group, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { ZodType } from "zod";
 import { useAppForm } from "@/lib/form";
+import { submitWithServerErrors } from "@/lib/server-validation";
 
 // One editable field, described declaratively. `name` is checked against the
 // resource's input model, so a typo or a renamed contract field fails at compile
@@ -31,10 +32,10 @@ export interface CrudFormProps<T extends Record<string, unknown>> {
   // fixing input=output=T lets `zXxxInput` satisfy it directly, with no cast.
   schema: ZodType<T, T>;
   defaultValues: T;
-  // Submits the validated values. Fire-and-forget: the resource mutation
-  // (useResourceMutation) toasts success/failure, so the form neither awaits nor
-  // tracks a server error itself.
-  onSubmit: (values: T) => void;
+  // Submits the validated values. Return the mutation's promise (mutateAsync):
+  // the resource mutation (useResourceMutation) toasts success/failure, and the
+  // form awaits it only to put a 422's per-field messages on the fields.
+  onSubmit: (values: T) => Promise<unknown>;
   submitLabel: string;
   // Invoked when the user cancels. The route owns navigation so the engine stays
   // resource-agnostic and the destination keeps TanStack Router's typed links.
@@ -60,10 +61,7 @@ export function CrudForm<T extends Record<string, unknown>>({
 
   const form = useAppForm({
     defaultValues,
-    validators: { onSubmit: schema },
-    onSubmit: ({ value }) => {
-      onSubmit(value);
-    },
+    validators: { onSubmit: schema, onSubmitAsync: submitWithServerErrors(onSubmit) },
   });
 
   return (

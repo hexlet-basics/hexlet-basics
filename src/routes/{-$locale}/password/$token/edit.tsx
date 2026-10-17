@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Container, Stack, Title } from "@mantine/core";
+import { Button, Card, Container, Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
@@ -60,7 +60,9 @@ function Edit() {
       // or it was already used from another tab.
       if (isAxiosError(error) && error.response?.status === 404) {
         void navigate(refusedLink(locale));
+        return;
       }
+      notifications.show({ color: "red", message: t(($) => $.common.errors.network) });
     },
   });
 
@@ -87,8 +89,6 @@ function Edit() {
               void form.handleSubmit();
             }}
           >
-            {mutation.isError && <Alert color="red">{t(($) => $.common.errors.network)}</Alert>}
-
             <form.AppField name="password">
               {(field) => (
                 <field.TextField

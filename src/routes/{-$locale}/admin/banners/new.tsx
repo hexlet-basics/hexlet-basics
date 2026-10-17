@@ -25,6 +25,7 @@ function NewBanner() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateBannerMutation(),
+    fieldErrors: true,
     invalidate: [adminListBannersQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewBanner() {
         fields={fields}
         schema={zBannerInput}
         defaultValues={emptyBanner}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

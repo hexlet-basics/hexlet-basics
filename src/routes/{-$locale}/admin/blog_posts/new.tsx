@@ -25,6 +25,7 @@ function NewBlogPost() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateBlogPostMutation(),
+    fieldErrors: true,
     invalidate: [adminListBlogPostsQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewBlogPost() {
         fields={fields}
         schema={zBlogPostInput}
         defaultValues={emptyBlogPost}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

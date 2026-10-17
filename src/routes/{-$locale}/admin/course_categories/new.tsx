@@ -28,6 +28,7 @@ function NewCourseCategory() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseCategoryMutation(),
+    fieldErrors: true,
     invalidate: [adminListCourseCategoriesQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -41,7 +42,7 @@ function NewCourseCategory() {
         fields={fields}
         schema={zCourseCategoryInput}
         defaultValues={emptyCourseCategory}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

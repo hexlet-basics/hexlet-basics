@@ -50,3 +50,22 @@ test("drops a redirect that would leave the site", async () => {
     await screen.unmount();
   }
 });
+
+test("shows a refused email at its field instead of as a toast", async () => {
+  worker.use(
+    http.post("*/users", () =>
+      HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
+    ),
+  );
+  const { router } = await renderRoute(signUpRoute, {
+    path: "/{-$locale}/users/new",
+    initialPath: "/users/new",
+  });
+
+  await signUp();
+
+  await expect.element(page.getByText("has already been taken")).toBeVisible();
+  expect(router.state.location.pathname).toBe("/users/new");
+  // The generic failure toast is for errors that belong to no field.
+  await expect.element(page.getByText("Упс, кажется в форме есть ошибки")).not.toBeInTheDocument();
+});

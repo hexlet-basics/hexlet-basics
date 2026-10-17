@@ -25,6 +25,7 @@ function NewUser() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateUserMutation(),
+    fieldErrors: true,
     invalidate: [adminListUsersQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewUser() {
         fields={fields}
         schema={zUserInput}
         defaultValues={emptyUser}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

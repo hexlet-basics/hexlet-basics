@@ -25,6 +25,7 @@ function NewStaffMember() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateStaffMemberMutation(),
+    fieldErrors: true,
     invalidate: [adminListStaffMembersQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewStaffMember() {
         fields={fields}
         schema={zStaffMemberInput}
         defaultValues={emptyStaffMember}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

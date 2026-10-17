@@ -33,6 +33,7 @@ function EditBanner() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateBannerMutation(),
+    fieldErrors: true,
     invalidate: [adminListBannersQueryKey(), adminGetBannerQueryKey({ path: { id: bannerId } })],
     successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -50,7 +51,7 @@ function EditBanner() {
           fields={fields}
           schema={zBannerInput}
           defaultValues={bannerToForm(data)}
-          onSubmit={(values) => mutation.mutate({ path: { id: bannerId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ path: { id: bannerId }, body: values })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}

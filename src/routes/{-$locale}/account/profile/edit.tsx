@@ -11,10 +11,12 @@ import {
   getProfileQueryKey,
   updateProfileMutation,
 } from "@/client/@tanstack/react-query.gen";
+import type { ProfileInput } from "@/client/types.gen";
 import { zProfileInput } from "@/client/zod.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
 import { useAppForm } from "@/lib/form";
+import { submitWithServerErrors } from "@/lib/server-validation";
 
 // The signed-in user's profile, ported from legacy account/profiles#edit
 // without the passkey section (ADR-0015). The name rules (40 characters, no
@@ -44,6 +46,7 @@ function Edit() {
 
   const update = useResourceMutation({
     mutation: updateProfileMutation(),
+    fieldErrors: true,
     // The header shows the user's name from the current-user query.
     invalidate: [getProfileQueryKey(), getCurrentUserQueryKey()],
     successMessage: t(($) => $.flash.account.profiles.update.success),
@@ -53,9 +56,11 @@ function Edit() {
   const form = useAppForm({
     // The contract's nullable names as they are: TextField renders null as "".
     defaultValues: { firstName: profile.firstName, lastName: profile.lastName },
-    validators: { onSubmit: zProfileInput },
-    onSubmit: async ({ value }) => {
-      await update.mutateAsync({ body: value });
+    validators: {
+      onSubmit: zProfileInput,
+      onSubmitAsync: submitWithServerErrors((value: ProfileInput) =>
+        update.mutateAsync({ body: value }),
+      ),
     },
   });
 

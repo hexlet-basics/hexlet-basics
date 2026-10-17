@@ -25,6 +25,7 @@ function NewCourse() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseMutation(),
+    fieldErrors: true,
     invalidate: [adminListCoursesQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewCourse() {
         fields={fields}
         schema={zCourseInput}
         defaultValues={emptyCourse}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

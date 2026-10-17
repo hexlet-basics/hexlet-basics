@@ -25,6 +25,7 @@ function NewReview() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateReviewMutation(),
+    fieldErrors: true,
     invalidate: [adminListReviewsQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewReview() {
         fields={fields}
         schema={zReviewInput}
         defaultValues={emptyReview}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

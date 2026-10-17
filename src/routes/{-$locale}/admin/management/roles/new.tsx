@@ -25,6 +25,7 @@ function NewRole() {
 
   const mutation = useResourceMutation({
     mutation: adminCreateRoleMutation(),
+    fieldErrors: true,
     invalidate: [adminListRolesQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -38,7 +39,7 @@ function NewRole() {
         fields={fields}
         schema={zRoleInput}
         defaultValues={emptyStaffRole}
-        onSubmit={(values) => mutation.mutate({ body: values })}
+        onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

@@ -37,6 +37,7 @@ function EditBlogPost() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateBlogPostMutation(),
+    fieldErrors: true,
     invalidate: [adminListBlogPostsQueryKey(), adminGetBlogPostQueryKey({ path: { id: postId } })],
     successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -55,7 +56,7 @@ function EditBlogPost() {
             fields={fields}
             schema={zBlogPostInput}
             defaultValues={blogPostToForm(data)}
-            onSubmit={(values) => mutation.mutate({ path: { id: postId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: postId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
             isPending={mutation.isPending}

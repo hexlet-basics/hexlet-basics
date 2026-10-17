@@ -1,8 +1,7 @@
-import { Alert, Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createSessionMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
@@ -22,7 +21,6 @@ function New() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
     ...createSessionMutation(),
@@ -34,14 +32,17 @@ function New() {
       });
       void navigate({ to: "/{-$locale}" });
     },
-    onError: () => setServerError(t(($) => $.flash.sessions.create.error)),
+    onError: () =>
+      notifications.show({
+        color: "red",
+        message: t(($) => $.flash.sessions.create.error),
+      }),
   });
 
   const form = useAppForm({
     defaultValues: { email: "", password: "" },
     validators: { onSubmit: zSessionInput },
     onSubmit: async ({ value }) => {
-      setServerError(null);
       await mutation.mutateAsync({ body: value });
     },
   });
@@ -61,8 +62,6 @@ function New() {
               void form.handleSubmit();
             }}
           >
-            {serverError && <Alert color="red">{serverError}</Alert>}
-
             <form.AppField name="email">
               {(field) => (
                 <field.TextField

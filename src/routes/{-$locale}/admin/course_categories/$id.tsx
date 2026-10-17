@@ -42,6 +42,7 @@ function EditCourseCategory() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateCourseCategoryMutation(),
+    fieldErrors: true,
     invalidate: [
       adminListCourseCategoriesQueryKey(),
       adminGetCourseCategoryQueryKey({ path: { id: categoryId } }),
@@ -88,7 +89,7 @@ function EditCourseCategory() {
             fields={fields}
             schema={zCourseCategoryInput}
             defaultValues={courseCategoryToForm(data)}
-            onSubmit={(values) => mutation.mutate({ path: { id: categoryId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: categoryId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
             isPending={mutation.isPending}

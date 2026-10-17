@@ -1,8 +1,7 @@
-import { Alert, Anchor, Box, Button, Stack, Text } from "@mantine/core";
+import { Anchor, Box, Button, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createUserMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
@@ -14,6 +13,7 @@ import {
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
 import { useAppForm } from "@/lib/form";
+import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
 // registration page and the home page. Submits through the generated
@@ -30,7 +30,6 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
     ...createUserMutation(),
@@ -51,15 +50,23 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
       if (redirect) await navigate({ href: redirect });
       else await navigate({ to: "/{-$locale}" });
     },
-    onError: () => setServerError(t(($) => $.flash.users.create.error)),
+    // A 422 is shown at the fields (submitWithServerErrors), not as a toast.
+    onError: (error) => {
+      if (isValidationError(error)) return;
+      notifications.show({
+        color: "red",
+        message: t(($) => $.flash.users.create.error),
+      });
+    },
   });
 
   const form = useAppForm({
     defaultValues: { firstName: "", email: "", password: "" },
-    validators: { onSubmit: signUpFormSchema },
-    onSubmit: async ({ value }) => {
-      setServerError(null);
-      await mutation.mutateAsync({ body: value });
+    validators: {
+      onSubmit: signUpFormSchema,
+      onSubmitAsync: submitWithServerErrors((value: z.infer<typeof signUpFormSchema>) =>
+        mutation.mutateAsync({ body: value }),
+      ),
     },
   });
 
@@ -71,8 +78,6 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
         void form.handleSubmit();
       }}
     >
-      {serverError && <Alert color="red">{serverError}</Alert>}
-
       <form.AppField name="firstName">
         {(field) => (
           <field.TextField

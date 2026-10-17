@@ -33,6 +33,7 @@ function EditStaffMember() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateStaffMemberMutation(),
+    fieldErrors: true,
     invalidate: [
       adminListStaffMembersQueryKey(),
       adminGetStaffMemberQueryKey({ path: { id: memberId } }),
@@ -53,7 +54,7 @@ function EditStaffMember() {
           fields={fields}
           schema={zStaffMemberInput}
           defaultValues={staffMemberToForm(data)}
-          onSubmit={(values) => mutation.mutate({ path: { id: memberId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ path: { id: memberId }, body: values })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}

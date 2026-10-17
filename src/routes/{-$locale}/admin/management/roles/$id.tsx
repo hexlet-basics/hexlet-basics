@@ -34,6 +34,7 @@ function EditRole() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateRoleMutation(),
+    fieldErrors: true,
     invalidate: [adminListRolesQueryKey(), adminGetRoleQueryKey({ path: { id: roleId } })],
     successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -52,7 +53,7 @@ function EditRole() {
             fields={fields}
             schema={zRoleInput}
             defaultValues={staffRoleToForm(data)}
-            onSubmit={(values) => mutation.mutate({ path: { id: roleId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: roleId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
             isPending={mutation.isPending}

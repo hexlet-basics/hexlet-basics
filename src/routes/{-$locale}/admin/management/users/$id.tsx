@@ -33,6 +33,7 @@ function EditManagementUser() {
 
   const mutation = useResourceMutation({
     mutation: adminUpdateManagementUserMutation(),
+    fieldErrors: true,
     invalidate: [
       adminListManagementUsersQueryKey(),
       adminGetManagementUserQueryKey({ path: { id: userId } }),
@@ -53,7 +54,7 @@ function EditManagementUser() {
           fields={fields}
           schema={zUserInput}
           defaultValues={userToForm(data)}
-          onSubmit={(values) => mutation.mutate({ path: { id: userId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ path: { id: userId }, body: values })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}

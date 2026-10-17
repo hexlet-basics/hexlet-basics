@@ -43,3 +43,25 @@ test("creates a user", async () => {
   });
   await expect.poll(() => router.state.location.pathname).toBe("/admin/users");
 });
+
+// A 422 from the API lands on the field it names, through the same CrudForm
+// every resource shares, and the form stays put for another try.
+test("shows a refused field of a new user at that field", async () => {
+  worker.use(
+    http.post("*/admin/api/users", () =>
+      HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
+    ),
+  );
+
+  const { router } = await renderRoute(Route, {
+    path: "/{-$locale}/admin/users/new",
+    initialPath: "/admin/users/new",
+    user: admin,
+  });
+
+  await page.getByLabelText("Email *").fill("dora@example.com");
+  await page.getByRole("button", { name: "Create" }).click();
+
+  await expect.element(page.getByText("has already been taken")).toBeVisible();
+  expect(router.state.location.pathname).toBe("/admin/users/new");
+});
