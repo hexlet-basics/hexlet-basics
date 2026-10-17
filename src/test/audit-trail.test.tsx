@@ -53,7 +53,7 @@ const read = record({
   id: 2,
   channel: "mcp",
   connectedAppId: 11,
-  tokenId: 12,
+  tokenId: "tok-12",
   operation: "AdminListUsers",
   entityType: "User",
   entityId: null,

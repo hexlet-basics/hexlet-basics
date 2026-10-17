@@ -95,7 +95,7 @@ export type AuditRecord = {
   actorUserId: number | null;
   channel: 'web' | 'mcp';
   connectedAppId: number | null;
-  tokenId: number | null;
+  tokenId: string | null;
   requestId: string | null;
   address: string | null;
   userAgent: string | null;

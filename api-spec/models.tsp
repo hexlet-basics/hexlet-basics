@@ -563,7 +563,7 @@ model AuditRecord {
   actorUserId: int32 | null;
   channel: "web" | "mcp";
   connectedAppId: int32 | null;
-  tokenId: int32 | null;
+  tokenId: string | null;
   requestId: string | null;
   address: string | null;
   userAgent: string | null;
