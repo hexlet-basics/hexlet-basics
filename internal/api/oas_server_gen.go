@@ -254,7 +254,9 @@ type Handler interface {
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
 	// AdminListCourseOptions implements adminListCourseOptions operation.
 	//
-	// Every course as id and name, unpaginated and oldest first, for selects.
+	// Every course as id and name, unpaginated and oldest first, for selects. It is the post form's course
+	// picker, so it is classified under blog posts: an editor of posts picks the courses a post promotes
+	// without being allowed to edit courses.
 	//
 	// GET /api/admin/courses/options
 	AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error)

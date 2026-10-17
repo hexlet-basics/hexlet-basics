@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCourseOptionsData, AdminListCourseOptionsErrors, AdminListCourseOptionsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesErrors, AdminSuggestBlogPostRelatedCoursesResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, DownloadBookData, DownloadBookErrors, DownloadBookResponses, GetActiveBannerData, GetActiveBannerErrors, GetActiveBannerResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetBookData, GetBookErrors, GetBookResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, GetYandexCoursesFeedData, GetYandexCoursesFeedErrors, GetYandexCoursesFeedResponses, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlErrors, GetYandexCoursesFeedXmlResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, StartLessonData, StartLessonErrors, StartLessonResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
+import type { AdminArchiveBannerData, AdminArchiveBannerErrors, AdminArchiveBannerResponses, AdminArchiveBlogPostData, AdminArchiveBlogPostErrors, AdminArchiveBlogPostResponses, AdminArchiveCourseLandingPageData, AdminArchiveCourseLandingPageErrors, AdminArchiveCourseLandingPageResponses, AdminArchiveReviewData, AdminArchiveReviewErrors, AdminArchiveReviewResponses, AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetMyCapabilitiesData, AdminGetMyCapabilitiesErrors, AdminGetMyCapabilitiesResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListAuditRecordsData, AdminListAuditRecordsErrors, AdminListAuditRecordsResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCourseOptionsData, AdminListCourseOptionsErrors, AdminListCourseOptionsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListPermissionsData, AdminListPermissionsErrors, AdminListPermissionsResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminMarkCourseCompletedData, AdminMarkCourseCompletedErrors, AdminMarkCourseCompletedResponses, AdminMarkCourseDraftData, AdminMarkCourseDraftErrors, AdminMarkCourseDraftResponses, AdminMarkCourseInDevelopmentData, AdminMarkCourseInDevelopmentErrors, AdminMarkCourseInDevelopmentResponses, AdminPublishBannerData, AdminPublishBannerErrors, AdminPublishBannerResponses, AdminPublishBlogPostData, AdminPublishBlogPostErrors, AdminPublishBlogPostResponses, AdminPublishCourseLandingPageData, AdminPublishCourseLandingPageErrors, AdminPublishCourseLandingPageResponses, AdminPublishReviewData, AdminPublishReviewErrors, AdminPublishReviewResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesErrors, AdminSuggestBlogPostRelatedCoursesResponses, AdminUnpublishBannerData, AdminUnpublishBannerErrors, AdminUnpublishBannerResponses, AdminUnpublishBlogPostData, AdminUnpublishBlogPostErrors, AdminUnpublishBlogPostResponses, AdminUnpublishCourseLandingPageData, AdminUnpublishCourseLandingPageErrors, AdminUnpublishCourseLandingPageResponses, AdminUnpublishReviewData, AdminUnpublishReviewErrors, AdminUnpublishReviewResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, ApproveOAuthConsentData, ApproveOAuthConsentErrors, ApproveOAuthConsentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, DenyOAuthConsentData, DenyOAuthConsentErrors, DenyOAuthConsentResponses, DownloadBookData, DownloadBookErrors, DownloadBookResponses, GetActiveBannerData, GetActiveBannerErrors, GetActiveBannerResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetBookData, GetBookErrors, GetBookResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetOAuthConsentData, GetOAuthConsentErrors, GetOAuthConsentResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, GetYandexCoursesFeedData, GetYandexCoursesFeedErrors, GetYandexCoursesFeedResponses, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlErrors, GetYandexCoursesFeedXmlResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListConnectedAppsData, ListConnectedAppsErrors, ListConnectedAppsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, RevokeConnectedAppData, RevokeConnectedAppErrors, RevokeConnectedAppResponses, StartLessonData, StartLessonErrors, StartLessonResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
   /**
@@ -178,11 +178,10 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
  * read of personal data: records carry addresses and old values.
  */
 export const adminListAuditRecords = <ThrowOnError extends boolean = false>(options?: Options<AdminListAuditRecordsData, ThrowOnError>): RequestResult<AdminListAuditRecordsResponses, AdminListAuditRecordsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListAuditRecordsResponses, AdminListAuditRecordsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/audit_records',
@@ -270,6 +269,50 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
   }
 });
 
+/**
+ * Archive a draft or published banner.
+ */
+export const adminArchiveBanner = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveBannerData, ThrowOnError>): RequestResult<AdminArchiveBannerResponses, AdminArchiveBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveBannerResponses, AdminArchiveBannerErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/banners/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived banner. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishBanner = <ThrowOnError extends boolean = false>(options: Options<AdminPublishBannerData, ThrowOnError>): RequestResult<AdminPublishBannerResponses, AdminPublishBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishBannerResponses, AdminPublishBannerErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/banners/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published banner back to draft.
+ */
+export const adminUnpublishBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishBannerData, ThrowOnError>): RequestResult<AdminUnpublishBannerResponses, AdminUnpublishBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishBannerResponses, AdminUnpublishBannerErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/banners/{id}/unpublish',
+  ...options
+});
+
 export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError>({
   security: [{
       key: 'AdminSession',
@@ -334,6 +377,36 @@ export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(option
 });
 
 /**
+ * Archive a draft or published post.
+ */
+export const adminArchiveBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveBlogPostData, ThrowOnError>): RequestResult<AdminArchiveBlogPostResponses, AdminArchiveBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveBlogPostResponses, AdminArchiveBlogPostErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/blog_posts/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived post. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminPublishBlogPostData, ThrowOnError>): RequestResult<AdminPublishBlogPostResponses, AdminPublishBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishBlogPostResponses, AdminPublishBlogPostErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/blog_posts/{id}/publish',
+  ...options
+});
+
+/**
  * Set the related/promoted courses for a post by hand.
  */
 export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = false>(options: Options<AdminSetBlogPostRelatedCoursesData, ThrowOnError>): RequestResult<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError> => (options.client ?? client).post<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError>({
@@ -368,14 +441,27 @@ export const adminSuggestBlogPostRelatedCourses = <ThrowOnError extends boolean 
 });
 
 /**
- * The capabilities the caller holds; open to any staff member.
+ * Take a published post back to draft.
  */
-export const adminGetMyCapabilities = <ThrowOnError extends boolean = false>(options?: Options<AdminGetMyCapabilitiesData, ThrowOnError>): RequestResult<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError> => (options?.client ?? client).get<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError>({
-  responseType: 'json',
+export const adminUnpublishBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishBlogPostData, ThrowOnError>): RequestResult<AdminUnpublishBlogPostResponses, AdminUnpublishBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishBlogPostResponses, AdminUnpublishBlogPostErrors, ThrowOnError>({
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/blog_posts/{id}/unpublish',
+  ...options
+});
+
+/**
+ * The capabilities the caller holds; open to any staff member.
+ */
+export const adminGetMyCapabilities = <ThrowOnError extends boolean = false>(options?: Options<AdminGetMyCapabilitiesData, ThrowOnError>): RequestResult<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError> => (options?.client ?? client).get<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/capabilities',
@@ -590,6 +676,50 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
   }
 });
 
+/**
+ * Archive a draft or published landing page.
+ */
+export const adminArchiveCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveCourseLandingPageData, ThrowOnError>): RequestResult<AdminArchiveCourseLandingPageResponses, AdminArchiveCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveCourseLandingPageResponses, AdminArchiveCourseLandingPageErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/course_landing_pages/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived landing page. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminPublishCourseLandingPageData, ThrowOnError>): RequestResult<AdminPublishCourseLandingPageResponses, AdminPublishCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishCourseLandingPageResponses, AdminPublishCourseLandingPageErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/course_landing_pages/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published landing page back to draft.
+ */
+export const adminUnpublishCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishCourseLandingPageData, ThrowOnError>): RequestResult<AdminUnpublishCourseLandingPageResponses, AdminUnpublishCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishCourseLandingPageResponses, AdminUnpublishCourseLandingPageErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/course_landing_pages/{id}/unpublish',
+  ...options
+});
+
 export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError>({
   security: [{
       key: 'AdminSession',
@@ -710,6 +840,9 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
 
 /**
  * Every course as id and name, unpaginated and oldest first, for selects.
+ *       It is the post form's course picker, so it is classified under blog posts:
+ *       an editor of posts picks the courses a post promotes without being allowed
+ *       to edit courses.
  */
 export const adminListCourseOptions = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseOptionsData, ThrowOnError>): RequestResult<AdminListCourseOptionsResponses, AdminListCourseOptionsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseOptionsResponses, AdminListCourseOptionsErrors, ThrowOnError>({
   security: [{
@@ -750,6 +883,51 @@ export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options:
     'Content-Type': 'application/json',
     ...options.headers
   }
+});
+
+/**
+ * Mark a course as completed: it joins the public catalogue.
+ */
+export const adminMarkCourseCompleted = <ThrowOnError extends boolean = false>(options: Options<AdminMarkCourseCompletedData, ThrowOnError>): RequestResult<AdminMarkCourseCompletedResponses, AdminMarkCourseCompletedErrors, ThrowOnError> => (options.client ?? client).post<AdminMarkCourseCompletedResponses, AdminMarkCourseCompletedErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/courses/{id}/mark_completed',
+  ...options
+});
+
+/**
+ * Mark a course as a draft. A state is not an update: each change of Course
+ *       Readiness is its own operation with its own Permission. Any change between two
+ *       distinct values is legal; repeating the current value is a 409 with a localized
+ *       `detail`.
+ */
+export const adminMarkCourseDraft = <ThrowOnError extends boolean = false>(options: Options<AdminMarkCourseDraftData, ThrowOnError>): RequestResult<AdminMarkCourseDraftResponses, AdminMarkCourseDraftErrors, ThrowOnError> => (options.client ?? client).post<AdminMarkCourseDraftResponses, AdminMarkCourseDraftErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/courses/{id}/mark_draft',
+  ...options
+});
+
+/**
+ * Mark a course as in development.
+ */
+export const adminMarkCourseInDevelopment = <ThrowOnError extends boolean = false>(options: Options<AdminMarkCourseInDevelopmentData, ThrowOnError>): RequestResult<AdminMarkCourseInDevelopmentResponses, AdminMarkCourseInDevelopmentErrors, ThrowOnError> => (options.client ?? client).post<AdminMarkCourseInDevelopmentResponses, AdminMarkCourseInDevelopmentErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/courses/{id}/mark_in_development',
+  ...options
 });
 
 /**
@@ -806,11 +984,10 @@ export const adminListLessonProgress = <ThrowOnError extends boolean = false>(op
  * The catalog of Permissions, generated from the operations' declarations.
  */
 export const adminListPermissions = <ThrowOnError extends boolean = false>(options?: Options<AdminListPermissionsData, ThrowOnError>): RequestResult<AdminListPermissionsResponses, AdminListPermissionsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListPermissionsResponses, AdminListPermissionsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/management/permissions',
@@ -1107,6 +1284,50 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
 });
 
 /**
+ * Archive a draft or published review.
+ */
+export const adminArchiveReview = <ThrowOnError extends boolean = false>(options: Options<AdminArchiveReviewData, ThrowOnError>): RequestResult<AdminArchiveReviewResponses, AdminArchiveReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminArchiveReviewResponses, AdminArchiveReviewErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/reviews/{id}/archive',
+  ...options
+});
+
+/**
+ * Publish a draft or archived review. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishReview = <ThrowOnError extends boolean = false>(options: Options<AdminPublishReviewData, ThrowOnError>): RequestResult<AdminPublishReviewResponses, AdminPublishReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminPublishReviewResponses, AdminPublishReviewErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/reviews/{id}/publish',
+  ...options
+});
+
+/**
+ * Take a published review back to draft.
+ */
+export const adminUnpublishReview = <ThrowOnError extends boolean = false>(options: Options<AdminUnpublishReviewData, ThrowOnError>): RequestResult<AdminUnpublishReviewResponses, AdminUnpublishReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminUnpublishReviewResponses, AdminUnpublishReviewErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/reviews/{id}/unpublish',
+  ...options
+});
+
+/**
  * The assistant chat history for the current user in this lesson, and their
  * remaining quota. A lesson they never asked about answers an empty chat.
  */
@@ -1353,14 +1574,41 @@ export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: O
 });
 
 /**
- * The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
+ * The apps the signed-in user has connected and that can still act for them. An app unused for thirty days (no refresh) has lapsed and is not listed.
  */
-export const getOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<GetOAuthConsentData, ThrowOnError>): RequestResult<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError> => (options.client ?? client).get<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError>({
-  responseType: 'json',
+export const listConnectedApps = <ThrowOnError extends boolean = false>(options?: Options<ListConnectedAppsData, ThrowOnError>): RequestResult<ListConnectedAppsResponses, ListConnectedAppsErrors, ThrowOnError> => (options?.client ?? client).get<ListConnectedAppsResponses, ListConnectedAppsErrors, ThrowOnError>({
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/oauth/connected_apps',
+  ...options
+});
+
+/**
+ * Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps.
+ */
+export const revokeConnectedApp = <ThrowOnError extends boolean = false>(options: Options<RevokeConnectedAppData, ThrowOnError>): RequestResult<RevokeConnectedAppResponses, RevokeConnectedAppErrors, ThrowOnError> => (options.client ?? client).delete<RevokeConnectedAppResponses, RevokeConnectedAppErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'session',
+      type: 'apiKey'
+    }],
+  url: '/api/oauth/connected_apps/{id}',
+  ...options
+});
+
+/**
+ * The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
+ */
+export const getOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<GetOAuthConsentData, ThrowOnError>): RequestResult<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError> => (options.client ?? client).get<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/oauth/consents/{requestId}',
@@ -1371,13 +1619,12 @@ export const getOAuthConsent = <ThrowOnError extends boolean = false>(options: O
  * Grant the request as the signed-in user.
  */
 export const approveOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<ApproveOAuthConsentData, ThrowOnError>): RequestResult<ApproveOAuthConsentResponses, ApproveOAuthConsentErrors, ThrowOnError> => (options.client ?? client).post<ApproveOAuthConsentResponses, ApproveOAuthConsentErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/oauth/consents/{requestId}/approve',
   ...options
 });
@@ -1386,13 +1633,12 @@ export const approveOAuthConsent = <ThrowOnError extends boolean = false>(option
  * Refuse the request; the application is told `access_denied`.
  */
 export const denyOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<DenyOAuthConsentData, ThrowOnError>): RequestResult<DenyOAuthConsentResponses, DenyOAuthConsentErrors, ThrowOnError> => (options.client ?? client).post<DenyOAuthConsentResponses, DenyOAuthConsentErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/oauth/consents/{requestId}/deny',
   ...options
 });

@@ -26,27 +26,6 @@ export const blogPostFields: FieldDescriptor[] = [
     required: false,
   },
   {
-    name: "state",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.blog_post.state",
-    enumValues: [
-      {
-        value: "draft",
-        labelKey: "models.attributes.blog_post.state/values.draft",
-      },
-      {
-        value: "published",
-        labelKey: "models.attributes.blog_post.state/values.published",
-      },
-      {
-        value: "archived",
-        labelKey: "models.attributes.blog_post.state/values.archived",
-      },
-    ],
-    required: false,
-  },
-  {
     name: "richBody",
     kind: "text",
     nullable: false,

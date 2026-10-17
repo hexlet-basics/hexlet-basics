@@ -397,7 +397,9 @@ func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params A
 
 // AdminListCourseOptions implements adminListCourseOptions operation.
 //
-// Every course as id and name, unpaginated and oldest first, for selects.
+// Every course as id and name, unpaginated and oldest first, for selects. It is the post form's course
+// picker, so it is classified under blog posts: an editor of posts picks the courses a post promotes
+// without being allowed to edit courses.
 //
 // GET /api/admin/courses/options
 func (UnimplementedHandler) AdminListCourseOptions(ctx context.Context) (r AdminListCourseOptionsRes, _ error) {

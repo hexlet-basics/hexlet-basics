@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 	ht "github.com/ogen-go/ogen/http"
 )
 
@@ -57,6 +58,38 @@ func (s *AdjacentLessons) SetPrevious(val NilLessonRef) {
 func (s *AdjacentLessons) SetNext(val NilLessonRef) {
 	s.Next = val
 }
+
+type AdminArchiveBannerForbidden ProblemDetails
+
+func (*AdminArchiveBannerForbidden) adminArchiveBannerRes() {}
+
+type AdminArchiveBannerUnauthorized ProblemDetails
+
+func (*AdminArchiveBannerUnauthorized) adminArchiveBannerRes() {}
+
+type AdminArchiveBlogPostForbidden ProblemDetails
+
+func (*AdminArchiveBlogPostForbidden) adminArchiveBlogPostRes() {}
+
+type AdminArchiveBlogPostUnauthorized ProblemDetails
+
+func (*AdminArchiveBlogPostUnauthorized) adminArchiveBlogPostRes() {}
+
+type AdminArchiveCourseLandingPageForbidden ProblemDetails
+
+func (*AdminArchiveCourseLandingPageForbidden) adminArchiveCourseLandingPageRes() {}
+
+type AdminArchiveCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminArchiveCourseLandingPageUnauthorized) adminArchiveCourseLandingPageRes() {}
+
+type AdminArchiveReviewForbidden ProblemDetails
+
+func (*AdminArchiveReviewForbidden) adminArchiveReviewRes() {}
+
+type AdminArchiveReviewUnauthorized ProblemDetails
+
+func (*AdminArchiveReviewUnauthorized) adminArchiveReviewRes() {}
 
 type AdminCreateBannerForbidden ProblemDetails
 
@@ -380,6 +413,14 @@ type AdminGetUserUnauthorized ProblemDetails
 
 func (*AdminGetUserUnauthorized) adminGetUserRes() {}
 
+type AdminListAuditRecordsForbidden ProblemDetails
+
+func (*AdminListAuditRecordsForbidden) adminListAuditRecordsRes() {}
+
+type AdminListAuditRecordsUnauthorized ProblemDetails
+
+func (*AdminListAuditRecordsUnauthorized) adminListAuditRecordsRes() {}
+
 type AdminListBannersForbidden ProblemDetails
 
 func (*AdminListBannersForbidden) adminListBannersRes() {}
@@ -544,6 +585,62 @@ type AdminListUsersUnauthorized ProblemDetails
 
 func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 
+type AdminMarkCourseCompletedForbidden ProblemDetails
+
+func (*AdminMarkCourseCompletedForbidden) adminMarkCourseCompletedRes() {}
+
+type AdminMarkCourseCompletedUnauthorized ProblemDetails
+
+func (*AdminMarkCourseCompletedUnauthorized) adminMarkCourseCompletedRes() {}
+
+type AdminMarkCourseDraftForbidden ProblemDetails
+
+func (*AdminMarkCourseDraftForbidden) adminMarkCourseDraftRes() {}
+
+type AdminMarkCourseDraftUnauthorized ProblemDetails
+
+func (*AdminMarkCourseDraftUnauthorized) adminMarkCourseDraftRes() {}
+
+type AdminMarkCourseInDevelopmentForbidden ProblemDetails
+
+func (*AdminMarkCourseInDevelopmentForbidden) adminMarkCourseInDevelopmentRes() {}
+
+type AdminMarkCourseInDevelopmentUnauthorized ProblemDetails
+
+func (*AdminMarkCourseInDevelopmentUnauthorized) adminMarkCourseInDevelopmentRes() {}
+
+type AdminPublishBannerForbidden ProblemDetails
+
+func (*AdminPublishBannerForbidden) adminPublishBannerRes() {}
+
+type AdminPublishBannerUnauthorized ProblemDetails
+
+func (*AdminPublishBannerUnauthorized) adminPublishBannerRes() {}
+
+type AdminPublishBlogPostForbidden ProblemDetails
+
+func (*AdminPublishBlogPostForbidden) adminPublishBlogPostRes() {}
+
+type AdminPublishBlogPostUnauthorized ProblemDetails
+
+func (*AdminPublishBlogPostUnauthorized) adminPublishBlogPostRes() {}
+
+type AdminPublishCourseLandingPageForbidden ProblemDetails
+
+func (*AdminPublishCourseLandingPageForbidden) adminPublishCourseLandingPageRes() {}
+
+type AdminPublishCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminPublishCourseLandingPageUnauthorized) adminPublishCourseLandingPageRes() {}
+
+type AdminPublishReviewForbidden ProblemDetails
+
+func (*AdminPublishReviewForbidden) adminPublishReviewRes() {}
+
+type AdminPublishReviewUnauthorized ProblemDetails
+
+func (*AdminPublishReviewUnauthorized) adminPublishReviewRes() {}
+
 type AdminReviewCourseForbidden ProblemDetails
 
 func (*AdminReviewCourseForbidden) adminReviewCourseRes() {}
@@ -627,6 +724,38 @@ func (*AdminSuggestBlogPostRelatedCoursesNoContent) adminSuggestBlogPostRelatedC
 type AdminSuggestBlogPostRelatedCoursesUnauthorized ProblemDetails
 
 func (*AdminSuggestBlogPostRelatedCoursesUnauthorized) adminSuggestBlogPostRelatedCoursesRes() {}
+
+type AdminUnpublishBannerForbidden ProblemDetails
+
+func (*AdminUnpublishBannerForbidden) adminUnpublishBannerRes() {}
+
+type AdminUnpublishBannerUnauthorized ProblemDetails
+
+func (*AdminUnpublishBannerUnauthorized) adminUnpublishBannerRes() {}
+
+type AdminUnpublishBlogPostForbidden ProblemDetails
+
+func (*AdminUnpublishBlogPostForbidden) adminUnpublishBlogPostRes() {}
+
+type AdminUnpublishBlogPostUnauthorized ProblemDetails
+
+func (*AdminUnpublishBlogPostUnauthorized) adminUnpublishBlogPostRes() {}
+
+type AdminUnpublishCourseLandingPageForbidden ProblemDetails
+
+func (*AdminUnpublishCourseLandingPageForbidden) adminUnpublishCourseLandingPageRes() {}
+
+type AdminUnpublishCourseLandingPageUnauthorized ProblemDetails
+
+func (*AdminUnpublishCourseLandingPageUnauthorized) adminUnpublishCourseLandingPageRes() {}
+
+type AdminUnpublishReviewForbidden ProblemDetails
+
+func (*AdminUnpublishReviewForbidden) adminUnpublishReviewRes() {}
+
+type AdminUnpublishReviewUnauthorized ProblemDetails
+
+func (*AdminUnpublishReviewUnauthorized) adminUnpublishReviewRes() {}
 
 type AdminUpdateBannerForbidden ProblemDetails
 
@@ -855,6 +984,506 @@ func (s *AttachmentUploadFormMultipart) SetFile(val ht.MultipartFile) {
 	s.File = val
 }
 
+// One mutation of one entity inside an operation. A bulk change carries no id.
+// Ref: #/components/schemas/AuditChange
+type AuditChange struct {
+	// The ent entity type, e.g. `BlogPost`.
+	Entity string    `json:"entity"`
+	ID     OptString `json:"id"`
+	// Create, update or delete.
+	Op     string             `json:"op"`
+	Fields []AuditFieldChange `json:"fields"`
+}
+
+// GetEntity returns the value of Entity.
+func (s *AuditChange) GetEntity() string {
+	return s.Entity
+}
+
+// GetID returns the value of ID.
+func (s *AuditChange) GetID() OptString {
+	return s.ID
+}
+
+// GetOp returns the value of Op.
+func (s *AuditChange) GetOp() string {
+	return s.Op
+}
+
+// GetFields returns the value of Fields.
+func (s *AuditChange) GetFields() []AuditFieldChange {
+	return s.Fields
+}
+
+// SetEntity sets the value of Entity.
+func (s *AuditChange) SetEntity(val string) {
+	s.Entity = val
+}
+
+// SetID sets the value of ID.
+func (s *AuditChange) SetID(val OptString) {
+	s.ID = val
+}
+
+// SetOp sets the value of Op.
+func (s *AuditChange) SetOp(val string) {
+	s.Op = val
+}
+
+// SetFields sets the value of Fields.
+func (s *AuditChange) SetFields(val []AuditFieldChange) {
+	s.Fields = val
+}
+
+// The old and new value of one field an operation changed. `old` is absent on a create and `new` on a
+// delete. A `secret` field (password material, a token) carries its name only: no value was ever
+// stored. The values are JSON of any shape, as the field held them.
+// Ref: #/components/schemas/AuditFieldChange
+type AuditFieldChange struct {
+	Name   string  `json:"name"`
+	Old    jx.Raw  `json:"old"`
+	New    jx.Raw  `json:"new"`
+	Secret OptBool `json:"secret"`
+}
+
+// GetName returns the value of Name.
+func (s *AuditFieldChange) GetName() string {
+	return s.Name
+}
+
+// GetOld returns the value of Old.
+func (s *AuditFieldChange) GetOld() jx.Raw {
+	return s.Old
+}
+
+// GetNew returns the value of New.
+func (s *AuditFieldChange) GetNew() jx.Raw {
+	return s.New
+}
+
+// GetSecret returns the value of Secret.
+func (s *AuditFieldChange) GetSecret() OptBool {
+	return s.Secret
+}
+
+// SetName sets the value of Name.
+func (s *AuditFieldChange) SetName(val string) {
+	s.Name = val
+}
+
+// SetOld sets the value of Old.
+func (s *AuditFieldChange) SetOld(val jx.Raw) {
+	s.Old = val
+}
+
+// SetNew sets the value of New.
+func (s *AuditFieldChange) SetNew(val jx.Raw) {
+	s.New = val
+}
+
+// SetSecret sets the value of Secret.
+func (s *AuditFieldChange) SetSecret(val OptBool) {
+	s.Secret = val
+}
+
+// What a read of personal data touched: how many rows and, up to a cap, their ids. Identifiers and
+// counts only, never a field value.
+// Ref: #/components/schemas/AuditReads
+type AuditReads struct {
+	Count int32    `json:"count"`
+	Ids   []string `json:"ids"`
+}
+
+// GetCount returns the value of Count.
+func (s *AuditReads) GetCount() int32 {
+	return s.Count
+}
+
+// GetIds returns the value of Ids.
+func (s *AuditReads) GetIds() []string {
+	return s.Ids
+}
+
+// SetCount sets the value of Count.
+func (s *AuditReads) SetCount(val int32) {
+	s.Count = val
+}
+
+// SetIds sets the value of Ids.
+func (s *AuditReads) SetIds(val []string) {
+	s.Ids = val
+}
+
+// One Audit Record: who did what, through which channel, to which entity, and how it ended (legacy:
+// none, the trail is new). A change carries `changes`, a read of personal data carries `reads`, a
+// refusal carries neither.
+// Ref: #/components/schemas/AuditRecord
+type AuditRecord struct {
+	ID         int64     `json:"id"`
+	OccurredAt time.Time `json:"occurredAt"`
+	// Null for a refusal of a caller who was not signed in.
+	ActorUserId    NilInt32           `json:"actorUserId"`
+	Channel        AuditRecordChannel `json:"channel"`
+	ConnectedAppId NilInt32           `json:"connectedAppId"`
+	TokenId        NilString          `json:"tokenId"`
+	RequestId      NilString          `json:"requestId"`
+	Address        NilString          `json:"address"`
+	UserAgent      NilString          `json:"userAgent"`
+	// The operation name, e.g. `AdminUpdateBlogPost`.
+	Operation  string             `json:"operation"`
+	EntityType NilString          `json:"entityType"`
+	EntityId   NilString          `json:"entityId"`
+	Locale     NilString          `json:"locale"`
+	Outcome    AuditRecordOutcome `json:"outcome"`
+	Changes    []AuditChange      `json:"changes"`
+	Reads      NilAuditReads      `json:"reads"`
+}
+
+// GetID returns the value of ID.
+func (s *AuditRecord) GetID() int64 {
+	return s.ID
+}
+
+// GetOccurredAt returns the value of OccurredAt.
+func (s *AuditRecord) GetOccurredAt() time.Time {
+	return s.OccurredAt
+}
+
+// GetActorUserId returns the value of ActorUserId.
+func (s *AuditRecord) GetActorUserId() NilInt32 {
+	return s.ActorUserId
+}
+
+// GetChannel returns the value of Channel.
+func (s *AuditRecord) GetChannel() AuditRecordChannel {
+	return s.Channel
+}
+
+// GetConnectedAppId returns the value of ConnectedAppId.
+func (s *AuditRecord) GetConnectedAppId() NilInt32 {
+	return s.ConnectedAppId
+}
+
+// GetTokenId returns the value of TokenId.
+func (s *AuditRecord) GetTokenId() NilString {
+	return s.TokenId
+}
+
+// GetRequestId returns the value of RequestId.
+func (s *AuditRecord) GetRequestId() NilString {
+	return s.RequestId
+}
+
+// GetAddress returns the value of Address.
+func (s *AuditRecord) GetAddress() NilString {
+	return s.Address
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *AuditRecord) GetUserAgent() NilString {
+	return s.UserAgent
+}
+
+// GetOperation returns the value of Operation.
+func (s *AuditRecord) GetOperation() string {
+	return s.Operation
+}
+
+// GetEntityType returns the value of EntityType.
+func (s *AuditRecord) GetEntityType() NilString {
+	return s.EntityType
+}
+
+// GetEntityId returns the value of EntityId.
+func (s *AuditRecord) GetEntityId() NilString {
+	return s.EntityId
+}
+
+// GetLocale returns the value of Locale.
+func (s *AuditRecord) GetLocale() NilString {
+	return s.Locale
+}
+
+// GetOutcome returns the value of Outcome.
+func (s *AuditRecord) GetOutcome() AuditRecordOutcome {
+	return s.Outcome
+}
+
+// GetChanges returns the value of Changes.
+func (s *AuditRecord) GetChanges() []AuditChange {
+	return s.Changes
+}
+
+// GetReads returns the value of Reads.
+func (s *AuditRecord) GetReads() NilAuditReads {
+	return s.Reads
+}
+
+// SetID sets the value of ID.
+func (s *AuditRecord) SetID(val int64) {
+	s.ID = val
+}
+
+// SetOccurredAt sets the value of OccurredAt.
+func (s *AuditRecord) SetOccurredAt(val time.Time) {
+	s.OccurredAt = val
+}
+
+// SetActorUserId sets the value of ActorUserId.
+func (s *AuditRecord) SetActorUserId(val NilInt32) {
+	s.ActorUserId = val
+}
+
+// SetChannel sets the value of Channel.
+func (s *AuditRecord) SetChannel(val AuditRecordChannel) {
+	s.Channel = val
+}
+
+// SetConnectedAppId sets the value of ConnectedAppId.
+func (s *AuditRecord) SetConnectedAppId(val NilInt32) {
+	s.ConnectedAppId = val
+}
+
+// SetTokenId sets the value of TokenId.
+func (s *AuditRecord) SetTokenId(val NilString) {
+	s.TokenId = val
+}
+
+// SetRequestId sets the value of RequestId.
+func (s *AuditRecord) SetRequestId(val NilString) {
+	s.RequestId = val
+}
+
+// SetAddress sets the value of Address.
+func (s *AuditRecord) SetAddress(val NilString) {
+	s.Address = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *AuditRecord) SetUserAgent(val NilString) {
+	s.UserAgent = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *AuditRecord) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetEntityType sets the value of EntityType.
+func (s *AuditRecord) SetEntityType(val NilString) {
+	s.EntityType = val
+}
+
+// SetEntityId sets the value of EntityId.
+func (s *AuditRecord) SetEntityId(val NilString) {
+	s.EntityId = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *AuditRecord) SetLocale(val NilString) {
+	s.Locale = val
+}
+
+// SetOutcome sets the value of Outcome.
+func (s *AuditRecord) SetOutcome(val AuditRecordOutcome) {
+	s.Outcome = val
+}
+
+// SetChanges sets the value of Changes.
+func (s *AuditRecord) SetChanges(val []AuditChange) {
+	s.Changes = val
+}
+
+// SetReads sets the value of Reads.
+func (s *AuditRecord) SetReads(val NilAuditReads) {
+	s.Reads = val
+}
+
+type AuditRecordChannel string
+
+const (
+	AuditRecordChannelWeb AuditRecordChannel = "web"
+	AuditRecordChannelMcp AuditRecordChannel = "mcp"
+)
+
+// AllValues returns all AuditRecordChannel values.
+func (AuditRecordChannel) AllValues() []AuditRecordChannel {
+	return []AuditRecordChannel{
+		AuditRecordChannelWeb,
+		AuditRecordChannelMcp,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordChannel) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordChannelWeb:
+		return []byte(s), nil
+	case AuditRecordChannelMcp:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordChannel) UnmarshalText(data []byte) error {
+	switch AuditRecordChannel(data) {
+	case AuditRecordChannelWeb:
+		*s = AuditRecordChannelWeb
+		return nil
+	case AuditRecordChannelMcp:
+		*s = AuditRecordChannelMcp
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type AuditRecordOutcome string
+
+const (
+	AuditRecordOutcomeSucceeded AuditRecordOutcome = "succeeded"
+	AuditRecordOutcomeForbidden AuditRecordOutcome = "forbidden"
+	AuditRecordOutcomeFailed    AuditRecordOutcome = "failed"
+)
+
+// AllValues returns all AuditRecordOutcome values.
+func (AuditRecordOutcome) AllValues() []AuditRecordOutcome {
+	return []AuditRecordOutcome{
+		AuditRecordOutcomeSucceeded,
+		AuditRecordOutcomeForbidden,
+		AuditRecordOutcomeFailed,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordOutcome) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordOutcomeSucceeded:
+		return []byte(s), nil
+	case AuditRecordOutcomeForbidden:
+		return []byte(s), nil
+	case AuditRecordOutcomeFailed:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordOutcome) UnmarshalText(data []byte) error {
+	switch AuditRecordOutcome(data) {
+	case AuditRecordOutcomeSucceeded:
+		*s = AuditRecordOutcomeSucceeded
+		return nil
+	case AuditRecordOutcomeForbidden:
+		*s = AuditRecordOutcomeForbidden
+		return nil
+	case AuditRecordOutcomeFailed:
+		*s = AuditRecordOutcomeFailed
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/AuditRecordPage
+type AuditRecordPage struct {
+	Items []AuditRecord `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *AuditRecordPage) GetItems() []AuditRecord {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *AuditRecordPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *AuditRecordPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *AuditRecordPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *AuditRecordPage) SetItems(val []AuditRecord) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AuditRecordPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *AuditRecordPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *AuditRecordPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+func (*AuditRecordPage) adminListAuditRecordsRes() {}
+
+type AuditRecordQueryChannel string
+
+const (
+	AuditRecordQueryChannelWeb AuditRecordQueryChannel = "web"
+	AuditRecordQueryChannelMcp AuditRecordQueryChannel = "mcp"
+)
+
+// AllValues returns all AuditRecordQueryChannel values.
+func (AuditRecordQueryChannel) AllValues() []AuditRecordQueryChannel {
+	return []AuditRecordQueryChannel{
+		AuditRecordQueryChannelWeb,
+		AuditRecordQueryChannelMcp,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordQueryChannel) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordQueryChannelWeb:
+		return []byte(s), nil
+	case AuditRecordQueryChannelMcp:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordQueryChannel) UnmarshalText(data []byte) error {
+	switch AuditRecordQueryChannel(data) {
+	case AuditRecordQueryChannelWeb:
+		*s = AuditRecordQueryChannelWeb
+		return nil
+	case AuditRecordQueryChannelMcp:
+		*s = AuditRecordQueryChannelMcp
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // A site banner (legacy: `Banner`).
 // Ref: #/components/schemas/Banner
 type Banner struct {
@@ -959,9 +1588,12 @@ func (s *Banner) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Banner) adminCreateBannerRes() {}
-func (*Banner) adminGetBannerRes()    {}
-func (*Banner) adminUpdateBannerRes() {}
+func (*Banner) adminArchiveBannerRes()   {}
+func (*Banner) adminCreateBannerRes()    {}
+func (*Banner) adminGetBannerRes()       {}
+func (*Banner) adminPublishBannerRes()   {}
+func (*Banner) adminUnpublishBannerRes() {}
+func (*Banner) adminUpdateBannerRes()    {}
 
 // Banner display background.
 // Ref: #/components/schemas/BannerBackground
@@ -1013,20 +1645,16 @@ func (s *BannerBackground) UnmarshalText(data []byte) error {
 	}
 }
 
+// The input of a banner: never its Publication State. A new banner is a draft and the state changes
+// only through the publish, unpublish and archive operations.
 // Ref: #/components/schemas/BannerInput
 type BannerInput struct {
-	State      BannerState      `json:"state"`
 	Background BannerBackground `json:"background"`
 	Locale     BannerLocale     `json:"locale"`
 	Body       string           `json:"body"`
 	URL        NilString        `json:"url"`
 	StartsAt   NilDateTime      `json:"startsAt"`
 	FinishesAt NilDateTime      `json:"finishesAt"`
-}
-
-// GetState returns the value of State.
-func (s *BannerInput) GetState() BannerState {
-	return s.State
 }
 
 // GetBackground returns the value of Background.
@@ -1057,11 +1685,6 @@ func (s *BannerInput) GetStartsAt() NilDateTime {
 // GetFinishesAt returns the value of FinishesAt.
 func (s *BannerInput) GetFinishesAt() NilDateTime {
 	return s.FinishesAt
-}
-
-// SetState sets the value of State.
-func (s *BannerInput) SetState(val BannerState) {
-	s.State = val
 }
 
 // SetBackground sets the value of Background.
@@ -1393,19 +2016,23 @@ func (s *BlogPost) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
+func (*BlogPost) adminArchiveBlogPostRes()           {}
 func (*BlogPost) adminCreateBlogPostRes()            {}
 func (*BlogPost) adminGetBlogPostRes()               {}
+func (*BlogPost) adminPublishBlogPostRes()           {}
 func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
+func (*BlogPost) adminUnpublishBlogPostRes()         {}
 func (*BlogPost) adminUpdateBlogPostRes()            {}
 func (*BlogPost) getNextBlogPostRes()                {}
 func (*BlogPost) likeBlogPostRes()                   {}
 
+// The input of a post: never its Publication State. A new post is a draft and the state changes only
+// through the publish, unpublish and archive operations.
 // Ref: #/components/schemas/BlogPostInput
 type BlogPostInput struct {
-	Name        NilString        `json:"name"`
-	Slug        NilString        `json:"slug"`
-	Description NilString        `json:"description"`
-	State       NilBlogPostState `json:"state"`
+	Name        NilString `json:"name"`
+	Slug        NilString `json:"slug"`
+	Description NilString `json:"description"`
 	// Trusted editor HTML, stored and returned without sanitization.
 	RichBody string `json:"richBody"`
 	// Attachment id from `POST /admin/attachments`, or null to keep/clear.
@@ -1425,11 +2052,6 @@ func (s *BlogPostInput) GetSlug() NilString {
 // GetDescription returns the value of Description.
 func (s *BlogPostInput) GetDescription() NilString {
 	return s.Description
-}
-
-// GetState returns the value of State.
-func (s *BlogPostInput) GetState() NilBlogPostState {
-	return s.State
 }
 
 // GetRichBody returns the value of RichBody.
@@ -1455,11 +2077,6 @@ func (s *BlogPostInput) SetSlug(val NilString) {
 // SetDescription sets the value of Description.
 func (s *BlogPostInput) SetDescription(val NilString) {
 	s.Description = val
-}
-
-// SetState sets the value of State.
-func (s *BlogPostInput) SetState(val NilBlogPostState) {
-	s.State = val
 }
 
 // SetRichBody sets the value of RichBody.
@@ -1962,9 +2579,12 @@ func (s *Course) SetCoverThumbVariant(val NilString) {
 	s.CoverThumbVariant = val
 }
 
-func (*Course) adminCreateCourseRes() {}
-func (*Course) adminGetCourseRes()    {}
-func (*Course) adminUpdateCourseRes() {}
+func (*Course) adminCreateCourseRes()            {}
+func (*Course) adminGetCourseRes()               {}
+func (*Course) adminMarkCourseCompletedRes()     {}
+func (*Course) adminMarkCourseDraftRes()         {}
+func (*Course) adminMarkCourseInDevelopmentRes() {}
+func (*Course) adminUpdateCourseRes()            {}
 
 // A catalog entry as shown on the courses index (legacy: `LanguageLandingPageForLists`). Embeds the
 // full course plus derived fields.
@@ -2306,13 +2926,14 @@ func (s *CourseCategoryView) SetQnaItems(val []QnaItem) {
 
 func (*CourseCategoryView) getPublicCourseCategoryRes() {}
 
+// The input of a course: never its Readiness. A new course is a draft and the Readiness changes only
+// through the mark-as operations.
 // Ref: #/components/schemas/CourseInput
 type CourseInput struct {
-	Slug                     NilString          `json:"slug"`
-	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
-	Readiness                NilCourseReadiness `json:"readiness"`
-	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
-	RepositoryUrl            NilString          `json:"repositoryUrl"`
+	Slug                     NilString        `json:"slug"`
+	LearnAs                  NilCourseLearnAs `json:"learnAs"`
+	HexletProgramLandingPage NilString        `json:"hexletProgramLandingPage"`
+	RepositoryUrl            NilString        `json:"repositoryUrl"`
 	// Attachment id from `POST /admin/attachments`, or null.
 	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`
 }
@@ -2325,11 +2946,6 @@ func (s *CourseInput) GetSlug() NilString {
 // GetLearnAs returns the value of LearnAs.
 func (s *CourseInput) GetLearnAs() NilCourseLearnAs {
 	return s.LearnAs
-}
-
-// GetReadiness returns the value of Readiness.
-func (s *CourseInput) GetReadiness() NilCourseReadiness {
-	return s.Readiness
 }
 
 // GetHexletProgramLandingPage returns the value of HexletProgramLandingPage.
@@ -2355,11 +2971,6 @@ func (s *CourseInput) SetSlug(val NilString) {
 // SetLearnAs sets the value of LearnAs.
 func (s *CourseInput) SetLearnAs(val NilCourseLearnAs) {
 	s.LearnAs = val
-}
-
-// SetReadiness sets the value of Readiness.
-func (s *CourseInput) SetReadiness(val NilCourseReadiness) {
-	s.Readiness = val
 }
 
 // SetHexletProgramLandingPage sets the value of HexletProgramLandingPage.
@@ -2650,30 +3261,33 @@ func (s *CourseLandingPage) SetEnrollmentsCount(val int32) {
 	s.EnrollmentsCount = val
 }
 
-func (*CourseLandingPage) adminCreateCourseLandingPageRes() {}
-func (*CourseLandingPage) adminGetCourseLandingPageRes()    {}
-func (*CourseLandingPage) adminUpdateCourseLandingPageRes() {}
+func (*CourseLandingPage) adminArchiveCourseLandingPageRes()   {}
+func (*CourseLandingPage) adminCreateCourseLandingPageRes()    {}
+func (*CourseLandingPage) adminGetCourseLandingPageRes()       {}
+func (*CourseLandingPage) adminPublishCourseLandingPageRes()   {}
+func (*CourseLandingPage) adminUnpublishCourseLandingPageRes() {}
+func (*CourseLandingPage) adminUpdateCourseLandingPageRes()    {}
 
+// The input of a landing page: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/CourseLandingPageInput
 type CourseLandingPageInput struct {
-	CourseId                int32               `json:"courseId"`
-	Slug                    NilString           `json:"slug"`
-	Name                    NilString           `json:"name"`
-	Main                    NilBool             `json:"main"`
-	Listed                  NilBool             `json:"listed"`
-	Footer                  NilBool             `json:"footer"`
-	FooterName              NilString           `json:"footerName"`
-	State                   NilLandingPageState `json:"state"`
-	Order                   NilString           `json:"order"`
-	LandingPageToRedirectId NilInt32            `json:"landingPageToRedirectId"`
-	MetaTitle               NilString           `json:"metaTitle"`
-	MetaDescription         NilString           `json:"metaDescription"`
-	Header                  NilString           `json:"header"`
-	Description             NilString           `json:"description"`
-	UsedInHeader            NilString           `json:"usedInHeader"`
-	UsedInDescription       NilString           `json:"usedInDescription"`
-	OutcomesHeader          NilString           `json:"outcomesHeader"`
-	OutcomesDescription     NilString           `json:"outcomesDescription"`
+	CourseId                int32     `json:"courseId"`
+	Slug                    NilString `json:"slug"`
+	Name                    NilString `json:"name"`
+	Main                    NilBool   `json:"main"`
+	Listed                  NilBool   `json:"listed"`
+	Footer                  NilBool   `json:"footer"`
+	FooterName              NilString `json:"footerName"`
+	Order                   NilString `json:"order"`
+	LandingPageToRedirectId NilInt32  `json:"landingPageToRedirectId"`
+	MetaTitle               NilString `json:"metaTitle"`
+	MetaDescription         NilString `json:"metaDescription"`
+	Header                  NilString `json:"header"`
+	Description             NilString `json:"description"`
+	UsedInHeader            NilString `json:"usedInHeader"`
+	UsedInDescription       NilString `json:"usedInDescription"`
+	OutcomesHeader          NilString `json:"outcomesHeader"`
+	OutcomesDescription     NilString `json:"outcomesDescription"`
 	// Attachment id from `POST /admin/attachments`, or null.
 	OutcomesImageAttachmentId NilInt32 `json:"outcomesImageAttachmentId"`
 }
@@ -2711,11 +3325,6 @@ func (s *CourseLandingPageInput) GetFooter() NilBool {
 // GetFooterName returns the value of FooterName.
 func (s *CourseLandingPageInput) GetFooterName() NilString {
 	return s.FooterName
-}
-
-// GetState returns the value of State.
-func (s *CourseLandingPageInput) GetState() NilLandingPageState {
-	return s.State
 }
 
 // GetOrder returns the value of Order.
@@ -2806,11 +3415,6 @@ func (s *CourseLandingPageInput) SetFooter(val NilBool) {
 // SetFooterName sets the value of FooterName.
 func (s *CourseLandingPageInput) SetFooterName(val NilString) {
 	s.FooterName = val
-}
-
-// SetState sets the value of State.
-func (s *CourseLandingPageInput) SetState(val NilLandingPageState) {
-	s.State = val
 }
 
 // SetOrder sets the value of Order.
@@ -5342,6 +5946,51 @@ func (s *MyDashboard) SetFinished(val []DashboardCourse) {
 
 func (*MyDashboard) getMyDashboardRes() {}
 
+// NewNilAuditReads returns new NilAuditReads with value set to v.
+func NewNilAuditReads(v AuditReads) NilAuditReads {
+	return NilAuditReads{
+		Value: v,
+	}
+}
+
+// NilAuditReads is nullable AuditReads.
+type NilAuditReads struct {
+	Value AuditReads
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilAuditReads) SetTo(v AuditReads) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilAuditReads) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilAuditReads) SetToNull() {
+	o.Null = true
+	var v AuditReads
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilAuditReads) Get() (v AuditReads, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilAuditReads) Or(d AuditReads) AuditReads {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilBanner returns new NilBanner with value set to v.
 func NewNilBanner(v Banner) NilBanner {
 	return NilBanner{
@@ -6356,6 +7005,144 @@ func (s *OAuthDecision) SetRedirectUrl(val string) {
 func (*OAuthDecision) approveOAuthConsentRes() {}
 func (*OAuthDecision) denyOAuthConsentRes()    {}
 
+// NewOptAuditRecordQueryChannel returns new OptAuditRecordQueryChannel with value set to v.
+func NewOptAuditRecordQueryChannel(v AuditRecordQueryChannel) OptAuditRecordQueryChannel {
+	return OptAuditRecordQueryChannel{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAuditRecordQueryChannel is optional AuditRecordQueryChannel.
+type OptAuditRecordQueryChannel struct {
+	Value AuditRecordQueryChannel
+	Set   bool
+}
+
+// IsSet returns true if OptAuditRecordQueryChannel was set.
+func (o OptAuditRecordQueryChannel) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAuditRecordQueryChannel) Reset() {
+	var v AuditRecordQueryChannel
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAuditRecordQueryChannel) SetTo(v AuditRecordQueryChannel) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAuditRecordQueryChannel) Get() (v AuditRecordQueryChannel, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAuditRecordQueryChannel) Or(d AuditRecordQueryChannel) AuditRecordQueryChannel {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
 	return OptInt32{
@@ -6576,7 +7363,7 @@ func (s *PermissionCatalog) SetPermissions(val []Permission) {
 
 func (*PermissionCatalog) adminListPermissionsRes() {}
 
-// Whether an operation only reads or can change data (ADR-0017).
+// Whether an operation only reads or can change data (ADR-0018).
 // Ref: #/components/schemas/PermissionKind
 type PermissionKind string
 
@@ -6613,78 +7400,6 @@ func (s *PermissionKind) UnmarshalText(data []byte) error {
 		return nil
 	case PermissionKindWrite:
 		*s = PermissionKindWrite
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
-// Admin resources a staff role can be granted permissions on through the create/read/update/delete
-// matrix. Resources that moved to declared Permissions (ADR-0017) leave this list as they move.
-// Ref: #/components/schemas/PermissionResource
-type PermissionResource string
-
-const (
-	PermissionResourceLanguageCategories    PermissionResource = "language_categories"
-	PermissionResourceLanguageLessons       PermissionResource = "language_lessons"
-	PermissionResourceLanguageLessonReviews PermissionResource = "language_lesson_reviews"
-	PermissionResourceLanguageLessonMembers PermissionResource = "language_lesson_members"
-	PermissionResourceLanguages             PermissionResource = "languages"
-	PermissionResourceLanguageLandingPages  PermissionResource = "language_landing_pages"
-)
-
-// AllValues returns all PermissionResource values.
-func (PermissionResource) AllValues() []PermissionResource {
-	return []PermissionResource{
-		PermissionResourceLanguageCategories,
-		PermissionResourceLanguageLessons,
-		PermissionResourceLanguageLessonReviews,
-		PermissionResourceLanguageLessonMembers,
-		PermissionResourceLanguages,
-		PermissionResourceLanguageLandingPages,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s PermissionResource) MarshalText() ([]byte, error) {
-	switch s {
-	case PermissionResourceLanguageCategories:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessons:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessonReviews:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessonMembers:
-		return []byte(s), nil
-	case PermissionResourceLanguages:
-		return []byte(s), nil
-	case PermissionResourceLanguageLandingPages:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *PermissionResource) UnmarshalText(data []byte) error {
-	switch PermissionResource(data) {
-	case PermissionResourceLanguageCategories:
-		*s = PermissionResourceLanguageCategories
-		return nil
-	case PermissionResourceLanguageLessons:
-		*s = PermissionResourceLanguageLessons
-		return nil
-	case PermissionResourceLanguageLessonReviews:
-		*s = PermissionResourceLanguageLessonReviews
-		return nil
-	case PermissionResourceLanguageLessonMembers:
-		*s = PermissionResourceLanguageLessonMembers
-		return nil
-	case PermissionResourceLanguages:
-		*s = PermissionResourceLanguages
-		return nil
-	case PermissionResourceLanguageLandingPages:
-		*s = PermissionResourceLanguageLandingPages
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -7114,24 +7829,22 @@ func (s *Review) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Review) adminCreateReviewRes() {}
-func (*Review) adminGetReviewRes()    {}
-func (*Review) adminUpdateReviewRes() {}
+func (*Review) adminArchiveReviewRes()   {}
+func (*Review) adminCreateReviewRes()    {}
+func (*Review) adminGetReviewRes()       {}
+func (*Review) adminPublishReviewRes()   {}
+func (*Review) adminUnpublishReviewRes() {}
+func (*Review) adminUpdateReviewRes()    {}
 
+// The input of a review: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/ReviewInput
 type ReviewInput struct {
-	State     NilReviewState `json:"state"`
-	Pinned    NilBool        `json:"pinned"`
-	CourseId  NilInt32       `json:"courseId"`
-	UserId    NilInt32       `json:"userId"`
-	Body      NilString      `json:"body"`
-	FirstName NilString      `json:"firstName"`
-	LastName  NilString      `json:"lastName"`
-}
-
-// GetState returns the value of State.
-func (s *ReviewInput) GetState() NilReviewState {
-	return s.State
+	Pinned    NilBool   `json:"pinned"`
+	CourseId  NilInt32  `json:"courseId"`
+	UserId    NilInt32  `json:"userId"`
+	Body      NilString `json:"body"`
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
 }
 
 // GetPinned returns the value of Pinned.
@@ -7162,11 +7875,6 @@ func (s *ReviewInput) GetFirstName() NilString {
 // GetLastName returns the value of LastName.
 func (s *ReviewInput) GetLastName() NilString {
 	return s.LastName
-}
-
-// SetState sets the value of State.
-func (s *ReviewInput) SetState(val NilReviewState) {
-	s.State = val
 }
 
 // SetPinned sets the value of Pinned.
@@ -7378,88 +8086,17 @@ func (s *RoleInput) SetDescription(val NilString) {
 	s.Description = val
 }
 
-// One permission row to set on a role.
-// Ref: #/components/schemas/RolePermissionInput
-type RolePermissionInput struct {
-	Resource   PermissionResource `json:"resource"`
-	CanIndex   bool               `json:"canIndex"`
-	CanCreate  bool               `json:"canCreate"`
-	CanUpdate  bool               `json:"canUpdate"`
-	CanDestroy bool               `json:"canDestroy"`
-}
-
-// GetResource returns the value of Resource.
-func (s *RolePermissionInput) GetResource() PermissionResource {
-	return s.Resource
-}
-
-// GetCanIndex returns the value of CanIndex.
-func (s *RolePermissionInput) GetCanIndex() bool {
-	return s.CanIndex
-}
-
-// GetCanCreate returns the value of CanCreate.
-func (s *RolePermissionInput) GetCanCreate() bool {
-	return s.CanCreate
-}
-
-// GetCanUpdate returns the value of CanUpdate.
-func (s *RolePermissionInput) GetCanUpdate() bool {
-	return s.CanUpdate
-}
-
-// GetCanDestroy returns the value of CanDestroy.
-func (s *RolePermissionInput) GetCanDestroy() bool {
-	return s.CanDestroy
-}
-
-// SetResource sets the value of Resource.
-func (s *RolePermissionInput) SetResource(val PermissionResource) {
-	s.Resource = val
-}
-
-// SetCanIndex sets the value of CanIndex.
-func (s *RolePermissionInput) SetCanIndex(val bool) {
-	s.CanIndex = val
-}
-
-// SetCanCreate sets the value of CanCreate.
-func (s *RolePermissionInput) SetCanCreate(val bool) {
-	s.CanCreate = val
-}
-
-// SetCanUpdate sets the value of CanUpdate.
-func (s *RolePermissionInput) SetCanUpdate(val bool) {
-	s.CanUpdate = val
-}
-
-// SetCanDestroy sets the value of CanDestroy.
-func (s *RolePermissionInput) SetCanDestroy(val bool) {
-	s.CanDestroy = val
-}
-
-// The full permission matrix submitted for a role.
+// The Permissions submitted for a role.
 // Ref: #/components/schemas/RolePermissionsInput
 type RolePermissionsInput struct {
-	Permissions []RolePermissionInput `json:"permissions"`
 	// The declared Permissions the role holds, replacing its current set. Names must come from the catalog
 	// (`GET /admin/management/permissions`).
 	Grants []string `json:"grants"`
 }
 
-// GetPermissions returns the value of Permissions.
-func (s *RolePermissionsInput) GetPermissions() []RolePermissionInput {
-	return s.Permissions
-}
-
 // GetGrants returns the value of Grants.
 func (s *RolePermissionsInput) GetGrants() []string {
 	return s.Grants
-}
-
-// SetPermissions sets the value of Permissions.
-func (s *RolePermissionsInput) SetPermissions(val []RolePermissionInput) {
-	s.Permissions = val
 }
 
 // SetGrants sets the value of Grants.
@@ -7911,13 +8548,12 @@ func (s *StaffRole) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-// A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+// A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).
 // Ref: #/components/schemas/StaffRoleDetail
 type StaffRoleDetail struct {
-	ID          int32                 `json:"id"`
-	Name        string                `json:"name"`
-	Description NilString             `json:"description"`
-	Permissions []StaffRolePermission `json:"permissions"`
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	Description NilString `json:"description"`
 	// Names of the declared Permissions the role holds (see `Permission`).
 	Grants []string `json:"grants"`
 }
@@ -7935,11 +8571,6 @@ func (s *StaffRoleDetail) GetName() string {
 // GetDescription returns the value of Description.
 func (s *StaffRoleDetail) GetDescription() NilString {
 	return s.Description
-}
-
-// GetPermissions returns the value of Permissions.
-func (s *StaffRoleDetail) GetPermissions() []StaffRolePermission {
-	return s.Permissions
 }
 
 // GetGrants returns the value of Grants.
@@ -7960,11 +8591,6 @@ func (s *StaffRoleDetail) SetName(val string) {
 // SetDescription sets the value of Description.
 func (s *StaffRoleDetail) SetDescription(val NilString) {
 	s.Description = val
-}
-
-// SetPermissions sets the value of Permissions.
-func (s *StaffRoleDetail) SetPermissions(val []StaffRolePermission) {
-	s.Permissions = val
 }
 
 // SetGrants sets the value of Grants.
@@ -8032,88 +8658,6 @@ func (s *StaffRolePage) SetPerPage(val int32) {
 }
 
 func (*StaffRolePage) adminListRolesRes() {}
-
-// One resource's permission bits for a role (legacy: `StaffRolePermission`).
-// Ref: #/components/schemas/StaffRolePermission
-type StaffRolePermission struct {
-	ID         int32              `json:"id"`
-	RoleId     int32              `json:"roleId"`
-	Resource   PermissionResource `json:"resource"`
-	CanIndex   bool               `json:"canIndex"`
-	CanCreate  bool               `json:"canCreate"`
-	CanUpdate  bool               `json:"canUpdate"`
-	CanDestroy bool               `json:"canDestroy"`
-}
-
-// GetID returns the value of ID.
-func (s *StaffRolePermission) GetID() int32 {
-	return s.ID
-}
-
-// GetRoleId returns the value of RoleId.
-func (s *StaffRolePermission) GetRoleId() int32 {
-	return s.RoleId
-}
-
-// GetResource returns the value of Resource.
-func (s *StaffRolePermission) GetResource() PermissionResource {
-	return s.Resource
-}
-
-// GetCanIndex returns the value of CanIndex.
-func (s *StaffRolePermission) GetCanIndex() bool {
-	return s.CanIndex
-}
-
-// GetCanCreate returns the value of CanCreate.
-func (s *StaffRolePermission) GetCanCreate() bool {
-	return s.CanCreate
-}
-
-// GetCanUpdate returns the value of CanUpdate.
-func (s *StaffRolePermission) GetCanUpdate() bool {
-	return s.CanUpdate
-}
-
-// GetCanDestroy returns the value of CanDestroy.
-func (s *StaffRolePermission) GetCanDestroy() bool {
-	return s.CanDestroy
-}
-
-// SetID sets the value of ID.
-func (s *StaffRolePermission) SetID(val int32) {
-	s.ID = val
-}
-
-// SetRoleId sets the value of RoleId.
-func (s *StaffRolePermission) SetRoleId(val int32) {
-	s.RoleId = val
-}
-
-// SetResource sets the value of Resource.
-func (s *StaffRolePermission) SetResource(val PermissionResource) {
-	s.Resource = val
-}
-
-// SetCanIndex sets the value of CanIndex.
-func (s *StaffRolePermission) SetCanIndex(val bool) {
-	s.CanIndex = val
-}
-
-// SetCanCreate sets the value of CanCreate.
-func (s *StaffRolePermission) SetCanCreate(val bool) {
-	s.CanCreate = val
-}
-
-// SetCanUpdate sets the value of CanUpdate.
-func (s *StaffRolePermission) SetCanUpdate(val bool) {
-	s.CanUpdate = val
-}
-
-// SetCanDestroy sets the value of CanDestroy.
-func (s *StaffRolePermission) SetCanDestroy(val bool) {
-	s.CanDestroy = val
-}
 
 // StartLessonNoContent is response for StartLesson operation.
 type StartLessonNoContent struct{}
@@ -8528,6 +9072,7 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 }
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
+func (*ValidationError) adminListAuditRecordsRes()          {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}

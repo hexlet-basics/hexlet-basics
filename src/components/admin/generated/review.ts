@@ -5,27 +5,6 @@ import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
 export const reviewFields: FieldDescriptor[] = [
   {
-    name: "state",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.review.state",
-    enumValues: [
-      {
-        value: "draft",
-        labelKey: "models.attributes.review.state/values.draft",
-      },
-      {
-        value: "published",
-        labelKey: "models.attributes.review.state/values.published",
-      },
-      {
-        value: "archived",
-        labelKey: "models.attributes.review.state/values.archived",
-      },
-    ],
-    required: false,
-  },
-  {
     name: "pinned",
     kind: "boolean",
     nullable: true,

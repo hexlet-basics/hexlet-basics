@@ -29,27 +29,6 @@ export const courseFields: FieldDescriptor[] = [
     required: false,
   },
   {
-    name: "readiness",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.course.readiness",
-    enumValues: [
-      {
-        value: "completed",
-        labelKey: "models.attributes.course.readiness/values.completed",
-      },
-      {
-        value: "in_development",
-        labelKey: "models.attributes.course.readiness/values.in_development",
-      },
-      {
-        value: "draft",
-        labelKey: "models.attributes.course.readiness/values.draft",
-      },
-    ],
-    required: false,
-  },
-  {
     name: "hexletProgramLandingPage",
     kind: "text",
     nullable: true,

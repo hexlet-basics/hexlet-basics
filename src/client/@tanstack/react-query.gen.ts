@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { adminCreateBanner, adminCreateBlogPost, adminCreateCategoryQnaItem, adminCreateCourse, adminCreateCourseCategory, adminCreateCourseLandingPage, adminCreateCourseVersion, adminCreateLandingPageQnaItem, adminCreateReview, adminCreateRole, adminCreateStaffMember, adminCreateUser, adminDeleteBanner, adminDeleteBlogPost, adminDeleteCategoryQnaItem, adminDeleteCourseCategory, adminDeleteCourseLandingPage, adminDeleteLandingPageQnaItem, adminDeleteReview, adminDeleteRole, adminDeleteStaffMember, adminDeleteUser, adminGetBanner, adminGetBlogPost, adminGetCourse, adminGetCourseCategory, adminGetCourseLandingPage, adminGetManagementUser, adminGetReview, adminGetRole, adminGetRolePermissions, adminGetStaffMember, adminGetUser, adminListBanners, adminListBlogPosts, adminListCategoryQnaItems, adminListCourseCategories, adminListCourseLandingPages, adminListCourseLessonReviews, adminListCourseLessons, adminListCourseOptions, adminListCourses, adminListLandingPageQnaItems, adminListLeads, adminListLessonProgress, adminListManagementUsers, adminListMessages, adminListReviews, adminListRoles, adminListStaffMembers, adminListUsers, adminReviewCourse, adminReviewCourseLesson, adminSearchUsers, adminSetBlogPostRelatedCourses, adminSuggestBlogPostRelatedCourses, adminUpdateBanner, adminUpdateBlogPost, adminUpdateCategoryQnaItem, adminUpdateCourse, adminUpdateCourseCategory, adminUpdateCourseLandingPage, adminUpdateLandingPageQnaItem, adminUpdateManagementUser, adminUpdateReview, adminUpdateRole, adminUpdateRolePermissions, adminUpdateStaffMember, adminUpdateUser, adminUploadAttachment, checkLesson, checkPasswordResetToken, consumeMagicLink, createAssistantMessage, createBookRequest, createLead, createMagicLink, createPasswordReminder, createSession, createUser, deleteAccount, deleteSession, downloadBook, getActiveBanner, getBlogPost, getBook, getCourse, getCourseLesson, getCurrentUser, getMyDashboard, getNextBlogPost, getProfile, getPublicCourseCategory, getSitemap, getYandexCoursesFeed, getYandexCoursesFeedXml, likeBlogPost, listAssistantMessages, listBlogPosts, listCourses, listPublicCourseCategories, listPublicReviews, type Options, startLesson, updatePassword, updateProfile } from '../sdk.gen';
-import type { AdminCreateBannerData, AdminCreateBannerError, AdminCreateBannerResponse, AdminCreateBlogPostData, AdminCreateBlogPostError, AdminCreateBlogPostResponse, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemError, AdminCreateCategoryQnaItemResponse, AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminCreateCourseData, AdminCreateCourseError, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageError, AdminCreateCourseLandingPageResponse, AdminCreateCourseResponse, AdminCreateCourseVersionData, AdminCreateCourseVersionError, AdminCreateCourseVersionResponse, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemError, AdminCreateLandingPageQnaItemResponse, AdminCreateReviewData, AdminCreateReviewError, AdminCreateReviewResponse, AdminCreateRoleData, AdminCreateRoleError, AdminCreateRoleResponse, AdminCreateStaffMemberData, AdminCreateStaffMemberError, AdminCreateStaffMemberResponse, AdminCreateUserData, AdminCreateUserError, AdminCreateUserResponse, AdminDeleteBannerData, AdminDeleteBannerError, AdminDeleteBannerResponse, AdminDeleteBlogPostData, AdminDeleteBlogPostError, AdminDeleteBlogPostResponse, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemError, AdminDeleteCategoryQnaItemResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryError, AdminDeleteCourseCategoryResponse, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageError, AdminDeleteCourseLandingPageResponse, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemError, AdminDeleteLandingPageQnaItemResponse, AdminDeleteReviewData, AdminDeleteReviewError, AdminDeleteReviewResponse, AdminDeleteRoleData, AdminDeleteRoleError, AdminDeleteRoleResponse, AdminDeleteStaffMemberData, AdminDeleteStaffMemberError, AdminDeleteStaffMemberResponse, AdminDeleteUserData, AdminDeleteUserError, AdminDeleteUserResponse, AdminGetBannerData, AdminGetBannerError, AdminGetBannerResponse, AdminGetBlogPostData, AdminGetBlogPostError, AdminGetBlogPostResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, AdminGetCourseData, AdminGetCourseError, AdminGetCourseLandingPageData, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, AdminGetCourseResponse, AdminGetManagementUserData, AdminGetManagementUserError, AdminGetManagementUserResponse, AdminGetReviewData, AdminGetReviewError, AdminGetReviewResponse, AdminGetRoleData, AdminGetRoleError, AdminGetRolePermissionsData, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, AdminGetRoleResponse, AdminGetStaffMemberData, AdminGetStaffMemberError, AdminGetStaffMemberResponse, AdminGetUserData, AdminGetUserError, AdminGetUserResponse, AdminListBannersData, AdminListBannersError, AdminListBannersResponse, AdminListBlogPostsData, AdminListBlogPostsError, AdminListBlogPostsResponse, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsError, AdminListCategoryQnaItemsResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesError, AdminListCourseCategoriesResponse, AdminListCourseLandingPagesData, AdminListCourseLandingPagesError, AdminListCourseLandingPagesResponse, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsError, AdminListCourseLessonReviewsResponse, AdminListCourseLessonsData, AdminListCourseLessonsError, AdminListCourseLessonsResponse, AdminListCourseOptionsData, AdminListCourseOptionsError, AdminListCourseOptionsResponse, AdminListCoursesData, AdminListCoursesError, AdminListCoursesResponse, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsError, AdminListLandingPageQnaItemsResponse, AdminListLeadsData, AdminListLeadsError, AdminListLeadsResponse, AdminListLessonProgressData, AdminListLessonProgressError, AdminListLessonProgressResponse, AdminListManagementUsersData, AdminListManagementUsersError, AdminListManagementUsersResponse, AdminListMessagesData, AdminListMessagesError, AdminListMessagesResponse, AdminListReviewsData, AdminListReviewsError, AdminListReviewsResponse, AdminListRolesData, AdminListRolesError, AdminListRolesResponse, AdminListStaffMembersData, AdminListStaffMembersError, AdminListStaffMembersResponse, AdminListUsersData, AdminListUsersError, AdminListUsersResponse, AdminReviewCourseData, AdminReviewCourseError, AdminReviewCourseLessonData, AdminReviewCourseLessonError, AdminReviewCourseLessonResponse, AdminReviewCourseResponse, AdminSearchUsersData, AdminSearchUsersError, AdminSearchUsersResponse, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesError, AdminSetBlogPostRelatedCoursesResponse, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesError, AdminSuggestBlogPostRelatedCoursesResponse, AdminUpdateBannerData, AdminUpdateBannerError, AdminUpdateBannerResponse, AdminUpdateBlogPostData, AdminUpdateBlogPostError, AdminUpdateBlogPostResponse, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemError, AdminUpdateCategoryQnaItemResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, AdminUpdateCourseData, AdminUpdateCourseError, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageError, AdminUpdateCourseLandingPageResponse, AdminUpdateCourseResponse, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemError, AdminUpdateLandingPageQnaItemResponse, AdminUpdateManagementUserData, AdminUpdateManagementUserError, AdminUpdateManagementUserResponse, AdminUpdateReviewData, AdminUpdateReviewError, AdminUpdateReviewResponse, AdminUpdateRoleData, AdminUpdateRoleError, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsError, AdminUpdateRolePermissionsResponse, AdminUpdateRoleResponse, AdminUpdateStaffMemberData, AdminUpdateStaffMemberError, AdminUpdateStaffMemberResponse, AdminUpdateUserData, AdminUpdateUserError, AdminUpdateUserResponse, AdminUploadAttachmentData, AdminUploadAttachmentError, AdminUploadAttachmentResponse, CheckLessonData, CheckLessonError, CheckLessonResponse, CheckPasswordResetTokenData, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ConsumeMagicLinkData, ConsumeMagicLinkError, ConsumeMagicLinkResponse, CreateAssistantMessageData, CreateAssistantMessageError, CreateAssistantMessageResponse, CreateBookRequestData, CreateBookRequestError, CreateBookRequestResponse, CreateLeadData, CreateLeadError, CreateLeadResponse, CreateMagicLinkData, CreateMagicLinkError, CreateMagicLinkResponse, CreatePasswordReminderData, CreatePasswordReminderError, CreatePasswordReminderResponse, CreateSessionData, CreateSessionError, CreateSessionResponse, CreateUserData, CreateUserError, CreateUserResponse, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeleteSessionData, DeleteSessionError, DeleteSessionResponse, DownloadBookData, DownloadBookError, DownloadBookResponse, GetActiveBannerData, GetActiveBannerError, GetActiveBannerResponse, GetBlogPostData, GetBlogPostError, GetBlogPostResponse, GetBookData, GetBookError, GetBookResponse, GetCourseData, GetCourseError, GetCourseLessonData, GetCourseLessonError, GetCourseLessonResponse, GetCourseResponse, GetCurrentUserData, GetCurrentUserError, GetCurrentUserResponse, GetMyDashboardData, GetMyDashboardError, GetMyDashboardResponse, GetNextBlogPostData, GetNextBlogPostError, GetNextBlogPostResponse, GetProfileData, GetProfileError, GetProfileResponse, GetPublicCourseCategoryData, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, GetSitemapData, GetSitemapError, GetSitemapResponse, GetYandexCoursesFeedData, GetYandexCoursesFeedError, GetYandexCoursesFeedResponse, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlError, GetYandexCoursesFeedXmlResponse, LikeBlogPostData, LikeBlogPostError, LikeBlogPostResponse, ListAssistantMessagesData, ListAssistantMessagesError, ListAssistantMessagesResponse, ListBlogPostsData, ListBlogPostsError, ListBlogPostsResponse, ListCoursesData, ListCoursesError, ListCoursesResponse, ListPublicCourseCategoriesData, ListPublicCourseCategoriesError, ListPublicCourseCategoriesResponse, ListPublicReviewsData, ListPublicReviewsError, ListPublicReviewsResponse, StartLessonData, StartLessonError, StartLessonResponse, UpdatePasswordData, UpdatePasswordError, UpdatePasswordResponse, UpdateProfileData, UpdateProfileError, UpdateProfileResponse } from '../types.gen';
+import { adminArchiveBanner, adminArchiveBlogPost, adminArchiveCourseLandingPage, adminArchiveReview, adminCreateBanner, adminCreateBlogPost, adminCreateCategoryQnaItem, adminCreateCourse, adminCreateCourseCategory, adminCreateCourseLandingPage, adminCreateCourseVersion, adminCreateLandingPageQnaItem, adminCreateReview, adminCreateRole, adminCreateStaffMember, adminCreateUser, adminDeleteBanner, adminDeleteBlogPost, adminDeleteCategoryQnaItem, adminDeleteCourseCategory, adminDeleteCourseLandingPage, adminDeleteLandingPageQnaItem, adminDeleteReview, adminDeleteRole, adminDeleteStaffMember, adminDeleteUser, adminGetBanner, adminGetBlogPost, adminGetCourse, adminGetCourseCategory, adminGetCourseLandingPage, adminGetManagementUser, adminGetMyCapabilities, adminGetReview, adminGetRole, adminGetRolePermissions, adminGetStaffMember, adminGetUser, adminListAuditRecords, adminListBanners, adminListBlogPosts, adminListCategoryQnaItems, adminListCourseCategories, adminListCourseLandingPages, adminListCourseLessonReviews, adminListCourseLessons, adminListCourseOptions, adminListCourses, adminListLandingPageQnaItems, adminListLeads, adminListLessonProgress, adminListManagementUsers, adminListMessages, adminListPermissions, adminListReviews, adminListRoles, adminListStaffMembers, adminListUsers, adminMarkCourseCompleted, adminMarkCourseDraft, adminMarkCourseInDevelopment, adminPublishBanner, adminPublishBlogPost, adminPublishCourseLandingPage, adminPublishReview, adminReviewCourse, adminReviewCourseLesson, adminSearchUsers, adminSetBlogPostRelatedCourses, adminSuggestBlogPostRelatedCourses, adminUnpublishBanner, adminUnpublishBlogPost, adminUnpublishCourseLandingPage, adminUnpublishReview, adminUpdateBanner, adminUpdateBlogPost, adminUpdateCategoryQnaItem, adminUpdateCourse, adminUpdateCourseCategory, adminUpdateCourseLandingPage, adminUpdateLandingPageQnaItem, adminUpdateManagementUser, adminUpdateReview, adminUpdateRole, adminUpdateRolePermissions, adminUpdateStaffMember, adminUpdateUser, adminUploadAttachment, approveOAuthConsent, checkLesson, checkPasswordResetToken, consumeMagicLink, createAssistantMessage, createBookRequest, createLead, createMagicLink, createPasswordReminder, createSession, createUser, deleteAccount, deleteSession, denyOAuthConsent, downloadBook, getActiveBanner, getBlogPost, getBook, getCourse, getCourseLesson, getCurrentUser, getMyDashboard, getNextBlogPost, getOAuthConsent, getProfile, getPublicCourseCategory, getSitemap, getYandexCoursesFeed, getYandexCoursesFeedXml, likeBlogPost, listAssistantMessages, listBlogPosts, listConnectedApps, listCourses, listPublicCourseCategories, listPublicReviews, type Options, revokeConnectedApp, startLesson, updatePassword, updateProfile } from '../sdk.gen';
+import type { AdminArchiveBannerData, AdminArchiveBannerError, AdminArchiveBannerResponse, AdminArchiveBlogPostData, AdminArchiveBlogPostError, AdminArchiveBlogPostResponse, AdminArchiveCourseLandingPageData, AdminArchiveCourseLandingPageError, AdminArchiveCourseLandingPageResponse, AdminArchiveReviewData, AdminArchiveReviewError, AdminArchiveReviewResponse, AdminCreateBannerData, AdminCreateBannerError, AdminCreateBannerResponse, AdminCreateBlogPostData, AdminCreateBlogPostError, AdminCreateBlogPostResponse, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemError, AdminCreateCategoryQnaItemResponse, AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminCreateCourseData, AdminCreateCourseError, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageError, AdminCreateCourseLandingPageResponse, AdminCreateCourseResponse, AdminCreateCourseVersionData, AdminCreateCourseVersionError, AdminCreateCourseVersionResponse, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemError, AdminCreateLandingPageQnaItemResponse, AdminCreateReviewData, AdminCreateReviewError, AdminCreateReviewResponse, AdminCreateRoleData, AdminCreateRoleError, AdminCreateRoleResponse, AdminCreateStaffMemberData, AdminCreateStaffMemberError, AdminCreateStaffMemberResponse, AdminCreateUserData, AdminCreateUserError, AdminCreateUserResponse, AdminDeleteBannerData, AdminDeleteBannerError, AdminDeleteBannerResponse, AdminDeleteBlogPostData, AdminDeleteBlogPostError, AdminDeleteBlogPostResponse, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemError, AdminDeleteCategoryQnaItemResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryError, AdminDeleteCourseCategoryResponse, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageError, AdminDeleteCourseLandingPageResponse, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemError, AdminDeleteLandingPageQnaItemResponse, AdminDeleteReviewData, AdminDeleteReviewError, AdminDeleteReviewResponse, AdminDeleteRoleData, AdminDeleteRoleError, AdminDeleteRoleResponse, AdminDeleteStaffMemberData, AdminDeleteStaffMemberError, AdminDeleteStaffMemberResponse, AdminDeleteUserData, AdminDeleteUserError, AdminDeleteUserResponse, AdminGetBannerData, AdminGetBannerError, AdminGetBannerResponse, AdminGetBlogPostData, AdminGetBlogPostError, AdminGetBlogPostResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, AdminGetCourseData, AdminGetCourseError, AdminGetCourseLandingPageData, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, AdminGetCourseResponse, AdminGetManagementUserData, AdminGetManagementUserError, AdminGetManagementUserResponse, AdminGetMyCapabilitiesData, AdminGetMyCapabilitiesError, AdminGetMyCapabilitiesResponse, AdminGetReviewData, AdminGetReviewError, AdminGetReviewResponse, AdminGetRoleData, AdminGetRoleError, AdminGetRolePermissionsData, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, AdminGetRoleResponse, AdminGetStaffMemberData, AdminGetStaffMemberError, AdminGetStaffMemberResponse, AdminGetUserData, AdminGetUserError, AdminGetUserResponse, AdminListAuditRecordsData, AdminListAuditRecordsError, AdminListAuditRecordsResponse, AdminListBannersData, AdminListBannersError, AdminListBannersResponse, AdminListBlogPostsData, AdminListBlogPostsError, AdminListBlogPostsResponse, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsError, AdminListCategoryQnaItemsResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesError, AdminListCourseCategoriesResponse, AdminListCourseLandingPagesData, AdminListCourseLandingPagesError, AdminListCourseLandingPagesResponse, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsError, AdminListCourseLessonReviewsResponse, AdminListCourseLessonsData, AdminListCourseLessonsError, AdminListCourseLessonsResponse, AdminListCourseOptionsData, AdminListCourseOptionsError, AdminListCourseOptionsResponse, AdminListCoursesData, AdminListCoursesError, AdminListCoursesResponse, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsError, AdminListLandingPageQnaItemsResponse, AdminListLeadsData, AdminListLeadsError, AdminListLeadsResponse, AdminListLessonProgressData, AdminListLessonProgressError, AdminListLessonProgressResponse, AdminListManagementUsersData, AdminListManagementUsersError, AdminListManagementUsersResponse, AdminListMessagesData, AdminListMessagesError, AdminListMessagesResponse, AdminListPermissionsData, AdminListPermissionsError, AdminListPermissionsResponse, AdminListReviewsData, AdminListReviewsError, AdminListReviewsResponse, AdminListRolesData, AdminListRolesError, AdminListRolesResponse, AdminListStaffMembersData, AdminListStaffMembersError, AdminListStaffMembersResponse, AdminListUsersData, AdminListUsersError, AdminListUsersResponse, AdminMarkCourseCompletedData, AdminMarkCourseCompletedError, AdminMarkCourseCompletedResponse, AdminMarkCourseDraftData, AdminMarkCourseDraftError, AdminMarkCourseDraftResponse, AdminMarkCourseInDevelopmentData, AdminMarkCourseInDevelopmentError, AdminMarkCourseInDevelopmentResponse, AdminPublishBannerData, AdminPublishBannerError, AdminPublishBannerResponse, AdminPublishBlogPostData, AdminPublishBlogPostError, AdminPublishBlogPostResponse, AdminPublishCourseLandingPageData, AdminPublishCourseLandingPageError, AdminPublishCourseLandingPageResponse, AdminPublishReviewData, AdminPublishReviewError, AdminPublishReviewResponse, AdminReviewCourseData, AdminReviewCourseError, AdminReviewCourseLessonData, AdminReviewCourseLessonError, AdminReviewCourseLessonResponse, AdminReviewCourseResponse, AdminSearchUsersData, AdminSearchUsersError, AdminSearchUsersResponse, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesError, AdminSetBlogPostRelatedCoursesResponse, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesError, AdminSuggestBlogPostRelatedCoursesResponse, AdminUnpublishBannerData, AdminUnpublishBannerError, AdminUnpublishBannerResponse, AdminUnpublishBlogPostData, AdminUnpublishBlogPostError, AdminUnpublishBlogPostResponse, AdminUnpublishCourseLandingPageData, AdminUnpublishCourseLandingPageError, AdminUnpublishCourseLandingPageResponse, AdminUnpublishReviewData, AdminUnpublishReviewError, AdminUnpublishReviewResponse, AdminUpdateBannerData, AdminUpdateBannerError, AdminUpdateBannerResponse, AdminUpdateBlogPostData, AdminUpdateBlogPostError, AdminUpdateBlogPostResponse, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemError, AdminUpdateCategoryQnaItemResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, AdminUpdateCourseData, AdminUpdateCourseError, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageError, AdminUpdateCourseLandingPageResponse, AdminUpdateCourseResponse, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemError, AdminUpdateLandingPageQnaItemResponse, AdminUpdateManagementUserData, AdminUpdateManagementUserError, AdminUpdateManagementUserResponse, AdminUpdateReviewData, AdminUpdateReviewError, AdminUpdateReviewResponse, AdminUpdateRoleData, AdminUpdateRoleError, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsError, AdminUpdateRolePermissionsResponse, AdminUpdateRoleResponse, AdminUpdateStaffMemberData, AdminUpdateStaffMemberError, AdminUpdateStaffMemberResponse, AdminUpdateUserData, AdminUpdateUserError, AdminUpdateUserResponse, AdminUploadAttachmentData, AdminUploadAttachmentError, AdminUploadAttachmentResponse, ApproveOAuthConsentData, ApproveOAuthConsentError, ApproveOAuthConsentResponse, CheckLessonData, CheckLessonError, CheckLessonResponse, CheckPasswordResetTokenData, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ConsumeMagicLinkData, ConsumeMagicLinkError, ConsumeMagicLinkResponse, CreateAssistantMessageData, CreateAssistantMessageError, CreateAssistantMessageResponse, CreateBookRequestData, CreateBookRequestError, CreateBookRequestResponse, CreateLeadData, CreateLeadError, CreateLeadResponse, CreateMagicLinkData, CreateMagicLinkError, CreateMagicLinkResponse, CreatePasswordReminderData, CreatePasswordReminderError, CreatePasswordReminderResponse, CreateSessionData, CreateSessionError, CreateSessionResponse, CreateUserData, CreateUserError, CreateUserResponse, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeleteSessionData, DeleteSessionError, DeleteSessionResponse, DenyOAuthConsentData, DenyOAuthConsentError, DenyOAuthConsentResponse, DownloadBookData, DownloadBookError, DownloadBookResponse, GetActiveBannerData, GetActiveBannerError, GetActiveBannerResponse, GetBlogPostData, GetBlogPostError, GetBlogPostResponse, GetBookData, GetBookError, GetBookResponse, GetCourseData, GetCourseError, GetCourseLessonData, GetCourseLessonError, GetCourseLessonResponse, GetCourseResponse, GetCurrentUserData, GetCurrentUserError, GetCurrentUserResponse, GetMyDashboardData, GetMyDashboardError, GetMyDashboardResponse, GetNextBlogPostData, GetNextBlogPostError, GetNextBlogPostResponse, GetOAuthConsentData, GetOAuthConsentError, GetOAuthConsentResponse, GetProfileData, GetProfileError, GetProfileResponse, GetPublicCourseCategoryData, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, GetSitemapData, GetSitemapError, GetSitemapResponse, GetYandexCoursesFeedData, GetYandexCoursesFeedError, GetYandexCoursesFeedResponse, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlError, GetYandexCoursesFeedXmlResponse, LikeBlogPostData, LikeBlogPostError, LikeBlogPostResponse, ListAssistantMessagesData, ListAssistantMessagesError, ListAssistantMessagesResponse, ListBlogPostsData, ListBlogPostsError, ListBlogPostsResponse, ListConnectedAppsData, ListConnectedAppsError, ListConnectedAppsResponse, ListCoursesData, ListCoursesError, ListCoursesResponse, ListPublicCourseCategoriesData, ListPublicCourseCategoriesError, ListPublicCourseCategoriesResponse, ListPublicReviewsData, ListPublicReviewsError, ListPublicReviewsResponse, RevokeConnectedAppData, RevokeConnectedAppError, RevokeConnectedAppResponse, StartLessonData, StartLessonError, StartLessonResponse, UpdatePasswordData, UpdatePasswordError, UpdatePasswordResponse, UpdateProfileData, UpdateProfileError, UpdateProfileResponse } from '../types.gen';
 
 /**
  * Delete the current user's account.
@@ -273,7 +273,7 @@ export const adminListAuditRecordsQueryKey = (options?: Options<AdminListAuditRe
  * on the Staff Role even for an administrator, and is itself recorded as a
  * read of personal data: records carry addresses and old values.
  */
-export const adminListAuditRecordsOptions = (options?: Options<AdminListAuditRecordsData>) => queryOptions<AdminListAuditRecordsResponse, AxiosError<AdminListAuditRecordsError>, AdminListAuditRecordsResponse, ReturnType<typeof adminListAuditRecordsQueryKey>>({
+export const adminListAuditRecordsOptions = (options?: Options<AdminListAuditRecordsData>) => queryOptions<AdminListAuditRecordsResponse, AdminListAuditRecordsError, AdminListAuditRecordsResponse, ReturnType<typeof adminListAuditRecordsQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
     const { data } = await adminListAuditRecords({
       ...options,
@@ -294,7 +294,7 @@ export const adminListAuditRecordsInfiniteQueryKey = (options?: Options<AdminLis
  * read of personal data: records carry addresses and old values.
  */
 export const adminListAuditRecordsInfiniteOptions = (options?: Options<AdminListAuditRecordsData>) => {
-  const opts = infiniteQueryOptions<AdminListAuditRecordsResponse, AxiosError<AdminListAuditRecordsError>, InfiniteData<AdminListAuditRecordsResponse>, QueryKey<Options<AdminListAuditRecordsData>>, number | Pick<QueryKey<Options<AdminListAuditRecordsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  const opts = infiniteQueryOptions<AdminListAuditRecordsResponse, AdminListAuditRecordsError, InfiniteData<AdminListAuditRecordsResponse>, QueryKey<Options<AdminListAuditRecordsData>>, number | Pick<QueryKey<Options<AdminListAuditRecordsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
   // @ts-ignore
   {
     queryFn: async ({ pageParam, queryKey, signal }) => {
@@ -438,6 +438,59 @@ export const adminUpdateBannerMutation = (options?: Partial<Options<AdminUpdateB
   return mutationOptions;
 };
 
+/**
+ * Archive a draft or published banner.
+ */
+export const adminArchiveBannerMutation = (options?: Partial<Options<AdminArchiveBannerData>>): UseMutationOptions<AdminArchiveBannerResponse, AdminArchiveBannerError, Options<AdminArchiveBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminArchiveBannerResponse, AdminArchiveBannerError, Options<AdminArchiveBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminArchiveBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Publish a draft or archived banner. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishBannerMutation = (options?: Partial<Options<AdminPublishBannerData>>): UseMutationOptions<AdminPublishBannerResponse, AdminPublishBannerError, Options<AdminPublishBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminPublishBannerResponse, AdminPublishBannerError, Options<AdminPublishBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminPublishBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Take a published banner back to draft.
+ */
+export const adminUnpublishBannerMutation = (options?: Partial<Options<AdminUnpublishBannerData>>): UseMutationOptions<AdminUnpublishBannerResponse, AdminUnpublishBannerError, Options<AdminUnpublishBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminUnpublishBannerResponse, AdminUnpublishBannerError, Options<AdminUnpublishBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUnpublishBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 export const adminListBlogPostsQueryKey = (options?: Options<AdminListBlogPostsData>) => createQueryKey('adminListBlogPosts', options);
 
 export const adminListBlogPostsOptions = (options?: Options<AdminListBlogPostsData>) => queryOptions<AdminListBlogPostsResponse, AdminListBlogPostsError, AdminListBlogPostsResponse, ReturnType<typeof adminListBlogPostsQueryKey>>({
@@ -538,6 +591,42 @@ export const adminUpdateBlogPostMutation = (options?: Partial<Options<AdminUpdat
 };
 
 /**
+ * Archive a draft or published post.
+ */
+export const adminArchiveBlogPostMutation = (options?: Partial<Options<AdminArchiveBlogPostData>>): UseMutationOptions<AdminArchiveBlogPostResponse, AdminArchiveBlogPostError, Options<AdminArchiveBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminArchiveBlogPostResponse, AdminArchiveBlogPostError, Options<AdminArchiveBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminArchiveBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Publish a draft or archived post. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishBlogPostMutation = (options?: Partial<Options<AdminPublishBlogPostData>>): UseMutationOptions<AdminPublishBlogPostResponse, AdminPublishBlogPostError, Options<AdminPublishBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminPublishBlogPostResponse, AdminPublishBlogPostError, Options<AdminPublishBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminPublishBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
  * Set the related/promoted courses for a post by hand.
  */
 export const adminSetBlogPostRelatedCoursesMutation = (options?: Partial<Options<AdminSetBlogPostRelatedCoursesData>>): UseMutationOptions<AdminSetBlogPostRelatedCoursesResponse, AdminSetBlogPostRelatedCoursesError, Options<AdminSetBlogPostRelatedCoursesData>> => {
@@ -573,12 +662,29 @@ export const adminSuggestBlogPostRelatedCoursesMutation = (options?: Partial<Opt
   return mutationOptions;
 };
 
+/**
+ * Take a published post back to draft.
+ */
+export const adminUnpublishBlogPostMutation = (options?: Partial<Options<AdminUnpublishBlogPostData>>): UseMutationOptions<AdminUnpublishBlogPostResponse, AdminUnpublishBlogPostError, Options<AdminUnpublishBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminUnpublishBlogPostResponse, AdminUnpublishBlogPostError, Options<AdminUnpublishBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUnpublishBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 export const adminGetMyCapabilitiesQueryKey = (options?: Options<AdminGetMyCapabilitiesData>) => createQueryKey('adminGetMyCapabilities', options);
 
 /**
  * The capabilities the caller holds; open to any staff member.
  */
-export const adminGetMyCapabilitiesOptions = (options?: Options<AdminGetMyCapabilitiesData>) => queryOptions<AdminGetMyCapabilitiesResponse, AxiosError<AdminGetMyCapabilitiesError>, AdminGetMyCapabilitiesResponse, ReturnType<typeof adminGetMyCapabilitiesQueryKey>>({
+export const adminGetMyCapabilitiesOptions = (options?: Options<AdminGetMyCapabilitiesData>) => queryOptions<AdminGetMyCapabilitiesResponse, AdminGetMyCapabilitiesError, AdminGetMyCapabilitiesResponse, ReturnType<typeof adminGetMyCapabilitiesQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
     const { data } = await adminGetMyCapabilities({
       ...options,
@@ -879,6 +985,59 @@ export const adminUpdateCourseLandingPageMutation = (options?: Partial<Options<A
   return mutationOptions;
 };
 
+/**
+ * Archive a draft or published landing page.
+ */
+export const adminArchiveCourseLandingPageMutation = (options?: Partial<Options<AdminArchiveCourseLandingPageData>>): UseMutationOptions<AdminArchiveCourseLandingPageResponse, AdminArchiveCourseLandingPageError, Options<AdminArchiveCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminArchiveCourseLandingPageResponse, AdminArchiveCourseLandingPageError, Options<AdminArchiveCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminArchiveCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Publish a draft or archived landing page. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishCourseLandingPageMutation = (options?: Partial<Options<AdminPublishCourseLandingPageData>>): UseMutationOptions<AdminPublishCourseLandingPageResponse, AdminPublishCourseLandingPageError, Options<AdminPublishCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminPublishCourseLandingPageResponse, AdminPublishCourseLandingPageError, Options<AdminPublishCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminPublishCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Take a published landing page back to draft.
+ */
+export const adminUnpublishCourseLandingPageMutation = (options?: Partial<Options<AdminUnpublishCourseLandingPageData>>): UseMutationOptions<AdminUnpublishCourseLandingPageResponse, AdminUnpublishCourseLandingPageError, Options<AdminUnpublishCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminUnpublishCourseLandingPageResponse, AdminUnpublishCourseLandingPageError, Options<AdminUnpublishCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUnpublishCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 export const adminListLandingPageQnaItemsQueryKey = (options: Options<AdminListLandingPageQnaItemsData>) => createQueryKey('adminListLandingPageQnaItems', options);
 
 export const adminListLandingPageQnaItemsOptions = (options: Options<AdminListLandingPageQnaItemsData>) => queryOptions<AdminListLandingPageQnaItemsResponse, AdminListLandingPageQnaItemsError, AdminListLandingPageQnaItemsResponse, ReturnType<typeof adminListLandingPageQnaItemsQueryKey>>({
@@ -1101,6 +1260,9 @@ export const adminListCourseOptionsQueryKey = (options?: Options<AdminListCourse
 
 /**
  * Every course as id and name, unpaginated and oldest first, for selects.
+ *       It is the post form's course picker, so it is classified under blog posts:
+ *       an editor of posts picks the courses a post promotes without being allowed
+ *       to edit courses.
  */
 export const adminListCourseOptionsOptions = (options?: Options<AdminListCourseOptionsData>) => queryOptions<AdminListCourseOptionsResponse, AdminListCourseOptionsError, AdminListCourseOptionsResponse, ReturnType<typeof adminListCourseOptionsQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -1138,6 +1300,60 @@ export const adminUpdateCourseMutation = (options?: Partial<Options<AdminUpdateC
   const mutationOptions: UseMutationOptions<AdminUpdateCourseResponse, AdminUpdateCourseError, Options<AdminUpdateCourseData>> = {
     mutationFn: async (fnOptions) => {
       const { data } = await adminUpdateCourse({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Mark a course as completed: it joins the public catalogue.
+ */
+export const adminMarkCourseCompletedMutation = (options?: Partial<Options<AdminMarkCourseCompletedData>>): UseMutationOptions<AdminMarkCourseCompletedResponse, AdminMarkCourseCompletedError, Options<AdminMarkCourseCompletedData>> => {
+  const mutationOptions: UseMutationOptions<AdminMarkCourseCompletedResponse, AdminMarkCourseCompletedError, Options<AdminMarkCourseCompletedData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminMarkCourseCompleted({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Mark a course as a draft. A state is not an update: each change of Course
+ *       Readiness is its own operation with its own Permission. Any change between two
+ *       distinct values is legal; repeating the current value is a 409 with a localized
+ *       `detail`.
+ */
+export const adminMarkCourseDraftMutation = (options?: Partial<Options<AdminMarkCourseDraftData>>): UseMutationOptions<AdminMarkCourseDraftResponse, AdminMarkCourseDraftError, Options<AdminMarkCourseDraftData>> => {
+  const mutationOptions: UseMutationOptions<AdminMarkCourseDraftResponse, AdminMarkCourseDraftError, Options<AdminMarkCourseDraftData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminMarkCourseDraft({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Mark a course as in development.
+ */
+export const adminMarkCourseInDevelopmentMutation = (options?: Partial<Options<AdminMarkCourseInDevelopmentData>>): UseMutationOptions<AdminMarkCourseInDevelopmentResponse, AdminMarkCourseInDevelopmentError, Options<AdminMarkCourseInDevelopmentData>> => {
+  const mutationOptions: UseMutationOptions<AdminMarkCourseInDevelopmentResponse, AdminMarkCourseInDevelopmentError, Options<AdminMarkCourseInDevelopmentData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminMarkCourseInDevelopment({
         ...options,
         ...fnOptions,
         throwOnError: true
@@ -1271,7 +1487,7 @@ export const adminListPermissionsQueryKey = (options?: Options<AdminListPermissi
 /**
  * The catalog of Permissions, generated from the operations' declarations.
  */
-export const adminListPermissionsOptions = (options?: Options<AdminListPermissionsData>) => queryOptions<AdminListPermissionsResponse, AxiosError<AdminListPermissionsError>, AdminListPermissionsResponse, ReturnType<typeof adminListPermissionsQueryKey>>({
+export const adminListPermissionsOptions = (options?: Options<AdminListPermissionsData>) => queryOptions<AdminListPermissionsResponse, AdminListPermissionsError, AdminListPermissionsResponse, ReturnType<typeof adminListPermissionsQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
     const { data } = await adminListPermissions({
       ...options,
@@ -1739,6 +1955,59 @@ export const adminUpdateReviewMutation = (options?: Partial<Options<AdminUpdateR
   const mutationOptions: UseMutationOptions<AdminUpdateReviewResponse, AdminUpdateReviewError, Options<AdminUpdateReviewData>> = {
     mutationFn: async (fnOptions) => {
       const { data } = await adminUpdateReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Archive a draft or published review.
+ */
+export const adminArchiveReviewMutation = (options?: Partial<Options<AdminArchiveReviewData>>): UseMutationOptions<AdminArchiveReviewResponse, AdminArchiveReviewError, Options<AdminArchiveReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminArchiveReviewResponse, AdminArchiveReviewError, Options<AdminArchiveReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminArchiveReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Publish a draft or archived review. A state is not an update: each change of
+ *       Publication State is its own operation with its own Permission. An illegal
+ *       move, or repeating the current state, is a 409 with a localized `detail`.
+ */
+export const adminPublishReviewMutation = (options?: Partial<Options<AdminPublishReviewData>>): UseMutationOptions<AdminPublishReviewResponse, AdminPublishReviewError, Options<AdminPublishReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminPublishReviewResponse, AdminPublishReviewError, Options<AdminPublishReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminPublishReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Take a published review back to draft.
+ */
+export const adminUnpublishReviewMutation = (options?: Partial<Options<AdminUnpublishReviewData>>): UseMutationOptions<AdminUnpublishReviewResponse, AdminUnpublishReviewError, Options<AdminUnpublishReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminUnpublishReviewResponse, AdminUnpublishReviewError, Options<AdminUnpublishReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUnpublishReview({
         ...options,
         ...fnOptions,
         throwOnError: true
@@ -2258,12 +2527,47 @@ export const getMyDashboardOptions = (options?: Options<GetMyDashboardData>) => 
   queryKey: getMyDashboardQueryKey(options)
 });
 
+export const listConnectedAppsQueryKey = (options?: Options<ListConnectedAppsData>) => createQueryKey('listConnectedApps', options);
+
+/**
+ * The apps the signed-in user has connected and that can still act for them. An app unused for thirty days (no refresh) has lapsed and is not listed.
+ */
+export const listConnectedAppsOptions = (options?: Options<ListConnectedAppsData>) => queryOptions<ListConnectedAppsResponse, ListConnectedAppsError, ListConnectedAppsResponse, ReturnType<typeof listConnectedAppsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await listConnectedApps({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: listConnectedAppsQueryKey(options)
+});
+
+/**
+ * Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps.
+ */
+export const revokeConnectedAppMutation = (options?: Partial<Options<RevokeConnectedAppData>>): UseMutationOptions<RevokeConnectedAppResponse, RevokeConnectedAppError, Options<RevokeConnectedAppData>> => {
+  const mutationOptions: UseMutationOptions<RevokeConnectedAppResponse, RevokeConnectedAppError, Options<RevokeConnectedAppData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await revokeConnectedApp({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 export const getOAuthConsentQueryKey = (options: Options<GetOAuthConsentData>) => createQueryKey('getOAuthConsent', options);
 
 /**
  * The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
  */
-export const getOAuthConsentOptions = (options: Options<GetOAuthConsentData>) => queryOptions<GetOAuthConsentResponse, AxiosError<GetOAuthConsentError>, GetOAuthConsentResponse, ReturnType<typeof getOAuthConsentQueryKey>>({
+export const getOAuthConsentOptions = (options: Options<GetOAuthConsentData>) => queryOptions<GetOAuthConsentResponse, GetOAuthConsentError, GetOAuthConsentResponse, ReturnType<typeof getOAuthConsentQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
     const { data } = await getOAuthConsent({
       ...options,
@@ -2279,8 +2583,8 @@ export const getOAuthConsentOptions = (options: Options<GetOAuthConsentData>) =>
 /**
  * Grant the request as the signed-in user.
  */
-export const approveOAuthConsentMutation = (options?: Partial<Options<ApproveOAuthConsentData>>): UseMutationOptions<ApproveOAuthConsentResponse, AxiosError<ApproveOAuthConsentError>, Options<ApproveOAuthConsentData>> => {
-  const mutationOptions: UseMutationOptions<ApproveOAuthConsentResponse, AxiosError<ApproveOAuthConsentError>, Options<ApproveOAuthConsentData>> = {
+export const approveOAuthConsentMutation = (options?: Partial<Options<ApproveOAuthConsentData>>): UseMutationOptions<ApproveOAuthConsentResponse, ApproveOAuthConsentError, Options<ApproveOAuthConsentData>> => {
+  const mutationOptions: UseMutationOptions<ApproveOAuthConsentResponse, ApproveOAuthConsentError, Options<ApproveOAuthConsentData>> = {
     mutationFn: async (fnOptions) => {
       const { data } = await approveOAuthConsent({
         ...options,
@@ -2296,8 +2600,8 @@ export const approveOAuthConsentMutation = (options?: Partial<Options<ApproveOAu
 /**
  * Refuse the request; the application is told `access_denied`.
  */
-export const denyOAuthConsentMutation = (options?: Partial<Options<DenyOAuthConsentData>>): UseMutationOptions<DenyOAuthConsentResponse, AxiosError<DenyOAuthConsentError>, Options<DenyOAuthConsentData>> => {
-  const mutationOptions: UseMutationOptions<DenyOAuthConsentResponse, AxiosError<DenyOAuthConsentError>, Options<DenyOAuthConsentData>> = {
+export const denyOAuthConsentMutation = (options?: Partial<Options<DenyOAuthConsentData>>): UseMutationOptions<DenyOAuthConsentResponse, DenyOAuthConsentError, Options<DenyOAuthConsentData>> => {
+  const mutationOptions: UseMutationOptions<DenyOAuthConsentResponse, DenyOAuthConsentError, Options<DenyOAuthConsentData>> = {
     mutationFn: async (fnOptions) => {
       const { data } = await denyOAuthConsent({
         ...options,

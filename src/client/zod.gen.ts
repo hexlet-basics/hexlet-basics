@@ -790,7 +790,7 @@ export const zOAuthDecision = z.object({
 });
 
 /**
- * Whether an operation only reads or can change data (ADR-0017).
+ * Whether an operation only reads or can change data (ADR-0018).
  */
 export const zPermissionKind = z.enum(['read', 'write']);
 

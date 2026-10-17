@@ -650,6 +650,19 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			"state":      row.State,
 			"pinned":     row.Pinned,
 		}, nil
+	case "Session":
+		key, ok := id.(string)
+		if !ok {
+			return nil, fmt.Errorf("audit row: %s id is %T, want string", typeName, id)
+		}
+		row, err := c.Session.Get(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+		return map[string]any{
+			"data":   row.Data,
+			"expiry": row.Expiry,
+		}, nil
 	case "StaffMember":
 		key, ok := id.(int)
 		if !ok {
@@ -747,6 +760,7 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			"nickname":                 row.Nickname,
 			"phone":                    row.Phone,
 			"confirmation_token":       row.ConfirmationToken,
+			"password_changed_at":      row.PasswordChangedAt,
 		}, nil
 	case "UserAccount":
 		key, ok := id.(int)

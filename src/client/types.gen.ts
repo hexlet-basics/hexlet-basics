@@ -1160,7 +1160,7 @@ export type PermissionCatalog = {
 };
 
 /**
- * Whether an operation only reads or can change data (ADR-0017).
+ * Whether an operation only reads or can change data (ADR-0018).
  */
 export type PermissionKind = 'read' | 'write';
 

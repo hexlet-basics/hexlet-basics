@@ -54,27 +54,6 @@ export const courseLandingPageFields: FieldDescriptor[] = [
     required: false,
   },
   {
-    name: "state",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.course_landing_page.state",
-    enumValues: [
-      {
-        value: "draft",
-        labelKey: "models.attributes.course_landing_page.state/values.draft",
-      },
-      {
-        value: "archived",
-        labelKey: "models.attributes.course_landing_page.state/values.archived",
-      },
-      {
-        value: "published",
-        labelKey: "models.attributes.course_landing_page.state/values.published",
-      },
-    ],
-    required: false,
-  },
-  {
     name: "order",
     kind: "text",
     nullable: true,

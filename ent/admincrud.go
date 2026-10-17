@@ -340,7 +340,7 @@ func (c *ReviewClient) AdminDelete(ctx context.Context, id int32) error {
 func (c *StaffMemberClient) adminQuery() *StaffMemberQuery {
 	return c.Query().
 		WithUser().
-		WithRole(func(rq *StaffRoleQuery) { rq.WithPermissions() })
+		WithRole(func(rq *StaffRoleQuery) { rq.WithGrants() })
 }
 
 // AdminList returns one page of StaffMember in the default admin order. The
@@ -403,7 +403,7 @@ func (c *StaffMemberClient) AdminDelete(ctx context.Context, id int32) error {
 // edges the API model embeds are loaded here once.
 func (c *StaffRoleClient) adminQuery() *StaffRoleQuery {
 	return c.Query().
-		WithPermissions()
+		WithGrants()
 }
 
 // AdminList returns one page of StaffRole in the default admin order. The

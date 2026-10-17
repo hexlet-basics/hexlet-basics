@@ -5,27 +5,6 @@ import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
 export const bannerFields: FieldDescriptor[] = [
   {
-    name: "state",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.state",
-    enumValues: [
-      {
-        value: "draft",
-        labelKey: "models.attributes.banner.state/values.draft",
-      },
-      {
-        value: "published",
-        labelKey: "models.attributes.banner.state/values.published",
-      },
-      {
-        value: "archived",
-        labelKey: "models.attributes.banner.state/values.archived",
-      },
-    ],
-    required: true,
-  },
-  {
     name: "background",
     kind: "select",
     nullable: false,
