@@ -373,3 +373,69 @@ refuse the base64 of a 15 MiB file (20 MiB), so the limit of the `/mcp` endpoint
 is raised to the base64 length of the largest upload plus 1 MiB. It applies to
 every tool, but only to callers with a valid token (the bearer check runs before
 the body is read), and a request still has to fit the rate limit.
+
+## Addendum: every admin operation as a tool, and `mcp.manage` (#855)
+
+Meets ADR-0017 and ADR-0018 as written; no departure. It closes the "not done
+here" of #854.
+
+**The allowlist is the whole admin surface.** `adminOperations` lists every
+operation that requires the `AdminSession` scheme (86 tools), minus
+`excludedAdminOperations`, a map from operationId to the reason it is not a tool.
+A test (`TestEveryAdminOperationIsAToolOrExcludedWithAReason`) enumerates the
+contract's admin operations and requires each to be in exactly one of the two, so
+an operation added later fails the build until someone decides. Excluded:
+only `adminGetMyCapabilities` (it feeds the admin menu; an agent learns what it
+may do from the answers of the tools, which name the refusal). The audit trail
+(`adminListAuditRecords`, #857) is a tool. The state transitions (`publish`, `unpublish`, `archive`,
+`adminMarkCourse...`) are tools of their own, as they are operations of their
+own; the `update` tools carry no state.
+
+**`mcp.manage` is declared in the contract.** A TypeSpec extension,
+`x-requires-capability: "mcp.manage"`, on the operation; `permissions.Parse`
+reads it (and rejects a name not listed under `x-capabilities`), and
+`permissions.MCPCapabilities(operation)` returns every capability the operation
+needs over MCP: `mcp.write` or `mcp.read` by its kind, plus the declared one.
+It replaces `MCPCapability`, and `authorizeMCP` checks each in turn through
+`Policy.HasCapability`, so an administrator without an explicit grant is refused
+like anyone else. There is no list in Go.
+
+**What manages who has access.** Every operation whose Permission is in
+`users.*`, `staff_members.*` or `staff_roles.*`, 22 operations, reads included:
+the user CRUD and search, the management users, the Staff Members, the Staff
+Roles, a role's grants and the Permission catalog. Writes are the obvious case
+(they create administrators, move people between roles and rewrite grants). Reads
+are included because the user and staff reads are personal data (ADR-0017's
+reads of personal data), and the roles and the catalog are the map an agent needs
+to plan a privilege escalation; keeping the reads under `mcp.read` would let a
+role meant for content work list every learner. So `mcp.manage` covers the
+access-management operations whatever their kind, on top of the operation's
+Permission and `mcp.read`/`mcp.write`. Not included: the leads, messages and
+lesson progress (personal data, but about learning and sales, not access), the
+learner-facing reads, and the content operations.
+
+**Self-protection holds, by construction.** The #844 rules are in the handlers,
+and the tool dispatches through the generated server with the Principal's user as
+the authenticated user, so the refusals are the handlers': own Staff Member
+record (403), own account (403), the last administrator (409), the
+administrator flag by a non-administrator (403) and the grants of the caller's
+own role by a non-administrator (403). Each is tested through a tool, with the
+Audit Record `failed`, the channel `mcp` and the row unchanged.
+
+**Hints.** `readOnlyHint` for a GET. `destructiveHint` only for an HTTP DELETE:
+archive and unpublish keep the record and can be undone, and a `PUT` that
+replaces a set (a role's grants, a post's related courses) is reversible by
+another call, so it is `destructiveHint: false`, which says that the data is not
+lost. `idempotentHint` for a PUT and a DELETE. A description is the contract's
+text, or, for the operations that have none, the operationId read as words,
+followed by what the call needs (its Permission, and `mcp.manage`).
+
+**Schemas.** The derivation of #854 (path and query parameters, a nested `body`,
+`$ref`s inlined, `nullable` as a type list or `anyOf` with null) held for every
+operation; no change was needed. A test builds every tool and validates an
+example generated from its input schema against it, and checks the output schema
+is valid. The admin tool list is about 225 KB of JSON (every input and output
+schema is inlined), and a test fails if it passes 300 KB; trimming it (for
+instance by advertising shared output shapes once) is left for a ticket of its
+own. The test harness (`testsupport.NewOAuth`) now wires the roles writer, the
+blog post remover and the related-courses replacer, which the new tools reach.

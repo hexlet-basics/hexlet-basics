@@ -62,6 +62,7 @@ type Declarations struct {
 	adminWrite   map[string]bool
 	standalone   map[string]bool
 	personalData map[string]string
+	required     map[string]string
 	catalog      []Permission
 }
 
@@ -95,6 +96,7 @@ func Parse(doc []byte) (*Declarations, error) {
 			Access       Access                `yaml:"x-access"`
 			UnitOfWork   string                `yaml:"x-unit-of-work"`
 			PersonalData string                `yaml:"x-personal-data"`
+			Requires     string                `yaml:"x-requires-capability"`
 			Security     []map[string][]string `yaml:"security"`
 		} `yaml:"paths"`
 	}
@@ -109,6 +111,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		adminWrite:   map[string]bool{},
 		standalone:   map[string]bool{},
 		personalData: map[string]string{},
+		required:     map[string]string{},
 	}
 	kinds := map[string]Kind{}
 	for _, c := range spec.Capabilities {
@@ -144,6 +147,15 @@ func Parse(doc []byte) (*Declarations, error) {
 					return nil, fmt.Errorf("%s: x-unit-of-work needs an operationId", where)
 				}
 				d.standalone[operationName(op.OperationID)] = true
+			}
+			if op.Requires != "" {
+				if op.OperationID == "" {
+					return nil, fmt.Errorf("%s: x-requires-capability needs an operationId", where)
+				}
+				if _, ok := d.capabilities[op.Requires]; !ok {
+					return nil, fmt.Errorf("%s: x-requires-capability %q is not listed under x-capabilities", where, op.Requires)
+				}
+				d.required[operationName(op.OperationID)] = op.Requires
 			}
 			if op.PersonalData != "" {
 				if op.OperationID == "" {
@@ -343,16 +355,32 @@ func Known(name string) bool {
 	return slices.ContainsFunc(declared.catalog, func(p Permission) bool { return p.Name == name })
 }
 
-// MCPCapability is the capability Permission an operation needs on top of its
-// own when it is called over MCP (ADR-0017): mcp.write for an operation that
-// changes data on the admin surface, mcp.read for the rest. The kind comes from
-// the contract (the declared Permission's, else the one IsAdminWrite derives),
-// so a new operation is classified by declaring it. mcp.manage, which ADR-0017
-// also names for operations on users, staff and roles, is not applied here yet:
-// those operations are not exposed as tools (ADR-0018 addendum, #854).
-func MCPCapability(operation string) string {
+// MCPCapabilities are the capability Permissions an operation needs on top of
+// its own when it is called over MCP (ADR-0017), all of them: mcp.write for an
+// operation that changes data on the admin surface, mcp.read for the rest, and
+// the capability the contract declares with `x-requires-capability` (mcp.manage
+// for every operation on users, staff members, Staff Roles and their grants,
+// whatever its kind). The kind comes from the contract (the declared
+// Permission's, else the one IsAdminWrite derives), so a new operation is
+// classified by declaring it, never by a list in Go.
+func MCPCapabilities(operation string) []string {
+	kind := "mcp.read"
 	if IsAdminWrite(operation) {
-		return "mcp.write"
+		kind = "mcp.write"
 	}
-	return "mcp.read"
+	if extra, ok := declared.required[operation]; ok {
+		return []string{kind, extra}
+	}
+	return []string{kind}
+}
+
+// RequiredCapabilityOperations lists the operations that declare
+// `x-requires-capability`, sorted, so a test can walk them.
+func RequiredCapabilityOperations() []string {
+	names := make([]string, 0, len(declared.required))
+	for name := range declared.required {
+		names = append(names, name)
+	}
+	slices.Sort(names)
+	return names
 }

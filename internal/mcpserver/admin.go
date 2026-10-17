@@ -30,10 +30,101 @@ import (
 // Each operation still passes the one checkpoint when it is called (see
 // callAdminTool); the list says what may be offered, not what may be done.
 var adminOperations = []string{
-	"adminListBanners",
-	"adminUpdateBanner",
-	"adminUploadAttachment",
+	"adminArchiveBanner",
+	"adminArchiveBlogPost",
+	"adminArchiveCourseLandingPage",
+	"adminArchiveReview",
+	"adminCreateBanner",
+	"adminCreateBlogPost",
+	"adminCreateCategoryQnaItem",
+	"adminCreateCourse",
+	"adminCreateCourseCategory",
+	"adminCreateCourseLandingPage",
+	"adminCreateCourseVersion",
+	"adminCreateLandingPageQnaItem",
+	"adminCreateReview",
+	"adminCreateRole",
+	"adminCreateStaffMember",
+	"adminCreateUser",
+	"adminDeleteBanner",
+	"adminDeleteBlogPost",
+	"adminDeleteCategoryQnaItem",
+	"adminDeleteCourseCategory",
+	"adminDeleteCourseLandingPage",
+	"adminDeleteLandingPageQnaItem",
+	"adminDeleteReview",
+	"adminDeleteRole",
+	"adminDeleteStaffMember",
+	"adminDeleteUser",
+	"adminGetBanner",
+	"adminGetBlogPost",
+	"adminGetCourse",
+	"adminGetCourseCategory",
+	"adminGetCourseLandingPage",
+	"adminGetManagementUser",
+	"adminGetReview",
+	"adminGetRole",
+	"adminGetRolePermissions",
+	"adminGetStaffMember",
+	"adminGetUser",
 	"adminListAuditRecords",
+	"adminListBanners",
+	"adminListBlogPosts",
+	"adminListCategoryQnaItems",
+	"adminListCourseCategories",
+	"adminListCourseLandingPages",
+	"adminListCourseLessonReviews",
+	"adminListCourseLessons",
+	"adminListCourses",
+	"adminListLandingPageQnaItems",
+	"adminListLeads",
+	"adminListLessonProgress",
+	"adminListManagementUsers",
+	"adminListMessages",
+	"adminListPermissions",
+	"adminListReviews",
+	"adminListRoles",
+	"adminListStaffMembers",
+	"adminListUsers",
+	"adminMarkCourseCompleted",
+	"adminMarkCourseDraft",
+	"adminMarkCourseInDevelopment",
+	"adminPublishBanner",
+	"adminPublishBlogPost",
+	"adminPublishCourseLandingPage",
+	"adminPublishReview",
+	"adminReviewCourse",
+	"adminReviewCourseLesson",
+	"adminSearchUsers",
+	"adminSetBlogPostRelatedCourses",
+	"adminSuggestBlogPostRelatedCourses",
+	"adminUnpublishBanner",
+	"adminUnpublishBlogPost",
+	"adminUnpublishCourseLandingPage",
+	"adminUnpublishReview",
+	"adminUpdateBanner",
+	"adminUpdateBlogPost",
+	"adminUpdateCategoryQnaItem",
+	"adminUpdateCourse",
+	"adminUpdateCourseCategory",
+	"adminUpdateCourseLandingPage",
+	"adminUpdateLandingPageQnaItem",
+	"adminUpdateManagementUser",
+	"adminUpdateReview",
+	"adminUpdateRole",
+	"adminUpdateRolePermissions",
+	"adminUpdateStaffMember",
+	"adminUpdateUser",
+	"adminUploadAttachment",
+}
+
+// excludedAdminOperations are the admin operations (the ones that require the
+// AdminSession scheme) that are deliberately not tools, each with its reason.
+// A test requires every admin operation of the contract to be in
+// adminOperations or here, so an operation added to the contract later cannot
+// be forgotten: it is either offered to agents or excluded on the record.
+var excludedAdminOperations = map[string]string{
+	"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
 }
 
 // adminLocales are the locales staff work in. The tool's locale argument is
@@ -132,7 +223,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	tool := &mcp.Tool{
 		Name:        op.ID,
 		Title:       op.ID,
-		Description: op.Description,
+		Description: describe(op),
 		InputSchema: input,
 		Annotations: adminAnnotations(op),
 	}
@@ -140,6 +231,44 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 		tool.OutputSchema = withTruncation(wrapObject(op.Response))
 	}
 	return tool, nil
+}
+
+// describe is the tool's description: the contract's own text for the
+// operation, or, for one that has none, its operationId read as words ("Admin
+// list banners" becomes "List banners"). It ends with what the call needs, so
+// an agent learns why a refusal came without making the call: the operation's
+// Permission and, over MCP, mcp.manage where the contract declares it.
+func describe(op *operation) string {
+	text := strings.Join(strings.Fields(op.Description), " ")
+	if text == "" {
+		words := camelWords(strings.TrimPrefix(op.ID, "admin"))
+		text = strings.ToUpper(words[:1]) + words[1:] + "."
+	}
+	needs := []string{}
+	if requirement, ok := permissions.For(op.ogenName()); ok {
+		needs = append(needs, requirement.Permission)
+	}
+	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+		if capability == "mcp.manage" {
+			needs = append(needs, capability)
+		}
+	}
+	if len(needs) > 0 {
+		text += " Needs " + strings.Join(needs, " and ") + "."
+	}
+	return text
+}
+
+// camelWords splits "ListBlogPosts" into "list blog posts".
+func camelWords(name string) string {
+	var out strings.Builder
+	for i, r := range name {
+		if i > 0 && r >= 'A' && r <= 'Z' {
+			out.WriteByte(' ')
+		}
+		out.WriteRune(r)
+	}
+	return strings.ToLower(out.String())
 }
 
 // wrapObject is the schema of structured content, which MCP requires to be an

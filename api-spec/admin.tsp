@@ -328,15 +328,15 @@ interface AdminCourses {
       Readiness is its own operation with its own Permission. Any change between two
       distinct values is legal; repeating the current value is a 409 with a localized
       `detail`. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_draft") @extension("x-permission", #{ name: "courses.mark_draft", kind: "write" }) @operationId("adminMarkCourseDraft")
+  @post @useAuth(AdminSession) @route("/{id}/mark_draft") @extension("x-permission", #{ name: "courses.mark_draft", kind: "write" }) @operationId("adminMarkCourseDraft")
   markDraft(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Mark a course as in development. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_in_development") @extension("x-permission", #{ name: "courses.mark_in_development", kind: "write" }) @operationId("adminMarkCourseInDevelopment")
+  @post @useAuth(AdminSession) @route("/{id}/mark_in_development") @extension("x-permission", #{ name: "courses.mark_in_development", kind: "write" }) @operationId("adminMarkCourseInDevelopment")
   markInDevelopment(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Mark a course as completed: it joins the public catalogue. */
-  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_completed") @extension("x-permission", #{ name: "courses.mark_completed", kind: "write" }) @operationId("adminMarkCourseCompleted")
+  @post @useAuth(AdminSession) @route("/{id}/mark_completed") @extension("x-permission", #{ name: "courses.mark_completed", kind: "write" }) @operationId("adminMarkCourseCompleted")
   markCompleted(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI re-review of every current lesson version. */
@@ -569,27 +569,27 @@ model UserInput {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Typeahead search by name/email. */
-  @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single user. A missing id surfaces as 404 via the central ent-error
       handler, not a typed union member. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "users.create", kind: "write" }) @operationId("adminCreateUser") create(@body body: UserInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "users.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateUser") create(@body body: UserInput): {
     @statusCode statusCode: 201;
     @body user: UserCrud;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a user. 404 (missing) and 409 (duplicate email) both flow through
       the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.delete", kind: "write" }) @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -605,22 +605,22 @@ model RoleInput {
 @tag("Admin: Roles")
 @useAuth(AdminSession)
 interface AdminRoles {
-  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a role with its permission matrix. A missing id surfaces as 404 via
       the central ent-error handler. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a role. A duplicate name is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_roles.create", kind: "write" }) @operationId("adminCreateRole") create(@body body: RoleInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_roles.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateRole") create(@body body: RoleInput): {
     @statusCode statusCode: 201;
     @body role: StaffRoleDetail;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.delete", kind: "write" }) @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_roles.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 /** The Permissions submitted for a role. */
@@ -642,7 +642,7 @@ model PermissionCatalog {
 @useAuth(AdminSession)
 interface AdminPermissions {
   /** The catalog of Permissions, generated from the operations' declarations. */
-  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/role_permissions")
@@ -650,10 +650,10 @@ interface AdminPermissions {
 @useAuth(AdminSession)
 interface AdminRolePermissions {
   /** The permission matrix for a role. */
-  @get @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.read", kind: "read" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Replace the permission matrix for a role. */
-  @put @useAuth(AdminSession) @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{roleId}") @extension("x-permission", #{ name: "staff_roles.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 model StaffMemberInput {
@@ -666,29 +666,29 @@ model StaffMemberInput {
 @tag("Admin: Staff Members")
 @useAuth(AdminSession)
 interface AdminStaffMembers {
-  @get @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @extension("x-requires-capability", "mcp.manage") @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @route("/{id}") @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_members.create", kind: "write" }) @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_members.create", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
     @body staffMember: StaffMember;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.update", kind: "write" }) @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.delete", kind: "write" }) @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "staff_members.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/users")
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminManagementUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 }
