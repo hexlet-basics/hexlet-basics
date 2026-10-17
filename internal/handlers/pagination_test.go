@@ -14,6 +14,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/paging"
 )
 
 type paginationContractHandler struct {
@@ -23,7 +24,7 @@ type paginationContractHandler struct {
 
 func (h *paginationContractHandler) ListPublicReviews(_ context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	h.calls++
-	page := newPagination(params.Page, params.PerPage)
+	page := paging.New(params.Page, params.PerPage)
 	return &api.ReviewPage{
 		Items:   []api.Review{},
 		Total:   0,

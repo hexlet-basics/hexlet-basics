@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/paging"
 )
 
 // pageQuery is the slice of an ent query builder the paginated list needs. It
@@ -49,7 +50,7 @@ func listPageWith[E any, A any, P any, Q pageQuery[E, Q]](
 	mkPage func(items []A, total, page, perPage int32) P,
 ) (P, error) {
 	var zero P
-	page := newPagination(pageParam, perPageParam)
+	page := paging.New(pageParam, perPageParam)
 
 	total, err := query.Clone().Count(ctx)
 	if err != nil {
