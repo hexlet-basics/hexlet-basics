@@ -432,6 +432,18 @@ type AdminListCourseLessonsUnauthorized ProblemDetails
 
 func (*AdminListCourseLessonsUnauthorized) adminListCourseLessonsRes() {}
 
+type AdminListCourseOptionsForbidden ProblemDetails
+
+func (*AdminListCourseOptionsForbidden) adminListCourseOptionsRes() {}
+
+type AdminListCourseOptionsOKApplicationJSON []CourseOption
+
+func (*AdminListCourseOptionsOKApplicationJSON) adminListCourseOptionsRes() {}
+
+type AdminListCourseOptionsUnauthorized ProblemDetails
+
+func (*AdminListCourseOptionsUnauthorized) adminListCourseOptionsRes() {}
+
 type AdminListCoursesForbidden ProblemDetails
 
 func (*AdminListCoursesForbidden) adminListCoursesRes() {}
@@ -1217,24 +1229,22 @@ func (s *BannerState) UnmarshalText(data []byte) error {
 // A blog post (legacy: `BlogPost`).
 // Ref: #/components/schemas/BlogPost
 type BlogPost struct {
-	ID                      int32            `json:"id"`
-	Creator                 PublicUser       `json:"creator"`
-	Name                    NilString        `json:"name"`
-	Slug                    NilString        `json:"slug"`
-	Description             NilString        `json:"description"`
-	State                   NilBlogPostState `json:"state"`
-	Locale                  NilString        `json:"locale"`
-	RichBodyHtml            string           `json:"richBodyHtml"`
-	ReadingTime             int32            `json:"readingTime"`
-	LikesCount              int32            `json:"likesCount"`
-	RelatedCourseItemsCount int32            `json:"relatedCourseItemsCount"`
+	ID           int32            `json:"id"`
+	Creator      PublicUser       `json:"creator"`
+	Name         NilString        `json:"name"`
+	Slug         NilString        `json:"slug"`
+	Description  NilString        `json:"description"`
+	State        NilBlogPostState `json:"state"`
+	Locale       NilString        `json:"locale"`
+	RichBodyHtml string           `json:"richBodyHtml"`
+	ReadingTime  int32            `json:"readingTime"`
+	LikesCount   int32            `json:"likesCount"`
 	// Promoted-course ids in display order, so the admin related-courses editor can round-trip the set it
 	// writes.
-	RelatedCourseIds  []int32   `json:"relatedCourseIds"`
-	CoverThumbVariant NilString `json:"coverThumbVariant"`
-	CoverListVariant  NilString `json:"coverListVariant"`
-	CoverMainVariant  NilString `json:"coverMainVariant"`
-	CreatedAt         time.Time `json:"createdAt"`
+	RelatedCourseIds []int32 `json:"relatedCourseIds"`
+	// The cover image, served by the asset store; null for a post without one.
+	CoverUrl  NilString `json:"coverUrl"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // GetID returns the value of ID.
@@ -1287,29 +1297,14 @@ func (s *BlogPost) GetLikesCount() int32 {
 	return s.LikesCount
 }
 
-// GetRelatedCourseItemsCount returns the value of RelatedCourseItemsCount.
-func (s *BlogPost) GetRelatedCourseItemsCount() int32 {
-	return s.RelatedCourseItemsCount
-}
-
 // GetRelatedCourseIds returns the value of RelatedCourseIds.
 func (s *BlogPost) GetRelatedCourseIds() []int32 {
 	return s.RelatedCourseIds
 }
 
-// GetCoverThumbVariant returns the value of CoverThumbVariant.
-func (s *BlogPost) GetCoverThumbVariant() NilString {
-	return s.CoverThumbVariant
-}
-
-// GetCoverListVariant returns the value of CoverListVariant.
-func (s *BlogPost) GetCoverListVariant() NilString {
-	return s.CoverListVariant
-}
-
-// GetCoverMainVariant returns the value of CoverMainVariant.
-func (s *BlogPost) GetCoverMainVariant() NilString {
-	return s.CoverMainVariant
+// GetCoverUrl returns the value of CoverUrl.
+func (s *BlogPost) GetCoverUrl() NilString {
+	return s.CoverUrl
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -1367,29 +1362,14 @@ func (s *BlogPost) SetLikesCount(val int32) {
 	s.LikesCount = val
 }
 
-// SetRelatedCourseItemsCount sets the value of RelatedCourseItemsCount.
-func (s *BlogPost) SetRelatedCourseItemsCount(val int32) {
-	s.RelatedCourseItemsCount = val
-}
-
 // SetRelatedCourseIds sets the value of RelatedCourseIds.
 func (s *BlogPost) SetRelatedCourseIds(val []int32) {
 	s.RelatedCourseIds = val
 }
 
-// SetCoverThumbVariant sets the value of CoverThumbVariant.
-func (s *BlogPost) SetCoverThumbVariant(val NilString) {
-	s.CoverThumbVariant = val
-}
-
-// SetCoverListVariant sets the value of CoverListVariant.
-func (s *BlogPost) SetCoverListVariant(val NilString) {
-	s.CoverListVariant = val
-}
-
-// SetCoverMainVariant sets the value of CoverMainVariant.
-func (s *BlogPost) SetCoverMainVariant(val NilString) {
-	s.CoverMainVariant = val
+// SetCoverUrl sets the value of CoverUrl.
+func (s *BlogPost) SetCoverUrl(val NilString) {
+	s.CoverUrl = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -3531,6 +3511,34 @@ func (s *CourseModule) SetDescription(val NilString) {
 // SetLessons sets the value of Lessons.
 func (s *CourseModule) SetLessons(val []LearnerLesson) {
 	s.Lessons = val
+}
+
+// A course reduced to what a select needs.
+// Ref: #/components/schemas/CourseOption
+type CourseOption struct {
+	ID int32 `json:"id"`
+	// The course's name, or its slug when it has none.
+	Name string `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseOption) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseOption) GetName() string {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *CourseOption) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseOption) SetName(val string) {
+	s.Name = val
 }
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
@@ -7807,21 +7815,6 @@ func (s *StaffRolePermission) SetCanDestroy(val bool) {
 type StartLessonNoContent struct{}
 
 func (*StartLessonNoContent) startLessonRes() {}
-
-// SwitchLocaleNoContent is response for SwitchLocale operation.
-type SwitchLocaleNoContent struct {
-	SetCookie []string
-}
-
-// GetSetCookie returns the value of SetCookie.
-func (s *SwitchLocaleNoContent) GetSetCookie() []string {
-	return s.SetCookie
-}
-
-// SetSetCookie sets the value of SetCookie.
-func (s *SwitchLocaleNoContent) SetSetCookie(val []string) {
-	s.SetCookie = val
-}
 
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User

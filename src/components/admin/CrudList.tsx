@@ -11,6 +11,7 @@ import {
   useTable,
 } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
+import { pageCount } from "@/lib/page-count";
 
 // Table v9 no longer bundles every feature — each one is registered here, and an
 // unregistered feature simply has no API. The admin lists paginate and nothing
@@ -55,7 +56,7 @@ export function CrudList<T extends RowData>({
   isLoading,
 }: CrudListProps<T>) {
   const { t } = useTranslation();
-  const pageCount = Math.max(1, Math.ceil(total / Math.max(1, pagination.pageSize)));
+  const pages = pageCount(total, pagination.pageSize);
 
   const table = useTable({
     features,
@@ -63,7 +64,7 @@ export function CrudList<T extends RowData>({
     columns,
     state: { pagination },
     manualPagination: true,
-    pageCount,
+    pageCount: pages,
     onPaginationChange,
   });
 
@@ -122,10 +123,10 @@ export function CrudList<T extends RowData>({
         </Table>
       </Table.ScrollContainer>
 
-      {pageCount > 1 && (
+      {pages > 1 && (
         <Group justify="flex-end">
           <Pagination
-            total={pageCount}
+            total={pages}
             value={pagination.pageIndex + 1}
             onChange={(page) => onPaginationChange({ ...pagination, pageIndex: page - 1 })}
           />

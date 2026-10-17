@@ -18,6 +18,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/progress"
 )
 
@@ -46,6 +47,8 @@ import (
 // goverter:extend TimeIdentity
 // goverter:extend EnrollmentStateFromPtr
 // goverter:extend LocaleFromPtr
+// goverter:extend NilBlogPostStateFromPtr
+// goverter:extend NilStringFromEmpty
 type Converter interface {
 	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
 
@@ -78,6 +81,15 @@ type Converter interface {
 	ToSitemapCourseLandingPage(source *ent.CourseLandingPage) api.SitemapCourseLandingPage
 
 	ToSitemapCourseLandingPages(source []*ent.CourseLandingPage) []api.SitemapCourseLandingPage
+
+	// A blog post as the reader assembled it (creator loaded): the reader owns
+	// the cover URL, the likes and the reading time, so this is a field copy.
+	// goverter:map RichBody RichBodyHtml
+	// goverter:map RelatedCourseIDs RelatedCourseIds
+	// goverter:map CoverURL CoverUrl
+	ToBlogPost(source blogposts.Post) api.BlogPost
+
+	ToBlogPosts(source []blogposts.Post) []api.BlogPost
 
 	ToSitemapBlogPost(source *ent.BlogPost) api.SitemapBlogPost
 
@@ -615,6 +627,21 @@ func leadFullNameNull(*ent.Lead) api.NilString {
 // NilReviewStateFromPtr bridges a nullable ent string to ogen's NilReviewState.
 func NilReviewStateFromPtr(v *string) api.NilReviewState {
 	return nilEnumOf[api.ReviewState, api.NilReviewState](v)
+}
+
+// NilBlogPostStateFromPtr bridges a nullable ent state string to the contract's
+// BlogPostState.
+func NilBlogPostStateFromPtr(v *string) api.NilBlogPostState {
+	return nilEnumOf[api.BlogPostState, api.NilBlogPostState](v)
+}
+
+// NilStringFromEmpty is a string that is null when empty: a post without a
+// cover has no URL, not an empty one.
+func NilStringFromEmpty(v string) api.NilString {
+	if v == "" {
+		return api.NilString{Null: true}
+	}
+	return api.NewNilString(v)
 }
 
 // LocaleFromPtr bridges a nullable ent locale column to the required contract

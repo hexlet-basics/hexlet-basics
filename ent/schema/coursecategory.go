@@ -20,6 +20,7 @@ func (CourseCategory) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_categories"},
 		AdminInput{},
+		AdminCRUD{},
 	}
 }
 

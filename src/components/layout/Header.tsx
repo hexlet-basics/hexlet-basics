@@ -46,7 +46,6 @@ import {
   getCurrentUserOptions,
   listCoursesOptions,
 } from "@/client/@tanstack/react-query.gen";
-import { switchLocale } from "@/client/sdk.gen";
 import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
 import { onIdentityChanged } from "@/lib/identity";
 import { localize } from "@/lib/locale-path";
@@ -266,12 +265,11 @@ function AuthLinks() {
   );
 }
 
-// Locale switcher (legacy LocalesController#switch). The choice is stored
-// first — on the signed-in user, and in the cookie the site root reads — then
-// the browser loads the same page, query included, under the new prefix (`/`,
-// `/ru`, `/es`), as legacy's redirect did. The load happens even if storing
-// failed: legacy redirected whatever happened. The href stays on the anchor so
-// the menu is still a set of links to the other locales.
+// Locale switcher: each entry is a plain link to the same page, query included,
+// under the other locale's prefix (`/`, `/ru`, `/es`). Following it is an
+// ordinary page load that changes nothing by itself, so the browser may prefetch
+// it; the SSR server remembers the locale of the page it then serves (see
+// `rememberLocale`), and the stored `users.locale` is edited in the profile only.
 const LOCALES = [
   { code: "en", label: "English" },
   { code: "ru", label: "Русский" },
@@ -283,11 +281,6 @@ function LocaleSwitcher() {
   const { pathname, searchStr } = useLocation();
 
   const hrefFor = (code: Locale) => localize(pathname, code) + searchStr;
-  const switchTo = (code: Locale) => {
-    void switchLocale({ query: { locale: code } }).finally(() =>
-      window.location.assign(hrefFor(code)),
-    );
-  };
 
   const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
 
@@ -298,15 +291,7 @@ function LocaleSwitcher() {
       </Menu.Target>
       <Menu.Dropdown>
         {LOCALES.map((locale) => (
-          <Menu.Item
-            key={locale.code}
-            component="a"
-            href={hrefFor(locale.code)}
-            onClick={(event) => {
-              event.preventDefault();
-              switchTo(locale.code);
-            }}
-          >
+          <Menu.Item key={locale.code} component="a" href={hrefFor(locale.code)}>
             {locale.label}
           </Menu.Item>
         ))}

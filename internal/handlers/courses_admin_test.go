@@ -123,3 +123,28 @@ func TestAdminUpdateCourse(t *testing.T) {
 	require.NoError(t, err)
 	assert.Nil(t, row.HexletProgramLandingPage, "null hexletProgramLandingPage should clear the column")
 }
+
+// The picker list is not paginated: every course is on it, so a form never
+// silently misses one.
+func TestAdminListCourseOptionsIsNotPaginated(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+	totalCourses := h.DB.Course.Query().CountX(ctx)
+
+	res, err := h.Client.AdminListCourseOptions(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+	list, ok := res.(*api.AdminListCourseOptionsOKApplicationJSON)
+	require.True(t, ok)
+	options := *list
+	assert.Len(t, options, totalCourses)
+
+	var ruby *api.CourseOption
+	for i := range options {
+		if options[i].ID == int32(courseRubyIDA) {
+			ruby = &options[i]
+		}
+	}
+	require.NotNil(t, ruby, "ruby is among the options")
+	assert.NotEmpty(t, ruby.Name)
+}

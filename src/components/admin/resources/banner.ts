@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { Banner, BannerInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { bannerFields } from "@/components/admin/generated/banner";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Banner form values ARE the generated request body (BannerInput): the datetime
 // fields carry RFC3339 strings (the engine's DateTimeField hides the Mantine
@@ -32,86 +33,10 @@ export function bannerToForm(banner: Banner): BannerInput {
   };
 }
 
-// Field descriptors driving CrudForm. Enum option labels reuse the legacy
-// `*/values` i18n maps, so admin copy matches the Rails back office.
+// Fields come from the contract (generated/banner.ts); what is listed here is
+// only what the schema cannot say.
 export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.banner.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.banner["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.banner["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.banner["state/values"].archived),
-        },
-      ],
-    },
-    {
-      name: "background",
-      label: t(($) => $.models.attributes.banner.background),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "cta_gradient",
-          label: t(($) => $.models.attributes.banner["background/values"].cta_gradient),
-        },
-        {
-          value: "dark",
-          label: t(($) => $.models.attributes.banner["background/values"].dark),
-        },
-        {
-          value: "blue",
-          label: t(($) => $.models.attributes.banner["background/values"].blue),
-        },
-      ],
-    },
-    {
-      name: "locale",
-      label: t(($) => $.models.attributes.banner.locale),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "en",
-          label: t(($) => $.models.attributes.banner["locale/values"].en),
-        },
-        {
-          value: "ru",
-          label: t(($) => $.models.attributes.banner["locale/values"].ru),
-        },
-      ],
-    },
-    {
-      name: "body",
-      label: t(($) => $.models.attributes.banner.body),
-      type: "textarea",
-      required: true,
-    },
-    {
-      name: "url",
-      label: t(($) => $.models.attributes.banner.url),
-    },
-    {
-      name: "startsAt",
-      label: t(($) => $.models.attributes.banner.starts_at),
-      type: "datetime",
-    },
-    {
-      name: "finishesAt",
-      label: t(($) => $.models.attributes.banner.finishes_at),
-      type: "datetime",
-    },
-  ];
+  return useGeneratedFields<BannerInput>(bannerFields, {
+    set: { body: { type: "textarea" } },
+  });
 }

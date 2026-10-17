@@ -259,10 +259,21 @@ model CourseInput {
   coverAttachmentId: int32 | null;
 }
 
+/** A course reduced to what a select needs. */
+model CourseOption {
+  id: int32;
+
+  /** The course's name, or its slug when it has none. */
+  name: string;
+}
+
 @route("/admin/courses")
 @tag("Admin: Courses")
 @useAuth(AdminSession)
 interface AdminCourses {
+  /** Every course as id and name, unpaginated and oldest first, for selects. */
+  @get @route("/options") @operationId("adminListCourseOptions") listOptions(): CourseOption[] | UnauthorizedError | ForbiddenError | ApiError;
+
   @get @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course. A missing id surfaces as 404 via the central

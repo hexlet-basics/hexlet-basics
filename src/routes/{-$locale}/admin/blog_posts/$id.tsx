@@ -7,7 +7,7 @@ import {
   adminGetBlogPostOptions,
   adminGetBlogPostQueryKey,
   adminListBlogPostsQueryKey,
-  adminListCoursesOptions,
+  adminListCourseOptionsOptions,
   adminSetBlogPostRelatedCoursesMutation,
   adminSuggestBlogPostRelatedCoursesMutation,
   adminUpdateBlogPostMutation,
@@ -80,11 +80,12 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
   const { t } = useTranslation();
   const [selected, setSelected] = useState(initial.map(String));
 
-  // The course catalog is small (a few dozen), so one large page covers it.
-  const courses = useQuery(adminListCoursesOptions({ query: { page: 1, perPage: 100 } }));
-  const options = (courses.data?.items ?? []).map((course) => ({
+  // Every course, from the unpaginated options list: a page would silently drop
+  // the courses past its end from the picker.
+  const courses = useQuery(adminListCourseOptionsOptions());
+  const options = (courses.data ?? []).map((course) => ({
     value: String(course.id),
-    label: course.slug,
+    label: course.name,
   }));
 
   const mutation = useResourceMutation({

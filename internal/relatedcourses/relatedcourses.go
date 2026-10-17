@@ -74,7 +74,8 @@ func NewReplacer(txStore store.Transactor) *Replacer {
 // their first position. Order is 0-based (legacy's job wrote 1-based, its
 // admin set nothing); readers sort by it ascending, so only the relative order
 // matters. The counter is written outright rather than counted up: legacy's
-// counter_culture drifted because delete_all skips its callbacks.
+// counter_culture drifted because delete_all skips its callbacks. A missing post
+// is ent not-found, reported from inside the transaction.
 //
 // The delete, the insert and the counter run in one transaction. Legacy ran
 // them bare, so a failed insert (an unknown course id fails the FK) left the
@@ -84,6 +85,15 @@ func NewReplacer(txStore store.Transactor) *Replacer {
 func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) error {
 	courseIDs = lo.Uniq(courseIDs)
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		// First, so a missing post is ent not-found before anything is written
+		// (the insert would otherwise fail its FK and read as a conflict). Left
+		// unwrapped: the central handler maps ent's not-found to 404.
+		if err := db.BlogPost.UpdateOneID(postID).
+			SetRelatedCourseItemsCount(len(courseIDs)).
+			Exec(ctx); err != nil {
+			return err
+		}
+
 		if _, err := db.BlogPostRelatedCourseItem.Delete().
 			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
 			return oops.Wrapf(err, "clear related courses of post %d", postID)
@@ -99,11 +109,6 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 			return oops.Wrapf(err, "store related courses of post %d", postID)
 		}
 
-		if err := db.BlogPost.UpdateOneID(postID).
-			SetRelatedCourseItemsCount(len(courseIDs)).
-			Exec(ctx); err != nil {
-			return oops.Wrapf(err, "count related courses of post %d", postID)
-		}
 		return nil
 	})
 }

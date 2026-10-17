@@ -258,3 +258,8 @@ func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 	require.Error(t, err)
 	assert.NotErrorIs(t, err, assetstore.ErrNotFound, "a failing bucket is not a missing asset")
 }
+
+func TestURLPointsAtTheStorageRouteOfTheOrigin(t *testing.T) {
+	assert.Equal(t, "https://assets.example.test/api/storage/abc.png", assetstore.URL("https://assets.example.test/", "abc.png"))
+	assert.Equal(t, "https://assets.example.test/api/storage/a%20b.png", assetstore.URL("https://assets.example.test", "a b.png"))
+}

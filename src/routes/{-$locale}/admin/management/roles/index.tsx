@@ -1,5 +1,4 @@
-import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { Group, Stack, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,10 +8,9 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { StaffRole } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { useCrudPager } from "@/components/admin/useCrudPager";
+import { EditLink } from "@/components/admin/EditLink";
+import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
-import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
-import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
   component: RolesList,
@@ -20,21 +18,11 @@ export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
 
 function RolesList() {
   const { t } = useTranslation();
-  const confirmDelete = useDeleteConfirmation();
 
-  const pager = useCrudPager();
-
-  const { data, isLoading } = useQuery(
-    adminListRolesOptions({
-      query: pager.query,
-    }),
-  );
-
-  const deleteMutation = useResourceMutation({
-    mutation: adminDeleteRoleMutation(),
-    invalidate: [adminListRolesQueryKey()],
-    successMessage: t(($) => $.admin.crud.deleted),
-    errorMessage: t(($) => $.admin.crud.deleteError),
+  const list = useCrudList({
+    list: adminListRolesOptions,
+    listKey: adminListRolesQueryKey,
+    remove: adminDeleteRoleMutation,
   });
 
   const columns: CrudColumnDef<StaffRole>[] = [
@@ -50,37 +38,12 @@ function RolesList() {
       accessorKey: "permissionsCount",
       header: t(($) => $.models.attributes.staff_role.permissions_count),
     },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ButtonLink
-            to="/{-$locale}/admin/management/roles/$id"
-            params={{ id: String(row.original.id) }}
-            size="xs"
-            variant="light"
-          >
-            {t(($) => $.admin.crud.edit)}
-          </ButtonLink>
-          <Tooltip label={t(($) => $.admin.crud.delete)}>
-            <ActionIcon
-              color="red"
-              variant="light"
-              aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() =>
-                confirmDelete({
-                  description: row.original.name,
-                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
-                })
-              }
-            >
-              ✕
-            </ActionIcon>
-          </Tooltip>
-        </Group>
+    list.actionsColumn({
+      edit: (row) => (
+        <EditLink to="/{-$locale}/admin/management/roles/$id" params={{ id: String(row.id) }} />
       ),
-    },
+      describe: (row) => row.name,
+    }),
   ];
 
   return (
@@ -92,13 +55,7 @@ function RolesList() {
         </ButtonLink>
       </Group>
 
-      <CrudList
-        columns={columns}
-        data={data?.items ?? []}
-        total={data?.total ?? 0}
-        {...pager.props(data?.perPage)}
-        isLoading={isLoading}
-      />
+      <CrudList columns={columns} {...list.props} />
     </Stack>
   );
 }

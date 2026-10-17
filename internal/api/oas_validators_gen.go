@@ -47,6 +47,14 @@ func (s AdminListCategoryQnaItemsOKApplicationJSON) Validate() error {
 	return nil
 }
 
+func (s AdminListCourseOptionsOKApplicationJSON) Validate() error {
+	alias := ([]CourseOption)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s AdminListLandingPageQnaItemsOKApplicationJSON) Validate() error {
 	alias := ([]QnaItem)(s)
 	if alias == nil {
@@ -2690,29 +2698,6 @@ func (s *StaffRolePermission) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "resource",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
-func (s *SwitchLocaleNoContent) Validate() error {
-	if s == nil {
-		return validate.ErrNilPointer
-	}
-
-	var failures []validate.FieldError
-	if err := func() error {
-		if s.SetCookie == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "SetCookie",
 			Error: err,
 		})
 	}

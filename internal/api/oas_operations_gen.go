@@ -46,6 +46,7 @@ const (
 	AdminListCourseLandingPagesOperation        OperationName = "AdminListCourseLandingPages"
 	AdminListCourseLessonReviewsOperation       OperationName = "AdminListCourseLessonReviews"
 	AdminListCourseLessonsOperation             OperationName = "AdminListCourseLessons"
+	AdminListCourseOptionsOperation             OperationName = "AdminListCourseOptions"
 	AdminListCoursesOperation                   OperationName = "AdminListCourses"
 	AdminListLandingPageQnaItemsOperation       OperationName = "AdminListLandingPageQnaItems"
 	AdminListLeadsOperation                     OperationName = "AdminListLeads"
@@ -108,7 +109,6 @@ const (
 	ListPublicCourseCategoriesOperation         OperationName = "ListPublicCourseCategories"
 	ListPublicReviewsOperation                  OperationName = "ListPublicReviews"
 	StartLessonOperation                        OperationName = "StartLesson"
-	SwitchLocaleOperation                       OperationName = "SwitchLocale"
 	UpdatePasswordOperation                     OperationName = "UpdatePassword"
 	UpdateProfileOperation                      OperationName = "UpdateProfile"
 )

@@ -339,6 +339,15 @@ func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params A
 	return r, ht.ErrNotImplemented
 }
 
+// AdminListCourseOptions implements adminListCourseOptions operation.
+//
+// Every course as id and name, unpaginated and oldest first, for selects.
+//
+// GET /api/admin/courses/options
+func (UnimplementedHandler) AdminListCourseOptions(ctx context.Context) (r AdminListCourseOptionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListCourses implements adminListCourses operation.
 //
 // GET /api/admin/courses
@@ -898,16 +907,6 @@ func (UnimplementedHandler) ListPublicReviews(ctx context.Context, params ListPu
 //
 // POST /api/lessons/{id}/start
 func (UnimplementedHandler) StartLesson(ctx context.Context, params StartLessonParams) (r StartLessonRes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// SwitchLocale implements switchLocale operation.
-//
-// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
-// the locale it redirects to. The page navigates itself afterwards.
-//
-// GET /api/locale/switch
-func (UnimplementedHandler) SwitchLocale(ctx context.Context, params SwitchLocaleParams) (r *SwitchLocaleNoContent, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

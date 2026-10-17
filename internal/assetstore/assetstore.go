@@ -82,6 +82,14 @@ func New(db *ent.Client, bucket *blob.Bucket, publicURL string) *Store {
 	}
 }
 
+// URL is where a stored asset is served from: the `/api/storage/{key}` route of
+// the public origin (ADR-0005). It is a plain function so a reader that only
+// holds blob keys (a blog post's cover) can build the address without the
+// store's bucket.
+func URL(origin, key string) string {
+	return strings.TrimRight(origin, "/") + "/api/storage/" + url.PathEscape(key)
+}
+
 // Put validates and streams an image to blob storage, then persists its
 // Attachment. Any failure after opening the blob writer compensates by deleting
 // the key, so callers never need to coordinate partial storage state.
@@ -127,7 +135,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	return Attachment{
 		ID:          record.ID,
-		URL:         s.publicURL + "/api/storage/" + url.PathEscape(key),
+		URL:         URL(s.publicURL, key),
 		Filename:    record.Filename,
 		ContentType: record.ContentType,
 		ByteSize:    record.ByteSize,
@@ -181,7 +189,7 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 		},
 	})
 	if gcerrors.Code(err) == gcerrors.Unimplemented {
-		return s.publicURL + "/api/storage/" + url.PathEscape(key), nil
+		return URL(s.publicURL, key), nil
 	}
 	if err != nil {
 		return "", fmt.Errorf("sign download url for %q: %w", key, err)

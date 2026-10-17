@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { BlogPost, BlogPostInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { blogPostFields } from "@/components/admin/generated/blogPost";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Blog-post form values ARE the generated request body (BlogPostInput).
 // richBody is trusted editor HTML behind the engine's richtext field (Mantine
@@ -27,48 +28,19 @@ export function blogPostToForm(post: BlogPost): BlogPostInput {
   };
 }
 
+// Fields come from the contract (generated/blogPost.ts); what is listed here is
+// only what the schema cannot say.
 export function useBlogPostFields(): CrudFieldSpec<BlogPostInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "name",
-      label: t(($) => $.models.attributes.base.name),
-      required: true,
+  return useGeneratedFields<BlogPostInput>(blogPostFields, {
+    // The contract lists state after richBody; the form shows it third. The
+    // schema allows null for these, the form insists.
+    order: ["name", "slug", "state", "description", "richBody"],
+    set: {
+      name: { required: true },
+      slug: { required: true },
+      state: { required: true },
+      description: { type: "textarea" },
+      richBody: { type: "richtext", required: false },
     },
-    {
-      name: "slug",
-      label: t(($) => $.models.attributes.base.slug),
-      required: true,
-    },
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.blog_post.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.blog_post["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.blog_post["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.blog_post["state/values"].archived),
-        },
-      ],
-    },
-    {
-      name: "description",
-      label: t(($) => $.models.attributes.base.description),
-      type: "textarea",
-    },
-    {
-      name: "richBody",
-      label: t(($) => $.models.attributes.blog_post.rich_body),
-      type: "richtext",
-    },
-  ];
+  });
 }

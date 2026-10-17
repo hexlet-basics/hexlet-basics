@@ -117,15 +117,15 @@ export type BlogPost = {
   richBodyHtml: string;
   readingTime: number;
   likesCount: number;
-  relatedCourseItemsCount: number;
   /**
    * Promoted-course ids in display order, so the admin related-courses
    *       editor can round-trip the set it writes.
    */
   relatedCourseIds: Array<number>;
-  coverThumbVariant: string | null;
-  coverListVariant: string | null;
-  coverMainVariant: string | null;
+  /**
+   * The cover image, served by the asset store; null for a post without one.
+   */
+  coverUrl: string | null;
   createdAt: string;
 };
 
@@ -576,6 +576,17 @@ export type CourseModule = {
    * The module's lessons in this version, in course order.
    */
   lessons: Array<LearnerLesson>;
+};
+
+/**
+ * A course reduced to what a select needs.
+ */
+export type CourseOption = {
+  id: number;
+  /**
+   * The course's name, or its slug when it has none.
+   */
+  name: string;
 };
 
 /**
@@ -3057,6 +3068,42 @@ export type AdminCreateCourseResponses = {
 
 export type AdminCreateCourseResponse = AdminCreateCourseResponses[keyof AdminCreateCourseResponses];
 
+export type AdminListCourseOptionsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/courses/options';
+};
+
+export type AdminListCourseOptionsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseOptionsError = AdminListCourseOptionsErrors[keyof AdminListCourseOptionsErrors];
+
+export type AdminListCourseOptionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<CourseOption>;
+};
+
+export type AdminListCourseOptionsResponse = AdminListCourseOptionsResponses[keyof AdminListCourseOptionsResponses];
+
 export type AdminGetCourseData = {
   body?: never;
   path: {
@@ -4780,36 +4827,6 @@ export type StartLessonResponses = {
 };
 
 export type StartLessonResponse = StartLessonResponses[keyof StartLessonResponses];
-
-export type SwitchLocaleData = {
-  body?: never;
-  path?: never;
-  query: {
-    locale: Locale;
-  };
-  url: '/api/locale/switch';
-};
-
-export type SwitchLocaleErrors = {
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type SwitchLocaleError = SwitchLocaleErrors[keyof SwitchLocaleErrors];
-
-export type SwitchLocaleResponses = {
-  /**
-   * A remembered locale choice and the cookie that carries it.
-   */
-  204: void;
-};
-
-export type SwitchLocaleResponse = SwitchLocaleResponses[keyof SwitchLocaleResponses];
 
 export type CreateMagicLinkData = {
   body: EmailInput;

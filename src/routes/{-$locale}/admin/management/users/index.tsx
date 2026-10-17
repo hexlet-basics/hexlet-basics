@@ -1,12 +1,14 @@
-import { Group, Stack, Title } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { Stack, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { adminListManagementUsersOptions } from "@/client/@tanstack/react-query.gen";
+import {
+  adminListManagementUsersOptions,
+  adminListManagementUsersQueryKey,
+} from "@/client/@tanstack/react-query.gen";
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { useCrudPager } from "@/components/admin/useCrudPager";
-import { ButtonLink } from "@/components/RouterLink";
+import { EditLink } from "@/components/admin/EditLink";
+import { useCrudList } from "@/components/admin/useCrudList";
 
 // Management users (legacy `/admin/management/users`) — list + edit only,
 // no create/delete (parity with legacy: accounts are self-registered).
@@ -17,13 +19,10 @@ export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
 function ManagementUsersList() {
   const { t } = useTranslation();
 
-  const pager = useCrudPager();
-
-  const { data, isLoading } = useQuery(
-    adminListManagementUsersOptions({
-      query: pager.query,
-    }),
-  );
+  const list = useCrudList({
+    list: adminListManagementUsersOptions,
+    listKey: adminListManagementUsersQueryKey,
+  });
 
   const columns: CrudColumnDef<UserCrud>[] = [
     {
@@ -43,35 +42,19 @@ function ManagementUsersList() {
       header: t(($) => $.models.attributes.user.admin),
       cell: ({ row }) => (row.original.admin ? "✓" : ""),
     },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ButtonLink
-            to="/{-$locale}/admin/management/users/$id"
-            params={{ id: String(row.original.id) }}
-            size="xs"
-            variant="light"
-          >
-            {t(($) => $.admin.crud.edit)}
-          </ButtonLink>
-        </Group>
+    list.actionsColumn({
+      edit: (row) => (
+        <EditLink to="/{-$locale}/admin/management/users/$id" params={{ id: String(row.id) }} />
       ),
-    },
+      describe: (row) => row.email ?? "",
+    }),
   ];
 
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.resources.managementUsers)}</Title>
 
-      <CrudList
-        columns={columns}
-        data={data?.items ?? []}
-        total={data?.total ?? 0}
-        {...pager.props(data?.perPage)}
-        isLoading={isLoading}
-      />
+      <CrudList columns={columns} {...list.props} />
     </Stack>
   );
 }

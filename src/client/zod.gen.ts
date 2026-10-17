@@ -221,6 +221,14 @@ export const zCourseLessonReviewPage = z.object({
 });
 
 /**
+ * A course reduced to what a select needs.
+ */
+export const zCourseOption = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string()
+});
+
+/**
  * Publication/readiness state of a course.
  */
 export const zCourseReadiness = z.enum([
@@ -725,11 +733,8 @@ export const zBlogPost = z.object({
   richBodyHtml: z.string(),
   readingTime: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   likesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  relatedCourseItemsCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   relatedCourseIds: z.array(z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })),
-  coverThumbVariant: z.string().nullable(),
-  coverListVariant: z.string().nullable(),
-  coverMainVariant: z.string().nullable(),
+  coverUrl: z.string().nullable(),
   createdAt: z.iso.datetime()
 });
 
@@ -1480,6 +1485,11 @@ export const zAdminCreateCourseBody = zCourseInput;
  */
 export const zAdminCreateCourseResponse = zCourse;
 
+/**
+ * The request has succeeded.
+ */
+export const zAdminListCourseOptionsResponse = z.array(zCourseOption);
+
 export const zAdminGetCoursePath = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
@@ -1912,15 +1922,6 @@ export const zStartLessonPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zStartLessonResponse = z.void();
-
-export const zSwitchLocaleQuery = z.object({
-  locale: zLocale
-});
-
-/**
- * A remembered locale choice and the cookie that carries it.
- */
-export const zSwitchLocaleResponse = z.void();
 
 export const zCreateMagicLinkBody = zEmailInput;
 

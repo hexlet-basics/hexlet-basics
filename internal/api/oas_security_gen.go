@@ -76,6 +76,7 @@ var operationRolesAdminSession = map[string][]string{
 	AdminListCourseLandingPagesOperation:        []string{},
 	AdminListCourseLessonReviewsOperation:       []string{},
 	AdminListCourseLessonsOperation:             []string{},
+	AdminListCourseOptionsOperation:             []string{},
 	AdminListCoursesOperation:                   []string{},
 	AdminListLandingPageQnaItemsOperation:       []string{},
 	AdminListLeadsOperation:                     []string{},

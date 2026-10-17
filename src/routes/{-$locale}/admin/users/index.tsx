@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Stack, TextInput, Title, Tooltip } from "@mantine/core";
+import { Group, Stack, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -12,10 +12,11 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { useCrudPager } from "@/components/admin/useCrudPager";
+import { EditLink } from "@/components/admin/EditLink";
+import { userColumns } from "@/components/admin/generated/user";
+import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
+import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
-import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
-import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // Users admin (legacy `/admin/api/users` — the `api/` segment was a Rails
 // namespacing artifact and is dropped from the UI path). A non-empty search
@@ -26,83 +27,32 @@ export const Route = createFileRoute("/{-$locale}/admin/users/")({
 
 function UsersList() {
   const { t } = useTranslation();
-  const confirmDelete = useDeleteConfirmation();
 
-  const pager = useCrudPager();
+  const list = useCrudList({
+    list: adminListUsersOptions,
+    listKey: adminListUsersQueryKey,
+    remove: adminDeleteUserMutation,
+  });
   const [search, setSearch] = useState("");
-  const [query] = useDebouncedValue(search.trim(), 300);
+  const [term] = useDebouncedValue(search.trim(), 300);
 
-  const list = useQuery({
-    ...adminListUsersOptions({
-      query: pager.query,
-    }),
-    enabled: query === "",
-  });
+  const searching = term !== "";
   const found = useQuery({
-    ...adminSearchUsersOptions({ query: { q: query } }),
-    enabled: query !== "",
-  });
-
-  const searching = query !== "";
-  const items = searching ? (found.data ?? []) : (list.data?.items ?? []);
-  const total = searching ? (found.data?.length ?? 0) : (list.data?.total ?? 0);
-
-  const deleteMutation = useResourceMutation({
-    mutation: adminDeleteUserMutation(),
-    invalidate: [adminListUsersQueryKey()],
-    successMessage: t(($) => $.admin.crud.deleted),
-    errorMessage: t(($) => $.admin.crud.deleteError),
+    ...adminSearchUsersOptions({ query: { q: term } }),
+    enabled: searching,
   });
 
   const columns: CrudColumnDef<UserCrud>[] = [
-    {
-      accessorKey: "email",
-      header: t(($) => $.models.attributes.user.email),
-    },
-    {
-      accessorKey: "firstName",
-      header: t(($) => $.models.attributes.user.first_name),
-    },
-    {
-      accessorKey: "lastName",
-      header: t(($) => $.models.attributes.user.last_name),
-    },
+    ...useGeneratedColumns<UserCrud>(userColumns, ["email", "firstName", "lastName"]),
     {
       id: "admin",
       header: t(($) => $.models.attributes.user.admin),
       cell: ({ row }) => (row.original.admin ? "✓" : ""),
     },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ButtonLink
-            to="/{-$locale}/admin/users/$id"
-            params={{ id: String(row.original.id) }}
-            size="xs"
-            variant="light"
-          >
-            {t(($) => $.admin.crud.edit)}
-          </ButtonLink>
-          <Tooltip label={t(($) => $.admin.crud.delete)}>
-            <ActionIcon
-              color="red"
-              variant="light"
-              aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() =>
-                confirmDelete({
-                  description: row.original.email ?? "",
-                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
-                })
-              }
-            >
-              ✕
-            </ActionIcon>
-          </Tooltip>
-        </Group>
-      ),
-    },
+    list.actionsColumn({
+      edit: (row) => <EditLink to="/{-$locale}/admin/users/$id" params={{ id: String(row.id) }} />,
+      describe: (row) => row.email ?? "",
+    }),
   ];
 
   return (
@@ -121,10 +71,12 @@ function UsersList() {
 
       <CrudList
         columns={columns}
-        data={items}
-        total={total}
-        {...pager.props(list.data?.perPage)}
-        isLoading={searching ? found.isLoading : list.isLoading}
+        {...list.props}
+        {...(searching && {
+          data: found.data ?? [],
+          total: found.data?.length ?? 0,
+          isLoading: found.isLoading,
+        })}
       />
     </Stack>
   );

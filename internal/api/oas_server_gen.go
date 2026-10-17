@@ -214,6 +214,12 @@ type Handler interface {
 	//
 	// GET /api/admin/course_lessons
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
+	// AdminListCourseOptions implements adminListCourseOptions operation.
+	//
+	// Every course as id and name, unpaginated and oldest first, for selects.
+	//
+	// GET /api/admin/courses/options
+	AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error)
 	// AdminListCourses implements adminListCourses operation.
 	//
 	// GET /api/admin/courses
@@ -590,13 +596,6 @@ type Handler interface {
 	//
 	// POST /api/lessons/{id}/start
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
-	// SwitchLocale implements switchLocale operation.
-	//
-	// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
-	// the locale it redirects to. The page navigates itself afterwards.
-	//
-	// GET /api/locale/switch
-	SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error)
 	// UpdatePassword implements updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.

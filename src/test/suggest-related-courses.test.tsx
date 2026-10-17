@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
-import type { BlogPost, CoursePage, User } from "@/client/types.gen";
+import type { BlogPost, CourseOption, User } from "@/client/types.gen";
 import { Route as editRoute } from "@/routes/{-$locale}/admin/blog_posts/$id";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
@@ -35,21 +35,18 @@ const post: BlogPost = {
   richBodyHtml: "<p>Hello world</p>",
   readingTime: 0,
   likesCount: 0,
-  relatedCourseItemsCount: 0,
   relatedCourseIds: [],
-  coverThumbVariant: null,
-  coverListVariant: null,
-  coverMainVariant: null,
+  coverUrl: null,
   createdAt: "2026-01-01T00:00:00Z",
 };
 
-const courses: CoursePage = { items: [], total: 0, page: 1, perPage: 100 };
+const courses: CourseOption[] = [];
 
 test("enqueues the related-courses suggestion for the post", async () => {
   let suggestedFor: string | undefined;
   worker.use(
     http.get("*/admin/blog_posts/10", () => HttpResponse.json(post)),
-    http.get("*/admin/courses", () => HttpResponse.json(courses)),
+    http.get("*/admin/courses/options", () => HttpResponse.json(courses)),
     http.post("*/admin/blog_posts/:id/suggest_related_courses", ({ params }) => {
       suggestedFor = String(params.id);
       return new HttpResponse(null, { status: 204 });

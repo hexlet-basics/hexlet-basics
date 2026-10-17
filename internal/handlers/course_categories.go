@@ -3,63 +3,35 @@ package handlers
 import (
 	"context"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/coursecategory"
 	"hexletbasics/internal/api"
 )
 
-// AdminListCourseCategories returns a page of course categories, newest first.
-//
-// URL stays `/admin/course_categories` for backward-compat; the domain
-// concept is a course category.
-func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (api.AdminListCourseCategoriesRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		s.db.CourseCategory.Query().Order(ent.Desc(coursecategory.FieldID)),
-		s.conv.ToCourseCategories,
-		func(items []api.CourseCategory, total, page, perPage int32) *api.CourseCategoryPage {
-			return &api.CourseCategoryPage{Items: items, Total: total, Page: page, PerPage: perPage}
-		},
-	)
-}
-
-// AdminGetCourseCategory returns a single course category by id. A missing id
-// returns ent's not-found error, which the central ErrorHandler maps to 404.
-func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGetCourseCategoryParams) (api.AdminGetCourseCategoryRes, error) {
-	return getOne(ctx, int(params.ID), s.db.CourseCategory.Get, s.conv.ToCourseCategory)
-}
-
-// AdminCreateCourseCategory creates a course category.
+// The admin operations are generated (ent/admincrud.go, from the AdminCRUD and
+// AdminInput schema annotations). URL stays `/admin/course_categories` for
+// backward-compat; the domain concept is a course category.
 //
 // Uniqueness (name/header/slug-per-locale) is enforced by DB unique indexes,
 // not a pre-check: a violation returns ent's constraint error, which the central
-// ErrorHandler maps to 409. This is race-free, unlike the former Exist queries.
+// ErrorHandler maps to 409. A missing id is ent's not-found error (404).
+
+func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (api.AdminListCourseCategoriesRes, error) {
+	return s.db.CourseCategory.AdminList(ctx, params.Page, params.PerPage, s.conv.ToCourseCategories)
+}
+
+func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGetCourseCategoryParams) (api.AdminGetCourseCategoryRes, error) {
+	return s.db.CourseCategory.AdminGet(ctx, params.ID, s.conv.ToCourseCategory)
+}
+
 func (s *Server) AdminCreateCourseCategory(ctx context.Context, req *api.CourseCategoryInput) (api.AdminCreateCourseCategoryRes, error) {
-	row, err := s.db.CourseCategory.Create().SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	item := s.conv.ToCourseCategory(row)
-	return &item, nil
+	return s.db.CourseCategory.AdminCreate(ctx, req, s.conv.ToCourseCategory)
 }
 
-// AdminUpdateCourseCategory updates a course category. A missing id (404) and a
-// uniqueness violation (409) both surface as ent errors handled centrally. The
-// generated SetInput clears description on null (assign_attributes semantics).
 func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseCategoryInput, params api.AdminUpdateCourseCategoryParams) (api.AdminUpdateCourseCategoryRes, error) {
-	row, err := s.db.CourseCategory.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	item := s.conv.ToCourseCategory(row)
-	return &item, nil
+	return s.db.CourseCategory.AdminUpdate(ctx, params.ID, req, s.conv.ToCourseCategory)
 }
 
-// AdminDeleteCourseCategory removes a course category by id. A missing id
-// returns ent's not-found error (mapped to 404 centrally).
 func (s *Server) AdminDeleteCourseCategory(ctx context.Context, params api.AdminDeleteCourseCategoryParams) (api.AdminDeleteCourseCategoryRes, error) {
-	if err := s.db.CourseCategory.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+	if err := s.db.CourseCategory.AdminDelete(ctx, params.ID); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteCourseCategoryNoContent{}, nil

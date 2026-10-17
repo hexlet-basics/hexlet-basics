@@ -44,11 +44,8 @@ function blogPost(overrides: Partial<BlogPost>): BlogPost {
     richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
     readingTime: 0,
     likesCount: 2,
-    relatedCourseItemsCount: 1,
     relatedCourseIds: [1],
-    coverThumbVariant: null,
-    coverListVariant: null,
-    coverMainVariant: null,
+    coverUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
     ...overrides,
   };

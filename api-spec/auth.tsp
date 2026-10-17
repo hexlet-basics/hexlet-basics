@@ -76,12 +76,6 @@ model SessionDeleted {
   @statusCode statusCode: 204;
 }
 
-/** A remembered locale choice and the cookie that carries it. */
-model LocaleSwitched {
-  @statusCode statusCode: 204;
-  @header("Set-Cookie") setCookie: string[];
-}
-
 /** A newly-created, signed-in user; `Set-Cookie` as in SessionResponse. */
 model UserCreated {
   @statusCode statusCode: 201;
@@ -220,20 +214,4 @@ interface AccountProfile {
   @useAuth(UserSession)
   @operationId("deleteAccount")
   delete(): SessionDeleted | UnauthorizedError | ApiError;
-}
-
-// ---- Locale ---------------------------------------------------------------
-
-@route("/locale")
-@tag("Auth")
-interface LocaleSwitch {
-  /**
-   * Remember the chosen UI locale: on the signed-in user, and in a cookie the
-   * site root reads to pick the locale it redirects to. The page navigates
-   * itself afterwards.
-   */
-  @get
-  @route("/switch")
-  @operationId("switchLocale")
-  switch(@query locale: Locale): LocaleSwitched | ApiError;
 }

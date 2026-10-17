@@ -118,6 +118,10 @@ run = "go generate ./internal/apigen"
 description = "Generate the hey-api TS client + Query hooks from OpenAPI"
 run = "pnpm generate"
 
+["gen:admin"]
+description = "Generate the admin form-field and list-column descriptors from api-spec/dist/openapi.yaml (scripts/gen-admin-fields.ts)"
+run = "pnpm generate:admin"
+
 ["gen:locales"]
 description = "Extract the English backend catalog from the message registry"
 run = "go generate ./internal/localization"
@@ -139,8 +143,8 @@ description = "Generate the harness mocks (moq) from the production interfaces t
 run = "go generate ./internal/testsupport"
 
 [gen]
-description = "Full contract pipeline: TypeSpec -> OpenAPI -> ogen server + hey-api client"
-run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }]
+description = "Full contract pipeline: TypeSpec -> OpenAPI -> ogen server + hey-api client + admin field descriptors"
+run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }, { task = "gen:admin" }]
 
 ["gen:all"]
 description = "Regenerate everything: ent + contracts + locales + external clients + test mocks + fixture labels"
