@@ -22,6 +22,10 @@ export default defineConfig({
       "/oauth": process.env.API_URL ?? "http://localhost:3001",
       "^/\\.well-known/(oauth-authorization-server|openid-configuration)$":
         process.env.API_URL ?? "http://localhost:3001",
+      // The MCP endpoint (ADR-0018) and its protected resource metadata.
+      "^/mcp$": process.env.API_URL ?? "http://localhost:3001",
+      "^/\\.well-known/oauth-protected-resource(/mcp)?$":
+        process.env.API_URL ?? "http://localhost:3001",
     },
   },
   resolve: {

@@ -94,6 +94,17 @@ type Config struct {
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
 	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0019).
 	OAuth OAuthConfig `envPrefix:"OAUTH_"`
+	// MCP switches on the MCP endpoint at `/mcp` (ADR-0018).
+	MCP MCPConfig `envPrefix:"MCP_"`
+}
+
+// MCPConfig configures the MCP endpoint. It is inert while Enabled is false,
+// which is the default.
+type MCPConfig struct {
+	// Enabled mounts `/mcp` and its protected resource metadata. Every request
+	// to the endpoint needs an OAuth token, so it requires OAUTH_ENABLED: an
+	// endpoint no client could sign in to would only answer 401.
+	Enabled bool `env:"ENABLED" envDefault:"false"`
 }
 
 // OAuthConfig configures the in-process OAuth authorization server. Everything
@@ -195,6 +206,9 @@ func Load() (*Config, error) {
 	}
 	if err := validateOAuth(cfg.OAuth); err != nil {
 		return nil, oops.Wrapf(err, "validate OAuth config")
+	}
+	if cfg.MCP.Enabled && !cfg.OAuth.Enabled {
+		return nil, oops.Errorf("MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
 	}
 	if cfg.AuditRetentionMonths < 1 {
 		// Zero would drop the month in progress; the job would refuse it on
