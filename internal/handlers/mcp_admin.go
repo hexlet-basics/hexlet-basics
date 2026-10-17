@@ -38,7 +38,7 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 //
 //  1. the admin Scope the user granted the Connected App;
 //  2. the operation's Permission and the locale, by Policy.Allow, which is the
-//     very call the cookie branch makes;
+//     very call the session branch makes;
 //  3. every capability Permission the operation needs (mcp.read or mcp.write
 //     by its kind, plus mcp.manage for an operation on users, staff and roles,
 //     as the contract declares), by Policy.HasCapability, which the

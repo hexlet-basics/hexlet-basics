@@ -52,7 +52,7 @@ func newestRecord(t *testing.T, h *testsupport.Harness) int {
 // is: with the grant on the role when withGrant is true, without it otherwise.
 func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
 	t.Helper()
-	h := testsupport.NewHarnessAs(t, "user_admin_staff")
+	h := testsupport.NewHarnessAs(t, fixtures.UserAdminStaff)
 	if withGrant {
 		h.Grant(t, int(roleEditorID), "audit.read")
 	}
@@ -230,7 +230,7 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	h := auditReader(t, true)
 	at := time.Now().Add(-time.Hour)
-	banner, carol := fixtures.ID("banner_en_draft"), fixtures.ID("user_with_password")
+	banner, carol := fixtures.ID(fixtures.BannerEnDraft), fixtures.ID(fixtures.UserWithPassword)
 
 	// A change is what the operation's own writes left in the Recorder: a banner
 	// text and a password digest, which the trail keeps by name only.

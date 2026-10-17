@@ -34,14 +34,16 @@ func listApps(t *testing.T, o *testsupport.OAuth, userID int) []connectedApp {
 	}](t, res).Items
 }
 
-// revokeApp calls the revoke operation; xsrf false leaves the header out.
-func revokeApp(t *testing.T, o *testsupport.OAuth, userID, appID int, xsrf bool) *http.Response {
+// revokeApp calls the revoke operation; sameSite false makes it look like a
+// browser's cross-site write, which the cross-origin protection refuses
+// (ADR-0017).
+func revokeApp(t *testing.T, o *testsupport.OAuth, userID, appID int, sameSite bool) *http.Response {
 	t.Helper()
 	s := testsupport.SessionFor(t, o.DB, userID)
 	return o.Do(http.MethodDelete, "/api/oauth/connected_apps/"+strconv.Itoa(appID), nil, func(r *http.Request) {
 		r.AddCookie(s.Cookie)
-		if xsrf {
-			r.Header.Set("X-XSRF-TOKEN", s.XSRF)
+		if !sameSite {
+			r.Header.Set("Sec-Fetch-Site", "cross-site")
 		}
 	})
 }
@@ -155,14 +157,14 @@ func TestRevokingSomeoneElsesOrAnUnknownAppIsNotFound(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, bob, bobsApp.ID, true).StatusCode)
 }
 
-func TestTheOperationsNeedASessionAndTheRevokeNeedsTheXSRFHeader(t *testing.T) {
+func TestTheOperationsNeedASessionAndTheRevokeRefusesACrossSiteWrite(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
 	app := listApps(t, o, alice)[0]
 
 	assert.Equal(t, http.StatusUnauthorized, o.Do(http.MethodGet, "/api/oauth/connected_apps", nil).StatusCode)
 	assert.Equal(t, http.StatusUnauthorized, o.Do(http.MethodDelete, "/api/oauth/connected_apps/"+strconv.Itoa(app.ID), nil).StatusCode)
-	assert.Equal(t, http.StatusUnauthorized, revokeApp(t, o, alice, app.ID, false).StatusCode)
+	assert.Equal(t, http.StatusForbidden, revokeApp(t, o, alice, app.ID, false).StatusCode)
 	assert.True(t, o.Accepts(tokens.AccessToken))
 }
 

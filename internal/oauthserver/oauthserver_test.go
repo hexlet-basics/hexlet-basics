@@ -21,7 +21,7 @@ import (
 )
 
 // alice is the fixture user who signs in and decides.
-var alice = fixtures.ID("user_admin_learner")
+var alice = fixtures.ID(fixtures.UserAdminLearner)
 
 func decode(t *testing.T, res *http.Response, into any) {
 	t.Helper()

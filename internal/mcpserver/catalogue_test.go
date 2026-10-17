@@ -17,7 +17,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-var bob = fixtures.ID("user_staff_editor")
+var bob = fixtures.ID(fixtures.UserStaffEditor)
 
 const (
 	// jsLanding is the landing page slug of the JavaScript course in Russian, the

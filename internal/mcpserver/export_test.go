@@ -21,6 +21,9 @@ func AllowForTest(t *testing.T, operationIDs ...string) {
 // SessionCookie is the cookie name the dispatcher puts the placeholder under.
 const SessionCookie = sessionCookie
 
+// CookiePlaceholder is the value of that cookie.
+const CookiePlaceholder = cookiePlaceholder
+
 // ContractAdminOperations are the operationIds of every operation of the
 // contract that requires the AdminSession scheme, sorted.
 func ContractAdminOperations(t *testing.T) []string {

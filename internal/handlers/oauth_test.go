@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -39,7 +40,7 @@ func TestConsentOperationsAnswerNotFoundWhileTheOAuthServerIsOff(t *testing.T) {
 // both flags off the router mounts nothing for them, so each path must fall
 // through to the generated server's 404 rather than reach a half-wired handler.
 func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
-	router, _, _ := newAttachmentRouterStack(t, false)
+	router, _ := newAttachmentRouterStack(t, false)
 
 	for _, target := range []string{
 		"/mcp",
@@ -62,7 +63,7 @@ func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
 // Without the OAuth server there can be no Connected App: the list is empty (the
 // account page shows its empty state) and a revoke finds nothing.
 func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, "user_admin_learner")
+	h := testsupport.NewHarnessAs(t, fixtures.UserAdminLearner)
 	ctx := context.Background()
 
 	list, err := h.Client.ListConnectedApps(ctx)

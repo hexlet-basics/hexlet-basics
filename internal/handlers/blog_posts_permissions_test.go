@@ -15,7 +15,7 @@ import (
 
 // editorLabel is the fixtures' editor: he holds blog_posts.read and nothing else
 // on blog posts, and works in ru and en.
-const editorLabel = "user_staff_editor"
+var editorLabel = fixtures.UserStaffEditor
 
 // permissionsPostInput is a complete post body: every field is required by the
 // contract, nullable or not.
@@ -40,7 +40,7 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminGetBlogPost": {"blog_posts.read", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	"AdminCreateBlogPost": {"blog_posts.create", func(h *testsupport.Harness) error {
@@ -48,36 +48,36 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminUpdateBlogPost": {"blog_posts.update", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	"AdminSetBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSetBlogPostRelatedCourses(context.Background(),
 			&api.BlogPostRelatedCoursesInput{CourseIds: []int32{}},
-			api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32("blog_post_hello_world")})
+			api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	"AdminSuggestBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
-			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32("blog_post_hello_world")})
+			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	// the second post is a draft and the first is published, so each transition is legal for an
 	// administrator.
 	"AdminPublishBlogPost": {"blog_posts.publish", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminPublishBlogPost(context.Background(), api.AdminPublishBlogPostParams{ID: fixtures.ID32("blog_post_second_post")})
+		_, err := h.Client.AdminPublishBlogPost(context.Background(), api.AdminPublishBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostSecondPost)})
 		return err
 	}},
 	"AdminUnpublishBlogPost": {"blog_posts.unpublish", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminUnpublishBlogPost(context.Background(), api.AdminUnpublishBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err := h.Client.AdminUnpublishBlogPost(context.Background(), api.AdminUnpublishBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	"AdminArchiveBlogPost": {"blog_posts.archive", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminArchiveBlogPost(context.Background(), api.AdminArchiveBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err := h.Client.AdminArchiveBlogPost(context.Background(), api.AdminArchiveBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		return err
 	}},
 	"AdminDeleteBlogPost": {"blog_posts.delete", func(h *testsupport.Harness) error {
-		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 	}},
 }
 

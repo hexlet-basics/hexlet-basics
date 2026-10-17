@@ -30,7 +30,7 @@ type stateSubject struct {
 	// id is the fixture row the scenarios move.
 	id int
 	// updaterRole may update the resource and not publish it; publisherRole the reverse.
-	updaterRole, publisherRole string
+	updaterRole, publisherRole fixtures.Label
 	// nullable says the legacy column may hold no state (counts as a draft).
 	nullable bool
 
@@ -47,13 +47,13 @@ type stateSubject struct {
 
 var (
 	bannerSubject = stateSubject{
-		name: "banner", operation: "Banner", id: fixtures.ID("banner_en_published"),
-		updaterRole: "staff_role_banner_updater", publisherRole: "staff_role_banner_publisher",
+		name: "banner", operation: "Banner", id: fixtures.ID(fixtures.BannerEnPublished),
+		updaterRole: fixtures.StaffRoleBannerUpdater, publisherRole: fixtures.StaffRoleBannerPublisher,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Banner.UpdateOneID(fixtures.ID("banner_en_published")).SetState(state).ExecX(context.Background())
+			h.DB.Banner.UpdateOneID(fixtures.ID(fixtures.BannerEnPublished)).SetState(state).ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			state := h.DB.Banner.GetX(t.Context(), fixtures.ID("banner_en_published")).State
+			state := h.DB.Banner.GetX(t.Context(), fixtures.ID(fixtures.BannerEnPublished)).State
 			return &state
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
@@ -80,7 +80,7 @@ var (
 				URL:        api.NilString{Null: true},
 				StartsAt:   api.NilDateTime{Null: true},
 				FinishesAt: api.NilDateTime{Null: true},
-			}, api.AdminUpdateBannerParams{ID: int32(fixtures.ID("banner_en_published"))})
+			}, api.AdminUpdateBannerParams{ID: int32(fixtures.ID(fixtures.BannerEnPublished))})
 			return err
 		},
 		// The page shows the live banner of the request locale: the published, in-window one.
@@ -94,17 +94,17 @@ var (
 	}
 
 	reviewSubject = stateSubject{
-		name: "review", operation: "Review", id: fixtures.ID("review_admin_learner_ruby_published"),
-		updaterRole: "staff_role_review_updater", publisherRole: "staff_role_review_publisher",
+		name: "review", operation: "Review", id: fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished),
+		updaterRole: fixtures.StaffRoleReviewUpdater, publisherRole: fixtures.StaffRoleReviewPublisher,
 		nullable: true,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Review.UpdateOneID(fixtures.ID("review_admin_learner_ruby_published")).SetState(state).ExecX(context.Background())
+			h.DB.Review.UpdateOneID(fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished)).SetState(state).ExecX(context.Background())
 		},
 		clearState: func(h *testsupport.Harness) {
-			h.DB.Review.UpdateOneID(fixtures.ID("review_admin_learner_ruby_published")).ClearState().ExecX(context.Background())
+			h.DB.Review.UpdateOneID(fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished)).ClearState().ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			return h.DB.Review.GetX(t.Context(), fixtures.ID("review_admin_learner_ruby_published")).State
+			return h.DB.Review.GetX(t.Context(), fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished)).State
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
 			var review *api.Review
@@ -130,7 +130,7 @@ var (
 				Body:      api.NewNilString("Edited"),
 				FirstName: api.NewNilString("Ivan"),
 				LastName:  api.NilString{Null: true},
-			}, api.AdminUpdateReviewParams{ID: int32(fixtures.ID("review_admin_learner_ruby_published"))})
+			}, api.AdminUpdateReviewParams{ID: int32(fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished))})
 			return err
 		},
 		// The public reviews page lists the published reviews of the request locale.
@@ -143,17 +143,17 @@ var (
 	}
 
 	landingSubject = stateSubject{
-		name: "landing page", operation: "CourseLandingPage", id: fixtures.ID("landing_page_go_ru"),
-		updaterRole: "staff_role_landing_page_updater", publisherRole: "staff_role_landing_page_publisher",
+		name: "landing page", operation: "CourseLandingPage", id: fixtures.ID(fixtures.LandingPageGoRu),
+		updaterRole: fixtures.StaffRoleLandingPageUpdater, publisherRole: fixtures.StaffRoleLandingPagePublisher,
 		nullable: true,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.CourseLandingPage.UpdateOneID(fixtures.ID("landing_page_go_ru")).SetState(state).ExecX(context.Background())
+			h.DB.CourseLandingPage.UpdateOneID(fixtures.ID(fixtures.LandingPageGoRu)).SetState(state).ExecX(context.Background())
 		},
 		clearState: func(h *testsupport.Harness) {
-			h.DB.CourseLandingPage.UpdateOneID(fixtures.ID("landing_page_go_ru")).ClearState().ExecX(context.Background())
+			h.DB.CourseLandingPage.UpdateOneID(fixtures.ID(fixtures.LandingPageGoRu)).ClearState().ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			return h.DB.CourseLandingPage.GetX(t.Context(), fixtures.ID("landing_page_go_ru")).State
+			return h.DB.CourseLandingPage.GetX(t.Context(), fixtures.ID(fixtures.LandingPageGoRu)).State
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
 			var page *api.CourseLandingPage
@@ -175,7 +175,7 @@ var (
 			in := fullLandingInput(int32(courseGoID))
 			in.Slug = api.NewNilString("go-ru")
 			in.Name = api.NewNilString("Edited")
-			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixtures.ID("landing_page_go_ru"))})
+			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixtures.ID(fixtures.LandingPageGoRu))})
 			return err
 		},
 		// A published page is listed on the category page through the category items it

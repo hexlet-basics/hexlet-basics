@@ -21,7 +21,7 @@ import (
 
 // bob is the fixtures' editor, a second user whose grants must stay out of
 // alice's way.
-var bob = fixtures.ID("user_staff_editor")
+var bob = fixtures.ID(fixtures.UserStaffEditor)
 
 func TestRefreshRotatesTheTokenAndRefusesTheOldOne(t *testing.T) {
 	o := testsupport.NewOAuth(t)

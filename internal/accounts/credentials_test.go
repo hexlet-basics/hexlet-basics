@@ -65,7 +65,7 @@ func TestEnsureAnotherAdmin(t *testing.T) {
 	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "user_blank is not an administrator")
 
 	// The fixtures hold a third administrator, the staff member user_admin_staff.
-	db.User.Update().Where(user.IDIn(secondAdmin, fixtures.ID("user_admin_staff"))).SetAdmin(false).ExecX(t.Context())
+	db.User.Update().Where(user.IDIn(secondAdmin, fixtures.ID(fixtures.UserAdminStaff))).SetAdmin(false).ExecX(t.Context())
 	assert.ErrorIs(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), accounts.ErrLastAdmin)
 	assert.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "still not an administrator")
 }

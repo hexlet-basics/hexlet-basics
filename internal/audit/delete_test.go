@@ -19,7 +19,7 @@ func TestADeleteRecordsTheOldValuesOfTheRow(t *testing.T) {
 	client := testsupport.NewClient(t)
 	ctx, recorder := audit.WithRecorder(t.Context())
 	// A learner with a password and nothing attached, so that the delete goes through.
-	user := client.User.GetX(t.Context(), fixtures.ID("user_with_password"))
+	user := client.User.GetX(t.Context(), fixtures.ID(fixtures.UserWithPassword))
 
 	require.NoError(t, client.User.DeleteOneID(user.ID).Exec(ctx))
 

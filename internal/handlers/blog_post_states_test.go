@@ -19,7 +19,7 @@ import (
 // through publish, unpublish and archive (ADR-0017, state transitions addendum).
 
 // The second post is a draft in the fixtures; each test puts it in the state it needs.
-var statePostID = fixtures.ID("blog_post_second_post")
+var statePostID = fixtures.ID(fixtures.BlogPostSecondPost)
 
 type transitionCall struct {
 	name string
@@ -155,7 +155,7 @@ func TestPublishingMakesAPostPublicAndUnpublishingHidesIt(t *testing.T) {
 }
 
 // actAs gives the signed-in editor the fixture role with the label.
-func actAs(h *testsupport.Harness, roleLabel string) {
+func actAs(h *testsupport.Harness, roleLabel fixtures.Label) {
 	h.DB.StaffMember.Update().SetRoleID(fixtures.ID(roleLabel)).ExecX(context.Background())
 }
 
@@ -164,9 +164,9 @@ func actAs(h *testsupport.Harness, roleLabel string) {
 func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 	t.Run("update only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, "staff_role_blog_updater")
+		actAs(h, fixtures.StaffRoleBlogUpdater)
 
-		_, err := h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err := h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		require.NoError(t, err)
 
 		_, err = h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID)})
@@ -175,12 +175,12 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 	})
 	t.Run("publish only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, "staff_role_blog_publisher")
+		actAs(h, fixtures.StaffRoleBlogPublisher)
 
 		_, err := h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID)})
 		require.NoError(t, err)
 
-		_, err = h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		_, err = h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 		require.Error(t, err)
 		assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	})
