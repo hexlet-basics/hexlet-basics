@@ -9,6 +9,8 @@ import {
 import type { Banner } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
+import { bannerColumns } from "@/components/admin/generated/banner";
+import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
@@ -28,22 +30,7 @@ function BannersList() {
   });
 
   const columns: CrudColumnDef<Banner>[] = [
-    {
-      accessorKey: "state",
-      header: t(($) => $.models.attributes.banner.state),
-    },
-    {
-      accessorKey: "locale",
-      header: t(($) => $.models.attributes.banner.locale),
-    },
-    {
-      accessorKey: "background",
-      header: t(($) => $.models.attributes.banner.background),
-    },
-    {
-      accessorKey: "body",
-      header: t(($) => $.models.attributes.banner.body),
-    },
+    ...useGeneratedColumns<Banner>(bannerColumns, ["state", "locale", "background", "body"]),
     list.actionsColumn({
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(row.id) }} />

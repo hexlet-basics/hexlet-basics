@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { Review, ReviewInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { reviewFields } from "@/components/admin/generated/review";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Review form values ARE the generated request body (ReviewInput). courseId and
 // userId stay raw ids for now (a searchable picker is a later refinement); the
@@ -30,57 +31,15 @@ export function reviewToForm(review: Review): ReviewInput {
   };
 }
 
+// Fields come from the contract (generated/review.ts); what is listed here is
+// only what the schema cannot say.
 export function useReviewFields(): CrudFieldSpec<ReviewInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.review.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.review["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.review["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.review["state/values"].archived),
-        },
-      ],
+  return useGeneratedFields<ReviewInput>(reviewFields, {
+    order: ["state", "pinned", "courseId", "userId", "firstName", "lastName", "body"],
+    // The schema allows null for these, the form insists.
+    set: {
+      state: { required: true },
+      body: { type: "textarea", required: true },
     },
-    {
-      name: "pinned",
-      label: t(($) => $.models.attributes.review.pinned),
-      type: "checkbox",
-    },
-    {
-      name: "courseId",
-      label: t(($) => $.models.attributes.review.course_id),
-      type: "number",
-    },
-    {
-      name: "userId",
-      label: t(($) => $.models.attributes.review.user_id),
-      type: "number",
-    },
-    {
-      name: "firstName",
-      label: t(($) => $.models.attributes.review.first_name),
-    },
-    {
-      name: "lastName",
-      label: t(($) => $.models.attributes.review.last_name),
-    },
-    {
-      name: "body",
-      label: t(($) => $.models.attributes.review.body),
-      type: "textarea",
-      required: true,
-    },
-  ];
+  });
 }

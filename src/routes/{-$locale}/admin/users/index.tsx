@@ -13,6 +13,8 @@ import {
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
+import { userColumns } from "@/components/admin/generated/user";
+import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
@@ -41,18 +43,7 @@ function UsersList() {
   });
 
   const columns: CrudColumnDef<UserCrud>[] = [
-    {
-      accessorKey: "email",
-      header: t(($) => $.models.attributes.user.email),
-    },
-    {
-      accessorKey: "firstName",
-      header: t(($) => $.models.attributes.user.first_name),
-    },
-    {
-      accessorKey: "lastName",
-      header: t(($) => $.models.attributes.user.last_name),
-    },
+    ...useGeneratedColumns<UserCrud>(userColumns, ["email", "firstName", "lastName"]),
     {
       id: "admin",
       header: t(($) => $.models.attributes.user.admin),

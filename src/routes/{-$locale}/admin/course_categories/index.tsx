@@ -9,6 +9,8 @@ import {
 import type { CourseCategory } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
+import { courseCategoryColumns } from "@/components/admin/generated/courseCategory";
+import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
@@ -29,18 +31,7 @@ function CourseCategoriesList() {
   });
 
   const columns: CrudColumnDef<CourseCategory>[] = [
-    {
-      accessorKey: "name",
-      header: t(($) => $.models.attributes.course_category.name),
-    },
-    {
-      accessorKey: "slug",
-      header: t(($) => $.models.attributes.course_category.slug),
-    },
-    {
-      accessorKey: "locale",
-      header: t(($) => $.models.attributes.course_category.locale),
-    },
+    ...useGeneratedColumns<CourseCategory>(courseCategoryColumns, ["name", "slug", "locale"]),
     list.actionsColumn({
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/course_categories/$id" params={{ id: String(row.id) }} />

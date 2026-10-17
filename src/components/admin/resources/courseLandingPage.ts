@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { CourseLandingPage, CourseLandingPageInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { courseLandingPageFields } from "@/components/admin/generated/courseLandingPage";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Landing-page form values ARE the generated request body. courseId /
 // landingPageToRedirectId stay raw ids for now (searchable pickers are a later
@@ -55,103 +56,40 @@ export function courseLandingPageToForm(page: CourseLandingPage): CourseLandingP
   };
 }
 
+// Fields come from the contract (generated/courseLandingPage.ts); what is listed here is
+// only what the schema cannot say.
 export function useCourseLandingPageFields(): CrudFieldSpec<CourseLandingPageInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "courseId",
-      label: t(($) => $.models.attributes.course_landing_page.course_id),
-      type: "number",
-      required: true,
+  return useGeneratedFields<CourseLandingPageInput>(courseLandingPageFields, {
+    // Searchable pickers for the redirect target are a later refinement.
+    hide: ["landingPageToRedirectId"],
+    order: [
+      "courseId",
+      "name",
+      "slug",
+      "state",
+      "main",
+      "listed",
+      "footer",
+      "footerName",
+      "order",
+      "header",
+      "description",
+      "metaTitle",
+      "metaDescription",
+      "usedInHeader",
+      "usedInDescription",
+      "outcomesHeader",
+      "outcomesDescription",
+    ],
+    // The schema allows null for these, the form insists.
+    set: {
+      name: { required: true },
+      slug: { required: true },
+      state: { required: true },
+      description: { type: "textarea" },
+      metaDescription: { type: "textarea" },
+      usedInDescription: { type: "textarea" },
+      outcomesDescription: { type: "textarea" },
     },
-    {
-      name: "name",
-      label: t(($) => $.models.attributes.course_landing_page.name),
-      required: true,
-    },
-    {
-      name: "slug",
-      label: t(($) => $.models.attributes.course_landing_page.slug),
-      required: true,
-    },
-    {
-      name: "state",
-      label: t(($) => $.models.attributes.course_landing_page.state),
-      type: "select",
-      required: true,
-      options: [
-        {
-          value: "draft",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].draft),
-        },
-        {
-          value: "published",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].published),
-        },
-        {
-          value: "archived",
-          label: t(($) => $.models.attributes.course_landing_page["state/values"].archived),
-        },
-      ],
-    },
-    {
-      name: "main",
-      label: t(($) => $.models.attributes.course_landing_page.main),
-      type: "checkbox",
-    },
-    {
-      name: "listed",
-      label: t(($) => $.models.attributes.course_landing_page.listed),
-      type: "checkbox",
-    },
-    {
-      name: "footer",
-      label: t(($) => $.models.attributes.course_landing_page.footer),
-      type: "checkbox",
-    },
-    {
-      name: "footerName",
-      label: t(($) => $.models.attributes.course_landing_page.footer_name),
-    },
-    {
-      name: "order",
-      label: t(($) => $.models.attributes.course_landing_page.order),
-    },
-    {
-      name: "header",
-      label: t(($) => $.models.attributes.course_landing_page.header),
-    },
-    {
-      name: "description",
-      label: t(($) => $.models.attributes.course_landing_page.description),
-      type: "textarea",
-    },
-    {
-      name: "metaTitle",
-      label: t(($) => $.models.attributes.course_landing_page.meta_title),
-    },
-    {
-      name: "metaDescription",
-      label: t(($) => $.models.attributes.course_landing_page.meta_description),
-      type: "textarea",
-    },
-    {
-      name: "usedInHeader",
-      label: t(($) => $.models.attributes.course_landing_page.used_in_header),
-    },
-    {
-      name: "usedInDescription",
-      label: t(($) => $.models.attributes.course_landing_page.used_in_description),
-      type: "textarea",
-    },
-    {
-      name: "outcomesHeader",
-      label: t(($) => $.models.attributes.course_landing_page.outcomes_header),
-    },
-    {
-      name: "outcomesDescription",
-      label: t(($) => $.models.attributes.course_landing_page.outcomes_description),
-      type: "textarea",
-    },
-  ];
+  });
 }

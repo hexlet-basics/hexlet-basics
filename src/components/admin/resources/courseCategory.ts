@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { CourseCategory, CourseCategoryInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { courseCategoryFields } from "@/components/admin/generated/courseCategory";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Form values ARE the generated CourseCategoryInput, so the form validates against
 // zCourseCategoryInput directly. The nullable `description` renders as "" (the
@@ -24,30 +25,10 @@ export function courseCategoryToForm(category: CourseCategory): CourseCategoryIn
   };
 }
 
-// Field descriptors driving CrudForm. A hook so labels resolve through the typed
-// i18n selector; shared by the create and edit screens.
+// Fields come from the contract (generated/courseCategory.ts); what is listed here is
+// only what the schema cannot say.
 export function useCourseCategoryFields(): CrudFieldSpec<CourseCategoryInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "name",
-      label: t(($) => $.models.attributes.course_category.name),
-      required: true,
-    },
-    {
-      name: "header",
-      label: t(($) => $.models.attributes.course_category.header),
-      required: true,
-    },
-    {
-      name: "slug",
-      label: t(($) => $.models.attributes.course_category.slug),
-      required: true,
-    },
-    {
-      name: "description",
-      label: t(($) => $.models.attributes.course_category.description),
-      type: "textarea",
-    },
-  ];
+  return useGeneratedFields<CourseCategoryInput>(courseCategoryFields, {
+    set: { description: { type: "textarea" } },
+  });
 }

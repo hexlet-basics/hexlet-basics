@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
 import type { UserCrud, UserInput } from "@/client/types.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
+import { userFields } from "@/components/admin/generated/user";
+import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // User form values ARE the generated request body (UserInput). The same
 // descriptor backs BOTH /admin/users (full CRUD) and /admin/management/users
@@ -22,26 +23,8 @@ export function userToForm(user: UserCrud): UserInput {
   };
 }
 
+// Fields come from the contract (generated/user.ts); what is listed here is
+// only what the schema cannot say.
 export function useUserFields(): CrudFieldSpec<UserInput>[] {
-  const { t } = useTranslation();
-  return [
-    {
-      name: "email",
-      label: t(($) => $.models.attributes.user.email),
-      required: true,
-    },
-    {
-      name: "firstName",
-      label: t(($) => $.models.attributes.user.first_name),
-    },
-    {
-      name: "lastName",
-      label: t(($) => $.models.attributes.user.last_name),
-    },
-    {
-      name: "admin",
-      label: t(($) => $.models.attributes.user.admin),
-      type: "checkbox",
-    },
-  ];
+  return useGeneratedFields<UserInput>(userFields);
 }
