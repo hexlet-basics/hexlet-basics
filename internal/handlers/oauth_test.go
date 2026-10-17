@@ -58,3 +58,21 @@ func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
 		})
 	}
 }
+
+// Without the OAuth server there can be no Connected App: the list is empty (the
+// account page shows its empty state) and a revoke finds nothing.
+func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
+	h := testsupport.NewHarnessAs(t, "user_admin_learner")
+	ctx := context.Background()
+
+	list, err := h.Client.ListConnectedApps(ctx)
+	require.NoError(t, err)
+	apps, ok := list.(*api.ConnectedApps)
+	require.True(t, ok, "got %T", list)
+	assert.NotNil(t, apps.Items)
+	assert.Empty(t, apps.Items)
+
+	revoked, err := h.Client.RevokeConnectedApp(ctx, api.RevokeConnectedAppParams{ID: 1})
+	require.NoError(t, err)
+	assert.IsType(t, &api.NotFoundError{}, revoked)
+}

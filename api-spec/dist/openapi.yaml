@@ -4206,6 +4206,79 @@ paths:
         - User Area
       security:
         - UserSession: []
+  /api/oauth/connected_apps:
+    get:
+      operationId: listConnectedApps
+      description: The apps the signed-in user has connected and that can still act for them. An app unused for thirty days (no refresh) has lapsed and is not listed.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectedApps'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - OAuth
+      security:
+        - UserSession: []
+  /api/oauth/connected_apps/{id}:
+    delete:
+      operationId: revokeConnectedApp
+      description: "Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - OAuth
+      security:
+        - UserSession: []
+          XsrfToken: []
   /api/oauth/consents/{requestId}:
     get:
       operationId: getOAuthConsent
@@ -5011,6 +5084,44 @@ components:
           format: int32
           description: The lesson version the code was written against.
       description: A submitted solution to run against the lesson's tests.
+    ConnectedApp:
+      type: object
+      required:
+        - id
+        - name
+        - scopes
+        - connectedAt
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Handle to revoke it by (not the OAuth client_id, which can be a URL).
+        name:
+          type: string
+          description: Display name the application registered with; untrusted text.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: 'What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).'
+        connectedAt:
+          type: string
+          format: date-time
+          description: When the user first connected it (the oldest grant still on file).
+        clientHost:
+          type: string
+          description: Host of the application's client_id when that is a metadata document URL; absent otherwise.
+      description: One application the signed-in user has connected.
+    ConnectedApps:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectedApp'
+      description: The signed-in user's Connected Apps, newest first.
     Course:
       type: object
       required:

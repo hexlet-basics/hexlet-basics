@@ -682,6 +682,13 @@ type Handler interface {
 	//
 	// GET /api/blog_posts
 	ListBlogPosts(ctx context.Context, params ListBlogPostsParams) (*BlogPostPage, error)
+	// ListConnectedApps implements listConnectedApps operation.
+	//
+	// The apps the signed-in user has connected and that can still act for them. An app unused for thirty
+	// days (no refresh) has lapsed and is not listed.
+	//
+	// GET /api/oauth/connected_apps
+	ListConnectedApps(ctx context.Context) (ListConnectedAppsRes, error)
 	// ListCourses implements listCourses operation.
 	//
 	// List the published course catalog.
@@ -700,6 +707,13 @@ type Handler interface {
 	//
 	// GET /api/reviews
 	ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (*ReviewPage, error)
+	// RevokeConnectedApp implements revokeConnectedApp operation.
+	//
+	// Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not
+	// one of the caller's apps.
+	//
+	// DELETE /api/oauth/connected_apps/{id}
+	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error)
 	// StartLesson implements startLesson operation.
 	//
 	// Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson

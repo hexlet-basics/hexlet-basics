@@ -210,6 +210,24 @@ export const zCheckLessonInput = z.object({
 });
 
 /**
+ * One application the signed-in user has connected.
+ */
+export const zConnectedApp = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string(),
+  scopes: z.array(z.string()),
+  connectedAt: z.iso.datetime(),
+  clientHost: z.string().optional()
+});
+
+/**
+ * The signed-in user's Connected Apps, newest first.
+ */
+export const zConnectedApps = z.object({
+  items: z.array(zConnectedApp)
+});
+
+/**
  * A course category (legacy: `LanguageCategory` / table `language_categories`).
  */
 export const zCourseCategory = z.object({
@@ -2209,6 +2227,20 @@ export const zGetCurrentUserResponse = zCurrentUser;
  * The request has succeeded.
  */
 export const zGetMyDashboardResponse = zMyDashboard;
+
+/**
+ * The request has succeeded.
+ */
+export const zListConnectedAppsResponse = zConnectedApps;
+
+export const zRevokeConnectedAppPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * Empty 204 response for deletes and other content-less successes.
+ */
+export const zRevokeConnectedAppResponse = z.void();
 
 export const zGetOAuthConsentPath = z.object({
   requestId: z.string()

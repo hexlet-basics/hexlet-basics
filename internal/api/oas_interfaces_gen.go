@@ -441,6 +441,14 @@ type ListAssistantMessagesRes interface {
 	listAssistantMessagesRes()
 }
 
+type ListConnectedAppsRes interface {
+	listConnectedAppsRes()
+}
+
+type RevokeConnectedAppRes interface {
+	revokeConnectedAppRes()
+}
+
 type StartLessonRes interface {
 	startLessonRes()
 }

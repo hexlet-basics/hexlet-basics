@@ -1686,6 +1686,89 @@ type CheckPasswordResetTokenNoContent struct{}
 
 func (*CheckPasswordResetTokenNoContent) checkPasswordResetTokenRes() {}
 
+// One application the signed-in user has connected.
+// Ref: #/components/schemas/ConnectedApp
+type ConnectedApp struct {
+	// Handle to revoke it by (not the OAuth client_id, which can be a URL).
+	ID int32 `json:"id"`
+	// Display name the application registered with; untrusted text.
+	Name string `json:"name"`
+	// What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
+	Scopes []string `json:"scopes"`
+	// When the user first connected it (the oldest grant still on file).
+	ConnectedAt time.Time `json:"connectedAt"`
+	// Host of the application's client_id when that is a metadata document URL; absent otherwise.
+	ClientHost OptString `json:"clientHost"`
+}
+
+// GetID returns the value of ID.
+func (s *ConnectedApp) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *ConnectedApp) GetName() string {
+	return s.Name
+}
+
+// GetScopes returns the value of Scopes.
+func (s *ConnectedApp) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetConnectedAt returns the value of ConnectedAt.
+func (s *ConnectedApp) GetConnectedAt() time.Time {
+	return s.ConnectedAt
+}
+
+// GetClientHost returns the value of ClientHost.
+func (s *ConnectedApp) GetClientHost() OptString {
+	return s.ClientHost
+}
+
+// SetID sets the value of ID.
+func (s *ConnectedApp) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *ConnectedApp) SetName(val string) {
+	s.Name = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *ConnectedApp) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetConnectedAt sets the value of ConnectedAt.
+func (s *ConnectedApp) SetConnectedAt(val time.Time) {
+	s.ConnectedAt = val
+}
+
+// SetClientHost sets the value of ClientHost.
+func (s *ConnectedApp) SetClientHost(val OptString) {
+	s.ClientHost = val
+}
+
+// The signed-in user's Connected Apps, newest first.
+// Ref: #/components/schemas/ConnectedApps
+type ConnectedApps struct {
+	Items []ConnectedApp `json:"items"`
+}
+
+// GetItems returns the value of Items.
+func (s *ConnectedApps) GetItems() []ConnectedApp {
+	return s.Items
+}
+
+// SetItems sets the value of Items.
+func (s *ConnectedApps) SetItems(val []ConnectedApp) {
+	s.Items = val
+}
+
+func (*ConnectedApps) listConnectedAppsRes() {}
+
 // A course (legacy: `Language`). Superset read model: the public catalog embeds it, admin course
 // screens read the full shape.
 // Ref: #/components/schemas/Course
@@ -6192,6 +6275,7 @@ func (*NotFoundError) getOAuthConsentRes()          {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
 func (*NotFoundError) listAssistantMessagesRes()    {}
+func (*NotFoundError) revokeConnectedAppRes()       {}
 func (*NotFoundError) startLessonRes()              {}
 func (*NotFoundError) updatePasswordRes()           {}
 
@@ -6686,6 +6770,8 @@ func (*ProblemDetails) getOAuthConsentRes()       {}
 func (*ProblemDetails) getProfileRes()            {}
 func (*ProblemDetails) likeBlogPostRes()          {}
 func (*ProblemDetails) listAssistantMessagesRes() {}
+func (*ProblemDetails) listConnectedAppsRes()     {}
+func (*ProblemDetails) revokeConnectedAppRes()    {}
 func (*ProblemDetails) updateProfileRes()         {}
 
 // ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.
@@ -7260,6 +7346,11 @@ func (s *ReviewState) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// RevokeConnectedAppNoContent is response for RevokeConnectedApp operation.
+type RevokeConnectedAppNoContent struct{}
+
+func (*RevokeConnectedAppNoContent) revokeConnectedAppRes() {}
 
 // Ref: #/components/schemas/RoleInput
 type RoleInput struct {

@@ -308,6 +308,39 @@ export type CheckLessonInput = {
 };
 
 /**
+ * One application the signed-in user has connected.
+ */
+export type ConnectedApp = {
+  /**
+   * Handle to revoke it by (not the OAuth client_id, which can be a URL).
+   */
+  id: number;
+  /**
+   * Display name the application registered with; untrusted text.
+   */
+  name: string;
+  /**
+   * What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
+   */
+  scopes: Array<string>;
+  /**
+   * When the user first connected it (the oldest grant still on file).
+   */
+  connectedAt: string;
+  /**
+   * Host of the application's client_id when that is a metadata document URL; absent otherwise.
+   */
+  clientHost?: string;
+};
+
+/**
+ * The signed-in user's Connected Apps, newest first.
+ */
+export type ConnectedApps = {
+  items: Array<ConnectedApp>;
+};
+
+/**
  * A course (legacy: `Language`). Superset read model: the public catalog embeds
  * it, admin course screens read the full shape.
  */
@@ -5750,6 +5783,76 @@ export type GetMyDashboardResponses = {
 };
 
 export type GetMyDashboardResponse = GetMyDashboardResponses[keyof GetMyDashboardResponses];
+
+export type ListConnectedAppsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/oauth/connected_apps';
+};
+
+export type ListConnectedAppsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListConnectedAppsError = ListConnectedAppsErrors[keyof ListConnectedAppsErrors];
+
+export type ListConnectedAppsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: ConnectedApps;
+};
+
+export type ListConnectedAppsResponse = ListConnectedAppsResponses[keyof ListConnectedAppsResponses];
+
+export type RevokeConnectedAppData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/oauth/connected_apps/{id}';
+};
+
+export type RevokeConnectedAppErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type RevokeConnectedAppError = RevokeConnectedAppErrors[keyof RevokeConnectedAppErrors];
+
+export type RevokeConnectedAppResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type RevokeConnectedAppResponse = RevokeConnectedAppResponses[keyof RevokeConnectedAppResponses];
 
 export type GetOAuthConsentData = {
   body?: never;

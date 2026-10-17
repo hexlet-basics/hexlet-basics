@@ -19,6 +19,10 @@ type OAuthConsents interface {
 	Pending(ctx context.Context, requestID string) (oauthserver.Consent, error)
 	Approve(ctx context.Context, requestID string) (redirectURL string, err error)
 	Deny(ctx context.Context, requestID string) (redirectURL string, err error)
+	// ConnectedApps and Disconnect are the Connected Apps page: what the signed-in
+	// user has approved, and withdrawing one.
+	ConnectedApps(ctx context.Context) ([]oauthserver.ConnectedApp, error)
+	Disconnect(ctx context.Context, appID int) error
 }
 
 // OAuthSession is the application's half of the seam: who is signed in. The
@@ -116,4 +120,49 @@ type decision interface {
 
 func (s *Server) oauthNotFound(ctx context.Context) *api.NotFoundError {
 	return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.OAuthRequestNotFound)}
+}
+
+// ListConnectedApps returns the signed-in user's Connected Apps. With the OAuth
+// server off no app can exist, so the list is empty rather than a 404: the
+// account page then shows its empty state instead of an error.
+func (s *Server) ListConnectedApps(ctx context.Context) (api.ListConnectedAppsRes, error) {
+	if s.oauth == nil {
+		return &api.ConnectedApps{Items: []api.ConnectedApp{}}, nil
+	}
+	apps, err := s.oauth.ConnectedApps(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items := make([]api.ConnectedApp, 0, len(apps))
+	for _, a := range apps {
+		item := api.ConnectedApp{
+			ID:          int32(a.ID), //nolint:gosec // a row id of a table that never nears 2^31
+			Name:        a.Name,
+			Scopes:      a.Scopes,
+			ConnectedAt: a.ConnectedAt,
+		}
+		if a.ClientHost != "" {
+			item.ClientHost = api.NewOptString(a.ClientHost)
+		}
+		items = append(items, item)
+	}
+	return &api.ConnectedApps{Items: items}, nil
+}
+
+// RevokeConnectedApp ends every token the signed-in user granted one app. An
+// app that is not theirs, has lapsed or was revoked already is a 404, the same
+// answer for each so the id reveals nothing about other users.
+func (s *Server) RevokeConnectedApp(ctx context.Context, params api.RevokeConnectedAppParams) (api.RevokeConnectedAppRes, error) {
+	notFound := &api.NotFoundError{Message: s.i18n.Text(ctx, localization.ConnectedAppNotFound)}
+	if s.oauth == nil {
+		return notFound, nil
+	}
+	err := s.oauth.Disconnect(ctx, int(params.ID))
+	if errors.Is(err, oauthserver.ErrAppNotConnected) {
+		return notFound, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &api.RevokeConnectedAppNoContent{}, nil
 }
