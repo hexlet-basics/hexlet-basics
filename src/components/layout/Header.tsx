@@ -222,21 +222,24 @@ function AuthLinks() {
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        <Group p="xs" gap="sm" wrap="nowrap">
-          <Avatar name={user.name ?? user.email ?? ""} color="initials" radius="xl" />
-          <Box miw={0}>
-            {user.name && (
-              <Text fw={500} size="sm" truncate>
-                {user.name}
-              </Text>
-            )}
-            {user.email && (
-              <Text size="xs" c="dimmed" truncate>
-                {user.email}
-              </Text>
-            )}
-          </Box>
-        </Group>
+        {/* The account block is the way to the learner's dashboard. */}
+        <Menu.Item renderRoot={(props) => <Link to="/{-$locale}/my" params {...props} />}>
+          <Group gap="sm" wrap="nowrap">
+            <Avatar name={user.name ?? user.email ?? ""} color="initials" radius="xl" />
+            <Box miw={0}>
+              {user.name && (
+                <Text fw={500} size="sm" truncate>
+                  {user.name}
+                </Text>
+              )}
+              {user.email && (
+                <Text size="xs" c="dimmed" truncate>
+                  {user.email}
+                </Text>
+              )}
+            </Box>
+          </Group>
+        </Menu.Item>
         <Menu.Divider />
         <Menu.Item
           leftSection={<IconUserCog size={16} />}
