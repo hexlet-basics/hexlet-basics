@@ -76,6 +76,31 @@ var cutovers = []cutover{
 			"messages": {index: []string{"AdminListMessages"}},
 		},
 	},
+	{
+		migration: "20261017110000_course_resources_into_grants.sql",
+		resources: map[string]opened{
+			"language_categories": {
+				index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
+				create:  []string{"AdminCreateCourseCategory"},
+				update:  []string{"AdminUpdateCourseCategory"},
+				destroy: []string{"AdminDeleteCourseCategory"},
+			},
+			"languages": {
+				index:  []string{"AdminListCourses", "AdminGetCourse"},
+				create: []string{"AdminCreateCourse"},
+				update: []string{"AdminUpdateCourse", "AdminReviewCourse"},
+			},
+			"language_lessons":        {index: []string{"AdminListCourseLessons"}, update: []string{"AdminReviewCourseLesson"}},
+			"language_lesson_reviews": {index: []string{"AdminListCourseLessonReviews"}},
+			"language_lesson_members": {index: []string{"AdminListLessonProgress"}},
+			"language_landing_pages": {
+				index:   []string{"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
+				create:  []string{"AdminCreateCourseLandingPage"},
+				update:  []string{"AdminUpdateCourseLandingPage"},
+				destroy: []string{"AdminDeleteCourseLandingPage"},
+			},
+		},
+	},
 }
 
 // TestMigrationsCarryEveryMatrixRightIntoGrants runs each cutover migration over

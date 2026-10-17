@@ -78,21 +78,21 @@ model CourseCategoryInput {
 interface AdminCourseCategories {
   /** List course categories (paginated). */
   @get
-  @operationId("adminListCourseCategories")
+  @extension("x-permission", #{ name: "course_categories.read", kind: "read" }) @operationId("adminListCourseCategories")
   list(...ListQuery): Page<CourseCategory> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course category. A missing id surfaces as 404 via the
       central ent-error handler, not a typed union member. */
   @get
   @route("/{id}")
-  @operationId("adminGetCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.read", kind: "read" }) @operationId("adminGetCourseCategory")
   get(@path id: int32): CourseCategory | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a course category. A uniqueness violation (name/header/slug) is a
       DB constraint, surfaced as 409 by the central ent-error handler. */
   @post
   @useAuth(AdminSession)
-  @operationId("adminCreateCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.create", kind: "write" }) @operationId("adminCreateCourseCategory")
   create(@body body: CourseCategoryInput): {
     @statusCode statusCode: 201;
     @body category: CourseCategory;
@@ -103,14 +103,14 @@ interface AdminCourseCategories {
   @put
   @useAuth(AdminSession)
   @route("/{id}")
-  @operationId("adminUpdateCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.update", kind: "write" }) @operationId("adminUpdateCourseCategory")
   update(@path id: int32, @body body: CourseCategoryInput): CourseCategory | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Delete a course category. */
   @delete
   @useAuth(AdminSession)
   @route("/{id}")
-  @operationId("adminDeleteCourseCategory")
+  @extension("x-permission", #{ name: "course_categories.delete", kind: "write" }) @operationId("adminDeleteCourseCategory")
   delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
@@ -277,21 +277,21 @@ interface AdminCourses {
       to edit courses. */
   @get @route("/options") @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListCourseOptions") listOptions(): CourseOption[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminGetCourse") get(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCourse") create(@body body: CourseInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "courses.create", kind: "write" }) @operationId("adminCreateCourse") create(@body body: CourseInput): {
     @statusCode statusCode: 201;
     @body course: Course;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "courses.update", kind: "write" }) @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI re-review of every current lesson version. */
-  @post @useAuth(AdminSession) @route("/{id}/review") @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
+  @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "courses.update", kind: "write" }) @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Build a new version of the course exercises. */
   @post @useAuth(AdminSession) @route("/{id}/versions") @operationId("adminCreateCourseVersion")
@@ -334,22 +334,22 @@ model CourseLandingPageInput {
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPages {
-  @get @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single landing page. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "course_landing_pages.create", kind: "write" }) @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
     @statusCode statusCode: 201;
     @body landingPage: CourseLandingPage;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a landing page. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.update", kind: "write" }) @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "course_landing_pages.delete", kind: "write" }) @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---- Nested QnA items ------------------------------------------------------
@@ -403,24 +403,24 @@ interface AdminCourseCategoryQnaItems {
 @tag("Admin: Course Lessons")
 @useAuth(AdminSession)
 interface AdminCourseLessons {
-  @get @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_lessons.read", kind: "read" }) @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI review for a single lesson. */
-  @post @useAuth(AdminSession) @route("/{id}/review") @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
+  @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "course_lessons.update", kind: "write" }) @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/lesson_progress")
 @tag("Admin: Lesson Progress")
 @useAuth(AdminSession)
 interface AdminLessonProgress {
-  @get @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "lesson_progress.read", kind: "read" }) @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/course_lesson_reviews")
 @tag("Admin: Course Lesson Reviews")
 @useAuth(AdminSession)
 interface AdminCourseLessonReviews {
-  @get @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_lesson_reviews.read", kind: "read" }) @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/leads")

@@ -10,7 +10,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/permissions"
 )
@@ -22,12 +21,10 @@ var ErrForbidden = errors.New("staff permission is required")
 // may do everything. A staff member may do what their role is granted, in the
 // locales their record lists — legacy `authorize_staff_locale!`.
 //
-// What an operation needs comes from one of two places while resources move
-// over (ADR-0017): the Permission it declares in the contract, which the role
-// must hold as a grant, or, for the resources not yet migrated, the table in
-// rules.go and the role's create/read/update/delete matrix. Anything neither
-// names is for administrators only, so a new admin operation is closed until
-// someone classifies it.
+// What an operation needs is the Permission it declares in the contract, which
+// the role must hold as a grant (ADR-0017). Anything that declares none, apart
+// from the any-staff upload, is for administrators only, so a new admin
+// operation is closed until someone classifies it.
 type Policy struct {
 	db *ent.Client
 }
@@ -68,30 +65,10 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 		return nil
 	}
 
-	rule, ok := rules[operation]
-	if !ok {
-		return ErrForbidden
-	}
-	if rule.anyStaff {
+	if slices.Contains(anyStaffOperations, operation) {
 		return nil
 	}
-
-	permission, err := p.db.StaffRolePermission.Query().
-		Where(
-			staffrolepermission.RoleID(staff.RoleID),
-			staffrolepermission.Resource(string(rule.resource)),
-		).
-		Only(ctx)
-	if ent.IsNotFound(err) {
-		return ErrForbidden
-	}
-	if err != nil {
-		return err
-	}
-	if !granted(permission, rule.action) {
-		return ErrForbidden
-	}
-	return nil
+	return ErrForbidden
 }
 
 // staffMember is the user's staff record, nil for someone who is not an
@@ -107,28 +84,12 @@ func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember
 	return staff, err
 }
 
-// granted reads the matrix bit for action.
-func granted(p *ent.StaffRolePermission, a action) bool {
-	switch a {
-	case index:
-		return p.CanIndex
-	case create:
-		return p.CanCreate
-	case update:
-		return p.CanUpdate
-	case destroy:
-		return p.CanDestroy
-	}
-	return false
-}
-
 // IsClassified reports whether operation is classified: it declares a
-// Permission, or the table names it. Administrators-only operations are listed
+// Permission, or it is one of the any-staff operations. Administrators-only operations are listed
 // too, so a test can tell "closed on purpose" from "forgotten".
 func IsClassified(operation string) bool {
 	_, declared := permissions.For(operation)
-	_, ok := rules[operation]
-	return declared || ok || adminOnly[operation]
+	return declared || slices.Contains(anyStaffOperations, operation) || adminOnly[operation]
 }
 
 // OperationName turns an OpenAPI operationId (adminListBanners) into the ogen
