@@ -4,6 +4,7 @@ package config
 import (
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
@@ -111,6 +112,11 @@ type OAuthConfig struct {
 	// so this key is what stands between a database leak and a usable token:
 	// rotating it invalidates every access token. At least 32 characters.
 	EncryptionKey string `env:"ENCRYPTION_KEY"`
+	// RegistrationLimit is how many client registrations (Dynamic Client
+	// Registration is anonymous) one address may attempt per RegistrationWindow.
+	RegistrationLimit int `env:"REGISTRATION_LIMIT" envDefault:"10"`
+	// RegistrationWindow is the period RegistrationLimit counts over.
+	RegistrationWindow time.Duration `env:"REGISTRATION_WINDOW" envDefault:"1h"`
 }
 
 // OAuthMinKeyLength is the shortest accepted EncryptionKey.
@@ -239,6 +245,11 @@ func validateOAuth(cfg OAuthConfig) error {
 	}
 	if len(cfg.EncryptionKey) < OAuthMinKeyLength {
 		return oops.Errorf("OAUTH_ENCRYPTION_KEY must be at least %d characters", OAuthMinKeyLength)
+	}
+	// Zero would silently mean "no limit" to a reader; refuse it so the limit on
+	// the anonymous registration endpoint cannot be switched off by accident.
+	if cfg.RegistrationLimit < 1 || cfg.RegistrationWindow < time.Second {
+		return oops.Errorf("OAUTH_REGISTRATION_LIMIT must be at least 1 and OAUTH_REGISTRATION_WINDOW at least 1s")
 	}
 	return nil
 }

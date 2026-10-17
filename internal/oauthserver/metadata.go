@@ -42,6 +42,9 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "metadata", http.StatusInternalServerError)
 		return
 	}
+	// RFC 7591: where a client registers itself. The library's discovery type has
+	// no field for it.
+	out["registration_endpoint"] = s.issuer + registerPath
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	_ = json.NewEncoder(w).Encode(out)
