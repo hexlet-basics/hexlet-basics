@@ -2,9 +2,11 @@ package audit
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
 )
 
 // PartitionsAhead is how many months past the current one the maintenance job
@@ -17,10 +19,12 @@ const PartitionsAhead = 3
 // are kept for two years.
 const DefaultRetentionMonths = 24
 
-// Queryer is what *sql.DB and *sql.Tx share. Tests hand in a transaction so
-// the partitions they create and drop roll back with it.
-type Queryer interface {
-	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+// Driver is the part of ent's dialect.Driver the maintenance needs: a query run
+// through the layer ent itself uses for every statement. The store builds it
+// (store.NewDriver over the pool, store.NewTxDriver over a transaction a test
+// owns and rolls back).
+type Driver interface {
+	Query(ctx context.Context, query string, args, v any) error
 }
 
 // Partitions maintains the monthly partitions of audit_records (ADR-0017,
@@ -29,15 +33,16 @@ type Queryer interface {
 // single record (the database trigger refuses both).
 //
 // The DDL is written once, in the SQL functions of the partitioning migration;
-// this type only calls them with fixed statements. That is also the answer to
-// the "no raw SQL in production Go" rule: ent has no partition DDL, so the
-// statements are confined to these two calls, with the logic reviewed as SQL.
+// this type only calls them. That is also the answer to the "no raw SQL in
+// production Go" rule: ent has no partition DDL, so the call is built with ent's
+// own SQL builder (a select of the function, the month as a bound argument) and
+// run on ent's driver, never through database/sql.
 type Partitions struct {
-	db Queryer
+	db Driver
 }
 
-// NewPartitions builds the maintainer over a pool (or a transaction in tests).
-func NewPartitions(db Queryer) *Partitions { return &Partitions{db: db} }
+// NewPartitions builds the maintainer over ent's driver.
+func NewPartitions(db Driver) *Partitions { return &Partitions{db: db} }
 
 // EnsureAhead creates the partition of now's month and of the PartitionsAhead
 // months after it. It is idempotent: an existing partition is left alone.
@@ -47,7 +52,7 @@ func (p *Partitions) EnsureAhead(ctx context.Context, now time.Time) error {
 	month := firstOfMonth(now)
 	for i := 0; i <= PartitionsAhead; i++ {
 		target := month.AddDate(0, i, 0)
-		if _, err := p.call(ctx, "SELECT audit_records_ensure_partition($1)", target); err != nil {
+		if _, err := p.call(ctx, "audit_records_ensure_partition", target); err != nil {
 			return fmt.Errorf("ensure audit partition for %s: %w", target.Format("2006-01"), err)
 		}
 	}
@@ -63,7 +68,7 @@ func (p *Partitions) DropExpired(ctx context.Context, now time.Time, retentionMo
 		return nil, fmt.Errorf("audit retention must be at least one month, got %d", retentionMonths)
 	}
 	cutoff := now.UTC().AddDate(0, -retentionMonths, 0)
-	dropped, err := p.call(ctx, "SELECT audit_records_drop_partitions_ended_before($1)", cutoff)
+	dropped, err := p.call(ctx, "audit_records_drop_partitions_ended_before", cutoff)
 	if err != nil {
 		return nil, fmt.Errorf("drop audit partitions before %s: %w", cutoff.Format(time.DateOnly), err)
 	}
@@ -75,11 +80,18 @@ func firstOfMonth(t time.Time) time.Time {
 	return time.Date(u.Year(), u.Month(), 1, 0, 0, 0, 0, time.UTC)
 }
 
-// call runs one of the maintenance functions and collects the text it returns
-// (the partition names created or dropped).
-func (p *Partitions) call(ctx context.Context, statement string, month time.Time) ([]string, error) {
-	rows, err := p.db.QueryContext(ctx, statement, month) //nolint:forbidigo // fixed calls to the migration's partition functions; ent has no partition DDL
-	if err != nil {
+// call runs one of the two maintenance functions, named by a constant of this
+// file and given the month as a bound argument, and collects the text it
+// returns (the partition names created or dropped).
+func (p *Partitions) call(ctx context.Context, function string, month time.Time) ([]string, error) {
+	query, args := entsql.Dialect(dialect.Postgres).
+		Select().
+		AppendSelectExprAs(entsql.ExprFunc(func(b *entsql.Builder) {
+			b.WriteString(function).WriteByte('(').Arg(month).WriteByte(')')
+		}), "name").
+		Query()
+	rows := &entsql.Rows{}
+	if err := p.db.Query(ctx, query, args, rows); err != nil {
 		return nil, err
 	}
 	defer func() { _ = rows.Close() }()

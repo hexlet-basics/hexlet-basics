@@ -14,6 +14,7 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -34,7 +35,7 @@ func TestMaintainAuditPartitionsJobDropsTheExpiredAndCreatesTheNext(t *testing.T
 
 	// A year-old partition holding a record: far outside a one-month retention.
 	old := time.Now().UTC().AddDate(-1, 0, 0)
-	partitions := audit.NewPartitions(tx)
+	partitions := audit.NewPartitions(store.NewTxDriver(tx))
 	require.NoError(t, partitions.EnsureAhead(t.Context(), old))
 	// The record is written through the production writer, which takes the
 	// instant: it lands in the partition just created.

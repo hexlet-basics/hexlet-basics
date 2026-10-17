@@ -68,6 +68,18 @@ func NewTxClient(tx *sql.Tx) *ent.Client {
 	return client
 }
 
+// NewDriver is ent's own SQL driver over the pool, for the code that runs a
+// statement ent has no builder for (the audit partition functions) through the
+// same layer ent uses for every statement, instead of through database/sql.
+func NewDriver(db *sql.DB) dialect.Driver {
+	return entsql.OpenDB(dialect.Postgres, db)
+}
+
+// NewTxDriver is NewDriver bound to a transaction the caller owns, as
+// NewTxClient is for the client: a test hands one in so what the statement does
+// rolls back with it.
+func NewTxDriver(tx *sql.Tx) dialect.Driver { return newTxDriver(tx) }
+
 func newTxDriver(tx *sql.Tx) dialect.Driver {
 	driver := entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: tx})
 	return txBoundDriver{Driver: driver}
