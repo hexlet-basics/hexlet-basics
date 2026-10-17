@@ -26,7 +26,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
+import { getActiveBannerOptions, getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
 import learningVideo from "@/assets/course-landing-page/learning_ru.mp4";
@@ -58,11 +58,20 @@ import { seoHead } from "@/lib/seo-head";
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
   loader: async ({ context, params }) => {
+    // The banner is prefetched so it is in the server-rendered HTML; fetched on
+    // the client only, it would pop in after hydration. It is decoration, so
+    // failing to read it must not take the page down.
+    const banner = context.queryClient
+      .query({ ...getActiveBannerOptions(), staleTime: "static" })
+      .catch(() => null);
     try {
-      const view = await context.queryClient.query({
-        ...getCourseOptions({ path: { slug: params.slug } }),
-        staleTime: "static",
-      });
+      const [view] = await Promise.all([
+        context.queryClient.query({
+          ...getCourseOptions({ path: { slug: params.slug } }),
+          staleTime: "static",
+        }),
+        banner,
+      ]);
       // An archived landing page moved: legacy answered it with a permanent
       // redirect, which keeps old links and search results pointing somewhere.
       if (view.movedTo) {
