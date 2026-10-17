@@ -25,6 +25,9 @@ export class Admin {
   }
 
   async expectUserListed(email: string): Promise<void> {
+    // The list is paginated, newest first, so an old fixture user is not on its
+    // first page: find the user the way an administrator does, by searching.
+    await this.#browser.page.getByRole("textbox").fill(email);
     await expect(this.#browser.page.getByRole("cell", { name: email })).toBeVisible();
   }
 }
