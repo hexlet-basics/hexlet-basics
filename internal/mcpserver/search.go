@@ -128,21 +128,21 @@ func (s *Server) addSearchTools(server *mcp.Server) error {
 		// The list's budget reads a description from its start, so it is short; the
 		// rest is in the argument descriptions.
 		description: "Searches courses, lessons and blog posts by what they say; returns the best matches with id, title, snippet and URL. Pass an id to fetch.",
-		input:  object(properties, "query"),
-		output: searchOutput,
-		scope:  oauthserver.ScopeCatalogRead,
-		class:  ClassCatalogue,
-		meta:   alwaysLoad,
+		input:       object(properties, "query"),
+		output:      searchOutput,
+		scope:       oauthserver.ScopeCatalogRead,
+		class:       ClassCatalogue,
+		meta:        alwaysLoad,
 	}, s.search)
 	s.addTool(server, toolSpec{
-		name:  fetchTool,
-		title: "Fetch a catalogue record",
+		name:        fetchTool,
+		title:       "Fetch a catalogue record",
 		description: "Reads one catalogue record by the id search returned (course:SLUG, lesson:COURSE/SLUG, post:SLUG): its title, text, URL and metadata.",
-		input:  object(map[string]any{"id": map[string]any{"type": "string", "minLength": 1, "description": "An id as search returns it, for example course:javascript-ru, lesson:javascript/hello-world or post:hello-world."}}, "id"),
-		output: fetchOutput,
-		scope:  oauthserver.ScopeCatalogRead,
-		class:  ClassCatalogue,
-		meta:   alwaysLoad,
+		input:       object(map[string]any{"id": map[string]any{"type": "string", "minLength": 1, "description": "An id as search returns it, for example course:javascript-ru, lesson:javascript/hello-world or post:hello-world."}}, "id"),
+		output:      fetchOutput,
+		scope:       oauthserver.ScopeCatalogRead,
+		class:       ClassCatalogue,
+		meta:        alwaysLoad,
 	}, s.fetch)
 	return nil
 }
