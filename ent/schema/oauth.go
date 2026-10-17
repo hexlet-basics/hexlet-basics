@@ -10,7 +10,7 @@ import (
 	"github.com/lib/pq"
 )
 
-// OAuthClient is an application that may ask users for access (ADR-0016): the
+// OAuthClient is an application that may ask users for access (ADR-0019): the
 // row behind a client_id. Every client is public (no secret) and must use PKCE
 // S256, so the table holds nothing a leak could turn into a credential. The
 // OAuth tables belong to the oauthserver package and carry no foreign-key edges
@@ -95,7 +95,7 @@ func (OAuthAuthRequest) Mixin() []ent.Mixin {
 // bearer value handed to the client is the encrypted pair (id, subject); the
 // table holds only the id, so a database leak yields no usable token, and the
 // resource server verifies by looking the id up, so deleting the row revokes
-// the token at once (ADR-0016).
+// the token at once (ADR-0019).
 type OAuthAccessToken struct {
 	ent.Schema
 }

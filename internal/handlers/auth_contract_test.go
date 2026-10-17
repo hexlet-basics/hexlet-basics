@@ -71,7 +71,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 		spec.Paths["/api/admin/attachments"].Post.Security,
 	)
 
-	// The OAuth consent screen (ADR-0016): reading it needs the session, deciding
+	// The OAuth consent screen (ADR-0019): reading it needs the session, deciding
 	// needs the session and the XSRF header.
 	consent := spec.Paths["/api/oauth/consents/{requestId}"]
 	assert.Equal(t, []map[string][]string{{"UserSession": {}}}, consent.Get.Security)

@@ -36,7 +36,7 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // TypeSpec security requirements and ogen's generated SecurityHandler protect
 // generated operations; the pipeline only supplies the identity they read.
 //
-// oauth is the OAuth authorization server (ADR-0016), nil while the feature is
+// oauth is the OAuth authorization server (ADR-0019), nil while the feature is
 // switched off. It is the one thing mounted outside `/api`: RFC 8414 puts its
 // metadata at the root well-known path, and its endpoints sit under `/oauth/`.
 // It stays outside the session pipeline: its clients are native or browser

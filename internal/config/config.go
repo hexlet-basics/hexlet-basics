@@ -87,7 +87,7 @@ type Config struct {
 	// legacy runner allowed, and a course that turns out to need more room must
 	// be fixable without a release.
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
-	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0016).
+	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0019).
 	OAuth OAuthConfig `envPrefix:"OAUTH_"`
 }
 

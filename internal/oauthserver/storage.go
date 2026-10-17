@@ -68,7 +68,7 @@ func digest(secret string) string {
 //
 // PKCE is enforced here, where the raw parameters are still visible: the library
 // treats a missing challenge as acceptable and an empty method as `plain`, but
-// S256 is mandatory for every client (ADR-0016).
+// S256 is mandatory for every client (ADR-0019).
 func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, _ string) (op.AuthRequest, error) {
 	if req.CodeChallenge == "" || req.CodeChallengeMethod != oidc.CodeChallengeMethodS256 {
 		return nil, oidc.ErrInvalidRequest().WithDescription("PKCE is required: send code_challenge with code_challenge_method=S256")
@@ -161,7 +161,7 @@ func (a *authRequest) GetAMR() []string    { return nil }
 func (a *authRequest) GetClientID() string { return a.row.ClientID }
 
 // GetAudience is the client for now; binding it to the MCP endpoint's canonical
-// URL through the `resource` parameter is a later step of ADR-0016.
+// URL through the `resource` parameter is a later step of ADR-0019.
 func (a *authRequest) GetAudience() []string { return []string{a.row.ClientID} }
 func (a *authRequest) GetAuthTime() time.Time {
 	if a.row.AuthTime == nil {
@@ -248,7 +248,7 @@ func (s *storage) insertAccessToken(
 
 // CreateAccessAndRefreshTokens issues a pair: for a first grant (no current
 // refresh token) or in exchange for a refresh token, which is spent and replaced.
-// Detecting a spent token being presented again is a later step (ADR-0016); here
+// Detecting a spent token being presented again is a later step (ADR-0019); here
 // the old token is simply gone, so a replay is refused as unknown.
 func (s *storage) CreateAccessAndRefreshTokens(
 	ctx context.Context, req op.TokenRequest, current string,

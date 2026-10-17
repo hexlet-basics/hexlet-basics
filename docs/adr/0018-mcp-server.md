@@ -18,7 +18,7 @@ official `modelcontextprotocol/go-sdk` (v1.8.0 at the time of writing): one
 request, one response, no sessions and no long-lived streams, so its load is
 that of any other API call. The handler is mounted in `handlers.NewRouter`,
 outside the `/api` prefix (ADR-0015 is amended to allow this; the ingress also
-carries `/oauth/*` and `/.well-known/oauth-*`, ADR-0016). The whole endpoint
+carries `/oauth/*` and `/.well-known/oauth-*`, ADR-0019). The whole endpoint
 requires an OAuth bearer token: there is no anonymous tier, because MCP clients
 only begin to sign in after a 401, so a half-open endpoint would never tell a
 client it can. The public catalogue is already open on the site, in the sitemap
@@ -26,7 +26,7 @@ and in the feeds. The endpoint is behind a configuration flag and off by
 default.
 
 Token verification uses the SDK's bearer-token middleware and its protected
-resource metadata handler. The verifier looks the token up (ADR-0016), checks
+resource metadata handler. The verifier looks the token up (ADR-0019), checks
 that its audience is the canonical `/mcp` URL, and refuses a token whose
 subject is a client rather than a user.
 
@@ -84,4 +84,4 @@ real Claude Code and Cursor.
 - Tool schemas are part of the public surface: renaming an operationId renames
   a tool.
 - Not verified yet: the SDK's exact stateless and middleware API against our
-  router, and how real clients behave (ADR-0016).
+  router, and how real clients behave (ADR-0019).

@@ -13,7 +13,7 @@ export default defineConfig({
   // The browser reaches the Go API on the site's own origin under `/api`
   // (ADR-0015); in development Vite stands in for the production ingress.
   server: {
-    // The OAuth server (ADR-0016) is the one thing outside `/api`: its
+    // The OAuth server (ADR-0019) is the one thing outside `/api`: its
     // endpoints under `/oauth` and the two metadata documents go to Go too, so
     // the consent flow works on the origin the browser is on. The well-known
     // keys are exact patterns: `/.well-known` as a whole belongs to the SSR server.

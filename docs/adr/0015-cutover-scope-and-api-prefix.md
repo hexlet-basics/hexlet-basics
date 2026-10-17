@@ -4,7 +4,7 @@ status: accepted
 
 # Cutover scope, English locale kept until after it, and the `/api` prefix
 
-Amended by [ADR-0016](0016-in-process-oauth-server-for-mcp-clients.md) and
+Amended by [ADR-0019](0019-in-process-oauth-server-for-mcp-clients.md) and
 [ADR-0018](0018-mcp-server.md): `/mcp`, `/oauth/*` and `/.well-known/oauth-*`
 are also served by Go, at the root, not under `/api`.
 
