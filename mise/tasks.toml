@@ -293,31 +293,42 @@ run = '''
 set -uo pipefail
 # One grammar per language, taken from the tree-sitter-* npm packages (the CLI compiles
 # them on first use). Exit status carries the result; the "no parser directories"
-# warning is noise. SQL and shell are left to atlas and shellcheck: their grammars flag
-# valid Postgres and nested bash expansions. Skipped: Helm templates and Rails fixtures (templated YAML), Sorbet RBIs
-# (generated; they use `def self(...)`, which the Ruby grammar rejects), Terraform (no usable
-# HCL grammar package; `lint:infra` validates it) and Dockerfiles (no npm grammar).
+# warning is noise. Not parsed:
+# - SQL and shell: their grammars flag valid Postgres and nested bash expansions (atlas and
+#   shellcheck cover them);
+# - Helm templates and Rails fixtures: templated YAML;
+# - Sorbet RBIs: generated, and they use `def self(...)`, which the Ruby grammar rejects;
+# - Terraform and Dockerfiles: no usable grammar package (`lint:infra` validates Terraform).
 status=0
+# `parse --grammar-path` recompiles the grammar on every run (it implies --rebuild), so each
+# one is built once into node_modules/.cache/tree-sitter and loaded with --lib-path; it is
+# rebuilt when the grammar's parser.c is newer than the library.
+libs=node_modules/.cache/tree-sitter
+mkdir -p "$libs"
 check() {
-  local grammar=$1; shift
+  local lang=$1 grammar=node_modules/$2; shift 2
+  local lib=$libs/$lang.dylib
+  if [ ! -e "$lib" ] || [ "$grammar/src/parser.c" -nt "$lib" ]; then
+    tree-sitter build --output "$lib" "$grammar" >&2 || { status=1; return; }
+  fi
   local out
   out=$(git ls-files -z -- "$@" ':(exclude,glob)**/app-chart/templates/**' ':!legacy/sorbet/rbi' ':!legacy/test/fixtures' |
-    xargs -0 -r tree-sitter parse --quiet --grammar-path "node_modules/$grammar" 2>&1 |
+    xargs -0 -r tree-sitter parse --quiet --lib-path "$lib" --lang-name "$lang" 2>&1 |
     grep -E 'ERROR|MISSING|Error' | grep -v 'parser directories') || true
   if [ -n "$out" ]; then echo "$out"; status=1; fi
 }
 # legacy's TSX carries a bare `&` the TSX grammar rejects.
-check tree-sitter-typescript/tsx '*.ts' '*.tsx' ':!legacy'
-check tree-sitter-javascript '*.js' '*.mjs' '*.cjs' '*.jsx'
-check tree-sitter-python '*.py'
-check tree-sitter-ruby '*.rb' '*.rbi' '*.rake'
-check tree-sitter-css '*.css'
-check tree-sitter-html '*.html'
-check tree-sitter-embedded-template '*.erb'
-check tree-sitter-go '*.go'
-check @tree-sitter-grammars/tree-sitter-yaml '*.yml' '*.yaml'
-check @tree-sitter-grammars/tree-sitter-toml '*.toml'
-check tree-sitter-json '*.json'
+check tsx tree-sitter-typescript/tsx '*.ts' '*.tsx' ':!legacy'
+check javascript tree-sitter-javascript '*.js' '*.mjs' '*.cjs' '*.jsx'
+check python tree-sitter-python '*.py'
+check ruby tree-sitter-ruby '*.rb' '*.rbi' '*.rake'
+check css tree-sitter-css '*.css'
+check html tree-sitter-html '*.html'
+check embedded_template tree-sitter-embedded-template '*.erb'
+check go tree-sitter-go '*.go'
+check yaml @tree-sitter-grammars/tree-sitter-yaml '*.yml' '*.yaml'
+check toml @tree-sitter-grammars/tree-sitter-toml '*.toml'
+check json tree-sitter-json '*.json'
 exit $status
 '''
 

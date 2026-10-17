@@ -19,6 +19,12 @@ allowBuilds:
   tree-sitter-javascript: false
   tree-sitter-typescript: false
   tree-sitter-go: false
+  tree-sitter-c: false
+  tree-sitter-cpp: false
+  tree-sitter-c-sharp: false
+  '@tree-sitter-grammars/tree-sitter-kotlin': false
+  tree-sitter-make: false
+  tree-sitter-bash: false
   tree-sitter-json: false
   '@tree-sitter-grammars/tree-sitter-yaml': false
   '@tree-sitter-grammars/tree-sitter-toml': false
@@ -169,6 +175,10 @@ minimumReleaseAgeExclude:
   - '@tanstack/router-generator@1.167.45'
   - '@tanstack/router-plugin@1.168.47'
   - '@tanstack/start-storage-context@1.167.40'
-onlyBuiltDependencies:
-  - '@swc/core'
-  - msw
+permissions:
+  '@tanstack/cli':
+    skills: true
+  '@tanstack/react-start':
+    skills: true
+  '@tanstack/react-table':
+    skills: true

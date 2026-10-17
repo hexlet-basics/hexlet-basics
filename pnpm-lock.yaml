@@ -143,6 +143,9 @@ importers:
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
+      web-tree-sitter:
+        specifier: ^0.27.1
+        version: 0.27.1
       zod:
         specifier: ^4.6.7
         version: 4.6.7
@@ -168,6 +171,9 @@ importers:
       '@tanstack/cli':
         specifier: ^0.72.0
         version: 0.72.0
+      '@tree-sitter-grammars/tree-sitter-kotlin':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@tree-sitter-grammars/tree-sitter-toml':
         specifier: ^0.7.0
         version: 0.7.0
@@ -240,6 +246,18 @@ importers:
       size-limit:
         specifier: ^14.2.0
         version: 14.2.0
+      tree-sitter-bash:
+        specifier: ^0.25.1
+        version: 0.25.1
+      tree-sitter-c:
+        specifier: ^0.24.1
+        version: 0.24.1
+      tree-sitter-c-sharp:
+        specifier: ^0.23.5
+        version: 0.23.5
+      tree-sitter-cpp:
+        specifier: ^0.23.4
+        version: 0.23.4
       tree-sitter-css:
         specifier: ^0.25.0
         version: 0.25.0
@@ -258,6 +276,9 @@ importers:
       tree-sitter-json:
         specifier: ^0.24.8
         version: 0.24.8
+      tree-sitter-make:
+        specifier: ^1.1.1
+        version: 1.1.1
       tree-sitter-python:
         specifier: ^0.25.0
         version: 0.25.0
@@ -2097,6 +2118,14 @@ packages:
   '@tiptap/starter-kit@3.32.0':
     resolution: {integrity: sha512-aPYxaevci4PgMrTLsg+baiqI7M1ICd4V9H+zTTdrqs8OUZIbAvj/pNDuHU8uWZyKMu3Dh72t2D6ZdqRu/6aSWw==}
 
+  '@tree-sitter-grammars/tree-sitter-kotlin@1.1.0':
+    resolution: {integrity: sha512-vlVXaxEE8t2kpJgfZpa8XVvxcnKw9AYtRTgy7KWjsDmAsadk06RxAT80IXOgGQnmM9i/orQn1nD84gPNUHu6DQ==}
+    peerDependencies:
+      tree-sitter: ^0.22.4
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
   '@tree-sitter-grammars/tree-sitter-toml@0.7.0':
     resolution: {integrity: sha512-873Kl518Qm5ghbWadISY41rwFjee0v+2bU4twwvAw2VAJcWwj2vBo3F3hOCXfbqHaFiqc4qh6eLhkMl2YZJS0g==}
     peerDependencies:
@@ -3633,6 +3662,11 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
+  npm-check-updates@17.1.18:
+    resolution: {integrity: sha512-bkUy2g4v1i+3FeUf5fXMLbxmV95eG4/sS7lYE32GrUeVgQRfQEk39gpskksFunyaxQgTIdrvYbnuNbO/pSUSqw==}
+    engines: {node: ^18.18.0 || >=20.0.0, npm: '>=8.12.1'}
+    hasBin: true
+
   npm-run-path@6.0.0:
     resolution: {integrity: sha512-9qny7Z9DsQU8Ou39ERsPU4OZQlSTP47ShQzuKZ6PRXpYLtIFgl/DEBYEXKlvcEa+9tHVcK8CF81Y2V72qaZhWA==}
     engines: {node: '>=18'}
@@ -4236,6 +4270,46 @@ packages:
     resolution: {integrity: sha512-exgYmnmL/sJpR3upZfXG5PoatXQii55xAiXGXzY+sROLZ/Y+SLcp9PgJNI9Vz37HpQ74WvDcLT8eqm+kV3FzrA==}
     engines: {node: '>=16'}
 
+  tree-sitter-bash@0.25.1:
+    resolution: {integrity: sha512-7hMytuYIMoXOq24yRulgIxthE9YmggZIOHCyPTTuJcu6EU54tYD+4G39cUb28kxC6jMf/AbPfWGLQtgPTdh3xw==}
+    peerDependencies:
+      tree-sitter: ^0.25.0
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-c-sharp@0.23.5:
+    resolution: {integrity: sha512-xJGOeXPMmld0nES5+080N/06yY6LQi+KWGWV4LfZaZe6srJPtUtfhIbRSN7EZN6IaauzW28v6W4QHFwmeUW6HQ==}
+    peerDependencies:
+      tree-sitter: ^0.25.0
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-c@0.23.6:
+    resolution: {integrity: sha512-0dxXKznVyUA0s6PjNolJNs2yF87O5aL538A/eR6njA5oqX3C3vH4vnx3QdOKwuUdpKEcFdHuiDpRKLLCA/tjvQ==}
+    peerDependencies:
+      tree-sitter: ^0.22.1
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-c@0.24.1:
+    resolution: {integrity: sha512-lkYwWN3SRecpvaeqmFKkuPNR3ZbtnvHU+4XAEEkJdrp3JfSp2pBrhXOtvfsENUneye76g889Y0ddF2DM0gEDpA==}
+    peerDependencies:
+      tree-sitter: ^0.22.4
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-cpp@0.23.4:
+    resolution: {integrity: sha512-qR5qUDyhZ5jJ6V8/umiBxokRbe89bCGmcq/dk94wI4kN86qfdV8k0GHIUEKaqWgcu42wKal5E97LKpLeVW8sKw==}
+    peerDependencies:
+      tree-sitter: ^0.21.1
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
   tree-sitter-css@0.25.0:
     resolution: {integrity: sha512-FRc9R8ePrwJiUhZsuZ/wcFQ3K8Z+9yCgDrrUjuYswGWlN89UvcB9vslTUGZElQWGwhS8sUw3/r2n4lpb2sxT4Q==}
     peerDependencies:
@@ -4288,6 +4362,14 @@ packages:
     resolution: {integrity: sha512-Tc9ZZYwHyWZ3Tt1VEw7Pa2scu1YO7/d2BCBbKTx5hXwig3UfdQjsOPkPyLpDJOn/m1UBEWYAtSdGAwCSyagBqQ==}
     peerDependencies:
       tree-sitter: ^0.21.1
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-make@1.1.1:
+    resolution: {integrity: sha512-szHESi1wObt07uM5a5mwkMjbLHOcgiS5G2YQjU8O+Tfv9RylQBA0umV25lf6gSOefwTsPBnTJGn4SFFdHAVwMg==}
+    peerDependencies:
+      tree-sitter: ^0.22.1
     peerDependenciesMeta:
       tree-sitter:
         optional: true
@@ -4612,6 +4694,9 @@ packages:
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
+
+  web-tree-sitter@0.27.1:
+    resolution: {integrity: sha512-qtx0VyUyNRHtL3ze7+v0hCKB/sLcAmY7ZAVp/ZK/bCj0yED8ptvNrr7Vd7DwDyKDWN9baqcUx4uaD2r2ql+6IA==}
 
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
@@ -6361,6 +6446,12 @@ snapshots:
       '@tiptap/extensions': 3.32.0(@tiptap/core@3.32.0(@tiptap/pm@3.32.0))(@tiptap/pm@3.32.0)
       '@tiptap/pm': 3.32.0
 
+  '@tree-sitter-grammars/tree-sitter-kotlin@1.1.0':
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+      npm-check-updates: 17.1.18
+
   '@tree-sitter-grammars/tree-sitter-toml@0.7.0':
     dependencies:
       node-addon-api: 8.9.2
@@ -8030,6 +8121,8 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
+  npm-check-updates@17.1.18: {}
+
   npm-run-path@6.0.0:
     dependencies:
       path-key: 4.0.0
@@ -8757,6 +8850,32 @@ snapshots:
     dependencies:
       tldts: 7.4.18
 
+  tree-sitter-bash@0.25.1:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  tree-sitter-c-sharp@0.23.5:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  tree-sitter-c@0.23.6:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  tree-sitter-c@0.24.1:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  tree-sitter-cpp@0.23.4:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+      tree-sitter-c: 0.23.6
+
   tree-sitter-css@0.25.0:
     dependencies:
       node-addon-api: 8.9.2
@@ -8788,6 +8907,11 @@ snapshots:
       node-gyp-build: 4.8.4
 
   tree-sitter-json@0.24.8:
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  tree-sitter-make@1.1.1:
     dependencies:
       node-addon-api: 8.9.2
       node-gyp-build: 4.8.4
@@ -9025,6 +9149,8 @@ snapshots:
   walk-up-path@4.0.0: {}
 
   web-namespaces@2.0.1: {}
+
+  web-tree-sitter@0.27.1: {}
 
   webpack-virtual-modules@0.6.2: {}
 
