@@ -1,6 +1,25 @@
 export default {
   translation: {
     account: {
+      connected_apps: {
+        confirm_label: "Desconectar",
+        confirm_text:
+          "La aplicación pierde el acceso a tu cuenta de inmediato. Puedes volver a conectarla más tarde.",
+        confirm_title: "¿Desconectar «{{client}}»?",
+        connected_at: "Conectada el {{date}}",
+        empty: "No has conectado ninguna aplicación.",
+        error: "No se pudo desconectar la aplicación. Inténtalo de nuevo.",
+        host: "Identificada por {{host}}",
+        intro:
+          "Estas aplicaciones pueden actuar en tu nombre con los permisos indicados. Una aplicación que no uses durante 30 días se desconecta automáticamente.",
+        meta: {
+          description: "Aplicaciones a las que has permitido usar tu cuenta de Code Basics",
+        },
+        permissions: "Permisos:",
+        revoke: "Desconectar",
+        revoked: "La aplicación se ha desconectado",
+        title: "Aplicaciones conectadas",
+      },
       profiles: {
         edit: {
           delete: "Delete account",
@@ -1426,6 +1445,7 @@ export default {
           cases: "Cases",
           categories: "Categories",
           community: "Community",
+          connected_apps: "Aplicaciones conectadas",
           courses: "Courses",
           courses_with_employment: "Курсы с трудоустройством",
           courses_with_employment_description: "Обучим программированию, аналитике и тестированию",

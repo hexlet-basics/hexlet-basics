@@ -2,6 +2,23 @@
 export default interface Resources {
   "translation": {
     "account": {
+      "connected_apps": {
+        "confirm_label": "Отключить",
+        "confirm_text": "Приложение сразу потеряет доступ к вашему аккаунту. Позже его можно подключить снова.",
+        "confirm_title": "Отключить «{{client}}»?",
+        "connected_at": "Подключено {{date}}",
+        "empty": "У вас нет подключённых приложений.",
+        "error": "Не удалось отключить приложение. Попробуйте ещё раз.",
+        "host": "Определяется по {{host}}",
+        "intro": "Эти приложения действуют от вашего имени с перечисленными правами. Приложение, которым вы не пользовались 30 дней, отключается автоматически.",
+        "meta": {
+          "description": "Приложения, которым вы разрешили доступ к аккаунту Code Basics"
+        },
+        "permissions": "Права:",
+        "revoke": "Отключить",
+        "revoked": "Приложение отключено",
+        "title": "Подключённые приложения"
+      },
       "profiles": {
         "edit": {
           "delete": "Удалить аккаунт",
@@ -1319,6 +1336,7 @@ export default interface Resources {
           "cases": "Решения",
           "categories": "Категории",
           "community": "Сообщество",
+          "connected_apps": "Подключённые приложения",
           "courses": "Курсы",
           "courses_with_employment": "Курсы с трудоустройством",
           "courses_with_employment_description": "Обучим программированию, аналитике и тестированию",
