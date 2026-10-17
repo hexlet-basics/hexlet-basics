@@ -10,6 +10,7 @@
   "audit.entity_id_needs_type": {
     "other": "El identificador de la entidad requiere indicar su tipo"
   },
+  "oauth.connected_app_not_found": { "other": "Aplicación conectada no encontrada" },
   "attachments.file_too_large": { "other": "El archivo es demasiado grande" },
   "attachments.unsupported_file_type": { "other": "Tipo de archivo no compatible" },
   "attachments.store_failed": { "other": "No se pudo guardar el archivo" },

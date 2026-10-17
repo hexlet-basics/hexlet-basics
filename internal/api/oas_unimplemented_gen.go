@@ -1029,6 +1029,16 @@ func (UnimplementedHandler) ListBlogPosts(ctx context.Context, params ListBlogPo
 	return r, ht.ErrNotImplemented
 }
 
+// ListConnectedApps implements listConnectedApps operation.
+//
+// The apps the signed-in user has connected and that can still act for them. An app unused for thirty
+// days (no refresh) has lapsed and is not listed.
+//
+// GET /api/oauth/connected_apps
+func (UnimplementedHandler) ListConnectedApps(ctx context.Context) (r ListConnectedAppsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListCourses implements listCourses operation.
 //
 // List the published course catalog.
@@ -1053,6 +1063,16 @@ func (UnimplementedHandler) ListPublicCourseCategories(ctx context.Context) (r [
 //
 // GET /api/reviews
 func (UnimplementedHandler) ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (r *ReviewPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RevokeConnectedApp implements revokeConnectedApp operation.
+//
+// Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not
+// one of the caller's apps.
+//
+// DELETE /api/oauth/connected_apps/{id}
+func (UnimplementedHandler) RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (r RevokeConnectedAppRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

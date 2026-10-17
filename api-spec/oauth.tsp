@@ -65,3 +65,49 @@ interface OAuthConsents {
   @operationId("denyOAuthConsent")
   deny(@path requestId: string): OAuthDecision | UnauthorizedError | NotFoundError | ApiError;
 }
+
+// ---------------------------------------------------------------------------
+// Connected Apps (ADR-0019, #848): the OAuth clients the signed-in user has
+// approved, and withdrawing one. Both are session-guarded and show only the
+// caller's own apps; the revoke needs the XSRF header too.
+// ---------------------------------------------------------------------------
+
+/** One application the signed-in user has connected. */
+model ConnectedApp {
+  /** Handle to revoke it by (not the OAuth client_id, which can be a URL). */
+  id: int32;
+
+  /** Display name the application registered with; untrusted text. */
+  name: string;
+
+  /** What it may do: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`). */
+  scopes: string[];
+
+  /** When the user first connected it (the oldest grant still on file). */
+  connectedAt: utcDateTime;
+
+  /** Host of the application's client_id when that is a metadata document URL; absent otherwise. */
+  clientHost?: string;
+}
+
+/** The signed-in user's Connected Apps, newest first. */
+model ConnectedApps {
+  items: ConnectedApp[];
+}
+
+@route("/oauth/connected_apps")
+@tag("OAuth")
+interface OAuthConnectedApps {
+  /** The apps the signed-in user has connected and that can still act for them. An app unused for thirty days (no refresh) has lapsed and is not listed. */
+  @get
+  @useAuth(UserSession)
+  @operationId("listConnectedApps")
+  list(): ConnectedApps | UnauthorizedError | ApiError;
+
+  /** Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps. */
+  @delete
+  @route("/{id}")
+  @useAuth([UserSession, XsrfToken])
+  @operationId("revokeConnectedApp")
+  revoke(@path id: int32): NoContent | UnauthorizedError | NotFoundError | ApiError;
+}

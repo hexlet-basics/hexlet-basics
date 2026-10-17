@@ -65,6 +65,12 @@ var (
 			Other: "an entity id needs its entity type",
 		},
 	}
+	ConnectedAppNotFound = Message{
+		value: i18n.Message{
+			ID:    "oauth.connected_app_not_found",
+			Other: "connected app not found",
+		},
+	}
 	FileTooLarge = Message{
 		value: i18n.Message{
 			ID:    "attachments.file_too_large",

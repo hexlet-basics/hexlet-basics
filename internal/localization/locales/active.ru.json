@@ -8,6 +8,7 @@
   "audit.window_reversed": { "other": "Конец периода должен быть позже его начала" },
   "audit.window_too_wide": { "other": "Период не может быть длиннее 92 дней" },
   "audit.entity_id_needs_type": { "other": "Идентификатор сущности требует указать её тип" },
+  "oauth.connected_app_not_found": { "other": "Подключённое приложение не найдено" },
   "attachments.file_too_large": { "other": "Файл слишком большой" },
   "attachments.unsupported_file_type": { "other": "Неподдерживаемый тип файла" },
   "attachments.store_failed": { "other": "Не удалось сохранить файл" },
