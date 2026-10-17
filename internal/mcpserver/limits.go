@@ -156,6 +156,15 @@ func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (use
 	if denied != nil {
 		return 0, "", denied
 	}
+	clientID, denied = s.spend(req, userID, class)
+	return userID, clientID, denied
+}
+
+// spend counts one call of the Class against the user and the Connected App and
+// refuses it when either budget is gone. Admin tools call it without admit's
+// Scope check, because their Scope is judged by the generated server's security
+// handler, which records a refusal.
+func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (clientID string, denied *mcp.CallToolResult) {
 	if client, ok := req.GetExtra().TokenInfo.Extra["client_id"].(string); ok {
 		clientID = client
 	}
@@ -166,7 +175,7 @@ func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (use
 			"rate limit exceeded for %s tools: retry in %d seconds (not before %s)",
 			class, seconds, s.limits.Now().Add(wait).UTC().Format(time.RFC3339)))
 		refusal.Meta = mcp.Meta{"retryAfterSeconds": seconds, "rateLimitClass": class.String()}
-		return 0, "", refusal
+		return "", refusal
 	}
-	return userID, clientID, nil
+	return clientID, nil
 }

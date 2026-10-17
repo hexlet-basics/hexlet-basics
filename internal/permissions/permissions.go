@@ -342,3 +342,17 @@ func IsCapability(name string) bool {
 func Known(name string) bool {
 	return slices.ContainsFunc(declared.catalog, func(p Permission) bool { return p.Name == name })
 }
+
+// MCPCapability is the capability Permission an operation needs on top of its
+// own when it is called over MCP (ADR-0017): mcp.write for an operation that
+// changes data on the admin surface, mcp.read for the rest. The kind comes from
+// the contract (the declared Permission's, else the one IsAdminWrite derives),
+// so a new operation is classified by declaring it. mcp.manage, which ADR-0017
+// also names for operations on users, staff and roles, is not applied here yet:
+// those operations are not exposed as tools (ADR-0018 addendum, #854).
+func MCPCapability(operation string) string {
+	if IsAdminWrite(operation) {
+		return "mcp.write"
+	}
+	return "mcp.read"
+}

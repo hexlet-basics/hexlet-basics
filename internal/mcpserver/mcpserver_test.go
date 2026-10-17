@@ -136,7 +136,7 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 			tool = candidate
 		}
 	}
-	require.NotNil(t, tool)
+	require.NotNil(t, tool, "the catalogue tool is offered beside the admin ones")
 	assert.True(t, tool.Annotations.ReadOnlyHint)
 
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "listCourses"})
