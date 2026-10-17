@@ -35,19 +35,36 @@ func NewPermissions(db *ent.Client, tx store.Transactor) *Permissions {
 // wrapped message lists the names.
 var ErrUnknownPermission = errors.New("unknown permission")
 
-// Apply writes the roles screen's save: the role holds exactly grants
-// afterwards. A missing role is domain.ErrNotFound, before any write, and a
-// grant the contract does not declare is ErrUnknownPermission.
-func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) error {
-	if _, err := p.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx); err != nil {
-		return domain.FromStore(err)
+// Check judges the roles screen's submission before it is written: a missing
+// role is domain.ErrNotFound and a grant the contract does not declare is
+// ErrUnknownPermission. It is the request's rule and not Apply's, because a
+// role may still hold a grant the contract has since retired (a migration
+// splits one Permission in two), and trusted callers rewriting what a role
+// holds must not be refused for it.
+func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) error {
+	if err := p.requireRole(ctx, roleID); err != nil {
+		return err
 	}
 	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissions.Known(name) }); len(unknown) > 0 {
 		return fmt.Errorf("%w: %s", ErrUnknownPermission, strings.Join(unknown, ", "))
 	}
+	return nil
+}
+
+// Apply writes the roles screen's save: the role holds exactly grants
+// afterwards. A missing role is domain.ErrNotFound, before any write.
+func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) error {
+	if err := p.requireRole(ctx, roleID); err != nil {
+		return err
+	}
 	return p.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		return replaceGrants(ctx, db, roleID, grants)
 	})
+}
+
+func (p *Permissions) requireRole(ctx context.Context, roleID int) error {
+	_, err := p.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx)
+	return domain.FromStore(err)
 }
 
 // replaceGrants makes the role hold exactly grants. Rows already held are left

@@ -38,8 +38,10 @@ type SitemapReader interface {
 	Read(ctx context.Context) (*sitemap.Page, error)
 }
 
-// PermissionWriter writes what a role may do: its grants.
+// PermissionWriter writes what a role may do: its grants. Check judges a
+// submission (the role is there, every grant is declared) before Apply writes it.
 type PermissionWriter interface {
+	Check(ctx context.Context, roleID int, grants []string) error
 	Apply(ctx context.Context, roleID int, grants []string) error
 }
 

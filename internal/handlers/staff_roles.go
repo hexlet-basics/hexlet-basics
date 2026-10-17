@@ -64,10 +64,13 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return nil, protection(err)
 	}
 
-	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
+	if err := s.permissions.Check(ctx, roleID, req.Grants); err != nil {
 		if errors.Is(err, staffroles.ErrUnknownPermission) {
 			return validationError("grants", err.Error()), nil
 		}
+		return nil, err
+	}
+	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
 		return nil, err
 	}
 	return s.roleDetail(ctx, roleID)
