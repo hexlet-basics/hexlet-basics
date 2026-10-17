@@ -1,8 +1,9 @@
 import { CodeHighlight } from "@mantine/code-highlight";
-import { Alert, Button, Center, Stack, Text, Title } from "@mantine/core";
+import { Alert, Button, Center, Image, Stack, Text, Title } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import waitingClock from "@/assets/waiting_clock.webp";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
 
@@ -76,6 +77,7 @@ function SolutionWait({ onReveal }: { onReveal: () => void }) {
           {t(($) => $.common.solutionInstructions)}
         </Text>
         <Text fz={50}>{clock}</Text>
+        <Image src={waitingClock} fit="contain" mah={300} loading="lazy" alt="" />
       </Stack>
     );
   }

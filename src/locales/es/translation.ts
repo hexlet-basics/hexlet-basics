@@ -1089,6 +1089,15 @@ export default {
               "Has alcanzado el límite diario de mensajes, así que el chat está en pausa hasta mañana. Nuestra <a>comunidad de Telegram</a> funciona las 24 horas, ¡únete! :)",
             guest:
               "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
+            guest_benefit_errors:
+              "Ve tu código y el resultado de la comprobación, así que ayuda a entender por qué falla un ejercicio",
+            guest_benefit_free: "Gratis: 7 mensajes al día",
+            guest_benefit_hint:
+              "Sugiere por dónde empezar y explica la teoría con palabras sencillas",
+            guest_example_answer:
+              "En la salida veo que tu función devuelve la cadena sin el signo de exclamación. Compárala con el enunciado 🙂",
+            guest_example_question: "¿Por qué no pasa la prueba?",
+            guest_sign_up: "Registrarse",
             hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
             not_available: "Our AI assistant will be here soon — we're setting things up right now",
             question: "Tu pregunta",
@@ -1145,6 +1154,12 @@ export default {
           only_for_signed_in_users: "Exercise available only for signed users.",
           output: "Output",
           output_empty: "Press Run to see the tests output",
+          output_empty_hint:
+            "Aquí aparecerá el resultado de la comprobación de tu solución: ejecutamos tu código en un entorno aislado y le pasamos las pruebas.",
+          output_step_read:
+            "Lee la salida: si una prueba falla, muestra qué se esperaba y qué obtuviste.",
+          output_step_run: "Pulsa Run: la comprobación tarda unos segundos.",
+          output_step_write: "Escribe tu solución en la pestaña Editor.",
           output_running: "Running the tests…",
           please_sign_in:
             "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",

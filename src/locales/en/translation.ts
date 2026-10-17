@@ -1088,6 +1088,14 @@ export default {
               "You have reached today's message limit, so the chat is paused until tomorrow. Our <a>Telegram community</a> is around the clock, come join :)",
             guest:
               "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
+            guest_benefit_errors:
+              "Sees your code and the check output, so it can help work out why an exercise fails",
+            guest_benefit_free: "Free: 7 messages a day",
+            guest_benefit_hint: "Suggests where to start and explains theory in plain words",
+            guest_example_answer:
+              "The output shows your function returns the string without the exclamation mark. Compare it with the task 🙂",
+            guest_example_question: "Why doesn't the test pass?",
+            guest_sign_up: "Sign up",
             hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
             not_available: "Our AI assistant will be here soon — we're setting things up right now",
             question: "Your question",
@@ -1144,6 +1152,12 @@ export default {
           only_for_signed_in_users: "Exercise available only for signed users.",
           output: "Output",
           output_empty: "Press Run to see the tests output",
+          output_empty_hint:
+            "The result of checking your solution will show up here: we run your code in an isolated environment and run the tests against it.",
+          output_step_read:
+            "Read the output: if a test fails, it shows what was expected and what you got.",
+          output_step_run: "Press Run — the check takes a few seconds.",
+          output_step_write: "Write your solution in the Editor tab.",
           output_running: "Running the tests…",
           please_sign_in:
             "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",

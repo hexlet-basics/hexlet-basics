@@ -1,6 +1,17 @@
 import { CodeHighlight } from "@mantine/code-highlight";
-import { Alert, Anchor, Box, Center, Loader, Stack, Text } from "@mantine/core";
-import { IconAlertTriangle, IconCheck, IconInfoCircle } from "@tabler/icons-react";
+import {
+  Alert,
+  Anchor,
+  Box,
+  Center,
+  List,
+  Loader,
+  Paper,
+  Stack,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
+import { IconAlertTriangle, IconCheck, IconInfoCircle, IconTerminal2 } from "@tabler/icons-react";
 import { useLocation, useRouteContext } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import type { LessonCheckingResponse } from "@/client/types.gen";
@@ -46,6 +57,38 @@ function GuestPrompt() {
   );
 }
 
+// Before the first run the pane would otherwise be blank, and a beginner has no
+// way to know what "output" is or what to do next. So it says what will appear
+// here, and walks through the loop: write, run, read.
+function EmptyOutput() {
+  const { t } = useTranslation();
+
+  return (
+    <Center h="100%" p="xl">
+      <Stack align="center" gap="md" maw={420}>
+        <ThemeIcon size={56} radius="xl" variant="light">
+          <IconTerminal2 size={28} />
+        </ThemeIcon>
+        <Stack align="center" gap={4}>
+          <Text fw={600} ta="center">
+            {t(($) => $.courses.lessons.show.output_empty)}
+          </Text>
+          <Text fz="sm" c="dimmed" ta="center">
+            {t(($) => $.courses.lessons.show.output_empty_hint)}
+          </Text>
+        </Stack>
+        <Paper withBorder radius="md" p="md" w="100%">
+          <List type="ordered" size="sm" spacing="xs">
+            <List.Item>{t(($) => $.courses.lessons.show.output_step_write)}</List.Item>
+            <List.Item>{t(($) => $.courses.lessons.show.output_step_run)}</List.Item>
+            <List.Item>{t(($) => $.courses.lessons.show.output_step_read)}</List.Item>
+          </List>
+        </Paper>
+      </Stack>
+    </Center>
+  );
+}
+
 const FIND_ERRORS_URL = "https://help.hexlet.io/article/20623";
 
 export default function LessonOutput({
@@ -72,11 +115,7 @@ export default function LessonOutput({
   }
 
   if (!result) {
-    return (
-      <Text p="md" fz="sm" c="dimmed">
-        {t(($) => $.courses.lessons.show.output_empty)}
-      </Text>
-    );
+    return <EmptyOutput />;
   }
 
   return (

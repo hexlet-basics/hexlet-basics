@@ -71,14 +71,23 @@ export default function LessonTheory({ view }: { view: CourseLessonView }) {
 
       <Divider my="xl" c="gray" />
 
-      <Accordion mb="xs" defaultValue={questions[0]?.question}>
+      <Accordion
+        mb="xs"
+        defaultValue={questions[0]?.question}
+        styles={{
+          control: { paddingBlock: "var(--mantine-spacing-xs)" },
+          content: { paddingBlock: "var(--mantine-spacing-xs)" },
+        }}
+      >
         {questions.map((entry) => (
           <Accordion.Item key={entry.question} value={entry.question}>
             <Accordion.Control>
-              <Text>{entry.question}</Text>
+              <Text fz="sm">{entry.question}</Text>
             </Accordion.Control>
             <Accordion.Panel>
-              <MarkdownViewer allowHtml>{entry.answer}</MarkdownViewer>
+              <Box fz="sm">
+                <MarkdownViewer allowHtml>{entry.answer}</MarkdownViewer>
+              </Box>
             </Accordion.Panel>
           </Accordion.Item>
         ))}
