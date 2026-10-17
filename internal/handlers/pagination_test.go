@@ -139,7 +139,7 @@ func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
 		wantPage    int32
 		wantPerPage int32
 	}{
-		{name: "defaults", path: "/api/reviews", wantPage: 1, wantPerPage: defaultPerPage},
+		{name: "defaults", path: "/api/reviews", wantPage: 1, wantPerPage: 20},
 		{name: "minimums", path: "/api/reviews?page=1&perPage=1", wantPage: 1, wantPerPage: 1},
 		{name: "maximum page size", path: "/api/reviews?page=123&perPage=100", wantPage: 123, wantPerPage: 100},
 	}

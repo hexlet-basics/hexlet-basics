@@ -7,10 +7,11 @@ import (
 )
 
 // pageQuery is the slice of an ent query builder the paginated list needs. It
-// self-references Q so the fluent Offset/Limit calls keep returning the concrete
-// builder type — every generated ent `*XQuery` satisfies it, which is what lets
-// listPage stay generic over otherwise-unrelated ent query types.
+// self-references Q so the fluent Offset/Limit/Clone calls keep returning the
+// concrete builder type — every generated ent `*XQuery` satisfies it, which is
+// what lets listPage stay generic over otherwise-unrelated ent query types.
 type pageQuery[E any, Q any] interface {
+	Clone() Q
 	Count(context.Context) (int, error)
 	Offset(int) Q
 	Limit(int) Q
@@ -19,19 +20,19 @@ type pageQuery[E any, Q any] interface {
 
 // listPage runs the standard admin list once, generically: a total count plus a
 // single ordered, paginated page, converted to the API model and wrapped in the
-// resource's `*Page`. The caller supplies only the resource-specific bits — a
-// fresh ordered query per call (count and page read from independent builders,
-// so eager-load/limit state never leaks between them), the converter, and the
-// `*Page` constructor. This is the shared body every AdminList* handler used to
-// repeat inline.
+// resource's `*Page`. The caller supplies only the resource-specific bits — the
+// scoped, ordered, eager-loading query, the converter, and the `*Page`
+// constructor. The count runs on a Clone, so the page's offset/limit never
+// leak into it, and the one query carries the same filter for both (a bare
+// Count would over-report rows the scoping hides).
 func listPage[E any, A any, P any, Q pageQuery[E, Q]](
 	ctx context.Context,
 	pageParam, perPageParam api.OptInt32,
-	newQuery func() Q,
+	query Q,
 	conv func([]E) []A,
 	mkPage func(items []A, total, page, perPage int32) P,
 ) (P, error) {
-	return listPageWith(ctx, pageParam, perPageParam, newQuery,
+	return listPageWith(ctx, pageParam, perPageParam, query,
 		func(_ context.Context, rows []E) ([]A, error) { return conv(rows), nil },
 		mkPage,
 	)
@@ -43,19 +44,19 @@ func listPage[E any, A any, P any, Q pageQuery[E, Q]](
 func listPageWith[E any, A any, P any, Q pageQuery[E, Q]](
 	ctx context.Context,
 	pageParam, perPageParam api.OptInt32,
-	newQuery func() Q,
+	query Q,
 	conv func(context.Context, []E) ([]A, error),
 	mkPage func(items []A, total, page, perPage int32) P,
 ) (P, error) {
 	var zero P
 	page := newPagination(pageParam, perPageParam)
 
-	total, err := newQuery().Count(ctx)
+	total, err := query.Clone().Count(ctx)
 	if err != nil {
 		return zero, err
 	}
 
-	rows, err := newQuery().Offset(page.Offset()).Limit(page.Limit()).All(ctx)
+	rows, err := query.Offset(page.Offset()).Limit(page.Limit()).All(ctx)
 	if err != nil {
 		return zero, err
 	}

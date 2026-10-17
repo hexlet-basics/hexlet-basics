@@ -15,10 +15,10 @@ import "@mantine/tiptap/styles.css";
 import "@mantine/notifications/styles.css";
 import { notifications } from "@mantine/notifications";
 import { afterEach, beforeAll } from "vitest";
-import { client } from "@/client/client.gen";
+// The production client setup (base URL, request and error interceptors), so a
+// test goes through the same transport as the application.
+import "@/lib/api-client";
 import { worker } from "./msw";
-
-client.setConfig({ baseURL: "http://localhost" });
 
 beforeAll(() => worker.start({ onUnhandledFrame: "bypass", quiet: true }));
 afterEach(() => worker.resetHandlers());

@@ -1,29 +1,8 @@
 package handlers
 
-import "hexletbasics/internal/api"
+import "hexletbasics/internal/paging"
 
-// defaultPerPage matches the legacy pagy default page size.
-const defaultPerPage = 20
-
-// pagination is a resolved 1-based page window. It centralizes the default and
-// offset math that every list endpoint would otherwise re-inline.
-type pagination struct {
-	Page    int32
-	PerPage int32
-}
-
-// newPagination resolves absent page/perPage query params. The generated ogen
-// decoder rejects values outside the bounds declared by ListQuery in TypeSpec
-// before a request reaches a handler.
-func newPagination(page, perPage api.OptInt32) pagination {
-	return pagination{
-		Page:    page.Or(1),
-		PerPage: perPage.Or(defaultPerPage),
-	}
-}
-
-// Offset is the SQL OFFSET for this window.
-func (p pagination) Offset() int { return int((p.Page - 1) * p.PerPage) }
-
-// Limit is the SQL LIMIT for this window.
-func (p pagination) Limit() int { return int(p.PerPage) }
+// newPagination resolves the page window from the list query params; the
+// implementation lives in internal/paging so the ent-generated AdminList
+// helpers share it.
+var newPagination = paging.New

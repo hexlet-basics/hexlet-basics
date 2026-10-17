@@ -21,13 +21,13 @@ export default function BlogPostBlock({ post, lazy }: { post: BlogPost; lazy?: b
         h="100%"
         td="none"
       >
-        {post.coverListVariant && (
+        {post.coverUrl && (
           <Card.Section>
             <AspectRatio ratio={2 / 1}>
               <Image
                 fit="cover"
                 loading={lazy ? "lazy" : "eager"}
-                src={post.coverListVariant}
+                src={post.coverUrl}
                 alt={`Cover for ${post.name}`}
               />
             </AspectRatio>

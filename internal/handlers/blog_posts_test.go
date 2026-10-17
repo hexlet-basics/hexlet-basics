@@ -48,16 +48,13 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, "Hello world", full.Name.Value)
 	assert.Equal(t, api.BlogPostStatePublished, full.State.Value)
 	assert.Equal(t, "<p>Hello <strong>world</strong> from the blog</p>", full.RichBodyHtml)
-	// Legacy reading time floors (Ruby integer division); a 5-word post -> 0.
-	assert.Equal(t, int32(0), full.ReadingTime)
+	// Reading time rounds up: a short post reads in a minute, not none.
+	assert.Equal(t, int32(1), full.ReadingTime)
 	assert.Equal(t, int32(2), full.LikesCount)
-	assert.Equal(t, int32(3), full.RelatedCourseItemsCount)
+	assert.Len(t, full.RelatedCourseIds, 3)
 	assert.Equal(t, "Admin Learner", full.Creator.Name.Value)
-	require.False(t, full.CoverThumbVariant.Null)
-	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", full.CoverThumbVariant.Value)
-	// All three variants serve the same URL until image variants land (ADR-0005).
-	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverListVariant.Value)
-	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverMainVariant.Value)
+	require.False(t, full.CoverUrl.Null)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", full.CoverUrl.Value)
 
 	// The "empty" post: no rich body, no cover, no likes, en locale (no prefix).
 	empty, ok := bySlug["second-post"]
@@ -66,9 +63,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, "", empty.RichBodyHtml)
 	assert.Equal(t, int32(0), empty.ReadingTime)
 	assert.Equal(t, int32(0), empty.LikesCount)
-	assert.True(t, empty.CoverThumbVariant.Null)
-	assert.True(t, empty.CoverListVariant.Null)
-	assert.True(t, empty.CoverMainVariant.Null)
+	assert.True(t, empty.CoverUrl.Null)
 }
 
 func TestAdminGetBlogPost(t *testing.T) {
@@ -82,7 +77,7 @@ func TestAdminGetBlogPost(t *testing.T) {
 	assert.Equal(t, int32(fixtures.ID(fixtures.BlogPostHelloWorld)), post.ID)
 	assert.Equal(t, "hello-world", post.Slug.Value)
 	assert.Equal(t, int32(2), post.LikesCount)
-	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", post.CoverMainVariant.Value)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", post.CoverUrl.Value)
 	// Promoted-course ids surface in display order (fixture order 0,1,2).
 	assert.Equal(t, []int32{fixtures.ID32(fixtures.CourseJavascript), fixtures.ID32(fixtures.CourseRuby), fixtures.ID32(fixtures.CoursePython)}, post.RelatedCourseIds)
 }
@@ -130,12 +125,28 @@ func TestAdminCreateBlogPost(t *testing.T) {
 	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
 	assert.Equal(t, "<p>We moved to Go.</p>", post.RichBodyHtml)
 	// The creator is the authenticated admin (the harness signs in as the
-	// fixture admin), and the locale is pinned to the default until request
-	// locale reaches handlers.
+	// fixture admin), and the locale is the request's (English without a header).
 	assert.Equal(t, "Admin Learner", post.Creator.Name.Value)
 	assert.Equal(t, "en", post.Locale.Value)
 	assert.Equal(t, int32(0), post.LikesCount)
-	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
+	assert.Empty(t, post.RelatedCourseIds)
+}
+
+// TestAdminCreateBlogPostStampsRequestLocale: the post carries the admin UI's
+// language, not a pinned default.
+func TestAdminCreateBlogPostStampsRequestLocale(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	post, err := h.Client.AdminCreateBlogPost(context.Background(), &api.BlogPostInput{
+		Name:        api.NewNilString("Заметки"),
+		Slug:        api.NewNilString("zametki"),
+		Description: api.NewNilString("Описание"),
+		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
+		RichBody:    "<p>Текст</p>",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "ru", post.Locale.Value)
 }
 
 func TestAdminUpdateBlogPost(t *testing.T) {
@@ -218,7 +229,7 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, int32(2), post.RelatedCourseItemsCount)
+	assert.Equal(t, []int32{fixtures.ID32(fixtures.CourseRuby), fixtures.ID32(fixtures.CourseJavascript)}, post.RelatedCourseIds)
 
 	items, err := h.DB.BlogPostRelatedCourseItem.Query().
 		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).
@@ -235,7 +246,7 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 		CourseIds: []int32{},
 	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 	require.NoError(t, err)
-	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
+	assert.Empty(t, post.RelatedCourseIds)
 }
 
 // An unknown course id fails the insert after the old set was deleted; the

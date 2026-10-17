@@ -17,7 +17,7 @@ const searchUsersLimit = 20
 // AdminListUsers returns a page of users, newest first.
 func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (api.AdminListUsersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.UserQuery { return s.db.User.Query().Order(ent.Desc(user.FieldID)) },
+		s.db.User.Query().Order(ent.Desc(user.FieldID)),
 		s.conv.ToUserCruds,
 		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
 			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}

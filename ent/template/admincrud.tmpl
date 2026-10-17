@@ -1,0 +1,122 @@
+{{/*
+admincrud generates the admin list/get/create/update/delete helpers on the
+client of every schema annotated with schema.AdminCRUD (see
+ent/schema/annotations.go). The handlers delegate to them with the apiconv
+converter, which ent cannot import. Needs the AdminInput annotation for the
+input type; the create/update bodies use the generated SetInput.
+
+A resource with eager edges re-reads the row through the eager query after a
+write, so the response embeds the same edges the list and get do.
+*/}}
+
+{{ define "admincrud" }}
+
+{{ $pkg := base $.Config.Package }}
+{{ template "header" $ }}
+
+{{- $has := false }}
+{{- range $n := $.Nodes }}{{ if $n.Annotations.AdminCRUD }}{{ $has = true }}{{ end }}{{ end }}
+
+{{ if $has }}
+import (
+	"context"
+
+	"hexletbasics/internal/api"
+	"hexletbasics/internal/paging"
+{{ range $n := $.Nodes }}{{ if $n.Annotations.AdminCRUD }}
+	"{{ $.Config.Package }}/{{ $n.Package }}"
+{{- end }}{{ end }}
+)
+{{ end }}
+
+{{ range $n := $.Nodes }}
+{{- $ann := $n.Annotations.AdminCRUD }}
+{{- if $ann }}
+{{- $in := $n.Annotations.AdminInput }}
+{{- $input := printf "%sInput" $n.Name }}
+{{- with $in }}{{ with .Type }}{{ $input = . }}{{ end }}{{ end }}
+{{- $item := $n.Name }}
+{{- with $ann.Type }}{{ $item = . }}{{ end }}
+{{- $detail := $item }}
+{{- with $ann.Detail }}{{ $detail = . }}{{ end }}
+{{- $client := printf "%sClient" $n.Name }}
+
+// adminQuery is the query every admin read of {{ $n.Name }} starts from: the
+// edges the API model embeds are loaded here once.
+func (c *{{ $client }}) adminQuery() *{{ $n.Name }}Query {
+	return c.Query(){{ range $ann.Eager }}.
+		{{ . }}{{ end }}
+}
+
+// AdminList returns one page of {{ $n.Name }} in the default admin order. The
+// count runs on a clone of the one scoped query, so the page's offset and
+// limit never leak into it.
+func (c *{{ $client }}) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*{{ $n.Name }}) []api.{{ $item }}) (*api.{{ $item }}Page, error) {
+	w := paging.New(page, perPage)
+	q := c.adminQuery().Order(
+{{- if $ann.Order }}
+{{- range $i, $o := $ann.Order }}{{ if $i }}, {{ end }}{{ if $o.Desc }}Desc{{ else }}Asc{{ end }}({{ $n.Package }}.Field{{ $o.Field }}){{ end }}
+{{- else }}Desc({{ $n.Package }}.FieldID){{ end }})
+
+	total, err := q.Clone().Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := q.Offset(w.Offset()).Limit(w.Limit()).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.{{ $item }}Page{Items: conv(rows), Total: int32(total), Page: w.Page, PerPage: w.PerPage}, nil
+}
+
+// AdminGet returns one {{ $n.Name }} by id; a missing id is ent's not-found
+// error, which the central ErrorHandler maps to 404.
+func (c *{{ $client }}) AdminGet(ctx context.Context, id int32, conv func(*{{ $n.Name }}) api.{{ $detail }}) (*api.{{ $detail }}, error) {
+	row, err := c.adminQuery().Where({{ $n.Package }}.ID(int(id))).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	item := conv(row)
+	return &item, nil
+}
+
+// AdminCreate creates a {{ $n.Name }} from the contract input.
+func (c *{{ $client }}) AdminCreate(ctx context.Context, in *api.{{ $input }}, conv func(*{{ $n.Name }}) api.{{ $detail }}) (*api.{{ $detail }}, error) {
+	row, err := c.Create().SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+{{- if $ann.Eager }}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+{{- else }}
+	item := conv(row)
+	return &item, nil
+{{- end }}
+}
+
+// AdminUpdate updates a {{ $n.Name }} from the contract input; a missing id
+// is ent's not-found error.
+func (c *{{ $client }}) AdminUpdate(ctx context.Context, id int32, in *api.{{ $input }}, conv func(*{{ $n.Name }}) api.{{ $detail }}) (*api.{{ $detail }}, error) {
+	row, err := c.UpdateOneID(int(id)).SetInput(in).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+{{- if $ann.Eager }}
+	return c.AdminGet(ctx, int32(row.ID), conv)
+{{- else }}
+	item := conv(row)
+	return &item, nil
+{{- end }}
+}
+
+// AdminDelete removes a {{ $n.Name }} by id; a missing id is ent's not-found
+// error.
+func (c *{{ $client }}) AdminDelete(ctx context.Context, id int32) error {
+	return c.DeleteOneID(int(id)).Exec(ctx)
+}
+{{- end }}
+{{ end }}
+
+{{ end }}

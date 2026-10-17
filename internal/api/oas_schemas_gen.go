@@ -1217,24 +1217,22 @@ func (s *BannerState) UnmarshalText(data []byte) error {
 // A blog post (legacy: `BlogPost`).
 // Ref: #/components/schemas/BlogPost
 type BlogPost struct {
-	ID                      int32            `json:"id"`
-	Creator                 PublicUser       `json:"creator"`
-	Name                    NilString        `json:"name"`
-	Slug                    NilString        `json:"slug"`
-	Description             NilString        `json:"description"`
-	State                   NilBlogPostState `json:"state"`
-	Locale                  NilString        `json:"locale"`
-	RichBodyHtml            string           `json:"richBodyHtml"`
-	ReadingTime             int32            `json:"readingTime"`
-	LikesCount              int32            `json:"likesCount"`
-	RelatedCourseItemsCount int32            `json:"relatedCourseItemsCount"`
+	ID           int32            `json:"id"`
+	Creator      PublicUser       `json:"creator"`
+	Name         NilString        `json:"name"`
+	Slug         NilString        `json:"slug"`
+	Description  NilString        `json:"description"`
+	State        NilBlogPostState `json:"state"`
+	Locale       NilString        `json:"locale"`
+	RichBodyHtml string           `json:"richBodyHtml"`
+	ReadingTime  int32            `json:"readingTime"`
+	LikesCount   int32            `json:"likesCount"`
 	// Promoted-course ids in display order, so the admin related-courses editor can round-trip the set it
 	// writes.
-	RelatedCourseIds  []int32   `json:"relatedCourseIds"`
-	CoverThumbVariant NilString `json:"coverThumbVariant"`
-	CoverListVariant  NilString `json:"coverListVariant"`
-	CoverMainVariant  NilString `json:"coverMainVariant"`
-	CreatedAt         time.Time `json:"createdAt"`
+	RelatedCourseIds []int32 `json:"relatedCourseIds"`
+	// The cover image, served by the asset store; null for a post without one.
+	CoverUrl  NilString `json:"coverUrl"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // GetID returns the value of ID.
@@ -1287,29 +1285,14 @@ func (s *BlogPost) GetLikesCount() int32 {
 	return s.LikesCount
 }
 
-// GetRelatedCourseItemsCount returns the value of RelatedCourseItemsCount.
-func (s *BlogPost) GetRelatedCourseItemsCount() int32 {
-	return s.RelatedCourseItemsCount
-}
-
 // GetRelatedCourseIds returns the value of RelatedCourseIds.
 func (s *BlogPost) GetRelatedCourseIds() []int32 {
 	return s.RelatedCourseIds
 }
 
-// GetCoverThumbVariant returns the value of CoverThumbVariant.
-func (s *BlogPost) GetCoverThumbVariant() NilString {
-	return s.CoverThumbVariant
-}
-
-// GetCoverListVariant returns the value of CoverListVariant.
-func (s *BlogPost) GetCoverListVariant() NilString {
-	return s.CoverListVariant
-}
-
-// GetCoverMainVariant returns the value of CoverMainVariant.
-func (s *BlogPost) GetCoverMainVariant() NilString {
-	return s.CoverMainVariant
+// GetCoverUrl returns the value of CoverUrl.
+func (s *BlogPost) GetCoverUrl() NilString {
+	return s.CoverUrl
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -1367,29 +1350,14 @@ func (s *BlogPost) SetLikesCount(val int32) {
 	s.LikesCount = val
 }
 
-// SetRelatedCourseItemsCount sets the value of RelatedCourseItemsCount.
-func (s *BlogPost) SetRelatedCourseItemsCount(val int32) {
-	s.RelatedCourseItemsCount = val
-}
-
 // SetRelatedCourseIds sets the value of RelatedCourseIds.
 func (s *BlogPost) SetRelatedCourseIds(val []int32) {
 	s.RelatedCourseIds = val
 }
 
-// SetCoverThumbVariant sets the value of CoverThumbVariant.
-func (s *BlogPost) SetCoverThumbVariant(val NilString) {
-	s.CoverThumbVariant = val
-}
-
-// SetCoverListVariant sets the value of CoverListVariant.
-func (s *BlogPost) SetCoverListVariant(val NilString) {
-	s.CoverListVariant = val
-}
-
-// SetCoverMainVariant sets the value of CoverMainVariant.
-func (s *BlogPost) SetCoverMainVariant(val NilString) {
-	s.CoverMainVariant = val
+// SetCoverUrl sets the value of CoverUrl.
+func (s *BlogPost) SetCoverUrl(val NilString) {
+	s.CoverUrl = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -5134,47 +5102,6 @@ func (s *LessonRef) SetName(val NilString) {
 	s.Name = val
 }
 
-type ListQuerySortOrder string
-
-const (
-	ListQuerySortOrderAsc  ListQuerySortOrder = "asc"
-	ListQuerySortOrderDesc ListQuerySortOrder = "desc"
-)
-
-// AllValues returns all ListQuerySortOrder values.
-func (ListQuerySortOrder) AllValues() []ListQuerySortOrder {
-	return []ListQuerySortOrder{
-		ListQuerySortOrderAsc,
-		ListQuerySortOrderDesc,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s ListQuerySortOrder) MarshalText() ([]byte, error) {
-	switch s {
-	case ListQuerySortOrderAsc:
-		return []byte(s), nil
-	case ListQuerySortOrderDesc:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ListQuerySortOrder) UnmarshalText(data []byte) error {
-	switch ListQuerySortOrder(data) {
-	case ListQuerySortOrderAsc:
-		*s = ListQuerySortOrderAsc
-		return nil
-	case ListQuerySortOrderDesc:
-		*s = ListQuerySortOrderDesc
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
 // UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
 // Ref: #/components/schemas/Locale
 type Locale string
@@ -6229,52 +6156,6 @@ func (o OptInt32) Get() (v int32, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt32) Or(d int32) int32 {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptListQuerySortOrder returns new OptListQuerySortOrder with value set to v.
-func NewOptListQuerySortOrder(v ListQuerySortOrder) OptListQuerySortOrder {
-	return OptListQuerySortOrder{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptListQuerySortOrder is optional ListQuerySortOrder.
-type OptListQuerySortOrder struct {
-	Value ListQuerySortOrder
-	Set   bool
-}
-
-// IsSet returns true if OptListQuerySortOrder was set.
-func (o OptListQuerySortOrder) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptListQuerySortOrder) Reset() {
-	var v ListQuerySortOrder
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptListQuerySortOrder) SetTo(v ListQuerySortOrder) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptListQuerySortOrder) Get() (v ListQuerySortOrder, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptListQuerySortOrder) Or(d ListQuerySortOrder) ListQuerySortOrder {
 	if v, ok := o.Get(); ok {
 		return v
 	}

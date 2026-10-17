@@ -510,7 +510,10 @@
   language_id: {{ id "course_javascript" }}
   listed: true
   locale: en
-  main:
+  # The English main page of the JavaScript course: the lesson page titles itself
+  # with the course's main landing page, which is the catalog's rule and has no
+  # fallback to an unflagged page.
+  main: true
   meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
     для старта с нуля.
   meta_title: Frontend Course

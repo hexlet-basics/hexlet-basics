@@ -65,7 +65,11 @@ model Page<T> {
   perPage: int32;
 }
 
-/** Standard pagination + sorting query params for every admin list. */
+/**
+ * Standard pagination query params for every list. The default page size is
+ * declared here once (the legacy pagy default); the generated server applies
+ * it and every response echoes the size used in `perPage`.
+ */
 model ListQuery {
   @query
   @minValue(1)
@@ -74,13 +78,7 @@ model ListQuery {
   @query
   @minValue(1)
   @maxValue(100)
-  perPage?: int32;
-
-  /** Sort field (ransack `sf`). */
-  @query sortField?: string;
-
-  /** Sort order (ransack `so`). */
-  @query sortOrder?: "asc" | "desc";
+  perPage?: int32 = 20;
 }
 
 /**

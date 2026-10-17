@@ -42,7 +42,6 @@
     "@tiptap/react": "^3.32.0",
     "@tiptap/starter-kit": "^3.32.0",
     "ai": "^7.0.143",
-    "axios": "^1.20.0",
     "dayjs": "^1.11.23",
     "es-toolkit": "1.52.0",
     "i18next": "^26.4.7",

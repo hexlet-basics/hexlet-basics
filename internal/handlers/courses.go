@@ -12,6 +12,7 @@ import (
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/coursepages"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
@@ -76,10 +77,16 @@ type Server struct {
 	yandexFeed *feeds.Yandex
 	// catalog reads the listed landing pages the course list and category pages share.
 	catalog *landingpages.Catalog
+	// coursePages reads the course page and the lesson page.
+	coursePages *coursepages.Pages
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
 	// blogPublic reads the posts a visitor may open.
 	blogPublic *blogposts.Public
+	// blogReader assembles posts (cover, likes, courses, reading time) for the
+	// admin and the public lists alike; blogLikes records a like.
+	blogReader *blogposts.Reader
+	blogLikes  *blogposts.Liker
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover blogposts.PostRemover
 	// permissions writes a role's permission matrix.
@@ -146,9 +153,12 @@ func NewServer(deps Deps) *Server {
 		errors:            deps.Errors,
 		yandexFeed:        deps.YandexFeed,
 		catalog:           landingpages.NewCatalog(deps.DB),
+		coursePages:       coursepages.New(deps.DB, landingpages.NewCatalog(deps.DB), deps.Progress, deps.Config.CourseRepoBaseURL),
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
 		blogPublic:        blogposts.NewPublic(deps.DB),
+		blogReader:        blogposts.NewReader(deps.DB, deps.Config.PublicURL),
+		blogLikes:         blogposts.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,

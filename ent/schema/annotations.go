@@ -49,3 +49,35 @@ type AdminInputField struct {
 
 // Name implements schema.Annotation.
 func (AdminInputField) Name() string { return "AdminInputField" }
+
+// AdminCRUD marks a schema whose five admin operations (list, get, create,
+// update, delete) follow the convention: one ent type, the contract's
+// `<Schema>`/`<Schema>Page` models, an input from AdminInput. The admincrud
+// template (ent/template/admincrud.tmpl) generates AdminList/AdminGet/
+// AdminCreate/AdminUpdate/AdminDelete on the schema's client; the handlers
+// delegate to them, passing the apiconv converter (ent cannot import apiconv:
+// apiconv imports ent). The default order and the eager-loaded edges live here
+// because the contract does not carry them. A schema needs AdminInput too.
+type AdminCRUD struct {
+	// Type overrides the list item model name; empty means "<Schema>".
+	Type string `json:"Type"`
+	// Detail overrides the model name get/create/update return, for a
+	// resource whose single view is richer than its list row; empty means Type.
+	Detail string `json:"Detail"`
+	// Order is the default list order; empty means newest first (id DESC).
+	Order []AdminOrder `json:"Order"`
+	// Eager lists the query-builder calls that load the edges the API model
+	// embeds, emitted verbatim after Query(): `WithUser()`,
+	// `WithRole(func(q *StaffRoleQuery) { q.WithPermissions() })`.
+	Eager []string `json:"Eager"`
+}
+
+// Name implements schema.Annotation.
+func (AdminCRUD) Name() string { return "AdminCRUD" }
+
+// AdminOrder is one ORDER BY term of an AdminCRUD list: Field is the Go field
+// name as ent spells it in its Field<Name> constant ("Name" for FieldName).
+type AdminOrder struct {
+	Field string `json:"Field"`
+	Desc  bool   `json:"Desc"`
+}

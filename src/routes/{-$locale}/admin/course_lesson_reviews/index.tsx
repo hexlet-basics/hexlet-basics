@@ -1,12 +1,11 @@
 import { Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminListCourseLessonReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonReview } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 
 // AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
@@ -17,15 +16,11 @@ export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")
 function LessonReviewsList() {
   const { t } = useTranslation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListCourseLessonReviewsOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -33,17 +28,14 @@ function LessonReviewsList() {
     {
       accessorKey: "courseSlug",
       header: t(($) => $.models.attributes.lesson_review.course),
-      enableSorting: false,
     },
     {
       accessorKey: "slug",
       header: t(($) => $.models.attributes.lesson_review.lesson),
-      enableSorting: false,
     },
     {
       accessorKey: "locale",
       header: t(($) => $.models.attributes.lesson_review.locale),
-      enableSorting: false,
     },
     {
       id: "summary",
@@ -53,13 +45,11 @@ function LessonReviewsList() {
           {row.original.summary}
         </Text>
       ),
-      enableSorting: false,
     },
     {
       id: "createdAt",
       header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
-      enableSorting: false,
     },
   ];
 
@@ -71,10 +61,7 @@ function LessonReviewsList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>

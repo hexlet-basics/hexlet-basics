@@ -22,8 +22,7 @@ import {
 } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { getActiveBannerOptions, getCourseOptions } from "@/client/@tanstack/react-query.gen";
@@ -38,6 +37,7 @@ import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import QnaBlock from "@/components/QnaBlock";
 import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
@@ -86,8 +86,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       // The slug is a landing page's, in this locale's site: an unknown one and
       // one of another locale are the same to a visitor, there is no such page.
       // Thrown here, not left to the error page, so the answer is a 404.
-      if (isAxiosError(error) && error.response?.status === 404) throw notFound();
-      throw error;
+      rethrowMissingAsNotFound(error);
     }
   },
   // Legacy languages#show meta: the landing page's meta title and description,

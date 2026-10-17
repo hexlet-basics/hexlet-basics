@@ -1,8 +1,6 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteStaffMemberMutation,
@@ -11,6 +9,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { StaffMember } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -23,15 +22,11 @@ function StaffMembersList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListStaffMembersOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -47,19 +42,16 @@ function StaffMembersList() {
       id: "user",
       header: t(($) => $.models.attributes.staff_member.user_id),
       cell: ({ row }) => row.original.user.email ?? String(row.original.userId),
-      enableSorting: false,
     },
     {
       id: "role",
       header: t(($) => $.models.attributes.staff_member.role_id),
       cell: ({ row }) => row.original.role.name,
-      enableSorting: false,
     },
     {
       id: "allowedLocales",
       header: t(($) => $.models.attributes.staff_member.allowed_locales),
       cell: ({ row }) => row.original.allowedLocales.join(", "),
-      enableSorting: false,
     },
     {
       id: "actions",
@@ -107,10 +99,7 @@ function StaffMembersList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>

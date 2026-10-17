@@ -1753,17 +1753,6 @@ func (s *LessonProgressPage) Validate() error {
 	return nil
 }
 
-func (s ListQuerySortOrder) Validate() error {
-	switch s {
-	case "asc":
-		return nil
-	case "desc":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
-}
-
 func (s Locale) Validate() error {
 	switch s {
 	case "ru":
