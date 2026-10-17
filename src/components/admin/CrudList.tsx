@@ -1,4 +1,13 @@
-import { Center, Group, Loader, Pagination, Stack, Table, Text } from "@mantine/core";
+import {
+  Center,
+  Group,
+  Loader,
+  Pagination,
+  Stack,
+  Table,
+  Text,
+  UnstyledButton,
+} from "@mantine/core";
 import {
   type ColumnDef,
   flexRender,
@@ -85,12 +94,17 @@ export function CrudList<T extends RowData>({
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
                   return (
-                    <Table.Th
-                      key={header.id}
-                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
-                      style={{ cursor: canSort ? "pointer" : undefined }}
-                    >
-                      <Group gap={4} wrap="nowrap">
+                    <Table.Th key={header.id}>
+                      {/* A sortable header is a button, which brings the pointer
+                          cursor and keyboard access with it. */}
+                      <Group
+                        component={canSort ? UnstyledButton : "div"}
+                        onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
+                        gap={4}
+                        wrap="nowrap"
+                        fw="inherit"
+                        fz="inherit"
+                      >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {sorted === "asc" && "▲"}
                         {sorted === "desc" && "▼"}

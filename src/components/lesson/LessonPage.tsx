@@ -186,7 +186,8 @@ function PaneBurger({
       size="sm"
       aria-label={label}
       mx="xs"
-      style={{ flexGrow: 0, alignSelf: "center" }}
+      my="auto"
+      flex="none"
     />
   );
 }

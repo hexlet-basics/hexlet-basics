@@ -90,7 +90,6 @@ export default function HomePage() {
         <Badge
           component="a"
           c="gray"
-          style={{ cursor: "pointer" }}
           href="https://github.com/orgs/hexlet-basics/repositories"
           leftSection={<IconBrandGithub size={10} />}
           size="sm"

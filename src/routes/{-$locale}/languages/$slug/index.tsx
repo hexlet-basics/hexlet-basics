@@ -13,6 +13,7 @@ import {
   Image,
   Loader,
   NumberFormatter,
+  Paper,
   Progress,
   SimpleGrid,
   Stack,
@@ -197,17 +198,16 @@ function Show() {
         {landingPage?.outcomesHeader && (
           <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
             {landingPage.outcomesImage && (
-              <Image
-                src={landingPage.outcomesImage}
-                width="100%"
-                height="auto"
-                loading="lazy"
-                alt={t(($) => $.courses.show.learning_preview)}
-                style={{
-                  borderRadius: "var(--mantine-radius-xl)",
-                  boxShadow: "var(--mantine-shadow-lg)",
-                }}
-              />
+              <Paper shadow="lg" radius="xl" bg="transparent">
+                <Image
+                  src={landingPage.outcomesImage}
+                  width="100%"
+                  height="auto"
+                  loading="lazy"
+                  alt={t(($) => $.courses.show.learning_preview)}
+                  radius="xl"
+                />
+              </Paper>
             )}
             <Box>
               <Title order={2} size="h1" mb="md">

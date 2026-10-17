@@ -26,7 +26,7 @@ import {
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
 import { getNextBlogPost } from "@/client/sdk.gen";
@@ -172,12 +172,31 @@ function PostChain({
   }, [nearEnd, isFetching, isError, fetchNextPage]);
 
   const posts = [first, ...(next.data?.pages ?? [])];
-  const track = useSyncedUrl();
+
+  // Keeps the address bar on the post crossing a line a quarter down the
+  // viewport (the issue #587 geometry of legacy useInfiniteItems). The URL is
+  // replaced behind the router's back on purpose — it records where the reader
+  // is, it is not a navigation, so no loader runs and the chain is not torn down.
+  // The chain is in the page's locale, so each post's path is built under the
+  // page's own locale segment, by the router that owns the prefix rule.
+  const router = useRouter();
+  const { locale } = Route.useParams();
+  const [current, setCurrent] = useState(0);
+  const slug = posts[current]?.slug ?? "";
+  useEffect(() => {
+    const { pathname } = router.buildLocation({
+      to: "/{-$locale}/blog_posts/$slug",
+      params: { locale, slug },
+    });
+    if (window.location.pathname !== pathname) {
+      window.history.replaceState(window.history.state, "", pathname);
+    }
+  }, [router, locale, slug]);
 
   return (
     <Container size="sm">
       {posts.map((post, index) => (
-        <Stack key={post.id} mb="xl" ref={(element) => track(post, element)}>
+        <ChainPost key={post.id} index={index} onCrossLine={setCurrent}>
           {index !== 0 && (
             <Title order={1} mt="xl" mb="sm">
               {post.name}
@@ -188,72 +207,37 @@ function PostChain({
             recommendedPosts={recommendedPosts}
             relatedLandingPages={relatedLandingPages}
           />
-        </Stack>
+        </ChainPost>
       ))}
       <div ref={markerRef} />
     </Container>
   );
 }
 
-// Keeps the address bar on the post crossing a line a quarter down the
-// viewport, ported from legacy useInfiniteItems (the issue #587 geometry: live
-// bounding boxes on scroll, symmetric up and down). The URL is replaced behind
-// the router's back on purpose — it records where the reader is, it is not a
-// navigation, so no loader runs and the chain is not torn down.
-function useSyncedUrl() {
-  // Insertion order is chain order: posts only ever append.
-  const boxes = useRef(new Map<number, { post: BlogPost; element: HTMLElement }>());
-  // The chain is in the page's locale, so each post's path is built under the
-  // page's own locale segment, by the router that owns the prefix rule.
-  const router = useRouter();
-  const { locale } = Route.useParams();
+// One post of the chain. A root margin that leaves a zero-height band at 25% of
+// the viewport makes it intersecting exactly while it spans that line; across
+// the gap between two posts the last one to span it stays current.
+function ChainPost({
+  index,
+  onCrossLine,
+  children,
+}: {
+  index: number;
+  onCrossLine: (index: number) => void;
+  children: ReactNode;
+}) {
+  const { ref, entry } = useIntersection({ rootMargin: "-25% 0px -75% 0px" });
+  const onLine = entry?.isIntersecting ?? false;
 
   useEffect(() => {
-    let frame = 0;
+    if (onLine) onCrossLine(index);
+  }, [onLine, index, onCrossLine]);
 
-    const syncUrl = () => {
-      frame = 0;
-      const referenceLine = window.innerHeight * 0.25;
-
-      let active: { post: BlogPost; top: number } | null = null;
-      for (const { post, element } of boxes.current.values()) {
-        const { top, bottom } = element.getBoundingClientRect();
-        if (top <= referenceLine && bottom > referenceLine) {
-          active = { post, top };
-          break;
-        }
-        // Fallback for gaps between posts: the nearest post above the line.
-        if (top <= referenceLine && (!active || top > active.top)) {
-          active = { post, top };
-        }
-      }
-
-      if (!active) return;
-      const { pathname } = router.buildLocation({
-        to: "/{-$locale}/blog_posts/$slug",
-        params: { locale, slug: active.post.slug ?? "" },
-      });
-      if (window.location.pathname !== pathname) {
-        window.history.replaceState(window.history.state, "", pathname);
-      }
-    };
-
-    const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(syncUrl);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, [router, locale]);
-
-  return (post: BlogPost, element: HTMLElement | null) => {
-    if (element) boxes.current.set(post.id, { post, element });
-    else boxes.current.delete(post.id);
-  };
+  return (
+    <Stack ref={ref} mb="xl">
+      {children}
+    </Stack>
+  );
 }
 
 function PostBody({

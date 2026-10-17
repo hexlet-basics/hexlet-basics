@@ -11,7 +11,6 @@ type HoverLiftProps = BoxProps &
 export function HoverLift({
   lift = 6,
   hoverScale = 1.02,
-  style,
   whileHover,
   transition,
   ...props
@@ -20,13 +19,7 @@ export function HoverLift({
     <Box
       component={motion.div}
       {...props}
-      style={
-        {
-          borderRadius: 16,
-          willChange: "transform",
-          ...(style as React.CSSProperties),
-        } as React.CSSProperties
-      }
+      bdrs={16}
       whileHover={{
         y: -lift,
         scale: hoverScale,

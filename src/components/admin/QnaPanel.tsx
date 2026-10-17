@@ -68,7 +68,7 @@ function QnaItemForm({
   return (
     <Stack gap="xs">
       <Group align="flex-start" wrap="nowrap">
-        <Stack gap="xs" style={{ flex: 1 }}>
+        <Stack gap="xs" flex={1}>
           <TextInput
             label={t(($) => $.models.attributes.qna_item.question)}
             value={question}

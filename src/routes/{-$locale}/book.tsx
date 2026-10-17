@@ -1,4 +1,15 @@
-import { Box, Button, Container, Divider, Grid, Image, Stack, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCompass, IconFileText, IconList, IconUsers } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -115,12 +126,12 @@ function Show() {
             {features.map(({ key, title, explanation, icon: Icon }) => (
               <Grid.Col span={{ base: 12, md: 6 }} key={key}>
                 <Stack gap={4}>
-                  <Box style={{ display: "flex", alignItems: "center" }}>
-                    <Icon size={20} style={{ marginRight: 8 }} />
+                  <Group gap={8} wrap="nowrap">
+                    <Icon size={20} />
                     <Text fw={700} fz="lg">
                       {title}
                     </Text>
-                  </Box>
+                  </Group>
                   <Text>{explanation}</Text>
                 </Stack>
               </Grid.Col>
@@ -145,11 +156,11 @@ function Show() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>{item.title}</Grid.Col>
             <Grid.Col span={{ base: 12, md: 6 }}>
-              <ul style={{ margin: 0, paddingLeft: 20 }}>
+              <Box component="ul" m={0} pl={20}>
                 {item.subsections.map((subsection) => (
                   <li key={subsection}>{subsection}</li>
                 ))}
-              </ul>
+              </Box>
             </Grid.Col>
           </Grid>
           {index !== bookToc.length - 1 && <Divider my="md" />}

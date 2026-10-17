@@ -1,4 +1,4 @@
-import { Divider, Stack } from "@mantine/core";
+import { Box, Divider, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 
 // The learner's markup, rendered under the editor as they type it.
@@ -19,12 +19,14 @@ export default function LessonPreview({ code }: { code: string }) {
   return (
     <Stack gap={0}>
       <Divider color="gray.4" />
-      <iframe
+      <Box
+        component="iframe"
         title={t(($) => $.courses.lessons.show.preview.title)}
         sandbox=""
         srcDoc={code}
         width="100%"
-        style={{ border: 0, display: "block" }}
+        display="block"
+        bd={0}
       />
     </Stack>
   );

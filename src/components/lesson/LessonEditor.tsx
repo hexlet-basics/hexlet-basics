@@ -119,7 +119,7 @@ function EditorPane({
 
   return (
     <Stack h="100%" gap={0}>
-      <Box style={{ flexGrow: 1, minHeight: 0 }}>
+      <Box flex={1} mih={0}>
         <Suspense>
           <MonacoEditor
             theme={colorScheme === "dark" ? "vs-dark" : "vs"}
