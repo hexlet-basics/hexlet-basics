@@ -23,9 +23,9 @@ in [Storage mapping](#storage-mapping).
 
 One exception is temporary rather than permanent: the **values** of
 `PermissionResource` (`"language_lesson_members"`, `"languages"`, …) are rows in
-`staff_member_role_permissions`, and the legacy Rails app reads the same rows in
-production. They are renamed by a data migration after the hard cutover
-(ADR-0002), not before.
+`staff_member_role_permissions`. ADR-0017 replaces that matrix with the
+Permission catalog, and the cutover migration (ADR-0002) carries the existing
+rows into it, so these legacy names stop being identifiers there.
 
 Terms that reach a learner or an administrator carry their **ru** and **es**
 wording, so the same concept is not translated two ways on two screens. Terms
@@ -80,8 +80,9 @@ Lesson itself already says.
 _ru_: прохождение урока · _es_: progreso de la lección
 
 **Staff Member**:
-An employee, carrying roles and permissions. Nothing to do with learning; it
-only shares a table-name prefix with Enrollment and Lesson Progress.
+An employee who holds one Staff Role and works in the locales their record
+lists. Nothing to do with learning; it only shares a table-name prefix with
+Enrollment and Lesson Progress.
 _ru_: сотрудник · _es_: empleado
 
 **Not started**:
@@ -177,6 +178,39 @@ Enrollment plus Lesson Progress rows in the Finished state for exactly those
 Lessons.
 _ru_: гостевой прогресс · _es_: progreso de invitado
 
+### Staff access and audit
+
+**Staff Role**:
+A named set of Permissions that a Staff Member holds.
+_ru_: роль сотрудника · _es_: rol del empleado
+
+**Permission**:
+The right to perform one kind of staff operation, such as publishing blog posts,
+or to use a staff capability, such as reading the Audit Record. Reading and
+changing are separate Permissions.
+_ru_: право · _es_: permiso
+
+**Scope**:
+The kind of access a User consented to give a Connected App, such as reading the
+catalogue. It only narrows what the User's Permissions already allow and never
+adds to them.
+_Avoid_: Permission (a Permission is what a Staff Role holds, a Scope is what a
+User gave away)
+_ru_: область доступа · _es_: ámbito de acceso
+
+**Connected App**:
+An external application, typically an AI assistant, that a User has authorized
+to read data on their behalf and, where their Permissions allow, to change it.
+The User can revoke it at any time.
+_ru_: подключённое приложение · _es_: aplicación conectada
+
+**Audit Record**:
+The permanent, unalterable note of one change a staff member made, or of one
+read of personal data: who did it, through which Connected App or the website,
+to what, and with what result.
+_Avoid_: Audit event, audit log entry ("event" already means a domain event)
+_ru_: запись аудита · _es_: registro de auditoría
+
 ## Storage mapping
 
 Where a term's storage still carries the legacy word. This is the working half
@@ -197,3 +231,5 @@ schema does not exist yet.
 | Course Landing Page | `language_landing_pages` | `language_id` |
 | Course Lesson Review | `language_lesson_reviews` | `language_lesson_version_id` |
 | Staff Member | `staff_members` | — |
+| Staff Role | `staff_member_roles` | — |
+| Permission | `staff_member_role_permissions` | per-resource `can_*` bits, replaced by the Permission catalog (ADR-0017) |
