@@ -2,7 +2,7 @@
 // Streamable HTTP server from the official SDK, whose every request carries an
 // OAuth bearer token issued by internal/oauthserver (ADR-0019).
 //
-// It serves tools that read the catalogue. A tool does not reimplement what the
+// It serves tools that read the catalogue and the signed-in learner's own progress. A tool does not reimplement what the
 // website shows: it calls the same handler code as the HTTP operation it mirrors
 // (Catalogue is satisfied by handlers.Server), and describes its result with the
 // operation's schema from the contract.
@@ -89,6 +89,8 @@ type Deps struct {
 	// http.Handler on purpose: it gives the package no way to reach an operation
 	// without the checkpoint. Without it no admin tool is offered.
 	API http.Handler
+	// Learner serves the learner tools; the token's user is the only subject.
+	Learner Learner
 	// Issuer is the authorization server's origin, advertised in the resource
 	// metadata so a client that was refused knows where to sign in.
 	Issuer string
@@ -120,6 +122,9 @@ func New(deps Deps) (*Server, error) {
 
 	mcpServer := mcp.NewServer(&mcp.Implementation{Name: "hexlet-basics", Title: "Hexlet Basics"}, nil)
 	if err := s.addCatalogueTools(mcpServer); err != nil {
+		return nil, err
+	}
+	if err := s.addLearnerTools(mcpServer); err != nil {
 		return nil, err
 	}
 	if deps.API != nil {

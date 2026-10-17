@@ -23,6 +23,7 @@ type ProgressTracker interface {
 	StartLesson(ctx context.Context, learner progress.Learner, lessonID int, locale string) (*progress.CourseState, error)
 	CheckSolution(ctx context.Context, check progress.Check) (*progress.CheckResult, error)
 	CourseState(ctx context.Context, learner progress.Learner, courseID int) (*progress.CourseState, error)
+	LearnerCourse(ctx context.Context, userID int, courseSlug string) (*progress.LearnerCourse, error)
 	MergeGuest(ctx context.Context, userID int, guest progress.GuestProgress, locale string) error
 }
 

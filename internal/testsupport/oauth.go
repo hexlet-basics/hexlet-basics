@@ -18,8 +18,10 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
@@ -126,6 +128,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	services := NewServices(t, tx, transactor)
 	o.Services = services
 	mocks := NewMocks()
+	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
 
 	var serverOpts []oauthserver.Option
 	if documentHost {
@@ -151,7 +154,8 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		Sessions:  sessions,
 		Starter:   services.Starter,
 		Jobs:      services.Jobs,
-		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
+		Progress:  tracker,
+		Dashboard: dashboard.New(db, landingpages.NewCatalog(db), tracker),
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
 		Events:    services.Events,
@@ -180,7 +184,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	if limits.Now == nil {
 		limits.Now = func() time.Time { return o.now }
 	}
-	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, API: handlers.NewAdminDispatcher(apiServer, translator), Issuer: OAuthIssuer, Limits: limits})
+	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Learner: handler, API: handlers.NewAdminDispatcher(apiServer, translator), Issuer: OAuthIssuer, Limits: limits})
 	require.NoError(t, err)
 	// The attachment and webhook handlers are not under test; their routes are
 	// registered but never requested.
