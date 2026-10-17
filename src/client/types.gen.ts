@@ -445,10 +445,13 @@ export type CourseCategoryView = {
   qnaItems: Array<QnaItem>;
 };
 
+/**
+ * The input of a course: never its Readiness. A new course is a draft and the
+ *     Readiness changes only through the mark-as operations.
+ */
 export type CourseInput = {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
   /**
@@ -3817,6 +3820,120 @@ export type AdminUpdateCourseResponses = {
 };
 
 export type AdminUpdateCourseResponse = AdminUpdateCourseResponses[keyof AdminUpdateCourseResponses];
+
+export type AdminMarkCourseCompletedData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_completed';
+};
+
+export type AdminMarkCourseCompletedErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseCompletedError = AdminMarkCourseCompletedErrors[keyof AdminMarkCourseCompletedErrors];
+
+export type AdminMarkCourseCompletedResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseCompletedResponse = AdminMarkCourseCompletedResponses[keyof AdminMarkCourseCompletedResponses];
+
+export type AdminMarkCourseDraftData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_draft';
+};
+
+export type AdminMarkCourseDraftErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseDraftError = AdminMarkCourseDraftErrors[keyof AdminMarkCourseDraftErrors];
+
+export type AdminMarkCourseDraftResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseDraftResponse = AdminMarkCourseDraftResponses[keyof AdminMarkCourseDraftResponses];
+
+export type AdminMarkCourseInDevelopmentData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/courses/{id}/mark_in_development';
+};
+
+export type AdminMarkCourseInDevelopmentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminMarkCourseInDevelopmentError = AdminMarkCourseInDevelopmentErrors[keyof AdminMarkCourseInDevelopmentErrors];
+
+export type AdminMarkCourseInDevelopmentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminMarkCourseInDevelopmentResponse = AdminMarkCourseInDevelopmentResponses[keyof AdminMarkCourseInDevelopmentResponses];
 
 export type AdminReviewCourseData = {
   body?: never;

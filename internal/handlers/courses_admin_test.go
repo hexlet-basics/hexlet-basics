@@ -65,7 +65,6 @@ func TestAdminCreateCourse(t *testing.T) {
 	created, err := h.Client.AdminCreateCourse(ctx, &api.CourseInput{
 		Slug:                     api.NewNilString("haskell"),
 		LearnAs:                  api.NewNilCourseLearnAs(api.CourseLearnAsSecondLanguage),
-		Readiness:                api.NewNilCourseReadiness(api.CourseReadinessInDevelopment),
 		HexletProgramLandingPage: api.NilString{Null: true},
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
@@ -75,7 +74,7 @@ func TestAdminCreateCourse(t *testing.T) {
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "haskell", created.Slug)
 	assert.Equal(t, api.CourseLearnAsSecondLanguage, created.LearnAs.Value)
-	assert.Equal(t, api.CourseReadinessInDevelopment, created.Readiness.Value)
+	assert.Equal(t, api.CourseReadinessDraft, created.Readiness.Value, "a new course is a draft")
 	// repositoryUrl derives from the new slug.
 	assert.Equal(t, "https://github.com/hexlet-basics/exercises-haskell", created.RepositoryUrl.Value)
 
@@ -93,7 +92,6 @@ func TestAdminCreateCourseDuplicateSlug(t *testing.T) {
 	_, err := h.Client.AdminCreateCourse(ctx, &api.CourseInput{
 		Slug:                     api.NewNilString("elixir"), // already seeded
 		LearnAs:                  api.NilCourseLearnAs{Null: true},
-		Readiness:                api.NilCourseReadiness{Null: true},
 		HexletProgramLandingPage: api.NilString{Null: true},
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
@@ -109,14 +107,13 @@ func TestAdminUpdateCourse(t *testing.T) {
 	updated, err := h.Client.AdminUpdateCourse(ctx, &api.CourseInput{
 		Slug:                     api.NewNilString("ruby"),
 		LearnAs:                  api.NewNilCourseLearnAs(api.CourseLearnAsFirstLanguage),
-		Readiness:                api.NewNilCourseReadiness(api.CourseReadinessCompleted),
 		HexletProgramLandingPage: api.NilString{Null: true}, // clears
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
 	}, api.AdminUpdateCourseParams{ID: int32(courseRubyIDA)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness.Value)
+	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness.Value, "update never changes the readiness")
 	assert.Equal(t, api.CourseLearnAsFirstLanguage, updated.LearnAs.Value)
 
 	row, err := h.DB.Course.Get(ctx, courseRubyIDA)

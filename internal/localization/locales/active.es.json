@@ -75,5 +75,8 @@
   },
   "state.draft": { "other": "borrador" },
   "state.published": { "other": "publicado" },
-  "state.archived": { "other": "archivado" }
+  "state.archived": { "other": "archivado" },
+  "readiness.draft": { "other": "borrador" },
+  "readiness.in_development": { "other": "en desarrollo" },
+  "readiness.completed": { "other": "completado" }
 }

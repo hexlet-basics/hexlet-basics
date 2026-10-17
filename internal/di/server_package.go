@@ -203,6 +203,13 @@ var serverPackage = do.Package(
 		}
 		return landingpages.NewEditor(db), nil
 	}),
+	do.Lazy[*courses.Readiness](func(i do.Injector) (*courses.Readiness, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return courses.NewReadiness(db), nil
+	}),
 	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -452,6 +459,7 @@ var serverPackage = do.Package(
 			BannerStates:      services.BannerStates,
 			ReviewStates:      services.ReviewStates,
 			LandingPageStates: services.LandingPageStates,
+			CourseReadiness:   services.CourseReadiness,
 			Dashboard:         services.Dashboard,
 			Sitemap:           services.Sitemap,
 			LessonReviews:     services.LessonReviews,

@@ -32,7 +32,7 @@ const cases: Case[] = [
     route: courseRoute,
     resource: "courses",
     fields: [["Slug *", "ruby"]],
-    sent: { slug: "ruby", readiness: "draft" },
+    sent: { slug: "ruby" },
   },
   {
     name: "a role",
@@ -100,6 +100,7 @@ test.each(cases)("an admin creates $name and is taken back to the list", async (
   await expect.element(confirmation).toBeVisible();
   expect(received).toMatchObject(c.sent);
   expect(received).not.toHaveProperty("state"); // a new record is a draft; the state has its own operations
+  expect(received).not.toHaveProperty("readiness"); // a new course is a draft; its readiness has its own operations
   await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
 });
 

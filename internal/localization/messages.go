@@ -239,6 +239,24 @@ var (
 			Other: "archived",
 		},
 	}
+	ReadinessDraft = Message{
+		value: i18n.Message{
+			ID:    "readiness.draft",
+			Other: "draft",
+		},
+	}
+	ReadinessInDevelopment = Message{
+		value: i18n.Message{
+			ID:    "readiness.in_development",
+			Other: "in development",
+		},
+	}
+	ReadinessCompleted = Message{
+		value: i18n.Message{
+			ID:    "readiness.completed",
+			Other: "completed",
+		},
+	}
 )
 
 var statusMessages = map[int]Message{

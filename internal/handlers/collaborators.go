@@ -149,6 +149,14 @@ type StateMover interface {
 	Archive(ctx context.Context, id int) error
 }
 
+// ReadinessMarker moves the Readiness of a course: each value is an operation of
+// its own, and a refused one is a *transitions.Illegal.
+type ReadinessMarker interface {
+	MarkDraft(ctx context.Context, id int) error
+	MarkInDevelopment(ctx context.Context, id int) error
+	MarkCompleted(ctx context.Context, id int) error
+}
+
 // PostEditor creates and changes blog posts, and moves their Publication State.
 type PostEditor interface {
 	StateMover

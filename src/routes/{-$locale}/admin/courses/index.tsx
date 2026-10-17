@@ -47,8 +47,10 @@ function CoursesList() {
       header: t(($) => $.models.attributes.course.slug),
     },
     {
-      accessorKey: "progress",
+      id: "readiness",
       header: t(($) => $.models.attributes.course.readiness),
+      cell: ({ row }) =>
+        t(($) => $.models.attributes.course["readiness/values"][row.original.readiness ?? "draft"]),
     },
     {
       accessorKey: "learnAs",

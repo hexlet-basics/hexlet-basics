@@ -94,6 +94,7 @@ type Server struct {
 	bannerStates      StateMover
 	reviewStates      StateMover
 	landingPageStates StateMover
+	courseReadiness   ReadinessMarker
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
@@ -145,6 +146,7 @@ type Deps struct {
 	BannerStates      StateMover
 	ReviewStates      StateMover
 	LandingPageStates StateMover
+	CourseReadiness   ReadinessMarker
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
 	LessonReviews     LessonReviewScheduler
@@ -202,6 +204,7 @@ func NewServer(deps Deps) *Server {
 		bannerStates:      deps.BannerStates,
 		reviewStates:      deps.ReviewStates,
 		landingPageStates: deps.LandingPageStates,
+		courseReadiness:   deps.CourseReadiness,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
 		lessonReviews:     deps.LessonReviews,

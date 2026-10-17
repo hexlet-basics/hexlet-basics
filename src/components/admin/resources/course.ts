@@ -11,7 +11,6 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 export const emptyCourse: CourseInput = {
   slug: "",
   learnAs: null,
-  readiness: "draft",
   hexletProgramLandingPage: "",
   repositoryUrl: null,
   coverAttachmentId: null,
@@ -21,7 +20,6 @@ export function courseToForm(course: Course): CourseInput {
   return {
     slug: course.slug,
     learnAs: course.learnAs,
-    readiness: course.readiness,
     hexletProgramLandingPage: course.hexletProgramLandingPage ?? "",
     repositoryUrl: null,
     coverAttachmentId: null,

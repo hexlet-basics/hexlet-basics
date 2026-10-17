@@ -279,6 +279,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		BannerStates:      banners.NewEditor(db),
 		ReviewStates:      reviews.NewEditor(db),
 		LandingPageStates: landingpages.NewEditor(db),
+		CourseReadiness:   courses.NewReadiness(db),
 		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
 		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),

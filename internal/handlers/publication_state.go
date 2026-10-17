@@ -22,10 +22,24 @@ var publicationStateNames = map[string]localization.Message{
 	"archived":  localization.PublicationStateArchived,
 }
 
+// readinessNames are the localized names of the Course Readiness values
+// (GLOSSARY): a Course's Readiness is a state with a vocabulary of its own.
+var readinessNames = map[string]localization.Message{
+	"draft":          localization.ReadinessDraft,
+	"in_development": localization.ReadinessInDevelopment,
+	"completed":      localization.ReadinessCompleted,
+}
+
 // refuseTransition turns a transitions.Illegal into a 409 refusal naming both
 // states in the caller's language; any other error (nil included) passes
 // through untouched.
 func refuseTransition(err error) error {
+	return refuseTransitionNamed(err, publicationStateNames)
+}
+
+// refuseTransitionNamed is refuseTransition for a state with a vocabulary of its
+// own, the Course Readiness: same 409, same message, the names from the map.
+func refuseTransitionNamed(err error, names map[string]localization.Message) error {
 	illegal, ok := transitions.IsIllegal(err)
 	if !ok {
 		return err
@@ -34,8 +48,8 @@ func refuseTransition(err error) error {
 		status:  http.StatusConflict,
 		message: localization.IllegalStateTransition,
 		data: map[string]any{
-			"From": stateName(illegal.From),
-			"To":   stateName(illegal.To),
+			"From": stateName(names, illegal.From),
+			"To":   stateName(names, illegal.To),
 		},
 		cause: err,
 	}
@@ -43,8 +57,8 @@ func refuseTransition(err error) error {
 
 // stateName is the localized name of a state, or the raw value of one the
 // registry does not know (a legacy row with a state of its own).
-func stateName(state string) any {
-	if message, ok := publicationStateNames[state]; ok {
+func stateName(names map[string]localization.Message, state string) any {
+	if message, ok := names[state]; ok {
 		return message
 	}
 	return state
@@ -54,8 +68,18 @@ func stateName(state string) any {
 // through read; a refused move is mapped to its 409. The same three steps serve
 // every resource that has a Publication State.
 func moveState[T any](ctx context.Context, id int, move func(context.Context, int) error, read func(context.Context, int) (*T, error)) (*T, error) {
+	return moveNamedState(ctx, id, move, read, publicationStateNames)
+}
+
+// moveReadiness is moveState for the Course Readiness, which names its values
+// in a vocabulary of its own.
+func moveReadiness[T any](ctx context.Context, id int, move func(context.Context, int) error, read func(context.Context, int) (*T, error)) (*T, error) {
+	return moveNamedState(ctx, id, move, read, readinessNames)
+}
+
+func moveNamedState[T any](ctx context.Context, id int, move func(context.Context, int) error, read func(context.Context, int) (*T, error), names map[string]localization.Message) (*T, error) {
 	if err := move(ctx, id); err != nil {
-		return nil, refuseTransition(err)
+		return nil, refuseTransitionNamed(err, names)
 	}
 	return read(ctx, id)
 }

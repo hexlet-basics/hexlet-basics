@@ -9,6 +9,7 @@ import {
   adminUpdateCourseMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zCourseInput } from "@/client/zod.gen";
+import { CourseReadinessPanel } from "@/components/admin/CourseReadinessPanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { courseToForm, useCourseFields } from "@/components/admin/resources/course";
@@ -46,16 +47,19 @@ function EditCourse() {
       {isLoading || !data ? (
         <FormSkeleton />
       ) : (
-        <CrudForm
-          key={data.id}
-          fields={fields}
-          schema={zCourseInput}
-          defaultValues={courseToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: courseId }, body: values })}
-          submitLabel={t(($) => $.admin.crud.save)}
-          onCancel={backToList}
-          isPending={mutation.isPending}
-        />
+        <>
+          <CrudForm
+            key={data.id}
+            fields={fields}
+            schema={zCourseInput}
+            defaultValues={courseToForm(data)}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: courseId }, body: values })}
+            submitLabel={t(($) => $.admin.crud.save)}
+            onCancel={backToList}
+            isPending={mutation.isPending}
+          />
+          <CourseReadinessPanel course={data} />
+        </>
       )}
     </Stack>
   );

@@ -361,6 +361,13 @@ export default {
         add: "Add question",
         title: "FAQ",
       },
+      readiness: {
+        changeError: "Could not change the readiness",
+        changed: "Readiness changed",
+        markCompleted: "Mark as completed",
+        markDraft: "Mark as draft",
+        markInDevelopment: "Mark as in development",
+      },
       banners: {
         edit: {
           header: "Edit Banner",

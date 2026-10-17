@@ -73,5 +73,8 @@
   },
   "state.draft": { "other": "черновик" },
   "state.published": { "other": "опубликовано" },
-  "state.archived": { "other": "в архиве" }
+  "state.archived": { "other": "в архиве" },
+  "readiness.draft": { "other": "черновик" },
+  "readiness.in_development": { "other": "в разработке" },
+  "readiness.completed": { "other": "завершён" }
 }

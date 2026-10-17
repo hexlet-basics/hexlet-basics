@@ -233,6 +233,18 @@ type AdminListUsersRes interface {
 	adminListUsersRes()
 }
 
+type AdminMarkCourseCompletedRes interface {
+	adminMarkCourseCompletedRes()
+}
+
+type AdminMarkCourseDraftRes interface {
+	adminMarkCourseDraftRes()
+}
+
+type AdminMarkCourseInDevelopmentRes interface {
+	adminMarkCourseInDevelopmentRes()
+}
+
 type AdminPublishBannerRes interface {
 	adminPublishBannerRes()
 }

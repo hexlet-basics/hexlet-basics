@@ -363,6 +363,13 @@ export default {
         add: "Добавить вопрос",
         title: "FAQ",
       },
+      readiness: {
+        changeError: "Не удалось изменить готовность",
+        changed: "Готовность изменена",
+        markCompleted: "Отметить завершённым",
+        markDraft: "Отметить черновиком",
+        markInDevelopment: "Отметить в разработке",
+      },
       banners: {
         edit: {
           header: "Редактирование баннера",
