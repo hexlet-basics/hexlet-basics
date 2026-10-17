@@ -190,7 +190,7 @@ export const adminListAuditRecords = <ThrowOnError extends boolean = false>(opti
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/audit_records',
@@ -290,9 +290,9 @@ export const adminArchiveBanner = <ThrowOnError extends boolean = false>(options
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/banners/{id}/archive',
   ...options
 });
@@ -307,9 +307,9 @@ export const adminPublishBanner = <ThrowOnError extends boolean = false>(options
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/banners/{id}/publish',
   ...options
 });
@@ -322,9 +322,9 @@ export const adminUnpublishBanner = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/banners/{id}/unpublish',
   ...options
 });
@@ -404,9 +404,9 @@ export const adminArchiveBlogPost = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/blog_posts/{id}/archive',
   ...options
 });
@@ -421,9 +421,9 @@ export const adminPublishBlogPost = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/blog_posts/{id}/publish',
   ...options
 });
@@ -471,9 +471,9 @@ export const adminUnpublishBlogPost = <ThrowOnError extends boolean = false>(opt
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/blog_posts/{id}/unpublish',
   ...options
 });
@@ -486,7 +486,7 @@ export const adminGetMyCapabilities = <ThrowOnError extends boolean = false>(opt
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/capabilities',
@@ -720,9 +720,9 @@ export const adminArchiveCourseLandingPage = <ThrowOnError extends boolean = fal
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/course_landing_pages/{id}/archive',
   ...options
 });
@@ -737,9 +737,9 @@ export const adminPublishCourseLandingPage = <ThrowOnError extends boolean = fal
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/course_landing_pages/{id}/publish',
   ...options
 });
@@ -752,9 +752,9 @@ export const adminUnpublishCourseLandingPage = <ThrowOnError extends boolean = f
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/course_landing_pages/{id}/unpublish',
   ...options
 });
@@ -924,9 +924,9 @@ export const adminMarkCourseCompleted = <ThrowOnError extends boolean = false>(o
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/courses/{id}/mark_completed',
   ...options
 });
@@ -942,9 +942,9 @@ export const adminMarkCourseDraft = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/courses/{id}/mark_draft',
   ...options
 });
@@ -957,9 +957,9 @@ export const adminMarkCourseInDevelopment = <ThrowOnError extends boolean = fals
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/courses/{id}/mark_in_development',
   ...options
 });
@@ -1025,7 +1025,7 @@ export const adminListPermissions = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/admin/management/permissions',
@@ -1347,9 +1347,9 @@ export const adminArchiveReview = <ThrowOnError extends boolean = false>(options
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/reviews/{id}/archive',
   ...options
 });
@@ -1364,9 +1364,9 @@ export const adminPublishReview = <ThrowOnError extends boolean = false>(options
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/reviews/{id}/publish',
   ...options
 });
@@ -1379,9 +1379,9 @@ export const adminUnpublishReview = <ThrowOnError extends boolean = false>(optio
   security: [{
       key: 'AdminSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/admin/reviews/{id}/unpublish',
   ...options
 });
@@ -1716,7 +1716,7 @@ export const listConnectedApps = <ThrowOnError extends boolean = false>(options?
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/oauth/connected_apps',
@@ -1730,9 +1730,9 @@ export const revokeConnectedApp = <ThrowOnError extends boolean = false>(options
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/oauth/connected_apps/{id}',
   ...options
 });
@@ -1745,7 +1745,7 @@ export const getOAuthConsent = <ThrowOnError extends boolean = false>(options: O
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
     }],
   url: '/api/oauth/consents/{requestId}',
@@ -1760,9 +1760,9 @@ export const approveOAuthConsent = <ThrowOnError extends boolean = false>(option
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/oauth/consents/{requestId}/approve',
   ...options
 });
@@ -1775,9 +1775,9 @@ export const denyOAuthConsent = <ThrowOnError extends boolean = false>(options: 
   security: [{
       key: 'UserSession',
       in: 'cookie',
-      name: 'JWT',
+      name: 'session',
       type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+    }],
   url: '/api/oauth/consents/{requestId}/deny',
   ...options
 });

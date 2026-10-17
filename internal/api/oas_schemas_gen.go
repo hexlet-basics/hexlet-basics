@@ -7316,7 +7316,7 @@ func (s *PermissionCatalog) SetPermissions(val []Permission) {
 
 func (*PermissionCatalog) adminListPermissionsRes() {}
 
-// Whether an operation only reads or can change data (ADR-0017).
+// Whether an operation only reads or can change data (ADR-0018).
 // Ref: #/components/schemas/PermissionKind
 type PermissionKind string
 

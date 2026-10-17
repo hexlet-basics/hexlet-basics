@@ -36,6 +36,10 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 
 // operationRolesAdminSession is a private map storing roles per operation.
 var operationRolesAdminSession = map[string][]string{
+	AdminArchiveBannerOperation:                 []string{},
+	AdminArchiveBlogPostOperation:               []string{},
+	AdminArchiveCourseLandingPageOperation:      []string{},
+	AdminArchiveReviewOperation:                 []string{},
 	AdminCreateBannerOperation:                  []string{},
 	AdminCreateBlogPostOperation:                []string{},
 	AdminCreateCategoryQnaItemOperation:         []string{},
@@ -89,11 +93,22 @@ var operationRolesAdminSession = map[string][]string{
 	AdminListRolesOperation:                     []string{},
 	AdminListStaffMembersOperation:              []string{},
 	AdminListUsersOperation:                     []string{},
+	AdminMarkCourseCompletedOperation:           []string{},
+	AdminMarkCourseDraftOperation:               []string{},
+	AdminMarkCourseInDevelopmentOperation:       []string{},
+	AdminPublishBannerOperation:                 []string{},
+	AdminPublishBlogPostOperation:               []string{},
+	AdminPublishCourseLandingPageOperation:      []string{},
+	AdminPublishReviewOperation:                 []string{},
 	AdminReviewCourseOperation:                  []string{},
 	AdminReviewCourseLessonOperation:            []string{},
 	AdminSearchUsersOperation:                   []string{},
 	AdminSetBlogPostRelatedCoursesOperation:     []string{},
 	AdminSuggestBlogPostRelatedCoursesOperation: []string{},
+	AdminUnpublishBannerOperation:               []string{},
+	AdminUnpublishBlogPostOperation:             []string{},
+	AdminUnpublishCourseLandingPageOperation:    []string{},
+	AdminUnpublishReviewOperation:               []string{},
 	AdminUpdateBannerOperation:                  []string{},
 	AdminUpdateBlogPostOperation:                []string{},
 	AdminUpdateCategoryQnaItemOperation:         []string{},
@@ -133,16 +148,21 @@ func GetRolesForAdminSession(operation string) []string {
 
 // operationRolesUserSession is a private map storing roles per operation.
 var operationRolesUserSession = map[string][]string{
+	ApproveOAuthConsentOperation:    []string{},
 	CreateAssistantMessageOperation: []string{},
 	CreateBookRequestOperation:      []string{},
 	CreateLeadOperation:             []string{},
 	DeleteAccountOperation:          []string{},
 	DeleteSessionOperation:          []string{},
+	DenyOAuthConsentOperation:       []string{},
 	DownloadBookOperation:           []string{},
 	GetMyDashboardOperation:         []string{},
+	GetOAuthConsentOperation:        []string{},
 	GetProfileOperation:             []string{},
 	LikeBlogPostOperation:           []string{},
 	ListAssistantMessagesOperation:  []string{},
+	ListConnectedAppsOperation:      []string{},
+	RevokeConnectedAppOperation:     []string{},
 	UpdateProfileOperation:          []string{},
 }
 

@@ -130,29 +130,11 @@ func (s *Server) handleAdminArchiveBannerRequest(args [1]string, argsEscaped boo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminArchiveBannerOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -348,29 +330,11 @@ func (s *Server) handleAdminArchiveBlogPostRequest(args [1]string, argsEscaped b
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminArchiveBlogPostOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -566,29 +530,11 @@ func (s *Server) handleAdminArchiveCourseLandingPageRequest(args [1]string, args
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminArchiveCourseLandingPageOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -784,29 +730,11 @@ func (s *Server) handleAdminArchiveReviewRequest(args [1]string, argsEscaped boo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminArchiveReviewOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11770,29 +11698,11 @@ func (s *Server) handleAdminMarkCourseCompletedRequest(args [1]string, argsEscap
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminMarkCourseCompletedOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11990,29 +11900,11 @@ func (s *Server) handleAdminMarkCourseDraftRequest(args [1]string, argsEscaped b
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminMarkCourseDraftOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12208,29 +12100,11 @@ func (s *Server) handleAdminMarkCourseInDevelopmentRequest(args [1]string, argsE
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminMarkCourseInDevelopmentOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12428,29 +12302,11 @@ func (s *Server) handleAdminPublishBannerRequest(args [1]string, argsEscaped boo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminPublishBannerOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12648,29 +12504,11 @@ func (s *Server) handleAdminPublishBlogPostRequest(args [1]string, argsEscaped b
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminPublishBlogPostOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12868,29 +12706,11 @@ func (s *Server) handleAdminPublishCourseLandingPageRequest(args [1]string, args
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminPublishCourseLandingPageOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -13088,29 +12908,11 @@ func (s *Server) handleAdminPublishReviewRequest(args [1]string, argsEscaped boo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminPublishReviewOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -14322,29 +14124,11 @@ func (s *Server) handleAdminUnpublishBannerRequest(args [1]string, argsEscaped b
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminUnpublishBannerOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -14540,29 +14324,11 @@ func (s *Server) handleAdminUnpublishBlogPostRequest(args [1]string, argsEscaped
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminUnpublishBlogPostOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -14758,29 +14524,11 @@ func (s *Server) handleAdminUnpublishCourseLandingPageRequest(args [1]string, ar
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminUnpublishCourseLandingPageOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -14976,29 +14724,11 @@ func (s *Server) handleAdminUnpublishReviewRequest(args [1]string, argsEscaped b
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, AdminUnpublishReviewOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -18191,29 +17921,11 @@ func (s *Server) handleApproveOAuthConsentRequest(args [1]string, argsEscaped bo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, ApproveOAuthConsentOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -20480,29 +20192,11 @@ func (s *Server) handleDenyOAuthConsentRequest(args [1]string, argsEscaped bool,
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, DenyOAuthConsentOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -24258,29 +23952,11 @@ func (s *Server) handleRevokeConnectedAppRequest(args [1]string, argsEscaped boo
 				ctx = sctx
 			}
 		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, RevokeConnectedAppOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {

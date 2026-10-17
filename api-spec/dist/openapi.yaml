@@ -18,6 +18,15 @@ info:
     contract never collides with a page path and needs no CORS. The prefix is
     set once here, on the namespace every file reopens, so the operation routes
     below keep the legacy paths they mirror.
+
+    `x-capabilities` lists the Permissions no operation requires yet but a Staff
+    Role can be granted: the MCP layer and the audit page check them (ADR-0018).
+    The administrator flag never implies them.
+
+    `x-requires-capability` on an operation names a capability Permission it
+    needs over MCP on top of its own Permission and `mcp.read`/`mcp.write`:
+    `mcp.manage` for every operation on users, staff members, Staff Roles and
+    their grants (who has access).
   version: 0.0.0
 tags:
   - name: Courses
@@ -43,6 +52,7 @@ tags:
   - name: 'Admin: Course Lesson Reviews'
   - name: 'Admin: Leads'
   - name: 'Admin: Messages'
+  - name: 'Admin: Audit'
   - name: 'Admin: Users'
   - name: 'Admin: Roles'
   - name: 'Admin: Staff Members'
@@ -196,6 +206,11 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: User
+      x-permission:
+        name: users.read
+        kind: read
     post:
       operationId: adminCreateUser
       description: |-
@@ -241,6 +256,10 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: users.create
+        kind: write
   /api/admin/api/users/search:
     get:
       operationId: adminSearchUsers
@@ -287,6 +306,11 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: User
+      x-permission:
+        name: users.read
+        kind: read
   /api/admin/api/users/{id}:
     get:
       operationId: adminGetUser
@@ -333,6 +357,11 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: User
+      x-permission:
+        name: users.read
+        kind: read
     put:
       operationId: adminUpdateUser
       description: |-
@@ -384,6 +413,10 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: users.update
+        kind: write
     delete:
       operationId: adminDeleteUser
       parameters:
@@ -422,6 +455,10 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: users.delete
+        kind: write
   /api/admin/attachments:
     post:
       operationId: adminUploadAttachment
@@ -475,6 +512,71 @@ paths:
               $ref: '#/components/schemas/AttachmentUploadForm'
       security:
         - AdminSession: []
+      x-access: any-staff
+      x-unit-of-work: standalone
+  /api/admin/audit_records:
+    get:
+      operationId: adminListAuditRecords
+      description: |-
+        The audit trail, newest first. Needs the capability Permission `audit.read`
+        on the Staff Role even for an administrator, and is itself recorded as a
+        read of personal data: records carry addresses and old values.
+      parameters:
+        - $ref: '#/components/parameters/AuditRecordQuery.page'
+        - $ref: '#/components/parameters/AuditRecordQuery.perPage'
+        - $ref: '#/components/parameters/AuditRecordQuery.actorUserId'
+        - $ref: '#/components/parameters/AuditRecordQuery.channel'
+        - $ref: '#/components/parameters/AuditRecordQuery.operation'
+        - $ref: '#/components/parameters/AuditRecordQuery.entityType'
+        - $ref: '#/components/parameters/AuditRecordQuery.entityId'
+        - $ref: '#/components/parameters/AuditRecordQuery.from'
+        - $ref: '#/components/parameters/AuditRecordQuery.to'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditRecordPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Audit'
+      security:
+        - AdminSession: []
+      x-personal-data: AuditRecord
+      x-permission:
+        name: audit.read
+        kind: read
   /api/admin/banners:
     get:
       operationId: adminListBanners
@@ -517,6 +619,9 @@ paths:
         - 'Admin: Banners'
       security:
         - AdminSession: []
+      x-permission:
+        name: banners.read
+        kind: read
     post:
       operationId: adminCreateBanner
       description: |-
@@ -563,6 +668,9 @@ paths:
               $ref: '#/components/schemas/BannerInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: banners.create
+        kind: write
   /api/admin/banners/{id}:
     get:
       operationId: adminGetBanner
@@ -609,6 +717,9 @@ paths:
         - 'Admin: Banners'
       security:
         - AdminSession: []
+      x-permission:
+        name: banners.read
+        kind: read
     put:
       operationId: adminUpdateBanner
       description: Update a banner. A missing id surfaces as 404 via the central handler.
@@ -658,6 +769,9 @@ paths:
               $ref: '#/components/schemas/BannerInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: banners.update
+        kind: write
     delete:
       operationId: adminDeleteBanner
       description: Delete a banner.
@@ -697,6 +811,153 @@ paths:
         - 'Admin: Banners'
       security:
         - AdminSession: []
+      x-permission:
+        name: banners.delete
+        kind: write
+  /api/admin/banners/{id}/archive:
+    post:
+      operationId: adminArchiveBanner
+      description: Archive a draft or published banner.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Banners'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: banners.archive
+        kind: write
+  /api/admin/banners/{id}/publish:
+    post:
+      operationId: adminPublishBanner
+      description: |-
+        Publish a draft or archived banner. A state is not an update: each change of
+              Publication State is its own operation with its own Permission. An illegal
+              move, or repeating the current state, is a 409 with a localized `detail`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Banners'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: banners.publish
+        kind: write
+  /api/admin/banners/{id}/unpublish:
+    post:
+      operationId: adminUnpublishBanner
+      description: Take a published banner back to draft.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Banners'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: banners.unpublish
+        kind: write
   /api/admin/blog_posts:
     get:
       operationId: adminListBlogPosts
@@ -738,6 +999,9 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.read
+        kind: read
     post:
       operationId: adminCreateBlogPost
       parameters: []
@@ -789,6 +1053,9 @@ paths:
               $ref: '#/components/schemas/BlogPostInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.create
+        kind: write
   /api/admin/blog_posts/{id}:
     get:
       operationId: adminGetBlogPost
@@ -832,6 +1099,9 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.read
+        kind: read
     put:
       operationId: adminUpdateBlogPost
       parameters:
@@ -889,6 +1159,9 @@ paths:
               $ref: '#/components/schemas/BlogPostInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.update
+        kind: write
     delete:
       operationId: adminDeleteBlogPost
       parameters:
@@ -927,6 +1200,106 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.delete
+        kind: write
+  /api/admin/blog_posts/{id}/archive:
+    post:
+      operationId: adminArchiveBlogPost
+      description: Archive a draft or published post.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: blog_posts.archive
+        kind: write
+  /api/admin/blog_posts/{id}/publish:
+    post:
+      operationId: adminPublishBlogPost
+      description: |-
+        Publish a draft or archived post. A state is not an update: each change of
+              Publication State is its own operation with its own Permission. An illegal
+              move, or repeating the current state, is a 409 with a localized `detail`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: blog_posts.publish
+        kind: write
   /api/admin/blog_posts/{id}/related_courses:
     post:
       operationId: adminSetBlogPostRelatedCourses
@@ -986,6 +1359,9 @@ paths:
               $ref: '#/components/schemas/BlogPostRelatedCoursesInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.update
+        kind: write
   /api/admin/blog_posts/{id}/suggest_related_courses:
     post:
       operationId: adminSuggestBlogPostRelatedCourses
@@ -1029,6 +1405,95 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
+      x-permission:
+        name: blog_posts.update
+        kind: write
+  /api/admin/blog_posts/{id}/unpublish:
+    post:
+      operationId: adminUnpublishBlogPost
+      description: Take a published post back to draft.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: blog_posts.unpublish
+        kind: write
+  /api/admin/capabilities:
+    get:
+      operationId: adminGetMyCapabilities
+      description: The capabilities the caller holds; open to any staff member.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCapabilities'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Audit'
+      security:
+        - AdminSession: []
+      x-access: any-staff
   /api/admin/course_categories:
     get:
       operationId: adminListCourseCategories
@@ -1071,6 +1536,9 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_categories.read
+        kind: read
     post:
       operationId: adminCreateCourseCategory
       description: |-
@@ -1116,6 +1584,9 @@ paths:
               $ref: '#/components/schemas/CourseCategoryInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_categories.create
+        kind: write
   /api/admin/course_categories/{categoryId}/qna_items:
     get:
       operationId: adminListCategoryQnaItems
@@ -1161,6 +1632,9 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_category_qna_items.read
+        kind: read
     post:
       operationId: adminCreateCategoryQnaItem
       parameters:
@@ -1209,6 +1683,9 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_category_qna_items.create
+        kind: write
   /api/admin/course_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
@@ -1267,6 +1744,9 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_category_qna_items.update
+        kind: write
     delete:
       operationId: adminDeleteCategoryQnaItem
       parameters:
@@ -1311,6 +1791,9 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_category_qna_items.delete
+        kind: write
   /api/admin/course_categories/{id}:
     get:
       operationId: adminGetCourseCategory
@@ -1357,6 +1840,9 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_categories.read
+        kind: read
     put:
       operationId: adminUpdateCourseCategory
       description: |-
@@ -1408,6 +1894,9 @@ paths:
               $ref: '#/components/schemas/CourseCategoryInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_categories.update
+        kind: write
     delete:
       operationId: adminDeleteCourseCategory
       description: Delete a course category.
@@ -1447,6 +1936,9 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_categories.delete
+        kind: write
   /api/admin/course_landing_pages:
     get:
       operationId: adminListCourseLandingPages
@@ -1488,6 +1980,9 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_pages.read
+        kind: read
     post:
       operationId: adminCreateCourseLandingPage
       parameters: []
@@ -1530,6 +2025,9 @@ paths:
               $ref: '#/components/schemas/CourseLandingPageInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_pages.create
+        kind: write
   /api/admin/course_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
@@ -1576,6 +2074,9 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_pages.read
+        kind: read
     put:
       operationId: adminUpdateCourseLandingPage
       description: |-
@@ -1627,6 +2128,9 @@ paths:
               $ref: '#/components/schemas/CourseLandingPageInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_pages.update
+        kind: write
     delete:
       operationId: adminDeleteCourseLandingPage
       parameters:
@@ -1665,6 +2169,153 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_pages.delete
+        kind: write
+  /api/admin/course_landing_pages/{id}/archive:
+    post:
+      operationId: adminArchiveCourseLandingPage
+      description: Archive a draft or published landing page.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: course_landing_pages.archive
+        kind: write
+  /api/admin/course_landing_pages/{id}/publish:
+    post:
+      operationId: adminPublishCourseLandingPage
+      description: |-
+        Publish a draft or archived landing page. A state is not an update: each change of
+              Publication State is its own operation with its own Permission. An illegal
+              move, or repeating the current state, is a 409 with a localized `detail`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: course_landing_pages.publish
+        kind: write
+  /api/admin/course_landing_pages/{id}/unpublish:
+    post:
+      operationId: adminUnpublishCourseLandingPage
+      description: Take a published landing page back to draft.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: course_landing_pages.unpublish
+        kind: write
   /api/admin/course_landing_pages/{landingPageId}/qna_items:
     get:
       operationId: adminListLandingPageQnaItems
@@ -1710,6 +2361,9 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_page_qna_items.read
+        kind: read
     post:
       operationId: adminCreateLandingPageQnaItem
       parameters:
@@ -1758,6 +2412,9 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_page_qna_items.create
+        kind: write
   /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
@@ -1816,6 +2473,9 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_page_qna_items.update
+        kind: write
     delete:
       operationId: adminDeleteLandingPageQnaItem
       parameters:
@@ -1860,6 +2520,9 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_landing_page_qna_items.delete
+        kind: write
   /api/admin/course_lesson_reviews:
     get:
       operationId: adminListCourseLessonReviews
@@ -1901,6 +2564,9 @@ paths:
         - 'Admin: Course Lesson Reviews'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_lesson_reviews.read
+        kind: read
   /api/admin/course_lessons:
     get:
       operationId: adminListCourseLessons
@@ -1942,6 +2608,9 @@ paths:
         - 'Admin: Course Lessons'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_lessons.read
+        kind: read
   /api/admin/course_lessons/{id}/review:
     post:
       operationId: adminReviewCourseLesson
@@ -1988,6 +2657,9 @@ paths:
         - 'Admin: Course Lessons'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_lessons.review
+        kind: write
   /api/admin/courses:
     get:
       operationId: adminListCourses
@@ -2029,6 +2701,9 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
+      x-permission:
+        name: courses.read
+        kind: read
     post:
       operationId: adminCreateCourse
       parameters: []
@@ -2071,6 +2746,9 @@ paths:
               $ref: '#/components/schemas/CourseInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: courses.create
+        kind: write
   /api/admin/courses/{id}:
     get:
       operationId: adminGetCourse
@@ -2117,6 +2795,9 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
+      x-permission:
+        name: courses.read
+        kind: read
     put:
       operationId: adminUpdateCourse
       parameters:
@@ -2165,6 +2846,154 @@ paths:
               $ref: '#/components/schemas/CourseInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: courses.update
+        kind: write
+  /api/admin/courses/{id}/mark_completed:
+    post:
+      operationId: adminMarkCourseCompleted
+      description: 'Mark a course as completed: it joins the public catalogue.'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Courses'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: courses.mark_completed
+        kind: write
+  /api/admin/courses/{id}/mark_draft:
+    post:
+      operationId: adminMarkCourseDraft
+      description: |-
+        Mark a course as a draft. A state is not an update: each change of Course
+              Readiness is its own operation with its own Permission. Any change between two
+              distinct values is legal; repeating the current value is a 409 with a localized
+              `detail`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Courses'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: courses.mark_draft
+        kind: write
+  /api/admin/courses/{id}/mark_in_development:
+    post:
+      operationId: adminMarkCourseInDevelopment
+      description: Mark a course as in development.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Courses'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: courses.mark_in_development
+        kind: write
   /api/admin/courses/{id}/review:
     post:
       operationId: adminReviewCourse
@@ -2211,6 +3040,9 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
+      x-permission:
+        name: courses.review
+        kind: write
   /api/admin/courses/{id}/versions:
     post:
       operationId: adminCreateCourseVersion
@@ -2261,6 +3093,9 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
+      x-permission:
+        name: course_versions.create
+        kind: write
   /api/admin/leads:
     get:
       operationId: adminListLeads
@@ -2302,6 +3137,10 @@ paths:
         - 'Admin: Leads'
       security:
         - AdminSession: []
+      x-personal-data: Lead
+      x-permission:
+        name: leads.read
+        kind: read
   /api/admin/lesson_progress:
     get:
       operationId: adminListLessonProgress
@@ -2343,6 +3182,52 @@ paths:
         - 'Admin: Lesson Progress'
       security:
         - AdminSession: []
+      x-personal-data: LessonProgress
+      x-permission:
+        name: lesson_progress.read
+        kind: read
+  /api/admin/management/permissions:
+    get:
+      operationId: adminListPermissions
+      description: The catalog of Permissions, generated from the operations' declarations.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCatalog'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Roles'
+      security:
+        - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.read
+        kind: read
   /api/admin/management/role_permissions/{roleId}:
     get:
       operationId: adminGetRolePermissions
@@ -2387,6 +3272,10 @@ paths:
         - 'Admin: Roles'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.read
+        kind: read
     put:
       operationId: adminUpdateRolePermissions
       description: Replace the permission matrix for a role.
@@ -2416,6 +3305,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2436,6 +3334,10 @@ paths:
               $ref: '#/components/schemas/RolePermissionsInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.update
+        kind: write
   /api/admin/management/roles:
     get:
       operationId: adminListRoles
@@ -2477,6 +3379,10 @@ paths:
         - 'Admin: Roles'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.read
+        kind: read
     post:
       operationId: adminCreateRole
       description: |-
@@ -2522,6 +3428,10 @@ paths:
               $ref: '#/components/schemas/RoleInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.create
+        kind: write
   /api/admin/management/roles/{id}:
     get:
       operationId: adminGetRole
@@ -2568,6 +3478,10 @@ paths:
         - 'Admin: Roles'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.read
+        kind: read
     put:
       operationId: adminUpdateRole
       parameters:
@@ -2616,6 +3530,10 @@ paths:
               $ref: '#/components/schemas/RoleInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.update
+        kind: write
     delete:
       operationId: adminDeleteRole
       parameters:
@@ -2654,6 +3572,10 @@ paths:
         - 'Admin: Roles'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_roles.delete
+        kind: write
   /api/admin/management/staff_members:
     get:
       operationId: adminListStaffMembers
@@ -2695,6 +3617,11 @@ paths:
         - 'Admin: Staff Members'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: StaffMember
+      x-permission:
+        name: staff_members.read
+        kind: read
     post:
       operationId: adminCreateStaffMember
       parameters: []
@@ -2737,6 +3664,10 @@ paths:
               $ref: '#/components/schemas/StaffMemberInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_members.create
+        kind: write
   /api/admin/management/staff_members/{id}:
     get:
       operationId: adminGetStaffMember
@@ -2780,6 +3711,11 @@ paths:
         - 'Admin: Staff Members'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: StaffMember
+      x-permission:
+        name: staff_members.read
+        kind: read
     put:
       operationId: adminUpdateStaffMember
       parameters:
@@ -2828,6 +3764,10 @@ paths:
               $ref: '#/components/schemas/StaffMemberInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_members.update
+        kind: write
     delete:
       operationId: adminDeleteStaffMember
       parameters:
@@ -2866,6 +3806,10 @@ paths:
         - 'Admin: Staff Members'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: staff_members.delete
+        kind: write
   /api/admin/management/users:
     get:
       operationId: adminListManagementUsers
@@ -2907,6 +3851,11 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: User
+      x-permission:
+        name: users.read
+        kind: read
   /api/admin/management/users/{id}:
     get:
       operationId: adminGetManagementUser
@@ -2953,6 +3902,11 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-personal-data: User
+      x-permission:
+        name: users.read
+        kind: read
     put:
       operationId: adminUpdateManagementUser
       parameters:
@@ -3001,6 +3955,10 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
+      x-requires-capability: mcp.manage
+      x-permission:
+        name: users.update
+        kind: write
   /api/admin/messages:
     get:
       operationId: adminListMessages
@@ -3042,6 +4000,10 @@ paths:
         - 'Admin: Messages'
       security:
         - AdminSession: []
+      x-personal-data: AiMessage
+      x-permission:
+        name: messages.read
+        kind: read
   /api/admin/reviews:
     get:
       operationId: adminListReviews
@@ -3083,6 +4045,10 @@ paths:
         - 'Admin: Reviews'
       security:
         - AdminSession: []
+      x-personal-data: Review
+      x-permission:
+        name: reviews.read
+        kind: read
     post:
       operationId: adminCreateReview
       parameters: []
@@ -3125,6 +4091,9 @@ paths:
               $ref: '#/components/schemas/ReviewInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: reviews.create
+        kind: write
   /api/admin/reviews/{id}:
     get:
       operationId: adminGetReview
@@ -3171,6 +4140,10 @@ paths:
         - 'Admin: Reviews'
       security:
         - AdminSession: []
+      x-personal-data: Review
+      x-permission:
+        name: reviews.read
+        kind: read
     put:
       operationId: adminUpdateReview
       description: |-
@@ -3222,6 +4195,9 @@ paths:
               $ref: '#/components/schemas/ReviewInput'
       security:
         - AdminSession: []
+      x-permission:
+        name: reviews.update
+        kind: write
     delete:
       operationId: adminDeleteReview
       parameters:
@@ -3260,6 +4236,153 @@ paths:
         - 'Admin: Reviews'
       security:
         - AdminSession: []
+      x-permission:
+        name: reviews.delete
+        kind: write
+  /api/admin/reviews/{id}/archive:
+    post:
+      operationId: adminArchiveReview
+      description: Archive a draft or published review.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Reviews'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: reviews.archive
+        kind: write
+  /api/admin/reviews/{id}/publish:
+    post:
+      operationId: adminPublishReview
+      description: |-
+        Publish a draft or archived review. A state is not an update: each change of
+              Publication State is its own operation with its own Permission. An illegal
+              move, or repeating the current state, is a 409 with a localized `detail`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Reviews'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: reviews.publish
+        kind: write
+  /api/admin/reviews/{id}/unpublish:
+    post:
+      operationId: adminUnpublishReview
+      description: Take a published review back to draft.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Reviews'
+      security:
+        - AdminSession: []
+      x-permission:
+        name: reviews.unpublish
+        kind: write
   /api/ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
@@ -4309,7 +5432,6 @@ paths:
         - OAuth
       security:
         - UserSession: []
-          XsrfToken: []
   /api/oauth/consents/{requestId}:
     get:
       operationId: getOAuthConsent
@@ -4396,7 +5518,6 @@ paths:
         - OAuth
       security:
         - UserSession: []
-          XsrfToken: []
   /api/oauth/consents/{requestId}/deny:
     post:
       operationId: denyOAuthConsent
@@ -4440,7 +5561,6 @@ paths:
         - OAuth
       security:
         - UserSession: []
-          XsrfToken: []
   /api/password/{token}:
     patch:
       operationId: updatePassword
@@ -4721,6 +5841,82 @@ paths:
               $ref: '#/components/schemas/SignUpInput'
 components:
   parameters:
+    AuditRecordQuery.actorUserId:
+      name: actorUserId
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    AuditRecordQuery.channel:
+      name: channel
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - web
+          - mcp
+      explode: false
+    AuditRecordQuery.entityId:
+      name: entityId
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    AuditRecordQuery.entityType:
+      name: entityType
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    AuditRecordQuery.from:
+      name: from
+      in: query
+      required: false
+      description: Start of the window (inclusive).
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    AuditRecordQuery.operation:
+      name: operation
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    AuditRecordQuery.page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      explode: false
+    AuditRecordQuery.perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+      explode: false
+    AuditRecordQuery.to:
+      name: to
+      in: query
+      required: false
+      description: End of the window (exclusive).
+      schema:
+        type: string
+        format: date-time
+      explode: false
     ListQuery.page:
       name: page
       in: query
@@ -4818,6 +6014,166 @@ components:
           format: binary
       required:
         - file
+    AuditChange:
+      type: object
+      required:
+        - entity
+        - op
+      properties:
+        entity:
+          type: string
+          description: The ent entity type, e.g. `BlogPost`.
+        id:
+          type: string
+        op:
+          type: string
+          description: create, update or delete.
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditFieldChange'
+      description: One mutation of one entity inside an operation. A bulk change carries no id.
+    AuditFieldChange:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        old: {}
+        new: {}
+        secret:
+          type: boolean
+      description: |-
+        The old and new value of one field an operation changed. `old` is absent on a
+        create and `new` on a delete. A `secret` field (password material, a token)
+        carries its name only: no value was ever stored. The values are JSON of any
+        shape, as the field held them.
+    AuditReads:
+      type: object
+      required:
+        - count
+      properties:
+        count:
+          type: integer
+          format: int32
+        ids:
+          type: array
+          items:
+            type: string
+      description: |-
+        What a read of personal data touched: how many rows and, up to a cap, their
+        ids. Identifiers and counts only, never a field value.
+    AuditRecord:
+      type: object
+      required:
+        - id
+        - occurredAt
+        - actorUserId
+        - channel
+        - connectedAppId
+        - tokenId
+        - requestId
+        - address
+        - userAgent
+        - operation
+        - entityType
+        - entityId
+        - locale
+        - outcome
+        - changes
+        - reads
+      properties:
+        id:
+          type: integer
+          format: int64
+        occurredAt:
+          type: string
+          format: date-time
+        actorUserId:
+          type: integer
+          format: int32
+          nullable: true
+          description: Null for a refusal of a caller who was not signed in.
+        channel:
+          type: string
+          enum:
+            - web
+            - mcp
+        connectedAppId:
+          type: integer
+          format: int32
+          nullable: true
+        tokenId:
+          type: string
+          nullable: true
+        requestId:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        userAgent:
+          type: string
+          nullable: true
+        operation:
+          type: string
+          description: The operation name, e.g. `AdminUpdateBlogPost`.
+        entityType:
+          type: string
+          nullable: true
+        entityId:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        outcome:
+          type: string
+          enum:
+            - succeeded
+            - forbidden
+            - failed
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditChange'
+        reads:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/AuditReads'
+          nullable: true
+      description: |-
+        One Audit Record: who did what, through which channel, to which entity, and
+        how it ended (legacy: none, the trail is new). A change carries `changes`, a
+        read of personal data carries `reads`, a refusal carries neither.
+    AuditRecordPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditRecord'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
     Banner:
       type: object
       required:
@@ -4867,7 +6223,6 @@ components:
     BannerInput:
       type: object
       required:
-        - state
         - background
         - locale
         - body
@@ -4875,8 +6230,6 @@ components:
         - startsAt
         - finishesAt
       properties:
-        state:
-          $ref: '#/components/schemas/BannerState'
         background:
           $ref: '#/components/schemas/BannerBackground'
         locale:
@@ -4895,6 +6248,9 @@ components:
           type: string
           format: date-time
           nullable: true
+      description: |-
+        The input of a banner: never its Publication State. A new banner is a draft and
+            the state changes only through the publish, unpublish and archive operations.
     BannerLocale:
       type: string
       enum:
@@ -5014,7 +6370,6 @@ components:
         - name
         - slug
         - description
-        - state
         - richBody
         - coverAttachmentId
       properties:
@@ -5027,10 +6382,6 @@ components:
         description:
           type: string
           nullable: true
-        state:
-          allOf:
-            - $ref: '#/components/schemas/BlogPostState'
-          nullable: true
         richBody:
           type: string
           description: Trusted editor HTML, stored and returned without sanitization.
@@ -5039,6 +6390,9 @@ components:
           format: int32
           nullable: true
           description: Attachment id from `POST /admin/attachments`, or null to keep/clear.
+      description: |-
+        The input of a post: never its Publication State. A new post is a draft and
+            the state changes only through the publish, unpublish and archive operations.
     BlogPostPage:
       type: object
       required:
@@ -5398,7 +6752,6 @@ components:
       required:
         - slug
         - learnAs
-        - readiness
         - hexletProgramLandingPage
         - repositoryUrl
         - coverAttachmentId
@@ -5409,10 +6762,6 @@ components:
         learnAs:
           allOf:
             - $ref: '#/components/schemas/CourseLearnAs'
-          nullable: true
-        readiness:
-          allOf:
-            - $ref: '#/components/schemas/CourseReadiness'
           nullable: true
         hexletProgramLandingPage:
           type: string
@@ -5425,6 +6774,9 @@ components:
           format: int32
           nullable: true
           description: Attachment id from `POST /admin/attachments`, or null.
+      description: |-
+        The input of a course: never its Readiness. A new course is a draft and the
+            Readiness changes only through the mark-as operations.
     CourseLandingPage:
       type: object
       required:
@@ -5536,7 +6888,6 @@ components:
         - listed
         - footer
         - footerName
-        - state
         - order
         - landingPageToRedirectId
         - metaTitle
@@ -5569,10 +6920,6 @@ components:
           nullable: true
         footerName:
           type: string
-          nullable: true
-        state:
-          allOf:
-            - $ref: '#/components/schemas/LandingPageState'
           nullable: true
         order:
           type: string
@@ -5610,6 +6957,7 @@ components:
           format: int32
           nullable: true
           description: Attachment id from `POST /admin/attachments`, or null.
+      description: 'The input of a landing page: never its Publication State (see BannerInput).'
     CourseLandingPagePage:
       type: object
       required:
@@ -6496,6 +7844,19 @@ components:
         - en
         - es
       description: UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
+    MyCapabilities:
+      type: object
+      required:
+        - held
+      properties:
+        held:
+          type: array
+          items:
+            type: string
+      description: |-
+        The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+        member holds through their Staff Role. The administrator flag adds none, so
+        the admin menu shows an entry behind a capability only to someone who holds it.
     MyDashboard:
       type: object
       required:
@@ -6557,21 +7918,43 @@ components:
           type: string
           description: "Absolute URL: the authorization endpoint's callback after approving, the application's redirect URI (with `error=access_denied`) after denying."
       description: Where the browser goes next after the user has decided.
-    PermissionResource:
+    Permission:
+      type: object
+      required:
+        - name
+        - kind
+        - capability
+      properties:
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/PermissionKind'
+        capability:
+          type: boolean
+          description: |-
+            True for a capability Permission (MCP, audit): the administrator flag does
+            not imply it, so a role must be given it explicitly.
+      description: |-
+        A Permission an admin operation can require, as declared on the operations in
+        this contract with `x-permission`. The catalog is read from those
+        declarations, never kept by hand, plus the capability Permissions the contract
+        lists under `x-capabilities`.
+    PermissionCatalog:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+      description: Every Permission an admin operation can require.
+    PermissionKind:
       type: string
       enum:
-        - blog_posts
-        - banners
-        - reviews
-        - leads
-        - messages
-        - language_categories
-        - language_lessons
-        - language_lesson_reviews
-        - language_lesson_members
-        - languages
-        - language_landing_pages
-      description: Admin resources a staff role can be granted permissions on.
+        - read
+        - write
+      description: Whether an operation only reads or can change data (ADR-0018).
     ProblemDetails:
       type: object
       required:
@@ -6746,7 +8129,6 @@ components:
     ReviewInput:
       type: object
       required:
-        - state
         - pinned
         - courseId
         - userId
@@ -6754,10 +8136,6 @@ components:
         - firstName
         - lastName
       properties:
-        state:
-          allOf:
-            - $ref: '#/components/schemas/ReviewState'
-          nullable: true
         pinned:
           type: boolean
           nullable: true
@@ -6778,6 +8156,7 @@ components:
         lastName:
           type: string
           nullable: true
+      description: 'The input of a review: never its Publication State (see BannerInput).'
     ReviewLocale:
       type: string
       enum:
@@ -6830,36 +8209,19 @@ components:
         description:
           type: string
           nullable: true
-    RolePermissionInput:
-      type: object
-      required:
-        - resource
-        - canIndex
-        - canCreate
-        - canUpdate
-        - canDestroy
-      properties:
-        resource:
-          $ref: '#/components/schemas/PermissionResource'
-        canIndex:
-          type: boolean
-        canCreate:
-          type: boolean
-        canUpdate:
-          type: boolean
-        canDestroy:
-          type: boolean
-      description: One permission row to set on a role.
     RolePermissionsInput:
       type: object
       required:
-        - permissions
+        - grants
       properties:
-        permissions:
+        grants:
           type: array
           items:
-            $ref: '#/components/schemas/RolePermissionInput'
-      description: The full permission matrix submitted for a role.
+            type: string
+          description: |-
+            The declared Permissions the role holds, replacing its current set. Names
+            must come from the catalog (`GET /admin/management/permissions`).
+      description: The Permissions submitted for a role.
     SessionInput:
       type: object
       required:
@@ -7059,7 +8421,7 @@ components:
         - id
         - name
         - description
-        - permissions
+        - grants
       properties:
         id:
           type: integer
@@ -7069,11 +8431,12 @@ components:
         description:
           type: string
           nullable: true
-        permissions:
+        grants:
           type: array
           items:
-            $ref: '#/components/schemas/StaffRolePermission'
-      description: 'A staff role with its full permission matrix (legacy: `StaffRoleCrud`).'
+            type: string
+          description: Names of the declared Permissions the role holds (see `Permission`).
+      description: 'A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).'
     StaffRolePage:
       type: object
       required:
@@ -7101,34 +8464,6 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    StaffRolePermission:
-      type: object
-      required:
-        - id
-        - roleId
-        - resource
-        - canIndex
-        - canCreate
-        - canUpdate
-        - canDestroy
-      properties:
-        id:
-          type: integer
-          format: int32
-        roleId:
-          type: integer
-          format: int32
-        resource:
-          $ref: '#/components/schemas/PermissionResource'
-        canIndex:
-          type: boolean
-        canCreate:
-          type: boolean
-        canUpdate:
-          type: boolean
-        canDestroy:
-          type: boolean
-      description: "One resource's permission bits for a role (legacy: `StaffRolePermission`)."
     User:
       type: object
       required:
@@ -7276,3 +8611,12 @@ components:
       type: apiKey
       in: cookie
       name: session
+x-capabilities:
+  - name: mcp.read
+    kind: read
+  - name: mcp.write
+    kind: write
+  - name: mcp.manage
+    kind: write
+  - name: audit.read
+    kind: read
