@@ -18,6 +18,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.114.3
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.79.1
 	github.com/caarlos0/env/v11 v11.4.1
+	github.com/distribution/reference v0.6.0
 	github.com/getsentry/sentry-go v0.50.0
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
@@ -114,7 +115,6 @@ require (
 	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
 	github.com/dave/jennifer v1.7.1 // indirect
 	github.com/dghubble/oauth1 v0.7.3 // indirect
-	github.com/distribution/reference v0.6.0 // indirect
 	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/docker/go-connections v0.8.2 // indirect
 	github.com/docker/go-units v0.5.0 // indirect

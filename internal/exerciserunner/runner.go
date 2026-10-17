@@ -20,9 +20,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/distribution/reference"
 	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/client"
+	"golang.org/x/sync/semaphore"
 
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/progress"
@@ -117,7 +119,7 @@ type Docker struct {
 	// slots bounds concurrent runs. A submission that cannot get one waits
 	// rather than being refused: the learner already pressed the button, and a
 	// queue of a few seconds beats an error they cannot act on.
-	slots chan struct{}
+	slots *semaphore.Weighted
 }
 
 // New builds the runner over a Docker client. The client resolves the daemon
@@ -135,7 +137,7 @@ func New(opts Options) (*Docker, error) {
 	return &Docker{
 		docker: docker,
 		opts:   opts,
-		slots:  make(chan struct{}, opts.Concurrency),
+		slots:  semaphore.NewWeighted(int64(opts.Concurrency)),
 	}, nil
 }
 
@@ -148,12 +150,10 @@ func (d *Docker) Close() error { return d.docker.Close() }
 // daemon, a missing image, a container that never reported. It is never used to
 // report a failing test: a failure is an outcome, and the learner sees it.
 func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progress.Outcome, error) {
-	select {
-	case d.slots <- struct{}{}:
-		defer func() { <-d.slots }()
-	case <-ctx.Done():
-		return progress.Outcome{}, ctx.Err()
+	if err := d.slots.Acquire(ctx, 1); err != nil {
+		return progress.Outcome{}, err
 	}
+	defer d.slots.Release(1)
 
 	image, err := d.ensureImage(ctx, submission)
 	if err != nil {
@@ -214,8 +214,12 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 // when the Course Version already named a tag, which is its own pin.
 func (d *Docker) imageRefs(submission progress.Submission) (pinned, source string) {
 	repository := submission.Image
-	if strings.Contains(path.Base(repository), ":") {
-		return repository, repository
+	if named, err := reference.Parse(repository); err == nil {
+		_, tagged := named.(reference.Tagged)
+		_, digested := named.(reference.Digested)
+		if tagged || digested {
+			return repository, repository
+		}
 	}
 	return fmt.Sprintf("%s:lv%d", repository, submission.VersionID),
 		fmt.Sprintf("%s:%s", repository, d.opts.ImageTag)
@@ -316,30 +320,21 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		return 0, "", fmt.Errorf("start container: %w", err)
 	}
 
-	// Read on its own goroutine. A hijacked connection does not honour context
-	// cancellation, so reading inline would mean a container that never exits —
-	// an image whose `timeout` is missing, a process that ignores the signal —
-	// blocks here forever: the deadline below would never be reached, the
-	// container would never be removed, and the concurrency slot would never be
-	// released. A few of those and every check hangs.
-	//
-	// The deferred close and force-remove are what end the read once this
-	// function returns, so the goroutine cannot outlive the run for long.
-	reading := make(chan readResult, 1)
-	go func() {
-		output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
-		reading <- readResult{output: output, err: err}
-	}()
-
-	var output string
-	select {
-	case read := <-reading:
-		if read.err != nil {
-			return 0, "", read.err
+	// A hijacked connection does not honour context cancellation, so reading
+	// inline would mean a container that never exits — an image whose `timeout`
+	// is missing, a process that ignores the signal — blocks here forever: the
+	// deadline would never be reached, the container would never be removed, and
+	// the concurrency slot would never be released. A few of those and every
+	// check hangs. Closing the connection when the context ends is what unblocks
+	// the read; the deferred Close above is then a second, harmless one.
+	stop := context.AfterFunc(ctx, func() { attached.Close() })
+	output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
+	stop()
+	if err != nil {
+		if ctx.Err() != nil {
+			return 0, "", d.gaveUp(ctx)
 		}
-		output = read.output
-	case <-ctx.Done():
-		return 0, "", d.gaveUp(ctx)
+		return 0, "", err
 	}
 
 	select {
@@ -353,12 +348,6 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	case <-ctx.Done():
 		return 0, "", d.gaveUp(ctx)
 	}
-}
-
-// readResult carries what the output goroutine produced.
-type readResult struct {
-	output string
-	err    error
 }
 
 // gaveUp reports a container that never finished within the budget plus its

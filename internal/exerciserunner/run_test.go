@@ -36,7 +36,7 @@ func TestRunReportsAnImageThatCannotGradeAsAFailedSubmission(t *testing.T) {
 // caller does, instead of holding the request open behind a full queue.
 func TestRunStopsWaitingForASlotWhenTheCallerGivesUp(t *testing.T) {
 	runner := dockerRunner(t)
-	runner.slots <- struct{}{} // the only slot is taken
+	require.True(t, runner.slots.TryAcquire(1)) // the only slot is taken
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
 
@@ -68,5 +68,6 @@ func TestNewRunsOneSubmissionAtATimeUnlessToldOtherwise(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = runner.Close() })
 
-	assert.Equal(t, 1, cap(runner.slots))
+	assert.True(t, runner.slots.TryAcquire(1))
+	assert.False(t, runner.slots.TryAcquire(1), "the second run has to wait")
 }
