@@ -478,7 +478,12 @@ func (s *storage) AuthorizeClientIDSecret(context.Context, string, string) error
 
 func (s *storage) Health(context.Context) error { return nil }
 
-func (s *storage) SetUserinfoFromScopes(context.Context, *oidc.UserInfo, string, string, []string) error {
+// SetUserinfoFromScopes fills the claims of an ID token. The library copies the
+// userinfo it is given over the token's own claims, so leaving Subject empty
+// here would blank the `sub` of every ID token. Nothing else about the user is
+// disclosed: no profile or email claim is offered.
+func (s *storage) SetUserinfoFromScopes(_ context.Context, info *oidc.UserInfo, userID, _ string, _ []string) error {
+	info.Subject = userID
 	return nil
 }
 
