@@ -5,111 +5,111 @@
 # The ids deliberately disagree with `order` on JavaScript's current version
 # (965227298): id 2 is ordered last. The feed orders its plan by `order`, and
 # this is what lets the golden file prove it.
-- id: 1
-  language_id: 82481401
-  language_version_id: 965227298
-  module_id: 1
+- id: {{ id "module_version_javascript_10_basics_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  module_id: {{ id "module_javascript_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 2
-  language_id: 82481401
-  language_version_id: 965227298
-  module_id: 3
+- id: {{ id "module_version_javascript_30_strings_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  module_id: {{ id "module_javascript_30_strings" }}
   order: 30
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3
-  language_id: 82481401
-  language_version_id: 965227298
-  module_id: 2
+- id: {{ id "module_version_javascript_20_arithmetics_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  module_id: {{ id "module_javascript_20_arithmetics" }}
   order: 20
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 4
-  language_id: 207281424
-  language_version_id: 207281424
-  module_id: 4
+- id: {{ id "module_version_ruby_10_basics_current" }}
+  language_id: {{ id "course_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  module_id: {{ id "module_ruby_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # JavaScript's retired version (545350298) had its own snapshot of module 1;
 # it has no infos, so no read picks it up.
-- id: 5
-  language_id: 82481401
-  language_version_id: 545350298
-  module_id: 1
+- id: {{ id "module_version_javascript_10_basics_retired" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_retired" }}
+  module_id: {{ id "module_javascript_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
-- id: 11
-  language_id: 322905520
-  language_version_id: 322905520
-  module_id: 11
+- id: {{ id "module_version_1c_10_basics_current" }}
+  language_id: {{ id "course_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  module_id: {{ id "module_1c_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 12
-  language_id: 378610130
-  language_version_id: 378610130
-  module_id: 12
+- id: {{ id "module_version_php_10_basics_current" }}
+  language_id: {{ id "course_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  module_id: {{ id "module_php_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 13
-  language_id: 410646757
-  language_version_id: 329547961
-  module_id: 13
+- id: {{ id "module_version_html_10_basics_current" }}
+  language_id: {{ id "course_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  module_id: {{ id "module_html_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 14
-  language_id: 414575699
-  language_version_id: 522730299
-  module_id: 14
+- id: {{ id "module_version_typescript_10_basics_current" }}
+  language_id: {{ id "course_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  module_id: {{ id "module_typescript_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 15
-  language_id: 599909531
-  language_version_id: 599909531
-  module_id: 15
+- id: {{ id "module_version_elixir_10_basics_current" }}
+  language_id: {{ id "course_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  module_id: {{ id "module_elixir_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 16
-  language_id: 617920698
-  language_version_id: 617920698
-  module_id: 16
+- id: {{ id "module_version_python_10_basics_current" }}
+  language_id: {{ id "course_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  module_id: {{ id "module_python_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 17
-  language_id: 912823128
-  language_version_id: 912823128
-  module_id: 17
+- id: {{ id "module_version_go_10_basics_current" }}
+  language_id: {{ id "course_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  module_id: {{ id "module_go_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 18
-  language_id: 953067225
-  language_version_id: 953067225
-  module_id: 18
+- id: {{ id "module_version_css_10_basics_current" }}
+  language_id: {{ id "course_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  module_id: {{ id "module_css_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 19
-  language_id: 995840764
-  language_version_id: 995840764
-  module_id: 19
+- id: {{ id "module_version_csharp_10_basics_current" }}
+  language_id: {{ id "course_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  module_id: {{ id "module_csharp_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 20
-  language_id: 1058727635
-  language_version_id: 1058727635
-  module_id: 20
+- id: {{ id "module_version_java_10_basics_current" }}
+  language_id: {{ id "course_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  module_id: {{ id "module_java_10_basics" }}
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'

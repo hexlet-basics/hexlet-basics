@@ -27,7 +27,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
@@ -38,6 +37,7 @@ import (
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/feeds"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/landingpages"
@@ -423,6 +423,11 @@ func DecodeGuestCookie(t *testing.T, setCookies []string) progress.GuestProgress
 	return progress.GuestProgress{}
 }
 
+// HarnessUserLabel is the fixture user every harness request is authenticated
+// as: an administrator who is enrolled in JavaScript and has finished its first
+// lesson, so one caller reaches both the admin surface and the learner's own.
+const HarnessUserLabel = "user_admin_learner"
+
 type harnessSecurity struct {
 	jwt    string
 	xsrf   string
@@ -432,7 +437,7 @@ type harnessSecurity struct {
 func newHarnessSecurity(t *testing.T, db *ent.Client) *harnessSecurity {
 	t.Helper()
 
-	u, err := db.User.Query().Where(user.AdminEQ(true)).First(t.Context())
+	u, err := db.User.Get(t.Context(), fixtures.ID(HarnessUserLabel))
 	if err != nil {
 		t.Fatalf("load harness admin: %v", err)
 	}

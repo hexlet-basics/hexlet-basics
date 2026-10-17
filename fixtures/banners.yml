@@ -3,7 +3,7 @@
 # skips existing files, so this survives re-imports. Small integer ids are safe:
 # banners have no FK graph, so they never mix with the crc32-id generated sets.
 # Loaded by testfixtures inside each test's rollback transaction.
-- id: 1
+- id: {{ id "banner_ru_published" }}
   background: cta_gradient
   body: Скидка 50% на все курсы
   locale: ru
@@ -13,7 +13,7 @@
   finishes_at:
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 2
+- id: {{ id "banner_en_draft" }}
   background: dark
   body: Black Friday sale
   locale: en
@@ -24,7 +24,7 @@
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
 # The live en banner: published, no window.
-- id: 3
+- id: {{ id "banner_en_published" }}
   background: blue
   body: Free programming courses — start learning today
   locale: en
@@ -36,7 +36,7 @@
   updated_at: '2026-07-26 20:50:31'
 # Published but already over, and newer than the live ru banner: the window,
 # not recency, keeps it off the page.
-- id: 4
+- id: {{ id "banner_ru_published_2" }}
   background: dark
   body: Распродажа закончилась
   locale: ru
@@ -47,7 +47,7 @@
   created_at: '2026-07-26 20:50:32'
   updated_at: '2026-07-26 20:50:32'
 # Published but not started yet.
-- id: 5
+- id: {{ id "banner_ru_published_3" }}
   background: cta_gradient
   body: Скоро большая акция
   locale: ru

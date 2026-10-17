@@ -3,8 +3,8 @@
 # and skips existing files, so this survives re-imports. Bob holds the request:
 # Alice is the harness user, and the request and download tests need her
 # without one. Loaded by testfixtures inside each test's rollback transaction.
-- id: 1
-  user_id: 1002
+- id: {{ id "book_request_staff_editor" }}
+  user_id: {{ id "user_staff_editor" }}
   state: requested
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'

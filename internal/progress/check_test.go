@@ -53,16 +53,16 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 	r.failTheRun()
 
-	result, err := r.progress.CheckSolution(ctx, r.check(t, carol, firstLesson))
+	result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 	require.NoError(t, err)
 
 	assert.False(t, result.Outcome.Passed)
 	assert.False(t, result.LessonFinished)
 	assert.Nil(t, result.Guest)
-	row := r.db.LessonProgress.Query().Where(lessonprogress.UserID(carol.UserID)).OnlyX(ctx)
+	row := r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).OnlyX(ctx)
 	assert.Equal(t, progress.StateStarted, *row.State)
 	assert.Empty(t, testsupport.PublishedEvents[events.LessonFinished](t, r.services))
 }
@@ -70,11 +70,11 @@ func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 
 	var results []*progress.CheckResult
 	for _, slug := range []string{firstLesson, secondLesson, thirdLesson} {
-		result, err := r.progress.CheckSolution(ctx, r.check(t, carol, slug))
+		result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, slug))
 		require.NoError(t, err)
 		results = append(results, result)
 	}
@@ -83,7 +83,7 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 	for _, result := range results {
 		assert.True(t, result.LessonFinished)
 	}
-	state, err := r.progress.CourseState(ctx, carol, r.course(t, jsSlug).ID)
+	state, err := r.progress.CourseState(ctx, blankUser, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)
 	assert.Equal(t, 100, state.Completion)
@@ -91,11 +91,11 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 	course := testsupport.PublishedEvents[events.CourseFinished](t, r.services)
 	require.Len(t, course, 1)
 	assert.Equal(t, 1, course[0].OccurrenceCount, "the first course this learner has finished")
-	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID), enrollment.StateEQ(progress.StateFinished)).CountX(ctx))
+	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID), enrollment.StateEQ(progress.StateFinished)).CountX(ctx))
 
 	// Experimenting on a passed lesson is safe: nothing transitions, nothing is published.
 	published := testsupport.PublishedCount(t, r.services)
-	again, err := r.progress.CheckSolution(ctx, r.check(t, carol, thirdLesson))
+	again, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, thirdLesson))
 	require.NoError(t, err)
 	assert.True(t, again.Outcome.Passed)
 	assert.False(t, again.LessonFinished)
@@ -106,19 +106,19 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 func TestPassingALessonThatLeavesAGapKeepsTheCourseOpen(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	alice := r.learner(t, "alice@example.com") // finished the first lesson only
+	adminLearner := r.learner(t, "user_admin_learner") // finished the first lesson only
 
 	// Close the third lesson behind the learner's back, as inherited data would.
 	third := r.lesson(t, thirdLesson)
 	r.db.LessonProgress.Create().
-		SetUserID(alice.UserID).
+		SetUserID(adminLearner.UserID).
 		SetCourseID(r.course(t, jsSlug).ID).
-		SetEnrollmentID(r.db.Enrollment.Query().Where(enrollment.UserID(alice.UserID)).OnlyX(ctx).ID).
+		SetEnrollmentID(r.db.Enrollment.Query().Where(enrollment.UserID(adminLearner.UserID)).OnlyX(ctx).ID).
 		SetLessonID(third.ID).
 		SetState(progress.StateFinished).
 		ExecX(ctx)
 
-	result, err := r.progress.CheckSolution(ctx, r.check(t, alice, firstLesson))
+	result, err := r.progress.CheckSolution(ctx, r.check(t, adminLearner, firstLesson))
 	require.NoError(t, err)
 
 	assert.False(t, result.CourseFinished, "the second lesson is still unfinished")

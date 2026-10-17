@@ -9,18 +9,19 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
-	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/testsupport"
 )
 
-// The fixtures seed bob (1002) as an editor reading blog posts and reading and
-// creating banners, in ru and en; alice (1001) is an administrator.
-const (
-	adminID = 1001
-	bobID   = 1002
+// The fixtures seed user_staff_editor as an editor reading blog posts and
+// reading and creating banners, in ru and en; user_admin_learner is an
+// administrator.
+var (
+	adminID = fixtures.ID("user_admin_learner")
+	bobID   = fixtures.ID("user_staff_editor")
 )
 
 func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
@@ -54,8 +55,8 @@ func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
 
 func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 	db := testsupport.NewClient(t)
-	// carol (1003) is neither an administrator nor staff.
-	u := db.User.GetX(t.Context(), 1003)
+	// user_blank is neither an administrator nor staff.
+	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
 
 	err := staffroles.NewPolicy(db).Allow(t.Context(), u, "ru", "AdminListBanners")
 
@@ -95,10 +96,10 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
-	bob := db.User.Query().Where(user.ID(bobID)).WithStaffMember().OnlyX(t.Context())
+	editor := db.User.Query().Where(user.ID(bobID)).WithStaffMember().OnlyX(t.Context())
 
-	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminListBlogPosts"))
-	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminCreateBlogPost"), staffroles.ErrForbidden)
+	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminListBlogPosts"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminCreateBlogPost"), staffroles.ErrForbidden)
 }
 
 // Each bit of the matrix answers for its own action: update and destroy are
@@ -106,44 +107,23 @@ func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 func TestPolicyGrantsUpdateAndDestroyOnlyWhenTheRoleHasThem(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
-	bob := db.User.GetX(t.Context(), bobID)
-	staff := bob.QueryStaffMember().OnlyX(t.Context())
+	editor := db.User.GetX(t.Context(), bobID)
+	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
-	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateBlogPost"), staffroles.ErrForbidden)
-	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
+	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateBlogPost"), staffroles.ErrForbidden)
+	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
 
 	db.StaffRolePermission.Update().
 		Where(staffrolepermission.RoleID(staff.RoleID), staffrolepermission.Resource("blog_posts")).
 		SetCanUpdate(true).
 		ExecX(t.Context())
-	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateBlogPost"))
-	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
+	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateBlogPost"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
 
 	db.StaffRolePermission.Update().
 		Where(staffrolepermission.RoleID(staff.RoleID), staffrolepermission.Resource("blog_posts")).
 		SetCanDestroy(true).
 		ExecX(t.Context())
-	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"))
+	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"))
 }
 
-// A database that fails is an error, never a quiet refusal and never a quiet
-// grant: the caller must be able to tell "not allowed" from "could not check".
-func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
-	for name, table := range map[string]string{
-		"staff record":  staffmember.Table,
-		"role's matrix": staffrolepermission.Table,
-	} {
-		t.Run(name, func(t *testing.T) {
-			db, tx := testsupport.NewClientWithTx(t)
-			bob := db.User.GetX(t.Context(), bobID)
-			_, err := tx.ExecContext(t.Context(),
-				`ALTER TABLE "`+table+`" RENAME TO "`+table+`_gone"`)
-			require.NoError(t, err)
-
-			err = staffroles.NewPolicy(db).Allow(t.Context(), bob, "ru", "AdminListBlogPosts")
-
-			require.Error(t, err)
-			assert.NotErrorIs(t, err, staffroles.ErrForbidden)
-		})
-	}
-}

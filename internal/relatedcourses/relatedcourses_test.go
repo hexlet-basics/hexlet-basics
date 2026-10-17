@@ -3,6 +3,7 @@ package relatedcourses_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"testing"
 
@@ -12,10 +13,13 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
+
+var helloWorldPost = fixtures.ID("blog_post_hello_world")
 
 // answeringModel is the LLM boundary answering with a fixed text.
 func answeringModel(answer string) *testsupport.JSONCompleterMock {
@@ -42,17 +46,18 @@ func relatedSlugs(t *testing.T, db *ent.Client, postID int) []string {
 	})
 }
 
-// Post 6001 is ru. The answer names ruby, an invented id, the
+// blog_post_hello_world is ru. The answer names ruby, an invented id, the
 // pre-course (a real course without a landing page, so never offered), python,
 // and ruby again: only the offered ids survive, once each, in the LLM's order.
 func TestSuggestRelatedCoursesReplacesTheSetInOrder(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	llm := answeringModel(`{"course_ids": [207281424, 999999, 596063838, 617920698, 207281424]}`)
+	ruby, preCourse, python := fixtures.ID("course_ruby"), fixtures.ID("course_pre_course_javascript"), fixtures.ID("course_python")
+	llm := answeringModel(fmt.Sprintf(`{"course_ids": [%d, 999999, %d, %d, %d]}`, ruby, preCourse, python, ruby))
 
-	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), helloWorldPost))
 
-	assert.Equal(t, []string{"ruby", "python"}, relatedSlugs(t, db, 6001))
-	assert.Equal(t, 2, db.BlogPost.GetX(t.Context(), 6001).RelatedCourseItemsCount)
+	assert.Equal(t, []string{"ruby", "python"}, relatedSlugs(t, db, helloWorldPost))
+	assert.Equal(t, 2, db.BlogPost.GetX(t.Context(), helloWorldPost).RelatedCourseItemsCount)
 }
 
 // The model is offered the published main landing pages of the post's locale
@@ -79,10 +84,10 @@ func TestSuggestRelatedCoursesKeepsTheSetOnAnEmptyAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := answeringModel(`{"course_ids": []}`)
 
-	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), helloWorldPost))
 
-	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
-	assert.Equal(t, 3, db.BlogPost.GetX(t.Context(), 6001).RelatedCourseItemsCount)
+	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, helloWorldPost))
+	assert.Equal(t, 3, db.BlogPost.GetX(t.Context(), helloWorldPost).RelatedCourseItemsCount)
 }
 
 // An answer that is not the structured object fails the job, so River retries it, and
@@ -91,9 +96,9 @@ func TestSuggestRelatedCoursesFailsOnAnUnreadableAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := answeringModel("Here are the courses: ruby, python")
 
-	require.Error(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.Error(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), helloWorldPost))
 
-	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
+	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, helloWorldPost))
 }
 
 // A model that cannot answer fails the job too, so River retries it later, and
@@ -106,10 +111,10 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 		},
 	}
 
-	err := newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001)
+	err := newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), helloWorldPost)
 
 	require.ErrorContains(t, err, "model unavailable")
-	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
+	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, helloWorldPost))
 }
 
 // A post deleted after the job was enqueued is an error the job reports, not a
@@ -117,7 +122,7 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 func TestSuggestRelatedCoursesFailsForAPostThatIsGone(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 
-	err := newSuggester(db, transactor, answeringModel(`{"course_ids": [207281424]}`)).SuggestRelatedCourses(t.Context(), 999999)
+	err := newSuggester(db, transactor, answeringModel(fmt.Sprintf(`{"course_ids": [%d]}`, fixtures.ID("course_ruby")))).SuggestRelatedCourses(t.Context(), 999999)
 
 	require.Error(t, err)
 	assert.Empty(t, relatedSlugs(t, db, 999999))

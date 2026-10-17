@@ -26,9 +26,9 @@ import (
 
 func TestCheckByALearnerWhoseCourseIsAlreadyFinishedDoesNotFinishItTwice(t *testing.T) {
 	r := newRig(t)
-	bob := r.learner(t, "bob@example.com") // enrollment finished, second lesson only started
+	staffEditor := r.learner(t, "user_staff_editor") // enrollment finished, second lesson only started
 
-	result, err := r.progress.CheckSolution(t.Context(), r.check(t, bob, firstLesson))
+	result, err := r.progress.CheckSolution(t.Context(), r.check(t, staffEditor, firstLesson))
 	require.NoError(t, err)
 
 	assert.True(t, result.Outcome.Passed)
@@ -42,12 +42,12 @@ func TestCheckByALearnerWhoseCourseIsAlreadyFinishedDoesNotFinishItTwice(t *test
 func TestMergeGuestCreditsEveryFinishedLessonToANewAccount(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 
-	require.NoError(t, r.progress.MergeGuest(ctx, carol.UserID, guestWith(firstLesson, secondLesson, thirdLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, guestWith(firstLesson, secondLesson, thirdLesson).Guest, locale))
 
-	assert.ElementsMatch(t, []string{firstLesson, secondLesson, thirdLesson}, r.finishedSlugs(t, carol))
-	state, err := r.progress.CourseState(ctx, carol, r.course(t, jsSlug).ID)
+	assert.ElementsMatch(t, []string{firstLesson, secondLesson, thirdLesson}, r.finishedSlugs(t, blankUser))
+	state, err := r.progress.CourseState(ctx, blankUser, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, 100, state.Completion)
 
@@ -63,22 +63,22 @@ func TestMergeGuestCreditsEveryFinishedLessonToANewAccount(t *testing.T) {
 // else: with lessons in any order, a later one no longer implies the earlier.
 func TestMergeGuestCreditsOnlyTheLessonsTheVisitorFinished(t *testing.T) {
 	r := newRig(t)
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 
-	require.NoError(t, r.progress.MergeGuest(t.Context(), carol.UserID, guestWith(thirdLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(t.Context(), blankUser.UserID, guestWith(thirdLesson).Guest, locale))
 
-	assert.Equal(t, []string{thirdLesson}, r.finishedSlugs(t, carol))
+	assert.Equal(t, []string{thirdLesson}, r.finishedSlugs(t, blankUser))
 	assert.Len(t, testsupport.PublishedEvents[events.LessonFinished](t, r.services), 1)
 }
 
 func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	alice := r.learner(t, "alice@example.com") // has finished the first lesson
+	adminLearner := r.learner(t, "user_admin_learner") // has finished the first lesson
 
-	require.NoError(t, r.progress.MergeGuest(ctx, alice.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, adminLearner.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
 
-	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, alice))
+	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, adminLearner))
 	assert.Empty(t, testsupport.PublishedEvents[events.CourseStarted](t, r.services), "she was already enrolled")
 	started := testsupport.PublishedEvents[events.LessonStarted](t, r.services)
 	require.Len(t, started, 1)
@@ -88,38 +88,38 @@ func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
 func TestMergeGuestFinishesALessonTheAccountOnlyStarted(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	bob := r.learner(t, "bob@example.com") // second lesson started, nothing finished
+	staffEditor := r.learner(t, "user_staff_editor") // second lesson started, nothing finished
 
-	require.NoError(t, r.progress.MergeGuest(ctx, bob.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, staffEditor.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
 
-	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, bob))
-	assert.Equal(t, 2, r.db.LessonProgress.Query().Where(lessonprogress.UserID(bob.UserID)).CountX(ctx),
+	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, staffEditor))
+	assert.Equal(t, 2, r.db.LessonProgress.Query().Where(lessonprogress.UserID(staffEditor.UserID)).CountX(ctx),
 		"the started row was finished in place, not duplicated")
 }
 
 func TestMergeGuestNeverMovesAnAccountBackwards(t *testing.T) {
 	r := newRig(t)
-	alice := r.learner(t, "alice@example.com")
+	adminLearner := r.learner(t, "user_admin_learner")
 
-	require.NoError(t, r.progress.MergeGuest(t.Context(), alice.UserID, guestWith(firstLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(t.Context(), adminLearner.UserID, guestWith(firstLesson).Guest, locale))
 
-	assert.Equal(t, []string{firstLesson}, r.finishedSlugs(t, alice))
+	assert.Equal(t, []string{firstLesson}, r.finishedSlugs(t, adminLearner))
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 }
 
 func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 	stale := progress.GuestProgress{}.
 		Record("no-such-course", firstLesson).
 		Record(jsSlug, "a-lesson-the-build-dropped")
 
-	require.NoError(t, r.progress.MergeGuest(ctx, carol.UserID, stale, locale))
-	require.NoError(t, r.progress.MergeGuest(ctx, carol.UserID, progress.GuestProgress{}, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, stale, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{}, locale))
 
-	assert.Empty(t, r.finishedSlugs(t, carol))
-	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID)).CountX(ctx))
+	assert.Empty(t, r.finishedSlugs(t, blankUser))
+	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 }
 
@@ -138,13 +138,13 @@ func (r *rig) dropLessonsAfterTheFirst(t *testing.T) {
 func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	alice := r.learner(t, "alice@example.com")
+	adminLearner := r.learner(t, "user_admin_learner")
 	courseID := r.course(t, jsSlug).ID
-	r.dropLessonsAfterTheFirst(t) // alice finished the only lesson that is left
+	r.dropLessonsAfterTheFirst(t) // adminLearner finished the only lesson that is left
 
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
 
-	state, err := r.progress.CourseState(ctx, alice, courseID)
+	state, err := r.progress.CourseState(ctx, adminLearner, courseID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)
 	finished := testsupport.PublishedEvents[events.CourseFinished](t, r.services)
@@ -160,11 +160,11 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *t
 func TestReevaluateCompletionLeavesLearnersWithWorkLeftAlone(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	alice := r.learner(t, "alice@example.com")
+	adminLearner := r.learner(t, "user_admin_learner")
 
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, r.course(t, jsSlug).ID, locale))
 
-	state, err := r.progress.CourseState(ctx, alice, r.course(t, jsSlug).ID)
+	state, err := r.progress.CourseState(ctx, adminLearner, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateStarted, state.State)
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
@@ -193,12 +193,12 @@ func TestReevaluateCompletionRefusesAnUnknownCourse(t *testing.T) {
 func TestFactsOfAContentRowWithoutASlugCarryAnEmptySlug(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 	r.db.Course.Update().Where(course.SlugEQ(jsSlug)).ClearSlug().ExecX(ctx)
 	hello := r.lesson(t, firstLesson)
 	r.db.CourseLesson.UpdateOneID(hello.ID).ClearSlug().ExecX(ctx)
 
-	_, err := r.progress.StartLesson(ctx, carol, hello.ID, locale)
+	_, err := r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
 	require.NoError(t, err)
 
 	started := testsupport.PublishedEvents[events.LessonStarted](t, r.services)
@@ -213,23 +213,23 @@ func TestFactsOfAContentRowWithoutASlugCarryAnEmptySlug(t *testing.T) {
 func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 	courseID := r.course(t, jsSlug).ID
 	raced := false
 	r.db.Enrollment.Use(func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if !raced && m.Op().Is(ent.OpCreate) {
 				raced = true
-				r.db.Enrollment.Create().SetUserID(carol.UserID).SetCourseID(courseID).SetState(progress.StateStarted).ExecX(ctx)
+				r.db.Enrollment.Create().SetUserID(blankUser.UserID).SetCourseID(courseID).SetState(progress.StateStarted).ExecX(ctx)
 			}
 			return next.Mutate(ctx, m)
 		})
 	})
 
-	_, err := r.progress.StartLesson(ctx, carol, r.lesson(t, firstLesson).ID, locale)
+	_, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, firstLesson).ID, locale)
 	require.NoError(t, err)
 
-	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID)).CountX(ctx))
+	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 	assert.Empty(t, testsupport.PublishedEvents[events.CourseStarted](t, r.services),
 		"only the request whose insert landed announces the enrollment")
 }
@@ -237,28 +237,28 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	alice := r.learner(t, "alice@example.com")
+	adminLearner := r.learner(t, "user_admin_learner")
 	second := r.lesson(t, secondLesson)
 	courseID := r.course(t, jsSlug).ID
-	enrolled := r.db.Enrollment.Query().Where(enrollment.UserID(alice.UserID)).OnlyX(ctx)
+	enrolled := r.db.Enrollment.Query().Where(enrollment.UserID(adminLearner.UserID)).OnlyX(ctx)
 	raced := false
 	r.db.LessonProgress.Use(func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if !raced && m.Op().Is(ent.OpCreate) {
 				raced = true
 				r.db.LessonProgress.Create().
-					SetUserID(alice.UserID).SetCourseID(courseID).SetEnrollmentID(enrolled.ID).
+					SetUserID(adminLearner.UserID).SetCourseID(courseID).SetEnrollmentID(enrolled.ID).
 					SetLessonID(second.ID).SetState(progress.StateStarted).ExecX(ctx)
 			}
 			return next.Mutate(ctx, m)
 		})
 	})
 
-	_, err := r.progress.StartLesson(ctx, alice, second.ID, locale)
+	_, err := r.progress.StartLesson(ctx, adminLearner, second.ID, locale)
 	require.NoError(t, err)
 
 	assert.Equal(t, 1, r.db.LessonProgress.Query().
-		Where(lessonprogress.UserID(alice.UserID), lessonprogress.LessonID(second.ID)).CountX(ctx))
+		Where(lessonprogress.UserID(adminLearner.UserID), lessonprogress.LessonID(second.ID)).CountX(ctx))
 	assert.Empty(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services))
 }
 
@@ -329,9 +329,9 @@ func operations() []operation {
 		{
 			name: "starting a lesson",
 			prepare: func(t *testing.T, r *rig) func() error {
-				carol, lesson := r.learner(t, "carol@example.com"), r.lesson(t, firstLesson)
+				blankUser, lesson := r.learner(t, "user_blank"), r.lesson(t, firstLesson)
 				return func() error {
-					_, err := r.progress.StartLesson(t.Context(), carol, lesson.ID, locale)
+					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID, locale)
 					return err
 				}
 			},
@@ -341,7 +341,7 @@ func operations() []operation {
 		{
 			name: "checking a solution",
 			prepare: func(t *testing.T, r *rig) func() error {
-				check := r.check(t, r.learner(t, "carol@example.com"), firstLesson)
+				check := r.check(t, r.learner(t, "user_blank"), firstLesson)
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
 					return err
@@ -354,7 +354,7 @@ func operations() []operation {
 			name: "checking the last lesson of a course",
 			prepare: func(t *testing.T, r *rig) func() error {
 				r.dropLessonsAfterTheFirst(t)
-				check := r.check(t, r.learner(t, "alice@example.com"), firstLesson)
+				check := r.check(t, r.learner(t, "user_admin_learner"), firstLesson)
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
 					return err
@@ -366,9 +366,9 @@ func operations() []operation {
 		{
 			name: "reading a learner's courses",
 			prepare: func(t *testing.T, r *rig) func() error {
-				alice, courseID := r.learner(t, "alice@example.com"), r.course(t, jsSlug).ID
+				adminLearner, courseID := r.learner(t, "user_admin_learner"), r.course(t, jsSlug).ID
 				return func() error {
-					_, err := r.progress.CourseStates(t.Context(), alice.UserID, []int{courseID})
+					_, err := r.progress.CourseStates(t.Context(), adminLearner.UserID, []int{courseID})
 					return err
 				}
 			},
@@ -388,9 +388,9 @@ func operations() []operation {
 		{
 			name: "merging a guest's progress",
 			prepare: func(t *testing.T, r *rig) func() error {
-				bob := r.learner(t, "bob@example.com")
+				staffEditor := r.learner(t, "user_staff_editor")
 				return func() error {
-					return r.progress.MergeGuest(t.Context(), bob.UserID, guestWith(thirdLesson).Guest, locale)
+					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest, locale)
 				}
 			},
 			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},

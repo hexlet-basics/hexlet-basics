@@ -4,9 +4,9 @@
 # block those deletes. allowed_locales is a native pg text array, written here as
 # the Postgres array literal. user_id is unique (one staff record per user).
 # testfixtures disables referential integrity during load.
-- id: 9201
-  user_id: 1002
-  role_id: 9001
+- id: {{ id "staff_member_staff_editor" }}
+  user_id: {{ id "user_staff_editor" }}
+  role_id: {{ id "staff_role_editor" }}
   allowed_locales: '{ru,en}'
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'

@@ -1,13 +1,13 @@
 # Fixtures for `language_versions`, exported from the legacy Rails fixtures by
 # `make fixtures-import`. Loaded by testfixtures inside each test's rollback
 # transaction. Regenerate; do not hand-tune unless you stop regenerating.
-- id: 207281424
+- id: {{ id "version_ruby_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-ruby
   exercise_filename: filename_ruby
   exercise_test_filename: test.rb
   extension: rb
-  language_id: 207281424
+  language_id: {{ id "course_ruby" }}
   learn_as:
   lessons_count: 0
   name: Основы Ruby
@@ -15,13 +15,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 322905520
+- id: {{ id "version_1c_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-1c
   exercise_filename: filename_1c
   exercise_test_filename: test_filename_1c
   extension: extension_1c
-  language_id: 322905520
+  language_id: {{ id "course_1c" }}
   learn_as:
   lessons_count: 0
   name: Основы 1C
@@ -29,13 +29,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 329547961
+- id: {{ id "version_html_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-html
   exercise_filename: filename_html1
   exercise_test_filename: test_filename_html1
   extension: extension_html1
-  language_id: 410646757
+  language_id: {{ id "course_html" }}
   learn_as:
   lessons_count: 0
   name: Основы HTML
@@ -43,13 +43,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 378610130
+- id: {{ id "version_php_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-php
   exercise_filename: filename_php
   exercise_test_filename: test_filename_php
   extension: extension_php
-  language_id: 378610130
+  language_id: {{ id "course_php" }}
   learn_as:
   lessons_count: 0
   name: Основы PHP
@@ -57,13 +57,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 522730299
+- id: {{ id "version_typescript_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-typescript
   exercise_filename: filename_typescript1
   exercise_test_filename: test_filename_typescript1
   extension: extension_typescript1
-  language_id: 414575699
+  language_id: {{ id "course_typescript" }}
   learn_as:
   lessons_count: 0
   name: Основы TypeScript
@@ -71,13 +71,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 545350298
+- id: {{ id "version_javascript_retired" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-javascript
   exercise_filename: filename_javascript1
   exercise_test_filename: test_filename_javascript1
   extension: rb
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   learn_as:
   lessons_count: 0
   name: JavaScript для начинающих
@@ -85,13 +85,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 564295009
+- id: {{ id "version_pre_course_javascript_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-javascript
   exercise_filename: filename_pre-course-javascript1
   exercise_test_filename: test_filename_pre-course-javascript1
   extension: extension_pre-course-javascript1
-  language_id: 596063838
+  language_id: {{ id "course_pre_course_javascript" }}
   learn_as:
   lessons_count: 0
   name: Подготовительный курс JavaScript
@@ -99,13 +99,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 599909531
+- id: {{ id "version_elixir_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-elixir
   exercise_filename: filename_elixir
   exercise_test_filename: test_filename_elixir
   extension: extension_elixir
-  language_id: 599909531
+  language_id: {{ id "course_elixir" }}
   learn_as:
   lessons_count: 0
   name: Основы Elixir
@@ -113,13 +113,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 617920698
+- id: {{ id "version_python_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-python
   exercise_filename: filename_python
   exercise_test_filename: test_filename_python
   extension: extension_python
-  language_id: 617920698
+  language_id: {{ id "course_python" }}
   learn_as:
   lessons_count: 0
   name: Основы Python
@@ -127,13 +127,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 912823128
+- id: {{ id "version_go_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-go
   exercise_filename: filename_go
   exercise_test_filename: test_filename_go
   extension: extension_go
-  language_id: 912823128
+  language_id: {{ id "course_go" }}
   learn_as:
   lessons_count: 0
   name: Основы Go
@@ -141,13 +141,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 953067225
+- id: {{ id "version_css_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-css
   exercise_filename: filename_css
   exercise_test_filename: test_filename_css
   extension: extension_css
-  language_id: 953067225
+  language_id: {{ id "course_css" }}
   learn_as:
   lessons_count: 0
   name: Основы CSS
@@ -155,13 +155,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 965227298
+- id: {{ id "version_javascript_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-javascript
   exercise_filename: filename_javascript2
   exercise_test_filename: test_filename_javascript2
   extension: rb
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   learn_as:
   lessons_count: 0
   name: Основы JavaScript
@@ -169,13 +169,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 995840764
+- id: {{ id "version_csharp_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-csharp
   exercise_filename: filename_csharp
   exercise_test_filename: test_filename_csharp
   extension: extension_csharp
-  language_id: 995840764
+  language_id: {{ id "course_csharp" }}
   learn_as:
   lessons_count: 0
   name: Основы C#
@@ -183,13 +183,13 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
-- id: 1058727635
+- id: {{ id "version_java_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-java
   exercise_filename: filename_java
   exercise_test_filename: test_filename_java
   extension: extension_java
-  language_id: 1058727635
+  language_id: {{ id "course_java" }}
   learn_as:
   lessons_count: 0
   name: Основы Java

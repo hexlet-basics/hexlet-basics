@@ -4,23 +4,23 @@
 # testfixtures disables referential integrity during load and wraps each test in
 # a rollback transaction. first_name/last_name are the reviewer's own display
 # name (distinct from the linked user).
-- id: 5001
+- id: {{ id "review_admin_learner_ruby_published" }}
   body: Отличный курс, всё понятно
   first_name: Ivan
   last_name: Petrov
-  language_id: 207281424
-  user_id: 1001
+  language_id: {{ id "course_ruby" }}
+  user_id: {{ id "user_admin_learner" }}
   locale: ru
   pinned: true
   state: published
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 5002
+- id: {{ id "review_staff_editor_1c_draft" }}
   body: Great course
   first_name: John
   last_name: Doe
-  language_id: 322905520
-  user_id: 1002
+  language_id: {{ id "course_1c" }}
+  user_id: {{ id "user_staff_editor" }}
   locale: en
   pinned: false
   state: draft
@@ -29,34 +29,34 @@
 # The public list: a newer, unpinned ru review sorts above the pinned 5001
 # (legacy ordered by id only), a ru draft stays off it, and an en published
 # review is all the en list shows.
-- id: 5003
+- id: {{ id "review_staff_editor_1c_published" }}
   body: Курс помог начать программировать
   first_name: Maria
   last_name: Ivanova
-  language_id: 322905520
-  user_id: 1002
+  language_id: {{ id "course_1c" }}
+  user_id: {{ id "user_staff_editor" }}
   locale: ru
   pinned: false
   state: published
   created_at: '2026-07-27 10:00:00'
   updated_at: '2026-07-27 10:00:00'
-- id: 5004
+- id: {{ id "review_admin_learner_ruby_draft" }}
   body: Черновик отзыва
   first_name: Oleg
   last_name: Sidorov
-  language_id: 207281424
-  user_id: 1001
+  language_id: {{ id "course_ruby" }}
+  user_id: {{ id "user_admin_learner" }}
   locale: ru
   pinned: false
   state: draft
   created_at: '2026-07-28 10:00:00'
   updated_at: '2026-07-28 10:00:00'
-- id: 5005
+- id: {{ id "review_admin_learner_ruby_published_2" }}
   body: Clear lessons and quick practice
   first_name: Jane
   last_name: Smith
-  language_id: 207281424
-  user_id: 1001
+  language_id: {{ id "course_ruby" }}
+  user_id: {{ id "user_admin_learner" }}
   locale: en
   pinned: false
   state: published

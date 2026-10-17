@@ -2,41 +2,41 @@
 # tests. The admin list is `where(locale: en).with_summary` (non-empty summary),
 # so two of these four rows are negative cases that must NOT appear.
 # testfixtures disables FKs during load.
-- id: 4001
+- id: {{ id "lesson_review_javascript_hello_world_en" }}
   locale: en
   summary: Students struggled with the print syntax.
-  language_id: 82481401
-  language_lesson_id: 1001
-  language_lesson_version_id: 965227298
-  language_lesson_version_info_id: 2002
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_hello_world" }}
+  language_lesson_version_id: {{ id "lesson_version_javascript_hello_world_current" }}
+  language_lesson_version_info_id: {{ id "lesson_version_info_javascript_hello_world_current_en" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Excluded: empty summary (with_summary) — a lesson with no student questions.
-- id: 4002
+- id: {{ id "lesson_review_javascript_variables_en" }}
   locale: en
   summary: ''
-  language_id: 82481401
-  language_lesson_id: 1002
-  language_lesson_version_id: 965227298
-  language_lesson_version_info_id: 2003
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_variables" }}
+  language_lesson_version_id: {{ id "lesson_version_javascript_hello_world_current" }}
+  language_lesson_version_info_id: {{ id "lesson_version_info_javascript_variables_current_en" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Excluded: wrong locale (ru) — not shown in the en review list.
-- id: 4003
+- id: {{ id "lesson_review_javascript_hello_world_ru" }}
   locale: ru
   summary: Студенты путались в синтаксисе.
-  language_id: 82481401
-  language_lesson_id: 1001
-  language_lesson_version_id: 965227298
-  language_lesson_version_info_id: 2002
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_hello_world" }}
+  language_lesson_version_id: {{ id "lesson_version_javascript_hello_world_current" }}
+  language_lesson_version_info_id: {{ id "lesson_version_info_javascript_hello_world_current_en" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 4004
+- id: {{ id "lesson_review_javascript_strings_en" }}
   locale: en
   summary: Good grasp of concatenation overall.
-  language_id: 82481401
-  language_lesson_id: 1003
-  language_lesson_version_id: 965227298
-  language_lesson_version_info_id: 2001
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_strings" }}
+  language_lesson_version_id: {{ id "lesson_version_javascript_hello_world_current" }}
+  language_lesson_version_info_id: {{ id "lesson_version_info_javascript_strings_current_en" }}
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'

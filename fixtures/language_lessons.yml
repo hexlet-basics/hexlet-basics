@@ -3,154 +3,154 @@
 # integrity while loading, so language_id/module_id parents need not exist.
 # These hang off the JavaScript course (languages id 82481401, current version
 # 965227298 — see languages.yml / language_versions.yml).
-- id: 1001
+- id: {{ id "lesson_javascript_hello_world" }}
   slug: hello-world
   natural_order: 1
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1002
+- id: {{ id "lesson_javascript_variables" }}
   slug: variables
   natural_order: 2
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1003
+- id: {{ id "lesson_javascript_strings" }}
   slug: strings
   natural_order: 3
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
-- id: 1101
+- id: {{ id "lesson_ruby_hello_world_ruby" }}
   slug: hello-world-ruby
   natural_order: 1
-  language_id: 207281424
+  language_id: {{ id "course_ruby" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1102
+- id: {{ id "lesson_ruby_greeting_ruby" }}
   slug: greeting-ruby
   natural_order: 2
-  language_id: 207281424
+  language_id: {{ id "course_ruby" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1103
+- id: {{ id "lesson_1c_hello_world_1c" }}
   slug: hello-world-1c
   natural_order: 1
-  language_id: 322905520
+  language_id: {{ id "course_1c" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1104
+- id: {{ id "lesson_1c_greeting_1c" }}
   slug: greeting-1c
   natural_order: 2
-  language_id: 322905520
+  language_id: {{ id "course_1c" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1105
+- id: {{ id "lesson_php_hello_world_php" }}
   slug: hello-world-php
   natural_order: 1
-  language_id: 378610130
+  language_id: {{ id "course_php" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1106
+- id: {{ id "lesson_php_greeting_php" }}
   slug: greeting-php
   natural_order: 2
-  language_id: 378610130
+  language_id: {{ id "course_php" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1107
+- id: {{ id "lesson_html_hello_world_html" }}
   slug: hello-world-html
   natural_order: 1
-  language_id: 410646757
+  language_id: {{ id "course_html" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1108
+- id: {{ id "lesson_html_greeting_html" }}
   slug: greeting-html
   natural_order: 2
-  language_id: 410646757
+  language_id: {{ id "course_html" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1109
+- id: {{ id "lesson_typescript_hello_world_typescript" }}
   slug: hello-world-typescript
   natural_order: 1
-  language_id: 414575699
+  language_id: {{ id "course_typescript" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1110
+- id: {{ id "lesson_typescript_greeting_typescript" }}
   slug: greeting-typescript
   natural_order: 2
-  language_id: 414575699
+  language_id: {{ id "course_typescript" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1111
+- id: {{ id "lesson_elixir_hello_world_elixir" }}
   slug: hello-world-elixir
   natural_order: 1
-  language_id: 599909531
+  language_id: {{ id "course_elixir" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1112
+- id: {{ id "lesson_elixir_greeting_elixir" }}
   slug: greeting-elixir
   natural_order: 2
-  language_id: 599909531
+  language_id: {{ id "course_elixir" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1113
+- id: {{ id "lesson_python_hello_world_python" }}
   slug: hello-world-python
   natural_order: 1
-  language_id: 617920698
+  language_id: {{ id "course_python" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1114
+- id: {{ id "lesson_python_greeting_python" }}
   slug: greeting-python
   natural_order: 2
-  language_id: 617920698
+  language_id: {{ id "course_python" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1115
+- id: {{ id "lesson_go_hello_world_go" }}
   slug: hello-world-go
   natural_order: 1
-  language_id: 912823128
+  language_id: {{ id "course_go" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1116
+- id: {{ id "lesson_go_greeting_go" }}
   slug: greeting-go
   natural_order: 2
-  language_id: 912823128
+  language_id: {{ id "course_go" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1117
+- id: {{ id "lesson_css_hello_world_css" }}
   slug: hello-world-css
   natural_order: 1
-  language_id: 953067225
+  language_id: {{ id "course_css" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1118
+- id: {{ id "lesson_css_greeting_css" }}
   slug: greeting-css
   natural_order: 2
-  language_id: 953067225
+  language_id: {{ id "course_css" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1119
+- id: {{ id "lesson_csharp_hello_world_csharp" }}
   slug: hello-world-csharp
   natural_order: 1
-  language_id: 995840764
+  language_id: {{ id "course_csharp" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1120
+- id: {{ id "lesson_csharp_greeting_csharp" }}
   slug: greeting-csharp
   natural_order: 2
-  language_id: 995840764
+  language_id: {{ id "course_csharp" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1121
+- id: {{ id "lesson_java_hello_world_java" }}
   slug: hello-world-java
   natural_order: 1
-  language_id: 1058727635
+  language_id: {{ id "course_java" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1122
+- id: {{ id "lesson_java_greeting_java" }}
   slug: greeting-java
   natural_order: 2
-  language_id: 1058727635
+  language_id: {{ id "course_java" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'

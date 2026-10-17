@@ -9,100 +9,100 @@
 # (207281424) gets one so the feed's "fewer than three modules" skip has a
 # course to skip. Slugs avoid `basics`, which lesson_progress_test seeds for
 # JavaScript at runtime under the (language_id, slug) unique index.
-- id: 1
-  language_id: 82481401
+- id: {{ id "module_javascript_10_basics" }}
+  language_id: {{ id "course_javascript" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 2
-  language_id: 82481401
+- id: {{ id "module_javascript_20_arithmetics" }}
+  language_id: {{ id "course_javascript" }}
   slug: 20-arithmetics
   order: 20
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3
-  language_id: 82481401
+- id: {{ id "module_javascript_30_strings" }}
+  language_id: {{ id "course_javascript" }}
   slug: 30-strings
   order: 30
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 4
-  language_id: 207281424
+- id: {{ id "module_ruby_10_basics" }}
+  language_id: {{ id "course_ruby" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
-- id: 11
-  language_id: 322905520
+- id: {{ id "module_1c_10_basics" }}
+  language_id: {{ id "course_1c" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 12
-  language_id: 378610130
+- id: {{ id "module_php_10_basics" }}
+  language_id: {{ id "course_php" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 13
-  language_id: 410646757
+- id: {{ id "module_html_10_basics" }}
+  language_id: {{ id "course_html" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 14
-  language_id: 414575699
+- id: {{ id "module_typescript_10_basics" }}
+  language_id: {{ id "course_typescript" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 15
-  language_id: 599909531
+- id: {{ id "module_elixir_10_basics" }}
+  language_id: {{ id "course_elixir" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 16
-  language_id: 617920698
+- id: {{ id "module_python_10_basics" }}
+  language_id: {{ id "course_python" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 17
-  language_id: 912823128
+- id: {{ id "module_go_10_basics" }}
+  language_id: {{ id "course_go" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 18
-  language_id: 953067225
+- id: {{ id "module_css_10_basics" }}
+  language_id: {{ id "course_css" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 19
-  language_id: 995840764
+- id: {{ id "module_csharp_10_basics" }}
+  language_id: {{ id "course_csharp" }}
   slug: 10-basics
   order: 10
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 20
-  language_id: 1058727635
+- id: {{ id "module_java_10_basics" }}
+  language_id: {{ id "course_java" }}
   slug: 10-basics
   order: 10
   state: active

@@ -3,20 +3,20 @@
 # language_members.yml and a real user from users.yml, so a test that inserts
 # alongside them does not trip the baseline's FKs. Course = JavaScript
 # (82481401); lessons from language_lessons.yml.
-- id: 3001
-  user_id: 1001
-  language_id: 82481401
-  language_member_id: 601
-  lesson_id: 1001
+- id: {{ id "lesson_progress_admin_learner_javascript_hello_world" }}
+  user_id: {{ id "user_admin_learner" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_admin_learner_javascript" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
   state: finished
   messages_count: 5
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3002
-  user_id: 1002
-  language_id: 82481401
-  language_member_id: 602
-  lesson_id: 1002
+- id: {{ id "lesson_progress_staff_editor_javascript_variables" }}
+  user_id: {{ id "user_staff_editor" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_staff_editor_javascript" }}
+  lesson_id: {{ id "lesson_javascript_variables" }}
   state: started
   messages_count:
   created_at: '2026-07-26 20:50:30'

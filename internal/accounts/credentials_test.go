@@ -6,75 +6,64 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
-// The fixtures carry no password digests: bob (1002) gets one here, carol (1003)
-// stays without.
 const (
-	bobID   = 1002
-	carolID = 1003
+	withPasswordEmail = "with-password@example.com"
+	removedEmail      = "removed-user@example.com"
+	blankEmail        = "blank-user@example.com"
 )
-
-func bobWithPassword(t *testing.T, db *ent.Client, password string) *accounts.Credentials {
-	t.Helper()
-	credentials := accounts.NewCredentials(db)
-	_, err := credentials.SetPassword(t.Context(), db.User.GetX(t.Context(), bobID), password)
-	require.NoError(t, err)
-	return credentials
-}
 
 func TestAuthenticateIgnoresEmailCaseAndSpaces(t *testing.T) {
 	db := testsupport.NewClient(t)
-	credentials := bobWithPassword(t, db, "secret")
 
-	got, err := credentials.Authenticate(t.Context(), "  Bob@Example.COM ", "secret")
+	got, err := accounts.NewCredentials(db).Authenticate(t.Context(), "  With-Password@Example.COM ", fixtures.Password)
 
 	require.NoError(t, err)
-	assert.Equal(t, bobID, got.ID)
+	assert.Equal(t, fixtures.ID("user_with_password"), got.ID)
 }
 
 func TestAuthenticateRefusesEveryFailureTheSameWay(t *testing.T) {
 	db := testsupport.NewClient(t)
-	credentials := bobWithPassword(t, db, "secret")
+	credentials := accounts.NewCredentials(db)
 
-	_, err := credentials.Authenticate(t.Context(), "bob@example.com", "nope")
+	_, err := credentials.Authenticate(t.Context(), withPasswordEmail, "nope")
 	assert.ErrorIs(t, err, accounts.ErrInvalidCredentials, "wrong password")
 
-	_, err = credentials.Authenticate(t.Context(), "nobody@example.com", "secret")
+	_, err = credentials.Authenticate(t.Context(), "nobody@example.com", fixtures.Password)
 	assert.ErrorIs(t, err, accounts.ErrInvalidCredentials, "unknown email")
 
-	_, err = credentials.Authenticate(t.Context(), "carol@example.com", "secret")
+	_, err = credentials.Authenticate(t.Context(), blankEmail, fixtures.Password)
 	assert.ErrorIs(t, err, accounts.ErrInvalidCredentials, "no password")
 
-	db.User.UpdateOneID(bobID).SetState(accounts.StateRemoved).ClearEmail().ExecX(t.Context())
-	_, err = credentials.Authenticate(t.Context(), "bob@example.com", "secret")
+	_, err = credentials.Authenticate(t.Context(), removedEmail, fixtures.Password)
 	assert.ErrorIs(t, err, accounts.ErrInvalidCredentials, "removed account")
 }
 
 func TestSetPasswordReplacesTheOldOne(t *testing.T) {
 	db := testsupport.NewClient(t)
-	credentials := bobWithPassword(t, db, "old")
+	credentials := accounts.NewCredentials(db)
 
-	_, err := credentials.SetPassword(t.Context(), db.User.GetX(t.Context(), bobID), "new")
+	_, err := credentials.SetPassword(t.Context(), db.User.GetX(t.Context(), fixtures.ID("user_with_password")), "new")
 	require.NoError(t, err)
 
-	_, err = credentials.Authenticate(t.Context(), "bob@example.com", "old")
+	_, err = credentials.Authenticate(t.Context(), withPasswordEmail, fixtures.Password)
 	assert.ErrorIs(t, err, accounts.ErrInvalidCredentials)
-	_, err = credentials.Authenticate(t.Context(), "bob@example.com", "new")
+	_, err = credentials.Authenticate(t.Context(), withPasswordEmail, "new")
 	assert.NoError(t, err)
 }
 
 func TestEnsureAnotherAdmin(t *testing.T) {
 	db := testsupport.NewClient(t)
-	const aliceID, danaID = 1001, 1004
+	admin, secondAdmin, blank := fixtures.ID("user_admin_learner"), fixtures.ID("user_second_admin"), fixtures.ID("user_blank")
 
-	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, aliceID), "dana is the other administrator")
-	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, carolID), "carol is not an administrator")
+	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), "user_second_admin is the other administrator")
+	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "user_blank is not an administrator")
 
-	db.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
-	assert.ErrorIs(t, accounts.EnsureAnotherAdmin(t.Context(), db, aliceID), accounts.ErrLastAdmin)
-	assert.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, carolID), "still not an administrator")
+	db.User.UpdateOneID(secondAdmin).SetAdmin(false).ExecX(t.Context())
+	assert.ErrorIs(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), accounts.ErrLastAdmin)
+	assert.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "still not an administrator")
 }

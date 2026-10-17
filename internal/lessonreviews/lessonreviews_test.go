@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/courselessonreview"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/testsupport"
 )
@@ -29,7 +30,7 @@ func echoingModel() *testsupport.CompleterMock {
 	}
 }
 
-// Info 2002 = hello-world (lesson 1001) en. Its lesson's assistant chat holds
+// The en info of lesson_javascript_hello_world. Its lesson's assistant chat holds
 // one student question, so the LLM runs and the existing (course, lesson, en)
 // review row is updated in place — not duplicated.
 func TestReviewLessonUpdatesExistingReview(t *testing.T) {
@@ -38,21 +39,21 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, 2002))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_hello_world_current_en")))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(82481401),
-			courselessonreview.CourseLessonID(1001),
+			courselessonreview.CourseID(fixtures.ID("course_javascript")),
+			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_hello_world")),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Contains(t, review.Summary, "Проанализируй вопросы")
 	assert.Contains(t, review.Summary, "How do I print a string?", "the student question feeds the prompt")
-	assert.Equal(t, 2002, review.CourseLessonTranslationID)
+	assert.Equal(t, fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), review.CourseLessonTranslationID)
 }
 
-// Info 2001 = strings (lesson 1003) en. The lesson has no assistant chats, so
+// The en info of lesson_javascript_strings. The lesson has no assistant chats, so
 // the summary empties WITHOUT an LLM call (legacy behavior: an empty question
 // pool still writes, marking the lesson reviewed; the admin list hides it).
 func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
@@ -61,19 +62,19 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, reviewingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, 2001))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_strings_current_en")))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(82481401),
-			courselessonreview.CourseLessonID(1003),
+			courselessonreview.CourseID(fixtures.ID("course_javascript")),
+			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_strings")),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "", review.Summary, "no questions: the model is not asked, so its answer is not stored")
 }
 
-// Info 2003 = variables (lesson 1002) en. Deleting the fixture review row
+// The en info of lesson_javascript_variables. Deleting the fixture review row
 // first exercises the CREATE branch of the upsert: the reviewer recreates the
 // (course, lesson, locale) row from scratch, pointing it at the reviewed
 // version/info.
@@ -83,8 +84,8 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	_, err := db.CourseLessonReview.Delete().
 		Where(
-			courselessonreview.CourseID(82481401),
-			courselessonreview.CourseLessonID(1002),
+			courselessonreview.CourseID(fixtures.ID("course_javascript")),
+			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_variables")),
 			courselessonreview.LocaleEQ("en"),
 		).
 		Exec(ctx)
@@ -92,15 +93,15 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, 2003))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_variables_current_en")))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(82481401),
-			courselessonreview.CourseLessonID(1002),
+			courselessonreview.CourseID(fixtures.ID("course_javascript")),
+			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_variables")),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Contains(t, review.Summary, "What is a variable?")
-	assert.Equal(t, 965227299, review.CourseLessonVersionID, "the version of the lesson reviewed")
+	assert.Equal(t, fixtures.ID("lesson_version_javascript_variables_current"), review.CourseLessonVersionID, "the version of the lesson reviewed")
 }

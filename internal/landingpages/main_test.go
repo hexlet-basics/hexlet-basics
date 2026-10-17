@@ -1,4 +1,4 @@
-package landingpages
+package landingpages_test
 
 import (
 	"os"

@@ -1,4 +1,4 @@
-package landingpages
+package landingpages_test
 
 import (
 	"testing"
@@ -7,17 +7,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/courselandingpage"
-	"hexletbasics/internal/store"
-	"hexletbasics/internal/testsupport/testdb"
+	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/testsupport"
 )
 
-func newCatalog(t *testing.T) *Catalog {
+func newCatalog(t *testing.T) *landingpages.Catalog {
 	t.Helper()
-	db, err := store.NewDB(testdb.DatabaseURL())
-	require.NoError(t, err)
-	client := store.NewClient(db)
-	t.Cleanup(func() { _ = client.Close() })
-	return NewCatalog(client)
+	return landingpages.NewCatalog(testsupport.NewClient(t))
 }
 
 // The catalog is the published, listed pages of one locale: drafts, archived
@@ -33,7 +29,7 @@ func TestCatalogServesOnlyPublishedPagesOfTheLocale(t *testing.T) {
 
 		for _, page := range pages {
 			assert.Equal(t, locale, *page.Locale, *page.Slug)
-			assert.Equal(t, StatePublished, *page.State, *page.Slug)
+			assert.Equal(t, landingpages.StatePublished, *page.State, *page.Slug)
 			assert.NotEqual(t, "nodejs-ru", *page.Slug, "draft")
 			assert.NotEqual(t, "javascript-ru-archived", *page.Slug, "archived")
 		}
@@ -95,7 +91,7 @@ func TestMainPagesKeyedByCourseWithoutDraftsOrForeignLocales(t *testing.T) {
 		assert.Equal(t, courseID, page.CourseID)
 		assert.True(t, *page.Main, *page.Slug)
 		assert.Equal(t, "ru", *page.Locale)
-		assert.Equal(t, StatePublished, *page.State)
+		assert.Equal(t, landingpages.StatePublished, *page.State)
 		require.NotNil(t, page.Edges.Course)
 	}
 

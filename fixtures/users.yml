@@ -1,33 +1,71 @@
 # Fixtures for `users`, HAND-CURATED (the admin CRUD surface maps only id, email,
-# first_name, last_name, admin). `make fixtures-import` is non-destructive and
-# skips existing files, so this survives re-imports. Loaded by testfixtures
-# inside each test's rollback transaction; only the mapped + NOT NULL columns are
+# first_name, last_name, admin). `mise run fixtures:import` is non-destructive and
+# skips existing files, so this survives re-imports. Loaded by cmd/fixtures and
+# the test containers (internal/fixtures); only the mapped + NOT NULL columns are
 # set, the rest default to null.
-- id: 1001
-  email: alice@example.com
-  first_name: Alice
-  last_name: Anderson
+#
+# Every row is named for the case it exists for, and says which tests lean on it.
+# Give a case its own row rather than editing a row in a test.
+
+# The user the test harness signs in as (testsupport.HarnessUserLabel): an
+# administrator who is enrolled in JavaScript, has finished its first lesson,
+# wrote blog posts and reviews, and has no staff record.
+- id: {{ id "user_admin_learner" }}
+  email: admin-learner@example.com
+  first_name: Admin
+  last_name: Learner
   admin: true
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 1002
-  email: bob@example.com
-  first_name: Bob
-  last_name: Brown
+
+# A staff member (the editor role), not an administrator. Finished JavaScript,
+# has the second lesson started and has asked for the book.
+- id: {{ id "user_staff_editor" }}
+  email: staff-editor@example.com
+  first_name: Staff
+  last_name: Editor
   admin: false
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
-- id: 1003
-  email: carol@example.com
-  first_name: Carol
-  last_name: Clark
+
+# An account with nothing attached: no password, no enrollment, no staff record,
+# `admin` unset (NULL, as a legacy account that never had the flag decided).
+- id: {{ id "user_blank" }}
+  email: blank-user@example.com
+  first_name: Blank
+  last_name: User
   admin:
   created_at: '2026-07-26 20:50:31'
   updated_at: '2026-07-26 20:50:31'
-- id: 1004
-  email: dana@example.com
-  first_name: Dana
-  last_name: Drake
+
+# The other administrator: with user_admin_learner, one of exactly two, so
+# removing either's flag shows what happens to the last one.
+- id: {{ id "user_second_admin" }}
+  email: second-admin@example.com
+  first_name: Second
+  last_name: Admin
   admin: true
   created_at: '2026-07-26 20:50:32'
   updated_at: '2026-07-26 20:50:32'
+
+# A learner who can sign in with a password (fixtures.Password).
+- id: {{ id "user_with_password" }}
+  email: with-password@example.com
+  password_digest: {{ password }}
+  first_name: Password
+  last_name: User
+  admin: false
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'
+
+# A removed account that still has its email and password, so a refusal proves
+# the state is what is checked, not that the erased fields happen to match nothing.
+- id: {{ id "user_removed" }}
+  email: removed-user@example.com
+  password_digest: {{ password }}
+  first_name: Removed
+  last_name: User
+  admin: false
+  state: removed
+  created_at: '2026-07-26 20:50:34'
+  updated_at: '2026-07-26 20:50:34'

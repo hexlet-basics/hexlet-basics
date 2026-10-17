@@ -65,12 +65,14 @@ func funcs() template.FuncMap {
 // refuses a database whose name does not contain "test" unless
 // allowAnyDatabase is set, because loading wipes the fixture tables first.
 func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
+	// The template options come before Directory: it reads and renders the files
+	// while the options are applied, in order.
 	options := []func(*testfixtures.Loader) error{
 		testfixtures.Database(db),
 		testfixtures.Dialect("postgres"),
-		testfixtures.Directory(dir),
 		testfixtures.Template(),
 		testfixtures.TemplateFuncs(funcs()),
+		testfixtures.Directory(dir),
 		testfixtures.SkipTableChecksumComputation(),
 	}
 	if allowAnyDatabase {

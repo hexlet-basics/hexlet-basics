@@ -1,7 +1,7 @@
 # Fixtures for `language_landing_pages`, exported from the legacy Rails fixtures by
 # `make fixtures-import`. Loaded by testfixtures inside each test's rollback
 # transaction. Regenerate; do not hand-tune unless you stop regenerating.
-- id: 59175011
+- id: {{ id "landing_page_go_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -10,7 +10,7 @@
   header: Курс Go
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 912823128
+  language_id: {{ id "course_go" }}
   listed: true
   locale: ru
   main: true
@@ -34,7 +34,7 @@
 
     '
   used_in_header: Где используется Go?
-- id: 88212034
+- id: {{ id "landing_page_ruby_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -43,7 +43,7 @@
   header: Курс Ruby
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 207281424
+  language_id: {{ id "course_ruby" }}
   listed: true
   locale: ru
   main: true
@@ -67,7 +67,7 @@
 
     '
   used_in_header: Где используется Ruby?
-- id: 102732589
+- id: {{ id "landing_page_java_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -76,7 +76,7 @@
   header: Java Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 1058727635
+  language_id: {{ id "course_java" }}
   listed: true
   locale: en
   main: true
@@ -100,7 +100,7 @@
 
     '
   used_in_header: Where is Java used?
-- id: 167370329
+- id: {{ id "landing_page_java_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -109,7 +109,7 @@
   header: Курс Java
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 1058727635
+  language_id: {{ id "course_java" }}
   listed: true
   locale: ru
   main: true
@@ -133,7 +133,7 @@
 
     '
   used_in_header: Где используется Java?
-- id: 178540350
+- id: {{ id "landing_page_ruby_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -142,7 +142,7 @@
   header: Ruby Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 207281424
+  language_id: {{ id "course_ruby" }}
   listed: true
   locale: en
   main: true
@@ -166,7 +166,7 @@
 
     '
   used_in_header: Where is Ruby used?
-- id: 207666459
+- id: {{ id "landing_page_go_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -175,7 +175,7 @@
   header: Go Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 912823128
+  language_id: {{ id "course_go" }}
   listed: true
   locale: en
   main: true
@@ -199,7 +199,7 @@
 
     '
   used_in_header: Where is Go used?
-- id: 238244035
+- id: {{ id "landing_page_javascript_ru_archived" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -208,7 +208,7 @@
   header: Архивный курс JavaScript
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   listed: true
   locale: ru
   main:
@@ -232,7 +232,7 @@
 
     '
   used_in_header: Где используется JavaScript?
-- id: 341643033
+- id: {{ id "landing_page_python_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -241,7 +241,7 @@
   header: Курс Python
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 617920698
+  language_id: {{ id "course_python" }}
   listed: true
   locale: ru
   main: true
@@ -265,7 +265,7 @@
 
     '
   used_in_header: Где используется Python?
-- id: 369218935
+- id: {{ id "landing_page_elixir_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -274,7 +274,7 @@
   header: Курс Elixir
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 599909531
+  language_id: {{ id "course_elixir" }}
   listed: true
   locale: ru
   main: true
@@ -298,7 +298,7 @@
 
     '
   used_in_header: Где используется Elixir?
-- id: 369896861
+- id: {{ id "landing_page_typescript_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -307,7 +307,7 @@
   header: Курс TypeScript
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 414575699
+  language_id: {{ id "course_typescript" }}
   listed: true
   locale: ru
   main: true
@@ -331,7 +331,7 @@
 
     '
   used_in_header: Где используется TypeScript?
-- id: 673653274
+- id: {{ id "landing_page_html_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -340,7 +340,7 @@
   header: Курс HTML
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 410646757
+  language_id: {{ id "course_html" }}
   listed: true
   locale: ru
   main: true
@@ -364,7 +364,7 @@
 
     '
   used_in_header: Где используется HTML?
-- id: 821163262
+- id: {{ id "landing_page_csharp_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -373,7 +373,7 @@
   header: C# Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 995840764
+  language_id: {{ id "course_csharp" }}
   listed: true
   locale: en
   main: true
@@ -397,7 +397,7 @@
 
     '
   used_in_header: Where is C# used?
-- id: 866612940
+- id: {{ id "landing_page_javascript_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -406,7 +406,7 @@
   header: Курс JavaScript
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   listed: true
   locale: ru
   main: true
@@ -430,7 +430,7 @@
 
     '
   used_in_header: Где используется JavaScript?
-- id: 896432903
+- id: {{ id "landing_page_php_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -439,7 +439,7 @@
   header: Курс PHP
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 378610130
+  language_id: {{ id "course_php" }}
   listed: true
   locale: ru
   main: true
@@ -463,7 +463,7 @@
 
     '
   used_in_header: Где используется PHP?
-- id: 900268625
+- id: {{ id "landing_page_css_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -472,7 +472,7 @@
   header: Курс CSS
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 953067225
+  language_id: {{ id "course_css" }}
   listed: true
   locale: ru
   main: true
@@ -496,7 +496,7 @@
 
     '
   used_in_header: Где используется CSS?
-- id: 934052201
+- id: {{ id "landing_page_frontend_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Programming learning is an interesting and exciting process. The syntax
     of the language is the simplest and shortest path, without which it is impossible
@@ -507,7 +507,7 @@
   header: Frontend Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   listed: true
   locale: en
   main:
@@ -531,7 +531,7 @@
 
     '
   used_in_header: Where is frontend development used?
-- id: 944426005
+- id: {{ id "landing_page_frontend_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -540,7 +540,7 @@
   header: Курс «Фронтенд»
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   listed: true
   locale: ru
   main:
@@ -564,7 +564,7 @@
 
     '
   used_in_header: Где используется фронтенд-разработка?
-- id: 978276149
+- id: {{ id "landing_page_css_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -573,7 +573,7 @@
   header: CSS Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 953067225
+  language_id: {{ id "course_css" }}
   listed: true
   locale: en
   main: true
@@ -597,7 +597,7 @@
 
     '
   used_in_header: Where is CSS used?
-- id: 982005375
+- id: {{ id "landing_page_php_en" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -606,7 +606,7 @@
   header: PHP Course
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 378610130
+  language_id: {{ id "course_php" }}
   listed: true
   locale: en
   main: true
@@ -630,7 +630,7 @@
 
     '
   used_in_header: Where is PHP used?
-- id: 995631485
+- id: {{ id "landing_page_nodejs_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -639,7 +639,7 @@
   header: Курс Node.js
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 82481401
+  language_id: {{ id "course_javascript" }}
   listed: true
   locale: ru
   main:
@@ -663,7 +663,7 @@
 
     '
   used_in_header: Где используется Node.js?
-- id: 1040414131
+- id: {{ id "landing_page_1c_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -672,7 +672,7 @@
   header: Курс 1C
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 322905520
+  language_id: {{ id "course_1c" }}
   listed: true
   locale: ru
   main: true
@@ -696,7 +696,7 @@
 
     '
   used_in_header: Где используется 1C?
-- id: 1058519430
+- id: {{ id "landing_page_csharp_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
     заданий прямо в браузере с поддержкой ИИ-ассистента.
@@ -705,7 +705,7 @@
   header: Курс C#
   landing_page_to_redirect_id:
   language_category_id:
-  language_id: 995840764
+  language_id: {{ id "course_csharp" }}
   listed: true
   locale: ru
   main: true

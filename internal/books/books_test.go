@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/books"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -16,8 +17,8 @@ func TestMain(m *testing.M) {
 	os.Exit(testdb.Run(m))
 }
 
-// carol has no request in the fixtures; bob already has one.
-const learnerID = 1003
+// user_blank has no book request in the fixtures; user_staff_editor already has one.
+var learnerID = fixtures.ID("user_blank")
 
 func newRecorder(t *testing.T) *books.Recorder {
 	t.Helper()

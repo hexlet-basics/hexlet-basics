@@ -1,10 +1,10 @@
 # Fixtures for `languages`, exported from the legacy Rails fixtures by
 # `make fixtures-import`. Loaded by testfixtures inside each test's rollback
 # transaction. Regenerate; do not hand-tune unless you stop regenerating.
-- id: 82481401
+- id: {{ id "course_javascript" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 965227298
+  current_version_id: {{ id "version_javascript_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -20,10 +20,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 207281424
+- id: {{ id "course_ruby" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 207281424
+  current_version_id: {{ id "version_ruby_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -39,10 +39,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 322905520
+- id: {{ id "course_1c" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 322905520
+  current_version_id: {{ id "version_1c_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -58,10 +58,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 378610130
+- id: {{ id "course_php" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 378610130
+  current_version_id: {{ id "version_php_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -77,10 +77,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 410646757
+- id: {{ id "course_html" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 329547961
+  current_version_id: {{ id "version_html_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -96,10 +96,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 414575699
+- id: {{ id "course_typescript" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 522730299
+  current_version_id: {{ id "version_typescript_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -115,10 +115,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 596063838
+- id: {{ id "course_pre_course_javascript" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 564295009
+  current_version_id: {{ id "version_pre_course_javascript_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -134,10 +134,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 599909531
+- id: {{ id "course_elixir" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 599909531
+  current_version_id: {{ id "version_elixir_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -153,10 +153,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 617920698
+- id: {{ id "course_python" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 617920698
+  current_version_id: {{ id "version_python_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -172,10 +172,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 912823128
+- id: {{ id "course_go" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 912823128
+  current_version_id: {{ id "version_go_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -191,10 +191,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 953067225
+- id: {{ id "course_css" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 953067225
+  current_version_id: {{ id "version_css_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -210,10 +210,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 995840764
+- id: {{ id "course_csharp" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 995840764
+  current_version_id: {{ id "version_csharp_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:
@@ -229,10 +229,10 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
-- id: 1058727635
+- id: {{ id "course_java" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
-  current_version_id: 1058727635
+  current_version_id: {{ id "version_java_current" }}
   docker_image:
   exercise_filename:
   exercise_test_filename:

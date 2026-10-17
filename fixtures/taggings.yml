@@ -5,13 +5,13 @@
 # tag. `make fixtures-import` is non-destructive and skips existing files, so this
 # survives re-imports. Loaded by testfixtures inside each test's rollback
 # transaction.
-- id: 1
-  tag_id: 1
-  taggable_id: 1001
+- id: {{ id "tagging_should_be_lead_user" }}
+  tag_id: {{ id "tag_should_be_lead" }}
+  taggable_id: {{ id "user_admin_learner" }}
   taggable_type: User
   context: tags
-- id: 2
-  tag_id: 1
+- id: {{ id "tagging_should_be_lead_survey_item" }}
+  tag_id: {{ id "tag_should_be_lead" }}
   taggable_id: 1001
   taggable_type: Survey::Item
   context: tags

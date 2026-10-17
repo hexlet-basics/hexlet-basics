@@ -18,11 +18,11 @@
 #
 # testfixtures disables FKs during load, so module_version_id parents need not
 # exist. Course = JavaScript (82481401), current version 965227298.
-- id: 965227298
-  language_id: 82481401
-  language_version_id: 965227298
-  lesson_id: 1001
-  module_version_id: 1
+- id: {{ id "lesson_version_javascript_hello_world_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
+  module_version_id: {{ id "module_version_javascript_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-javascript/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -32,11 +32,11 @@
   updated_at: '2026-07-26 20:50:29'
 # The lesson-player read serves this one: it carries the code, the tests and
 # the repository path the "improve this lesson" link is built from.
-- id: 965227299
-  language_id: 82481401
-  language_version_id: 965227298
-  lesson_id: 1002
-  module_version_id: 1
+- id: {{ id "lesson_version_javascript_variables_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  lesson_id: {{ id "lesson_javascript_variables" }}
+  module_version_id: {{ id "module_version_javascript_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-javascript/modules/10-basics/20-variables
   prepared_code: "let greeting = '';\n"
@@ -44,11 +44,11 @@
   test_code: "assert.equal(greeting, 'hello');\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 965227300
-  language_id: 82481401
-  language_version_id: 965227298
-  lesson_id: 1003
-  module_version_id: 1
+- id: {{ id "lesson_version_javascript_strings_current" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  lesson_id: {{ id "lesson_javascript_strings" }}
+  module_version_id: {{ id "module_version_javascript_10_basics_current" }}
   natural_order: 3
   path_to_code: /exercises-javascript/modules/10-basics/30-strings
   created_at: '2026-07-26 20:50:29'
@@ -56,19 +56,19 @@
 # The retired version's row hangs off the retired version's own module
 # version (5): a module version belongs to exactly one course version, and the
 # Yandex feed lists a module's lessons through it.
-- id: 545350298
-  language_id: 82481401
-  language_version_id: 545350298
-  lesson_id: 1001
-  module_version_id: 5
+- id: {{ id "lesson_version_javascript_hello_world_retired" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_retired" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
+  module_version_id: {{ id "module_version_javascript_10_basics_retired" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
-- id: 3000001
-  language_id: 207281424
-  language_version_id: 207281424
-  lesson_id: 1101
-  module_version_id: 4
+- id: {{ id "lesson_version_ruby_hello_world_ruby_current" }}
+  language_id: {{ id "course_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  lesson_id: {{ id "lesson_ruby_hello_world_ruby" }}
+  module_version_id: {{ id "module_version_ruby_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-ruby/modules/10-basics/10-hello-world
   prepared_code: "# Print the greeting\n"
@@ -76,11 +76,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000002
-  language_id: 207281424
-  language_version_id: 207281424
-  lesson_id: 1102
-  module_version_id: 4
+- id: {{ id "lesson_version_ruby_greeting_ruby_current" }}
+  language_id: {{ id "course_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  lesson_id: {{ id "lesson_ruby_greeting_ruby" }}
+  module_version_id: {{ id "module_version_ruby_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-ruby/modules/10-basics/20-greeting
   prepared_code: "# Print the greeting\n"
@@ -88,11 +88,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000003
-  language_id: 322905520
-  language_version_id: 322905520
-  lesson_id: 1103
-  module_version_id: 11
+- id: {{ id "lesson_version_1c_hello_world_1c_current" }}
+  language_id: {{ id "course_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  lesson_id: {{ id "lesson_1c_hello_world_1c" }}
+  module_version_id: {{ id "module_version_1c_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-1c/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -100,11 +100,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000004
-  language_id: 322905520
-  language_version_id: 322905520
-  lesson_id: 1104
-  module_version_id: 11
+- id: {{ id "lesson_version_1c_greeting_1c_current" }}
+  language_id: {{ id "course_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  lesson_id: {{ id "lesson_1c_greeting_1c" }}
+  module_version_id: {{ id "module_version_1c_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-1c/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"
@@ -112,11 +112,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000005
-  language_id: 378610130
-  language_version_id: 378610130
-  lesson_id: 1105
-  module_version_id: 12
+- id: {{ id "lesson_version_php_hello_world_php_current" }}
+  language_id: {{ id "course_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  lesson_id: {{ id "lesson_php_hello_world_php" }}
+  module_version_id: {{ id "module_version_php_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-php/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -124,11 +124,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000006
-  language_id: 378610130
-  language_version_id: 378610130
-  lesson_id: 1106
-  module_version_id: 12
+- id: {{ id "lesson_version_php_greeting_php_current" }}
+  language_id: {{ id "course_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  lesson_id: {{ id "lesson_php_greeting_php" }}
+  module_version_id: {{ id "module_version_php_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-php/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"
@@ -136,11 +136,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000007
-  language_id: 410646757
-  language_version_id: 329547961
-  lesson_id: 1107
-  module_version_id: 13
+- id: {{ id "lesson_version_html_hello_world_html_current" }}
+  language_id: {{ id "course_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  lesson_id: {{ id "lesson_html_hello_world_html" }}
+  module_version_id: {{ id "module_version_html_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-html/modules/10-basics/10-hello-world
   prepared_code: "<!-- Add the heading -->\n"
@@ -148,11 +148,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000008
-  language_id: 410646757
-  language_version_id: 329547961
-  lesson_id: 1108
-  module_version_id: 13
+- id: {{ id "lesson_version_html_greeting_html_current" }}
+  language_id: {{ id "course_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  lesson_id: {{ id "lesson_html_greeting_html" }}
+  module_version_id: {{ id "module_version_html_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-html/modules/10-basics/20-greeting
   prepared_code: "<!-- Add the heading -->\n"
@@ -160,11 +160,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000009
-  language_id: 414575699
-  language_version_id: 522730299
-  lesson_id: 1109
-  module_version_id: 14
+- id: {{ id "lesson_version_typescript_hello_world_typescript_current" }}
+  language_id: {{ id "course_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  lesson_id: {{ id "lesson_typescript_hello_world_typescript" }}
+  module_version_id: {{ id "module_version_typescript_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-typescript/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -172,11 +172,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000010
-  language_id: 414575699
-  language_version_id: 522730299
-  lesson_id: 1110
-  module_version_id: 14
+- id: {{ id "lesson_version_typescript_greeting_typescript_current" }}
+  language_id: {{ id "course_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  lesson_id: {{ id "lesson_typescript_greeting_typescript" }}
+  module_version_id: {{ id "module_version_typescript_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-typescript/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"
@@ -184,11 +184,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000011
-  language_id: 599909531
-  language_version_id: 599909531
-  lesson_id: 1111
-  module_version_id: 15
+- id: {{ id "lesson_version_elixir_hello_world_elixir_current" }}
+  language_id: {{ id "course_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  lesson_id: {{ id "lesson_elixir_hello_world_elixir" }}
+  module_version_id: {{ id "module_version_elixir_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-elixir/modules/10-basics/10-hello-world
   prepared_code: "# Print the greeting\n"
@@ -196,11 +196,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000012
-  language_id: 599909531
-  language_version_id: 599909531
-  lesson_id: 1112
-  module_version_id: 15
+- id: {{ id "lesson_version_elixir_greeting_elixir_current" }}
+  language_id: {{ id "course_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  lesson_id: {{ id "lesson_elixir_greeting_elixir" }}
+  module_version_id: {{ id "module_version_elixir_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-elixir/modules/10-basics/20-greeting
   prepared_code: "# Print the greeting\n"
@@ -208,11 +208,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000013
-  language_id: 617920698
-  language_version_id: 617920698
-  lesson_id: 1113
-  module_version_id: 16
+- id: {{ id "lesson_version_python_hello_world_python_current" }}
+  language_id: {{ id "course_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  lesson_id: {{ id "lesson_python_hello_world_python" }}
+  module_version_id: {{ id "module_version_python_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-python/modules/10-basics/10-hello-world
   prepared_code: "# Print the greeting\n"
@@ -220,11 +220,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000014
-  language_id: 617920698
-  language_version_id: 617920698
-  lesson_id: 1114
-  module_version_id: 16
+- id: {{ id "lesson_version_python_greeting_python_current" }}
+  language_id: {{ id "course_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  lesson_id: {{ id "lesson_python_greeting_python" }}
+  module_version_id: {{ id "module_version_python_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-python/modules/10-basics/20-greeting
   prepared_code: "# Print the greeting\n"
@@ -232,11 +232,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000015
-  language_id: 912823128
-  language_version_id: 912823128
-  lesson_id: 1115
-  module_version_id: 17
+- id: {{ id "lesson_version_go_hello_world_go_current" }}
+  language_id: {{ id "course_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  lesson_id: {{ id "lesson_go_hello_world_go" }}
+  module_version_id: {{ id "module_version_go_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-go/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -244,11 +244,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000016
-  language_id: 912823128
-  language_version_id: 912823128
-  lesson_id: 1116
-  module_version_id: 17
+- id: {{ id "lesson_version_go_greeting_go_current" }}
+  language_id: {{ id "course_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  lesson_id: {{ id "lesson_go_greeting_go" }}
+  module_version_id: {{ id "module_version_go_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-go/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"
@@ -256,11 +256,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000017
-  language_id: 953067225
-  language_version_id: 953067225
-  lesson_id: 1117
-  module_version_id: 18
+- id: {{ id "lesson_version_css_hello_world_css_current" }}
+  language_id: {{ id "course_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  lesson_id: {{ id "lesson_css_hello_world_css" }}
+  module_version_id: {{ id "module_version_css_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-css/modules/10-basics/10-hello-world
   prepared_code: "/* Style the heading */\n"
@@ -268,11 +268,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000018
-  language_id: 953067225
-  language_version_id: 953067225
-  lesson_id: 1118
-  module_version_id: 18
+- id: {{ id "lesson_version_css_greeting_css_current" }}
+  language_id: {{ id "course_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  lesson_id: {{ id "lesson_css_greeting_css" }}
+  module_version_id: {{ id "module_version_css_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-css/modules/10-basics/20-greeting
   prepared_code: "/* Style the paragraph */\n"
@@ -280,11 +280,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000019
-  language_id: 995840764
-  language_version_id: 995840764
-  lesson_id: 1119
-  module_version_id: 19
+- id: {{ id "lesson_version_csharp_hello_world_csharp_current" }}
+  language_id: {{ id "course_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  lesson_id: {{ id "lesson_csharp_hello_world_csharp" }}
+  module_version_id: {{ id "module_version_csharp_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-csharp/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -292,11 +292,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000020
-  language_id: 995840764
-  language_version_id: 995840764
-  lesson_id: 1120
-  module_version_id: 19
+- id: {{ id "lesson_version_csharp_greeting_csharp_current" }}
+  language_id: {{ id "course_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  lesson_id: {{ id "lesson_csharp_greeting_csharp" }}
+  module_version_id: {{ id "module_version_csharp_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-csharp/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"
@@ -304,11 +304,11 @@
   test_code: "expect output == \"Hello, Hexlet!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000021
-  language_id: 1058727635
-  language_version_id: 1058727635
-  lesson_id: 1121
-  module_version_id: 20
+- id: {{ id "lesson_version_java_hello_world_java_current" }}
+  language_id: {{ id "course_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  lesson_id: {{ id "lesson_java_hello_world_java" }}
+  module_version_id: {{ id "module_version_java_10_basics_current" }}
   natural_order: 1
   path_to_code: /exercises-java/modules/10-basics/10-hello-world
   prepared_code: "// Print the greeting\n"
@@ -316,11 +316,11 @@
   test_code: "expect output == \"Hello, World!\\n\"\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3000022
-  language_id: 1058727635
-  language_version_id: 1058727635
-  lesson_id: 1122
-  module_version_id: 20
+- id: {{ id "lesson_version_java_greeting_java_current" }}
+  language_id: {{ id "course_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  lesson_id: {{ id "lesson_java_greeting_java" }}
+  module_version_id: {{ id "module_version_java_10_basics_current" }}
   natural_order: 2
   path_to_code: /exercises-java/modules/10-basics/20-greeting
   prepared_code: "// Print the greeting\n"

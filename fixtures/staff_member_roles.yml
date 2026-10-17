@@ -1,12 +1,12 @@
 # Fixtures for `staff_member_roles`, HAND-CURATED. Two roles; "editor" owns two
 # permission rows (see staff_member_role_permissions.yml), "moderator" none.
 # Names are unique (staff_member_roles_name_uniq). Ordered by name in the list.
-- id: 9001
+- id: {{ id "staff_role_editor" }}
   name: editor
   description: Can edit content
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 9002
+- id: {{ id "staff_role_moderator" }}
   name: moderator
   description:
   created_at: '2026-07-26 20:50:30'

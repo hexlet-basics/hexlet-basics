@@ -13,24 +13,24 @@
 # by coincidence in these fixtures, so the difference is easy to miss.
 #
 # Visible in the lesson list (locale=en AND version=965227298, JS current):
-- id: 2001
+- id: {{ id "lesson_version_info_javascript_strings_current_en" }}
   name: Strings
   description: Working with strings
   locale: en
-  language_id: 82481401
-  language_lesson_id: 1003
-  language_version_id: 965227298
-  version_id: 965227300
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_strings" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  version_id: {{ id "lesson_version_javascript_strings_current" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 2002
+- id: {{ id "lesson_version_info_javascript_hello_world_current_en" }}
   name: Hello, World!
   description: Your first program
   locale: en
-  language_id: 82481401
-  language_lesson_id: 1001
-  language_version_id: 965227298
-  version_id: 965227298
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_hello_world" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  version_id: {{ id "lesson_version_javascript_hello_world_current" }}
   theory: |
     Every programming journey starts with a program that prints a greeting.
     In JavaScript, `console.log` writes a line to the output.
@@ -47,14 +47,14 @@
 # Carries the prose the lesson-player read serves. tips and definitions are
 # stored as YAML arrays, the form Rails' `serialize type: Array` wrote and the
 # loader still writes.
-- id: 2003
+- id: {{ id "lesson_version_info_javascript_variables_current_en" }}
   name: Variables
   description: Storing values
   locale: en
-  language_id: 82481401
-  language_lesson_id: 1002
-  language_version_id: 965227298
-  version_id: 965227299
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_variables" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  version_id: {{ id "lesson_version_javascript_variables_current" }}
   theory: A variable is a name bound to a value.
   instructions: Assign the string `hello` to `greeting`.
   tips: |
@@ -69,25 +69,25 @@
   updated_at: '2026-07-26 20:50:29'
 # Excluded: not the current version (545350298 is a JS version, but not the
 # course's current_version_id) — must NOT appear in the lesson list.
-- id: 2004
+- id: {{ id "lesson_version_info_javascript_hello_world_retired_en" }}
   name: Old Hello
   description: From a previous version
   locale: en
-  language_id: 82481401
-  language_lesson_id: 1001
-  language_version_id: 545350298
-  version_id: 545350298
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_hello_world" }}
+  language_version_id: {{ id "version_javascript_retired" }}
+  version_id: {{ id "lesson_version_javascript_hello_world_retired" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Excluded: wrong locale (ru) — must NOT appear in the en lesson list.
-- id: 2005
+- id: {{ id "lesson_version_info_javascript_hello_world_current_ru" }}
   name: Привет, мир!
   description: Первая программа
   locale: ru
-  language_id: 82481401
-  language_lesson_id: 1001
-  language_version_id: 965227298
-  version_id: 965227298
+  language_id: {{ id "course_javascript" }}
+  language_lesson_id: {{ id "lesson_javascript_hello_world" }}
+  language_version_id: {{ id "version_javascript_current" }}
+  version_id: {{ id "lesson_version_javascript_hello_world_current" }}
   theory: |
     Любое знакомство с программированием начинается с программы, которая выводит приветствие.
     В JavaScript строку в вывод печатает `console.log`.
@@ -102,616 +102,616 @@
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
-- id: 3001
+- id: {{ id "lesson_version_info_ruby_hello_world_ruby_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 207281424
-  language_lesson_id: 1101
-  language_version_id: 207281424
-  version_id: 3000001
+  language_id: {{ id "course_ruby" }}
+  language_lesson_id: {{ id "lesson_ruby_hello_world_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  version_id: {{ id "lesson_version_ruby_hello_world_ruby_current" }}
   theory: "Ruby: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3002
+- id: {{ id "lesson_version_info_ruby_hello_world_ruby_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 207281424
-  language_lesson_id: 1101
-  language_version_id: 207281424
-  version_id: 3000001
+  language_id: {{ id "course_ruby" }}
+  language_lesson_id: {{ id "lesson_ruby_hello_world_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  version_id: {{ id "lesson_version_ruby_hello_world_ruby_current" }}
   theory: "Ruby: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3003
+- id: {{ id "lesson_version_info_ruby_greeting_ruby_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 207281424
-  language_lesson_id: 1102
-  language_version_id: 207281424
-  version_id: 3000002
+  language_id: {{ id "course_ruby" }}
+  language_lesson_id: {{ id "lesson_ruby_greeting_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  version_id: {{ id "lesson_version_ruby_greeting_ruby_current" }}
   theory: "Ruby: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3004
+- id: {{ id "lesson_version_info_ruby_greeting_ruby_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 207281424
-  language_lesson_id: 1102
-  language_version_id: 207281424
-  version_id: 3000002
+  language_id: {{ id "course_ruby" }}
+  language_lesson_id: {{ id "lesson_ruby_greeting_ruby" }}
+  language_version_id: {{ id "version_ruby_current" }}
+  version_id: {{ id "lesson_version_ruby_greeting_ruby_current" }}
   theory: "Ruby: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3005
+- id: {{ id "lesson_version_info_1c_hello_world_1c_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 322905520
-  language_lesson_id: 1103
-  language_version_id: 322905520
-  version_id: 3000003
+  language_id: {{ id "course_1c" }}
+  language_lesson_id: {{ id "lesson_1c_hello_world_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  version_id: {{ id "lesson_version_1c_hello_world_1c_current" }}
   theory: "1C: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3006
+- id: {{ id "lesson_version_info_1c_hello_world_1c_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 322905520
-  language_lesson_id: 1103
-  language_version_id: 322905520
-  version_id: 3000003
+  language_id: {{ id "course_1c" }}
+  language_lesson_id: {{ id "lesson_1c_hello_world_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  version_id: {{ id "lesson_version_1c_hello_world_1c_current" }}
   theory: "1C: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3007
+- id: {{ id "lesson_version_info_1c_greeting_1c_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 322905520
-  language_lesson_id: 1104
-  language_version_id: 322905520
-  version_id: 3000004
+  language_id: {{ id "course_1c" }}
+  language_lesson_id: {{ id "lesson_1c_greeting_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  version_id: {{ id "lesson_version_1c_greeting_1c_current" }}
   theory: "1C: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3008
+- id: {{ id "lesson_version_info_1c_greeting_1c_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 322905520
-  language_lesson_id: 1104
-  language_version_id: 322905520
-  version_id: 3000004
+  language_id: {{ id "course_1c" }}
+  language_lesson_id: {{ id "lesson_1c_greeting_1c" }}
+  language_version_id: {{ id "version_1c_current" }}
+  version_id: {{ id "lesson_version_1c_greeting_1c_current" }}
   theory: "1C: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3009
+- id: {{ id "lesson_version_info_php_hello_world_php_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 378610130
-  language_lesson_id: 1105
-  language_version_id: 378610130
-  version_id: 3000005
+  language_id: {{ id "course_php" }}
+  language_lesson_id: {{ id "lesson_php_hello_world_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  version_id: {{ id "lesson_version_php_hello_world_php_current" }}
   theory: "PHP: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3010
+- id: {{ id "lesson_version_info_php_hello_world_php_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 378610130
-  language_lesson_id: 1105
-  language_version_id: 378610130
-  version_id: 3000005
+  language_id: {{ id "course_php" }}
+  language_lesson_id: {{ id "lesson_php_hello_world_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  version_id: {{ id "lesson_version_php_hello_world_php_current" }}
   theory: "PHP: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3011
+- id: {{ id "lesson_version_info_php_greeting_php_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 378610130
-  language_lesson_id: 1106
-  language_version_id: 378610130
-  version_id: 3000006
+  language_id: {{ id "course_php" }}
+  language_lesson_id: {{ id "lesson_php_greeting_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  version_id: {{ id "lesson_version_php_greeting_php_current" }}
   theory: "PHP: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3012
+- id: {{ id "lesson_version_info_php_greeting_php_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 378610130
-  language_lesson_id: 1106
-  language_version_id: 378610130
-  version_id: 3000006
+  language_id: {{ id "course_php" }}
+  language_lesson_id: {{ id "lesson_php_greeting_php" }}
+  language_version_id: {{ id "version_php_current" }}
+  version_id: {{ id "lesson_version_php_greeting_php_current" }}
   theory: "PHP: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3013
+- id: {{ id "lesson_version_info_html_hello_world_html_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 410646757
-  language_lesson_id: 1107
-  language_version_id: 329547961
-  version_id: 3000007
+  language_id: {{ id "course_html" }}
+  language_lesson_id: {{ id "lesson_html_hello_world_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  version_id: {{ id "lesson_version_html_hello_world_html_current" }}
   theory: "HTML: первая программа. Начнём с самого простого примера."
   instructions: "Добавьте нужную разметку."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3014
+- id: {{ id "lesson_version_info_html_hello_world_html_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 410646757
-  language_lesson_id: 1107
-  language_version_id: 329547961
-  version_id: 3000007
+  language_id: {{ id "course_html" }}
+  language_lesson_id: {{ id "lesson_html_hello_world_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  version_id: {{ id "lesson_version_html_hello_world_html_current" }}
   theory: "HTML: your first program. Let's start with the simplest example."
   instructions: "Write the markup the task asks for."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3015
+- id: {{ id "lesson_version_info_html_greeting_html_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 410646757
-  language_lesson_id: 1108
-  language_version_id: 329547961
-  version_id: 3000008
+  language_id: {{ id "course_html" }}
+  language_lesson_id: {{ id "lesson_html_greeting_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  version_id: {{ id "lesson_version_html_greeting_html_current" }}
   theory: "HTML: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Добавьте нужную разметку."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3016
+- id: {{ id "lesson_version_info_html_greeting_html_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 410646757
-  language_lesson_id: 1108
-  language_version_id: 329547961
-  version_id: 3000008
+  language_id: {{ id "course_html" }}
+  language_lesson_id: {{ id "lesson_html_greeting_html" }}
+  language_version_id: {{ id "version_html_current" }}
+  version_id: {{ id "lesson_version_html_greeting_html_current" }}
   theory: "HTML: say hello to hexlet. Let's start with the simplest example."
   instructions: "Write the markup the task asks for."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3017
+- id: {{ id "lesson_version_info_typescript_hello_world_typescript_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 414575699
-  language_lesson_id: 1109
-  language_version_id: 522730299
-  version_id: 3000009
+  language_id: {{ id "course_typescript" }}
+  language_lesson_id: {{ id "lesson_typescript_hello_world_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  version_id: {{ id "lesson_version_typescript_hello_world_typescript_current" }}
   theory: "TypeScript: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3018
+- id: {{ id "lesson_version_info_typescript_hello_world_typescript_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 414575699
-  language_lesson_id: 1109
-  language_version_id: 522730299
-  version_id: 3000009
+  language_id: {{ id "course_typescript" }}
+  language_lesson_id: {{ id "lesson_typescript_hello_world_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  version_id: {{ id "lesson_version_typescript_hello_world_typescript_current" }}
   theory: "TypeScript: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3019
+- id: {{ id "lesson_version_info_typescript_greeting_typescript_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 414575699
-  language_lesson_id: 1110
-  language_version_id: 522730299
-  version_id: 3000010
+  language_id: {{ id "course_typescript" }}
+  language_lesson_id: {{ id "lesson_typescript_greeting_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  version_id: {{ id "lesson_version_typescript_greeting_typescript_current" }}
   theory: "TypeScript: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3020
+- id: {{ id "lesson_version_info_typescript_greeting_typescript_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 414575699
-  language_lesson_id: 1110
-  language_version_id: 522730299
-  version_id: 3000010
+  language_id: {{ id "course_typescript" }}
+  language_lesson_id: {{ id "lesson_typescript_greeting_typescript" }}
+  language_version_id: {{ id "version_typescript_current" }}
+  version_id: {{ id "lesson_version_typescript_greeting_typescript_current" }}
   theory: "TypeScript: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3021
+- id: {{ id "lesson_version_info_elixir_hello_world_elixir_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 599909531
-  language_lesson_id: 1111
-  language_version_id: 599909531
-  version_id: 3000011
+  language_id: {{ id "course_elixir" }}
+  language_lesson_id: {{ id "lesson_elixir_hello_world_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  version_id: {{ id "lesson_version_elixir_hello_world_elixir_current" }}
   theory: "Elixir: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3022
+- id: {{ id "lesson_version_info_elixir_hello_world_elixir_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 599909531
-  language_lesson_id: 1111
-  language_version_id: 599909531
-  version_id: 3000011
+  language_id: {{ id "course_elixir" }}
+  language_lesson_id: {{ id "lesson_elixir_hello_world_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  version_id: {{ id "lesson_version_elixir_hello_world_elixir_current" }}
   theory: "Elixir: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3023
+- id: {{ id "lesson_version_info_elixir_greeting_elixir_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 599909531
-  language_lesson_id: 1112
-  language_version_id: 599909531
-  version_id: 3000012
+  language_id: {{ id "course_elixir" }}
+  language_lesson_id: {{ id "lesson_elixir_greeting_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  version_id: {{ id "lesson_version_elixir_greeting_elixir_current" }}
   theory: "Elixir: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3024
+- id: {{ id "lesson_version_info_elixir_greeting_elixir_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 599909531
-  language_lesson_id: 1112
-  language_version_id: 599909531
-  version_id: 3000012
+  language_id: {{ id "course_elixir" }}
+  language_lesson_id: {{ id "lesson_elixir_greeting_elixir" }}
+  language_version_id: {{ id "version_elixir_current" }}
+  version_id: {{ id "lesson_version_elixir_greeting_elixir_current" }}
   theory: "Elixir: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3025
+- id: {{ id "lesson_version_info_python_hello_world_python_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 617920698
-  language_lesson_id: 1113
-  language_version_id: 617920698
-  version_id: 3000013
+  language_id: {{ id "course_python" }}
+  language_lesson_id: {{ id "lesson_python_hello_world_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  version_id: {{ id "lesson_version_python_hello_world_python_current" }}
   theory: "Python: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3026
+- id: {{ id "lesson_version_info_python_hello_world_python_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 617920698
-  language_lesson_id: 1113
-  language_version_id: 617920698
-  version_id: 3000013
+  language_id: {{ id "course_python" }}
+  language_lesson_id: {{ id "lesson_python_hello_world_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  version_id: {{ id "lesson_version_python_hello_world_python_current" }}
   theory: "Python: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3027
+- id: {{ id "lesson_version_info_python_greeting_python_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 617920698
-  language_lesson_id: 1114
-  language_version_id: 617920698
-  version_id: 3000014
+  language_id: {{ id "course_python" }}
+  language_lesson_id: {{ id "lesson_python_greeting_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  version_id: {{ id "lesson_version_python_greeting_python_current" }}
   theory: "Python: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3028
+- id: {{ id "lesson_version_info_python_greeting_python_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 617920698
-  language_lesson_id: 1114
-  language_version_id: 617920698
-  version_id: 3000014
+  language_id: {{ id "course_python" }}
+  language_lesson_id: {{ id "lesson_python_greeting_python" }}
+  language_version_id: {{ id "version_python_current" }}
+  version_id: {{ id "lesson_version_python_greeting_python_current" }}
   theory: "Python: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3029
+- id: {{ id "lesson_version_info_go_hello_world_go_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 912823128
-  language_lesson_id: 1115
-  language_version_id: 912823128
-  version_id: 3000015
+  language_id: {{ id "course_go" }}
+  language_lesson_id: {{ id "lesson_go_hello_world_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  version_id: {{ id "lesson_version_go_hello_world_go_current" }}
   theory: "Go: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3030
+- id: {{ id "lesson_version_info_go_hello_world_go_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 912823128
-  language_lesson_id: 1115
-  language_version_id: 912823128
-  version_id: 3000015
+  language_id: {{ id "course_go" }}
+  language_lesson_id: {{ id "lesson_go_hello_world_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  version_id: {{ id "lesson_version_go_hello_world_go_current" }}
   theory: "Go: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3031
+- id: {{ id "lesson_version_info_go_greeting_go_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 912823128
-  language_lesson_id: 1116
-  language_version_id: 912823128
-  version_id: 3000016
+  language_id: {{ id "course_go" }}
+  language_lesson_id: {{ id "lesson_go_greeting_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  version_id: {{ id "lesson_version_go_greeting_go_current" }}
   theory: "Go: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3032
+- id: {{ id "lesson_version_info_go_greeting_go_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 912823128
-  language_lesson_id: 1116
-  language_version_id: 912823128
-  version_id: 3000016
+  language_id: {{ id "course_go" }}
+  language_lesson_id: {{ id "lesson_go_greeting_go" }}
+  language_version_id: {{ id "version_go_current" }}
+  version_id: {{ id "lesson_version_go_greeting_go_current" }}
   theory: "Go: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3033
+- id: {{ id "lesson_version_info_css_hello_world_css_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 953067225
-  language_lesson_id: 1117
-  language_version_id: 953067225
-  version_id: 3000017
+  language_id: {{ id "course_css" }}
+  language_lesson_id: {{ id "lesson_css_hello_world_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  version_id: {{ id "lesson_version_css_hello_world_css_current" }}
   theory: "CSS: первая программа. Начнём с самого простого примера."
   instructions: "Добавьте нужную разметку."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3034
+- id: {{ id "lesson_version_info_css_hello_world_css_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 953067225
-  language_lesson_id: 1117
-  language_version_id: 953067225
-  version_id: 3000017
+  language_id: {{ id "course_css" }}
+  language_lesson_id: {{ id "lesson_css_hello_world_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  version_id: {{ id "lesson_version_css_hello_world_css_current" }}
   theory: "CSS: your first program. Let's start with the simplest example."
   instructions: "Write the markup the task asks for."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3035
+- id: {{ id "lesson_version_info_css_greeting_css_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 953067225
-  language_lesson_id: 1118
-  language_version_id: 953067225
-  version_id: 3000018
+  language_id: {{ id "course_css" }}
+  language_lesson_id: {{ id "lesson_css_greeting_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  version_id: {{ id "lesson_version_css_greeting_css_current" }}
   theory: "CSS: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Добавьте нужную разметку."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3036
+- id: {{ id "lesson_version_info_css_greeting_css_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 953067225
-  language_lesson_id: 1118
-  language_version_id: 953067225
-  version_id: 3000018
+  language_id: {{ id "course_css" }}
+  language_lesson_id: {{ id "lesson_css_greeting_css" }}
+  language_version_id: {{ id "version_css_current" }}
+  version_id: {{ id "lesson_version_css_greeting_css_current" }}
   theory: "CSS: say hello to hexlet. Let's start with the simplest example."
   instructions: "Write the markup the task asks for."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3037
+- id: {{ id "lesson_version_info_csharp_hello_world_csharp_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 995840764
-  language_lesson_id: 1119
-  language_version_id: 995840764
-  version_id: 3000019
+  language_id: {{ id "course_csharp" }}
+  language_lesson_id: {{ id "lesson_csharp_hello_world_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  version_id: {{ id "lesson_version_csharp_hello_world_csharp_current" }}
   theory: "C#: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3038
+- id: {{ id "lesson_version_info_csharp_hello_world_csharp_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 995840764
-  language_lesson_id: 1119
-  language_version_id: 995840764
-  version_id: 3000019
+  language_id: {{ id "course_csharp" }}
+  language_lesson_id: {{ id "lesson_csharp_hello_world_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  version_id: {{ id "lesson_version_csharp_hello_world_csharp_current" }}
   theory: "C#: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3039
+- id: {{ id "lesson_version_info_csharp_greeting_csharp_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 995840764
-  language_lesson_id: 1120
-  language_version_id: 995840764
-  version_id: 3000020
+  language_id: {{ id "course_csharp" }}
+  language_lesson_id: {{ id "lesson_csharp_greeting_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  version_id: {{ id "lesson_version_csharp_greeting_csharp_current" }}
   theory: "C#: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3040
+- id: {{ id "lesson_version_info_csharp_greeting_csharp_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 995840764
-  language_lesson_id: 1120
-  language_version_id: 995840764
-  version_id: 3000020
+  language_id: {{ id "course_csharp" }}
+  language_lesson_id: {{ id "lesson_csharp_greeting_csharp" }}
+  language_version_id: {{ id "version_csharp_current" }}
+  version_id: {{ id "lesson_version_csharp_greeting_csharp_current" }}
   theory: "C#: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3041
+- id: {{ id "lesson_version_info_java_hello_world_java_current_ru" }}
   name: "Привет, мир!"
   description: "Первая программа"
   locale: ru
-  language_id: 1058727635
-  language_lesson_id: 1121
-  language_version_id: 1058727635
-  version_id: 3000021
+  language_id: {{ id "course_java" }}
+  language_lesson_id: {{ id "lesson_java_hello_world_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  version_id: {{ id "lesson_version_java_hello_world_java_current" }}
   theory: "Java: первая программа. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, World!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3042
+- id: {{ id "lesson_version_info_java_hello_world_java_current_en" }}
   name: "Hello, World!"
   description: "Your first program"
   locale: en
-  language_id: 1058727635
-  language_lesson_id: 1121
-  language_version_id: 1058727635
-  version_id: 3000021
+  language_id: {{ id "course_java" }}
+  language_lesson_id: {{ id "lesson_java_hello_world_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  version_id: {{ id "lesson_version_java_hello_world_java_current" }}
   theory: "Java: your first program. Let's start with the simplest example."
   instructions: "Print `Hello, World!`."
   tips: "---\n- Mind the quotes and the case\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3043
+- id: {{ id "lesson_version_info_java_greeting_java_current_ru" }}
   name: "Приветствие"
   description: "Поздоровайтесь с Хекслетом"
   locale: ru
-  language_id: 1058727635
-  language_lesson_id: 1122
-  language_version_id: 1058727635
-  version_id: 3000022
+  language_id: {{ id "course_java" }}
+  language_lesson_id: {{ id "lesson_java_greeting_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  version_id: {{ id "lesson_version_java_greeting_java_current" }}
   theory: "Java: поздоровайтесь с хекслетом. Начнём с самого простого примера."
   instructions: "Выведите на экран `Hello, Hexlet!`."
   tips: "---\n- Следите за кавычками и регистром\n"
   definitions: "--- []\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 3044
+- id: {{ id "lesson_version_info_java_greeting_java_current_en" }}
   name: "Greeting"
   description: "Say hello to Hexlet"
   locale: en
-  language_id: 1058727635
-  language_lesson_id: 1122
-  language_version_id: 1058727635
-  version_id: 3000022
+  language_id: {{ id "course_java" }}
+  language_lesson_id: {{ id "lesson_java_greeting_java" }}
+  language_version_id: {{ id "version_java_current" }}
+  version_id: {{ id "lesson_version_java_greeting_java_current" }}
   theory: "Java: say hello to hexlet. Let's start with the simplest example."
   instructions: "Print `Hello, Hexlet!`."
   tips: "---\n- Mind the quotes and the case\n"

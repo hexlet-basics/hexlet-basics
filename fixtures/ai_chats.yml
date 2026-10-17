@@ -4,13 +4,13 @@
 # language_lesson_members.yml. testfixtures disables FKs during load, so
 # user_id parents need not exist. The RubyLLM-era `ai_model_id` column stays
 # NULL: it is not part of the Go domain.
-- id: 7001
-  user_id: 501
-  language_lesson_member_id: 3001
+- id: {{ id "ai_chat_admin_learner_javascript_hello_world" }}
+  user_id: {{ id "user_admin_learner" }}
+  language_lesson_member_id: {{ id "lesson_progress_admin_learner_javascript_hello_world" }}
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 7002
-  user_id: 502
-  language_lesson_member_id: 3002
+- id: {{ id "ai_chat_staff_editor_javascript_variables" }}
+  user_id: {{ id "user_staff_editor" }}
+  language_lesson_member_id: {{ id "lesson_progress_staff_editor_javascript_variables" }}
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'

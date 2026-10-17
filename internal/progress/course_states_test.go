@@ -6,18 +6,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/store"
-	"hexletbasics/internal/testsupport/testdb"
+	"hexletbasics/internal/testsupport"
 )
 
 func TestCourseStatesOfNoCoursesIsEmpty(t *testing.T) {
-	sqlDB, err := store.NewDB(testdb.DatabaseURL())
-	require.NoError(t, err)
-	db := store.NewClient(sqlDB)
-	t.Cleanup(func() { _ = db.Close() })
+	db := testsupport.NewClient(t)
 
-	states, err := progress.New(db, nil, nil, nil).CourseStates(t.Context(), 1001, nil)
+	states, err := progress.New(db, nil, nil, nil).CourseStates(t.Context(), fixtures.ID("user_admin_learner"), nil)
 	require.NoError(t, err)
 	assert.Empty(t, states)
 }

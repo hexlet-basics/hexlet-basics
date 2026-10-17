@@ -15,8 +15,8 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -66,12 +66,12 @@ func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 	return r.db.CourseLesson.Query().Where(courselesson.SlugEQ(slug)).OnlyX(t.Context())
 }
 
-// learner is a fixture account by email: alice has finished the first lesson,
-// bob has the second one started, carol has not begun.
-func (r *rig) learner(t *testing.T, email string) progress.Learner {
+// learner is a fixture account by label: user_admin_learner has finished the
+// first lesson, user_staff_editor has the second one started, user_blank has not
+// begun.
+func (r *rig) learner(t *testing.T, label string) progress.Learner {
 	t.Helper()
-	id := r.db.User.Query().Where(user.EmailEQ(email)).OnlyX(t.Context()).ID
-	return progress.Learner{UserID: id}
+	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixtures.ID(label)).ID}
 }
 
 func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
@@ -108,10 +108,10 @@ func lessonSlugs(state *progress.CourseState) []string {
 func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 	hello := r.lesson(t, firstLesson)
 
-	state, err := r.progress.StartLesson(ctx, carol, hello.ID, locale)
+	state, err := r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateStarted, state.State)
 	require.NotNil(t, state.NextLessonSlug)
@@ -124,10 +124,10 @@ func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 
 	// Pressing start again writes nothing and publishes nothing: the counts the
 	// CRM keeps count transitions, not requests.
-	_, err = r.progress.StartLesson(ctx, carol, hello.ID, locale)
+	_, err = r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
 	require.NoError(t, err)
 	assert.Equal(t, 2, testsupport.PublishedCount(t, r.services), "one course fact and one lesson fact, once")
-	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID)).CountX(ctx))
+	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }
 
 // Any lesson may be started, in any order (ADR-0016): the third before the first
@@ -135,12 +135,12 @@ func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 
-	state, err := r.progress.StartLesson(ctx, carol, r.lesson(t, thirdLesson).ID, locale)
+	state, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, thirdLesson).ID, locale)
 	require.NoError(t, err)
 
-	started := r.db.LessonProgress.Query().Where(lessonprogress.UserID(carol.UserID)).AllX(ctx)
+	started := r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).AllX(ctx)
 	require.Len(t, started, 1)
 	assert.Equal(t, r.lesson(t, thirdLesson).ID, started[0].LessonID)
 	assert.Equal(t, 0, state.Completion, "starting finishes nothing")
@@ -157,7 +157,7 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 		ClearNaturalOrder().
 		ExecX(ctx)
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, "alice@example.com"), lesson.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, "user_admin_learner"), lesson.ID, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -167,7 +167,7 @@ func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 	ctx := t.Context()
 	orphan := r.db.CourseLesson.Create().SetSlug("orphan").SaveX(ctx)
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, "alice@example.com"), orphan.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, "user_admin_learner"), orphan.ID, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -175,7 +175,7 @@ func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 func TestStartLessonReadsAnUnknownLessonAsNotFound(t *testing.T) {
 	r := newRig(t)
 
-	_, err := r.progress.StartLesson(t.Context(), r.learner(t, "alice@example.com"), -1, locale)
+	_, err := r.progress.StartLesson(t.Context(), r.learner(t, "user_admin_learner"), -1, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -238,7 +238,7 @@ func TestCourseStateOfAnUnknownCourseIsNotFound(t *testing.T) {
 	_, err := r.progress.CourseState(ctx, progress.Learner{}, -1)
 	assert.True(t, ent.IsNotFound(err), "a guest: %v", err)
 
-	_, err = r.progress.CourseState(ctx, r.learner(t, "alice@example.com"), -1)
+	_, err = r.progress.CourseState(ctx, r.learner(t, "user_admin_learner"), -1)
 	assert.True(t, ent.IsNotFound(err), "an account: %v", err)
 }
 
@@ -252,7 +252,7 @@ func TestCourseStateOfACourseWithNoVersionHasNoLessons(t *testing.T) {
 	assert.Empty(t, guest.Lessons)
 	assert.Zero(t, guest.Completion)
 
-	account, err := r.progress.CourseState(ctx, r.learner(t, "alice@example.com"), bare.ID)
+	account, err := r.progress.CourseState(ctx, r.learner(t, "user_admin_learner"), bare.ID)
 	require.NoError(t, err)
 	assert.Empty(t, account.Lessons)
 }
@@ -263,7 +263,7 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	javascript := r.course(t, jsSlug)
 	ruby := r.course(t, "ruby")
 
-	states, err := r.progress.CourseStates(ctx, r.learner(t, "alice@example.com").UserID, []int{javascript.ID, ruby.ID, -1})
+	states, err := r.progress.CourseStates(ctx, r.learner(t, "user_admin_learner").UserID, []int{javascript.ID, ruby.ID, -1})
 	require.NoError(t, err)
 
 	assert.NotContains(t, states, -1, "a course that does not exist is absent")
@@ -288,7 +288,7 @@ func TestCourseStatesSkipsLessonsWithoutAPosition(t *testing.T) {
 		ClearNaturalOrder().
 		ExecX(ctx)
 
-	states, err := r.progress.CourseStates(ctx, r.learner(t, "alice@example.com").UserID, []int{r.course(t, jsSlug).ID})
+	states, err := r.progress.CourseStates(ctx, r.learner(t, "user_admin_learner").UserID, []int{r.course(t, jsSlug).ID})
 	require.NoError(t, err)
 
 	state := states[r.course(t, jsSlug).ID]
@@ -324,19 +324,19 @@ func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) 
 	r.mocks.Runner.RunFunc = func(_ context.Context, _ progress.Submission) (progress.Outcome, error) {
 		return progress.Outcome{}, boom
 	}
-	carol := r.learner(t, "carol@example.com")
+	blankUser := r.learner(t, "user_blank")
 
-	_, err := r.progress.CheckSolution(ctx, r.check(t, carol, firstLesson))
+	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
 	assert.ErrorIs(t, err, boom)
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
-	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID)).CountX(ctx))
+	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }
 
 func TestCheckRefusesAVersionThatIsNotTheCurrentOneOfThisLesson(t *testing.T) {
 	r := newRig(t)
-	check := r.check(t, r.learner(t, "alice@example.com"), secondLesson)
-	check.VersionID = r.check(t, r.learner(t, "alice@example.com"), firstLesson).VersionID
+	check := r.check(t, r.learner(t, "user_admin_learner"), secondLesson)
+	check.VersionID = r.check(t, r.learner(t, "user_admin_learner"), firstLesson).VersionID
 
 	_, err := r.progress.CheckSolution(t.Context(), check)
 
@@ -346,7 +346,7 @@ func TestCheckRefusesAVersionThatIsNotTheCurrentOneOfThisLesson(t *testing.T) {
 func TestCheckRefusesACourseWithNoCurrentVersion(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	check := r.check(t, r.learner(t, "alice@example.com"), secondLesson)
+	check := r.check(t, r.learner(t, "user_admin_learner"), secondLesson)
 	r.db.Course.Update().Where(course.SlugEQ(jsSlug)).ClearCurrentVersionID().ExecX(ctx)
 
 	_, err := r.progress.CheckSolution(ctx, check)
@@ -357,7 +357,7 @@ func TestCheckRefusesACourseWithNoCurrentVersion(t *testing.T) {
 func TestCheckCannotGradeAVersionBuiltWithoutAnImage(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	check := r.check(t, r.learner(t, "alice@example.com"), secondLesson)
+	check := r.check(t, r.learner(t, "user_admin_learner"), secondLesson)
 	r.db.CourseVersion.UpdateOneID(*r.course(t, jsSlug).CurrentVersionID).
 		ClearDockerImage().
 		ExecX(ctx)

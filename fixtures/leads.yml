@@ -4,7 +4,7 @@
 # so `user_id` need not match a users fixture (and full_name is derived from the
 # user, which the admin list serializer returns null until the User schema lands).
 # Loaded by testfixtures inside each test's rollback transaction.
-- id: 1
+- id: {{ id "lead_anna" }}
   user_id: 101
   email: anna@example.com
   phone: '+79990000001'
@@ -15,7 +15,7 @@
   state: new
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 2
+- id: {{ id "lead_boris" }}
   user_id: 102
   email: boris@example.com
   phone:

@@ -6,69 +6,69 @@
 # ru published posts are 6003 (newest), 6001 and 5990 (oldest), so the list,
 # next-post and recommended-post orders are all observable; 6004 is ru but
 # archived and 6005 is en, so the locale and state scopes each exclude one.
-- id: 6001
+- id: {{ id "blog_post_hello_world" }}
   name: Hello world
   slug: hello-world
   description: The very first post
   locale: ru
   state: published
   rich_body: '<p>Hello <strong>world</strong> from the blog</p>'
-  creator_id: 1001
+  creator_id: {{ id "user_admin_learner" }}
   related_language_items_count: 3
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-- id: 6002
+- id: {{ id "blog_post_second_post" }}
   name: Second post
   slug: second-post
   description: A draft
   locale: en
   state: draft
   rich_body: ''
-  creator_id: 1002
+  creator_id: {{ id "user_staff_editor" }}
   related_language_items_count: 0
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
-- id: 6003
+- id: {{ id "blog_post_learning_ruby" }}
   name: Learning Ruby
   slug: learning-ruby
   description: Why Ruby is a good first language
   locale: ru
   state: published
   rich_body: '<p>Ruby часто советуют как первый язык, и не зря: код на нём читается почти как обычный английский, а порог входа ниже, чем у большинства языков.</p><h2>Простой синтаксис</h2><p>Не нужно объявлять типы, ставить точки с запятой и разбираться с шаблонным кодом. Программа из одной строки — это уже полноценная программа, которую можно сразу запустить и увидеть результат.</p><ul><li>Читаемый код помогает сосредоточиться на идеях, а не на синтаксисе</li><li>Богатая стандартная библиотека избавляет от лишних зависимостей</li><li>Большое дружелюбное сообщество и море материалов на русском</li></ul><h2>Куда пойти после основ</h2><p>Освоив базу, можно перейти к веб-разработке на Rails, писать скрипты для автоматизации или готовиться к работе в команде. Фундамент, который даёт Ruby, пригодится в любом из этих направлений.</p><pre><code>puts "Hello, world!"</code></pre><p>Начните с первого урока: на всё про всё уйдёт меньше десяти минут.</p>'
-  creator_id: 1002
+  creator_id: {{ id "user_staff_editor" }}
   related_language_items_count: 0
   created_at: '2026-07-27 10:00:00'
   updated_at: '2026-07-27 10:00:00'
-- id: 5990
+- id: {{ id "blog_post_oldest_post" }}
   name: Oldest post
   slug: oldest-post
   description: Where the blog began
   locale: ru
   state: published
   rich_body: '<p>Это самая первая запись блога Code Basics — с неё всё и началось. Тогда у платформы было всего несколько уроков и горстка первых учеников.</p><h2>Первые шаги</h2><p>Мы собирали обратную связь после каждого урока и переписывали задания, пока они не становились понятными с первого прочтения. Многие решения, которые сегодня кажутся очевидными, родились из комментариев студентов.</p><ul><li>Первые курсы вышли за несколько недель</li><li>Проверка кода заработала раньше, чем мы успели написать документацию</li><li>Сообщество появилось само, мы просто дали ему место</li></ul><h2>Чему мы научились</h2><p>Лучший способ учить — давать писать код как можно раньше. Теория нужна ровно настолько, насколько она помогает решить следующее задание.</p><pre><code>puts "Hello, world!"</code></pre><p>Спасибо всем, кто был с нами с самого начала.</p>'
-  creator_id: 1001
+  creator_id: {{ id "user_admin_learner" }}
   related_language_items_count: 0
   created_at: '2026-07-20 10:00:00'
   updated_at: '2026-07-20 10:00:00'
-- id: 6004
+- id: {{ id "blog_post_archived_notes" }}
   name: Archived notes
   slug: archived-notes
   description: No longer relevant
   locale: ru
   state: archived
   rich_body: '<p>Old news</p>'
-  creator_id: 1001
+  creator_id: {{ id "user_admin_learner" }}
   related_language_items_count: 0
   created_at: '2026-07-27 11:00:00'
   updated_at: '2026-07-27 11:00:00'
-- id: 6005
+- id: {{ id "blog_post_english_post" }}
   name: English post
   slug: english-post
   description: A post for the English blog
   locale: en
   state: published
   rich_body: '<p>Hello readers</p>'
-  creator_id: 1001
+  creator_id: {{ id "user_admin_learner" }}
   related_language_items_count: 0
   created_at: '2026-07-27 12:00:00'
   updated_at: '2026-07-27 12:00:00'
