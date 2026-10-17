@@ -130,9 +130,13 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
-	require.Len(t, tools.Tools, 1)
-	tool := tools.Tools[0]
-	assert.Equal(t, "listCourses", tool.Name)
+	var tool *mcp.Tool
+	for _, candidate := range tools.Tools {
+		if candidate.Name == "listCourses" {
+			tool = candidate
+		}
+	}
+	require.NotNil(t, tool)
 	assert.True(t, tool.Annotations.ReadOnlyHint)
 
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "listCourses"})
@@ -202,7 +206,9 @@ func (v verifier) VerifyAccessToken(context.Context, string) (oauthserver.Token,
 }
 func (verifier) Resource() string { return testsupport.MCPEndpoint }
 
-type emptyCatalogue struct{}
+// emptyCatalogue answers an empty course list; the other methods are the nil
+// embedded interface's, which no test of it reaches.
+type emptyCatalogue struct{ mcpserver.Catalogue }
 
 func (emptyCatalogue) ListCourses(context.Context) ([]api.CourseCatalogItem, error) { return nil, nil }
 

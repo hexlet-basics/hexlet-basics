@@ -105,7 +105,36 @@ type MCPConfig struct {
 	// to the endpoint needs an OAuth token, so it requires OAUTH_ENABLED: an
 	// endpoint no client could sign in to would only answer 401.
 	Enabled bool `env:"ENABLED" envDefault:"false"`
+	// MaxPageSize caps the records one tool call returns: a larger page size is
+	// clamped to it, and the result says so. An agent that asks for everything
+	// would otherwise fill its own context with one call.
+	MaxPageSize int `env:"MAX_PAGE_SIZE" envDefault:"50"`
+	// MaxResponseBytes caps the structured content of one result. A result over
+	// it is cut at a record boundary and carries a pagination hint, never
+	// invalid JSON.
+	MaxResponseBytes int `env:"MAX_RESPONSE_BYTES" envDefault:"102400"`
+	// ToolTimeout is how long one tool call may run before its context is
+	// cancelled and the agent gets an error.
+	ToolTimeout time.Duration `env:"TOOL_TIMEOUT" envDefault:"30s"`
+	// RateWindow is the period every rate limit below counts over.
+	RateWindow time.Duration `env:"RATE_WINDOW" envDefault:"1m"`
+	// The rate limits are calls per RateWindow, per class of tool, for one user
+	// and for one Connected App (an OAuth client, shared by all its users).
+	// Catalogue reads are public data; reads of personal data and writes are
+	// stricter, and writes the strictest. They are in memory, per replica.
+	RateUserCatalogue int `env:"RATE_USER_CATALOGUE" envDefault:"60"`
+	RateUserPersonal  int `env:"RATE_USER_PERSONAL" envDefault:"30"`
+	RateUserWrite     int `env:"RATE_USER_WRITE" envDefault:"10"`
+	// The Connected App limits are higher than the per-user ones, since an app
+	// speaks for many users; they stop one misbehaving app, not one user.
+	RateClientCatalogue int `env:"RATE_CLIENT_CATALOGUE" envDefault:"600"`
+	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL" envDefault:"300"`
+	RateClientWrite     int `env:"RATE_CLIENT_WRITE" envDefault:"100"`
 }
+
+// MCPMinResponseBytes is the smallest accepted MaxResponseBytes: below it the
+// pagination hint itself would not fit in a cut result.
+const MCPMinResponseBytes = 1024
 
 // OAuthConfig configures the in-process OAuth authorization server. Everything
 // in it is inert while Enabled is false, which is the default: the code ships
@@ -216,6 +245,9 @@ func Load() (*Config, error) {
 	if cfg.MCP.Enabled && !cfg.OAuth.Enabled {
 		return nil, oops.Errorf("MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
 	}
+	if err := validateMCP(cfg.MCP); err != nil {
+		return nil, oops.Wrapf(err, "validate MCP config")
+	}
 	if cfg.AuditRetentionMonths < 1 {
 		// Zero would drop the month in progress; the job would refuse it on
 		// every run, so the process refuses to start instead.
@@ -245,6 +277,40 @@ func validateProduction(cfg *Config) error {
 	}
 	if cfg.OAuth.Enabled && !strings.HasPrefix(cfg.OAuth.Issuer, "https://") {
 		return oops.Errorf("OAUTH_ISSUER must be an https origin in production")
+	}
+	return nil
+}
+
+// validateMCP refuses a limit that would silently switch a protection off: zero
+// reads as "unlimited" to a person and as "always refused" to the code, and both
+// are wrong. It checks only when the endpoint is on, like validateOAuth.
+func validateMCP(cfg MCPConfig) error {
+	if !cfg.Enabled {
+		return nil
+	}
+	if cfg.MaxPageSize < 1 {
+		return oops.Errorf("MCP_MAX_PAGE_SIZE must be at least 1, got %d", cfg.MaxPageSize)
+	}
+	if cfg.MaxResponseBytes < MCPMinResponseBytes {
+		return oops.Errorf("MCP_MAX_RESPONSE_BYTES must be at least %d, got %d", MCPMinResponseBytes, cfg.MaxResponseBytes)
+	}
+	if cfg.ToolTimeout < time.Second {
+		return oops.Errorf("MCP_TOOL_TIMEOUT must be at least 1s, got %s", cfg.ToolTimeout)
+	}
+	if cfg.RateWindow < time.Second {
+		return oops.Errorf("MCP_RATE_WINDOW must be at least 1s, got %s", cfg.RateWindow)
+	}
+	for name, limit := range map[string]int{
+		"MCP_RATE_USER_CATALOGUE":   cfg.RateUserCatalogue,
+		"MCP_RATE_USER_PERSONAL":    cfg.RateUserPersonal,
+		"MCP_RATE_USER_WRITE":       cfg.RateUserWrite,
+		"MCP_RATE_CLIENT_CATALOGUE": cfg.RateClientCatalogue,
+		"MCP_RATE_CLIENT_PERSONAL":  cfg.RateClientPersonal,
+		"MCP_RATE_CLIENT_WRITE":     cfg.RateClientWrite,
+	} {
+		if limit < 1 {
+			return oops.Errorf("%s must be at least 1, got %d", name, limit)
+		}
 	}
 	return nil
 }

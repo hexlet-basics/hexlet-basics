@@ -536,6 +536,22 @@ var serverPackage = do.Package(
 			Verifier:  oauthServer,
 			Catalogue: handler,
 			Issuer:    cfg.OAuth.Issuer,
+			Limits: mcpserver.Limits{
+				MaxPageSize:      cfg.MCP.MaxPageSize,
+				MaxResponseBytes: cfg.MCP.MaxResponseBytes,
+				ToolTimeout:      cfg.MCP.ToolTimeout,
+				RateWindow:       cfg.MCP.RateWindow,
+				User: mcpserver.Rates{
+					Catalogue: cfg.MCP.RateUserCatalogue,
+					Personal:  cfg.MCP.RateUserPersonal,
+					Write:     cfg.MCP.RateUserWrite,
+				},
+				Client: mcpserver.Rates{
+					Catalogue: cfg.MCP.RateClientCatalogue,
+					Personal:  cfg.MCP.RateClientPersonal,
+					Write:     cfg.MCP.RateClientWrite,
+				},
+			},
 		})
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {

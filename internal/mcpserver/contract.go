@@ -90,9 +90,8 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 			out[k] = resolved
 		}
 		if nullable, _ := out["nullable"].(bool); nullable {
-			if typ, ok := out["type"].(string); ok {
-				out["type"] = []any{typ, "null"}
-			}
+			delete(out, "nullable")
+			return allowNull(out), nil
 		}
 		delete(out, "nullable")
 		return out, nil
@@ -109,4 +108,24 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 	default:
 		return node, nil
 	}
+}
+
+// allowNull makes a schema accept null, which is what OpenAPI 3.0's
+// `nullable: true` means. A plain type becomes a type list, and an enum gains
+// null. A schema built from other schemas (the contract writes a nullable
+// reference as `allOf` with `nullable`) cannot take null by editing it, since
+// every branch would still refuse it, so null becomes an alternative to it.
+func allowNull(schema map[string]any) map[string]any {
+	for _, combined := range []string{"allOf", "anyOf", "oneOf"} {
+		if _, ok := schema[combined]; ok {
+			return map[string]any{"anyOf": []any{schema, map[string]any{"type": "null"}}}
+		}
+	}
+	if typ, ok := schema["type"].(string); ok {
+		schema["type"] = []any{typ, "null"}
+	}
+	if values, ok := schema["enum"].([]any); ok {
+		schema["enum"] = append(values, nil)
+	}
+	return schema
 }

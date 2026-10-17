@@ -65,36 +65,55 @@ type OAuth struct {
 	now time.Time
 }
 
+type oauthOptions struct {
+	mcpLimits mcpserver.Limits
+}
+
+// OAuthOption changes how NewOAuth builds the stack.
+type OAuthOption func(*oauthOptions)
+
+// WithMCPLimits sets the MCP endpoint's limits (page size, response size,
+// timeout, rates); a field left zero keeps its default. Tests of a limit set
+// only that one, small, so they do not have to produce a hundred kilobytes or
+// wait half a minute.
+func WithMCPLimits(limits mcpserver.Limits) OAuthOption {
+	return func(o *oauthOptions) { o.mcpLimits = limits }
+}
+
 // NewOAuth builds the stack. The clock starts at the real time and moves only
 // through Advance, so a token can be expired without sleeping.
 //
 // Client ID Metadata Documents are fetched from o.Documents (see ClientDocuments).
-func NewOAuth(t *testing.T) *OAuth {
+func NewOAuth(t *testing.T, opts ...OAuthOption) *OAuth {
 	t.Helper()
-	return newOAuth(t, true, oauthserver.Config{})
+	return newOAuth(t, true, oauthserver.Config{}, opts)
 }
 
 // NewOAuthWith is NewOAuth with settings of the server open to change: the
 // token lifetimes. The issuer and the key are always the test's own.
-func NewOAuthWith(t *testing.T, cfg oauthserver.Config) *OAuth {
+func NewOAuthWith(t *testing.T, cfg oauthserver.Config, opts ...OAuthOption) *OAuth {
 	t.Helper()
-	return newOAuth(t, true, cfg)
+	return newOAuth(t, true, cfg, opts)
 }
 
 // NewOAuthWithProductionFetcher is NewOAuth with the metadata document client
 // the application wires in production, which refuses every non-public address.
 // A test about what the server will not fetch uses it; there is no document
 // host behind it.
-func NewOAuthWithProductionFetcher(t *testing.T) *OAuth {
+func NewOAuthWithProductionFetcher(t *testing.T, opts ...OAuthOption) *OAuth {
 	t.Helper()
-	return newOAuth(t, false, oauthserver.Config{})
+	return newOAuth(t, false, oauthserver.Config{}, opts)
 }
 
-func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config) *OAuth {
+func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OAuthOption) *OAuth {
 	t.Helper()
 	cfg.Issuer, cfg.EncryptionKey = OAuthIssuer, oauthEncryptionKey
 	db, tx, transactor := NewClientWithTxAndTransactor(t)
 	o := &OAuth{t: t, DB: db, now: time.Now()}
+	var options oauthOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
 	if documentHost {
 		o.Documents = newClientDocuments(t)
 	}
@@ -144,7 +163,13 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config) *OAuth {
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
 	require.NoError(t, err)
-	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Issuer: OAuthIssuer})
+	// The endpoint's rate limiter runs on the same controllable clock as the
+	// OAuth server, unless a test brings its own.
+	limits := options.mcpLimits
+	if limits.Now == nil {
+		limits.Now = func() time.Time { return o.now }
+	}
+	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Issuer: OAuthIssuer, Limits: limits})
 	require.NoError(t, err)
 	// The attachment and webhook handlers are not under test; their routes are
 	// registered but never requested.
@@ -410,6 +435,34 @@ func (o *OAuth) Connect(userID int, scopes ...string) Tokens {
 	require.NotEmpty(o.t, f.RequestID)
 	code := f.Approve()
 	tokens, res := f.Exchange(code, PKCEVerifier())
+	require.Equal(o.t, http.StatusOK, res.StatusCode)
+	return tokens
+}
+
+// ConnectAs is Connect through a named Connected App, for a test with several
+// users or apps connected at once. Connect's registration replaces every client,
+// and deleting a client revokes its tokens, so a second Connect would end the
+// first one's session; ConnectAs registers clientID only when it is not
+// registered yet and leaves the others alone. Use OAuthClientID to connect
+// another user through the app Connect registered (call Connect first), and any
+// other id for a second app. A test of what is counted per client needs two apps
+// whose users overlap.
+func (o *OAuth) ConnectAs(clientID string, userID int, scopes ...string) Tokens {
+	o.t.Helper()
+	known, err := o.DB.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Exist(o.t.Context())
+	require.NoError(o.t, err)
+	if !known {
+		_, err = o.DB.OAuthClient.Create().
+			SetClientID(clientID).
+			SetName("Test MCP client " + clientID).
+			SetRedirectUris([]string{OAuthRedirectURI}).
+			SetScopes(scopes).
+			Save(o.t.Context())
+		require.NoError(o.t, err)
+	}
+	f := o.StartWith(userID, StartOptions{Scopes: scopes, ClientID: clientID, RedirectURIs: []string{OAuthRedirectURI}})
+	require.Equal(o.t, http.StatusFound, f.Authorize.StatusCode)
+	tokens, res := f.Exchange(f.Approve(), PKCEVerifier())
 	require.Equal(o.t, http.StatusOK, res.StatusCode)
 	return tokens
 }
