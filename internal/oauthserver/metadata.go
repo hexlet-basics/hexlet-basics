@@ -37,7 +37,12 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 	doc.RequestParameterSupported = false
 	doc.RequestObjectSigningAlgValuesSupported = nil
 
+	out, err := withIssParameter(doc)
+	if err != nil {
+		http.Error(w, "metadata", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
-	_ = json.NewEncoder(w).Encode(doc)
+	_ = json.NewEncoder(w).Encode(out)
 }
