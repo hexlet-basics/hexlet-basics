@@ -3291,6 +3291,8 @@ type AuditRecordMutation struct {
 	outcome             *string
 	changes             *jsontext.Value
 	appendchanges       jsontext.Value
+	reads               *jsontext.Value
+	appendreads         jsontext.Value
 	clearedFields       map[string]struct{}
 	done                bool
 	oldValue            func(context.Context) (*AuditRecord, error)
@@ -4108,6 +4110,71 @@ func (m *AuditRecordMutation) ResetChanges() {
 	delete(m.clearedFields, auditrecord.FieldChanges)
 }
 
+// SetReads sets the "reads" field.
+func (m *AuditRecordMutation) SetReads(j jsontext.Value) {
+	m.reads = &j
+	m.appendreads = nil
+}
+
+// Reads returns the value of the "reads" field in the mutation.
+func (m *AuditRecordMutation) Reads() (r jsontext.Value, exists bool) {
+	v := m.reads
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReads returns the old "reads" field's value of the AuditRecord entity.
+// If the AuditRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuditRecordMutation) OldReads(ctx context.Context) (v jsontext.Value, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReads is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReads requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReads: %w", err)
+	}
+	return oldValue.Reads, nil
+}
+
+// AppendReads adds j to the "reads" field.
+func (m *AuditRecordMutation) AppendReads(j jsontext.Value) {
+	m.appendreads = append(m.appendreads, j...)
+}
+
+// AppendedReads returns the list of values that were appended to the "reads" field in this mutation.
+func (m *AuditRecordMutation) AppendedReads() (jsontext.Value, bool) {
+	if len(m.appendreads) == 0 {
+		return nil, false
+	}
+	return m.appendreads, true
+}
+
+// ClearReads clears the value of the "reads" field.
+func (m *AuditRecordMutation) ClearReads() {
+	m.reads = nil
+	m.appendreads = nil
+	m.clearedFields[auditrecord.FieldReads] = struct{}{}
+}
+
+// ReadsCleared returns if the "reads" field was cleared in this mutation.
+func (m *AuditRecordMutation) ReadsCleared() bool {
+	_, ok := m.clearedFields[auditrecord.FieldReads]
+	return ok
+}
+
+// ResetReads resets all changes to the "reads" field.
+func (m *AuditRecordMutation) ResetReads() {
+	m.reads = nil
+	m.appendreads = nil
+	delete(m.clearedFields, auditrecord.FieldReads)
+}
+
 // Where appends a list predicates to the AuditRecordMutation builder.
 func (m *AuditRecordMutation) Where(ps ...predicate.AuditRecord) {
 	m.predicates = append(m.predicates, ps...)
@@ -4142,7 +4209,7 @@ func (m *AuditRecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AuditRecordMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.occurred_at != nil {
 		fields = append(fields, auditrecord.FieldOccurredAt)
 	}
@@ -4185,6 +4252,9 @@ func (m *AuditRecordMutation) Fields() []string {
 	if m.changes != nil {
 		fields = append(fields, auditrecord.FieldChanges)
 	}
+	if m.reads != nil {
+		fields = append(fields, auditrecord.FieldReads)
+	}
 	return fields
 }
 
@@ -4221,6 +4291,8 @@ func (m *AuditRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.Outcome()
 	case auditrecord.FieldChanges:
 		return m.Changes()
+	case auditrecord.FieldReads:
+		return m.Reads()
 	}
 	return nil, false
 }
@@ -4258,6 +4330,8 @@ func (m *AuditRecordMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldOutcome(ctx)
 	case auditrecord.FieldChanges:
 		return m.OldChanges(ctx)
+	case auditrecord.FieldReads:
+		return m.OldReads(ctx)
 	}
 	return nil, fmt.Errorf("unknown AuditRecord field %s", name)
 }
@@ -4365,6 +4439,13 @@ func (m *AuditRecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetChanges(v)
 		return nil
+	case auditrecord.FieldReads:
+		v, ok := value.(jsontext.Value)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReads(v)
+		return nil
 	}
 	return fmt.Errorf("unknown AuditRecord field %s", name)
 }
@@ -4464,6 +4545,9 @@ func (m *AuditRecordMutation) ClearedFields() []string {
 	if m.FieldCleared(auditrecord.FieldChanges) {
 		fields = append(fields, auditrecord.FieldChanges)
 	}
+	if m.FieldCleared(auditrecord.FieldReads) {
+		fields = append(fields, auditrecord.FieldReads)
+	}
 	return fields
 }
 
@@ -4507,6 +4591,9 @@ func (m *AuditRecordMutation) ClearField(name string) error {
 		return nil
 	case auditrecord.FieldChanges:
 		m.ClearChanges()
+		return nil
+	case auditrecord.FieldReads:
+		m.ClearReads()
 		return nil
 	}
 	return fmt.Errorf("unknown AuditRecord nullable field %s", name)
@@ -4557,6 +4644,9 @@ func (m *AuditRecordMutation) ResetField(name string) error {
 		return nil
 	case auditrecord.FieldChanges:
 		m.ResetChanges()
+		return nil
+	case auditrecord.FieldReads:
+		m.ResetReads()
 		return nil
 	}
 	return fmt.Errorf("unknown AuditRecord field %s", name)

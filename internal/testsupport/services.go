@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	wmsql "github.com/ThreeDotsLabs/watermill-sql/v4/pkg/sql"
+	"github.com/ThreeDotsLabs/watermill/components/cqrs"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
@@ -141,4 +142,22 @@ func outbox(t *testing.T, s *Services) []*message.Message {
 	}
 	require.NoError(t, rows.Err())
 	return messages
+}
+
+// Deliver hands every fact in the outbox that handler consumes to it, oldest
+// first, the way the worker's Watermill router does after the request is over.
+// The harness runs no router, so a test that asserts on what a consumer leaves
+// behind (an Audit Record) calls this after the operation and then reads the
+// rows. Facts of other types are skipped.
+func Deliver(t *testing.T, s *Services, handler cqrs.EventHandler) {
+	t.Helper()
+	name := events.Marshaler.Name(handler.NewEvent())
+	for _, msg := range outbox(t, s) {
+		if events.Marshaler.NameFromMessage(msg) != name {
+			continue
+		}
+		event := handler.NewEvent()
+		require.NoError(t, events.Marshaler.Unmarshal(msg, event))
+		require.NoError(t, handler.Handle(t.Context(), event))
+	}
 }

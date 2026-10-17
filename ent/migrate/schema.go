@@ -130,6 +130,7 @@ var (
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "outcome", Type: field.TypeString},
 		{Name: "changes", Type: field.TypeJSON, Nullable: true},
+		{Name: "reads", Type: field.TypeJSON, Nullable: true},
 	}
 	// AuditRecordsTable holds the schema information for the "audit_records" table.
 	AuditRecordsTable = &schema.Table{

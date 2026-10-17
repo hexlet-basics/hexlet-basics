@@ -85,6 +85,28 @@ type Entry struct {
 	Operation string
 	Locale    string
 	Outcome   Outcome
+
+	// The rest is for a read of personal data, which is recorded from a domain
+	// event some time after the request (ADR-0017). OccurredAt is when the read
+	// happened, not when the record was written; EntityType and EntityID file the
+	// record under what was read (the id only for a read of one row); Reads says
+	// how much was touched. A change leaves all four empty: its time is now, and
+	// its entity comes from the Recorder.
+	OccurredAt time.Time
+	EntityType string
+	EntityID   string
+	Reads      *Reads
+}
+
+// MaxReadIDs caps the ids a read record keeps. A page is far smaller, and a
+// record that grew with the table would turn a bulk read into a bulk write.
+const MaxReadIDs = 200
+
+// Reads is what a read of personal data touched: the number of rows, and their
+// ids up to MaxReadIDs. Identifiers and counts only, never a field value.
+type Reads struct {
+	Count int      `json:"count"`
+	IDs   []string `json:"ids,omitempty"`
 }
 
 // FieldChange is the old and new value of one field. A secret field keeps only
@@ -161,8 +183,12 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	if rec != nil {
 		changes = rec.Changes()
 	}
+	occurredAt := e.OccurredAt
+	if occurredAt.IsZero() {
+		occurredAt = time.Now()
+	}
 	create := client.AuditRecord.Create().
-		SetOccurredAt(time.Now()).
+		SetOccurredAt(occurredAt).
 		SetChannel(string(e.Source.Channel)).
 		SetOperation(e.Operation).
 		SetOutcome(string(e.Outcome)).
@@ -181,8 +207,22 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	if e.Locale != "" {
 		create.SetLocale(e.Locale)
 	}
-	if entity, id := primary(changes); entity != "" {
-		create.SetEntityType(entity).SetEntityID(id)
+	entity, id := e.EntityType, e.EntityID
+	if entity == "" {
+		entity, id = primary(changes)
+	}
+	if entity != "" {
+		create.SetEntityType(entity)
+	}
+	if id != "" {
+		create.SetEntityID(id)
+	}
+	if e.Reads != nil {
+		raw, err := json.Marshal(e.Reads)
+		if err != nil {
+			return fmt.Errorf("encode audit reads: %w", err)
+		}
+		create.SetReads(raw)
 	}
 	if len(changes) > 0 {
 		raw, err := json.Marshal(changes)

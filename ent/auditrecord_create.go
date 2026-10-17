@@ -187,6 +187,12 @@ func (_c *AuditRecordCreate) SetChanges(v jsontext.Value) *AuditRecordCreate {
 	return _c
 }
 
+// SetReads sets the "reads" field.
+func (_c *AuditRecordCreate) SetReads(v jsontext.Value) *AuditRecordCreate {
+	_c.mutation.SetReads(v)
+	return _c
+}
+
 // Mutation returns the AuditRecordMutation object of the builder.
 func (_c *AuditRecordCreate) Mutation() *AuditRecordMutation {
 	return _c.mutation
@@ -325,6 +331,10 @@ func (_c *AuditRecordCreate) createSpec() (*AuditRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(auditrecord.FieldChanges, field.TypeJSON, value)
 		_node.Changes = value
 	}
+	if value, ok := _c.mutation.Reads(); ok {
+		_spec.SetField(auditrecord.FieldReads, field.TypeJSON, value)
+		_node.Reads = value
+	}
 	return _node, _spec
 }
 
@@ -429,6 +439,9 @@ func (u *AuditRecordUpsertOne) UpdateNewValues() *AuditRecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.Changes(); exists {
 			s.SetIgnore(auditrecord.FieldChanges)
+		}
+		if _, exists := u.create.mutation.Reads(); exists {
+			s.SetIgnore(auditrecord.FieldReads)
 		}
 	}))
 	return u
@@ -678,6 +691,9 @@ func (u *AuditRecordUpsertBulk) UpdateNewValues() *AuditRecordUpsertBulk {
 			}
 			if _, exists := b.mutation.Changes(); exists {
 				s.SetIgnore(auditrecord.FieldChanges)
+			}
+			if _, exists := b.mutation.Reads(); exists {
+				s.SetIgnore(auditrecord.FieldReads)
 			}
 		}
 	}))

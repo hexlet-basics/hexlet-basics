@@ -98,6 +98,9 @@ func (_u *AuditRecordUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if _u.mutation.ChangesCleared() {
 		_spec.ClearField(auditrecord.FieldChanges, field.TypeJSON)
 	}
+	if _u.mutation.ReadsCleared() {
+		_spec.ClearField(auditrecord.FieldReads, field.TypeJSON)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{auditrecord.Label}
@@ -218,6 +221,9 @@ func (_u *AuditRecordUpdateOne) sqlSave(ctx context.Context) (_node *AuditRecord
 	}
 	if _u.mutation.ChangesCleared() {
 		_spec.ClearField(auditrecord.FieldChanges, field.TypeJSON)
+	}
+	if _u.mutation.ReadsCleared() {
+		_spec.ClearField(auditrecord.FieldReads, field.TypeJSON)
 	}
 	_node = &AuditRecord{config: _u.config}
 	_spec.Assign = _node.assignValues

@@ -509,3 +509,60 @@ falls under the shared default error response.
 record a stronger role than their own (two staff members can raise each other);
 removing that would be a hierarchy of roles, a separate decision. The last
 administrator check is not a lock (see `accounts.EnsureAnotherAdmin`).
+
+## Addendum: reads of personal data (#850)
+
+Settled by the ticket that records staff reads. It meets the ADR as written
+(asynchronous, through Watermill, identifiers only); no departure. One column is
+added.
+
+**Declared in the contract.** An operation that returns personal data carries
+`@extension("x-personal-data", "<EntType>")` in the TypeSpec, next to its read
+`x-permission`; the value is the ent type it reads (`User`, `Lead`), which
+becomes the record's entity type. `permissions.Parse` reads it into
+`PersonalDataEntity(op)` and `PersonalDataReads()`, and rejects it on an
+operation that is not a read Permission, so a write cannot be marked. No Go list
+holds the set; `TestEveryPersonalDataReadOfTheContractIsRecorded` enumerates it.
+
+**The decision of what is personal data.** Marked: `users.read` (`AdminListUsers`,
+`AdminSearchUsers`, `AdminGetUser`, `AdminListManagementUsers`,
+`AdminGetManagementUser`), `leads.read`, `messages.read` (the learners'
+assistant chats), `lesson_progress.read`, plus two the ticket did not name:
+`staff_members.read` (each row embeds the member's user, name and email) and
+`reviews.read` (a learner's name and the text they wrote). Not marked: courses,
+lessons, landing pages, banners, blog posts, categories, Q&A items, roles and the
+Permission catalog (content or configuration), `course_lesson_reviews.read` (the
+AI review of a lesson, no learner in it). Declaring another is one line of
+TypeSpec. Reading the trail itself (#853) declares the same marker, as this ADR
+requires.
+
+**Recording.** `handlers.NewPersonalDataReadMiddleware`, a sibling of the audit
+middleware (registered next to it in `di` and in the harness), acts only on an
+operation that declares the marker, with no code in any handler. After the
+handler answers it publishes the domain event `staff_read_personal_data`
+(`events.StaffReadPersonalData`: actor, channel, Connected App and token, request
+id, address, user agent, locale, operation, entity type, ids, count, time) and
+returns the response untouched. The consumer `staff_read_personal_data_to_audit_v1`
+runs in the worker (ADR-0010: the server only publishes) and writes the Audit
+Record through `audit.Write`, with the time of the read. A response is a read
+when its JSON holds a page (`items`), a list or an object with an `id`; a
+handler error or an error body records nothing. The ids are taken from the
+response's JSON form so no handler or response type cooperates, at the price of
+encoding a page a second time.
+
+**Not slowing, not failing.** What the request still does is one small insert
+into the outbox (`PublishStandalone`), bounded by a 2 second timeout on a context
+a hung-up client does not cancel; the partitioned audit insert is the worker's.
+A failure to publish is logged and the response goes out unchanged. A crash
+before the consumer runs loses the record, as the ADR accepts. Delivery is at
+least once, so a redelivered fact may leave a second record of one read. The
+publish stays synchronous rather than in a goroutine because the harness shares
+one transaction between all calls; the bound is what keeps it from delaying a
+response.
+
+**What the record holds.** Identifiers and counts only: `entity_type`, the
+`entity_id` when exactly one row was read, and a new nullable `reads` column
+(`{"count": N, "ids": [...]}`, ids capped at 200, the count not). `changes`
+stays for changes, hence the column (migration `audit_record_reads`). The outbox
+keeps the event's address and user agent indefinitely (ADR-0004: retention of
+events is undecided), the same data the record holds under its own retention.

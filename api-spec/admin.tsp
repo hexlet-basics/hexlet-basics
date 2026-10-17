@@ -228,11 +228,11 @@ model ReviewInput {
 @tag("Admin: Reviews")
 @useAuth(AdminSession)
 interface AdminReviews {
-  @get @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @operationId("adminListReviews") list(...ListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminListReviews") list(...ListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single review. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @operationId("adminGetReview") get(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminGetReview") get(@path id: int32): Review | UnauthorizedError | ForbiddenError | ApiError;
 
   @post @useAuth(AdminSession) @extension("x-permission", #{ name: "reviews.create", kind: "write" }) @operationId("adminCreateReview") create(@body body: ReviewInput): {
     @statusCode statusCode: 201;
@@ -402,7 +402,7 @@ interface AdminCourseLessons {
 @tag("Admin: Lesson Progress")
 @useAuth(AdminSession)
 interface AdminLessonProgress {
-  @get @extension("x-permission", #{ name: "lesson_progress.read", kind: "read" }) @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "lesson_progress.read", kind: "read" }) @extension("x-personal-data", "LessonProgress") @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/course_lesson_reviews")
@@ -416,14 +416,14 @@ interface AdminCourseLessonReviews {
 @tag("Admin: Leads")
 @useAuth(AdminSession)
 interface AdminLeads {
-  @get @extension("x-permission", #{ name: "leads.read", kind: "read" }) @operationId("adminListLeads") list(...ListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "leads.read", kind: "read" }) @extension("x-personal-data", "Lead") @operationId("adminListLeads") list(...ListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/messages")
 @tag("Admin: Messages")
 @useAuth(AdminSession)
 interface AdminMessages {
-  @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @extension("x-personal-data", "AiMessage") @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -441,14 +441,14 @@ model UserInput {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Typeahead search by name/email. */
-  @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single user. A missing id surfaces as 404 via the central ent-error
       handler, not a typed union member. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
@@ -538,9 +538,9 @@ model StaffMemberInput {
 @tag("Admin: Staff Members")
 @useAuth(AdminSession)
 interface AdminStaffMembers {
-  @get @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @route("/{id}") @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "staff_members.read", kind: "read" }) @extension("x-personal-data", "StaffMember") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
   @post @useAuth(AdminSession) @extension("x-permission", #{ name: "staff_members.create", kind: "write" }) @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
@@ -556,11 +556,11 @@ interface AdminStaffMembers {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminManagementUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
   @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 }
