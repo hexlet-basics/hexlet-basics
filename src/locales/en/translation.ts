@@ -298,10 +298,15 @@ export default {
         updated: "Record updated",
       },
       blogPosts: {
+        archive: "Archive",
         likes: "Likes",
+        publish: "Publish",
         relatedCourses: "Related courses",
+        stateChangeError: "Could not change the state",
+        stateChanged: "State changed",
         suggestQueued: "Course suggestion started — reload the page shortly",
         suggestRelatedCourses: "Suggest courses",
+        unpublish: "Unpublish",
       },
       courses: {
         edit: {

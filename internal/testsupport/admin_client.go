@@ -70,6 +70,18 @@ func (c *Client) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 	return noContent[api.AdminDeleteBlogPostNoContent](c.Client.AdminDeleteBlogPost(ctx, params))
 }
 
+func (c *Client) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (*api.BlogPost, error) {
+	return success[api.BlogPost](c.Client.AdminPublishBlogPost(ctx, params))
+}
+
+func (c *Client) AdminUnpublishBlogPost(ctx context.Context, params api.AdminUnpublishBlogPostParams) (*api.BlogPost, error) {
+	return success[api.BlogPost](c.Client.AdminUnpublishBlogPost(ctx, params))
+}
+
+func (c *Client) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchiveBlogPostParams) (*api.BlogPost, error) {
+	return success[api.BlogPost](c.Client.AdminArchiveBlogPost(ctx, params))
+}
+
 func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams) (*api.BlogPost, error) {
 	return success[api.BlogPost](c.Client.AdminSetBlogPostRelatedCourses(ctx, request, params))
 }

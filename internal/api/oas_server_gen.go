@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
+	//
+	// Archive a draft or published post.
+	//
+	// POST /api/admin/blog_posts/{id}/archive
+	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
 	// AdminCreateBanner implements adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -280,6 +286,14 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	// AdminPublishBlogPost implements adminPublishBlogPost operation.
+	//
+	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
+	// own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/blog_posts/{id}/publish
+	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
 	// AdminReviewCourse implements adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
@@ -311,6 +325,12 @@ type Handler interface {
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
 	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
+	//
+	// Take a published post back to draft.
+	//
+	// POST /api/admin/blog_posts/{id}/unpublish
+	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.

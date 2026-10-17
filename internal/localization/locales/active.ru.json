@@ -66,5 +66,11 @@
   "users.administrator_flag_restricted": {
     "other": "Только администратор может выдать или снять признак администратора"
   },
-  "users.last_administrator": { "other": "Нельзя удалить или понизить последнего администратора" }
+  "users.last_administrator": { "other": "Нельзя удалить или понизить последнего администратора" },
+  "state.illegal_transition": {
+    "other": "Нельзя перевести из состояния «{{.From}}» в «{{.To}}»: текущее состояние этого не допускает"
+  },
+  "state.draft": { "other": "черновик" },
+  "state.published": { "other": "опубликовано" },
+  "state.archived": { "other": "в архиве" }
 }

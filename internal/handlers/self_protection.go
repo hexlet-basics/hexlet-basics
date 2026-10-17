@@ -27,7 +27,10 @@ import (
 type refusal struct {
 	status  int
 	message localization.Message
-	cause   error
+	// data fills the placeholders of message; a value that is itself a
+	// localization.Message is translated first (a state's name, say).
+	data  map[string]any
+	cause error
 }
 
 func (e *refusal) Error() string {

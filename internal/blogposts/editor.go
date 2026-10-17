@@ -14,7 +14,6 @@ type PostFields struct {
 	Name        *string
 	Slug        *string
 	Description *string
-	State       *string
 	// RichBody is trusted editor HTML, stored and returned exactly as given.
 	RichBody string
 }
@@ -29,14 +28,16 @@ func NewEditor(db *ent.Client) *Editor {
 	return &Editor{db: db}
 }
 
-// Create adds a post by creator (legacy `blog_post.creator = current_user`),
-// stamped with the locale of the request: legacy stamped the admin UI's.
+// Create adds a post, always as a draft: the state is not part of the fields, it
+// moves only through Publish, Unpublish and Archive. The creator is the author
+// (legacy `blog_post.creator = current_user`), and the post is stamped with the
+// locale of the request: legacy stamped the admin UI's.
 func (e *Editor) Create(ctx context.Context, creatorID int, locale string, fields PostFields) (*ent.BlogPost, error) {
 	row, err := e.db.BlogPost.Create().
 		SetNillableName(fields.Name).
 		SetNillableSlug(fields.Slug).
 		SetNillableDescription(fields.Description).
-		SetNillableState(fields.State).
+		SetState(StateDraft).
 		SetRichBody(fields.RichBody).
 		SetCreatorID(creatorID).
 		SetLocale(locale).
@@ -64,11 +65,6 @@ func (e *Editor) Update(ctx context.Context, id int, fields PostFields) (*ent.Bl
 		update.ClearDescription()
 	} else {
 		update.SetDescription(*fields.Description)
-	}
-	if fields.State == nil {
-		update.ClearState()
-	} else {
-		update.SetState(*fields.State)
 	}
 	row, err := update.Save(ctx)
 	return row, domain.FromStore(err)

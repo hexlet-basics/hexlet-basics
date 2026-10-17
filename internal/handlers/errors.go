@@ -137,7 +137,14 @@ func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) ap
 	}
 	var refused *refusal
 	if errors.As(err, &refused) {
-		problem.Detail = api.NewOptString(h.translator.Text(ctx, refused.message))
+		data := make(map[string]any, len(refused.data))
+		for key, value := range refused.data {
+			if message, ok := value.(localization.Message); ok {
+				value = h.translator.Text(ctx, message)
+			}
+			data[key] = value
+		}
+		problem.Detail = api.NewOptString(h.translator.TextWith(ctx, refused.message, data))
 	}
 	return problem
 }

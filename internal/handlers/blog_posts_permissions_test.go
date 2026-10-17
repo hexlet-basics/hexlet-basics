@@ -24,7 +24,6 @@ func permissionsPostInput(slug string) *api.BlogPostInput {
 		Name:              api.NewNilString("Notes"),
 		Slug:              api.NewNilString(slug),
 		Description:       api.NilString{Null: true},
-		State:             api.NewNilBlogPostState(api.BlogPostStateDraft),
 		RichBody:          "<p>x</p>",
 		CoverAttachmentId: api.NilInt32{Null: true},
 	}
@@ -61,6 +60,20 @@ var blogPostOperations = map[string]struct {
 	"AdminSuggestBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32("blog_post_hello_world")})
+		return err
+	}},
+	// the second post is a draft and the first is published, so each transition is legal for an
+	// administrator.
+	"AdminPublishBlogPost": {"blog_posts.publish", func(h *testsupport.Harness) error {
+		_, err := h.Client.AdminPublishBlogPost(context.Background(), api.AdminPublishBlogPostParams{ID: fixtures.ID32("blog_post_second_post")})
+		return err
+	}},
+	"AdminUnpublishBlogPost": {"blog_posts.unpublish", func(h *testsupport.Harness) error {
+		_, err := h.Client.AdminUnpublishBlogPost(context.Background(), api.AdminUnpublishBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
+		return err
+	}},
+	"AdminArchiveBlogPost": {"blog_posts.archive", func(h *testsupport.Harness) error {
+		_, err := h.Client.AdminArchiveBlogPost(context.Background(), api.AdminArchiveBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 		return err
 	}},
 	"AdminDeleteBlogPost": {"blog_posts.delete", func(h *testsupport.Harness) error {

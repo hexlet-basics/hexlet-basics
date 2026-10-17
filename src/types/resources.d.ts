@@ -277,10 +277,15 @@ export default interface Resources {
         }
       },
       "blogPosts": {
+        "archive": "В архив",
         "likes": "Лайки",
+        "publish": "Опубликовать",
         "relatedCourses": "Связанные курсы",
+        "stateChangeError": "Не удалось изменить состояние",
+        "stateChanged": "Состояние изменено",
         "suggestQueued": "Подбор курсов запущен — обновите страницу чуть позже",
-        "suggestRelatedCourses": "Подобрать курсы"
+        "suggestRelatedCourses": "Подобрать курсы",
+        "unpublish": "Снять с публикации"
       },
       "blog_posts": {
         "edit": {

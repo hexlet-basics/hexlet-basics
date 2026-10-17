@@ -300,10 +300,15 @@ export default {
         updated: "Запись обновлена",
       },
       blogPosts: {
+        archive: "В архив",
         likes: "Лайки",
+        publish: "Опубликовать",
         relatedCourses: "Связанные курсы",
+        stateChangeError: "Не удалось изменить состояние",
+        stateChanged: "Состояние изменено",
         suggestQueued: "Подбор курсов запущен — обновите страницу чуть позже",
         suggestRelatedCourses: "Подобрать курсы",
+        unpublish: "Снять с публикации",
       },
       courses: {
         edit: {

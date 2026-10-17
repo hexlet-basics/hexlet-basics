@@ -299,10 +299,15 @@ export default {
         updated: "Registro actualizado",
       },
       blogPosts: {
+        archive: "Archivar",
         likes: "Me gusta",
+        publish: "Publicar",
         relatedCourses: "Cursos relacionados",
+        stateChangeError: "No se pudo cambiar el estado",
+        stateChanged: "Estado cambiado",
         suggestQueued: "Sugerencia de cursos iniciada: recarga la página en breve",
         suggestRelatedCourses: "Sugerir cursos",
+        unpublish: "Despublicar",
       },
       courses: {
         edit: {

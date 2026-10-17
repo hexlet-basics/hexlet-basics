@@ -141,10 +141,13 @@ type ReviewDirectory interface {
 	Public(ctx context.Context, locale string, page domain.Page) ([]*ent.Review, int, error)
 }
 
-// PostEditor creates and changes blog posts.
+// PostEditor creates and changes blog posts, and moves their Publication State.
 type PostEditor interface {
 	Create(ctx context.Context, creatorID int, locale string, fields blogposts.PostFields) (*ent.BlogPost, error)
 	Update(ctx context.Context, id int, fields blogposts.PostFields) (*ent.BlogPost, error)
+	Publish(ctx context.Context, id int) error
+	Unpublish(ctx context.Context, id int) error
+	Archive(ctx context.Context, id int) error
 }
 
 // LessonReviewScheduler asks for AI reviews of a course's or a lesson's

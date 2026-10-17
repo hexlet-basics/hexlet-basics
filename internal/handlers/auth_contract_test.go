@@ -127,5 +127,8 @@ func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
 		"adminDeleteBlogPost":                {"blog_posts.delete", "write"},
 		"adminSetBlogPostRelatedCourses":     {"blog_posts.update", "write"},
 		"adminSuggestBlogPostRelatedCourses": {"blog_posts.update", "write"},
+		"adminPublishBlogPost":               {"blog_posts.publish", "write"},
+		"adminUnpublishBlogPost":             {"blog_posts.unpublish", "write"},
+		"adminArchiveBlogPost":               {"blog_posts.archive", "write"},
 	}, got)
 }

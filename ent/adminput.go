@@ -57,7 +57,6 @@ func (c *BlogPostCreate) SetInput(i *api.BlogPostInput) *BlogPostCreate {
 	c.SetNillableName(inputconv.StringPtr(i.Name))
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableDescription(inputconv.StringPtr(i.Description))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetRichBody(string(i.RichBody))
 	return c
 }
@@ -81,11 +80,6 @@ func (u *BlogPostUpdateOne) SetInput(i *api.BlogPostInput) *BlogPostUpdateOne {
 		u.ClearDescription()
 	} else {
 		u.SetDescription(string(i.Description.Value))
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	u.SetRichBody(string(i.RichBody))
 	return u

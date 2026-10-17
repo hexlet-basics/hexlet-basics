@@ -3,8 +3,10 @@ package handlers_test
 import (
 	"context"
 	"net/http"
+	"sort"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -13,7 +15,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds two roles; editor owns three grants (banners.create, banners.read, blog_posts.read).
+// staff_member_roles.yml seeds four roles (two of them for the blog post Permissions); editor owns three grants (banners.create, banners.read, blog_posts.read).
 var (
 	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )
@@ -32,13 +34,14 @@ func TestAdminListRoles(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, int32(totalRoles), page.Total)
 
-	// Ordered by name: editor before moderator.
+	// Ordered by name.
 	require.Len(t, page.Items, totalRoles)
-	assert.Equal(t, "editor", page.Items[0].Name)
-	assert.Equal(t, "moderator", page.Items[1].Name)
-	// editor owns three grants.
-	assert.Equal(t, int32(3), page.Items[0].PermissionsCount)
-	assert.Equal(t, int32(0), page.Items[1].PermissionsCount)
+	names := lo.Map(page.Items, func(role api.StaffRole, _ int) string { return role.Name })
+	assert.True(t, sort.StringsAreSorted(names), "roles are listed by name: %v", names)
+	counts := lo.SliceToMap(page.Items, func(role api.StaffRole) (string, int32) { return role.Name, role.PermissionsCount })
+	// editor owns three grants, moderator none.
+	assert.Equal(t, int32(3), counts["editor"])
+	assert.Equal(t, int32(0), counts["moderator"])
 }
 
 func TestAdminGetRole(t *testing.T) {
@@ -147,7 +150,7 @@ func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
-		Grants: []string{"blog_posts.publish"},
+		Grants: []string{"blog_posts.frobnicate"},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 
 	require.Error(t, err)

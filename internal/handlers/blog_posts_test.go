@@ -115,14 +115,13 @@ func TestAdminCreateBlogPost(t *testing.T) {
 		Name:        api.NewNilString("Go rewrite notes"),
 		Slug:        api.NewNilString("go-rewrite-notes"),
 		Description: api.NewNilString("Notes from the migration"),
-		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
 		RichBody:    "<p>We moved to Go.</p>",
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	assert.Equal(t, "go-rewrite-notes", post.Slug.Value)
-	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
+	assert.Equal(t, api.BlogPostStateDraft, post.State.Value, "a new post is always a draft")
 	assert.Equal(t, "<p>We moved to Go.</p>", post.RichBodyHtml)
 	// The creator is the authenticated admin (the harness signs in as the
 	// fixture admin), and the locale is the request's (English without a header).
@@ -157,14 +156,13 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 		Name:        api.NewNilString("Second post, renamed"),
 		Slug:        api.NewNilString("second-post"),
 		Description: api.NilString{Null: true},
-		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
 		RichBody:    "<p>Now with a body.</p>",
 	}, api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostSecondPost)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	assert.Equal(t, "Second post, renamed", post.Name.Value)
-	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
+	assert.Equal(t, api.BlogPostStateDraft, post.State.Value, "update never changes the state")
 	assert.Equal(t, "<p>Now with a body.</p>", post.RichBodyHtml)
 	// Legacy assign_attributes semantics: a null nullable field clears the column.
 	assert.True(t, post.Description.Null)
@@ -180,7 +178,6 @@ func TestAdminUpdateBlogPostNotFound(t *testing.T) {
 		Name:        api.NilString{Null: true},
 		Slug:        api.NilString{Null: true},
 		Description: api.NilString{Null: true},
-		State:       api.NilBlogPostState{Null: true},
 		RichBody:    "<p>ghost</p>",
 	}, api.AdminUpdateBlogPostParams{ID: 999999})
 	require.Error(t, err)
