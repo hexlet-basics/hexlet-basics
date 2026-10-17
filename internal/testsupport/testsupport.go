@@ -205,7 +205,7 @@ func NewHarness(t *testing.T) *Harness {
 	registrar := accounts.NewRegistrar(transactor, services.Events)
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
-	// The real progress module, over the test's transaction: the gate and the
+	// The real progress module, over the test's transaction: the
 	// transitions under test are the production ones, only the event transport
 	// is recorded instead of written to the outbox and the submission is not
 	// really run — running it means Docker, which is the one thing this seam

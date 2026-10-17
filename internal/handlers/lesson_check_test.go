@@ -19,10 +19,10 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// A passing submission for the lesson one past the learner's furthest finished
-// one finishes it. The learner never pressed start — the Lesson Progress is
-// created lazily, so arriving by a direct link does not lose the work.
-func TestCheckFinishesAnAvailableLesson(t *testing.T) {
+// A passing submission finishes the lesson. The learner never pressed start —
+// the Lesson Progress is created lazily, so arriving by a direct link does not
+// lose the work.
+func TestCheckFinishesALesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -89,21 +89,24 @@ func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
 	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
-// Two past the furthest finished lesson is refused before anything runs: no
-// container is started and nothing is written.
-func TestCheckRefusesALessonBeyondTheGate(t *testing.T) {
+// Lessons may be taken in any order (ADR-0016): the third before the first
+// finishes that lesson and only that lesson.
+func TestCheckFinishesALessonTakenOutOfOrder(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
+	second := lessonBySlug(t, h, secondLessonSlug)
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 
-	res, err := checkLesson(t, h, lesson)
-	require.NoError(t, err)
-	require.IsType(t, &api.ProblemDetails{}, res)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	result := submitSolution(t, h, lesson)
+	assert.True(t, result.Response.Passed)
+	assert.True(t, result.Response.LessonHasBeenFinished)
+	assert.False(t, result.Response.CourseHasBeenFinished)
 
-	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Equal(t, before+1, h.DB.LessonProgress.Query().CountX(ctx), "one row, for this lesson")
+	assert.Equal(t, 0, h.DB.LessonProgress.Query().Where(lessonprogress.LessonID(second.ID),
+		lessonprogress.UserID(actingUserID(t, h)), lessonprogress.StateEQ("finished")).CountX(ctx),
+		"the lesson before it is not implied")
 }
 
 // The last unfinished lesson of a course finishes the course as well, and the
@@ -209,7 +212,7 @@ func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
 		SaveX(ctx)
 	fourth := seedLesson(t, h, js, "functions", 4)
 
-	// The gap does not hold them back: position 4 is one past their furthest.
+	// The gap does not hold them back.
 	result := submitSolution(t, h, fourth)
 	assert.True(t, result.Response.LessonHasBeenFinished)
 	assert.False(t, result.Response.CourseHasBeenFinished, "the second lesson is still open")
@@ -252,9 +255,9 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 
 // ---- Guests ---------------------------------------------------------------
 
-// A visitor with no cookie may take the first lesson of a course. Their pass
-// comes back as a signed cookie and leaves no rows behind.
-func TestGuestCheckAdvancesTheCookieAndWritesNoRows(t *testing.T) {
+// A visitor with no cookie may take any lesson of a course. Their pass comes
+// back as a signed cookie and leaves no rows behind.
+func TestGuestCheckAddsToTheCookieAndWritesNoRows(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -266,9 +269,7 @@ func TestGuestCheckAdvancesTheCookieAndWritesNoRows(t *testing.T) {
 		"a guest finishes nothing that a record could hold")
 
 	guest := testsupport.DecodeGuestCookie(t, h.ResponseCookies())
-	furthest, ok := guest.Furthest(jsCourseSlug)
-	require.True(t, ok)
-	assert.Equal(t, firstLessonSlug, furthest)
+	assert.True(t, guest.Has(jsCourseSlug, firstLessonSlug))
 
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
@@ -279,21 +280,23 @@ func TestGuestCheckAdvancesTheCookieAndWritesNoRows(t *testing.T) {
 	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
-// The same rule gates a guest: the second lesson is out of reach until the
-// first one is passed.
-func TestGuestCheckRefusesALessonBeyondTheGate(t *testing.T) {
+// A guest may take a lesson out of order too: the cookie names that lesson and
+// not the ones before it.
+func TestGuestCheckFinishesALessonOutOfOrder(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	lesson := lessonBySlug(t, h, secondLessonSlug)
+	lesson := lessonBySlug(t, h, thirdLessonSlug)
 
-	res, err := checkLesson(t, h, lesson)
-	require.NoError(t, err)
-	require.IsType(t, &api.ProblemDetails{}, res)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	result := submitSolution(t, h, lesson)
+	assert.True(t, result.Response.Passed)
+
+	guest := testsupport.DecodeGuestCookie(t, h.ResponseCookies())
+	assert.True(t, guest.Has(jsCourseSlug, thirdLessonSlug))
+	assert.False(t, guest.Has(jsCourseSlug, firstLessonSlug), "the lessons before it are not implied")
 }
 
-// Replaying the cookie a previous pass returned opens the next lesson, and
-// passing it moves the stored position forward.
-func TestGuestCheckAdvancesFromTheCarriedCookie(t *testing.T) {
+// Replaying the cookie a previous pass returned and passing another lesson adds
+// it to what the cookie carries.
+func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, firstLessonSlug))
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
@@ -301,12 +304,11 @@ func TestGuestCheckAdvancesFromTheCarriedCookie(t *testing.T) {
 	assert.True(t, result.Response.Passed)
 
 	guest := testsupport.DecodeGuestCookie(t, h.ResponseCookies())
-	furthest, ok := guest.Furthest(jsCourseSlug)
-	require.True(t, ok)
-	assert.Equal(t, secondLessonSlug, furthest, "the cookie carries the furthest lesson finished")
+	assert.True(t, guest.Has(jsCourseSlug, firstLessonSlug), "what it carried is kept")
+	assert.True(t, guest.Has(jsCourseSlug, secondLessonSlug), "and the new pass is added")
 }
 
-// A failed guest check records the fact and nothing else: the position moves
+// A failed guest check records the fact and nothing else: the cookie changes
 // only on a pass.
 func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
@@ -322,18 +324,17 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 }
 
 // A cookie naming a lesson the current version no longer contains resolves to
-// no position at all, so that course starts over for the visitor.
-func TestGuestCheckResetsAPositionTheCurrentVersionDropped(t *testing.T) {
-	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, "removed-in-a-later-build"))
-
-	second := lessonBySlug(t, h, secondLessonSlug)
-	res, err := checkLesson(t, h, second)
-	require.NoError(t, err)
-	assert.IsType(t, &api.ProblemDetails{}, res, "the stored lesson raises nothing")
+// nothing, so that course starts over for the visitor: the next pass is the only
+// lesson the cookie counts.
+func TestGuestCheckIgnoresALessonTheCurrentVersionDropped(t *testing.T) {
+	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
 
 	first := lessonBySlug(t, h, firstLessonSlug)
 	result := submitSolution(t, h, first)
 	assert.True(t, result.Response.Passed, "the visitor resumes from the beginning")
+
+	guest := testsupport.DecodeGuestCookie(t, h.ResponseCookies())
+	assert.True(t, guest.Has(jsCourseSlug, firstLessonSlug))
 }
 
 // ---- Helpers --------------------------------------------------------------

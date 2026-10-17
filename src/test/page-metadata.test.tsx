@@ -78,8 +78,7 @@ const progress: CourseProgress = {
   state: null,
   completion: 0,
   nextLessonSlug: "variables",
-  furthestFinishedPosition: 0,
-  lessons: [{ slug: "variables", position: 1, finished: false, available: true }],
+  lessons: [{ slug: "variables", position: 1, finished: false }],
 };
 
 const lessons = [{ id: 1002, name: "Variables", description: null, slug: "variables" }];

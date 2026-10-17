@@ -3361,8 +3361,8 @@ paths:
         the answer is complete, with the answer's token usage.
 
         Asking is doing the lesson, so it starts the lesson when the learner has
-        not yet (409 beyond the gate, exactly as starting would). 429 once today's
-        questions are used up — decided before anything streams.
+        not yet. 429 once today's questions are used up — decided before anything
+        streams.
       parameters:
         - name: lessonId
           in: path
@@ -3397,17 +3397,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
-        '409':
-          description: |-
-            The learner has not reached this lesson yet. Sequential progression
-            (ADR-0012) makes a lesson available only when its position in the course's
-            current version is at most one past the furthest lesson they have finished.
-
-            Distinct from 403: the caller's permissions are fine, their progress is not.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         '429':
           description: The learner has used up today's assistant questions.
           content:
@@ -3989,9 +3978,9 @@ paths:
         Run a submitted solution and record progress. Synchronous to match legacy;
         revisit as submit + stream for the Docker-job model (see file header).
 
-        Public on purpose: a guest must be able to submit, and their position
-        travels in the signed cookie rather than in rows. 409 when the lesson is
-        beyond the gate — the submission is refused before anything is run.
+        Public on purpose: a guest must be able to submit, and what they have
+        finished travels in the signed cookie rather than in rows. Any lesson may
+        be submitted, in any order.
       parameters:
         - name: id
           in: path
@@ -4025,17 +4014,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
-        '409':
-          description: |-
-            The learner has not reached this lesson yet. Sequential progression
-            (ADR-0012) makes a lesson available only when its position in the course's
-            current version is at most one past the furthest lesson they have finished.
-
-            Distinct from 403: the caller's permissions are fine, their progress is not.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -4073,11 +4051,11 @@ paths:
         on hover.
 
         Idempotent: starting an already-started or already-finished lesson
-        succeeds and changes nothing. 409 when the lesson is beyond the gate.
+        succeeds and changes nothing. Any lesson may be started, in any order.
 
-        Public, because a guest progresses under the same rule. For them it
-        validates the gate and returns their position without storing anything:
-        their state is the signed cookie, and only a check moves it.
+        Public, because a guest progresses the same way. For them it returns where
+        they stand without storing anything: their state is the signed cookie, and
+        only a check moves it.
       parameters:
         - name: id
           in: path
@@ -4098,17 +4076,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
-        '409':
-          description: |-
-            The learner has not reached this lesson yet. Sequential progression
-            (ADR-0012) makes a lesson available only when its position in the course's
-            current version is at most one past the furthest lesson they have finished.
-
-            Distinct from 403: the caller's permissions are fine, their progress is not.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5737,7 +5704,7 @@ components:
             list the course landing read returns.
 
             The player's navigation tab is this list joined to `progress.lessons` by
-            slug: names and order from here, checks and locks from there. Both screens
+            slug: names and order from here, checks from there. Both screens
             render from the same two arrays, which is what keeps the Course page's list
             and the player's from disagreeing.
         progress:
@@ -5748,8 +5715,7 @@ components:
           description: |-
             Where the visitor stands in the course this lesson belongs to — the same
             payload the course landing read returns, for a signed-in learner and a
-            guest alike. The player reads `lessons[].available` to know whether this
-            one may be taken, and `nextLessonSlug` for where "next" goes.
+            guest alike. The player reads `nextLessonSlug` for where "next" goes.
 
             Null only for a course with no built version.
       description: 'The lesson page: the lesson itself, and where the visitor stands in it.'
@@ -5812,7 +5778,6 @@ components:
         - state
         - completion
         - nextLessonSlug
-        - furthestFinishedPosition
         - lessons
       properties:
         state:
@@ -5827,20 +5792,13 @@ components:
           type: string
           nullable: true
           description: The first unfinished Lesson in course order — where the learner resumes.
-        furthestFinishedPosition:
-          type: integer
-          format: int32
-          description: The highest Position finished, 0 when nothing has been.
         lessons:
           type: array
           items:
             $ref: '#/components/schemas/LessonProgressItem'
       description: |-
-        A learner's position in one Course, computed against its current Version.
-
-        Availability travels with it even though it is a pure function of position:
-        a client deriving it would be a second implementation of the gate, free to
-        drift from the server that enforces it.
+        Where a learner stands in one Course, computed against its current Version:
+        which Lessons they have finished, in whatever order they took them.
     CourseReadiness:
       type: string
       enum:
@@ -6307,7 +6265,6 @@ components:
         - slug
         - position
         - finished
-        - available
       properties:
         slug:
           type: string
@@ -6317,10 +6274,7 @@ components:
           description: Position in the current Version, 1..N across the whole Course.
         finished:
           type: boolean
-        available:
-          type: boolean
-          description: Whether the gate lets the learner take it (ADR-0012).
-      description: 'Per-Lesson state for the course and lesson pages: locks and checkmarks.'
+      description: 'Per-Lesson state for the course and lesson pages: the checkmarks.'
     LessonProgressPage:
       type: object
       required:

@@ -18,12 +18,10 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// Signing up with guest progress credits the whole prefix: sequential
-// progression means a visitor could not have finished the second lesson without
-// the first, so the prefix IS the set — rows are written for a completion the
-// rule implies rather than one that was individually observed.
-func TestSignUpCreditsTheGuestPrefix(t *testing.T) {
-	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, secondLessonSlug))
+// Signing up with guest progress credits exactly the lessons the visitor
+// finished.
+func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
+	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateUser(ctx, &api.SignUpInput{
@@ -37,34 +35,34 @@ func TestSignUpCreditsTheGuestPrefix(t *testing.T) {
 
 	finished := finishedLessonSlugs(t, h, int(created.Response.ID), jsCourseSlug)
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug}, finished,
-		"the lesson before the guest's furthest one is credited too")
+		"every lesson the cookie names is credited")
 
 	assert.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the enrollment is new")
 	assert.Len(t, publishedOf[events.LessonFinished](t, h), 2, "one per credited lesson")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()), "the cookie is consumed")
 }
 
-// Signing in with the browser ahead of the account moves the account forward.
-func TestSignInTakesTheFurtherOfTheTwoPositions(t *testing.T) {
-	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, thirdLessonSlug))
+// Signing in with the browser ahead of the account adds what it finished: the
+// merge is a union, and a later lesson does not pull the earlier ones with it.
+func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
+	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateSession(ctx, signInAsActingUser(t, h))
 	require.NoError(t, err)
 	session := res.(*api.UserHeaders)
 	finished := finishedLessonSlugs(t, h, int(session.Response.ID), jsCourseSlug)
-	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug}, finished,
-		"the account had only the first; the browser's third pulls the prefix with it")
+	assert.ElementsMatch(t, []string{firstLessonSlug, thirdLessonSlug}, finished,
+		"the account had only the first; the browser's third is added, the second is not implied")
 
 	assert.Empty(t, publishedOf[events.CourseStarted](t, h), "the learner was already enrolled")
-	assert.Len(t, publishedOf[events.LessonFinished](t, h), 2, "only what the merge actually created")
+	assert.Len(t, publishedOf[events.LessonFinished](t, h), 1, "only what the merge actually created")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))
 }
 
-// An account already further along is untouched: the merge takes the higher
-// position, which is the one already stored.
+// An account that already has everything the cookie names is untouched.
 func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
-	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 

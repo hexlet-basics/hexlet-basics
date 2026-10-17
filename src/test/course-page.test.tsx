@@ -69,16 +69,15 @@ const landingPage: CourseLandingPage = {
 // Three payloads the server can send, each a fact about where the visitor
 // stands. The page is expected to render them as given.
 
-// Has finished the first lesson: the second is next, the third still locked.
+// Has finished the first lesson: the second is next.
 const midCourse: CourseProgress = {
   state: "started",
   completion: 33,
   nextLessonSlug: "variables",
-  furthestFinishedPosition: 1,
   lessons: [
-    { slug: "hello-world", position: 1, finished: true, available: true },
-    { slug: "variables", position: 2, finished: false, available: true },
-    { slug: "strings", position: 3, finished: false, available: false },
+    { slug: "hello-world", position: 1, finished: true },
+    { slug: "variables", position: 2, finished: false },
+    { slug: "strings", position: 3, finished: false },
   ],
 };
 
@@ -87,24 +86,22 @@ const finished: CourseProgress = {
   state: "finished",
   completion: 100,
   nextLessonSlug: null,
-  furthestFinishedPosition: 3,
   lessons: [
-    { slug: "hello-world", position: 1, finished: true, available: true },
-    { slug: "variables", position: 2, finished: true, available: true },
-    { slug: "strings", position: 3, finished: true, available: true },
+    { slug: "hello-world", position: 1, finished: true },
+    { slug: "variables", position: 2, finished: true },
+    { slug: "strings", position: 3, finished: true },
   ],
 };
 
-// Has never been here: the first lesson open, the rest locked.
+// Has never been here: nothing finished, the first lesson is next.
 const firstVisit: CourseProgress = {
   state: null,
   completion: 0,
   nextLessonSlug: "hello-world",
-  furthestFinishedPosition: 0,
   lessons: [
-    { slug: "hello-world", position: 1, finished: false, available: true },
-    { slug: "variables", position: 2, finished: false, available: false },
-    { slug: "strings", position: 3, finished: false, available: false },
+    { slug: "hello-world", position: 1, finished: false },
+    { slug: "variables", position: 2, finished: false },
+    { slug: "strings", position: 3, finished: false },
   ],
 };
 
@@ -211,12 +208,11 @@ test("a learner mid-course sees the landing copy, the marked lessons, and Contin
   // Every current lesson, in course order.
   expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
-  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   expect(page.getByLabelText("Finished").elements()).toHaveLength(1);
-  expect(page.getByLabelText("Locked").elements()).toHaveLength(1);
-  // Locked stays reachable: theory is public.
+  // Lessons may be taken in any order, so every entry is a plain link.
   await expect
-    .element(page.getByRole("link", { name: "Locked Strings" }))
+    .element(page.getByRole("link", { name: "Strings" }))
     .toHaveAttribute("href", "/languages/javascript/lessons/strings");
 
   // Completion as the server reported it.
@@ -274,7 +270,7 @@ test("lays the program out by module, the first one open, and answers the landin
   // for, and opening it folds the first, as legacy's accordion did.
   expect(lessonNames()).toEqual(["Hello, World!", "Variables"]);
   await page.getByRole("button", { name: "Text" }).click();
-  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   await expect.element(page.getByText("Working with strings.")).toBeVisible();
   await expect.poll(lessonNames).toEqual(["Strings"]);
 
@@ -318,9 +314,8 @@ test("a guest carrying progress sees the same page and the same action", async (
   expect(page.getByText("Completed 33%").elements()).toHaveLength(0);
   expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
-  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   expect(page.getByLabelText("Finished").elements()).toHaveLength(1);
-  expect(page.getByLabelText("Locked").elements()).toHaveLength(1);
 
   await page.getByRole("button", { name: "Continue Learning" }).click();
   await expect
@@ -329,7 +324,7 @@ test("a guest carrying progress sees the same page and the same action", async (
   expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 });
 
-test("a first-time visitor sees the first lesson open and the rest locked", async () => {
+test("a first-time visitor sees every lesson as a plain link and Try It", async () => {
   worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(firstVisit))));
 
   const { router, starts } = await renderCourse(null);
@@ -337,10 +332,9 @@ test("a first-time visitor sees the first lesson open and the rest locked", asyn
   await expect.element(page.getByRole("button", { name: "Try It" })).toBeVisible();
   expect(page.getByText("Completed 0%").elements()).toHaveLength(0);
   expect(page.getByLabelText("Finished").elements()).toHaveLength(0);
-  expect(page.getByLabelText("Locked").elements()).toHaveLength(2);
   expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
-  await expect.element(page.getByRole("link", { name: "Locked Variables" })).toBeVisible();
-  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Variables" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
 
   await page.getByRole("button", { name: "Try It" }).click();
   await expect
@@ -402,8 +396,8 @@ test("stays on the course page when the start command fails", async () => {
   expect(router.state.location.pathname).toBe("/languages/javascript");
 });
 
-// The Next Lesson as the lesson player reads it, with the gate as `progress`
-// says: `available` is what the pass the start followed has changed.
+// The Next Lesson as the lesson player reads it, with the standing `progress`
+// carries: the marks are what the pass the start followed has changed.
 function variablesView(progress: CourseProgress): CourseLessonView {
   return {
     lesson: {
@@ -459,7 +453,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
     withPlayer: true,
   });
   // What a hover over the list would have preloaded before the pass: the same
-  // lesson, still locked.
+  // lesson, with nothing finished yet.
   queryClient.setQueryData(
     getCourseLessonQueryKey({ path: { courseSlug: "javascript", slug: "variables" } }),
     variablesView(firstVisit),
@@ -470,7 +464,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
   expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 
   // While the lesson is read afresh the learner is still on the course page:
-  // the cached copy, lock and all, is never put in front of them.
+  // the cached copy, marks and all, is never put in front of them.
   expect(page.getByRole("heading", { name: "JavaScript: Variables" }).elements()).toHaveLength(0);
   await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
 
@@ -478,5 +472,4 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
   await page.getByRole("tab", { name: "Navigation" }).click();
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
-  expect(page.getByRole("link", { name: "Locked Variables" }).elements()).toHaveLength(0);
 });

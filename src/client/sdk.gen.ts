@@ -1124,8 +1124,8 @@ export const listAssistantMessages = <ThrowOnError extends boolean = false>(opti
  * the answer is complete, with the answer's token usage.
  *
  * Asking is doing the lesson, so it starts the lesson when the learner has
- * not yet (409 beyond the gate, exactly as starting would). 429 once today's
- * questions are used up — decided before anything streams.
+ * not yet. 429 once today's questions are used up — decided before anything
+ * streams.
  */
 export const createAssistantMessage = <ThrowOnError extends boolean = false>(options: Options<CreateAssistantMessageData, ThrowOnError>): RequestResult<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError> => (options.client ?? client).post<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError>({
   responseType: 'text',
@@ -1332,9 +1332,9 @@ export const createLead = <ThrowOnError extends boolean = false>(options: Option
  * Run a submitted solution and record progress. Synchronous to match legacy;
  * revisit as submit + stream for the Docker-job model (see file header).
  *
- * Public on purpose: a guest must be able to submit, and their position
- * travels in the signed cookie rather than in rows. 409 when the lesson is
- * beyond the gate — the submission is refused before anything is run.
+ * Public on purpose: a guest must be able to submit, and what they have
+ * finished travels in the signed cookie rather than in rows. Any lesson may
+ * be submitted, in any order.
  */
 export const checkLesson = <ThrowOnError extends boolean = false>(options: Options<CheckLessonData, ThrowOnError>): RequestResult<CheckLessonResponses, CheckLessonErrors, ThrowOnError> => (options.client ?? client).post<CheckLessonResponses, CheckLessonErrors, ThrowOnError>({
   responseType: 'json',
@@ -1353,11 +1353,11 @@ export const checkLesson = <ThrowOnError extends boolean = false>(options: Optio
  * on hover.
  *
  * Idempotent: starting an already-started or already-finished lesson
- * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+ * succeeds and changes nothing. Any lesson may be started, in any order.
  *
- * Public, because a guest progresses under the same rule. For them it
- * validates the gate and returns their position without storing anything:
- * their state is the signed cookie, and only a check moves it.
+ * Public, because a guest progresses the same way. For them it returns where
+ * they stand without storing anything: their state is the signed cookie, and
+ * only a check moves it.
  */
 export const startLesson = <ThrowOnError extends boolean = false>(options: Options<StartLessonData, ThrowOnError>): RequestResult<StartLessonResponses, StartLessonErrors, ThrowOnError> => (options.client ?? client).post<StartLessonResponses, StartLessonErrors, ThrowOnError>({
   responseType: 'json',

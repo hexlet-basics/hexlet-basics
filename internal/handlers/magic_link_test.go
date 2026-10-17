@@ -13,7 +13,6 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -100,7 +99,7 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 // Following the link signs in exactly as a password does: the session cookie,
 // the guest's progress credited, the sign-in recorded.
 func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
-	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, secondLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
 	u := createEmailUser(t, h, "magic-guest@example.com")
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(),

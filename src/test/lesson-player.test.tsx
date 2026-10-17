@@ -98,8 +98,7 @@ const lesson: CourseLesson = {
   createdAt: "2026-01-01T00:00:00Z",
 };
 
-// A learner who has finished the first lesson: the second is theirs to take, the
-// third is still behind the gate.
+// A learner who has finished the first lesson: the second is next.
 function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView {
   return {
     lesson,
@@ -113,11 +112,10 @@ function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView
       state: "started",
       completion: 33,
       nextLessonSlug: "variables",
-      furthestFinishedPosition: 1,
       lessons: [
-        { slug: "hello-world", position: 1, finished: true, available: true },
-        { slug: "variables", position: 2, finished: false, available: true },
-        { slug: "strings", position: 3, finished: false, available: false },
+        { slug: "hello-world", position: 1, finished: true },
+        { slug: "variables", position: 2, finished: false },
+        { slug: "strings", position: 3, finished: false },
       ],
     },
     ...overrides,
@@ -205,7 +203,7 @@ test("renders the lesson a learner reads, titled from the course's landing copy"
   await expect.element(page.getByRole("tab", { name: "Solution" })).toBeVisible();
 });
 
-test("lists every lesson in course order, marking finished and locked ones", async () => {
+test("lists every lesson in course order, marking the finished ones", async () => {
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
   );
@@ -223,43 +221,40 @@ test("lists every lesson in course order, marking finished and locked ones", asy
   ]);
 
   await expect.element(page.getByLabelText("Finished")).toBeVisible();
-  await expect.element(page.getByLabelText("Locked")).toBeVisible();
 
   // Where the learner is now.
   await expect
     .element(page.getByRole("link", { name: "Variables" }))
     .toHaveAttribute("aria-current", "page");
 
-  // Locked stays clickable: theory is public, only the exercise is gated.
+  // Any lesson may be taken in any order, so every entry is a plain link.
   await expect
-    .element(page.getByRole("link", { name: "Locked Strings" }))
+    .element(page.getByRole("link", { name: "Strings" }))
     .toHaveAttribute("href", "/languages/javascript/lessons/strings");
 });
 
-test("serves a visitor a locked lesson in full", async () => {
-  const locked = lessonView({
+test("serves a visitor any lesson in full", async () => {
+  const visitor = lessonView({
     progress: {
       state: null,
       completion: 0,
       nextLessonSlug: "hello-world",
-      furthestFinishedPosition: 0,
       lessons: [
-        { slug: "hello-world", position: 1, finished: false, available: true },
-        { slug: "variables", position: 2, finished: false, available: false },
-        { slug: "strings", position: 3, finished: false, available: false },
+        { slug: "hello-world", position: 1, finished: false },
+        { slug: "variables", position: 2, finished: false },
+        { slug: "strings", position: 3, finished: false },
       ],
     },
   });
-  worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(locked)));
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(visitor)),
+  );
 
   await renderPlayer("variables");
 
   // Readable in full — this is the page a search engine indexes.
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
   await expect.element(page.getByText("A variable is a name bound to a value.")).toBeVisible();
-
-  await page.getByRole("tab", { name: "Navigation" }).click();
-  await expect.element(page.getByLabelText("Locked").first()).toBeVisible();
 });
 
 test("starts nothing by loading the page", async () => {
@@ -275,7 +270,7 @@ test("starts nothing by loading the page", async () => {
   await renderPlayer("variables");
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
   await page.getByRole("tab", { name: "Navigation" }).click();
-  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
 
   // The router preloads on hover, so a read that started a lesson would enroll a
   // learner in every lesson they pointed at (ADR-0012).
@@ -695,11 +690,10 @@ test("opens the reference solution straight away on a lesson already finished", 
       state: "started",
       completion: 66,
       nextLessonSlug: "strings",
-      furthestFinishedPosition: 2,
       lessons: [
-        { slug: "hello-world", position: 1, finished: true, available: true },
-        { slug: "variables", position: 2, finished: true, available: true },
-        { slug: "strings", position: 3, finished: false, available: true },
+        { slug: "hello-world", position: 1, finished: true },
+        { slug: "variables", position: 2, finished: true },
+        { slug: "strings", position: 3, finished: false },
       ],
     },
   });
@@ -797,11 +791,10 @@ function lastLessonView(): CourseLessonView {
       state: "started",
       completion: 66,
       nextLessonSlug: "strings",
-      furthestFinishedPosition: 2,
       lessons: [
-        { slug: "hello-world", position: 1, finished: true, available: true },
-        { slug: "variables", position: 2, finished: true, available: true },
-        { slug: "strings", position: 3, finished: false, available: true },
+        { slug: "hello-world", position: 1, finished: true },
+        { slug: "variables", position: 2, finished: true },
+        { slug: "strings", position: 3, finished: false },
       ],
     },
   });

@@ -20,7 +20,7 @@ func (r *rig) failTheRun() {
 	}
 }
 
-func TestCheckByAGuestAdvancesTheCookieOnlyWhenThePassMovesThemForward(t *testing.T) {
+func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 
@@ -29,13 +29,11 @@ func TestCheckByAGuestAdvancesTheCookieOnlyWhenThePassMovesThemForward(t *testin
 	passed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{}, firstLesson))
 	require.NoError(t, err)
 	require.NotNil(t, passed.Guest, "a first pass is worth a cookie")
-	furthest, ok := passed.Guest.Furthest(jsSlug)
-	require.True(t, ok)
-	assert.Equal(t, firstLesson, furthest)
+	assert.True(t, passed.Guest.Has(jsSlug, firstLesson))
 	assert.False(t, passed.LessonFinished, "a guest finishes nothing a database knows about")
 	assert.Zero(t, r.db.LessonProgress.Query().CountX(ctx)-before, "and leaves no rows")
 
-	// The same lesson again moves them nowhere, so there is nothing to write.
+	// The same lesson again finishes nothing new, so there is nothing to write.
 	again, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{Guest: *passed.Guest}, firstLesson))
 	require.NoError(t, err)
 	assert.Nil(t, again.Guest)

@@ -81,10 +81,10 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		Progress:    api.NilCourseProgress{Null: true},
 	}
 
-	// Everyone gets a position, because everyone has one: a visitor who has
-	// finished nothing stands at the beginning with the first lesson open, and
-	// that is a fact about the course, not about having an account. Deriving it
-	// client-side instead would be a second implementation of the gate.
+	// Everyone gets a standing, because everyone has one: a visitor who has
+	// finished nothing stands at the beginning, and that is a fact about the
+	// course, not about having an account. Deriving it client-side instead would
+	// be a second implementation of what finished means.
 	learner := currentLearner(ctx)
 	state, err := s.progress.CourseState(ctx, learner, crs.ID)
 	if err != nil {

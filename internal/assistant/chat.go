@@ -130,7 +130,7 @@ type Question struct {
 }
 
 // Ask streams the model's answer to q. Everything that decides the outcome —
-// the quota, the gate, the lesson's text — is settled before it returns, and
+// the quota, the lesson's text — is settled before it returns, and
 // so is the model's first token: a model that fails straight away is an error
 // here rather than an empty 200. The returned reader yields the answer as the
 // model produces it; the answer is stored, with its usage, before the reader
@@ -141,8 +141,8 @@ type Question struct {
 // still cost them the question — or cutting the connection just before the end
 // would be a way round the quota. A model that never starts costs nothing.
 //
-// Returns ErrQuotaExceeded, progress.ErrLessonNotAvailable, or an ent
-// not-found error for a lesson outside the course's current build.
+// Returns ErrQuotaExceeded, or an ent not-found error for a lesson outside the
+// course's current build.
 func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 	exhausted, err := c.quota.Exhausted(ctx, q.UserID)
 	if err != nil {

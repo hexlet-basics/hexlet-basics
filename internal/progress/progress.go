@@ -1,11 +1,11 @@
-// Package progress owns sequential progression: which Lesson a learner is
-// allowed to take, and the state transitions and domain facts that follow from
-// taking it (ADR-0012).
+// Package progress owns what a learner has done in a Course: the state
+// transitions and domain facts that follow from starting and passing a Lesson,
+// and the read model of where they stand (ADR-0012, ADR-0016).
 //
-// The rule lives here rather than in a handler because three surfaces need the
-// same answer — starting a Lesson, checking a solution, and reading a Course —
-// and a gate evaluated in two places is a gate that will eventually disagree
-// with itself.
+// Lessons may be taken in any order. The rules for what counts as finished and
+// as a completed Course live here rather than in a handler because three
+// surfaces need the same answer — starting a Lesson, checking a solution, and
+// reading a Course.
 package progress
 
 import (
@@ -35,14 +35,8 @@ const (
 	StateFinished = "finished"
 )
 
-// ErrLessonNotAvailable reports a Lesson beyond the learner's gate: its
-// Position is more than one past the furthest Position they have finished.
-// Distinct from a permission failure — the caller is allowed here, their
-// progress is not far enough.
-var ErrLessonNotAvailable = errors.New("progress: lesson is not available to this learner yet")
-
 // Tracker is the seam handlers depend on, so no handler learns where progress
-// is stored or how the gate is evaluated.
+// is stored.
 type Tracker interface {
 	StartLesson(ctx context.Context, learner Learner, lessonID int, locale string) (*CourseState, error)
 	CheckSolution(ctx context.Context, check Check) (*CheckResult, error)
@@ -52,23 +46,19 @@ type Tracker interface {
 }
 
 // CourseState is where a learner stands in one Course, computed against its
-// current Version. The per-Lesson list carries availability rather than leaving
-// the client to derive it: a client-side gate is a second implementation of the
-// rule, free to drift from the server that enforces it.
+// current Version.
 type CourseState struct {
-	State                    string
-	Completion               int
-	NextLessonSlug           *string
-	FurthestFinishedPosition int
-	Lessons                  []LessonState
+	State          string
+	Completion     int
+	NextLessonSlug *string
+	Lessons        []LessonState
 }
 
 // LessonState is one row of that list, in course order.
 type LessonState struct {
-	Slug      string
-	Position  int
-	Finished  bool
-	Available bool
+	Slug     string
+	Position int
+	Finished bool
 }
 
 // Progress records transitions and their domain facts in one transaction, and
@@ -93,14 +83,12 @@ func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher,
 // finished, succeeds and writes nothing — the frontend calls this from a button
 // that a learner can press twice, and from "next" at the end of a Lesson.
 //
-// A guest is gated by the same rule but stores nothing: their whole state is
-// the furthest Lesson they finished, which only a check can move. They still
-// get their position back, so the page they land on renders from the server's
-// answer exactly as a learner's does.
+// A guest stores nothing: their whole state is the Lessons they finished, which
+// only a check can add to. They still get their state back, so the page they
+// land on renders from the server's answer exactly as a learner's does.
 //
-// Returns ErrLessonNotAvailable when the gate refuses, and an ent not-found
-// error when the Lesson is not part of its Course's current Version — a Lesson
-// a later build dropped is no longer startable.
+// Returns an ent not-found error when the Lesson is not part of its Course's
+// current Version — a Lesson a later build dropped is no longer startable.
 func (p *Progress) StartLesson(
 	ctx context.Context,
 	learner Learner,
@@ -118,11 +106,11 @@ func (p *Progress) StartLesson(
 // the read that follows it runs outside the transaction rather than inside.
 func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID int, locale string) (int, error) {
 	if !learner.SignedIn() {
-		// A guest is gated and nothing else. There is no guest equivalent of a
-		// started Lesson: the state would carry no data, and the one feature
-		// anchored on Lesson Progress — the in-lesson assistant — requires an
-		// account anyway.
-		open, err := p.openGate(ctx, p.db, learner, lessonID)
+		// There is no guest equivalent of a started Lesson: the state would
+		// carry no data, and the one feature anchored on Lesson Progress — the
+		// in-lesson assistant — requires an account anyway. The Lesson is still
+		// resolved, so a Lesson the Course does not have reads as not found.
+		open, err := p.resolveLesson(ctx, p.db, lessonID)
 		if err != nil {
 			return 0, err
 		}
@@ -132,7 +120,7 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 	courseID := 0
 	err := p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		userID := learner.UserID
-		open, err := p.openGate(ctx, db, learner, lessonID)
+		open, err := p.resolveLesson(ctx, db, lessonID)
 		if err != nil {
 			return err
 		}
@@ -166,16 +154,12 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 	return courseID, err
 }
 
-// openGate is the gate, and the only place it is evaluated: a Lesson is
-// available when its Position is at most one past the furthest Position the
-// learner has finished. Expressing it once is the point — the rule is applied
-// on both write paths and shipped to the client in every read, and three copies
-// of one comparison is three chances for them to disagree.
-//
-// It resolves the Lesson against the Course's current Version on the way, so a
-// Lesson a later build dropped reads as not found rather than as a Lesson at
-// some stale Position.
-func (p *Progress) openGate(ctx context.Context, db *ent.Client, learner Learner, lessonID int) (*openLesson, error) {
+// resolveLesson finds a Lesson in its Course's current Version and the Position
+// it has there. Any Lesson may be taken in any order (ADR-0016), so this is only
+// a lookup — but it is the one place a Lesson is resolved on every write path,
+// and it is why a Lesson a later build dropped reads as not found rather than as
+// a Lesson at some stale Position.
+func (p *Progress) resolveLesson(ctx context.Context, db *ent.Client, lessonID int) (*resolvedLesson, error) {
 	lesson, crs, err := loadLessonCourse(ctx, db, lessonID)
 	if err != nil {
 		return nil, err
@@ -190,35 +174,24 @@ func (p *Progress) openGate(ctx context.Context, db *ent.Client, learner Learner
 		return nil, &ent.NotFoundError{}
 	}
 
-	furthest, err := p.furthestPosition(ctx, db, learner, crs, lessons)
-	if err != nil {
-		return nil, err
-	}
-	if target > furthest+1 {
-		return nil, ErrLessonNotAvailable
-	}
-	return &openLesson{
+	return &resolvedLesson{
 		lesson:   lesson,
 		course:   crs,
 		lessons:  lessons,
 		position: target,
-		furthest: furthest,
 	}, nil
 }
 
-// openLesson is a Lesson the gate let through, with everything resolving it
+// resolvedLesson is a Lesson found in its Course, with everything resolving it
 // already cost: these travel together through every step that follows, so they
 // travel as one value.
-type openLesson struct {
+type resolvedLesson struct {
 	lesson  *ent.CourseLesson
 	course  *ent.Course
 	lessons []currentLesson
 
-	// position is the Lesson's Position in the current Version; furthest is the
-	// learner's furthest finished one, which a guest's pass has to beat before
-	// it is worth writing a cookie.
+	// position is the Lesson's Position in the current Version.
 	position int
-	furthest int
 }
 
 // publishCourseStarted records the enrollment transition, counting the
@@ -256,7 +229,7 @@ func (p *Progress) publishLessonStarted(
 	tx *sql.Tx,
 	db *ent.Client,
 	enrollmentID int,
-	open *openLesson,
+	open *resolvedLesson,
 	locale string,
 	occurredAt time.Time,
 ) error {
@@ -405,40 +378,13 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 	return lesson, crs, nil
 }
 
-// positionsOf maps every Lesson of the current Version to its Position.
-// natural_order numbers Lessons 1..N across all modules in build order, which
-// is what course order means; `order` is per-module and cannot gate anything on
-// its own.
-//
-// A Course with no current Version has no positions, so nothing in it is
-// startable — which is correct: there is no built content to start.
-func positionsOf(lessons []currentLesson) map[int]int {
-	positions := make(map[int]int, len(lessons))
-	for _, l := range lessons {
-		positions[l.lessonID] = l.position
-	}
-	return positions
-}
-
 // positionOf is a Lesson's Position in the current Version, or 0 when the
 // Version does not contain it. Zero is not a Position — Positions start at one
-// — so it reads as "this Lesson has none", which is the same answer the gate
-// and the guest merge both need for a Lesson a later build dropped.
+// — so it reads as "this Lesson has none", which is the same answer lesson
+// resolution and the guest merge both need for a Lesson a later build dropped.
 func positionOf(lessons []currentLesson, lessonID int) int {
 	for _, lesson := range lessons {
 		if lesson.lessonID == lessonID {
-			return lesson.position
-		}
-	}
-	return 0
-}
-
-// positionOfSlug is the same lookup by slug, which is how guest progress
-// identifies a Lesson: a stored Position would denote a different Lesson after
-// the next promotion, a stored slug resolves against whatever is current.
-func positionOfSlug(lessons []currentLesson, slug string) int {
-	for _, lesson := range lessons {
-		if lesson.slug == slug {
 			return lesson.position
 		}
 	}
@@ -528,9 +474,8 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 // "not started" condition, not a state a record can be in, so the read does not
 // have to distinguish them.
 //
-// A guest gets the same shape from the other storage. Sequential progression
-// makes their gaps unrepresentable, so their single furthest Lesson implies the
-// whole finished set: everything up to it is done, everything after it is not.
+// A guest gets the same shape from the other storage: the Lessons their signed
+// cookie names, resolved against the current Version.
 func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error) {
 	if learner.SignedIn() {
 		// One implementation for accounts, whether one Course is asked for or a
@@ -562,13 +507,9 @@ func (p *Progress) guestCourseState(ctx context.Context, learner Learner, course
 		return nil, err
 	}
 
-	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
-	if err != nil {
-		return nil, err
-	}
 	finishedIDs := make(map[int]bool, len(lessons))
 	for _, lesson := range lessons {
-		finishedIDs[lesson.lessonID] = lesson.position <= furthest
+		finishedIDs[lesson.lessonID] = learner.Guest.Has(slugOf(crs), lesson.slug)
 	}
 
 	state, finishedCount := stateOf(lessons, finishedIDs)
@@ -635,8 +576,8 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 
 // stateOf folds a Course's current Lessons and the learner's finished set into
 // the read model, and reports how many current Lessons are finished. It is the
-// one place availability, the next Lesson and completion are decided, whether
-// the learner is a guest, one Course is asked for, or a dashboard asks for many.
+// one place the next Lesson and completion are decided, whether the learner is a
+// guest, one Course is asked for, or a dashboard asks for many.
 func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, int) {
 	state := &CourseState{Lessons: make([]LessonState, 0, len(lessons))}
 	finishedCount := 0
@@ -644,18 +585,11 @@ func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, i
 		finished := finishedIDs[l.lessonID]
 		if finished {
 			finishedCount++
-			if l.position > state.FurthestFinishedPosition {
-				state.FurthestFinishedPosition = l.position
-			}
 		}
-	}
-	for _, l := range lessons {
-		finished := finishedIDs[l.lessonID]
 		state.Lessons = append(state.Lessons, LessonState{
-			Slug:      l.slug,
-			Position:  l.position,
-			Finished:  finished,
-			Available: l.position <= state.FurthestFinishedPosition+1,
+			Slug:     l.slug,
+			Position: l.position,
+			Finished: finished,
 		})
 		if !finished && state.NextLessonSlug == nil {
 			slug := l.slug
@@ -710,26 +644,6 @@ func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int
 		return finished, nil
 	}
 	return map[int]bool{}, nil
-}
-
-// furthestFinishedPosition is the highest Position the learner has finished in
-// this Course, or 0 when they have finished nothing. Availability is measured
-// from the furthest finished Lesson rather than the first unfinished one, so a
-// gap in a learner's history does not block them — and a finished Lesson that a
-// later Version dropped has no Position and therefore raises nothing.
-func furthestFinishedPosition(ctx context.Context, db *ent.Client, userID, courseID int, positions map[int]int) (int, error) {
-	finished, err := finishedLessonIDs(ctx, db, userID, courseID)
-	if err != nil {
-		return 0, err
-	}
-
-	furthest := 0
-	for lessonID := range finished {
-		if position, ok := positions[lessonID]; ok && position > furthest {
-			furthest = position
-		}
-	}
-	return furthest, nil
 }
 
 func slugOf(c *ent.Course) string {

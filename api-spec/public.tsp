@@ -126,7 +126,7 @@ model CourseLessonView {
    * list the course landing read returns.
    *
    * The player's navigation tab is this list joined to `progress.lessons` by
-   * slug: names and order from here, checks and locks from there. Both screens
+   * slug: names and order from here, checks from there. Both screens
    * render from the same two arrays, which is what keeps the Course page's list
    * and the player's from disagreeing.
    */
@@ -135,8 +135,7 @@ model CourseLessonView {
   /**
    * Where the visitor stands in the course this lesson belongs to — the same
    * payload the course landing read returns, for a signed-in learner and a
-   * guest alike. The player reads `lessons[].available` to know whether this
-   * one may be taken, and `nextLessonSlug` for where "next" goes.
+   * guest alike. The player reads `nextLessonSlug` for where "next" goes.
    *
    * Null only for a course with no built version.
    */
@@ -152,8 +151,7 @@ interface CourseLessons {
    *
    * Reading a lesson never starts it: the frontend preloads routes on hover,
    * so a read with that effect would enroll a learner in every lesson they
-   * pointed at (ADR-0012). Theory stays public and indexable for everyone,
-   * including a lesson the visitor may not take yet.
+   * pointed at (ADR-0012). Theory is public and indexable for everyone.
    */
   @get
   @route("/{slug}")

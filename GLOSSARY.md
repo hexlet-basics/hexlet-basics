@@ -88,10 +88,8 @@ _ru_: начат · _es_: iniciado
 **Finished**:
 The state of a Lesson Progress whose exercise the learner has passed, and of an
 Enrollment all of whose Current Lessons are finished. Neither ever returns to
-Started. Merging Guest progress is the one case where a Lesson Progress is
-created Finished without the learner having passed that Lesson individually:
-sequential progression means the whole prefix up to their furthest Lesson was
-passed, so the rule implies the rest.
+Started. Lessons may be taken in any order, so finished is a property of each
+Lesson on its own and a later one implies nothing about an earlier one.
 _ru_: завершён · _es_: finalizado
 
 **Current Lessons**:
@@ -104,15 +102,7 @@ have finished under an older one.
 Where a Lesson sits in course order — a property of the Lesson's Version, not of
 the Lesson, and therefore only meaningful relative to one Course Version. A
 Lesson a learner finished that is absent from the current Version has no
-position: it neither raises the gate nor counts towards Completion.
-
-**Available Lesson**:
-A Lesson a learner is allowed to take: one whose Position is at most one past
-the highest Position they have finished. Availability is measured from the
-highest finished Lesson, not from the first unfinished one, so a gap in a
-learner's history does not block them. A learner with no history has exactly one
-Available Lesson, the first.
-_ru_: доступный урок · _es_: lección disponible
+position: it does not count towards Completion.
 
 **Completion**:
 The share of a Course's Current Lessons a learner has finished, as a percentage.
@@ -128,9 +118,8 @@ _ru_: готовность курса · _es_: disponibilidad del curso
 
 **Next Lesson**:
 The first Lesson, in course order, among a Course's Current Lessons that the
-learner has not finished — where they resume. It is not the gate: for a learner
-with a gap, the Next Lesson is the gap, while their Available Lessons run all
-the way to one past their furthest finished one.
+learner has not finished — where they resume. For a learner who took Lessons out
+of order, it is the first gap.
 _ru_: следующий урок · _es_: siguiente lección
 
 **Starter Code**:
@@ -153,13 +142,11 @@ reads the tests has read the specification of the exercise. Carried as
 _ru_: тесты урока · _es_: pruebas de la lección
 
 **Guest progress**:
-Lessons a visitor passed before having an account. It is one Lesson per Course —
-the furthest one they finished — carried in a signed, httpOnly cookie, because
-sequential progression makes a guest's gaps unrepresentable and that single
-value therefore says everything. It is merged into an account on sign-up and on
-sign-in, taking the further of the two positions, and becomes an ordinary
-Enrollment plus Lesson Progress rows in the Finished state for the whole prefix
-up to it.
+Lessons a visitor passed before having an account. It is the set of finished
+Lesson slugs per Course, carried in a signed, httpOnly cookie. It is merged into
+an account on sign-up and on sign-in as a union, and becomes an ordinary
+Enrollment plus Lesson Progress rows in the Finished state for exactly those
+Lessons.
 _ru_: гостевой прогресс · _es_: progreso de invitado
 
 ## Storage mapping

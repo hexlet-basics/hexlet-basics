@@ -26,28 +26,27 @@ func TestGuestCookieRoundTripsProgress(t *testing.T) {
 	decoded, err := codec.Decode(value)
 	require.NoError(t, err)
 
-	lesson, ok := decoded.Furthest("javascript")
-	require.True(t, ok)
-	assert.Equal(t, "variables", lesson)
-
-	_, ok = decoded.Furthest("ruby")
-	assert.False(t, ok, "a course the visitor never touched has no entry")
+	assert.True(t, decoded.Has("javascript", "variables"))
+	assert.False(t, decoded.Has("javascript", "strings"), "only what was recorded is finished")
+	assert.False(t, decoded.Has("ruby", "variables"), "a course the visitor never touched has no entry")
 }
 
-// Recording a course again replaces its entry rather than accumulating one, and
-// moves it to the most-recently-touched end.
+// Recording a course again adds to its entry rather than accumulating a second
+// one, and moves it to the most-recently-touched end. Lessons are a set: any
+// order, and recording one twice stores it once.
 func TestGuestProgressKeepsOneEntryPerCourse(t *testing.T) {
 	stored := progress.GuestProgress{}.
 		Record("javascript", "hello-world").
 		Record("python", "intro").
-		Record("javascript", "variables")
+		Record("javascript", "variables").
+		Record("javascript", "hello-world")
 
 	require.Len(t, stored.Entries, 2)
 	assert.Equal(t, "python", stored.Entries[0].CourseSlug, "least recently touched first")
 	assert.Equal(t, "javascript", stored.Entries[1].CourseSlug)
 
-	lesson, _ := stored.Furthest("javascript")
-	assert.Equal(t, "variables", lesson)
+	assert.Equal(t, []string{"hello-world", "variables"}, stored.Entries[1].Lessons,
+		"both lessons are kept, once each, in the order they were finished")
 }
 
 // A tampered payload is rejected: this state becomes rows and events on sign-up,
@@ -104,10 +103,8 @@ func TestGuestCookieEvictsLeastRecentlyTouchedCourses(t *testing.T) {
 	require.NoError(t, err)
 	assert.Less(t, len(decoded.Entries), 200, "something was evicted")
 
-	_, ok := decoded.Furthest("course-with-a-fairly-long-slug-199")
-	assert.True(t, ok, "the most recently touched course survives")
-	_, ok = decoded.Furthest("course-with-a-fairly-long-slug-000")
-	assert.False(t, ok, "the least recently touched one is dropped first")
+	assert.True(t, hasCourse(decoded, "course-with-a-fairly-long-slug-199"), "the most recently touched course survives")
+	assert.False(t, hasCourse(decoded, "course-with-a-fairly-long-slug-000"), "the least recently touched one is dropped first")
 }
 
 func TestGuestCookieIsHttpOnlyAndLongLived(t *testing.T) {
@@ -122,4 +119,13 @@ func TestGuestCookieIsHttpOnlyAndLongLived(t *testing.T) {
 	assert.Equal(t, http.SameSiteLaxMode, cookie.SameSite)
 	assert.Equal(t, "/", cookie.Path)
 	assert.Equal(t, 365*24*60*60, cookie.MaxAge, "a year")
+}
+
+func hasCourse(g progress.GuestProgress, courseSlug string) bool {
+	for _, entry := range g.Entries {
+		if entry.CourseSlug == courseSlug {
+			return true
+		}
+	}
+	return false
 }

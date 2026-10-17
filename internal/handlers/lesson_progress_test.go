@@ -24,8 +24,8 @@ import (
 // by slug throughout: fixture ids are legacy crc32 values.
 const (
 	firstLessonSlug  = "hello-world" // position 1, finished by the acting user
-	secondLessonSlug = "variables"   // position 2, the next available one
-	thirdLessonSlug  = "strings"     // position 3, beyond the gate
+	secondLessonSlug = "variables"   // position 2, the first one still to do
+	thirdLessonSlug  = "strings"     // position 3
 	jsCourseSlug     = "javascript"
 	// jsLandingSlug is the public URL of the JavaScript course's Russian landing
 	// page, the slug GetCourse resolves (legacy `/languages/javascript-ru`).
@@ -35,10 +35,10 @@ const (
 	jsEnglishLandingSlug = "frontend-en"
 )
 
-// Starting the lesson one past the furthest finished one records it and
-// publishes the lesson-started fact. No course-started fact: the learner was
-// already enrolled, and the CRM counts transitions, not requests.
-func TestStartLessonRecordsProgressOnTheNextAvailableLesson(t *testing.T) {
+// Starting a lesson records it and publishes the lesson-started fact. No
+// course-started fact: the learner was already enrolled, and the CRM counts
+// transitions, not requests.
+func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -120,8 +120,9 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 	assert.Equal(t, "finished", *row.State, "the finished state is not rolled back to started")
 }
 
-// Two past the furthest finished lesson is refused, and nothing is written.
-func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
+// Lessons may be taken in any order (ADR-0016): the third lesson starts before
+// the second, and only that lesson is recorded.
+func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
@@ -129,16 +130,15 @@ func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.ProblemDetails{}, res)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	require.IsType(t, &api.CourseProgress{}, res)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Equal(t, before+1, h.DB.LessonProgress.Query().CountX(ctx), "one row, for this lesson")
+	assert.Equal(t, thirdLessonSlug, publishedLessonStarted(t, h).LessonSlug)
 }
 
-// A lesson the current version does not contain contributes no Position, so a
-// learner whose furthest finished lesson was dropped is gated from their
-// furthest surviving one — not from the dropped lesson's old position.
+// A lesson the current version does not contain counts for nothing, so a learner
+// who finished one that was dropped has no more of the course done than before.
 func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
@@ -170,22 +170,18 @@ func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 		SetState("finished").
 		SaveX(ctx)
 
-	// Position 9 must not raise the gate: the third lesson stays out of reach.
+	// The dropped lesson adds nothing to the course's completion: one of three.
 	third := lessonBySlug(t, h, thirdLessonSlug)
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(third.ID)})
 	require.NoError(t, err)
-	assert.IsType(t, &api.ProblemDetails{}, res, "a dropped lesson has no position")
-
-	// While the lesson one past their furthest SURVIVING one still opens.
-	second := lessonBySlug(t, h, secondLessonSlug)
-	res, err = h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(second.ID)})
-	require.NoError(t, err)
-	assert.IsType(t, &api.CourseProgress{}, res)
+	state, ok := res.(*api.CourseProgress)
+	require.True(t, ok, "got %T", res)
+	assert.Equal(t, int32(33), state.Completion, "a dropped lesson has no place in the course")
+	require.Len(t, state.Lessons, 3)
 }
 
 // Starting returns where the learner now stands, so the page they land on
-// renders locks and checkmarks from the server's answer rather than deriving
-// them.
+// renders the checkmarks from the server's answer rather than deriving them.
 func TestStartLessonAnswersWithTheLearnersPosition(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -195,15 +191,14 @@ func TestStartLessonAnswersWithTheLearnersPosition(t *testing.T) {
 	state, ok := res.(*api.CourseProgress)
 	require.True(t, ok, "got %T", res)
 
-	assert.Equal(t, int32(1), state.FurthestFinishedPosition)
 	assert.Equal(t, secondLessonSlug, state.NextLessonSlug.Value, "started is not finished")
 	require.Len(t, state.Lessons, 3)
-	assert.True(t, state.Lessons[1].Available)
-	assert.False(t, state.Lessons[2].Available)
+	assert.True(t, state.Lessons[0].Finished)
+	assert.False(t, state.Lessons[1].Finished)
 }
 
-// A guest starts under the same rule and gets the same payload, with nothing
-// stored: only a check moves their position.
+// A guest starts the same way and gets the same payload, with nothing stored:
+// only a check changes what their cookie names.
 func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
 	ctx := t.Context()
@@ -217,25 +212,24 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 	require.True(t, ok, "got %T", res)
 
 	assert.Equal(t, api.EnrollmentStateStarted, state.State.Value, "derived from what they finished")
-	assert.Equal(t, int32(1), state.FurthestFinishedPosition)
-	assert.True(t, state.Lessons[1].Available)
-	assert.False(t, state.Lessons[2].Available)
+	assert.True(t, state.Lessons[0].Finished)
+	assert.False(t, state.Lessons[1].Finished)
 
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
 	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "starting is not a fact for someone with no account")
 }
 
-// The gate is real for a visitor too: with no cookie only the first lesson of a
-// course opens.
-func TestStartLessonRefusesAGuestBeyondTheGate(t *testing.T) {
+// A visitor with no cookie may start any lesson: nothing is stored, so there is
+// nothing to refuse.
+func TestStartLessonLetsAGuestTakeAnyLesson(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	lesson := lessonBySlug(t, h, secondLessonSlug)
+	lesson := lessonBySlug(t, h, thirdLessonSlug)
 
 	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.ProblemDetails{}, res)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	require.IsType(t, &api.CourseProgress{}, res)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
 }
 
 func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.CourseLesson {
@@ -326,8 +320,7 @@ func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
 	return testsupport.PublishedEvents[T](t, h.Services)
 }
 
-// A lesson that does not exist is told apart from one that is not yet
-// available: the client can stop looking rather than wait for it to unlock.
+// A lesson that does not exist is a 404: the client can stop looking.
 func TestStartLessonAnswersAnUnknownLessonAsNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 

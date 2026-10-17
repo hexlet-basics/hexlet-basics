@@ -3,18 +3,13 @@ import type { CourseLessonView } from "@/client/types.gen";
 import LessonMark from "@/components/lesson/LessonMark";
 import { NavLink } from "@/components/RouterLink";
 
-// The course's lessons, in course order, with the current one marked. Legacy's
-// flat list plus the two marks sequential progression needs: a check on the
-// finished ones and a lock on the ones the gate has not opened yet (ADR-0012).
-//
-// A locked entry is still a link. Theory is public and is what a search engine
-// indexes, so the lock says "you cannot take this yet", never "you cannot read
-// this" — it is the editor's actions that are gated, and the server decides
-// that, not this list.
+// The course's lessons, in course order, with the current one marked and a check
+// on the finished ones. Legacy's flat list: lessons may be taken in any order
+// (ADR-0016), so every entry is a plain link.
 export default function LessonNavigation({ view }: { view: CourseLessonView }) {
   const courseSlug = view.lesson.course.slug;
 
-  // Names and order come from `lessons`, checks and locks from `progress`, joined
+  // Names and order come from `lessons`, checks from `progress`, joined
   // by slug — the same pair the course page renders, so the two cannot disagree.
   const stateBySlug = new Map(view.progress?.lessons.map((item) => [item.slug, item]) ?? []);
 

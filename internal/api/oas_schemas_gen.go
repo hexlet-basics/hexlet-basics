@@ -3393,13 +3393,12 @@ type CourseLessonView struct {
 	// read returns.
 	//
 	// The player's navigation tab is this list joined to `progress.lessons` by slug: names and order from
-	// here, checks and locks from there. Both screens render from the same two arrays, which is what keeps
-	// the Course page's list and the player's from disagreeing.
+	// here, checks from there. Both screens render from the same two arrays, which is what keeps the
+	// Course page's list and the player's from disagreeing.
 	Lessons []CourseLessonListItem `json:"lessons"`
 	// Where the visitor stands in the course this lesson belongs to — the same payload the course
-	// landing read returns, for a signed-in learner and a guest alike. The player reads
-	// `lessons[].available` to know whether this one may be taken, and `nextLessonSlug` for where "next"
-	// goes.
+	// landing read returns, for a signed-in learner and a guest alike. The player reads `nextLessonSlug`
+	// for where "next" goes.
 	//
 	// Null only for a course with no built version.
 	Progress NilCourseProgress `json:"progress"`
@@ -3554,20 +3553,16 @@ func (s *CoursePage) SetPerPage(val int32) {
 
 func (*CoursePage) adminListCoursesRes() {}
 
-// A learner's position in one Course, computed against its current Version.
-//
-// Availability travels with it even though it is a pure function of position: a client deriving it
-// would be a second implementation of the gate, free to drift from the server that enforces it.
+// Where a learner stands in one Course, computed against its current Version: which Lessons they have
+// finished, in whatever order they took them.
 // Ref: #/components/schemas/CourseProgress
 type CourseProgress struct {
 	State NilEnrollmentState `json:"state"`
 	// The share of the Course's current Lessons finished (0–100).
 	Completion int32 `json:"completion"`
 	// The first unfinished Lesson in course order — where the learner resumes.
-	NextLessonSlug NilString `json:"nextLessonSlug"`
-	// The highest Position finished, 0 when nothing has been.
-	FurthestFinishedPosition int32                `json:"furthestFinishedPosition"`
-	Lessons                  []LessonProgressItem `json:"lessons"`
+	NextLessonSlug NilString            `json:"nextLessonSlug"`
+	Lessons        []LessonProgressItem `json:"lessons"`
 }
 
 // GetState returns the value of State.
@@ -3583,11 +3578,6 @@ func (s *CourseProgress) GetCompletion() int32 {
 // GetNextLessonSlug returns the value of NextLessonSlug.
 func (s *CourseProgress) GetNextLessonSlug() NilString {
 	return s.NextLessonSlug
-}
-
-// GetFurthestFinishedPosition returns the value of FurthestFinishedPosition.
-func (s *CourseProgress) GetFurthestFinishedPosition() int32 {
-	return s.FurthestFinishedPosition
 }
 
 // GetLessons returns the value of Lessons.
@@ -3608,11 +3598,6 @@ func (s *CourseProgress) SetCompletion(val int32) {
 // SetNextLessonSlug sets the value of NextLessonSlug.
 func (s *CourseProgress) SetNextLessonSlug(val NilString) {
 	s.NextLessonSlug = val
-}
-
-// SetFurthestFinishedPosition sets the value of FurthestFinishedPosition.
-func (s *CourseProgress) SetFurthestFinishedPosition(val int32) {
-	s.FurthestFinishedPosition = val
 }
 
 // SetLessons sets the value of Lessons.
@@ -3845,10 +3830,6 @@ func (s *CourseView) SetProgress(val NilCourseProgress) {
 }
 
 func (*CourseView) getCourseRes() {}
-
-type CreateAssistantMessageConflict ProblemDetails
-
-func (*CreateAssistantMessageConflict) createAssistantMessageRes() {}
 
 type CreateAssistantMessageOK struct {
 	Data io.Reader
@@ -4980,15 +4961,13 @@ func (s *LessonProgress) SetCourseLessonName(val string) {
 	s.CourseLessonName = val
 }
 
-// Per-Lesson state for the course and lesson pages: locks and checkmarks.
+// Per-Lesson state for the course and lesson pages: the checkmarks.
 // Ref: #/components/schemas/LessonProgressItem
 type LessonProgressItem struct {
 	Slug string `json:"slug"`
 	// Position in the current Version, 1..N across the whole Course.
 	Position int32 `json:"position"`
 	Finished bool  `json:"finished"`
-	// Whether the gate lets the learner take it (ADR-0012).
-	Available bool `json:"available"`
 }
 
 // GetSlug returns the value of Slug.
@@ -5006,11 +4985,6 @@ func (s *LessonProgressItem) GetFinished() bool {
 	return s.Finished
 }
 
-// GetAvailable returns the value of Available.
-func (s *LessonProgressItem) GetAvailable() bool {
-	return s.Available
-}
-
 // SetSlug sets the value of Slug.
 func (s *LessonProgressItem) SetSlug(val string) {
 	s.Slug = val
@@ -5024,11 +4998,6 @@ func (s *LessonProgressItem) SetPosition(val int32) {
 // SetFinished sets the value of Finished.
 func (s *LessonProgressItem) SetFinished(val bool) {
 	s.Finished = val
-}
-
-// SetAvailable sets the value of Available.
-func (s *LessonProgressItem) SetAvailable(val bool) {
-	s.Available = val
 }
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
@@ -6497,7 +6466,6 @@ func (s *ProblemDetails) SetInstance(val OptString) {
 	s.Instance = val
 }
 
-func (*ProblemDetails) checkLessonRes()           {}
 func (*ProblemDetails) createBookRequestRes()     {}
 func (*ProblemDetails) createLeadRes()            {}
 func (*ProblemDetails) deleteAccountRes()         {}
@@ -6507,7 +6475,6 @@ func (*ProblemDetails) getMyDashboardRes()        {}
 func (*ProblemDetails) getProfileRes()            {}
 func (*ProblemDetails) likeBlogPostRes()          {}
 func (*ProblemDetails) listAssistantMessagesRes() {}
-func (*ProblemDetails) startLessonRes()           {}
 func (*ProblemDetails) updateProfileRes()         {}
 
 // ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.

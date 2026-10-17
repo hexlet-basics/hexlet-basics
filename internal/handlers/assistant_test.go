@@ -219,22 +219,17 @@ func TestAskAssistantQuotaResetsDaily(t *testing.T) {
 	assert.NotEmpty(t, answer, "yesterday's questions do not count, so the model answers")
 }
 
-// Asking about a lesson beyond the gate is refused as starting it would be,
-// and nothing is stored.
-func TestAskAssistantRefusesALessonBeyondTheGate(t *testing.T) {
+// Any lesson may be asked about, in any order (ADR-0016): the learner has not
+// reached the third lesson, and the assistant still answers and stores the turn.
+func TestAskAssistantAnswersAboutALessonOutOfOrder(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	ctx := t.Context()
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
-	messages := h.DB.AiMessage.Query().CountX(ctx)
+	messages := h.DB.AiMessage.Query().CountX(t.Context())
 
-	res, err := h.Client.CreateAssistantMessage(ctx,
-		&api.AssistantMessageInput{Message: "Help?"},
-		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
-	)
-	require.NoError(t, err)
-	assert.IsType(t, &api.CreateAssistantMessageConflict{}, res)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
-	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
+	answer := askAssistant(t, h, lesson, "Help?")
+
+	assert.NotEmpty(t, answer)
+	assert.Greater(t, h.DB.AiMessage.Query().CountX(t.Context()), messages, "the turn is stored")
 }
 
 // When the model fails before its first token the learner gets an error

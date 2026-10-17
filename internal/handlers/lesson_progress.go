@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"errors"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
@@ -12,15 +11,11 @@ import (
 )
 
 // StartLesson marks a lesson started and answers with where the learner now
-// stands. The rule — which lessons a learner may take — lives in the progress
-// module; this handler only translates its outcome to the contract's responses.
+// stands. What starting means lives in the progress module; this handler only
+// translates its outcome to the contract's responses.
 //
 // A guest reaches it too, and gets the same payload with nothing stored: their
-// position is the signed cookie, and only a check moves it.
-//
-// 409 rather than 403 for a gated lesson: the caller's permissions are fine,
-// their progress is not, and a client that cannot tell those apart cannot
-// respond to either sensibly.
+// state is the signed cookie, and only a check moves it.
 func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) (api.StartLessonRes, error) {
 	state, err := s.progress.StartLesson(
 		ctx,
@@ -29,8 +24,6 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 		s.i18n.Locale(ctx),
 	)
 	switch {
-	case errors.Is(err, progress.ErrLessonNotAvailable):
-		return s.errors.LessonNotAvailable(ctx), nil
 	case ent.IsNotFound(err):
 		return s.lessonNotFound(ctx), nil
 	case err != nil:
@@ -61,10 +54,6 @@ func (s *Server) CheckLesson(
 		Locale:    s.i18n.Locale(ctx),
 	})
 	switch {
-	case errors.Is(err, progress.ErrLessonNotAvailable):
-		// Refused before the submission ran: nothing was executed and nothing
-		// was written.
-		return s.errors.LessonNotAvailable(ctx), nil
 	case ent.IsNotFound(err):
 		// The lesson, or the version the code was written against, is not part
 		// of the course's current build.

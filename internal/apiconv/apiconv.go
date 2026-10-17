@@ -253,25 +253,21 @@ func ToEnrollment(row *ent.Enrollment, state *progress.CourseState) api.Enrollme
 	}
 }
 
-// ToCourseProgress projects the computed course state. Availability travels
-// with it so the client renders locks from the server's answer instead of
-// reimplementing the gate.
+// ToCourseProgress projects the computed course state.
 func ToCourseProgress(state *progress.CourseState) api.CourseProgress {
 	lessons := make([]api.LessonProgressItem, 0, len(state.Lessons))
 	for _, lesson := range state.Lessons {
 		lessons = append(lessons, api.LessonProgressItem{
-			Slug:      lesson.Slug,
-			Position:  int32(lesson.Position),
-			Finished:  lesson.Finished,
-			Available: lesson.Available,
+			Slug:     lesson.Slug,
+			Position: int32(lesson.Position),
+			Finished: lesson.Finished,
 		})
 	}
 	return api.CourseProgress{
-		State:                    nilEnrollmentState(&state.State),
-		Completion:               int32(state.Completion),
-		NextLessonSlug:           NilStringFromPtr(state.NextLessonSlug),
-		FurthestFinishedPosition: int32(state.FurthestFinishedPosition),
-		Lessons:                  lessons,
+		State:          nilEnrollmentState(&state.State),
+		Completion:     int32(state.Completion),
+		NextLessonSlug: NilStringFromPtr(state.NextLessonSlug),
+		Lessons:        lessons,
 	}
 }
 

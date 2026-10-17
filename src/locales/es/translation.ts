@@ -1140,7 +1140,6 @@ export default {
           issues: "Found a bug? Have something to add? Pull requests are welcome!",
           lesson: "Lesson",
           lesson_not_found: "Lección no encontrada. Prueba con otra lección.",
-          locked: "Bloqueada",
           navigation: "Navigation",
           next: "Next →",
           only_for_signed_in_users: "Exercise available only for signed users.",

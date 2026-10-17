@@ -83,10 +83,7 @@ function courseView(state: EnrollmentState | null): CourseView {
     state,
     completion: state === "finished" ? 100 : 0,
     nextLessonSlug: state === "finished" ? null : "hello-world",
-    furthestFinishedPosition: state === "finished" ? 1 : 0,
-    lessons: [
-      { slug: "hello-world", position: 1, finished: state === "finished", available: true },
-    ],
+    lessons: [{ slug: "hello-world", position: 1, finished: state === "finished" }],
   };
   return {
     course,

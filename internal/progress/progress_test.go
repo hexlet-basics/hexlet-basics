@@ -21,7 +21,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// The progress module over the test's own transaction: the real gate, the real
+// The progress module over the test's own transaction: the real rules, the real
 // transitions and the real event publisher, with the exercise runner the one
 // mock. Asserted is what a learner or a guest is left with — the rows, the
 // state read back, the facts published — never what was called.
@@ -87,8 +87,14 @@ func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
 	return slugs
 }
 
-func guestAt(lessonSlug string) progress.Learner {
-	return progress.Learner{Guest: progress.GuestProgress{}.Record(jsSlug, lessonSlug)}
+// guestWith is a visitor whose cookie names exactly these JavaScript lessons as
+// finished.
+func guestWith(lessonSlugs ...string) progress.Learner {
+	guest := progress.GuestProgress{}
+	for _, slug := range lessonSlugs {
+		guest = guest.Record(jsSlug, slug)
+	}
+	return progress.Learner{Guest: guest}
 }
 
 func lessonSlugs(state *progress.CourseState) []string {
@@ -124,14 +130,21 @@ func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(carol.UserID)).CountX(ctx))
 }
 
-func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
+// Any lesson may be started, in any order (ADR-0016): the third before the first
+// enrolls the learner and records exactly that lesson.
+func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	r := newRig(t)
+	ctx := t.Context()
 	carol := r.learner(t, "carol@example.com")
 
-	_, err := r.progress.StartLesson(t.Context(), carol, r.lesson(t, thirdLesson).ID, locale)
+	state, err := r.progress.StartLesson(ctx, carol, r.lesson(t, thirdLesson).ID, locale)
+	require.NoError(t, err)
 
-	assert.ErrorIs(t, err, progress.ErrLessonNotAvailable)
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
+	started := r.db.LessonProgress.Query().Where(lessonprogress.UserID(carol.UserID)).AllX(ctx)
+	require.Len(t, started, 1)
+	assert.Equal(t, r.lesson(t, thirdLesson).ID, started[0].LessonID)
+	assert.Equal(t, 0, state.Completion, "starting finishes nothing")
+	assert.Len(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services), 1)
 }
 
 func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T) {
@@ -167,23 +180,22 @@ func TestStartLessonReadsAnUnknownLessonAsNotFound(t *testing.T) {
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
 
-func TestStartLessonLetsAGuestInAtTheGateAndWritesNothing(t *testing.T) {
+func TestStartLessonLetsAGuestTakeAnyLessonAndWritesNothing(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	before := r.db.LessonProgress.Query().CountX(ctx)
 
-	state, err := r.progress.StartLesson(ctx, guestAt(firstLesson), r.lesson(t, secondLesson).ID, locale)
-	require.NoError(t, err)
+	// A first-time visitor may open any lesson, and one with progress too.
+	for _, learner := range []progress.Learner{{}, guestWith(firstLesson)} {
+		_, err := r.progress.StartLesson(ctx, learner, r.lesson(t, thirdLesson).ID, locale)
+		require.NoError(t, err)
+	}
 
-	assert.Equal(t, 1, state.FurthestFinishedPosition)
 	assert.Equal(t, before, r.db.LessonProgress.Query().CountX(ctx), "a guest leaves no rows")
 	assert.Zero(t, testsupport.PublishedCount(t, r.services), "and no facts: there is no account")
-
-	_, err = r.progress.StartLesson(ctx, progress.Learner{}, r.lesson(t, secondLesson).ID, locale)
-	assert.ErrorIs(t, err, progress.ErrLessonNotAvailable, "a first-time visitor cannot skip ahead")
 }
 
-func TestGuestCourseStateIsDerivedFromTheFurthestLesson(t *testing.T) {
+func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	courseID := r.course(t, jsSlug).ID
@@ -196,9 +208,10 @@ func TestGuestCourseStateIsDerivedFromTheFurthestLesson(t *testing.T) {
 		next      string
 	}{
 		{"a first visit has not started", progress.Learner{}, "", 0, firstLesson},
-		{"a visitor part way is started", guestAt(secondLesson), progress.StateStarted, 66, thirdLesson},
-		{"a visitor at the last lesson has finished", guestAt(thirdLesson), progress.StateFinished, 100, ""},
-		{"a slug the version dropped counts as a first visit", guestAt("gone"), "", 0, firstLesson},
+		{"a visitor part way is started", guestWith(firstLesson, secondLesson), progress.StateStarted, 66, thirdLesson},
+		{"a visitor who took a later lesson first has only that one", guestWith(thirdLesson), progress.StateStarted, 33, firstLesson},
+		{"a visitor who finished every lesson has finished", guestWith(firstLesson, secondLesson, thirdLesson), progress.StateFinished, 100, ""},
+		{"a slug the version dropped counts as a first visit", guestWith("gone"), "", 0, firstLesson},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -258,12 +271,11 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	require.NotNil(t, js)
 	assert.Equal(t, progress.StateStarted, js.State)
 	assert.Equal(t, 33, js.Completion)
-	assert.Equal(t, 1, js.FurthestFinishedPosition)
-	available := make([]bool, 0, len(js.Lessons))
+	finished := make([]bool, 0, len(js.Lessons))
 	for _, lesson := range js.Lessons {
-		available = append(available, lesson.Available)
+		finished = append(finished, lesson.Finished)
 	}
-	assert.Equal(t, []bool{true, true, false}, available, "one past the furthest finished lesson is open")
+	assert.Equal(t, []bool{true, false, false}, finished)
 	assert.Empty(t, states[ruby.ID].State, "a course the learner never joined has no state")
 }
 

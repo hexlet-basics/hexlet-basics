@@ -55,20 +55,6 @@ model LessonCheckingResult {
   @body response: LessonCheckingResponse;
 }
 
-/**
- * The learner has not reached this lesson yet. Sequential progression
- * (ADR-0012) makes a lesson available only when its position in the course's
- * current version is at most one past the furthest lesson they have finished.
- *
- * Distinct from 403: the caller's permissions are fine, their progress is not.
- */
-@error
-model LessonNotAvailableError {
-  @statusCode statusCode: 409;
-  @header contentType: "application/problem+json";
-  @body body: ProblemDetails;
-}
-
 @route("/lessons/{id}/check")
 @tag("Lesson Player")
 interface LessonCheck {
@@ -76,15 +62,14 @@ interface LessonCheck {
    * Run a submitted solution and record progress. Synchronous to match legacy;
    * revisit as submit + stream for the Docker-job model (see file header).
    *
-   * Public on purpose: a guest must be able to submit, and their position
-   * travels in the signed cookie rather than in rows. 409 when the lesson is
-   * beyond the gate — the submission is refused before anything is run.
+   * Public on purpose: a guest must be able to submit, and what they have
+   * finished travels in the signed cookie rather than in rows. Any lesson may
+   * be submitted, in any order.
    */
   @post
   @operationId("checkLesson")
   check(@path id: int32, @body body: CheckLessonInput):
     | LessonCheckingResult
-    | LessonNotAvailableError
     | NotFoundError
     | ValidationError
     | ApiError;
@@ -102,15 +87,15 @@ interface LessonStart {
    * on hover.
    *
    * Idempotent: starting an already-started or already-finished lesson
-   * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+   * succeeds and changes nothing. Any lesson may be started, in any order.
    *
-   * Public, because a guest progresses under the same rule. For them it
-   * validates the gate and returns their position without storing anything:
-   * their state is the signed cookie, and only a check moves it.
+   * Public, because a guest progresses the same way. For them it returns where
+   * they stand without storing anything: their state is the signed cookie, and
+   * only a check moves it.
    */
   @post
   @operationId("startLesson")
-  start(@path id: int32): CourseProgress | LessonNotAvailableError | NotFoundError | ApiError;
+  start(@path id: int32): CourseProgress | NotFoundError | ApiError;
 }
 
 // ---- AI assistant (in-lesson chat) ----------------------------------------
@@ -187,8 +172,8 @@ interface LessonAssistant {
    * the answer is complete, with the answer's token usage.
    *
    * Asking is doing the lesson, so it starts the lesson when the learner has
-   * not yet (409 beyond the gate, exactly as starting would). 429 once today's
-   * questions are used up — decided before anything streams.
+   * not yet. 429 once today's questions are used up — decided before anything
+   * streams.
    */
   @post
   @useAuth([UserSession, XsrfToken])
@@ -196,7 +181,6 @@ interface LessonAssistant {
   create(@path lessonId: int32, @body body: AssistantMessageInput):
     | AssistantAnswerStream
     | AssistantQuotaExceededError
-    | LessonNotAvailableError
     | UnauthorizedError
     | NotFoundError
     | ApiError;

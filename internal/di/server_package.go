@@ -333,7 +333,7 @@ var serverPackage = do.Package(
 		llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
 		return assistant.NewChat(db, txStore, tracker, llm, translator), nil
 	}),
-	// The progress module owns sequential progression. It writes and publishes
+	// The progress module owns what a learner has finished. It writes and publishes
 	// through the same transaction seam every other business module uses.
 	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
 		db, err := do.Invoke[*ent.Client](i)

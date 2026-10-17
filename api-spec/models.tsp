@@ -176,11 +176,8 @@ model Enrollment {
 }
 
 /**
- * A learner's position in one Course, computed against its current Version.
- *
- * Availability travels with it even though it is a pure function of position:
- * a client deriving it would be a second implementation of the gate, free to
- * drift from the server that enforces it.
+ * Where a learner stands in one Course, computed against its current Version:
+ * which Lessons they have finished, in whatever order they took them.
  */
 model CourseProgress {
   state: EnrollmentState | null;
@@ -191,13 +188,10 @@ model CourseProgress {
   /** The first unfinished Lesson in course order — where the learner resumes. */
   nextLessonSlug: string | null;
 
-  /** The highest Position finished, 0 when nothing has been. */
-  furthestFinishedPosition: int32;
-
   lessons: LessonProgressItem[];
 }
 
-/** Per-Lesson state for the course and lesson pages: locks and checkmarks. */
+/** Per-Lesson state for the course and lesson pages: the checkmarks. */
 model LessonProgressItem {
   slug: string;
 
@@ -205,9 +199,6 @@ model LessonProgressItem {
   position: int32;
 
   finished: boolean;
-
-  /** Whether the gate lets the learner take it (ADR-0012). */
-  available: boolean;
 }
 
 // ---- Course categories & landing pages ------------------------------------

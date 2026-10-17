@@ -11696,10 +11696,6 @@ func (s *CourseProgress) encodeFields(e *jx.Encoder) {
 		s.NextLessonSlug.Encode(e)
 	}
 	{
-		e.FieldStart("furthestFinishedPosition")
-		e.Int32(s.FurthestFinishedPosition)
-	}
-	{
 		e.FieldStart("lessons")
 		e.ArrStart()
 		for _, elem := range s.Lessons {
@@ -11709,12 +11705,11 @@ func (s *CourseProgress) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseProgress = [5]string{
+var jsonFieldsNameOfCourseProgress = [4]string{
 	0: "state",
 	1: "completion",
 	2: "nextLessonSlug",
-	3: "furthestFinishedPosition",
-	4: "lessons",
+	3: "lessons",
 }
 
 // Decode decodes CourseProgress from json.
@@ -11758,20 +11753,8 @@ func (s *CourseProgress) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"nextLessonSlug\"")
 			}
-		case "furthestFinishedPosition":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				v, err := d.Int32()
-				s.FurthestFinishedPosition = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"furthestFinishedPosition\"")
-			}
 		case "lessons":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				s.Lessons = make([]LessonProgressItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -11798,7 +11781,7 @@ func (s *CourseProgress) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011111,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -12275,44 +12258,6 @@ func (s *CourseView) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *CourseView) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes CreateAssistantMessageConflict as json.
-func (s *CreateAssistantMessageConflict) Encode(e *jx.Encoder) {
-	unwrapped := (*ProblemDetails)(s)
-
-	unwrapped.Encode(e)
-}
-
-// Decode decodes CreateAssistantMessageConflict from json.
-func (s *CreateAssistantMessageConflict) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode CreateAssistantMessageConflict to nil")
-	}
-	var unwrapped ProblemDetails
-	if err := func() error {
-		if err := unwrapped.Decode(d); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return errors.Wrap(err, "alias")
-	}
-	*s = CreateAssistantMessageConflict(unwrapped)
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *CreateAssistantMessageConflict) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *CreateAssistantMessageConflict) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -14678,17 +14623,12 @@ func (s *LessonProgressItem) encodeFields(e *jx.Encoder) {
 		e.FieldStart("finished")
 		e.Bool(s.Finished)
 	}
-	{
-		e.FieldStart("available")
-		e.Bool(s.Available)
-	}
 }
 
-var jsonFieldsNameOfLessonProgressItem = [4]string{
+var jsonFieldsNameOfLessonProgressItem = [3]string{
 	0: "slug",
 	1: "position",
 	2: "finished",
-	3: "available",
 }
 
 // Decode decodes LessonProgressItem from json.
@@ -14736,18 +14676,6 @@ func (s *LessonProgressItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"finished\"")
 			}
-		case "available":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				v, err := d.Bool()
-				s.Available = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"available\"")
-			}
 		default:
 			return d.Skip()
 		}
@@ -14758,7 +14686,7 @@ func (s *LessonProgressItem) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00001111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

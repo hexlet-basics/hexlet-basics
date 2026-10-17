@@ -91,8 +91,8 @@ export default function LessonWorkspace({
     onSuccess: async (outcome) => {
       setResult(outcome);
       // The server has just recorded progress; the marks in the lesson list and
-      // everything else the payload gates are re-read rather than guessed at
-      // here (ADR-0012).
+      // everything else the payload carries are re-read rather than guessed at
+      // here.
       await queryClient.invalidateQueries({
         queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
       });

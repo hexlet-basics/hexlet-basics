@@ -18,7 +18,7 @@ import (
 
 // Learner is who is submitting. A signed-in learner's position is rows; a
 // guest's is the cookie they carry. Everything above the recording step treats
-// the two identically — resolve a position, evaluate the gate — which is what
+// the two identically — resolve the Lesson in its Course — which is what
 // lets one handler and one client code path serve both.
 type Learner struct {
 	// UserID is 0 for a guest.
@@ -47,17 +47,17 @@ type CheckResult struct {
 	LessonFinished bool
 	CourseFinished bool
 
-	// Guest carries a visitor's advanced position, and is nil whenever there is
+	// Guest carries a visitor's updated progress, and is nil whenever there is
 	// no cookie to write — for every signed-in learner, and for a guest whose
-	// submission moved them nowhere. The handler turns a non-nil value into the
+	// submission finished nothing new. The handler turns a non-nil value into the
 	// response cookie; it never has to ask who it is serving.
 	Guest *GuestProgress
 }
 
 // CheckSolution runs a submitted solution and records what it changed.
 //
-// The gate is evaluated BEFORE the run: a submission for a Lesson the learner
-// has not reached is refused without burning a container and without writing
+// The Lesson is resolved BEFORE the run: a submission for a Lesson the Course
+// does not have is refused without burning a container and without writing
 // anything. The run itself happens outside the transaction — it is a Docker
 // call taking seconds, and holding a transaction open across it would tie up a
 // connection per submission for no benefit.
@@ -66,7 +66,7 @@ type CheckResult struct {
 // arrived by a direct link and submitted gets their Enrollment and Lesson
 // Progress created lazily, so the route they took cannot lose their work.
 func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult, error) {
-	open, err := p.openGate(ctx, p.db, check.Learner, check.LessonID)
+	open, err := p.resolveLesson(ctx, p.db, check.LessonID)
 	if err != nil {
 		return nil, err
 	}
@@ -105,10 +105,10 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		if !check.Learner.SignedIn() {
 			// A guest leaves no rows and produces no enrollment facts: those count
 			// transitions on an account, and there is no account. Their whole state
-			// is the furthest Lesson they finished, so a pass that does not move
-			// them forward — re-submitting one they already passed — changes
-			// nothing and writes no cookie.
-			if outcome.Passed && open.position > open.furthest {
+			// is the set of Lessons they finished, so a pass that adds nothing —
+			// re-submitting one they already passed — changes nothing and writes
+			// no cookie.
+			if outcome.Passed && !check.Learner.Guest.Has(slugOf(open.course), slugOfLesson(open.lesson)) {
 				advanced := check.Learner.Guest.Record(slugOf(open.course), slugOfLesson(open.lesson))
 				result.Guest = &advanced
 			}
@@ -181,31 +181,6 @@ func (p *Progress) submissionFor(
 	}, nil
 }
 
-// furthestPosition is the furthest Position the learner has finished in this
-// Course, from whichever storage holds their progress.
-//
-// A guest's cookie names one Lesson per Course, and a slug the current Version
-// no longer contains resolves to no Position at all — the same rule the merge
-// applies, so a promotion cannot make the gate and the merge disagree about
-// where a visitor stands.
-func (p *Progress) furthestPosition(
-	ctx context.Context,
-	db *ent.Client,
-	learner Learner,
-	crs *ent.Course,
-	lessons []currentLesson,
-) (int, error) {
-	if learner.SignedIn() {
-		return furthestFinishedPosition(ctx, db, learner.UserID, crs.ID, positionsOf(lessons))
-	}
-
-	slug, ok := learner.Guest.Furthest(slugOf(crs))
-	if !ok {
-		return 0, nil
-	}
-	return positionOfSlug(lessons, slug), nil
-}
-
 // record writes what a signed-in learner's check changed, and publishes the
 // fact for each transition it made.
 func (p *Progress) record(
@@ -213,7 +188,7 @@ func (p *Progress) record(
 	tx *sql.Tx,
 	db *ent.Client,
 	check Check,
-	open *openLesson,
+	open *resolvedLesson,
 	outcome Outcome,
 	result *CheckResult,
 	occurredAt time.Time,
@@ -293,7 +268,7 @@ func (p *Progress) finishCourse(
 	tx *sql.Tx,
 	db *ent.Client,
 	check Check,
-	open *openLesson,
+	open *resolvedLesson,
 	enrolled *ent.Enrollment,
 	result *CheckResult,
 	occurredAt time.Time,

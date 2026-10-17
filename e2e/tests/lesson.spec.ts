@@ -5,7 +5,7 @@ import { learner, signIn, visit } from "../support/app";
 // locale; the fixtures give the JavaScript course no English page but "Frontend".
 const lesson = "/languages/javascript/lessons/hello-world";
 
-test("a guest reads a lesson, finds the later ones locked and is invited to sign in", async ({
+test("a guest reads a lesson, sees the other lessons as links and is invited to sign in", async ({
   page,
 }) => {
   await visit(page, lesson);
@@ -17,7 +17,7 @@ test("a guest reads a lesson, finds the later ones locked and is invited to sign
   await expect(page.getByRole("textbox", { name: "Code editor" })).toBeAttached();
 
   await page.getByRole("tab", { name: "Navigation" }).click();
-  await expect(page.getByRole("link", { name: "Locked Variables" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Variables" })).toBeVisible();
 
   await page.getByRole("tab", { name: "Assistant" }).click();
   await expect(page.getByText("please sign up or log in")).toBeVisible();

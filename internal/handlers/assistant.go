@@ -8,7 +8,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assistant"
-	"hexletbasics/internal/progress"
 )
 
 // ListAssistantMessages returns the learner's in-lesson chat and whether they
@@ -56,8 +55,6 @@ func (s *Server) CreateAssistantMessage(
 		// A declared outcome, not a failure: it never reaches the reporting path.
 		problem := api.CreateAssistantMessageTooManyRequests(s.errors.problem(ctx, http.StatusTooManyRequests))
 		return &problem, nil
-	case errors.Is(err, progress.ErrLessonNotAvailable):
-		return (*api.CreateAssistantMessageConflict)(s.errors.LessonNotAvailable(ctx)), nil
 	case ent.IsNotFound(err):
 		return s.lessonNotFound(ctx), nil
 	case err != nil:

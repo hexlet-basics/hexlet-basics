@@ -45,7 +45,7 @@ type Server struct {
 	jobs JobEnqueuer
 	// relatedCoursesSet replaces a post's related courses in one transaction.
 	relatedCoursesSet RelatedCoursesReplacer
-	// progress owns sequential progression; handlers never evaluate the gate.
+	// progress owns what a learner has finished; handlers never derive it.
 	progress progress.Tracker
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
 	// the upload operation only translates its outcome to the contract.

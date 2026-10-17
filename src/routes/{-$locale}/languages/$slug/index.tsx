@@ -298,7 +298,7 @@ function Show() {
 // The learning program, as legacy's accordion laid it out: a panel per module,
 // the first one open, each with its lessons beside the module's description.
 //
-// A lesson in the panel is a link carrying its mark. Checks and locks come from
+// A lesson in the panel is a link carrying its mark. Checks come from
 // `progress`, names and order from `lessons`, joined by slug — the same pair
 // the player's list renders; a module names its lessons by slug the same way.
 // A lesson no module in this locale claims is listed after the panels rather
@@ -309,8 +309,6 @@ function LearningProgram({ view }: { view: CourseView }) {
   const claimed = new Set(view.modules.flatMap((module) => module.lessonSlugs));
   const unclaimed = view.lessons.filter((item) => !claimed.has(item.slug));
 
-  // A locked lesson is still a link: theory is public, and the lock says "not
-  // yet", never "you cannot read this".
   const lessonLinks = (lessons: CourseView["lessons"]) =>
     lessons.map((item) => (
       <NavLink
@@ -397,9 +395,9 @@ function CourseAction({ view }: { view: CourseView }) {
   // not at all.
   return (
     <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
-      {progress.furthestFinishedPosition === 0
-        ? t(($) => $.courses.show.try)
-        : t(($) => $.courses.show.continue)}
+      {progress.lessons.some((item) => item.finished)
+        ? t(($) => $.courses.show.continue)
+        : t(($) => $.courses.show.try)}
     </Button>
   );
 }

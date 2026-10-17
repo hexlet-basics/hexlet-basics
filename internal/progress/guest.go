@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 
@@ -41,49 +42,56 @@ const guestCookieTTL = 365 * 24 * time.Hour
 // handled as if they had no cookie.
 var ErrGuestCookieInvalid = errors.New("progress: guest cookie is not valid")
 
-// GuestProgress is a visitor's whole state: per Course, the slug of the
-// furthest Lesson they finished.
+// GuestProgress is a visitor's whole state: per Course, the slugs of the
+// Lessons they finished.
 //
-// A slug rather than a position, because a position is meaningless across
+// Slugs rather than positions, because a position is meaningless across
 // Versions — promoting a Version that inserts or removes Lessons renumbers
-// everything, and a stored number would come to denote a different Lesson. The
-// Position is resolved against the current Version at read time.
+// everything, and a stored number would come to denote a different Lesson. A
+// slug is resolved against the current Version at read time, and one it no
+// longer contains simply counts for nothing.
 //
-// One entry per Course is exact rather than lossy: sequential progression makes
-// a guest's gaps unrepresentable, so the furthest Lesson implies the rest.
-// Entries are ordered least-recently-touched first, which is the order they are
-// evicted in.
+// Lessons may be taken in any order (ADR-0016), so the finished set is stored as
+// a set: a single "furthest" Lesson cannot say that the third was passed and the
+// first was not. Entries are ordered least-recently-touched first, which is the
+// order they are evicted in.
 type GuestProgress struct {
 	Entries []GuestEntry `json:"entries"`
 }
 
-// GuestEntry is one Course's furthest finished Lesson.
+// GuestEntry is one Course's finished Lessons.
 type GuestEntry struct {
-	CourseSlug string `json:"course"`
-	LessonSlug string `json:"lesson"`
+	CourseSlug string   `json:"course"`
+	Lessons    []string `json:"lessons"`
 }
 
-// Furthest reports the furthest Lesson the visitor finished in a Course.
-func (g GuestProgress) Furthest(courseSlug string) (string, bool) {
+// Has reports whether the visitor finished a Lesson of a Course.
+func (g GuestProgress) Has(courseSlug, lessonSlug string) bool {
 	for _, entry := range g.Entries {
 		if entry.CourseSlug == courseSlug {
-			return entry.LessonSlug, true
+			return slices.Contains(entry.Lessons, lessonSlug)
 		}
 	}
-	return "", false
+	return false
 }
 
-// Record stores a Course's furthest finished Lesson and marks it most recently
-// touched. The caller decides what "furthest" means — this type stores, it does
-// not compare positions, because only the current Version can order them.
+// Record adds a finished Lesson to its Course's set and marks the Course most
+// recently touched. Adding one already in the set changes nothing but the
+// Course's recency.
 func (g GuestProgress) Record(courseSlug, lessonSlug string) GuestProgress {
+	var lessons []string
 	kept := make([]GuestEntry, 0, len(g.Entries)+1)
 	for _, entry := range g.Entries {
-		if entry.CourseSlug != courseSlug {
-			kept = append(kept, entry)
+		if entry.CourseSlug == courseSlug {
+			lessons = entry.Lessons
+			continue
 		}
+		kept = append(kept, entry)
 	}
-	return GuestProgress{Entries: append(kept, GuestEntry{CourseSlug: courseSlug, LessonSlug: lessonSlug})}
+	if !slices.Contains(lessons, lessonSlug) {
+		lessons = append(slices.Clone(lessons), lessonSlug)
+	}
+	return GuestProgress{Entries: append(kept, GuestEntry{CourseSlug: courseSlug, Lessons: lessons})}
 }
 
 // GuestCodec signs and verifies the cookie with the authentication secret.
@@ -177,19 +185,12 @@ func (c *GuestCodec) mac(body []byte) []byte {
 
 // MergeGuest credits a visitor's cookie progress to their account.
 //
-// The transferred set is the PREFIX up to the guest's furthest finished Lesson,
-// not an explicit list: sequential progression means the prefix *is* the set,
-// because a guest could not have finished the fifth Lesson without finishing
-// the fourth. This is the one place rows are written for Lessons whose
-// completion is implied by the rule rather than individually observed, and a
-// deliberate departure from the legacy merge, which carried an explicit list of
-// lesson ids and could therefore transfer a non-contiguous selection.
-//
-// Both positions are resolved against the current Version before comparing, so
-// an account already further along is left untouched. A stored slug that the
-// current Version no longer contains resolves to nothing and that Course is
-// skipped — the guest's position resets, which is a bounded loss for someone
-// without an account and one that cannot corrupt the account.
+// The transferred set is exactly the Lessons the cookie names, resolved against
+// the current Version; the ones the account already finished are left as they
+// are, so the merge is a union and never takes anything away. A stored slug the
+// current Version no longer contains resolves to nothing and is skipped — a
+// bounded loss for someone without an account, and one that cannot corrupt the
+// account.
 func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error {
 	if len(guest.Entries) == 0 {
 		return nil
@@ -219,20 +220,21 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		return err
 	}
 
-	guestPosition := positionOfSlug(lessons, entry.LessonSlug)
-	if guestPosition == 0 {
-		// The stored Lesson is not in the current Version: there is nothing to
-		// resolve the position against, so this Course resets to the beginning.
-		return nil
-	}
-
-	accountPosition, err := furthestFinishedPosition(ctx, db, userID, crs.ID, positionsOf(lessons))
+	finished, err := finishedLessonIDs(ctx, db, userID, crs.ID)
 	if err != nil {
 		return err
 	}
-	if accountPosition >= guestPosition {
-		// The account is already further along; the merge takes the higher of
-		// the two positions, which is the one already stored.
+
+	// In course order, which is the order the facts are published in.
+	var credited []currentLesson
+	for _, lesson := range lessons {
+		if slices.Contains(entry.Lessons, lesson.slug) && !finished[lesson.lessonID] {
+			credited = append(credited, lesson)
+		}
+	}
+	if len(credited) == 0 {
+		// Nothing the account does not already have — or nothing the current
+		// Version still contains, in which case this Course resets for the guest.
 		return nil
 	}
 
@@ -259,24 +261,13 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		}
 	}
 
-	finished, err := finishedLessonIDs(ctx, db, userID, crs.ID)
-	if err != nil {
-		return err
-	}
-
-	var credited []currentLesson
-	for _, lesson := range lessons {
-		if lesson.position <= guestPosition && !finished[lesson.lessonID] {
-			credited = append(credited, lesson)
-		}
-	}
 	return p.creditLessons(ctx, tx, db, userID, crs, enrolled, credited, locale, occurredAt)
 }
 
-// creditLessons writes the implied completions of a guest's prefix and the pair
+// creditLessons writes the completions of a guest's finished Lessons and the pair
 // of facts each one would have produced had a learner passed it.
 //
-// The rows go in three statements however long the prefix is: one read of what
+// The rows go in three statements however many Lessons there are: one read of what
 // the account already holds, one update finishing the started ones, and one
 // insert of the missing ones. The occurrence count each fact carries is the
 // number of Lesson Progress rows on the Enrollment as of that Lesson, so it is
@@ -315,7 +306,7 @@ func (p *Progress) creditLessons(
 		return err
 	}
 
-	// Started but not finished: the guest's prefix says otherwise.
+	// Started but not finished: the guest's cookie says otherwise.
 	if len(held) > 0 {
 		if _, err := db.LessonProgress.Update().
 			Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lo.Keys(isHeld)...)).

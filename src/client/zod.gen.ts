@@ -547,27 +547,22 @@ export const zLessonProgress = z.object({
 });
 
 /**
- * Per-Lesson state for the course and lesson pages: locks and checkmarks.
+ * Per-Lesson state for the course and lesson pages: the checkmarks.
  */
 export const zLessonProgressItem = z.object({
   slug: z.string(),
   position: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  finished: z.boolean(),
-  available: z.boolean()
+  finished: z.boolean()
 });
 
 /**
- * A learner's position in one Course, computed against its current Version.
- *
- * Availability travels with it even though it is a pure function of position:
- * a client deriving it would be a second implementation of the gate, free to
- * drift from the server that enforces it.
+ * Where a learner stands in one Course, computed against its current Version:
+ * which Lessons they have finished, in whatever order they took them.
  */
 export const zCourseProgress = z.object({
   state: zEnrollmentState.nullable(),
   completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   nextLessonSlug: z.string().nullable(),
-  furthestFinishedPosition: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   lessons: z.array(zLessonProgressItem)
 });
 

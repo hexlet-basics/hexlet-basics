@@ -158,7 +158,7 @@ func TestGetCourseLessonStartsNothing(t *testing.T) {
 }
 
 // The read carries the same progress the course page carries, so the player
-// renders locks and the "next" target from the server's answer.
+// renders the checkmarks and the "next" target from the server's answer.
 func TestGetCourseLessonReturnsProgress(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
@@ -171,16 +171,15 @@ func TestGetCourseLessonReturnsProgress(t *testing.T) {
 
 	require.False(t, view.Progress.Null)
 	progress := view.Progress.Value
-	assert.Equal(t, int32(1), progress.FurthestFinishedPosition)
 	assert.Equal(t, secondLessonSlug, progress.NextLessonSlug.Value)
 	require.Len(t, progress.Lessons, 3)
-	assert.True(t, progress.Lessons[1].Available, "the learner may take this one")
-	assert.False(t, progress.Lessons[2].Available)
+	assert.True(t, progress.Lessons[0].Finished)
+	assert.False(t, progress.Lessons[1].Finished)
 }
 
-// Theory stays public: a visitor reads any lesson, including one they cannot
-// take yet, which is what keeps the page answering the search that led here.
-func TestGetCourseLessonServesAVisitorALockedLesson(t *testing.T) {
+// Theory is public: a visitor reads any lesson with no session, which is what
+// keeps the page answering the search that led here.
+func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -193,9 +192,7 @@ func TestGetCourseLessonServesAVisitorALockedLesson(t *testing.T) {
 
 	assert.Equal(t, thirdLessonSlug, view.Lesson.Slug)
 	require.False(t, view.Progress.Null)
-	assert.False(t, view.Progress.Value.Lessons[2].Available,
-		"readable, and visibly out of reach")
-	assert.True(t, view.Progress.Value.Lessons[0].Available)
+	assert.False(t, view.Progress.Value.Lessons[2].Finished, "a first visit has finished nothing")
 }
 
 // A lesson of another course, an unknown slug, and a lesson the current build

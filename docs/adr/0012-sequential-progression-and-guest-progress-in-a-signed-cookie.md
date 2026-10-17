@@ -1,8 +1,12 @@
 ---
-status: accepted
+status: partly superseded by ADR-0016
 ---
 
 # Sequential progression, and guest progress in a signed cookie
+
+> ADR-0016 drops the sequential gate and stores guest progress as a set of
+> Lessons. What this decision says about enrollment on a deliberate action, the
+> signed cookie, Version-relative positions and Completion still stands.
 
 Legacy enrolled a learner on *viewing* a Lesson and kept guest progress in the
 server session; route preloading makes the first unsafe, and the stateless JWT

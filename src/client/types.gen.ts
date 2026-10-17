@@ -538,7 +538,7 @@ export type CourseLessonView = {
    * list the course landing read returns.
    *
    * The player's navigation tab is this list joined to `progress.lessons` by
-   * slug: names and order from here, checks and locks from there. Both screens
+   * slug: names and order from here, checks from there. Both screens
    * render from the same two arrays, which is what keeps the Course page's list
    * and the player's from disagreeing.
    */
@@ -546,8 +546,7 @@ export type CourseLessonView = {
   /**
    * Where the visitor stands in the course this lesson belongs to — the same
    * payload the course landing read returns, for a signed-in learner and a
-   * guest alike. The player reads `lessons[].available` to know whether this
-   * one may be taken, and `nextLessonSlug` for where "next" goes.
+   * guest alike. The player reads `nextLessonSlug` for where "next" goes.
    *
    * Null only for a course with no built version.
    */
@@ -592,11 +591,8 @@ export type CoursePage = {
 };
 
 /**
- * A learner's position in one Course, computed against its current Version.
- *
- * Availability travels with it even though it is a pure function of position:
- * a client deriving it would be a second implementation of the gate, free to
- * drift from the server that enforces it.
+ * Where a learner stands in one Course, computed against its current Version:
+ * which Lessons they have finished, in whatever order they took them.
  */
 export type CourseProgress = {
   state: EnrollmentState | null;
@@ -608,10 +604,6 @@ export type CourseProgress = {
    * The first unfinished Lesson in course order — where the learner resumes.
    */
   nextLessonSlug: string | null;
-  /**
-   * The highest Position finished, 0 when nothing has been.
-   */
-  furthestFinishedPosition: number;
   lessons: Array<LessonProgressItem>;
 };
 
@@ -872,7 +864,7 @@ export type LessonProgress = {
 };
 
 /**
- * Per-Lesson state for the course and lesson pages: locks and checkmarks.
+ * Per-Lesson state for the course and lesson pages: the checkmarks.
  */
 export type LessonProgressItem = {
   slug: string;
@@ -881,10 +873,6 @@ export type LessonProgressItem = {
    */
   position: number;
   finished: boolean;
-  /**
-   * Whether the gate lets the learner take it (ADR-0012).
-   */
-  available: boolean;
 };
 
 /**
@@ -4260,14 +4248,6 @@ export type CreateAssistantMessageErrors = {
    */
   404: NotFoundError;
   /**
-   * The learner has not reached this lesson yet. Sequential progression
-   * (ADR-0012) makes a lesson available only when its position in the course's
-   * current version is at most one past the furthest lesson they have finished.
-   *
-   * Distinct from 403: the caller's permissions are fine, their progress is not.
-   */
-  409: ProblemDetails;
-  /**
    * The learner has used up today's assistant questions.
    */
   429: ProblemDetails;
@@ -4844,14 +4824,6 @@ export type CheckLessonErrors = {
    */
   404: NotFoundError;
   /**
-   * The learner has not reached this lesson yet. Sequential progression
-   * (ADR-0012) makes a lesson available only when its position in the course's
-   * current version is at most one past the furthest lesson they have finished.
-   *
-   * Distinct from 403: the caller's permissions are fine, their progress is not.
-   */
-  409: ProblemDetails;
-  /**
    * Field-level validation errors, keyed by field name (each value is the list
    * of messages for that field). Returned when a write fails validation —
    * including constraints the schema cannot express, like uniqueness.
@@ -4896,14 +4868,6 @@ export type StartLessonErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
-  /**
-   * The learner has not reached this lesson yet. Sequential progression
-   * (ADR-0012) makes a lesson available only when its position in the course's
-   * current version is at most one past the furthest lesson they have finished.
-   *
-   * Distinct from 403: the caller's permissions are fine, their progress is not.
-   */
-  409: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
