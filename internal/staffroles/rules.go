@@ -48,6 +48,9 @@ var resourceOperations = map[api.PermissionResource][]string{
 	api.PermissionResourceBlogPosts: {
 		"AdminListBlogPosts", "AdminGetBlogPost", "AdminCreateBlogPost", "AdminUpdateBlogPost",
 		"AdminDeleteBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses",
+		// The post form's course picker: an editor of posts picks the courses a post
+		// promotes without being allowed to edit courses.
+		"AdminListCourseOptions",
 	},
 	api.PermissionResourceReviews: {
 		"AdminListReviews", "AdminGetReview", "AdminCreateReview", "AdminUpdateReview", "AdminDeleteReview",
