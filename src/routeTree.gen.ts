@@ -13,6 +13,7 @@ import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125BookRouteImport } from './routes/{-$locale}/book'
+import { Route as Char123LocaleChar125ConnectRouteImport } from './routes/{-$locale}/connect'
 import { Route as Char123LocaleChar125MapRouteImport } from './routes/{-$locale}/map'
 import { Route as Char123LocaleChar125MyRouteImport } from './routes/{-$locale}/my'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
@@ -91,6 +92,12 @@ const Char123LocaleChar125BookRoute =
   Char123LocaleChar125BookRouteImport.update({
     id: '/book',
     path: '/book',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125ConnectRoute =
+  Char123LocaleChar125ConnectRouteImport.update({
+    id: '/connect',
+    path: '/connect',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125MapRoute = Char123LocaleChar125MapRouteImport.update({
@@ -432,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
@@ -492,6 +500,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
@@ -555,6 +564,7 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/connect': typeof Char123LocaleChar125ConnectRoute
   '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/my': typeof Char123LocaleChar125MyRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
@@ -619,6 +629,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}/'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}'
@@ -741,6 +753,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/connect'
     | '/{-$locale}/map'
     | '/{-$locale}/my'
     | '/{-$locale}/'
@@ -832,6 +845,13 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/{-$locale}/book'
       preLoaderRoute: typeof Char123LocaleChar125BookRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/connect': {
+      id: '/{-$locale}/connect'
+      path: '/connect'
+      fullPath: '/{-$locale}/connect'
+      preLoaderRoute: typeof Char123LocaleChar125ConnectRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/map': {
@@ -1345,6 +1365,7 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125BookRoute: typeof Char123LocaleChar125BookRoute
+  Char123LocaleChar125ConnectRoute: typeof Char123LocaleChar125ConnectRoute
   Char123LocaleChar125MapRoute: typeof Char123LocaleChar125MapRoute
   Char123LocaleChar125MyRoute: typeof Char123LocaleChar125MyRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
@@ -1373,6 +1394,7 @@ interface Char123LocaleChar125RouteChildren {
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125BookRoute: Char123LocaleChar125BookRoute,
+  Char123LocaleChar125ConnectRoute: Char123LocaleChar125ConnectRoute,
   Char123LocaleChar125MapRoute: Char123LocaleChar125MapRoute,
   Char123LocaleChar125MyRoute: Char123LocaleChar125MyRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,

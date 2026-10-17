@@ -741,6 +741,28 @@ export default {
         },
       },
     },
+    connect: {
+      account: "Has iniciado sesión como {{account}}",
+      approve: "Permitir",
+      deny: "Rechazar",
+      error: "No se pudo enviar tu decisión. Inténtalo de nuevo.",
+      intro: "La aplicación «{{client}}» solicita acceso a tu cuenta.",
+      meta: {
+        description: "Aprueba el acceso de una aplicación a tu cuenta de Code Basics",
+      },
+      not_found:
+        "La solicitud no es válida o ya fue resuelta. Vuelve a la aplicación y empieza la conexión de nuevo.",
+      redirect: "Después de decidir, volverás a {{host}}.",
+      scopes: {
+        admin: "Actuar en el panel de administración en tu nombre",
+        catalog_read: "Leer el catálogo de cursos",
+        offline_access: "Mantener el acceso hasta que lo revoques",
+        openid: "Saber quién eres",
+        progress_read: "Leer tu progreso en los cursos",
+      },
+      scopes_title: "La aplicación solicita:",
+      title: "Conectar una aplicación",
+    },
     enums: {
       course: {
         learn_as: {

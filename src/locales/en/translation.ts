@@ -741,6 +741,28 @@ export default {
         },
       },
     },
+    connect: {
+      account: "Signed in as {{account}}",
+      approve: "Allow",
+      deny: "Deny",
+      error: "Could not send your decision. Please try again.",
+      intro: "The application “{{client}}” asks for access to your account.",
+      meta: {
+        description: "Approve an application's access to your Code Basics account",
+      },
+      not_found:
+        "This request is invalid or has already been handled. Go back to the application and start connecting again.",
+      redirect: "After you decide, you will be sent back to {{host}}.",
+      scopes: {
+        admin: "Act in the admin panel on your behalf",
+        catalog_read: "Read the course catalog",
+        offline_access: "Keep access until you revoke it",
+        openid: "Learn who you are",
+        progress_read: "Read your progress in courses",
+      },
+      scopes_title: "The application asks to:",
+      title: "Connect an application",
+    },
     enums: {
       course: {
         learn_as: {
