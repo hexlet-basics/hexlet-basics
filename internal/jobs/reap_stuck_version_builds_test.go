@@ -2,8 +2,6 @@ package jobs_test
 
 import (
 	"context"
-	"database/sql"
-	"io"
 	"log/slog"
 	"strings"
 	"testing"
@@ -30,8 +28,7 @@ import (
 func TestWorkerReapsStuckVersionBuildsPeriodically(t *testing.T) {
 	ctx := context.Background()
 
-	sqlDB, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
+	sqlDB := testdb.Open(t)
 	db := store.NewClient(sqlDB)
 
 	ruby, err := db.Course.Query().Where(course.Slug("ruby")).Only(ctx)
@@ -59,11 +56,11 @@ func TestWorkerReapsStuckVersionBuildsPeriodically(t *testing.T) {
 	// assets, fetcher or progress module.
 	workerClient, err := jobs.NewWorkerClient(
 		sqlDB,
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 		jobs.NewErrorHandler(sentryClient),
 		nooptrace.NewTracerProvider(),
 		noopmetric.NewMeterProvider(),
-		jobs.ReapStuckVersionBuilds(courseloader.NewLoader(db, nil, nil, nil, nil), slog.New(slog.NewTextHandler(io.Discard, nil))),
+		jobs.ReapStuckVersionBuilds(courseloader.NewLoader(db, nil, nil, nil, nil), slog.New(slog.DiscardHandler)),
 	)
 	require.NoError(t, err)
 

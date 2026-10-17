@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log/slog"
 	"strings"
 	"testing"
@@ -22,18 +21,10 @@ import (
 	"hexletbasics/internal/testsupport/testdb"
 )
 
-func openTestDB(t *testing.T) *sql.DB {
-	t.Helper()
-	db, err := store.NewDB(testdb.DatabaseURL())
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = db.Close() })
-	return db
-}
-
 func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
-	db := openTestDB(t)
+	db := testdb.Open(t)
 	txStore := store.New(db)
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	logger := slog.New(slog.DiscardHandler)
 	registrar := NewRegistrar(txStore, events.NewPublisher(txStore, logger))
 	occurredAt := time.Date(2026, time.July, 29, 10, 11, 12, 0, time.UTC)
 	registrar.now = func() time.Time { return occurredAt }
@@ -86,7 +77,7 @@ func (failingPublisher) Publish(context.Context, *sql.Tx, events.Event) error {
 }
 
 func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
-	db := openTestDB(t)
+	db := testdb.Open(t)
 	registrar := NewRegistrar(store.New(db), failingPublisher{})
 	email := fmt.Sprintf("watermill-rollback-%s@example.com", ids.New())
 

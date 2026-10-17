@@ -28,7 +28,7 @@ func TestNewOpenTelemetrySDKIsNoopWithoutConfigFile(t *testing.T) {
 
 	sdk, err := telemetry.NewOpenTelemetrySDK(
 		t.Context(),
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 	)
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, sdk.Shutdown(t.Context())) })
@@ -81,7 +81,7 @@ tracer_provider:
 
 	sdk, err := telemetry.NewOpenTelemetrySDK(
 		t.Context(),
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 	)
 	require.NoError(t, err)
 
@@ -106,7 +106,7 @@ func TestNewOpenTelemetrySDKRejectsMissingConfigFile(t *testing.T) {
 
 	_, err := telemetry.NewOpenTelemetrySDK(
 		t.Context(),
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 	)
 	require.ErrorContains(t, err, "initialize OpenTelemetry SDK")
 }
@@ -125,7 +125,7 @@ tracer_provider:
 
 	_, err := telemetry.NewOpenTelemetrySDK(
 		t.Context(),
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 	)
 	require.ErrorContains(t, err, "initialize OpenTelemetry SDK")
 }

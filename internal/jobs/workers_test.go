@@ -2,9 +2,7 @@ package jobs_test
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"io"
 	"log/slog"
 	"testing"
 	"time"
@@ -33,14 +31,12 @@ func runJob(t *testing.T, kind string, module jobs.Module, args river.JobArgs) *
 	t.Helper()
 	ctx := context.Background()
 
-	db, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
+	db := testdb.Open(t)
 	t.Cleanup(func() {
 		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = $1", kind)
-		_ = db.Close()
 	})
 
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	logger := slog.New(slog.DiscardHandler)
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
 	worker, err := jobs.NewWorkerClient(
@@ -122,9 +118,7 @@ func TestSuggestRelatedCoursesJobSurfacesAFailedSuggestionAndStaysRetryable(t *t
 // A build whose version is gone fails once and is discarded: a course build is
 // re-triggered by an admin or the next webhook, never retried by the queue.
 func TestExerciseLoaderJobDiscardsABuildOfAVersionThatDoesNotExist(t *testing.T) {
-	db, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = db.Close() })
+	db := testdb.Open(t)
 	client := ent.NewClient(ent.Driver(entsql.OpenDB(dialect.Postgres, db)))
 	loader := courseloader.NewLoader(client, nil, nil, nil, nil)
 

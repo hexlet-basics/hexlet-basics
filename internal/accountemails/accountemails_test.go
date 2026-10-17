@@ -1,7 +1,6 @@
 package accountemails_test
 
 import (
-	"io"
 	"log/slog"
 	"regexp"
 	"testing"
@@ -72,7 +71,7 @@ func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
 	u, err := db.User.Create().SetEmail("mail-cooldown@example.com").Save(t.Context())
 	require.NoError(t, err)
-	client, err := jobs.NewInsertOnlyClient(nil, slog.New(slog.NewTextHandler(io.Discard, nil)), nil, nil)
+	client, err := jobs.NewInsertOnlyClient(nil, slog.New(slog.DiscardHandler), nil, nil)
 	require.NoError(t, err)
 
 	first, err := client.InsertTx(t.Context(), tx,

@@ -15,7 +15,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -136,7 +135,7 @@ func NewAPIErrorHandler(t testing.TB, translator *localization.Translator) *hand
 	t.Helper()
 	return handlers.NewAPIErrorHandler(
 		translator,
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 	)
 }
 

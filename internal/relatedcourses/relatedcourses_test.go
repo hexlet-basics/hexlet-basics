@@ -3,7 +3,6 @@ package relatedcourses_test
 import (
 	"context"
 	"errors"
-	"io"
 	"log/slog"
 	"testing"
 
@@ -27,7 +26,7 @@ func answeringModel(answer string) *testsupport.JSONCompleterMock {
 
 func newSuggester(db *ent.Client, transactor store.Transactor, llm *testsupport.JSONCompleterMock) *relatedcourses.Suggester {
 	return relatedcourses.NewSuggester(db, relatedcourses.NewReplacer(transactor), llm,
-		slog.New(slog.NewTextHandler(io.Discard, nil)))
+		slog.New(slog.DiscardHandler))
 }
 
 // relatedSlugs is the post's stored related courses in display order, by slug.

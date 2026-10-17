@@ -2,11 +2,9 @@ package courseloader
 
 import (
 	"context"
-	"database/sql"
 	"sync"
 	"testing"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -17,9 +15,7 @@ import (
 
 func TestClaimAllowsOnlyOneConcurrentOwner(t *testing.T) {
 	ctx := context.Background()
-	sqlDB, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = sqlDB.Close() })
+	sqlDB := testdb.Open(t)
 
 	db := store.NewClient(sqlDB)
 	ruby, err := db.Course.Query().Where(course.Slug("ruby")).Only(ctx)

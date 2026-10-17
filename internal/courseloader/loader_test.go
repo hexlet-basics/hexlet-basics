@@ -3,7 +3,6 @@ package courseloader_test
 import (
 	"context"
 	"errors"
-	"io"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -55,7 +54,7 @@ func newLoaderWith(
 ) *courseloader.Loader {
 	t.Helper()
 	return newLoaderWithCompletion(t, db, txStore, fetcher,
-		events.NewPublisher(txStore, slog.New(slog.NewTextHandler(io.Discard, nil))))
+		events.NewPublisher(txStore, slog.New(slog.DiscardHandler)))
 }
 
 // newLoaderWithCompletion builds a loader whose promotion re-evaluates

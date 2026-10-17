@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -43,7 +42,7 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 		nil,
 		api.WithErrorHandler(NewAPIErrorHandler(
 			translator,
-			slog.New(slog.NewTextHandler(io.Discard, nil)),
+			slog.New(slog.DiscardHandler),
 		).Write),
 		api.WithNotFound(NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(translator)),

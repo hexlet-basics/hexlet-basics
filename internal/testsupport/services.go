@@ -3,7 +3,6 @@ package testsupport
 import (
 	"database/sql"
 	"encoding/json"
-	"io"
 	"log/slog"
 	"testing"
 
@@ -57,7 +56,7 @@ func NewServices(t *testing.T, tx *sql.Tx, transactor store.Transactor) *Service
 	return &Services{
 		tx:      tx,
 		River:   riverClient,
-		Events:  events.NewPublisher(transactor, slog.New(slog.NewTextHandler(io.Discard, nil))),
+		Events:  events.NewPublisher(transactor, slog.New(slog.DiscardHandler)),
 		Starter: versionbuilds.NewStarter(transactor, enqueuer),
 		Jobs:    enqueuer,
 	}

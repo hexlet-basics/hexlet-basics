@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"log/slog"
 	"testing"
 	"time"
@@ -67,7 +66,7 @@ func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
 	db, err := store.NewDB(testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = db.Close() })
-	logger := watermill.NewSlogLogger(slog.New(slog.NewTextHandler(io.Discard, nil)))
+	logger := watermill.NewSlogLogger(slog.New(slog.DiscardHandler))
 	router, err := message.NewRouter(message.RouterConfig{}, logger)
 	require.NoError(t, err)
 
@@ -121,7 +120,7 @@ func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
 	targetUserID := int(time.Now().UnixNano() & 0x3fffffff)
 	tx, err := db.BeginTx(t.Context(), nil)
 	require.NoError(t, err)
-	publisher := NewPublisher(store.New(db), slog.New(slog.NewTextHandler(io.Discard, nil)))
+	publisher := NewPublisher(store.New(db), slog.New(slog.DiscardHandler))
 	require.NoError(t, publisher.Publish(t.Context(), tx, UserSignedUp{
 		UserID: targetUserID, Locale: "en", OccurredAt: time.Now().UTC(),
 	}))

@@ -2,11 +2,9 @@ package versionbuilds_test
 
 import (
 	"context"
-	"database/sql"
 	"strconv"
 	"testing"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
@@ -23,9 +21,7 @@ import (
 // shared database/sql transaction against the real test database.
 func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	ctx := context.Background()
-	sqlDB, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = sqlDB.Close() })
+	sqlDB := testdb.Open(t)
 
 	db := store.NewClient(sqlDB)
 	riverClient, err := jobs.NewInsertOnlyClient(

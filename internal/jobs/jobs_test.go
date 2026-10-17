@@ -2,9 +2,7 @@ package jobs_test
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
-	"io"
 	"log/slog"
 	"slices"
 	"testing"
@@ -33,11 +31,9 @@ import (
 func TestQueueBackbone(t *testing.T) {
 	ctx := context.Background()
 
-	db, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
+	db := testdb.Open(t)
 	t.Cleanup(func() {
 		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = 'account_email'")
-		_ = db.Close()
 	})
 
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
@@ -54,7 +50,7 @@ func TestQueueBackbone(t *testing.T) {
 
 	workerClient, err := jobs.NewWorkerClient(
 		db,
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 		jobs.NewErrorHandler(sentryClient),
 		tracerProvider,
 		meterProvider,
@@ -63,7 +59,7 @@ func TestQueueBackbone(t *testing.T) {
 	require.NoError(t, err)
 	insertClient, err := jobs.NewInsertOnlyClient(
 		db,
-		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		slog.New(slog.DiscardHandler),
 		tracerProvider,
 		meterProvider,
 	)
@@ -130,14 +126,12 @@ func TestQueueBackbone(t *testing.T) {
 func TestWorkerLeavesKindsItCannotRunQueued(t *testing.T) {
 	ctx := context.Background()
 
-	db, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
+	db := testdb.Open(t)
 	t.Cleanup(func() {
 		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind IN ('review_lesson', 'account_email')")
-		_ = db.Close()
 	})
 
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	logger := slog.New(slog.DiscardHandler)
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
 	workerClient, err := jobs.NewWorkerClient(
@@ -182,14 +176,12 @@ func TestWorkerLeavesKindsItCannotRunQueued(t *testing.T) {
 func TestJobKindsLandOnTheirQueues(t *testing.T) {
 	ctx := context.Background()
 
-	db, err := sql.Open("pgx", testdb.DatabaseURL())
-	require.NoError(t, err)
+	db := testdb.Open(t)
 	t.Cleanup(func() {
 		_, _ = db.ExecContext(context.Background(),
 			"DELETE FROM river_job WHERE kind IN ('account_email', 'exercise_loader', 'review_lesson', 'suggest_related_courses', 'reap_stuck_version_builds')")
-		_ = db.Close()
 	})
-	client, err := jobs.NewInsertOnlyClient(db, slog.New(slog.NewTextHandler(io.Discard, nil)),
+	client, err := jobs.NewInsertOnlyClient(db, slog.New(slog.DiscardHandler),
 		sdktrace.NewTracerProvider(), sdkmetric.NewMeterProvider())
 	require.NoError(t, err)
 
