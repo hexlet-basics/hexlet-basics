@@ -275,6 +275,8 @@ export default {
         canDestroy: "Eliminar",
         canIndex: "Ver",
         canUpdate: "Actualizar",
+        kindRead: "Lectura",
+        kindWrite: "Escritura",
         title: "Permisos",
       },
       qna: {

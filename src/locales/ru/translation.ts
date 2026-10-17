@@ -275,6 +275,8 @@ export default {
         canDestroy: "Удаление",
         canIndex: "Просмотр",
         canUpdate: "Изменение",
+        kindRead: "Чтение",
+        kindWrite: "Запись",
         title: "Права",
       },
       qna: {
