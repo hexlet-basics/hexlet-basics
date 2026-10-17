@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"slices"
 
+	"github.com/samber/lo"
 	"github.com/samber/oops"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
@@ -202,18 +203,25 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 			return oops.Wrapf(err, "create module version %q", m.Slug)
 		}
 
-		for _, info := range m.Infos {
-			if _, err := tx.CourseModuleTranslation.Create().
+		moduleInfos := lo.Map(m.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
+			return tx.CourseModuleTranslation.Create().
 				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
 				SetVersionID(mv.ID).
 				SetLocale(info.Locale).
 				SetName(info.Name).
-				SetDescription(info.Description).
-				Save(ctx); err != nil {
-				return oops.Wrapf(err, "create module info %q/%s", m.Slug, info.Locale)
-			}
+				SetDescription(info.Description)
+		})
+		if err := saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
+			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
+			return err
+		}); err != nil {
+			return oops.Wrapf(err, "create module infos %q", m.Slug)
 		}
+
+		// A module's lesson infos are written together once its lessons exist: the
+		// translations need the lesson version ids, but not one round trip each.
+		var lessonInfos []*ent.CourseLessonTranslationCreate
 
 		for _, lesson := range m.Lessons {
 			lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
@@ -238,11 +246,19 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 			}
 
 			for _, info := range lesson.Infos {
-				if err := l.createLessonInfo(ctx, tx, courseID, versionID, lessonID, lv.ID, info); err != nil {
+				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, lv.ID, info)
+				if err != nil {
 					return err
 				}
+				lessonInfos = append(lessonInfos, create)
 			}
 			totalLessons++
+		}
+		if err := saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
+			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
+			return err
+		}); err != nil {
+			return oops.Wrapf(err, "create lesson infos of module %q", m.Slug)
 		}
 	}
 
@@ -276,11 +292,27 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	return nil
 }
 
-// createLessonInfo writes one locale's lesson info. Theory images were already
-// uploaded and the markdown rewritten by uploadImages before this transaction, so
-// info.Theory is used as-is here. tips/definitions are serialized as YAML arrays
-// for Rails `serialize type: Array` compatibility.
-func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, courseID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
+// saveInChunks runs save over rows in slices small enough for one statement:
+// PostgreSQL takes at most 65535 bind parameters, and a bulk insert binds every
+// column of every row.
+func saveInChunks[T any](rows []T, save func([]T) error) error {
+	for chunk := range slices.Chunk(rows, bulkInsertRows) {
+		if err := save(chunk); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// bulkInsertRows keeps a bulk insert far below the parameter limit even for the
+// widest table written here.
+const bulkInsertRows = 500
+
+// lessonInfoCreate prepares one locale's lesson info for insertion. Theory
+// images were already uploaded and the markdown rewritten by uploadImages
+// before this transaction, so info.Theory is used as-is here. tips/definitions
+// are serialized as YAML arrays for Rails `serialize type: Array` compatibility.
+func lessonInfoCreate(tx *ent.Client, courseID, versionID, lessonID, lessonVersionID int, info LessonInfo) (*ent.CourseLessonTranslationCreate, error) {
 	create := tx.CourseLessonTranslation.Create().
 		SetCourseID(courseID).
 		SetCourseVersionID(versionID).
@@ -297,22 +329,18 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, courseID,
 	if len(info.Tips) > 0 {
 		s, err := marshalYAML(info.Tips)
 		if err != nil {
-			return oops.Wrapf(err, "serialize tips")
+			return nil, oops.Wrapf(err, "serialize tips")
 		}
 		create.SetTips(s)
 	}
 	if len(info.Definitions) > 0 {
 		s, err := marshalYAML(info.Definitions)
 		if err != nil {
-			return oops.Wrapf(err, "serialize definitions")
+			return nil, oops.Wrapf(err, "serialize definitions")
 		}
 		create.SetDefinitions(s)
 	}
-
-	if _, err := create.Save(ctx); err != nil {
-		return oops.Wrapf(err, "create lesson info %s", info.Locale)
-	}
-	return nil
+	return create, nil
 }
 
 // upsertModule atomically creates or finds the stable module row for (course,
