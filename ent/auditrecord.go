@@ -46,7 +46,9 @@ type AuditRecord struct {
 	// Outcome holds the value of the "outcome" field.
 	Outcome string `json:"outcome,omitempty"`
 	// Changes holds the value of the "changes" field.
-	Changes      jsontext.Value `json:"changes,omitempty"`
+	Changes jsontext.Value `json:"changes,omitempty"`
+	// Reads holds the value of the "reads" field.
+	Reads        jsontext.Value `json:"reads,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -55,7 +57,7 @@ func (*AuditRecord) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case auditrecord.FieldChanges:
+		case auditrecord.FieldChanges, auditrecord.FieldReads:
 			values[i] = new([]byte)
 		case auditrecord.FieldID, auditrecord.FieldActorUserID, auditrecord.FieldConnectedAppID, auditrecord.FieldTokenID:
 			values[i] = new(sql.NullInt64)
@@ -179,6 +181,14 @@ func (_m *AuditRecord) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field changes: %w", err)
 				}
 			}
+		case auditrecord.FieldReads:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field reads", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.Reads); err != nil {
+					return fmt.Errorf("unmarshal field reads: %w", err)
+				}
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -274,6 +284,9 @@ func (_m *AuditRecord) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("changes=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Changes))
+	builder.WriteString(", ")
+	builder.WriteString("reads=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Reads))
 	builder.WriteByte(')')
 	return builder.String()
 }

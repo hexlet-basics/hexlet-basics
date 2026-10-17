@@ -115,6 +115,7 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			"locale":           row.Locale,
 			"outcome":          row.Outcome,
 			"changes":          row.Changes,
+			"reads":            row.Reads,
 		}, nil
 	case "Banner":
 		key, ok := id.(int)

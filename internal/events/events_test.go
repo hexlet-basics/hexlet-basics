@@ -47,6 +47,7 @@ func TestLegacyEventNames(t *testing.T) {
 		{SolutionChecked{}, "solution_checked"},
 		{EmailConfirmed{}, "email_confirmed"},
 		{LeadCreated{}, "lead_created"},
+		{StaffReadPersonalData{}, "staff_read_personal_data"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

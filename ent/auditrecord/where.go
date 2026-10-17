@@ -964,6 +964,16 @@ func ChangesNotNil() predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldNotNull(FieldChanges))
 }
 
+// ReadsIsNil applies the IsNil predicate on the "reads" field.
+func ReadsIsNil() predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldIsNull(FieldReads))
+}
+
+// ReadsNotNil applies the NotNil predicate on the "reads" field.
+func ReadsNotNil() predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldNotNull(FieldReads))
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.AuditRecord) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.AndPredicates(predicates...))

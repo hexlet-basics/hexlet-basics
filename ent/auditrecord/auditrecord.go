@@ -41,6 +41,8 @@ const (
 	FieldOutcome = "outcome"
 	// FieldChanges holds the string denoting the changes field in the database.
 	FieldChanges = "changes"
+	// FieldReads holds the string denoting the reads field in the database.
+	FieldReads = "reads"
 	// Table holds the table name of the auditrecord in the database.
 	Table = "audit_records"
 )
@@ -62,6 +64,7 @@ var Columns = []string{
 	FieldLocale,
 	FieldOutcome,
 	FieldChanges,
+	FieldReads,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

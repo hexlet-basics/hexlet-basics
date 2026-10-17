@@ -297,7 +297,14 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		api.WithErrorHandler(errorHandler.Write),
 		// The production unit of work, over the savepoint transactor: the audit
 		// record and the change share a savepoint, as they share a commit.
-		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator, errorHandler)),
+		// The real publisher beside it: a read of personal data leaves its fact in
+		// the outbox, which Deliver turns into the Audit Record the way the
+		// worker's consumer does. One WithMiddleware call, because a second one
+		// replaces the first.
+		api.WithMiddleware(
+			handlers.NewAuditMiddleware(transactor, translator, errorHandler),
+			handlers.NewPersonalDataReadMiddleware(services.Events, translator, errorHandler),
+		),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

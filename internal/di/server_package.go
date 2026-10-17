@@ -528,11 +528,22 @@ var serverPackage = do.Package(
 		// WithErrorHandler installs the central ent-error -> HTTP-status
 		// mapping (404/409), so handlers return raw ent errors instead of
 		// typed DTOs.
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
 		return api.NewServer(
 			handler,
 			handler.Security(),
 			api.WithErrorHandler(errorHandler.Write),
-			api.WithMiddleware(handlers.NewAuditMiddleware(txStore, translator, errorHandler)),
+			// One call: a second WithMiddleware would replace the first. The
+			// second middleware is the staff reads of personal data: the server
+			// only publishes the fact, the worker writes the Audit Record
+			// (ADR-0017, ADR-0010).
+			api.WithMiddleware(
+				handlers.NewAuditMiddleware(txStore, translator, errorHandler),
+				handlers.NewPersonalDataReadMiddleware(publisher, translator, errorHandler),
+			),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),

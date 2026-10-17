@@ -61,6 +61,7 @@ type Declarations struct {
 	capabilities map[string]Kind
 	adminWrite   map[string]bool
 	standalone   map[string]bool
+	personalData map[string]string
 	catalog      []Permission
 }
 
@@ -89,11 +90,12 @@ func Parse(doc []byte) (*Declarations, error) {
 			Kind Kind   `yaml:"kind"`
 		} `yaml:"x-capabilities"`
 		Paths map[string]map[string]struct {
-			OperationID string                `yaml:"operationId"`
-			Permission  *permissionDecl       `yaml:"x-permission"`
-			Access      Access                `yaml:"x-access"`
-			UnitOfWork  string                `yaml:"x-unit-of-work"`
-			Security    []map[string][]string `yaml:"security"`
+			OperationID  string                `yaml:"operationId"`
+			Permission   *permissionDecl       `yaml:"x-permission"`
+			Access       Access                `yaml:"x-access"`
+			UnitOfWork   string                `yaml:"x-unit-of-work"`
+			PersonalData string                `yaml:"x-personal-data"`
+			Security     []map[string][]string `yaml:"security"`
 		} `yaml:"paths"`
 	}
 	if err := yaml.Unmarshal(doc, &spec); err != nil {
@@ -106,6 +108,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		capabilities: map[string]Kind{},
 		adminWrite:   map[string]bool{},
 		standalone:   map[string]bool{},
+		personalData: map[string]string{},
 	}
 	kinds := map[string]Kind{}
 	for _, c := range spec.Capabilities {
@@ -141,6 +144,15 @@ func Parse(doc []byte) (*Declarations, error) {
 					return nil, fmt.Errorf("%s: x-unit-of-work needs an operationId", where)
 				}
 				d.standalone[operationName(op.OperationID)] = true
+			}
+			if op.PersonalData != "" {
+				if op.OperationID == "" {
+					return nil, fmt.Errorf("%s: x-personal-data needs an operationId", where)
+				}
+				if op.Permission == nil || op.Permission.Kind != Read {
+					return nil, fmt.Errorf("%s: x-personal-data belongs on an operation that declares a read Permission", where)
+				}
+				d.personalData[operationName(op.OperationID)] = op.PersonalData
 			}
 			if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
 				d.adminWrite[operationName(op.OperationID)] = true
@@ -280,6 +292,36 @@ func (d *Declarations) AdminWrites() []string {
 
 // Standalone is the package-level function over these declarations.
 func (d *Declarations) Standalone(operation string) bool { return d.standalone[operation] }
+
+// PersonalDataEntity reports whether an operation reads personal data, as the
+// contract declares with `x-personal-data`, and the ent type it reads (User,
+// Lead). Every such read leaves an Audit Record (ADR-0017); a read of the
+// catalogue or of content declares nothing and leaves none.
+func PersonalDataEntity(operation string) (entity string, ok bool) {
+	return declared.PersonalDataEntity(operation)
+}
+
+// PersonalDataReads lists every operation that declares `x-personal-data`,
+// sorted, so a test can walk the whole set.
+func PersonalDataReads() []string {
+	return declared.PersonalDataReads()
+}
+
+// PersonalDataEntity is the package-level function over these declarations.
+func (d *Declarations) PersonalDataEntity(operation string) (string, bool) {
+	entity, ok := d.personalData[operation]
+	return entity, ok
+}
+
+// PersonalDataReads is the package-level function over these declarations.
+func (d *Declarations) PersonalDataReads() []string {
+	names := make([]string, 0, len(d.personalData))
+	for name := range d.personalData {
+		names = append(names, name)
+	}
+	slices.Sort(names)
+	return names
+}
 
 // Catalog lists every declared Permission once, ordered by name so the roles
 // screen and the tests see a stable list.

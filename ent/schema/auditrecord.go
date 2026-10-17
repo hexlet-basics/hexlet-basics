@@ -57,5 +57,8 @@ func (AuditRecord) Fields() []ent.Field {
 		field.String("outcome").Immutable(),
 		// The row changes of the operation as JSON (internal/audit.Change).
 		field.JSON("changes", json.RawMessage{}).Optional().Immutable(),
+		// What a read of personal data touched, as JSON (internal/audit.Reads):
+		// how many rows and, up to a cap, their ids. Never field values.
+		field.JSON("reads", json.RawMessage{}).Optional().Immutable(),
 	}
 }
