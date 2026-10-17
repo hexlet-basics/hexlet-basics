@@ -10,57 +10,53 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 // The audit trail page is closed by a capability Permission: audit.read has to
 // be granted to the Staff Role of whoever reads it, an administrator included.
 
-// seedRecord stores one Audit Record directly, with the time and fields a test
-// needs; the trail is append-only for the application, but a test may insert.
+// seedRecord writes one Audit Record through the production writer, with the
+// instant and fields a test needs: the writer takes the time of a read of
+// personal data, which is recorded after the request, so a record can be placed
+// in the past without a back door.
 func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation string, mutate func(*audit.Entry)) int {
 	t.Helper()
-	entry := audit.Entry{Operation: operation, Outcome: audit.OutcomeSucceeded}
+	entry := audit.Entry{
+		OccurredAt: at,
+		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Operation:  operation,
+		Outcome:    audit.OutcomeSucceeded,
+	}
 	if mutate != nil {
 		mutate(&entry)
 	}
-	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-	create := h.DB.AuditRecord.Create().
-		SetOccurredAt(at).
-		SetChannel(string(audit.ChannelWeb)).
-		SetOperation(operation).
-		SetOutcome(string(entry.Outcome))
-	if entry.Actor != nil {
-		create = create.SetActorUserID(*entry.Actor)
-	}
-	if entry.Source.Channel != "" {
-		create = create.SetChannel(string(entry.Source.Channel))
-	}
-	if entry.EntityType != "" {
-		create = create.SetEntityType(entry.EntityType)
-	}
-	if entry.EntityID != "" {
-		create = create.SetEntityID(entry.EntityID)
-	}
-	return create.SaveX(context.Background()).ID
+	require.NoError(t, audit.Write(t.Context(), h.DB, entry, nil))
+	return newestRecord(t, h)
 }
 
-// grantAuditRead makes the signed-in administrator a staff member whose role
-// holds audit.read, the way an operator would delegate the capability.
-func grantAuditRead(t *testing.T, h *testsupport.Harness, withGrant bool) {
+// newestRecord is the id of the Audit Record written last in the test's transaction.
+func newestRecord(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
-	ctx := context.Background()
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	role := h.DB.StaffRole.Create().SetName("Auditors " + t.Name()).SetDescription("reads the trail").SaveX(ctx)
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	h.DB.StaffMember.Create().SetUserID(h.UserID).SetRoleID(role.ID).SetAllowedLocales([]string{"ru", "en"}).ExecX(ctx)
+	return h.DB.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context()).ID
+}
+
+// auditReader is a signed-in administrator who is also staff (user_admin_staff,
+// on the editor role), the way an operator who may be delegated the capability
+// is: with the grant on the role when withGrant is true, without it otherwise.
+func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
+	t.Helper()
+	h := testsupport.NewHarnessAs(t, "user_admin_staff")
 	if withGrant {
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		h.DB.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("audit.read").ExecX(ctx)
+		h.Grant(t, int(roleEditorID), "audit.read")
 	}
+	return h
 }
 
 func listTrail(h *testsupport.Harness, params api.AdminListAuditRecordsParams) (*api.AuditRecordPage, error) {
@@ -85,8 +81,7 @@ func TestAnAdministratorWithoutAStaffRecordIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestAnAdministratorWhoseRoleLacksAuditReadIsRefusedTheTrail(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, false)
+	h := auditReader(t, false)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
 
@@ -95,8 +90,7 @@ func TestAnAdministratorWhoseRoleLacksAuditReadIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
 
@@ -114,8 +108,7 @@ func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 	now := time.Now()
 	oldest := seedRecord(t, h, now.Add(-72*time.Hour), "AdminCreateBanner", nil)
 	middle := seedRecord(t, h, now.Add(-48*time.Hour), "AdminUpdateBanner", nil)
@@ -144,8 +137,7 @@ func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
 }
 
 func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 	now := time.Now().Add(-time.Hour)
 	actor := 4242
 	byActor := seedRecord(t, h, now, "AdminUpdateBanner", func(e *audit.Entry) { e.Actor = &actor })
@@ -178,8 +170,7 @@ func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
 // recent past: a record older than the default window is not listed unless the
 // caller asks for it.
 func TestTheTrailIsBoundedByAWindowThatDefaultsToThirtyDays(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 	now := time.Now()
 	old := seedRecord(t, h, now.Add(-45*24*time.Hour), "AdminCreateBanner", nil)
 	recent := seedRecord(t, h, now.Add(-2*24*time.Hour), "AdminUpdateBanner", nil)
@@ -204,8 +195,7 @@ func TestTheTrailIsBoundedByAWindowThatDefaultsToThirtyDays(t *testing.T) {
 }
 
 func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 	now := time.Now()
 
 	cases := map[string]struct {
@@ -238,31 +228,39 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 }
 
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
-	ctx := context.Background()
+	h := auditReader(t, true)
 	at := time.Now().Add(-time.Hour)
-	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-	h.DB.AuditRecord.Create().
-		SetOccurredAt(at).SetChannel("web").SetOperation("AdminUpdateBanner").SetOutcome("succeeded").
-		SetChanges([]byte(`[{"entity":"Banner","id":"3","op":"update","fields":[{"name":"title","old":"A","new":"B"},{"name":"token","secret":true}]}]`)).
-		ExecX(ctx)
-	//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-	h.DB.AuditRecord.Create().
-		SetOccurredAt(at).SetChannel("web").SetOperation("AdminListUsers").SetOutcome("succeeded").
-		SetReads([]byte(`{"count":2,"ids":["1","2"]}`)).
-		ExecX(ctx)
+	banner, carol := fixtures.ID("banner_en_draft"), fixtures.ID("user_with_password")
+
+	// A change is what the operation's own writes left in the Recorder: a banner
+	// text and a password digest, which the trail keeps by name only.
+	ctx, changes := audit.WithRecorder(t.Context())
+	h.DB.Banner.UpdateOneID(banner).SetBody("Cyber Monday sale").ExecX(ctx)
+	h.DB.User.UpdateOneID(carol).SetPasswordDigest("digest-the-trail-must-not-keep").ExecX(ctx)
+	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
+		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		Operation: "AdminUpdateBanner", Outcome: audit.OutcomeSucceeded,
+	}, changes))
+	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
+		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		Operation: "AdminListUsers", Outcome: audit.OutcomeSucceeded,
+		Reads: &audit.Reads{Count: 2, IDs: []string{"1", "2"}},
+	}, nil))
 
 	page, err := listTrail(h, api.AdminListAuditRecordsParams{Operation: api.NewOptString("AdminUpdateBanner")})
 	require.NoError(t, err)
 	require.Len(t, page.Items, 1)
+	require.Len(t, page.Items[0].Changes, 2)
 	change := page.Items[0].Changes[0]
 	assert.Equal(t, "Banner", change.Entity)
-	assert.Equal(t, "3", change.ID.Value)
-	require.Len(t, change.Fields, 2)
-	assert.JSONEq(t, `"A"`, string(change.Fields[0].Old))
-	assert.JSONEq(t, `"B"`, string(change.Fields[0].New))
-	assert.True(t, change.Fields[1].Secret.Value)
+	assert.Equal(t, strconv.Itoa(banner), change.ID.Value)
+	require.Len(t, change.Fields, 1)
+	assert.JSONEq(t, `"Black Friday sale"`, string(change.Fields[0].Old))
+	assert.JSONEq(t, `"Cyber Monday sale"`, string(change.Fields[0].New))
+	secret := page.Items[0].Changes[1].Fields[0]
+	assert.Equal(t, "password_digest", secret.Name)
+	assert.True(t, secret.Secret.Value)
+	assert.Empty(t, secret.New, "a secret keeps its name and no value")
 	assert.True(t, page.Items[0].Reads.Null)
 
 	page, err = listTrail(h, api.AdminListAuditRecordsParams{Operation: api.NewOptString("AdminListUsers")})
@@ -277,8 +275,7 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 // leaves a record of AuditRecord rows being read once the worker has run, and
 // the ids are those of the records the page showed.
 func TestReadingTheTrailIsRecordedAsAReadOfPersonalData(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 	testsupport.ArriveFrom(h, "203.0.113.77")
 	seeded := seedRecord(t, h, time.Now().Add(-time.Hour), "AdminCreateBanner", nil)
 
@@ -328,15 +325,13 @@ func TestAnAdministratorHoldsNoCapabilityByBeingOne(t *testing.T) {
 }
 
 func TestARoleWithTheGrantHoldsTheCapability(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, true)
+	h := auditReader(t, true)
 
 	assert.Equal(t, []string{"audit.read"}, capabilitiesOf(t, h))
 }
 
 func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	grantAuditRead(t, h, false)
+	h := auditReader(t, false)
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }
