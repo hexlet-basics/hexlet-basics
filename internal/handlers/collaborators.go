@@ -5,7 +5,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/progress"

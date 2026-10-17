@@ -317,7 +317,7 @@ func (h *Harness) ActAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	t.Helper()
 	// Sessions live in the database, so a manager of its own over the same client
 	// issues one the harness's pipeline recognises.
-	security := newHarnessSecurity(t, h.DB, session.New(h.DB), userLabel)
+	security := newHarnessSecurity(t, h.DB, sessions.New(h.DB), userLabel)
 	doer := *h.doer
 	doer.session = security.session
 	client, err := api.NewClient("http://test", security, api.WithClient(&doer))

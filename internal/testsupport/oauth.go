@@ -30,7 +30,7 @@ import (
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/session"
+	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
@@ -172,7 +172,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	require.NoError(t, err)
 	o.Server = server
 
-	sessions := session.New(db, session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+	manager := sessions.New(db, sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
 	// An in-memory bucket, as in the harness: the upload tool stores into it and
@@ -183,7 +183,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		DB:        db,
 		Assets:    assetstore.New(db, bucket, testConfig.PublicURL),
 		Config:    &config.Config{GuestCookieSecret: testConfig.GuestCookieSecret, EmailTokenSecret: testConfig.EmailTokenSecret},
-		Sessions:  sessions,
+		Sessions:  manager,
 		Starter:   services.Starter,
 		Jobs:      services.Jobs,
 		Progress:  tracker,
@@ -278,9 +278,9 @@ func SessionFor(t *testing.T, db *ent.Client, userID int) Session {
 	t.Helper()
 	u, err := db.User.Get(t.Context(), userID)
 	require.NoError(t, err)
-	value, err := session.New(db).Issue(t.Context(), u)
+	value, err := sessions.New(db).Issue(t.Context(), u)
 	require.NoError(t, err)
-	return Session{Cookie: &http.Cookie{Name: session.CookieName, Value: value}}
+	return Session{Cookie: &http.Cookie{Name: sessions.CookieName, Value: value}}
 }
 
 // Do sends one request through the router and returns the recorded response.

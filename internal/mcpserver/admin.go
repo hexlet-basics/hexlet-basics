@@ -141,7 +141,7 @@ const (
 	localeArgument = "locale"
 	bodyArgument   = "body"
 
-	// sessionCookie is the name of the website's session cookie (session.CookieName;
+	// sessionCookie is the name of the website's session cookie (sessions.CookieName;
 	// a test pins the two together). The package does not import the session
 	// package, which would put the session store within reach of the tools.
 	sessionCookie = "session"
