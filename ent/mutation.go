@@ -3279,8 +3279,7 @@ type AuditRecordMutation struct {
 	channel             *string
 	connected_app_id    *int
 	addconnected_app_id *int
-	token_id            *int
-	addtoken_id         *int
+	token_id            *string
 	request_id          *string
 	address             *string
 	user_agent          *string
@@ -3610,13 +3609,12 @@ func (m *AuditRecordMutation) ResetConnectedAppID() {
 }
 
 // SetTokenID sets the "token_id" field.
-func (m *AuditRecordMutation) SetTokenID(i int) {
-	m.token_id = &i
-	m.addtoken_id = nil
+func (m *AuditRecordMutation) SetTokenID(s string) {
+	m.token_id = &s
 }
 
 // TokenID returns the value of the "token_id" field in the mutation.
-func (m *AuditRecordMutation) TokenID() (r int, exists bool) {
+func (m *AuditRecordMutation) TokenID() (r string, exists bool) {
 	v := m.token_id
 	if v == nil {
 		return
@@ -3627,7 +3625,7 @@ func (m *AuditRecordMutation) TokenID() (r int, exists bool) {
 // OldTokenID returns the old "token_id" field's value of the AuditRecord entity.
 // If the AuditRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuditRecordMutation) OldTokenID(ctx context.Context) (v *int, err error) {
+func (m *AuditRecordMutation) OldTokenID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTokenID is only allowed on UpdateOne operations")
 	}
@@ -3641,28 +3639,9 @@ func (m *AuditRecordMutation) OldTokenID(ctx context.Context) (v *int, err error
 	return oldValue.TokenID, nil
 }
 
-// AddTokenID adds i to the "token_id" field.
-func (m *AuditRecordMutation) AddTokenID(i int) {
-	if m.addtoken_id != nil {
-		*m.addtoken_id += i
-	} else {
-		m.addtoken_id = &i
-	}
-}
-
-// AddedTokenID returns the value that was added to the "token_id" field in this mutation.
-func (m *AuditRecordMutation) AddedTokenID() (r int, exists bool) {
-	v := m.addtoken_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearTokenID clears the value of the "token_id" field.
 func (m *AuditRecordMutation) ClearTokenID() {
 	m.token_id = nil
-	m.addtoken_id = nil
 	m.clearedFields[auditrecord.FieldTokenID] = struct{}{}
 }
 
@@ -3675,7 +3654,6 @@ func (m *AuditRecordMutation) TokenIDCleared() bool {
 // ResetTokenID resets all changes to the "token_id" field.
 func (m *AuditRecordMutation) ResetTokenID() {
 	m.token_id = nil
-	m.addtoken_id = nil
 	delete(m.clearedFields, auditrecord.FieldTokenID)
 }
 
@@ -4370,7 +4348,7 @@ func (m *AuditRecordMutation) SetField(name string, value ent.Value) error {
 		m.SetConnectedAppID(v)
 		return nil
 	case auditrecord.FieldTokenID:
-		v, ok := value.(int)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -4460,9 +4438,6 @@ func (m *AuditRecordMutation) AddedFields() []string {
 	if m.addconnected_app_id != nil {
 		fields = append(fields, auditrecord.FieldConnectedAppID)
 	}
-	if m.addtoken_id != nil {
-		fields = append(fields, auditrecord.FieldTokenID)
-	}
 	return fields
 }
 
@@ -4475,8 +4450,6 @@ func (m *AuditRecordMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedActorUserID()
 	case auditrecord.FieldConnectedAppID:
 		return m.AddedConnectedAppID()
-	case auditrecord.FieldTokenID:
-		return m.AddedTokenID()
 	}
 	return nil, false
 }
@@ -4499,13 +4472,6 @@ func (m *AuditRecordMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddConnectedAppID(v)
-		return nil
-	case auditrecord.FieldTokenID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTokenID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AuditRecord numeric field %s", name)

@@ -120,7 +120,7 @@ var (
 		{Name: "actor_user_id", Type: field.TypeInt, Nullable: true},
 		{Name: "channel", Type: field.TypeString},
 		{Name: "connected_app_id", Type: field.TypeInt, Nullable: true},
-		{Name: "token_id", Type: field.TypeInt, Nullable: true},
+		{Name: "token_id", Type: field.TypeString, Nullable: true},
 		{Name: "request_id", Type: field.TypeString, Nullable: true},
 		{Name: "address", Type: field.TypeString, Nullable: true},
 		{Name: "user_agent", Type: field.TypeString, Nullable: true},

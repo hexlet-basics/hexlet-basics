@@ -41,8 +41,11 @@ func (AuditRecord) Fields() []ent.Field {
 		field.Int("actor_user_id").Optional().Nillable().Immutable(),
 		// web or mcp. The Connected App and token only exist for mcp.
 		field.String("channel").Immutable(),
+		// The oauth_clients row of the Connected App.
 		field.Int("connected_app_id").Optional().Nillable().Immutable(),
-		field.Int("token_id").Optional().Nillable().Immutable(),
+		// The id of the OAuth access token, a random string (oauth_access_tokens.id),
+		// not a number: it is not the bearer, which is that id encrypted.
+		field.String("token_id").Optional().Nillable().Immutable(),
 		field.String("request_id").Optional().Nillable().Immutable(),
 		field.String("address").Optional().Nillable().Immutable(),
 		field.String("user_agent").Optional().Nillable().Immutable(),

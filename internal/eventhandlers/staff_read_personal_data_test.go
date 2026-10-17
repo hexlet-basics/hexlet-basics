@@ -18,7 +18,8 @@ import (
 func TestStaffReadPersonalDataIsRecordedAtTheTimeOfTheRead(t *testing.T) {
 	client := testsupport.NewClient(t)
 	handler := eventhandlers.StaffReadPersonalData(client)
-	app, token, actor := 3, 4, 5
+	app, actor := 3, 5
+	token := "tok-4"
 	readAt := time.Now().Add(-2 * time.Hour).Truncate(time.Second)
 
 	require.NoError(t, handler.Handle(t.Context(), &events.StaffReadPersonalData{

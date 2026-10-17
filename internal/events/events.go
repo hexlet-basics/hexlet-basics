@@ -170,7 +170,7 @@ type StaffReadPersonalData struct {
 	ActorUserID    *int      `json:"actor_user_id"`
 	Channel        string    `json:"channel"`
 	ConnectedAppID *int      `json:"connected_app_id"`
-	TokenID        *int      `json:"token_id"`
+	TokenID        *string   `json:"token_id"`
 	Operation      string    `json:"operation"`
 	EntityType     string    `json:"entity_type"`
 	EntityIDs      []string  `json:"entity_ids"`

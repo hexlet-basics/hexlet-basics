@@ -75,7 +75,7 @@ func ConnectedAppID(v int) predicate.AuditRecord {
 }
 
 // TokenID applies equality check predicate on the "token_id" field. It's identical to TokenIDEQ.
-func TokenID(v int) predicate.AuditRecord {
+func TokenID(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldEQ(FieldTokenID, v))
 }
 
@@ -325,43 +325,58 @@ func ConnectedAppIDNotNil() predicate.AuditRecord {
 }
 
 // TokenIDEQ applies the EQ predicate on the "token_id" field.
-func TokenIDEQ(v int) predicate.AuditRecord {
+func TokenIDEQ(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldEQ(FieldTokenID, v))
 }
 
 // TokenIDNEQ applies the NEQ predicate on the "token_id" field.
-func TokenIDNEQ(v int) predicate.AuditRecord {
+func TokenIDNEQ(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldNEQ(FieldTokenID, v))
 }
 
 // TokenIDIn applies the In predicate on the "token_id" field.
-func TokenIDIn(vs ...int) predicate.AuditRecord {
+func TokenIDIn(vs ...string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldIn(FieldTokenID, vs...))
 }
 
 // TokenIDNotIn applies the NotIn predicate on the "token_id" field.
-func TokenIDNotIn(vs ...int) predicate.AuditRecord {
+func TokenIDNotIn(vs ...string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldNotIn(FieldTokenID, vs...))
 }
 
 // TokenIDGT applies the GT predicate on the "token_id" field.
-func TokenIDGT(v int) predicate.AuditRecord {
+func TokenIDGT(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldGT(FieldTokenID, v))
 }
 
 // TokenIDGTE applies the GTE predicate on the "token_id" field.
-func TokenIDGTE(v int) predicate.AuditRecord {
+func TokenIDGTE(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldGTE(FieldTokenID, v))
 }
 
 // TokenIDLT applies the LT predicate on the "token_id" field.
-func TokenIDLT(v int) predicate.AuditRecord {
+func TokenIDLT(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldLT(FieldTokenID, v))
 }
 
 // TokenIDLTE applies the LTE predicate on the "token_id" field.
-func TokenIDLTE(v int) predicate.AuditRecord {
+func TokenIDLTE(v string) predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldLTE(FieldTokenID, v))
+}
+
+// TokenIDContains applies the Contains predicate on the "token_id" field.
+func TokenIDContains(v string) predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldContains(FieldTokenID, v))
+}
+
+// TokenIDHasPrefix applies the HasPrefix predicate on the "token_id" field.
+func TokenIDHasPrefix(v string) predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldHasPrefix(FieldTokenID, v))
+}
+
+// TokenIDHasSuffix applies the HasSuffix predicate on the "token_id" field.
+func TokenIDHasSuffix(v string) predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldHasSuffix(FieldTokenID, v))
 }
 
 // TokenIDIsNil applies the IsNil predicate on the "token_id" field.
@@ -372,6 +387,16 @@ func TokenIDIsNil() predicate.AuditRecord {
 // TokenIDNotNil applies the NotNil predicate on the "token_id" field.
 func TokenIDNotNil() predicate.AuditRecord {
 	return predicate.AuditRecord(sql.FieldNotNull(FieldTokenID))
+}
+
+// TokenIDEqualFold applies the EqualFold predicate on the "token_id" field.
+func TokenIDEqualFold(v string) predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldEqualFold(FieldTokenID, v))
+}
+
+// TokenIDContainsFold applies the ContainsFold predicate on the "token_id" field.
+func TokenIDContainsFold(v string) predicate.AuditRecord {
+	return predicate.AuditRecord(sql.FieldContainsFold(FieldTokenID, v))
 }
 
 // RequestIDEQ applies the EQ predicate on the "request_id" field.
