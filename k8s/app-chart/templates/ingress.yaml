@@ -46,6 +46,54 @@ api-check, which is what the legacy chart did.
       name: "{{ .Release.Name }}-api-service"
       port:
         number: 80
+{{- /* The OAuth server and MCP endpoint (ADR-0019, ADR-0018), mounted by Go
+only when OAUTH_ENABLED / MCP_ENABLED are on; while off they answer 404, so
+routing them is harmless. These must stay ahead of the `/` catch-all below.
+/oauth/ is a Prefix. The well-known documents and /mcp are Exact, and since the
+main Ingress sets use-regex an Exact path is an RE2 regex: the dots are
+escaped. /connect and /account/connected_apps are SSR pages and stay on web. */}}
+- path: '/mcp'
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: '/\.well-known/oauth-authorization-server'
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: '/\.well-known/openid-configuration'
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: '/\.well-known/oauth-protected-resource'
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: '/\.well-known/oauth-protected-resource/mcp'
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: "/oauth/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
 - path: "/"
   pathType: Prefix
   backend:
