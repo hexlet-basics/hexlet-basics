@@ -38,6 +38,27 @@ export default defineConfig({
       },
     ],
   },
+  overrides: [
+    {
+      // A spec says what a person does and sees through the `site` fixture. It
+      // takes `test` from the support file, whose type hands it no `page`;
+      // Playwright's own `test` would bring `page`, selectors and waits back.
+      files: ["e2e/tests/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                name: "@playwright/test",
+                message: "import test from ../support/test and drive the site through its steps",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
   ignorePatterns: [
     "legacy/**/*",
     "src/client/**",

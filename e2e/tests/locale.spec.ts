@@ -7,18 +7,10 @@ test("switching the language keeps the page and prefixes the route", async ({ si
   await site.catalog.open();
   await site.expectHeading(/./, 1);
 
-  await site.locale.switch("English", "Русский");
-  await site.expectPath("/ru/languages");
-  await site.settled();
-  await site.locale.expectLang("ru");
+  await site.locale.switch("English", "Русский", { path: "/ru/languages", lang: "ru" });
   await site.expectHeading(/./, 1);
 
-  await site.locale.switch("Русский", "Español");
-  await site.expectPath("/es/languages");
-  await site.settled();
-  await site.locale.expectLang("es");
+  await site.locale.switch("Русский", "Español", { path: "/es/languages", lang: "es" });
 
-  await site.locale.switch("Español", "English");
-  await site.expectPath("/languages");
-  await site.locale.expectLang("en");
+  await site.locale.switch("Español", "English", { path: "/languages", lang: "en" });
 });

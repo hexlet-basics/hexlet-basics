@@ -20,7 +20,7 @@ linters:
         # Persistence goes through ent builders; raw SQL in production code
         # splits the package between two idioms. Tests and testsupport (savepoints,
         # reading the outbox) are exempt below.
-        - pattern: '^sql\.(DB|Tx|Conn)\.(ExecContext|QueryContext|QueryRowContext)$'
+        - pattern: '^sql\.(DB|Tx|Conn|Stmt)\.(ExecContext|QueryContext|QueryRowContext)$'
           msg: use ent query builders instead of raw SQL
         # The next two apply to tests only (see exclusions). A test arranges its
         # data from fixtures/ and never makes a row to act on: creating one is the

@@ -1,65 +1,65 @@
 import { expect } from "@playwright/test";
-import type { Site } from "./site";
+import type { Browser } from "./browser";
 
 /** The lesson player: the lesson, its navigation and the assistant. */
 export class Lesson {
-  readonly #site: Site;
+  readonly #browser: Browser;
 
-  constructor(site: Site) {
-    this.#site = site;
+  constructor(browser: Browser) {
+    this.#browser = browser;
   }
 
   async open(path: string): Promise<void> {
-    await this.#site.visit(path);
+    await this.#browser.visit(path);
   }
 
   async expectLessonTab(): Promise<void> {
     await expect(
-      this.#site.page.getByRole("tab", { name: "Lesson", selected: true }),
+      this.#browser.page.getByRole("tab", { name: "Lesson", selected: true }),
     ).toBeVisible();
   }
 
   async expectCodeEditor(): Promise<void> {
-    await expect(this.#site.page.getByRole("textbox", { name: "Code editor" })).toBeAttached();
+    await expect(this.#browser.page.getByRole("textbox", { name: "Code editor" })).toBeAttached();
   }
 
   async openNavigation(): Promise<void> {
-    await this.#site.page.getByRole("tab", { name: "Navigation" }).click();
+    await this.#browser.page.getByRole("tab", { name: "Navigation" }).click();
   }
 
   async expectLinkTo(lesson: string): Promise<void> {
-    await expect(this.#site.page.getByRole("link", { name: lesson })).toBeVisible();
+    await expect(this.#browser.page.getByRole("link", { name: lesson })).toBeVisible();
   }
 
   async openAssistant(): Promise<void> {
-    await this.#site.page.getByRole("tab", { name: "Assistant" }).click();
+    await this.#browser.page.getByRole("tab", { name: "Assistant" }).click();
   }
 
   async expectSignInInvitation(): Promise<void> {
-    await expect(this.#site.page.getByText("please sign up or log in")).toBeVisible();
+    await expect(this.#browser.page.getByText("please sign up or log in")).toBeVisible();
   }
 
   async expectNoSignInInvitation(): Promise<void> {
-    await expect(this.#site.page.getByText("please sign up or log in")).toBeHidden();
+    await expect(this.#browser.page.getByText("please sign up or log in")).toBeHidden();
   }
 
   async expectAssistantGreeting(): Promise<void> {
     await expect(
-      this.#site.page.getByText("I'm here to help you with any questions"),
+      this.#browser.page.getByText("I'm here to help you with any questions"),
     ).toBeVisible();
   }
 
   /** The question box is live: Send stays disabled until there is something to send. */
   async expectCannotSend(): Promise<void> {
-    await expect(this.#site.page.getByRole("button", { name: "Send" })).toBeDisabled();
+    await expect(this.#browser.page.getByRole("button", { name: "Send" })).toBeDisabled();
   }
 
   async expectCanSend(): Promise<void> {
-    await expect(this.#site.page.getByRole("button", { name: "Send" })).toBeEnabled();
+    await expect(this.#browser.page.getByRole("button", { name: "Send" })).toBeEnabled();
   }
 
   /** Types a question without sending it: no language model is configured in e2e. */
   async typeQuestion(question: string): Promise<void> {
-    await this.#site.page.getByRole("textbox", { name: "Your question" }).fill(question);
+    await this.#browser.page.getByRole("textbox", { name: "Your question" }).fill(question);
   }
 }

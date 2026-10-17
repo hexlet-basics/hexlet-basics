@@ -188,12 +188,16 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   db:up`) and `pnpm exec playwright install chromium` once; never part of
   `mise run test`. It asserts on what pages show, mocks nothing, and does not run
   lesson code (that needs an environment the stack lacks).
-  A spec only says what a person does and sees: it gets the `site` fixture from
-  `e2e/support/test.ts` and calls steps on it (`site.session.signInAs(learner)`,
-  `site.lesson.open(path)`), never `page`, a selector or a wait; destructuring
-  `page` fails `tsc -b`. Steps live in a file per concept under `e2e/support/`
-  (`session.ts`, `catalog.ts`, `lesson.ts`, `admin.ts`, `locale.ts`), and a new
-  scenario that needs a step the site does not have adds it there.
+  A spec only says what a person does and sees: it takes `test` from
+  `e2e/support/test.ts`, gets the `site` fixture and calls steps on it
+  (`site.session.signInAs(learner)`, `site.lesson.open(path)`), never `page`, a
+  selector or a wait. Three things hold that line: that `test` hands a scenario
+  no `page` (destructuring it fails `tsc -b`), `Site` keeps its browser in a
+  `#private` field (`site.page` fails `tsc -b`), and oxlint rejects importing
+  `@playwright/test` under `e2e/tests`. Steps live in a file per concept under
+  `e2e/support/` (`session.ts`, `catalog.ts`, `lesson.ts`, `admin.ts`,
+  `locale.ts`), and a scenario that needs a step the site does not have adds it
+  there.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **A test never creates the data it arranges: it reads it from `fixtures/`.**
@@ -207,8 +211,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   then run `mise run gen:fixtures`; `fixtures.LabelOf(name)` is only for a label
   read at run time (a request path). Ids count up in the order rows are written
   (the application reads "oldest first" off the id, so write older rows first);
-  a label no row defines panics in the YAML, and `LabelOf` of one panics in `ID`. A case a test needs and no row has becomes a
-  new row, with a comment above it saying what it is for, never an
+  a label no row defines panics in the YAML, and `LabelOf` of one panics in
+  `ID`. A case a test needs and no row has becomes a new row, with a comment
+  above it saying what it is for, never an
   `.Create()` in the test: `forbidigo` rejects `.Create()`, `.CreateBulk()`,
   `sql.Open` and `store.NewDB` in `_test.go`, and a test whose creation is the
   act under test (a sign-up, a concurrent request that wins a race, a database
