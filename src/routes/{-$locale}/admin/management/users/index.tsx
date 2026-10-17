@@ -21,6 +21,7 @@ function ManagementUsersList() {
 
   const list = useCrudList({
     list: adminListManagementUsersOptions,
+    searchable: true,
     listKey: adminListManagementUsersQueryKey,
   });
 

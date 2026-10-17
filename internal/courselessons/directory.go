@@ -5,8 +5,10 @@ package courselessons
 
 import (
 	"context"
+	"strings"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
@@ -31,23 +33,33 @@ func NewDirectory(db *ent.Client) *Directory {
 // locale, drawn from the current version's translation (legacy
 // `Language::Lesson::Version::Info.current.with_locale`). The name and the
 // description come from the translation row; the slug is joined from the lesson.
-func (d *Directory) Lessons(ctx context.Context, locale string, page domain.Page) ([]*ent.CourseLessonTranslation, int, error) {
-	return domain.Paged(ctx,
-		d.db.CourseLessonTranslation.Query().
-			Where(
-				courselessontranslation.LocaleEQ(locale),
-				// Legacy `.current`: the translation's course version must be
-				// selected as current by a completed course.
-				courselessontranslation.HasCourseVersionWith(
-					courseversion.HasCurrentCoursesWith(landingpages.Completed()),
-				),
-			).
-			WithLesson().
-			// Legacy orders by the translation id (ransack `sf=id`), not by the
-			// lesson id this row reports as its own, so the order is the
-			// translation's field.
-			Order(ent.Desc(courselessontranslation.FieldID)),
-		page)
+//
+// A non-blank search keeps the rows whose name or description, or whose
+// lesson's slug, contains it, case-insensitively. It narrows the rows the list
+// already shows and never adds one the list hides.
+func (d *Directory) Lessons(ctx context.Context, locale, search string, page domain.Page) ([]*ent.CourseLessonTranslation, int, error) {
+	query := d.db.CourseLessonTranslation.Query().
+		Where(
+			courselessontranslation.LocaleEQ(locale),
+			// Legacy `.current`: the translation's course version must be
+			// selected as current by a completed course.
+			courselessontranslation.HasCourseVersionWith(
+				courseversion.HasCurrentCoursesWith(landingpages.Completed()),
+			),
+		).
+		WithLesson().
+		// Legacy orders by the translation id (ransack `sf=id`), not by the
+		// lesson id this row reports as its own, so the order is the
+		// translation's field.
+		Order(ent.Desc(courselessontranslation.FieldID))
+	if term := strings.TrimSpace(search); term != "" {
+		query = query.Where(courselessontranslation.Or(
+			courselessontranslation.NameContainsFold(term),
+			courselessontranslation.DescriptionContainsFold(term),
+			courselessontranslation.HasLessonWith(courselesson.SlugContainsFold(term)),
+		))
+	}
+	return domain.Paged(ctx, query, page)
 }
 
 // Progress lists learners' per-lesson progress rows, newest first (legacy

@@ -21,6 +21,7 @@ function CourseLandingPagesList() {
 
   const list = useCrudList({
     list: adminListCourseLandingPagesOptions,
+    searchable: true,
     listKey: adminListCourseLandingPagesQueryKey,
     remove: adminDeleteCourseLandingPageMutation,
   });

@@ -25,7 +25,11 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/")({
 function CoursesList() {
   const { t } = useTranslation();
 
-  const list = useCrudList({ list: adminListCoursesOptions, listKey: adminListCoursesQueryKey });
+  const list = useCrudList({
+    list: adminListCoursesOptions,
+    listKey: adminListCoursesQueryKey,
+    searchable: true,
+  });
 
   const versionMutation = useResourceMutation({
     mutation: adminCreateCourseVersionMutation(),

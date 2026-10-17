@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
 )
 
@@ -20,7 +21,9 @@ import (
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
-	return listFrom(ctx, params.Page, params.PerPage, s.blogReader.List, s.conv.ToBlogPosts,
+	return listFrom(ctx, params.Page, params.PerPage, func(ctx context.Context, page domain.Page) ([]blogposts.Post, int, error) {
+		return s.blogReader.List(ctx, params.Q.Value, page)
+	}, s.conv.ToBlogPosts,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
 			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
 		},

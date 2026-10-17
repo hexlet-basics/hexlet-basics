@@ -23,6 +23,7 @@ function BlogPostsList() {
 
   const list = useCrudList({
     list: adminListBlogPostsOptions,
+    searchable: true,
     listKey: adminListBlogPostsQueryKey,
     remove: adminDeleteBlogPostMutation,
   });

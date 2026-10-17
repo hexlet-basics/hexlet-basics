@@ -25,7 +25,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonTranslation, int, error) {
-			return s.lessonDirectory.Lessons(ctx, locale, page)
+			return s.lessonDirectory.Lessons(ctx, locale, params.Q.Value, page)
 		},
 		s.conv.ToCourseLessonListItems,
 		func(items []api.CourseLessonListItem, total, page, perPage int32) *api.CourseLessonListItemPage {

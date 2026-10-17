@@ -29,11 +29,18 @@ const banner = (id: number, body: string): Banner => ({
   createdAt: "2026-01-01T00:00:00Z",
 });
 
-function Banners({ deletable = true }: { deletable?: boolean }) {
+function Banners({
+  deletable = true,
+  searchable = false,
+}: {
+  deletable?: boolean;
+  searchable?: boolean;
+}) {
   const list = useCrudList({
     list: adminListBannersOptions,
     listKey: adminListBannersQueryKey,
     remove: deletable ? adminDeleteBannerMutation : undefined,
+    searchable,
   });
 
   const columns: CrudColumnDef<Banner>[] = [
@@ -117,4 +124,46 @@ test("a resource without a delete mutation shows only the edit link", async () =
 
   await expect.element(page.getByRole("link", { name: "Edit" })).toBeVisible();
   await expect.element(page.getByRole("button", { name: "Delete" })).not.toBeInTheDocument();
+});
+
+test("a searchable list sends the typed term as q and starts again from the first page", async () => {
+  const requested: URLSearchParams[] = [];
+  worker.use(
+    http.get("*/admin/banners", ({ request }) => {
+      const query = new URL(request.url).searchParams;
+      requested.push(query);
+      const found = query.get("q") === "sale";
+      return HttpResponse.json({
+        items: [banner(1, found ? "Spring sale" : "Anything")],
+        total: found ? 1 : 30,
+        page: Number(query.get("page")),
+        perPage: 25,
+      });
+    }),
+  );
+
+  await renderWithRouter(<Banners searchable />);
+  await expect.element(page.getByRole("cell", { name: "Anything" })).toBeVisible();
+  expect(requested[0]?.has("q")).toBe(false);
+  await page.getByRole("button", { name: "2" }).click();
+  await expect.poll(() => requested.at(-1)?.get("page")).toBe("2");
+
+  await page.getByPlaceholder("Search…").fill("sale");
+
+  await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
+  expect(requested.at(-1)?.get("q")).toBe("sale");
+  expect(requested.at(-1)?.get("page")).toBe("1");
+});
+
+test("a list that is not searchable shows no search box", async () => {
+  worker.use(
+    http.get("*/admin/banners", () =>
+      HttpResponse.json({ items: [banner(1, "Spring sale")], total: 1, page: 1, perPage: 25 }),
+    ),
+  );
+
+  await renderWithRouter(<Banners />);
+
+  await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
+  await expect.element(page.getByPlaceholder("Search…")).not.toBeInTheDocument();
 });

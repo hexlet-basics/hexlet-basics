@@ -35,7 +35,7 @@ func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicRev
 
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
-	return s.db.Review.AdminList(ctx, params.Page, params.PerPage, s.conv.ToReviews)
+	return s.db.Review.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToReviews)
 }
 
 func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (api.AdminGetReviewRes, error) {

@@ -1549,6 +1549,11 @@ export type ListQueryPage = number;
 
 export type ListQueryPerPage = number;
 
+/**
+ * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+ */
+export type SearchListQueryQ = string;
+
 export type DeleteAccountData = {
   body?: never;
   path?: never;
@@ -1657,6 +1662,10 @@ export type AdminListUsersData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/api/users';
 };
@@ -1984,6 +1993,10 @@ export type AdminListBannersData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/banners';
 };
@@ -2287,6 +2300,10 @@ export type AdminListBlogPostsData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/blog_posts';
 };
@@ -3063,6 +3080,10 @@ export type AdminListCourseLandingPagesData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/course_landing_pages';
 };
@@ -3559,6 +3580,10 @@ export type AdminListCourseLessonsData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/course_lessons';
 };
@@ -3640,6 +3665,10 @@ export type AdminListCoursesData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/courses';
 };
@@ -4025,6 +4054,10 @@ export type AdminListLeadsData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/leads';
 };
@@ -4599,6 +4632,10 @@ export type AdminListManagementUsersData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/management/users';
 };
@@ -4714,6 +4751,10 @@ export type AdminListMessagesData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/messages';
 };
@@ -4753,6 +4794,10 @@ export type AdminListReviewsData = {
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+     */
+    q?: string;
   };
   url: '/api/admin/reviews';
 };

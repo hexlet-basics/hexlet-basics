@@ -3,8 +3,10 @@ package handlers
 import (
 	"context"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
 )
 
@@ -16,12 +18,16 @@ import (
 
 // AdminListUsers returns a page of users, newest first.
 func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (api.AdminListUsersRes, error) {
-	return s.userCrudPage(ctx, params.Page, params.PerPage)
+	return s.userCrudPage(ctx, params.Page, params.PerPage, params.Q)
 }
 
 // userCrudPage is the list the two admin surfaces over users share.
-func (s *Server) userCrudPage(ctx context.Context, pageParam, perPageParam api.OptInt32) (*api.UserCrudPage, error) {
-	return listFrom(ctx, pageParam, perPageParam, s.userDirectory.List, s.conv.ToUserCruds,
+func (s *Server) userCrudPage(ctx context.Context, pageParam, perPageParam api.OptInt32, search api.OptString) (*api.UserCrudPage, error) {
+	return listFrom(ctx, pageParam, perPageParam,
+		func(ctx context.Context, page domain.Page) ([]*ent.User, int, error) {
+			return s.userDirectory.List(ctx, search.Value, page)
+		},
+		s.conv.ToUserCruds,
 		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
 			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}
 		},

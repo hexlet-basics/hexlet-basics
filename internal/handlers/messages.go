@@ -15,7 +15,7 @@ func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMess
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.AiMessage, int, error) {
-			return s.messageDirectory.Messages(ctx, locale, page)
+			return s.messageDirectory.Messages(ctx, locale, params.Q.Value, page)
 		},
 		s.conv.ToLessonAssistantMessages,
 		func(items []api.LessonAssistantMessage, total, page, perPage int32) *api.LessonAssistantMessagePage {

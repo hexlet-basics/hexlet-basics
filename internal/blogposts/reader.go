@@ -77,9 +77,19 @@ func (r *Reader) Get(ctx context.Context, id int) (Post, error) {
 	return posts[0], nil
 }
 
-// List is one page of posts for the admin, newest first, with the total.
-func (r *Reader) List(ctx context.Context, page domain.Page) ([]Post, int, error) {
-	rows, total, err := domain.Paged(ctx, r.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID)), page)
+// List is one page of posts for the admin, newest first, with the total. A
+// non-blank search keeps the posts whose name, slug or description contain it,
+// case-insensitively; the body is left out, being the one large text column.
+func (r *Reader) List(ctx context.Context, search string, page domain.Page) ([]Post, int, error) {
+	query := r.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID))
+	if term := strings.TrimSpace(search); term != "" {
+		query = query.Where(blogpost.Or(
+			blogpost.NameContainsFold(term),
+			blogpost.SlugContainsFold(term),
+			blogpost.DescriptionContainsFold(term),
+		))
+	}
+	rows, total, err := domain.Paged(ctx, query, page)
 	if err != nil {
 		return nil, 0, err
 	}

@@ -1,14 +1,10 @@
-import { Group, Stack, TextInput, Title } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import { useQuery } from "@tanstack/react-query";
+import { Group, Stack, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteUserMutation,
   adminListUsersOptions,
   adminListUsersQueryKey,
-  adminSearchUsersOptions,
 } from "@/client/@tanstack/react-query.gen";
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
@@ -19,8 +15,8 @@ import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
 // Users admin (legacy `/admin/api/users` — the `api/` segment was a Rails
-// namespacing artifact and is dropped from the UI path). A non-empty search
-// swaps the paginated list for the typeahead endpoint (legacy `#search`).
+// namespacing artifact and is dropped from the UI path). The search box is the
+// list's own `q` filter, so a search pages and totals like the list does.
 export const Route = createFileRoute("/{-$locale}/admin/users/")({
   component: UsersList,
 });
@@ -32,14 +28,7 @@ function UsersList() {
     list: adminListUsersOptions,
     listKey: adminListUsersQueryKey,
     remove: adminDeleteUserMutation,
-  });
-  const [search, setSearch] = useState("");
-  const [term] = useDebouncedValue(search.trim(), 300);
-
-  const searching = term !== "";
-  const found = useQuery({
-    ...adminSearchUsersOptions({ query: { q: term } }),
-    enabled: searching,
+    searchable: true,
   });
 
   const columns: CrudColumnDef<UserCrud>[] = [
@@ -62,22 +51,7 @@ function UsersList() {
         <ButtonLink to="/{-$locale}/admin/users/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
-      <TextInput
-        placeholder={t(($) => $.admin.crud.search)}
-        value={search}
-        onChange={(event) => setSearch(event.currentTarget.value)}
-        maw={360}
-      />
-
-      <CrudList
-        columns={columns}
-        {...list.props}
-        {...(searching && {
-          data: found.data ?? [],
-          total: found.data?.length ?? 0,
-          isLoading: found.isLoading,
-        })}
-      />
+      <CrudList columns={columns} {...list.props} />
     </Stack>
   );
 }

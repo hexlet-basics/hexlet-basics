@@ -33,7 +33,7 @@ func (Review) Annotations() []schema.Annotation {
 		AdminCRUD{Eager: []string{
 			"WithCourse(func(q *CourseQuery) { q.WithCurrentVersion() })",
 			"WithUser()",
-		}},
+		}, Search: []string{"Body", "FirstName", "LastName"}},
 	}
 }
 

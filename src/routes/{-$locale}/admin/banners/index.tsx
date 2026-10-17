@@ -24,6 +24,7 @@ function BannersList() {
 
   const list = useCrudList({
     list: adminListBannersOptions,
+    searchable: true,
     listKey: adminListBannersQueryKey,
     remove: adminDeleteBannerMutation,
   });

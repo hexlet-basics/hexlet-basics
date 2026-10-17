@@ -21,6 +21,7 @@ function ReviewsList() {
 
   const list = useCrudList({
     list: adminListReviewsOptions,
+    searchable: true,
     listKey: adminListReviewsQueryKey,
     remove: adminDeleteReviewMutation,
   });

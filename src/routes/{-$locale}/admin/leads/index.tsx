@@ -15,7 +15,11 @@ export const Route = createFileRoute("/{-$locale}/admin/leads/")({
 function LeadsList() {
   const { t } = useTranslation();
   const formatDateTime = useDateTime();
-  const list = useCrudList({ list: adminListLeadsOptions, listKey: adminListLeadsQueryKey });
+  const list = useCrudList({
+    list: adminListLeadsOptions,
+    listKey: adminListLeadsQueryKey,
+    searchable: true,
+  });
 
   const columns: CrudColumnDef<Lead>[] = [
     {

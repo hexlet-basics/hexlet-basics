@@ -14,7 +14,7 @@ import (
 // the Attachments uploader lands — same deferral as the course cover.
 
 func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (api.AdminListCourseLandingPagesRes, error) {
-	return s.db.CourseLandingPage.AdminList(ctx, params.Page, params.PerPage, s.conv.ToCourseLandingPages)
+	return s.db.CourseLandingPage.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourseLandingPages)
 }
 
 func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.AdminGetCourseLandingPageParams) (api.AdminGetCourseLandingPageRes, error) {

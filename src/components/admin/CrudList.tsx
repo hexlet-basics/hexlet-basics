@@ -1,4 +1,4 @@
-import { EmptyState, Group, Pagination, Skeleton, Stack, Table } from "@mantine/core";
+import { EmptyState, Group, Pagination, Skeleton, Stack, Table, TextInput } from "@mantine/core";
 import { IconDatabaseOff } from "@tabler/icons-react";
 import {
   type ColumnDef,
@@ -45,6 +45,8 @@ export interface CrudListProps<T extends RowData> {
   pagination: PaginationState;
   onPaginationChange: OnChangeFn<PaginationState>;
   isLoading?: boolean;
+  // A search box above the table, for a list the server filters on `q`.
+  search?: { value: string; onChange: (value: string) => void };
 }
 
 export function CrudList<T extends RowData>({
@@ -54,6 +56,7 @@ export function CrudList<T extends RowData>({
   pagination,
   onPaginationChange,
   isLoading,
+  search,
 }: CrudListProps<T>) {
   const { t } = useTranslation();
   const pages = pageCount(total, pagination.pageSize);
@@ -70,6 +73,14 @@ export function CrudList<T extends RowData>({
 
   return (
     <Stack>
+      {search && (
+        <TextInput
+          placeholder={t(($) => $.admin.crud.search)}
+          value={search.value}
+          onChange={(event) => search.onChange(event.currentTarget.value)}
+          maw={360}
+        />
+      )}
       <Table.ScrollContainer minWidth={600}>
         <Table striped highlightOnHover withTableBorder>
           <Table.Thead>

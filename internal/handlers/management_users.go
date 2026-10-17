@@ -11,7 +11,7 @@ import (
 // It shares their read and write paths (see users.go).
 
 func (s *Server) AdminListManagementUsers(ctx context.Context, params api.AdminListManagementUsersParams) (api.AdminListManagementUsersRes, error) {
-	return s.userCrudPage(ctx, params.Page, params.PerPage)
+	return s.userCrudPage(ctx, params.Page, params.PerPage, params.Q)
 }
 
 func (s *Server) AdminGetManagementUser(ctx context.Context, params api.AdminGetManagementUserParams) (api.AdminGetManagementUserRes, error) {

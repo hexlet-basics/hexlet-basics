@@ -5,7 +5,9 @@ import (
 
 	"github.com/samber/lo"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
 	"hexletbasics/internal/leads"
 )
@@ -54,7 +56,11 @@ func firstVisitOf(input api.OptNilFirstVisit) leads.FirstVisit {
 // AdminListLeads returns a page of sales leads, newest first. The admin surface
 // is read-only (legacy `admin/leads#index`), so there is no get/update path.
 func (s *Server) AdminListLeads(ctx context.Context, params api.AdminListLeadsParams) (api.AdminListLeadsRes, error) {
-	return listFrom(ctx, params.Page, params.PerPage, s.leadDirectory.List, s.conv.ToLeads,
+	return listFrom(ctx, params.Page, params.PerPage,
+		func(ctx context.Context, page domain.Page) ([]*ent.Lead, int, error) {
+			return s.leadDirectory.List(ctx, params.Q.Value, page)
+		},
+		s.conv.ToLeads,
 		func(items []api.Lead, total, page, perPage int32) *api.LeadPage {
 			return &api.LeadPage{Items: items, Total: total, Page: page, PerPage: perPage}
 		},

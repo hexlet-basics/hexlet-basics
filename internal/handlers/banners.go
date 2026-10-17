@@ -34,7 +34,7 @@ func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error)
 // so there is no 409 path.
 
 func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (api.AdminListBannersRes, error) {
-	return s.db.Banner.AdminList(ctx, params.Page, params.PerPage, s.conv.ToBanners)
+	return s.db.Banner.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToBanners)
 }
 
 func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (api.AdminGetBannerRes, error) {

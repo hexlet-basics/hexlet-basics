@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"strings"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/paging"
@@ -26,9 +27,17 @@ func (c *BannerClient) adminQuery() *BannerQuery {
 // AdminList returns one page of Banner in the default admin order. The
 // count runs on a clone of the one scoped query, so the page's offset and
 // limit never leak into it.
-func (c *BannerClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*Banner) []api.Banner) (*api.BannerPage, error) {
+// A non-blank q keeps the rows whose Body, URL contain it,
+// case-insensitively, in the same query the window and the count run on.
+func (c *BannerClient) AdminList(ctx context.Context, page, perPage api.OptInt32, search api.OptString, conv func([]*Banner) []api.Banner) (*api.BannerPage, error) {
 	w := paging.New(page, perPage)
 	q := c.adminQuery().Order(Desc(banner.FieldID))
+	if term := strings.TrimSpace(search.Value); term != "" {
+		q = q.Where(banner.Or(
+			banner.BodyContainsFold(term),
+			banner.URLContainsFold(term),
+		))
+	}
 
 	total, err := q.Clone().Count(ctx)
 	if err != nil {
@@ -91,9 +100,17 @@ func (c *CourseClient) adminQuery() *CourseQuery {
 // AdminList returns one page of Course in the default admin order. The
 // count runs on a clone of the one scoped query, so the page's offset and
 // limit never leak into it.
-func (c *CourseClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*Course) []api.Course) (*api.CoursePage, error) {
+// A non-blank q keeps the rows whose Name, Slug contain it,
+// case-insensitively, in the same query the window and the count run on.
+func (c *CourseClient) AdminList(ctx context.Context, page, perPage api.OptInt32, search api.OptString, conv func([]*Course) []api.Course) (*api.CoursePage, error) {
 	w := paging.New(page, perPage)
 	q := c.adminQuery().Order(Desc(course.FieldID))
+	if term := strings.TrimSpace(search.Value); term != "" {
+		q = q.Where(course.Or(
+			course.NameContainsFold(term),
+			course.SlugContainsFold(term),
+		))
+	}
 
 	total, err := q.Clone().Count(ctx)
 	if err != nil {
@@ -218,9 +235,18 @@ func (c *CourseLandingPageClient) adminQuery() *CourseLandingPageQuery {
 // AdminList returns one page of CourseLandingPage in the default admin order. The
 // count runs on a clone of the one scoped query, so the page's offset and
 // limit never leak into it.
-func (c *CourseLandingPageClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*CourseLandingPage) []api.CourseLandingPage) (*api.CourseLandingPagePage, error) {
+// A non-blank q keeps the rows whose Slug, Name, Header contain it,
+// case-insensitively, in the same query the window and the count run on.
+func (c *CourseLandingPageClient) AdminList(ctx context.Context, page, perPage api.OptInt32, search api.OptString, conv func([]*CourseLandingPage) []api.CourseLandingPage) (*api.CourseLandingPagePage, error) {
 	w := paging.New(page, perPage)
 	q := c.adminQuery().Order(Desc(courselandingpage.FieldID))
+	if term := strings.TrimSpace(search.Value); term != "" {
+		q = q.Where(courselandingpage.Or(
+			courselandingpage.SlugContainsFold(term),
+			courselandingpage.NameContainsFold(term),
+			courselandingpage.HeaderContainsFold(term),
+		))
+	}
 
 	total, err := q.Clone().Count(ctx)
 	if err != nil {
@@ -282,9 +308,18 @@ func (c *ReviewClient) adminQuery() *ReviewQuery {
 // AdminList returns one page of Review in the default admin order. The
 // count runs on a clone of the one scoped query, so the page's offset and
 // limit never leak into it.
-func (c *ReviewClient) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*Review) []api.Review) (*api.ReviewPage, error) {
+// A non-blank q keeps the rows whose Body, FirstName, LastName contain it,
+// case-insensitively, in the same query the window and the count run on.
+func (c *ReviewClient) AdminList(ctx context.Context, page, perPage api.OptInt32, search api.OptString, conv func([]*Review) []api.Review) (*api.ReviewPage, error) {
 	w := paging.New(page, perPage)
 	q := c.adminQuery().Order(Desc(review.FieldID))
+	if term := strings.TrimSpace(search.Value); term != "" {
+		q = q.Where(review.Or(
+			review.BodyContainsFold(term),
+			review.FirstNameContainsFold(term),
+			review.LastNameContainsFold(term),
+		))
+	}
 
 	total, err := q.Clone().Count(ctx)
 	if err != nil {

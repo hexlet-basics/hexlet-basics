@@ -6,6 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
+import { useDebouncedValue } from "@mantine/hooks";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
@@ -24,6 +25,8 @@ interface ListQuery {
   // Left out until the user picks a size: the server's default is declared once in
   // the contract and echoed back in every response's `perPage`.
   perPage?: number;
+  // The text filter, on the lists whose operation takes one.
+  q?: string;
 }
 
 // What the generated delete mutation takes: the row's id in the path.
@@ -47,6 +50,9 @@ interface CrudListOptions<
   // The generated delete mutation, e.g. `adminDeleteBannerMutation`. Left out for
   // a resource that cannot be deleted; its rows then carry no delete button.
   remove?: () => UseMutationOptions<TDeleteData, TDeleteError, TDeleteVars>;
+  // Show a search box that filters the list on the server (`q`). Only for a list
+  // whose operation declares `q`.
+  searchable?: boolean;
 }
 
 interface ActionsColumnOptions<TItem> {
@@ -83,6 +89,7 @@ export function useCrudList<
   list,
   listKey,
   remove,
+  searchable = false,
 }: CrudListOptions<TPage, TListError, TListKey, TDeleteData, TDeleteError, TDeleteVars>) {
   type TItem = TPage["items"][number];
   const { t } = useTranslation();
@@ -91,7 +98,18 @@ export function useCrudList<
   const [pageIndex, setPageIndex] = useState(0);
   const [chosenSize, setChosenSize] = useState<number>();
 
-  const query = useQuery(list({ query: { page: pageIndex + 1, perPage: chosenSize } }));
+  const [search, setSearch] = useState("");
+  const [term] = useDebouncedValue(search.trim(), 300);
+
+  const query = useQuery(
+    list({
+      query: {
+        page: pageIndex + 1,
+        perPage: chosenSize,
+        q: searchable && term !== "" ? term : undefined,
+      },
+    }),
+  );
 
   const deleteMutation = useResourceMutation({
     mutation: remove?.() ?? noMutation,
@@ -153,6 +171,17 @@ export function useCrudList<
       pagination,
       onPaginationChange,
       isLoading: query.isLoading,
+      // A new term starts from the first page: the old page may not exist in the
+      // narrowed list.
+      search: searchable
+        ? {
+            value: search,
+            onChange: (value: string) => {
+              setSearch(value);
+              setPageIndex(0);
+            },
+          }
+        : undefined,
     },
     actionsColumn,
   };

@@ -2484,6 +2484,8 @@ func decodeAdminListAuditRecordsParams(args [0]string, argsEscaped bool, r *http
 type AdminListBannersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListBannersParams(packed middleware.Parameters) (params AdminListBannersParams) {
@@ -2503,6 +2505,15 @@ func unpackAdminListBannersParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -2647,6 +2658,47 @@ func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -2654,6 +2706,8 @@ func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Requ
 type AdminListBlogPostsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListBlogPostsParams(packed middleware.Parameters) (params AdminListBlogPostsParams) {
@@ -2673,6 +2727,15 @@ func unpackAdminListBlogPostsParams(packed middleware.Parameters) (params AdminL
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -2813,6 +2876,47 @@ func decodeAdminListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Re
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
 			In:   "query",
 			Err:  err,
 		}
@@ -3059,6 +3163,8 @@ func decodeAdminListCourseCategoriesParams(args [0]string, argsEscaped bool, r *
 type AdminListCourseLandingPagesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseLandingPagesParams(packed middleware.Parameters) (params AdminListCourseLandingPagesParams) {
@@ -3078,6 +3184,15 @@ func unpackAdminListCourseLandingPagesParams(packed middleware.Parameters) (para
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -3218,6 +3333,47 @@ func decodeAdminListCourseLandingPagesParams(args [0]string, argsEscaped bool, r
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
 			In:   "query",
 			Err:  err,
 		}
@@ -3399,6 +3555,8 @@ func decodeAdminListCourseLessonReviewsParams(args [0]string, argsEscaped bool, 
 type AdminListCourseLessonsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseLessonsParams(packed middleware.Parameters) (params AdminListCourseLessonsParams) {
@@ -3418,6 +3576,15 @@ func unpackAdminListCourseLessonsParams(packed middleware.Parameters) (params Ad
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -3562,6 +3729,47 @@ func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *htt
 			Err:  err,
 		}
 	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -3569,6 +3777,8 @@ func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *htt
 type AdminListCoursesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCoursesParams(packed middleware.Parameters) (params AdminListCoursesParams) {
@@ -3588,6 +3798,15 @@ func unpackAdminListCoursesParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -3732,6 +3951,47 @@ func decodeAdminListCoursesParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -3804,6 +4064,8 @@ func decodeAdminListLandingPageQnaItemsParams(args [1]string, argsEscaped bool, 
 type AdminListLeadsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListLeadsParams(packed middleware.Parameters) (params AdminListLeadsParams) {
@@ -3823,6 +4085,15 @@ func unpackAdminListLeadsParams(packed middleware.Parameters) (params AdminListL
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -3963,6 +4234,47 @@ func decodeAdminListLeadsParams(args [0]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
 			In:   "query",
 			Err:  err,
 		}
@@ -4144,6 +4456,8 @@ func decodeAdminListLessonProgressParams(args [0]string, argsEscaped bool, r *ht
 type AdminListManagementUsersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListManagementUsersParams(packed middleware.Parameters) (params AdminListManagementUsersParams) {
@@ -4163,6 +4477,15 @@ func unpackAdminListManagementUsersParams(packed middleware.Parameters) (params 
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -4307,6 +4630,47 @@ func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *h
 			Err:  err,
 		}
 	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -4314,6 +4678,8 @@ func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *h
 type AdminListMessagesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListMessagesParams(packed middleware.Parameters) (params AdminListMessagesParams) {
@@ -4333,6 +4699,15 @@ func unpackAdminListMessagesParams(packed middleware.Parameters) (params AdminLi
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -4477,6 +4852,47 @@ func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Req
 			Err:  err,
 		}
 	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -4484,6 +4900,8 @@ func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Req
 type AdminListReviewsParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListReviewsParams(packed middleware.Parameters) (params AdminListReviewsParams) {
@@ -4503,6 +4921,15 @@ func unpackAdminListReviewsParams(packed middleware.Parameters) (params AdminLis
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -4643,6 +5070,47 @@ func decodeAdminListReviewsParams(args [0]string, argsEscaped bool, r *http.Requ
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
 			In:   "query",
 			Err:  err,
 		}
@@ -4994,6 +5462,8 @@ func decodeAdminListStaffMembersParams(args [0]string, argsEscaped bool, r *http
 type AdminListUsersParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Text to find, matched case-insensitively against the names, slugs and text of the rows.
+	Q OptString `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListUsersParams(packed middleware.Parameters) (params AdminListUsersParams) {
@@ -5013,6 +5483,15 @@ func unpackAdminListUsersParams(packed middleware.Parameters) (params AdminListU
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
 		}
 	}
 	return params
@@ -5153,6 +5632,47 @@ func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
 			In:   "query",
 			Err:  err,
 		}

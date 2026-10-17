@@ -82,6 +82,21 @@ model ListQuery {
 }
 
 /**
+ * A list an editor looks things up in: the page window plus an optional text
+ * filter. `q` is a case-insensitive substring match over the resource's
+ * human-readable fields (title, name, slug, text), applied in the query, so it
+ * composes with the window. Searching is reading: the operation keeps its
+ * Permission and its personal-data marker.
+ */
+model SearchListQuery {
+  ...ListQuery;
+
+  /** Text to find, matched case-insensitively against the names, slugs and text of the rows. */
+  @query
+  q?: string;
+}
+
+/**
  * Field-level validation errors, keyed by field name (each value is the list
  * of messages for that field). Returned when a write fails validation —
  * including constraints the schema cannot express, like uniqueness.

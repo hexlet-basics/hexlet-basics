@@ -2,8 +2,10 @@ package accounts
 
 import (
 	"context"
+	"strings"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/domain"
 )
@@ -26,8 +28,25 @@ func NewDirectory(db *ent.Client) *Directory {
 // List returns one page of users, newest first, and how many there are in all.
 // Newest first is id descending: ids only grow, so the order is total and the
 // pages never overlap.
-func (d *Directory) List(ctx context.Context, page domain.Page) ([]*ent.User, int, error) {
-	return domain.Paged(ctx, d.db.User.Query().Order(ent.Desc(user.FieldID)), page)
+//
+// A non-blank search keeps the users that match it as the typeahead does.
+func (d *Directory) List(ctx context.Context, search string, page domain.Page) ([]*ent.User, int, error) {
+	query := d.db.User.Query().Order(ent.Desc(user.FieldID))
+	if term := strings.TrimSpace(search); term != "" {
+		query = query.Where(matches(term))
+	}
+	return domain.Paged(ctx, query, page)
+}
+
+// matches is the one definition of "a user the term finds", shared by the
+// typeahead and the list's search: a case-insensitive substring of the first
+// name, the last name or the email (legacy `first_name_or_last_name_or_email_cont`).
+func matches(term string) predicate.User {
+	return user.Or(
+		user.FirstNameContainsFold(term),
+		user.LastNameContainsFold(term),
+		user.EmailContainsFold(term),
+	)
 }
 
 // Search is the admin typeahead: a case-insensitive substring match on first
@@ -38,11 +57,7 @@ func (d *Directory) Search(ctx context.Context, term string) ([]*ent.User, error
 		return nil, nil
 	}
 	rows, err := d.db.User.Query().
-		Where(user.Or(
-			user.FirstNameContainsFold(term),
-			user.LastNameContainsFold(term),
-			user.EmailContainsFold(term),
-		)).
+		Where(matches(term)).
 		Order(ent.Desc(user.FieldID)).
 		Limit(searchLimit).
 		All(ctx)

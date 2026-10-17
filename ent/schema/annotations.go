@@ -69,6 +69,11 @@ type AdminCRUD struct {
 	// embeds, emitted verbatim after Query(): `WithUser()`,
 	// `WithRole(func(q *StaffRoleQuery) { q.WithPermissions() })`.
 	Eager []string `json:"Eager"`
+	// Search lists the Go field names of the string columns the list's `q`
+	// filter matches, case-insensitively (the human-readable ones: name, slug,
+	// text). Empty means the contract's list has no `q` and AdminList takes
+	// none.
+	Search []string `json:"Search"`
 }
 
 // Name implements schema.Annotation.

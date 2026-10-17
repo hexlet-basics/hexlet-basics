@@ -1208,6 +1208,11 @@ export const zListQueryPage = z.int().gte(1).max(2147483647, { error: 'Invalid v
 export const zListQueryPerPage = z.int().gte(1).lte(100).default(20);
 
 /**
+ * Text to find, matched case-insensitively against the names, slugs and text of the rows.
+ */
+export const zSearchListQueryQ = z.string();
+
+/**
  * A successful sign-out; the session cookie is expired by the server.
  */
 export const zDeleteAccountResponse = z.void();
@@ -1226,7 +1231,8 @@ export const zGetProfileResponse = zUser;
 
 export const zAdminListUsersQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1305,7 +1311,8 @@ export const zAdminListAuditRecordsResponse = zAuditRecordPage;
 
 export const zAdminListBannersQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1378,7 +1385,8 @@ export const zAdminUnpublishBannerResponse = zBanner;
 
 export const zAdminListBlogPostsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1564,7 +1572,8 @@ export const zAdminUpdateCourseCategoryResponse = zCourseCategory;
 
 export const zAdminListCourseLandingPagesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1689,7 +1698,8 @@ export const zAdminListCourseLessonReviewsResponse = zCourseLessonReviewPage;
 
 export const zAdminListCourseLessonsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1708,7 +1718,8 @@ export const zAdminReviewCourseLessonResponse = z.void();
 
 export const zAdminListCoursesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1795,7 +1806,8 @@ export const zAdminCreateCourseVersionResponse = zCourseVersion;
 
 export const zAdminListLeadsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1932,7 +1944,8 @@ export const zAdminUpdateStaffMemberResponse = zStaffMember;
 
 export const zAdminListManagementUsersQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1962,7 +1975,8 @@ export const zAdminUpdateManagementUserResponse = zUserCrud;
 
 export const zAdminListMessagesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**
@@ -1972,7 +1986,8 @@ export const zAdminListMessagesResponse = zLessonAssistantMessagePage;
 
 export const zAdminListReviewsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional().default(20)
+  perPage: z.int().gte(1).lte(100).optional().default(20),
+  q: z.string().optional()
 });
 
 /**

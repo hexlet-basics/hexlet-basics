@@ -171,6 +171,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -582,6 +583,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -960,6 +962,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -1937,6 +1940,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -2561,6 +2565,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -2652,6 +2657,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -3133,6 +3139,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -3839,6 +3846,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -3986,6 +3994,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -4029,6 +4038,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/SearchListQuery.q'
       responses:
         '200':
           description: The request has succeeded.
@@ -5910,6 +5920,14 @@ components:
         minimum: 1
         maximum: 100
         default: 20
+      explode: false
+    SearchListQuery.q:
+      name: q
+      in: query
+      required: false
+      description: Text to find, matched case-insensitively against the names, slugs and text of the rows.
+      schema:
+        type: string
       explode: false
   schemas:
     ActiveBanner:

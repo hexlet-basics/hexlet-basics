@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/samber/lo"
@@ -255,6 +256,17 @@ func NewDirectory(db *ent.Client) *Directory {
 }
 
 // List returns one page of leads, newest first, and how many there are in all.
-func (d *Directory) List(ctx context.Context, page domain.Page) ([]*ent.Lead, int, error) {
-	return domain.Paged(ctx, d.db.Lead.Query().Order(ent.Desc(lead.FieldID)), page)
+// A non-blank search keeps the leads whose email, phone, WhatsApp or Telegram
+// contains it, case-insensitively: how an editor finds a person's request.
+func (d *Directory) List(ctx context.Context, search string, page domain.Page) ([]*ent.Lead, int, error) {
+	query := d.db.Lead.Query().Order(ent.Desc(lead.FieldID))
+	if term := strings.TrimSpace(search); term != "" {
+		query = query.Where(lead.Or(
+			lead.EmailContainsFold(term),
+			lead.PhoneContainsFold(term),
+			lead.WhatsappContainsFold(term),
+			lead.TelegramContainsFold(term),
+		))
+	}
+	return domain.Paged(ctx, query, page)
 }

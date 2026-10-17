@@ -26,7 +26,7 @@ func (CourseLandingPage) Annotations() []schema.Annotation {
 		// part of the admin input.
 		AdminInput{Type: "CourseLandingPageInput"},
 		// The course supplies courseSlug, duration and membersCount.
-		AdminCRUD{Eager: []string{"WithCourse()"}},
+		AdminCRUD{Eager: []string{"WithCourse()"}, Search: []string{"Slug", "Name", "Header"}},
 	}
 }
 

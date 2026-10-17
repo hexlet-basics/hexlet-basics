@@ -20,7 +20,11 @@ function MessagesList() {
   const { t } = useTranslation();
 
   const formatDateTime = useDateTime();
-  const list = useCrudList({ list: adminListMessagesOptions, listKey: adminListMessagesQueryKey });
+  const list = useCrudList({
+    list: adminListMessagesOptions,
+    listKey: adminListMessagesQueryKey,
+    searchable: true,
+  });
 
   const columns: CrudColumnDef<LessonAssistantMessage>[] = [
     {

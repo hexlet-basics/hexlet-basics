@@ -137,7 +137,7 @@ model BannerInput {
 @useAuth(AdminSession)
 interface AdminBanners {
   /** List banners (paginated). */
-  @get @extension("x-permission", #{ name: "banners.read", kind: "read" }) @operationId("adminListBanners") list(...ListQuery): Page<Banner> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "banners.read", kind: "read" }) @operationId("adminListBanners") list(...SearchListQuery): Page<Banner> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single banner. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
@@ -200,7 +200,7 @@ model BlogPostRelatedCoursesInput {
 @tag("Admin: Blog Posts")
 @useAuth(AdminSession)
 interface AdminBlogPosts {
-  @get @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListBlogPosts") list(...SearchListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
 
   // 404 comes from the shared ApiError response (ent not-found), like every
   // other admin get — so no operation-specific NotFoundError member is needed.
@@ -258,7 +258,7 @@ model ReviewInput {
 @tag("Admin: Reviews")
 @useAuth(AdminSession)
 interface AdminReviews {
-  @get @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminListReviews") list(...ListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "reviews.read", kind: "read" }) @extension("x-personal-data", "Review") @operationId("adminListReviews") list(...SearchListQuery): Page<Review> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single review. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
@@ -325,7 +325,7 @@ interface AdminCourses {
       to edit courses. */
   @get @route("/options") @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListCourseOptions") listOptions(): CourseOption[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminListCourses") list(...ListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "courses.read", kind: "read" }) @operationId("adminListCourses") list(...SearchListQuery): Page<Course> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single course. A missing id surfaces as 404 via the central
       ent-error handler. */
@@ -397,7 +397,7 @@ model CourseLandingPageInput {
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPages {
-  @get @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_landing_pages.read", kind: "read" }) @operationId("adminListCourseLandingPages") list(...SearchListQuery): Page<CourseLandingPage> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single landing page. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
@@ -480,7 +480,7 @@ interface AdminCourseCategoryQnaItems {
 @tag("Admin: Course Lessons")
 @useAuth(AdminSession)
 interface AdminCourseLessons {
-  @get @extension("x-permission", #{ name: "course_lessons.read", kind: "read" }) @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "course_lessons.read", kind: "read" }) @operationId("adminListCourseLessons") list(...SearchListQuery): Page<CourseLessonListItem> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI review for a single lesson. */
   @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "course_lessons.review", kind: "write" }) @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
@@ -504,14 +504,14 @@ interface AdminCourseLessonReviews {
 @tag("Admin: Leads")
 @useAuth(AdminSession)
 interface AdminLeads {
-  @get @extension("x-permission", #{ name: "leads.read", kind: "read" }) @extension("x-personal-data", "Lead") @operationId("adminListLeads") list(...ListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "leads.read", kind: "read" }) @extension("x-personal-data", "Lead") @operationId("adminListLeads") list(...SearchListQuery): Page<Lead> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/messages")
 @tag("Admin: Messages")
 @useAuth(AdminSession)
 interface AdminMessages {
-  @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @extension("x-personal-data", "AiMessage") @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @extension("x-personal-data", "AiMessage") @operationId("adminListMessages") list(...SearchListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 /**
@@ -583,7 +583,7 @@ model UserInput {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListUsers") list(...SearchListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Typeahead search by name/email. */
   @get @route("/search") @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
@@ -698,7 +698,7 @@ interface AdminStaffMembers {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminManagementUsers {
-  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "users.read", kind: "read" }) @extension("x-personal-data", "User") @extension("x-requires-capability", "mcp.manage") @operationId("adminListManagementUsers") list(...SearchListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */

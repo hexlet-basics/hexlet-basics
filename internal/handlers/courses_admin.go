@@ -17,7 +17,7 @@ import (
 // is computed from the slug on read. There is no delete (parity with legacy).
 
 func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (api.AdminListCoursesRes, error) {
-	return s.db.Course.AdminList(ctx, params.Page, params.PerPage, s.conv.ToCourses)
+	return s.db.Course.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourses)
 }
 
 // AdminListCourseOptions serves selects: every course as id and name, with no

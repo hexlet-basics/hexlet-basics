@@ -20,6 +20,7 @@ write, so the response embeds the same edges the list and get do.
 {{ if $has }}
 import (
 	"context"
+	"strings"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/paging"
@@ -50,12 +51,25 @@ func (c *{{ $client }}) adminQuery() *{{ $n.Name }}Query {
 // AdminList returns one page of {{ $n.Name }} in the default admin order. The
 // count runs on a clone of the one scoped query, so the page's offset and
 // limit never leak into it.
-func (c *{{ $client }}) AdminList(ctx context.Context, page, perPage api.OptInt32, conv func([]*{{ $n.Name }}) []api.{{ $item }}) (*api.{{ $item }}Page, error) {
+{{- if $ann.Search }}
+// A non-blank q keeps the rows whose {{ range $i, $f := $ann.Search }}{{ if $i }}, {{ end }}{{ $f }}{{ end }} contain it,
+// case-insensitively, in the same query the window and the count run on.
+{{- end }}
+func (c *{{ $client }}) AdminList(ctx context.Context, page, perPage api.OptInt32, {{ if $ann.Search }}search api.OptString, {{ end }}conv func([]*{{ $n.Name }}) []api.{{ $item }}) (*api.{{ $item }}Page, error) {
 	w := paging.New(page, perPage)
 	q := c.adminQuery().Order(
 {{- if $ann.Order }}
 {{- range $i, $o := $ann.Order }}{{ if $i }}, {{ end }}{{ if $o.Desc }}Desc{{ else }}Asc{{ end }}({{ $n.Package }}.Field{{ $o.Field }}){{ end }}
 {{- else }}Desc({{ $n.Package }}.FieldID){{ end }})
+{{- if $ann.Search }}
+	if term := strings.TrimSpace(search.Value); term != "" {
+		q = q.Where({{ $n.Package }}.Or(
+{{- range $ann.Search }}
+			{{ $n.Package }}.{{ . }}ContainsFold(term),
+{{- end }}
+		))
+	}
+{{- end }}
 
 	total, err := q.Clone().Count(ctx)
 	if err != nil {

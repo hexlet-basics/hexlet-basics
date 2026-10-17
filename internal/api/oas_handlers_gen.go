@@ -8019,6 +8019,10 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -8221,6 +8225,10 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -8825,6 +8833,10 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -9229,6 +9241,10 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -9618,6 +9634,10 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -10018,6 +10038,10 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -10422,6 +10446,10 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -10624,6 +10652,10 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -11011,6 +11043,10 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}
@@ -11617,6 +11653,10 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 					Name: "perPage",
 					In:   "query",
 				}: params.PerPage,
+				{
+					Name: "q",
+					In:   "query",
+				}: params.Q,
 			},
 			Raw: r,
 		}

@@ -99,14 +99,14 @@ type UserEditor interface {
 
 // UserDirectory is how an administrator reads user records.
 type UserDirectory interface {
-	List(ctx context.Context, page domain.Page) ([]*ent.User, int, error)
+	List(ctx context.Context, search string, page domain.Page) ([]*ent.User, int, error)
 	Search(ctx context.Context, term string) ([]*ent.User, error)
 	Get(ctx context.Context, id int) (*ent.User, error)
 }
 
 // LessonDirectory is the administrators' read side of the lesson graph.
 type LessonDirectory interface {
-	Lessons(ctx context.Context, locale string, page domain.Page) ([]*ent.CourseLessonTranslation, int, error)
+	Lessons(ctx context.Context, locale, search string, page domain.Page) ([]*ent.CourseLessonTranslation, int, error)
 	Progress(ctx context.Context, locale string, page domain.Page) ([]*ent.LessonProgress, int, error)
 	Reviews(ctx context.Context, locale string, page domain.Page) ([]*ent.CourseLessonReview, int, error)
 }
@@ -124,12 +124,12 @@ type CategoryDirectory interface {
 
 // MessageDirectory is the administrators' read side of the assistant's messages.
 type MessageDirectory interface {
-	Messages(ctx context.Context, locale string, page domain.Page) ([]*ent.AiMessage, int, error)
+	Messages(ctx context.Context, locale, search string, page domain.Page) ([]*ent.AiMessage, int, error)
 }
 
 // LeadDirectory is the administrators' read side of the leads.
 type LeadDirectory interface {
-	List(ctx context.Context, page domain.Page) ([]*ent.Lead, int, error)
+	List(ctx context.Context, search string, page domain.Page) ([]*ent.Lead, int, error)
 }
 
 // CourseDirectory is the administrators' read side of the courses.
