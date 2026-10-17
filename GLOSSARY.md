@@ -108,7 +108,9 @@ position: it does not count towards Completion.
 The share of a Course's Current Lessons a learner has finished, as a percentage.
 Lessons finished under a retired Version do not count towards it. Carried as
 `Enrollment.completion`; the word Progress on its own is ambiguous now that
-Lesson Progress is a record, so Completion is the name for the number.
+Lesson Progress is a record, so Completion is the name for the number. Carried
+as `CourseProgress.completion`: computed against the current Version, never
+stored on the Enrollment.
 _ru_: прогресс · _es_: progreso
 
 **Course Readiness**:
@@ -119,8 +121,16 @@ _ru_: готовность курса · _es_: disponibilidad del curso
 **Next Lesson**:
 The first Lesson, in course order, among a Course's Current Lessons that the
 learner has not finished — where they resume. For a learner who took Lessons out
-of order, it is the first gap.
+of order, it is the first gap. Carried as `CourseProgress.nextLesson`. Not the
+Lesson after the one being viewed: that is an Adjacent Lesson.
 _ru_: следующий урок · _es_: siguiente lección
+
+**Adjacent Lessons**:
+The Lessons immediately before and after a given Lesson in course order, for
+back/forward navigation in the player. Independent of what the learner has
+finished, and so not the Next Lesson. Carried as `LessonView.adjacent`
+(`previous`, `next`); either is absent at the edge of the Course.
+_ru_: соседние уроки · _es_: lecciones adyacentes
 
 **Starter Code**:
 The code a Lesson's editor opens with, written by the Course author as the
