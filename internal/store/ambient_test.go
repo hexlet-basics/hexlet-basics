@@ -21,6 +21,7 @@ import (
 
 func openPool(t *testing.T) (*store.Store, *ent.Client) {
 	t.Helper()
+	//nolint:forbidigo // the case is about separate connections (concurrent transactions), so the test needs a pool of its own
 	db, err := store.NewDB(testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = db.Close() })
@@ -44,6 +45,7 @@ func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 
 		// Written through the pooled client, yet inside the transaction: the
 		// handler's plain `s.db` takes part without knowing.
+		//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 		require.NoError(t, client.AuditRecord.Create().
 			SetChannel("web").SetOperation(operation).SetOutcome("succeeded").Exec(ctx))
 		// A read in the same operation sees the write ...
@@ -68,6 +70,7 @@ func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T)
 		// A module that owns an atomic step commits it on its own when it is
 		// called alone; called inside an operation it must not.
 		require.NoError(t, txStore.WithinTx(ctx, func(_ *sql.Tx, inner *ent.Client) error {
+			//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
 			return inner.AuditRecord.Create().
 				SetChannel("web").SetOperation(operation).SetOutcome("succeeded").Exec(ctx)
 		}))

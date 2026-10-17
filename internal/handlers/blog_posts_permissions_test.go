@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -40,7 +41,7 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminGetBlogPost": {"blog_posts.read", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: 6001})
+		_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 		return err
 	}},
 	"AdminCreateBlogPost": {"blog_posts.create", func(h *testsupport.Harness) error {
@@ -48,22 +49,22 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminUpdateBlogPost": {"blog_posts.update", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: 6001})
+		_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 		return err
 	}},
 	"AdminSetBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSetBlogPostRelatedCourses(context.Background(),
 			&api.BlogPostRelatedCoursesInput{CourseIds: []int32{}},
-			api.AdminSetBlogPostRelatedCoursesParams{ID: 6001})
+			api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32("blog_post_hello_world")})
 		return err
 	}},
 	"AdminSuggestBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
-			api.AdminSuggestBlogPostRelatedCoursesParams{ID: 6001})
+			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32("blog_post_hello_world")})
 		return err
 	}},
 	"AdminDeleteBlogPost": {"blog_posts.delete", func(h *testsupport.Harness) error {
-		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: 6001})
+		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixtures.ID32("blog_post_hello_world")})
 	}},
 }
 
@@ -89,6 +90,7 @@ func TestARoleWithTheGrantMayUseTheOperation(t *testing.T) {
 			role := h.DB.StaffMember.Query().OnlyX(context.Background()).RoleID
 			// The editor already holds blog_posts.read; every other grant is new.
 			if op.permission != "blog_posts.read" {
+				//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 				h.DB.StaffRoleGrant.Create().SetRoleID(role).SetPermission(op.permission).ExecX(context.Background())
 			}
 

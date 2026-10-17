@@ -17,6 +17,7 @@ import (
 
 	"hexletbasics/ent/oauthaccesstoken"
 	"hexletbasics/ent/oauthrefreshtoken"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
@@ -25,7 +26,7 @@ import (
 
 // bob is the fixtures' editor, a second user whose grants must stay out of
 // alice's way.
-const bob = 1002
+var bob = fixtures.ID("user_staff_editor")
 
 func TestRefreshRotatesTheTokenAndRefusesTheOldOne(t *testing.T) {
 	o := testsupport.NewOAuth(t)
@@ -71,6 +72,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 	otherUser := o.Connect(bob, oauthserver.ScopeCatalogRead)
 
 	// Another client of the same user.
+	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
 	_, err := o.DB.OAuthClient.Create().SetClientID("other-client").SetName("Other").
 		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{oauthserver.ScopeCatalogRead}).Save(t.Context())
 	require.NoError(t, err)
@@ -214,6 +216,7 @@ func TestPurgeDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 // loser reads as a replay the family ends revoked: there are never two live
 // children.
 func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
+	//nolint:forbidigo // the case is about separate connections (concurrent transactions), so the test needs a pool of its own
 	sqlDB, err := store.NewDB(testdb.DatabaseURL())
 	require.NoError(t, err)
 	db := store.NewClient(sqlDB)
@@ -225,6 +228,7 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
 	client := db.OAuthClient.Create().SetClientID("race-client").SetName("Race").
 		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{}).SaveX(ctx)
 	t.Cleanup(func() {
@@ -235,9 +239,11 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 
 	const secret = "race-refresh-secret"
 	sum := sha256.Sum256([]byte(secret))
+	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
 	db.OAuthAccessToken.Create().SetID("race-access").SetClientID("race-client").SetUserID(alice).
 		SetScopes([]string{}).SetRefreshTokenID("race-refresh").SetFamilyID("race-family").
 		SetExpiresAt(time.Now().Add(time.Hour)).SaveX(ctx)
+	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
 	db.OAuthRefreshToken.Create().SetID("race-refresh").SetTokenHash(hex.EncodeToString(sum[:])).
 		SetClientID("race-client").SetUserID(alice).SetScopes([]string{}).SetAuthTime(time.Now()).
 		SetAccessTokenID("race-access").SetFamilyID("race-family").SetExpiresAt(time.Now().Add(time.Hour)).SaveX(ctx)

@@ -10,16 +10,20 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
-// The fixtures: alice (1001) and dana (1004) are administrators, bob (1002) is
-// the editor (role 9001, staff record 9201), carol (1003) is a plain user, 9002
-// is the moderator role.
-const (
-	aliceID   = 1001
-	carolID   = 1003
-	moderator = 9002
+// The fixtures: alice is the first administrator (the harness user), dana the second, bob the editor
+// (role staff_role_editor), carol a plain user, and the moderator role holds no grants.
+var (
+	aliceID        = fixtures.ID("user_admin_learner")
+	danaID         = fixtures.ID("user_second_admin")
+	danaLabel      = "user_second_admin"
+	carolID        = fixtures.ID("user_with_password")
+	editorID       = fixtures.ID("user_staff_editor")
+	moderator      = fixtures.ID32("staff_role_moderator")
+	editorRecordID = fixtures.ID32("staff_member_staff_editor")
 )
 
 // delegate gives the editor role Permissions it does not hold in the fixtures,
@@ -27,19 +31,21 @@ const (
 func delegate(t *testing.T, h *testsupport.Harness, permissions ...string) {
 	t.Helper()
 	for _, p := range permissions {
-		h.DB.StaffRoleGrant.Create().SetRoleID(roleEditorID).SetPermission(p).ExecX(t.Context())
+		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
+		h.DB.StaffRoleGrant.Create().SetRoleID(int(roleEditorID)).SetPermission(p).ExecX(t.Context())
 	}
 }
 
 // staffRecordOf makes user a staff member with the role and returns the record id.
 func staffRecordOf(t *testing.T, h *testsupport.Harness, userID, roleID int) int {
 	t.Helper()
+	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
 	return h.DB.StaffMember.Create().SetUserID(userID).SetRoleID(roleID).
 		SetAllowedLocales([]string{"ru", "en"}).SaveX(t.Context()).ID
 }
 
-func staffInput(userID, roleID int32) *api.StaffMemberInput {
-	return &api.StaffMemberInput{UserId: userID, RoleId: roleID, AllowedLocales: []string{"ru"}}
+func staffInput(userID, roleID int) *api.StaffMemberInput {
+	return &api.StaffMemberInput{UserId: int32(userID), RoleId: int32(roleID), AllowedLocales: []string{"ru"}}
 }
 
 func userInput(email string, admin bool) *api.UserInput {
@@ -70,49 +76,49 @@ func problemOf(t *testing.T, err error) api.ProblemDetails {
 }
 
 func TestStaffMemberCannotChangeTheirOwnStaffRecord(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update", "staff_members.delete", "staff_members.create")
 
-	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, moderator), api.AdminUpdateStaffMemberParams{ID: 9201})
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
-	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, moderator), api.AdminUpdateStaffMemberParams{ID: 9201})
+	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
 	assert.Contains(t, forbiddenDetail(t, res, err), "your own staff record")
 
-	own := h.DB.StaffMember.GetX(t.Context(), 9201)
-	assert.Equal(t, roleEditorID, own.RoleID, "the role is unchanged")
+	own := h.DB.StaffMember.GetX(t.Context(), int(editorRecordID))
+	assert.Equal(t, int(roleEditorID), own.RoleID, "the role is unchanged")
 
-	err = h.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: 9201})
+	err = h.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: editorRecordID})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
-	exists, err := h.DB.StaffMember.Query().Where(staffmember.ID(9201)).Exist(t.Context())
+	exists, err := h.DB.StaffMember.Query().Where(staffmember.ID(int(editorRecordID))).Exist(t.Context())
 	require.NoError(t, err)
 	assert.True(t, exists)
 
 	// Nor can a new record be made for oneself.
-	h.DB.StaffMember.DeleteOneID(9201).ExecX(t.Context())
-	_, err = h.Client.AdminCreateStaffMember(t.Context(), staffInput(editorID, moderator))
+	h.DB.StaffMember.DeleteOneID(int(editorRecordID)).ExecX(t.Context())
+	_, err = h.Client.AdminCreateStaffMember(t.Context(), staffInput(editorID, int(moderator)))
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 }
 
 func TestStaffMemberCannotMoveAnotherRecordOntoThemselves(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
-	carol := staffRecordOf(t, h, carolID, moderator)
+	carol := staffRecordOf(t, h, carolID, int(moderator))
 
-	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, moderator), api.AdminUpdateStaffMemberParams{ID: int32(carol)})
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(carol)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 }
 
 func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update", "staff_members.delete")
-	carol := staffRecordOf(t, h, carolID, moderator)
+	carol := staffRecordOf(t, h, carolID, int(moderator))
 
-	updated, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(carolID, roleEditorID), api.AdminUpdateStaffMemberParams{ID: int32(carol)})
+	updated, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(carolID, int(roleEditorID)), api.AdminUpdateStaffMemberParams{ID: int32(carol)})
 	require.NoError(t, err)
 	assert.Equal(t, "editor", updated.Role.Name)
 
@@ -121,9 +127,9 @@ func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
 
 func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	record := staffRecordOf(t, h, aliceID, roleEditorID)
+	record := staffRecordOf(t, h, aliceID, int(roleEditorID))
 
-	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(aliceID, moderator), api.AdminUpdateStaffMemberParams{ID: int32(record)})
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(aliceID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(record)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	err = h.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: int32(record)})
@@ -131,18 +137,19 @@ func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
 	// Dana, another administrator, can make the same changes to alice's record.
-	other := testsupport.NewHarnessAs(t, danaID)
-	staff := other.DB.StaffMember.Create().SetUserID(carolID).SetRoleID(roleEditorID).SetAllowedLocales([]string{"ru"}).SaveX(t.Context())
-	_, err = other.Client.AdminUpdateStaffMember(t.Context(), staffInput(carolID, moderator), api.AdminUpdateStaffMemberParams{ID: int32(staff.ID)})
+	other := testsupport.NewHarnessAs(t, danaLabel)
+	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
+	staff := other.DB.StaffMember.Create().SetUserID(carolID).SetRoleID(int(roleEditorID)).SetAllowedLocales([]string{"ru"}).SaveX(t.Context())
+	_, err = other.Client.AdminUpdateStaffMember(t.Context(), staffInput(carolID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(staff.ID)})
 	require.NoError(t, err)
 	require.NoError(t, other.Client.AdminDeleteStaffMember(t.Context(), api.AdminDeleteStaffMemberParams{ID: int32(staff.ID)}))
 }
 
 func TestARefusedSelfChangeIsRecordedAsFailed(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
 
-	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, moderator), api.AdminUpdateStaffMemberParams{ID: 9201})
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
 	require.Error(t, err)
 
 	rows := records(t, h, "AdminUpdateStaffMember")
@@ -153,18 +160,18 @@ func TestARefusedSelfChangeIsRecordedAsFailed(t *testing.T) {
 }
 
 func TestTheRefusalIsExplainedInTheCallersLanguage(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
 	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, moderator), api.AdminUpdateStaffMemberParams{ID: 9201})
+	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
 	assert.Contains(t, forbiddenDetail(t, res, err), "собственную запись")
 }
 
 func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: aliceID})
+	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	exists, err := h.DB.User.Query().Where(user.ID(aliceID)).Exist(t.Context())
@@ -172,13 +179,14 @@ func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) 
 	assert.True(t, exists)
 
 	// Another administrator can delete alice, and alice can delete dana.
-	require.NoError(t, h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: danaID}))
+	require.NoError(t, h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(danaID)}))
 }
 
 func TestAnotherAdministratorMayDeleteAnAdministrator(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, danaID)
+	h := testsupport.NewHarnessAs(t, danaLabel)
 	// alice owns content rows that keep her from being deleted, so a third
 	// administrator stands in for the one dana removes.
+	//nolint:forbidigo // an extra account that exists only to be deleted or promoted by the case
 	erin := h.DB.User.Create().SetEmail("erin@example.com").SetAdmin(true).SaveX(t.Context())
 
 	require.NoError(t, h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(erin.ID)}))
@@ -188,12 +196,12 @@ func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.
 	h := testsupport.NewHarness(t)
 	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
 
-	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("alice@example.com", false), api.AdminUpdateUserParams{ID: aliceID})
+	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("alice@example.com", false), api.AdminUpdateUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 	assert.Contains(t, problemOf(t, err).Detail.Value, "last administrator")
 
-	_, err = h.Client.AdminUpdateManagementUser(t.Context(), userInput("alice@example.com", false), api.AdminUpdateManagementUserParams{ID: aliceID})
+	_, err = h.Client.AdminUpdateManagementUser(t.Context(), userInput("alice@example.com", false), api.AdminUpdateManagementUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
@@ -203,23 +211,23 @@ func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.
 func TestAnAdministratorFlagCanBeClearedWithTwoAdministrators(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("dana@example.com", false), api.AdminUpdateUserParams{ID: danaID})
+	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("dana@example.com", false), api.AdminUpdateUserParams{ID: int32(danaID)})
 	require.NoError(t, err)
 	assert.False(t, *h.DB.User.GetX(t.Context(), danaID).Admin)
 }
 
 func TestTheLastAdministratorCannotBeDeletedByAStaffMember(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "users.delete")
 	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
 
-	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: aliceID})
+	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 }
 
 func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_roles.update")
 
 	_, err := h.Client.AdminUpdateRolePermissions(t.Context(),
@@ -246,7 +254,7 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 
 func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	staffRecordOf(t, h, aliceID, roleEditorID)
+	staffRecordOf(t, h, aliceID, int(roleEditorID))
 
 	updated, err := h.Client.AdminUpdateRolePermissions(t.Context(),
 		&api.RolePermissionsInput{Grants: []string{"blog_posts.read"}},
@@ -256,31 +264,31 @@ func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
 }
 
 func TestOnlyAnAdministratorChangesTheAdministratorFlag(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, editorID)
+	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "users.update", "users.create")
 
 	// Raising oneself, through either user surface.
-	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("bob@example.com", true), api.AdminUpdateUserParams{ID: editorID})
+	_, err := h.Client.AdminUpdateUser(t.Context(), userInput("bob@example.com", true), api.AdminUpdateUserParams{ID: int32(editorID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
-	_, err = h.Client.AdminUpdateManagementUser(t.Context(), userInput("bob@example.com", true), api.AdminUpdateManagementUserParams{ID: editorID})
+	_, err = h.Client.AdminUpdateManagementUser(t.Context(), userInput("bob@example.com", true), api.AdminUpdateManagementUserParams{ID: int32(editorID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	assert.False(t, *h.DB.User.GetX(t.Context(), editorID).Admin)
 
 	// Raising someone else, creating an administrator, demoting one.
-	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("carol@example.com", true), api.AdminUpdateUserParams{ID: carolID})
+	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("carol@example.com", true), api.AdminUpdateUserParams{ID: int32(carolID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	_, err = h.Client.AdminCreateUser(t.Context(), userInput("new@example.com", true))
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
-	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("dana@example.com", false), api.AdminUpdateUserParams{ID: danaID})
+	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("dana@example.com", false), api.AdminUpdateUserParams{ID: int32(danaID)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
 	// Everything else about a user stays within users.update and users.create.
-	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("carol2@example.com", false), api.AdminUpdateUserParams{ID: carolID})
+	_, err = h.Client.AdminUpdateUser(t.Context(), userInput("carol2@example.com", false), api.AdminUpdateUserParams{ID: int32(carolID)})
 	require.NoError(t, err)
 	_, err = h.Client.AdminCreateUser(t.Context(), userInput("new@example.com", false))
 	require.NoError(t, err)

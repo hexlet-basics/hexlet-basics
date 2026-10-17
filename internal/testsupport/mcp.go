@@ -42,9 +42,9 @@ const MCPEndpoint = OAuthIssuer + "/mcp"
 // generated server with the production audit middleware and hands it to the MCP
 // server as its dispatcher, so a tool call runs the security handler, the
 // transaction and the Audit Record exactly as in the running server. The
-// fixtures seed bob (1002) as an editor of role 9001 with banners.read and
-// banners.create in ru and en, and alice (1001) as an administrator without a
-// Staff Role. A test sets up what it needs through Grant and RevokeGrant (a role's
+// fixtures seed bob (user_staff_editor) as an editor of staff_role_editor with banners.read and
+// banners.create in ru and en, and alice (user_admin_learner) as an administrator
+// without a Staff Role. A test sets up what it needs through Grant and RevokeGrant (a role's
 // grants, which the check reads from the database on every call), asserts on
 // Records (the Audit Records an operation left) and on the rows themselves, and
 // connects with the Scope under test: Connect(bob, oauthserver.ScopeAdmin).

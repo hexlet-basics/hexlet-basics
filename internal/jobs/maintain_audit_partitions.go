@@ -58,12 +58,18 @@ func (w *maintainAuditPartitionsWorker) Work(ctx context.Context, _ *river.Job[M
 // MaintainAuditPartitions keeps the audit table's monthly partitions: next
 // months ahead of time, expired ones dropped.
 func MaintainAuditPartitions(partitions *audit.Partitions, retentionMonths int, logger *slog.Logger) Module {
-	return module(&maintainAuditPartitionsWorker{
+	return module(MaintainAuditPartitionsWorker(partitions, retentionMonths, logger), maintainAuditPartitionsSchedule())
+}
+
+// MaintainAuditPartitionsWorker is the worker alone, without its schedule, so
+// that a test can work the upkeep through it in a transaction (rivertest.Worker).
+func MaintainAuditPartitionsWorker(partitions *audit.Partitions, retentionMonths int, logger *slog.Logger) river.Worker[MaintainAuditPartitionsArgs] {
+	return &maintainAuditPartitionsWorker{
 		partitions:      partitions,
 		retentionMonths: retentionMonths,
 		logger:          logger,
 		now:             time.Now,
-	}, maintainAuditPartitionsSchedule())
+	}
 }
 
 // maintainAuditPartitionsSchedule is the recurring insert. RunOnStart makes a

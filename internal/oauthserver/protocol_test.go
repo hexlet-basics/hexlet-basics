@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -52,7 +53,7 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 		Azp string `json:"azp"`
 	}
 	require.NoError(t, json.Unmarshal(payload, &claims))
-	assert.Equal(t, "1001", claims.Sub)
+	assert.Equal(t, strconv.Itoa(alice), claims.Sub)
 	assert.Equal(t, testsupport.OAuthIssuer, claims.Iss)
 	assert.Equal(t, testsupport.OAuthClientID, claims.Azp)
 }
@@ -68,7 +69,7 @@ func TestUserinfoAnswersWithTheSubjectOfALiveToken(t *testing.T) {
 		Sub string `json:"sub"`
 	}
 	decode(t, res, &info)
-	assert.Equal(t, "1001", info.Sub)
+	assert.Equal(t, strconv.Itoa(alice), info.Sub)
 
 	// Once the token is revoked the endpoint refuses it.
 	_, err := o.DB.OAuthAccessToken.Delete().Exec(t.Context())
@@ -97,6 +98,7 @@ func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 func TestAClientCannotRevokeAnotherClientsToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
 	_, err := o.DB.OAuthClient.Create().SetClientID("other-client").SetName("Other").
 		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{}).Save(t.Context())
 	require.NoError(t, err)

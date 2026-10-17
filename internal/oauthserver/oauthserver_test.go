@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -14,12 +15,13 @@ import (
 
 	"hexletbasics/ent/oauthaccesstoken"
 	"hexletbasics/ent/oauthrefreshtoken"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // alice is the fixture user who signs in and decides.
-const alice = 1001
+var alice = fixtures.ID("user_admin_learner")
 
 func decode(t *testing.T, res *http.Response, into any) {
 	t.Helper()
@@ -258,7 +260,7 @@ func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 	require.NoError(t, err)
 	assert.Contains(t, string(header), "A256GCM")
 	assert.NotContains(t, string(header), "sub")
-	assert.NotContains(t, tokens.AccessToken, "1001")
+	assert.NotContains(t, tokens.AccessToken, strconv.Itoa(alice))
 
 	// The row holds an id. Presenting that id as a bearer token is refused.
 	row, err := o.DB.OAuthAccessToken.Query().Only(t.Context())

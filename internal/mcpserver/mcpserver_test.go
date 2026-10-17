@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -16,13 +17,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // alice is a fixture user.
-const alice = 1001
+var alice = fixtures.ID("user_admin_learner")
 
 func body(t *testing.T, res *http.Response) string {
 	t.Helper()
@@ -108,12 +110,12 @@ func TestBearerTokenIsNotAcceptedOnAnyAPIOperation(t *testing.T) {
 	withCookie := o.Do(http.MethodGet, "/api/me", nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 	defer func() { _ = withCookie.Body.Close() }()
 	require.Equal(t, http.StatusOK, withCookie.StatusCode)
-	assert.Contains(t, body(t, withCookie), "1001")
+	assert.Contains(t, body(t, withCookie), strconv.Itoa(alice))
 
 	withBearer := o.Do(http.MethodGet, "/api/me", nil, bearer)
 	defer func() { _ = withBearer.Body.Close() }()
 	require.Equal(t, http.StatusOK, withBearer.StatusCode)
-	assert.NotContains(t, body(t, withBearer), "1001")
+	assert.NotContains(t, body(t, withBearer), strconv.Itoa(alice))
 
 	// Operations that need a signed-in user refuse it.
 	for _, path := range []string{"/api/my", "/api/admin/api/users"} {

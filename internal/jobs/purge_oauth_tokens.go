@@ -48,7 +48,13 @@ func (w *purgeOAuthTokensWorker) Work(ctx context.Context, _ *river.Job[PurgeOAu
 // requests. It runs whether or not the OAuth server is enabled: on empty tables
 // it deletes nothing.
 func PurgeOAuthTokens(db *ent.Client, logger *slog.Logger) Module {
-	return module(&purgeOAuthTokensWorker{db: db, logger: logger, now: time.Now}, purgeOAuthTokensSchedule())
+	return module(PurgeOAuthTokensWorker(db, logger), purgeOAuthTokensSchedule())
+}
+
+// PurgeOAuthTokensWorker is the worker alone, without its schedule, so that a
+// test can work a sweep through it in a transaction (rivertest.Worker).
+func PurgeOAuthTokensWorker(db *ent.Client, logger *slog.Logger) river.Worker[PurgeOAuthTokensArgs] {
+	return &purgeOAuthTokensWorker{db: db, logger: logger, now: time.Now}
 }
 
 // purgeOAuthTokensSchedule is the recurring insert, without unique options for
