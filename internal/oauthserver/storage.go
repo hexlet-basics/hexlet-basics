@@ -38,6 +38,9 @@ type storage struct {
 	resource string
 	now      func() time.Time
 	signing  ed25519.PrivateKey
+	// accessLifetime and refreshLifetime are how long the two token kinds live.
+	accessLifetime  time.Duration
+	refreshLifetime time.Duration
 }
 
 var _ op.Storage = (*storage)(nil)
@@ -224,23 +227,30 @@ func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (s
 	if err != nil {
 		return "", time.Time{}, err
 	}
-	id, expires, err := s.insertAccessToken(ctx, s.db, owner, userID, "")
+	// Without a refresh token there is nothing to rotate: the token is a family
+	// of its own, which only an explicit revocation can end.
+	family, err := randomToken(16)
+	if err != nil {
+		return "", time.Time{}, err
+	}
+	id, expires, err := s.insertAccessToken(ctx, s.db, owner, userID, "", family)
 	return id, expires, err
 }
 
 func (s *storage) insertAccessToken(
-	ctx context.Context, db *ent.Client, owner tokenOwner, userID int, refreshID string,
+	ctx context.Context, db *ent.Client, owner tokenOwner, userID int, refreshID, familyID string,
 ) (string, time.Time, error) {
 	id, err := randomToken(16)
 	if err != nil {
 		return "", time.Time{}, err
 	}
-	expires := s.now().Add(accessTokenLifetime)
+	expires := s.now().Add(s.accessLifetime)
 	create := db.OAuthAccessToken.Create().
 		SetID(id).
 		SetClientID(owner.GetClientID()).
 		SetUserID(userID).
 		SetScopes(pq.StringArray(owner.GetScopes())).
+		SetFamilyID(familyID).
 		SetExpiresAt(expires)
 	if refreshID != "" {
 		create.SetRefreshTokenID(refreshID)
@@ -252,9 +262,14 @@ func (s *storage) insertAccessToken(
 }
 
 // CreateAccessAndRefreshTokens issues a pair: for a first grant (no current
-// refresh token) or in exchange for a refresh token, which is spent and replaced.
-// Detecting a spent token being presented again is a later step (ADR-0019); here
-// the old token is simply gone, so a replay is refused as unknown.
+// refresh token, which starts a new family) or in exchange for a refresh token,
+// which is marked used and replaced by a child in the same family.
+//
+// Spending a token is one conditional UPDATE (unused and unexpired), so of two
+// parallel exchanges of the same token the database lets exactly one claim it.
+// The other finds it used and is treated as a replay: the family, including the
+// child the winner just issued, is revoked. That is deliberately strict, with no
+// grace window (ADR-0019 addendum, #839).
 func (s *storage) CreateAccessAndRefreshTokens(
 	ctx context.Context, req op.TokenRequest, current string,
 ) (string, string, time.Time, error) {
@@ -270,20 +285,34 @@ func (s *storage) CreateAccessAndRefreshTokens(
 	var accessID, refresh string
 	var expires time.Time
 	err = s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		if current != "" {
-			// Spend the presented token and the access token it was paired with.
-			old, err := db.OAuthRefreshToken.Query().
-				Where(oauthrefreshtoken.TokenHash(digest(current)), oauthrefreshtoken.ExpiresAtGT(s.now())).
-				Only(ctx)
+		var family string
+		if current == "" {
+			family, err = randomToken(16)
+			if err != nil {
+				return err
+			}
+		} else {
+			// Spend the presented token, then end the access token it was paired
+			// with: only the new pair is alive afterwards.
+			hash := digest(current)
+			claimed, err := db.OAuthRefreshToken.Update().
+				Where(oauthrefreshtoken.TokenHash(hash), oauthrefreshtoken.UsedAtIsNil(), oauthrefreshtoken.ExpiresAtGT(s.now())).
+				SetUsedAt(s.now()).
+				Save(ctx)
+			if err != nil {
+				return fmt.Errorf("spend refresh token: %w", err)
+			}
+			if claimed == 0 {
+				return errRefreshNotSpendable
+			}
+			old, err := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.TokenHash(hash)).Only(ctx)
 			if err != nil {
 				return fmt.Errorf("refresh token: %w", err)
 			}
+			family = old.FamilyID
 			if _, err := db.OAuthAccessToken.Delete().
 				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx); err != nil {
 				return fmt.Errorf("delete paired access token: %w", err)
-			}
-			if err := db.OAuthRefreshToken.DeleteOne(old).Exec(ctx); err != nil {
-				return fmt.Errorf("delete spent refresh token: %w", err)
 			}
 		}
 
@@ -295,7 +324,7 @@ func (s *storage) CreateAccessAndRefreshTokens(
 		if err != nil {
 			return err
 		}
-		accessID, expires, err = s.insertAccessToken(ctx, db, owner, userID, refreshID)
+		accessID, expires, err = s.insertAccessToken(ctx, db, owner, userID, refreshID, family)
 		if err != nil {
 			return err
 		}
@@ -311,22 +340,82 @@ func (s *storage) CreateAccessAndRefreshTokens(
 			SetScopes(pq.StringArray(owner.GetScopes())).
 			SetAuthTime(authTime).
 			SetAccessTokenID(accessID).
-			SetExpiresAt(s.now().Add(refreshTokenLifetime)).
+			SetFamilyID(family).
+			SetExpiresAt(s.now().Add(s.refreshLifetime)).
 			Exec(ctx)
 	})
+	if errors.Is(err, errRefreshNotSpendable) {
+		// The spend was rolled back with the rest of the transaction, so a replay
+		// is dealt with in a transaction of its own.
+		return "", "", time.Time{}, s.refuseUnspendable(ctx, current)
+	}
 	if err != nil {
 		return "", "", time.Time{}, err
 	}
 	return accessID, refresh, expires, nil
 }
 
+// errRefreshNotSpendable marks a refresh token that was not unused and live at
+// the moment of the exchange.
+var errRefreshNotSpendable = errors.New("refresh token cannot be spent")
+
+// refuseUnspendable answers an exchange that lost the race for a token: a token
+// that is on file and used is a replay (or the loser of a parallel exchange), and
+// revokes its family; anything else is simply unknown or expired.
+func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
+	row, err := s.db.OAuthRefreshToken.Query().
+		Where(oauthrefreshtoken.TokenHash(digest(refresh)), oauthrefreshtoken.ExpiresAtGT(s.now())).
+		Only(ctx)
+	switch {
+	case ent.IsNotFound(err):
+		return oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired")
+	case err != nil:
+		return fmt.Errorf("refresh token: %w", err)
+	}
+	return s.refuseReuse(ctx, row)
+}
+
+// refuseReuse revokes the family of a refresh token presented a second time and
+// returns the refusal. A used token is evidence it has been copied: whoever holds
+// the newer tokens, the thief and the owner alike, loses them, and the user must
+// sign in again (ADR-0019, the MCP authorization spec).
+func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
+	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
+		return oidc.ErrServerError().WithParent(err)
+	}
+	return oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again")
+}
+
+// revokeFamily deletes every access and refresh token descended from one
+// authorization, used refresh tokens included.
+func (s *storage) revokeFamily(ctx context.Context, familyID string) error {
+	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		return deleteFamily(ctx, db, familyID)
+	})
+}
+
+func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
+	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
+		return fmt.Errorf("delete family access tokens: %w", err)
+	}
+	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
+		return fmt.Errorf("delete family refresh tokens: %w", err)
+	}
+	return nil
+}
+
 // TokenRequestByRefreshToken finds the grant a presented refresh token belongs to.
+// A token that was already used is not a grant: it is a replay, and the family
+// is revoked before the request is refused.
 func (s *storage) TokenRequestByRefreshToken(ctx context.Context, refresh string) (op.RefreshTokenRequest, error) {
 	row, err := s.db.OAuthRefreshToken.Query().
 		Where(oauthrefreshtoken.TokenHash(digest(refresh)), oauthrefreshtoken.ExpiresAtGT(s.now())).
 		Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("refresh token: %w", err)
+	}
+	if row.UsedAt != nil {
+		return nil, s.refuseReuse(ctx, row)
 	}
 	return &refreshRequest{row: row, scopes: row.Scopes, resource: s.resource}, nil
 }
@@ -362,10 +451,11 @@ func (s *storage) GetRefreshTokenInfo(ctx context.Context, _ string, token strin
 	return strconv.Itoa(row.UserID), row.ID, nil
 }
 
-// RevokeToken deletes the token with this id, an access token or a refresh token
-// (with the access token paired to it). A token that is already gone is not an
-// error: the caller wanted it dead and it is. Only the client the token was
-// issued to may revoke it.
+// RevokeToken ends the token with this id. An access token is deleted alone, so
+// the client can still refresh; a refresh token ends its whole family, since
+// the user withdrawing a connection means every token of it, the rotated ones
+// included. A token that is already gone is not an error: the caller wanted it
+// dead and it is. Only the client the token was issued to may revoke it.
 func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc.Error {
 	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		access, err := db.OAuthAccessToken.Get(ctx, id)
@@ -389,11 +479,7 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 		if refresh.ClientID != clientID {
 			return errWrongClient
 		}
-		if _, err := db.OAuthAccessToken.Delete().
-			Where(oauthaccesstoken.RefreshTokenID(refresh.ID)).Exec(ctx); err != nil {
-			return err
-		}
-		return db.OAuthRefreshToken.DeleteOne(refresh).Exec(ctx)
+		return deleteFamily(ctx, db, refresh.FamilyID)
 	})
 	switch {
 	case err == nil:
@@ -517,4 +603,28 @@ func (s *storage) GetKeyByIDAndClientID(context.Context, string, string) (*jose.
 
 func (s *storage) ValidateJWTProfileScopes(context.Context, string, []string) ([]string, error) {
 	return nil, errUnsupported
+}
+
+// PurgeExpired deletes what can no longer be used: expired access and refresh
+// tokens (the used refresh tokens kept for replay detection among them, once
+// their own lifetime is over) and authorization requests nobody completed. It
+// is what keeps the tables from growing without bound, since a rotated refresh
+// token is retained instead of deleted. It returns how many rows it removed.
+func PurgeExpired(ctx context.Context, db *ent.Client, now time.Time) (int, error) {
+	total := 0
+	n, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.ExpiresAtLTE(now)).Exec(ctx)
+	if err != nil {
+		return total, fmt.Errorf("purge access tokens: %w", err)
+	}
+	total += n
+	n, err = db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.ExpiresAtLTE(now)).Exec(ctx)
+	if err != nil {
+		return total, fmt.Errorf("purge refresh tokens: %w", err)
+	}
+	total += n
+	n, err = db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ExpiresAtLTE(now)).Exec(ctx)
+	if err != nil {
+		return total, fmt.Errorf("purge authorization requests: %w", err)
+	}
+	return total + n, nil
 }

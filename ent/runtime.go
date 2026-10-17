@@ -471,6 +471,10 @@ func init() {
 	oauthaccesstokenDescClientID := oauthaccesstokenFields[1].Descriptor()
 	// oauthaccesstoken.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	oauthaccesstoken.ClientIDValidator = oauthaccesstokenDescClientID.Validators[0].(func(string) error)
+	// oauthaccesstokenDescFamilyID is the schema descriptor for family_id field.
+	oauthaccesstokenDescFamilyID := oauthaccesstokenFields[5].Descriptor()
+	// oauthaccesstoken.FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	oauthaccesstoken.FamilyIDValidator = oauthaccesstokenDescFamilyID.Validators[0].(func(string) error)
 	// oauthaccesstokenDescID is the schema descriptor for id field.
 	oauthaccesstokenDescID := oauthaccesstokenFields[0].Descriptor()
 	// oauthaccesstoken.IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -572,6 +576,10 @@ func init() {
 	oauthrefreshtokenDescClientID := oauthrefreshtokenFields[2].Descriptor()
 	// oauthrefreshtoken.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	oauthrefreshtoken.ClientIDValidator = oauthrefreshtokenDescClientID.Validators[0].(func(string) error)
+	// oauthrefreshtokenDescFamilyID is the schema descriptor for family_id field.
+	oauthrefreshtokenDescFamilyID := oauthrefreshtokenFields[7].Descriptor()
+	// oauthrefreshtoken.FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	oauthrefreshtoken.FamilyIDValidator = oauthrefreshtokenDescFamilyID.Validators[0].(func(string) error)
 	// oauthrefreshtokenDescID is the schema descriptor for id field.
 	oauthrefreshtokenDescID := oauthrefreshtokenFields[0].Descriptor()
 	// oauthrefreshtoken.IDValidator is a validator for the "id" field. It is called by the builders before save.

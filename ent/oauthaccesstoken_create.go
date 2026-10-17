@@ -84,6 +84,12 @@ func (_c *OAuthAccessTokenCreate) SetNillableRefreshTokenID(v *string) *OAuthAcc
 	return _c
 }
 
+// SetFamilyID sets the "family_id" field.
+func (_c *OAuthAccessTokenCreate) SetFamilyID(v string) *OAuthAccessTokenCreate {
+	_c.mutation.SetFamilyID(v)
+	return _c
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (_c *OAuthAccessTokenCreate) SetExpiresAt(v time.Time) *OAuthAccessTokenCreate {
 	_c.mutation.SetExpiresAt(v)
@@ -163,6 +169,14 @@ func (_c *OAuthAccessTokenCreate) check() error {
 	if _, ok := _c.mutation.Scopes(); !ok {
 		return &ValidationError{Name: "scopes", err: errors.New(`ent: missing required field "OAuthAccessToken.scopes"`)}
 	}
+	if _, ok := _c.mutation.FamilyID(); !ok {
+		return &ValidationError{Name: "family_id", err: errors.New(`ent: missing required field "OAuthAccessToken.family_id"`)}
+	}
+	if v, ok := _c.mutation.FamilyID(); ok {
+		if err := oauthaccesstoken.FamilyIDValidator(v); err != nil {
+			return &ValidationError{Name: "family_id", err: fmt.Errorf(`ent: validator failed for field "OAuthAccessToken.family_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.ExpiresAt(); !ok {
 		return &ValidationError{Name: "expires_at", err: errors.New(`ent: missing required field "OAuthAccessToken.expires_at"`)}
 	}
@@ -230,6 +244,10 @@ func (_c *OAuthAccessTokenCreate) createSpec() (*OAuthAccessToken, *sqlgraph.Cre
 	if value, ok := _c.mutation.RefreshTokenID(); ok {
 		_spec.SetField(oauthaccesstoken.FieldRefreshTokenID, field.TypeString, value)
 		_node.RefreshTokenID = &value
+	}
+	if value, ok := _c.mutation.FamilyID(); ok {
+		_spec.SetField(oauthaccesstoken.FieldFamilyID, field.TypeString, value)
+		_node.FamilyID = value
 	}
 	if value, ok := _c.mutation.ExpiresAt(); ok {
 		_spec.SetField(oauthaccesstoken.FieldExpiresAt, field.TypeTime, value)
@@ -354,6 +372,9 @@ func (u *OAuthAccessTokenUpsertOne) UpdateNewValues() *OAuthAccessTokenUpsertOne
 		}
 		if _, exists := u.create.mutation.UserID(); exists {
 			s.SetIgnore(oauthaccesstoken.FieldUserID)
+		}
+		if _, exists := u.create.mutation.FamilyID(); exists {
+			s.SetIgnore(oauthaccesstoken.FieldFamilyID)
 		}
 		if _, exists := u.create.mutation.ExpiresAt(); exists {
 			s.SetIgnore(oauthaccesstoken.FieldExpiresAt)
@@ -629,6 +650,9 @@ func (u *OAuthAccessTokenUpsertBulk) UpdateNewValues() *OAuthAccessTokenUpsertBu
 			}
 			if _, exists := b.mutation.UserID(); exists {
 				s.SetIgnore(oauthaccesstoken.FieldUserID)
+			}
+			if _, exists := b.mutation.FamilyID(); exists {
+				s.SetIgnore(oauthaccesstoken.FieldFamilyID)
 			}
 			if _, exists := b.mutation.ExpiresAt(); exists {
 				s.SetIgnore(oauthaccesstoken.FieldExpiresAt)

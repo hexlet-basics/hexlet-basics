@@ -560,6 +560,7 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			"user_id":          row.UserID,
 			"scopes":           row.Scopes,
 			"refresh_token_id": row.RefreshTokenID,
+			"family_id":        row.FamilyID,
 			"expires_at":       row.ExpiresAt,
 		}, nil
 	case "OAuthAuthRequest":
@@ -624,6 +625,8 @@ func (c *Client) AuditRow(ctx context.Context, typeName string, id any) (map[str
 			"scopes":          row.Scopes,
 			"auth_time":       row.AuthTime,
 			"access_token_id": row.AccessTokenID,
+			"family_id":       row.FamilyID,
+			"used_at":         row.UsedAt,
 			"expires_at":      row.ExpiresAt,
 		}, nil
 	case "Review":

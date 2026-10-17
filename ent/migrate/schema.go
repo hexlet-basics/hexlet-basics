@@ -729,6 +729,7 @@ var (
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
 		{Name: "refresh_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "family_id", Type: field.TypeString},
 		{Name: "expires_at", Type: field.TypeTime},
 	}
 	// OauthAccessTokensTable holds the schema information for the "oauth_access_tokens" table.
@@ -797,6 +798,8 @@ var (
 		{Name: "scopes", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
 		{Name: "auth_time", Type: field.TypeTime},
 		{Name: "access_token_id", Type: field.TypeString, Nullable: true},
+		{Name: "family_id", Type: field.TypeString},
+		{Name: "used_at", Type: field.TypeTime, Nullable: true},
 		{Name: "expires_at", Type: field.TypeTime},
 	}
 	// OauthRefreshTokensTable holds the schema information for the "oauth_refresh_tokens" table.

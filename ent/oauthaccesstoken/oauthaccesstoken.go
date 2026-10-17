@@ -25,6 +25,8 @@ const (
 	FieldScopes = "scopes"
 	// FieldRefreshTokenID holds the string denoting the refresh_token_id field in the database.
 	FieldRefreshTokenID = "refresh_token_id"
+	// FieldFamilyID holds the string denoting the family_id field in the database.
+	FieldFamilyID = "family_id"
 	// FieldExpiresAt holds the string denoting the expires_at field in the database.
 	FieldExpiresAt = "expires_at"
 	// Table holds the table name of the oauthaccesstoken in the database.
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldUserID,
 	FieldScopes,
 	FieldRefreshTokenID,
+	FieldFamilyID,
 	FieldExpiresAt,
 }
 
@@ -62,6 +65,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	ClientIDValidator func(string) error
+	// FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	FamilyIDValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(string) error
 )
@@ -102,6 +107,11 @@ func ByScopes(opts ...sql.OrderTermOption) OrderOption {
 // ByRefreshTokenID orders the results by the refresh_token_id field.
 func ByRefreshTokenID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefreshTokenID, opts...).ToFunc()
+}
+
+// ByFamilyID orders the results by the family_id field.
+func ByFamilyID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFamilyID, opts...).ToFunc()
 }
 
 // ByExpiresAt orders the results by the expires_at field.

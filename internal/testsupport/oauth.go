@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/oauthclient"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
@@ -70,7 +71,14 @@ type OAuth struct {
 // Client ID Metadata Documents are fetched from o.Documents (see ClientDocuments).
 func NewOAuth(t *testing.T) *OAuth {
 	t.Helper()
-	return newOAuth(t, true)
+	return newOAuth(t, true, oauthserver.Config{})
+}
+
+// NewOAuthWith is NewOAuth with settings of the server open to change: the
+// token lifetimes. The issuer and the key are always the test's own.
+func NewOAuthWith(t *testing.T, cfg oauthserver.Config) *OAuth {
+	t.Helper()
+	return newOAuth(t, true, cfg)
 }
 
 // NewOAuthWithProductionFetcher is NewOAuth with the metadata document client
@@ -79,11 +87,12 @@ func NewOAuth(t *testing.T) *OAuth {
 // host behind it.
 func NewOAuthWithProductionFetcher(t *testing.T) *OAuth {
 	t.Helper()
-	return newOAuth(t, false)
+	return newOAuth(t, false, oauthserver.Config{})
 }
 
-func newOAuth(t *testing.T, documentHost bool) *OAuth {
+func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config) *OAuth {
 	t.Helper()
+	cfg.Issuer, cfg.EncryptionKey = OAuthIssuer, oauthEncryptionKey
 	db, tx, transactor := NewClientWithTxAndTransactor(t)
 	o := &OAuth{t: t, DB: db, now: time.Now()}
 	if documentHost {
@@ -100,7 +109,7 @@ func newOAuth(t *testing.T, documentHost bool) *OAuth {
 		serverOpts = append(serverOpts, oauthserver.WithMetadataHTTPClient(o.Documents.client))
 	}
 	server, err := oauthserver.New(oauthserver.Deps{
-		Config:        oauthserver.Config{Issuer: OAuthIssuer, EncryptionKey: oauthEncryptionKey},
+		Config:        cfg,
 		DB:            db,
 		Transactor:    transactor,
 		App:           handlers.OAuthSession{},
@@ -143,6 +152,9 @@ func newOAuth(t *testing.T, documentHost bool) *OAuth {
 	return o
 }
 
+// Now is the server's clock.
+func (o *OAuth) Now() time.Time { return o.now }
+
 // Advance moves the server's clock forward.
 func (o *OAuth) Advance(d time.Duration) { o.now = o.now.Add(d) }
 
@@ -158,14 +170,21 @@ func (o *OAuth) SeedClient(scopes ...string) *ent.OAuthClient {
 func (o *OAuth) SeedClientURIs(redirectURIs []string, scopes ...string) *ent.OAuthClient {
 	o.t.Helper()
 	ctx := o.t.Context()
-	_, err := o.DB.OAuthClient.Delete().Exec(ctx)
+	// Updated in place when it exists: deleting the row would cascade away the
+	// tokens of an earlier Connect, and a test about families needs several.
+	existing, err := o.DB.OAuthClient.Query().Where(oauthclient.ClientID(OAuthClientID)).Only(ctx)
+	if ent.IsNotFound(err) {
+		row, err := o.DB.OAuthClient.Create().
+			SetClientID(OAuthClientID).
+			SetName("Test MCP client").
+			SetRedirectUris(redirectURIs).
+			SetScopes(scopes).
+			Save(ctx)
+		require.NoError(o.t, err)
+		return row
+	}
 	require.NoError(o.t, err)
-	row, err := o.DB.OAuthClient.Create().
-		SetClientID(OAuthClientID).
-		SetName("Test MCP client").
-		SetRedirectUris(redirectURIs).
-		SetScopes(scopes).
-		Save(ctx)
+	row, err := existing.Update().SetRedirectUris(redirectURIs).SetScopes(scopes).Save(ctx)
 	require.NoError(o.t, err)
 	return row
 }
@@ -426,4 +445,32 @@ func (o *OAuth) Register(body any, mutate ...func(*http.Request)) *http.Response
 // forward it.
 func FromAddress(ip string) func(*http.Request) {
 	return func(r *http.Request) { r.Header.Set("X-Real-IP", ip) }
+}
+
+// Refresh presents a refresh token at /oauth/token as a client and returns the
+// new tokens (zero when refused) with the raw response.
+func (o *OAuth) Refresh(clientID, refreshToken string) (Tokens, *http.Response) {
+	o.t.Helper()
+	res := o.Do(http.MethodPost, "/oauth/token", url.Values{
+		"grant_type": {"refresh_token"}, "client_id": {clientID}, "refresh_token": {refreshToken},
+	})
+	var tokens Tokens
+	if res.StatusCode == http.StatusOK {
+		require.NoError(o.t, json.NewDecoder(res.Body).Decode(&tokens))
+		tokens.Scopes = strings.Fields(tokens.Scope)
+	}
+	return tokens, res
+}
+
+// Revoke posts a token to /oauth/revoke (RFC 7009) as a client.
+func (o *OAuth) Revoke(clientID, token string) *http.Response {
+	o.t.Helper()
+	return o.Do(http.MethodPost, "/oauth/revoke", url.Values{"client_id": {clientID}, "token": {token}})
+}
+
+// Accepts reports whether the server still accepts an access token.
+func (o *OAuth) Accepts(accessToken string) bool {
+	o.t.Helper()
+	_, err := o.Server.VerifyAccessToken(o.t.Context(), accessToken)
+	return err == nil
 }

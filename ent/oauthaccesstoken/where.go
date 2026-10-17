@@ -95,6 +95,11 @@ func RefreshTokenID(v string) predicate.OAuthAccessToken {
 	return predicate.OAuthAccessToken(sql.FieldEQ(FieldRefreshTokenID, v))
 }
 
+// FamilyID applies equality check predicate on the "family_id" field. It's identical to FamilyIDEQ.
+func FamilyID(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldEQ(FieldFamilyID, v))
+}
+
 // ExpiresAt applies equality check predicate on the "expires_at" field. It's identical to ExpiresAtEQ.
 func ExpiresAt(v time.Time) predicate.OAuthAccessToken {
 	return predicate.OAuthAccessToken(sql.FieldEQ(FieldExpiresAt, v))
@@ -398,6 +403,71 @@ func RefreshTokenIDEqualFold(v string) predicate.OAuthAccessToken {
 // RefreshTokenIDContainsFold applies the ContainsFold predicate on the "refresh_token_id" field.
 func RefreshTokenIDContainsFold(v string) predicate.OAuthAccessToken {
 	return predicate.OAuthAccessToken(sql.FieldContainsFold(FieldRefreshTokenID, v))
+}
+
+// FamilyIDEQ applies the EQ predicate on the "family_id" field.
+func FamilyIDEQ(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldEQ(FieldFamilyID, v))
+}
+
+// FamilyIDNEQ applies the NEQ predicate on the "family_id" field.
+func FamilyIDNEQ(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldNEQ(FieldFamilyID, v))
+}
+
+// FamilyIDIn applies the In predicate on the "family_id" field.
+func FamilyIDIn(vs ...string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldIn(FieldFamilyID, vs...))
+}
+
+// FamilyIDNotIn applies the NotIn predicate on the "family_id" field.
+func FamilyIDNotIn(vs ...string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldNotIn(FieldFamilyID, vs...))
+}
+
+// FamilyIDGT applies the GT predicate on the "family_id" field.
+func FamilyIDGT(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldGT(FieldFamilyID, v))
+}
+
+// FamilyIDGTE applies the GTE predicate on the "family_id" field.
+func FamilyIDGTE(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldGTE(FieldFamilyID, v))
+}
+
+// FamilyIDLT applies the LT predicate on the "family_id" field.
+func FamilyIDLT(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldLT(FieldFamilyID, v))
+}
+
+// FamilyIDLTE applies the LTE predicate on the "family_id" field.
+func FamilyIDLTE(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldLTE(FieldFamilyID, v))
+}
+
+// FamilyIDContains applies the Contains predicate on the "family_id" field.
+func FamilyIDContains(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldContains(FieldFamilyID, v))
+}
+
+// FamilyIDHasPrefix applies the HasPrefix predicate on the "family_id" field.
+func FamilyIDHasPrefix(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldHasPrefix(FieldFamilyID, v))
+}
+
+// FamilyIDHasSuffix applies the HasSuffix predicate on the "family_id" field.
+func FamilyIDHasSuffix(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldHasSuffix(FieldFamilyID, v))
+}
+
+// FamilyIDEqualFold applies the EqualFold predicate on the "family_id" field.
+func FamilyIDEqualFold(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldEqualFold(FieldFamilyID, v))
+}
+
+// FamilyIDContainsFold applies the ContainsFold predicate on the "family_id" field.
+func FamilyIDContainsFold(v string) predicate.OAuthAccessToken {
+	return predicate.OAuthAccessToken(sql.FieldContainsFold(FieldFamilyID, v))
 }
 
 // ExpiresAtEQ applies the EQ predicate on the "expires_at" field.
