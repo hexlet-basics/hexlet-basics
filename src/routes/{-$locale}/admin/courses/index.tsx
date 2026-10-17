@@ -1,5 +1,4 @@
 import { Button, Group, Stack, Title } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,7 +9,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { Course } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { useCrudPager } from "@/components/admin/useCrudPager";
+import { EditLink } from "@/components/admin/EditLink";
+import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
@@ -25,13 +25,7 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/")({
 function CoursesList() {
   const { t } = useTranslation();
 
-  const pager = useCrudPager();
-
-  const { data, isLoading } = useQuery(
-    adminListCoursesOptions({
-      query: pager.query,
-    }),
-  );
+  const list = useCrudList({ list: adminListCoursesOptions, listKey: adminListCoursesQueryKey });
 
   const versionMutation = useResourceMutation({
     mutation: adminCreateCourseVersionMutation(),
@@ -69,26 +63,17 @@ function CoursesList() {
       accessorKey: "lessonsCount",
       header: t(($) => $.admin.courses.lessonsCount),
     },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ButtonLink
-            to="/{-$locale}/admin/courses/$id"
-            params={{ id: String(row.original.id) }}
-            size="xs"
-            variant="light"
-          >
-            {t(($) => $.admin.crud.edit)}
-          </ButtonLink>
+    list.actionsColumn({
+      edit: (row) => (
+        <EditLink to="/{-$locale}/admin/courses/$id" params={{ id: String(row.id) }} />
+      ),
+      extra: (row) => (
+        <>
           <Button
             size="xs"
             variant="light"
-            loading={
-              versionMutation.isPending && versionMutation.variables?.path.id === row.original.id
-            }
-            onClick={() => versionMutation.mutate({ path: { id: row.original.id } })}
+            loading={versionMutation.isPending && versionMutation.variables?.path.id === row.id}
+            onClick={() => versionMutation.mutate({ path: { id: row.id } })}
           >
             {t(($) => $.admin.courses.createVersion)}
           </Button>
@@ -96,16 +81,15 @@ function CoursesList() {
             size="xs"
             variant="light"
             color="grape"
-            loading={
-              reviewMutation.isPending && reviewMutation.variables?.path.id === row.original.id
-            }
-            onClick={() => reviewMutation.mutate({ path: { id: row.original.id } })}
+            loading={reviewMutation.isPending && reviewMutation.variables?.path.id === row.id}
+            onClick={() => reviewMutation.mutate({ path: { id: row.id } })}
           >
             {t(($) => $.admin.courses.review)}
           </Button>
-        </Group>
+        </>
       ),
-    },
+      describe: (row) => row.slug,
+    }),
   ];
 
   return (
@@ -115,13 +99,7 @@ function CoursesList() {
         <ButtonLink to="/{-$locale}/admin/courses/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
-      <CrudList
-        columns={columns}
-        data={data?.items ?? []}
-        total={data?.total ?? 0}
-        {...pager.props(data?.perPage)}
-        isLoading={isLoading}
-      />
+      <CrudList columns={columns} {...list.props} />
     </Stack>
   );
 }

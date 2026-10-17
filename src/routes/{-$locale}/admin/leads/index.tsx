@@ -1,11 +1,11 @@
 import { Stack, Title } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { adminListLeadsOptions } from "@/client/@tanstack/react-query.gen";
+import { adminListLeadsOptions, adminListLeadsQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { Lead } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { useCrudPager } from "@/components/admin/useCrudPager";
+import { useCrudList } from "@/components/admin/useCrudList";
+import { useDateTime } from "@/hooks/useDateTime";
 
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
@@ -14,14 +14,8 @@ export const Route = createFileRoute("/{-$locale}/admin/leads/")({
 
 function LeadsList() {
   const { t } = useTranslation();
-
-  const pager = useCrudPager();
-
-  const { data, isLoading } = useQuery(
-    adminListLeadsOptions({
-      query: pager.query,
-    }),
-  );
+  const formatDateTime = useDateTime();
+  const list = useCrudList({ list: adminListLeadsOptions, listKey: adminListLeadsQueryKey });
 
   const columns: CrudColumnDef<Lead>[] = [
     {
@@ -43,7 +37,7 @@ function LeadsList() {
     {
       id: "createdAt",
       header: t(($) => $.models.attributes.base.created_at),
-      cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+      cell: ({ row }) => formatDateTime(row.original.createdAt),
     },
   ];
 
@@ -51,13 +45,7 @@ function LeadsList() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.resources.leads)}</Title>
 
-      <CrudList
-        columns={columns}
-        data={data?.items ?? []}
-        total={data?.total ?? 0}
-        {...pager.props(data?.perPage)}
-        isLoading={isLoading}
-      />
+      <CrudList columns={columns} {...list.props} />
     </Stack>
   );
 }

@@ -1,5 +1,6 @@
 import { Center, Pagination } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
+import { pageCount } from "@/lib/page-count";
 
 // The public pager, ported from legacy XPaging: Mantine Pagination whose pages
 // and arrows are real links to `?page=N` on the current page, so every page is
@@ -19,7 +20,7 @@ export default function Pager({
   page: number;
   perPage: number;
 }) {
-  const last = Math.max(1, Math.ceil(total / perPage));
+  const last = pageCount(total, perPage);
   if (last <= 1) return null;
 
   // Page one is the bare URL, as legacy canonicalised the list.
