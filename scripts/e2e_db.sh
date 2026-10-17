@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Recreates the end-to-end database: a fresh code_basics_e2e_test, migrated with
 # atlas and loaded with the committed fixtures/, the same starting data the Go
-# tests get. The name carries "test" because the testfixtures CLI refuses to
+# tests get. The name carries "test" because the fixture loader refuses to
 # wipe a database without it. Reached through E2E_DB_HOST / E2E_DB_PORT (the
 # local db daemon on 54330 by default, a service container in CI); the
 # development database is never touched.
@@ -22,7 +22,7 @@ run -d postgres -c "drop database if exists \"$name\" with (force)" -c "create d
 
 dsn="postgres://postgres:${PGPASSWORD}@${host}:${port}/${name}?sslmode=disable"
 atlas migrate apply --env local --url "${dsn}&search_path=public" >/dev/null
-testfixtures --dialect postgres --conn "$dsn" --dir fixtures
+go run ./cmd/fixtures -conn "$dsn" -dir fixtures
 
 # The fixtures carry no password digests (the Go tests mint sessions directly),
 # but a browser has to sign in. This is the bcrypt digest of the public,

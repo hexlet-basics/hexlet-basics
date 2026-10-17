@@ -15,10 +15,11 @@ import (
 
 	"ariga.io/atlas/sql/migrate"
 	atlaspostgres "ariga.io/atlas/sql/postgres"
-	"github.com/go-testfixtures/testfixtures/v3"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/testcontainers/testcontainers-go"
 	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
+
+	"hexletbasics/internal/fixtures"
 )
 
 const (
@@ -137,19 +138,7 @@ func applyMigrations(ctx context.Context, db *sql.DB, path string) error {
 }
 
 func loadFixtures(db *sql.DB, path string) error {
-	loader, err := testfixtures.New(
-		testfixtures.Database(db),
-		testfixtures.Dialect("postgres"),
-		testfixtures.Directory(path),
-		testfixtures.SkipTableChecksumComputation(),
-	)
-	if err != nil {
-		return fmt.Errorf("create fixture loader: %w", err)
-	}
-	if err := loader.Load(); err != nil {
-		return fmt.Errorf("load fixtures: %w", err)
-	}
-	return nil
+	return fixtures.Load(db, path, false)
 }
 
 func repositoryRoot() (string, error) {

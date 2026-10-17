@@ -48,10 +48,6 @@ kubeconform = "0.8.0"
 # Terraform under legacy/terraform (mise run lint:infra); the pin follows
 # required_version in versions.tf.
 terraform = "1.16.5"
-# Loads fixtures/ into a database (mise run test:e2e:db); the Go tests load the same
-# files through the library in internal/testsupport/testdb.
-"github:go-testfixtures/testfixtures" = "3.19.0"
-
 # Install the git hooks (hk.pkl) once the toolchain is in place.
 [hooks]
 postinstall = "hk install --mise"

@@ -102,7 +102,7 @@ run = "go run ./scripts/fixture_covers"
 ["db:fixtures"]
 description = "Migrate the development DB and load fixtures/ into it, replacing the data in the fixture tables (the old `rails db:fixtures:load`), and generate the images they point at"
 depends = ["db:migrate", "storage:fixtures"]
-run = 'testfixtures --dialect postgres --dangerous-no-test-database-check --conn "${DEV_DB_URL:-postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable}" --dir fixtures'
+run = 'go run ./cmd/fixtures -any-database -conn "${DEV_DB_URL:-postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable}" -dir fixtures'
 
 # --- code generation (contract is the source of truth, ADR-0001) -------------------
 
