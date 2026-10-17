@@ -172,6 +172,12 @@ type Invoker interface {
 	//
 	// GET /api/admin/management/users/{id}
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	// AdminGetMyCapabilities invokes adminGetMyCapabilities operation.
+	//
+	// The capabilities the caller holds; open to any staff member.
+	//
+	// GET /api/admin/capabilities
+	AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -4253,6 +4259,119 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminGetManagementUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminGetMyCapabilities invokes adminGetMyCapabilities operation.
+//
+// The capabilities the caller holds; open to any staff member.
+//
+// GET /api/admin/capabilities
+func (c *Client) AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error) {
+	res, err := c.sendAdminGetMyCapabilities(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetMyCapabilities(ctx context.Context) (res AdminGetMyCapabilitiesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetMyCapabilities"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/admin/capabilities"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetMyCapabilitiesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/admin/capabilities"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetMyCapabilitiesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetMyCapabilitiesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

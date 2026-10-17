@@ -36,3 +36,8 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
     return undefined;
   };
 }
+
+// Every message of a 422, flattened, for a screen that has no form fields to put
+// them on (a filter bar): empty when the failure is not a validation error.
+export const validationMessages = (error: unknown): string[] =>
+  Object.values(validationErrors(error) ?? {}).flat();

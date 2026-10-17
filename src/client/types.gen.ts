@@ -1031,6 +1031,15 @@ export type LessonRef = {
 export type Locale = 'ru' | 'en' | 'es';
 
 /**
+ * The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+ * member holds through their Staff Role. The administrator flag adds none, so
+ * the admin menu shows an entry behind a capability only to someone who holds it.
+ */
+export type MyCapabilities = {
+  held: Array<string>;
+};
+
+/**
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export type MyDashboard = {
@@ -2391,6 +2400,42 @@ export type AdminSuggestBlogPostRelatedCoursesResponses = {
 };
 
 export type AdminSuggestBlogPostRelatedCoursesResponse = AdminSuggestBlogPostRelatedCoursesResponses[keyof AdminSuggestBlogPostRelatedCoursesResponses];
+
+export type AdminGetMyCapabilitiesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/capabilities';
+};
+
+export type AdminGetMyCapabilitiesErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetMyCapabilitiesError = AdminGetMyCapabilitiesErrors[keyof AdminGetMyCapabilitiesErrors];
+
+export type AdminGetMyCapabilitiesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: MyCapabilities;
+};
+
+export type AdminGetMyCapabilitiesResponse = AdminGetMyCapabilitiesResponses[keyof AdminGetMyCapabilitiesResponses];
 
 export type AdminListCourseCategoriesData = {
   body?: never;

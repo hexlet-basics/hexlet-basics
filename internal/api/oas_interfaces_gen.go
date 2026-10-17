@@ -113,6 +113,10 @@ type AdminGetManagementUserRes interface {
 	adminGetManagementUserRes()
 }
 
+type AdminGetMyCapabilitiesRes interface {
+	adminGetMyCapabilitiesRes()
+}
+
 type AdminGetReviewRes interface {
 	adminGetReviewRes()
 }

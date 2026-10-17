@@ -33,6 +33,7 @@ import { Route as Char123LocaleChar125ReviewsIndexRouteImport } from './routes/{
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 import { Route as Char123LocaleChar125AccountProfileEditRouteImport } from './routes/{-$locale}/account/profile/edit'
+import { Route as Char123LocaleChar125AdminAuditIndexRouteImport } from './routes/{-$locale}/admin/audit/index'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
 import { Route as Char123LocaleChar125AdminBannersIdRouteImport } from './routes/{-$locale}/admin/banners/$id'
 import { Route as Char123LocaleChar125AdminBannersNewRouteImport } from './routes/{-$locale}/admin/banners/new'
@@ -211,6 +212,12 @@ const Char123LocaleChar125AccountProfileEditRoute =
     id: '/account/profile/edit',
     path: '/account/profile/edit',
     getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AdminAuditIndexRoute =
+  Char123LocaleChar125AdminAuditIndexRouteImport.update({
+    id: '/audit/',
+    path: '/audit/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminBannersIndexRoute =
   Char123LocaleChar125AdminBannersIndexRouteImport.update({
@@ -476,6 +483,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -537,6 +545,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -601,6 +610,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -666,6 +676,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -727,6 +738,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
     | '/{-$locale}/admin/course_categories'
@@ -790,6 +802,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -986,6 +999,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/{-$locale}/account/profile/edit'
       preLoaderRoute: typeof Char123LocaleChar125AccountProfileEditRouteImport
       parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/admin/audit/': {
+      id: '/{-$locale}/admin/audit/'
+      path: '/audit'
+      fullPath: '/{-$locale}/admin/audit/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminAuditIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/banners/': {
       id: '/{-$locale}/admin/banners/'
@@ -1265,6 +1285,7 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminReviewsNewRoute: typeof Char123LocaleChar125AdminReviewsNewRoute
   Char123LocaleChar125AdminUsersIdRoute: typeof Char123LocaleChar125AdminUsersIdRoute
   Char123LocaleChar125AdminUsersNewRoute: typeof Char123LocaleChar125AdminUsersNewRoute
+  Char123LocaleChar125AdminAuditIndexRoute: typeof Char123LocaleChar125AdminAuditIndexRoute
   Char123LocaleChar125AdminBannersIndexRoute: typeof Char123LocaleChar125AdminBannersIndexRoute
   Char123LocaleChar125AdminBlog_postsIndexRoute: typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   Char123LocaleChar125AdminCourse_categoriesIndexRoute: typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -1317,6 +1338,8 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminUsersIdRoute,
     Char123LocaleChar125AdminUsersNewRoute:
       Char123LocaleChar125AdminUsersNewRoute,
+    Char123LocaleChar125AdminAuditIndexRoute:
+      Char123LocaleChar125AdminAuditIndexRoute,
     Char123LocaleChar125AdminBannersIndexRoute:
       Char123LocaleChar125AdminBannersIndexRoute,
     Char123LocaleChar125AdminBlog_postsIndexRoute:

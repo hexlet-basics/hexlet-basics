@@ -368,6 +368,21 @@ export const adminSuggestBlogPostRelatedCourses = <ThrowOnError extends boolean 
 });
 
 /**
+ * The capabilities the caller holds; open to any staff member.
+ */
+export const adminGetMyCapabilities = <ThrowOnError extends boolean = false>(options?: Options<AdminGetMyCapabilitiesData, ThrowOnError>): RequestResult<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError> => (options?.client ?? client).get<AdminGetMyCapabilitiesResponses, AdminGetMyCapabilitiesErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/capabilities',
+  ...options
+});
+
+/**
  * List course categories (paginated).
  */
 export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError>({

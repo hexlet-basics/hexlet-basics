@@ -301,3 +301,30 @@ func TestARefusedReadOfTheTrailIsNotRecordedAsARead(t *testing.T) {
 
 	assert.Empty(t, testsupport.PublishedEvents[events.StaffReadPersonalData](t, h.Services))
 }
+
+func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
+	t.Helper()
+	res, err := h.Client.AdminGetMyCapabilities(context.Background())
+	require.NoError(t, err)
+	held, ok := res.(*api.MyCapabilities)
+	require.True(t, ok, "got %T", res)
+	return held.Held
+}
+
+// The menu asks what the caller holds: the administrator flag adds nothing, the
+// grant on the role is the only way in.
+func TestTheCapabilitiesAMemberHoldsComeFromTheirRoleAlone(t *testing.T) {
+	admin := testsupport.NewHarness(t)
+	assert.Empty(t, capabilitiesOf(t, admin), "an administrator holds no capability by being one")
+
+	granted := testsupport.NewHarness(t)
+	grantAuditRead(t, granted, true)
+	assert.Equal(t, []string{"audit.read"}, capabilitiesOf(t, granted))
+
+	ungranted := testsupport.NewHarness(t)
+	grantAuditRead(t, ungranted, false)
+	assert.Empty(t, capabilitiesOf(t, ungranted))
+
+	editor := testsupport.NewHarnessAs(t, editorID)
+	assert.Empty(t, capabilitiesOf(t, editor), "any staff member may ask, and holds none")
+}

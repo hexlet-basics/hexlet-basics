@@ -1,7 +1,9 @@
 import { AppShell, Burger, Group, NavLink, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { adminGetMyCapabilitiesOptions } from "@/client/@tanstack/react-query.gen";
 import { requireAdmin } from "@/lib/auth";
 
 // Admin back-office layout. The guard runs in beforeLoad so a non-admin never
@@ -13,7 +15,10 @@ export const Route = createFileRoute("/{-$locale}/admin")({
   component: AdminLayout,
 });
 
-// Nav entries. Each new CRUD resource adds one line here; the screens themselves
+// Nav entries. An entry with a `capability` is shown only to a staff member whose
+// role holds that capability Permission (ADR-0017): the administrator flag does
+// not imply it, so the menu asks the API what the caller holds. Each new CRUD
+// resource adds one line here; the screens themselves
 // are driven by the shared engine (CrudList/CrudForm). Ordered content-first,
 // then community/marketing, then management — mirrors how the legacy back
 // office grouped its menu.
@@ -89,12 +94,30 @@ const NAV = [
     match: "/admin/management/users",
     key: "managementUsers",
   },
+  {
+    to: "/{-$locale}/admin/audit",
+    match: "/admin/audit",
+    key: "audit",
+    capability: "audit.read",
+  },
 ] as const;
+
+// The capability an entry needs, when it needs one.
+const capabilityOf = (entry: (typeof NAV)[number]): string | undefined =>
+  "capability" in entry ? entry.capability : undefined;
 
 function AdminLayout() {
   const { t } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
   const { pathname } = useLocation();
+  // Until the answer arrives nothing behind a capability is shown, so the menu
+  // never offers an entry it may have to take back.
+  const { data: capabilities } = useQuery(adminGetMyCapabilitiesOptions());
+  const held = capabilities?.held ?? [];
+  const entries = NAV.filter((entry) => {
+    const needed = capabilityOf(entry);
+    return needed === undefined || held.includes(needed);
+  });
 
   return (
     <AppShell
@@ -114,7 +137,7 @@ function AdminLayout() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        {NAV.map((entry) => (
+        {entries.map((entry) => (
           <NavLink
             key={entry.to}
             component={Link}

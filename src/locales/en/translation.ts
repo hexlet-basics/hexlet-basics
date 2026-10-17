@@ -211,6 +211,7 @@ export default {
     },
     admin: {
       resources: {
+        audit: "Audit trail",
         banners: "Banners",
         blogPosts: "Blog Posts",
         courseCategories: "Course Categories",
@@ -225,6 +226,59 @@ export default {
         roles: "Roles",
         staffMembers: "Staff Members",
         users: "Users",
+      },
+      audit: {
+        channel: {
+          mcp: "MCP",
+          web: "Website",
+        },
+        columns: {
+          actor: "User",
+          channel: "Channel",
+          entity: "Entity",
+          occurredAt: "When",
+          operation: "Operation",
+          outcome: "Outcome",
+        },
+        details: {
+          address: "Address",
+          changes: "Changes",
+          connectedApp: "Connected App",
+          field: "Field",
+          locale: "Locale",
+          new: "New value",
+          old: "Old value",
+          open: "Details",
+          readCount: "Rows read: {{count}}",
+          reads: "Reads of personal data",
+          requestId: "Request",
+          secret: "Secret value, not recorded",
+          token: "Token",
+          userAgent: "User agent",
+        },
+        filters: {
+          actorUserId: "User id",
+          anyChannel: "Any channel",
+          apply: "Apply",
+          channel: "Channel",
+          entityId: "Entity id",
+          entityType: "Entity type",
+          from: "From",
+          operation: "Operation",
+          reset: "Reset",
+          to: "To",
+          windowHint:
+            "Shows the last 30 days unless a period is picked; a period may be at most 92 days. An entity id needs its entity type.",
+        },
+        forbidden: {
+          body: "Reading the audit trail needs the audit.read permission on your role, even for an administrator.",
+          title: "No access to the audit trail",
+        },
+        outcome: {
+          failed: "Failed",
+          forbidden: "Refused",
+          succeeded: "Done",
+        },
       },
       crud: {
         cancel: "Cancel",
