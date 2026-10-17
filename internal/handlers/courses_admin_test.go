@@ -15,7 +15,7 @@ import (
 
 // languages.yml seeds this many courses; ruby is one of them.
 var (
-	courseRubyIDA = fixtures.ID("course_ruby")
+	courseRubyIDA = fixtures.ID(fixtures.CourseRuby)
 )
 
 func TestAdminListCourses(t *testing.T) {

@@ -13,7 +13,7 @@ import { Route as localeLayoutRoute } from "@/routes/{-$locale}";
 import { Route as adminLayoutRoute } from "@/routes/{-$locale}/admin";
 import type { AuthUser } from "@/lib/auth";
 import { createI18n, type Locale } from "@/lib/i18n";
-import { localeFromPathname } from "@/lib/locale-path";
+import { localeOf } from "@/lib/locale-path";
 import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";
 
@@ -104,7 +104,7 @@ export async function renderRoute(
   // The locale layout switches the router's i18n to the URL's locale before a
   // route's head runs; the synthetic root has no such layout, so it is done here.
   const i18n = createI18n();
-  await i18n.changeLanguage(locale ?? localeFromPathname(initialPath));
+  await i18n.changeLanguage(locale ?? localeOf(initialPath));
 
   const router = createRouter({
     routeTree: rootRoute.addChildren([...top, layout] as never[]),

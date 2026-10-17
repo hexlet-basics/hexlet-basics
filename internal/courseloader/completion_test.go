@@ -22,10 +22,10 @@ func TestPromotionFinishesALearnerWhoHasCompletedTheNewVersion(t *testing.T) {
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 	// The rebuildable course was built once and has its only lesson finished by
 	// user_learner_finished_rebuildable.
-	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_finished_rebuildable_rebuildable"))
+	learner := db.Enrollment.GetX(ctx, fixtures.ID(fixtures.EnrollmentLearnerFinishedRebuildableRebuildable))
 
 	// Promoting a version with the same single lesson completes them.
-	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
+	require.NoError(t, loader.Run(ctx, fixtures.ID(fixtures.VersionRebuildableCreatedSecond)))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 
@@ -43,9 +43,9 @@ func TestPromotionLeavesAnUnfinishedLearnerInProgress(t *testing.T) {
 	services := testsupport.NewServices(t, tx, txStore)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 	// Enrolled in the rebuildable course, nothing finished.
-	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_unfinished_rebuildable_rebuildable"))
+	learner := db.Enrollment.GetX(ctx, fixtures.ID(fixtures.EnrollmentLearnerUnfinishedRebuildableRebuildable))
 
-	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
+	require.NoError(t, loader.Run(ctx, fixtures.ID(fixtures.VersionRebuildableCreatedSecond)))
 
 	assert.Equal(t, "started", *db.Enrollment.GetX(ctx, learner.ID).State)
 	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
@@ -60,10 +60,10 @@ func TestPromotionDoesNotRepublishForAnAlreadyFinishedLearner(t *testing.T) {
 	services := testsupport.NewServices(t, tx, txStore)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
-	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
+	require.NoError(t, loader.Run(ctx, fixtures.ID(fixtures.VersionRebuildableCreatedSecond)))
 	require.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
 
-	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_third")))
+	require.NoError(t, loader.Run(ctx, fixtures.ID(fixtures.VersionRebuildableCreatedThird)))
 
 	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1, "the second promotion finds nothing to finish")
 }
@@ -78,12 +78,12 @@ func TestPromotionFinishesLearnersWhenAVersionDropsALesson(t *testing.T) {
 	services := testsupport.NewServices(t, tx, txStore)
 	// The shrinkable course was built with two lessons; the learner finished only
 	// the first.
-	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_finished_kept_lesson_shrinkable"))
+	learner := db.Enrollment.GetX(ctx, fixtures.ID(fixtures.EnrollmentLearnerFinishedKeptLessonShrinkable))
 	require.Equal(t, "started", *learner.State, "still in progress while the second lesson exists")
 
 	// The next build is the committed fixture course: one lesson, the second is dropped.
 	narrow := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
-	require.NoError(t, narrow.Run(ctx, fixtures.ID("version_shrinkable_created_next")))
+	require.NoError(t, narrow.Run(ctx, fixtures.ID(fixtures.VersionShrinkableCreatedNext)))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
@@ -98,10 +98,10 @@ func TestPromotionFinishesALearnerWhoseStateIsNull(t *testing.T) {
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
-	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_null_state_null_state"))
+	learner := db.Enrollment.GetX(ctx, fixtures.ID(fixtures.EnrollmentLearnerNullStateNullState))
 	require.Nil(t, learner.State, "the fixture enrollment has no state")
 
-	require.NoError(t, loader.Run(ctx, fixtures.ID("version_null_state_created_second")))
+	require.NoError(t, loader.Run(ctx, fixtures.ID(fixtures.VersionNullStateCreatedSecond)))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)

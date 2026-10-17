@@ -28,8 +28,7 @@ const (
 	ruLanding     = "javascript-ru"
 	archivedRu    = "javascript-ru-archived"
 	repoBase      = "https://github.com/hexlet-basics"
-	learnerLabel  = "user_admin_learner" // has finished the first lesson
-	untranslated  = "ru"                 // lessons are written in English only
+	untranslated  = "ru" // lessons are written in English only
 	secondLessonN = "Variables"
 )
 
@@ -48,7 +47,7 @@ func newRig(t *testing.T) *rig {
 
 func (r *rig) learner(t *testing.T) progress.Learner {
 	t.Helper()
-	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixtures.ID(learnerLabel)).ID}
+	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixtures.ID(fixtures.UserAdminLearner)).ID}
 }
 
 func lessonSlugs(infos []*ent.CourseLessonTranslation) []string {
@@ -92,7 +91,7 @@ func TestCoursePageOrdersLessonsByTheProgressPositions(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	first := r.db.CourseLesson.Query().
-		Where(courselesson.SlugEQ(firstLesson), courselesson.CourseID(fixtures.ID("course_javascript"))).
+		Where(courselesson.SlugEQ(firstLesson), courselesson.CourseID(fixtures.ID(fixtures.CourseJavascript))).
 		OnlyX(ctx)
 	r.db.CourseLessonVersion.Update().
 		Where(courselessonversion.LessonID(first.ID)).

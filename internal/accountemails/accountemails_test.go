@@ -22,7 +22,7 @@ var magicLinkURL = regexp.MustCompile(`https://code-basics\.test/ru/magic_links/
 
 func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
 	tokens := emailtokens.New("test-email-secret")
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, tokens, recorder, testsupport.NewTranslator(t), siteURL)
@@ -42,7 +42,7 @@ func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 
 func TestSenderMailsSpanishPasswordResetLink(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)
@@ -68,7 +68,7 @@ func TestSenderSkipsDeletedUser(t *testing.T) {
 
 func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
 	client, err := jobs.NewInsertOnlyClient(nil, slog.New(slog.DiscardHandler), nil, nil)
 	require.NoError(t, err)
 
@@ -90,7 +90,7 @@ func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 
 func TestSenderRefusesAnUnknownPurpose(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)
@@ -103,7 +103,7 @@ func TestSenderRefusesAnUnknownPurpose(t *testing.T) {
 
 func TestSenderSkipsAUserWithoutAnEmail(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixtures.ID("user_without_email"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserWithoutEmail))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)

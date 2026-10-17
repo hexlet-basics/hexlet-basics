@@ -94,8 +94,8 @@ func TestAdminCreateReview(t *testing.T) {
 	created, err := h.Client.AdminCreateReview(ctx, &api.ReviewInput{
 		State:     api.NewNilReviewState(api.ReviewStatePublished),
 		Pinned:    api.NewNilBool(false),
-		CourseId:  api.NewNilInt32(fixtures.ID32("course_ruby")),
-		UserId:    api.NewNilInt32(fixtures.ID32("user_blank")),
+		CourseId:  api.NewNilInt32(fixtures.ID32(fixtures.CourseRuby)),
+		UserId:    api.NewNilInt32(fixtures.ID32(fixtures.UserBlank)),
 		Body:      api.NewNilString("New review"),
 		FirstName: api.NewNilString("Carol"),
 		LastName:  api.NewNilString("Clark"),

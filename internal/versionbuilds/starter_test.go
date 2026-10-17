@@ -24,7 +24,7 @@ func TestStarterCreatesTheVersionAndItsJobTogether(t *testing.T) {
 	require.NoError(t, err)
 	starter := versionbuilds.NewStarter(transactor, jobs.NewEnqueuer(transactor, riverClient))
 
-	version, err := starter.Start(ctx, fixtures.ID("course_ruby"))
+	version, err := starter.Start(ctx, fixtures.ID(fixtures.CourseRuby))
 	require.NoError(t, err)
 
 	saved := db.CourseVersion.GetX(ctx, version.ID)

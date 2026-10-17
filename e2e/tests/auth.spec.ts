@@ -1,42 +1,29 @@
-import { expect, test } from "@playwright/test";
-import { header, password, signIn, uniqueEmail, visit } from "../support/app";
+import { learner, password, uniqueEmail } from "../support/people";
+import { test } from "../support/test";
 
-test("a visitor signs up, signs out and signs in again", async ({ page }) => {
+test("a visitor signs up, signs out and signs in again", async ({ site }) => {
   const email = uniqueEmail();
   const secret = "s3cret-pass-e2e";
 
-  await visit(page, "/users/new");
-  await page.getByRole("textbox", { name: "First name" }).fill("Ada");
-  await page.getByRole("textbox", { name: "Email" }).fill(email);
-  await page.getByRole("textbox", { name: "Password" }).fill(secret);
-  await page.getByRole("button", { name: "Create an Account" }).click();
+  await site.session.signUp({ firstName: "Ada", email, password: secret });
 
   // Signing up also signs in: the header shows the new account.
-  await expect(header(page).getByRole("button", { name: "Ada" })).toBeVisible();
+  await site.session.expectSignedInAs("Ada");
 
-  await header(page).getByRole("button", { name: "Ada" }).click();
-  await page.getByRole("menuitem", { name: "Sign out" }).click();
-  await expect(header(page).getByRole("link", { name: "Sign in" })).toBeVisible();
+  await site.session.signOut("Ada");
+  await site.session.expectSignedOut();
 
-  await visit(page, "/session/new");
-  await page.getByRole("textbox", { name: "Email" }).fill(email);
-  await page.getByRole("textbox", { name: "Password" }).fill(secret);
-  await page.getByRole("button", { name: "Sign In" }).click();
-  await expect(header(page).getByRole("button", { name: "Ada" })).toBeVisible();
+  await site.session.signIn(email, secret);
+  await site.session.expectSignedInAs("Ada");
 });
 
-test("a wrong password is refused and nobody is signed in", async ({ page }) => {
-  await visit(page, "/session/new");
-  await page.getByRole("textbox", { name: "Email" }).fill("staff-editor@example.com");
-  await page.getByRole("textbox", { name: "Password" }).fill(`${password}-wrong`);
-  await page.getByRole("button", { name: "Sign In" }).click();
+test("a wrong password is refused and nobody is signed in", async ({ site }) => {
+  await site.session.signIn(learner.email, `${password}-wrong`);
 
-  await expect(page.getByRole("alert")).toBeVisible();
-  await expect(page).toHaveURL("/session/new");
-  await expect(header(page).getByRole("link", { name: "Sign in" })).toBeVisible();
+  await site.session.expectSignInRefused();
 });
 
-test("a fixture learner signs in with the seeded password", async ({ page }) => {
-  await signIn(page, "staff-editor@example.com", "Staff Editor");
-  await expect(page).toHaveURL("/");
+test("a fixture learner signs in with the seeded password", async ({ site }) => {
+  await site.session.signInAs(learner);
+  await site.expectPath("/");
 });

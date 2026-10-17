@@ -23,7 +23,7 @@ func TestAuthenticateIgnoresEmailCaseAndSpaces(t *testing.T) {
 	got, err := accounts.NewCredentials(db).Authenticate(t.Context(), "  With-Password@Example.COM ", fixtures.Password)
 
 	require.NoError(t, err)
-	assert.Equal(t, fixtures.ID("user_with_password"), got.ID)
+	assert.Equal(t, fixtures.ID(fixtures.UserWithPassword), got.ID)
 }
 
 func TestAuthenticateRefusesEveryFailureTheSameWay(t *testing.T) {
@@ -47,7 +47,7 @@ func TestSetPasswordReplacesTheOldOne(t *testing.T) {
 	db := testsupport.NewClient(t)
 	credentials := accounts.NewCredentials(db)
 
-	_, err := credentials.SetPassword(t.Context(), db.User.GetX(t.Context(), fixtures.ID("user_with_password")), "new")
+	_, err := credentials.SetPassword(t.Context(), db.User.GetX(t.Context(), fixtures.ID(fixtures.UserWithPassword)), "new")
 	require.NoError(t, err)
 
 	_, err = credentials.Authenticate(t.Context(), withPasswordEmail, fixtures.Password)
@@ -58,7 +58,7 @@ func TestSetPasswordReplacesTheOldOne(t *testing.T) {
 
 func TestEnsureAnotherAdmin(t *testing.T) {
 	db := testsupport.NewClient(t)
-	admin, secondAdmin, blank := fixtures.ID("user_admin_learner"), fixtures.ID("user_second_admin"), fixtures.ID("user_blank")
+	admin, secondAdmin, blank := fixtures.ID(fixtures.UserAdminLearner), fixtures.ID(fixtures.UserSecondAdmin), fixtures.ID(fixtures.UserBlank)
 
 	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, admin), "user_second_admin is the other administrator")
 	require.NoError(t, accounts.EnsureAnotherAdmin(t.Context(), db, blank), "user_blank is not an administrator")
