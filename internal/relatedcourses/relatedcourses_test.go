@@ -19,7 +19,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-var helloWorldPost = fixtures.ID("blog_post_hello_world")
+var helloWorldPost = fixtures.ID(fixtures.BlogPostHelloWorld)
 
 // answeringModel is the LLM boundary answering with a fixed text.
 func answeringModel(answer string) *testsupport.JSONCompleterMock {
@@ -51,7 +51,7 @@ func relatedSlugs(t *testing.T, db *ent.Client, postID int) []string {
 // and ruby again: only the offered ids survive, once each, in the LLM's order.
 func TestSuggestRelatedCoursesReplacesTheSetInOrder(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	ruby, preCourse, python := fixtures.ID("course_ruby"), fixtures.ID("course_pre_course_javascript"), fixtures.ID("course_python")
+	ruby, preCourse, python := fixtures.ID(fixtures.CourseRuby), fixtures.ID(fixtures.CoursePreCourseJavascript), fixtures.ID(fixtures.CoursePython)
 	llm := answeringModel(fmt.Sprintf(`{"course_ids": [%d, 999999, %d, %d, %d]}`, ruby, preCourse, python, ruby))
 
 	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), helloWorldPost))
@@ -122,7 +122,7 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 func TestSuggestRelatedCoursesFailsForAPostThatIsGone(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 
-	err := newSuggester(db, transactor, answeringModel(fmt.Sprintf(`{"course_ids": [%d]}`, fixtures.ID("course_ruby")))).SuggestRelatedCourses(t.Context(), 999999)
+	err := newSuggester(db, transactor, answeringModel(fmt.Sprintf(`{"course_ids": [%d]}`, fixtures.ID(fixtures.CourseRuby)))).SuggestRelatedCourses(t.Context(), 999999)
 
 	require.Error(t, err)
 	assert.Empty(t, relatedSlugs(t, db, 999999))

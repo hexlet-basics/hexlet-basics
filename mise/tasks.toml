@@ -130,6 +130,10 @@ run = "go generate ./internal/amocrm"
 description = "Regenerate the ent ORM from ent/schema"
 run = "go generate ./ent"
 
+["gen:fixtures"]
+description = "Generate the fixture label variables (internal/fixtures/labels_gen.go) from fixtures/*.yml"
+run = "go generate ./internal/fixtures"
+
 ["gen:mocks"]
 description = "Generate the harness mocks (moq) from the production interfaces they replace"
 run = "go generate ./internal/testsupport"
@@ -139,13 +143,14 @@ description = "Full contract pipeline: TypeSpec -> OpenAPI -> ogen server + hey-
 run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }]
 
 ["gen:all"]
-description = "Regenerate everything: ent + contracts + locales + external clients + test mocks"
+description = "Regenerate everything: ent + contracts + locales + external clients + test mocks + fixture labels"
 run = [
   { task = "gen:ent" },
   { task = "gen" },
   { task = "gen:locales" },
   { task = "gen:amocrm" },
   { task = "gen:mocks" },
+  { task = "gen:fixtures" },
 ]
 
 ["gen:check"]
@@ -347,12 +352,12 @@ run = [
 [test]
 description = "Run the Go suite; DB packages start disposable Postgres 18 containers (Docker required). Pass packages/flags after `--`"
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
-run = 'eval "set -- $usage_go_test_args"; go test "$@"'
+run = 'eval "set -- $usage_go_test_args"; go test -shuffle=on "$@"'
 
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (Docker required)"
 run = [
-  "go test ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
+  "go test -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
   "go tool go-test-coverage --config=.testcoverage.yml",
 ]
 

@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -53,7 +54,7 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 	r.failTheRun()
 
 	result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
@@ -70,7 +71,7 @@ func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 
 	var results []*progress.CheckResult
 	for _, slug := range []string{firstLesson, secondLesson, thirdLesson} {
@@ -107,7 +108,7 @@ func TestPassingALessonThatLeavesAGapKeepsTheCourseOpen(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	// Inherited data: the first and the third lessons are finished, the second is not.
-	gapLearner := r.learner(t, "user_learner_with_a_gap")
+	gapLearner := r.learner(t, fixtures.UserLearnerWithAGap)
 
 	result, err := r.progress.CheckSolution(ctx, r.check(t, gapLearner, firstLesson))
 	require.NoError(t, err)

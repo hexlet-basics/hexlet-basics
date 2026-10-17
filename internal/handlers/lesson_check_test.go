@@ -115,7 +115,7 @@ func TestCheckFinishesALessonTakenOutOfOrder(t *testing.T) {
 func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	lesson := lessonLabeled(t, h, "lesson_single_lesson_printing")
+	lesson := lessonLabeled(t, h, fixtures.LessonSingleLessonPrinting)
 
 	result := submitSolution(t, h, lesson)
 	assert.True(t, result.Response.LessonHasBeenFinished)
@@ -169,7 +169,7 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 // course by passing anything, rather than having no submission left that would
 // notice.
 func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, "user_learner_all_lessons_done")
+	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerAllLessonsDone)
 	ctx := t.Context()
 
 	first := lessonBySlug(t, h, firstLessonSlug)
@@ -193,15 +193,15 @@ func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
 // order — does not block them, but keeps the course open until they close it.
 // The learner has finished the first and the third of four lessons.
 func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, "user_learner_four_lessons_gap")
+	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerFourLessonsGap)
 	ctx := t.Context()
-	crs := h.DB.Course.GetX(ctx, fixtures.ID("course_with_four_lessons"))
+	crs := h.DB.Course.GetX(ctx, fixtures.ID(fixtures.CourseWithFourLessons))
 	owner := h.DB.Enrollment.Query().
 		Where(enrollment.UserID(actingUserID(t, h)), enrollment.CourseID(crs.ID)).
 		OnlyX(ctx)
 
 	// The gap does not hold them back.
-	result := submitSolution(t, h, lessonLabeled(t, h, "lesson_with_four_lessons_four"))
+	result := submitSolution(t, h, lessonLabeled(t, h, fixtures.LessonWithFourLessonsFour))
 	assert.True(t, result.Response.LessonHasBeenFinished)
 	assert.False(t, result.Response.CourseHasBeenFinished, "the second lesson is still open")
 
@@ -209,7 +209,7 @@ func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
 	assert.Equal(t, "started", *owner.State)
 
 	// Closing the gap finishes the course.
-	closing := submitSolution(t, h, lessonLabeled(t, h, "lesson_with_four_lessons_two"))
+	closing := submitSolution(t, h, lessonLabeled(t, h, fixtures.LessonWithFourLessonsTwo))
 	assert.True(t, closing.Response.CourseHasBeenFinished)
 
 	owner = h.DB.Enrollment.Query().Where(enrollment.ID(owner.ID)).OnlyX(ctx)
@@ -224,7 +224,7 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
 	res, err := h.Client.CheckLesson(ctx,
-		&api.CheckLessonInput{Code: submittedCode, VersionId: fixtures.ID32("lesson_version_javascript_hello_world_retired")},
+		&api.CheckLessonInput{Code: submittedCode, VersionId: fixtures.ID32(fixtures.LessonVersionJavascriptHelloWorldRetired)},
 		api.CheckLessonParams{ID: int32(lesson.ID)},
 	)
 	require.NoError(t, err)

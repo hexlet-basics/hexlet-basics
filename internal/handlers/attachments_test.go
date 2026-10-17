@@ -94,9 +94,9 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 
 	// An administrator may upload; a user who is neither an administrator nor
 	// staff may not.
-	label := "user_blank"
+	label := fixtures.UserBlank
 	if admin {
-		label = "user_admin_learner"
+		label = fixtures.UserAdminLearner
 	}
 	u, err := db.User.Get(t.Context(), fixtures.ID(label))
 	require.NoError(t, err)

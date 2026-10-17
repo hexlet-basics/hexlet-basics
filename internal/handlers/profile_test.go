@@ -63,7 +63,7 @@ func TestDeleteAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	u := h.DB.User.GetX(t.Context(), h.UserID)
 	require.NotNil(t, u.Nickname, "the fixture user has a nickname and a phone to erase")
-	other := h.DB.UserAccount.GetX(t.Context(), fixtures.ID("user_account_staff_editor_github"))
+	other := h.DB.UserAccount.GetX(t.Context(), fixtures.ID(fixtures.UserAccountStaffEditorGithub))
 
 	res, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
@@ -137,7 +137,7 @@ func TestRemovedUserCannotSignInWithPassword(t *testing.T) {
 
 func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_removed")
+	u := fixtureUser(t, h, fixtures.UserRemoved)
 	token := issueEmailToken(t, emailtokens.MagicLink, u)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
@@ -149,7 +149,7 @@ func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 // empty digest and to an email that is still there; only the state can refuse it.
 func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_removed_without_password")
+	u := fixtureUser(t, h, fixtures.UserRemovedWithoutPassword)
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
@@ -196,7 +196,7 @@ func TestSwitchLocaleRemembersAVisitorsChoiceInACookie(t *testing.T) {
 	assert.Nil(t, h.DB.User.GetX(t.Context(), h.UserID).Locale)
 }
 
-var secondAdminID = fixtures.ID("user_second_admin")
+var secondAdminID = fixtures.ID(fixtures.UserSecondAdmin)
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)

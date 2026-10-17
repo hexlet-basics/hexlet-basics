@@ -19,7 +19,7 @@ import { NotFoundPage } from "@/components/ErrorPage";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 import { recordFirstVisit } from "@/lib/first-visit";
-import { localeFromPathname } from "@/lib/locale-path";
+import { localeOf } from "@/lib/locale-path";
 import { SITE_NAME } from "@/lib/seo-head";
 import { theme } from "@/theme";
 
@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   // is rendered without the `{-$locale}` layout's beforeLoad having run, and
   // its 404 would otherwise come out in the `en` default.
   beforeLoad: async ({ context, location }) => {
-    await context.i18n.changeLanguage(localeFromPathname(location.pathname));
+    await context.i18n.changeLanguage(localeOf(location.pathname));
     return {
       user: await resolveCurrentUser(context.queryClient),
       // A string, so it travels with the dehydrated router and the browser's

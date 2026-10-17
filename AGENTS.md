@@ -132,8 +132,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `mise run gen` — full contract pipeline (spec → ogen server → hey-api client).
 - `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
 - `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
-- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks`.
-- `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run tidy` — `go mod tidy`.
+- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks` + `gen:fixtures`.
+- `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run gen:fixtures` — regenerate `internal/fixtures/labels_gen.go`, one `fixtures.Label` variable per label in `fixtures/*.yml` (directive in `internal/fixtures/gen.go`, generator in `cmd/fixturelabels`). `mise run tidy` — `go mod tidy`.
 - `mise run gen:check` — runs `gen:all` and fails if the tree changes; the CI `gen-check` job runs it, so generated output must be committed with its source.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
   and commit the regenerated outputs alongside the source change.
@@ -162,7 +162,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 ## Test
 
-- `mise run test` — the Go suite (`go test ./...`).
+- `mise run test` — the Go suite (`go test -shuffle=on ./...`). Tests run in a random
+  order and `go` prints the seed, so a test must not depend on another's side
+  effects; replay an order with `mise run test -- -shuffle=<seed> ./pkg`.
 - `mise run test:cover` — the Go suite over `cmd/` and `internal/` with
   coverage, failing under the total in `.testcoverage.yml` (generated code and
   `testsupport` excluded). `pnpm test:coverage` does the same for the frontend
@@ -186,17 +188,32 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   db:up`) and `pnpm exec playwright install chromium` once; never part of
   `mise run test`. It asserts on what pages show, mocks nothing, and does not run
   lesson code (that needs an environment the stack lacks).
+  A spec only says what a person does and sees: it takes `test` from
+  `e2e/support/test.ts`, gets the `site` fixture and calls steps on it
+  (`site.session.signInAs(learner)`, `site.lesson.open(path)`), never `page`, a
+  selector or a wait. Three things hold that line: that `test` hands a scenario
+  no `page` (destructuring it fails `tsc -b`), `Site` keeps its browser in a
+  `#private` field (`site.page` fails `tsc -b`), and oxlint rejects importing
+  `@playwright/test` under `e2e/tests`. Steps live in a file per concept under
+  `e2e/support/` (`session.ts`, `catalog.ts`, `lesson.ts`, `admin.ts`,
+  `locale.ts`), and a scenario that needs a step the site does not have adds it
+  there.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **A test never creates the data it arranges: it reads it from `fixtures/`.**
   Every row there is named for the case it exists for, with a label:
   `{{ id "user_removed" }}` in the YAML (primary keys and references alike), and
-  `fixtures.ID("user_removed")` (`fixtures.ID32` for the contract's int32) in a
-  test. `NewHarnessAs(t, "user_learner_with_a_gap")` signs a request in as that
-  user. Ids count up in the order rows are written (the application reads
-  "oldest first" off the id, so write older rows first); a label no row defines
-  panics, in a test and in the YAML. A case a test needs and no row has becomes a
-  new row, with a comment above it saying what it is for, never an
+  `fixtures.ID(fixtures.UserRemoved)` (`fixtures.ID32` for the contract's int32)
+  in a test: every label has a generated `fixtures.Label` variable (the
+  `snake_case` label in `PascalCase`), and `ID` takes a `Label`, not a string, so
+  a typo or a removed row fails the build. `NewHarnessAs(t,
+  fixtures.UserLearnerWithAGap)` signs a request in as that user. Add the row,
+  then run `mise run gen:fixtures`; `fixtures.LabelOf(name)` is only for a label
+  read at run time (a request path). Ids count up in the order rows are written
+  (the application reads "oldest first" off the id, so write older rows first);
+  a label no row defines panics in the YAML, and `LabelOf` of one panics in
+  `ID`. A case a test needs and no row has becomes a new row, with a comment
+  above it saying what it is for, never an
   `.Create()` in the test: `forbidigo` rejects `.Create()`, `.CreateBulk()`,
   `sql.Open` and `store.NewDB` in `_test.go`, and a test whose creation is the
   act under test (a sign-up, a concurrent request that wins a race, a database
@@ -256,6 +273,7 @@ Change the source, run the generator, commit the output. Never hand-edit or
 `git restore` a generated file — regenerate it from current source.
 
 - `internal/testsupport/mock_*_gen.go` (moq mocks) ← the production interfaces via `mise run gen:mocks`.
+- `internal/fixtures/labels_gen.go` (fixture labels) ← `fixtures/*.yml` via `mise run gen:fixtures`.
 - `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `mise run gen:spec`.
 - `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `mise run gen:api`.
 - `internal/amocrm/generated/**` (ogen client) ← the pinned amoCRM OpenAPI via

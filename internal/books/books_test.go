@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 }
 
 // user_blank has no book request in the fixtures; user_staff_editor already has one.
-var learnerID = fixtures.ID("user_blank")
+var learnerID = fixtures.ID(fixtures.UserBlank)
 
 func newRecorder(t *testing.T) *books.Recorder {
 	t.Helper()

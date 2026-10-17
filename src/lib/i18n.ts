@@ -13,8 +13,15 @@ export type { Locale };
 // `en` is the default and is served unprefixed; `ru`/`es` live behind a path
 // prefix (legacy `scope "(:suffix)", suffix: /es|ru/`, ADR-0002 / ADR-0008).
 export const DEFAULT_LOCALE: Locale = "en";
-// Locales that appear as a URL prefix (everything except the unprefixed default).
-export const PREFIXED_LOCALES = ["ru", "es"] as const;
+// Locales that appear as a URL prefix: the contract's set minus the unprefixed
+// default, so a new contract locale is routed without a second list to edit.
+export const PREFIXED_LOCALES = zLocale.options.filter(
+  (locale): locale is Exclude<Locale, typeof DEFAULT_LOCALE> => locale !== DEFAULT_LOCALE,
+);
+
+export function isPrefixedLocale(value: string): value is (typeof PREFIXED_LOCALES)[number] {
+  return PREFIXED_LOCALES.some((locale) => locale === value);
+}
 
 export function isLocale(value: string): value is Locale {
   return zLocale.safeParse(value).success;

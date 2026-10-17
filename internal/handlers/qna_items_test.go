@@ -15,10 +15,10 @@ import (
 
 // Parent ids seeded by the qna fixtures.
 var (
-	qnaCategoryID       = fixtures.ID32("category_layouting_ru")   // layouting-ru, 2 items (7001, 7002)
-	qnaOtherCategoryID  = fixtures.ID32("category_programming_en") // programming-en, 1 item (7003)
-	qnaLandingPageID    = fixtures.ID32("landing_page_go_ru")      // go-ru, 2 items (8001, 8002)
-	qnaOtherLandingPage = fixtures.ID32("landing_page_ruby_ru")    // ruby-ru, 1 item (8003)
+	qnaCategoryID       = fixtures.ID32(fixtures.CategoryLayoutingRu)   // layouting-ru, 2 items (7001, 7002)
+	qnaOtherCategoryID  = fixtures.ID32(fixtures.CategoryProgrammingEn) // programming-en, 1 item (7003)
+	qnaLandingPageID    = fixtures.ID32(fixtures.LandingPageGoRu)       // go-ru, 2 items (8001, 8002)
+	qnaOtherLandingPage = fixtures.ID32(fixtures.LandingPageRubyRu)     // ruby-ru, 1 item (8003)
 )
 
 func TestAdminListCategoryQnaItems(t *testing.T) {
@@ -65,7 +65,7 @@ func TestAdminUpdateCategoryQnaItem(t *testing.T) {
 	updated, err := h.Client.AdminUpdateCategoryQnaItem(ctx, &api.QnaItemInput{
 		Question: "Изменённый вопрос?",
 		Answer:   "Изменённый ответ.",
-	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixtures.ID32("category_qna_layouting_ru")})
+	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixtures.ID32(fixtures.CategoryQnaLayoutingRu)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Изменённый вопрос?", updated.Question)
@@ -80,7 +80,7 @@ func TestAdminUpdateCategoryQnaItemWrongParent(t *testing.T) {
 	_, err := h.Client.AdminUpdateCategoryQnaItem(ctx, &api.QnaItemInput{
 		Question: "x",
 		Answer:   "y",
-	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaOtherCategoryID, ID: fixtures.ID32("category_qna_layouting_ru")})
+	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaOtherCategoryID, ID: fixtures.ID32(fixtures.CategoryQnaLayoutingRu)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
@@ -89,7 +89,7 @@ func TestAdminDeleteCategoryQnaItem(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	err := h.Client.AdminDeleteCategoryQnaItem(ctx, api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixtures.ID32("category_qna_layouting_ru_2")})
+	err := h.Client.AdminDeleteCategoryQnaItem(ctx, api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixtures.ID32(fixtures.CategoryQnaLayoutingRu2)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

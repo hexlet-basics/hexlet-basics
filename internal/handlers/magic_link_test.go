@@ -18,7 +18,7 @@ import (
 )
 
 // fixtureUser is the fixture user with the label.
-func fixtureUser(t *testing.T, h *testsupport.Harness, label string) *ent.User {
+func fixtureUser(t *testing.T, h *testsupport.Harness, label fixtures.Label) *ent.User {
 	t.Helper()
 	return h.DB.User.GetX(t.Context(), fixtures.ID(label))
 }
@@ -38,7 +38,7 @@ func issuedAgo(d time.Duration) emailtokens.Option {
 func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
-	u := fixtureUser(t, h, "user_blank")
+	u := fixtureUser(t, h, fixtures.UserBlank)
 
 	res, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
@@ -49,7 +49,7 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 
 func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_blank")
+	u := fixtureUser(t, h, fixtures.UserBlank)
 
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Blank-User@Example.com"})
 	require.NoError(t, err)
@@ -62,7 +62,7 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "en")
-	fixtureUser(t, h, "user_blank")
+	fixtureUser(t, h, fixtures.UserBlank)
 
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
@@ -86,7 +86,7 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	fixtureUser(t, h, "user_blank")
+	fixtureUser(t, h, fixtures.UserBlank)
 
 	for range 2 {
 		res, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
@@ -102,7 +102,7 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 // the guest's progress credited, the sign-in recorded.
 func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
-	u := fixtureUser(t, h, "user_blank")
+	u := fixtureUser(t, h, fixtures.UserBlank)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(),
 		api.ConsumeMagicLinkParams{Token: issueEmailToken(t, emailtokens.MagicLink, u)})
@@ -120,7 +120,7 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 
 func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_blank")
+	u := fixtureUser(t, h, fixtures.UserBlank)
 	token := issueEmailToken(t, emailtokens.MagicLink, u)
 
 	for range 2 {
@@ -132,8 +132,8 @@ func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
 
 func TestConsumeMagicLinkRefusesDeadLinks(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_blank")
-	changed := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserBlank)
+	changed := fixtureUser(t, h, fixtures.UserWithPassword)
 	sentToOldAddress := issueEmailToken(t, emailtokens.MagicLink, changed)
 	h.DB.User.UpdateOne(changed).SetEmail("magic-new-address@example.com").ExecX(t.Context())
 

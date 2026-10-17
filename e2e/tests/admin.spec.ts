@@ -1,33 +1,32 @@
-import { expect, test } from "@playwright/test";
-import { admin, header, learner, outsider, signIn, visit } from "../support/app";
+import { admin, learner, outsider } from "../support/people";
+import { test } from "../support/test";
 
-test("a guest is sent to sign in and returns to the admin afterwards", async ({ page }) => {
-  await visit(page, "/admin");
+test("a guest is sent to sign in and returns to the admin afterwards", async ({ site }) => {
+  await site.admin.open();
 
-  await expect(page).toHaveURL("/session/new?redirect=%2Fadmin");
-  await expect(page.getByRole("heading", { level: 1, name: "Sign In" })).toBeVisible();
+  await site.expectPath("/session/new?redirect=%2Fadmin");
+  await site.expectHeading("Sign In", 1);
 });
 
-test("a signed-in user who is neither an admin nor staff is refused", async ({ page }) => {
-  await signIn(page, outsider.email, outsider.name);
+test("a signed-in user who is neither an admin nor staff is refused", async ({ site }) => {
+  await site.session.signInAs(outsider);
 
-  await visit(page, "/admin");
+  await site.admin.open();
 
-  await expect(page).toHaveURL("/");
-  await expect(header(page).getByRole("button", { name: outsider.name })).toBeVisible();
+  await site.expectPath("/");
+  await site.session.expectSignedInAs(outsider.name);
 });
 
-test("an admin sees the back office and its lists", async ({ page }) => {
-  await signIn(page, admin.email, admin.name);
+test("an admin sees the back office and its lists", async ({ site }) => {
+  await site.session.signInAs(admin);
 
-  await visit(page, "/admin");
-  await expect(page).toHaveURL("/admin/courses");
-  await expect(page.getByRole("heading", { name: "Courses" })).toBeVisible();
-  await expect(page.getByRole("row", { name: /javascript/i }).first()).toBeVisible();
+  await site.admin.open();
+  await site.expectPath("/admin/courses");
+  await site.admin.expectCourseList();
 
-  await page.getByRole("link", { name: "Users", exact: true }).click();
-  await expect(page).toHaveURL("/admin/users");
-  await expect(page.getByRole("heading", { name: "Users" })).toBeVisible();
-  await expect(page.getByRole("cell", { name: admin.email })).toBeVisible();
-  await expect(page.getByRole("cell", { name: learner.email })).toBeVisible();
+  await site.admin.openUsers();
+  await site.expectPath("/admin/users");
+  await site.expectHeading("Users");
+  await site.admin.expectUserListed(admin.email);
+  await site.admin.expectUserListed(learner.email);
 });

@@ -39,18 +39,18 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_hello_world_current_en")))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentEn)))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(fixtures.ID("course_javascript")),
-			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_hello_world")),
+			courselessonreview.CourseID(fixtures.ID(fixtures.CourseJavascript)),
+			courselessonreview.CourseLessonID(fixtures.ID(fixtures.LessonJavascriptHelloWorld)),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Contains(t, review.Summary, "Проанализируй вопросы")
 	assert.Contains(t, review.Summary, "How do I print a string?", "the student question feeds the prompt")
-	assert.Equal(t, fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), review.CourseLessonTranslationID)
+	assert.Equal(t, fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentEn), review.CourseLessonTranslationID)
 }
 
 // The en info of lesson_javascript_strings. The lesson has no assistant chats, so
@@ -62,12 +62,12 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, reviewingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_strings_current_en")))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID(fixtures.LessonVersionInfoJavascriptStringsCurrentEn)))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(fixtures.ID("course_javascript")),
-			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_strings")),
+			courselessonreview.CourseID(fixtures.ID(fixtures.CourseJavascript)),
+			courselessonreview.CourseLessonID(fixtures.ID(fixtures.LessonJavascriptStrings)),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
@@ -84,8 +84,8 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	_, err := db.CourseLessonReview.Delete().
 		Where(
-			courselessonreview.CourseID(fixtures.ID("course_javascript")),
-			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_variables")),
+			courselessonreview.CourseID(fixtures.ID(fixtures.CourseJavascript)),
+			courselessonreview.CourseLessonID(fixtures.ID(fixtures.LessonJavascriptVariables)),
 			courselessonreview.LocaleEQ("en"),
 		).
 		Exec(ctx)
@@ -93,15 +93,15 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
-	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID("lesson_version_info_javascript_variables_current_en")))
+	require.NoError(t, reviewer.ReviewLesson(ctx, fixtures.ID(fixtures.LessonVersionInfoJavascriptVariablesCurrentEn)))
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.CourseID(fixtures.ID("course_javascript")),
-			courselessonreview.CourseLessonID(fixtures.ID("lesson_javascript_variables")),
+			courselessonreview.CourseID(fixtures.ID(fixtures.CourseJavascript)),
+			courselessonreview.CourseLessonID(fixtures.ID(fixtures.LessonJavascriptVariables)),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Contains(t, review.Summary, "What is a variable?")
-	assert.Equal(t, fixtures.ID("lesson_version_javascript_variables_current"), review.CourseLessonVersionID, "the version of the lesson reviewed")
+	assert.Equal(t, fixtures.ID(fixtures.LessonVersionJavascriptVariablesCurrent), review.CourseLessonVersionID, "the version of the lesson reviewed")
 }
