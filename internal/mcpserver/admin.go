@@ -33,6 +33,7 @@ var adminOperations = []string{
 	"adminListBanners",
 	"adminUpdateBanner",
 	"adminUploadAttachment",
+	"adminListAuditRecords",
 }
 
 // adminLocales are the locales staff work in. The tool's locale argument is
