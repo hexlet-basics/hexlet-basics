@@ -1,9 +1,22 @@
 import { useChat } from "@ai-sdk/react";
-import { Anchor, Box, Button, Group, Paper, Skeleton, Stack, Text, Textarea } from "@mantine/core";
+import {
+  Anchor,
+  Button,
+  Group,
+  List,
+  Paper,
+  Skeleton,
+  Stack,
+  Text,
+  Textarea,
+  ThemeIcon,
+} from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { APICallError, TextStreamChatTransport, type UIMessage } from "ai";
+import { IconCheck, IconLock } from "@tabler/icons-react";
+import { useLocation } from "@tanstack/react-router";
 import { type SubmitEvent, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -18,6 +31,7 @@ import type {
   LessonAssistantMessage,
 } from "@/client/types.gen";
 import MarkdownViewer from "@/components/MarkdownViewer";
+import { ButtonLink } from "@/components/RouterLink";
 import { lessonCodeKey } from "@/lib/lesson-code";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
@@ -41,11 +55,7 @@ export default function LessonAssistant({
   });
 
   if (!signedIn) {
-    return (
-      <Box p="lg">
-        <MarkdownViewer>{t(($) => $.courses.lessons.show.chat.guest)}</MarkdownViewer>
-      </Box>
-    );
+    return <GuestAssistant />;
   }
 
   if (history.isPending) {
@@ -69,6 +79,71 @@ export default function LessonAssistant({
   // Keyed by lesson: useChat takes its messages once, so another lesson needs
   // another chat rather than new props.
   return <AssistantChat key={lessonId} view={view} output={output} chat={history.data} />;
+}
+
+// What a visitor sees instead of the chat: who Tota is, what she does for a
+// learner, a sample exchange in the real chat's bubbles, and the way in. The
+// sign-up and sign-in links carry the way back to this lesson.
+function GuestAssistant() {
+  const { t } = useTranslation();
+  const redirect = useLocation({ select: (location) => location.href });
+  const benefits = [
+    t(($) => $.courses.lessons.show.chat.guest_benefit_hint),
+    t(($) => $.courses.lessons.show.chat.guest_benefit_errors),
+    t(($) => $.courses.lessons.show.chat.guest_benefit_free),
+  ];
+
+  return (
+    <Stack p="lg" gap="lg">
+      <Paper p="sm" radius="lg" bg="var(--mantine-color-default-hover)">
+        <Stack gap="sm">
+          <Text size="sm">{t(($) => $.courses.lessons.show.chat.guest)}</Text>
+          <List
+            spacing="xs"
+            size="sm"
+            icon={
+              <ThemeIcon variant="transparent" size={20}>
+                <IconCheck size={16} />
+              </ThemeIcon>
+            }
+          >
+            {benefits.map((text) => (
+              <List.Item key={text}>{text}</List.Item>
+            ))}
+          </List>
+        </Stack>
+      </Paper>
+
+      <Stack gap="xs" aria-hidden>
+        <Group justify="flex-end">
+          <Paper p="sm" radius="lg" maw="85%" bg="var(--mantine-primary-color-light)">
+            <Text size="sm">{t(($) => $.courses.lessons.show.chat.guest_example_question)}</Text>
+          </Paper>
+        </Group>
+        <Group justify="flex-start">
+          <Paper p="sm" radius="lg" maw="85%" bg="var(--mantine-color-default-hover)">
+            <Text size="sm">{t(($) => $.courses.lessons.show.chat.guest_example_answer)}</Text>
+          </Paper>
+        </Group>
+        <Textarea
+          disabled
+          rows={2}
+          leftSection={<IconLock size={16} />}
+          placeholder={t(($) => $.courses.lessons.show.chat.question)}
+          tabIndex={-1}
+        />
+      </Stack>
+
+      <Group>
+        <ButtonLink to="/{-$locale}/users/new" search={{ redirect }}>
+          {t(($) => $.courses.lessons.show.chat.guest_sign_up)}
+        </ButtonLink>
+        <ButtonLink to="/{-$locale}/session/new" search={{ redirect }} variant="default">
+          {t(($) => $.courses.lessons.show.sign_in)}
+        </ButtonLink>
+      </Group>
+    </Stack>
+  );
 }
 
 function AssistantChat({
