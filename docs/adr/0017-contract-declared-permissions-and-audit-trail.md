@@ -29,10 +29,10 @@ resource-by-CRUD-bits matrix. A Staff Member keeps one Staff Role and the list
 of locales they work in; several roles per person and locales per resource are
 deferred until a real case needs them. Administrators, the current
 `users.admin` value read from the database on every call (ADR-0011), pass every
-content Permission. Whether the administrator flag also implies the `mcp.*`
-Permissions and `audit.read` is **undecided**: if it does, no administrator can
-be denied MCP access or have it limited to reading, which contradicts MCP
-access being a right a role is given. ADR-0002 rules out running Rails beside Go, so nothing constrains
+content Permission. The administrator flag does **not** imply the `mcp.*`
+Permissions or `audit.read`: an administrator's role must be given them
+explicitly, like anyone's, so any administrator can be denied MCP access or
+limited to reading. ADR-0002 rules out running Rails beside Go, so nothing constrains
 the new shape: the existing roles and rows are carried into it by the cutover
 migration.
 
