@@ -186,6 +186,12 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   db:up`) and `pnpm exec playwright install chromium` once; never part of
   `mise run test`. It asserts on what pages show, mocks nothing, and does not run
   lesson code (that needs an environment the stack lacks).
+  A spec only says what a person does and sees: it gets the `site` fixture from
+  `e2e/support/test.ts` and calls steps on it (`site.session.signInAs(learner)`,
+  `site.lesson.open(path)`), never `page`, a selector or a wait; destructuring
+  `page` fails `tsc -b`. Steps live in a file per concept under `e2e/support/`
+  (`session.ts`, `catalog.ts`, `lesson.ts`, `admin.ts`, `locale.ts`), and a new
+  scenario that needs a step the site does not have adds it there.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **A test never creates the data it arranges: it reads it from `fixtures/`.**
