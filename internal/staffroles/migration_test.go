@@ -49,7 +49,7 @@ const legacyMatrixTable = `CREATE TABLE IF NOT EXISTS "staff_member_role_permiss
 
 var cutovers = []cutover{
 	{
-		migration: "20261017200000_staff_role_grants.sql",
+		migration: "20261017210200_staff_role_grants.sql",
 		resources: map[string]opened{
 			"blog_posts": {
 				index:   []string{"AdminListBlogPosts", "AdminGetBlogPost"},
@@ -60,7 +60,7 @@ var cutovers = []cutover{
 		},
 	},
 	{
-		migration: "20261017201000_banners_reviews_leads_messages_into_grants.sql",
+		migration: "20261017210300_banners_reviews_leads_messages_into_grants.sql",
 		resources: map[string]opened{
 			"banners": {
 				index:   []string{"AdminListBanners", "AdminGetBanner"},
@@ -79,7 +79,7 @@ var cutovers = []cutover{
 		},
 	},
 	{
-		migration: "20261017202000_course_resources_into_grants.sql",
+		migration: "20261017210400_course_resources_into_grants.sql",
 		resources: map[string]opened{
 			"language_categories": {
 				index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
