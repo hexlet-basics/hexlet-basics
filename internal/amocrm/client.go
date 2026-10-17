@@ -235,7 +235,7 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 	body, _ := io.ReadAll(io.LimitReader(response.Body, maxErrorMessageBytes))
 	return nil, newRequestError(
 		response.StatusCode,
-		string(body),
+		strings.ToValidUTF8(string(body), ""),
 		nil,
 		isRetryableStatus(response.StatusCode),
 	)
@@ -313,24 +313,21 @@ func isRetryableStatus(statusCode int) bool {
 }
 
 func joinProblem(title, detail generated.OptString) string {
-	parts := make([]string, 0, 2)
-	if value, ok := title.Get(); ok && value != "" {
-		parts = append(parts, value)
-	}
-	if value, ok := detail.Get(); ok && value != "" {
-		parts = append(parts, value)
-	}
+	parts := lo.Compact([]string{title.Or(""), detail.Or("")})
 	if len(parts) == 0 {
 		return "request failed"
 	}
 	return strings.Join(parts, ": ")
 }
 
+// truncate cuts to at most limit bytes without splitting a rune: the message
+// lands in a River job error (jsonb) and Sentry, and a Cyrillic body cut
+// mid-rune is invalid UTF-8.
 func truncate(value string, limit int) string {
 	if len(value) <= limit {
 		return value
 	}
-	return value[:limit]
+	return strings.ToValidUTF8(value[:limit], "")
 }
 
 // optString keeps nil out of the request: ogen has no pointer constructor for

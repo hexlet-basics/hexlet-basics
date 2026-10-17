@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"unicode/utf8"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -370,4 +371,12 @@ func assertCustomFieldByID(t *testing.T, value any, id int, expected string) {
 		return
 	}
 	t.Errorf("custom field %d not found", id)
+}
+
+// An error body is cut by bytes, but never through a rune: the text ends up in a
+// jsonb job error, where invalid UTF-8 is rejected.
+func TestTruncateKeepsRunesWhole(t *testing.T) {
+	assert.Equal(t, "привет", truncate("привет", 12))
+	assert.Equal(t, "при", truncate("привет", 7), "the cut falls inside the 4th rune, which is dropped")
+	assert.True(t, utf8.ValidString(truncate(strings.Repeat("я", 100), 11)))
 }
