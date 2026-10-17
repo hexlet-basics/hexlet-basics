@@ -32,6 +32,7 @@ import type {
 } from "@/client/types.gen";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import { ButtonLink } from "@/components/RouterLink";
+import { isApiError } from "@/lib/api-error";
 import { lessonCodeKey } from "@/lib/lesson-code";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
@@ -261,7 +262,7 @@ function AssistantChat({
 // The transport speaks the contract rather than the AI SDK's own request shape:
 // it sends the question with the editor state, and it sends it through the
 // generated client — so the path, the session cookie and URL
-// locale come from the same place as every other call. Axios' fetch adapter
+// locale come from the same place as every other call. `parseAs: "stream"`
 // hands back the body as a stream, which the transport reads as plain text.
 function assistantTransport(lessonId: number) {
   return new TextStreamChatTransport<UIMessage>({
@@ -278,18 +279,21 @@ function assistantTransport(lessonId: number) {
       if (typeof init?.body !== "string") {
         throw new TypeError("assistant transport expects a JSON string body");
       }
-      const response = await createAssistantMessage({
-        path: { lessonId },
-        body: JSON.parse(init.body),
-        adapter: "fetch",
-        responseType: "stream",
+      try {
+        const { data, response } = await createAssistantMessage({
+          path: { lessonId },
+          body: JSON.parse(init.body),
+          parseAs: "stream",
+          signal: init?.signal ?? undefined,
+          throwOnError: true,
+        });
+        return new Response(data, { status: response.status });
+      } catch (error) {
         // Every status is handed to the transport, which reports a refusal
         // (the quota's 429 among them) as an APICallError with its status.
-        validateStatus: () => true,
-        signal: init?.signal ?? undefined,
-        throwOnError: true,
-      });
-      return new Response(response.data, { status: response.status });
+        if (isApiError(error)) return new Response(null, { status: error.status });
+        throw error;
+      }
     },
   });
 }

@@ -36,7 +36,6 @@ export const deleteAccount = <ThrowOnError extends boolean = false>(options?: Op
  * Update the current user's profile.
  */
 export const updateProfile = <ThrowOnError extends boolean = false>(options: Options<UpdateProfileData, ThrowOnError>): RequestResult<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError> => (options.client ?? client).patch<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -55,7 +54,6 @@ export const updateProfile = <ThrowOnError extends boolean = false>(options: Opt
  * The editable profile of the current user.
  */
 export const getProfile = <ThrowOnError extends boolean = false>(options?: Options<GetProfileData, ThrowOnError>): RequestResult<GetProfileResponses, GetProfileErrors, ThrowOnError> => (options?.client ?? client).get<GetProfileResponses, GetProfileErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -67,7 +65,6 @@ export const getProfile = <ThrowOnError extends boolean = false>(options?: Optio
 });
 
 export const adminListUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListUsersData, ThrowOnError>): RequestResult<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -83,7 +80,6 @@ export const adminListUsers = <ThrowOnError extends boolean = false>(options?: O
  *       by the central ent-error handler.
  */
 export const adminCreateUser = <ThrowOnError extends boolean = false>(options: Options<AdminCreateUserData, ThrowOnError>): RequestResult<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -102,7 +98,6 @@ export const adminCreateUser = <ThrowOnError extends boolean = false>(options: O
  * Typeahead search by name/email.
  */
 export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: Options<AdminSearchUsersData, ThrowOnError>): RequestResult<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError> => (options.client ?? client).get<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -129,7 +124,6 @@ export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: O
  *       handler, not a typed union member.
  */
 export const adminGetUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetUserData, ThrowOnError>): RequestResult<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -145,7 +139,6 @@ export const adminGetUser = <ThrowOnError extends boolean = false>(options: Opti
  *       the central ent-error handler.
  */
 export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -165,7 +158,6 @@ export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: O
  */
 export const adminUploadAttachment = <ThrowOnError extends boolean = false>(options: Options<AdminUploadAttachmentData, ThrowOnError>): RequestResult<AdminUploadAttachmentResponses, AdminUploadAttachmentErrors, ThrowOnError> => (options.client ?? client).post<AdminUploadAttachmentResponses, AdminUploadAttachmentErrors, ThrowOnError>({
   ...formDataBodySerializer,
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -184,7 +176,6 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
  * List banners (paginated).
  */
 export const adminListBanners = <ThrowOnError extends boolean = false>(options?: Options<AdminListBannersData, ThrowOnError>): RequestResult<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -201,7 +192,6 @@ export const adminListBanners = <ThrowOnError extends boolean = false>(options?:
  *       constraint, so there is no 409 path.
  */
 export const adminCreateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBannerData, ThrowOnError>): RequestResult<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -235,7 +225,6 @@ export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options:
  *       ent-error handler, not a typed union member.
  */
 export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Options<AdminGetBannerData, ThrowOnError>): RequestResult<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -250,7 +239,6 @@ export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Op
  * Update a banner. A missing id surfaces as 404 via the central handler.
  */
 export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBannerData, ThrowOnError>): RequestResult<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -266,7 +254,6 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
 });
 
 export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -278,7 +265,6 @@ export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options
 });
 
 export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBlogPostData, ThrowOnError>): RequestResult<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -305,7 +291,6 @@ export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(option
 });
 
 export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminGetBlogPostData, ThrowOnError>): RequestResult<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -317,7 +302,6 @@ export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: 
 });
 
 export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBlogPostData, ThrowOnError>): RequestResult<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -336,7 +320,6 @@ export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(option
  * Set the related/promoted courses for a post by hand.
  */
 export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = false>(options: Options<AdminSetBlogPostRelatedCoursesData, ThrowOnError>): RequestResult<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError> => (options.client ?? client).post<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -371,7 +354,6 @@ export const adminSuggestBlogPostRelatedCourses = <ThrowOnError extends boolean 
  * List course categories (paginated).
  */
 export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -387,7 +369,6 @@ export const adminListCourseCategories = <ThrowOnError extends boolean = false>(
  *       DB constraint, surfaced as 409 by the central ent-error handler.
  */
 export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseCategoryData, ThrowOnError>): RequestResult<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -403,7 +384,6 @@ export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(
 });
 
 export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListCategoryQnaItemsData, ThrowOnError>): RequestResult<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -415,7 +395,6 @@ export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(
 });
 
 export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -446,7 +425,6 @@ export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>
  *       as 404 via the central ent-error handler.
  */
 export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -480,7 +458,6 @@ export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(
  *       central ent-error handler, not a typed union member.
  */
 export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseCategoryData, ThrowOnError>): RequestResult<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -496,7 +473,6 @@ export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(opt
  *       through the central ent-error handler.
  */
 export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseCategoryData, ThrowOnError>): RequestResult<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -512,7 +488,6 @@ export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(
 });
 
 export const adminListCourseLandingPages = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLandingPagesData, ThrowOnError>): RequestResult<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -524,7 +499,6 @@ export const adminListCourseLandingPages = <ThrowOnError extends boolean = false
 });
 
 export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseLandingPageData, ThrowOnError>): RequestResult<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -555,7 +529,6 @@ export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = fals
  *       ent-error handler, not a typed union member.
  */
 export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseLandingPageData, ThrowOnError>): RequestResult<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -571,7 +544,6 @@ export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(
  *       ent-error handler.
  */
 export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseLandingPageData, ThrowOnError>): RequestResult<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -587,7 +559,6 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
 });
 
 export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -599,7 +570,6 @@ export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = fals
 });
 
 export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -630,7 +600,6 @@ export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = fal
  *       as 404 via the central ent-error handler.
  */
 export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -646,7 +615,6 @@ export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = fal
 });
 
 export const adminListCourseLessonReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonReviewsData, ThrowOnError>): RequestResult<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -658,7 +626,6 @@ export const adminListCourseLessonReviews = <ThrowOnError extends boolean = fals
 });
 
 export const adminListCourseLessons = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonsData, ThrowOnError>): RequestResult<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -684,7 +651,6 @@ export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(op
 });
 
 export const adminListCourses = <ThrowOnError extends boolean = false>(options?: Options<AdminListCoursesData, ThrowOnError>): RequestResult<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -696,7 +662,6 @@ export const adminListCourses = <ThrowOnError extends boolean = false>(options?:
 });
 
 export const adminCreateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseData, ThrowOnError>): RequestResult<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -716,7 +681,6 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
  *       ent-error handler.
  */
 export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseData, ThrowOnError>): RequestResult<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -728,7 +692,6 @@ export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Op
 });
 
 export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseData, ThrowOnError>): RequestResult<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -761,7 +724,6 @@ export const adminReviewCourse = <ThrowOnError extends boolean = false>(options:
  * Build a new version of the course exercises.
  */
 export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseVersionData, ThrowOnError>): RequestResult<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -773,7 +735,6 @@ export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(o
 });
 
 export const adminListLeads = <ThrowOnError extends boolean = false>(options?: Options<AdminListLeadsData, ThrowOnError>): RequestResult<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -785,7 +746,6 @@ export const adminListLeads = <ThrowOnError extends boolean = false>(options?: O
 });
 
 export const adminListLessonProgress = <ThrowOnError extends boolean = false>(options?: Options<AdminListLessonProgressData, ThrowOnError>): RequestResult<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -800,7 +760,6 @@ export const adminListLessonProgress = <ThrowOnError extends boolean = false>(op
  * The permission matrix for a role.
  */
 export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminGetRolePermissionsData, ThrowOnError>): RequestResult<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -815,7 +774,6 @@ export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(op
  * Replace the permission matrix for a role.
  */
 export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRolePermissionsData, ThrowOnError>): RequestResult<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -831,7 +789,6 @@ export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>
 });
 
 export const adminListRoles = <ThrowOnError extends boolean = false>(options?: Options<AdminListRolesData, ThrowOnError>): RequestResult<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -847,7 +804,6 @@ export const adminListRoles = <ThrowOnError extends boolean = false>(options?: O
  *       by the central ent-error handler.
  */
 export const adminCreateRole = <ThrowOnError extends boolean = false>(options: Options<AdminCreateRoleData, ThrowOnError>): RequestResult<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -878,7 +834,6 @@ export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: O
  *       the central ent-error handler.
  */
 export const adminGetRole = <ThrowOnError extends boolean = false>(options: Options<AdminGetRoleData, ThrowOnError>): RequestResult<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -890,7 +845,6 @@ export const adminGetRole = <ThrowOnError extends boolean = false>(options: Opti
 });
 
 export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRoleData, ThrowOnError>): RequestResult<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -906,7 +860,6 @@ export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: O
 });
 
 export const adminListStaffMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListStaffMembersData, ThrowOnError>): RequestResult<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -918,7 +871,6 @@ export const adminListStaffMembers = <ThrowOnError extends boolean = false>(opti
 });
 
 export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminCreateStaffMemberData, ThrowOnError>): RequestResult<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -945,7 +897,6 @@ export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(opt
 });
 
 export const adminGetStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminGetStaffMemberData, ThrowOnError>): RequestResult<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError> => (options.client ?? client).get<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -957,7 +908,6 @@ export const adminGetStaffMember = <ThrowOnError extends boolean = false>(option
 });
 
 export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateStaffMemberData, ThrowOnError>): RequestResult<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -973,7 +923,6 @@ export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(opt
 });
 
 export const adminListManagementUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListManagementUsersData, ThrowOnError>): RequestResult<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -989,7 +938,6 @@ export const adminListManagementUsers = <ThrowOnError extends boolean = false>(o
  *       ent-error handler.
  */
 export const adminGetManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetManagementUserData, ThrowOnError>): RequestResult<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1001,7 +949,6 @@ export const adminGetManagementUser = <ThrowOnError extends boolean = false>(opt
 });
 
 export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateManagementUserData, ThrowOnError>): RequestResult<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1017,7 +964,6 @@ export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(
 });
 
 export const adminListMessages = <ThrowOnError extends boolean = false>(options?: Options<AdminListMessagesData, ThrowOnError>): RequestResult<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1029,7 +975,6 @@ export const adminListMessages = <ThrowOnError extends boolean = false>(options?
 });
 
 export const adminListReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListReviewsData, ThrowOnError>): RequestResult<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1041,7 +986,6 @@ export const adminListReviews = <ThrowOnError extends boolean = false>(options?:
 });
 
 export const adminCreateReview = <ThrowOnError extends boolean = false>(options: Options<AdminCreateReviewData, ThrowOnError>): RequestResult<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1072,7 +1016,6 @@ export const adminDeleteReview = <ThrowOnError extends boolean = false>(options:
  *       ent-error handler, not a typed union member.
  */
 export const adminGetReview = <ThrowOnError extends boolean = false>(options: Options<AdminGetReviewData, ThrowOnError>): RequestResult<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError> => (options.client ?? client).get<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1088,7 +1031,6 @@ export const adminGetReview = <ThrowOnError extends boolean = false>(options: Op
  *       handler.
  */
 export const adminUpdateReview = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateReviewData, ThrowOnError>): RequestResult<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'AdminSession',
       in: 'cookie',
@@ -1108,7 +1050,6 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
  * remaining quota. A lesson they never asked about answers an empty chat.
  */
 export const listAssistantMessages = <ThrowOnError extends boolean = false>(options: Options<ListAssistantMessagesData, ThrowOnError>): RequestResult<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError> => (options.client ?? client).get<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -1128,7 +1069,6 @@ export const listAssistantMessages = <ThrowOnError extends boolean = false>(opti
  * streams.
  */
 export const createAssistantMessage = <ThrowOnError extends boolean = false>(options: Options<CreateAssistantMessageData, ThrowOnError>): RequestResult<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError> => (options.client ?? client).post<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError>({
-  responseType: 'text',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -1147,26 +1087,17 @@ export const createAssistantMessage = <ThrowOnError extends boolean = false>(opt
  * The newest published banner of the request locale whose window is open
  * now: it started (or has no start) and has not finished (or has no finish).
  */
-export const getActiveBanner = <ThrowOnError extends boolean = false>(options?: Options<GetActiveBannerData, ThrowOnError>): RequestResult<GetActiveBannerResponses, GetActiveBannerErrors, ThrowOnError> => (options?.client ?? client).get<GetActiveBannerResponses, GetActiveBannerErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/banner',
-  ...options
-});
+export const getActiveBanner = <ThrowOnError extends boolean = false>(options?: Options<GetActiveBannerData, ThrowOnError>): RequestResult<GetActiveBannerResponses, GetActiveBannerErrors, ThrowOnError> => (options?.client ?? client).get<GetActiveBannerResponses, GetActiveBannerErrors, ThrowOnError>({ url: '/api/banner', ...options });
 
 /**
  * Paginated published blog posts.
  */
-export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<ListBlogPostsData, ThrowOnError>): RequestResult<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/blog_posts',
-  ...options
-});
+export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<ListBlogPostsData, ThrowOnError>): RequestResult<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError>({ url: '/api/blog_posts', ...options });
 
 /**
  * Like a post once per signed-in user; a repeat like changes nothing.
  */
 export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Options<LikeBlogPostData, ThrowOnError>): RequestResult<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError> => (options.client ?? client).post<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -1181,29 +1112,17 @@ export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Opti
  * The next post to read after this one: the next older published post in
  *       the request locale.
  */
-export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetNextBlogPostData, ThrowOnError>): RequestResult<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/blog_posts/{id}/next',
-  ...options
-});
+export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetNextBlogPostData, ThrowOnError>): RequestResult<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError>({ url: '/api/blog_posts/{id}/next', ...options });
 
 /**
  * A published post in the request locale, by slug, with its page data.
  */
-export const getBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetBlogPostData, ThrowOnError>): RequestResult<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/blog_posts/{slug}',
-  ...options
-});
+export const getBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetBlogPostData, ThrowOnError>): RequestResult<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError>({ url: '/api/blog_posts/{slug}', ...options });
 
 /**
  * The book page's state for whoever is visiting; a visitor is answered too.
  */
-export const getBook = <ThrowOnError extends boolean = false>(options?: Options<GetBookData, ThrowOnError>): RequestResult<GetBookResponses, GetBookErrors, ThrowOnError> => (options?.client ?? client).get<GetBookResponses, GetBookErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/book',
-  ...options
-});
+export const getBook = <ThrowOnError extends boolean = false>(options?: Options<GetBookData, ThrowOnError>): RequestResult<GetBookResponses, GetBookErrors, ThrowOnError> => (options?.client ?? client).get<GetBookResponses, GetBookErrors, ThrowOnError>({ url: '/api/book', ...options });
 
 /**
  * Request the book for the signed-in user. A repeat request changes nothing.
@@ -1239,49 +1158,29 @@ export const downloadBook = <ThrowOnError extends boolean = false>(options?: Opt
 /**
  * The same feed at the path the legacy route declares.
  */
-export const getYandexCoursesFeed = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedData, ThrowOnError>): RequestResult<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError>({
-  responseType: 'blob',
-  url: '/api/feeds/yandex_courses',
-  ...options
-});
+export const getYandexCoursesFeed = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedData, ThrowOnError>): RequestResult<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError>({ url: '/api/feeds/yandex_courses', ...options });
 
 /**
  * The feed at the address production actually answers on. Legacy routes
  * `/api` with a JSON default format and the action only knows XML, so the
  * bare path has always answered 406 and Yandex reads this one.
  */
-export const getYandexCoursesFeedXml = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedXmlData, ThrowOnError>): RequestResult<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError>({
-  responseType: 'blob',
-  url: '/api/feeds/yandex_courses.xml',
-  ...options
-});
+export const getYandexCoursesFeedXml = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedXmlData, ThrowOnError>): RequestResult<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError>({ url: '/api/feeds/yandex_courses.xml', ...options });
 
 /**
  * List the categories of the request locale.
  */
-export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/language_categories',
-  ...options
-});
+export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError>({ url: '/api/language_categories', ...options });
 
 /**
  * A category and the courses it groups.
  */
-export const getPublicCourseCategory = <ThrowOnError extends boolean = false>(options: Options<GetPublicCourseCategoryData, ThrowOnError>): RequestResult<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/language_categories/{slug}',
-  ...options
-});
+export const getPublicCourseCategory = <ThrowOnError extends boolean = false>(options: Options<GetPublicCourseCategoryData, ThrowOnError>): RequestResult<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError>({ url: '/api/language_categories/{slug}', ...options });
 
 /**
  * List the published course catalog.
  */
-export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>): RequestResult<ListCoursesResponses, ListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<ListCoursesResponses, ListCoursesErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/languages',
-  ...options
-});
+export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>): RequestResult<ListCoursesResponses, ListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<ListCoursesResponses, ListCoursesErrors, ThrowOnError>({ url: '/api/languages', ...options });
 
 /**
  * Lesson player payload (theory, starter code, tests) by slug, plus the
@@ -1291,28 +1190,19 @@ export const listCourses = <ThrowOnError extends boolean = false>(options?: Opti
  * so a read with that effect would enroll a learner in every lesson they
  * pointed at (ADR-0012). Theory is public and indexable for everyone.
  */
-export const getCourseLesson = <ThrowOnError extends boolean = false>(options: Options<GetCourseLessonData, ThrowOnError>): RequestResult<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError> => (options.client ?? client).get<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/languages/{courseSlug}/lessons/{slug}',
-  ...options
-});
+export const getCourseLesson = <ThrowOnError extends boolean = false>(options: Options<GetCourseLessonData, ThrowOnError>): RequestResult<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError> => (options.client ?? client).get<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError>({ url: '/api/languages/{courseSlug}/lessons/{slug}', ...options });
 
 /**
  * The course page, by the slug of one of its landing pages in the request
  * locale — the slug in every public link (`/languages/javascript-ru`), not the
  * course's own. The same slug under another locale is a 404.
  */
-export const getCourse = <ThrowOnError extends boolean = false>(options: Options<GetCourseData, ThrowOnError>): RequestResult<GetCourseResponses, GetCourseErrors, ThrowOnError> => (options.client ?? client).get<GetCourseResponses, GetCourseErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/languages/{slug}',
-  ...options
-});
+export const getCourse = <ThrowOnError extends boolean = false>(options: Options<GetCourseData, ThrowOnError>): RequestResult<GetCourseResponses, GetCourseErrors, ThrowOnError> => (options.client ?? client).get<GetCourseResponses, GetCourseErrors, ThrowOnError>({ url: '/api/languages/{slug}', ...options });
 
 /**
  * Submit a contact request.
  */
 export const createLead = <ThrowOnError extends boolean = false>(options: Options<CreateLeadData, ThrowOnError>): RequestResult<CreateLeadResponses, CreateLeadErrors, ThrowOnError> => (options.client ?? client).post<CreateLeadResponses, CreateLeadErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -1336,7 +1226,6 @@ export const createLead = <ThrowOnError extends boolean = false>(options: Option
  * be submitted, in any order.
  */
 export const checkLesson = <ThrowOnError extends boolean = false>(options: Options<CheckLessonData, ThrowOnError>): RequestResult<CheckLessonResponses, CheckLessonErrors, ThrowOnError> => (options.client ?? client).post<CheckLessonResponses, CheckLessonErrors, ThrowOnError>({
-  responseType: 'json',
   url: '/api/lessons/{id}/check',
   ...options,
   headers: {
@@ -1383,35 +1272,22 @@ export const createMagicLink = <ThrowOnError extends boolean = false>(options: O
 /**
  * Consume a magic link token; starts the session.
  */
-export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: Options<ConsumeMagicLinkData, ThrowOnError>): RequestResult<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError> => (options.client ?? client).get<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/magic_links/{token}',
-  ...options
-});
+export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: Options<ConsumeMagicLinkData, ThrowOnError>): RequestResult<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError> => (options.client ?? client).get<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError>({ url: '/api/magic_links/{token}', ...options });
 
 /**
  * Everything the sitemap page lists, across the ru and en locales.
  */
-export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, GetSitemapErrors, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, GetSitemapErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/map',
-  ...options
-});
+export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, GetSitemapErrors, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, GetSitemapErrors, ThrowOnError>({ url: '/api/map', ...options });
 
 /**
  * Resolve the current user from the session cookie (for SSR).
  */
-export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserData, ThrowOnError>): RequestResult<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError> => (options?.client ?? client).get<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/me',
-  ...options
-});
+export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserData, ThrowOnError>): RequestResult<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError> => (options?.client ?? client).get<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError>({ url: '/api/me', ...options });
 
 /**
  * The signed-in user's course dashboard.
  */
 export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: Options<GetMyDashboardData, ThrowOnError>): RequestResult<GetMyDashboardResponses, GetMyDashboardErrors, ThrowOnError> => (options?.client ?? client).get<GetMyDashboardResponses, GetMyDashboardErrors, ThrowOnError>({
-  responseType: 'json',
   security: [{
       key: 'UserSession',
       in: 'cookie',
@@ -1426,7 +1302,6 @@ export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: O
  * Set a new password using a reset token; signs the user in.
  */
 export const updatePassword = <ThrowOnError extends boolean = false>(options: Options<UpdatePasswordData, ThrowOnError>): RequestResult<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError> => (options.client ?? client).patch<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError>({
-  responseType: 'json',
   url: '/api/password/{token}',
   ...options,
   headers: {
@@ -1455,11 +1330,7 @@ export const createPasswordReminder = <ThrowOnError extends boolean = false>(opt
 /**
  * Paginated published student reviews.
  */
-export const listPublicReviews = <ThrowOnError extends boolean = false>(options?: Options<ListPublicReviewsData, ThrowOnError>): RequestResult<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/api/reviews',
-  ...options
-});
+export const listPublicReviews = <ThrowOnError extends boolean = false>(options?: Options<ListPublicReviewsData, ThrowOnError>): RequestResult<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError>({ url: '/api/reviews', ...options });
 
 /**
  * Log out; ends the session.
@@ -1479,7 +1350,6 @@ export const deleteSession = <ThrowOnError extends boolean = false>(options?: Op
  * Log in with email + password; starts the session.
  */
 export const createSession = <ThrowOnError extends boolean = false>(options: Options<CreateSessionData, ThrowOnError>): RequestResult<CreateSessionResponses, CreateSessionErrors, ThrowOnError> => (options.client ?? client).post<CreateSessionResponses, CreateSessionErrors, ThrowOnError>({
-  responseType: 'json',
   url: '/api/session',
   ...options,
   headers: {
@@ -1492,7 +1362,6 @@ export const createSession = <ThrowOnError extends boolean = false>(options: Opt
  * Sign up; starts the session on success.
  */
 export const createUser = <ThrowOnError extends boolean = false>(options: Options<CreateUserData, ThrowOnError>): RequestResult<CreateUserResponses, CreateUserErrors, ThrowOnError> => (options.client ?? client).post<CreateUserResponses, CreateUserErrors, ThrowOnError>({
-  responseType: 'json',
   url: '/api/users',
   ...options,
   headers: {
