@@ -680,3 +680,45 @@ fixtures grant no blog post update, so none were rewritten. The admin screen
 replaces the state select with buttons for the transitions legal from the current
 state; the frontend table mirrors the server's only to pick the buttons.
 
+### Banners, reviews and landing pages (#862)
+
+The three other resources with a Publication State follow the pattern as written,
+with these settled in the slice:
+
+- **One table.** The legal moves are no longer written per resource: `Publish`,
+  `Unpublish` and `Archive` live once in `internal/transitions` over a
+  `PublicationState` (`draft`, `published`, `archived`, the string column every
+  one of these resources stores), with `CurrentOf` reading a nullable column as a
+  draft. Blog posts use them too. The frontend mirrors them once in
+  `src/lib/publicationState.ts`, and one `PublicationStatePanel` renders the
+  badge and the legal buttons for all four resources; each resource's own panel
+  only binds its three generated mutations.
+- **Operations and Permissions** are named like the blog post's:
+  `adminPublishBanner`, `adminUnpublishReview`, `adminArchiveCourseLandingPage`,
+  and `banners.publish`, `reviews.unpublish`, `course_landing_pages.archive`, kind
+  `write`, `POST /admin/<resource>/{id}/publish|unpublish|archive`.
+- **New records are drafts.** A banner takes the column default; a review and a
+  landing page, whose state column is nullable, are given `draft` explicitly, so
+  none is left stateless. `state` is skipped in the generated `SetInput`
+  (`AdminInputField{Skip: true}`) and absent from the three inputs and clients.
+- **Side effects.** None of the three is lost with the old update. What the public
+  sees is a query on the state column and nothing is copied or cached: the active
+  banner picks among the published banners of the locale whose window is open (so
+  publishing a banner outside its window shows nothing until the window opens;
+  the window is edited with the banner, not with its state); the public reviews
+  page lists the published reviews of the locale; and a landing page, through
+  `landingpages.Published`, appears in the catalog, on its Course Category pages
+  (through the category items it already has), in the Yandex feed and in the
+  sitemap, so publishing it lists it under its categories with no extra step.
+  Legacy additionally validated a description on a published landing page; the Go
+  update never enforced that or any presence rule of the page, so the transition
+  does not either (a decision for a ticket on page validation, not this one).
+- **Existing access is preserved**, by one migration per resource
+  (`banner_state_permissions`, `review_state_permissions`,
+  `course_landing_page_state_permissions`), each granting the three Permissions to
+  every role holding the matching `.update`. One test runs each over every
+  combination of holding update, an already-held publish and a bystander read,
+  twice. The fixtures gained an updater and a publisher role per resource to test
+  the split: a role that edits cannot publish, one that publishes can neither
+  edit nor unpublish nor archive.
+
