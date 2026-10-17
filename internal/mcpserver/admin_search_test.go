@@ -55,7 +55,11 @@ func (c searchCase) args(q string) map[string]any {
 
 func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
+	// The list a caller gets holds the tools it may call, so it holds them all.
+	o.Grant(editor, "mcp.read", "mcp.manage")
+	for _, c := range searchCases {
+		o.Grant(editor, c.permission)
+	}
 	session, _ := admin(t, o, bob)
 
 	tools, err := session.ListTools(t.Context(), nil)
