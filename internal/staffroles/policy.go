@@ -23,8 +23,8 @@ var ErrForbidden = errors.New("staff permission is required")
 //
 // What an operation needs is the Permission it declares in the contract, which
 // the role must hold as a grant (ADR-0017). Anything that declares none, apart
-// from the any-staff upload, is for administrators only, so a new admin
-// operation is closed until someone classifies it.
+// from the operations declared open to any staff member, is for administrators
+// only, so a new admin operation is closed until someone classifies it.
 type Policy struct {
 	db *ent.Client
 }
@@ -65,9 +65,10 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 		return nil
 	}
 
-	if slices.Contains(anyStaffOperations, operation) {
+	if permissions.AccessOf(operation) == permissions.AnyStaff {
 		return nil
 	}
+	// Administrators-only, or declaring nothing: closed.
 	return ErrForbidden
 }
 
@@ -84,12 +85,10 @@ func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember
 	return staff, err
 }
 
-// IsClassified reports whether operation is classified: it declares a
-// Permission, or it is one of the any-staff operations. Administrators-only operations are listed
-// too, so a test can tell "closed on purpose" from "forgotten".
+// IsClassified reports whether operation says who may use it, by declaring a
+// Permission or an Access in the contract.
 func IsClassified(operation string) bool {
-	_, declared := permissions.For(operation)
-	return declared || slices.Contains(anyStaffOperations, operation) || adminOnly[operation]
+	return permissions.IsClassified(operation)
 }
 
 // OperationName turns an OpenAPI operationId (adminListBanners) into the ogen

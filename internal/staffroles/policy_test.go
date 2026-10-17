@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/permissions"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/testsupport"
 )
@@ -65,8 +66,9 @@ func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 }
 
 // TestEveryAdminOperationIsClassified fails when a new admin operation is added
-// to the contract without saying who may use it: it would be closed to staff
-// by default, which is safe but surprising.
+// to the contract without declaring a Permission (x-permission) or an Access
+// (x-access): it would be closed to staff by default, which is safe but
+// surprising.
 func TestEveryAdminOperationIsClassified(t *testing.T) {
 	raw, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
@@ -89,7 +91,8 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 			}
 		}
 	}
-	assert.Empty(t, unclassified, "classify these in staffroles/rules.go")
+	assert.Empty(t, unclassified,
+		"declare x-permission or x-access on these in api-spec/admin.tsp")
 }
 
 // A staff record loaded with the user is used as it is; the answer is the same
@@ -162,4 +165,33 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 			assert.NotErrorIs(t, err, staffroles.ErrForbidden)
 		})
 	}
+}
+
+// An operation declared for administrators only is refused to a staff member
+// whatever the role holds, and an administrator may still perform it.
+func TestAdministratorsOnlyOperationsAreClosedToStaff(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	bob := db.User.GetX(t.Context(), editorID)
+	alice := db.User.GetX(t.Context(), adminID)
+	staff := bob.QueryStaffMember().OnlyX(t.Context())
+	// Even a role holding every Permission of the catalog gets nothing here.
+	db.StaffRoleGrant.Delete().Where(staffrolegrant.RoleID(staff.RoleID)).ExecX(t.Context())
+	for _, p := range permissions.Catalog() {
+		db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission(p.Name).ExecX(t.Context())
+	}
+
+	for _, operation := range []string{
+		"AdminListUsers", "AdminUpdateRolePermissions", "AdminListPermissions", "AdminCreateCourseVersion",
+		"AdminCreateCategoryQnaItem", "AdminDeleteStaffMember",
+	} {
+		assert.Equal(t, permissions.Administrators, permissions.AccessOf(operation), operation)
+		assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", operation), staffroles.ErrForbidden, operation)
+		assert.NoError(t, policy.Allow(t.Context(), alice, "ru", operation), operation)
+	}
+}
+
+// The upload is declared open to any staff member, whatever the role holds.
+func TestUploadIsDeclaredOpenToAnyStaffMember(t *testing.T) {
+	assert.Equal(t, permissions.AnyStaff, permissions.AccessOf("AdminUploadAttachment"))
 }

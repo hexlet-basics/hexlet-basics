@@ -48,7 +48,7 @@ model AttachmentUploadForm {
 interface AdminAttachments {
   /** Upload a file; returns the attachment to reference from a form. */
   @post
-  @operationId("adminUploadAttachment")
+  @extension("x-access", "any-staff") @operationId("adminUploadAttachment")
   upload(@header contentType: "multipart/form-data", @multipartBody body: AttachmentUploadForm): {
     @statusCode statusCode: 201;
     @body attachment: Attachment;
@@ -280,7 +280,7 @@ interface AdminCourses {
   @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "courses.update", kind: "write" }) @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Build a new version of the course exercises. */
-  @post @useAuth(AdminSession) @route("/{id}/versions") @operationId("adminCreateCourseVersion")
+  @post @useAuth(AdminSession) @route("/{id}/versions") @extension("x-access", "administrators") @operationId("adminCreateCourseVersion")
   createVersion(@path id: int32): {
     @statusCode statusCode: 201;
     @body version: CourseVersion;
@@ -349,36 +349,36 @@ model QnaItemInput {
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPageQnaItems {
-  @get @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
+  @post @useAuth(AdminSession) @extension("x-access", "administrators") @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/course_categories/{categoryId}/qna_items")
 @tag("Admin: Course Categories")
 @useAuth(AdminSession)
 interface AdminCourseCategoryQnaItems {
-  @get @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[] | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
+  @post @useAuth(AdminSession) @extension("x-access", "administrators") @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -438,27 +438,27 @@ model UserInput {
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminUsers {
-  @get @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Typeahead search by name/email. */
-  @get @route("/search") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/search") @extension("x-access", "administrators") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a single user. A missing id surfaces as 404 via the central ent-error
       handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-access", "administrators") @operationId("adminGetUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @operationId("adminCreateUser") create(@body body: UserInput): {
+  @post @useAuth(AdminSession) @extension("x-access", "administrators") @operationId("adminCreateUser") create(@body body: UserInput): {
     @statusCode statusCode: 201;
     @body user: UserCrud;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Update a user. 404 (missing) and 409 (duplicate email) both flow through
       the central ent-error handler. */
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -474,22 +474,22 @@ model RoleInput {
 @tag("Admin: Roles")
 @useAuth(AdminSession)
 interface AdminRoles {
-  @get @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a role with its permission matrix. A missing id surfaces as 404 via
       the central ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-access", "administrators") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Create a role. A duplicate name is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
-  @post @useAuth(AdminSession) @operationId("adminCreateRole") create(@body body: RoleInput): {
+  @post @useAuth(AdminSession) @extension("x-access", "administrators") @operationId("adminCreateRole") create(@body body: RoleInput): {
     @statusCode statusCode: 201;
     @body role: StaffRoleDetail;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 /** One permission row to set on a role. */
@@ -522,7 +522,7 @@ model PermissionCatalog {
 @useAuth(AdminSession)
 interface AdminPermissions {
   /** The catalog of Permissions, generated from the operations' declarations. */
-  @get @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/role_permissions")
@@ -530,10 +530,10 @@ interface AdminPermissions {
 @useAuth(AdminSession)
 interface AdminRolePermissions {
   /** The permission matrix for a role. */
-  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{roleId}") @extension("x-access", "administrators") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Replace the permission matrix for a role. */
-  @put @useAuth(AdminSession) @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{roleId}") @extension("x-access", "administrators") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 model StaffMemberInput {
@@ -546,29 +546,29 @@ model StaffMemberInput {
 @tag("Admin: Staff Members")
 @useAuth(AdminSession)
 interface AdminStaffMembers {
-  @get @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | UnauthorizedError | ForbiddenError | ApiError;
 
-  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-access", "administrators") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
+  @post @useAuth(AdminSession) @extension("x-access", "administrators") @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
     @body staffMember: StaffMember;
   } | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/users")
 @tag("Admin: Users")
 @useAuth(AdminSession)
 interface AdminManagementUsers {
-  @get @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-access", "administrators") @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-access", "administrators") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | UnauthorizedError | ForbiddenError | ApiError;
 }

@@ -85,6 +85,16 @@ func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
 	})
 }
 
+func TestAnOperationReportsTheAccessItDeclaresInsteadOfAPermission(t *testing.T) {
+	assert.Equal(t, permissions.Administrators, permissions.AccessOf("AdminListRoles"))
+	assert.Equal(t, permissions.AnyStaff, permissions.AccessOf("AdminUploadAttachment"))
+	assert.Empty(t, permissions.AccessOf("AdminListBanners"), "a Permission is not an Access")
+
+	assert.True(t, permissions.IsClassified("AdminListBanners"))
+	assert.True(t, permissions.IsClassified("AdminListRoles"))
+	assert.False(t, permissions.IsClassified("AdminInventedOperation"))
+}
+
 func TestKnownTellsCatalogNamesFromInventedOnes(t *testing.T) {
 	assert.True(t, permissions.Known("blog_posts.delete"))
 	assert.False(t, permissions.Known("blog_posts.publish"))
@@ -109,6 +119,19 @@ paths:
     post:
       operationId: adminCreateX
       x-permission: {name: x.use, kind: write}`,
+		"unknown access": `
+paths:
+  /api/admin/x:
+    get:
+      operationId: adminListX
+      x-access: everyone`,
+		"permission and access together": `
+paths:
+  /api/admin/x:
+    get:
+      operationId: adminListX
+      x-permission: {name: x.read, kind: read}
+      x-access: administrators`,
 		"declaration without a name": `
 paths:
   /api/admin/x:
