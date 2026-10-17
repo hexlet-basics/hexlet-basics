@@ -442,52 +442,70 @@ func assistantMessageLessonName(source *ent.AiMessage) string {
 	return lessonProgressLessonName(source.Edges.Chat.Edges.LessonProgress)
 }
 
-// NilStringFromPtr bridges a nullable ent column to ogen's NilString.
-func NilStringFromPtr(v *string) api.NilString {
-	if v == nil {
-		return api.NilString{Null: true}
-	}
-	return api.NewNilString(*v)
+// nilSetter is what ogen's generated Nil* wrappers share: SetTo and SetToNull
+// on a pointer receiver.
+type nilSetter[V any, N any] interface {
+	*N
+	SetTo(V)
+	SetToNull()
 }
+
+// nilOf bridges a nullable ent column to the ogen Nil wrapper N of its value
+// type: null when v is nil, the value otherwise. Every NilXFromPtr below is
+// this with the contract type spelled out.
+func nilOf[V any, N any, P nilSetter[V, N]](v *V) N {
+	var out N
+	if v == nil {
+		P(&out).SetToNull()
+		return out
+	}
+	P(&out).SetTo(*v)
+	return out
+}
+
+// nilStringAs retypes a nullable ent string as a contract enum (or any
+// string-backed type), keeping nil as nil.
+func nilStringAs[V ~string](v *string) *V {
+	if v == nil {
+		return nil
+	}
+	return lo.ToPtr(V(*v))
+}
+
+// nilEnumOf is nilOf for a nullable ent string that the contract types as an
+// enum V.
+func nilEnumOf[V ~string, N any, P nilSetter[V, N]](v *string) N {
+	return nilOf[V, N, P](nilStringAs[V](v))
+}
+
+// nilInt32From narrows a nullable ent int to the contract's int32, keeping nil.
+func nilInt32From(v *int) *int32 {
+	if v == nil {
+		return nil
+	}
+	return lo.ToPtr(int32(*v))
+}
+
+// NilStringFromPtr bridges a nullable ent column to ogen's NilString.
+func NilStringFromPtr(v *string) api.NilString { return nilOf[string, api.NilString](v) }
 
 // NilInt32FromPtr bridges a nullable ent int to ogen's NilInt32.
-func NilInt32FromPtr(v *int) api.NilInt32 {
-	if v == nil {
-		return api.NilInt32{Null: true}
-	}
-	return api.NewNilInt32(int32(*v))
-}
+func NilInt32FromPtr(v *int) api.NilInt32 { return nilOf[int32, api.NilInt32](nilInt32From(v)) }
 
 // NilBoolFromPtr bridges a nullable ent bool column to ogen's NilBool.
-func NilBoolFromPtr(v *bool) api.NilBool {
-	if v == nil {
-		return api.NilBool{Null: true}
-	}
-	return api.NewNilBool(*v)
-}
+func NilBoolFromPtr(v *bool) api.NilBool { return nilOf[bool, api.NilBool](v) }
 
 // NilDateTimeFromPtr bridges a nullable ent time column to ogen's NilDateTime.
-func NilDateTimeFromPtr(v *time.Time) api.NilDateTime {
-	if v == nil {
-		return api.NilDateTime{Null: true}
-	}
-	return api.NewNilDateTime(*v)
-}
+func NilDateTimeFromPtr(v *time.Time) api.NilDateTime { return nilOf[time.Time, api.NilDateTime](v) }
 
 // NilLearnAsFromPtr bridges a nullable ent string to ogen's NilCourseLearnAs.
 func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {
-	if v == nil {
-		return api.NilCourseLearnAs{Null: true}
-	}
-	return api.NewNilCourseLearnAs(api.CourseLearnAs(*v))
+	return nilEnumOf[api.CourseLearnAs, api.NilCourseLearnAs](v)
 }
 
 // NilReadinessFromPtr bridges a nullable ent string to ogen's NilCourseReadiness.
 func NilReadinessFromPtr(v *string) api.NilCourseReadiness {
-	if v == nil {
-		return api.NilCourseReadiness{Null: true}
-	}
-	return api.NewNilCourseReadiness(api.CourseReadiness(*v))
+	return nilEnumOf[api.CourseReadiness, api.NilCourseReadiness](v)
 }
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.
@@ -503,10 +521,7 @@ func leadFullNameNull(*ent.Lead) api.NilString {
 
 // NilReviewStateFromPtr bridges a nullable ent string to ogen's NilReviewState.
 func NilReviewStateFromPtr(v *string) api.NilReviewState {
-	if v == nil {
-		return api.NilReviewState{Null: true}
-	}
-	return api.NewNilReviewState(api.ReviewState(*v))
+	return nilEnumOf[api.ReviewState, api.NilReviewState](v)
 }
 
 // LocaleFromPtr bridges a nullable ent locale column to the required contract
@@ -517,10 +532,7 @@ func LocaleFromPtr(v *string) api.Locale {
 
 // NilReviewLocaleFromPtr bridges a nullable ent string to ogen's NilReviewLocale.
 func NilReviewLocaleFromPtr(v *string) api.NilReviewLocale {
-	if v == nil {
-		return api.NilReviewLocale{Null: true}
-	}
-	return api.NewNilReviewLocale(api.ReviewLocale(*v))
+	return nilEnumOf[api.ReviewLocale, api.NilReviewLocale](v)
 }
 
 // joinName joins a first/last name pair with a single space, treating a nil
@@ -561,10 +573,7 @@ func reviewFullName(r *ent.Review) api.NilString {
 // NilLandingPageStateFromPtr bridges a nullable ent string to ogen's
 // NilLandingPageState.
 func NilLandingPageStateFromPtr(v *string) api.NilLandingPageState {
-	if v == nil {
-		return api.NilLandingPageState{Null: true}
-	}
-	return api.NewNilLandingPageState(api.LandingPageState(*v))
+	return nilEnumOf[api.LandingPageState, api.NilLandingPageState](v)
 }
 
 // courseDuration mirrors Language#duration: estimated hours from the lesson
