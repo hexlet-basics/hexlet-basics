@@ -1,4 +1,13 @@
-import { Container, Grid, Title, Typography, type TypographyProps } from "@mantine/core";
+import {
+  Box,
+  Container,
+  Grid,
+  TableOfContents,
+  Text,
+  Title,
+  Typography,
+  type TypographyProps,
+} from "@mantine/core";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import type { TFunction } from "i18next";
 import type { ComponentType } from "react";
@@ -122,22 +131,37 @@ function Show() {
   const Body = PAGES[i18n.language === "en" ? "en" : "ru"][id];
 
   return (
-    <>
-      {/* Legacy ApplicationLayout's `header` block, centered. */}
-      <Container size="lg" my="xl">
-        <Title order={1} ta="center">
-          {pageMeta(t, id).title}
-        </Title>
-      </Container>
-      <Container size="xl">
-        <Grid justify="center" mb="xl">
-          <Grid.Col span={{ base: 12, md: 10, lg: 8 }}>
-            <Typography styles={typographyStyles}>
-              <Body />
-            </Typography>
-          </Grid.Col>
-        </Grid>
-      </Container>
-    </>
+    <Container size="lg" my="xl">
+      <Title order={1} mb="xl">
+        {pageMeta(t, id).title}
+      </Title>
+      {/* Keyed by page, so the contents are read again when the page changes. */}
+      <Grid key={id} gap="xl">
+        <Grid.Col span={{ base: 12, lg: 9 }}>
+          <Typography id="page-content" styles={typographyStyles}>
+            <Body />
+          </Typography>
+        </Grid.Col>
+        <Grid.Col span={3} visibleFrom="lg">
+          {/* The headings the page itself has: the legal texts use h3/h4 and the
+              rest h2, so the first level found is the top of the list. */}
+          <Box pos="sticky" top={80}>
+            <Text fw="bold" mb="xs">
+              {t(($) => $.common.tos)}
+            </Text>
+            <TableOfContents
+              variant="light"
+              size="sm"
+              minDepthToOffset={2}
+              scrollSpyOptions={{ selector: "#page-content :is(h2, h3)" }}
+              getControlProps={({ data }) => ({
+                onClick: () => data.getNode().scrollIntoView({ behavior: "smooth" }),
+                children: data.value,
+              })}
+            />
+          </Box>
+        </Grid.Col>
+      </Grid>
+    </Container>
   );
 }
