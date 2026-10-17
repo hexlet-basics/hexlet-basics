@@ -287,24 +287,32 @@ description = "oxlint, oxfmt check, and the TypeScript project build"
 run = ["pnpm lint", "pnpm format:check", "pnpm check"]
 
 ["lint:syntax"]
-description = "tree-sitter parses the TS/TSX, Go, YAML, TOML and JSON files and fails on a syntax error (independent of tsc, go vet and the other linters)"
+description = "tree-sitter parses the TS/TSX, JS, Go, Python, Ruby, CSS, HTML, ERB, YAML, TOML and JSON files and fails on a syntax error (independent of tsc, go vet and the other linters)"
 run = '''
 #!/usr/bin/env bash
 set -uo pipefail
 # One grammar per language, taken from the tree-sitter-* npm packages (the CLI compiles
 # them on first use). Exit status carries the result; the "no parser directories"
 # warning is noise. SQL and shell are left to atlas and shellcheck: their grammars flag
-# valid Postgres and nested bash expansions. Helm templates are Go-templated YAML, so they are not parsed.
+# valid Postgres and nested bash expansions. Skipped: Helm templates and Rails fixtures (templated YAML), Sorbet RBIs
+# (generated; they use `def self(...)`, which the Ruby grammar rejects), Terraform (no usable
+# HCL grammar package; `lint:infra` validates it) and Dockerfiles (no npm grammar).
 status=0
 check() {
   local grammar=$1; shift
   local out
-  out=$(git ls-files -z -- "$@" ':!legacy' ':!k8s/app-chart/templates' |
+  out=$(git ls-files -z -- "$@" ':!*/app-chart/templates' ':!legacy/sorbet/rbi' ':!legacy/test/fixtures' |
     xargs -0 -r tree-sitter parse --quiet --grammar-path "node_modules/$grammar" 2>&1 |
     grep -E 'ERROR|MISSING|Error' | grep -v 'parser directories') || true
   if [ -n "$out" ]; then echo "$out"; status=1; fi
 }
-check tree-sitter-typescript/tsx 'src/*.ts' 'src/*.tsx'
+check tree-sitter-typescript/tsx '*.ts' '*.tsx'
+check tree-sitter-javascript '*.js' '*.mjs' '*.cjs' '*.jsx'
+check tree-sitter-python '*.py'
+check tree-sitter-ruby '*.rb' '*.rbi' '*.rake'
+check tree-sitter-css '*.css'
+check tree-sitter-html '*.html'
+check tree-sitter-embedded-template '*.erb'
 check tree-sitter-go '*.go'
 check @tree-sitter-grammars/tree-sitter-yaml '*.yml' '*.yaml'
 check @tree-sitter-grammars/tree-sitter-toml '*.toml'

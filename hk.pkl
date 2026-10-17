@@ -76,6 +76,9 @@ hooks {
       ["lint-web"] {
         check = "mise run lint:web"
       }
+      ["lint-syntax"] {
+        check = "mise run lint:syntax"
+      }
       ["lint-adr"] {
         check = "mise run lint:adr"
       }
