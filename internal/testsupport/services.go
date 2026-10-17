@@ -16,8 +16,11 @@ import (
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
 	tracenoop "go.opentelemetry.io/otel/trace/noop"
 
+	"hexletbasics/ent"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 	"hexletbasics/internal/versionbuilds"
@@ -61,6 +64,27 @@ func NewServices(t *testing.T, tx *sql.Tx, transactor store.Transactor) *Service
 		Starter: versionbuilds.NewStarter(transactor, enqueuer),
 		Jobs:    enqueuer,
 	}
+}
+
+// Grant gives a Staff Role Permissions it did not hold, through the production
+// writer behind the roles screen (staffroles.Permissions). That writer sets a
+// role's grants exactly, so the grants the role holds are read back and kept.
+// Granting one the role already holds changes nothing.
+func Grant(t testing.TB, db *ent.Client, transactor store.Transactor, roleID int, permissions ...string) {
+	t.Helper()
+	held, err := db.StaffRoleGrant.Query().
+		Where(staffrolegrant.RoleID(roleID)).
+		Select(staffrolegrant.FieldPermission).
+		Strings(t.Context())
+	require.NoError(t, err)
+	require.NoError(t, staffroles.NewPermissions(db, transactor).Apply(t.Context(), roleID, append(held, permissions...)))
+}
+
+// Grant is Grant for a harness: the role's grants change in the test's
+// transaction, where the handlers see them.
+func (h *Harness) Grant(t testing.TB, roleID int, permissions ...string) {
+	t.Helper()
+	Grant(t, h.DB, h.Transactor, roleID, permissions...)
 }
 
 // RequireEnqueued asserts the queue holds exactly one job of kind's type and

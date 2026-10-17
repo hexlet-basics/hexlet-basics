@@ -119,6 +119,15 @@ func TestMigrationsCarryEveryMatrixRightIntoGrants(t *testing.T) {
 	}
 }
 
+// createRole makes a Staff Role the way an administrator does, through the
+// operation, and returns its id.
+func createRole(t *testing.T, h *testsupport.Harness, name string) int {
+	t.Helper()
+	role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{Name: name, Description: api.NilString{Null: true}})
+	require.NoError(t, err)
+	return int(role.ID)
+}
+
 func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened) {
 	t.Helper()
 	migration, err := os.ReadFile("../../migrations/" + file)
@@ -128,7 +137,10 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 
 	byBit := [][]string{ops.index, ops.create, ops.update, ops.destroy}
 
-	db, tx := testsupport.NewClientWithTx(t)
+	// The roles are made the way an administrator makes them, through the
+	// operation; the harness's transaction is the one the migration runs in.
+	h := testsupport.NewHarness(t)
+	db, tx := h.DB, h.Tx
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	// Start from the old shape: no grants, and the matrix table as the baseline
@@ -141,12 +153,11 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	require.NoError(t, err)
 
 	for mask := 0; mask < 1<<len(byBit); mask++ {
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
+		role := createRole(t, h, fmt.Sprintf("combo-%d", mask))
 		_, err = tx.ExecContext(t.Context(), `INSERT INTO "staff_member_role_permissions"
 			("role_id", "resource", "can_index", "can_create", "can_update", "can_destroy", "created_at", "updated_at")
 			VALUES ($1, $2, $3, $4, $5, $6, now(), now())`,
-			role.ID, resource, mask&1 != 0, mask&2 != 0, mask&4 != 0, mask&8 != 0)
+			role, resource, mask&1 != 0, mask&2 != 0, mask&4 != 0, mask&8 != 0)
 		require.NoError(t, err)
 	}
 	_, err = tx.ExecContext(t.Context(), data)
@@ -182,26 +193,23 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	migration, err := os.ReadFile("../../migrations/20261018100000_review_permissions.sql")
 	require.NoError(t, err)
 
-	db, tx := testsupport.NewClientWithTx(t)
+	h := testsupport.NewHarness(t)
+	db, tx := h.DB, h.Tx
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
 	const holdsCourses, holdsLessons = 1, 2
 	for mask := 0; mask < 4; mask++ {
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
 		// A bystander grant must survive untouched.
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.read").ExecX(t.Context())
+		grants := []string{"courses.read"}
 		if mask&holdsCourses != 0 {
-			//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("courses.update").ExecX(t.Context())
+			grants = append(grants, "courses.update")
 		}
 		if mask&holdsLessons != 0 {
-			//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-			db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("course_lessons.update").ExecX(t.Context())
+			grants = append(grants, "course_lessons.update")
 		}
+		h.Grant(t, createRole(t, h, fmt.Sprintf("combo-%d", mask)), grants...)
 	}
 	_, err = tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)

@@ -160,6 +160,23 @@ func repositoryRoot() (string, error) {
 	}
 }
 
+// Open returns a connection pool of its own to the package's disposable
+// database, closed when the test ends. Almost every test wants the rolled-back
+// transaction testsupport hands out instead; this is for the case where the
+// connection is the thing under test, such as which of two connections sees an
+// uncommitted write, or concurrent transactions racing for one row. Whatever
+// such a test commits stays in the package's database, so it must clean up
+// after itself.
+func Open(t testing.TB) *sql.DB {
+	t.Helper()
+	db, err := sql.Open("pgx", DatabaseURL())
+	if err != nil {
+		t.Fatalf("open test database: %v", err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	return db
+}
+
 func setupFailed(err error) int {
 	fmt.Fprintf(os.Stderr, "test database setup failed: %v\n", err)
 	return 1

@@ -224,3 +224,18 @@
   admin: false
   created_at: '2026-07-26 20:50:43'
   updated_at: '2026-07-26 20:50:43'
+
+# A second staff-bearing person who is also an administrator: user_admin_learner has no
+# staff record on purpose (it is the harness user and many cases lean on that) and
+# a staff record cannot be made for oneself, so a case about an administrator who
+# is staff signs in as this user. Staff on the editor role (staff_member_admin_staff).
+# Relied on by the audit trail, capability, self-protection and MCP cases.
+# It is the third administrator, so the cases about the last administrators clear
+# its flag first.
+- id: {{ id "user_admin_staff" }}
+  email: admin-staff@example.com
+  first_name: Admin
+  last_name: Staff
+  admin: true
+  created_at: '2026-07-26 20:50:44'
+  updated_at: '2026-07-26 20:50:44'

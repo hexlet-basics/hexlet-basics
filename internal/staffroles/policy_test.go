@@ -19,10 +19,14 @@ import (
 )
 
 // The fixtures seed user_staff_editor as an editor holding the blog_posts.read,
-// banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator.
+// banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator
+// without a staff record, user_admin_staff one with it.
 var (
 	adminID  = fixtures.ID(fixtures.UserAdminLearner)
 	editorID = fixtures.ID(fixtures.UserStaffEditor)
+	// An administrator who is also staff, on the editor role: the harness user
+	// has no staff record, and a staff record cannot be made for oneself.
+	adminStaffID = fixtures.ID(fixtures.UserAdminStaff)
 )
 
 func TestPolicyFollowsTheRolesGrants(t *testing.T) {
@@ -109,7 +113,7 @@ func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 // Each grant answers for its own operations: update and delete are refused
 // until the role is given them, and then allowed — and only them.
 func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := staffroles.NewPolicy(db)
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
@@ -117,8 +121,7 @@ func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateBlogPost"), staffroles.ErrForbidden)
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("blog_posts.update").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "blog_posts.update")
 	for _, operation := range []string{
 		"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses",
 	} {
@@ -126,8 +129,7 @@ func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
 	}
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("blog_posts.delete").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "blog_posts.delete")
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"))
 }
 
@@ -161,7 +163,7 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 // that operation. Nothing is open to a role that never held anything here, so the
 // existing roles lose and gain nothing.
 func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := staffroles.NewPolicy(db)
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
@@ -183,8 +185,7 @@ func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) 
 	}
 
 	for permission, operations := range former {
-		//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-		db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission(permission).ExecX(t.Context())
+		testsupport.Grant(t, db, transactor, staff.RoleID, permission)
 		for _, operation := range operations {
 			assert.NoError(t, policy.Allow(t.Context(), editor, "ru", operation), operation)
 		}
@@ -212,24 +213,21 @@ func TestAdministratorsKeepTheFormerAdministratorsOnlyOperations(t *testing.T) {
 // The review of a course and of a lesson is a Permission of its own: holding
 // update no longer opens it, holding review does not open update.
 func TestReviewIsSeparateFromUpdate(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := staffroles.NewPolicy(db)
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("courses.update").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "courses.update")
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateCourse"))
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminReviewCourse"), staffroles.ErrForbidden)
 
 	db.StaffRoleGrant.Delete().Where(staffrolegrant.RoleID(staff.RoleID), staffrolegrant.Permission("courses.update")).ExecX(t.Context())
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("courses.review").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "courses.review")
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminReviewCourse"))
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateCourse"), staffroles.ErrForbidden)
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("course_lessons.review").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "course_lessons.review")
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminReviewCourseLesson"))
 }
 
@@ -238,43 +236,37 @@ func TestReviewIsSeparateFromUpdate(t *testing.T) {
 // granting the capability to the role opens it. A user who is not staff has no
 // role to hold it, whatever the flag says.
 func TestAdministratorFlagDoesNotImplyCapabilities(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := staffroles.NewPolicy(db)
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	role := db.StaffRole.Create().SetName("operators").SaveX(t.Context())
-	alice := db.User.GetX(t.Context(), adminID)
 
 	// Not staff: refused, though an administrator.
+	alice := db.User.GetX(t.Context(), adminID)
 	for _, capability := range []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"} {
 		assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, capability), staffroles.ErrForbidden, capability)
 	}
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffMember.Create().SetUserID(adminID).SetRoleID(role.ID).SetAllowedLocales([]string{"ru"}).ExecX(t.Context())
-	alice = db.User.GetX(t.Context(), adminID)
-
-	assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, "mcp.read"), staffroles.ErrForbidden)
+	// An administrator who is staff, on a role that holds no capability.
+	staffAdmin := db.User.GetX(t.Context(), adminStaffID)
+	assert.ErrorIs(t, policy.HasCapability(t.Context(), staffAdmin, "mcp.read"), staffroles.ErrForbidden)
 	// The administrator still passes ordinary operation Permissions.
-	assert.NoError(t, policy.Allow(t.Context(), alice, "es", "AdminListBlogPosts"))
-	assert.NoError(t, policy.Allow(t.Context(), alice, "ru", "AdminListUsers"))
+	assert.NoError(t, policy.Allow(t.Context(), staffAdmin, "es", "AdminListBlogPosts"))
+	assert.NoError(t, policy.Allow(t.Context(), staffAdmin, "ru", "AdminListUsers"))
 
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("mcp.read").ExecX(t.Context())
-	assert.NoError(t, policy.HasCapability(t.Context(), alice, "mcp.read"))
+	testsupport.Grant(t, db, transactor, staffAdmin.QueryStaffMember().OnlyX(t.Context()).RoleID, "mcp.read")
+	assert.NoError(t, policy.HasCapability(t.Context(), staffAdmin, "mcp.read"))
 	// One capability does not open another.
-	assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, "mcp.write"), staffroles.ErrForbidden)
+	assert.ErrorIs(t, policy.HasCapability(t.Context(), staffAdmin, "mcp.write"), staffroles.ErrForbidden)
 }
 
 // A staff member who is not an administrator is given a capability the same way.
 func TestAStaffRoleHoldsCapabilitiesThroughGrants(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := staffroles.NewPolicy(db)
 	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	assert.ErrorIs(t, policy.HasCapability(t.Context(), editor, "audit.read"), staffroles.ErrForbidden)
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("audit.read").ExecX(t.Context())
+	testsupport.Grant(t, db, transactor, staff.RoleID, "audit.read")
 	assert.NoError(t, policy.HasCapability(t.Context(), editor, "audit.read"))
 }
 
