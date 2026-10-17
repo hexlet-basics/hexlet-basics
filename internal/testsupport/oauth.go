@@ -193,7 +193,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	if limits.Now == nil {
 		limits.Now = func() time.Time { return o.now }
 	}
-	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Learner: handler, API: handlers.NewAdminDispatcher(apiServer, translator), Issuer: OAuthIssuer, Limits: limits})
+	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Learner: handler, Capabilities: handler.Security(), API: handlers.NewAdminDispatcher(apiServer, translator), Issuer: OAuthIssuer, Limits: limits})
 	require.NoError(t, err)
 	// The attachment and webhook handlers are not under test; their routes are
 	// registered but never requested.

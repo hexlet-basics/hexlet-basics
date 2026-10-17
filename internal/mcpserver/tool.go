@@ -75,14 +75,16 @@ func errNotFound(what string) error { return userError{fmt.Errorf("%s not found"
 // order: the Scope and the rate limit of its Class (admit), a context that ends
 // after the call timeout, the body, and the response size limit.
 func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context.Context, c call) (result, error)) {
-	server.AddTool(&mcp.Tool{
+	tool := &mcp.Tool{
 		Name:         spec.name,
 		Title:        spec.title,
 		Description:  spec.description,
 		InputSchema:  spec.input,
-		OutputSchema: withTruncation(spec.output),
+		OutputSchema: withTruncation(outputShape(spec.output)),
 		Annotations:  annotations(spec.class),
-	}, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	}
+	s.note(tool, toolNeeds{scope: spec.scope})
+	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		userID, clientID, denied := s.admit(req, spec.scope, spec.class)
 		if denied != nil {
 			return denied, nil
@@ -111,7 +113,17 @@ func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context
 
 // annotations marks what a client may assume about the Class.
 func annotations(class Class) *mcp.ToolAnnotations {
-	return &mcp.ToolAnnotations{ReadOnlyHint: class != ClassWrite}
+	return hints(class != ClassWrite, false, class != ClassWrite)
+}
+
+// hints is a tool's annotations with all four hints set. The protocol's defaults
+// (destructive and open-world both true) are the unsafe ones, so a tool that
+// leaves one unset is described as the worst it could be, and a client may ask
+// its user to confirm a read. Nothing here reaches outside the site's own
+// database, so open-world is false everywhere.
+func hints(readOnly, destructive, idempotent bool) *mcp.ToolAnnotations {
+	closedWorld := false
+	return &mcp.ToolAnnotations{ReadOnlyHint: readOnly, DestructiveHint: &destructive, IdempotentHint: idempotent, OpenWorldHint: &closedWorld}
 }
 
 // finish turns a body's result into the tool result, within the size limit.

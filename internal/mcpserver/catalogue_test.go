@@ -125,8 +125,8 @@ func TestEveryCatalogueToolIsReadOnlyAndNamedAfterItsOperation(t *testing.T) {
 
 	var names []string
 	for _, tool := range tools.Tools {
-		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) {
-			continue // the admin tools are tested in admin_test.go
+		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) || tool.Name == "findTools" {
+			continue // the admin tools are tested in admin_test.go, the lookup in discovery_test.go
 		}
 		names = append(names, tool.Name)
 		assert.True(t, tool.Annotations.ReadOnlyHint, tool.Name)
@@ -251,7 +251,7 @@ func TestEveryCatalogueToolRefusesAConnectionWithoutTheCatalogReadScope(t *testi
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 	for _, tool := range tools.Tools {
-		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) {
+		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) || tool.Name == "findTools" {
 			continue
 		}
 		result := callTool(t, session, tool.Name, map[string]any{"slug": "x", "courseSlug": "x"})

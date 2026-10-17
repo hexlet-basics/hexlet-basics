@@ -72,6 +72,8 @@ func assertRefused(t *testing.T, result *mcp.CallToolResult) {
 
 func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+	// The list shows what the role may be offered, so give it every capability.
+	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
 	session, _ := admin(t, o, bob)
 
 	tools, err := session.ListTools(t.Context(), nil)
@@ -98,6 +100,7 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 
 func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
 	session, _ := admin(t, o, bob)
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
@@ -465,14 +468,13 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 	// A role with nothing: bob's grants are removed, and no mcp.* is held.
 	o.DB.StaffRoleGrant.Delete().ExecX(t.Context())
 	session, _ := admin(t, o, bob)
-	tools, err := session.ListTools(t.Context(), nil)
-	require.NoError(t, err)
+	// The tools come from the contract, not from the list: a role with nothing is
+	// not shown the admin tools (#878), and hiding is no authorization, so every
+	// one is called by name all the same.
+	tools := mcpserver.AdminToolsFromTheContract(t)
 
 	checked := 0
-	for _, tool := range tools.Tools {
-		if !strings.HasPrefix(tool.Name, "admin") {
-			continue
-		}
+	for _, tool := range tools {
 		checked++
 		result := call(t, session, tool.Name, sampleArguments(t, tool))
 		assertRefused(t, result)

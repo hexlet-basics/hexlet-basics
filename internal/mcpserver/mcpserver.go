@@ -99,6 +99,10 @@ type Deps struct {
 	// Limits are the page, response, timeout and rate limits of the tools; a
 	// zero field takes its default.
 	Limits Limits
+	// Capabilities tells which capability Permissions a user holds, so `tools/list`
+	// can leave out the admin tools a call would be refused. Optional: without it
+	// the list is narrowed by Scope only.
+	Capabilities Capabilities
 }
 
 // Server is the MCP endpoint.
@@ -108,6 +112,8 @@ type Server struct {
 	limits   Limits
 	meter    *meter
 	handler  http.Handler
+	// registry is every tool with what it needs, for the list filter and findTools.
+	registry []listedTool
 }
 
 // New builds the endpoint. It fails when a tool's output schema cannot be built
@@ -120,7 +126,12 @@ func New(deps Deps) (*Server, error) {
 	limits := deps.Limits.withDefaults()
 	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
 
-	mcpServer := mcp.NewServer(&mcp.Implementation{Name: "hexlet-basics", Title: "Hexlet Basics"}, nil)
+	mcpServer := mcp.NewServer(&mcp.Implementation{Name: serverName, Title: "Hexlet Basics"}, &mcp.ServerOptions{
+		Instructions: instructionsText,
+		// A tool list differs by caller, so it is private to the one that asked.
+		SetCacheable: markPrivate,
+	})
+	mcpServer.AddReceivingMiddleware(s.filterToolList)
 	if err := s.addCatalogueTools(mcpServer); err != nil {
 		return nil, err
 	}
@@ -132,6 +143,8 @@ func New(deps Deps) (*Server, error) {
 			return nil, err
 		}
 	}
+
+	s.addFindTools(mcpServer)
 
 	// Stateless: one request, one response, no sessions and no long-lived
 	// streams, so the load is that of any other API call (ADR-0021). JSON

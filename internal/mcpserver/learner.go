@@ -61,18 +61,16 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 		{toolSpec{
 			name:  myDashboardTool,
 			title: "My courses",
-			description: "Lists the signed-in learner's own courses: each Enrollment with its state " +
-				"(started or finished), Completion (percent of the course's current lessons finished) " +
-				"and next lesson, plus the catalogue card of each course.",
+			description: "Lists the signed-in learner's own courses: each Enrollment's state, " +
+				"Completion and next lesson, with the course card.",
 			input:  object(map[string]any{}),
 			output: dashboardSchema,
 		}, s.myDashboard},
 		{toolSpec{
 			name:  myCourseProgressTool,
 			title: "My progress in a course",
-			description: "Where the signed-in learner stands in one course: the Enrollment state, Completion, " +
-				"the Next Lesson (the first unfinished lesson in course order, where they resume) and the " +
-				"Lesson Progress of every current lesson as finished, started or not started.",
+			description: "Where the signed-in learner stands in one course: Enrollment state, Completion, " +
+				"Next Lesson and the Lesson Progress of every lesson.",
 			input: object(map[string]any{"courseSlug": courseSlug}, "courseSlug"),
 			output: object(map[string]any{
 				"courseSlug": map[string]any{"type": "string"},
@@ -89,9 +87,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 		{toolSpec{
 			name:  myLessonProgressTool,
 			title: "My progress in a lesson",
-			description: "The signed-in learner's Lesson Progress in one lesson (finished, started or not started) " +
-				"and the outcome of their checks: passedCheck is true once a check passed. A failed attempt " +
-				"leaves the lesson started; the platform keeps neither the submitted code nor the check output.",
+			description: "The signed-in learner's progress in one lesson: finished, started or not started, " +
+				"and passedCheck once a check passed.",
 			input: object(map[string]any{
 				"courseSlug": courseSlug,
 				"lessonSlug": slugArg("The lesson's slug within the course."),

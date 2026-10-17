@@ -79,3 +79,36 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 	}
 	return ctx, err
 }
+
+// HeldCapabilities lists the capability Permissions the user's Staff Role holds,
+// for the MCP tool list to leave out the admin tools a call would be refused
+// (#878). It asks Policy.HasCapability, the check authorizeMCP makes on every
+// call, so the list and the call agree, and it does not count the administrator
+// flag, which the call does not either.
+//
+// It is a convenience only: nothing here authorizes anything, and a user who is
+// gone or has no Staff Role holds nothing.
+func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, error) {
+	u, err := accounts.ActiveUserByID(ctx, s.db, userID)
+	if ent.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("load user for capabilities: %w", err)
+	}
+	held := []string{}
+	for _, permission := range permissions.Catalog() {
+		if !permission.Capability {
+			continue
+		}
+		err := s.policy.HasCapability(ctx, u, permission.Name)
+		if errors.Is(err, staffroles.ErrForbidden) {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("check capability %s: %w", permission.Name, err)
+		}
+		held = append(held, permission.Name)
+	}
+	return held, nil
+}

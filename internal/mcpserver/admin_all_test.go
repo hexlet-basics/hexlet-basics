@@ -67,11 +67,11 @@ func TestEveryAdminToolSchemaBuildsAndAcceptsAnExample(t *testing.T) {
 }
 
 // The tool list is what an agent loads into its context on every connection, so
-// its size is a budget: about 225 KB for the 86 admin tools when this limit was
-// set (the input and output schemas dominate). Growing past it is a decision to
-// make on purpose, not a side effect of a contract change.
+// its size is a budget: 79 KB for the 87 admin tools when this limit was set (it
+// was 229 KB before #878 trimmed the schemas and descriptions). Growing past it is
+// a decision to make on purpose, not a side effect of a contract change.
 func TestTheAdminToolListStaysWithinItsSizeBudget(t *testing.T) {
-	const budget = 300 * 1024
+	const budget = 90 * 1024
 	total := 0
 	for _, tool := range mcpserver.AdminToolsFromTheContract(t) {
 		raw, err := json.Marshal(tool)

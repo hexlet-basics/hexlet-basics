@@ -19,32 +19,11 @@ const truncationKey = "truncation"
 // must not become the thing that fills the result.
 const maxListedCuts = 6
 
-// truncationSchema describes the hint, for the output schemas.
-var truncationSchema = map[string]any{
-	"type":        "object",
-	"description": "Present only when the response was cut to stay within the size limit: says what was cut and how to read the rest.",
-	"properties": map[string]any{
-		"truncated": map[string]any{"type": "boolean"},
-		"limitBytes": map[string]any{
-			"type": "integer", "description": "The response size limit that was applied.",
-		},
-		"cuts": map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type": "object",
-				"properties": map[string]any{
-					"path":  map[string]any{"type": "string", "description": "Where in the result, as dot-separated keys and array indexes."},
-					"kept":  map[string]any{"type": "integer"},
-					"total": map[string]any{"type": "integer"},
-					"unit":  map[string]any{"type": "string", "enum": []string{"items", "bytes"}},
-				},
-			},
-		},
-		"suggestedPage":    map[string]any{"type": "integer", "description": "For a list: the page to ask for next, together with suggestedPerPage, to continue without a gap (it may repeat a few records already seen)."},
-		"suggestedPerPage": map[string]any{"type": "integer", "description": "For a list: a page size that fits the limit."},
-		"hint":             map[string]any{"type": "string"},
-	},
-}
+// truncationSchema describes the hint, for the output schemas. It is the
+// property and its type only: the same paragraph on each of 90 tools was a
+// tenth of the tool list, so what the hint contains is told once, in the
+// server's instructions, and every schema points there (#878).
+var truncationSchema = map[string]any{"type": "object"}
 
 // withTruncation adds the optional `truncation` property to an output schema.
 // The contract's own schemas are closed objects, and a result that carries a

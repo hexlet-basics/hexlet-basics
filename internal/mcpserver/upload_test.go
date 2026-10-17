@@ -67,6 +67,7 @@ func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) 
 
 func TestUploadToolOfferedWithTheContractsPartAndLimits(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+	o.Grant(editor, "mcp.write")
 	session, _ := admin(t, o, bob)
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)

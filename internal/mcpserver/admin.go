@@ -18,6 +18,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/permissions"
 )
 
@@ -166,9 +167,31 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 		if err != nil {
 			return fmt.Errorf("admin tool %s: %w", id, err)
 		}
+		s.note(tool, adminNeeds(op))
 		server.AddTool(tool, s.adminHandler(op))
 	}
 	return nil
+}
+
+// adminNeeds is what the checkpoint will ask of a caller of the operation, as
+// the list filter and findTools show it: the admin Scope, the operation's
+// Permission, and the capability Permissions: the ones every MCP call needs
+// (mcp.read or mcp.write by kind, mcp.manage where declared) and the operation's
+// own Permission when it is one (the audit trail's audit.read).
+func adminNeeds(op *operation) toolNeeds {
+	needs := toolNeeds{scope: oauthserver.ScopeAdmin}
+	if requirement, ok := permissions.For(op.ogenName()); ok {
+		needs.permission = requirement.Permission
+		if permissions.IsCapability(requirement.Permission) {
+			needs.capabilities = append(needs.capabilities, requirement.Permission)
+		}
+	}
+	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+		if !slices.Contains(needs.capabilities, capability) {
+			needs.capabilities = append(needs.capabilities, capability)
+		}
+	}
+	return needs
 }
 
 // adminTool describes an operation as a tool: named after its operationId, with
@@ -223,13 +246,12 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 
 	tool := &mcp.Tool{
 		Name:        op.ID,
-		Title:       op.ID,
 		Description: describe(op),
-		InputSchema: input,
+		InputSchema: trimInput(input).(map[string]any),
 		Annotations: adminAnnotations(op),
 	}
 	if op.Response != nil {
-		tool.OutputSchema = withTruncation(wrapObject(op.Response))
+		tool.OutputSchema = withTruncation(outputShape(wrapObject(op.Response)))
 	}
 	return tool, nil
 }
@@ -240,7 +262,10 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 // an agent learns why a refusal came without making the call: the operation's
 // Permission and, over MCP, mcp.manage where the contract declares it.
 func describe(op *operation) string {
-	text := strings.Join(strings.Fields(op.Description), " ")
+	// Only the contract's first sentence: the rest says how errors surface, which
+	// a refusal tells an agent when it matters, and clients cut a description at a
+	// fixed length from its start.
+	text := firstSentence(op.Description, maxToolDescription)
 	if text == "" {
 		words := camelWords(strings.TrimPrefix(op.ID, "admin"))
 		text = strings.ToUpper(words[:1]) + words[1:] + "."
@@ -291,13 +316,9 @@ func wrapObject(schema map[string]any) map[string]any {
 // is what the contract's own write classification falls back to as well.
 func adminAnnotations(op *operation) *mcp.ToolAnnotations {
 	if op.Method == http.MethodGet {
-		return &mcp.ToolAnnotations{ReadOnlyHint: true}
+		return hints(true, false, true)
 	}
-	destructive := op.Method == http.MethodDelete
-	return &mcp.ToolAnnotations{
-		DestructiveHint: &destructive,
-		IdempotentHint:  op.Method == http.MethodPut || op.Method == http.MethodDelete,
-	}
+	return hints(false, op.Method == http.MethodDelete, op.Method == http.MethodPut || op.Method == http.MethodDelete)
 }
 
 // adminHandler is a tool call: the arguments become an HTTP request that is

@@ -82,7 +82,7 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 	}{
 		{listCoursesTool, toolSpec{
 			title:       "List courses",
-			description: "Lists the published Hexlet Basics courses in catalogue order, with their slug, name, duration and enrollment count. The slug of an item is the one getCourse takes.",
+			description: "Lists the published courses in catalogue order. An item's slug is the one getCourse takes.",
 			input:       object(s.pageProperties()),
 		}, s.listCourses},
 		{listCategoriesTool, toolSpec{
@@ -97,14 +97,14 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		}, s.getCategory},
 		{getCourseTool, toolSpec{
 			title: "Get a course",
-			description: "A course page: the course, its landing copy, its lessons in order and its modules. " +
-				"The slug is the one of the course's landing page in the request locale, as listCourses returns it (for example javascript-ru), not the course's own slug.",
+			description: "A course page: the course, its landing copy, lessons in order and modules. " +
+				"The slug is the landing page's, as listCourses returns it (javascript-ru).",
 			input: object(map[string]any{"slug": slugArg("The landing page slug, as listCourses returns it.")}, "slug"),
 		}, s.getCourse},
 		{getCourseLessonTool, toolSpec{
 			title: "Get a lesson",
-			description: "A lesson's content: its instructions and theory, its starter code, reference solution and test code, and its lesson list. " +
-				"courseSlug is the course's own slug (the course.slug of getCourse's result), not a landing page slug; slug is the lesson's slug from the course's lesson list.",
+			description: "A lesson: instructions, theory, starter code, reference solution and tests. " +
+				"courseSlug is the course's own (course.slug of getCourse), not a landing page slug.",
 			input: object(map[string]any{
 				"courseSlug": slugArg("The course's own slug (course.slug in getCourse)."),
 				"slug":       slugArg("The lesson's slug, from the lessons of getCourse."),
