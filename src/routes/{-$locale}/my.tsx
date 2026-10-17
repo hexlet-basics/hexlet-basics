@@ -3,6 +3,7 @@ import {
   Anchor,
   Card,
   Container,
+  EmptyState,
   Group,
   Image,
   Progress,
@@ -11,7 +12,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { IconMessage2 } from "@tabler/icons-react";
+import { IconBooks, IconMessage2 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { getMyDashboardOptions } from "@/client/@tanstack/react-query.gen";
@@ -92,7 +93,9 @@ function My() {
       <Title order={2} my="xl">
         {t(($) => $.my.show.started)}
       </Title>
-      {startedEnrollments.length === 0 && <Text c="dimmed">{t(($) => $.common.empty)}</Text>}
+      {startedEnrollments.length === 0 && (
+        <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
+      )}
 
       <SimpleGrid cols={{ base: 1, xs: 2 }}>
         {startedEnrollments.map((enrollment) => {
@@ -125,7 +128,9 @@ function My() {
         </Alert>
       )}
 
-      {finishedEnrollments.length === 0 && <Text c="dimmed">{t(($) => $.common.empty)}</Text>}
+      {finishedEnrollments.length === 0 && (
+        <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
+      )}
 
       <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
         {finishedEnrollments.map((enrollment) => {

@@ -1,4 +1,13 @@
-import { Group, Pagination, Skeleton, Stack, Table, Text, UnstyledButton } from "@mantine/core";
+import {
+  EmptyState,
+  Group,
+  Pagination,
+  Skeleton,
+  Stack,
+  Table,
+  UnstyledButton,
+} from "@mantine/core";
+import { IconDatabaseOff } from "@tabler/icons-react";
 import {
   type ColumnDef,
   flexRender,
@@ -120,9 +129,12 @@ export function CrudList<T extends RowData>({
             ) : data.length === 0 ? (
               <Table.Tr>
                 <Table.Td colSpan={columns.length}>
-                  <Text c="dimmed" ta="center" py="xl">
-                    {t(($) => $.admin.crud.empty)}
-                  </Text>
+                  <EmptyState
+                    icon={<IconDatabaseOff />}
+                    title={t(($) => $.admin.crud.empty)}
+                    size="sm"
+                    py="xl"
+                  />
                 </Table.Td>
               </Table.Tr>
             ) : (

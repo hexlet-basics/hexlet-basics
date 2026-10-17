@@ -3,13 +3,14 @@ import {
   Anchor,
   Card,
   Container,
+  EmptyState,
   Group,
   SimpleGrid,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
-import { IconUserCircle } from "@tabler/icons-react";
+import { IconMessageOff, IconUserCircle } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
@@ -80,6 +81,10 @@ function Index() {
             }}
           />
         </Alert>
+      )}
+
+      {data && reviews.length === 0 && (
+        <EmptyState icon={<IconMessageOff />} title={t(($) => $.common.empty)} />
       )}
 
       <SimpleGrid cols={{ base: 1, xs: 2 }}>

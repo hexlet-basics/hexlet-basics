@@ -101,3 +101,10 @@ test("the dashboard shows courses in progress with where to resume, and finished
   await expect.element(page.getByText("Variables →")).toBeVisible();
   await expect.element(page.getByText("Python")).toBeVisible();
 });
+
+test("a learner with no courses sees an empty state under both headings", async () => {
+  await openMy({ startedEnrollments: [], finishedEnrollments: [], landingPagesByCourseId: {} });
+
+  await expect.element(page.getByText("Empty").first()).toBeVisible();
+  expect(page.getByText("Empty").elements()).toHaveLength(2);
+});

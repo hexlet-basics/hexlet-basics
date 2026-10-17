@@ -1,4 +1,5 @@
-import { Container, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Container, EmptyState, SimpleGrid, Stack, Title } from "@mantine/core";
+import { IconArticle } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -44,7 +45,7 @@ function Index() {
       </Stack>
 
       {posts.length === 0 ? (
-        <Text c="dimmed">{t(($) => $.blog_posts.index.empty)}</Text>
+        <EmptyState icon={<IconArticle />} title={t(($) => $.blog_posts.index.empty)} />
       ) : (
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {posts.map((post) => (
