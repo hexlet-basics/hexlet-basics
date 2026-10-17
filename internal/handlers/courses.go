@@ -89,7 +89,8 @@ type Server struct {
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover PostRemover
 	// permissions writes a role's grants.
-	permissions PermissionWriter
+	permissions    PermissionWriter
+	selfProtection SelfProtection
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
@@ -137,6 +138,7 @@ type Deps struct {
 	Assistant         *assistant.Chat
 	PostRemover       PostRemover
 	Permissions       PermissionWriter
+	SelfProtection    SelfProtection
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
 	LessonReviews     LessonReviewScheduler
@@ -190,6 +192,7 @@ func NewServer(deps Deps) *Server {
 		blogReader:        blogposts.NewReader(deps.DB, deps.Config.PublicURL),
 		blogLikes:         blogposts.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
+		selfProtection:    deps.SelfProtection,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
 		lessonReviews:     deps.LessonReviews,

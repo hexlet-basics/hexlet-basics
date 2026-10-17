@@ -55,6 +55,9 @@ func (s *Server) userCrud(ctx context.Context, id int) (*api.UserCrud, error) {
 
 // AdminCreateUser creates a user.
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
+	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), false, !req.Admin.Null && req.Admin.Value); err != nil {
+		return nil, protection(err)
+	}
 	row, err := s.userEditor.Create(ctx, userFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -68,20 +71,37 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 	return s.updateUser(ctx, int(params.ID), req)
 }
 
-// updateUser is the write the two admin surfaces over users share.
+// updateUser is the write the two admin surfaces over users share. The editor
+// stores the email the way registration does and refuses to take the flag from
+// the last administrator (ErrLastAdmin); here, before it runs, only an
+// administrator may change the administrator flag, and the refusal for the last
+// one is given its localized explanation.
 func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*api.UserCrud, error) {
-	row, err := s.userEditor.Update(ctx, id, userFieldsOf(req))
+	current, err := s.userDirectory.Get(ctx, id)
 	if err != nil {
 		return nil, err
+	}
+	admin := !req.Admin.Null && req.Admin.Value
+	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), isAdministrator(current), admin); err != nil {
+		return nil, protection(err)
+	}
+	row, err := s.userEditor.Update(ctx, id, userFieldsOf(req))
+	if err != nil {
+		return nil, lastAdminError(err)
 	}
 	item := s.conv.ToUserCrud(row)
 	return &item, nil
 }
 
-// AdminDeleteUser removes a user by id.
+// AdminDeleteUser removes a user by id. The actor's own account is not deleted
+// through the admin operations, and the last administrator is refused with a
+// localized explanation (the editor returns ErrLastAdmin).
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
+	if err := s.selfProtection.OwnAccountDeletion(actorOfRequest(ctx), int(params.ID)); err != nil {
+		return nil, protection(err)
+	}
 	if err := s.userEditor.Delete(ctx, int(params.ID)); err != nil {
-		return nil, err
+		return nil, lastAdminError(err)
 	}
 	return &api.AdminDeleteUserNoContent{}, nil
 }

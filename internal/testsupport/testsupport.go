@@ -47,6 +47,7 @@ import (
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/reviews"
+	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
@@ -274,6 +275,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover:       blogposts.NewRemover(transactor),
 		Permissions:       staffroles.NewPermissions(db, transactor),
+		SelfProtection:    selfprotection.NewGuard(db),
 		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
 		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),

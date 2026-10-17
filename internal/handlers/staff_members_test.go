@@ -60,14 +60,14 @@ func TestAdminCreateStaffMember(t *testing.T) {
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
 
 	created, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         fixtures.ID32(fixtures.UserAdminLearner), // user_admin_learner has no staff record yet
+		UserId:         fixtures.ID32(fixtures.UserWithPassword), // has no staff record yet; the caller (user_admin_learner) may not manage their own
 		RoleId:         fixtures.ID32(fixtures.StaffRoleEditor),
 		AllowedLocales: []string{"ru", "en", "es"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.NotZero(t, created.ID)
-	assert.Equal(t, "admin-learner@example.com", created.User.Email.Value)
+	assert.Equal(t, "with-password@example.com", created.User.Email.Value)
 	assert.Equal(t, "editor", created.Role.Name)
 	assert.Equal(t, []string{"ru", "en", "es"}, created.AllowedLocales)
 

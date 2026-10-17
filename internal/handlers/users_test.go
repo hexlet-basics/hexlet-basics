@@ -213,9 +213,11 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
+	// Deleting oneself is refused on its own account (self-protection_test.go);
+	// the last administrator is also protected from someone else.
 	err = h.Client.AdminDeleteUser(ctx, api.AdminDeleteUserParams{ID: int32(h.UserID)})
 	require.Error(t, err)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
 	// With a second administrator the same changes go through.
 	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(true).ExecX(ctx)

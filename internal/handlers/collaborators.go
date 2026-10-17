@@ -15,6 +15,7 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
+	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sitemap"
 )
 
@@ -40,6 +41,16 @@ type SitemapReader interface {
 // PermissionWriter writes what a role may do: its grants.
 type PermissionWriter interface {
 	Apply(ctx context.Context, roleID int, grants []string) error
+}
+
+// SelfProtection judges an actor's change to staff management: an
+// administrator-only flag, one's own Staff Member record, role grants and
+// account (the selfprotection module).
+type SelfProtection interface {
+	StaffRecordChange(ctx context.Context, actor selfprotection.Actor, recordID, newOwner int) error
+	OwnRoleGrants(ctx context.Context, actor selfprotection.Actor, roleID int) error
+	AdministratorFlag(actor selfprotection.Actor, was, will bool) error
+	OwnAccountDeletion(actor selfprotection.Actor, userID int) error
 }
 
 // CourseLister assembles the learner's dashboard courses.

@@ -48,5 +48,20 @@
   },
   "assistant.question": {
     "other": "El código del estudiante (su solución del ejercicio): {{.Code}}\n\nEl resultado de ejecutar el código del estudiante con las pruebas del ejercicio: {{.Output}}\n\nLa pregunta del estudiante: {{.Question}}"
+  },
+  "staff.own_record": {
+    "other": "No puedes cambiar tu propio registro de personal ni tu rol; pide ayuda a otro administrador"
+  },
+  "staff.own_role_grants": {
+    "other": "No puedes cambiar los permisos de tu propio rol de personal; pide ayuda a un administrador"
+  },
+  "users.own_account_deletion": {
+    "other": "No puedes eliminar tu propia cuenta aquí; pide ayuda a otro administrador"
+  },
+  "users.administrator_flag_restricted": {
+    "other": "Solo un administrador puede conceder o quitar la marca de administrador"
+  },
+  "users.last_administrator": {
+    "other": "No se puede eliminar ni degradar al último administrador"
   }
 }

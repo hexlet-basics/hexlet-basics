@@ -60,6 +60,10 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
+	if err := s.selfProtection.OwnRoleGrants(ctx, actorOfRequest(ctx), roleID); err != nil {
+		return nil, protection(err)
+	}
+
 	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
 		if errors.Is(err, staffroles.ErrUnknownPermission) {
 			return validationError("grants", err.Error()), nil
