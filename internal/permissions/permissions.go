@@ -59,6 +59,8 @@ type Declarations struct {
 	operations   map[string]Requirement
 	access       map[string]Access
 	capabilities map[string]Kind
+	adminWrite   map[string]bool
+	standalone   map[string]bool
 	catalog      []Permission
 }
 
@@ -87,19 +89,24 @@ func Parse(doc []byte) (*Declarations, error) {
 			Kind Kind   `yaml:"kind"`
 		} `yaml:"x-capabilities"`
 		Paths map[string]map[string]struct {
-			OperationID string `yaml:"operationId"`
-			Permission  *struct {
-				Name string `yaml:"name"`
-				Kind Kind   `yaml:"kind"`
-			} `yaml:"x-permission"`
-			Access Access `yaml:"x-access"`
+			OperationID string                `yaml:"operationId"`
+			Permission  *permissionDecl       `yaml:"x-permission"`
+			Access      Access                `yaml:"x-access"`
+			UnitOfWork  string                `yaml:"x-unit-of-work"`
+			Security    []map[string][]string `yaml:"security"`
 		} `yaml:"paths"`
 	}
 	if err := yaml.Unmarshal(doc, &spec); err != nil {
 		return nil, fmt.Errorf("parse OpenAPI: %w", err)
 	}
 
-	d := &Declarations{operations: map[string]Requirement{}, access: map[string]Access{}, capabilities: map[string]Kind{}}
+	d := &Declarations{
+		operations:   map[string]Requirement{},
+		access:       map[string]Access{},
+		capabilities: map[string]Kind{},
+		adminWrite:   map[string]bool{},
+		standalone:   map[string]bool{},
+	}
 	kinds := map[string]Kind{}
 	for _, c := range spec.Capabilities {
 		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
@@ -126,6 +133,18 @@ func Parse(doc []byte) (*Declarations, error) {
 				}
 				d.access[operationName(op.OperationID)] = op.Access
 			}
+			if op.UnitOfWork != "" {
+				if op.UnitOfWork != unitStandalone {
+					return nil, fmt.Errorf("%s: x-unit-of-work %q is not %s", where, op.UnitOfWork, unitStandalone)
+				}
+				if op.OperationID == "" {
+					return nil, fmt.Errorf("%s: x-unit-of-work needs an operationId", where)
+				}
+				d.standalone[operationName(op.OperationID)] = true
+			}
+			if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
+				d.adminWrite[operationName(op.OperationID)] = true
+			}
 			if op.Permission == nil {
 				continue
 			}
@@ -149,6 +168,51 @@ func Parse(doc []byte) (*Declarations, error) {
 	}
 	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
 	return d, nil
+}
+
+// unitStandalone is the only value of `x-unit-of-work`: the operation calls a
+// service outside the database, so the audit middleware must not hold a
+// transaction open around it.
+const unitStandalone = "standalone"
+
+// permissionDecl is the `x-permission` value of one operation.
+type permissionDecl struct {
+	Name string `yaml:"name"`
+	Kind Kind   `yaml:"kind"`
+}
+
+func permissionKind(p *permissionDecl) Kind {
+	if p == nil {
+		return ""
+	}
+	return p.Kind
+}
+
+// isAdminWrite is the one rule that says an operation changes data on the admin
+// surface, so the audit trail needs no list of its own. An operation is admin
+// when it requires the AdminSession security scheme or declares a Permission or
+// an Access (both only exist on admin operations). It is a write when its
+// declared Permission says so; one that declares only an Access (or nothing yet)
+// is judged by its HTTP method, so an operation marked administrators-only is
+// audited before #843 gives it a Permission, and stays audited after.
+func isAdminWrite(method string, security []map[string][]string, hasPermission, hasAccess bool, kind Kind) bool {
+	admin := hasPermission || hasAccess
+	for _, requirement := range security {
+		if _, ok := requirement["AdminSession"]; ok {
+			admin = true
+		}
+	}
+	if !admin {
+		return false
+	}
+	if kind != "" {
+		return kind == Write
+	}
+	switch strings.ToUpper(method) {
+	case "GET", "HEAD", "OPTIONS":
+		return false
+	}
+	return true
 }
 
 // operationName turns an OpenAPI operationId (adminListBanners) into the ogen
@@ -179,6 +243,43 @@ func IsClassified(operation string) bool {
 	_, hasPermission := declared.operations[operation]
 	return hasPermission || declared.access[operation] != ""
 }
+
+// IsAdminWrite reports whether an operation changes data on the admin surface:
+// the operations whose every call must leave an Audit Record (ADR-0017). It is
+// read from the contract's security requirement, Permission kind and HTTP
+// method, never from a Go list.
+func IsAdminWrite(operation string) bool {
+	return declared.IsAdminWrite(operation)
+}
+
+// AdminWrites lists every operation IsAdminWrite accepts, sorted, so a test can
+// walk the whole admin write surface.
+func AdminWrites() []string {
+	return declared.AdminWrites()
+}
+
+// Standalone reports whether an operation declares `x-unit-of-work: standalone`:
+// it calls a service outside the database (blob storage, a model, a mailer), so
+// it must not run inside a transaction held open for the call.
+func Standalone(operation string) bool {
+	return declared.Standalone(operation)
+}
+
+// IsAdminWrite is the package-level function over these declarations.
+func (d *Declarations) IsAdminWrite(operation string) bool { return d.adminWrite[operation] }
+
+// AdminWrites is the package-level function over these declarations.
+func (d *Declarations) AdminWrites() []string {
+	names := make([]string, 0, len(d.adminWrite))
+	for name := range d.adminWrite {
+		names = append(names, name)
+	}
+	slices.Sort(names)
+	return names
+}
+
+// Standalone is the package-level function over these declarations.
+func (d *Declarations) Standalone(operation string) bool { return d.standalone[operation] }
 
 // Catalog lists every declared Permission once, ordered by name so the roles
 // screen and the tests see a stable list.

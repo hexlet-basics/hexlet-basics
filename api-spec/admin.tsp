@@ -48,6 +48,9 @@ model AttachmentUploadForm {
 interface AdminAttachments {
   /** Upload a file; returns the attachment to reference from a form. */
   @post
+  // The handler writes to blob storage, so the audit middleware must not hold a
+  // database transaction open around it (ADR-0017, "external calls" addendum).
+  @extension("x-unit-of-work", "standalone")
   @extension("x-access", "any-staff") @operationId("adminUploadAttachment")
   upload(@header contentType: "multipart/form-data", @multipartBody body: AttachmentUploadForm): {
     @statusCode statusCode: 201;
