@@ -18,11 +18,8 @@ const post: BlogPost = {
   richBodyHtml: "<p>Hi</p>",
   readingTime: 1,
   likesCount: 0,
-  relatedCourseItemsCount: 0,
   relatedCourseIds: [],
-  coverThumbVariant: null,
-  coverListVariant: null,
-  coverMainVariant: null,
+  coverUrl: null,
   createdAt: "2026-01-01T00:00:00Z",
 };
 
