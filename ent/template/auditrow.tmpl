@@ -3,7 +3,7 @@ auditrow generates (*Client).AuditRow: load one row of any schema type by id and
 return its stored fields by column name. ent has no generic read of a row that is
 about to be deleted (a delete mutation carries only the id), so internal/audit
 calls this from its hook to keep what a delete destroyed in the Audit Record
-(ADR-0017: a change keeps old and new values). Generated, not listed by hand, so
+(ADR-0018: a change keeps old and new values). Generated, not listed by hand, so
 a new schema type is covered the moment it exists. Secrets are not filtered here:
 the hook consults AuditSecretFields and keeps those by name only.
 */}}

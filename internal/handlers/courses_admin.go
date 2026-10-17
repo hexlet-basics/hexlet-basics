@@ -64,7 +64,7 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 	return s.getAdminCourse(ctx, int32(row.ID))
 }
 
-// A state is not an update (ADR-0017, state transitions addendum): the Readiness
+// A state is not an update (ADR-0018, state transitions addendum): the Readiness
 // of a course moves only through the three operations below, each with its own
 // Permission. Any change between two distinct values is legal, so the tables in
 // internal/transitions differ from the Publication State's, but the refusal of a

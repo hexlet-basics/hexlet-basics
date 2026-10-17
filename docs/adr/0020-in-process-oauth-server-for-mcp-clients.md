@@ -5,11 +5,14 @@ status: accepted
 # An in-process OAuth 2.1 authorization server for MCP clients
 
 Amends [ADR-0001](0001-contract-first-pipeline-with-ogen.md),
-[ADR-0003](0003-jwt-auth-via-go-pkgz-auth.md) and
+[ADR-0017](0017-server-side-sessions.md) and
 [ADR-0015](0015-cutover-scope-and-api-prefix.md).
 
-Remote MCP clients (Claude Code, Cursor) cannot use the JWT cookie with its XSRF
-header; the MCP authorization specification (revision 2026-07-28) expects the
+(Written against ADR-0003's JWT cookie and rebased onto ADR-0017's server-side
+sessions, which replaced it; the reasoning below holds for the session cookie.)
+
+Remote MCP clients (Claude Code, Cursor) cannot use the session cookie, which
+a browser holds and a client has no way to obtain; the MCP authorization specification (revision 2026-07-28) expects the
 server to sit behind an OAuth 2.1 authorization server. We build one as a
 self-contained package, `internal/oauthserver`, inside `cmd/server`, on the
 `zitadel/oidc` `op` library. It owns its tables and configuration and reaches
@@ -25,7 +28,7 @@ process, so ADR-0010 is unchanged: no third runtime, no second database.
 
 - RFC 8414 metadata, advertising `registration_endpoint`, S256 as the only PKCE
   method, and `authorization_response_iss_parameter_supported`. Protected
-  resource metadata (RFC 9728) is the MCP endpoint's side (ADR-0018).
+  resource metadata (RFC 9728) is the MCP endpoint's side (ADR-0019).
 - PKCE S256 is mandatory for every client. Redirect URIs match exactly, except
   that a loopback redirect may use any port (RFC 8252), because native clients
   pick a free port per run.
@@ -72,9 +75,10 @@ and fixed paths that TypeSpec does not express, so they are hand-written, and
 that is deliberate: do not move them into the contract. What our own frontend
 calls is still contract-first (ADR-0011): the data behind the consent screen,
 approving or denying it, listing Connected Apps and revoking one are TypeSpec
-operations guarded by the session and XSRF schemes.
+operations guarded by the session scheme (the two writes also sit behind the
+pipeline's cross-origin protection, ADR-0017).
 
-**A second credential.** ADR-0003's cookie JWT is not the only credential
+**A second credential.** The session cookie (ADR-0017) is not the only credential
 anymore: an OAuth bearer token is accepted, but only on `/mcp`, never on an
 `/api` operation. A token whose subject is a client rather than a user is
 rejected there. The consent screen can only be completed with the cookie
@@ -84,7 +88,7 @@ domains signs in once more there.
 **Scopes.** A Scope records what a user consented to give a Connected App, and
 is deliberately coarse: `catalog:read`, `progress:read`, `admin`. What a call
 may actually do comes from the user's Permissions at the moment of the call
-(ADR-0017); a Scope can only narrow that, never widen it.
+(ADR-0018); a Scope can only narrow that, never widen it.
 
 ## Considered Options
 
@@ -147,8 +151,8 @@ What the first implementation settled, and where it stops short of the text abov
   so the default configuration needs none of them.
 - **Seam.** The package is given `oauthserver.Application`, which names the
   signed-in user. The consent screen's three operations are TypeSpec operations
-  under `/api/oauth/consents/{requestId}` (read; `approve` and `deny` need the
-  XSRF header too); the handlers call `Pending`, `Approve` and `Deny`. A test
+  under `/api/oauth/consents/{requestId}` (read; `approve` and `deny` are
+  also behind the cross-origin protection); the handlers call `Pending`, `Approve` and `Deny`. A test
   runs `go list -deps` and fails if the package depends on `internal/handlers`.
 - **ID-token signing key.** An Ed25519 key derived from the encryption secret,
   not a stored or per-process RSA key: every replica signs and verifies alike
@@ -213,7 +217,7 @@ What the first implementation settled, and where it stops short of the text abov
 
 - **Endpoint.** `POST /oauth/register` (RFC 7591, JSON in and out, `201` with `Cache-Control: no-store`), advertised as `registration_endpoint` in both metadata documents. It is ours entirely (`internal/oauthserver/registration.go`); the library has none. A client row is public by construction, so a registration can only ever produce a public client with the `authorization_code` and `refresh_token` grants and the `code` response type.
 - **Refusals** (`400`, RFC 7591 `invalid_redirect_uri` or `invalid_client_metadata`, nothing stored): a redirect URI that is not `https` or `http` on a loopback host (`localhost`, `127.0.0.0/8`, `::1`), is relative, has a custom scheme, a fragment, userinfo (the `http://127.0.0.1@evil` lookalike) or a wildcard (literal or `%2A`), or more than ten redirect URIs; any grant other than the two above, or `refresh_token` without `authorization_code`; any response type but `code`; a `token_endpoint_auth_method` other than `none`; any scope outside `catalog:read`, `progress:read`, `admin` and `offline_access` (`openid` and `profile` included: a client row cannot use them); a body that is not one JSON object, is not `application/json` (`415`) or exceeds 16 KiB (`413`). The request is judged by an allow-list of fields: `client_secret`, `audience`, `resource`, `client_id`, `jwks`, `software_statement`, `skip_consent` and any other unknown field are refused, never ignored, because a field ignored today could gain meaning by accident. Harmless descriptive metadata (`client_uri`, `logo_uri`, `tos_uri`, `policy_uri`, `contacts`, `software_id`, `software_version`, `application_type`) is accepted and dropped.
-- **Default scopes.** A registration that names no scope may later request `catalog:read` and `progress:read`: read-only, never `admin`, which a client must ask for by name (the user still consents, and their Permissions still decide, ADR-0017). The client row stores the custom Scopes only; `offline_access` is admitted for every client.
+- **Default scopes.** A registration that names no scope may later request `catalog:read` and `progress:read`: read-only, never `admin`, which a client must ask for by name (the user still consents, and their Permissions still decide, ADR-0018). The client row stores the custom Scopes only; `offline_access` is admitted for every client.
 - **Name.** `client_name` is stored as plain text, trimmed, control characters removed, at most 100 characters, `Unnamed application` when absent. It is what the consent screen shows, so it is untrusted text, and escaping stays the screen's job.
 - **Rate limit.** Nothing in the repository limited requests, so the package has the smallest limiter that does the job: a fixed window per client address, in memory, `OAUTH_REGISTRATION_LIMIT` attempts (default 10) per `OAUTH_REGISTRATION_WINDOW` (default `1h`), a `429` with `Retry-After` beyond it. Every attempt spends it, refused ones included, so probing the validation is not free. The address comes from the existing client-IP middleware (`handlers.WithClientIP`, now also wrapped around the OAuth routes) and reaches the package through `Deps.ClientAddress`, never from a header read in the package; an unresolved address shares one bucket, and an IPv6 address counts as its /64. Memory is bounded: past 100,000 addresses in one window new addresses wait for the window to pass. Being in memory, the budget is per replica. There is no separate cap on the clients one address may own: ten an hour from one address is the cap, and an unused row costs a few hundred bytes; pruning clients that never completed a flow is left for when the table shows it needs it. The client-IP middleware trusts the forwarding headers as `realip` does (ADR-0015 chose it for attribution); an attacker who can put a public address first in `X-Forwarded-For` on a request that reaches the pod directly would pick their own bucket, which is the ingress's job to prevent by overwriting the header.
 - **Supersedes** the "not yet done" note on `registration_endpoint` in the #836 addendum.
@@ -250,6 +254,6 @@ What the first implementation settled, and where it stops short of the text abov
 ## Addendum: Connected Apps (#848)
 
 - **What the list is.** A Connected App is one OAuth client the signed-in user holds a live grant to: an unused, unexpired refresh token, or an unexpired access token (a grant made without `offline_access`, which lives out its hour). A used refresh token is the replay tombstone of #839, not a grant, so it never keeps an app listed on its own. Several sign-ins of one user to one client are one app. The list shows the client's display name as stored (untrusted text, escaped by the page), the Scopes of its newest live grant, when it was connected, and, for a client-document app, the host of its `client_id` (the one fact its author does not pick through a name; absent for other clients, whose ids are opaque). "Connected at" is the approval time (`auth_time`, which every rotation inherits) of the oldest grant still on file, so it can move forward once an old family's tombstones expire.
-- **Contract.** `GET /api/oauth/connected_apps` (session) and `DELETE /api/oauth/connected_apps/{id}` (session and XSRF), handled by `ListConnectedApps` and `RevokeConnectedApp`, which reach the package through the `OAuthConsents` seam (`ConnectedApps`, `Disconnect`); the package still does not import handlers. The handle is the client row's integer id, not the `client_id`, because a metadata-document `client_id` is a URL that does not belong in a path segment. A guest gets 401; with the OAuth server off the list is empty (no app can exist) and a revoke is 404.
+- **Contract.** `GET /api/oauth/connected_apps` (session) and `DELETE /api/oauth/connected_apps/{id}` (session; the revoke is also behind the cross-origin protection), handled by `ListConnectedApps` and `RevokeConnectedApp`, which reach the package through the `OAuthConsents` seam (`ConnectedApps`, `Disconnect`); the package still does not import handlers. The handle is the client row's integer id, not the `client_id`, because a metadata-document `client_id` is a URL that does not belong in a path segment. A guest gets 401; with the OAuth server off the list is empty (no app can exist) and a revoke is 404.
 - **Revoking.** `Disconnect` runs the same primitive as `TerminateSession` (#839): in one transaction every access token and every refresh token of that user and client, in every family and used tombstones included, is deleted. The effect is immediate: the access token fails `VerifyAccessToken` at its next use, and a refresh with any old refresh token is `invalid_grant`. Other users' grants to the same client and the same user's other clients are untouched. An id that is not one of the caller's listed apps (another user's, unknown, already revoked or lapsed) is a 404, one answer for all of them. The revoke leaves the client row alone, so the app may ask for consent again.
 - **Lapse after thirty days: what "last used" means.** There is no last-used column and no sliding window on access. A grant lives as long as its newest refresh token, which is thirty days from its issue, and every refresh issues a new one. So an app stays connected while it **refreshes** at least once in thirty days, and an app that has not refreshed for thirty days has no live refresh token: it cannot obtain access, and it drops off the list on its own. "Used" therefore means a refresh, **not an MCP call**: an access token is good for an hour, so a client that is calling tools is refreshing hourly anyway, but an app holding a still-valid access token and never refreshing lapses on schedule regardless of calls it made. The page does not show a "last used" time for the same reason, since the only honest value would be the last refresh. Pinned with the test helper's clock: 30 days minus a minute after the last refresh it is listed, two minutes later it is not and its refresh token is refused; an app refreshed every five days is still listed at day 35.

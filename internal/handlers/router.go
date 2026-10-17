@@ -37,7 +37,7 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // TypeSpec security requirements and ogen's generated SecurityHandler protect
 // generated operations; the pipeline only supplies the identity they read.
 //
-// oauth is the OAuth authorization server (ADR-0019), nil while the feature is
+// oauth is the OAuth authorization server (ADR-0020), nil while the feature is
 // switched off. It is the one thing mounted outside `/api`: RFC 8414 puts its
 // metadata at the root well-known path, and its endpoints sit under `/oauth/`.
 // It stays outside the session pipeline: its clients are native or browser
@@ -45,7 +45,7 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // protection would refuse a web client's legitimate cross-site token request.
 // The consent screen, which does need the session, is a generated operation.
 // WithClientIP resolves the caller's address for its registration rate limit.
-// mcp, the MCP endpoint (ADR-0018), is mounted outside `/api` the same way, and is
+// mcp, the MCP endpoint (ADR-0019), is mounted outside `/api` the same way, and is
 // nil while its own flag is off.
 func NewRouter(
 	generated http.Handler,
@@ -69,7 +69,7 @@ func NewRouter(
 			transport.Handle(pattern, WithClientIP(oauth))
 		}
 	}
-	// The MCP endpoint and its resource metadata (ADR-0018), nil while switched
+	// The MCP endpoint and its resource metadata (ADR-0019), nil while switched
 	// off. It authenticates a bearer token itself, so it sits beside the
 	// generated server and not behind the session pipeline: the website's session
 	// cookie is never read on it, and the generated operations accept no bearer token.

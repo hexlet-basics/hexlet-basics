@@ -1,4 +1,4 @@
--- ADR-0019, refresh rotation (#839). Every access and refresh token descends
+-- ADR-0020, refresh rotation (#839). Every access and refresh token descends
 -- from one authorization: its family. Presenting a refresh token that was
 -- already used revokes the whole family, so the server must remember a used
 -- refresh token (used_at) instead of deleting it, until its own expiry.

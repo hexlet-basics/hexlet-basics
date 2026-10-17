@@ -12,7 +12,7 @@ import type { ConnectedApp } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
 
-// The apps the signed-in user has connected through the OAuth server (ADR-0019,
+// The apps the signed-in user has connected through the OAuth server (ADR-0020,
 // #848), each with what it may do, and a way to disconnect one. The list is
 // always fresh (staleTime 0): a revoke elsewhere or a lapse must not linger on
 // screen. Access lapses 30 days after an app's last refresh, which the intro

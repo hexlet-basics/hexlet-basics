@@ -1,4 +1,4 @@
--- ADR-0017, third slice: the course side of the admin (course categories,
+-- ADR-0018, third slice: the course side of the admin (course categories,
 -- courses, course lessons, course lesson reviews, lesson progress and course
 -- landing pages) moves from the create/read/update/delete matrix to declared
 -- Permissions. The matrix named these resources with the legacy Rails values

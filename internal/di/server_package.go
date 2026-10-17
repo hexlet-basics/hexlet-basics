@@ -369,7 +369,7 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		// WithMiddleware is the unit of work of every admin write: the
-		// transaction, and the Audit Record written inside it (ADR-0017).
+		// transaction, and the Audit Record written inside it (ADR-0018).
 		// WithErrorHandler installs the central ent-error -> HTTP-status
 		// mapping (404/409), so handlers return raw ent errors instead of
 		// typed DTOs.
@@ -384,7 +384,7 @@ var serverPackage = do.Package(
 			// One call: a second WithMiddleware would replace the first. The
 			// second middleware is the staff reads of personal data: the server
 			// only publishes the fact, the worker writes the Audit Record
-			// (ADR-0017, ADR-0010).
+			// (ADR-0018, ADR-0010).
 			api.WithMiddleware(
 				handlers.NewAuditMiddleware(txStore, translator, errorHandler),
 				handlers.NewPersonalDataReadMiddleware(publisher, translator, errorHandler),
@@ -448,7 +448,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// The OAuth server is mounted only behind its flag (ADR-0019).
+		// The OAuth server is mounted only behind its flag (ADR-0020).
 		var oauthHandler http.Handler
 		if cfg.OAuth.Enabled {
 			oauthServer, err := do.Invoke[*oauthserver.Server](i)
@@ -457,7 +457,7 @@ var serverPackage = do.Package(
 			}
 			oauthHandler = oauthServer.Handler()
 		}
-		// The MCP endpoint is mounted only behind its flag (ADR-0018). A nil
+		// The MCP endpoint is mounted only behind its flag (ADR-0019). A nil
 		// *mcpserver.Server must not become a non-nil http.Handler.
 		var mcpHandler http.Handler
 		if cfg.MCP.Enabled {
@@ -475,7 +475,7 @@ var serverPackage = do.Package(
 			mcpHandler,
 		), nil
 	}),
-	// The OAuth authorization server (ADR-0019). It receives the application's
+	// The OAuth authorization server (ADR-0020). It receives the application's
 	// half of its seam, who is signed in, from the handlers package; the
 	// package itself never imports handlers. Built only when the flag is on,
 	// since an invalid issuer or a missing key would otherwise stop a
@@ -513,7 +513,7 @@ var serverPackage = do.Package(
 			ClientAddress: handlers.ClientIP,
 		})
 	}),
-	// The MCP endpoint (ADR-0018): verifies tokens with the OAuth server and
+	// The MCP endpoint (ADR-0019): verifies tokens with the OAuth server and
 	// serves tools through the same handler code as the HTTP operations. Built
 	// only when its flag is on; config validation guarantees OAuth is on then.
 	do.Lazy[*mcpserver.Server](func(i do.Injector) (*mcpserver.Server, error) {
@@ -544,7 +544,7 @@ var serverPackage = do.Package(
 			Verifier:  oauthServer,
 			Catalogue: handler,
 			// The generated server with its security handler and audit
-			// middleware: the one checkpoint of every admin tool (ADR-0018).
+			// middleware: the one checkpoint of every admin tool (ADR-0019).
 			Learner: handler,
 			API:     handlers.NewAdminDispatcher(apiServer, translator),
 			Issuer:  cfg.OAuth.Issuer,

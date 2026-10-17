@@ -166,7 +166,7 @@ func (s *Security) HandleAdminSession(
 }
 
 // recordRefusal leaves an Audit Record with outcome forbidden for a call the
-// permission check turned away (ADR-0017, #845). It runs here because a refusal
+// permission check turned away (ADR-0018, #845). It runs here because a refusal
 // never reaches the audit middleware, and it is a single insert on the pooled
 // client with no ambient transaction (none exists yet at the security stage), so
 // it commits on its own. The record names who, where and which operation and

@@ -158,7 +158,7 @@ type LeadCreated struct {
 func (LeadCreated) eventName() string { return leadCreatedName }
 
 // StaffReadPersonalData is the fact that a staff member read personal data
-// through the admin surface or over MCP (ADR-0017). The request publishes it and
+// through the admin surface or over MCP (ADR-0018). The request publishes it and
 // a worker consumer writes the Audit Record, so recording never slows the read.
 //
 // It carries identifiers and a count, never a field value: EntityIDs are the ids

@@ -5,8 +5,9 @@ status: superseded by ADR-0017
 # Authentication via go-pkgz/auth JWT tokens
 
 Amended by [ADR-0011](0011-contract-declared-authentication.md) and
-[ADR-0019](0019-in-process-oauth-server-for-mcp-clients.md) (an OAuth bearer
-token is a second credential, accepted only on `/mcp`).
+[ADR-0020](0020-in-process-oauth-server-for-mcp-clients.md) (an OAuth bearer
+token is a second credential next to the session cookie that replaced the JWT,
+accepted only on `/mcp`).
 
 Authentication uses **go-pkgz/auth's `token.Service`** rather than assembling
 JWT signing, parsing, and cookie handling from primitives. The application owns

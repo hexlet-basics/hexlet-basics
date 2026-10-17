@@ -20,7 +20,7 @@ import (
 // requestIDHeader is the header a proxy or client may set to correlate a call.
 const requestIDHeader = "X-Request-ID"
 
-// NewAuditMiddleware is the unit of work of every admin write (ADR-0017
+// NewAuditMiddleware is the unit of work of every admin write (ADR-0018
 // addendum). The generated server hands a handler a context, not a
 // transaction, so the transaction is opened here, around the handler:
 //
@@ -42,14 +42,14 @@ const requestIDHeader = "X-Request-ID"
 // what the caller was never allowed to read. A handler that answers with a
 // validation error (a response, not an error) is recorded the same way, because
 // nothing was changed. Refusals are recorded by the security handler, which
-// rejects them first (AuthHandler.HandleAdminSession).
+// rejects them first (Security.HandleAdminSession).
 //
 // An operation that declares `x-unit-of-work: standalone` calls a service
 // outside the database (blob storage), and a connection held in a transaction
 // across that call is exactly what we avoid, so it runs without one: its own
 // writes commit as they happen, the recorder still notes them, and the record is
 // written afterwards in its own transaction. The cost is a window between the
-// change and its record in which a crash loses the record (ADR-0017 addendum).
+// change and its record in which a crash loses the record (ADR-0018 addendum).
 //
 // It is selected by the contract, not by a list, so a resource that declares
 // itself in TypeSpec is audited with no code of its own, and the MCP server,

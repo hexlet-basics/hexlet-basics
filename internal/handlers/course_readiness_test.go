@@ -15,7 +15,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// A state is not an update (ADR-0017, state transitions addendum), for a
+// A state is not an update (ADR-0018, state transitions addendum), for a
 // Course's Readiness as for a Publication State: it moves only through the three
 // mark-as operations. Readiness is no workflow, so every change between two
 // distinct values is legal and only repeating the current value is refused.

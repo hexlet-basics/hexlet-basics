@@ -50,7 +50,7 @@ operation called over MCP is allowed when the user's role holds the operation's
 Permission *and* the `mcp.*` Permission matching its kind (`mcp.read` for a
 read, `mcp.write` for a write, `mcp.manage` for operations on users, staff and
 roles). It is evaluated from the database on every call, so taking a Permission
-away works at once. A Connected App's Scope can only narrow it (ADR-0019).
+away works at once. A Connected App's Scope can only narrow it (ADR-0020).
 Catalogue and learner operations need no Staff Role: they need only the Scope
 (`catalog:read`, `progress:read`) and a user as the token's subject.
 
@@ -97,7 +97,7 @@ Reads of the catalogue and of content are not recorded.
 ## Consequences
 
 - This reaches every admin operation and the roles screen, and has to land
-  before any MCP admin tool (ADR-0018).
+  before any MCP admin tool (ADR-0019).
 - Not designed yet: how the single place that writes a record inside the
   business transaction is wired through ogen, which hands handlers a context
   and not a transaction. It needs its own design before the audit work starts.
@@ -135,7 +135,7 @@ there, because opening or closing every operation silently is worse.
 `permissions.Catalog()` lists every declared Permission once; the roles screen
 gets it from `GET /admin/management/permissions`, so its list cannot drift.
 
-**Enforcing.** Unchanged in where it happens: `AuthHandler.HandleAdminSession`
+**Enforcing.** Unchanged in where it happens: `Security.HandleAdminSession`
 runs `staffroles.Policy.Allow` before the request body is decoded. `Allow`
 passes an administrator, requires a staff record with the request's locale, and
 then, if the operation declares a Permission, requires a row in
@@ -155,7 +155,7 @@ deletes the row; the fixtures, which load after migrations, are rewritten by
 hand to the same shape.
 
 Departures from the text above: none. The locale is still the `Accept-Language`
-match, not a request argument; ADR-0018's locale argument is not part of this
+match, not a request argument; ADR-0019's locale argument is not part of this
 slice.
 
 ## Addendum: the matrix is retired
@@ -406,7 +406,7 @@ change, because the rule never looked at the marker. `TestEveryAdminWriteOperati
 middleware once for each name `permissions.AdminWrites()` returns and fails if
 one leaves no record, so a new operation is covered by declaring it in TypeSpec.
 
-**Refusals.** A refusal is rejected in `AuthHandler.HandleAdminSession`, before
+**Refusals.** A refusal is rejected in `Security.HandleAdminSession`, before
 any handler or transaction exists. There, a `staffroles.ErrForbidden` writes an
 Audit Record with outcome `forbidden` as one insert on the pooled client, which
 commits on its own, and then answers 403 as before. This covers every admin

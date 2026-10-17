@@ -81,7 +81,7 @@ type Config struct {
 	// apart from GuestCookieSecret so rotating one never invalidates the other: a
 	// leaked email token secret must not force every learner to sign in again.
 	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
-	// AuditRetentionMonths is how long Audit Records are kept (ADR-0017). The
+	// AuditRetentionMonths is how long Audit Records are kept (ADR-0018). The
 	// audit table is partitioned by month and retention drops whole partitions,
 	// so a record lives at least this many months and up to one month longer.
 	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24"`
@@ -92,9 +92,9 @@ type Config struct {
 	// legacy runner allowed, and a course that turns out to need more room must
 	// be fixable without a release.
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
-	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0019).
+	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0020).
 	OAuth OAuthConfig `envPrefix:"OAUTH_"`
-	// MCP switches on the MCP endpoint at `/mcp` (ADR-0018).
+	// MCP switches on the MCP endpoint at `/mcp` (ADR-0019).
 	MCP MCPConfig `envPrefix:"MCP_"`
 }
 

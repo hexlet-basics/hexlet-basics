@@ -18,7 +18,7 @@ import (
 const purgeOAuthTokensInterval = time.Hour
 
 // PurgeOAuthTokensArgs is the periodic cleanup of the OAuth server's tables
-// (ADR-0019, ticket #839): rotated refresh tokens are kept to detect replays,
+// (ADR-0020, ticket #839): rotated refresh tokens are kept to detect replays,
 // so something has to delete them once they expire. It is enqueued only by the
 // periodic scheduler.
 type PurgeOAuthTokensArgs struct{}

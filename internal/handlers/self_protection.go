@@ -11,7 +11,7 @@ import (
 	"hexletbasics/internal/localization"
 )
 
-// Self-protection (ADR-0017 addendum). Whoever may manage staff must not be
+// Self-protection (ADR-0018 addendum). Whoever may manage staff must not be
 // able to remove their own footing or raise themselves. The rules live here,
 // in the operation layer, because the website and the MCP server both reach the
 // admin operations through these handlers: a check in the screen would bind

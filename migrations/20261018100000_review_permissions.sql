@@ -1,4 +1,4 @@
--- ADR-0017, delegation slice: reviewing a course and reviewing a course lesson
+-- ADR-0018, delegation slice: reviewing a course and reviewing a course lesson
 -- become Permissions of their own (courses.review, course_lessons.review),
 -- separate from updating. Until now the review was opened by the update
 -- Permission, so every role holding it gets the matching review Permission and

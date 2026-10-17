@@ -223,7 +223,7 @@ helm lint "$chart" "${set[@]}"
 helm template codebasics "$chart" "${set[@]}" | "${kc[@]}"
 helm template codebasics "$chart" "${set[@]}" --set migrate.baseline=20260727053619 | "${kc[@]}"
 
-# Routing (ADR-0019): every `full` host sends the MCP and OAuth paths to the Go
+# Routing (ADR-0020): every `full` host sends the MCP and OAuth paths to the Go
 # api service ahead of the `/` catch-all, and a host without `full` sends only
 # `/` (web). Paths of one host, in order, as "<host> <path> <service>" lines.
 paths=$(helm template codebasics "$chart" "${set[@]}" --show-only templates/ingress.yaml | awk '
