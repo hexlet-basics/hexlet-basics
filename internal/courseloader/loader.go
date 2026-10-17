@@ -453,10 +453,17 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 }
 
 // uploadImage opens a theory image referenced relative to the locale dir and
-// delegates its complete storage lifecycle to the shared asset store. OpenInRoot
-// confines symlink resolution as well as lexical traversal to localeDir.
+// delegates its complete storage lifecycle to the shared asset store.
+//
+// The images may sit beside the theory (`./assets/x.png`) or in the lesson's own
+// assets directory next to the locale dirs (`../assets/x.png`, which is where the
+// course repos keep them, shared by every locale). So the confinement is the
+// lesson dir, the locale dir's parent, not the locale dir: OpenInRoot still stops
+// both lexical traversal and symlinks from leaving the lesson, and a reference
+// that climbs out of it fails the build.
 func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
-	file, err := os.OpenInRoot(localeDir, ref)
+	lessonDir := filepath.Dir(localeDir)
+	file, err := os.OpenInRoot(lessonDir, filepath.Join(filepath.Base(localeDir), ref))
 	if err != nil {
 		return "", oops.Wrapf(err, "open image %q", ref)
 	}

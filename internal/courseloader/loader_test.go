@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -268,6 +269,57 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 	assert.ErrorContains(t, err, "open image")
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
+}
+
+// The course repos keep a lesson's images in `<lesson>/assets`, shared by every
+// locale, and refer to them as `../assets/x.png` from the locale's theory.
+func TestLoaderUploadsTheoryImagesFromTheLessonAssetsDir(t *testing.T) {
+	db, txStore := testsupport.NewClientWithTransactor(t)
+	ctx := context.Background()
+	repo := t.TempDir()
+	require.NoError(t, os.CopyFS(repo, os.DirFS(fixtureRepo(t))))
+
+	lesson := filepath.Join(repo, "modules", "10-basics", "10-hello-world")
+	require.NoError(t, os.Rename(filepath.Join(lesson, "en", "assets"), filepath.Join(lesson, "assets")))
+	readme := filepath.Join(lesson, "en", "README.md")
+	body, err := os.ReadFile(readme)
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644))
+
+	course := db.Course.Create().SetSlug("loader-lesson-assets-lang").SetName("Lesson Assets").SaveX(ctx)
+	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+
+	require.NoError(t, newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID))
+
+	infos := db.CourseLessonTranslation.Query().Where(courselessontranslation.CourseVersionID(version.ID)).AllX(ctx)
+	en := lessonInfoByLocale(t, infos, "en")
+	assert.Contains(t, derefStr(en.Theory), "http://localhost:3001/api/storage/")
+	assert.NotContains(t, derefStr(en.Theory), "../assets/")
+}
+
+func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
+	db, txStore := testsupport.NewClientWithTransactor(t)
+	ctx := context.Background()
+	repo := t.TempDir()
+	require.NoError(t, os.CopyFS(repo, os.DirFS(fixtureRepo(t))))
+
+	lesson := filepath.Join(repo, "modules", "10-basics", "10-hello-world")
+	picture, err := os.ReadFile(filepath.Join(lesson, "en", "assets", "dart.png"))
+	require.NoError(t, err)
+	// A real image, but outside the lesson: only the reference's path is at fault.
+	require.NoError(t, os.WriteFile(filepath.Join(repo, "outside.png"), picture, 0o644))
+	readme := filepath.Join(lesson, "en", "README.md")
+	body, err := os.ReadFile(readme)
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644))
+
+	course := db.Course.Create().SetSlug("loader-climb-lang").SetName("Climb").SaveX(ctx)
+	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+
+	err = newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "open image")
 }
 
 func derefStr(s *string) string {
