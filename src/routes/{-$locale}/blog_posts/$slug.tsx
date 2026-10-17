@@ -67,7 +67,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       name: post.name,
       datePublished: post.createdAt,
       headline: post.description,
-      image: post.coverMainVariant,
+      image: post.coverUrl,
       interactionStatistic: [
         {
           "@type": "InteractionCounter",
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
         i18n: match.context.i18n,
         title: post.name ?? "",
         description: post.description ?? "",
-        image: post.coverMainVariant,
+        image: post.coverUrl,
         canonicalPath: match.pathname,
       }),
       scripts: [
@@ -279,7 +279,7 @@ function PostBody({
           h="100%"
           radius="md"
           fallbackSrc={NO_COVER}
-          src={post.coverMainVariant}
+          src={post.coverUrl}
           alt={post.name ?? ""}
         />
       </AspectRatio>
