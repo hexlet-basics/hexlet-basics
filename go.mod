@@ -70,7 +70,9 @@ require (
 )
 
 require (
+	cel.dev/expr v0.25.3 // indirect
 	dario.cat/mergo v1.0.2 // indirect
+	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20261013165250-51075c6ea6bc // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/Microsoft/go-winio v0.6.4 // indirect
@@ -80,6 +82,7 @@ require (
 	github.com/alexflint/go-arg v1.6.0 // indirect
 	github.com/alexflint/go-scalar v1.2.0 // indirect
 	github.com/andybalholm/brotli v1.2.6 // indirect
+	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v17 v17.0.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.22 // indirect
@@ -115,15 +118,19 @@ require (
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.2.0 // indirect
 	github.com/containerd/platforms v0.2.1 // indirect
+	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/cpuguy83/dockercfg v0.3.2 // indirect
+	github.com/cubicdaiya/gonp v1.0.4 // indirect
 	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
 	github.com/dave/jennifer v1.7.1 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/docker/go-connections v0.8.2 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/ebitengine/purego v0.11.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/fatih/color v1.19.0 // indirect
+	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/felixge/httpsnoop v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
@@ -135,6 +142,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-openapi/inflect v1.0.1 // indirect
+	github.com/go-sql-driver/mysql v1.10.1 // indirect
 	github.com/gobwas/glob v1.0.0 // indirect
 	github.com/goccy/go-json v0.11.2 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
@@ -143,6 +151,7 @@ require (
 	github.com/gohugoio/hugo v0.167.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
+	github.com/google/cel-go v0.28.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-github/v88 v88.0.0 // indirect
 	github.com/google/go-querystring v1.2.0 // indirect
@@ -157,6 +166,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.3 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jmattheis/goverter v1.11.1 // indirect
 	github.com/kevinburke/ssh_config v1.6.0 // indirect
 	github.com/klauspost/compress v1.20.3 // indirect
@@ -178,6 +188,8 @@ require (
 	github.com/muhlemmer/gu v0.3.1 // indirect
 	github.com/muhlemmer/httpforwarded v0.1.0 // indirect
 	github.com/narqo/go-badge v0.0.0-20230821190521-c9a75c019a59 // indirect
+	github.com/ncruces/go-sqlite3 v0.32.0 // indirect
+	github.com/ncruces/julianday v1.0.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/olekukonko/cat v0.0.0-20250911104152-50322a0618f6 // indirect
 	github.com/olekukonko/errors v1.3.0 // indirect
@@ -188,12 +200,18 @@ require (
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
+	github.com/pganalyze/pg_query_go/v6 v6.2.2 // indirect
+	github.com/pingcap/errors v0.11.5-0.20250523034308-74f78ae071ee // indirect
+	github.com/pingcap/failpoint v0.0.0-20240528011301-b51a646c7c86 // indirect
+	github.com/pingcap/log v1.1.0 // indirect
+	github.com/pingcap/tidb/pkg/parser v0.0.0-20260418072757-ce92298d1124 // indirect
 	github.com/pjbgf/sha1cd v0.7.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20260916203055-22a1a467d9f0 // indirect
 	github.com/riverqueue/river/riverdriver v0.49.0 // indirect
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.49.0 // indirect
 	github.com/riverqueue/river/rivershared v0.49.0 // indirect
+	github.com/riza-io/grpc-go v0.2.0 // indirect
 	github.com/rs/zerolog v1.35.1 // indirect
 	github.com/samber/go-type-to-string v1.8.0 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
@@ -208,7 +226,11 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/sqlc-dev/doubleclick v1.0.0 // indirect
+	github.com/sqlc-dev/pqtype v0.3.0 // indirect
+	github.com/sqlc-dev/sqlc v1.31.1 // indirect
 	github.com/tdewolff/parse/v2 v2.8.16 // indirect
+	github.com/tetratelabs/wazero v1.12.0 // indirect
 	github.com/tidwall/gjson v1.20.0 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.2 // indirect
@@ -216,6 +238,8 @@ require (
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
 	github.com/vladopajic/go-test-coverage/v2 v2.20.0 // indirect
+	github.com/wasilibs/go-pgquery v0.0.0-20250409022910-10ac41983c07 // indirect
+	github.com/wasilibs/wazero-helpers v0.0.0-20240620070341-3dff1577cd52 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
@@ -242,6 +266,7 @@ require (
 	go.opentelemetry.io/otel/log v1.47.0 // indirect
 	go.opentelemetry.io/otel/sdk/log v1.47.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.47.0 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/goleak v1.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
@@ -260,6 +285,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20261012220534-4341edf3f941 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261012220534-4341edf3f941 // indirect
 	google.golang.org/grpc v1.84.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
@@ -270,6 +296,7 @@ tool (
 	github.com/jmattheis/goverter/cmd/goverter
 	github.com/matryer/moq
 	github.com/ogen-go/ogen/cmd/ogen
+	github.com/sqlc-dev/sqlc/cmd/sqlc
 	github.com/vladopajic/go-test-coverage/v2
 	golang.org/x/vuln/cmd/govulncheck
 )

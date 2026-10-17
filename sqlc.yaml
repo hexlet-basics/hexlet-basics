@@ -1,0 +1,13 @@
+# PROTOTYPE (ticket 890): throwaway sqlc config, never merged.
+version: "2"
+sql:
+  - engine: postgresql
+    schema: migrations
+    queries: internal/protosqlc/queries
+    gen:
+      go:
+        package: db
+        out: internal/protosqlc/db
+        sql_package: database/sql
+        emit_pointers_for_null_types: true
+        emit_result_struct_pointers: true
