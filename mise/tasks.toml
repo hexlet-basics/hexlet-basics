@@ -95,9 +95,13 @@ run = 'atlas migrate apply --env local --url "${DEV_DB_URL:-postgres://postgres:
 description = "Create and migrate the development DB without replacing its data"
 run = [{ task = "db:up" }, { task = "db:migrate" }]
 
+["storage:fixtures"]
+description = "Generate the placeholder cover images the fixtures reference into the local storage/ bucket (git-ignored)"
+run = "go run ./scripts/fixture_covers"
+
 ["db:fixtures"]
-description = "Migrate the development DB and load fixtures/ into it, replacing the data in the fixture tables (the old `rails db:fixtures:load`)"
-depends = ["db:migrate"]
+description = "Migrate the development DB and load fixtures/ into it, replacing the data in the fixture tables (the old `rails db:fixtures:load`), and generate the images they point at"
+depends = ["db:migrate", "storage:fixtures"]
 run = 'testfixtures --dialect postgres --dangerous-no-test-database-check --conn "${DEV_DB_URL:-postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable}" --dir fixtures'
 
 # --- code generation (contract is the source of truth, ADR-0001) -------------------
@@ -168,6 +172,7 @@ description = "Lint Go + frontend + ADR numbering + dependency health"
 depends = [
   "lint:go",
   "lint:web",
+  "lint:syntax",
   "lint:adr",
   "lint:deps",
   "lint:typos",
@@ -280,6 +285,32 @@ golangci-lint run
 ["lint:web"]
 description = "oxlint, oxfmt check, and the TypeScript project build"
 run = ["pnpm lint", "pnpm format:check", "pnpm check"]
+
+["lint:syntax"]
+description = "tree-sitter parses the TS/TSX, Go, YAML, TOML and JSON files and fails on a syntax error (independent of tsc, go vet and the other linters)"
+run = '''
+#!/usr/bin/env bash
+set -uo pipefail
+# One grammar per language, taken from the tree-sitter-* npm packages (the CLI compiles
+# them on first use). Exit status carries the result; the "no parser directories"
+# warning is noise. SQL and shell are left to atlas and shellcheck: their grammars flag
+# valid Postgres and nested bash expansions. Helm templates are Go-templated YAML, so they are not parsed.
+status=0
+check() {
+  local grammar=$1; shift
+  local out
+  out=$(git ls-files -z -- "$@" ':!legacy' ':!k8s/app-chart/templates' |
+    xargs -0 -r tree-sitter parse --quiet --grammar-path "node_modules/$grammar" 2>&1 |
+    grep -E 'ERROR|MISSING|Error' | grep -v 'parser directories') || true
+  if [ -n "$out" ]; then echo "$out"; status=1; fi
+}
+check tree-sitter-typescript/tsx 'src/*.ts' 'src/*.tsx'
+check tree-sitter-go '*.go'
+check @tree-sitter-grammars/tree-sitter-yaml '*.yml' '*.yaml'
+check @tree-sitter-grammars/tree-sitter-toml '*.toml'
+check tree-sitter-json '*.json'
+exit $status
+'''
 
 ["lint:fix"]
 description = "Auto-fix Go and frontend formatting and lint findings"

@@ -28,6 +28,9 @@ hk = "2.6.0"
 pkl = "0.32.1"
 # pitchfork runs the [daemons] below (`mise daemons ...`).
 pitchfork = "2.30.1"
+# Syntax check of src/ (mise run lint:syntax). The grammar comes from the
+# tree-sitter-typescript npm package; the CLI compiles it on first use.
+tree-sitter = "0.27.1"
 # Secret scan on staged changes (pre-commit hook in hk.pkl).
 gitleaks = "8.30.1"
 # Workflow linters (mise run lint:workflows), the spelling check (lint:typos) and
@@ -71,6 +74,8 @@ experimental = true
 [env]
 ADDR = ":{{ env.API_PORT }}"
 API_URL = "http://localhost:{{ env.API_PORT }}"
+# Origin of the /api/storage URLs (blog covers); the default would point at :3001.
+PUBLIC_URL = "http://localhost:{{ env.API_PORT }}"
 SITE_URL = "http://localhost:{{ env.WEB_PORT }}"
 # The postgres preset exports DATABASE_URL (and PG*) for its own `postgres` database, which
 # would beat .env; point the app at the development database instead.
