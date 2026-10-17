@@ -271,6 +271,7 @@ export default {
         versionQueued: "Compilación de versión iniciada",
       },
       permissions: {
+        capability: "Solo con permiso explícito",
         kindRead: "Lectura",
         kindWrite: "Escritura",
         title: "Permisos",

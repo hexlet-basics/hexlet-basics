@@ -17021,11 +17021,16 @@ func (s *Permission) encodeFields(e *jx.Encoder) {
 		e.FieldStart("kind")
 		s.Kind.Encode(e)
 	}
+	{
+		e.FieldStart("capability")
+		e.Bool(s.Capability)
+	}
 }
 
-var jsonFieldsNameOfPermission = [2]string{
+var jsonFieldsNameOfPermission = [3]string{
 	0: "name",
 	1: "kind",
+	2: "capability",
 }
 
 // Decode decodes Permission from json.
@@ -17059,6 +17064,18 @@ func (s *Permission) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"kind\"")
 			}
+		case "capability":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Bool()
+				s.Capability = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"capability\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -17069,7 +17086,7 @@ func (s *Permission) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

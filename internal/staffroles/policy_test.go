@@ -35,15 +35,15 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 		operation string
 		allowed   bool
 	}{
-		"administrator may do anything":        {adminID, "es", "AdminDeleteUser", true},
-		"granted bit":                          {editorID, "ru", "AdminListBlogPosts", true},
-		"another grant of the same resource":   {editorID, "en", "AdminCreateBanner", true},
-		"grant the role lacks, same resource":  {editorID, "ru", "AdminDeleteBanner", false},
-		"bit the role lacks":                   {editorID, "ru", "AdminCreateBlogPost", false},
-		"resource the role has no row for":     {editorID, "ru", "AdminListReviews", false},
-		"locale outside the staff record":      {editorID, "es", "AdminListBlogPosts", false},
-		"operation only administrators may do": {editorID, "ru", "AdminListUsers", false},
-		"upload needs only being staff":        {editorID, "ru", "AdminUploadAttachment", true},
+		"administrator may do anything":       {adminID, "es", "AdminDeleteUser", true},
+		"granted bit":                         {editorID, "ru", "AdminListBlogPosts", true},
+		"another grant of the same resource":  {editorID, "en", "AdminCreateBanner", true},
+		"grant the role lacks, same resource": {editorID, "ru", "AdminDeleteBanner", false},
+		"bit the role lacks":                  {editorID, "ru", "AdminCreateBlogPost", false},
+		"resource the role has no row for":    {editorID, "ru", "AdminListReviews", false},
+		"locale outside the staff record":     {editorID, "es", "AdminListBlogPosts", false},
+		"operation the role does not hold":    {editorID, "ru", "AdminListUsers", false},
+		"upload needs only being staff":       {editorID, "ru", "AdminUploadAttachment", true},
 	} {
 		u := db.User.GetX(t.Context(), c.user)
 		err := policy.Allow(t.Context(), u, c.locale, c.operation)
@@ -153,28 +153,131 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 	}
 }
 
-// An operation declared for administrators only is refused to a staff member
-// whatever the role holds, and an administrator may still perform it.
-func TestAdministratorsOnlyOperationsAreClosedToStaff(t *testing.T) {
+// The operations that were administrators-only (users, staff members, roles,
+// question-and-answer items, course versions) declare Permissions now: a staff
+// member is refused until their role holds the Permission, and then gets exactly
+// that operation. Nothing is open to a role that never held anything here, so the
+// existing roles lose and gain nothing.
+func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
 	bob := db.User.GetX(t.Context(), editorID)
-	alice := db.User.GetX(t.Context(), adminID)
 	staff := bob.QueryStaffMember().OnlyX(t.Context())
-	// Even a role holding every Permission of the catalog gets nothing here.
-	db.StaffRoleGrant.Delete().Where(staffrolegrant.RoleID(staff.RoleID)).ExecX(t.Context())
-	for _, p := range permissions.Catalog() {
-		db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission(p.Name).ExecX(t.Context())
+
+	former := map[string][]string{
+		"users.read":                       {"AdminListUsers", "AdminGetManagementUser"},
+		"users.update":                     {"AdminUpdateUser"},
+		"staff_members.delete":             {"AdminDeleteStaffMember"},
+		"staff_roles.read":                 {"AdminListRoles", "AdminListPermissions", "AdminGetRolePermissions"},
+		"staff_roles.update":               {"AdminUpdateRolePermissions"},
+		"course_category_qna_items.create": {"AdminCreateCategoryQnaItem"},
+		"course_versions.create":           {"AdminCreateCourseVersion"},
 	}
+	// The seeded editor role holds none of them.
+	for _, operations := range former {
+		for _, operation := range operations {
+			assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", operation), staffroles.ErrForbidden, operation)
+		}
+	}
+
+	for permission, operations := range former {
+		db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission(permission).ExecX(t.Context())
+		for _, operation := range operations {
+			assert.NoError(t, policy.Allow(t.Context(), bob, "ru", operation), operation)
+		}
+	}
+	// A neighbour of a granted Permission stays closed.
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteUser"), staffroles.ErrForbidden)
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminCreateRole"), staffroles.ErrForbidden)
+}
+
+// An administrator keeps access to the user, staff and role operations, and to
+// all the rest, with no grants at all.
+func TestAdministratorsKeepTheFormerAdministratorsOnlyOperations(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	alice := db.User.GetX(t.Context(), adminID)
 
 	for _, operation := range []string{
 		"AdminListUsers", "AdminUpdateRolePermissions", "AdminListPermissions", "AdminCreateCourseVersion",
-		"AdminCreateCategoryQnaItem", "AdminDeleteStaffMember",
+		"AdminCreateCategoryQnaItem", "AdminDeleteStaffMember", "AdminReviewCourse", "AdminReviewCourseLesson",
 	} {
-		assert.Equal(t, permissions.Administrators, permissions.AccessOf(operation), operation)
-		assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", operation), staffroles.ErrForbidden, operation)
 		assert.NoError(t, policy.Allow(t.Context(), alice, "ru", operation), operation)
 	}
+}
+
+// The review of a course and of a lesson is a Permission of its own: holding
+// update no longer opens it, holding review does not open update.
+func TestReviewIsSeparateFromUpdate(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	bob := db.User.GetX(t.Context(), editorID)
+	staff := bob.QueryStaffMember().OnlyX(t.Context())
+
+	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("courses.update").ExecX(t.Context())
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateCourse"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminReviewCourse"), staffroles.ErrForbidden)
+
+	db.StaffRoleGrant.Delete().Where(staffrolegrant.RoleID(staff.RoleID), staffrolegrant.Permission("courses.update")).ExecX(t.Context())
+	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("courses.review").ExecX(t.Context())
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminReviewCourse"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateCourse"), staffroles.ErrForbidden)
+
+	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("course_lessons.review").ExecX(t.Context())
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminReviewCourseLesson"))
+}
+
+// The administrator flag passes the operation Permissions but not the capability
+// ones: an administrator whose role lacks mcp.read is refused the MCP check, and
+// granting the capability to the role opens it. A user who is not staff has no
+// role to hold it, whatever the flag says.
+func TestAdministratorFlagDoesNotImplyCapabilities(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	role := db.StaffRole.Create().SetName("operators").SaveX(t.Context())
+	alice := db.User.GetX(t.Context(), adminID)
+
+	// Not staff: refused, though an administrator.
+	for _, capability := range []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"} {
+		assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, capability), staffroles.ErrForbidden, capability)
+	}
+
+	db.StaffMember.Create().SetUserID(adminID).SetRoleID(role.ID).SetAllowedLocales([]string{"ru"}).ExecX(t.Context())
+	alice = db.User.GetX(t.Context(), adminID)
+
+	assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, "mcp.read"), staffroles.ErrForbidden)
+	// The administrator still passes ordinary operation Permissions.
+	assert.NoError(t, policy.Allow(t.Context(), alice, "es", "AdminListBlogPosts"))
+	assert.NoError(t, policy.Allow(t.Context(), alice, "ru", "AdminListUsers"))
+
+	db.StaffRoleGrant.Create().SetRoleID(role.ID).SetPermission("mcp.read").ExecX(t.Context())
+	assert.NoError(t, policy.HasCapability(t.Context(), alice, "mcp.read"))
+	// One capability does not open another.
+	assert.ErrorIs(t, policy.HasCapability(t.Context(), alice, "mcp.write"), staffroles.ErrForbidden)
+}
+
+// A staff member who is not an administrator is given a capability the same way.
+func TestAStaffRoleHoldsCapabilitiesThroughGrants(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	bob := db.User.GetX(t.Context(), editorID)
+	staff := bob.QueryStaffMember().OnlyX(t.Context())
+
+	assert.ErrorIs(t, policy.HasCapability(t.Context(), bob, "audit.read"), staffroles.ErrForbidden)
+	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("audit.read").ExecX(t.Context())
+	assert.NoError(t, policy.HasCapability(t.Context(), bob, "audit.read"))
+}
+
+// Asking about a Permission that is not a capability is the caller's mistake, not
+// a refusal, so it cannot be mistaken for "not allowed".
+func TestHasCapabilityRejectsANameThatIsNotACapability(t *testing.T) {
+	db := testsupport.NewClient(t)
+	bob := db.User.GetX(t.Context(), editorID)
+
+	err := staffroles.NewPolicy(db).HasCapability(t.Context(), bob, "blog_posts.read")
+
+	require.Error(t, err)
+	assert.NotErrorIs(t, err, staffroles.ErrForbidden)
 }
 
 // The upload is declared open to any staff member, whatever the role holds.

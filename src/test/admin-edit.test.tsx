@@ -27,9 +27,10 @@ const role: StaffRoleDetail = {
 
 const catalog = {
   permissions: [
-    { name: "banners.read", kind: "read" },
-    { name: "blog_posts.create", kind: "write" },
-    { name: "blog_posts.read", kind: "read" },
+    { name: "audit.read", kind: "read", capability: true },
+    { name: "banners.read", kind: "read", capability: false },
+    { name: "blog_posts.create", kind: "write", capability: false },
+    { name: "blog_posts.read", kind: "read", capability: false },
   ],
 };
 
@@ -54,6 +55,11 @@ test("a role's permissions are shown by resource and saved as the admin ticked t
   // Permissions are listed under the resource they belong to.
   await expect.element(page.getByText("banners", { exact: true })).toBeVisible();
   await expect.element(page.getByText("blog_posts", { exact: true })).toBeVisible();
+
+  // A capability is offered with its own group and a note that it is explicit only.
+  await expect.element(page.getByText("audit", { exact: true })).toBeVisible();
+  await expect.element(page.getByRole("checkbox", { name: "audit.read" })).not.toBeChecked();
+  await expect.element(page.getByText("Explicit grant only")).toBeVisible();
 
   // The role reads blog posts and may not create them yet.
   const read = page.getByRole("checkbox", { name: "blog_posts.read" });

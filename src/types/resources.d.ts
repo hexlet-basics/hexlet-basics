@@ -401,6 +401,7 @@ export default interface Resources {
         }
       },
       "permissions": {
+        "capability": "Только по явной выдаче",
         "kindRead": "Чтение",
         "kindWrite": "Запись",
         "title": "Права"

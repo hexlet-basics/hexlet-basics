@@ -271,6 +271,7 @@ export default {
         versionQueued: "Version build started",
       },
       permissions: {
+        capability: "Explicit grant only",
         kindRead: "Read",
         kindWrite: "Write",
         title: "Permissions",

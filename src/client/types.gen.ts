@@ -1001,6 +1001,11 @@ export type OAuthDecision = {
 export type Permission = {
   name: string;
   kind: PermissionKind;
+  /**
+   * True for a capability Permission (MCP, audit): the administrator flag does
+   * not imply it, so a role must be given it explicitly.
+   */
+  capability: boolean;
 };
 
 /**
