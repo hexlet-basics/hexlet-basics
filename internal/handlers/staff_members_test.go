@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_members.yml seeds a single record (staff_member_staff_editor: user_staff_editor as editor).
+// staff_members.yml seeds the editor (staff_member_staff_editor) and an administrator who is staff (staff_member_admin_staff).
 
 func TestAdminListStaffMembers(t *testing.T) {
 	h := testsupport.NewHarness(t)
