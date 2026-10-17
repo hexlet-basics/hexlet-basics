@@ -41,6 +41,8 @@ func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerPa
 	return s.db.Banner.AdminGet(ctx, params.ID, s.conv.ToBanner)
 }
 
+// AdminCreateBanner creates a banner as a draft: the state is not an input (it
+// moves only through the transition operations), so the column default applies.
 func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (api.AdminCreateBannerRes, error) {
 	return s.db.Banner.AdminCreate(ctx, req, s.conv.ToBanner)
 }
@@ -54,4 +56,31 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 		return nil, err
 	}
 	return &api.AdminDeleteBannerNoContent{}, nil
+}
+
+// A state is not an update (ADR-0017, state transitions addendum): the
+// Publication State of a banner moves only through the three operations below,
+// each with its own Permission, and the legal moves are the banners module's
+// (the shared transitions.Publish, Unpublish and Archive). A new banner is a
+// draft (the column default), so it reaches the page only when someone
+// publishes it.
+
+// AdminPublishBanner makes a draft or archived banner eligible for the pages.
+func (s *Server) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (api.AdminPublishBannerRes, error) {
+	return moveState(ctx, int(params.ID), s.bannerStates.Publish, s.getAdminBanner)
+}
+
+// AdminUnpublishBanner takes a published banner back to draft.
+func (s *Server) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (api.AdminUnpublishBannerRes, error) {
+	return moveState(ctx, int(params.ID), s.bannerStates.Unpublish, s.getAdminBanner)
+}
+
+// AdminArchiveBanner archives a draft or published banner.
+func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (api.AdminArchiveBannerRes, error) {
+	return moveState(ctx, int(params.ID), s.bannerStates.Archive, s.getAdminBanner)
+}
+
+// getAdminBanner is the read model a state move echoes back.
+func (s *Server) getAdminBanner(ctx context.Context, id int) (*api.Banner, error) {
+	return s.db.Banner.AdminGet(ctx, int32(id), s.conv.ToBanner)
 }

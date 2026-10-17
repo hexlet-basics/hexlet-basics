@@ -31,3 +31,35 @@
   permission: blog_posts.publish
   created_at: '2026-07-26 20:50:32'
   updated_at: '2026-07-26 20:50:32'
+# The same split for banners, reviews and landing pages: the updater edits and
+# cannot publish, the publisher publishes and cannot edit.
+- id: {{ id "staff_grant_banner_updater_update" }}
+  role_id: {{ id "staff_role_banner_updater" }}
+  permission: banners.update
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'
+- id: {{ id "staff_grant_banner_publisher_publish" }}
+  role_id: {{ id "staff_role_banner_publisher" }}
+  permission: banners.publish
+  created_at: '2026-07-26 20:50:34'
+  updated_at: '2026-07-26 20:50:34'
+- id: {{ id "staff_grant_review_updater_update" }}
+  role_id: {{ id "staff_role_review_updater" }}
+  permission: reviews.update
+  created_at: '2026-07-26 20:50:35'
+  updated_at: '2026-07-26 20:50:35'
+- id: {{ id "staff_grant_review_publisher_publish" }}
+  role_id: {{ id "staff_role_review_publisher" }}
+  permission: reviews.publish
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "staff_grant_landing_page_updater_update" }}
+  role_id: {{ id "staff_role_landing_page_updater" }}
+  permission: course_landing_pages.update
+  created_at: '2026-07-26 20:50:37'
+  updated_at: '2026-07-26 20:50:37'
+- id: {{ id "staff_grant_landing_page_publisher_publish" }}
+  role_id: {{ id "staff_role_landing_page_publisher" }}
+  permission: course_landing_pages.publish
+  created_at: '2026-07-26 20:50:38'
+  updated_at: '2026-07-26 20:50:38'

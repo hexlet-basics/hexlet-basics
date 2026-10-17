@@ -41,11 +41,11 @@ test("creates a banner with the default enum selections", async () => {
   await expect.element(page.getByText("Record created")).toBeVisible();
   expect(received).toMatchObject({
     body: "Promo",
-    state: "draft",
     background: "cta_gradient",
     locale: "en",
     startsAt: null,
     finishesAt: null,
   });
+  expect(received).not.toHaveProperty("state"); // a new banner is a draft; the state has its own operations
   await expect.poll(() => router.state.location.pathname).toBe("/admin/banners");
 });

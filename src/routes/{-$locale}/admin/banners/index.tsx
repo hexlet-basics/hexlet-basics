@@ -29,7 +29,18 @@ function BannersList() {
   });
 
   const columns: CrudColumnDef<Banner>[] = [
-    ...useGeneratedColumns<Banner>(bannerColumns, ["state", "locale", "background", "body"]),
+    // The state shows as its label: it moves only through the transition buttons
+    // of the edit page, so the list is where it is read.
+    ...useGeneratedColumns<Banner>(bannerColumns, ["state", "locale", "background", "body"]).map(
+      (column) =>
+        "accessorKey" in column && column.accessorKey === "state"
+          ? {
+              ...column,
+              cell: ({ row }) =>
+                t(($) => $.models.attributes.banner["state/values"][row.original.state]),
+            }
+          : column,
+    ),
     list.actionsColumn({
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(row.id) }} />

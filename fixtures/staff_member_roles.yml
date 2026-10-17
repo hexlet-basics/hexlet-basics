@@ -22,3 +22,33 @@
   description: Publishes blog posts but cannot edit them
   created_at: '2026-07-26 20:50:32'
   updated_at: '2026-07-26 20:50:32'
+- id: {{ id "staff_role_banner_updater" }}
+  name: banner updater
+  description: Edits banners but cannot publish them
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'
+- id: {{ id "staff_role_banner_publisher" }}
+  name: banner publisher
+  description: Publishes banners but cannot edit them
+  created_at: '2026-07-26 20:50:34'
+  updated_at: '2026-07-26 20:50:34'
+- id: {{ id "staff_role_review_updater" }}
+  name: review updater
+  description: Edits reviews but cannot publish them
+  created_at: '2026-07-26 20:50:35'
+  updated_at: '2026-07-26 20:50:35'
+- id: {{ id "staff_role_review_publisher" }}
+  name: review publisher
+  description: Publishes reviews but cannot edit them
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "staff_role_landing_page_updater" }}
+  name: landing page updater
+  description: Edits course landing pages but cannot publish them
+  created_at: '2026-07-26 20:50:37'
+  updated_at: '2026-07-26 20:50:37'
+- id: {{ id "staff_role_landing_page_publisher" }}
+  name: landing page publisher
+  description: Publishes course landing pages but cannot edit them
+  created_at: '2026-07-26 20:50:38'
+  updated_at: '2026-07-26 20:50:38'

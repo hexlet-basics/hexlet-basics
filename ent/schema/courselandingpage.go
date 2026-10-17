@@ -41,7 +41,11 @@ func (CourseLandingPage) Fields() []ent.Field {
 			Annotations(AdminInputField{Skip: true}),
 		field.Bool("listed").Optional().Nillable(),
 		field.Bool("main").Optional().Nillable(),
-		field.String("state").Optional().Nillable(),
+		// state is not an input: a landing page is created as a draft (the
+		// default) and the state moves only through the publish, unpublish and
+		// archive operations.
+		field.String("state").Optional().Nillable().Default("draft").
+			Annotations(AdminInputField{Skip: true}),
 		// `order` is a free-form string key in the legacy schema, not an int.
 		field.String("order").Optional().Nillable(),
 		field.String("meta_title").Optional().Nillable(),

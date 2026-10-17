@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 
 	"hexletbasics/internal/localization"
@@ -47,4 +48,14 @@ func stateName(state string) any {
 		return message
 	}
 	return state
+}
+
+// moveState runs one of a module's state moves and echoes the resource back
+// through read; a refused move is mapped to its 409. The same three steps serve
+// every resource that has a Publication State.
+func moveState[T any](ctx context.Context, id int, move func(context.Context, int) error, read func(context.Context, int) (*T, error)) (*T, error) {
+	if err := move(ctx, id); err != nil {
+		return nil, refuseTransition(err)
+	}
+	return read(ctx, id)
 }

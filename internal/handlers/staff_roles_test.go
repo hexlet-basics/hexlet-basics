@@ -15,7 +15,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds four roles (two of them for the blog post Permissions); editor owns three grants (banners.create, banners.read, blog_posts.read).
+// staff_member_roles.yml seeds editor and moderator plus an updater and a publisher role for each resource with a Publication State; editor owns three grants (banners.create, banners.read, blog_posts.read).
 var (
 	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )

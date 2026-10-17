@@ -9,6 +9,7 @@ import {
   adminUpdateBannerMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zBannerInput } from "@/client/zod.gen";
+import { BannerStatePanel } from "@/components/admin/BannerStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { bannerToForm, useBannerFields } from "@/components/admin/resources/banner";
@@ -46,16 +47,19 @@ function EditBanner() {
       {isLoading || !data ? (
         <FormSkeleton />
       ) : (
-        <CrudForm
-          key={data.id}
-          fields={fields}
-          schema={zBannerInput}
-          defaultValues={bannerToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: bannerId }, body: values })}
-          submitLabel={t(($) => $.admin.crud.save)}
-          onCancel={backToList}
-          isPending={mutation.isPending}
-        />
+        <>
+          <CrudForm
+            key={data.id}
+            fields={fields}
+            schema={zBannerInput}
+            defaultValues={bannerToForm(data)}
+            onSubmit={(values) => mutation.mutateAsync({ path: { id: bannerId }, body: values })}
+            submitLabel={t(($) => $.admin.crud.save)}
+            onCancel={backToList}
+            isPending={mutation.isPending}
+          />
+          <BannerStatePanel banner={data} />
+        </>
       )}
     </Stack>
   );

@@ -299,15 +299,10 @@ export default {
         updated: "Registro actualizado",
       },
       blogPosts: {
-        archive: "Archivar",
         likes: "Me gusta",
-        publish: "Publicar",
         relatedCourses: "Cursos relacionados",
-        stateChangeError: "No se pudo cambiar el estado",
-        stateChanged: "Estado cambiado",
         suggestQueued: "Sugerencia de cursos iniciada: recarga la página en breve",
         suggestRelatedCourses: "Sugerir cursos",
-        unpublish: "Despublicar",
       },
       courses: {
         edit: {
@@ -336,6 +331,13 @@ export default {
         kindRead: "Lectura",
         kindWrite: "Escritura",
         title: "Permisos",
+      },
+      publicationState: {
+        archive: "Archivar",
+        changeError: "No se pudo cambiar el estado",
+        changed: "Estado cambiado",
+        publish: "Publicar",
+        unpublish: "Despublicar",
       },
       qna: {
         add: "Agregar pregunta",

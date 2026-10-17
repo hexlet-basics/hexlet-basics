@@ -21,6 +21,9 @@ func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.Admin
 	return s.db.CourseLandingPage.AdminGet(ctx, params.ID, s.conv.ToCourseLandingPage)
 }
 
+// AdminCreateCourseLandingPage creates a landing page as a draft: the state is
+// not an input (it moves only through the transition operations), so the column
+// default applies.
 func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput) (api.AdminCreateCourseLandingPageRes, error) {
 	return s.db.CourseLandingPage.AdminCreate(ctx, req, s.conv.ToCourseLandingPage)
 }
@@ -34,4 +37,30 @@ func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.Ad
 		return nil, err
 	}
 	return &api.AdminDeleteCourseLandingPageNoContent{}, nil
+}
+
+// A state is not an update (ADR-0017, state transitions addendum): the
+// Publication State of a landing page moves only through the three operations
+// below, each with its own Permission, and the legal moves are the
+// landingpages module's (the shared transitions.Publish, Unpublish and
+// Archive). A new landing page is a draft (the column default).
+
+// AdminPublishCourseLandingPage makes a draft or archived landing page public.
+func (s *Server) AdminPublishCourseLandingPage(ctx context.Context, params api.AdminPublishCourseLandingPageParams) (api.AdminPublishCourseLandingPageRes, error) {
+	return moveState(ctx, int(params.ID), s.landingPageStates.Publish, s.getAdminCourseLandingPage)
+}
+
+// AdminUnpublishCourseLandingPage takes a published landing page back to draft.
+func (s *Server) AdminUnpublishCourseLandingPage(ctx context.Context, params api.AdminUnpublishCourseLandingPageParams) (api.AdminUnpublishCourseLandingPageRes, error) {
+	return moveState(ctx, int(params.ID), s.landingPageStates.Unpublish, s.getAdminCourseLandingPage)
+}
+
+// AdminArchiveCourseLandingPage archives a draft or published landing page.
+func (s *Server) AdminArchiveCourseLandingPage(ctx context.Context, params api.AdminArchiveCourseLandingPageParams) (api.AdminArchiveCourseLandingPageRes, error) {
+	return moveState(ctx, int(params.ID), s.landingPageStates.Archive, s.getAdminCourseLandingPage)
+}
+
+// getAdminCourseLandingPage is the read model a state move echoes back.
+func (s *Server) getAdminCourseLandingPage(ctx context.Context, id int) (*api.CourseLandingPage, error) {
+	return s.db.CourseLandingPage.AdminGet(ctx, int32(id), s.conv.ToCourseLandingPage)
 }

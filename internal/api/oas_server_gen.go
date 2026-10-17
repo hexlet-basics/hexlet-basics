@@ -8,12 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AdminArchiveBanner implements adminArchiveBanner operation.
+	//
+	// Archive a draft or published banner.
+	//
+	// POST /api/admin/banners/{id}/archive
+	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error)
 	// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
 	//
 	// Archive a draft or published post.
 	//
 	// POST /api/admin/blog_posts/{id}/archive
 	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
+	// AdminArchiveCourseLandingPage implements adminArchiveCourseLandingPage operation.
+	//
+	// Archive a draft or published landing page.
+	//
+	// POST /api/admin/course_landing_pages/{id}/archive
+	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error)
+	// AdminArchiveReview implements adminArchiveReview operation.
+	//
+	// Archive a draft or published review.
+	//
+	// POST /api/admin/reviews/{id}/archive
+	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error)
 	// AdminCreateBanner implements adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -286,6 +304,14 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	// AdminPublishBanner implements adminPublishBanner operation.
+	//
+	// Publish a draft or archived banner. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/banners/{id}/publish
+	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error)
 	// AdminPublishBlogPost implements adminPublishBlogPost operation.
 	//
 	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -294,6 +320,22 @@ type Handler interface {
 	//
 	// POST /api/admin/blog_posts/{id}/publish
 	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
+	// AdminPublishCourseLandingPage implements adminPublishCourseLandingPage operation.
+	//
+	// Publish a draft or archived landing page. A state is not an update: each change of Publication State
+	// is its own operation with its own Permission. An illegal move, or repeating the current state, is a
+	// 409 with a localized `detail`.
+	//
+	// POST /api/admin/course_landing_pages/{id}/publish
+	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error)
+	// AdminPublishReview implements adminPublishReview operation.
+	//
+	// Publish a draft or archived review. A state is not an update: each change of Publication State is
+	// its own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+	// with a localized `detail`.
+	//
+	// POST /api/admin/reviews/{id}/publish
+	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error)
 	// AdminReviewCourse implements adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
@@ -325,12 +367,30 @@ type Handler interface {
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
 	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	// AdminUnpublishBanner implements adminUnpublishBanner operation.
+	//
+	// Take a published banner back to draft.
+	//
+	// POST /api/admin/banners/{id}/unpublish
+	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error)
 	// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
 	//
 	// Take a published post back to draft.
 	//
 	// POST /api/admin/blog_posts/{id}/unpublish
 	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
+	// AdminUnpublishCourseLandingPage implements adminUnpublishCourseLandingPage operation.
+	//
+	// Take a published landing page back to draft.
+	//
+	// POST /api/admin/course_landing_pages/{id}/unpublish
+	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error)
+	// AdminUnpublishReview implements adminUnpublishReview operation.
+	//
+	// Take a published review back to draft.
+	//
+	// POST /api/admin/reviews/{id}/unpublish
+	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.

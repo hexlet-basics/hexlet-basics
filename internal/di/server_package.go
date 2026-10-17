@@ -88,6 +88,9 @@ type handlerServices struct {
 	PostRemover       *blogposts.Remover          `do:""`
 	Permissions       *staffroles.Permissions     `do:""`
 	SelfProtection    *selfprotection.Guard       `do:""`
+	BannerStates      *banners.Editor             `do:""`
+	ReviewStates      *reviews.Editor             `do:""`
+	LandingPageStates *landingpages.Editor        `do:""`
 	Dashboard         *dashboard.Dashboard        `do:""`
 	Sitemap           *sitemap.Sitemap            `do:""`
 	LessonReviews     *lessonreviews.Scheduler    `do:""`
@@ -178,6 +181,27 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return blogposts.NewRemover(db), nil
+	}),
+	do.Lazy[*banners.Editor](func(i do.Injector) (*banners.Editor, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return banners.NewEditor(db), nil
+	}),
+	do.Lazy[*reviews.Editor](func(i do.Injector) (*reviews.Editor, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return reviews.NewEditor(db), nil
+	}),
+	do.Lazy[*landingpages.Editor](func(i do.Injector) (*landingpages.Editor, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return landingpages.NewEditor(db), nil
 	}),
 	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -425,6 +449,9 @@ var serverPackage = do.Package(
 			PostRemover:       services.PostRemover,
 			Permissions:       services.Permissions,
 			SelfProtection:    services.SelfProtection,
+			BannerStates:      services.BannerStates,
+			ReviewStates:      services.ReviewStates,
+			LandingPageStates: services.LandingPageStates,
 			Dashboard:         services.Dashboard,
 			Sitemap:           services.Sitemap,
 			LessonReviews:     services.LessonReviews,

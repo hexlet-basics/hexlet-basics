@@ -41,6 +41,12 @@ function CourseLandingPagesList() {
     {
       accessorKey: "state",
       header: t(($) => $.models.attributes.course_landing_page.state),
+      cell: ({ row }) => {
+        const state = row.original.state;
+        return state
+          ? t(($) => $.models.attributes.course_landing_page["state/values"][state])
+          : "";
+      },
     },
     {
       id: "main",

@@ -38,6 +38,10 @@ function ReviewsList() {
     {
       accessorKey: "state",
       header: t(($) => $.models.attributes.review.state),
+      cell: ({ row }) => {
+        const state = row.original.state;
+        return state ? t(($) => $.models.attributes.review["state/values"][state]) : "";
+      },
     },
     {
       accessorKey: "locale",

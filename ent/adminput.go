@@ -16,7 +16,6 @@ func (c *BannerCreate) SetInput(i *api.BannerInput) *BannerCreate {
 	c.SetBackground(string(i.Background))
 	c.SetBody(string(i.Body))
 	c.SetLocale(string(i.Locale))
-	c.SetState(string(i.State))
 	c.SetNillableURL(inputconv.StringPtr(i.URL))
 	c.SetNillableStartsAt(inputconv.Ptr(i.StartsAt))
 	c.SetNillableFinishesAt(inputconv.Ptr(i.FinishesAt))
@@ -31,7 +30,6 @@ func (u *BannerUpdateOne) SetInput(i *api.BannerInput) *BannerUpdateOne {
 	u.SetBackground(string(i.Background))
 	u.SetBody(string(i.Body))
 	u.SetLocale(string(i.Locale))
-	u.SetState(string(i.State))
 	if i.URL.Null {
 		u.ClearURL()
 	} else {
@@ -180,7 +178,6 @@ func (c *CourseLandingPageCreate) SetInput(i *api.CourseLandingPageInput) *Cours
 	c.SetNillableName(inputconv.StringPtr(i.Name))
 	c.SetNillableListed(inputconv.Ptr(i.Listed))
 	c.SetNillableMain(inputconv.Ptr(i.Main))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetNillableOrder(inputconv.StringPtr(i.Order))
 	c.SetNillableMetaTitle(inputconv.StringPtr(i.MetaTitle))
 	c.SetNillableMetaDescription(inputconv.StringPtr(i.MetaDescription))
@@ -225,11 +222,6 @@ func (u *CourseLandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *Co
 		u.ClearMain()
 	} else {
 		u.SetMain(i.Main.Value)
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	if i.Order.Null {
 		u.ClearOrder()
@@ -321,7 +313,6 @@ func (c *ReviewCreate) SetInput(i *api.ReviewInput) *ReviewCreate {
 	c.SetNillableBody(inputconv.StringPtr(i.Body))
 	c.SetNillableFirstName(inputconv.StringPtr(i.FirstName))
 	c.SetNillableLastName(inputconv.StringPtr(i.LastName))
-	c.SetNillableState(inputconv.StringPtr(i.State))
 	c.SetNillablePinned(inputconv.Ptr(i.Pinned))
 	return c
 }
@@ -351,11 +342,6 @@ func (u *ReviewUpdateOne) SetInput(i *api.ReviewInput) *ReviewUpdateOne {
 		u.ClearLastName()
 	} else {
 		u.SetLastName(string(i.LastName.Value))
-	}
-	if i.State.Null {
-		u.ClearState()
-	} else {
-		u.SetState(string(i.State.Value))
 	}
 	if i.Pinned.Null {
 		u.ClearPinned()

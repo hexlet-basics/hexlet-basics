@@ -9,7 +9,6 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // directly — no hand-written schema, no per-resource date conversion.
 
 export const emptyBanner: BannerInput = {
-  state: "draft",
   background: "cta_gradient",
   locale: "en",
   body: "",
@@ -23,7 +22,6 @@ export const emptyBanner: BannerInput = {
 // so the text input stays controlled.
 export function bannerToForm(banner: Banner): BannerInput {
   return {
-    state: banner.state,
     background: banner.background,
     locale: banner.locale,
     body: banner.body,

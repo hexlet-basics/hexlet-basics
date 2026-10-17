@@ -79,26 +79,17 @@ func postFieldsOf(in *api.BlogPostInput) blogposts.PostFields {
 // are the editor's: an illegal one, repeating the current state included, is a
 // 409 with a localized detail (refuseTransition).
 func (s *Server) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (api.AdminPublishBlogPostRes, error) {
-	return s.moveBlogPost(ctx, int(params.ID), s.postEditor.Publish)
+	return moveState(ctx, int(params.ID), s.postEditor.Publish, s.getAdminBlogPost)
 }
 
 // AdminUnpublishBlogPost takes a published post back to draft.
 func (s *Server) AdminUnpublishBlogPost(ctx context.Context, params api.AdminUnpublishBlogPostParams) (api.AdminUnpublishBlogPostRes, error) {
-	return s.moveBlogPost(ctx, int(params.ID), s.postEditor.Unpublish)
+	return moveState(ctx, int(params.ID), s.postEditor.Unpublish, s.getAdminBlogPost)
 }
 
 // AdminArchiveBlogPost archives a draft or published post.
 func (s *Server) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchiveBlogPostParams) (api.AdminArchiveBlogPostRes, error) {
-	return s.moveBlogPost(ctx, int(params.ID), s.postEditor.Archive)
-}
-
-// moveBlogPost runs one of the editor's state moves and echoes the post back; a
-// refused move is mapped to its 409.
-func (s *Server) moveBlogPost(ctx context.Context, id int, move func(context.Context, int) error) (*api.BlogPost, error) {
-	if err := move(ctx, id); err != nil {
-		return nil, refuseTransition(err)
-	}
-	return s.getAdminBlogPost(ctx, id)
+	return moveState(ctx, int(params.ID), s.postEditor.Archive, s.getAdminBlogPost)
 }
 
 // AdminDeleteBlogPost removes a post with its dependents (the likes and related

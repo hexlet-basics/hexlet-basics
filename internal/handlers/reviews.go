@@ -56,3 +56,29 @@ func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteRe
 	}
 	return &api.AdminDeleteReviewNoContent{}, nil
 }
+
+// A state is not an update (ADR-0017, state transitions addendum): the
+// Publication State of a review moves only through the three operations below,
+// each with its own Permission, and the legal moves are the reviews module's
+// (the shared transitions.Publish, Unpublish and Archive). A new review is a
+// draft (the column default).
+
+// AdminPublishReview makes a draft or archived review public.
+func (s *Server) AdminPublishReview(ctx context.Context, params api.AdminPublishReviewParams) (api.AdminPublishReviewRes, error) {
+	return moveState(ctx, int(params.ID), s.reviewStates.Publish, s.getAdminReview)
+}
+
+// AdminUnpublishReview takes a published review back to draft.
+func (s *Server) AdminUnpublishReview(ctx context.Context, params api.AdminUnpublishReviewParams) (api.AdminUnpublishReviewRes, error) {
+	return moveState(ctx, int(params.ID), s.reviewStates.Unpublish, s.getAdminReview)
+}
+
+// AdminArchiveReview archives a draft or published review.
+func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchiveReviewParams) (api.AdminArchiveReviewRes, error) {
+	return moveState(ctx, int(params.ID), s.reviewStates.Archive, s.getAdminReview)
+}
+
+// getAdminReview is the read model a state move echoes back.
+func (s *Server) getAdminReview(ctx context.Context, id int) (*api.Review, error) {
+	return s.db.Review.AdminGet(ctx, int32(id), s.conv.ToReview)
+}
