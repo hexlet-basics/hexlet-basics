@@ -12,6 +12,7 @@
 # wrote blog posts and reviews, and has no staff record.
 - id: {{ id "user_admin_learner" }}
   email: admin-learner@example.com
+  password_digest: {{ password }}
   first_name: Admin
   last_name: Learner
   admin: true
@@ -69,3 +70,39 @@
   state: removed
   created_at: '2026-07-26 20:50:34'
   updated_at: '2026-07-26 20:50:34'
+
+# A removed account with no password, whose email is still on it: a Password
+# Reset link issued to it is bound to an empty digest and a live address, so
+# only the removed state can refuse the link.
+- id: {{ id "user_removed_without_password" }}
+  email: removed-passwordless@example.com
+  first_name: Removed
+  last_name: Passwordless
+  admin: false
+  state: removed
+  created_at: '2026-07-26 20:50:35'
+  updated_at: '2026-07-26 20:50:35'
+
+# Asked seven questions today: the assistant's daily quota (seven) is
+# used up or, for the day before, not. The harness clock reads
+# testsupport.Today (2026-07-27 12:00 UTC). It is enrolled in JavaScript and has
+# the first lesson started, so its chat on that lesson exists.
+- id: {{ id "user_quota_used_today" }}
+  email: quota-used-today@example.com
+  first_name: Quota
+  last_name: Today
+  admin: false
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+
+# Asked seven questions yesterday, just before midnight: the assistant's daily quota (seven) is
+# used up or, for the day before, not. The harness clock reads
+# testsupport.Today (2026-07-27 12:00 UTC). It is enrolled in JavaScript and has
+# the first lesson started, so its chat on that lesson exists.
+- id: {{ id "user_quota_used_yesterday" }}
+  email: quota-used-yesterday@example.com
+  first_name: Quota
+  last_name: Yesterday
+  admin: false
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'

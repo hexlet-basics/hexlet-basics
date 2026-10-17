@@ -62,6 +62,19 @@ type Chat struct {
 	now     func() time.Time
 }
 
+// Option adjusts a Chat as it is built.
+type Option func(*Chat)
+
+// WithClock makes the chat, and the daily quota it enforces, read the time from
+// now instead of the wall clock. A test fixes the day so that questions written
+// into the fixtures count as asked today, or yesterday, whenever the test runs.
+func WithClock(now func() time.Time) Option {
+	return func(c *Chat) {
+		c.now = now
+		c.quota.now = now
+	}
+}
+
 // NewChat wires the chat's dependencies.
 func NewChat(
 	db *ent.Client,
@@ -69,8 +82,13 @@ func NewChat(
 	lessons progress.Tracker,
 	llm Streamer,
 	translator *localization.Translator,
+	opts ...Option,
 ) *Chat {
-	return &Chat{db: db, tx: txStore, lessons: lessons, quota: NewQuota(db), llm: llm, i18n: translator, now: time.Now}
+	chat := &Chat{db: db, tx: txStore, lessons: lessons, quota: NewQuota(db), llm: llm, i18n: translator, now: time.Now}
+	for _, opt := range opts {
+		opt(chat)
+	}
+	return chat
 }
 
 // History is a learner's chat on one lesson.

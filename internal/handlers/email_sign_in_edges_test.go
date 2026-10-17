@@ -9,6 +9,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -17,7 +18,7 @@ import (
 // another try with a password that fits.
 func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := createPasswordUser(t, h, "reset-too-long@example.com")
+	u := fixtureUser(t, h, "user_with_password")
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
@@ -27,7 +28,7 @@ func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	refusal, ok := res.(*api.ValidationError)
 	require.True(t, ok, "got %T", res)
 	assert.Contains(t, refusal.Errors, "password")
-	assert.True(t, signsInWith(t, h, "reset-too-long@example.com", oldPassword))
+	assert.True(t, signsInWith(t, h, "with-password@example.com", fixtures.Password))
 
 	res, err = h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "a-password-that-fits"}, api.UpdatePasswordParams{Token: token})

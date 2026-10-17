@@ -19,12 +19,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/samber/lo"
 	"gocloud.dev/blob/memblob"
-	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
@@ -194,6 +193,18 @@ func (h *Harness) ResponseCookies() []string { return h.doer.setCookies }
 // socket, and exercise the exact ent-error -> status mapping the server uses.
 func NewHarness(t *testing.T) *Harness {
 	t.Helper()
+	return NewHarnessAs(t, HarnessUserLabel)
+}
+
+// Today is the day the harness's clock reads: the day the fixtures were written,
+// so a question the fixtures say was asked today is asked today whenever a test
+// runs. The assistant's daily quota counts from the start of it.
+var Today = time.Date(2026, time.July, 27, 12, 0, 0, 0, time.UTC)
+
+// NewHarnessAs is NewHarness for a request authenticated as the fixture user
+// with the label, for a scenario that belongs to a user of its own.
+func NewHarnessAs(t *testing.T, userLabel string) *Harness {
+	t.Helper()
 
 	db, tx := NewClientWithTx(t)
 	transactor := newSavepointTransactor(tx, db)
@@ -239,7 +250,8 @@ func NewHarness(t *testing.T) *Harness {
 		I18n:       translator,
 		Errors:     errorHandler,
 		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
-		Assistant:  assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator),
+		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
+			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover: blogposts.NewRemover(transactor),
 		Permissions: staffroles.NewPermissions(db),
@@ -257,7 +269,7 @@ func NewHarness(t *testing.T) *Harness {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	security := newHarnessSecurity(t, db)
+	security := newHarnessSecurity(t, db, userLabel)
 	doer := &inProcessDoer{
 		server: translator.Middleware(handler.AuthHandler().Trace(handlers.WithClientIP(
 			handler.AuthHandler().Identify(handler.AuthHandler().CarryGuestProgress(srv)),
@@ -323,25 +335,6 @@ func FailingOutcome() progress.Outcome {
 		Output: "expected 3, got 2",
 		Status: 1,
 	}
-}
-
-// HarnessUserPassword is the password GivePassword sets, so a test can sign in
-// as a fixture user without inventing credentials of its own.
-const HarnessUserPassword = "harness-password"
-
-// GivePassword gives a fixture user a usable password. The fixtures carry no
-// digest — the harness normally mints a JWT directly — so a test that exercises
-// the password flow has to supply one.
-func GivePassword(t *testing.T, h *Harness, userID int) string {
-	t.Helper()
-	digest, err := bcrypt.GenerateFromPassword([]byte(HarnessUserPassword), bcrypt.MinCost)
-	if err != nil {
-		t.Fatalf("hash harness password: %v", err)
-	}
-	u := h.DB.User.UpdateOneID(userID).
-		SetPasswordDigest(string(digest)).
-		SaveX(t.Context())
-	return lo.FromPtr(u.Email)
 }
 
 // NewGuestHarness is the harness with a signed guest-progress cookie on every
@@ -434,10 +427,10 @@ type harnessSecurity struct {
 	userID int
 }
 
-func newHarnessSecurity(t *testing.T, db *ent.Client) *harnessSecurity {
+func newHarnessSecurity(t *testing.T, db *ent.Client, userLabel string) *harnessSecurity {
 	t.Helper()
 
-	u, err := db.User.Get(t.Context(), fixtures.ID(HarnessUserLabel))
+	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))
 	if err != nil {
 		t.Fatalf("load harness admin: %v", err)
 	}

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -41,16 +40,12 @@ func TestListAssistantMessagesReturnsTheLessonChat(t *testing.T) {
 }
 
 // Provider bookkeeping rows (system prompts, tool calls) live in the same
-// table in production; the learner only ever sees the conversation.
+// table in production; the learner only ever sees the conversation. The
+// fixture chat on the first lesson holds a system prompt.
 func TestListAssistantMessagesHidesProviderRoles(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
-	chat := chatFor(t, h, lesson)
-	h.DB.AiMessage.Create().
-		SetAiChatID(chat.ID).
-		SetRole("system").
-		SetContent("You help people learn").
-		ExecX(t.Context())
+	require.True(t, h.DB.AiMessage.Query().Where(aimessage.RoleEQ("system")).ExistX(t.Context()), "the fixtures hold a system prompt")
 
 	listed := listAssistantChat(t, h, lesson)
 
@@ -187,13 +182,12 @@ func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 	assert.Contains(t, rest, "And a number?")
 }
 
-// Seven questions a day. Over the quota the operation answers 429 before the
+// Seven questions a day (the fixture learner has asked seven today). Over the quota the operation answers 429 before the
 // model is called, stores nothing, and the history reports the disabled state.
 func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	h := testsupport.NewHarnessAs(t, "user_quota_used_today")
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
-	askedAt(t, h, lesson, assistant.DailyQuota, time.Now().UTC())
 	messages := h.DB.AiMessage.Query().CountX(ctx)
 
 	res, err := h.Client.CreateAssistantMessage(ctx,
@@ -210,9 +204,8 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 
 // The quota is per day: yesterday's questions do not count against today.
 func TestAskAssistantQuotaResetsDaily(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	h := testsupport.NewHarnessAs(t, "user_quota_used_yesterday")
 	lesson := lessonBySlug(t, h, firstLessonSlug)
-	askedAt(t, h, lesson, assistant.DailyQuota, time.Now().UTC().Truncate(24*time.Hour).Add(-time.Minute))
 
 	answer := askAssistant(t, h, lesson, "A new day?")
 
@@ -335,23 +328,6 @@ func hasLessonProgress(t *testing.T, h *testsupport.Harness, lesson *ent.CourseL
 	return h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
 		ExistX(t.Context())
-}
-
-// askedAt records n questions by the acting learner at the given time, which
-// is stored as its wall clock: pass UTC, as the chat writes it.
-func askedAt(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson, n int, at time.Time) {
-	t.Helper()
-	chat := chatFor(t, h, lesson)
-	for i := range n {
-		h.DB.AiMessage.Create().
-			SetAiChatID(chat.ID).
-			SetRole("user").
-			SetContent(strings.Repeat("?", i+1)).
-			SetUserID(actingUserID(t, h)).
-			SetCreatedAt(at).
-			SetUpdatedAt(at).
-			ExecX(t.Context())
-	}
 }
 
 func assistantMessagesCount(t *testing.T, h *testsupport.Harness) int {

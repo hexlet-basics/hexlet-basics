@@ -66,5 +66,5 @@ func TestAdminListMessagesPaginated(t *testing.T) {
 
 	assert.Equal(t, int32(totalAssistantMessages), page.Total)
 	assert.Equal(t, int32(2), page.Page)
-	assert.Len(t, page.Items, 1) // 3 rows, page 2 of size 2 -> the last row
+	assert.Len(t, page.Items, 2, "page 2 of size 2 is full when there are more than 4 rows")
 }

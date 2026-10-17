@@ -190,10 +190,8 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 
 	// Accounts without a password digest are also rejected as invalid
 	// credentials rather than causing a panic or exposing account state.
-	_, err := db.User.Create().SetEmail("passwordless-auth-flow@example.com").Save(t.Context())
-	require.NoError(t, err)
 	resp = do(t, router, http.MethodPost, "/api/session",
-		`{"email":"passwordless-auth-flow@example.com","password":"wrong"}`, nil)
+		`{"email":"blank-user@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
 	var passwordlessUser api.ValidationError
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&passwordlessUser))

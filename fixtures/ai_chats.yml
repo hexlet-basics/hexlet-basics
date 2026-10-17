@@ -14,3 +14,13 @@
   language_lesson_member_id: {{ id "lesson_progress_staff_editor_javascript_variables" }}
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+- id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  user_id: {{ id "user_quota_used_today" }}
+  language_lesson_member_id: {{ id "lesson_progress_quota_used_today_javascript_hello_world" }}
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  user_id: {{ id "user_quota_used_yesterday" }}
+  language_lesson_member_id: {{ id "lesson_progress_quota_used_yesterday_javascript_hello_world" }}
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'

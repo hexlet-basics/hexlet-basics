@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -14,6 +15,7 @@ import (
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -131,14 +133,14 @@ func assertEnrollmentExists(t *testing.T, h *testsupport.Harness, userID, course
 	require.Equal(t, 1, count, "the merge creates the enrollment when it is absent")
 }
 
-// signInAsActingUser gives the fixture learner a password and returns the
-// credentials for it: the fixtures carry no digest, because the harness
-// normally mints a session directly.
+// signInAsActingUser returns the credentials of the fixture learner the harness
+// acts as, who has a password, for the flows that sign in rather than reuse the
+// harness session.
 func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput {
 	t.Helper()
 	return &api.SessionInput{
-		Email:    testsupport.GivePassword(t, h, actingUserID(t, h)),
-		Password: testsupport.HarnessUserPassword,
+		Email:    lo.FromPtr(h.DB.User.GetX(t.Context(), actingUserID(t, h)).Email),
+		Password: fixtures.Password,
 	}
 }
 

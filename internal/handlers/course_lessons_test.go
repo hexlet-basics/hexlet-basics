@@ -77,11 +77,13 @@ func TestAdminListLessonProgress(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	assert.Equal(t, int32(2), page.Total)
-	require.Len(t, page.Items, 2)
+	assert.Equal(t, int32(h.DB.LessonProgress.Query().CountX(ctx)), page.Total)
+	require.Len(t, page.Items, int(page.Total))
 
 	// id DESC: the newest row first.
-	assert.Greater(t, page.Items[0].ID, page.Items[1].ID)
+	for i := 1; i < len(page.Items); i++ {
+		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
+	}
 	byID := lo.KeyBy(page.Items, func(item api.LessonProgress) int32 { return item.ID })
 
 	first := byID[fixtures.ID32("lesson_progress_staff_editor_javascript_variables")] // started, no messages, lesson "variables"

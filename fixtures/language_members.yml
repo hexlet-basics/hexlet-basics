@@ -16,3 +16,17 @@
   finished_lessons_count: 2
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+- id: {{ id "enrollment_quota_used_today_javascript" }}
+  user_id: {{ id "user_quota_used_today" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'
+- id: {{ id "enrollment_quota_used_yesterday_javascript" }}
+  user_id: {{ id "user_quota_used_yesterday" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:36'
+  updated_at: '2026-07-26 20:50:36'

@@ -23,6 +23,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/progress"
@@ -95,10 +96,13 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 
 	jti := ids.New()
 	rec := httptest.NewRecorder()
-	u, err := db.User.Create().
-		SetEmail("attachment-user-" + ids.New() + "@example.com").
-		SetAdmin(admin).
-		Save(t.Context())
+	// An administrator may upload; a user who is neither an administrator nor
+	// staff may not.
+	label := "user_blank"
+	if admin {
+		label = "user_admin_learner"
+	}
+	u, err := db.User.Get(t.Context(), fixtures.ID(label))
 	require.NoError(t, err)
 	authUser := &token.User{ID: strconv.Itoa(u.ID), Name: "attachment-admin@example.com"}
 	_, err = token.NewService(token.Opts{

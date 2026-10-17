@@ -8,9 +8,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/crypto/bcrypt"
 
-	"hexletbasics/ent"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
 	"hexletbasics/internal/accounts"
@@ -131,31 +129,16 @@ func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 	assert.Equal(t, 2, h.DB.User.Query().Where(user.Or(user.Email(email), user.ID(h.UserID))).CountX(t.Context()))
 }
 
-// removedUser is an account in the removed state that still has its email and
-// password, so a refusal proves the state is checked, not that the erased
-// fields happen to match nothing.
-func removedUser(t *testing.T, h *testsupport.Harness, email string) *ent.User {
-	t.Helper()
-	digest, err := bcrypt.GenerateFromPassword([]byte(oldPassword), bcrypt.MinCost)
-	require.NoError(t, err)
-	return h.DB.User.Create().
-		SetEmail(email).
-		SetPasswordDigest(string(digest)).
-		SetState(accounts.StateRemoved).
-		SaveX(t.Context())
-}
-
 func TestRemovedUserCannotSignInWithPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	removedUser(t, h, "removed-password@example.com")
 
-	assert.False(t, signsInWith(t, h, "removed-password@example.com", oldPassword))
+	assert.False(t, signsInWith(t, h, "removed-user@example.com", fixtures.Password))
 	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
 }
 
 func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := removedUser(t, h, "removed-magic@example.com")
+	u := fixtureUser(t, h, "user_removed")
 	token := issueEmailToken(t, emailtokens.MagicLink, u)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
@@ -163,13 +146,12 @@ func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 	assert.IsType(t, &api.NotFoundError{}, res)
 }
 
-// A Password Reset issued to a user without a password is bound to an empty
-// digest, which removal leaves empty; only the state can refuse it.
+// A Password Reset issued to a removed user without a password is bound to an
+// empty digest and to an email that is still there; only the state can refuse it.
 func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := h.DB.User.Create().SetEmail("removed-reset@example.com").SaveX(t.Context())
+	u := fixtureUser(t, h, "user_removed_without_password")
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
-	h.DB.User.UpdateOne(u).SetState(accounts.StateRemoved).ClearEmail().ExecX(t.Context())
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},

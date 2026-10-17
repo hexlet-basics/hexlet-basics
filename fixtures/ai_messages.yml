@@ -26,3 +26,111 @@
   user_id: {{ id "user_staff_editor" }}
   created_at: '2026-07-26 20:50:31'
   updated_at: '2026-07-26 20:50:31'
+# Provider bookkeeping (a system prompt) lives in the same table in production;
+# the learner only ever sees the conversation.
+- id: {{ id "ai_message_admin_learner_javascript_hello_world_system" }}
+  ai_chat_id: {{ id "ai_chat_admin_learner_javascript_hello_world" }}
+  role: system
+  content: 'You help people learn'
+  user_id:
+  created_at: '2026-07-26 20:50:28'
+  updated_at: '2026-07-26 20:50:28'
+# Seven questions asked on one UTC day by each of two learners, one day apart.
+- id: {{ id "ai_message_quota_used_today_1" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '?'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_2" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '??'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_3" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '???'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_4" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '????'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_5" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '?????'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_6" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '??????'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_today_7" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_today_javascript_hello_world" }}
+  role: user
+  content: '???????'
+  user_id: {{ id "user_quota_used_today" }}
+  created_at: '2026-07-27 09:00:00'
+  updated_at: '2026-07-27 09:00:00'
+- id: {{ id "ai_message_quota_used_yesterday_1" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '?'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_2" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '??'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_3" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '???'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_4" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '????'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_5" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '?????'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_6" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '??????'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
+- id: {{ id "ai_message_quota_used_yesterday_7" }}
+  ai_chat_id: {{ id "ai_chat_quota_used_yesterday_javascript_hello_world" }}
+  role: user
+  content: '???????'
+  user_id: {{ id "user_quota_used_yesterday" }}
+  created_at: '2026-07-26 23:59:00'
+  updated_at: '2026-07-26 23:59:00'
