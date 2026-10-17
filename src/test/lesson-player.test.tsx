@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { http, HttpResponse } from "msw";
 import { afterAll, afterEach, beforeEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
@@ -285,9 +286,9 @@ test("divides the two panes where the learner left the divider", async () => {
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
   );
-  // What a previous visit to this lesson stored — a reload reads it back rather
-  // than resetting to the default split.
-  localStorage.setItem("lesson-panes-javascript-variables", JSON.stringify(["70%", "30%"]));
+  // What a previous visit stored — a reload reads it back rather than resetting
+  // to the default split.
+  Cookies.set("lesson_panes", "70");
 
   await renderPlayer("variables");
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
@@ -299,7 +300,7 @@ test("divides the two panes where the learner left the divider", async () => {
   expect(panes.length).toBe(2);
   expect(panes[0]?.style.cssText).toContain("70%");
 
-  localStorage.removeItem("lesson-panes-javascript-variables");
+  Cookies.remove("lesson_panes");
 });
 
 test("says so when the lesson is not there", async () => {

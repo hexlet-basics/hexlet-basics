@@ -9,13 +9,7 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import {
-  type SplitterPaneSize,
-  useDisclosure,
-  useLocalStorage,
-  useMediaQuery,
-  useMounted,
-} from "@mantine/hooks";
+import { type SplitterPaneSize, useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,10 +19,8 @@ import LessonAssistant from "@/components/lesson/LessonAssistant";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
+import { writeTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
-
-// The desktop split before the learner drags the divider: theory, then workspace.
-const DEFAULT_PANE_SIZES: [SplitterPaneSize, SplitterPaneSize] = ["40%", "60%"];
 
 // The lesson player's shell: theory, the assistant and navigation on the left,
 // the workspace on the right. Both panes stay mounted for the life of the page —
@@ -44,25 +36,21 @@ export default function LessonPage({
   courseSlug,
   lessonSlug,
   signedIn,
+  theoryPercent: initialTheoryPercent,
 }: {
   courseSlug: string;
   lessonSlug: string;
   signedIn: boolean;
+  // Where the learner last left the divider, read where the page is rendered
+  // (see lib/lesson-panes) so the server's markup already has it.
+  theoryPercent: number;
 }) {
   const { t } = useTranslation();
   const { data, isPending, isError } = useQuery(
     getCourseLessonOptions({ path: { courseSlug, slug: lessonSlug } }),
   );
 
-  // Where the learner dragged the divider, remembered per lesson exactly as
-  // legacy remembered it.
-  // Read in an effect (the hook's default), not during render: this page is
-  // server-rendered, and reading storage on the first client render would paint
-  // a split the server's HTML does not have.
-  const [paneSizes, setPaneSizes] = useLocalStorage<SplitterPaneSize[]>({
-    key: `lesson-panes-${courseSlug}-${lessonSlug}`,
-    defaultValue: DEFAULT_PANE_SIZES,
-  });
+  const [theoryPercent, setTheoryPercent] = useState(initialTheoryPercent);
 
   // Read in an effect with a desktop default, for the same reason as the sizes
   // above: the server renders the desktop split, and a phone moves to its
@@ -74,11 +62,6 @@ export default function LessonPage({
   // Whether a phone shows the theory pane rather than the workspace. The
   // workspace comes first, as in legacy: it is where the learner acts, and its
   // own theory tab keeps the reading one tap away.
-  // The stored split and the viewport are both read in effects, so the first
-  // frame is the server's 40/60 whatever the learner chose: shown, the divider
-  // would jump once those effects land. Mounted flips in the same flush as they
-  // do, so the panes appear once, already at their size.
-  const mounted = useMounted();
   const [theoryOpened, { toggle: togglePanes }] = useDisclosure(false);
 
   // The outcome of the last check: the workspace renders it, the assistant is
@@ -97,11 +80,15 @@ export default function LessonPage({
     return <LessonMissing />;
   }
 
-  const phoneSizes: SplitterPaneSize[] = theoryOpened ? ["100%", "0%"] : ["0%", "100%"];
-  const sizes = isDesktop ? paneSizes : phoneSizes;
-  // Storage holds whatever array was written to it, so a pane with no entry
-  // falls back to the default split instead of an undefined size.
-  const [theorySize = DEFAULT_PANE_SIZES[0], workspaceSize = DEFAULT_PANE_SIZES[1]] = sizes;
+  const phoneSizes: [SplitterPaneSize, SplitterPaneSize] = theoryOpened
+    ? ["100%", "0%"]
+    : ["0%", "100%"];
+  const deskSizes: [SplitterPaneSize, SplitterPaneSize] = [
+    `${theoryPercent}%`,
+    `${100 - theoryPercent}%`,
+  ];
+  const sizes = isDesktop ? deskSizes : phoneSizes;
+  const [theorySize, workspaceSize] = sizes;
 
   const burger = (
     <PaneBurger
@@ -118,10 +105,12 @@ export default function LessonPage({
           the controlled sizes stay where the burger put them. */}
       <Splitter
         h="100%"
-        style={{ visibility: mounted ? "visible" : "hidden" }}
         sizes={sizes}
         onSizeChange={(next) => {
-          if (isDesktop) setPaneSizes(next);
+          if (isDesktop) setTheoryPercent(Number.parseFloat(String(next[0])));
+        }}
+        onResizeEnd={(_handle, next) => {
+          if (isDesktop) writeTheoryPercent(Number.parseFloat(String(next[0])));
         }}
         withHandle={isDesktop}
         // The line defaults to the page background, so only the thumb showed.
