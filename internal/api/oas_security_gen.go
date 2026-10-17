@@ -64,6 +64,7 @@ var operationRolesAdminSession = map[string][]string{
 	AdminGetCourseCategoryOperation:             []string{},
 	AdminGetCourseLandingPageOperation:          []string{},
 	AdminGetManagementUserOperation:             []string{},
+	AdminGetMyCapabilitiesOperation:             []string{},
 	AdminGetReviewOperation:                     []string{},
 	AdminGetRoleOperation:                       []string{},
 	AdminGetRolePermissionsOperation:            []string{},

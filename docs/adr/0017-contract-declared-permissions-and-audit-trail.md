@@ -566,3 +566,48 @@ response.
 stays for changes, hence the column (migration `audit_record_reads`). The outbox
 keeps the event's address and user agent indefinitely (ADR-0004: retention of
 events is undecided), the same data the record holds under its own retention.
+
+## Addendum: the audit page (#853)
+
+Settled by the ticket that shows the trail to staff. It meets the ADR as written;
+no departure. It is the first operation to require a capability Permission, so
+the branch of `Policy.Allow` that withholds the administrator shortcut now runs
+for a real request.
+
+**One operation, two declarations.** `AdminListAuditRecords`
+(`GET /admin/audit_records`) declares `x-permission audit.read` (read) and
+`x-personal-data AuditRecord`. The first makes an administrator without the grant
+on a Staff Role (or without a staff record at all) get a 403, and the grant opens
+it. The second makes reading the trail leave a read record like any read of
+personal data: the records carry addresses and old values. No new middleware: the
+operation passes through the two already registered in the single
+`api.WithMiddleware` call.
+
+**The window.** The table is partitioned by month, so every query carries an
+`occurred_at` bound and `audit.Filter` is the one place that builds it. `to`
+defaults to now, `from` to 30 days before `to`, and a window wider than 92 days
+(at most four partitions) or empty is a 422 on `from` or `to`; looking further
+back is several narrower queries. Page cost is capped by the contract's
+`perPage` of at most 100 and by the window. An entity id without its entity type
+is a 422 as well, because the index is `(entity_type, entity_id, occurred_at)`
+and an id alone could not use it. Rows are ordered by `(occurred_at, id)`
+descending, the id breaking ties so a page boundary never repeats a row. The
+actor, channel, operation and entity filters are equalities that meet the
+existing indexes; no migration. A test proves the bound: with partitions for
+several months, the plan of a filtered query names only the partition of its
+window and never the default partition, and the same table without a window
+reads all of them.
+
+**The shape.** `changes` is a typed list (entity, id, op, fields with old and new
+value as raw JSON, `secret` for a field stored by name only) and `reads` a typed
+`{count, ids}`; the old and new values are `unknown` in the contract because they
+are the JSON of whatever the field held. The conversion is hand-written
+(`apiconv.AuditRecord`) since the columns are JSON, not generated.
+
+**Who sees the menu entry.** The admin menu is the first place that depends on a
+capability, and the session user carries no staff role, so one small operation,
+`AdminGetMyCapabilities` (`GET /admin/capabilities`, open to any staff member),
+answers with the capability Permissions the caller holds, through the same
+`Policy.HasCapability` the operations are held to. The menu shows the audit entry
+only when it lists `audit.read`; the page itself still answers a 403 with an
+explanation, since the grant may change after the menu loaded.

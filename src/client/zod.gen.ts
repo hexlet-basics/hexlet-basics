@@ -681,6 +681,15 @@ export const zLocale = z.enum([
 ]);
 
 /**
+ * The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+ * member holds through their Staff Role. The administrator flag adds none, so
+ * the admin menu shows an entry behind a capability only to someone who holds it.
+ */
+export const zMyCapabilities = z.object({
+  held: z.array(z.string())
+});
+
+/**
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export const zMyDashboard = z.object({
@@ -1343,6 +1352,11 @@ export const zAdminSuggestBlogPostRelatedCoursesPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zAdminSuggestBlogPostRelatedCoursesResponse = z.void();
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminGetMyCapabilitiesResponse = zMyCapabilities;
 
 export const zAdminListCourseCategoriesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),

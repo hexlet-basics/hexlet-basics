@@ -427,6 +427,24 @@ interface AdminMessages {
 }
 
 /**
+ * The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff
+ * member holds through their Staff Role. The administrator flag adds none, so
+ * the admin menu shows an entry behind a capability only to someone who holds it.
+ */
+model MyCapabilities {
+  held: string[];
+}
+
+@route("/admin/capabilities")
+@tag("Admin: Audit")
+@useAuth(AdminSession)
+interface AdminCapabilities {
+  /** The capabilities the caller holds; open to any staff member. */
+  @get @extension("x-access", "any-staff") @operationId("adminGetMyCapabilities")
+  get(): MyCapabilities | UnauthorizedError | ForbiddenError | ApiError;
+}
+
+/**
  * Filters of the audit trail listing. The table is partitioned by month on
  * `occurred_at`, so every query carries a time window: `from` defaults to 30
  * days before `to`, `to` defaults to now, and the window may not exceed 92 days

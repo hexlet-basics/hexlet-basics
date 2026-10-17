@@ -34,6 +34,7 @@ const (
 	AdminGetCourseCategoryOperation             OperationName = "AdminGetCourseCategory"
 	AdminGetCourseLandingPageOperation          OperationName = "AdminGetCourseLandingPage"
 	AdminGetManagementUserOperation             OperationName = "AdminGetManagementUser"
+	AdminGetMyCapabilitiesOperation             OperationName = "AdminGetMyCapabilities"
 	AdminGetReviewOperation                     OperationName = "AdminGetReview"
 	AdminGetRoleOperation                       OperationName = "AdminGetRole"
 	AdminGetRolePermissionsOperation            OperationName = "AdminGetRolePermissions"

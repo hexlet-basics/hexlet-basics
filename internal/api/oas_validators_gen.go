@@ -1874,6 +1874,29 @@ func (s Locale) Validate() error {
 	}
 }
 
+func (s *MyCapabilities) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Held == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "held",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *MyDashboard) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer

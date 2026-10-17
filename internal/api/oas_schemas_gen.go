@@ -306,6 +306,14 @@ type AdminGetManagementUserUnauthorized ProblemDetails
 
 func (*AdminGetManagementUserUnauthorized) adminGetManagementUserRes() {}
 
+type AdminGetMyCapabilitiesForbidden ProblemDetails
+
+func (*AdminGetMyCapabilitiesForbidden) adminGetMyCapabilitiesRes() {}
+
+type AdminGetMyCapabilitiesUnauthorized ProblemDetails
+
+func (*AdminGetMyCapabilitiesUnauthorized) adminGetMyCapabilitiesRes() {}
+
 type AdminGetReviewForbidden ProblemDetails
 
 func (*AdminGetReviewForbidden) adminGetReviewRes() {}
@@ -5638,6 +5646,26 @@ func (s *Locale) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// The capability Permissions (`audit.read`, `mcp.read`, ...) the signed-in staff member holds through
+// their Staff Role. The administrator flag adds none, so the admin menu shows an entry behind a
+// capability only to someone who holds it.
+// Ref: #/components/schemas/MyCapabilities
+type MyCapabilities struct {
+	Held []string `json:"held"`
+}
+
+// GetHeld returns the value of Held.
+func (s *MyCapabilities) GetHeld() []string {
+	return s.Held
+}
+
+// SetHeld sets the value of Held.
+func (s *MyCapabilities) SetHeld(val []string) {
+	s.Held = val
+}
+
+func (*MyCapabilities) adminGetMyCapabilitiesRes() {}
 
 // The signed-in user's dashboard (legacy: `MyController#show`).
 // Ref: #/components/schemas/MyDashboard

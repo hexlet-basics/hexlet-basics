@@ -574,6 +574,24 @@ export const adminSuggestBlogPostRelatedCoursesMutation = (options?: Partial<Opt
   return mutationOptions;
 };
 
+export const adminGetMyCapabilitiesQueryKey = (options?: Options<AdminGetMyCapabilitiesData>) => createQueryKey('adminGetMyCapabilities', options);
+
+/**
+ * The capabilities the caller holds; open to any staff member.
+ */
+export const adminGetMyCapabilitiesOptions = (options?: Options<AdminGetMyCapabilitiesData>) => queryOptions<AdminGetMyCapabilitiesResponse, AxiosError<AdminGetMyCapabilitiesError>, AdminGetMyCapabilitiesResponse, ReturnType<typeof adminGetMyCapabilitiesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetMyCapabilities({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetMyCapabilitiesQueryKey(options)
+});
+
 export const adminListCourseCategoriesQueryKey = (options?: Options<AdminListCourseCategoriesData>) => createQueryKey('adminListCourseCategories', options);
 
 /**

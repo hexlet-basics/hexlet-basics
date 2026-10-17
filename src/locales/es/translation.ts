@@ -211,6 +211,7 @@ export default {
     },
     admin: {
       resources: {
+        audit: "Registro de auditoría",
         banners: "Banners",
         blogPosts: "Publicaciones del blog",
         courseCategories: "Categorías de cursos",
@@ -225,6 +226,59 @@ export default {
         roles: "Roles",
         staffMembers: "Personal",
         users: "Usuarios",
+      },
+      audit: {
+        channel: {
+          mcp: "MCP",
+          web: "Sitio web",
+        },
+        columns: {
+          actor: "Usuario",
+          channel: "Canal",
+          entity: "Entidad",
+          occurredAt: "Cuándo",
+          operation: "Operación",
+          outcome: "Resultado",
+        },
+        details: {
+          address: "Dirección",
+          changes: "Cambios",
+          connectedApp: "Aplicación conectada",
+          field: "Campo",
+          locale: "Idioma",
+          new: "Valor nuevo",
+          old: "Valor anterior",
+          open: "Detalles",
+          readCount: "Registros leídos: {{count}}",
+          reads: "Lecturas de datos personales",
+          requestId: "Solicitud",
+          secret: "Valor secreto, no se guarda",
+          token: "Token",
+          userAgent: "User agent",
+        },
+        filters: {
+          actorUserId: "Id de usuario",
+          anyChannel: "Cualquier canal",
+          apply: "Aplicar",
+          channel: "Canal",
+          entityId: "Id de la entidad",
+          entityType: "Tipo de entidad",
+          from: "Desde",
+          operation: "Operación",
+          reset: "Restablecer",
+          to: "Hasta",
+          windowHint:
+            "Sin período se muestran los últimos 30 días; un período puede durar como máximo 92 días. El id de la entidad requiere indicar su tipo.",
+        },
+        forbidden: {
+          body: "Leer el registro de auditoría requiere el permiso audit.read en tu rol, incluso para un administrador.",
+          title: "Sin acceso al registro de auditoría",
+        },
+        outcome: {
+          failed: "Fallido",
+          forbidden: "Rechazado",
+          succeeded: "Hecho",
+        },
       },
       crud: {
         cancel: "Cancelar",

@@ -151,6 +151,12 @@ type Handler interface {
 	//
 	// GET /api/admin/management/users/{id}
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	// AdminGetMyCapabilities implements adminGetMyCapabilities operation.
+	//
+	// The capabilities the caller holds; open to any staff member.
+	//
+	// GET /api/admin/capabilities
+	AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error)
 	// AdminGetReview implements adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed

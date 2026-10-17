@@ -211,6 +211,7 @@ export default {
     },
     admin: {
       resources: {
+        audit: "Журнал аудита",
         banners: "Баннеры",
         blogPosts: "Посты блога",
         courseCategories: "Категории курсов",
@@ -225,6 +226,59 @@ export default {
         roles: "Роли",
         staffMembers: "Сотрудники",
         users: "Пользователи",
+      },
+      audit: {
+        channel: {
+          mcp: "MCP",
+          web: "Сайт",
+        },
+        columns: {
+          actor: "Пользователь",
+          channel: "Канал",
+          entity: "Сущность",
+          occurredAt: "Когда",
+          operation: "Операция",
+          outcome: "Результат",
+        },
+        details: {
+          address: "Адрес",
+          changes: "Изменения",
+          connectedApp: "Подключённое приложение",
+          field: "Поле",
+          locale: "Язык",
+          new: "Новое значение",
+          old: "Старое значение",
+          open: "Подробнее",
+          readCount: "Прочитано записей: {{count}}",
+          reads: "Чтение персональных данных",
+          requestId: "Запрос",
+          secret: "Секретное значение, не сохраняется",
+          token: "Токен",
+          userAgent: "User agent",
+        },
+        filters: {
+          actorUserId: "Id пользователя",
+          anyChannel: "Любой канал",
+          apply: "Применить",
+          channel: "Канал",
+          entityId: "Id сущности",
+          entityType: "Тип сущности",
+          from: "С",
+          operation: "Операция",
+          reset: "Сбросить",
+          to: "По",
+          windowHint:
+            "Без периода показаны последние 30 дней; период не длиннее 92 дней. Id сущности требует указать её тип.",
+        },
+        forbidden: {
+          body: "Чтобы читать журнал аудита, у вашей роли должно быть право audit.read, даже у администратора.",
+          title: "Нет доступа к журналу аудита",
+        },
+        outcome: {
+          failed: "Ошибка",
+          forbidden: "Отказано",
+          succeeded: "Выполнено",
+        },
       },
       crud: {
         cancel: "Отмена",

@@ -240,6 +240,15 @@ func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params A
 	return r, ht.ErrNotImplemented
 }
 
+// AdminGetMyCapabilities implements adminGetMyCapabilities operation.
+//
+// The capabilities the caller holds; open to any staff member.
+//
+// GET /api/admin/capabilities
+func (UnimplementedHandler) AdminGetMyCapabilities(ctx context.Context) (r AdminGetMyCapabilitiesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminGetReview implements adminGetReview operation.
 //
 // Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
