@@ -117,6 +117,8 @@ export default function LessonPage({
           if (isDesktop) setPaneSizes(next);
         }}
         withHandle={isDesktop}
+        // The line defaults to the page background, so only the thumb showed.
+        handleColor="var(--mantine-color-default-border)"
         lineSize={isDesktop ? undefined : 0}
       >
         {/* The pane a phone has folded away is `inert`: still mounted, but out
