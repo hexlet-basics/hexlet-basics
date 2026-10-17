@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/dashboard"
 )
 
 // GetMyDashboard returns the learner's courses, split into what they are
@@ -30,25 +28,7 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 	}
 
 	return &api.MyDashboard{
-		Started:  s.dashboardCourses(courses.Started),
-		Finished: s.dashboardCourses(courses.Finished),
+		Started:  s.conv.ToDashboardCourses(courses.Started),
+		Finished: s.conv.ToDashboardCourses(courses.Finished),
 	}, nil
-}
-
-// dashboardCourses projects each course: the enrollment, where the learner
-// stands in it, and the card to draw.
-func (s *Server) dashboardCourses(courses []dashboard.Course) []api.DashboardCourse {
-	items := make([]api.DashboardCourse, 0, len(courses))
-	for _, c := range courses {
-		next := api.NilLessonRef{Null: true}
-		if c.NextLesson != nil {
-			next = apiconv.NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
-		}
-		items = append(items, api.DashboardCourse{
-			Enrollment: apiconv.ToEnrollment(c.Enrollment),
-			Progress:   apiconv.ToCourseProgress(c.State, next),
-			Card:       s.conv.ToCatalogItem(c.Card),
-		})
-	}
-	return items
 }

@@ -19,6 +19,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/progress"
 )
 
@@ -44,6 +45,8 @@ import (
 // goverter:extend PermissionResourceFromString
 // goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
+// goverter:extend NilEnrollmentStateFromPtr
+// goverter:extend NilEnrollmentStateFromString
 // goverter:extend TimeIdentity
 // goverter:extend EnrollmentStateFromPtr
 // goverter:extend LocaleFromPtr
@@ -238,90 +241,150 @@ type Converter interface {
 	ToCourseLessonReview(source *ent.CourseLessonReview) api.CourseLessonReview
 
 	ToCourseLessonReviews(source []*ent.CourseLessonReview) []api.CourseLessonReview
+
+	// An Enrollment is the record alone: where the learner stands in it is
+	// computed against the current Version and travels as CourseProgress.
+	// goverter:map UserID UserId
+	// goverter:map CourseID CourseId
+	ToEnrollment(source *ent.Enrollment) api.Enrollment
+
+	// The computed course state. The Next Lesson is named from the lessons of the
+	// visitor's locale (nextLessonOf); the state knows only its slug.
+	// goverter:map State.State State
+	// goverter:map State.Completion Completion
+	// goverter:map . NextLesson | nextLessonOf
+	ToCourseProgress(source CourseProgressSource) api.CourseProgress
+
+	// The dashboard names the Next Lesson itself (its id and name came from the
+	// request locale's translations), so its progress is a different projection.
+	// goverter:map State.State State
+	// goverter:map State.Completion Completion
+	// goverter:map . NextLesson | dashboardNextLesson
+	ToDashboardProgress(source dashboard.Course) api.CourseProgress
+
+	// goverter:map . Progress
+	ToDashboardCourse(source dashboard.Course) api.DashboardCourse
+
+	ToDashboardCourses(source []dashboard.Course) []api.DashboardCourse
+
+	// A lesson with the visitor's standing in it: the checkmark travels with the
+	// row, so no screen joins two lists. LearnerLessonSources does the join.
+	// goverter:map Info.CourseLessonID ID
+	// goverter:map Info.Edges.Lesson.Slug Slug
+	// goverter:map Info.Name Name
+	// goverter:map Info.Description Description
+	// goverter:map Standing.Position Position
+	// goverter:map Standing.Finished Finished
+	ToLearnerLesson(source LearnerLessonSource) api.LearnerLesson
+
+	ToLearnerLessons(source []LearnerLessonSource) []api.LearnerLesson
+
+	// goverter:map Row.Edges.Version.ModuleID ID
+	// goverter:map Row.Name Name
+	// goverter:map Row.Description Description
+	ToCourseModule(source ModuleSource) api.CourseModule
+
+	ToCourseModules(source []ModuleSource) []api.CourseModule
+
+	// The player payload, assembled from the rows in LessonContent. versionId and
+	// version both carry the Lesson Version id, as the legacy serializer emitted
+	// them (one from the Translation's FK column, one from the row it points at);
+	// the check operation reads the former.
+	// goverter:map Course Course
+	// goverter:map Lesson.ID ID
+	// goverter:map Lesson.Slug Slug
+	// goverter:map Lesson.CreatedAt CreatedAt
+	// goverter:map Translation.Name Name
+	// goverter:map Translation.Locale Locale
+	// goverter:map Translation.Description Description
+	// goverter:map Translation.Instructions Instructions
+	// goverter:map Translation.Theory Theory
+	// goverter:map Translation.Definitions Definitions | lessonDefinitions
+	// goverter:map Translation.Tips Tips | lessonTips
+	// goverter:map Version.NaturalOrder NaturalOrder
+	// goverter:map Version.ID VersionId
+	// goverter:map Version.ID Version
+	// goverter:map Version.PreparedCode PreparedCode
+	// goverter:map Version.OriginalCode OriginalCode
+	// goverter:map Version.TestCode TestCode
+	// goverter:map . ExerciseExtension | exerciseExtension
+	// goverter:map . TestExtension | testExtension
+	// goverter:map SourceCodeURL SourceCodeUrl | sourceCodeURL
+	ToCourseLesson(source LessonContent) api.CourseLesson
 }
 
-// ToEnrollment projects a learner's Enrollment: the record alone. Where the
-// learner stands (Completion, the Next Lesson) is computed against the current
-// Version and travels as CourseProgress.
-func ToEnrollment(row *ent.Enrollment) api.Enrollment {
-	return api.Enrollment{
-		ID:       int32(row.ID),
-		UserId:   int32(row.UserID),
-		CourseId: int32(row.CourseID),
-		State:    nilEnrollmentState(row.State),
-	}
+// CourseProgressSource is what a course's progress is computed from: the state
+// and the lessons of the visitor's locale, which name the Next Lesson.
+type CourseProgressSource struct {
+	State   *progress.CourseState
+	Lessons []api.LearnerLesson
 }
 
-// ToCourseProgress projects the computed course state. The Next Lesson is
-// named by the caller, who has the lessons of the visitor's locale; the state
-// knows only its slug.
-func ToCourseProgress(state *progress.CourseState, next api.NilLessonRef) api.CourseProgress {
-	return api.CourseProgress{
-		State:      nilEnrollmentState(&state.State),
-		Completion: int32(state.Completion),
-		NextLesson: next,
-	}
+// LearnerLessonSource is one lesson's translation with the visitor's standing
+// in it.
+type LearnerLessonSource struct {
+	Info     *ent.CourseLessonTranslation
+	Standing progress.LessonState
 }
 
-// ToLearnerLessons lists a Version's lessons in one locale with the visitor's
-// standing in each: the checkmark travels with the row, so no screen joins two
-// lists. infos are the translations of the lessons in course order, each with its
-// lesson loaded (WithLesson); the standing comes from the computed state.
+// LearnerLessonSources joins the lessons of a Version in one locale with the
+// visitor's standing in each. infos are the translations in course order, each
+// with its lesson loaded (WithLesson).
 //
 // A lesson the state does not know has no Position and is not finished: the
 // state and the infos read the same Version, so that is a lesson added since
 // the state was computed, not a case to fail on.
-func ToLearnerLessons(infos []*ent.CourseLessonTranslation, state *progress.CourseState) []api.LearnerLesson {
+func LearnerLessonSources(infos []*ent.CourseLessonTranslation, state *progress.CourseState) []LearnerLessonSource {
 	standing := make(map[string]progress.LessonState, len(state.Lessons))
 	for _, lesson := range state.Lessons {
 		standing[lesson.Slug] = lesson
 	}
-
-	lessons := make([]api.LearnerLesson, 0, len(infos))
-	for _, info := range infos {
+	return lo.Map(infos, func(info *ent.CourseLessonTranslation, _ int) LearnerLessonSource {
 		slug := ""
 		if info.Edges.Lesson != nil {
 			slug = lo.FromPtr(info.Edges.Lesson.Slug)
 		}
-		lesson := standing[slug]
-		lessons = append(lessons, api.LearnerLesson{
-			ID:          int32(info.CourseLessonID),
-			Slug:        slug,
-			Name:        NilStringFromPtr(info.Name),
-			Description: NilStringFromPtr(info.Description),
-			Position:    int32(lesson.Position),
-			Finished:    lesson.Finished,
-		})
-	}
-	return lessons
+		return LearnerLessonSource{Info: info, Standing: standing[slug]}
+	})
 }
 
-// ToCourseModules lists a Version's modules in one locale, each with its
-// lessons as the learner sees them. rows are the module translations with their
-// lesson versions and lessons loaded (WithVersion → WithLessonVersions →
-// WithLesson), lessons already in course order; lessons are the Version's
-// LearnerLessons, from which each module takes its own. A module's lesson that
-// is not translated into the locale is simply not listed, as in the flat list.
-func ToCourseModules(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []api.CourseModule {
-	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
+// ModuleSource is a module's translation with the lessons it lists.
+type ModuleSource struct {
+	Row     *ent.CourseModuleTranslation
+	Lessons []api.LearnerLesson
+}
 
-	modules := make([]api.CourseModule, 0, len(rows))
-	for _, row := range rows {
-		moduleID := 0
-		if row.Edges.Version != nil {
-			moduleID = row.Edges.Version.ModuleID
-		}
-		modules = append(modules, api.CourseModule{
-			ID:          int32(moduleID),
-			Name:        NilStringFromPtr(row.Name),
-			Description: NilStringFromPtr(row.Description),
+// ModuleSources assigns each module its lessons. rows are the module
+// translations with their lesson versions and lessons loaded (WithVersion,
+// WithLessonVersions, WithLesson), lessons already in course order; lessons
+// are the Version's LearnerLessons, from which each module takes its own. A
+// module's lesson that is not translated into the locale is simply not listed,
+// as in the flat list.
+func ModuleSources(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []ModuleSource {
+	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
+	return lo.Map(rows, func(row *ent.CourseModuleTranslation, _ int) ModuleSource {
+		return ModuleSource{
+			Row: row,
 			Lessons: lo.FilterMap(moduleLessonSlugs(row), func(slug string, _ int) (api.LearnerLesson, bool) {
 				lesson, ok := bySlug[slug]
 				return lesson, ok
 			}),
-		})
+		}
+	})
+}
+
+// nextLessonOf names the Next Lesson of a course from its lessons.
+func nextLessonOf(source CourseProgressSource) api.NilLessonRef {
+	return NextLessonRef(source.State.NextLessonSlug, source.Lessons)
+}
+
+// dashboardNextLesson is null when the dashboard found no Next Lesson in the
+// locale, else the reference the dashboard resolved.
+func dashboardNextLesson(c dashboard.Course) api.NilLessonRef {
+	if c.NextLesson == nil {
+		return api.NilLessonRef{Null: true}
 	}
-	return modules
+	return NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
 }
 
 // NextLessonRef names the Next Lesson from the lessons of the visitor's locale.
@@ -395,45 +458,26 @@ type LessonContent struct {
 	SourceCodeURL string
 }
 
-// ToCourseLesson projects the player payload. Hand-written for the same reason
-// ToEnrollment is: it is assembled from several rows, and two of its fields are
-// YAML columns rather than scalars.
-func ToCourseLesson(content LessonContent, course api.Course) api.CourseLesson {
-	version := content.Version
-	translation := content.Translation
-	build := content.Course.Edges.CurrentVersion
-	if build == nil {
-		build = &ent.CourseVersion{}
-	}
-
-	return api.CourseLesson{
-		Course:       course,
-		ID:           int32(content.Lesson.ID),
-		Slug:         lo.FromPtr(content.Lesson.Slug),
-		Name:         NilStringFromPtr(translation.Name),
-		Locale:       NilStringFromPtr(translation.Locale),
-		Description:  NilStringFromPtr(translation.Description),
-		Instructions: NilStringFromPtr(translation.Instructions),
-		Theory:       NilStringFromPtr(translation.Theory),
-		Definitions:  lessonDefinitions(translation.Definitions),
-		Tips:         lessonTips(translation.Tips),
-		NaturalOrder: int32(lo.FromPtr(version.NaturalOrder)),
-		// versionId and version both carry the Lesson Version id, as the legacy
-		// serializer emitted them: one from the Translation's FK column, one from
-		// the row it points at. The check operation reads the former.
-		VersionId:    int32(version.ID),
-		Version:      api.NewNilInt32(int32(version.ID)),
-		PreparedCode: NilStringFromPtr(version.PreparedCode),
-		OriginalCode: NilStringFromPtr(version.OriginalCode),
-		TestCode:     NilStringFromPtr(version.TestCode),
-		// The build's own file names say what language the code and the tests are
-		// in; the course slug does not (the AI course is markdown with JS tests).
-		ExerciseExtension: nilExtension(lo.FromPtr(build.Extension)),
-		TestExtension:     nilExtension(filepath.Ext(lo.FromPtr(build.ExerciseTestFilename))),
-		SourceCodeUrl:     NilStringFromPtr(&content.SourceCodeURL),
-		CreatedAt:         content.Lesson.CreatedAt,
-	}
+// exerciseExtension and testExtension: the build's own file names say what
+// language the code and the tests are in; the course slug does not (the AI
+// course is markdown with JS tests).
+func exerciseExtension(c LessonContent) api.NilString {
+	return nilExtension(lo.FromPtr(currentBuild(c).Extension))
 }
+
+func testExtension(c LessonContent) api.NilString {
+	return nilExtension(filepath.Ext(lo.FromPtr(currentBuild(c).ExerciseTestFilename)))
+}
+
+func currentBuild(c LessonContent) *ent.CourseVersion {
+	if c.Course == nil || c.Course.Edges.CurrentVersion == nil {
+		return &ent.CourseVersion{}
+	}
+	return c.Course.Edges.CurrentVersion
+}
+
+// sourceCodeURL is never null: the caller always has the repository host.
+func sourceCodeURL(v string) api.NilString { return api.NewNilString(v) }
 
 // nilExtension is a bare extension (no dot) or null. The spec's `extension:` is
 // already bare; a test filename is not, so callers pass the file's Ext. An empty
@@ -481,14 +525,20 @@ func decodeLessonYAML(raw *string, into any) {
 	_ = yaml.Unmarshal([]byte(*raw), into)
 }
 
-// nilEnrollmentState resolves the nullable legacy column to the contract's
+// NilEnrollmentStateFromPtr resolves the nullable legacy column to the contract's
 // nilable enum: a learner with no Enrollment has no state at all, which is the
 // "not started" condition rather than a state a record can be in.
-func nilEnrollmentState(v *string) api.NilEnrollmentState {
+func NilEnrollmentStateFromPtr(v *string) api.NilEnrollmentState {
 	if v == nil || *v == "" {
 		return api.NilEnrollmentState{Null: true}
 	}
 	return api.NewNilEnrollmentState(api.EnrollmentState(*v))
+}
+
+// NilEnrollmentStateFromString is the same for a computed state, which is a
+// plain string and empty when the learner has no Enrollment.
+func NilEnrollmentStateFromString(v string) api.NilEnrollmentState {
+	return NilEnrollmentStateFromPtr(&v)
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -734,9 +784,10 @@ func landingOutcomesImageNull(*ent.CourseLandingPage) api.NilString {
 }
 
 // NilCourseVersionFromEnt bridges the current_version association to ogen's
-// NilCourseVersion. The exposed fields are mapped inline: constructing the
-// Nil wrapper is the irreducible part goverter cannot infer, so hand-mapping the
-// small CourseVersion body alongside it keeps the whole bridge in one place.
+// NilCourseVersion. Constructing the Nil wrapper is the part goverter cannot
+// infer, and an extend cannot call back into the converter, so the small
+// CourseVersion body is hand-mapped alongside it (CourseVersionFromEnt) and
+// stays one bridge rather than a generated method plus a wrapper.
 func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 	if v == nil {
 		return api.NilCourseVersion{Null: true}

@@ -30,19 +30,19 @@ func (s *Server) GetCourseLesson(
 		return nil, err
 	}
 
-	lessons := apiconv.ToLearnerLessons(page.Infos, page.State)
+	lessons := s.conv.ToLearnerLessons(apiconv.LearnerLessonSources(page.Infos, page.State))
 	landing := api.NilCourseLandingPage{Null: true}
 	if page.Landing != nil {
 		landing = api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page.Landing))
 	}
 	return &api.CourseLessonView{
-		Lesson: apiconv.ToCourseLesson(apiconv.LessonContent{
+		Lesson: s.conv.ToCourseLesson(apiconv.LessonContent{
 			Course:        page.Course,
 			Lesson:        page.Lesson,
 			Version:       page.Version,
 			Translation:   page.Translation,
 			SourceCodeURL: page.SourceURL,
-		}, s.conv.ToCourse(page.Course)),
+		}),
 		LandingPage: landing,
 		Lessons:     lessons,
 		Adjacent:    apiconv.AdjacentLessons(params.Slug, lessons),

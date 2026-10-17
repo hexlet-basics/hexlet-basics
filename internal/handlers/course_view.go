@@ -26,13 +26,13 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		return nil, err
 	}
 
-	lessons := apiconv.ToLearnerLessons(page.Infos, page.State)
+	lessons := s.conv.ToLearnerLessons(apiconv.LearnerLessonSources(page.Infos, page.State))
 	view := &api.CourseView{
 		Course:      s.conv.ToCourse(page.Course),
 		LandingPage: api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page.Landing)),
 		MovedTo:     api.NilString{Null: true},
 		Lessons:     lessons,
-		Modules:     apiconv.ToCourseModules(page.Modules, lessons),
+		Modules:     s.conv.ToCourseModules(apiconv.ModuleSources(page.Modules, lessons)),
 		QnaItems:    s.conv.ToLandingPageQnaItems(page.QnaItems),
 		Enrollment:  api.NilEnrollment{Null: true},
 		Progress:    s.courseProgress(page.State, lessons),
@@ -41,7 +41,7 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		view.MovedTo = api.NewNilString(*page.MovedTo)
 	}
 	if page.Enrollment != nil {
-		view.Enrollment = api.NewNilEnrollment(apiconv.ToEnrollment(page.Enrollment))
+		view.Enrollment = api.NewNilEnrollment(s.conv.ToEnrollment(page.Enrollment))
 	}
 	return view, nil
 }
@@ -53,6 +53,6 @@ func (s *Server) courseProgress(state *progress.CourseState, lessons []api.Learn
 		return api.NilCourseProgress{Null: true}
 	}
 	return api.NewNilCourseProgress(
-		apiconv.ToCourseProgress(state, apiconv.NextLessonRef(state.NextLessonSlug, lessons)),
+		s.conv.ToCourseProgress(apiconv.CourseProgressSource{State: state, Lessons: lessons}),
 	)
 }

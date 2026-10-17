@@ -8,6 +8,8 @@ import (
 	api "hexletbasics/internal/api"
 	assetstore "hexletbasics/internal/assetstore"
 	blogposts "hexletbasics/internal/blogposts"
+	dashboard "hexletbasics/internal/dashboard"
+	"time"
 )
 
 type ConverterImpl struct{}
@@ -219,6 +221,94 @@ func (c *ConverterImpl) ToCourseLandingPages(source []*ent.CourseLandingPage) []
 	}
 	return apiCourseLandingPageList
 }
+func (c *ConverterImpl) ToCourseLesson(source LessonContent) api.CourseLesson {
+	var apiCourseLesson api.CourseLesson
+	apiCourseLesson.Course = c.ToCourse(source.Course)
+	var pInt *int
+	if source.Lesson != nil {
+		pInt = &source.Lesson.ID
+	}
+	apiCourseLesson.ID = Int32FromPtr(pInt)
+	var pString *string
+	if source.Translation != nil {
+		pString = source.Translation.Name
+	}
+	apiCourseLesson.Name = NilStringFromPtr(pString)
+	var pString2 *string
+	if source.Lesson != nil {
+		pString2 = source.Lesson.Slug
+	}
+	apiCourseLesson.Slug = StringFromPtr(pString2)
+	var pString3 *string
+	if source.Translation != nil {
+		pString3 = source.Translation.Locale
+	}
+	apiCourseLesson.Locale = NilStringFromPtr(pString3)
+	var pInt2 *int
+	if source.Version != nil {
+		pInt2 = source.Version.NaturalOrder
+	}
+	apiCourseLesson.NaturalOrder = Int32FromPtr(pInt2)
+	var pInt3 *int
+	if source.Version != nil {
+		pInt3 = &source.Version.ID
+	}
+	apiCourseLesson.VersionId = Int32FromPtr(pInt3)
+	var pInt4 *int
+	if source.Version != nil {
+		pInt4 = &source.Version.ID
+	}
+	apiCourseLesson.Version = NilInt32FromPtr(pInt4)
+	var pString4 *string
+	if source.Translation != nil {
+		pString4 = source.Translation.Description
+	}
+	apiCourseLesson.Description = NilStringFromPtr(pString4)
+	var pString5 *string
+	if source.Translation != nil {
+		pString5 = source.Translation.Instructions
+	}
+	apiCourseLesson.Instructions = NilStringFromPtr(pString5)
+	var pString6 *string
+	if source.Translation != nil {
+		pString6 = source.Translation.Theory
+	}
+	apiCourseLesson.Theory = NilStringFromPtr(pString6)
+	var pString7 *string
+	if source.Translation != nil {
+		pString7 = source.Translation.Definitions
+	}
+	apiCourseLesson.Definitions = lessonDefinitions(pString7)
+	var pString8 *string
+	if source.Translation != nil {
+		pString8 = source.Translation.Tips
+	}
+	apiCourseLesson.Tips = lessonTips(pString8)
+	var pString9 *string
+	if source.Version != nil {
+		pString9 = source.Version.PreparedCode
+	}
+	apiCourseLesson.PreparedCode = NilStringFromPtr(pString9)
+	var pString10 *string
+	if source.Version != nil {
+		pString10 = source.Version.OriginalCode
+	}
+	apiCourseLesson.OriginalCode = NilStringFromPtr(pString10)
+	var pString11 *string
+	if source.Version != nil {
+		pString11 = source.Version.TestCode
+	}
+	apiCourseLesson.TestCode = NilStringFromPtr(pString11)
+	apiCourseLesson.ExerciseExtension = exerciseExtension(source)
+	apiCourseLesson.TestExtension = testExtension(source)
+	apiCourseLesson.SourceCodeUrl = sourceCodeURL(source.SourceCodeURL)
+	var pTimeTime *time.Time
+	if source.Lesson != nil {
+		pTimeTime = &source.Lesson.CreatedAt
+	}
+	apiCourseLesson.CreatedAt = c.pTimeTimeToTimeTime(pTimeTime)
+	return apiCourseLesson
+}
 func (c *ConverterImpl) ToCourseLessonListItem(source *ent.CourseLessonTranslation) api.CourseLessonListItem {
 	var apiCourseLessonListItem api.CourseLessonListItem
 	if source != nil {
@@ -282,6 +372,56 @@ func (c *ConverterImpl) ToCourseLessonReviews(source []*ent.CourseLessonReview) 
 	}
 	return apiCourseLessonReviewList
 }
+func (c *ConverterImpl) ToCourseModule(source ModuleSource) api.CourseModule {
+	var apiCourseModule api.CourseModule
+	var pInt *int
+	if source.Row != nil && source.Row.Edges.Version != nil {
+		pInt = &source.Row.Edges.Version.ModuleID
+	}
+	apiCourseModule.ID = Int32FromPtr(pInt)
+	var pString *string
+	if source.Row != nil {
+		pString = source.Row.Name
+	}
+	apiCourseModule.Name = NilStringFromPtr(pString)
+	var pString2 *string
+	if source.Row != nil {
+		pString2 = source.Row.Description
+	}
+	apiCourseModule.Description = NilStringFromPtr(pString2)
+	if source.Lessons != nil {
+		apiCourseModule.Lessons = make([]api.LearnerLesson, len(source.Lessons))
+		for i := 0; i < len(source.Lessons); i++ {
+			apiCourseModule.Lessons[i] = c.apiLearnerLessonToApiLearnerLesson(source.Lessons[i])
+		}
+	}
+	return apiCourseModule
+}
+func (c *ConverterImpl) ToCourseModules(source []ModuleSource) []api.CourseModule {
+	var apiCourseModuleList []api.CourseModule
+	if source != nil {
+		apiCourseModuleList = make([]api.CourseModule, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseModuleList[i] = c.ToCourseModule(source[i])
+		}
+	}
+	return apiCourseModuleList
+}
+func (c *ConverterImpl) ToCourseProgress(source CourseProgressSource) api.CourseProgress {
+	var apiCourseProgress api.CourseProgress
+	var pString *string
+	if source.State != nil {
+		pString = &source.State.State
+	}
+	apiCourseProgress.State = NilEnrollmentStateFromPtr(pString)
+	var pInt *int
+	if source.State != nil {
+		pInt = &source.State.Completion
+	}
+	apiCourseProgress.Completion = Int32FromPtr(pInt)
+	apiCourseProgress.NextLesson = nextLessonOf(source)
+	return apiCourseProgress
+}
 func (c *ConverterImpl) ToCourses(source []*ent.Course) []api.Course {
 	var apiCourseList []api.Course
 	if source != nil {
@@ -291,6 +431,48 @@ func (c *ConverterImpl) ToCourses(source []*ent.Course) []api.Course {
 		}
 	}
 	return apiCourseList
+}
+func (c *ConverterImpl) ToDashboardCourse(source dashboard.Course) api.DashboardCourse {
+	var apiDashboardCourse api.DashboardCourse
+	apiDashboardCourse.Enrollment = c.ToEnrollment(source.Enrollment)
+	apiDashboardCourse.Progress = c.ToDashboardProgress(source)
+	apiDashboardCourse.Card = c.ToCatalogItem(source.Card)
+	return apiDashboardCourse
+}
+func (c *ConverterImpl) ToDashboardCourses(source []dashboard.Course) []api.DashboardCourse {
+	var apiDashboardCourseList []api.DashboardCourse
+	if source != nil {
+		apiDashboardCourseList = make([]api.DashboardCourse, len(source))
+		for i := 0; i < len(source); i++ {
+			apiDashboardCourseList[i] = c.ToDashboardCourse(source[i])
+		}
+	}
+	return apiDashboardCourseList
+}
+func (c *ConverterImpl) ToDashboardProgress(source dashboard.Course) api.CourseProgress {
+	var apiCourseProgress api.CourseProgress
+	var pString *string
+	if source.State != nil {
+		pString = &source.State.State
+	}
+	apiCourseProgress.State = NilEnrollmentStateFromPtr(pString)
+	var pInt *int
+	if source.State != nil {
+		pInt = &source.State.Completion
+	}
+	apiCourseProgress.Completion = Int32FromPtr(pInt)
+	apiCourseProgress.NextLesson = dashboardNextLesson(source)
+	return apiCourseProgress
+}
+func (c *ConverterImpl) ToEnrollment(source *ent.Enrollment) api.Enrollment {
+	var apiEnrollment api.Enrollment
+	if source != nil {
+		apiEnrollment.ID = Int32FromInt((*source).ID)
+		apiEnrollment.UserId = Int32FromInt((*source).UserID)
+		apiEnrollment.CourseId = Int32FromInt((*source).CourseID)
+		apiEnrollment.State = NilEnrollmentStateFromPtr((*source).State)
+	}
+	return apiEnrollment
 }
 func (c *ConverterImpl) ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem {
 	var apiQnaItem api.QnaItem
@@ -336,6 +518,42 @@ func (c *ConverterImpl) ToLeads(source []*ent.Lead) []api.Lead {
 		}
 	}
 	return apiLeadList
+}
+func (c *ConverterImpl) ToLearnerLesson(source LearnerLessonSource) api.LearnerLesson {
+	var apiLearnerLesson api.LearnerLesson
+	var pInt *int
+	if source.Info != nil {
+		pInt = &source.Info.CourseLessonID
+	}
+	apiLearnerLesson.ID = Int32FromPtr(pInt)
+	var pString *string
+	if source.Info != nil && source.Info.Edges.Lesson != nil {
+		pString = source.Info.Edges.Lesson.Slug
+	}
+	apiLearnerLesson.Slug = StringFromPtr(pString)
+	var pString2 *string
+	if source.Info != nil {
+		pString2 = source.Info.Name
+	}
+	apiLearnerLesson.Name = NilStringFromPtr(pString2)
+	var pString3 *string
+	if source.Info != nil {
+		pString3 = source.Info.Description
+	}
+	apiLearnerLesson.Description = NilStringFromPtr(pString3)
+	apiLearnerLesson.Position = Int32FromInt(source.Standing.Position)
+	apiLearnerLesson.Finished = source.Standing.Finished
+	return apiLearnerLesson
+}
+func (c *ConverterImpl) ToLearnerLessons(source []LearnerLessonSource) []api.LearnerLesson {
+	var apiLearnerLessonList []api.LearnerLesson
+	if source != nil {
+		apiLearnerLessonList = make([]api.LearnerLesson, len(source))
+		for i := 0; i < len(source); i++ {
+			apiLearnerLessonList[i] = c.ToLearnerLesson(source[i])
+		}
+	}
+	return apiLearnerLessonList
 }
 func (c *ConverterImpl) ToLessonAssistantMessage(source *ent.AiMessage) api.LessonAssistantMessage {
 	var apiLessonAssistantMessage api.LessonAssistantMessage
@@ -589,4 +807,27 @@ func (c *ConverterImpl) ToUserCruds(source []*ent.User) []api.UserCrud {
 		}
 	}
 	return apiUserCrudList
+}
+func (c *ConverterImpl) apiLearnerLessonToApiLearnerLesson(source api.LearnerLesson) api.LearnerLesson {
+	var apiLearnerLesson api.LearnerLesson
+	apiLearnerLesson.ID = source.ID
+	apiLearnerLesson.Slug = source.Slug
+	apiLearnerLesson.Name = c.apiNilStringToApiNilString(source.Name)
+	apiLearnerLesson.Description = c.apiNilStringToApiNilString(source.Description)
+	apiLearnerLesson.Position = source.Position
+	apiLearnerLesson.Finished = source.Finished
+	return apiLearnerLesson
+}
+func (c *ConverterImpl) apiNilStringToApiNilString(source api.NilString) api.NilString {
+	var apiNilString api.NilString
+	apiNilString.Value = source.Value
+	apiNilString.Null = source.Null
+	return apiNilString
+}
+func (c *ConverterImpl) pTimeTimeToTimeTime(source *time.Time) time.Time {
+	var timeTime time.Time
+	if source != nil {
+		timeTime = TimeIdentity((*source))
+	}
+	return timeTime
 }
