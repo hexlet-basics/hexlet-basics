@@ -51,6 +51,32 @@ const (
 
 // serverPackage contains the synchronous graph: HTTP delivery, event
 // publishing, and insert-only River access.
+// handlerServices is what handlers.Server is built from, resolved by concrete
+// type: handlers.Deps holds interfaces, which the container cannot tell apart
+// by type alone.
+type handlerServices struct {
+	DB                *ent.Client               `do:""`
+	Config            *config.Config            `do:""`
+	Starter           *versionbuilds.Starter    `do:""`
+	Jobs              *jobs.Enqueuer            `do:""`
+	RelatedCoursesSet *relatedcourses.Replacer  `do:""`
+	Progress          *progress.Progress        `do:""`
+	Assets            *assetstore.Store         `do:""`
+	Registrar         *accounts.Registrar       `do:""`
+	Remover           *accounts.Remover         `do:""`
+	Events            *events.Publisher         `do:""`
+	Leads             *leads.Recorder           `do:""`
+	Books             *books.Recorder           `do:""`
+	I18n              *localization.Translator  `do:""`
+	Errors            *handlers.APIErrorHandler `do:""`
+	YandexFeed        *feeds.Yandex             `do:""`
+	Assistant         *assistant.Chat           `do:""`
+	PostRemover       *blogposts.Remover        `do:""`
+	Permissions       *staffroles.Permissions   `do:""`
+	Dashboard         *dashboard.Dashboard      `do:""`
+	Sitemap           *sitemap.Sitemap          `do:""`
+}
+
 var serverPackage = do.Package(
 	do.Lazy[*handlers.APIErrorHandler](func(i do.Injector) (*handlers.APIErrorHandler, error) {
 		translator, err := do.Invoke[*localization.Translator](i)
@@ -62,17 +88,6 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return handlers.NewAPIErrorHandler(translator, logger), nil
-	}),
-	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
-		db, err := do.Invoke[*store.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		logger, err := do.Invoke[*slog.Logger](i)
-		if err != nil {
-			return nil, err
-		}
-		return events.NewPublisher(db, logger), nil
 	}),
 	do.Lazy[*accounts.Registrar](func(i do.Injector) (*accounts.Registrar, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -201,107 +216,31 @@ var serverPackage = do.Package(
 		return feeds.NewYandex(db, cfg.AppHost), nil
 	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
-		db, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-		cfg, err := do.Invoke[*config.Config](i)
-		if err != nil {
-			return nil, err
-		}
-		starter, err := do.Invoke[*versionbuilds.Starter](i)
-		if err != nil {
-			return nil, err
-		}
-		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
-		if err != nil {
-			return nil, err
-		}
-		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
-		if err != nil {
-			return nil, err
-		}
-		assets, err := do.Invoke[*assetstore.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		registrar, err := do.Invoke[*accounts.Registrar](i)
-		if err != nil {
-			return nil, err
-		}
-		remover, err := do.Invoke[*accounts.Remover](i)
-		if err != nil {
-			return nil, err
-		}
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
-		leadRecorder, err := do.Invoke[*leads.Recorder](i)
-		if err != nil {
-			return nil, err
-		}
-		bookRecorder, err := do.Invoke[*books.Recorder](i)
-		if err != nil {
-			return nil, err
-		}
-		translator, err := do.Invoke[*localization.Translator](i)
-		if err != nil {
-			return nil, err
-		}
-		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
-		if err != nil {
-			return nil, err
-		}
-		tracker, err := do.Invoke[*progress.Progress](i)
-		if err != nil {
-			return nil, err
-		}
-		yandexFeed, err := do.Invoke[*feeds.Yandex](i)
-		if err != nil {
-			return nil, err
-		}
-		chat, err := do.Invoke[*assistant.Chat](i)
-		if err != nil {
-			return nil, err
-		}
-		postRemover, err := do.Invoke[*blogposts.Remover](i)
-		if err != nil {
-			return nil, err
-		}
-		permissions, err := do.Invoke[*staffroles.Permissions](i)
-		if err != nil {
-			return nil, err
-		}
-		sitemapReader, err := do.Invoke[*sitemap.Sitemap](i)
-		if err != nil {
-			return nil, err
-		}
-		dashboardCourses, err := do.Invoke[*dashboard.Dashboard](i)
+		services, err := do.InvokeStruct[handlerServices](i)
 		if err != nil {
 			return nil, err
 		}
 		return handlers.NewServer(handlers.Deps{
-			DB:                db,
-			Config:            cfg,
-			Starter:           starter,
-			Jobs:              enqueuer,
-			RelatedCoursesSet: relatedCoursesSet,
-			Progress:          tracker,
-			Assets:            assets,
-			Registrar:         registrar,
-			Remover:           remover,
-			Events:            publisher,
-			Leads:             leadRecorder,
-			Books:             bookRecorder,
-			I18n:              translator,
-			Errors:            errorHandler,
-			YandexFeed:        yandexFeed,
-			Assistant:         chat,
-			PostRemover:       postRemover,
-			Permissions:       permissions,
-			Dashboard:         dashboardCourses,
-			Sitemap:           sitemapReader,
+			DB:                services.DB,
+			Config:            services.Config,
+			Starter:           services.Starter,
+			Jobs:              services.Jobs,
+			RelatedCoursesSet: services.RelatedCoursesSet,
+			Progress:          services.Progress,
+			Assets:            services.Assets,
+			Registrar:         services.Registrar,
+			Remover:           services.Remover,
+			Events:            services.Events,
+			Leads:             services.Leads,
+			Books:             services.Books,
+			I18n:              services.I18n,
+			Errors:            services.Errors,
+			YandexFeed:        services.YandexFeed,
+			Assistant:         services.Assistant,
+			PostRemover:       services.PostRemover,
+			Permissions:       services.Permissions,
+			Dashboard:         services.Dashboard,
+			Sitemap:           services.Sitemap,
 		}), nil
 	}),
 	// The in-lesson assistant answers inside the request (a stream, no job), so

@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
 	"hexletbasics/internal/relatedcourses"
@@ -101,5 +102,18 @@ var commonPackage = do.Package(
 			return nil, err
 		}
 		return relatedcourses.NewReplacer(txStore), nil
+	}),
+	// Both processes raise facts: the HTTP process for what learners do, the
+	// worker for the one thing it promotes (a Course Version).
+	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		logger, err := do.Invoke[*slog.Logger](i)
+		if err != nil {
+			return nil, err
+		}
+		return events.NewPublisher(txStore, logger), nil
 	}),
 )

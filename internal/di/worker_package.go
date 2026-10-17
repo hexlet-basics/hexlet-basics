@@ -64,20 +64,8 @@ var workerPackage = do.Package(
 		return courseloader.NewLoader(db, store, assets, fetcher, completion), nil
 	}),
 	// Promoting a version re-evaluates completion, so the worker graph carries
-	// the progress module too. It also needs a publisher of its own: the worker
-	// otherwise only consumes facts, and promotion is the one place it raises
-	// them.
-	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
-		txStore, err := do.Invoke[*store.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		logger, err := do.Invoke[*slog.Logger](i)
-		if err != nil {
-			return nil, err
-		}
-		return events.NewPublisher(txStore, logger), nil
-	}),
+	// the progress module too. The worker otherwise only consumes facts, and
+	// promotion is the one place it raises them, through the shared publisher.
 	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
