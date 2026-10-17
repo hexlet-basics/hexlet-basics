@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -14,25 +13,16 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"gocloud.dev/blob/memblob"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/oauthclient"
-	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/assetstore"
-	"hexletbasics/internal/blogposts"
-	"hexletbasics/internal/config"
-	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
-	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/sessions"
-	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -176,36 +166,12 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	manager := sessions.New(db, sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
-	// An in-memory bucket, as in the harness: the upload tool stores into it and
-	// the attachment row lands in the test's transaction.
-	bucket := memblob.OpenBucket(nil)
-	t.Cleanup(func() { _ = bucket.Close() })
-	handler := handlers.NewServer(handlers.Deps{
-		DB:        db,
-		Assets:    assetstore.New(db, bucket, testConfig.PublicURL),
-		Config:    &config.Config{GuestCookieSecret: testConfig.GuestCookieSecret, EmailTokenSecret: testConfig.EmailTokenSecret},
-		Sessions:  manager,
-		Starter:   services.Starter,
-		Jobs:      services.Jobs,
-		Progress:  tracker,
-		Dashboard: dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
-		Registrar: accounts.NewRegistrar(transactor, services.Events),
-		Remover:   accounts.NewRemover(transactor),
-		// The administrators' write and read side of users, which the user admin
-		// tools reach: the real ones, as in NewHarness.
-		UserEditor:    accounts.NewEditor(db),
-		UserDirectory: accounts.NewDirectory(db),
-		Events:        services.Events,
-		I18n:          translator,
-		Errors:        errorHandler,
-		OAuth:         server,
-		// What the admin operations that are tools reach: the roles screen's
-		// writer, the blog post remover and the related-courses replacer, the
-		// real ones over the test transaction as in NewHarness.
-		Permissions:       staffroles.NewPermissions(db, transactor),
-		PostRemover:       blogposts.NewRemover(transactor),
-		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
-	})
+	// The harness's collaborators, so every tool reaches the real module a
+	// request does (a nil collaborator would panic a tool in a test); only the
+	// OAuth server, which the harness does not run, is added.
+	deps := handlerDeps(t, db, transactor, services, mocks, tracker, translator, errorHandler, manager)
+	deps.OAuth = server
+	handler := handlers.NewServer(deps)
 	apiServer, err := api.NewServer(
 		handler,
 		handler.Security(),

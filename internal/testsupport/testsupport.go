@@ -222,9 +222,6 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	transactor := newSavepointTransactor(tx, db)
 	services := NewServices(t, tx, transactor)
 	mocks := NewMocks()
-	// The real registrar: it hashes, writes the user and raises the sign-up fact
-	// through the transactor, so the fact lands in the outbox like in production.
-	registrar := accounts.NewRegistrar(transactor, services.Events)
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
 	// The real session manager over the test's transaction: a test's session rows
@@ -238,63 +235,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	// really run — running it means Docker, which is the one thing this seam
 	// exists to keep out of the tests.
 	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
-	// An in-memory bucket keeps uploads off disk and out of the network while
-	// the attachment metadata still lands in the test's transaction.
-	bucket := memblob.OpenBucket(nil)
-	t.Cleanup(func() { _ = bucket.Close() })
-	assets := assetstore.New(db, bucket, testConfig.PublicURL)
-	// The real lead recorder too: a lead test asserts the stored row and the
-	// published fact, and both go through the test's transaction.
-	leadRecorder := leads.NewRecorder(transactor, services.Events)
-	// The real chat over the real progress module: only the model is mocked.
-	handler := handlers.NewServer(handlers.Deps{
-		DB:      db,
-		Config:  testConfig,
-		Starter: services.Starter,
-		Jobs:    services.Jobs,
-		// The real replacer over the savepoint transactor, so a failed replace
-		// rolls back exactly as it does in production.
-		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
-		Progress:          tracker,
-		Assets:            assets,
-		Sessions:          manager,
-		Registrar:         registrar,
-		// The real remover, over the savepoint transactor: what a test asserts
-		// about a removed account is what production does to one.
-		Remover:       accounts.NewRemover(transactor),
-		UserEditor:    accounts.NewEditor(db),
-		UserDirectory: accounts.NewDirectory(db),
-		Events:        services.Events,
-		Leads:         leadRecorder,
-		Books:         books.NewRecorder(transactor, services.Events),
-		I18n:          translator,
-		Errors:        errorHandler,
-		YandexFeed:    feeds.NewYandex(db, testConfig.AppHost),
-		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
-			assistant.WithClock(func() time.Time { return Today })),
-		// The real remover over the savepoint transactor, like the others.
-		PostRemover:       blogposts.NewRemover(transactor),
-		Permissions:       staffroles.NewPermissions(db, transactor),
-		SelfProtection:    selfprotection.NewGuard(db),
-		BannerStates:      banners.NewEditor(db),
-		ReviewStates:      reviews.NewEditor(db),
-		LandingPageStates: landingpages.NewEditor(db),
-		CourseReadiness:   courses.NewReadiness(db),
-		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
-		Sitemap:           sitemap.New(db),
-		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),
-		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
-		LandingPageQna:    qnaitems.NewLandingPage(db),
-		CategoryQna:       qnaitems.NewCategory(db),
-		PostEditor:        blogposts.NewEditor(db),
-		ReviewDirectory:   reviews.NewDirectory(db),
-		CourseDirectory:   courses.NewDirectory(db),
-		LeadDirectory:     leads.NewDirectory(db),
-		MessageDirectory:  assistant.NewDirectory(db),
-		CategoryDirectory: coursecategories.NewDirectory(db),
-		BannerDirectory:   banners.NewDirectory(db),
-		LessonDirectory:   courselessons.NewDirectory(db),
-	})
+	handler := handlers.NewServer(handlerDeps(t, db, transactor, services, mocks, tracker, translator, errorHandler, manager))
 	srv, err := api.NewServer(
 		handler,
 		handler.Security(),
@@ -369,6 +310,85 @@ type Mocks struct {
 	// Runner is the exercise runner behind the check, returning a passing
 	// outcome instead of starting a container.
 	Runner *ExerciseRunnerMock
+}
+
+// handlerDeps are the collaborators every in-process stack hands the handlers:
+// the real use-case modules over the test's database and transactor, with only
+// the LLM and the exercise runner mocked. The harness and the OAuth/MCP seam
+// both build their handlers from it, so a tool reaches the same collaborators a
+// request does and a module added to handlers.Deps is wired once, here.
+func handlerDeps(
+	t *testing.T,
+	db *ent.Client,
+	transactor store.Transactor,
+	services *Services,
+	mocks *Mocks,
+	tracker *progress.Progress,
+	translator *localization.Translator,
+	errorHandler *handlers.APIErrorHandler,
+	manager *sessions.Manager,
+) handlers.Deps {
+	t.Helper()
+	// The real registrar: it hashes, writes the user and raises the sign-up fact
+	// through the transactor, so the fact lands in the outbox like in production.
+	registrar := accounts.NewRegistrar(transactor, services.Events)
+	// An in-memory bucket keeps uploads off disk and out of the network while
+	// the attachment metadata still lands in the test's transaction.
+	bucket := memblob.OpenBucket(nil)
+	t.Cleanup(func() { _ = bucket.Close() })
+	assets := assetstore.New(db, bucket, testConfig.PublicURL)
+	// The real lead recorder too: a lead test asserts the stored row and the
+	// published fact, and both go through the test's transaction.
+	leadRecorder := leads.NewRecorder(transactor, services.Events)
+	// The real chat over the real progress module: only the model is mocked.
+	return handlers.Deps{
+		DB:      db,
+		Config:  testConfig,
+		Starter: services.Starter,
+		Jobs:    services.Jobs,
+		// The real replacer over the savepoint transactor, so a failed replace
+		// rolls back exactly as it does in production.
+		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
+		Progress:          tracker,
+		Assets:            assets,
+		Sessions:          manager,
+		Registrar:         registrar,
+		// The real remover, over the savepoint transactor: what a test asserts
+		// about a removed account is what production does to one.
+		Remover:       accounts.NewRemover(transactor),
+		UserEditor:    accounts.NewEditor(db),
+		UserDirectory: accounts.NewDirectory(db),
+		Events:        services.Events,
+		Leads:         leadRecorder,
+		Books:         books.NewRecorder(transactor, services.Events),
+		I18n:          translator,
+		Errors:        errorHandler,
+		YandexFeed:    feeds.NewYandex(db, testConfig.AppHost),
+		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
+			assistant.WithClock(func() time.Time { return Today })),
+		// The real remover over the savepoint transactor, like the others.
+		PostRemover:       blogposts.NewRemover(transactor),
+		Permissions:       staffroles.NewPermissions(db, transactor),
+		SelfProtection:    selfprotection.NewGuard(db),
+		BannerStates:      banners.NewEditor(db),
+		ReviewStates:      reviews.NewEditor(db),
+		LandingPageStates: landingpages.NewEditor(db),
+		CourseReadiness:   courses.NewReadiness(db),
+		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
+		Sitemap:           sitemap.New(db),
+		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),
+		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
+		LandingPageQna:    qnaitems.NewLandingPage(db),
+		CategoryQna:       qnaitems.NewCategory(db),
+		PostEditor:        blogposts.NewEditor(db),
+		ReviewDirectory:   reviews.NewDirectory(db),
+		CourseDirectory:   courses.NewDirectory(db),
+		LeadDirectory:     leads.NewDirectory(db),
+		MessageDirectory:  assistant.NewDirectory(db),
+		CategoryDirectory: coursecategories.NewDirectory(db),
+		BannerDirectory:   banners.NewDirectory(db),
+		LessonDirectory:   courselessons.NewDirectory(db),
+	}
 }
 
 // NewMocks builds the boundary mocks with their defaults.
