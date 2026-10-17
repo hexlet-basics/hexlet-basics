@@ -286,6 +286,12 @@ The five canonical triage roles, each label string equal to its name. See
 Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See
 `docs/agents/domain.md`.
 
+### Git workflow
+
+The main checkout stays on `main` (never switch branches there); trivial changes
+are committed on `main`, anything bigger is done in a worktree. See
+`docs/agents/git-workflow.md`.
+
 ## High-Value Agent Workflow
 
 - Confirm you're working at the root (Go) vs `legacy/` (Rails) and follow the
