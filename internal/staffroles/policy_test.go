@@ -20,8 +20,8 @@ import (
 // reading and creating banners, in ru and en; user_admin_learner is an
 // administrator.
 var (
-	adminID  = fixtures.ID("user_admin_learner")
-	editorID = fixtures.ID("user_staff_editor")
+	adminID  = fixtures.ID(fixtures.UserAdminLearner)
+	editorID = fixtures.ID(fixtures.UserStaffEditor)
 )
 
 func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
@@ -56,7 +56,7 @@ func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
 func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 	db := testsupport.NewClient(t)
 	// user_blank is neither an administrator nor staff.
-	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
+	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
 
 	err := staffroles.NewPolicy(db).Allow(t.Context(), u, "ru", "AdminListBanners")
 

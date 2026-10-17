@@ -18,6 +18,7 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -26,7 +27,7 @@ import (
 
 func TestCheckByALearnerWhoseCourseIsAlreadyFinishedDoesNotFinishItTwice(t *testing.T) {
 	r := newRig(t)
-	staffEditor := r.learner(t, "user_staff_editor") // enrollment finished, second lesson only started
+	staffEditor := r.learner(t, fixtures.UserStaffEditor) // enrollment finished, second lesson only started
 
 	result, err := r.progress.CheckSolution(t.Context(), r.check(t, staffEditor, firstLesson))
 	require.NoError(t, err)
@@ -42,7 +43,7 @@ func TestCheckByALearnerWhoseCourseIsAlreadyFinishedDoesNotFinishItTwice(t *test
 func TestMergeGuestCreditsEveryFinishedLessonToANewAccount(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 
 	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, guestWith(firstLesson, secondLesson, thirdLesson).Guest, locale))
 
@@ -63,7 +64,7 @@ func TestMergeGuestCreditsEveryFinishedLessonToANewAccount(t *testing.T) {
 // else: with lessons in any order, a later one no longer implies the earlier.
 func TestMergeGuestCreditsOnlyTheLessonsTheVisitorFinished(t *testing.T) {
 	r := newRig(t)
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 
 	require.NoError(t, r.progress.MergeGuest(t.Context(), blankUser.UserID, guestWith(thirdLesson).Guest, locale))
 
@@ -74,7 +75,7 @@ func TestMergeGuestCreditsOnlyTheLessonsTheVisitorFinished(t *testing.T) {
 func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	adminLearner := r.learner(t, "user_admin_learner") // has finished the first lesson
+	adminLearner := r.learner(t, fixtures.UserAdminLearner) // has finished the first lesson
 
 	require.NoError(t, r.progress.MergeGuest(ctx, adminLearner.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
 
@@ -88,7 +89,7 @@ func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
 func TestMergeGuestFinishesALessonTheAccountOnlyStarted(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	staffEditor := r.learner(t, "user_staff_editor") // second lesson started, nothing finished
+	staffEditor := r.learner(t, fixtures.UserStaffEditor) // second lesson started, nothing finished
 
 	require.NoError(t, r.progress.MergeGuest(ctx, staffEditor.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
 
@@ -99,7 +100,7 @@ func TestMergeGuestFinishesALessonTheAccountOnlyStarted(t *testing.T) {
 
 func TestMergeGuestNeverMovesAnAccountBackwards(t *testing.T) {
 	r := newRig(t)
-	adminLearner := r.learner(t, "user_admin_learner")
+	adminLearner := r.learner(t, fixtures.UserAdminLearner)
 
 	require.NoError(t, r.progress.MergeGuest(t.Context(), adminLearner.UserID, guestWith(firstLesson).Guest, locale))
 
@@ -110,7 +111,7 @@ func TestMergeGuestNeverMovesAnAccountBackwards(t *testing.T) {
 func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 	stale := progress.GuestProgress{}.
 		Record("no-such-course", firstLesson).
 		Record(jsSlug, "a-lesson-the-build-dropped")
@@ -140,7 +141,7 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *t
 	ctx := t.Context()
 	// Every lesson finished, the enrollment still open: the only fixture learner
 	// the promotion has anything to close for.
-	allDone := r.learner(t, "user_learner_all_lessons_done")
+	allDone := r.learner(t, fixtures.UserLearnerAllLessonsDone)
 	courseID := r.course(t, jsSlug).ID
 
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
@@ -163,7 +164,7 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *t
 func TestReevaluateCompletionFinishesTheCourseOfALearnerWhoseRemainingLessonsWereDropped(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	adminLearner := r.learner(t, "user_admin_learner")
+	adminLearner := r.learner(t, fixtures.UserAdminLearner)
 	courseID := r.course(t, jsSlug).ID
 	r.dropLessonsAfterTheFirst(t) // adminLearner finished the only lesson that is left
 
@@ -187,10 +188,10 @@ func TestReevaluateCompletionLeavesLearnersWithWorkLeftAlone(t *testing.T) {
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, r.course(t, jsSlug).ID, locale))
 
 	// Work left: the second lesson, or a lesson not even started.
-	for _, label := range []string{"user_admin_learner", "user_learner_with_a_gap", "user_learner_hidden_cards"} {
+	for _, label := range []fixtures.Label{fixtures.UserAdminLearner, fixtures.UserLearnerWithAGap, fixtures.UserLearnerHiddenCards} {
 		state, err := r.progress.CourseState(ctx, r.learner(t, label), r.course(t, jsSlug).ID)
 		require.NoError(t, err)
-		assert.Equal(t, progress.StateStarted, state.State, label)
+		assert.Equal(t, progress.StateStarted, state.State, label.String())
 	}
 }
 
@@ -217,7 +218,7 @@ func TestReevaluateCompletionRefusesAnUnknownCourse(t *testing.T) {
 func TestFactsOfAContentRowWithoutASlugCarryAnEmptySlug(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 	r.db.Course.Update().Where(course.SlugEQ(jsSlug)).ClearSlug().ExecX(ctx)
 	hello := r.lesson(t, firstLesson)
 	r.db.CourseLesson.UpdateOneID(hello.ID).ClearSlug().ExecX(ctx)
@@ -237,7 +238,7 @@ func TestFactsOfAContentRowWithoutASlugCarryAnEmptySlug(t *testing.T) {
 func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, "user_blank")
+	blankUser := r.learner(t, fixtures.UserBlank)
 	courseID := r.course(t, jsSlug).ID
 	raced := false
 	r.db.Enrollment.Use(func(next ent.Mutator) ent.Mutator {
@@ -262,7 +263,7 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	adminLearner := r.learner(t, "user_admin_learner")
+	adminLearner := r.learner(t, fixtures.UserAdminLearner)
 	second := r.lesson(t, secondLesson)
 	courseID := r.course(t, jsSlug).ID
 	enrolled := r.db.Enrollment.Query().Where(enrollment.UserID(adminLearner.UserID)).OnlyX(ctx)
@@ -354,7 +355,7 @@ func operations() []operation {
 		{
 			name: "starting a lesson",
 			prepare: func(t *testing.T, r *rig) func() error {
-				blankUser, lesson := r.learner(t, "user_blank"), r.lesson(t, firstLesson)
+				blankUser, lesson := r.learner(t, fixtures.UserBlank), r.lesson(t, firstLesson)
 				return func() error {
 					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID, locale)
 					return err
@@ -366,7 +367,7 @@ func operations() []operation {
 		{
 			name: "checking a solution",
 			prepare: func(t *testing.T, r *rig) func() error {
-				check := r.check(t, r.learner(t, "user_blank"), firstLesson)
+				check := r.check(t, r.learner(t, fixtures.UserBlank), firstLesson)
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
 					return err
@@ -379,7 +380,7 @@ func operations() []operation {
 			name: "checking the last lesson of a course",
 			prepare: func(t *testing.T, r *rig) func() error {
 				r.dropLessonsAfterTheFirst(t)
-				check := r.check(t, r.learner(t, "user_admin_learner"), firstLesson)
+				check := r.check(t, r.learner(t, fixtures.UserAdminLearner), firstLesson)
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
 					return err
@@ -391,7 +392,7 @@ func operations() []operation {
 		{
 			name: "reading a learner's courses",
 			prepare: func(t *testing.T, r *rig) func() error {
-				adminLearner, courseID := r.learner(t, "user_admin_learner"), r.course(t, jsSlug).ID
+				adminLearner, courseID := r.learner(t, fixtures.UserAdminLearner), r.course(t, jsSlug).ID
 				return func() error {
 					_, err := r.progress.CourseStates(t.Context(), adminLearner.UserID, []int{courseID})
 					return err
@@ -413,7 +414,7 @@ func operations() []operation {
 		{
 			name: "merging a guest's progress",
 			prepare: func(t *testing.T, r *rig) func() error {
-				staffEditor := r.learner(t, "user_staff_editor")
+				staffEditor := r.learner(t, fixtures.UserStaffEditor)
 				return func() error {
 					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest, locale)
 				}

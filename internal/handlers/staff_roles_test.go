@@ -15,7 +15,7 @@ import (
 
 // staff_member_roles.yml seeds two roles; editor owns two permission rows.
 var (
-	roleEditorID = fixtures.ID32("staff_role_editor")
+	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )
 
 func TestAdminListRoles(t *testing.T) {
@@ -96,7 +96,7 @@ func TestAdminDeleteRole(t *testing.T) {
 	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
 
 	// moderator (9002) has no permissions -> no FK children to block delete.
-	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixtures.ID32("staff_role_moderator")})
+	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixtures.ID32(fixtures.StaffRoleModerator)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

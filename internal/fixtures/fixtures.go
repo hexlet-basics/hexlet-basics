@@ -2,8 +2,14 @@
 // rows. A row is written with a label, Rails-style: the YAML says
 // `{{ id "user_removed" }}` where the row's primary key (or a reference to
 // another row) goes, and a Go test asks for the same row with
-// fixtures.ID("user_removed"). The label is the only handle a test needs, so
-// no test depends on a literal id or on how many rows a table happens to hold.
+// fixtures.ID(fixtures.UserRemoved). The label is the only handle a test needs,
+// so no test depends on a literal id or on how many rows a table happens to
+// hold.
+//
+// Every label has a Label variable of its own in labels_gen.go, generated from
+// the YAML by `mise run gen:fixtures`, and ID takes a Label rather than a
+// string. A typo, or a label whose row was removed, is a compile error in the
+// test instead of a panic when it runs.
 //
 // Ids follow the order the rows are written in. The application reads
 // "oldest first" and "newest first" off the id, so a fixture that is written
@@ -111,9 +117,41 @@ var (
 	repoErr    error
 )
 
+// Label names one fixture row. It is a struct, not a string type, on purpose:
+// an untyped string constant converts to a string type implicitly, so
+// ID("typo") would compile, while nothing converts to a struct with an
+// unexported field. The only ways to get a Label are the generated variables
+// and LabelOf.
+type Label struct{ name string }
+
+// LabelOf is the escape hatch for a label that is not known when the test is
+// written, such as one read from a request path. ID still panics for a name no
+// row defines, so prefer the generated variables wherever the row is known.
+func LabelOf(name string) Label {
+	return Label{name: name}
+}
+
+// String is the label as it is written in the YAML.
+func (l Label) String() string { return l.name }
+
+// LabelNames lists every label the rows in dir define, in name order. It is
+// what the generator of labels_gen.go reads.
+func LabelNames(dir string) ([]string, error) {
+	found, err := scan(dir)
+	if err != nil {
+		return nil, fmt.Errorf("number fixture rows: %w", err)
+	}
+	names := make([]string, 0, len(found))
+	for name := range found {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names, nil
+}
+
 // ID is the primary key of the fixture row labelled label in the repository's
 // fixtures/ directory. It panics for a label no row defines.
-func ID(label string) int {
+func ID(label Label) int {
 	repoOnce.Do(func() {
 		var dir string
 		if dir, repoErr = Dir(); repoErr == nil {
@@ -123,7 +161,7 @@ func ID(label string) int {
 	if repoErr != nil {
 		panic(fmt.Sprintf("fixtures: %v", repoErr))
 	}
-	id, err := repoLabels.id(label)
+	id, err := repoLabels.id(label.name)
 	if err != nil {
 		panic(fmt.Sprintf("fixtures: %v", err))
 	}
@@ -131,7 +169,7 @@ func ID(label string) int {
 }
 
 // ID32 is ID as the int32 the HTTP contract uses for identifiers.
-func ID32(label string) int32 {
+func ID32(label Label) int32 {
 	return int32(ID(label))
 }
 

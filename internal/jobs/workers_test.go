@@ -110,11 +110,11 @@ func TestReapStuckVersionBuildsJobFailsTheStuckBuildOnly(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
-	stuck := db.CourseVersion.GetX(t.Context(), fixtures.ID("version_loadable_stuck"))
+	stuck := db.CourseVersion.GetX(t.Context(), fixtures.ID(fixtures.VersionLoadableStuck))
 	assert.Equal(t, "failed", *stuck.State)
 	require.NotNil(t, stuck.Result)
 	assert.Contains(t, *stuck.Result, "Build reaped: stuck in 'building' since ")
-	running := db.CourseVersion.GetX(t.Context(), fixtures.ID("version_loadable_building"))
+	running := db.CourseVersion.GetX(t.Context(), fixtures.ID(fixtures.VersionLoadableBuilding))
 	assert.Equal(t, "building", *running.State)
 	assert.Nil(t, running.Result)
 }
@@ -122,7 +122,7 @@ func TestReapStuckVersionBuildsJobFailsTheStuckBuildOnly(t *testing.T) {
 // The sweep removes a session that has run out and leaves a live one alone.
 func TestReapExpiredSessionsJobRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
-	_, err := session.New(db).Issue(t.Context(), db.User.GetX(t.Context(), fixtures.ID("user_with_password")))
+	_, err := session.New(db).Issue(t.Context(), db.User.GetX(t.Context(), fixtures.ID(fixtures.UserWithPassword)))
 	require.NoError(t, err)
 	sweep := func(now time.Time) {
 		t.Helper()

@@ -31,12 +31,12 @@ func TestAdminReviewCourse(t *testing.T) {
 	// JavaScript: its CURRENT version's infos across every locale —
 	// the en trio plus the ru hello-world info. The old-version info
 	// must not be re-reviewed.
-	err := h.Client.AdminReviewCourse(ctx, api.AdminReviewCourseParams{ID: fixtures.ID32("course_javascript")})
+	err := h.Client.AdminReviewCourse(ctx, api.AdminReviewCourseParams{ID: fixtures.ID32(fixtures.CourseJavascript)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{fixtures.ID("lesson_version_info_javascript_strings_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), fixtures.ID("lesson_version_info_javascript_variables_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_ru")}, ids)
+	assert.ElementsMatch(t, []int{fixtures.ID(fixtures.LessonVersionInfoJavascriptStringsCurrentEn), fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentEn), fixtures.ID(fixtures.LessonVersionInfoJavascriptVariablesCurrentEn), fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentRu)}, ids)
 }
 
 func TestAdminReviewCourseNotFound(t *testing.T) {
@@ -55,12 +55,12 @@ func TestAdminReviewCourseLesson(t *testing.T) {
 
 	// hello-world: every info of the lesson — current en, old-version
 	// en, and ru — so historical summaries refresh too (legacy lesson.infos).
-	err := h.Client.AdminReviewCourseLesson(ctx, api.AdminReviewCourseLessonParams{ID: fixtures.ID32("lesson_javascript_hello_world")})
+	err := h.Client.AdminReviewCourseLesson(ctx, api.AdminReviewCourseLessonParams{ID: fixtures.ID32(fixtures.LessonJavascriptHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_retired_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_ru")}, ids)
+	assert.ElementsMatch(t, []int{fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentEn), fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldRetiredEn), fixtures.ID(fixtures.LessonVersionInfoJavascriptHelloWorldCurrentRu)}, ids)
 }
 
 func TestAdminReviewCourseLessonNotFound(t *testing.T) {

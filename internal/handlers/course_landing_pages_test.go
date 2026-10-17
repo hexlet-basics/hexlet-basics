@@ -17,9 +17,9 @@ import (
 
 // go-ru landing page and its course, ruby course — all present in the fixtures.
 var (
-	landingGoRuID = fixtures.ID32("landing_page_go_ru")
-	courseRubyID  = fixtures.ID("course_ruby")
-	courseGoID    = fixtures.ID("course_go")
+	landingGoRuID = fixtures.ID32(fixtures.LandingPageGoRu)
+	courseRubyID  = fixtures.ID(fixtures.CourseRuby)
+	courseGoID    = fixtures.ID(fixtures.CourseGo)
 )
 
 // fullLandingInput returns a complete CourseLandingPageInput with every nullable

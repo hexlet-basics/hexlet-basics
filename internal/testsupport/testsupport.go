@@ -178,14 +178,17 @@ func (h *Harness) LastStatus() int { return h.doer.status }
 // set has to look at the response itself.
 func (h *Harness) ResponseCookies() []string { return h.doer.setCookies }
 
-// NewHarness builds the in-process test stack: an ent client over a fresh SQL
+// NewHarness builds the in-process test stack, authenticated as the fixture user
+// UserAdminLearner: an administrator who is enrolled in JavaScript and has
+// finished its first lesson, so one caller reaches both the admin surface and
+// the learner's own. The stack is: an ent client over a fresh SQL
 // transaction, the handlers.Server, the ogen api.Server with the production
 // ErrorHandler, and a generated client whose transport dispatches straight into
 // that server's ServeHTTP — so tests run the full request pipeline without a
 // socket, and exercise the exact ent-error -> status mapping the server uses.
 func NewHarness(t *testing.T) *Harness {
 	t.Helper()
-	return NewHarnessAs(t, HarnessUserLabel)
+	return NewHarnessAs(t, fixtures.UserAdminLearner)
 }
 
 // Today is the day the harness's clock reads: the day the fixtures were written,
@@ -195,7 +198,7 @@ var Today = time.Date(2026, time.July, 27, 12, 0, 0, 0, time.UTC)
 
 // NewHarnessAs is NewHarness for a request authenticated as the fixture user
 // with the label, for a scenario that belongs to a user of its own.
-func NewHarnessAs(t *testing.T, userLabel string) *Harness {
+func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	t.Helper()
 
 	db, tx := NewClientWithTx(t)
@@ -414,11 +417,6 @@ func DecodeGuestCookie(t *testing.T, setCookies []string) progress.GuestProgress
 	return progress.GuestProgress{}
 }
 
-// HarnessUserLabel is the fixture user every harness request is authenticated
-// as: an administrator who is enrolled in JavaScript and has finished its first
-// lesson, so one caller reaches both the admin surface and the learner's own.
-const HarnessUserLabel = "user_admin_learner"
-
 type harnessSecurity struct {
 	session string
 	userID  int
@@ -427,7 +425,7 @@ type harnessSecurity struct {
 // newHarnessSecurity signs the fixture user in through the real session manager
 // and keeps the cookie value that names the session, which is what a browser
 // would send on every request.
-func newHarnessSecurity(t *testing.T, db *ent.Client, sessions *session.Manager, userLabel string) *harnessSecurity {
+func newHarnessSecurity(t *testing.T, db *ent.Client, sessions *session.Manager, userLabel fixtures.Label) *harnessSecurity {
 	t.Helper()
 
 	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))

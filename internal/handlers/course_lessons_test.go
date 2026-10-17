@@ -45,10 +45,10 @@ func TestAdminListCourseLessons(t *testing.T) {
 	require.Len(t, items, 3, "old-version and ru infos must be excluded")
 
 	// Ordered by the Info id DESC (not the lesson id this row reports as `id`).
-	infoOf := map[string]string{
-		"variables":   "lesson_version_info_javascript_variables_current_en",
-		"hello-world": "lesson_version_info_javascript_hello_world_current_en",
-		"strings":     "lesson_version_info_javascript_strings_current_en",
+	infoOf := map[string]fixtures.Label{
+		"variables":   fixtures.LessonVersionInfoJavascriptVariablesCurrentEn,
+		"hello-world": fixtures.LessonVersionInfoJavascriptHelloWorldCurrentEn,
+		"strings":     fixtures.LessonVersionInfoJavascriptStringsCurrentEn,
 	}
 	got := lo.Map(items, func(item api.CourseLessonListItem, _ int) string { return item.Slug })
 	want := slices.SortedFunc(maps.Keys(infoOf), func(a, b string) int {
@@ -62,9 +62,9 @@ func TestAdminListCourseLessons(t *testing.T) {
 	assert.Equal(t, "Strings", bySlug["strings"].Name.Value)
 
 	// The reported id is the lesson id and the slug is joined from the lesson.
-	assert.Equal(t, fixtures.ID32("lesson_javascript_variables"), bySlug["variables"].ID)
+	assert.Equal(t, fixtures.ID32(fixtures.LessonJavascriptVariables), bySlug["variables"].ID)
 	assert.Equal(t, "Storing values", bySlug["variables"].Description.Value)
-	assert.Equal(t, fixtures.ID32("lesson_javascript_hello_world"), bySlug["hello-world"].ID)
+	assert.Equal(t, fixtures.ID32(fixtures.LessonJavascriptHelloWorld), bySlug["hello-world"].ID)
 }
 
 // TestAdminListLessonProgress: newest first, with course/lesson slugs and the
@@ -86,15 +86,15 @@ func TestAdminListLessonProgress(t *testing.T) {
 	}
 	byID := lo.KeyBy(page.Items, func(item api.LessonProgress) int32 { return item.ID })
 
-	first := byID[fixtures.ID32("lesson_progress_staff_editor_javascript_variables")] // started, no messages, lesson "variables"
-	assert.Equal(t, int32(fixtures.ID("user_staff_editor")), first.UserId)
+	first := byID[fixtures.ID32(fixtures.LessonProgressStaffEditorJavascriptVariables)] // started, no messages, lesson "variables"
+	assert.Equal(t, int32(fixtures.ID(fixtures.UserStaffEditor)), first.UserId)
 	assert.Equal(t, api.EnrollmentStateStarted, first.State)
 	assert.True(t, first.MessagesCount.Null, "blank messages_count should be null")
 	assert.Equal(t, "javascript", first.CourseSlug)
 	assert.Equal(t, "variables", first.CourseLessonSlug)
 	assert.Equal(t, "Variables", first.CourseLessonName)
 
-	second := byID[fixtures.ID32("lesson_progress_admin_learner_javascript_hello_world")] // finished, 5 messages, lesson "hello-world"
+	second := byID[fixtures.ID32(fixtures.LessonProgressAdminLearnerJavascriptHelloWorld)] // finished, 5 messages, lesson "hello-world"
 	assert.Equal(t, api.EnrollmentStateFinished, second.State)
 	assert.Equal(t, int32(5), second.MessagesCount.Value)
 	assert.Equal(t, "hello-world", second.CourseLessonSlug)
@@ -118,16 +118,16 @@ func TestAdminListCourseLessonReviews(t *testing.T) {
 	assert.Greater(t, page.Items[0].ID, page.Items[1].ID)
 	byID := lo.KeyBy(page.Items, func(item api.CourseLessonReview) int32 { return item.ID })
 
-	first := byID[fixtures.ID32("lesson_review_javascript_strings_en")] // strings, natural_order 3
+	first := byID[fixtures.ID32(fixtures.LessonReviewJavascriptStringsEn)] // strings, natural_order 3
 	assert.Equal(t, "en", first.Locale)
 	assert.Equal(t, "Good grasp of concatenation overall.", first.Summary)
 	assert.Equal(t, "strings", first.Slug)
 	assert.Equal(t, int32(3), first.LessonNaturalOrder)
 	assert.Equal(t, "javascript", first.CourseSlug)
-	assert.Equal(t, int32(fixtures.ID("course_javascript")), first.CourseId)
-	assert.Equal(t, int32(fixtures.ID("lesson_javascript_strings")), first.CourseLessonId)
+	assert.Equal(t, int32(fixtures.ID(fixtures.CourseJavascript)), first.CourseId)
+	assert.Equal(t, int32(fixtures.ID(fixtures.LessonJavascriptStrings)), first.CourseLessonId)
 
-	second := byID[fixtures.ID32("lesson_review_javascript_hello_world_en")] // hello-world, natural_order 1
+	second := byID[fixtures.ID32(fixtures.LessonReviewJavascriptHelloWorldEn)] // hello-world, natural_order 1
 	assert.Equal(t, "hello-world", second.Slug)
 	assert.Equal(t, int32(1), second.LessonNaturalOrder)
 }

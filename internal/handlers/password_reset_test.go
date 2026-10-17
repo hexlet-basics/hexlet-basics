@@ -27,7 +27,7 @@ func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) b
 func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 
 	res, err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
 	require.NoError(t, err)
@@ -50,7 +50,7 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 func TestCheckPasswordResetToken(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	res, err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
@@ -67,7 +67,7 @@ func TestCheckPasswordResetToken(t *testing.T) {
 
 func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
@@ -86,7 +86,7 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 // Changing the digest is what kills the link, so it cannot be used twice.
 func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
@@ -103,7 +103,7 @@ func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 
 func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
@@ -120,7 +120,7 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 // submission leaves the digest, and so the link, untouched.
 func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, "user_with_password")
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 	token := issueEmailToken(t, emailtokens.PasswordReset, u)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
@@ -137,8 +137,8 @@ func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 // session a thief may hold stops naming anyone, and only the reset's own new
 // session is left.
 func TestUpdatePasswordEndsTheSessionsOfTheOldPassword(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, "user_with_password")
-	u := fixtureUser(t, h, "user_with_password")
+	h := testsupport.NewHarnessAs(t, fixtures.UserWithPassword)
+	u := fixtureUser(t, h, fixtures.UserWithPassword)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
