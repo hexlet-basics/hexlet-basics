@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"time"
 
+	jose "github.com/go-jose/go-jose/v4"
 	"github.com/rs/cors"
 	"github.com/zitadel/oidc/v3/pkg/op"
 
@@ -142,6 +143,10 @@ func New(deps Deps) (*Server, error) {
 			op.NewEndpoint(endSessionPath),
 			op.NewEndpoint(keysPath),
 		),
+		// The ID tokens are signed with EdDSA, and the library's verifier of an
+		// id_token_hint accepts only RS256 unless told otherwise: without this
+		// it would reject the server's own tokens.
+		op.WithIDTokenHintVerifierOpts(op.WithSupportedIDTokenHintSigningAlgorithms(string(jose.EdDSA))),
 		op.WithCustomIntrospectionEndpoint(op.NewEndpoint(introspectPath)),
 		op.WithCustomDeviceAuthorizationEndpoint(op.NewEndpoint(deviceAuthzPath)),
 		// Browser-based MCP clients call the token and metadata endpoints across
