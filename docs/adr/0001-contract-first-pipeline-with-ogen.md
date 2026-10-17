@@ -1,5 +1,9 @@
 # Contract-first API pipeline with ogen
 
+Amended by [ADR-0016](0016-in-process-oauth-server-for-mcp-clients.md): the
+endpoints an RFC defines (OAuth authorization, token, registration, discovery)
+are hand-written outside the contract on purpose.
+
 The API contract is authored once in TypeSpec (`api-spec/main.tsp`), emitted to
 OpenAPI (`api-spec/dist/openapi.yaml`), and code-generated into a Go `net/http`
 server via **ogen** and a TypeScript client via **hey-api**. One contract, no

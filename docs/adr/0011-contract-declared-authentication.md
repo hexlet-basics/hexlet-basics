@@ -7,6 +7,10 @@ status: accepted
 Amended by [ADR-0017](0017-server-side-sessions.md): sessions are server-side and
 there is no XSRF token scheme.
 
+Amended by [ADR-0017](0017-contract-declared-permissions-and-audit-trail.md)
+(what an administrator or staff member may do is declared per operation in the
+contract, no longer in a hand-kept table).
+
 Protected routes were chosen by hand-written URL-prefix checks outside the
 contract, and administrator rights came from a JWT claim that survives a
 refresh. We declare authentication as security schemes in TypeSpec, so ogen's
