@@ -2,118 +2,103 @@ package handlers
 
 import (
 	"context"
-	"errors"
-	"net/http"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
+	"hexletbasics/internal/paging"
 )
 
-// searchUsersLimit mirrors the legacy typeahead cap (`.limit(20)`).
-const searchUsersLimit = 20
+// The rules around editing users (the stored email, the last administrator)
+// live in accounts.Editor, and the reads in accounts.Directory; these handlers
+// only translate the contract to their commands and the rows to its models. A
+// missing id, a duplicate email and the last administrator reach the central
+// ErrorHandler as domain errors and become 404 and 409 there.
 
 // AdminListUsers returns a page of users, newest first.
 func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (api.AdminListUsersRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		s.db.User.Query().Order(ent.Desc(user.FieldID)),
-		s.conv.ToUserCruds,
-		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
-			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}
-		},
-	)
+	return s.userCrudPage(ctx, params.Page, params.PerPage)
 }
 
-// AdminSearchUsers is the admin typeahead: a case-insensitive substring match on
-// first name, last name, or email (legacy `first_name_or_last_name_or_email_cont`),
-// capped at 20 rows. A blank term returns an empty list rather than every user.
-func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) (api.AdminSearchUsersRes, error) {
-	if params.Q == "" {
-		items := api.AdminSearchUsersOKApplicationJSON{}
-		return &items, nil
-	}
-
-	rows, err := s.db.User.Query().
-		Where(user.Or(
-			user.FirstNameContainsFold(params.Q),
-			user.LastNameContainsFold(params.Q),
-			user.EmailContainsFold(params.Q),
-		)).
-		Order(ent.Desc(user.FieldID)).
-		Limit(searchUsersLimit).
-		All(ctx)
+// userCrudPage is the list the two admin surfaces over users share.
+func (s *Server) userCrudPage(ctx context.Context, pageParam, perPageParam api.OptInt32) (*api.UserCrudPage, error) {
+	window := paging.New(pageParam, perPageParam)
+	rows, total, err := s.userDirectory.List(ctx, accounts.Page{Offset: window.Offset(), Limit: window.Limit()})
 	if err != nil {
 		return nil, err
 	}
+	return &api.UserCrudPage{
+		Items:   s.conv.ToUserCruds(rows),
+		Total:   int32(total),
+		Page:    window.Page,
+		PerPage: window.PerPage,
+	}, nil
+}
 
+// AdminSearchUsers is the admin typeahead; a blank term returns an empty list.
+func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) (api.AdminSearchUsersRes, error) {
+	rows, err := s.userDirectory.Search(ctx, params.Q)
+	if err != nil {
+		return nil, err
+	}
 	items := api.AdminSearchUsersOKApplicationJSON(s.conv.ToUserCruds(rows))
 	return &items, nil
 }
 
-// AdminGetUser returns a single user by id. A missing id returns ent's not-found
-// error, which the central ErrorHandler maps to 404.
+// AdminGetUser returns a single user by id.
 func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (api.AdminGetUserRes, error) {
-	return getOne(ctx, int(params.ID), s.db.User.Get, s.conv.ToUserCrud)
+	return s.userCrud(ctx, int(params.ID))
+}
+
+// userCrud is the single view the two admin surfaces over users share.
+func (s *Server) userCrud(ctx context.Context, id int) (*api.UserCrud, error) {
+	row, err := s.userDirectory.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	item := s.conv.ToUserCrud(row)
+	return &item, nil
 }
 
 // AdminCreateUser creates a user.
-//
-// Email uniqueness is enforced by the baseline unique index, not a pre-check: a
-// violation returns ent's constraint error, mapped to 409 centrally (race-free).
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
-	req.Email = accounts.NormalizeEmail(req.Email)
-	row, err := s.db.User.Create().SetInput(req).Save(ctx)
+	row, err := s.userEditor.Create(ctx, userFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
-
 	item := s.conv.ToUserCrud(row)
 	return &item, nil
 }
 
-// AdminUpdateUser updates a user. A missing id returns ent's not-found error
-// (mapped to 404 centrally). The generated SetInput clears a column on null,
-// matching the legacy assign_attributes semantics.
+// AdminUpdateUser updates a user. A null nullable field clears its column.
 func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (api.AdminUpdateUserRes, error) {
-	row, err := s.updateUser(ctx, int(params.ID), req)
+	return s.updateUser(ctx, int(params.ID), req)
+}
+
+// updateUser is the write the two admin surfaces over users share.
+func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*api.UserCrud, error) {
+	row, err := s.userEditor.Update(ctx, id, userFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
-
 	item := s.conv.ToUserCrud(row)
 	return &item, nil
 }
 
-// updateUser is the write shared by the two admin surfaces over users. The email
-// is stored the way registration stores it, or the account could not be found
-// at sign-in; clearing the administrator flag is refused for the last one.
-func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*ent.User, error) {
-	req.Email = accounts.NormalizeEmail(req.Email)
-	if req.Admin.Null || !req.Admin.Value {
-		if err := accounts.EnsureAnotherAdmin(ctx, s.db, id); err != nil {
-			return nil, lastAdminError(err)
-		}
-	}
-	return s.db.User.UpdateOneID(id).SetInput(req).Save(ctx)
-}
-
-// lastAdminError gives the refusal its 409; any other error passes through.
-func lastAdminError(err error) error {
-	if errors.Is(err, accounts.ErrLastAdmin) {
-		return withHTTPStatus(http.StatusConflict, err)
-	}
-	return err
-}
-
-// AdminDeleteUser removes a user by id. A missing id returns ent's not-found
-// error (mapped to 404 centrally).
+// AdminDeleteUser removes a user by id.
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
-	if err := accounts.EnsureAnotherAdmin(ctx, s.db, int(params.ID)); err != nil {
-		return nil, lastAdminError(err)
-	}
-	if err := s.db.User.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+	if err := s.userEditor.Delete(ctx, int(params.ID)); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteUserNoContent{}, nil
+}
+
+// userFieldsOf is the contract's UserInput as the editor's command.
+func userFieldsOf(in *api.UserInput) accounts.UserFields {
+	return accounts.UserFields{
+		Email:     in.Email,
+		FirstName: inputconv.StringPtr(in.FirstName),
+		LastName:  inputconv.StringPtr(in.LastName),
+		Admin:     inputconv.Ptr(in.Admin),
+	}
 }

@@ -244,13 +244,15 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
-		Remover:    accounts.NewRemover(transactor),
-		Events:     services.Events,
-		Leads:      leadRecorder,
-		Books:      books.NewRecorder(transactor, services.Events),
-		I18n:       translator,
-		Errors:     errorHandler,
-		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
+		Remover:       accounts.NewRemover(transactor),
+		UserEditor:    accounts.NewEditor(db),
+		UserDirectory: accounts.NewDirectory(db),
+		Events:        services.Events,
+		Leads:         leadRecorder,
+		Books:         books.NewRecorder(transactor, services.Events),
+		I18n:          translator,
+		Errors:        errorHandler,
+		YandexFeed:    feeds.NewYandex(db, testConfig.AppHost),
 		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.

@@ -57,7 +57,11 @@ type Server struct {
 	credentials *accounts.Credentials
 	registrar   UserRegistrar
 	remover     AccountRemover
-	events      events.StandalonePublisher
+	// userEditor and userDirectory are the administrators' write and read side of
+	// user records.
+	userEditor    UserEditor
+	userDirectory UserDirectory
+	events        events.StandalonePublisher
 	// emailTokens verifies the Magic Link and Password Reset links.
 	emailTokens *emailtokens.Tokens
 	// guests is the visitor-progress cookie.
@@ -108,6 +112,8 @@ type Deps struct {
 	Sessions          *sessions.Manager
 	Registrar         UserRegistrar
 	Remover           AccountRemover
+	UserEditor        UserEditor
+	UserDirectory     UserDirectory
 	Events            events.StandalonePublisher
 	Leads             LeadCreator
 	Books             BookRequester
@@ -139,6 +145,8 @@ func NewServer(deps Deps) *Server {
 		credentials:       accounts.NewCredentials(deps.DB),
 		registrar:         deps.Registrar,
 		remover:           deps.Remover,
+		userEditor:        deps.UserEditor,
+		userDirectory:     deps.UserDirectory,
 		events:            deps.Events,
 		emailTokens:       emailtokens.New(deps.Config.EmailTokenSecret),
 		guests:            guests,

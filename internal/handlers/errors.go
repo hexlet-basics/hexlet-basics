@@ -13,6 +13,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 )
 
@@ -116,9 +117,9 @@ func errorStatus(err error) int {
 		return ogenErr.Code()
 	case errors.Is(err, context.Canceled):
 		return statusClientClosedRequest
-	case ent.IsNotFound(err):
+	case ent.IsNotFound(err), errors.Is(err, domain.ErrNotFound):
 		return http.StatusNotFound
-	case ent.IsConstraintError(err):
+	case ent.IsConstraintError(err), errors.Is(err, domain.ErrConflict):
 		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError

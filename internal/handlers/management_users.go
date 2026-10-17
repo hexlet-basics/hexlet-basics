@@ -3,37 +3,23 @@ package handlers
 import (
 	"context"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
 )
 
 // The management users surface (legacy `admin/management/users`) is a slim view
-// over the same users table as AdminUsers: list + get + update, no create or
-// delete. It reuses the User schema and UserCrud converter.
+// over the same users as AdminUsers: list + get + update, no create or delete.
+// It shares their read and write paths (see users.go).
 
 func (s *Server) AdminListManagementUsers(ctx context.Context, params api.AdminListManagementUsersParams) (api.AdminListManagementUsersRes, error) {
-	return listPage(ctx, params.Page, params.PerPage,
-		s.db.User.Query().Order(ent.Desc(user.FieldID)),
-		s.conv.ToUserCruds,
-		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
-			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}
-		},
-	)
+	return s.userCrudPage(ctx, params.Page, params.PerPage)
 }
 
 func (s *Server) AdminGetManagementUser(ctx context.Context, params api.AdminGetManagementUserParams) (api.AdminGetManagementUserRes, error) {
-	return getOne(ctx, int(params.ID), s.db.User.Get, s.conv.ToUserCrud)
+	return s.userCrud(ctx, int(params.ID))
 }
 
-// AdminUpdateManagementUser updates a user's editable fields. Email uniqueness
-// is enforced by the baseline unique index (409 via the central handler); a
-// null nullable field clears the column.
+// AdminUpdateManagementUser updates a user's editable fields. A null nullable
+// field clears the column.
 func (s *Server) AdminUpdateManagementUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateManagementUserParams) (api.AdminUpdateManagementUserRes, error) {
-	row, err := s.updateUser(ctx, int(params.ID), req)
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToUserCrud(row)
-	return &item, nil
+	return s.updateUser(ctx, int(params.ID), req)
 }

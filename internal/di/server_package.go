@@ -66,6 +66,8 @@ type handlerServices struct {
 	Sessions          *sessions.Manager         `do:""`
 	Registrar         *accounts.Registrar       `do:""`
 	Remover           *accounts.Remover         `do:""`
+	UserEditor        *accounts.Editor          `do:""`
+	UserDirectory     *accounts.Directory       `do:""`
 	Events            *events.Publisher         `do:""`
 	Leads             *leads.Recorder           `do:""`
 	Books             *books.Recorder           `do:""`
@@ -183,6 +185,20 @@ var serverPackage = do.Package(
 		}
 		return dashboard.New(db, landingpages.NewCatalog(db), tracker, logger), nil
 	}),
+	do.Lazy[*accounts.Editor](func(i do.Injector) (*accounts.Editor, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return accounts.NewEditor(db), nil
+	}),
+	do.Lazy[*accounts.Directory](func(i do.Injector) (*accounts.Directory, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return accounts.NewDirectory(db), nil
+	}),
 	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
@@ -260,6 +276,8 @@ var serverPackage = do.Package(
 			Sessions:          services.Sessions,
 			Registrar:         services.Registrar,
 			Remover:           services.Remover,
+			UserEditor:        services.UserEditor,
+			UserDirectory:     services.UserDirectory,
 			Events:            services.Events,
 			Leads:             services.Leads,
 			Books:             services.Books,

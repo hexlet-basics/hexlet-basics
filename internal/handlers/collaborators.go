@@ -70,3 +70,17 @@ type UserRegistrar interface {
 type PostRemover interface {
 	Remove(ctx context.Context, postID int) error
 }
+
+// UserEditor is how an administrator creates, changes and deletes user records.
+type UserEditor interface {
+	Create(ctx context.Context, fields accounts.UserFields) (*ent.User, error)
+	Update(ctx context.Context, id int, fields accounts.UserFields) (*ent.User, error)
+	Delete(ctx context.Context, id int) error
+}
+
+// UserDirectory is how an administrator reads user records.
+type UserDirectory interface {
+	List(ctx context.Context, page accounts.Page) ([]*ent.User, int, error)
+	Search(ctx context.Context, term string) ([]*ent.User, error)
+	Get(ctx context.Context, id int) (*ent.User, error)
+}
