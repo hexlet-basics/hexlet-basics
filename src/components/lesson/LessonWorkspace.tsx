@@ -117,6 +117,14 @@ export default function LessonWorkspace({
   const run = () => {
     if (check.isPending) return;
 
+    // The contract refuses an empty submission, and the starter code of some
+    // courses is empty: pressing run on it would come back as a 400, which the
+    // error handler below reads as a network failure.
+    if (code.trim() === "") {
+      notifications.show({ message: t(($) => $.courses.lessons.show.empty_solution) });
+      return;
+    }
+
     // Move to where the answer will appear before asking for it.
     setTab("output");
     setResult(null);

@@ -521,6 +521,96 @@ test("says when the request itself failed, rather than leaving it to be read as 
   await expect.element(page.getByText("Tests passed")).not.toBeInTheDocument();
 });
 
+// Some courses (TypeScript) start from an empty file. The contract refuses an
+// empty submission, so running it would come back as a 400 and read as a network
+// failure; the page says what is missing instead and asks the server nothing.
+test("asks for a solution rather than sending an empty one", async () => {
+  let checks = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () =>
+      HttpResponse.json(lessonView({ lesson: { ...lesson, preparedCode: "" } })),
+    ),
+    http.post("*/lessons/1002/check", () => {
+      checks += 1;
+      return HttpResponse.json(checkResult());
+    }),
+  );
+
+  // An empty buffer leaves monaco's input element zero-wide, so "visible" would
+  // never hold for it.
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeInTheDocument();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect
+    .element(page.getByText("Write your solution in the editor before running the check"))
+    .toBeVisible();
+  await expect
+    .element(page.getByText("There was a network problem", { exact: false }))
+    .not.toBeInTheDocument();
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeEnabled();
+  expect(checks).toBe(0);
+});
+
+// The learner is moved to the output pane the moment they press run, and the
+// check can take seconds (a container starts); the pane must say so rather than
+// sit empty.
+test("shows that the check is running while it is", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      return HttpResponse.json(checkResult());
+    }),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect.element(page.getByText("Running the tests…")).toBeVisible();
+
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(page.getByText("Running the tests…")).not.toBeInTheDocument();
+});
+
+test("tells the learner what the output pane is for before the first run", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("tab", { name: "Output" }).click();
+
+  await expect.element(page.getByText("Press Run to see the tests output")).toBeVisible();
+});
+
+// Test runners colour their report; the colours show, the escape codes do not.
+test("renders the runner's colours instead of their escape codes", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () =>
+      HttpResponse.json(
+        checkResult({
+          passed: false,
+          result: "failed",
+          status: 1,
+          output: "\u001b[31mexpected hello\u001b[39m",
+          lessonHasBeenFinished: false,
+        }),
+      ),
+    ),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect.element(page.getByText("expected hello")).toBeVisible();
+  await expect.element(page.getByText("[31m", { exact: false })).not.toBeInTheDocument();
+});
+
 test("refuses a second run while one is in flight", async () => {
   let checks = 0;
   worker.use(

@@ -1131,6 +1131,7 @@ export default {
           discuss: "AI Assistant",
           editor: "Editor",
           editor_aria_label: "Editor de código",
+          empty_solution: "Write your solution in the editor before running the check",
           finish: "Finalizar",
           finished: "Completada",
           if_stuck_html:

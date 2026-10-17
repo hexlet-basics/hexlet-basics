@@ -1132,6 +1132,7 @@ export default {
           discuss: "ИИ-помощник",
           editor: "Редактор",
           editor_aria_label: "Редактор кода",
+          empty_solution: "Напишите решение в редакторе, прежде чем запускать проверку",
           finish: "Завершить",
           finished: "Пройден",
           if_stuck_html:
