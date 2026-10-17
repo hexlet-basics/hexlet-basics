@@ -85,6 +85,8 @@ type Server struct {
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
 	sitemap SitemapReader
+	// oauth serves the consent screen of the OAuth server; nil while it is off.
+	oauth OAuthConsents
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -114,6 +116,7 @@ type Deps struct {
 	Permissions       PermissionWriter
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
+	OAuth             OAuthConsents
 }
 
 // NewServer wires the handler to its dependencies.
@@ -150,6 +153,7 @@ func NewServer(deps Deps) *Server {
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
+		oauth:             deps.OAuth,
 	}
 }
 

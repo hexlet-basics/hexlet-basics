@@ -6,3 +6,7 @@ useDefault = true
 [[allowlists]]
 description = "_typos.toml lists path fragments such as internal/api that the generic-api-key rule takes for a key"
 paths = ['''^_typos\.toml$''']
+
+[[allowlists]]
+description = "atlas.sum holds one integrity hash per migration file, which the generic-api-key rule takes for a key"
+paths = ['''^migrations/atlas\.sum$''']

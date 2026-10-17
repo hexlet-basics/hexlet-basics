@@ -11,6 +11,7 @@ import "./public.tsp";
 import "./auth.tsp";
 import "./admin.tsp";
 import "./lesson-player.tsp";
+import "./oauth.tsp";
 
 using Http;
 using Rest;

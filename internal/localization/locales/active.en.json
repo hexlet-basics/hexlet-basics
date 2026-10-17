@@ -32,6 +32,7 @@
   "http.unprocessable_entity": "Unprocessable Entity",
   "http.unsupported_media_type": "Unsupported Media Type",
   "lessons.not_found": "lesson not found",
+  "oauth.request_not_found": "authorization request not found or already decided",
   "webhooks.invalid_payload": "invalid payload",
   "webhooks.invalid_signature": "invalid signature",
   "webhooks.read_body_failed": "failed to read body",

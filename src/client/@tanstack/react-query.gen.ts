@@ -2172,6 +2172,58 @@ export const getMyDashboardOptions = (options?: Options<GetMyDashboardData>) => 
   queryKey: getMyDashboardQueryKey(options)
 });
 
+export const getOAuthConsentQueryKey = (options: Options<GetOAuthConsentData>) => createQueryKey('getOAuthConsent', options);
+
+/**
+ * The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
+ */
+export const getOAuthConsentOptions = (options: Options<GetOAuthConsentData>) => queryOptions<GetOAuthConsentResponse, AxiosError<GetOAuthConsentError>, GetOAuthConsentResponse, ReturnType<typeof getOAuthConsentQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getOAuthConsent({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getOAuthConsentQueryKey(options)
+});
+
+/**
+ * Grant the request as the signed-in user.
+ */
+export const approveOAuthConsentMutation = (options?: Partial<Options<ApproveOAuthConsentData>>): UseMutationOptions<ApproveOAuthConsentResponse, AxiosError<ApproveOAuthConsentError>, Options<ApproveOAuthConsentData>> => {
+  const mutationOptions: UseMutationOptions<ApproveOAuthConsentResponse, AxiosError<ApproveOAuthConsentError>, Options<ApproveOAuthConsentData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await approveOAuthConsent({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Refuse the request; the application is told `access_denied`.
+ */
+export const denyOAuthConsentMutation = (options?: Partial<Options<DenyOAuthConsentData>>): UseMutationOptions<DenyOAuthConsentResponse, AxiosError<DenyOAuthConsentError>, Options<DenyOAuthConsentData>> => {
+  const mutationOptions: UseMutationOptions<DenyOAuthConsentResponse, AxiosError<DenyOAuthConsentError>, Options<DenyOAuthConsentData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await denyOAuthConsent({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 /**
  * Set a new password using a reset token; signs the user in.
  */

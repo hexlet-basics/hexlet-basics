@@ -575,6 +575,15 @@ func (UnimplementedHandler) AdminUploadAttachment(ctx context.Context, req *Atta
 	return r, ht.ErrNotImplemented
 }
 
+// ApproveOAuthConsent implements approveOAuthConsent operation.
+//
+// Grant the request as the signed-in user.
+//
+// POST /api/oauth/consents/{requestId}/approve
+func (UnimplementedHandler) ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (r ApproveOAuthConsentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CheckLesson implements checkLesson operation.
 //
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -691,6 +700,15 @@ func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionR
 	return r, ht.ErrNotImplemented
 }
 
+// DenyOAuthConsent implements denyOAuthConsent operation.
+//
+// Refuse the request; the application is told `access_denied`.
+//
+// POST /api/oauth/consents/{requestId}/deny
+func (UnimplementedHandler) DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (r DenyOAuthConsentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DownloadBook implements downloadBook operation.
 //
 // Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -778,6 +796,16 @@ func (UnimplementedHandler) GetMyDashboard(ctx context.Context) (r GetMyDashboar
 //
 // GET /api/blog_posts/{id}/next
 func (UnimplementedHandler) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (r GetNextBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetOAuthConsent implements getOAuthConsent operation.
+//
+// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+// already decided.
+//
+// GET /api/oauth/consents/{requestId}
+func (UnimplementedHandler) GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (r GetOAuthConsentRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

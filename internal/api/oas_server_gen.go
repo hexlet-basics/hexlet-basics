@@ -363,6 +363,12 @@ type Handler interface {
 	//
 	// POST /api/admin/attachments
 	AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
+	// ApproveOAuthConsent implements approveOAuthConsent operation.
+	//
+	// Grant the request as the signed-in user.
+	//
+	// POST /api/oauth/consents/{requestId}/approve
+	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error)
 	// CheckLesson implements checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -443,6 +449,12 @@ type Handler interface {
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	// DenyOAuthConsent implements denyOAuthConsent operation.
+	//
+	// Refuse the request; the application is told `access_denied`.
+	//
+	// POST /api/oauth/consents/{requestId}/deny
+	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error)
 	// DownloadBook implements downloadBook operation.
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -506,6 +518,13 @@ type Handler interface {
 	//
 	// GET /api/blog_posts/{id}/next
 	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	// GetOAuthConsent implements getOAuthConsent operation.
+	//
+	// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+	// already decided.
+	//
+	// GET /api/oauth/consents/{requestId}
+	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error)
 	// GetProfile implements getProfile operation.
 	//
 	// The editable profile of the current user.

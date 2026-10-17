@@ -626,6 +626,23 @@ export const zNotFoundError = z.object({
 });
 
 /**
+ * What the consent screen shows for one authorization request.
+ */
+export const zOAuthConsent = z.object({
+  clientName: z.string(),
+  redirectHost: z.string(),
+  scopes: z.array(z.string()),
+  accountName: z.string()
+});
+
+/**
+ * Where the browser goes next after the user has decided.
+ */
+export const zOAuthDecision = z.object({
+  redirectUrl: z.string()
+});
+
+/**
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
@@ -1971,6 +1988,33 @@ export const zGetCurrentUserResponse = zCurrentUser;
  * The request has succeeded.
  */
 export const zGetMyDashboardResponse = zMyDashboard;
+
+export const zGetOAuthConsentPath = z.object({
+  requestId: z.string()
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zGetOAuthConsentResponse = zOAuthConsent;
+
+export const zApproveOAuthConsentPath = z.object({
+  requestId: z.string()
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zApproveOAuthConsentResponse = zOAuthDecision;
+
+export const zDenyOAuthConsentPath = z.object({
+  requestId: z.string()
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zDenyOAuthConsentResponse = zOAuthDecision;
 
 export const zUpdatePasswordBody = zResetPasswordInput;
 

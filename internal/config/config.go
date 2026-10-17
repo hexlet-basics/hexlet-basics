@@ -2,6 +2,7 @@
 package config
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/caarlos0/env/v11"
@@ -86,7 +87,30 @@ type Config struct {
 	// legacy runner allowed, and a course that turns out to need more room must
 	// be fixable without a release.
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
+	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0016).
+	OAuth OAuthConfig `envPrefix:"OAUTH_"`
 }
+
+// OAuthConfig configures the in-process OAuth authorization server. Everything
+// in it is inert while Enabled is false, which is the default: the code ships
+// before the feature is exposed.
+type OAuthConfig struct {
+	// Enabled mounts `/oauth/*` and the well-known metadata documents.
+	Enabled bool `env:"ENABLED" envDefault:"false"`
+	// Issuer is the bare canonical origin (scheme and host, no path) the server
+	// speaks as. It is never derived from the Host header: a forged header must
+	// not change what a token claims, and the value is baked into every
+	// registration and token, so it is expensive to change later.
+	Issuer string `env:"ISSUER"`
+	// EncryptionKey is the secret the access tokens are encrypted under and the
+	// ID-token signing key is derived from. The database stores only token ids,
+	// so this key is what stands between a database leak and a usable token:
+	// rotating it invalidates every access token. At least 32 characters.
+	EncryptionKey string `env:"ENCRYPTION_KEY"`
+}
+
+// OAuthMinKeyLength is the shortest accepted EncryptionKey.
+const OAuthMinKeyLength = 32
 
 // ExerciseRunnerConfig is the isolation budget one submission runs under. The
 // zero values are never used: Load fills them from the hardened defaults.
@@ -159,6 +183,9 @@ func Load() (*Config, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse config from environment")
 	}
+	if err := validateOAuth(cfg.OAuth); err != nil {
+		return nil, oops.Wrapf(err, "validate OAuth config")
+	}
 	if err := validateProduction(cfg); err != nil {
 		return nil, oops.Wrapf(err, "validate production config")
 	}
@@ -180,6 +207,29 @@ func validateProduction(cfg *Config) error {
 	}
 	if !cfg.Mail.PostboxEnabled() {
 		return oops.Errorf("MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
+	}
+	if cfg.OAuth.Enabled && !strings.HasPrefix(cfg.OAuth.Issuer, "https://") {
+		return oops.Errorf("OAUTH_ISSUER must be an https origin in production")
+	}
+	return nil
+}
+
+// validateOAuth checks the settings the OAuth server cannot run without. It
+// applies only when the flag is on, so the default configuration needs none of
+// them.
+func validateOAuth(cfg OAuthConfig) error {
+	if !cfg.Enabled {
+		return nil
+	}
+	issuer, err := url.Parse(cfg.Issuer)
+	if err != nil || issuer.Host == "" || (issuer.Scheme != "https" && issuer.Scheme != "http") {
+		return oops.Errorf("OAUTH_ISSUER must be an origin such as https://code-basics.com")
+	}
+	if issuer.Path != "" || issuer.RawQuery != "" || issuer.Fragment != "" {
+		return oops.Errorf("OAUTH_ISSUER must be a bare origin without a path: discovery lives at the root")
+	}
+	if len(cfg.EncryptionKey) < OAuthMinKeyLength {
+		return oops.Errorf("OAUTH_ENCRYPTION_KEY must be at least %d characters", OAuthMinKeyLength)
 	}
 	return nil
 }

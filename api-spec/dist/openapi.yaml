@@ -47,6 +47,7 @@ tags:
   - name: 'Admin: Roles'
   - name: 'Admin: Staff Members'
   - name: Lesson Player
+  - name: OAuth
 paths:
   /api/account/profile:
     patch:
@@ -4236,6 +4237,137 @@ paths:
         - User Area
       security:
         - UserSession: []
+  /api/oauth/consents/{requestId}:
+    get:
+      operationId: getOAuthConsent
+      description: The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthConsent'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - OAuth
+      security:
+        - UserSession: []
+  /api/oauth/consents/{requestId}/approve:
+    post:
+      operationId: approveOAuthConsent
+      description: Grant the request as the signed-in user.
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthDecision'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - OAuth
+      security:
+        - UserSession: []
+          XsrfToken: []
+  /api/oauth/consents/{requestId}/deny:
+    post:
+      operationId: denyOAuthConsent
+      description: Refuse the request; the application is told `access_denied`.
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthDecision'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - OAuth
+      security:
+        - UserSession: []
+          XsrfToken: []
   /api/password/{token}:
     patch:
       operationId: updatePassword
@@ -6282,6 +6414,38 @@ components:
         message:
           type: string
       description: A resource was not found.
+    OAuthConsent:
+      type: object
+      required:
+        - clientName
+        - redirectHost
+        - scopes
+        - accountName
+      properties:
+        clientName:
+          type: string
+          description: Name of the application asking for access.
+        redirectHost:
+          type: string
+          description: Host the user is sent back to after deciding.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: 'What the application asks for: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).'
+        accountName:
+          type: string
+          description: The signed-in account that would grant it.
+      description: What the consent screen shows for one authorization request.
+    OAuthDecision:
+      type: object
+      required:
+        - redirectUrl
+      properties:
+        redirectUrl:
+          type: string
+          description: "Absolute URL: the authorization endpoint's callback after approving, the application's redirect URI (with `error=access_denied`) after denying."
+      description: Where the browser goes next after the user has decided.
     PermissionResource:
       type: string
       enum:

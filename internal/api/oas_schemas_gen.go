@@ -6049,19 +6049,99 @@ func (s *NotFoundError) SetMessage(val string) {
 func (*NotFoundError) adminCreateCourseVersionRes() {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
+func (*NotFoundError) approveOAuthConsentRes()      {}
 func (*NotFoundError) checkLessonRes()              {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
 func (*NotFoundError) consumeMagicLinkRes()         {}
 func (*NotFoundError) createAssistantMessageRes()   {}
+func (*NotFoundError) denyOAuthConsentRes()         {}
 func (*NotFoundError) getBlogPostRes()              {}
 func (*NotFoundError) getCourseLessonRes()          {}
 func (*NotFoundError) getCourseRes()                {}
 func (*NotFoundError) getNextBlogPostRes()          {}
+func (*NotFoundError) getOAuthConsentRes()          {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
 func (*NotFoundError) listAssistantMessagesRes()    {}
 func (*NotFoundError) startLessonRes()              {}
 func (*NotFoundError) updatePasswordRes()           {}
+
+// What the consent screen shows for one authorization request.
+// Ref: #/components/schemas/OAuthConsent
+type OAuthConsent struct {
+	// Name of the application asking for access.
+	ClientName string `json:"clientName"`
+	// Host the user is sent back to after deciding.
+	RedirectHost string `json:"redirectHost"`
+	// What the application asks for: OAuth scopes (`catalog:read`, `progress:read`, `admin`,
+	// `offline_access`).
+	Scopes []string `json:"scopes"`
+	// The signed-in account that would grant it.
+	AccountName string `json:"accountName"`
+}
+
+// GetClientName returns the value of ClientName.
+func (s *OAuthConsent) GetClientName() string {
+	return s.ClientName
+}
+
+// GetRedirectHost returns the value of RedirectHost.
+func (s *OAuthConsent) GetRedirectHost() string {
+	return s.RedirectHost
+}
+
+// GetScopes returns the value of Scopes.
+func (s *OAuthConsent) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetAccountName returns the value of AccountName.
+func (s *OAuthConsent) GetAccountName() string {
+	return s.AccountName
+}
+
+// SetClientName sets the value of ClientName.
+func (s *OAuthConsent) SetClientName(val string) {
+	s.ClientName = val
+}
+
+// SetRedirectHost sets the value of RedirectHost.
+func (s *OAuthConsent) SetRedirectHost(val string) {
+	s.RedirectHost = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *OAuthConsent) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetAccountName sets the value of AccountName.
+func (s *OAuthConsent) SetAccountName(val string) {
+	s.AccountName = val
+}
+
+func (*OAuthConsent) getOAuthConsentRes() {}
+
+// Where the browser goes next after the user has decided.
+// Ref: #/components/schemas/OAuthDecision
+type OAuthDecision struct {
+	// Absolute URL: the authorization endpoint's callback after approving, the application's redirect URI
+	// (with `error=access_denied`) after denying.
+	RedirectUrl string `json:"redirectUrl"`
+}
+
+// GetRedirectUrl returns the value of RedirectUrl.
+func (s *OAuthDecision) GetRedirectUrl() string {
+	return s.RedirectUrl
+}
+
+// SetRedirectUrl sets the value of RedirectUrl.
+func (s *OAuthDecision) SetRedirectUrl(val string) {
+	s.RedirectUrl = val
+}
+
+func (*OAuthDecision) approveOAuthConsentRes() {}
+func (*OAuthDecision) denyOAuthConsentRes()    {}
 
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
@@ -6446,8 +6526,10 @@ func (*ProblemDetails) createBookRequestRes()     {}
 func (*ProblemDetails) createLeadRes()            {}
 func (*ProblemDetails) deleteAccountRes()         {}
 func (*ProblemDetails) deleteSessionRes()         {}
+func (*ProblemDetails) denyOAuthConsentRes()      {}
 func (*ProblemDetails) downloadBookRes()          {}
 func (*ProblemDetails) getMyDashboardRes()        {}
+func (*ProblemDetails) getOAuthConsentRes()       {}
 func (*ProblemDetails) getProfileRes()            {}
 func (*ProblemDetails) likeBlogPostRes()          {}
 func (*ProblemDetails) listAssistantMessagesRes() {}

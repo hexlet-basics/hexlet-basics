@@ -4,6 +4,7 @@
   "auth.email_taken": { "other": "Este correo electrónico ya está en uso" },
   "courses.not_found": { "other": "Curso no encontrado" },
   "lessons.not_found": { "other": "Lección no encontrada" },
+  "oauth.request_not_found": { "other": "Solicitud de autorización no encontrada o ya resuelta" },
   "attachments.file_too_large": { "other": "El archivo es demasiado grande" },
   "attachments.unsupported_file_type": { "other": "Tipo de archivo no compatible" },
   "attachments.store_failed": { "other": "No se pudo guardar el archivo" },

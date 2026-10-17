@@ -384,6 +384,12 @@ type Invoker interface {
 	//
 	// POST /api/admin/attachments
 	AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
+	// ApproveOAuthConsent invokes approveOAuthConsent operation.
+	//
+	// Grant the request as the signed-in user.
+	//
+	// POST /api/oauth/consents/{requestId}/approve
+	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error)
 	// CheckLesson invokes checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -464,6 +470,12 @@ type Invoker interface {
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	// DenyOAuthConsent invokes denyOAuthConsent operation.
+	//
+	// Refuse the request; the application is told `access_denied`.
+	//
+	// POST /api/oauth/consents/{requestId}/deny
+	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error)
 	// DownloadBook invokes downloadBook operation.
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -527,6 +539,13 @@ type Invoker interface {
 	//
 	// GET /api/blog_posts/{id}/next
 	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	// GetOAuthConsent invokes getOAuthConsent operation.
+	//
+	// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+	// already decided.
+	//
+	// GET /api/oauth/consents/{requestId}
+	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error)
 	// GetProfile invokes getProfile operation.
 	//
 	// The editable profile of the current user.
@@ -10445,6 +10464,149 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 	return result, nil
 }
 
+// ApproveOAuthConsent invokes approveOAuthConsent operation.
+//
+// Grant the request as the signed-in user.
+//
+// POST /api/oauth/consents/{requestId}/approve
+func (c *Client) ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error) {
+	res, err := c.sendApproveOAuthConsent(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (res ApproveOAuthConsentRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("approveOAuthConsent"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/oauth/consents/{requestId}/approve"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ApproveOAuthConsentOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/oauth/consents/"
+	{
+		// Encode "requestId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "requestId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.RequestId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/approve"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, ApproveOAuthConsentOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, ApproveOAuthConsentOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeApproveOAuthConsentResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // CheckLesson invokes checkLesson operation.
 //
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -11674,6 +11836,149 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 	return result, nil
 }
 
+// DenyOAuthConsent invokes denyOAuthConsent operation.
+//
+// Refuse the request; the application is told `access_denied`.
+//
+// POST /api/oauth/consents/{requestId}/deny
+func (c *Client) DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error) {
+	res, err := c.sendDenyOAuthConsent(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (res DenyOAuthConsentRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("denyOAuthConsent"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/oauth/consents/{requestId}/deny"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DenyOAuthConsentOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/oauth/consents/"
+	{
+		// Encode "requestId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "requestId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.RequestId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/deny"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, DenyOAuthConsentOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, DenyOAuthConsentOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDenyOAuthConsentResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DownloadBook invokes downloadBook operation.
 //
 // Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -12571,6 +12876,138 @@ func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPost
 
 	stage = "DecodeResponse"
 	result, err := decodeGetNextBlogPostResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetOAuthConsent invokes getOAuthConsent operation.
+//
+// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
+// already decided.
+//
+// GET /api/oauth/consents/{requestId}
+func (c *Client) GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error) {
+	res, err := c.sendGetOAuthConsent(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (res GetOAuthConsentRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getOAuthConsent"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/oauth/consents/{requestId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetOAuthConsentOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/oauth/consents/"
+	{
+		// Encode "requestId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "requestId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.RequestId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, GetOAuthConsentOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetOAuthConsentResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

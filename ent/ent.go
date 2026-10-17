@@ -33,6 +33,10 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthauthrequest"
+	"hexletbasics/ent/oauthclient"
+	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
@@ -135,6 +139,10 @@ func checkColumn(t, c string) error {
 			landingpageqnaitem.Table:        landingpageqnaitem.ValidColumn,
 			lead.Table:                      lead.ValidColumn,
 			lessonprogress.Table:            lessonprogress.ValidColumn,
+			oauthaccesstoken.Table:          oauthaccesstoken.ValidColumn,
+			oauthauthrequest.Table:          oauthauthrequest.ValidColumn,
+			oauthclient.Table:               oauthclient.ValidColumn,
+			oauthrefreshtoken.Table:         oauthrefreshtoken.ValidColumn,
 			review.Table:                    review.ValidColumn,
 			session.Table:                   session.ValidColumn,
 			staffmember.Table:               staffmember.ValidColumn,

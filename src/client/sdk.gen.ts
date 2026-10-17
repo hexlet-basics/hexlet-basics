@@ -1426,6 +1426,51 @@ export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: O
 });
 
 /**
+ * The request the browser arrived at the consent screen with. 404 when it is unknown, expired or already decided.
+ */
+export const getOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<GetOAuthConsentData, ThrowOnError>): RequestResult<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError> => (options.client ?? client).get<GetOAuthConsentResponses, GetOAuthConsentErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
+  url: '/api/oauth/consents/{requestId}',
+  ...options
+});
+
+/**
+ * Grant the request as the signed-in user.
+ */
+export const approveOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<ApproveOAuthConsentData, ThrowOnError>): RequestResult<ApproveOAuthConsentResponses, ApproveOAuthConsentErrors, ThrowOnError> => (options.client ?? client).post<ApproveOAuthConsentResponses, ApproveOAuthConsentErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/oauth/consents/{requestId}/approve',
+  ...options
+});
+
+/**
+ * Refuse the request; the application is told `access_denied`.
+ */
+export const denyOAuthConsent = <ThrowOnError extends boolean = false>(options: Options<DenyOAuthConsentData, ThrowOnError>): RequestResult<DenyOAuthConsentResponses, DenyOAuthConsentErrors, ThrowOnError> => (options.client ?? client).post<DenyOAuthConsentResponses, DenyOAuthConsentErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/api/oauth/consents/{requestId}/deny',
+  ...options
+});
+
+/**
  * Set a new password using a reset token; signs the user in.
  */
 export const updatePassword = <ThrowOnError extends boolean = false>(options: Options<UpdatePasswordData, ThrowOnError>): RequestResult<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError> => (options.client ?? client).patch<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError>({

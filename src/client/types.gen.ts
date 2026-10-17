@@ -922,6 +922,38 @@ export type NotFoundError = {
 };
 
 /**
+ * What the consent screen shows for one authorization request.
+ */
+export type OAuthConsent = {
+  /**
+   * Name of the application asking for access.
+   */
+  clientName: string;
+  /**
+   * Host the user is sent back to after deciding.
+   */
+  redirectHost: string;
+  /**
+   * What the application asks for: OAuth scopes (`catalog:read`, `progress:read`, `admin`, `offline_access`).
+   */
+  scopes: Array<string>;
+  /**
+   * The signed-in account that would grant it.
+   */
+  accountName: string;
+};
+
+/**
+ * Where the browser goes next after the user has decided.
+ */
+export type OAuthDecision = {
+  /**
+   * Absolute URL: the authorization endpoint's callback after approving, the application's redirect URI (with `error=access_denied`) after denying.
+   */
+  redirectUrl: string;
+};
+
+/**
  * Admin resources a staff role can be granted permissions on.
  */
 export type PermissionResource = 'blog_posts' | 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
@@ -5079,6 +5111,120 @@ export type GetMyDashboardResponses = {
 };
 
 export type GetMyDashboardResponse = GetMyDashboardResponses[keyof GetMyDashboardResponses];
+
+export type GetOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}';
+};
+
+export type GetOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetOAuthConsentError = GetOAuthConsentErrors[keyof GetOAuthConsentErrors];
+
+export type GetOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthConsent;
+};
+
+export type GetOAuthConsentResponse = GetOAuthConsentResponses[keyof GetOAuthConsentResponses];
+
+export type ApproveOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}/approve';
+};
+
+export type ApproveOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ApproveOAuthConsentError = ApproveOAuthConsentErrors[keyof ApproveOAuthConsentErrors];
+
+export type ApproveOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthDecision;
+};
+
+export type ApproveOAuthConsentResponse = ApproveOAuthConsentResponses[keyof ApproveOAuthConsentResponses];
+
+export type DenyOAuthConsentData = {
+  body?: never;
+  path: {
+    requestId: string;
+  };
+  query?: never;
+  url: '/api/oauth/consents/{requestId}/deny';
+};
+
+export type DenyOAuthConsentErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type DenyOAuthConsentError = DenyOAuthConsentErrors[keyof DenyOAuthConsentErrors];
+
+export type DenyOAuthConsentResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: OAuthDecision;
+};
+
+export type DenyOAuthConsentResponse = DenyOAuthConsentResponses[keyof DenyOAuthConsentResponses];
 
 export type UpdatePasswordData = {
   body: ResetPasswordInput;
