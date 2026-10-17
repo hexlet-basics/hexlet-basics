@@ -2,12 +2,13 @@ package courseloader
 
 import (
 	"bytes"
+	"cmp"
 	"context"
 	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/samber/oops"
@@ -416,9 +417,7 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 		return "", err
 	}
 
-	sort.Slice(replacements, func(i, j int) bool {
-		return replacements[i].start < replacements[j].start
-	})
+	slices.SortFunc(replacements, func(a, b markdownImageReplacement) int { return cmp.Compare(a.start, b.start) })
 
 	var result bytes.Buffer
 	cursor := 0

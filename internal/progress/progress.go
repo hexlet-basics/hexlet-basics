@@ -9,11 +9,12 @@
 package progress
 
 import (
+	"cmp"
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
-	"sort"
+	"slices"
 	"time"
 
 	"github.com/samber/lo"
@@ -213,7 +214,7 @@ func (p *Progress) publishCourseStarted(
 	}
 	if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
 		OccurrenceCount: count,
-		Slug:            slugOf(crs),
+		Slug:            lo.FromPtr(crs.Slug),
 		Locale:          locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {
@@ -239,8 +240,8 @@ func (p *Progress) publishLessonStarted(
 	}
 	if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
 		OccurrenceCount: count,
-		LessonSlug:      slugOfLesson(open.lesson),
-		CourseSlug:      slugOf(open.course),
+		LessonSlug:      lo.FromPtr(open.lesson.Slug),
+		CourseSlug:      lo.FromPtr(open.course.Slug),
 		Locale:          locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {
@@ -464,7 +465,7 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 		})
 	}
 	for _, lessons := range byCourse {
-		sort.Slice(lessons, func(i, j int) bool { return lessons[i].position < lessons[j].position })
+		slices.SortStableFunc(lessons, func(a, b currentLesson) int { return cmp.Compare(a.position, b.position) })
 	}
 	return byCourse, nil
 }
@@ -509,7 +510,7 @@ func (p *Progress) guestCourseState(ctx context.Context, learner Learner, course
 
 	finishedIDs := make(map[int]bool, len(lessons))
 	for _, lesson := range lessons {
-		finishedIDs[lesson.lessonID] = learner.Guest.Has(slugOf(crs), lesson.slug)
+		finishedIDs[lesson.lessonID] = learner.Guest.Has(lo.FromPtr(crs.Slug), lesson.slug)
 	}
 
 	state, finishedCount := stateOf(lessons, finishedIDs)
@@ -640,22 +641,7 @@ func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int
 	if err != nil {
 		return nil, err
 	}
-	if finished := byCourse[courseID]; finished != nil {
-		return finished, nil
-	}
-	return map[int]bool{}, nil
-}
-
-func slugOf(c *ent.Course) string {
-	if c.Slug == nil {
-		return ""
-	}
-	return *c.Slug
-}
-
-func slugOfLesson(l *ent.CourseLesson) string {
-	if l.Slug == nil {
-		return ""
-	}
-	return *l.Slug
+	// A course with nothing finished has no entry; callers only index the
+	// result, and indexing a nil map reads as "not finished".
+	return byCourse[courseID], nil
 }

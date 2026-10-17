@@ -6,6 +6,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/samber/lo"
+
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
@@ -32,7 +34,7 @@ func NewPolicy(db *ent.Client) *Policy {
 // Allow reports nil when u may perform operation (an ogen operation name) in
 // locale, and ErrForbidden otherwise.
 func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation string) error {
-	if u.Admin != nil && *u.Admin {
+	if lo.FromPtr(u.Admin) {
 		return nil
 	}
 

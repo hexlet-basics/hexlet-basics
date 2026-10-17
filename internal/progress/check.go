@@ -93,8 +93,8 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		// Published for everyone, guests included: pre-signup activity is exactly
 		// what this fact exists to keep visible.
 		if err := p.publisher.Publish(ctx, tx, events.SolutionChecked{
-			LessonSlug: slugOfLesson(open.lesson),
-			CourseSlug: slugOf(open.course),
+			LessonSlug: lo.FromPtr(open.lesson.Slug),
+			CourseSlug: lo.FromPtr(open.course.Slug),
 			Locale:     check.Locale,
 			Passed:     outcome.Passed,
 			OccurredAt: occurredAt,
@@ -108,8 +108,8 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 			// is the set of Lessons they finished, so a pass that adds nothing —
 			// re-submitting one they already passed — changes nothing and writes
 			// no cookie.
-			if outcome.Passed && !check.Learner.Guest.Has(slugOf(open.course), slugOfLesson(open.lesson)) {
-				advanced := check.Learner.Guest.Record(slugOf(open.course), slugOfLesson(open.lesson))
+			if outcome.Passed && !check.Learner.Guest.Has(lo.FromPtr(open.course.Slug), lo.FromPtr(open.lesson.Slug)) {
+				advanced := check.Learner.Guest.Record(lo.FromPtr(open.course.Slug), lo.FromPtr(open.lesson.Slug))
 				result.Guest = &advanced
 			}
 			return nil
@@ -239,8 +239,8 @@ func (p *Progress) record(
 		}
 		if err := p.publisher.Publish(ctx, tx, events.LessonFinished{
 			OccurrenceCount: count,
-			LessonSlug:      slugOfLesson(open.lesson),
-			CourseSlug:      slugOf(open.course),
+			LessonSlug:      lo.FromPtr(open.lesson.Slug),
+			CourseSlug:      lo.FromPtr(open.course.Slug),
 			Locale:          check.Locale,
 			OccurredAt:      occurredAt,
 		}); err != nil {
@@ -313,7 +313,7 @@ func (p *Progress) finishCourse(
 	}
 	if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 		OccurrenceCount: count,
-		Slug:            slugOf(open.course),
+		Slug:            lo.FromPtr(open.course.Slug),
 		Locale:          check.Locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {

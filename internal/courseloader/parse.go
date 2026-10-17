@@ -22,10 +22,11 @@ package courseloader
 
 import (
 	"bytes"
+	"cmp"
 	"os"
 	"path/filepath"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -185,7 +186,7 @@ func parseModules(modulesDir string, spec *Spec, courseSlug string) ([]Module, e
 
 	// Sort by the numeric prefix so build/display order follows intent, not the
 	// filesystem's lexical directory order.
-	sort.Slice(modules, func(i, j int) bool { return modules[i].Order < modules[j].Order })
+	slices.SortStableFunc(modules, func(a, b Module) int { return cmp.Compare(a.Order, b.Order) })
 	return modules, nil
 }
 
@@ -194,7 +195,7 @@ func parseModuleInfos(moduleDir string) ([]ModuleInfo, error) {
 	if err != nil {
 		return nil, oops.Wrapf(err, "glob module infos in %s", moduleDir)
 	}
-	sort.Strings(files) // deterministic locale order
+	slices.Sort(files) // deterministic locale order
 
 	infos := make([]ModuleInfo, 0, len(files))
 	for _, file := range files {
@@ -262,7 +263,7 @@ func parseLessons(moduleDir, moduleDirName string, spec *Spec, courseSlug string
 		})
 	}
 
-	sort.Slice(lessons, func(i, j int) bool { return lessons[i].Order < lessons[j].Order })
+	slices.SortStableFunc(lessons, func(a, b Lesson) int { return cmp.Compare(a.Order, b.Order) })
 	return lessons, nil
 }
 
@@ -317,7 +318,7 @@ func parseLessonInfos(lessonDir string) ([]LessonInfo, error) {
 		})
 	}
 
-	sort.Slice(infos, func(i, j int) bool { return infos[i].Locale < infos[j].Locale })
+	slices.SortFunc(infos, func(a, b LessonInfo) int { return strings.Compare(a.Locale, b.Locale) })
 	return infos, nil
 }
 

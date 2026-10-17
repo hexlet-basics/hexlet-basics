@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	entsql "entgo.io/ent/dialect/sql"
+	"github.com/samber/lo"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
@@ -86,7 +87,7 @@ func (p *Progress) ReevaluateCompletion(
 	for _, row := range completed {
 		if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 			OccurrenceCount: counts[row.userID],
-			Slug:            slugOf(crs),
+			Slug:            lo.FromPtr(crs.Slug),
 			Locale:          locale,
 			OccurredAt:      occurredAt,
 		}); err != nil {

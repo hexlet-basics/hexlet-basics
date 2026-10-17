@@ -17,8 +17,8 @@ type pagination struct {
 // before a request reaches a handler.
 func newPagination(page, perPage api.OptInt32) pagination {
 	return pagination{
-		Page:    optOrDefault(page, 1),
-		PerPage: optOrDefault(perPage, defaultPerPage),
+		Page:    page.Or(1),
+		PerPage: perPage.Or(defaultPerPage),
 	}
 }
 
@@ -27,11 +27,3 @@ func (p pagination) Offset() int { return int((p.Page - 1) * p.PerPage) }
 
 // Limit is the SQL LIMIT for this window.
 func (p pagination) Limit() int { return int(p.PerPage) }
-
-// optOrDefault returns v when present, otherwise def.
-func optOrDefault(v api.OptInt32, def int32) int32 {
-	if n, ok := v.Get(); ok {
-		return n
-	}
-	return def
-}
