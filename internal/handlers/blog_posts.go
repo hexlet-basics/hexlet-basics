@@ -77,7 +77,7 @@ func postFieldsOf(in *api.BlogPostInput) blogposts.PostFields {
 
 // AdminPublishBlogPost makes a draft or archived post public. The legal moves
 // are the editor's: an illegal one, repeating the current state included, is a
-// 409 with a localized detail (refuseTransition).
+// 409 with a localized detail (moveState).
 func (s *Server) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (api.AdminPublishBlogPostRes, error) {
 	return moveState(ctx, int(params.ID), s.postEditor.Publish, s.getAdminBlogPost)
 }

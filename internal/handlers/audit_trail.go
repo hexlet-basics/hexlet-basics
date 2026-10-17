@@ -9,6 +9,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 )
 
@@ -32,8 +33,10 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 		return s.auditWindowProblem(ctx, err)
 	}
 
-	page, err := listPageWith(ctx, params.Page, params.PerPage,
-		query,
+	page, err := listFromWith(ctx, params.Page, params.PerPage,
+		func(ctx context.Context, window domain.Page) ([]*ent.AuditRecord, int, error) {
+			return domain.Paged(ctx, query, window)
+		},
 		func(_ context.Context, rows []*ent.AuditRecord) ([]api.AuditRecord, error) {
 			items := make([]api.AuditRecord, 0, len(rows))
 			for _, row := range rows {

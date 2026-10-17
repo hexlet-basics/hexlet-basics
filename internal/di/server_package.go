@@ -91,6 +91,7 @@ type handlerServices struct {
 	BannerStates      *banners.Editor             `do:""`
 	ReviewStates      *reviews.Editor             `do:""`
 	LandingPageStates *landingpages.Editor        `do:""`
+	CourseReadiness   *courses.Readiness          `do:""`
 	Dashboard         *dashboard.Dashboard        `do:""`
 	Sitemap           *sitemap.Sitemap            `do:""`
 	LessonReviews     *lessonreviews.Scheduler    `do:""`

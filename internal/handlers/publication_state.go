@@ -30,15 +30,10 @@ var readinessNames = map[string]localization.Message{
 	"completed":      localization.ReadinessCompleted,
 }
 
-// refuseTransition turns a transitions.Illegal into a 409 refusal naming both
-// states in the caller's language; any other error (nil included) passes
+// refuseTransitionNamed turns a transitions.Illegal into a 409 refusal naming
+// both states in the caller's language, the names from the map (the Publication
+// States' or the Course Readiness'); any other error (nil included) passes
 // through untouched.
-func refuseTransition(err error) error {
-	return refuseTransitionNamed(err, publicationStateNames)
-}
-
-// refuseTransitionNamed is refuseTransition for a state with a vocabulary of its
-// own, the Course Readiness: same 409, same message, the names from the map.
 func refuseTransitionNamed(err error, names map[string]localization.Message) error {
 	illegal, ok := transitions.IsIllegal(err)
 	if !ok {
