@@ -611,3 +611,72 @@ answers with the capability Permissions the caller holds, through the same
 `Policy.HasCapability` the operations are held to. The menu shows the audit entry
 only when it lists `audit.read`; the page itself still answers a 403 with an
 explanation, since the grant may change after the menu loaded.
+
+## Addendum: a state is not an update (#861)
+
+Settled by the blog-post slice of the state ticket; #862 (banners, reviews,
+landing pages) and #863 (Course Readiness) copy it. It meets the ADR as written;
+no departure.
+
+**The rule.** A resource changes its Publication State (GLOSSARY) only through an
+operation of its own, never through `create` or `update`. Each transition is a
+contract operation with its own write Permission, so it leaves its own Audit
+Record by operation name and, in time, becomes its own MCP tool. Publishing can be
+granted apart from archiving and from editing. The input of `create` and `update`
+carries no state (a new resource is a draft; an update never moves the state),
+while the response models keep showing it.
+
+**Naming.**
+
+- operation: `admin<Verb><Resource>`, the verb being `Publish`, `Unpublish` or
+  `Archive` (`adminPublishBlogPost`, `adminUnpublishBlogPost`,
+  `adminArchiveBlogPost`);
+- route: a sub-resource action of the resource, `POST /{id}/publish`,
+  `/{id}/unpublish`, `/{id}/archive`, like the existing `/{id}/review`; no body,
+  the answer is the resource;
+- Permission: `<resource>.<verb>` in the glossary's resource term, kind `write`
+  (`blog_posts.publish`, `blog_posts.unpublish`, `blog_posts.archive`);
+- handler: the operation names its `transitions.Transition` and runs it; the blog
+  post version is `transitionBlogPost` in `internal/handlers/blog_posts.go`.
+
+**The table is code, written once.** `internal/transitions` holds the generic
+`Transition[S]{To, From}`: `Check(current)` returns a typed `*transitions.Illegal`
+(the state it is in, the state it asked for). The handler maps it with
+`refuseTransition` (`internal/handlers/publication_state.go`) to a refusal like the
+self-protection ones: **409** with a localized RFC 9457 `detail`
+(`state.illegal_transition`, naming both states through the `state.draft`,
+`state.published` and `state.archived` messages in ru, en and es). The contract
+needed no change: 409 falls under the shared default error response. The blog post
+table:
+
+| operation | from | to |
+| --------- | ---- | -- |
+| publish   | draft, archived | published |
+| unpublish | published | draft |
+| archive   | draft, published | archived |
+
+**Repeating the current state is refused**, with the same 409, not a no-op: `To`
+is never in `From`. A client retrying after a lost answer learns the state is
+already there, and an Audit Record never claims a change that did not happen. A
+row with no state (the column is nullable in the legacy schema) counts as a draft.
+
+**Side effects.** Reading the handler and the legacy code found none to carry: the
+state column is all there is (no published-at stamp, no feed, cache or search
+index to refresh; the public list, the feeds and the sitemap query the state).
+Another resource whose publishing does more attaches it to the transition's
+handler, not to the update.
+
+**Audit.** A transition is a write operation declared in the contract, so the
+middleware records it by name, and the change is written through `UpdateOne`, so
+the audit hook records the old and the new state in `changes`. No audit code of
+its own.
+
+**Existing access is preserved.** The migration `blog_post_state_permissions`
+grants `blog_posts.publish`, `.unpublish` and `.archive` to every role holding
+`blog_posts.update` (the state was settable through the update), the way the
+review split did; no other role gains anything. A test runs it over every
+combination of holding update, an already-held publish and a bystander read. The
+fixtures grant no blog post update, so none were rewritten. The admin screen
+replaces the state select with buttons for the transitions legal from the current
+state; the frontend table mirrors the server's only to pick the buttons.
+
