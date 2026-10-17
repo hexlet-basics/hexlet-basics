@@ -11,7 +11,7 @@ import (
 	"hexletbasics/internal/staffroles"
 )
 
-// roleDetail fetches a role with its permission matrix and converts it to the
+// roleDetail fetches a role with its grants and converts it to the
 // StaffRoleDetail projection returned by create/update/get and the permission
 // endpoints. A missing id surfaces as ent's not-found error (404 centrally).
 func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, error) {
@@ -54,13 +54,13 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
-// AdminUpdateRolePermissions applies the submitted matrix and grants; the
-// staffroles module writes them in one transaction. A missing role is a 404,
+// AdminUpdateRolePermissions applies the submitted set; the staffroles
+// module writes them in one transaction. A missing role is a 404,
 // before any write, and an undeclared grant a 422.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
-	if err := s.permissions.Apply(ctx, roleID, req.Permissions, req.Grants); err != nil {
+	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
 		if errors.Is(err, staffroles.ErrUnknownPermission) {
 			return validationError("grants", err.Error()), nil
 		}

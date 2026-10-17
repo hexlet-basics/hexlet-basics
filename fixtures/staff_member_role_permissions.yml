@@ -1,4 +1,0 @@
-# Fixtures for `staff_member_role_permissions`, HAND-CURATED. Empty: every
-# resource moved to declared Permissions, which live in
-# staff_member_role_grants.yml.
-[]

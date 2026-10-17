@@ -295,29 +295,6 @@ func DescriptionContainsFold(v string) predicate.StaffRole {
 	return predicate.StaffRole(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// HasPermissions applies the HasEdge predicate on the "permissions" edge.
-func HasPermissions() predicate.StaffRole {
-	return predicate.StaffRole(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, PermissionsTable, PermissionsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasPermissionsWith applies the HasEdge predicate on the "permissions" edge with a given conditions (other predicates).
-func HasPermissionsWith(preds ...predicate.StaffRolePermission) predicate.StaffRole {
-	return predicate.StaffRole(func(s *sql.Selector) {
-		step := newPermissionsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasGrants applies the HasEdge predicate on the "grants" edge.
 func HasGrants() predicate.StaffRole {
 	return predicate.StaffRole(func(s *sql.Selector) {

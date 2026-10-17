@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds two roles; editor owns no matrix row and three grants (banners.create, banners.read, blog_posts.read).
+// staff_member_roles.yml seeds two roles; editor owns three grants (banners.create, banners.read, blog_posts.read).
 var (
 	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )
@@ -36,7 +36,7 @@ func TestAdminListRoles(t *testing.T) {
 	require.Len(t, page.Items, totalRoles)
 	assert.Equal(t, "editor", page.Items[0].Name)
 	assert.Equal(t, "moderator", page.Items[1].Name)
-	// editor owns no matrix row and three grants.
+	// editor owns three grants.
 	assert.Equal(t, int32(3), page.Items[0].PermissionsCount)
 	assert.Equal(t, int32(0), page.Items[1].PermissionsCount)
 }
@@ -49,7 +49,6 @@ func TestAdminGetRole(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Empty(t, got.Permissions)
 	assert.Equal(t, editorGrants, got.Grants)
 }
 
@@ -64,7 +63,6 @@ func TestAdminCreateRole(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.Equal(t, "support", created.Name)
-	assert.Empty(t, created.Permissions)
 	assert.Empty(t, created.Grants)
 }
 
@@ -92,8 +90,7 @@ func TestAdminUpdateRole(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor-renamed", updated.Name)
 	assert.True(t, updated.Description.Null)
-	// Permissions and grants are untouched by a role update.
-	assert.Empty(t, updated.Permissions)
+	// Grants are untouched by a role update.
 	assert.Equal(t, editorGrants, updated.Grants)
 }
 
@@ -120,35 +117,7 @@ func TestAdminGetRolePermissions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Empty(t, got.Permissions)
-}
-
-// TestAdminUpdateRolePermissions upserts the matrix: inserts a row, then
-// updates it and inserts another — matching the legacy find_or_initialize sync.
-func TestAdminUpdateRolePermissions(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	ctx := context.Background()
-
-	updated, err := h.Client.AdminUpdateRolePermissions(ctx, &api.RolePermissionsInput{
-		Permissions: []api.RolePermissionInput{
-			{Resource: api.PermissionResourceLanguages, CanIndex: true, CanCreate: true, CanUpdate: true, CanDestroy: true},
-			{Resource: api.PermissionResourceLanguageLessons, CanIndex: true, CanCreate: false, CanUpdate: false, CanDestroy: false},
-		},
-		Grants: []string{"blog_posts.read"},
-	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, h.LastStatus())
-
-	// Both rows are stored.
-	assert.Len(t, updated.Permissions, 2)
-
-	byResource := map[api.PermissionResource]api.StaffRolePermission{}
-	for _, p := range updated.Permissions {
-		byResource[p.Resource] = p
-	}
-	assert.True(t, byResource[api.PermissionResourceLanguages].CanDestroy, "full CRUD is stored")
-	assert.True(t, byResource[api.PermissionResourceLanguageLessons].CanIndex)
-	assert.False(t, byResource[api.PermissionResourceLanguageLessons].CanCreate)
+	assert.Equal(t, editorGrants, got.Grants)
 }
 
 // TestAdminUpdateRolePermissionsReplacesTheGrants checks that the grants
@@ -158,16 +127,14 @@ func TestAdminUpdateRolePermissionsReplacesTheGrants(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	updated, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
-		Permissions: []api.RolePermissionInput{},
-		Grants:      []string{"blog_posts.update", "blog_posts.create", "blog_posts.create"},
+		Grants: []string{"blog_posts.update", "blog_posts.create", "blog_posts.create"},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 	require.NoError(t, err)
 
 	assert.Equal(t, []string{"blog_posts.create", "blog_posts.update"}, updated.Grants)
 
 	again, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
-		Permissions: []api.RolePermissionInput{},
-		Grants:      []string{},
+		Grants: []string{},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 	require.NoError(t, err)
 	assert.Empty(t, again.Grants)
@@ -180,8 +147,7 @@ func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
-		Permissions: []api.RolePermissionInput{},
-		Grants:      []string{"blog_posts.publish"},
+		Grants: []string{"blog_posts.publish"},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 
 	require.Error(t, err)

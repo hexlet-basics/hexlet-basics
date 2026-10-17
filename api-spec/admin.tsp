@@ -506,19 +506,8 @@ interface AdminRoles {
   @delete @useAuth(AdminSession) @route("/{id}") @extension("x-access", "administrators") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
-/** One permission row to set on a role. */
-model RolePermissionInput {
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
-}
-
-/** The full permission matrix submitted for a role. */
+/** The Permissions submitted for a role. */
 model RolePermissionsInput {
-  permissions: RolePermissionInput[];
-
   /**
    * The declared Permissions the role holds, replacing its current set. Names
    * must come from the catalog (`GET /admin/management/permissions`).

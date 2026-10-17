@@ -33,7 +33,7 @@ alongside each.
 
 When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `GLOSSARY.md`.
 
-`GLOSSARY.md` opens with a **Naming rule** that says where the term binds: everywhere the name is ours to choose — Go and TypeScript identifiers, contract models and fields, ent schema and edge names, i18n keys, docs, tests, open issues — with three permanent exceptions (table names, column names, public URLs) and one that expires at the cutover (`PermissionResource` values). Read that section before proposing a rename; the exceptions are what stops a sweep from moving storage.
+`GLOSSARY.md` opens with a **Naming rule** that says where the term binds: everywhere the name is ours to choose — Go and TypeScript identifiers, contract models and fields, ent schema and edge names, i18n keys, docs, tests, open issues — with three permanent exceptions (table names, column names, public URLs). Read that section before proposing a rename; the exceptions are what stops a sweep from moving storage.
 
 If the concept you need isn't in the glossary yet, that's a signal — either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
 

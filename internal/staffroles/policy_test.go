@@ -25,7 +25,7 @@ var (
 	editorID = fixtures.ID(fixtures.UserStaffEditor)
 )
 
-func TestPolicyFollowsTheRolesGrantsAndMatrix(t *testing.T) {
+func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
 
@@ -127,20 +127,6 @@ func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
 
 	db.StaffRoleGrant.Create().SetRoleID(staff.RoleID).SetPermission("blog_posts.delete").ExecX(t.Context())
 	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"))
-}
-
-// The matrix no longer decides blog posts: a stale blog_posts row granting
-// everything changes nothing, because the declared Permission is the rule.
-func TestPolicyIgnoresTheMatrixForBlogPosts(t *testing.T) {
-	db := testsupport.NewClient(t)
-	bob := db.User.GetX(t.Context(), editorID)
-	staff := bob.QueryStaffMember().OnlyX(t.Context())
-	db.StaffRolePermission.Create().SetRoleID(staff.RoleID).SetResource("blog_posts").
-		SetCanIndex(true).SetCanCreate(true).SetCanUpdate(true).SetCanDestroy(true).ExecX(t.Context())
-
-	err := staffroles.NewPolicy(db).Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost")
-
-	assert.ErrorIs(t, err, staffroles.ErrForbidden)
 }
 
 // A database that fails is an error, never a quiet refusal and never a quiet

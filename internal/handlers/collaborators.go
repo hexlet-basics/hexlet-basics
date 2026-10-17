@@ -37,9 +37,9 @@ type SitemapReader interface {
 	Read(ctx context.Context) (*sitemap.Page, error)
 }
 
-// PermissionWriter writes what a role may do: its matrix rows and its grants.
+// PermissionWriter writes what a role may do: its grants.
 type PermissionWriter interface {
-	Apply(ctx context.Context, roleID int, permissions []api.RolePermissionInput, grants []string) error
+	Apply(ctx context.Context, roleID int, grants []string) error
 }
 
 // CourseLister assembles the learner's dashboard courses.

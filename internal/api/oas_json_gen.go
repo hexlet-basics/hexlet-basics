@@ -17261,54 +17261,6 @@ func (s *PermissionKind) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes PermissionResource as json.
-func (s PermissionResource) Encode(e *jx.Encoder) {
-	e.Str(string(s))
-}
-
-// Decode decodes PermissionResource from json.
-func (s *PermissionResource) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PermissionResource to nil")
-	}
-	v, err := d.StrBytes()
-	if err != nil {
-		return err
-	}
-	// Try to use constant string.
-	switch PermissionResource(v) {
-	case PermissionResourceLanguageCategories:
-		*s = PermissionResourceLanguageCategories
-	case PermissionResourceLanguageLessons:
-		*s = PermissionResourceLanguageLessons
-	case PermissionResourceLanguageLessonReviews:
-		*s = PermissionResourceLanguageLessonReviews
-	case PermissionResourceLanguageLessonMembers:
-		*s = PermissionResourceLanguageLessonMembers
-	case PermissionResourceLanguages:
-		*s = PermissionResourceLanguages
-	case PermissionResourceLanguageLandingPages:
-		*s = PermissionResourceLanguageLandingPages
-	default:
-		*s = PermissionResource(v)
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PermissionResource) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PermissionResource) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *ProblemDetails) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -18920,168 +18872,6 @@ func (s *RoleInput) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *RolePermissionInput) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *RolePermissionInput) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("resource")
-		s.Resource.Encode(e)
-	}
-	{
-		e.FieldStart("canIndex")
-		e.Bool(s.CanIndex)
-	}
-	{
-		e.FieldStart("canCreate")
-		e.Bool(s.CanCreate)
-	}
-	{
-		e.FieldStart("canUpdate")
-		e.Bool(s.CanUpdate)
-	}
-	{
-		e.FieldStart("canDestroy")
-		e.Bool(s.CanDestroy)
-	}
-}
-
-var jsonFieldsNameOfRolePermissionInput = [5]string{
-	0: "resource",
-	1: "canIndex",
-	2: "canCreate",
-	3: "canUpdate",
-	4: "canDestroy",
-}
-
-// Decode decodes RolePermissionInput from json.
-func (s *RolePermissionInput) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode RolePermissionInput to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "resource":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				if err := s.Resource.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"resource\"")
-			}
-		case "canIndex":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanIndex = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canIndex\"")
-			}
-		case "canCreate":
-			requiredBitSet[0] |= 1 << 2
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanCreate = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canCreate\"")
-			}
-		case "canUpdate":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanUpdate = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canUpdate\"")
-			}
-		case "canDestroy":
-			requiredBitSet[0] |= 1 << 4
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanDestroy = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canDestroy\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode RolePermissionInput")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00011111,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfRolePermissionInput) {
-					name = jsonFieldsNameOfRolePermissionInput[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *RolePermissionInput) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *RolePermissionInput) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
 func (s *RolePermissionsInput) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -19090,14 +18880,6 @@ func (s *RolePermissionsInput) Encode(e *jx.Encoder) {
 
 // encodeFields encodes fields.
 func (s *RolePermissionsInput) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("permissions")
-		e.ArrStart()
-		for _, elem := range s.Permissions {
-			elem.Encode(e)
-		}
-		e.ArrEnd()
-	}
 	{
 		e.FieldStart("grants")
 		e.ArrStart()
@@ -19108,9 +18890,8 @@ func (s *RolePermissionsInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfRolePermissionsInput = [2]string{
-	0: "permissions",
-	1: "grants",
+var jsonFieldsNameOfRolePermissionsInput = [1]string{
+	0: "grants",
 }
 
 // Decode decodes RolePermissionsInput from json.
@@ -19122,26 +18903,8 @@ func (s *RolePermissionsInput) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "permissions":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				s.Permissions = make([]RolePermissionInput, 0)
-				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem RolePermissionInput
-					if err := elem.Decode(d); err != nil {
-						return err
-					}
-					s.Permissions = append(s.Permissions, elem)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"permissions\"")
-			}
 		case "grants":
-			requiredBitSet[0] |= 1 << 1
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				s.Grants = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -19170,7 +18933,7 @@ func (s *RolePermissionsInput) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -20596,14 +20359,6 @@ func (s *StaffRoleDetail) encodeFields(e *jx.Encoder) {
 		s.Description.Encode(e)
 	}
 	{
-		e.FieldStart("permissions")
-		e.ArrStart()
-		for _, elem := range s.Permissions {
-			elem.Encode(e)
-		}
-		e.ArrEnd()
-	}
-	{
 		e.FieldStart("grants")
 		e.ArrStart()
 		for _, elem := range s.Grants {
@@ -20613,12 +20368,11 @@ func (s *StaffRoleDetail) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfStaffRoleDetail = [5]string{
+var jsonFieldsNameOfStaffRoleDetail = [4]string{
 	0: "id",
 	1: "name",
 	2: "description",
-	3: "permissions",
-	4: "grants",
+	3: "grants",
 }
 
 // Decode decodes StaffRoleDetail from json.
@@ -20664,26 +20418,8 @@ func (s *StaffRoleDetail) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"description\"")
 			}
-		case "permissions":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				s.Permissions = make([]StaffRolePermission, 0)
-				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem StaffRolePermission
-					if err := elem.Decode(d); err != nil {
-						return err
-					}
-					s.Permissions = append(s.Permissions, elem)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"permissions\"")
-			}
 		case "grants":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				s.Grants = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -20712,7 +20448,7 @@ func (s *StaffRoleDetail) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011111,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -20911,202 +20647,6 @@ func (s *StaffRolePage) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *StaffRolePage) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *StaffRolePermission) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *StaffRolePermission) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("id")
-		e.Int32(s.ID)
-	}
-	{
-		e.FieldStart("roleId")
-		e.Int32(s.RoleId)
-	}
-	{
-		e.FieldStart("resource")
-		s.Resource.Encode(e)
-	}
-	{
-		e.FieldStart("canIndex")
-		e.Bool(s.CanIndex)
-	}
-	{
-		e.FieldStart("canCreate")
-		e.Bool(s.CanCreate)
-	}
-	{
-		e.FieldStart("canUpdate")
-		e.Bool(s.CanUpdate)
-	}
-	{
-		e.FieldStart("canDestroy")
-		e.Bool(s.CanDestroy)
-	}
-}
-
-var jsonFieldsNameOfStaffRolePermission = [7]string{
-	0: "id",
-	1: "roleId",
-	2: "resource",
-	3: "canIndex",
-	4: "canCreate",
-	5: "canUpdate",
-	6: "canDestroy",
-}
-
-// Decode decodes StaffRolePermission from json.
-func (s *StaffRolePermission) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode StaffRolePermission to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Int32()
-				s.ID = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"id\"")
-			}
-		case "roleId":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Int32()
-				s.RoleId = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"roleId\"")
-			}
-		case "resource":
-			requiredBitSet[0] |= 1 << 2
-			if err := func() error {
-				if err := s.Resource.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"resource\"")
-			}
-		case "canIndex":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanIndex = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canIndex\"")
-			}
-		case "canCreate":
-			requiredBitSet[0] |= 1 << 4
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanCreate = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canCreate\"")
-			}
-		case "canUpdate":
-			requiredBitSet[0] |= 1 << 5
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanUpdate = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canUpdate\"")
-			}
-		case "canDestroy":
-			requiredBitSet[0] |= 1 << 6
-			if err := func() error {
-				v, err := d.Bool()
-				s.CanDestroy = bool(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"canDestroy\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode StaffRolePermission")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b01111111,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfStaffRolePermission) {
-					name = jsonFieldsNameOfStaffRolePermission[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *StaffRolePermission) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *StaffRolePermission) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

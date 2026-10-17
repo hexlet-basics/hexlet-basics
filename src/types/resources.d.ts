@@ -401,10 +401,6 @@ export default interface Resources {
         }
       },
       "permissions": {
-        "canCreate": "Создание",
-        "canDestroy": "Удаление",
-        "canIndex": "Просмотр",
-        "canUpdate": "Изменение",
         "kindRead": "Чтение",
         "kindWrite": "Запись",
         "title": "Права"

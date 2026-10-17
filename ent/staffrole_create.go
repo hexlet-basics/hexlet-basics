@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/ent/staffrolepermission"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -70,21 +69,6 @@ func (_c *StaffRoleCreate) SetNillableDescription(v *string) *StaffRoleCreate {
 		_c.SetDescription(*v)
 	}
 	return _c
-}
-
-// AddPermissionIDs adds the "permissions" edge to the StaffRolePermission entity by IDs.
-func (_c *StaffRoleCreate) AddPermissionIDs(ids ...int) *StaffRoleCreate {
-	_c.mutation.AddPermissionIDs(ids...)
-	return _c
-}
-
-// AddPermissions adds the "permissions" edges to the StaffRolePermission entity.
-func (_c *StaffRoleCreate) AddPermissions(v ...*StaffRolePermission) *StaffRoleCreate {
-	ids := make([]int, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddPermissionIDs(ids...)
 }
 
 // AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by IDs.
@@ -200,22 +184,6 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(staffrole.FieldDescription, field.TypeString, value)
 		_node.Description = &value
-	}
-	if nodes := _c.mutation.PermissionsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   staffrole.PermissionsTable,
-			Columns: []string{staffrole.PermissionsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.GrantsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

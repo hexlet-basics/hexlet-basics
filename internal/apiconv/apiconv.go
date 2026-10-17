@@ -43,7 +43,6 @@ import (
 // goverter:extend NilReviewStateFromPtr
 // goverter:extend NilReviewLocaleFromPtr
 // goverter:extend NilLandingPageStateFromPtr
-// goverter:extend PermissionResourceFromString
 // goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend NilEnrollmentStateFromPtr
@@ -176,20 +175,16 @@ type Converter interface {
 	ToCourseLandingPages(source []*ent.CourseLandingPage) []api.CourseLandingPage
 
 	// StaffRole is the list projection: permissionsCount is the size of the
-	// loaded permissions edge.
+	// loaded grants edge.
 	// goverter:map . PermissionsCount | staffRolePermissionsCount
 	ToStaffRole(source *ent.StaffRole) api.StaffRole
 
 	ToStaffRoles(source []*ent.StaffRole) []api.StaffRole
 
-	// StaffRoleDetail carries the full permission matrix (loaded via
-	// WithPermissions) and the declared Permissions it holds (WithGrants).
-	// goverter:map Edges.Permissions Permissions
+	// StaffRoleDetail carries the Permissions the role holds (loaded via
+	// WithGrants).
 	// goverter:map Edges.Grants Grants | grantNames
 	ToStaffRoleDetail(source *ent.StaffRole) api.StaffRoleDetail
-
-	// goverter:map RoleID RoleId
-	ToStaffRolePermission(source *ent.StaffRolePermission) api.StaffRolePermission
 
 	// StaffMember embeds the full user and role (loaded via WithUser/WithRole);
 	// allowedLocales is the native pg array bridged by LocalesFromPq.
@@ -759,12 +754,6 @@ func courseDuration(c *ent.Course) int32 {
 	return int32(c.LessonsCount * 15 / 60)
 }
 
-// PermissionResourceFromString bridges the ent resource column (a plain string)
-// to the api's PermissionResource enum.
-func PermissionResourceFromString(v string) api.PermissionResource {
-	return api.PermissionResource(v)
-}
-
 // LocalesFromPq bridges the native pg text-array column to the api's plain
 // []string (pq.StringArray is a []string, but goverter needs the named-type
 // conversion spelled out).
@@ -772,11 +761,10 @@ func LocalesFromPq(v pq.StringArray) []string {
 	return []string(v)
 }
 
-// staffRolePermissionsCount is the size of the role's loaded permissions edge,
-// mirroring StaffRoleResource#permissions_count, plus its declared grants: a
-// role holding only grants must not read as having none.
+// staffRolePermissionsCount is the number of Permissions the role holds, its
+// loaded grants edge: a role holding none must read as having none.
 func staffRolePermissionsCount(r *ent.StaffRole) int32 {
-	return int32(len(r.Edges.Permissions) + len(r.Edges.Grants))
+	return int32(len(r.Edges.Grants))
 }
 
 // grantNames lists the Permissions a role holds, by name and in a stable order.

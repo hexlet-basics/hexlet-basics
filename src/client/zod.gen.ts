@@ -874,21 +874,9 @@ export const zRoleInput = z.object({
 });
 
 /**
- * One permission row to set on a role.
- */
-export const zRolePermissionInput = z.object({
-  resource: zPermissionResource,
-  canIndex: z.boolean(),
-  canCreate: z.boolean(),
-  canUpdate: z.boolean(),
-  canDestroy: z.boolean()
-});
-
-/**
- * The full permission matrix submitted for a role.
+ * The Permissions submitted for a role.
  */
 export const zRolePermissionsInput = z.object({
-  permissions: z.array(zRolePermissionInput),
   grants: z.array(z.string())
 });
 
@@ -963,6 +951,16 @@ export const zStaffRole = z.object({
 });
 
 /**
+ * A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).
+ */
+export const zStaffRoleDetail = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string(),
+  description: z.string().nullable(),
+  grants: z.array(z.string())
+});
+
+/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -971,30 +969,6 @@ export const zStaffRolePage = z.object({
   total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * One resource's permission bits for a role (legacy: `StaffRolePermission`).
- */
-export const zStaffRolePermission = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  roleId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  resource: zPermissionResource,
-  canIndex: z.boolean(),
-  canCreate: z.boolean(),
-  canUpdate: z.boolean(),
-  canDestroy: z.boolean()
-});
-
-/**
- * A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
- */
-export const zStaffRoleDetail = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  name: z.string(),
-  description: z.string().nullable(),
-  permissions: z.array(zStaffRolePermission),
-  grants: z.array(z.string())
 });
 
 /**

@@ -158,6 +158,44 @@ Departures from the text above: none. The locale is still the `Accept-Language`
 match, not a request argument; ADR-0018's locale argument is not part of this
 slice.
 
+## Addendum: the matrix is retired
+
+Settled by the slice that moved every remaining resource, after blog posts.
+
+**What moved.** Banners, reviews, leads, messages, course categories, courses,
+course lessons, course lesson reviews, lesson progress and course landing pages
+declare their Permissions the same way as blog posts, named with the
+[GLOSSARY](../../GLOSSARY.md) terms (`courses.read`, `course_categories.update`,
+`lesson_progress.read`, `course_landing_pages.create`); the legacy
+`language_*` values stop being identifiers. Actions follow the old bits: `read`
+(list, get), `create`, `update` (update and every operation the old policy let
+`can_update` open, which is the review of a course or a lesson) and `delete`. A
+bit that opened no operation (a delete on courses, a create on lessons) has no
+Permission. One migration per resource group turns each bit into the grant for
+exactly those operations, and a test runs every migration over each combination
+of a resource's four bits and asks the policy about each operation, so nobody
+gains or loses one.
+
+**Operations nothing delegates yet.** An admin operation that declares no
+Permission declares an `x-access` extension instead, `administrators` for users,
+staff members, roles and role permissions, question-and-answer items, course
+versions and the permissions catalog, `any-staff` for the attachment upload. It is
+read from the same parsed contract as `x-permission`, so it is visible in
+`openapi.yaml`, and no Go table holds it. `TestEveryAdminOperationIsClassified`
+fails for an operation that declares neither; declaring both is a parse error.
+Replacing the marker on an operation with a Permission is a one-line change in the
+TypeSpec, which is how the next slice makes these operations delegable.
+
+**Departures from the text above: none, with one decision.** The old
+create/read/update/delete storage is dropped, not kept empty: the table
+`staff_member_role_permissions`, the ent entity, the `PermissionResource` enum, the
+matrix fields of the roles contract and the matrix rows of the roles screen are
+gone, and `PUT /admin/management/role_permissions/{roleId}` takes only `grants`.
+Leaving an empty copy would invite a second place to hold a right. Rows the
+migrations did not convert named a resource no operation used, so they carried no
+access. The migration tests recreate the legacy table inside their own transaction
+to feed the conversions.
+
 ## Addendum: how an Audit Record joins the business transaction
 
 Settled by the audit tracer slice, blog posts. It closes the "Not designed yet"

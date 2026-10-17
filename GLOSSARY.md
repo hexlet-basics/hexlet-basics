@@ -21,11 +21,12 @@ renames the Go identifier and leaves storage untouched, so ent names follow the
 glossary like everything else. The legacy identifier behind each term is listed
 in [Storage mapping](#storage-mapping).
 
-One exception is temporary rather than permanent: the **values** of
-`PermissionResource` (`"language_lesson_members"`, `"languages"`, …) are rows in
-`staff_member_role_permissions`. ADR-0017 replaces that matrix with the
-Permission catalog, and the cutover migration (ADR-0002) carries the existing
-rows into it, so these legacy names stop being identifiers there.
+A fourth exception existed for a while and is gone: the **values** of
+`PermissionResource` (`"language_lesson_members"`, `"languages"`, …) were rows in
+the create/read/update/delete matrix. ADR-0017 replaced that matrix with
+Permissions named with the terms (`courses.read`, `lesson_progress.read`), and
+migrations carried the existing rows into them, so the legacy names are no
+longer identifiers anywhere.
 
 Terms that reach a learner or an administrator carry their **ru** and **es**
 wording, so the same concept is not translated two ways on two screens. Terms
@@ -232,4 +233,4 @@ schema does not exist yet.
 | Course Lesson Review | `language_lesson_reviews` | `language_lesson_version_id` |
 | Staff Member | `staff_members` | — |
 | Staff Role | `staff_member_roles` | — |
-| Permission | `staff_member_role_permissions` | per-resource `can_*` bits, replaced by the Permission catalog (ADR-0017) |
+| Permission | `staff_member_role_grants` | one row per Permission a Staff Role holds (ADR-0017); the former `staff_member_role_permissions` bit matrix is dropped |

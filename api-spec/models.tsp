@@ -82,20 +82,6 @@ enum ReviewState {
   archived: "archived",
 }
 
-/**
- * Admin resources a staff role can be granted permissions on through the
- * create/read/update/delete matrix. Resources that moved to declared
- * Permissions (ADR-0017) leave this list as they move.
- */
-enum PermissionResource {
-  courseCategories: "language_categories",
-  courseLessons: "language_lessons",
-  courseLessonReviews: "language_lesson_reviews",
-  lessonProgress: "language_lesson_members",
-  courses: "languages",
-  courseLandingPages: "language_landing_pages",
-}
-
 // ---- Course core ----------------------------------------------------------
 
 /** A build/version of a course's exercises (legacy `LanguageVersion`). */
@@ -414,12 +400,11 @@ model StaffRole {
   createdAt: utcDateTime;
 }
 
-/** A staff role with its full permission matrix (legacy: `StaffRoleCrud`). */
+/** A staff role with the Permissions it holds (legacy: `StaffRoleCrud`). */
 model StaffRoleDetail {
   id: int32;
   name: string;
   description: string | null;
-  permissions: StaffRolePermission[];
 
   /** Names of the declared Permissions the role holds (see `Permission`). */
   grants: string[];
@@ -439,17 +424,6 @@ enum PermissionKind {
 model Permission {
   name: string;
   kind: PermissionKind;
-}
-
-/** One resource's permission bits for a role (legacy: `StaffRolePermission`). */
-model StaffRolePermission {
-  id: int32;
-  roleId: int32;
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
 }
 
 /** A staff member: a user bound to a role (legacy: `StaffMember`). */
