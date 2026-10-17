@@ -193,3 +193,123 @@ What the first implementation settled, and where it stops short of the text abov
   `MCP_TOOL_TIMEOUT`, `MCP_RATE_WINDOW` and `MCP_RATE_{USER,CLIENT}_{CATALOGUE,
   PERSONAL,WRITE}`, all with defaults; a value below its minimum is a
   configuration error when `MCP_ENABLED` is on.
+
+## Addendum: admin tools and the one checkpoint (#854)
+
+Settled by the first admin-tool slice (banners: `adminListBanners`,
+`adminUpdateBanner`), which every later admin ticket inherits. It meets ADR-0017
+and ADR-0018 as written: one checkpoint, identical to the HTTP check. One schema
+change came with it (the `token_id` column type, below).
+
+**How a tool call reaches an operation.** It does not. A tool call becomes an
+HTTP request synthesized from the arguments and is served, in process, by the
+generated `api.Server` that serves the website (`handlers.NewAdminDispatcher`:
+that server behind the locale middleware and `WithClientIP`, without `Identify`
+and `Trace`, which read the session cookie). So the security handler, body
+decoding and validation, the audit middleware (transaction, Audit Record,
+`failed`) and the central error mapping are the code an HTTP call runs, not a
+copy of it. `internal/mcpserver` is given only that `http.Handler`
+(`Deps.API`); it holds no `api.Handler`, no ent client and does not import
+`internal/handlers`. A test (`TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer`)
+fails if it starts to, and `TestNoRegisteredAdminToolRunsWithoutTheCheck` calls
+every registered admin tool as a caller whose role holds nothing, with arguments
+generated from the tool's own schema, and requires a refusal, no `succeeded`
+Audit Record and no changed row.
+
+**The principal.** The tool puts an `mcpserver.Principal` (user, the token's
+Scopes, the locale argument, a per-call nonce) in the request context.
+`AuthHandler.HandleAdminSession`, the one gate of every admin operation, takes
+the MCP branch (`authorizeMCP`) when the context holds one. A context value
+cannot arrive over HTTP, so no header or cookie can claim to be a Principal
+(`TestBearerTokenIsNotAcceptedOnAnyAPIOperation` and
+`TestSessionPlaceholderOpensNothingOverHTTP` pin it). The branch loads the user
+from the database and judges, on every call and in this order: the `admin`
+Scope; `Policy.Allow(user, locale, operation)`, the call the cookie branch makes;
+`Policy.HasCapability` for `permissions.MCPCapability(operation)`, which is
+`mcp.write` for an admin write and `mcp.read` for the rest, from the contract's
+declared kind (never the administrator flag, ADR-0017). A refusal is the HTTP
+refusal: an Audit Record `forbidden` (channel `mcp`) and a 403, before the body
+is decoded. Nothing is cached, so removing a grant applies on the next call.
+The tool does not check the Scope or the capability itself: a second place that
+refuses would refuse without recording.
+
+**Two things the generated code forces, and how they are kept harmless.** The
+generated server will not call a security handler without a `JWT` cookie, and a
+write also needs the `X-XSRF-TOKEN` header. The synthesized request therefore
+carries a placeholder cookie (`mcp-in-process`) and the Principal's nonce as the
+XSRF header, and `authorizeMCP` stores the nonce as the session id, so the
+second scheme passes by the same comparison the website's requests pass. Outside
+a tool call the placeholder is a JWT that does not parse (401). This is the
+single mechanism that departs from "no cookie on MCP"; it opens nothing.
+
+**Locale.** `locale` is a required argument of every admin tool, validated
+against `en` and `ru` (the locales staff work in; the website's matcher would
+otherwise fall back to English for a language it does not know, judging a call
+in a locale nobody named). It is sent as the request's `Accept-Language`, which
+is what the HTTP check reads, and the Principal carries it too: `authorizeMCP`
+refuses when the locale the generated server resolved differs. The connection's
+own `Accept-Language` is not read (a test sends `en` there and `ru` as the
+argument). The request body is nested under `body` in the input, not merged with
+the parameters, because a body field can collide with a call argument (a banner
+has a `locale` of its own).
+
+**The registry.** `adminOperations` in `internal/mcpserver/admin.go` is the
+allowlist of operationIds, in code. Building the server fails for a name that is
+not in the contract or does not require the `AdminSession` scheme (which would
+skip the checkpoint). Tool name is the operationId; the input schema is the
+operation's path and query parameters (references to `components/parameters`
+resolved) plus `locale` and `body`; the output schema is the first 2xx JSON
+response, wrapped under `result` only when it is not an object. A write
+carries `destructiveHint: false`, a delete `true`; GET is read-only. A non-2xx
+answer is a tool error whose text is `HTTP <status>: <problem document>`, byte
+for byte what an HTTP caller receives (`TestHTTPAndMCPBehaveTheSameForTheSameOperation`).
+Adding a tool is adding its operationId; #855 lists the rest. Operations that
+declare `x-unit-of-work: standalone` (the upload) need nothing more: the
+middleware already handles them.
+
+**Audit Record, Connected App and token.** The dispatcher sets
+`audit.WithSource` before dispatch, so `succeeded`, `forbidden` and `failed`
+records alike carry channel `mcp`. The Connected App is the id of the
+`oauth_clients` row behind the token's `client_id` (`oauthserver.Token.ConnectedAppID`,
+filled by `VerifyAccessToken`, which also refuses a token whose client row is
+gone). The token is the access token's own id (`oauth_access_tokens.id`, not the
+bearer, which is that id encrypted). That id is a random string and the column
+was reserved as `bigint`, so migration `audit_records_token_id_text` changes
+`audit_records.token_id` to text and `audit.Source.TokenID` to `*string`
+(nothing had ever written it). The request's user agent, `X-Forwarded-For`,
+`X-Real-IP` and `X-Request-ID` are copied from the `/mcp` request to the
+synthesized one, so a record keeps the client's agent and address as an HTTP
+record does.
+
+**Test seam.** `testsupport.NewOAuth` now builds the generated server with the
+production audit middleware and hands `NewAdminDispatcher` of it to the MCP
+server, and gains `Grant`, `RevokeGrant` and `Records` (documented in
+`internal/testsupport/mcp.go`). A tool test is: grant the role what the case
+needs, `Connect` with the Scope, call the tool, assert on the result, the rows
+and `Records`.
+
+**Not done here, for the next tickets.** `mcp.manage` (ADR-0017: operations on
+users, staff and roles) is not applied by `MCPCapability`; the operations that
+need it must not be added to the allowlist until it is (#855 decides how it is
+declared in the contract, and the rule must go in `MCPCapability`, the one
+place). Upload (#856) takes its bytes as base64, which the synthesizer does not
+build yet (the body here is JSON). The page-size cap of #851 is not applied to
+admin lists, which keep the contract's own `perPage` maximum of 100.
+
+**Limits (after #851).** Admin tools share the limiter, timeout and response size
+limit of `addTool`, but are registered through their own handler, because their
+Scope is judged by the security handler (so a refusal is recorded) and not by
+`admit`. `Server.spend` is the rate-limit half of `admit`, used by both. An admin
+write is `ClassWrite`; every admin read is `ClassPersonal` (stricter than the
+public catalogue: it can show staff-only and personal data), whatever its
+operation, so no list of "personal" operations is kept in code. A call refused for
+the limit never reaches the checkpoint and leaves no Audit Record.
+
+**One `WithMiddleware` call.** ogen's `api.WithMiddleware` replaces the previous
+option, so the audit middleware and the personal-data read middleware are passed
+in a single call (`di`, `testsupport.NewHarness` and `testsupport.NewOAuth`). A
+dispatcher is never given a server of its own, so a call by tool shows the effect
+of both (`TestDispatchedCallsPassBothMiddlewares`: a write leaves its Audit
+Record, a read of users publishes its read fact, both with channel `mcp`, the
+Connected App and the token). The read fact's `TokenID` is a string for the same
+reason as the column.

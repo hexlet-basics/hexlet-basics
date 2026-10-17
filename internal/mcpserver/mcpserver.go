@@ -72,10 +72,23 @@ type Catalogue interface {
 	GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error)
 }
 
+// Token info keys the verifier fills and the admin tools read into an Audit
+// Record's Source.
+const (
+	extraConnectedAppID = "connected_app_id"
+	extraTokenID        = "token_id"
+)
+
 // Deps are the collaborators of the Server.
 type Deps struct {
 	Verifier  Verifier
 	Catalogue Catalogue
+	// API serves an admin tool call: the generated api.Server, behind the
+	// locale middleware, so a call runs the code of the HTTP operation it mirrors,
+	// security handler and audit middleware included (ADR-0018 addendum). It is an
+	// http.Handler on purpose: it gives the package no way to reach an operation
+	// without the checkpoint. Without it no admin tool is offered.
+	API http.Handler
 	// Issuer is the authorization server's origin, advertised in the resource
 	// metadata so a client that was refused knows where to sign in.
 	Issuer string
@@ -108,6 +121,11 @@ func New(deps Deps) (*Server, error) {
 	mcpServer := mcp.NewServer(&mcp.Implementation{Name: "hexlet-basics", Title: "Hexlet Basics"}, nil)
 	if err := s.addCatalogueTools(mcpServer); err != nil {
 		return nil, err
+	}
+	if deps.API != nil {
+		if err := s.addAdminTools(mcpServer); err != nil {
+			return nil, err
+		}
 	}
 
 	// Stateless: one request, one response, no sessions and no long-lived
@@ -169,7 +187,11 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 	return &auth.TokenInfo{
 		Scopes: token.Scopes,
 		UserID: strconv.Itoa(token.UserID),
-		Extra:  map[string]any{"client_id": token.ClientID},
+		Extra: map[string]any{
+			"client_id":         token.ClientID,
+			extraConnectedAppID: token.ConnectedAppID,
+			extraTokenID:        token.ID,
+		},
 	}, nil
 }
 

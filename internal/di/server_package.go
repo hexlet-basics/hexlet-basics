@@ -683,10 +683,21 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		apiServer, err := do.Invoke[*api.Server](i)
+		if err != nil {
+			return nil, err
+		}
+		translator, err := do.Invoke[*localization.Translator](i)
+		if err != nil {
+			return nil, err
+		}
 		return mcpserver.New(mcpserver.Deps{
 			Verifier:  oauthServer,
 			Catalogue: handler,
-			Issuer:    cfg.OAuth.Issuer,
+			// The generated server with its security handler and audit
+			// middleware: the one checkpoint of every admin tool (ADR-0018).
+			API:    handlers.NewAdminDispatcher(apiServer, translator),
+			Issuer: cfg.OAuth.Issuer,
 			Limits: mcpserver.Limits{
 				MaxPageSize:      cfg.MCP.MaxPageSize,
 				MaxResponseBytes: cfg.MCP.MaxResponseBytes,

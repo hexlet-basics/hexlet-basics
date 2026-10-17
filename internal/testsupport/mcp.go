@@ -6,6 +6,10 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/stretchr/testify/require"
+
+	"hexletbasics/ent"
+	"hexletbasics/ent/auditrecord"
+	"hexletbasics/ent/staffrolegrant"
 )
 
 // MCPEndpoint is the canonical MCP URL of the test server: the resource every
@@ -33,6 +37,17 @@ const MCPEndpoint = OAuthIssuer + "/mcp"
 // token for another audience): it is an http.Client whose transport serves the
 // request through the router without a socket, like the other helpers here.
 // Database state is the test's rolled-back transaction (o.DB), as everywhere.
+//
+// Admin tools (#854) are reachable through the same session: NewOAuth builds the
+// generated server with the production audit middleware and hands it to the MCP
+// server as its dispatcher, so a tool call runs the security handler, the
+// transaction and the Audit Record exactly as in the running server. The
+// fixtures seed bob (1002) as an editor of role 9001 with banners.read and
+// banners.create in ru and en, and alice (1001) as an administrator without a
+// Staff Role. A test sets up what it needs through Grant and RevokeGrant (a role's
+// grants, which the check reads from the database on every call), asserts on
+// Records (the Audit Records an operation left) and on the rows themselves, and
+// connects with the Scope under test: Connect(bob, oauthserver.ScopeAdmin).
 //
 // Only what NewOAuth wires is reachable: the router is built with the handler
 // dependencies the OAuth flow needs, so an operation or tool that reads
@@ -91,3 +106,37 @@ func (o *OAuth) MCPConnect(bearer string, mutate ...func(*http.Request)) (*mcp.C
 type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+// Grant gives a Staff Role the Permissions (operation Permissions or the mcp.*
+// capabilities), as the roles screen would. Granting one the role already has is
+// not an error.
+func (o *OAuth) Grant(roleID int, permissions ...string) {
+	o.t.Helper()
+	for _, p := range permissions {
+		held, err := o.DB.StaffRoleGrant.Query().
+			Where(staffrolegrant.RoleID(roleID), staffrolegrant.Permission(p)).Exist(o.t.Context())
+		require.NoError(o.t, err)
+		if held {
+			continue
+		}
+		require.NoError(o.t, o.DB.StaffRoleGrant.Create().SetRoleID(roleID).SetPermission(p).Exec(o.t.Context()))
+	}
+}
+
+// RevokeGrant takes the Permissions away from a Staff Role.
+func (o *OAuth) RevokeGrant(roleID int, permissions ...string) {
+	o.t.Helper()
+	_, err := o.DB.StaffRoleGrant.Delete().
+		Where(staffrolegrant.RoleID(roleID), staffrolegrant.PermissionIn(permissions...)).Exec(o.t.Context())
+	require.NoError(o.t, err)
+}
+
+// Records are the Audit Records an operation (an ogen name, AdminUpdateBanner)
+// left, oldest first.
+func (o *OAuth) Records(operation string) []*ent.AuditRecord {
+	o.t.Helper()
+	rows, err := o.DB.AuditRecord.Query().
+		Where(auditrecord.Operation(operation)).Order(ent.Asc(auditrecord.FieldID)).All(o.t.Context())
+	require.NoError(o.t, err)
+	return rows
+}

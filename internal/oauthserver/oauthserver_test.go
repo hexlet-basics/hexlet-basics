@@ -111,6 +111,21 @@ func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 	assert.ElementsMatch(t, []string{"catalog:read", "progress:read", "offline_access"}, granted.Scopes)
 }
 
+func TestVerificationNamesTheConnectedAppByItsRowAndRefusesATokenOfARemovedClient(t *testing.T) {
+	o := testsupport.NewOAuth(t)
+	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	app := o.DB.OAuthClient.Query().OnlyX(t.Context())
+
+	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
+	require.NoError(t, err)
+	assert.Equal(t, app.ID, verified.ConnectedAppID)
+	assert.NotEmpty(t, verified.ID)
+
+	o.DB.OAuthClient.DeleteOne(app).ExecX(t.Context())
+	_, err = o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
+	require.ErrorIs(t, err, oauthserver.ErrInvalidToken)
+}
+
 func TestDenyingTheConsentReturnsAccessDeniedToTheClient(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	flow := o.Start(alice, oauthserver.ScopeCatalogRead)

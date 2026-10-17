@@ -10,6 +10,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/staffroles"
 )
@@ -139,6 +140,15 @@ func (s *Security) HandleAdminSession(
 	operation api.OperationName,
 	_ api.AdminSession,
 ) (context.Context, error) {
+	// An MCP tool call carries a Principal in its context (never in a header or
+	// a cookie) and takes the branch with the capability check; every other call
+	// is a session. The session cookie value of a tool call's in-process request
+	// is a placeholder nothing reads: this branch is taken before the session is
+	// consulted, and the same request sent over HTTP has no Principal and finds
+	// no session under the placeholder.
+	if principal, ok := mcpserver.PrincipalFrom(ctx); ok {
+		return s.authorizeMCP(ctx, operation, principal)
+	}
 	ctx, err := s.attach(ctx)
 	if err != nil {
 		return ctx, err

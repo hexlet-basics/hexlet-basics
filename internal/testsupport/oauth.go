@@ -54,6 +54,9 @@ type OAuth struct {
 	DB *ent.Client
 	// Server is the authorization server, for VerifyAccessToken.
 	Server *oauthserver.Server
+	// Services holds the outbox, for PublishedEvents and Deliver (a read of
+	// personal data over MCP leaves a fact there, as over HTTP).
+	Services *Services
 	// Router is the production router; mounted OAuth endpoints and the generated
 	// API (the consent operations) are both reachable through it.
 	Router http.Handler
@@ -121,6 +124,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
 	services := NewServices(t, tx, transactor)
+	o.Services = services
 	mocks := NewMocks()
 
 	var serverOpts []oauthserver.Option
@@ -159,6 +163,13 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		handler,
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
+		// The production unit of work, so an admin write over MCP leaves its Audit
+		// Record here as it does in the running server.
+		// One call: a second WithMiddleware would replace the first.
+		api.WithMiddleware(
+			handlers.NewAuditMiddleware(transactor, translator, errorHandler),
+			handlers.NewPersonalDataReadMiddleware(services.Events, translator, errorHandler),
+		),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
@@ -169,7 +180,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	if limits.Now == nil {
 		limits.Now = func() time.Time { return o.now }
 	}
-	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, Issuer: OAuthIssuer, Limits: limits})
+	mcpEndpoint, err := mcpserver.New(mcpserver.Deps{Verifier: server, Catalogue: handler, API: handlers.NewAdminDispatcher(apiServer, translator), Issuer: OAuthIssuer, Limits: limits})
 	require.NoError(t, err)
 	// The attachment and webhook handlers are not under test; their routes are
 	// registered but never requested.

@@ -9,6 +9,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/oauthaccesstoken"
+	"hexletbasics/ent/oauthclient"
 )
 
 // ErrInvalidToken is the one answer for every token that must not be accepted:
@@ -20,8 +21,12 @@ var ErrInvalidToken = errors.New("oauthserver: invalid access token")
 type Token struct {
 	ID       string
 	ClientID string
-	UserID   int
-	Scopes   []string
+	// ConnectedAppID is the id of the oauth_clients row behind ClientID: the
+	// Connected App the Audit Record names (ADR-0018). The public client_id is
+	// the application's own label, the row id is what the trail keeps.
+	ConnectedAppID int
+	UserID         int
+	Scopes         []string
 	// Audience is the resource the token is bound to: the canonical MCP URL. A
 	// resource server must check that it is itself in it. It is not stored per
 	// token, since this server has exactly one resource and admits no other
@@ -52,7 +57,19 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 	if err != nil {
 		return Token{}, err
 	}
-	return Token{ID: row.ID, ClientID: row.ClientID, UserID: userID, Scopes: row.Scopes, Audience: []string{s.resource}}, nil
+	// A token whose client was removed is no longer a Connected App's: refused,
+	// the same as a revoked token, rather than recorded against nothing.
+	app, err := s.storage.db.OAuthClient.Query().Where(oauthclient.ClientID(row.ClientID)).OnlyID(ctx)
+	if ent.IsNotFound(err) {
+		return Token{}, ErrInvalidToken
+	}
+	if err != nil {
+		return Token{}, fmt.Errorf("look up connected app: %w", err)
+	}
+	return Token{
+		ID: row.ID, ClientID: row.ClientID, ConnectedAppID: app, UserID: userID,
+		Scopes: row.Scopes, Audience: []string{s.resource},
+	}, nil
 }
 
 // liveAccessToken loads an access token that is on file, unexpired and issued to
