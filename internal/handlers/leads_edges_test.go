@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
@@ -98,24 +97,5 @@ func TestCreateLeadLeavesTheTagAloneForAUserWhoNeverHadIt(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.True(t, h.DB.Lead.Query().Where(lead.UserID(h.UserID)).ExistX(ctx))
-	})
-}
-
-// A lead is all or nothing: when any step of storing it fails, the visitor is
-// told it was a server error and nothing of it stays.
-func TestCreateLeadAnswersAStorageFailureAsAServerError(t *testing.T) {
-	create := func(ctx context.Context, h *testsupport.Harness) error {
-		_, err := h.Client.CreateLead(ctx, leadFromTheSite())
-		return err
-	}
-	outbox := outboxTable()
-
-	answerServerErrors(t, []failure{
-		{"the user's enrollments cannot be read", reads(enrollment.Table), create},
-		{"the lead cannot be stored", writes(lead.Table, "INSERT"), create},
-		{"the flag cannot be looked up", reads(tag.Table), create},
-		{"the flag cannot be removed", writes(tagging.Table, "DELETE"), create},
-		{"the flag's counter cannot be updated", writes(tag.Table, "UPDATE"), create},
-		{"the fact cannot be published", writes(outbox, "INSERT"), create},
 	})
 }

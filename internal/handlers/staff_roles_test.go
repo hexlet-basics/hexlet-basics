@@ -9,13 +9,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 // staff_member_roles.yml seeds two roles; editor owns two permission rows.
-const (
+var (
 	totalRoles   = 2
-	roleEditorID = 9001
+	roleEditorID = fixtures.ID32("staff_role_editor")
 )
 
 func TestAdminListRoles(t *testing.T) {
@@ -94,7 +95,7 @@ func TestAdminDeleteRole(t *testing.T) {
 	ctx := context.Background()
 
 	// moderator (9002) has no permissions -> no FK children to block delete.
-	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: 9002})
+	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixtures.ID32("staff_role_moderator")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

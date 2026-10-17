@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -25,7 +26,7 @@ func TestAdminListStaffMembers(t *testing.T) {
 	assert.Equal(t, int32(totalStaffMembers), page.Total)
 
 	m := page.Items[0]
-	assert.Equal(t, int32(1002), m.UserId)
+	assert.Equal(t, int32(fixtures.ID("user_staff_editor")), m.UserId)
 	assert.Equal(t, "editor", m.Role.Name)
 	assert.Equal(t, "bob@example.com", m.User.Email.Value)
 	// The native pg array round-trips to a plain []string.
@@ -36,7 +37,7 @@ func TestAdminGetStaffMember(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: 9201})
+	got, err := h.Client.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Role.Name)
@@ -58,8 +59,8 @@ func TestAdminCreateStaffMember(t *testing.T) {
 	ctx := context.Background()
 
 	created, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         1001, // alice has no staff record yet
-		RoleId:         9001,
+		UserId:         fixtures.ID32("user_admin_learner"), // alice has no staff record yet
+		RoleId:         fixtures.ID32("staff_role_editor"),
 		AllowedLocales: []string{"ru", "en", "es"},
 	})
 	require.NoError(t, err)
@@ -81,8 +82,8 @@ func TestAdminCreateStaffMemberDuplicateUser(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminCreateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         1002, // already a staff member (9201)
-		RoleId:         9001,
+		UserId:         fixtures.ID32("user_staff_editor"), // already a staff member (9201)
+		RoleId:         fixtures.ID32("staff_role_editor"),
 		AllowedLocales: []string{"ru"},
 	})
 	require.Error(t, err)
@@ -94,10 +95,10 @@ func TestAdminUpdateStaffMember(t *testing.T) {
 	ctx := context.Background()
 
 	updated, err := h.Client.AdminUpdateStaffMember(ctx, &api.StaffMemberInput{
-		UserId:         1002,
-		RoleId:         9002, // reassign to moderator
+		UserId:         fixtures.ID32("user_staff_editor"),
+		RoleId:         fixtures.ID32("staff_role_moderator"), // reassign to moderator
 		AllowedLocales: []string{"en"},
-	}, api.AdminUpdateStaffMemberParams{ID: 9201})
+	}, api.AdminUpdateStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "moderator", updated.Role.Name)
@@ -108,7 +109,7 @@ func TestAdminDeleteStaffMember(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	err := h.Client.AdminDeleteStaffMember(ctx, api.AdminDeleteStaffMemberParams{ID: 9201})
+	err := h.Client.AdminDeleteStaffMember(ctx, api.AdminDeleteStaffMemberParams{ID: fixtures.ID32("staff_member_staff_editor")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

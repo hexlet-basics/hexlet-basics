@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -92,8 +93,8 @@ func TestAdminCreateReview(t *testing.T) {
 	created, err := h.Client.AdminCreateReview(ctx, &api.ReviewInput{
 		State:     api.NewNilReviewState(api.ReviewStatePublished),
 		Pinned:    api.NewNilBool(false),
-		CourseId:  api.NewNilInt32(207281424),
-		UserId:    api.NewNilInt32(1003),
+		CourseId:  api.NewNilInt32(fixtures.ID32("course_ruby")),
+		UserId:    api.NewNilInt32(fixtures.ID32("user_blank")),
 		Body:      api.NewNilString("New review"),
 		FirstName: api.NewNilString("Carol"),
 		LastName:  api.NewNilString("Clark"),

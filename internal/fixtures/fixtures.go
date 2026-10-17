@@ -37,6 +37,11 @@ func ID(label string) int {
 	return int(crc32.ChecksumIEEE([]byte(label)) % maxID)
 }
 
+// ID32 is ID as the int32 the HTTP contract uses for identifiers.
+func ID32(label string) int32 {
+	return int32(ID(label))
+}
+
 var (
 	digestOnce sync.Once
 	digest     string

@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"context"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
@@ -30,12 +31,12 @@ func TestAdminReviewCourse(t *testing.T) {
 	// JavaScript (82481401): its CURRENT version's infos across every locale —
 	// the en trio plus the ru hello-world info. The old-version info (2004)
 	// must not be re-reviewed.
-	err := h.Client.AdminReviewCourse(ctx, api.AdminReviewCourseParams{ID: 82481401})
+	err := h.Client.AdminReviewCourse(ctx, api.AdminReviewCourseParams{ID: fixtures.ID32("course_javascript")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{2001, 2002, 2003, 2005}, ids)
+	assert.ElementsMatch(t, []int{fixtures.ID("lesson_version_info_javascript_strings_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), fixtures.ID("lesson_version_info_javascript_variables_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_ru")}, ids)
 }
 
 func TestAdminReviewCourseNotFound(t *testing.T) {
@@ -54,12 +55,12 @@ func TestAdminReviewCourseLesson(t *testing.T) {
 
 	// hello-world (1001): every info of the lesson — current en, old-version
 	// en, and ru — so historical summaries refresh too (legacy lesson.infos).
-	err := h.Client.AdminReviewCourseLesson(ctx, api.AdminReviewCourseLessonParams{ID: 1001})
+	err := h.Client.AdminReviewCourseLesson(ctx, api.AdminReviewCourseLessonParams{ID: fixtures.ID32("lesson_javascript_hello_world")})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{2002, 2004, 2005}, ids)
+	assert.ElementsMatch(t, []int{fixtures.ID("lesson_version_info_javascript_hello_world_current_en"), fixtures.ID("lesson_version_info_javascript_hello_world_retired_en"), fixtures.ID("lesson_version_info_javascript_hello_world_current_ru")}, ids)
 }
 
 func TestAdminReviewCourseLessonNotFound(t *testing.T) {

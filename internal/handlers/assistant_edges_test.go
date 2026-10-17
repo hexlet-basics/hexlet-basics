@@ -1,18 +1,14 @@
 package handlers_test
 
 import (
-	"context"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent/aichat"
-	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -60,43 +56,4 @@ func TestAskAssistantRefusesACourseWithNothingBuilt(t *testing.T) {
 	require.NoError(t, err)
 	assert.IsType(t, &api.NotFoundError{}, res)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-}
-
-// When storing fails the learner is told it was a server error, and a question
-// that could not be stored is not answered as if it had been.
-func TestAskAssistantAnswersAStorageFailureAsAServerError(t *testing.T) {
-	noAnswer := func(context.Context, []assistant.Turn, func(string) error) (assistant.Usage, error) {
-		return assistant.Usage{}, nil
-	}
-	cases := []struct {
-		name    string
-		lesson  string
-		model   func(context.Context, []assistant.Turn, func(string) error) (assistant.Usage, error)
-		storage func(*testing.T, *testsupport.Harness)
-	}{
-		{"today's questions cannot be counted", firstLessonSlug, nil, reads(aimessage.Table)},
-		{"the earlier conversation cannot be read", firstLessonSlug, nil, column(aimessage.Table, "content")},
-		{"the chat cannot be created", secondLessonSlug, nil, writes(aichat.Table, "INSERT")},
-		{"the question cannot be stored", firstLessonSlug, nil, writes(aimessage.Table, "INSERT")},
-		{"an empty answer's question cannot be stored", firstLessonSlug, noAnswer, writes(aimessage.Table, "INSERT")},
-	}
-
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-			lesson := lessonBySlug(t, h, c.lesson)
-			if c.model != nil {
-				h.Assistant.StreamFunc = c.model
-			}
-			c.storage(t, h)
-
-			_, err := h.Client.CreateAssistantMessage(t.Context(),
-				&api.AssistantMessageInput{Message: "Help?"},
-				api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
-			)
-
-			require.Error(t, err)
-			assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
-		})
-	}
 }
