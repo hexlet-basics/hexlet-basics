@@ -6674,6 +6674,7 @@ func (s *ProblemDetails) SetInstance(val OptString) {
 	s.Instance = val
 }
 
+func (*ProblemDetails) approveOAuthConsentRes()   {}
 func (*ProblemDetails) createBookRequestRes()     {}
 func (*ProblemDetails) createLeadRes()            {}
 func (*ProblemDetails) deleteAccountRes()         {}

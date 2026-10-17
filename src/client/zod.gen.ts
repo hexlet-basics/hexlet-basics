@@ -761,16 +761,28 @@ export const zOAuthDecision = z.object({
 });
 
 /**
- * Admin resources a staff role can be granted permissions on.
+ * Whether an operation only reads or can change data (ADR-0017).
  */
-export const zPermissionResource = z.enum([
-  'language_categories',
-  'language_lessons',
-  'language_lesson_reviews',
-  'language_lesson_members',
-  'languages',
-  'language_landing_pages'
-]);
+export const zPermissionKind = z.enum(['read', 'write']);
+
+/**
+ * A Permission an admin operation can require, as declared on the operations in
+ * this contract with `x-permission`. The catalog is read from those
+ * declarations, never kept by hand, plus the capability Permissions the contract
+ * lists under `x-capabilities`.
+ */
+export const zPermission = z.object({
+  name: z.string(),
+  kind: zPermissionKind,
+  capability: z.boolean()
+});
+
+/**
+ * Every Permission an admin operation can require.
+ */
+export const zPermissionCatalog = z.object({
+  permissions: z.array(zPermission)
+});
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
