@@ -2,6 +2,7 @@ package testsupport
 
 import (
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
@@ -26,6 +27,8 @@ import (
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/session"
+	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 )
 
 const (
@@ -72,6 +75,7 @@ type OAuth struct {
 
 type oauthOptions struct {
 	mcpLimits mcpserver.Limits
+	onPool    bool
 }
 
 // OAuthOption changes how NewOAuth builds the stack.
@@ -83,6 +87,14 @@ type OAuthOption func(*oauthOptions)
 // wait half a minute.
 func WithMCPLimits(limits mcpserver.Limits) OAuthOption {
 	return func(o *oauthOptions) { o.mcpLimits = limits }
+}
+
+// OnPool builds the stack over a connection pool of its own instead of the
+// test's rolled-back transaction, so that every write commits and separate
+// requests run in separate transactions. Only a test about concurrent
+// transactions wants it, and it must delete what it committed.
+func OnPool() OAuthOption {
+	return func(o *oauthOptions) { o.onPool = true }
 }
 
 // NewOAuth builds the stack. The clock starts at the real time and moves only
@@ -113,12 +125,22 @@ func NewOAuthWithProductionFetcher(t *testing.T, opts ...OAuthOption) *OAuth {
 func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OAuthOption) *OAuth {
 	t.Helper()
 	cfg.Issuer, cfg.EncryptionKey = OAuthIssuer, oauthEncryptionKey
-	db, tx, transactor := NewClientWithTxAndTransactor(t)
-	o := &OAuth{t: t, DB: db, now: time.Now()}
 	var options oauthOptions
 	for _, opt := range opts {
 		opt(&options)
 	}
+	var (
+		db         *ent.Client
+		tx         *sql.Tx
+		transactor store.Transactor
+	)
+	if options.onPool {
+		pool := testdb.Open(t)
+		db, transactor = store.NewClient(pool), store.New(pool)
+	} else {
+		db, tx, transactor = NewClientWithTxAndTransactor(t)
+	}
+	o := &OAuth{t: t, DB: db, now: time.Now()}
 	if documentHost {
 		o.Documents = newClientDocuments(t)
 	}

@@ -98,16 +98,16 @@ func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 func TestAClientCannotRevokeAnotherClientsToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	//nolint:forbidigo // the client or token under test: its lifetime, secrets and ownership are what the test chooses
-	_, err := o.DB.OAuthClient.Create().SetClientID("other-client").SetName("Other").
-		SetRedirectUris([]string{"http://127.0.0.1:1/cb"}).SetScopes([]string{}).Save(t.Context())
-	require.NoError(t, err)
+	// Another client registers itself, the way a client does.
+	res := o.Register(request(nil))
+	require.Equal(t, http.StatusCreated, res.StatusCode)
+	other := decodeJSON[registered](t, res)
 
 	for _, token := range []string{tokens.AccessToken, tokens.RefreshToken} {
-		res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{"client_id": {"other-client"}, "token": {token}})
+		res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{"client_id": {other.ClientID}, "token": {token}})
 		assert.Equal(t, http.StatusUnauthorized, res.StatusCode)
 	}
-	_, err = o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
+	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err, "the token survived")
 }
 
