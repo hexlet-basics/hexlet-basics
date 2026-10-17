@@ -33,12 +33,21 @@ const role: StaffRoleDetail = {
       canDestroy: false,
     },
   ],
+  grants: ["blog_posts.read"],
+};
+
+const catalog = {
+  permissions: [
+    { name: "blog_posts.create", kind: "write" },
+    { name: "blog_posts.read", kind: "read" },
+  ],
 };
 
 test("a role's permissions are saved as the grid the admin ticked", async () => {
   let received: RolePermissionsInput | undefined;
   worker.use(
     http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
+    http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
     http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
     http.put("*/admin/management/role_permissions/5", async ({ request }) => {
       received = (await request.json()) as RolePermissionsInput;
@@ -66,6 +75,40 @@ test("a role's permissions are saved as the grid the admin ticked", async () => 
   await expect.element(confirmation).toBeVisible();
   const banners = received?.permissions.find((row) => row.resource === "banners");
   expect(banners).toMatchObject({ canIndex: true, canCreate: true, canUpdate: false });
+});
+
+test("a role's blog post permissions are shown and saved as the admin ticked them", async () => {
+  let received: RolePermissionsInput | undefined;
+  worker.use(
+    http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
+    http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
+    http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
+    http.put("*/admin/management/role_permissions/5", async ({ request }) => {
+      received = (await request.json()) as RolePermissionsInput;
+      return HttpResponse.json(role);
+    }),
+  );
+
+  await renderRoute(roleRoute, {
+    path: "/{-$locale}/admin/management/roles/$id",
+    initialPath: "/admin/management/roles/5",
+    user: admin,
+  });
+
+  // The role reads blog posts and may not create them yet.
+  const read = page.getByRole("checkbox", { name: "blog_posts.read" });
+  await expect.element(read).toBeChecked();
+  const create = page.getByRole("checkbox", { name: "blog_posts.create" });
+  await expect.element(create).not.toBeChecked();
+
+  await create.click();
+  await read.click();
+  const save = page.getByRole("button", { name: "Save" }).last();
+  await save.click();
+
+  const confirmation = page.getByText("Record updated");
+  await expect.element(confirmation).toBeVisible();
+  expect(received?.grants).toEqual(["blog_posts.create"]);
 });
 
 const category: CourseCategory = {
