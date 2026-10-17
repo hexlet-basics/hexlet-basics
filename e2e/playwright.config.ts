@@ -43,7 +43,7 @@ export default defineConfig({
       env: {
         ADDR: `:${apiPort}`,
         DATABASE_URL: `postgres://postgres:${dbPassword}@${dbHost}:${dbPort}/${dbName}?sslmode=disable`,
-        JWT_SECRET: "e2e-jwt-secret",
+        GUEST_COOKIE_SECRET: "e2e-guest-cookie-secret",
         EMAIL_TOKEN_SECRET: "e2e-email-token-secret",
         SITE_URL: siteURL,
         PUBLIC_URL: siteURL,

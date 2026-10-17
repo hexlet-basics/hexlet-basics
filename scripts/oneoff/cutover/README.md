@@ -32,7 +32,7 @@ scripts/oneoff/cutover/cutover.sh
    Kubernetes must be at least 1.30, and both GHCR images must exist.
 3. Postbox domain and static key (#793).
 4. Cluster secrets through `make -C k8s secrets-edit`. The check prints key
-   names only. `JWT_SECRET` and `EMAIL_TOKEN_SECRET` are compared in memory
+   names only. `GUEST_COOKIE_SECRET` and `EMAIL_TOKEN_SECRET` are compared in memory
    against the public development values. `SITE_URL` and `PUBLIC_URL` are
    checked (#797, #808).
 5. Database access. The URL is entered hidden, and it is never written or

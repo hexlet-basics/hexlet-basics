@@ -14,7 +14,7 @@ import (
 // AdminUploadAttachment implements `POST /admin/attachments`: store the single
 // multipart `file` part in the bucket under a fresh key, record its metadata,
 // and return the Attachment the admin form references by id. ogen decodes the
-// form and enforces admin+XSRF before this runs; the router caps the body size.
+// form and enforces admin before this runs; the router caps the body size.
 // The part's declared Content-Type is ignored on purpose — assetstore derives
 // the stored type from the bytes.
 func (s *Server) AdminUploadAttachment(

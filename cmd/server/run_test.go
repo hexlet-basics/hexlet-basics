@@ -20,7 +20,7 @@ func serverEnv(t *testing.T, addr string) {
 	t.Setenv("ADDR", addr)
 	t.Setenv("DATABASE_URL", testdb.DatabaseURL())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("JWT_SECRET", "test-secret")
+	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
 	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
 }
 

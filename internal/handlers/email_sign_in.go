@@ -16,8 +16,8 @@ import (
 // CreateMagicLink emails a Magic Link to the User with this email. It answers
 // the same whether or not one exists, so the form cannot be used to learn which
 // emails are registered, and it never creates an account.
-func (h *AuthHandler) CreateMagicLink(ctx context.Context, req *api.EmailInput) (api.CreateMagicLinkRes, error) {
-	if err := h.requestAccountEmail(ctx, emailtokens.MagicLink, req.Email); err != nil {
+func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) (api.CreateMagicLinkRes, error) {
+	if err := s.requestAccountEmail(ctx, emailtokens.MagicLink, req.Email); err != nil {
 		return nil, err
 	}
 	return &api.CreateMagicLinkNoContent{}, nil
@@ -25,28 +25,28 @@ func (h *AuthHandler) CreateMagicLink(ctx context.Context, req *api.EmailInput) 
 
 // ConsumeMagicLink signs in the User the link was issued to. The link may be
 // followed again while it lives, as in legacy.
-func (h *AuthHandler) ConsumeMagicLink(
+func (s *Server) ConsumeMagicLink(
 	ctx context.Context,
 	params api.ConsumeMagicLinkParams,
 ) (api.ConsumeMagicLinkRes, error) {
-	u, err := h.emailTokens.Verify(ctx, h.db, emailtokens.MagicLink, params.Token)
+	u, err := s.emailTokens.Verify(ctx, s.db, emailtokens.MagicLink, params.Token)
 	if errors.Is(err, emailtokens.ErrInvalid) {
-		return h.linkInvalid(ctx), nil
+		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	return h.signIn(ctx, u)
+	return s.signIn(ctx, u)
 }
 
 // CreatePasswordReminder emails a Password Reset link. Unlike legacy it no
 // longer says that an email is unknown: that would undo the Magic Link form's
 // protection against learning which emails are registered.
-func (h *AuthHandler) CreatePasswordReminder(
+func (s *Server) CreatePasswordReminder(
 	ctx context.Context,
 	req *api.EmailInput,
 ) (api.CreatePasswordReminderRes, error) {
-	if err := h.requestAccountEmail(ctx, emailtokens.PasswordReset, req.Email); err != nil {
+	if err := s.requestAccountEmail(ctx, emailtokens.PasswordReset, req.Email); err != nil {
 		return nil, err
 	}
 	return &api.CreatePasswordReminderNoContent{}, nil
@@ -54,13 +54,13 @@ func (h *AuthHandler) CreatePasswordReminder(
 
 // CheckPasswordResetToken lets the reset page refuse a dead link before the
 // learner types a new password into it.
-func (h *AuthHandler) CheckPasswordResetToken(
+func (s *Server) CheckPasswordResetToken(
 	ctx context.Context,
 	params api.CheckPasswordResetTokenParams,
 ) (api.CheckPasswordResetTokenRes, error) {
-	_, err := h.emailTokens.Verify(ctx, h.db, emailtokens.PasswordReset, params.Token)
+	_, err := s.emailTokens.Verify(ctx, s.db, emailtokens.PasswordReset, params.Token)
 	if errors.Is(err, emailtokens.ErrInvalid) {
-		return h.linkInvalid(ctx), nil
+		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
 		return nil, err
@@ -72,82 +72,46 @@ func (h *AuthHandler) CheckPasswordResetToken(
 // proved they own the email, so asking for the new password again adds
 // nothing. Changing the digest is what kills the link — its fingerprint no
 // longer matches — so the link cannot be used twice.
-func (h *AuthHandler) UpdatePassword(
+func (s *Server) UpdatePassword(
 	ctx context.Context,
 	req *api.ResetPasswordInput,
 	params api.UpdatePasswordParams,
 ) (api.UpdatePasswordRes, error) {
-	u, err := h.emailTokens.Verify(ctx, h.db, emailtokens.PasswordReset, params.Token)
+	u, err := s.emailTokens.Verify(ctx, s.db, emailtokens.PasswordReset, params.Token)
 	if errors.Is(err, emailtokens.ErrInvalid) {
-		return h.linkInvalid(ctx), nil
+		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	u, err = h.credentials.SetPassword(ctx, u, req.Password)
+	u, err = s.credentials.SetPassword(ctx, u, req.Password)
 	if errors.Is(err, accounts.ErrPasswordProcessing) {
-		return validationError("password", h.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
+		return validationError("password", s.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	return h.signIn(ctx, u)
+	return s.signIn(ctx, u)
 }
 
 // requestAccountEmail enqueues the email for a registered address and does
 // nothing for an unknown one. The lookup normalizes the email the way registration
 // stores it, as legacy's did.
-func (h *AuthHandler) requestAccountEmail(ctx context.Context, purpose emailtokens.Purpose, email string) error {
-	u, err := accounts.ActiveUserByEmail(ctx, h.db, email)
+func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtokens.Purpose, email string) error {
+	u, err := accounts.ActiveUserByEmail(ctx, s.db, email)
 	if ent.IsNotFound(err) {
 		return nil
 	}
 	if err != nil {
 		return err
 	}
-	return h.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
+	return s.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
 		Purpose: purpose,
 		UserID:  u.ID,
-		Locale:  accountemails.Locale(h.i18n.Locale(ctx)),
+		Locale:  accountemails.Locale(s.i18n.Locale(ctx)),
 	})
 }
 
-func (h *AuthHandler) linkInvalid(ctx context.Context) *api.NotFoundError {
-	return &api.NotFoundError{Message: h.i18n.Text(ctx, localization.EmailLinkInvalid)}
-}
-
-// Forwarding methods for the generated api.Handler seam, like the ones in
-// auth.go.
-
-func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) (api.CreateMagicLinkRes, error) {
-	return s.auth.CreateMagicLink(ctx, req)
-}
-
-func (s *Server) ConsumeMagicLink(
-	ctx context.Context,
-	params api.ConsumeMagicLinkParams,
-) (api.ConsumeMagicLinkRes, error) {
-	return s.auth.ConsumeMagicLink(ctx, params)
-}
-
-func (s *Server) CreatePasswordReminder(
-	ctx context.Context,
-	req *api.EmailInput,
-) (api.CreatePasswordReminderRes, error) {
-	return s.auth.CreatePasswordReminder(ctx, req)
-}
-
-func (s *Server) CheckPasswordResetToken(
-	ctx context.Context,
-	params api.CheckPasswordResetTokenParams,
-) (api.CheckPasswordResetTokenRes, error) {
-	return s.auth.CheckPasswordResetToken(ctx, params)
-}
-
-func (s *Server) UpdatePassword(
-	ctx context.Context,
-	req *api.ResetPasswordInput,
-	params api.UpdatePasswordParams,
-) (api.UpdatePasswordRes, error) {
-	return s.auth.UpdatePassword(ctx, req, params)
+func (s *Server) linkInvalid(ctx context.Context) *api.NotFoundError {
+	return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.EmailLinkInvalid)}
 }

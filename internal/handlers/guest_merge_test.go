@@ -17,6 +17,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -147,6 +148,18 @@ func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput 
 // clearsGuestCookie inspects the raw Set-Cookie headers rather than the
 // client-decoded list: the generated client reads that header as one
 // comma-separated array and reports only the first cookie.
+// startsSession reports whether the response set a session cookie that names a
+// session, not one that ends it.
+func startsSession(setCookie []string) bool {
+	for _, raw := range setCookie {
+		cookie, err := http.ParseSetCookie(raw)
+		if err == nil && cookie.Name == session.CookieName && cookie.Value != "" && cookie.MaxAge >= 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func clearsGuestCookie(setCookie []string) bool {
 	return strings.Contains(strings.Join(setCookie, ","), progress.GuestCookieName+"=")
 }

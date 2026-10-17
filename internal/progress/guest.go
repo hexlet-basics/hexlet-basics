@@ -168,6 +168,20 @@ func (c *GuestCodec) Cookie(progress GuestProgress, secure bool) (*http.Cookie, 
 	}, nil
 }
 
+// ClearedCookie is the response cookie that ends the visitor's progress cookie,
+// with the same attributes Cookie sets so the browser matches it to the one it
+// holds. It is sent once the progress has been credited to an account.
+func (c *GuestCodec) ClearedCookie(secure bool) *http.Cookie {
+	return &http.Cookie{
+		Name:     GuestCookieName,
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   secure,
+		SameSite: http.SameSiteLaxMode,
+	}
+}
+
 func (c *GuestCodec) sign(progress GuestProgress) (string, error) {
 	body, err := json.Marshal(progress)
 	if err != nil {

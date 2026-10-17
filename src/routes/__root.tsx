@@ -36,7 +36,7 @@ const getRequestCookies = createIsomorphicFn()
   .client(() => undefined);
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  // Resolve the current user from the httpOnly JWT cookie server-side, so
+  // Resolve the current user from the httpOnly session cookie server-side, so
   // authenticated pages (and the admin guard) render on the server (ADR-0008).
   // Cached in the shared QueryClient, so this is one fetch per request.
   //

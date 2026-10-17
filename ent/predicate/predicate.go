@@ -90,6 +90,9 @@ type LessonProgress func(*sql.Selector)
 // Review is the predicate function for review builders.
 type Review func(*sql.Selector)
 
+// Session is the predicate function for session builders.
+type Session func(*sql.Selector)
+
 // StaffMember is the predicate function for staffmember builders.
 type StaffMember func(*sql.Selector)
 

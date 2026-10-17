@@ -11,7 +11,7 @@ import { useAppForm } from "@/lib/form";
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
 // deferred until their backends and routes land. Submits through the generated `createSession`
-// mutation, which sets the JWT cookie server-side; validation reuses the
+// mutation, which starts the session server-side; validation reuses the
 // generated `zSessionInput` schema.
 export const Route = createFileRoute("/{-$locale}/session/new")({
   component: New,

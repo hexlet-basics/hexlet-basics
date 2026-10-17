@@ -15,6 +15,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -69,14 +70,14 @@ func TestDeleteAccount(t *testing.T) {
 	assert.IsType(t, &api.DeleteAccountNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	// Both session cookies come back expired, as on sign-out.
+	// The session cookie comes back expired, as on sign-out.
 	expired := map[string]bool{}
 	for _, raw := range h.ResponseCookies() {
 		cookie, err := http.ParseSetCookie(raw)
 		require.NoError(t, err)
 		expired[cookie.Name] = cookie.MaxAge < 0 || cookie.Value == ""
 	}
-	assert.Equal(t, map[string]bool{"JWT": true, "XSRF-TOKEN": true}, expired)
+	assert.Equal(t, map[string]bool{session.CookieName: true}, expired)
 
 	// The row stays, removed and erased; what is not identifying is kept.
 	removed := h.DB.User.GetX(t.Context(), u.ID)
@@ -93,9 +94,9 @@ func TestDeleteAccount(t *testing.T) {
 	assert.True(t, h.DB.UserAccount.Query().Where(useraccount.UID(other.UID)).ExistX(t.Context()))
 }
 
-// The JWT is stateless, so the token a browser still holds — on this device
-// until the cookie is dropped, on any other one for its whole life — must stop
-// naming anyone once the account is gone.
+// A session is only as good as the account it names, so the cookie a browser
+// still holds — on this device until it is dropped, on any other one for its
+// whole life — must stop naming anyone once the account is gone.
 func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	_, err := h.Client.DeleteAccount(t.Context())

@@ -34,6 +34,7 @@ import (
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/review"
+	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
@@ -135,6 +136,7 @@ func checkColumn(t, c string) error {
 			lead.Table:                      lead.ValidColumn,
 			lessonprogress.Table:            lessonprogress.ValidColumn,
 			review.Table:                    review.ValidColumn,
+			session.Table:                   session.ValidColumn,
 			staffmember.Table:               staffmember.ValidColumn,
 			staffrole.Table:                 staffrole.ValidColumn,
 			staffrolepermission.Table:       staffrolepermission.ValidColumn,

@@ -14,15 +14,12 @@ package testsupport
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
-	"github.com/go-pkgz/auth/v2/token"
-	"github.com/golang-jwt/jwt/v5"
 	"gocloud.dev/blob/memblob"
 
 	"hexletbasics/ent"
@@ -38,12 +35,12 @@ import (
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/ids"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -55,7 +52,7 @@ import (
 var testConfig = &config.Config{
 	AppHost:           "code-basics.com",
 	PublicURL:         "http://localhost:3001",
-	JWTSecret:         "test-secret",
+	GuestCookieSecret: "test-secret",
 	EmailTokenSecret:  "test-email-secret",
 	CourseRepoBaseURL: "https://github.com/hexlet-basics",
 	SiteURL:           "https://code-basics.com",
@@ -210,6 +207,11 @@ func NewHarnessAs(t *testing.T, userLabel string) *Harness {
 	registrar := accounts.NewRegistrar(transactor, services.Events)
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
+	// The real session manager over the test's transaction: a test's session rows
+	// are rolled back with everything else.
+	sessions := session.New(db, session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+		errorHandler.Write(r.Context(), w, r, err)
+	}))
 	// The real progress module, over the test's transaction: the
 	// transitions under test are the production ones, only the event transport
 	// is recorded instead of written to the outbox and the submission is not
@@ -235,6 +237,7 @@ func NewHarnessAs(t *testing.T, userLabel string) *Harness {
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
 		Progress:          tracker,
 		Assets:            assets,
+		Sessions:          sessions,
 		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
@@ -255,7 +258,7 @@ func NewHarnessAs(t *testing.T, userLabel string) *Harness {
 	})
 	srv, err := api.NewServer(
 		handler,
-		handler.AuthHandler(),
+		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
@@ -264,12 +267,12 @@ func NewHarnessAs(t *testing.T, userLabel string) *Harness {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	security := newHarnessSecurity(t, db, userLabel)
+	security := newHarnessSecurity(t, db, sessions, userLabel)
 	doer := &inProcessDoer{
-		server: translator.Middleware(handler.AuthHandler().Trace(handlers.WithClientIP(
-			handler.AuthHandler().Identify(handler.AuthHandler().CarryGuestProgress(srv)),
-		))),
-		jwt: security.jwt,
+		// The production pipeline around the generated server, so a test passes
+		// the same gates a request does.
+		server:  translator.Middleware(handler.Security().Pipeline(srv)),
+		session: security.session,
 	}
 	client, err := api.NewClient("http://test", security, api.WithClient(doer))
 	if err != nil {
@@ -337,7 +340,7 @@ func FailingOutcome() progress.Outcome {
 func NewGuestHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 	t.Helper()
 	h := NewHarness(t)
-	value, err := progress.NewGuestCodec(testConfig.JWTSecret).Encode(guest)
+	value, err := progress.NewGuestCodec(testConfig.GuestCookieSecret).Encode(guest)
 	if err != nil {
 		t.Fatalf("encode guest progress: %v", err)
 	}
@@ -401,7 +404,7 @@ func DecodeGuestCookie(t *testing.T, setCookies []string) progress.GuestProgress
 		if err != nil || parsed.Name != progress.GuestCookieName {
 			continue
 		}
-		guest, err := progress.NewGuestCodec(testConfig.JWTSecret).Decode(parsed.Value)
+		guest, err := progress.NewGuestCodec(testConfig.GuestCookieSecret).Decode(parsed.Value)
 		if err != nil {
 			t.Fatalf("guest cookie does not verify: %v", err)
 		}
@@ -417,59 +420,33 @@ func DecodeGuestCookie(t *testing.T, setCookies []string) progress.GuestProgress
 const HarnessUserLabel = "user_admin_learner"
 
 type harnessSecurity struct {
-	jwt    string
-	xsrf   string
-	userID int
+	session string
+	userID  int
 }
 
-func newHarnessSecurity(t *testing.T, db *ent.Client, userLabel string) *harnessSecurity {
+// newHarnessSecurity signs the fixture user in through the real session manager
+// and keeps the cookie value that names the session, which is what a browser
+// would send on every request.
+func newHarnessSecurity(t *testing.T, db *ent.Client, sessions *session.Manager, userLabel string) *harnessSecurity {
 	t.Helper()
 
 	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))
 	if err != nil {
-		t.Fatalf("load harness admin: %v", err)
+		t.Fatalf("load harness user: %v", err)
 	}
-
-	jti := ids.New()
-	rec := httptest.NewRecorder()
-	_, err = token.NewService(token.Opts{
-		SecretReader: token.SecretFunc(func(string) (string, error) {
-			return testConfig.JWTSecret, nil
-		}),
-	}).Set(rec, token.Claims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ID:       jti,
-			Audience: jwt.ClaimStrings{"hexlet-basics"},
-		},
-		User: &token.User{
-			ID:   fmt.Sprintf("%d", u.ID),
-			Name: *u.Email,
-		},
-		AuthProvider: &token.AuthProvider{Name: "password"},
-	})
+	token, err := sessions.Issue(t.Context(), u)
 	if err != nil {
-		t.Fatalf("create harness JWT: %v", err)
+		t.Fatalf("issue harness session: %v", err)
 	}
-
-	for _, cookie := range rec.Result().Cookies() {
-		if cookie.Name == "JWT" {
-			return &harnessSecurity{jwt: cookie.Value, xsrf: jti, userID: u.ID}
-		}
-	}
-	t.Fatal("JWT cookie was not issued")
-	return nil
+	return &harnessSecurity{session: token, userID: u.ID}
 }
 
 func (s *harnessSecurity) AdminSession(context.Context, api.OperationName) (api.AdminSession, error) {
-	return api.AdminSession{APIKey: s.jwt}, nil
+	return api.AdminSession{APIKey: s.session}, nil
 }
 
 func (s *harnessSecurity) UserSession(context.Context, api.OperationName) (api.UserSession, error) {
-	return api.UserSession{APIKey: s.jwt}, nil
-}
-
-func (s *harnessSecurity) XsrfToken(context.Context, api.OperationName) (api.XsrfToken, error) {
-	return api.XsrfToken{APIKey: s.xsrf}, nil
+	return api.UserSession{APIKey: s.session}, nil
 }
 
 // inProcessDoer satisfies ogen's http client interface by serving each request
@@ -478,10 +455,10 @@ func (s *harnessSecurity) XsrfToken(context.Context, api.OperationName) (api.Xsr
 type inProcessDoer struct {
 	server http.Handler
 	status int
-	// jwt is the session a browser would send on EVERY request, including the
-	// public reads whose contract declares no security — those still answer a
-	// signed-in learner differently.
-	jwt string
+	// session is the session cookie a browser would send on EVERY request,
+	// including the public reads whose contract declares no security — those
+	// still answer a signed-in learner differently.
+	session string
 	// anonymous drops it, so a public read can be exercised exactly as a visitor
 	// reaches it.
 	anonymous bool
@@ -499,9 +476,8 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	switch {
 	case d.anonymous:
 		r.Header.Del("Cookie")
-		r.Header.Del("X-XSRF-TOKEN")
-	case d.jwt != "":
-		r.AddCookie(&http.Cookie{Name: "JWT", Value: d.jwt})
+	case d.session != "":
+		r.AddCookie(&http.Cookie{Name: session.CookieName, Value: d.session})
 	}
 	// Added after the anonymous branch cleared the header: a visitor carries
 	// progress without carrying a session, which is the whole point of it.

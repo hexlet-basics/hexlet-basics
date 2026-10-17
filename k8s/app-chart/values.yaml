@@ -13,14 +13,14 @@ images:
     repository: ghcr.io/hexlet-basics/hexlet-basics-web
 
 # Non-secret environment of every Go process (internal/config). Secret keys
-# the operator must have in secrets.code_basics.env: DATABASE_URL, JWT_SECRET,
+# the operator must have in secrets.code_basics.env: DATABASE_URL, GUEST_COOKIE_SECRET,
 # EMAIL_TOKEN_SECRET, MAIL_POSTBOX_ACCESS_KEY_ID, MAIL_POSTBOX_SECRET_ACCESS_KEY,
 # BLOB_BUCKET_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION,
 # GITHUB_WEBHOOK_SECRET, GITHUB_TOKEN, OPENAI_ACCESS_TOKEN, AMOCRM_BASE_URL,
 # AMOCRM_AUTH_TOKEN, YM_COUNTER, SENTRY_DSN, SENTRY_API_TOKEN (notify job).
 goEnv:
   # `production` also switches on config.validateProduction: the committed
-  # development JWT/email secrets are refused and a Postbox key is required.
+  # development guest-cookie/email secrets are refused and a Postbox key is required.
   SENTRY_ENVIRONMENT: production
   APP_HOST: code-basics.com
   SITE_URL: https://code-basics.com

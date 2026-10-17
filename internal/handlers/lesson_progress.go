@@ -73,7 +73,7 @@ func (s *Server) CheckLesson(
 		},
 	}
 	if result.Guest != nil {
-		cookie, err := s.auth.GuestCookie(*result.Guest)
+		cookie, err := s.guests.set(*result.Guest)
 		if err != nil {
 			return nil, err
 		}

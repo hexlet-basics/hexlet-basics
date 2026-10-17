@@ -260,7 +260,7 @@ function AssistantChat({
 
 // The transport speaks the contract rather than the AI SDK's own request shape:
 // it sends the question with the editor state, and it sends it through the
-// generated client — so the path, the session cookie, XSRF header and URL
+// generated client — so the path, the session cookie and URL
 // locale come from the same place as every other call. Axios' fetch adapter
 // hands back the body as a stream, which the transport reads as plain text.
 function assistantTransport(lessonId: number) {

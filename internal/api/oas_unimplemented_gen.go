@@ -599,7 +599,7 @@ func (UnimplementedHandler) CheckPasswordResetToken(ctx context.Context, params 
 
 // ConsumeMagicLink implements consumeMagicLink operation.
 //
-// Consume a magic link token; sets the JWT cookie.
+// Consume a magic link token; starts the session.
 //
 // GET /api/magic_links/{token}
 func (UnimplementedHandler) ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (r ConsumeMagicLinkRes, _ error) {
@@ -657,7 +657,7 @@ func (UnimplementedHandler) CreatePasswordReminder(ctx context.Context, req *Ema
 
 // CreateSession implements createSession operation.
 //
-// Log in with email + password; sets the JWT cookie.
+// Log in with email + password; starts the session.
 //
 // POST /api/session
 func (UnimplementedHandler) CreateSession(ctx context.Context, req *SessionInput) (r CreateSessionRes, _ error) {
@@ -666,7 +666,7 @@ func (UnimplementedHandler) CreateSession(ctx context.Context, req *SessionInput
 
 // CreateUser implements createUser operation.
 //
-// Sign up; sets the JWT cookie on success.
+// Sign up; starts the session on success.
 //
 // POST /api/users
 func (UnimplementedHandler) CreateUser(ctx context.Context, req *SignUpInput) (r CreateUserRes, _ error) {
@@ -684,7 +684,7 @@ func (UnimplementedHandler) DeleteAccount(ctx context.Context) (r DeleteAccountR
 
 // DeleteSession implements deleteSession operation.
 //
-// Log out; clears the JWT cookie.
+// Log out; ends the session.
 //
 // DELETE /api/session
 func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionRes, _ error) {
@@ -695,7 +695,7 @@ func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionR
 //
 // Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
 // the book page when there is no request yet. The browser follows it as a link, so only the session
-// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 //
 // GET /api/book/download
 func (UnimplementedHandler) DownloadBook(ctx context.Context) (r DownloadBookRes, _ error) {

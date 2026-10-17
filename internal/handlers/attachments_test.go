@@ -12,8 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-pkgz/auth/v2/token"
-	"github.com/golang-jwt/jwt/v5"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,8 +23,8 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/ids"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -43,14 +41,12 @@ var tinyPNG = []byte{
 type authenticatedHandler struct {
 	next    http.Handler
 	cookies []*http.Cookie
-	xsrf    string
 }
 
 func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, cookie := range h.cookies {
 		r.AddCookie(cookie)
 	}
-	r.Header.Set("X-XSRF-TOKEN", h.xsrf)
 	h.next.ServeHTTP(w, r)
 }
 
@@ -58,7 +54,7 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 // bucket and a transaction-bound ent client. Uploads run through the generated
 // ogen server — its multipart decoder and SecurityHandler — exactly as in
 // production; downloads use the blob read route mounted beside it.
-func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.Cookie, string) {
+func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.Cookie) {
 	t.Helper()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	bucket := memblob.OpenBucket(nil)
@@ -66,7 +62,8 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
-	cfg := &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
+	cfg := &config.Config{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
+	sessions := session.New(db)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
@@ -76,6 +73,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		Jobs:      services.Jobs,
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
 		Assets:    assets,
+		Sessions:  sessions,
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
 		Events:    services.Events,
@@ -84,7 +82,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	})
 	apiServer, err := api.NewServer(
 		handler,
-		handler.AuthHandler(),
+		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
@@ -92,10 +90,8 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	require.NoError(t, err)
 	att := handlers.NewAttachmentHandler(assets, errorHandler)
 	gh := handlers.NewGitHubWebhookHandler(db, services.Starter, "", translator)
-	router := translator.Middleware(handlers.NewRouter(apiServer, att, gh, handler.AuthHandler()))
+	router := translator.Middleware(handlers.NewRouter(handler.Security().Pipeline(apiServer), att, gh))
 
-	jti := ids.New()
-	rec := httptest.NewRecorder()
 	// An administrator may upload; a user who is neither an administrator nor
 	// staff may not.
 	label := "user_blank"
@@ -104,28 +100,16 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	}
 	u, err := db.User.Get(t.Context(), fixtures.ID(label))
 	require.NoError(t, err)
-	authUser := &token.User{ID: strconv.Itoa(u.ID), Name: "attachment-admin@example.com"}
-	_, err = token.NewService(token.Opts{
-		SecretReader: token.SecretFunc(func(string) (string, error) {
-			return cfg.JWTSecret, nil
-		}),
-	}).Set(rec, token.Claims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ID:       jti,
-			Audience: jwt.ClaimStrings{"hexlet-basics"},
-		},
-		User:         authUser,
-		AuthProvider: &token.AuthProvider{Name: "password"},
-	})
+	token, err := sessions.Issue(t.Context(), u)
 	require.NoError(t, err)
 
-	return router, rec.Result().Cookies(), jti
+	return router, []*http.Cookie{{Name: session.CookieName, Value: token}}
 }
 
 func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Helper()
-	router, cookies, xsrf := newAttachmentRouterStack(t, true)
-	return authenticatedHandler{next: router, cookies: cookies, xsrf: xsrf}
+	router, cookies := newAttachmentRouterStack(t, true)
+	return authenticatedHandler{next: router, cookies: cookies}
 }
 
 // uploadRequest builds a multipart POST with one file part whose declared
@@ -231,7 +215,7 @@ func TestAdminUploadAttachmentThroughGeneratedClient(t *testing.T) {
 
 func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 	t.Run("missing session", func(t *testing.T) {
-		router, _, _ := newAttachmentRouterStack(t, true)
+		router, _ := newAttachmentRouterStack(t, true)
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
@@ -241,23 +225,26 @@ func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 	})
 
 	t.Run("current database user is not admin", func(t *testing.T) {
-		router, cookies, xsrf := newAttachmentRouterStack(t, false)
-		rec := httptest.NewRecorder()
-
-		authenticatedHandler{next: router, cookies: cookies, xsrf: xsrf}.
-			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
-
-		assert.Equal(t, http.StatusForbidden, rec.Code)
-	})
-
-	t.Run("missing xsrf header", func(t *testing.T) {
-		router, cookies, _ := newAttachmentRouterStack(t, true)
+		router, cookies := newAttachmentRouterStack(t, false)
 		rec := httptest.NewRecorder()
 
 		authenticatedHandler{next: router, cookies: cookies}.
 			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
 
-		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Equal(t, http.StatusForbidden, rec.Code)
+	})
+
+	// A page on another site can make the browser send the session cookie, but
+	// the browser tells the server the request came from elsewhere.
+	t.Run("cross-site request", func(t *testing.T) {
+		router, cookies := newAttachmentRouterStack(t, true)
+		rec := httptest.NewRecorder()
+		req := uploadRequest(t, "cover.png", "image/png", tinyPNG)
+		req.Header.Set("Sec-Fetch-Site", "cross-site")
+
+		authenticatedHandler{next: router, cookies: cookies}.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusForbidden, rec.Code)
 	})
 }
 

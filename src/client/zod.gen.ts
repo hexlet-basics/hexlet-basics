@@ -1048,7 +1048,7 @@ export const zListQuerySortField = z.string();
 export const zListQuerySortOrder = z.enum(['asc', 'desc']);
 
 /**
- * A successful sign-out with the expired auth cookies.
+ * A successful sign-out; the session cookie is expired by the server.
  */
 export const zDeleteAccountResponse = z.void();
 
@@ -1946,8 +1946,10 @@ export const zConsumeMagicLinkPath = z.object({
 });
 
 /**
- * A successful sign-in. Cookie headers are part of the HTTP contract so the
- * implementation stays behind the generated ogen seam.
+ * A successful sign-in. The session cookie is not part of the contract: the
+ * server's session middleware writes it. `Set-Cookie` here carries only the
+ * cookie that ends the visitor's guest progress, once it has been credited to
+ * the account that just signed in.
  */
 export const zConsumeMagicLinkResponse = zUser;
 
@@ -1977,8 +1979,10 @@ export const zUpdatePasswordPath = z.object({
 });
 
 /**
- * A successful sign-in. Cookie headers are part of the HTTP contract so the
- * implementation stays behind the generated ogen seam.
+ * A successful sign-in. The session cookie is not part of the contract: the
+ * server's session middleware writes it. `Set-Cookie` here carries only the
+ * cookie that ends the visitor's guest progress, once it has been credited to
+ * the account that just signed in.
  */
 export const zUpdatePasswordResponse = zUser;
 
@@ -2011,21 +2015,23 @@ export const zListPublicReviewsQuery = z.object({
 export const zListPublicReviewsResponse = zReviewPage;
 
 /**
- * A successful sign-out with the expired auth cookies.
+ * A successful sign-out; the session cookie is expired by the server.
  */
 export const zDeleteSessionResponse = z.void();
 
 export const zCreateSessionBody = zSessionInput;
 
 /**
- * A successful sign-in. Cookie headers are part of the HTTP contract so the
- * implementation stays behind the generated ogen seam.
+ * A successful sign-in. The session cookie is not part of the contract: the
+ * server's session middleware writes it. `Set-Cookie` here carries only the
+ * cookie that ends the visitor's guest progress, once it has been credited to
+ * the account that just signed in.
  */
 export const zCreateSessionResponse = zUser;
 
 export const zCreateUserBody = zSignUpInput;
 
 /**
- * A newly-created user and the auth cookies issued for that user.
+ * A newly-created, signed-in user; `Set-Cookie` as in SessionResponse.
  */
 export const zCreateUserResponse = zUser;

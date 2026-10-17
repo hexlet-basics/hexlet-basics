@@ -17,7 +17,7 @@ import { isValidationError, submitWithServerErrors } from "@/lib/server-validati
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
 // registration page and the home page. Submits through the generated
-// `createUser` mutation, which creates the account and sets the JWT cookie
+// `createUser` mutation, which creates the account and starts the session
 // server-side. Validation reuses the generated `zSignUpInput` schema,
 // tightening `firstName` to a plain (optional) string so the empty-string
 // default validates instead of the contract's nullable form.

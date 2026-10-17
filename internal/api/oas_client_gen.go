@@ -402,7 +402,7 @@ type Invoker interface {
 	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
 	// ConsumeMagicLink invokes consumeMagicLink operation.
 	//
-	// Consume a magic link token; sets the JWT cookie.
+	// Consume a magic link token; starts the session.
 	//
 	// GET /api/magic_links/{token}
 	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
@@ -442,13 +442,13 @@ type Invoker interface {
 	CreatePasswordReminder(ctx context.Context, request *EmailInput) (CreatePasswordReminderRes, error)
 	// CreateSession invokes createSession operation.
 	//
-	// Log in with email + password; sets the JWT cookie.
+	// Log in with email + password; starts the session.
 	//
 	// POST /api/session
 	CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error)
 	// CreateUser invokes createUser operation.
 	//
-	// Sign up; sets the JWT cookie on success.
+	// Sign up; starts the session on success.
 	//
 	// POST /api/users
 	CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error)
@@ -460,7 +460,7 @@ type Invoker interface {
 	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
 	// DeleteSession invokes deleteSession operation.
 	//
-	// Log out; clears the JWT cookie.
+	// Log out; ends the session.
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
@@ -468,7 +468,7 @@ type Invoker interface {
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
 	// the book page when there is no request yet. The browser follows it as a link, so only the session
-	// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+	// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 	//
 	// GET /api/book/download
 	DownloadBook(ctx context.Context) (DownloadBookRes, error)
@@ -747,22 +747,11 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateBannerOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -872,22 +861,11 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateBlogPostOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1016,22 +994,11 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateCategoryQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1141,22 +1108,11 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateCourseOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1269,22 +1225,11 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateCourseCategoryOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1394,22 +1339,11 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateCourseLandingPageOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1537,22 +1471,11 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateCourseVersionOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1681,22 +1604,11 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateLandingPageQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1806,22 +1718,11 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateReviewOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -1934,22 +1835,11 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateRoleOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2059,22 +1949,11 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateStaffMemberOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2187,22 +2066,11 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminCreateUserOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2329,22 +2197,11 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteBannerOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2469,22 +2326,11 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteBlogPostOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2628,22 +2474,11 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteCategoryQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2770,22 +2605,11 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteCourseCategoryOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -2910,22 +2734,11 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteCourseLandingPageOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -3069,22 +2882,11 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteLandingPageQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -3209,22 +3011,11 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteReviewOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -3349,22 +3140,11 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteRoleOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -3489,22 +3269,11 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteStaffMemberOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -3629,22 +3398,11 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminDeleteUserOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -8224,22 +7982,11 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminReviewCourseOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -8367,22 +8114,11 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminReviewCourseLessonOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -8644,22 +8380,11 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminSetBlogPostRelatedCoursesOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -8788,22 +8513,11 @@ func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, par
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminSuggestBlogPostRelatedCoursesOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -8933,22 +8647,11 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateBannerOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9076,22 +8779,11 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateBlogPostOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9241,22 +8933,11 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateCategoryQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9384,22 +9065,11 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9530,22 +9200,11 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseCategoryOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9675,22 +9334,11 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseLandingPageOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9840,22 +9488,11 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateLandingPageQnaItemOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -9983,22 +9620,11 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateManagementUserOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10128,22 +9754,11 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateReviewOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10271,22 +9886,11 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateRoleOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10416,22 +10020,11 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateRolePermissionsOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10559,22 +10152,11 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateStaffMemberOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10705,22 +10287,11 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUpdateUserOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -10832,22 +10403,11 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 				return res, errors.Wrap(err, "security \"AdminSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, AdminUploadAttachmentOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11092,7 +10652,7 @@ func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPa
 
 // ConsumeMagicLink invokes consumeMagicLink operation.
 //
-// Consume a magic link token; sets the JWT cookie.
+// Consume a magic link token; starts the session.
 //
 // GET /api/magic_links/{token}
 func (c *Client) ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error) {
@@ -11285,22 +10845,11 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, CreateAssistantMessageOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11409,22 +10958,11 @@ func (c *Client) sendCreateBookRequest(ctx context.Context) (res CreateBookReque
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, CreateBookRequestOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11536,22 +11074,11 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, CreateLeadOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -11757,7 +11284,7 @@ func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailI
 
 // CreateSession invokes createSession operation.
 //
-// Log in with email + password; sets the JWT cookie.
+// Log in with email + password; starts the session.
 //
 // POST /api/session
 func (c *Client) CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error) {
@@ -11840,7 +11367,7 @@ func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (
 
 // CreateUser invokes createUser operation.
 //
-// Sign up; sets the JWT cookie on success.
+// Sign up; starts the session on success.
 //
 // POST /api/users
 func (c *Client) CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error) {
@@ -11992,22 +11519,11 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, DeleteAccountOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12047,7 +11563,7 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 
 // DeleteSession invokes deleteSession operation.
 //
-// Log out; clears the JWT cookie.
+// Log out; ends the session.
 //
 // DELETE /api/session
 func (c *Client) DeleteSession(ctx context.Context) (DeleteSessionRes, error) {
@@ -12116,22 +11632,11 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, DeleteSessionOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -12173,7 +11678,7 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 //
 // Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
 // the book page when there is no request yet. The browser follows it as a link, so only the session
-// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 //
 // GET /api/book/download
 func (c *Client) DownloadBook(ctx context.Context) (DownloadBookRes, error) {
@@ -13616,22 +13121,11 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, LikeBlogPostOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
@@ -14647,22 +14141,11 @@ func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (
 				return res, errors.Wrap(err, "security \"UserSession\"")
 			}
 		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, UpdateProfileOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
 
 		if ok := func() bool {
 		nextRequirement:
 			for _, requirement := range []bitset{
-				{0b00000011},
+				{0b00000001},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {

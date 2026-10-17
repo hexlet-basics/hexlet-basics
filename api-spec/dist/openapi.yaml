@@ -95,21 +95,13 @@ paths:
               $ref: '#/components/schemas/ProfileInput'
       security:
         - UserSession: []
-          XsrfToken: []
     delete:
       operationId: deleteAccount
       description: Delete the current user's account.
       parameters: []
       responses:
         '204':
-          description: A successful sign-out with the expired auth cookies.
-          headers:
-            Set-Cookie:
-              required: true
-              schema:
-                type: array
-                items:
-                  type: string
+          description: A successful sign-out; the session cookie is expired by the server.
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
@@ -130,7 +122,6 @@ paths:
         - User Area
       security:
         - UserSession: []
-          XsrfToken: []
   /api/account/profile/edit:
     get:
       operationId: getProfile
@@ -249,7 +240,6 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/api/users/search:
     get:
       operationId: adminSearchUsers
@@ -393,7 +383,6 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteUser
       parameters:
@@ -432,7 +421,6 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/attachments:
     post:
       operationId: adminUploadAttachment
@@ -486,7 +474,6 @@ paths:
               $ref: '#/components/schemas/AttachmentUploadForm'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/banners:
     get:
       operationId: adminListBanners
@@ -575,7 +562,6 @@ paths:
               $ref: '#/components/schemas/BannerInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/banners/{id}:
     get:
       operationId: adminGetBanner
@@ -671,7 +657,6 @@ paths:
               $ref: '#/components/schemas/BannerInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteBanner
       description: Delete a banner.
@@ -711,7 +696,6 @@ paths:
         - 'Admin: Banners'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/blog_posts:
     get:
       operationId: adminListBlogPosts
@@ -804,7 +788,6 @@ paths:
               $ref: '#/components/schemas/BlogPostInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/blog_posts/{id}:
     get:
       operationId: adminGetBlogPost
@@ -905,7 +888,6 @@ paths:
               $ref: '#/components/schemas/BlogPostInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteBlogPost
       parameters:
@@ -944,7 +926,6 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/blog_posts/{id}/related_courses:
     post:
       operationId: adminSetBlogPostRelatedCourses
@@ -1004,7 +985,6 @@ paths:
               $ref: '#/components/schemas/BlogPostRelatedCoursesInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/blog_posts/{id}/suggest_related_courses:
     post:
       operationId: adminSuggestBlogPostRelatedCourses
@@ -1048,7 +1028,6 @@ paths:
         - 'Admin: Blog Posts'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_categories:
     get:
       operationId: adminListCourseCategories
@@ -1136,7 +1115,6 @@ paths:
               $ref: '#/components/schemas/CourseCategoryInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_categories/{categoryId}/qna_items:
     get:
       operationId: adminListCategoryQnaItems
@@ -1230,7 +1208,6 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
@@ -1289,7 +1266,6 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteCategoryQnaItem
       parameters:
@@ -1334,7 +1310,6 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_categories/{id}:
     get:
       operationId: adminGetCourseCategory
@@ -1432,7 +1407,6 @@ paths:
               $ref: '#/components/schemas/CourseCategoryInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteCourseCategory
       description: Delete a course category.
@@ -1472,7 +1446,6 @@ paths:
         - 'Admin: Course Categories'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_landing_pages:
     get:
       operationId: adminListCourseLandingPages
@@ -1556,7 +1529,6 @@ paths:
               $ref: '#/components/schemas/CourseLandingPageInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
@@ -1654,7 +1626,6 @@ paths:
               $ref: '#/components/schemas/CourseLandingPageInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteCourseLandingPage
       parameters:
@@ -1693,7 +1664,6 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_landing_pages/{landingPageId}/qna_items:
     get:
       operationId: adminListLandingPageQnaItems
@@ -1787,7 +1757,6 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
@@ -1846,7 +1815,6 @@ paths:
               $ref: '#/components/schemas/QnaItemInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteLandingPageQnaItem
       parameters:
@@ -1891,7 +1859,6 @@ paths:
         - 'Admin: Course Landing Pages'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/course_lesson_reviews:
     get:
       operationId: adminListCourseLessonReviews
@@ -2020,7 +1987,6 @@ paths:
         - 'Admin: Course Lessons'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/courses:
     get:
       operationId: adminListCourses
@@ -2104,7 +2070,6 @@ paths:
               $ref: '#/components/schemas/CourseInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/courses/{id}:
     get:
       operationId: adminGetCourse
@@ -2199,7 +2164,6 @@ paths:
               $ref: '#/components/schemas/CourseInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/courses/{id}/review:
     post:
       operationId: adminReviewCourse
@@ -2246,7 +2210,6 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/courses/{id}/versions:
     post:
       operationId: adminCreateCourseVersion
@@ -2297,7 +2260,6 @@ paths:
         - 'Admin: Courses'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/leads:
     get:
       operationId: adminListLeads
@@ -2473,7 +2435,6 @@ paths:
               $ref: '#/components/schemas/RolePermissionsInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/management/roles:
     get:
       operationId: adminListRoles
@@ -2560,7 +2521,6 @@ paths:
               $ref: '#/components/schemas/RoleInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/management/roles/{id}:
     get:
       operationId: adminGetRole
@@ -2655,7 +2615,6 @@ paths:
               $ref: '#/components/schemas/RoleInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteRole
       parameters:
@@ -2694,7 +2653,6 @@ paths:
         - 'Admin: Roles'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/management/staff_members:
     get:
       operationId: adminListStaffMembers
@@ -2778,7 +2736,6 @@ paths:
               $ref: '#/components/schemas/StaffMemberInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/management/staff_members/{id}:
     get:
       operationId: adminGetStaffMember
@@ -2870,7 +2827,6 @@ paths:
               $ref: '#/components/schemas/StaffMemberInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteStaffMember
       parameters:
@@ -2909,7 +2865,6 @@ paths:
         - 'Admin: Staff Members'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/management/users:
     get:
       operationId: adminListManagementUsers
@@ -3045,7 +3000,6 @@ paths:
               $ref: '#/components/schemas/UserInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/messages:
     get:
       operationId: adminListMessages
@@ -3170,7 +3124,6 @@ paths:
               $ref: '#/components/schemas/ReviewInput'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/admin/reviews/{id}:
     get:
       operationId: adminGetReview
@@ -3268,7 +3221,6 @@ paths:
               $ref: '#/components/schemas/ReviewInput'
       security:
         - AdminSession: []
-          XsrfToken: []
     delete:
       operationId: adminDeleteReview
       parameters:
@@ -3307,7 +3259,6 @@ paths:
         - 'Admin: Reviews'
       security:
         - AdminSession: []
-          XsrfToken: []
   /api/ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
@@ -3423,7 +3374,6 @@ paths:
               $ref: '#/components/schemas/AssistantMessageInput'
       security:
         - UserSession: []
-          XsrfToken: []
   /api/banner:
     get:
       operationId: getActiveBanner
@@ -3522,7 +3472,6 @@ paths:
         - Blog
       security:
         - UserSession: []
-          XsrfToken: []
   /api/blog_posts/{id}/next:
     get:
       operationId: getNextBlogPost
@@ -3648,7 +3597,6 @@ paths:
         - Marketing
       security:
         - UserSession: []
-          XsrfToken: []
   /api/book/download:
     get:
       operationId: downloadBook
@@ -3656,7 +3604,7 @@ paths:
         Download the book: mark the request downloaded and redirect to the PDF in
         blob storage, or back to the book page when there is no request yet. The
         browser follows it as a link, so only the session cookie is required — a
-        navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+        navigation is a GET, and a GET changes nothing unsafe.
       parameters: []
       responses:
         '302':
@@ -3969,7 +3917,6 @@ paths:
               $ref: '#/components/schemas/LeadInput'
       security:
         - UserSession: []
-          XsrfToken: []
   /api/lessons/{id}/check:
     post:
       operationId: checkLesson
@@ -4161,7 +4108,7 @@ paths:
   /api/magic_links/{token}:
     get:
       operationId: consumeMagicLink
-      description: Consume a magic link token; sets the JWT cookie.
+      description: Consume a magic link token; starts the session.
       parameters:
         - name: token
           in: path
@@ -4171,11 +4118,13 @@ paths:
       responses:
         '200':
           description: |-
-            A successful sign-in. Cookie headers are part of the HTTP contract so the
-            implementation stays behind the generated ogen seam.
+            A successful sign-in. The session cookie is not part of the contract: the
+            server's session middleware writes it. `Set-Cookie` here carries only the
+            cookie that ends the visitor's guest progress, once it has been credited to
+            the account that just signed in.
           headers:
             Set-Cookie:
-              required: true
+              required: false
               schema:
                 type: array
                 items:
@@ -4300,11 +4249,13 @@ paths:
       responses:
         '200':
           description: |-
-            A successful sign-in. Cookie headers are part of the HTTP contract so the
-            implementation stays behind the generated ogen seam.
+            A successful sign-in. The session cookie is not part of the contract: the
+            server's session middleware writes it. `Set-Cookie` here carries only the
+            cookie that ends the visitor's guest progress, once it has been credited to
+            the account that just signed in.
           headers:
             Set-Cookie:
-              required: true
+              required: false
               schema:
                 type: array
                 items:
@@ -4443,16 +4394,18 @@ paths:
   /api/session:
     post:
       operationId: createSession
-      description: Log in with email + password; sets the JWT cookie.
+      description: Log in with email + password; starts the session.
       parameters: []
       responses:
         '200':
           description: |-
-            A successful sign-in. Cookie headers are part of the HTTP contract so the
-            implementation stays behind the generated ogen seam.
+            A successful sign-in. The session cookie is not part of the contract: the
+            server's session middleware writes it. `Set-Cookie` here carries only the
+            cookie that ends the visitor's guest progress, once it has been credited to
+            the account that just signed in.
           headers:
             Set-Cookie:
-              required: true
+              required: false
               schema:
                 type: array
                 items:
@@ -4490,18 +4443,11 @@ paths:
               $ref: '#/components/schemas/SessionInput'
     delete:
       operationId: deleteSession
-      description: Log out; clears the JWT cookie.
+      description: Log out; ends the session.
       parameters: []
       responses:
         '204':
-          description: A successful sign-out with the expired auth cookies.
-          headers:
-            Set-Cookie:
-              required: true
-              schema:
-                type: array
-                items:
-                  type: string
+          description: A successful sign-out; the session cookie is expired by the server.
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
@@ -4522,18 +4468,17 @@ paths:
         - Auth
       security:
         - UserSession: []
-          XsrfToken: []
   /api/users:
     post:
       operationId: createUser
-      description: Sign up; sets the JWT cookie on success.
+      description: Sign up; starts the session on success.
       parameters: []
       responses:
         '201':
-          description: A newly-created user and the auth cookies issued for that user.
+          description: A newly-created, signed-in user; `Set-Cookie` as in SessionResponse.
           headers:
             Set-Cookie:
-              required: true
+              required: false
               schema:
                 type: array
                 items:
@@ -7051,12 +6996,8 @@ components:
     UserSession:
       type: apiKey
       in: cookie
-      name: JWT
-    XsrfToken:
-      type: apiKey
-      in: header
-      name: X-XSRF-TOKEN
+      name: session
     AdminSession:
       type: apiKey
       in: cookie
-      name: JWT
+      name: session

@@ -262,6 +262,26 @@ func (_u *UserUpdate) ClearConfirmationToken() *UserUpdate {
 	return _u
 }
 
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (_u *UserUpdate) SetPasswordChangedAt(v time.Time) *UserUpdate {
+	_u.mutation.SetPasswordChangedAt(v)
+	return _u
+}
+
+// SetNillablePasswordChangedAt sets the "password_changed_at" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePasswordChangedAt(v *time.Time) *UserUpdate {
+	if v != nil {
+		_u.SetPasswordChangedAt(*v)
+	}
+	return _u
+}
+
+// ClearPasswordChangedAt clears the value of the "password_changed_at" field.
+func (_u *UserUpdate) ClearPasswordChangedAt() *UserUpdate {
+	_u.mutation.ClearPasswordChangedAt()
+	return _u
+}
+
 // SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
 func (_u *UserUpdate) SetStaffMemberID(id int) *UserUpdate {
 	_u.mutation.SetStaffMemberID(id)
@@ -408,6 +428,12 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ConfirmationTokenCleared() {
 		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
+	}
+	if value, ok := _u.mutation.PasswordChangedAt(); ok {
+		_spec.SetField(user.FieldPasswordChangedAt, field.TypeTime, value)
+	}
+	if _u.mutation.PasswordChangedAtCleared() {
+		_spec.ClearField(user.FieldPasswordChangedAt, field.TypeTime)
 	}
 	if _u.mutation.StaffMemberCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -691,6 +717,26 @@ func (_u *UserUpdateOne) ClearConfirmationToken() *UserUpdateOne {
 	return _u
 }
 
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (_u *UserUpdateOne) SetPasswordChangedAt(v time.Time) *UserUpdateOne {
+	_u.mutation.SetPasswordChangedAt(v)
+	return _u
+}
+
+// SetNillablePasswordChangedAt sets the "password_changed_at" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePasswordChangedAt(v *time.Time) *UserUpdateOne {
+	if v != nil {
+		_u.SetPasswordChangedAt(*v)
+	}
+	return _u
+}
+
+// ClearPasswordChangedAt clears the value of the "password_changed_at" field.
+func (_u *UserUpdateOne) ClearPasswordChangedAt() *UserUpdateOne {
+	_u.mutation.ClearPasswordChangedAt()
+	return _u
+}
+
 // SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
 func (_u *UserUpdateOne) SetStaffMemberID(id int) *UserUpdateOne {
 	_u.mutation.SetStaffMemberID(id)
@@ -867,6 +913,12 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.ConfirmationTokenCleared() {
 		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
+	}
+	if value, ok := _u.mutation.PasswordChangedAt(); ok {
+		_spec.SetField(user.FieldPasswordChangedAt, field.TypeTime, value)
+	}
+	if _u.mutation.PasswordChangedAtCleared() {
+		_spec.ClearField(user.FieldPasswordChangedAt, field.TypeTime)
 	}
 	if _u.mutation.StaffMemberCleared() {
 		edge := &sqlgraph.EdgeSpec{

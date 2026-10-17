@@ -17,8 +17,6 @@ type SecurityHandler interface {
 	HandleAdminSession(ctx context.Context, operationName OperationName, t AdminSession) (context.Context, error)
 	// HandleUserSession handles UserSession security.
 	HandleUserSession(ctx context.Context, operationName OperationName, t UserSession) (context.Context, error)
-	// HandleXsrfToken handles XsrfToken security.
-	HandleXsrfToken(ctx context.Context, operationName OperationName, t XsrfToken) (context.Context, error)
 }
 
 func findAuthorization(h http.Header, prefix string) (string, bool) {
@@ -166,81 +164,9 @@ func GetRolesForUserSession(operation string) []string {
 	return result
 }
 
-// operationRolesXsrfToken is a private map storing roles per operation.
-var operationRolesXsrfToken = map[string][]string{
-	AdminCreateBannerOperation:                  []string{},
-	AdminCreateBlogPostOperation:                []string{},
-	AdminCreateCategoryQnaItemOperation:         []string{},
-	AdminCreateCourseOperation:                  []string{},
-	AdminCreateCourseCategoryOperation:          []string{},
-	AdminCreateCourseLandingPageOperation:       []string{},
-	AdminCreateCourseVersionOperation:           []string{},
-	AdminCreateLandingPageQnaItemOperation:      []string{},
-	AdminCreateReviewOperation:                  []string{},
-	AdminCreateRoleOperation:                    []string{},
-	AdminCreateStaffMemberOperation:             []string{},
-	AdminCreateUserOperation:                    []string{},
-	AdminDeleteBannerOperation:                  []string{},
-	AdminDeleteBlogPostOperation:                []string{},
-	AdminDeleteCategoryQnaItemOperation:         []string{},
-	AdminDeleteCourseCategoryOperation:          []string{},
-	AdminDeleteCourseLandingPageOperation:       []string{},
-	AdminDeleteLandingPageQnaItemOperation:      []string{},
-	AdminDeleteReviewOperation:                  []string{},
-	AdminDeleteRoleOperation:                    []string{},
-	AdminDeleteStaffMemberOperation:             []string{},
-	AdminDeleteUserOperation:                    []string{},
-	AdminReviewCourseOperation:                  []string{},
-	AdminReviewCourseLessonOperation:            []string{},
-	AdminSetBlogPostRelatedCoursesOperation:     []string{},
-	AdminSuggestBlogPostRelatedCoursesOperation: []string{},
-	AdminUpdateBannerOperation:                  []string{},
-	AdminUpdateBlogPostOperation:                []string{},
-	AdminUpdateCategoryQnaItemOperation:         []string{},
-	AdminUpdateCourseOperation:                  []string{},
-	AdminUpdateCourseCategoryOperation:          []string{},
-	AdminUpdateCourseLandingPageOperation:       []string{},
-	AdminUpdateLandingPageQnaItemOperation:      []string{},
-	AdminUpdateManagementUserOperation:          []string{},
-	AdminUpdateReviewOperation:                  []string{},
-	AdminUpdateRoleOperation:                    []string{},
-	AdminUpdateRolePermissionsOperation:         []string{},
-	AdminUpdateStaffMemberOperation:             []string{},
-	AdminUpdateUserOperation:                    []string{},
-	AdminUploadAttachmentOperation:              []string{},
-	CreateAssistantMessageOperation:             []string{},
-	CreateBookRequestOperation:                  []string{},
-	CreateLeadOperation:                         []string{},
-	DeleteAccountOperation:                      []string{},
-	DeleteSessionOperation:                      []string{},
-	LikeBlogPostOperation:                       []string{},
-	UpdateProfileOperation:                      []string{},
-}
-
-// GetRolesForXsrfToken returns the required roles for the given operation.
-//
-// This is useful for authorization scenarios where you need to know which roles
-// are required for an operation.
-//
-// Example:
-//
-//	requiredRoles := GetRolesForXsrfToken(AddPetOperation)
-//
-// Returns nil if the operation has no role requirements or if the operation is unknown.
-func GetRolesForXsrfToken(operation string) []string {
-	roles, ok := operationRolesXsrfToken[operation]
-	if !ok {
-		return nil
-	}
-	// Return a copy to prevent external modification
-	result := make([]string, len(roles))
-	copy(result, roles)
-	return result
-}
-
 func (s *Server) securityAdminSession(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
 	var t AdminSession
-	const parameterName = "JWT"
+	const parameterName = "session"
 	var value string
 	switch cookie, err := req.Cookie(parameterName); {
 	case err == nil: // if NO error
@@ -263,7 +189,7 @@ func (s *Server) securityAdminSession(ctx context.Context, operationName Operati
 
 func (s *Server) securityUserSession(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
 	var t UserSession
-	const parameterName = "JWT"
+	const parameterName = "session"
 	var value string
 	switch cookie, err := req.Cookie(parameterName); {
 	case err == nil: // if NO error
@@ -284,32 +210,12 @@ func (s *Server) securityUserSession(ctx context.Context, operationName Operatio
 	return rctx, true, err
 }
 
-func (s *Server) securityXsrfToken(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
-	var t XsrfToken
-	const parameterName = "X-XSRF-TOKEN"
-	value := req.Header.Get(parameterName)
-	if value == "" {
-		return ctx, false, nil
-	}
-	t.APIKey = value
-	t.Roles = operationRolesXsrfToken[operationName]
-	rctx, err := s.sec.HandleXsrfToken(ctx, operationName, t)
-	if errors.Is(err, ogenerrors.ErrSkipServerSecurity) {
-		return nil, false, nil
-	} else if err != nil {
-		return nil, false, err
-	}
-	return rctx, true, err
-}
-
 // SecuritySource is provider of security values (tokens, passwords, etc.).
 type SecuritySource interface {
 	// AdminSession provides AdminSession security value.
 	AdminSession(ctx context.Context, operationName OperationName) (AdminSession, error)
 	// UserSession provides UserSession security value.
 	UserSession(ctx context.Context, operationName OperationName) (UserSession, error)
-	// XsrfToken provides XsrfToken security value.
-	XsrfToken(ctx context.Context, operationName OperationName) (XsrfToken, error)
 }
 
 func (s *Client) securityAdminSession(ctx context.Context, operationName OperationName, req *http.Request) error {
@@ -318,7 +224,7 @@ func (s *Client) securityAdminSession(ctx context.Context, operationName Operati
 		return errors.Wrap(err, "security source \"AdminSession\"")
 	}
 	req.AddCookie(&http.Cookie{
-		Name:  "JWT",
+		Name:  "session",
 		Value: t.APIKey,
 	})
 	return nil
@@ -329,16 +235,8 @@ func (s *Client) securityUserSession(ctx context.Context, operationName Operatio
 		return errors.Wrap(err, "security source \"UserSession\"")
 	}
 	req.AddCookie(&http.Cookie{
-		Name:  "JWT",
+		Name:  "session",
 		Value: t.APIKey,
 	})
-	return nil
-}
-func (s *Client) securityXsrfToken(ctx context.Context, operationName OperationName, req *http.Request) error {
-	t, err := s.sec.XsrfToken(ctx, operationName)
-	if err != nil {
-		return errors.Wrap(err, "security source \"XsrfToken\"")
-	}
-	req.Header.Set("X-XSRF-TOKEN", t.APIKey)
 	return nil
 }

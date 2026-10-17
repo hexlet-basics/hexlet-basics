@@ -111,7 +111,7 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	session, ok := res.(*api.UserHeaders)
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, u.ID, int(session.Response.ID))
-	assert.Contains(t, h.ResponseCookies()[0], "JWT=")
+	assert.True(t, startsSession(h.ResponseCookies()))
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug},
 		finishedLessonSlugs(t, h, u.ID, jsCourseSlug))
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))

@@ -13,12 +13,14 @@ import (
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/dashboard"
+	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 )
@@ -50,7 +52,22 @@ type Server struct {
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
 	// the upload operation only translates its outcome to the contract.
 	assets *assetstore.Store
-	auth   *AuthHandler
+	// sessions begins and ends the signed-in visitor's session (ADR-0017);
+	// security is the seam that recognises a request by it.
+	sessions *session.Manager
+	security *Security
+	// credentials checks and changes passwords; registrar creates accounts and
+	// remover removes them.
+	credentials *accounts.Credentials
+	registrar   accounts.UserRegistrar
+	remover     accounts.AccountRemover
+	events      events.StandalonePublisher
+	// emailTokens verifies the Magic Link and Password Reset links.
+	emailTokens *emailtokens.Tokens
+	// guests is the visitor-progress cookie.
+	guests *guestCookies
+	// secure marks cookies Secure when the site is served over https.
+	secure bool
 	// leads stores a lead and raises LeadCreated in one transaction.
 	leads leads.Creator
 	// books stores a book request and raises BookRequested in one transaction.
@@ -88,6 +105,7 @@ type Deps struct {
 	RelatedCoursesSet RelatedCoursesReplacer
 	Progress          progress.Tracker
 	Assets            *assetstore.Store
+	Sessions          *session.Manager
 	Registrar         accounts.UserRegistrar
 	Remover           accounts.AccountRemover
 	Events            events.StandalonePublisher
@@ -105,6 +123,8 @@ type Deps struct {
 
 // NewServer wires the handler to its dependencies.
 func NewServer(deps Deps) *Server {
+	secure := deps.Config.SecureCookies()
+	guests := newGuestCookies(deps.Config.GuestCookieSecret, secure)
 	return &Server{
 		db:                deps.DB,
 		conv:              &apiconv.ConverterImpl{},
@@ -114,27 +134,34 @@ func NewServer(deps Deps) *Server {
 		relatedCoursesSet: deps.RelatedCoursesSet,
 		progress:          deps.Progress,
 		assets:            deps.Assets,
-		auth: NewAuthHandler(deps.DB, deps.Config, deps.I18n, deps.Errors, deps.Registrar,
-			deps.Remover, deps.Events, deps.Progress, deps.Jobs),
-		i18n:        deps.I18n,
-		leads:       deps.Leads,
-		books:       deps.Books,
-		errors:      deps.Errors,
-		yandexFeed:  deps.YandexFeed,
-		catalog:     landingpages.NewCatalog(deps.DB),
-		assistant:   deps.Assistant,
-		postRemover: deps.PostRemover,
-		blogPublic:  blogposts.NewPublic(deps.DB),
-		permissions: deps.Permissions,
-		dashboard:   deps.Dashboard,
-		sitemap:     deps.Sitemap,
+		sessions:          deps.Sessions,
+		security:          newSecurity(deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
+		credentials:       accounts.NewCredentials(deps.DB),
+		registrar:         deps.Registrar,
+		remover:           deps.Remover,
+		events:            deps.Events,
+		emailTokens:       emailtokens.New(deps.Config.EmailTokenSecret),
+		guests:            guests,
+		secure:            secure,
+		i18n:              deps.I18n,
+		leads:             deps.Leads,
+		books:             deps.Books,
+		errors:            deps.Errors,
+		yandexFeed:        deps.YandexFeed,
+		catalog:           landingpages.NewCatalog(deps.DB),
+		assistant:         deps.Assistant,
+		postRemover:       deps.PostRemover,
+		blogPublic:        blogposts.NewPublic(deps.DB),
+		permissions:       deps.Permissions,
+		dashboard:         deps.Dashboard,
+		sitemap:           deps.Sitemap,
 	}
 }
 
-// AuthHandler returns the shared go-pkgz/auth adapter used by both the ogen
-// handlers and the outer HTTP router.
-func (s *Server) AuthHandler() *AuthHandler {
-	return s.auth
+// Security returns the seam that recognises a request by its session: ogen's
+// generated security handler and the pipeline that wraps the generated server.
+func (s *Server) Security() *Security {
+	return s.security
 }
 
 // ListCourses returns the published course catalog.

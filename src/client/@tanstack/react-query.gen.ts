@@ -1847,7 +1847,7 @@ export const downloadBookQueryKey = (options?: Options<DownloadBookData>) => cre
  * Download the book: mark the request downloaded and redirect to the PDF in
  * blob storage, or back to the book page when there is no request yet. The
  * browser follows it as a link, so only the session cookie is required — a
- * navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+ * navigation is a GET, and a GET changes nothing unsafe.
  */
 export const downloadBookOptions = (options?: Options<DownloadBookData>) => queryOptions<DownloadBookResponse, AxiosError<DownloadBookError>, DownloadBookResponse, ReturnType<typeof downloadBookQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -2103,7 +2103,7 @@ export const createMagicLinkMutation = (options?: Partial<Options<CreateMagicLin
 export const consumeMagicLinkQueryKey = (options: Options<ConsumeMagicLinkData>) => createQueryKey('consumeMagicLink', options);
 
 /**
- * Consume a magic link token; sets the JWT cookie.
+ * Consume a magic link token; starts the session.
  */
 export const consumeMagicLinkOptions = (options: Options<ConsumeMagicLinkData>) => queryOptions<ConsumeMagicLinkResponse, AxiosError<ConsumeMagicLinkError>, ConsumeMagicLinkResponse, ReturnType<typeof consumeMagicLinkQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -2273,7 +2273,7 @@ export const listPublicReviewsInfiniteOptions = (options?: Options<ListPublicRev
 };
 
 /**
- * Log out; clears the JWT cookie.
+ * Log out; ends the session.
  */
 export const deleteSessionMutation = (options?: Partial<Options<DeleteSessionData>>): UseMutationOptions<DeleteSessionResponse, AxiosError<DeleteSessionError>, Options<DeleteSessionData>> => {
   const mutationOptions: UseMutationOptions<DeleteSessionResponse, AxiosError<DeleteSessionError>, Options<DeleteSessionData>> = {
@@ -2290,7 +2290,7 @@ export const deleteSessionMutation = (options?: Partial<Options<DeleteSessionDat
 };
 
 /**
- * Log in with email + password; sets the JWT cookie.
+ * Log in with email + password; starts the session.
  */
 export const createSessionMutation = (options?: Partial<Options<CreateSessionData>>): UseMutationOptions<CreateSessionResponse, AxiosError<CreateSessionError>, Options<CreateSessionData>> => {
   const mutationOptions: UseMutationOptions<CreateSessionResponse, AxiosError<CreateSessionError>, Options<CreateSessionData>> = {
@@ -2307,7 +2307,7 @@ export const createSessionMutation = (options?: Partial<Options<CreateSessionDat
 };
 
 /**
- * Sign up; sets the JWT cookie on success.
+ * Sign up; starts the session on success.
  */
 export const createUserMutation = (options?: Partial<Options<CreateUserData>>): UseMutationOptions<CreateUserResponse, AxiosError<CreateUserError>, Options<CreateUserData>> => {
   const mutationOptions: UseMutationOptions<CreateUserResponse, AxiosError<CreateUserError>, Options<CreateUserData>> = {

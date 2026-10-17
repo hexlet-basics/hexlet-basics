@@ -206,7 +206,7 @@ ENV_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/hexlet-basics-cutover${REHEARSAL
 mkdir -p "$(dirname "$ENV_FILE")"
 
 # Keys every Go pod needs in secrets.code_basics.env (k8s/app-chart/values.yaml).
-REQUIRED_SECRET_KEYS=(DATABASE_URL JWT_SECRET EMAIL_TOKEN_SECRET
+REQUIRED_SECRET_KEYS=(DATABASE_URL GUEST_COOKIE_SECRET EMAIL_TOKEN_SECRET
   MAIL_POSTBOX_ACCESS_KEY_ID MAIL_POSTBOX_SECRET_ACCESS_KEY BLOB_BUCKET_URL
   AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION GITHUB_WEBHOOK_SECRET
   AMOCRM_BASE_URL AMOCRM_AUTH_TOKEN OPENAI_ACCESS_TOKEN SENTRY_DSN SENTRY_API_TOKEN)
@@ -410,7 +410,7 @@ s_secrets() {
   say "The editor opens legacy/k8s/secrets.yaml decrypted (in memory, re-encrypted on save)."
   say "Under secrets.code_basics.env make sure these keys exist:"
   note "${REQUIRED_SECRET_KEYS[*]}"
-  step "JWT_SECRET, EMAIL_TOKEN_SECRET: fresh random values (e.g. in vim: :r !openssl rand -hex 32)."
+  step "GUEST_COOKIE_SECRET, EMAIL_TOKEN_SECRET: fresh random values (e.g. in vim: :r !openssl rand -hex 32)."
   step "MAIL_POSTBOX_*: the static key from the previous stage."
   step "BLOB_BUCKET_URL: s3://<bucket>?endpoint=https://storage.yandexcloud.net&region=ru-central1,"
   step "  AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY/AWS_REGION: the legacy STORAGE_S3_* values."
@@ -419,7 +419,7 @@ s_secrets() {
   pause "Press Enter to open the editor"
   make -s --no-print-directory -C "$REPO_ROOT/k8s" secrets-edit
   verify "every required key renders into codebasics-environment-secrets" secret_keys_complete
-  verify "JWT_SECRET is not the public development value" secret_is_not_dev JWT_SECRET
+  verify "GUEST_COOKIE_SECRET is not the public development value" secret_is_not_dev GUEST_COOKIE_SECRET
   verify "EMAIL_TOKEN_SECRET is not the public development value" secret_is_not_dev EMAIL_TOKEN_SECRET
   say "Plain settings from values.yaml (goEnv):"
   local k v

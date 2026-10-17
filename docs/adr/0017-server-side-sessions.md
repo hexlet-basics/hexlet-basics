@@ -24,12 +24,19 @@ session to migrate.
 - [`alexedwards/scs`](https://github.com/alexedwards/scs) owns the cookie, the
   token rotation, the idle and absolute timeouts and the middleware. The token is
   stored hashed (`HashTokenInStore`), so a leaked table logs nobody in.
-- The store is an ent entity (`sessions`), not scs's `postgresstore`. The store
+- The store is an ent entity (`user_sessions`; the Rails baseline's own `sessions`
+  table is a different shape and is left alone), not scs's `postgresstore`. The store
   has to run inside the test's rolled-back transaction, which a `*sql.DB` store
   cannot, and expired rows are removed by a River periodic job in the worker
   rather than by a goroutine the store starts itself (ADR-0010).
-- A session lives 31 days from sign-in and ends after 7 days without a request.
-  The token is renewed on sign-in, sign-up and password change (session
+- A session lives at most 31 days from sign-in and ends after 7 days without a
+  request. The cookie is set once, at sign-in, for the full 31 days and never
+  changes: pages are rendered by the SSR server, which calls this API for the
+  browser and does not relay the API's `Set-Cookie`, so a cookie that moved with
+  use would be refreshed for the SSR server and never for the browser. Idleness
+  is the time of the last request, kept inside the session and recorded at most
+  once an hour, so a read is not a write (scs's own idle timeout rewrites the
+  session on every request and moves the cookie). The token is renewed on sign-in, sign-up and password change (session
   fixation) and destroyed on sign-out and account removal.
 - A session remembers the user and the user's `password_changed_at` when it
   started. Changing or resetting the password makes every other session of that
@@ -61,8 +68,10 @@ tokens (`emailtokens`) that end in a sign-in, not sessions.
 ## Consequences
 
 - A session can be ended from the server, and a password change ends the others.
-- The cost is a store write on each authenticated request: idle timeout moves
-  the expiry forward, which scs does by re-committing the session.
-- The API server needs `PublicURL` to be the origin browsers use, because
-  `CrossOriginProtection` compares `Origin` with the request's host.
+- A busy session is written back at most once an hour, not on every request. A
+  session that went idle stays in the table until its 31 days are over, when the
+  periodic job removes it; nothing reads it in between.
+- `CrossOriginProtection` compares a request's `Origin` with its `Host` when the
+  browser sent no `Sec-Fetch-Site`, so the ingress must pass `Host` through
+  unchanged.
 - `go-pkgz/auth` leaves `go.mod`; `golang-jwt` stays for `emailtokens`.

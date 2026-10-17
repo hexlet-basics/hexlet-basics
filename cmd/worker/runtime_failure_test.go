@@ -145,7 +145,7 @@ func workerDependencies(t *testing.T) di.WorkerDependencies {
 	t.Helper()
 	t.Setenv("DATABASE_URL", "postgres://nobody@127.0.0.1:1/none")
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("JWT_SECRET", "test-secret")
+	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
 	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
 	dependencies, err := di.BuildWorker()
 	require.NoError(t, err)

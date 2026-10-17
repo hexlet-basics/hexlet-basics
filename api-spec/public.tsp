@@ -197,7 +197,7 @@ interface Blog {
 
   /** Like a post once per signed-in user; a repeat like changes nothing. */
   @post
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @route("/{id}/likes")
   @operationId("likeBlogPost")
   like(@path id: int32): {
@@ -262,7 +262,7 @@ model FirstVisit {
 
 @route("/leads")
 @tag("Leads")
-@useAuth([UserSession, XsrfToken])
+@useAuth(UserSession)
 interface PublicLeads {
   /** Submit a contact request. */
   @post
@@ -289,7 +289,7 @@ interface Book {
 
   /** Request the book for the signed-in user. A repeat request changes nothing. */
   @post
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @route("/create_request")
   @operationId("createBookRequest")
   createRequest(): NoContent | UnauthorizedError | ApiError;
@@ -298,7 +298,7 @@ interface Book {
    * Download the book: mark the request downloaded and redirect to the PDF in
    * blob storage, or back to the book page when there is no request yet. The
    * browser follows it as a link, so only the session cookie is required — a
-   * navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+   * navigation is a GET, and a GET changes nothing unsafe.
    */
   @get
   @useAuth(UserSession)

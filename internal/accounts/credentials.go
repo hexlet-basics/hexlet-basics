@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -72,12 +73,20 @@ func (c *Credentials) Authenticate(ctx context.Context, email, password string) 
 // SetPassword replaces u's password and returns the saved user. Changing the
 // digest is also what kills a Password Reset link, whose fingerprint binds it.
 // A password bcrypt cannot encode is ErrPasswordProcessing.
+//
+// It also stamps when the password changed: a session remembers the stamp it
+// began under and stops matching when it moves, which signs the user's other
+// sessions out (ADR-0017). The stamp is cut to the database's microseconds so the
+// saved user and a later load of the row carry the same value.
 func (c *Credentials) SetPassword(ctx context.Context, u *ent.User, password string) (*ent.User, error) {
 	digest, err := hashPassword(password)
 	if err != nil {
 		return nil, err
 	}
-	return u.Update().SetPasswordDigest(digest).Save(ctx)
+	return u.Update().
+		SetPasswordDigest(digest).
+		SetPasswordChangedAt(time.Now().UTC().Truncate(time.Microsecond)).
+		Save(ctx)
 }
 
 // hashPassword is the one place a password becomes a digest.

@@ -11,9 +11,9 @@ namespace HexletBasics;
 // ---------------------------------------------------------------------------
 // Authentication and the signed-in user area.
 //
-// Auth is a JWT in an httpOnly cookie (ADR-0003/0008): login/signup/magic-link
-// endpoints set the cookie server-side, so the contract just returns the
-// `User`. Legacy URLs preserved. Phone sign-in and passkeys are out of the
+// Auth is a server-side session behind an httpOnly cookie (ADR-0017):
+// login/signup/magic-link endpoints start it, and the server writes its cookie
+// itself, so the contract just returns the `User`. Legacy URLs preserved. Phone sign-in and passkeys are out of the
 // cutover (ADR-0015) and have no operations here.
 // ---------------------------------------------------------------------------
 
@@ -61,18 +61,19 @@ model CurrentUser {
 }
 
 /**
- * A successful sign-in. Cookie headers are part of the HTTP contract so the
- * implementation stays behind the generated ogen seam.
+ * A successful sign-in. The session cookie is not part of the contract: the
+ * server's session middleware writes it. `Set-Cookie` here carries only the
+ * cookie that ends the visitor's guest progress, once it has been credited to
+ * the account that just signed in.
  */
 model SessionResponse {
-  @header("Set-Cookie") setCookie: string[];
+  @header("Set-Cookie") setCookie?: string[];
   @body user: User;
 }
 
-/** A successful sign-out with the expired auth cookies. */
+/** A successful sign-out; the session cookie is expired by the server. */
 model SessionDeleted {
   @statusCode statusCode: 204;
-  @header("Set-Cookie") setCookie: string[];
 }
 
 /** A remembered locale choice and the cookie that carries it. */
@@ -81,10 +82,10 @@ model LocaleSwitched {
   @header("Set-Cookie") setCookie: string[];
 }
 
-/** A newly-created user and the auth cookies issued for that user. */
+/** A newly-created, signed-in user; `Set-Cookie` as in SessionResponse. */
 model UserCreated {
   @statusCode statusCode: 201;
-  @header("Set-Cookie") setCookie: string[];
+  @header("Set-Cookie") setCookie?: string[];
   @body user: User;
 }
 
@@ -102,14 +103,14 @@ model MyDashboard {
 @route("/session")
 @tag("Auth")
 interface Session {
-  /** Log in with email + password; sets the JWT cookie. */
+  /** Log in with email + password; starts the session. */
   @post
   @operationId("createSession")
   create(@body body: SessionInput): SessionResponse | ValidationError | ApiError;
 
-  /** Log out; clears the JWT cookie. */
+  /** Log out; ends the session. */
   @delete
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @operationId("deleteSession")
   delete(): SessionDeleted | UnauthorizedError | ApiError;
 }
@@ -138,7 +139,7 @@ interface My {
 @route("/users")
 @tag("Auth")
 interface Registration {
-  /** Sign up; sets the JWT cookie on success. */
+  /** Sign up; starts the session on success. */
   @post
   @operationId("createUser")
   create(@body body: SignUpInput): UserCreated | ValidationError | ApiError;
@@ -152,7 +153,7 @@ interface MagicLinks {
   @operationId("createMagicLink")
   create(@body body: EmailInput): NoContent | ValidationError | ApiError;
 
-  /** Consume a magic link token; sets the JWT cookie. */
+  /** Consume a magic link token; starts the session. */
   @get
   @route("/{token}")
   @operationId("consumeMagicLink")
@@ -201,13 +202,13 @@ interface AccountProfile {
 
   /** Update the current user's profile. */
   @patch
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @operationId("updateProfile")
   update(@body body: ProfileInput): User | ValidationError | UnauthorizedError | ApiError;
 
   /** Delete the current user's account. */
   @delete
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @operationId("deleteAccount")
   delete(): SessionDeleted | UnauthorizedError | ApiError;
 }

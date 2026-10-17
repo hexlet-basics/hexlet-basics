@@ -19,9 +19,9 @@ const (
 
 // GetProfile returns the signed-in user's editable profile. The contract
 // guarantees a session, so the user is always in the context here.
-func (h *AuthHandler) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
+func (s *Server) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
 	u := MustAuthenticatedUser(ctx)
-	profile := h.conv.ToUser(u)
+	profile := s.conv.ToUser(u)
 	return &profile, nil
 }
 
@@ -29,7 +29,7 @@ func (h *AuthHandler) GetProfile(ctx context.Context) (api.GetProfileRes, error)
 // rules are contract constraints, so the generated server has already refused
 // anything legacy's validations would have. A null clears the column, as
 // legacy's `update(struct.attributes)` did with a nil attribute.
-func (h *AuthHandler) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.UpdateProfileRes, error) {
+func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.UpdateProfileRes, error) {
 	u := MustAuthenticatedUser(ctx)
 
 	update := u.Update()
@@ -47,32 +47,31 @@ func (h *AuthHandler) UpdateProfile(ctx context.Context, req *api.ProfileInput) 
 	if err != nil {
 		return nil, err
 	}
-	profile := h.conv.ToUser(u)
+	profile := s.conv.ToUser(u)
 	return &profile, nil
 }
 
 // DeleteAccount removes the signed-in user's account and signs them out. The
 // row stays, in the removed state, as in legacy. Legacy ended only the current
-// device's session; here every other device's JWT stops working too, because
-// authentication refuses a removed user whatever token it carries.
-func (h *AuthHandler) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
+// device's session; here every other device's session stops working too,
+// because a session is only as good as the account it names and a removed
+// account is refused whatever session it carries.
+func (s *Server) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
 	u := MustAuthenticatedUser(ctx)
-	if err := h.remover.Remove(ctx, u.ID); err != nil {
+	if err := s.remover.Remove(ctx, u.ID); err != nil {
 		return nil, lastAdminError(err)
 	}
-
-	cookies, err := h.expiredSessionCookies()
-	if err != nil {
+	if err := s.sessions.End(ctx); err != nil {
 		return nil, err
 	}
-	return &api.DeleteAccountNoContent{SetCookie: cookies}, nil
+	return &api.DeleteAccountNoContent{}, nil
 }
 
 // SwitchLocale remembers the chosen locale (legacy LocalesController#switch).
 // Legacy answered with a redirect to the same page in the new locale; the page
 // knows its own URL, so here it navigates itself once the choice is stored.
 // The contract's Locale enum already refuses anything but en, ru and es.
-func (h *AuthHandler) SwitchLocale(ctx context.Context, params api.SwitchLocaleParams) (*api.SwitchLocaleNoContent, error) {
+func (s *Server) SwitchLocale(ctx context.Context, params api.SwitchLocaleParams) (*api.SwitchLocaleNoContent, error) {
 	locale := string(params.Locale)
 	if u, ok := AuthenticatedUser(ctx); ok {
 		if err := u.Update().SetLocale(locale).Exec(ctx); err != nil {
@@ -86,27 +85,8 @@ func (h *AuthHandler) SwitchLocale(ctx context.Context, params api.SwitchLocaleP
 		Path:     "/",
 		MaxAge:   int(localeCookieTTL.Seconds()),
 		HttpOnly: true,
-		Secure:   h.secure,
+		Secure:   s.secure,
 		SameSite: http.SameSiteLaxMode,
 	}
 	return &api.SwitchLocaleNoContent{SetCookie: []string{cookie.String()}}, nil
-}
-
-// Forwarding methods for the generated api.Handler seam, like the ones in
-// auth.go.
-
-func (s *Server) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
-	return s.auth.GetProfile(ctx)
-}
-
-func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.UpdateProfileRes, error) {
-	return s.auth.UpdateProfile(ctx, req)
-}
-
-func (s *Server) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
-	return s.auth.DeleteAccount(ctx)
-}
-
-func (s *Server) SwitchLocale(ctx context.Context, params api.SwitchLocaleParams) (*api.SwitchLocaleNoContent, error) {
-	return s.auth.SwitchLocale(ctx, params)
 }

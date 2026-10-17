@@ -17,6 +17,7 @@ import (
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -116,4 +117,28 @@ func TestReapStuckVersionBuildsJobFailsTheStuckBuildOnly(t *testing.T) {
 	running := db.CourseVersion.GetX(t.Context(), fixtures.ID("version_loadable_building"))
 	assert.Equal(t, "building", *running.State)
 	assert.Nil(t, running.Result)
+}
+
+// The sweep removes a session that has run out and leaves a live one alone.
+func TestReapExpiredSessionsJobRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
+	db, tx := testsupport.NewClientWithTx(t)
+	_, err := session.New(db).Issue(t.Context(), db.User.GetX(t.Context(), fixtures.ID("user_with_password")))
+	require.NoError(t, err)
+	sweep := func(now time.Time) {
+		t.Helper()
+		worker := rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{},
+			jobs.ReapExpiredSessionsWorker(
+				session.New(db, session.WithClock(func() time.Time { return now })),
+				slog.New(slog.DiscardHandler),
+			))
+		result, err := worker.Work(t.Context(), t, tx, jobs.ReapExpiredSessionsArgs{}, nil)
+		require.NoError(t, err)
+		assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
+	}
+
+	sweep(time.Now())
+	assert.Equal(t, 1, db.Session.Query().CountX(t.Context()), "a live session stays")
+
+	sweep(time.Now().Add(session.MaxLifetime + time.Hour))
+	assert.Zero(t, db.Session.Query().CountX(t.Context()))
 }

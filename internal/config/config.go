@@ -2,14 +2,16 @@
 package config
 
 import (
+	"strings"
+
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 	"github.com/samber/oops"
 )
 
 const (
-	developmentJWTSecret        = "dev-insecure-jwt-secret-change-me"
-	developmentEmailTokenSecret = "dev-insecure-email-token-secret-change-me"
+	developmentGuestCookieSecret = "dev-insecure-guest-cookie-secret-change-me"
+	developmentEmailTokenSecret  = "dev-insecure-email-token-secret-change-me"
 )
 
 // Config holds the runtime configuration for the server. Fields are populated
@@ -67,12 +69,14 @@ type Config struct {
 	SentryDSN         string `env:"SENTRY_DSN"`
 	SentryEnvironment string `env:"SENTRY_ENVIRONMENT" envDefault:"development"`
 	ReleaseVersion    string `env:"HEXLET_BASICS_RELEASE_VERSION"`
-	// JWTSecret signs the session JWT stored in the auth cookie (ADR-0003). The
-	// committed .env.example supplies a development value, while deployments
-	// must provide a non-empty secret explicitly.
-	JWTSecret string `env:"JWT_SECRET,required,notEmpty"`
+	// GuestCookieSecret signs the cookie that carries a visitor's lesson progress
+	// until they sign up. Sessions need no secret (ADR-0017): the cookie is an
+	// opaque token, not a signed claim. The committed .env.example supplies a
+	// development value, while deployments must provide a non-empty secret
+	// explicitly.
+	GuestCookieSecret string `env:"GUEST_COOKIE_SECRET,required,notEmpty"`
 	// EmailTokenSecret signs the Magic Link and Password Reset tokens. It is kept
-	// apart from JWTSecret so rotating one never invalidates the other: a
+	// apart from GuestCookieSecret so rotating one never invalidates the other: a
 	// leaked email token secret must not force every learner to sign in again.
 	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
 	// Mail configures account email (ADR-0006).
@@ -143,6 +147,10 @@ func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
 // A local .env is loaded first if present; it only fills variables that are not
 // already set in the real environment (godotenv never overrides), so exported
 // vars and 12-factor deploys keep precedence over the dev-convenience file.
+// SecureCookies reports whether the site is served over https, which is when
+// cookies are marked Secure.
+func (c *Config) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "https://") }
+
 func Load() (*Config, error) {
 	// Ignore a missing file: .env is a local convenience, absent in prod/CI.
 	_ = godotenv.Load()
@@ -164,8 +172,8 @@ func validateProduction(cfg *Config) error {
 	if cfg.SentryEnvironment != "production" {
 		return nil
 	}
-	if cfg.JWTSecret == developmentJWTSecret {
-		return oops.Errorf("JWT_SECRET must differ from the public development value")
+	if cfg.GuestCookieSecret == developmentGuestCookieSecret {
+		return oops.Errorf("GUEST_COOKIE_SECRET must differ from the public development value")
 	}
 	if cfg.EmailTokenSecret == developmentEmailTokenSecret {
 		return oops.Errorf("EMAIL_TOKEN_SECRET must differ from the public development value")

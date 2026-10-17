@@ -7,6 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
+
+	"hexletbasics/internal/session"
 )
 
 type openAPISecurityScheme struct {
@@ -38,17 +40,17 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	}
 	require.NoError(t, yaml.Unmarshal(specData, &spec))
 
-	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: "JWT"},
+	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: session.CookieName},
 		spec.Components.SecuritySchemes["UserSession"])
-	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: "JWT"},
+	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "cookie", Name: session.CookieName},
 		spec.Components.SecuritySchemes["AdminSession"])
-	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "header", Name: "X-XSRF-TOKEN"},
-		spec.Components.SecuritySchemes["XsrfToken"])
+	assert.NotContains(t, spec.Components.SecuritySchemes, "XsrfToken",
+		"cross-origin writes are refused from browser headers, not a token (ADR-0017)")
 
 	assert.Empty(t, spec.Paths["/api/languages"].Get.Security)
 	assert.Empty(t, spec.Paths["/api/lessons/{id}/check"].Post.Security)
 	assert.Equal(t,
-		[]map[string][]string{{"UserSession": {}, "XsrfToken": {}}},
+		[]map[string][]string{{"UserSession": {}}},
 		spec.Paths["/api/blog_posts/{id}/likes"].Post.Security,
 	)
 	assert.Equal(t,
@@ -60,11 +62,11 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 		spec.Paths["/api/admin/course_categories"].Get.Security,
 	)
 	assert.Equal(t,
-		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
+		[]map[string][]string{{"AdminSession": {}}},
 		spec.Paths["/api/admin/course_categories"].Post.Security,
 	)
 	assert.Equal(t,
-		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
+		[]map[string][]string{{"AdminSession": {}}},
 		spec.Paths["/api/admin/attachments"].Post.Security,
 	)
 

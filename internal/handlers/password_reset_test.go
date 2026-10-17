@@ -77,7 +77,7 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	session, ok := res.(*api.UserHeaders)
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, u.ID, int(session.Response.ID))
-	assert.Contains(t, h.ResponseCookies()[0], "JWT=")
+	assert.True(t, startsSession(h.ResponseCookies()))
 	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 	assert.True(t, signsInWith(t, h, "with-password@example.com", "new-password"))
 	assert.False(t, signsInWith(t, h, "with-password@example.com", fixtures.Password))
@@ -131,4 +131,21 @@ func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 	res, err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
 	require.NoError(t, err)
 	assert.IsType(t, &api.CheckPasswordResetTokenNoContent{}, res)
+}
+
+// Resetting a password signs the account out wherever it was signed in: the
+// session a thief may hold stops naming anyone, and only the reset's own new
+// session is left.
+func TestUpdatePasswordEndsTheSessionsOfTheOldPassword(t *testing.T) {
+	h := testsupport.NewHarnessAs(t, "user_with_password")
+	u := fixtureUser(t, h, "user_with_password")
+
+	_, err := h.Client.UpdatePassword(t.Context(),
+		&api.ResetPasswordInput{Password: "new-password"},
+		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u)})
+	require.NoError(t, err)
+
+	_, err = h.Client.GetProfile(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusUnauthorized, h.LastStatus(), "the session from before the reset is dead")
 }

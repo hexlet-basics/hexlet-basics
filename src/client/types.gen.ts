@@ -1337,7 +1337,7 @@ export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
 
 export type DeleteAccountResponses = {
   /**
-   * A successful sign-out with the expired auth cookies.
+   * A successful sign-out; the session cookie is expired by the server.
    */
   204: void;
 };
@@ -4979,8 +4979,10 @@ export type ConsumeMagicLinkError = ConsumeMagicLinkErrors[keyof ConsumeMagicLin
 
 export type ConsumeMagicLinkResponses = {
   /**
-   * A successful sign-in. Cookie headers are part of the HTTP contract so the
-   * implementation stays behind the generated ogen seam.
+   * A successful sign-in. The session cookie is not part of the contract: the
+   * server's session middleware writes it. `Set-Cookie` here carries only the
+   * cookie that ends the visitor's guest progress, once it has been credited to
+   * the account that just signed in.
    */
   200: User;
 };
@@ -5111,8 +5113,10 @@ export type UpdatePasswordError = UpdatePasswordErrors[keyof UpdatePasswordError
 
 export type UpdatePasswordResponses = {
   /**
-   * A successful sign-in. Cookie headers are part of the HTTP contract so the
-   * implementation stays behind the generated ogen seam.
+   * A successful sign-in. The session cookie is not part of the contract: the
+   * server's session middleware writes it. `Set-Cookie` here carries only the
+   * cookie that ends the visitor's guest progress, once it has been credited to
+   * the account that just signed in.
    */
   200: User;
 };
@@ -5251,7 +5255,7 @@ export type DeleteSessionError = DeleteSessionErrors[keyof DeleteSessionErrors];
 
 export type DeleteSessionResponses = {
   /**
-   * A successful sign-out with the expired auth cookies.
+   * A successful sign-out; the session cookie is expired by the server.
    */
   204: void;
 };
@@ -5285,8 +5289,10 @@ export type CreateSessionError = CreateSessionErrors[keyof CreateSessionErrors];
 
 export type CreateSessionResponses = {
   /**
-   * A successful sign-in. Cookie headers are part of the HTTP contract so the
-   * implementation stays behind the generated ogen seam.
+   * A successful sign-in. The session cookie is not part of the contract: the
+   * server's session middleware writes it. `Set-Cookie` here carries only the
+   * cookie that ends the visitor's guest progress, once it has been credited to
+   * the account that just signed in.
    */
   200: User;
 };
@@ -5320,7 +5326,7 @@ export type CreateUserError = CreateUserErrors[keyof CreateUserErrors];
 
 export type CreateUserResponses = {
   /**
-   * A newly-created user and the auth cookies issued for that user.
+   * A newly-created, signed-in user; `Set-Cookie` as in SessionResponse.
    */
   201: User;
 };

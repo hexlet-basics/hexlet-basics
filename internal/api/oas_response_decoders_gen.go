@@ -11196,16 +11196,6 @@ func decodeConsumeMagicLinkResponse(resp *http.Response) (res ConsumeMagicLinkRe
 						}); err != nil {
 							return err
 						}
-						if err := func() error {
-							if wrapper.SetCookie == nil {
-								return errors.New("nil is invalid value")
-							}
-							return nil
-						}(); err != nil {
-							return err
-						}
-					} else {
-						return err
 					}
 					return nil
 				}(); err != nil {
@@ -11986,16 +11976,6 @@ func decodeCreateSessionResponse(resp *http.Response) (res CreateSessionRes, _ e
 						}); err != nil {
 							return err
 						}
-						if err := func() error {
-							if wrapper.SetCookie == nil {
-								return errors.New("nil is invalid value")
-							}
-							return nil
-						}(); err != nil {
-							return err
-						}
-					} else {
-						return err
 					}
 					return nil
 				}(); err != nil {
@@ -12175,16 +12155,6 @@ func decodeCreateUserResponse(resp *http.Response) (res CreateUserRes, _ error) 
 						}); err != nil {
 							return err
 						}
-						if err := func() error {
-							if wrapper.SetCookie == nil {
-								return errors.New("nil is invalid value")
-							}
-							return nil
-						}(); err != nil {
-							return err
-						}
-					} else {
-						return err
 					}
 					return nil
 				}(); err != nil {
@@ -12289,59 +12259,7 @@ func decodeDeleteAccountResponse(resp *http.Response) (res DeleteAccountRes, _ e
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		var wrapper DeleteAccountNoContent
-		h := uri.NewHeaderDecoder(resp.Header)
-		// Parse "Set-Cookie" header.
-		{
-			cfg := uri.HeaderParameterDecodingConfig{
-				Name:    "Set-Cookie",
-				Explode: false,
-			}
-			if err := func() error {
-				if err := h.HasParam(cfg); err == nil {
-					if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-						wrapper.SetCookie = nil
-						return d.DecodeArray(func(d uri.Decoder) error {
-							var wrapperDotSetCookieVal string
-							if err := func() error {
-								val, err := d.DecodeValue()
-								if err != nil {
-									return err
-								}
-
-								c, err := conv.ToString(val)
-								if err != nil {
-									return err
-								}
-
-								wrapperDotSetCookieVal = c
-								return nil
-							}(); err != nil {
-								return err
-							}
-							wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
-							return nil
-						})
-					}); err != nil {
-						return err
-					}
-					if err := func() error {
-						if wrapper.SetCookie == nil {
-							return errors.New("nil is invalid value")
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				} else {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return res, errors.Wrap(err, "parse Set-Cookie header")
-			}
-		}
-		return &wrapper, nil
+		return &DeleteAccountNoContent{}, nil
 	case 401:
 		// Code 401.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -12427,59 +12345,7 @@ func decodeDeleteSessionResponse(resp *http.Response) (res DeleteSessionRes, _ e
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		var wrapper DeleteSessionNoContent
-		h := uri.NewHeaderDecoder(resp.Header)
-		// Parse "Set-Cookie" header.
-		{
-			cfg := uri.HeaderParameterDecodingConfig{
-				Name:    "Set-Cookie",
-				Explode: false,
-			}
-			if err := func() error {
-				if err := h.HasParam(cfg); err == nil {
-					if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-						wrapper.SetCookie = nil
-						return d.DecodeArray(func(d uri.Decoder) error {
-							var wrapperDotSetCookieVal string
-							if err := func() error {
-								val, err := d.DecodeValue()
-								if err != nil {
-									return err
-								}
-
-								c, err := conv.ToString(val)
-								if err != nil {
-									return err
-								}
-
-								wrapperDotSetCookieVal = c
-								return nil
-							}(); err != nil {
-								return err
-							}
-							wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
-							return nil
-						})
-					}); err != nil {
-						return err
-					}
-					if err := func() error {
-						if wrapper.SetCookie == nil {
-							return errors.New("nil is invalid value")
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				} else {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return res, errors.Wrap(err, "parse Set-Cookie header")
-			}
-		}
-		return &wrapper, nil
+		return &DeleteSessionNoContent{}, nil
 	case 401:
 		// Code 401.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -15097,16 +14963,6 @@ func decodeUpdatePasswordResponse(resp *http.Response) (res UpdatePasswordRes, _
 						}); err != nil {
 							return err
 						}
-						if err := func() error {
-							if wrapper.SetCookie == nil {
-								return errors.New("nil is invalid value")
-							}
-							return nil
-						}(); err != nil {
-							return err
-						}
-					} else {
-						return err
 					}
 					return nil
 				}(); err != nil {

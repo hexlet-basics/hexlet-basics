@@ -26,13 +26,7 @@ const getRequestLocale = createIsomorphicFn()
 // never match, and each page would refetch and fail hydration. The server
 // reaches Go over the internal network (API_URL) through the request
 // interceptor below instead.
-client.setConfig({
-  baseURL: "",
-  // Axios owns the browser-side XSRF protocol: on a same-origin request it
-  // copies the cookie into the header by default, matching go-pkgz/auth.
-  xsrfCookieName: "XSRF-TOKEN",
-  xsrfHeaderName: "X-XSRF-TOKEN",
-});
+client.setConfig({ baseURL: "" });
 
 // Forward the SSR request's cookie so authenticated pages render server-side
 // with the user's session (ADR-0008). Registered once at module scope — never

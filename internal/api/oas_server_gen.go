@@ -381,7 +381,7 @@ type Handler interface {
 	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
 	// ConsumeMagicLink implements consumeMagicLink operation.
 	//
-	// Consume a magic link token; sets the JWT cookie.
+	// Consume a magic link token; starts the session.
 	//
 	// GET /api/magic_links/{token}
 	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
@@ -421,13 +421,13 @@ type Handler interface {
 	CreatePasswordReminder(ctx context.Context, req *EmailInput) (CreatePasswordReminderRes, error)
 	// CreateSession implements createSession operation.
 	//
-	// Log in with email + password; sets the JWT cookie.
+	// Log in with email + password; starts the session.
 	//
 	// POST /api/session
 	CreateSession(ctx context.Context, req *SessionInput) (CreateSessionRes, error)
 	// CreateUser implements createUser operation.
 	//
-	// Sign up; sets the JWT cookie on success.
+	// Sign up; starts the session on success.
 	//
 	// POST /api/users
 	CreateUser(ctx context.Context, req *SignUpInput) (CreateUserRes, error)
@@ -439,7 +439,7 @@ type Handler interface {
 	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
 	// DeleteSession implements deleteSession operation.
 	//
-	// Log out; clears the JWT cookie.
+	// Log out; ends the session.
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
@@ -447,7 +447,7 @@ type Handler interface {
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
 	// the book page when there is no request yet. The browser follows it as a link, so only the session
-	// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+	// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 	//
 	// GET /api/book/download
 	DownloadBook(ctx context.Context) (DownloadBookRes, error)

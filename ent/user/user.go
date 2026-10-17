@@ -40,6 +40,8 @@ const (
 	FieldPhone = "phone"
 	// FieldConfirmationToken holds the string denoting the confirmation_token field in the database.
 	FieldConfirmationToken = "confirmation_token"
+	// FieldPasswordChangedAt holds the string denoting the password_changed_at field in the database.
+	FieldPasswordChangedAt = "password_changed_at"
 	// EdgeStaffMember holds the string denoting the staff_member edge name in mutations.
 	EdgeStaffMember = "staff_member"
 	// Table holds the table name of the user in the database.
@@ -69,6 +71,7 @@ var Columns = []string{
 	FieldNickname,
 	FieldPhone,
 	FieldConfirmationToken,
+	FieldPasswordChangedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -161,6 +164,11 @@ func ByPhone(opts ...sql.OrderTermOption) OrderOption {
 // ByConfirmationToken orders the results by the confirmation_token field.
 func ByConfirmationToken(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConfirmationToken, opts...).ToFunc()
+}
+
+// ByPasswordChangedAt orders the results by the password_changed_at field.
+func ByPasswordChangedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPasswordChangedAt, opts...).ToFunc()
 }
 
 // ByStaffMemberField orders the results by staff_member field.

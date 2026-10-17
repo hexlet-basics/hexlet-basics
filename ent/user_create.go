@@ -205,6 +205,20 @@ func (_c *UserCreate) SetNillableConfirmationToken(v *string) *UserCreate {
 	return _c
 }
 
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (_c *UserCreate) SetPasswordChangedAt(v time.Time) *UserCreate {
+	_c.mutation.SetPasswordChangedAt(v)
+	return _c
+}
+
+// SetNillablePasswordChangedAt sets the "password_changed_at" field if the given value is not nil.
+func (_c *UserCreate) SetNillablePasswordChangedAt(v *time.Time) *UserCreate {
+	if v != nil {
+		_c.SetPasswordChangedAt(*v)
+	}
+	return _c
+}
+
 // SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
 func (_c *UserCreate) SetStaffMemberID(id int) *UserCreate {
 	_c.mutation.SetStaffMemberID(id)
@@ -355,6 +369,10 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ConfirmationToken(); ok {
 		_spec.SetField(user.FieldConfirmationToken, field.TypeString, value)
 		_node.ConfirmationToken = &value
+	}
+	if value, ok := _c.mutation.PasswordChangedAt(); ok {
+		_spec.SetField(user.FieldPasswordChangedAt, field.TypeTime, value)
+		_node.PasswordChangedAt = &value
 	}
 	if nodes := _c.mutation.StaffMemberIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -637,6 +655,24 @@ func (u *UserUpsert) UpdateConfirmationToken() *UserUpsert {
 // ClearConfirmationToken clears the value of the "confirmation_token" field.
 func (u *UserUpsert) ClearConfirmationToken() *UserUpsert {
 	u.SetNull(user.FieldConfirmationToken)
+	return u
+}
+
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (u *UserUpsert) SetPasswordChangedAt(v time.Time) *UserUpsert {
+	u.Set(user.FieldPasswordChangedAt, v)
+	return u
+}
+
+// UpdatePasswordChangedAt sets the "password_changed_at" field to the value that was provided on create.
+func (u *UserUpsert) UpdatePasswordChangedAt() *UserUpsert {
+	u.SetExcluded(user.FieldPasswordChangedAt)
+	return u
+}
+
+// ClearPasswordChangedAt clears the value of the "password_changed_at" field.
+func (u *UserUpsert) ClearPasswordChangedAt() *UserUpsert {
+	u.SetNull(user.FieldPasswordChangedAt)
 	return u
 }
 
@@ -934,6 +970,27 @@ func (u *UserUpsertOne) UpdateConfirmationToken() *UserUpsertOne {
 func (u *UserUpsertOne) ClearConfirmationToken() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearConfirmationToken()
+	})
+}
+
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (u *UserUpsertOne) SetPasswordChangedAt(v time.Time) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPasswordChangedAt(v)
+	})
+}
+
+// UpdatePasswordChangedAt sets the "password_changed_at" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdatePasswordChangedAt() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePasswordChangedAt()
+	})
+}
+
+// ClearPasswordChangedAt clears the value of the "password_changed_at" field.
+func (u *UserUpsertOne) ClearPasswordChangedAt() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearPasswordChangedAt()
 	})
 }
 
@@ -1397,6 +1454,27 @@ func (u *UserUpsertBulk) UpdateConfirmationToken() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearConfirmationToken() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearConfirmationToken()
+	})
+}
+
+// SetPasswordChangedAt sets the "password_changed_at" field.
+func (u *UserUpsertBulk) SetPasswordChangedAt(v time.Time) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPasswordChangedAt(v)
+	})
+}
+
+// UpdatePasswordChangedAt sets the "password_changed_at" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdatePasswordChangedAt() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePasswordChangedAt()
+	})
+}
+
+// ClearPasswordChangedAt clears the value of the "password_changed_at" field.
+func (u *UserUpsertBulk) ClearPasswordChangedAt() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearPasswordChangedAt()
 	})
 }
 

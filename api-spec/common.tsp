@@ -9,29 +9,24 @@ namespace HexletBasics;
 // ---------------------------------------------------------------------------
 // Authentication schemes.
 //
-// UserSession and AdminSession deliberately read the same JWT cookie. Distinct
-// scheme names give ogen two generated SecurityHandler methods, so the
-// contract — rather than Go operation-name lists — selects whether a current
-// database admin check is required. Unsafe operations additionally require the
-// double-submit XSRF header as an AND security group.
+// UserSession and AdminSession deliberately read the same session cookie
+// (ADR-0017). Distinct scheme names give ogen two generated SecurityHandler
+// methods, so the contract — rather than Go operation-name lists — selects
+// whether a current database admin check is required. There is no CSRF token
+// scheme: cross-origin writes are refused by the server from the headers a
+// browser sets itself.
 // ---------------------------------------------------------------------------
 
 model UserSession {
   type: AuthType.apiKey;
   in: ApiKeyLocation.cookie;
-  name: "JWT";
+  name: "session";
 }
 
 model AdminSession {
   type: AuthType.apiKey;
   in: ApiKeyLocation.cookie;
-  name: "JWT";
-}
-
-model XsrfToken {
-  type: AuthType.apiKey;
-  in: ApiKeyLocation.header;
-  name: "X-XSRF-TOKEN";
+  name: "session";
 }
 
 // ---------------------------------------------------------------------------

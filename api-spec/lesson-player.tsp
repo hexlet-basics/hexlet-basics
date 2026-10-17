@@ -176,7 +176,7 @@ interface LessonAssistant {
    * streams.
    */
   @post
-  @useAuth([UserSession, XsrfToken])
+  @useAuth(UserSession)
   @operationId("createAssistantMessage")
   create(@path lessonId: int32, @body body: AssistantMessageInput):
     | AssistantAnswerStream

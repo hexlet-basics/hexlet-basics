@@ -68,6 +68,8 @@ type Tx struct {
 	LessonProgress *LessonProgressClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
+	// Session is the client for interacting with the Session builders.
+	Session *SessionClient
 	// StaffMember is the client for interacting with the StaffMember builders.
 	StaffMember *StaffMemberClient
 	// StaffRole is the client for interacting with the StaffRole builders.
@@ -241,6 +243,7 @@ func (tx *Tx) init() {
 	tx.Lead = NewLeadClient(tx.config)
 	tx.LessonProgress = NewLessonProgressClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
+	tx.Session = NewSessionClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)
 	tx.StaffRole = NewStaffRoleClient(tx.config)
 	tx.StaffRolePermission = NewStaffRolePermissionClient(tx.config)

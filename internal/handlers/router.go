@@ -26,21 +26,19 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 // to ogen. The upload route is the generated server too, behind a body-size
 // cap.
 //
+// `generated` is the generated server inside Security.Pipeline: the session, the
+// signed-in user and cross-origin protection reach every operation, including the
+// two routes that wrap it below. The blob read and the webhook sit outside it:
+// the blob is public, and the webhook proves itself by its HMAC signature and
+// carries no browser session.
+//
 // TypeSpec security requirements and ogen's generated SecurityHandler protect
-// generated operations. Trace wraps the complete transport only to preserve
-// go-pkgz/auth's optional identity extraction and sliding JWT refresh.
+// generated operations; the pipeline only supplies the identity they read.
 func NewRouter(
-	apiHandler http.Handler,
+	generated http.Handler,
 	att *AttachmentHandler,
 	gh *GitHubWebhookHandler,
-	auth *AuthHandler,
 ) http.Handler {
-	// Identify wraps only the generated operations: it attaches the signed-in
-	// user when a session cookie is present, so a public read can answer a
-	// learner with their progress and a visitor without it.
-	// WithClientIP records the caller's address for lead attribution.
-	generated := WithClientIP(auth.Identify(auth.CarryGuestProgress(apiHandler)))
-
 	transport := http.NewServeMux()
 	transport.Handle("POST /api/admin/attachments", http.MaxBytesHandler(generated, UploadBodyLimit))
 	transport.HandleFunc("GET /api/storage/{key}", att.Download)
@@ -52,7 +50,7 @@ func NewRouter(
 	// delivers to the legacy `/webhooks/github`; the ingress maps it here.
 	transport.HandleFunc("POST /api/webhooks/github", gh.Handle)
 	transport.Handle("/", generated)
-	return auth.Trace(transport)
+	return transport
 }
 
 // StreamResponses serves a route whose body is produced over time (the

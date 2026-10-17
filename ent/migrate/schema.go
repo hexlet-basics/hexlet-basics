@@ -722,6 +722,25 @@ var (
 			},
 		},
 	}
+	// UserSessionsColumns holds the columns for the "user_sessions" table.
+	UserSessionsColumns = []*schema.Column{
+		{Name: "token", Type: field.TypeString},
+		{Name: "data", Type: field.TypeBytes},
+		{Name: "expiry", Type: field.TypeTime},
+	}
+	// UserSessionsTable holds the schema information for the "user_sessions" table.
+	UserSessionsTable = &schema.Table{
+		Name:       "user_sessions",
+		Columns:    UserSessionsColumns,
+		PrimaryKey: []*schema.Column{UserSessionsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "session_expiry",
+				Unique:  false,
+				Columns: []*schema.Column{UserSessionsColumns[2]},
+			},
+		},
+	}
 	// StaffMembersColumns holds the columns for the "staff_members" table.
 	StaffMembersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -833,6 +852,7 @@ var (
 		{Name: "nickname", Type: field.TypeString, Nullable: true},
 		{Name: "phone", Type: field.TypeString, Nullable: true},
 		{Name: "confirmation_token", Type: field.TypeString, Nullable: true},
+		{Name: "password_changed_at", Type: field.TypeTime, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -885,6 +905,7 @@ var (
 		LeadsTable,
 		LanguageLessonMembersTable,
 		ReviewsTable,
+		UserSessionsTable,
 		StaffMembersTable,
 		StaffMemberRolesTable,
 		StaffMemberRolePermissionsTable,
@@ -979,6 +1000,9 @@ func init() {
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
+	UserSessionsTable.Annotation = &entsql.Annotation{
+		Table: "user_sessions",
+	}
 	StaffMembersTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
 	StaffMembersTable.ForeignKeys[1].RefTable = UsersTable
 	StaffMemberRolesTable.Annotation = &entsql.Annotation{

@@ -58,6 +58,10 @@ func (User) Fields() []ent.Field {
 		field.String("nickname").Optional().Nillable(),
 		field.String("phone").Optional().Nillable(),
 		field.String("confirmation_token").Optional().Nillable().Sensitive(),
+		// When the password last changed, null until it has. A session remembers
+		// the value it started under and stops matching when it moves (ADR-0017),
+		// which signs every other session out without a table scan.
+		field.Time("password_changed_at").Optional().Nillable(),
 	}
 }
 

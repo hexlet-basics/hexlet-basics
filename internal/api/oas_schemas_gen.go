@@ -3887,36 +3887,12 @@ func (s *CurrentUser) SetUser(val NilUser) {
 }
 
 // DeleteAccountNoContent is response for DeleteAccount operation.
-type DeleteAccountNoContent struct {
-	SetCookie []string
-}
-
-// GetSetCookie returns the value of SetCookie.
-func (s *DeleteAccountNoContent) GetSetCookie() []string {
-	return s.SetCookie
-}
-
-// SetSetCookie sets the value of SetCookie.
-func (s *DeleteAccountNoContent) SetSetCookie(val []string) {
-	s.SetCookie = val
-}
+type DeleteAccountNoContent struct{}
 
 func (*DeleteAccountNoContent) deleteAccountRes() {}
 
 // DeleteSessionNoContent is response for DeleteSession operation.
-type DeleteSessionNoContent struct {
-	SetCookie []string
-}
-
-// GetSetCookie returns the value of SetCookie.
-func (s *DeleteSessionNoContent) GetSetCookie() []string {
-	return s.SetCookie
-}
-
-// SetSetCookie sets the value of SetCookie.
-func (s *DeleteSessionNoContent) SetSetCookie(val []string) {
-	s.SetCookie = val
-}
+type DeleteSessionNoContent struct{}
 
 func (*DeleteSessionNoContent) deleteSessionRes() {}
 
@@ -8232,29 +8208,4 @@ func (s *ValidationErrorErrors) init() ValidationErrorErrors {
 		*s = m
 	}
 	return m
-}
-
-type XsrfToken struct {
-	APIKey string
-	Roles  []string
-}
-
-// GetAPIKey returns the value of APIKey.
-func (s *XsrfToken) GetAPIKey() string {
-	return s.APIKey
-}
-
-// GetRoles returns the value of Roles.
-func (s *XsrfToken) GetRoles() []string {
-	return s.Roles
-}
-
-// SetAPIKey sets the value of APIKey.
-func (s *XsrfToken) SetAPIKey(val string) {
-	s.APIKey = val
-}
-
-// SetRoles sets the value of Roles.
-func (s *XsrfToken) SetRoles(val []string) {
-	s.Roles = val
 }

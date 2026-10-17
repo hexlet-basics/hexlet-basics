@@ -12,120 +12,91 @@ import (
 
 var (
 	rn86AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PATCH":  "Content-Type,X-Xsrf-Token",
+		"PATCH": "Content-Type",
 	}
 	rn23AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn39AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn65AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn1AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn25AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn3AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn27AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn61AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
-	}
-	rn63AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn10AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn6AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn7AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn29AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn12AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn17AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn18AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn31AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
-	}
-	rn59AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn9AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn14AllowedHeaders = map[string]string{
-		"PUT": "Content-Type,X-Xsrf-Token",
-	}
-	rn56AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
-	}
-	rn15AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn44AllowedHeaders = map[string]string{
-		"PUT": "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn20AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn35AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn22AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn37AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn41AllowedHeaders = map[string]string{
-		"PUT": "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn19AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn33AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"PUT":    "Content-Type,X-Xsrf-Token",
+		"PUT": "Content-Type",
 	}
 	rn78AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
-	}
-	rn112AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
-	}
-	rn79AllowedHeaders = map[string]string{
-		"POST": "X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn81AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "Content-Type",
 	}
 	rn69AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
@@ -143,8 +114,7 @@ var (
 		"POST": "Content-Type",
 	}
 	rn84AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-		"POST":   "Content-Type",
+		"POST": "Content-Type",
 	}
 	rn85AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
@@ -631,7 +601,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 											default:
 												s.notAllowed(w, r, notAllowedParams{
 													allowedMethods: "POST",
-													allowedHeaders: rn63AllowedHeaders,
+													allowedHeaders: nil,
 													acceptPost:     "",
 													acceptPatch:    "",
 												})
@@ -1078,7 +1048,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 													default:
 														s.notAllowed(w, r, notAllowedParams{
 															allowedMethods: "POST",
-															allowedHeaders: rn59AllowedHeaders,
+															allowedHeaders: nil,
 															acceptPost:     "",
 															acceptPatch:    "",
 														})
@@ -1192,7 +1162,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 											default:
 												s.notAllowed(w, r, notAllowedParams{
 													allowedMethods: "POST",
-													allowedHeaders: rn56AllowedHeaders,
+													allowedHeaders: nil,
 													acceptPost:     "",
 													acceptPatch:    "",
 												})
@@ -1219,7 +1189,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 											default:
 												s.notAllowed(w, r, notAllowedParams{
 													allowedMethods: "POST",
-													allowedHeaders: rn15AllowedHeaders,
+													allowedHeaders: nil,
 													acceptPost:     "",
 													acceptPatch:    "",
 												})
@@ -1873,7 +1843,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn112AllowedHeaders,
+											allowedHeaders: nil,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -1967,7 +1937,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "POST",
-										allowedHeaders: rn79AllowedHeaders,
+										allowedHeaders: nil,
 										acceptPost:     "",
 										acceptPatch:    "",
 									})

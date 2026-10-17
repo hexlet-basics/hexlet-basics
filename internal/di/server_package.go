@@ -30,6 +30,7 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/session"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -62,6 +63,7 @@ type handlerServices struct {
 	RelatedCoursesSet *relatedcourses.Replacer  `do:""`
 	Progress          *progress.Progress        `do:""`
 	Assets            *assetstore.Store         `do:""`
+	Sessions          *session.Manager          `do:""`
 	Registrar         *accounts.Registrar       `do:""`
 	Remover           *accounts.Remover         `do:""`
 	Events            *events.Publisher         `do:""`
@@ -88,6 +90,29 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return handlers.NewAPIErrorHandler(translator, logger), nil
+	}),
+	// Sessions live in the database; a store failure answers in the API's own
+	// error shape through the same handler everything else uses.
+	do.Lazy[*session.Manager](func(i do.Injector) (*session.Manager, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
+		if err != nil {
+			return nil, err
+		}
+		return session.New(
+			db,
+			session.WithSecure(cfg.SecureCookies()),
+			session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+				errorHandler.Write(r.Context(), w, r, err)
+			}),
+		), nil
 	}),
 	do.Lazy[*accounts.Registrar](func(i do.Injector) (*accounts.Registrar, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -228,6 +253,7 @@ var serverPackage = do.Package(
 			RelatedCoursesSet: services.RelatedCoursesSet,
 			Progress:          services.Progress,
 			Assets:            services.Assets,
+			Sessions:          services.Sessions,
 			Registrar:         services.Registrar,
 			Remover:           services.Remover,
 			Events:            services.Events,
@@ -326,7 +352,7 @@ var serverPackage = do.Package(
 		// typed DTOs.
 		return api.NewServer(
 			handler,
-			handler.AuthHandler(),
+			handler.Security(),
 			api.WithErrorHandler(errorHandler.Write),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
@@ -384,10 +410,9 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return handlers.NewRouter(
-			apiServer,
+			handler.Security().Pipeline(apiServer),
 			attachmentHandler,
 			webhookHandler,
-			handler.AuthHandler(),
 		), nil
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
