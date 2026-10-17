@@ -425,11 +425,18 @@ func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api
 	return &api.UserHeaders{SetCookie: append(cookies, merged...), Response: h.conv.ToUser(u)}, nil
 }
 
-// DeleteSession returns go-pkgz/auth's expired session cookies.
-func (h *AuthHandler) DeleteSession(context.Context) (api.DeleteSessionRes, error) {
+// expiredSessionCookies are go-pkgz/auth's cookies that end the session. The
+// library only writes to an http.ResponseWriter, so a recorder collects them
+// for the generated response's Set-Cookie headers.
+func (h *AuthHandler) expiredSessionCookies() ([]string, error) {
 	rec := httptest.NewRecorder()
 	h.jwt.Reset(rec)
-	cookies, err := responseCookies(rec, authCookie, xsrfCookie)
+	return responseCookies(rec, authCookie, xsrfCookie)
+}
+
+// DeleteSession returns go-pkgz/auth's expired session cookies.
+func (h *AuthHandler) DeleteSession(context.Context) (api.DeleteSessionRes, error) {
+	cookies, err := h.expiredSessionCookies()
 	if err != nil {
 		return nil, err
 	}

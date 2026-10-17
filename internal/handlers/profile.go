@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"net/http/httptest"
 	"time"
 
 	"hexletbasics/internal/api"
@@ -62,9 +61,7 @@ func (h *AuthHandler) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, 
 		return nil, lastAdminError(err)
 	}
 
-	rec := httptest.NewRecorder()
-	h.jwt.Reset(rec)
-	cookies, err := responseCookies(rec, authCookie, xsrfCookie)
+	cookies, err := h.expiredSessionCookies()
 	if err != nil {
 		return nil, err
 	}
