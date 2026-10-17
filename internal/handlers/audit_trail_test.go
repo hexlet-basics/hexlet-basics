@@ -312,19 +312,31 @@ func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
 }
 
 // The menu asks what the caller holds: the administrator flag adds nothing, the
-// grant on the role is the only way in.
-func TestTheCapabilitiesAMemberHoldsComeFromTheirRoleAlone(t *testing.T) {
-	admin := testsupport.NewHarness(t)
-	assert.Empty(t, capabilitiesOf(t, admin), "an administrator holds no capability by being one")
+// grant on the role is the only way in. Each case has its own test because a
+// harness holds an open transaction, and two of them inserting a staff record
+// for the same user would wait on each other.
+func TestAnAdministratorHoldsNoCapabilityByBeingOne(t *testing.T) {
+	h := testsupport.NewHarness(t)
 
-	granted := testsupport.NewHarness(t)
-	grantAuditRead(t, granted, true)
-	assert.Equal(t, []string{"audit.read"}, capabilitiesOf(t, granted))
+	assert.Empty(t, capabilitiesOf(t, h))
+}
 
-	ungranted := testsupport.NewHarness(t)
-	grantAuditRead(t, ungranted, false)
-	assert.Empty(t, capabilitiesOf(t, ungranted))
+func TestARoleWithTheGrantHoldsTheCapability(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	grantAuditRead(t, h, true)
 
-	editor := testsupport.NewHarnessAs(t, editorID)
-	assert.Empty(t, capabilitiesOf(t, editor), "any staff member may ask, and holds none")
+	assert.Equal(t, []string{"audit.read"}, capabilitiesOf(t, h))
+}
+
+func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	grantAuditRead(t, h, false)
+
+	assert.Empty(t, capabilitiesOf(t, h))
+}
+
+func TestAnyStaffMemberMayAskWhatTheyHold(t *testing.T) {
+	h := testsupport.NewHarnessAs(t, editorID)
+
+	assert.Empty(t, capabilitiesOf(t, h))
 }

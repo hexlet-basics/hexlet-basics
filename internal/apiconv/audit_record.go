@@ -24,7 +24,7 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 		ActorUserId:    NilInt32FromPtr(row.ActorUserID),
 		Channel:        api.AuditRecordChannel(row.Channel),
 		ConnectedAppId: NilInt32FromPtr(row.ConnectedAppID),
-		TokenId:        NilInt32FromPtr(row.TokenID),
+		TokenId:        NilStringFromPtr(row.TokenID),
 		RequestId:      NilStringFromPtr(row.RequestID),
 		Address:        NilStringFromPtr(row.Address),
 		UserAgent:      NilStringFromPtr(row.UserAgent),

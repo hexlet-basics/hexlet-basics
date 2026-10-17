@@ -966,7 +966,7 @@ type AuditRecord struct {
 	ActorUserId    NilInt32           `json:"actorUserId"`
 	Channel        AuditRecordChannel `json:"channel"`
 	ConnectedAppId NilInt32           `json:"connectedAppId"`
-	TokenId        NilInt32           `json:"tokenId"`
+	TokenId        NilString          `json:"tokenId"`
 	RequestId      NilString          `json:"requestId"`
 	Address        NilString          `json:"address"`
 	UserAgent      NilString          `json:"userAgent"`
@@ -1006,7 +1006,7 @@ func (s *AuditRecord) GetConnectedAppId() NilInt32 {
 }
 
 // GetTokenId returns the value of TokenId.
-func (s *AuditRecord) GetTokenId() NilInt32 {
+func (s *AuditRecord) GetTokenId() NilString {
 	return s.TokenId
 }
 
@@ -1086,7 +1086,7 @@ func (s *AuditRecord) SetConnectedAppId(val NilInt32) {
 }
 
 // SetTokenId sets the value of TokenId.
-func (s *AuditRecord) SetTokenId(val NilInt32) {
+func (s *AuditRecord) SetTokenId(val NilString) {
 	s.TokenId = val
 }
 
