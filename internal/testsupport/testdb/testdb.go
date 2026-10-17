@@ -96,7 +96,7 @@ func serverConfig() pgtestdb.Config {
 		User:       adminUser,
 		Password:   adminPass,
 		Database:   "postgres",
-		Options:    "sslmode=disable&timezone=UTC",
+		Options:    "sslmode=disable",
 		// A package that leaks a connection must not turn into a failed cleanup
 		// and a database left behind on the shared server.
 		ForceTerminateConnections: true,

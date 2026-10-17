@@ -27,9 +27,10 @@ kept rule has a reason; a rule without one would have lost to practice.
 - **The server is shared, the databases are not.** A template is built once per
   content hash of `migrations/` and `fixtures/` and reused by every package, and a
   clone costs milliseconds where a container per package cost seconds. Clients
-  connect with `timezone=UTC`: a migration that computes from `now()` once failed
-  on a developer's server in another zone, and a test database must not depend on
-  where the server runs.
+  keep the server's time zone: containers were always UTC and hid a partition
+  function whose month bounds overlapped across a DST change on a server in
+  another zone, so a zone-dependent migration must fail on a developer's machine
+  rather than in production.
 - **Fixtures only.** A test reads its data from `fixtures/` by generated
   `fixtures.Label`; `forbidigo` rejects `.Create()` in `_test.go`. Practice
   prefers per-test factories, but a labelled row names the case it exists for and

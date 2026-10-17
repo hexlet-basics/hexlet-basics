@@ -57,6 +57,11 @@ CREATE TABLE "audit_records_default" PARTITION OF "audit_records" DEFAULT;
 -- 3. Partition DDL lives in SQL functions, not in Go strings: the application
 -- calls two fixed statements and the DDL is written, reviewed and tested once.
 -- Months are calendar months in UTC. Partitions are named audit_records_pYYYYMM.
+-- Month arithmetic is done on UTC wall-clock timestamps (without time zone) and
+-- converted once: adding an interval to a timestamptz works in the session's
+-- zone, so across a DST change "+ 1 month" is not the next UTC month start, the
+-- bounds of neighbouring partitions overlap, and the result would depend on
+-- where the server runs.
 
 -- Creates the partition for the month containing p_month. Idempotent and safe
 -- to run from concurrent workers (advisory lock). Rows already parked in the
@@ -70,9 +75,11 @@ CREATE TABLE "audit_records_default" PARTITION OF "audit_records" DEFAULT;
 CREATE FUNCTION "audit_records_ensure_partition"(p_month timestamptz) RETURNS text
   LANGUAGE plpgsql AS $$
 DECLARE
-  month_start timestamptz := date_trunc('month', p_month AT TIME ZONE 'UTC') AT TIME ZONE 'UTC';
-  month_end timestamptz := month_start + interval '1 month';
-  part_name text := 'audit_records_p' || to_char(month_start AT TIME ZONE 'UTC', 'YYYYMM');
+  first_day timestamp := date_trunc('month', p_month AT TIME ZONE 'UTC');
+  next_first_day timestamp := first_day + interval '1 month';
+  month_start timestamptz := first_day AT TIME ZONE 'UTC';
+  month_end timestamptz := next_first_day AT TIME ZONE 'UTC';
+  part_name text := 'audit_records_p' || to_char(first_day, 'YYYYMM');
   bounds text;
 BEGIN
   PERFORM pg_advisory_xact_lock(hashtext('audit_records_partitions'));
@@ -80,8 +87,8 @@ BEGIN
     RETURN part_name;
   END IF;
   bounds := format('FOR VALUES FROM (%L) TO (%L)',
-    to_char(month_start AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS+00'),
-    to_char(month_end AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS+00'));
+    to_char(first_day, 'YYYY-MM-DD HH24:MI:SS+00'),
+    to_char(next_first_day, 'YYYY-MM-DD HH24:MI:SS+00'));
 
   IF EXISTS (SELECT 1 FROM "audit_records_default"
              WHERE "occurred_at" >= month_start AND "occurred_at" < month_end) THEN
@@ -111,7 +118,7 @@ CREATE FUNCTION "audit_records_drop_partitions_ended_before"(p_cutoff timestampt
   LANGUAGE plpgsql AS $$
 DECLARE
   part record;
-  month_start timestamptz;
+  first_day timestamp;
 BEGIN
   PERFORM pg_advisory_xact_lock(hashtext('audit_records_partitions'));
   FOR part IN
@@ -122,8 +129,8 @@ BEGIN
       AND c.relname ~ '^audit_records_p[0-9]{6}$'
     ORDER BY c.relname
   LOOP
-    month_start := to_timestamp(substr(part.name, 16) || '01', 'YYYYMMDD') AT TIME ZONE 'UTC';
-    IF month_start + interval '1 month' <= p_cutoff THEN
+    first_day := to_date(substr(part.name, 16) || '01', 'YYYYMMDD')::timestamp;
+    IF (first_day + interval '1 month') AT TIME ZONE 'UTC' <= p_cutoff THEN
       EXECUTE format('DROP TABLE %I', part.name);
       RETURN NEXT part.name;
     END IF;
@@ -133,10 +140,10 @@ $$;
 
 -- 4. Carry over what the unpartitioned table holds: partitions for every month
 -- it has rows in and for the current one, then the rows themselves.
-SELECT "audit_records_ensure_partition"(m)
+SELECT "audit_records_ensure_partition"(m AT TIME ZONE 'UTC')
 FROM generate_series(
-  date_trunc('month', COALESCE((SELECT min("occurred_at") FROM "audit_records_unpartitioned"), now())),
-  date_trunc('month', now()) + interval '3 months',
+  date_trunc('month', COALESCE((SELECT min("occurred_at") FROM "audit_records_unpartitioned"), now()) AT TIME ZONE 'UTC'),
+  date_trunc('month', now() AT TIME ZONE 'UTC') + interval '3 months',
   interval '1 month'
 ) AS m;
 INSERT INTO "audit_records" OVERRIDING SYSTEM VALUE SELECT * FROM "audit_records_unpartitioned";
