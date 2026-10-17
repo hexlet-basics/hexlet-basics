@@ -35,8 +35,8 @@ goEnv:
   MAIL_FROM: support@hexlet.io
   MAIL_POSTBOX_ENDPOINT: https://postbox.cloud.yandex.net
   MAIL_POSTBOX_REGION: ru-central1
-  # MCP endpoint (/mcp, ADR-0019) and its OAuth authorization server (/oauth/*,
-  # the well-known documents, ADR-0020). Both are off by default; while off Go
+  # MCP endpoint (/mcp, ADR-0020) and its OAuth authorization server (/oauth/*,
+  # the well-known documents, ADR-0021). Both are off by default; while off Go
   # mounts nothing and every one of those paths answers 404. MCP_ENABLED needs
   # OAUTH_ENABLED (the process refuses to start otherwise), and OAUTH_ENABLED
   # needs OAUTH_ENCRYPTION_KEY from the secret. The ingress routes the paths on
@@ -55,7 +55,7 @@ goEnv:
   # first public one in X-Forwarded-For (see the ingress note below).
   OAUTH_REGISTRATION_LIMIT: "10"
   OAUTH_REGISTRATION_WINDOW: 1h
-  # Months of Audit Records kept (ADR-0018). The worker's partition maintenance
+  # Months of Audit Records kept (ADR-0019). The worker's partition maintenance
   # drops whole monthly partitions, so a record lives up to one month longer.
   AUDIT_RETENTION_MONTHS: "24"
 
@@ -105,7 +105,7 @@ ingress:
     - host: "code-basics.com"
       full: true
   # full hosts also route /mcp, /oauth/ and the /.well-known/oauth-* and
-  # openid-configuration documents to the Go API (ADR-0020); /connect and
+  # openid-configuration documents to the Go API (ADR-0021); /connect and
   # /account/connected_apps stay on web. Hosts without `full` get only /.
   #
   # X-Forwarded-For: the registration rate limit (and lead attribution) takes

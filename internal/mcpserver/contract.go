@@ -11,14 +11,14 @@ import (
 
 // responseSchema is the JSON Schema of an operation's 200 response body, read
 // from the embedded OpenAPI document (the same one internal/permissions reads,
-// ADR-0018) with every $ref inlined.
+// ADR-0019) with every $ref inlined.
 //
 // A tool's output schema comes from the contract rather than from reflection on
 // the Go types: ogen wraps optional fields in Opt* structs that reflection would
 // render as objects with Value and Set properties, which no client could match
 // to the JSON the tool really returns. Reading the document also means a tool
 // cannot drift from the operation it mirrors: regenerating the contract is what
-// updates the schema (ADR-0019).
+// updates the schema (ADR-0020).
 func responseSchema(operationID string) (map[string]any, error) {
 	var doc struct {
 		Paths      map[string]map[string]yaml.Node `yaml:"paths"`

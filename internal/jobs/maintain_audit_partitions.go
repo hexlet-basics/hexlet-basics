@@ -17,7 +17,7 @@ import (
 const maintainAuditPartitionsInterval = 24 * time.Hour
 
 // MaintainAuditPartitionsArgs is the periodic upkeep of the audit table
-// (ADR-0018, ticket #846): create the partitions of the coming months, then
+// (ADR-0019, ticket #846): create the partitions of the coming months, then
 // drop the whole partitions older than the retention. It is enqueued only by
 // the periodic scheduler.
 type MaintainAuditPartitionsArgs struct{}

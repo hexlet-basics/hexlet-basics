@@ -73,7 +73,7 @@ func digest(secret string) string {
 //
 // PKCE is enforced here, where the raw parameters are still visible: the library
 // treats a missing challenge as acceptable and an empty method as `plain`, but
-// S256 is mandatory for every client (ADR-0020).
+// S256 is mandatory for every client (ADR-0021).
 func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, _ string) (op.AuthRequest, error) {
 	if req.CodeChallenge == "" || req.CodeChallengeMethod != oidc.CodeChallengeMethodS256 {
 		return nil, oidc.ErrInvalidRequest().WithDescription("PKCE is required: send code_challenge with code_challenge_method=S256")
@@ -269,7 +269,7 @@ func (s *storage) insertAccessToken(
 // parallel exchanges of the same token the database lets exactly one claim it.
 // The other finds it used and is treated as a replay: the family, including the
 // child the winner just issued, is revoked. That is deliberately strict, with no
-// grace window (ADR-0020 addendum, #839).
+// grace window (ADR-0021 addendum, #839).
 func (s *storage) CreateAccessAndRefreshTokens(
 	ctx context.Context, req op.TokenRequest, current string,
 ) (string, string, time.Time, error) {
@@ -378,7 +378,7 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 // refuseReuse revokes the family of a refresh token presented a second time and
 // returns the refusal. A used token is evidence it has been copied: whoever holds
 // the newer tokens, the thief and the owner alike, loses them, and the user must
-// sign in again (ADR-0020, the MCP authorization spec).
+// sign in again (ADR-0021, the MCP authorization spec).
 func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
 	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
 		return oidc.ErrServerError().WithParent(err)

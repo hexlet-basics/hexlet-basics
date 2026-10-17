@@ -11,7 +11,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { requireAuth } from "@/lib/auth";
 
-// The OAuth consent screen (ADR-0020): an assistant (an MCP client) was sent
+// The OAuth consent screen (ADR-0021): an assistant (an MCP client) was sent
 // here by the authorization endpoint with the id of its request. A guest signs
 // in first and comes back, because `requireAuth` carries this URL, request id
 // included, through the sign-in page. The screen shows who asks, where the

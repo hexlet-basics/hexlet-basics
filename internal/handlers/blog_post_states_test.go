@@ -16,7 +16,7 @@ import (
 )
 
 // A state is not an update: the Publication State of a blog post moves only
-// through publish, unpublish and archive (ADR-0018, state transitions addendum).
+// through publish, unpublish and archive (ADR-0019, state transitions addendum).
 
 // The second post is a draft in the fixtures; each test puts it in the state it needs.
 var statePostID = fixtures.ID(fixtures.BlogPostSecondPost)

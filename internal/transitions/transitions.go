@@ -15,7 +15,7 @@ import (
 // Transition is one operation's rule: it moves a resource to To, and only from
 // one of the From states.
 //
-// Repeating the current state is refused, not a no-op (ADR-0018, state
+// Repeating the current state is refused, not a no-op (ADR-0019, state
 // transitions addendum): To is never in From, so "publish a published post" is
 // an illegal move like any other. A client that retries after a lost answer
 // learns that the state is already there, and the Audit Record never claims a

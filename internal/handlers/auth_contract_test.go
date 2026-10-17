@@ -71,7 +71,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 		spec.Paths["/api/admin/attachments"].Post.Security,
 	)
 
-	// The OAuth consent screen (ADR-0020): reading it and deciding both need the
+	// The OAuth consent screen (ADR-0021): reading it and deciding both need the
 	// session; a cross-site decision is refused by the pipeline, not a token.
 	consent := spec.Paths["/api/oauth/consents/{requestId}"]
 	assert.Equal(t, []map[string][]string{{"UserSession": {}}}, consent.Get.Security)
@@ -89,7 +89,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "403")
 }
 
-// TestBlogPostOperationsDeclareAPermissionAndAKind pins ADR-0018's rule for the
+// TestBlogPostOperationsDeclareAPermissionAndAKind pins ADR-0019's rule for the
 // operations migrated so far: what an admin operation needs is written in the
 // contract, as a Permission and whether it reads or writes, not in a Go table.
 func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {

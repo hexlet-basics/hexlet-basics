@@ -18,7 +18,7 @@ official `modelcontextprotocol/go-sdk` (v1.8.0 at the time of writing): one
 request, one response, no sessions and no long-lived streams, so its load is
 that of any other API call. The handler is mounted in `handlers.NewRouter`,
 outside the `/api` prefix (ADR-0015 is amended to allow this; the ingress also
-carries `/oauth/*` and `/.well-known/oauth-*`, ADR-0020). The whole endpoint
+carries `/oauth/*` and `/.well-known/oauth-*`, ADR-0021). The whole endpoint
 requires an OAuth bearer token: there is no anonymous tier, because MCP clients
 only begin to sign in after a 401, so a half-open endpoint would never tell a
 client it can. The public catalogue is already open on the site, in the sitemap
@@ -26,7 +26,7 @@ and in the feeds. The endpoint is behind a configuration flag and off by
 default.
 
 Token verification uses the SDK's bearer-token middleware and its protected
-resource metadata handler. The verifier looks the token up (ADR-0020), checks
+resource metadata handler. The verifier looks the token up (ADR-0021), checks
 that its audience is the canonical `/mcp` URL, and refuses a token whose
 subject is a client rather than a user.
 
@@ -50,7 +50,7 @@ in the generated security handler (ADR-0011). A tool that called a handler
 directly would skip it. Every tool call therefore goes through the same
 operation-layer check as an HTTP call. For an admin tool that is the
 operation's Permission, the matching `mcp.*` Permission and the locale, read
-from the database on each call (ADR-0018). Catalogue and learner tools are
+from the database on each call (ADR-0019). Catalogue and learner tools are
 checked against the token's Scope and its user subject only.
 
 **Results and limits.** A tool returns structured content whose schema comes
@@ -80,11 +80,11 @@ real Claude Code and Cursor.
 
 - The agent is as powerful as the user: an administrator's token can reach
   every admin operation, including users and roles. That is deliberate, bounded
-  by `mcp.manage`, the self-protection rules and the audit trail (ADR-0018).
+  by `mcp.manage`, the self-protection rules and the audit trail (ADR-0019).
 - Tool schemas are part of the public surface: renaming an operationId renames
   a tool.
 - Not verified yet: the SDK's exact stateless and middleware API against our
-  router, and how real clients behave (ADR-0020).
+  router, and how real clients behave (ADR-0021).
 
 ## Addendum: the tracer slice (#849)
 
@@ -122,7 +122,7 @@ What the first implementation settled, and where it stops short of the text abov
   for the other tools.
 - **Ingress not yet routed.** The Helm ingress (`k8s/app-chart/templates/ingress.yaml`)
   still sends only `/api/` to Go. `/mcp`, `/.well-known/oauth-protected-resource*`
-  (and `/oauth/*` from ADR-0020) must be added before either flag is switched on.
+  (and `/oauth/*` from ADR-0021) must be added before either flag is switched on.
   The Vite development proxy already carries them.
 
 ## Addendum: catalogue tools, response limits and rate limiting (#851)
@@ -197,8 +197,8 @@ What the first implementation settled, and where it stops short of the text abov
 ## Addendum: admin tools and the one checkpoint (#854)
 
 Settled by the first admin-tool slice (banners: `adminListBanners`,
-`adminUpdateBanner`), which every later admin ticket inherits. It meets ADR-0018
-and ADR-0019 as written: one checkpoint, identical to the HTTP check. One schema
+`adminUpdateBanner`), which every later admin ticket inherits. It meets ADR-0019
+and ADR-0020 as written: one checkpoint, identical to the HTTP check. One schema
 change came with it (the `token_id` column type, below).
 
 **How a tool call reaches an operation.** It does not. A tool call becomes an
@@ -228,7 +228,7 @@ from the database and judges, on every call and in this order: the `admin`
 Scope; `Policy.Allow(user, locale, operation)`, the call the session branch makes;
 `Policy.HasCapability` for `permissions.MCPCapability(operation)`, which is
 `mcp.write` for an admin write and `mcp.read` for the rest, from the contract's
-declared kind (never the administrator flag, ADR-0018). A refusal is the HTTP
+declared kind (never the administrator flag, ADR-0019). A refusal is the HTTP
 refusal: an Audit Record `forbidden` (channel `mcp`) and a 403, before the body
 is decoded. Nothing is cached, so removing a grant applies on the next call.
 The tool does not check the Scope or the capability itself: a second place that
@@ -296,7 +296,7 @@ server, and gains `Grant`, `RevokeGrant` and `Records` (documented in
 needs, `Connect` with the Scope, call the tool, assert on the result, the rows
 and `Records`.
 
-**Not done here, for the next tickets.** `mcp.manage` (ADR-0018: operations on
+**Not done here, for the next tickets.** `mcp.manage` (ADR-0019: operations on
 users, staff and roles) is not applied by `MCPCapability`; the operations that
 need it must not be added to the allowlist until it is (#855 decides how it is
 declared in the contract, and the rule must go in `MCPCapability`, the one
@@ -384,7 +384,7 @@ the body is read), and a request still has to fit the rate limit.
 
 ## Addendum: every admin operation as a tool, and `mcp.manage` (#855)
 
-Meets ADR-0018 and ADR-0019 as written; no departure. It closes the "not done
+Meets ADR-0019 and ADR-0020 as written; no departure. It closes the "not done
 here" of #854.
 
 **The allowlist is the whole admin surface.** `adminOperations` lists every
@@ -413,7 +413,7 @@ like anyone else. There is no list in Go.
 the user CRUD and search, the management users, the Staff Members, the Staff
 Roles, a role's grants and the Permission catalog. Writes are the obvious case
 (they create administrators, move people between roles and rewrite grants). Reads
-are included because the user and staff reads are personal data (ADR-0018's
+are included because the user and staff reads are personal data (ADR-0019's
 reads of personal data), and the roles and the catalog are the map an agent needs
 to plan a privilege escalation; keeping the reads under `mcp.read` would let a
 role meant for content work list every learner. So `mcp.manage` covers the

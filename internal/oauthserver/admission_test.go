@@ -255,7 +255,7 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 		"http://127.0.0.1/callback",
 		// The library compares only path and query once both sides are loopback,
 		// so another loopback address or name also matches. That reaches only the
-		// user's own machine (RFC 8252 section 8.3); recorded in ADR-0020.
+		// user's own machine (RFC 8252 section 8.3); recorded in ADR-0021.
 		"http://localhost:5000/callback",
 		"http://[::1]:5000/callback",
 	} {

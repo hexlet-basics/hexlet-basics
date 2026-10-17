@@ -42,7 +42,7 @@ func (StaffRole) Fields() []ent.Field {
 
 func (StaffRole) Edges() []ent.Edge {
 	return []ent.Edge{
-		// The Permissions the role holds (ADR-0018).
+		// The Permissions the role holds (ADR-0019).
 		edge.To("grants", StaffRoleGrant.Type),
 	}
 }

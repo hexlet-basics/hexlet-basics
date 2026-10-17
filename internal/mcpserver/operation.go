@@ -16,7 +16,7 @@ import (
 // operation is one contract operation as an admin tool needs it: how to build
 // its HTTP request from tool arguments and what schemas to advertise. It is read
 // from the embedded OpenAPI document, the same one internal/permissions reads
-// (ADR-0018), so a tool cannot describe anything the contract does not declare.
+// (ADR-0019), so a tool cannot describe anything the contract does not declare.
 type operation struct {
 	ID          string
 	Method      string

@@ -1,4 +1,4 @@
--- Tables of the in-process OAuth authorization server (ADR-0020). They are owned
+-- Tables of the in-process OAuth authorization server (ADR-0021). They are owned
 -- by internal/oauthserver, which reaches users only through ids it is handed.
 -- The foreign keys to users make removing an account revoke every grant it made;
 -- the one to oauth_clients does the same when a client is deleted.

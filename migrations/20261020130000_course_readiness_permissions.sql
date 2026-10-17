@@ -1,4 +1,4 @@
--- ADR-0018, state transitions slice: marking a course as draft, in development
+-- ADR-0019, state transitions slice: marking a course as draft, in development
 -- or completed become operations of their own (courses.mark_draft,
 -- courses.mark_in_development, courses.mark_completed), no longer a field of
 -- the update. The readiness used to be settable through the update, so every

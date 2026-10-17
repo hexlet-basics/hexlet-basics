@@ -15,7 +15,7 @@ import (
 )
 
 // TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer is the
-// structural half of ADR-0019's "one checkpoint" (the behavioural half is
+// structural half of ADR-0020's "one checkpoint" (the behavioural half is
 // TestNoRegisteredAdminToolRunsWithoutTheCheck). The permission check lives in
 // the generated server's security handler, so a tool that reached a handler
 // method, the database or the generated server's constructor would skip it. The

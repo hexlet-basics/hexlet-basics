@@ -8,7 +8,7 @@ import (
 	"hexletbasics/internal/transitions"
 )
 
-// A state is not an update (ADR-0018, state transitions addendum): publishing,
+// A state is not an update (ADR-0019, state transitions addendum): publishing,
 // unpublishing and archiving are operations of their own, and the legal moves
 // are a transitions.Transition each. This file maps a refused move to the same
 // kind of answer the self-protection refusals give, so every resource that

@@ -22,7 +22,7 @@ import (
 )
 
 // adminOperations is the allowlist of admin operations exposed as tools: the
-// operationIds, nothing else (ADR-0019). An operation added to the contract is
+// operationIds, nothing else (ADR-0020). An operation added to the contract is
 // not an agent capability until its operationId is listed here, so exposure is a
 // reviewed line of code and never a side effect of a contract change. New fails
 // for a name that is not an admin operation of the contract.
@@ -287,7 +287,7 @@ func wrapObject(schema map[string]any) map[string]any {
 }
 
 // annotations are the hints an agent shows its user: reads are read-only, a
-// delete is destructive (ADR-0019). The kind comes from the HTTP method, which
+// delete is destructive (ADR-0020). The kind comes from the HTTP method, which
 // is what the contract's own write classification falls back to as well.
 func adminAnnotations(op *operation) *mcp.ToolAnnotations {
 	if op.Method == http.MethodGet {
@@ -303,7 +303,7 @@ func adminAnnotations(op *operation) *mcp.ToolAnnotations {
 // adminHandler is a tool call: the arguments become an HTTP request that is
 // served by the generated api.Server, in process.
 //
-// This is the whole of ADR-0019's "one checkpoint". The handler never reaches
+// This is the whole of ADR-0020's "one checkpoint". The handler never reaches
 // an operation's code. The only thing it holds is an http.Handler, the same
 // generated server (with its security handler, validation, audit middleware and
 // error mapping) the website calls, so the Permission, the capability, the

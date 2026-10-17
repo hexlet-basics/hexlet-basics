@@ -11,7 +11,7 @@ import (
 )
 
 // Class is the kind of work a tool does, which decides how often one caller may
-// ask for it (ADR-0019): reading the public catalogue is cheap and harmless,
+// ask for it (ADR-0020): reading the public catalogue is cheap and harmless,
 // reading a learner's own data is more sensitive, and a write changes the site.
 // A tool names its Class when it is registered, so the tickets that add learner
 // and admin tools only pick one.
@@ -56,7 +56,7 @@ func (r Rates) of(c Class) int {
 	}
 }
 
-// Limits are what protects the server from one assistant (ADR-0019). The zero
+// Limits are what protects the server from one assistant (ADR-0020). The zero
 // value of a field means its default, so a caller sets only what it changes.
 type Limits struct {
 	// MaxPageSize is the most records one result holds.
@@ -146,7 +146,7 @@ func (m *meter) allow(class Class, userID int, clientID string) (ok bool, wait t
 // Scope spends no budget, so a connection that was never allowed to use a tool
 // cannot use up what the same user's other connections may call.
 //
-// The refusal is a tool error rather than HTTP 429 (decision in ADR-0019): the
+// The refusal is a tool error rather than HTTP 429 (decision in ADR-0020): the
 // Class is known only from the tool name inside the JSON-RPC body, and a 429 on
 // the endpoint would also stop `initialize` and `tools/list`, which cost
 // nothing, and an SDK client reads it as a broken transport, not as a message

@@ -1,4 +1,4 @@
--- ADR-0018, state transitions slice: publishing, unpublishing and archiving a
+-- ADR-0019, state transitions slice: publishing, unpublishing and archiving a
 -- review become operations of their own (reviews.publish,
 -- reviews.unpublish, reviews.archive), no longer a field of the update.
 -- The state used to be settable through the update, so every role holding

@@ -14,7 +14,7 @@ import (
 const staffReadPersonalDataHandlerName = "staff_read_personal_data_to_audit_v1"
 
 // StaffReadPersonalData turns the fact that a staff member read personal data
-// into an Audit Record (ADR-0018). It runs in the worker, so the request that
+// into an Audit Record (ADR-0019). It runs in the worker, so the request that
 // published the fact never waits for this insert; cmd/server only publishes
 // (ADR-0010).
 //

@@ -20,7 +20,7 @@ import (
 // time the record is given up (and logged) rather than holding the response.
 const publishTimeout = 2 * time.Second
 
-// NewPersonalDataReadMiddleware records staff reads of personal data (ADR-0018
+// NewPersonalDataReadMiddleware records staff reads of personal data (ADR-0019
 // addendum), the sibling of NewAuditMiddleware for the operations that change
 // nothing. It is selected by the contract: an operation that declares
 // `x-personal-data` (permissions.PersonalDataEntity) is recorded, every other

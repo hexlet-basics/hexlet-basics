@@ -10,7 +10,7 @@ import (
 	"hexletbasics/internal/oauthserver"
 )
 
-// OAuthConsents is the consent seam of the OAuth server (ADR-0020): what the
+// OAuthConsents is the consent seam of the OAuth server (ADR-0021): what the
 // consent screen shows, and approving or denying it. *oauthserver.Server is the
 // implementation; the dependency points this way only, handlers know the
 // package and the package never knows handlers. nil means the OAuth server is

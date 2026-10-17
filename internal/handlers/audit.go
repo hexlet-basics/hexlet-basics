@@ -20,7 +20,7 @@ import (
 // requestIDHeader is the header a proxy or client may set to correlate a call.
 const requestIDHeader = "X-Request-ID"
 
-// NewAuditMiddleware is the unit of work of every admin write (ADR-0018
+// NewAuditMiddleware is the unit of work of every admin write (ADR-0019
 // addendum). The generated server hands a handler a context, not a
 // transaction, so the transaction is opened here, around the handler:
 //
@@ -49,7 +49,7 @@ const requestIDHeader = "X-Request-ID"
 // across that call is exactly what we avoid, so it runs without one: its own
 // writes commit as they happen, the recorder still notes them, and the record is
 // written afterwards in its own transaction. The cost is a window between the
-// change and its record in which a crash loses the record (ADR-0018 addendum).
+// change and its record in which a crash loses the record (ADR-0019 addendum).
 //
 // It is selected by the contract, not by a list, so a resource that declares
 // itself in TypeSpec is audited with no code of its own, and the MCP server,

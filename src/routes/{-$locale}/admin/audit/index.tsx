@@ -23,7 +23,7 @@ import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 
-// The audit trail (ADR-0018): every change a staff member made and every read of
+// The audit trail (ADR-0019): every change a staff member made and every read of
 // personal data, newest first. The API needs the capability Permission
 // `audit.read` on the caller's Staff Role (an administrator included), refuses a
 // window wider than 92 days, and records that the trail was read.
