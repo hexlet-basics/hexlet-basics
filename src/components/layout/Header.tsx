@@ -38,17 +38,17 @@ import {
   IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import logoImg from "@/assets/logo.svg";
 import {
   deleteSessionMutation,
   getCurrentUserOptions,
-  getCurrentUserQueryKey,
   listCoursesOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { switchLocale } from "@/client/sdk.gen";
 import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
+import { onIdentityChanged } from "@/lib/identity";
 import { localize } from "@/lib/locale-path";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
@@ -190,11 +190,12 @@ function AuthLinks() {
   const user = useCurrentUser();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const navigate = useNavigate();
   const { mutate: logout } = useMutation({
     ...deleteSessionMutation(),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+    onSuccess: async () => {
+      await onIdentityChanged(queryClient, router);
       void navigate({ to: "/{-$locale}" });
     },
   });

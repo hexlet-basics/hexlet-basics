@@ -1,10 +1,10 @@
 import { Anchor, Box, Button, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
-import { createUserMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
+import { createUserMutation } from "@/client/@tanstack/react-query.gen";
 import { zSignUpInput } from "@/client/zod.gen";
 import {
   firstNameInputProps,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
 import { useAppForm } from "@/lib/form";
+import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
@@ -30,19 +31,12 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutation = useMutation({
     ...createUserMutation(),
-    onSuccess: async () => {
-      // Everything read as a guest describes the guest. The course and lesson
-      // reads carry progress, which the sign-up has just merged into the new
-      // account — so the lesson a guest is sent back to must be read again,
-      // not served from the cache with the guest's locks. They are dropped
-      // rather than invalidated: an inactive query is only marked stale by an
-      // invalidation, and a loader's queryClient.query serves stale data.
-      queryClient.removeQueries({ queryKey: [{ _id: "getCourse" }] });
-      queryClient.removeQueries({ queryKey: [{ _id: "getCourseLesson" }] });
-      await queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+    onSuccess: async (user) => {
+      await onIdentityChanged(queryClient, router, user);
       notifications.show({
         color: "green",
         message: t(($) => $.flash.users.create.success),

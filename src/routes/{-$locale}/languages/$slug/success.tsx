@@ -22,10 +22,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
   },
   loader: async ({ context, params }) => {
     try {
-      const view = await context.queryClient.query({
-        ...getCourseOptions({ path: { slug: params.slug } }),
-        staleTime: "static",
-      });
+      const view = await context.queryClient.query(
+        getCourseOptions({ path: { slug: params.slug } }),
+      );
       if (view.movedTo) {
         throw redirect({
           to: "/{-$locale}/languages/$slug/success",

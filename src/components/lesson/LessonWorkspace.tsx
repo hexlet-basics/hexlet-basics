@@ -97,14 +97,10 @@ export default function LessonWorkspace({
         queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
       });
       // A pass also moves the course's own progress, and on the last lesson it
-      // finishes the Enrollment the completion page checks for. A course read
-      // cached from an earlier visit to the Course page is inactive here, so an
-      // invalidation would not refetch it and the completion page's
-      // queryClient.query would serve it as it was — still unfinished, bouncing
-      // the learner back. The entry is dropped so the next read is fresh.
-      // The Course page is read by its landing page's slug, so that is the key.
+      // finishes the Enrollment the completion page checks for. The Course page
+      // is read by its landing page's slug, so that is the key.
       if (outcome.passed && view.landingPage) {
-        queryClient.removeQueries({
+        await queryClient.invalidateQueries({
           queryKey: getCourseQueryKey({ path: { slug: view.landingPage.slug } }),
         });
       }

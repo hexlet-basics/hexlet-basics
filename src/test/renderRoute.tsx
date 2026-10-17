@@ -110,6 +110,8 @@ export async function renderRoute(
     routeTree: rootRoute.addChildren([...top, layout] as never[]),
     context: { queryClient, i18n, user } as never,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
+    // Links preload on hover, as in getRouter.
+    defaultPreload: "intent",
     // The application's error pages, as getRouter sets them.
     defaultNotFoundComponent: NotFoundPage,
     defaultErrorComponent: ServerErrorPage,

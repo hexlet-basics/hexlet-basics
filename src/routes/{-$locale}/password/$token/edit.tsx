@@ -1,13 +1,14 @@
 import { Button, Card, Container, Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { getCurrentUserQueryKey, updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
+import { updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
 import { checkPasswordResetToken } from "@/client/sdk.gen";
 import { zResetPasswordInput } from "@/client/zod.gen";
 import { newPasswordInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
+import { onIdentityChanged } from "@/lib/identity";
 import { isApiError } from "@/lib/api-error";
 
 // Where a refused link lands, from the loader and from a failed submission.
@@ -42,13 +43,12 @@ function Edit() {
   const { locale, token } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutation = useMutation({
     ...updatePasswordMutation(),
-    onSuccess: (user) => {
-      // Seeded from the response, as after a Magic Link: the root guard reads
-      // the current user through queryClient.query and would keep the guest.
-      queryClient.setQueryData(getCurrentUserQueryKey(), { user });
+    onSuccess: async (user) => {
+      await onIdentityChanged(queryClient, router, user);
       notifications.show({
         color: "green",
         message: t(($) => $.flash.passwords.update.success),

@@ -1,12 +1,13 @@
 import { Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { createSessionMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
+import { createSessionMutation } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
 import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
+import { onIdentityChanged } from "@/lib/identity";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
@@ -21,11 +22,12 @@ function New() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutation = useMutation({
     ...createSessionMutation(),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+    onSuccess: async (user) => {
+      await onIdentityChanged(queryClient, router, user);
       notifications.show({
         color: "green",
         message: t(($) => $.flash.sessions.create.success),

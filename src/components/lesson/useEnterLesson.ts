@@ -30,12 +30,8 @@ export function useEnterLesson(courseSlug: string) {
       { path: { id: lesson.id } },
       {
         onSuccess: () => {
-          // The lesson's payload may already be cached from a hover, taken
-          // before this start — and before the latest pass. The loader's
-          // queryClient.query would serve that stale copy, marks and all, and an
-          // inactive query is not refetched by a plain invalidation, so the
-          // entry is dropped and the loader reads it afresh.
-          queryClient.removeQueries({
+          // A hover may have cached the lesson before this start; it is stale now.
+          void queryClient.invalidateQueries({
             queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
           });
           void navigate({

@@ -66,10 +66,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       .catch(() => null);
     try {
       const [view] = await Promise.all([
-        context.queryClient.query({
-          ...getCourseOptions({ path: { slug: params.slug } }),
-          staleTime: "static",
-        }),
+        // Carries the visitor's progress, so it takes the client's default
+        // staleness and is dropped when who is visiting changes.
+        context.queryClient.query(getCourseOptions({ path: { slug: params.slug } })),
         banner,
       ]);
       // An archived landing page moved: legacy answered it with a permanent
