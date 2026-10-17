@@ -15,6 +15,8 @@
   password_digest: {{ password }}
   first_name: Admin
   last_name: Learner
+  nickname: ally
+  phone: '+10000000001'
   admin: true
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
@@ -106,3 +108,75 @@
   admin: false
   created_at: '2026-07-26 20:50:36'
   updated_at: '2026-07-26 20:50:36'
+
+# JavaScript learner who finished the first and the third lessons but not the second: a gap, not a block.
+- id: {{ id "user_learner_with_a_gap" }}
+  email: learner-with-a-gap@example.com
+  first_name: Gap
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# JavaScript learner who finished every lesson while the enrollment is still open (inherited data): passing anything closes the course.
+- id: {{ id "user_learner_all_lessons_done" }}
+  email: learner-all-lessons-done@example.com
+  first_name: Done
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# JavaScript learner who finished the course: all lessons and the enrollment.
+- id: {{ id "user_learner_finished_javascript" }}
+  email: learner-finished-javascript@example.com
+  first_name: Finished
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# JavaScript learner whose only finished lesson is one the current build dropped: it adds nothing to the completion.
+- id: {{ id "user_learner_dropped_lesson" }}
+  email: learner-dropped-lesson@example.com
+  first_name: Dropped
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# Learner of the four-lesson course who finished the first and the third lessons: the second and the fourth are open.
+- id: {{ id "user_learner_four_lessons_gap" }}
+  email: learner-four-lessons-gap@example.com
+  first_name: Four
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# Learner with JavaScript started and Go finished, both of which have a public catalogue card.
+- id: {{ id "user_learner_javascript_and_go" }}
+  email: learner-javascript-and-go@example.com
+  first_name: Two
+  last_name: Courses
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# Learner who started JavaScript (public card) and four courses the dashboard cannot draw a card for: none, a draft, another locale.
+- id: {{ id "user_learner_hidden_cards" }}
+  email: learner-hidden-cards@example.com
+  first_name: Hidden
+  last_name: Cards
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# Learner who started JavaScript and a course whose card is published but unlisted: the dashboard keeps it.
+- id: {{ id "user_learner_unlisted_card" }}
+  email: learner-unlisted-card@example.com
+  first_name: Unlisted
+  last_name: Card
+  admin: false
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

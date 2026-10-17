@@ -9,11 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselesson"
-	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
@@ -69,7 +68,7 @@ func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
-	lesson := seedCourse(t, h, "go-basics", "printing")
+	lesson := lessonLabeled(t, h, "lesson_single_lesson_printing")
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
@@ -89,7 +88,7 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 
 	courseStarted := publishedOf[events.CourseStarted](t, h)
 	require.Len(t, courseStarted, 1)
-	assert.Equal(t, "go-basics", courseStarted[0].Slug)
+	assert.Equal(t, "single-lesson", courseStarted[0].Slug)
 	assert.Equal(t, 2, courseStarted[0].OccurrenceCount, "the learner's started enrollments, fixture one included")
 
 	started := publishedLessonStarted(t, h)
@@ -140,43 +139,17 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 // A lesson the current version does not contain counts for nothing, so a learner
 // who finished one that was dropped has no more of the course done than before.
 func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	// Their only finished lesson exists in the retired version alone.
+	h := testsupport.NewHarnessAs(t, "user_learner_dropped_lesson")
 	ctx := context.Background()
-	user := actingUserID(t, h)
-	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
-	owner := h.DB.Enrollment.Query().
-		Where(enrollment.UserID(user), enrollment.CourseID(js.ID)).
-		OnlyX(ctx)
 
-	// A lesson that exists only in the retired version, finished by the learner.
-	dropped := h.DB.CourseLesson.Create().
-		SetSlug("removed-in-a-later-build").
-		SetCourseID(js.ID).
-		SetNaturalOrder(9).
-		SaveX(ctx)
-	retired := retiredVersionID(t, h, js)
-	h.DB.CourseLessonVersion.Create().
-		SetCourseID(js.ID).
-		SetCourseVersionID(retired).
-		SetLessonID(dropped.ID).
-		SetModuleVersionID(seedModuleVersion(t, h, js.ID, retired)).
-		SetNaturalOrder(9).
-		SaveX(ctx)
-	h.DB.LessonProgress.Create().
-		SetUserID(user).
-		SetCourseID(js.ID).
-		SetEnrollmentID(owner.ID).
-		SetLessonID(dropped.ID).
-		SetState("finished").
-		SaveX(ctx)
-
-	// The dropped lesson adds nothing to the course's completion: one of three.
+	// The dropped lesson adds nothing to the course's completion.
 	third := lessonBySlug(t, h, thirdLessonSlug)
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(third.ID)})
 	require.NoError(t, err)
 	state, ok := res.(*api.CourseProgress)
 	require.True(t, ok, "got %T", res)
-	assert.Equal(t, int32(33), state.Completion, "a dropped lesson has no place in the course")
+	assert.Equal(t, int32(0), state.Completion, "a dropped lesson has no place in the course")
 	require.Len(t, state.Lessons, 3)
 }
 
@@ -239,73 +212,17 @@ func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.Course
 		OnlyX(t.Context())
 }
 
+// lessonLabeled is the fixture lesson with the label.
+func lessonLabeled(t *testing.T, h *testsupport.Harness, label string) *ent.CourseLesson {
+	t.Helper()
+	return h.DB.CourseLesson.GetX(t.Context(), fixtures.ID(label))
+}
+
 func actingUserID(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
 	u, ok := testsupport.HarnessUser(h)
 	require.True(t, ok)
 	return u
-}
-
-func retiredVersionID(t *testing.T, h *testsupport.Harness, c *ent.Course) int {
-	t.Helper()
-	require.NotNil(t, c.CurrentVersionID)
-	retired, err := h.DB.CourseVersion.Query().
-		Where(
-			courseversion.CourseID(c.ID),
-			courseversion.IDNEQ(*c.CurrentVersionID),
-		).
-		First(t.Context())
-	require.NoError(t, err, "fixtures must carry a retired course version")
-	return retired.ID
-}
-
-// seedModuleVersion creates the module and module version a lesson version's
-// NOT NULL FK requires. Fixtures can point at a module version that does not
-// exist (loading disables FKs); a live insert cannot.
-func seedModuleVersion(t *testing.T, h *testsupport.Harness, courseID, versionID int) int {
-	t.Helper()
-	module := h.DB.CourseModule.Create().
-		SetSlug("basics").
-		SetCourseID(courseID).
-		SaveX(t.Context())
-	return h.DB.CourseModuleVersion.Create().
-		SetCourseID(courseID).
-		SetCourseVersionID(versionID).
-		SetModuleID(module.ID).
-		SaveX(t.Context()).ID
-}
-
-// seedCourse builds a minimal course the acting user has never touched: one
-// promoted version carrying one lesson at position 1.
-func seedCourse(t *testing.T, h *testsupport.Harness, courseSlug, lessonSlug string) *ent.CourseLesson {
-	t.Helper()
-	ctx := t.Context()
-
-	created := h.DB.Course.Create().SetSlug(courseSlug).SaveX(ctx)
-	// The image and the exercise filename are what the runner needs to grade a
-	// submission, so a seeded course carries them as a built one does.
-	version := h.DB.CourseVersion.Create().
-		SetCourseID(created.ID).
-		SetState("ready").
-		SetDockerImage("hexletbasics/exercises-" + courseSlug).
-		SetExerciseFilename("index.js").
-		SaveX(ctx)
-	promoted := created.Update().SetCurrentVersionID(version.ID).SaveX(ctx)
-
-	lesson := h.DB.CourseLesson.Create().
-		SetSlug(lessonSlug).
-		SetCourseID(promoted.ID).
-		SetNaturalOrder(1).
-		SaveX(ctx)
-	h.DB.CourseLessonVersion.Create().
-		SetCourseID(promoted.ID).
-		SetCourseVersionID(version.ID).
-		SetLessonID(lesson.ID).
-		SetModuleVersionID(seedModuleVersion(t, h, promoted.ID, version.ID)).
-		SetNaturalOrder(1).
-		SetPathToCode("/exercises-" + courseSlug + "/modules/10-basics/10-" + lessonSlug).
-		SaveX(ctx)
-	return lesson
 }
 
 func publishedLessonStarted(t *testing.T, h *testsupport.Harness) events.LessonStarted {

@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/progress"
@@ -114,7 +115,7 @@ func TestCheckFinishesALessonTakenOutOfOrder(t *testing.T) {
 func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	lesson := seedCourse(t, h, "go-basics", "printing")
+	lesson := lessonLabeled(t, h, "lesson_single_lesson_printing")
 
 	result := submitSolution(t, h, lesson)
 	assert.True(t, result.Response.LessonHasBeenFinished)
@@ -131,7 +132,7 @@ func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 	require.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the submission enrolled them")
 	courseFinished := publishedOf[events.CourseFinished](t, h)
 	require.Len(t, courseFinished, 1)
-	assert.Equal(t, "go-basics", courseFinished[0].Slug)
+	assert.Equal(t, "single-lesson", courseFinished[0].Slug)
 	assert.Equal(t, 1, courseFinished[0].OccurrenceCount,
 		"counts the learner's finished enrollments including the one just finished")
 }
@@ -168,10 +169,8 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 // course by passing anything, rather than having no submission left that would
 // notice.
 func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	h := testsupport.NewHarnessAs(t, "user_learner_all_lessons_done")
 	ctx := t.Context()
-	finishLesson(t, h, secondLessonSlug)
-	finishLesson(t, h, thirdLessonSlug)
 
 	first := lessonBySlug(t, h, firstLessonSlug)
 	result := submitSolution(t, h, first)
@@ -192,28 +191,17 @@ func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
 
 // A gap in the learner's history — inherited from a system that allowed any
 // order — does not block them, but keeps the course open until they close it.
+// The learner has finished the first and the third of four lessons.
 func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	h := testsupport.NewHarnessAs(t, "user_learner_four_lessons_gap")
 	ctx := t.Context()
-	user := actingUserID(t, h)
-	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
+	crs := h.DB.Course.GetX(ctx, fixtures.ID("course_with_four_lessons"))
 	owner := h.DB.Enrollment.Query().
-		Where(enrollment.UserID(user), enrollment.CourseID(js.ID)).
+		Where(enrollment.UserID(actingUserID(t, h)), enrollment.CourseID(crs.ID)).
 		OnlyX(ctx)
 
-	// Finished out of order: the third lesson is done, the second is not.
-	third := lessonBySlug(t, h, thirdLessonSlug)
-	h.DB.LessonProgress.Create().
-		SetUserID(user).
-		SetCourseID(js.ID).
-		SetEnrollmentID(owner.ID).
-		SetLessonID(third.ID).
-		SetState("finished").
-		SaveX(ctx)
-	fourth := seedLesson(t, h, js, "functions", 4)
-
 	// The gap does not hold them back.
-	result := submitSolution(t, h, fourth)
+	result := submitSolution(t, h, lessonLabeled(t, h, "lesson_with_four_lessons_four"))
 	assert.True(t, result.Response.LessonHasBeenFinished)
 	assert.False(t, result.Response.CourseHasBeenFinished, "the second lesson is still open")
 
@@ -221,8 +209,7 @@ func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
 	assert.Equal(t, "started", *owner.State)
 
 	// Closing the gap finishes the course.
-	second := lessonBySlug(t, h, secondLessonSlug)
-	closing := submitSolution(t, h, second)
+	closing := submitSolution(t, h, lessonLabeled(t, h, "lesson_with_four_lessons_two"))
 	assert.True(t, closing.Response.CourseHasBeenFinished)
 
 	owner = h.DB.Enrollment.Query().Where(enrollment.ID(owner.ID)).OnlyX(ctx)
@@ -234,19 +221,10 @@ func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
 func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	lesson := lessonBySlug(t, h, secondLessonSlug)
-	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
-
-	retired := h.DB.CourseLessonVersion.Create().
-		SetCourseID(js.ID).
-		SetCourseVersionID(retiredVersionID(t, h, js)).
-		SetLessonID(lesson.ID).
-		SetModuleVersionID(seedModuleVersion(t, h, js.ID, retiredVersionID(t, h, js))).
-		SetNaturalOrder(2).
-		SaveX(ctx)
+	lesson := lessonBySlug(t, h, firstLessonSlug)
 
 	res, err := h.Client.CheckLesson(ctx,
-		&api.CheckLessonInput{Code: submittedCode, VersionId: int32(retired.ID)},
+		&api.CheckLessonInput{Code: submittedCode, VersionId: fixtures.ID32("lesson_version_javascript_hello_world_retired")},
 		api.CheckLessonParams{ID: int32(lesson.ID)},
 	)
 	require.NoError(t, err)
@@ -375,29 +353,6 @@ func currentLessonVersionID(t *testing.T, h *testsupport.Harness, lesson *ent.Co
 			courselessonversion.CourseVersionID(*crs.CurrentVersionID),
 		).
 		OnlyX(ctx).ID
-}
-
-// seedLesson adds a lesson to the course's current version at a position of the
-// caller's choosing, for the histories fixtures cannot express.
-func seedLesson(t *testing.T, h *testsupport.Harness, crs *ent.Course, slug string, position int) *ent.CourseLesson {
-	t.Helper()
-	ctx := t.Context()
-	require.NotNil(t, crs.CurrentVersionID)
-
-	lesson := h.DB.CourseLesson.Create().
-		SetSlug(slug).
-		SetCourseID(crs.ID).
-		SetNaturalOrder(position).
-		SaveX(ctx)
-	h.DB.CourseLessonVersion.Create().
-		SetCourseID(crs.ID).
-		SetCourseVersionID(*crs.CurrentVersionID).
-		SetLessonID(lesson.ID).
-		SetModuleVersionID(seedModuleVersion(t, h, crs.ID, *crs.CurrentVersionID)).
-		SetNaturalOrder(position).
-		SetPathToCode("/exercises-javascript/modules/10-basics/" + slug).
-		SaveX(ctx)
-	return lesson
 }
 
 // A solution that never terminates is its own answer, not a plain failure: the

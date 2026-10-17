@@ -1,0 +1,15 @@
+# Fixtures for `user_accounts`, HAND-CURATED: the social sign-in identities
+# linked to a user. Social sign-in is not ported (ADR-0015); the only use is
+# removing an account, which deletes the account's rows and no one else's.
+- id: {{ id "user_account_admin_learner_github" }}
+  user_id: {{ id "user_admin_learner" }}
+  provider: github
+  uid: admin-learner-gh
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: {{ id "user_account_staff_editor_github" }}
+  user_id: {{ id "user_staff_editor" }}
+  provider: github
+  uid: staff-editor-gh
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

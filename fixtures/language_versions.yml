@@ -197,3 +197,27 @@
   result:
   state: created
   updated_at: '2026-07-27 09:59:18'
+
+- id: {{ id "version_single_lesson_current" }}
+  language_id: {{ id "course_single_lesson" }}
+  docker_image: hexletbasics/exercises-single-lesson
+  exercise_filename: index.js
+  exercise_test_filename: test.js
+  extension: js
+  lessons_count: 1
+  name: single-lesson
+  state: ready
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+- id: {{ id "version_with_four_lessons_current" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  docker_image: hexletbasics/exercises-four-lessons
+  exercise_filename: index.js
+  exercise_test_filename: test.js
+  extension: js
+  lessons_count: 4
+  name: four-lessons
+  state: ready
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

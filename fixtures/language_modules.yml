@@ -108,3 +108,19 @@
   state: active
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+
+- id: {{ id "module_single_lesson_10_basics" }}
+  language_id: {{ id "course_single_lesson" }}
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+- id: {{ id "module_with_four_lessons_10_basics" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

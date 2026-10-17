@@ -209,14 +209,8 @@ func TestGetCourseLessonIsNotFoundOutsideTheCurrentBuild(t *testing.T) {
 	require.IsType(t, &api.NotFoundError{}, res)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
-	// A lesson that exists but is not part of the current version.
-	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
-	h.DB.CourseLesson.Create().
-		SetSlug("removed-in-a-later-build").
-		SetCourseID(js.ID).
-		SetNaturalOrder(9).
-		SaveX(ctx)
-
+	// A lesson that exists but is not part of the current version: the fixtures
+	// carry one that only the retired version has.
 	res, err = h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       "removed-in-a-later-build",

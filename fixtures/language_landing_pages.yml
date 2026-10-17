@@ -729,3 +729,42 @@
 
     '
   used_in_header: Где используется C#?
+
+- id: {{ id "landing_page_with_draft_card" }}
+  language_id: {{ id "course_with_draft_card" }}
+  slug: draft-card-ru
+  name: draft-card
+  header: draft-card
+  description: draft-card
+  locale: ru
+  main: true
+  listed: true
+  state: draft
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+- id: {{ id "landing_page_with_english_card" }}
+  language_id: {{ id "course_with_english_card" }}
+  slug: english-card-en
+  name: english-card
+  header: english-card
+  description: english-card
+  locale: en
+  main: true
+  listed: true
+  state: published
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+- id: {{ id "landing_page_with_unlisted_card" }}
+  language_id: {{ id "course_with_unlisted_card" }}
+  slug: unlisted-card-ru
+  name: unlisted-card
+  header: unlisted-card
+  description: unlisted-card
+  locale: ru
+  main: true
+  listed: false
+  state: published
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

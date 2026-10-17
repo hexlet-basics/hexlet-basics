@@ -60,11 +60,9 @@ func TestUpdateProfile(t *testing.T) {
 
 func TestDeleteAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	u := h.DB.User.UpdateOneID(h.UserID).SetNickname("ally").SetPhone("+10000000001").SaveX(t.Context())
-	h.DB.UserAccount.Create().SetUserID(u.ID).SetProvider("github").SetUID("alice-gh").SaveX(t.Context())
-	other := h.DB.UserAccount.Create().SetUserID(h.DB.User.Query().
-		Where(user.Email("staff-editor@example.com")).OnlyX(t.Context()).ID).
-		SetProvider("github").SetUID("bob-gh").SaveX(t.Context())
+	u := h.DB.User.GetX(t.Context(), h.UserID)
+	require.NotNil(t, u.Nickname, "the fixture user has a nickname and a phone to erase")
+	other := h.DB.UserAccount.GetX(t.Context(), fixtures.ID("user_account_staff_editor_github"))
 
 	res, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)

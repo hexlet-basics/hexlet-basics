@@ -30,3 +30,94 @@
   finished_lessons_count: 0
   created_at: '2026-07-26 20:50:36'
   updated_at: '2026-07-26 20:50:36'
+- id: {{ id "enrollment_learner_with_a_gap_javascript" }}
+  user_id: {{ id "user_learner_with_a_gap" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 2
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_all_lessons_done_javascript" }}
+  user_id: {{ id "user_learner_all_lessons_done" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 3
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_finished_javascript_javascript" }}
+  user_id: {{ id "user_learner_finished_javascript" }}
+  language_id: {{ id "course_javascript" }}
+  state: finished
+  finished_lessons_count: 3
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_dropped_lesson_javascript" }}
+  user_id: {{ id "user_learner_dropped_lesson" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 1
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_four_lessons_gap_with_four_lessons" }}
+  user_id: {{ id "user_learner_four_lessons_gap" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  state: started
+  finished_lessons_count: 2
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_javascript_and_go_javascript" }}
+  user_id: {{ id "user_learner_javascript_and_go" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_javascript_and_go_go" }}
+  user_id: {{ id "user_learner_javascript_and_go" }}
+  language_id: {{ id "course_go" }}
+  state: finished
+  finished_lessons_count: 2
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_hidden_cards_javascript" }}
+  user_id: {{ id "user_learner_hidden_cards" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_hidden_cards_single_lesson" }}
+  user_id: {{ id "user_learner_hidden_cards" }}
+  language_id: {{ id "course_single_lesson" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_hidden_cards_with_draft_card" }}
+  user_id: {{ id "user_learner_hidden_cards" }}
+  language_id: {{ id "course_with_draft_card" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_hidden_cards_with_english_card" }}
+  user_id: {{ id "user_learner_hidden_cards" }}
+  language_id: {{ id "course_with_english_card" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_unlisted_card_javascript" }}
+  user_id: {{ id "user_learner_unlisted_card" }}
+  language_id: {{ id "course_javascript" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "enrollment_learner_unlisted_card_with_unlisted_card" }}
+  user_id: {{ id "user_learner_unlisted_card" }}
+  language_id: {{ id "course_with_unlisted_card" }}
+  state: started
+  finished_lessons_count: 0
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

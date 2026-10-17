@@ -39,3 +39,91 @@
   messages_count: 7
   created_at: '2026-07-26 20:50:36'
   updated_at: '2026-07-26 20:50:36'
+- id: {{ id "lesson_progress_learner_with_a_gap_javascript_hello_world" }}
+  user_id: {{ id "user_learner_with_a_gap" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_with_a_gap_javascript" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_with_a_gap_javascript_strings" }}
+  user_id: {{ id "user_learner_with_a_gap" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_with_a_gap_javascript" }}
+  lesson_id: {{ id "lesson_javascript_strings" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_all_lessons_done_javascript_hello_world" }}
+  user_id: {{ id "user_learner_all_lessons_done" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_all_lessons_done_javascript" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_all_lessons_done_javascript_variables" }}
+  user_id: {{ id "user_learner_all_lessons_done" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_all_lessons_done_javascript" }}
+  lesson_id: {{ id "lesson_javascript_variables" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_all_lessons_done_javascript_strings" }}
+  user_id: {{ id "user_learner_all_lessons_done" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_all_lessons_done_javascript" }}
+  lesson_id: {{ id "lesson_javascript_strings" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_finished_javascript_javascript_hello_world" }}
+  user_id: {{ id "user_learner_finished_javascript" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_finished_javascript_javascript" }}
+  lesson_id: {{ id "lesson_javascript_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_finished_javascript_javascript_variables" }}
+  user_id: {{ id "user_learner_finished_javascript" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_finished_javascript_javascript" }}
+  lesson_id: {{ id "lesson_javascript_variables" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_finished_javascript_javascript_strings" }}
+  user_id: {{ id "user_learner_finished_javascript" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_finished_javascript_javascript" }}
+  lesson_id: {{ id "lesson_javascript_strings" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_dropped_lesson_javascript_removed_in_a_later_build" }}
+  user_id: {{ id "user_learner_dropped_lesson" }}
+  language_id: {{ id "course_javascript" }}
+  language_member_id: {{ id "enrollment_learner_dropped_lesson_javascript" }}
+  lesson_id: {{ id "lesson_javascript_removed_in_a_later_build" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_four_lessons_gap_with_four_lessons_one" }}
+  user_id: {{ id "user_learner_four_lessons_gap" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_member_id: {{ id "enrollment_learner_four_lessons_gap_with_four_lessons" }}
+  lesson_id: {{ id "lesson_with_four_lessons_one" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_four_lessons_gap_with_four_lessons_three" }}
+  user_id: {{ id "user_learner_four_lessons_gap" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_member_id: {{ id "enrollment_learner_four_lessons_gap_with_four_lessons" }}
+  lesson_id: {{ id "lesson_with_four_lessons_three" }}
+  state: finished
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

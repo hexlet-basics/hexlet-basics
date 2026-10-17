@@ -248,3 +248,60 @@
   state:
   updated_at: '2026-07-26 20:50:29'
   upload_id:
+
+# A built course of one lesson that nobody has touched and no catalogue card: the first lesson enrolls, and finishing it finishes the course.
+- id: {{ id "course_single_lesson" }}
+  current_version_id: {{ id "version_single_lesson_current" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: single-lesson
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# A built course of four lessons, for a learner whose history has a gap.
+- id: {{ id "course_with_four_lessons" }}
+  current_version_id: {{ id "version_with_four_lessons_current" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: four-lessons
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# A course whose only main card is a draft.
+- id: {{ id "course_with_draft_card" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: draft-card
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# A course whose only main card is written for another locale.
+- id: {{ id "course_with_english_card" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: english-card
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+# A course whose main card is published but not listed.
+- id: {{ id "course_with_unlisted_card" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: unlisted-card
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

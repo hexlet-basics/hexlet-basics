@@ -328,3 +328,57 @@
   path_to_code: /exercises-javascript/modules/10-basics/30-strings
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+- id: {{ id "lesson_version_single_lesson_printing_current" }}
+  language_id: {{ id "course_single_lesson" }}
+  language_version_id: {{ id "version_single_lesson_current" }}
+  lesson_id: {{ id "lesson_single_lesson_printing" }}
+  module_version_id: {{ id "module_version_single_lesson_10_basics_current" }}
+  natural_order: 1
+  path_to_code: /exercises-single-lesson/modules/10-basics/10-printing
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_version_with_four_lessons_one_current" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_version_id: {{ id "version_with_four_lessons_current" }}
+  lesson_id: {{ id "lesson_with_four_lessons_one" }}
+  module_version_id: {{ id "module_version_with_four_lessons_10_basics_current" }}
+  natural_order: 1
+  path_to_code: /exercises-four-lessons/modules/10-basics/10-one
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_version_with_four_lessons_two_current" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_version_id: {{ id "version_with_four_lessons_current" }}
+  lesson_id: {{ id "lesson_with_four_lessons_two" }}
+  module_version_id: {{ id "module_version_with_four_lessons_10_basics_current" }}
+  natural_order: 2
+  path_to_code: /exercises-four-lessons/modules/10-basics/20-two
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_version_with_four_lessons_three_current" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_version_id: {{ id "version_with_four_lessons_current" }}
+  lesson_id: {{ id "lesson_with_four_lessons_three" }}
+  module_version_id: {{ id "module_version_with_four_lessons_10_basics_current" }}
+  natural_order: 3
+  path_to_code: /exercises-four-lessons/modules/10-basics/30-three
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_version_with_four_lessons_four_current" }}
+  language_id: {{ id "course_with_four_lessons" }}
+  language_version_id: {{ id "version_with_four_lessons_current" }}
+  lesson_id: {{ id "lesson_with_four_lessons_four" }}
+  module_version_id: {{ id "module_version_with_four_lessons_10_basics_current" }}
+  natural_order: 4
+  path_to_code: /exercises-four-lessons/modules/10-basics/40-four
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+
+- id: {{ id "lesson_version_javascript_removed_in_a_later_build_retired" }}
+  language_id: {{ id "course_javascript" }}
+  language_version_id: {{ id "version_javascript_retired" }}
+  lesson_id: {{ id "lesson_javascript_removed_in_a_later_build" }}
+  module_version_id: {{ id "module_version_javascript_10_basics_retired" }}
+  natural_order: 9
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/courselandingpage"
-	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
@@ -49,10 +48,9 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 // Lessons may be taken in any order: a learner who finished the third lesson but
 // not the second has exactly those marked, and the course is still unfinished.
 func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	h := testsupport.NewHarnessAs(t, "user_learner_with_a_gap")
 	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
-	finishLesson(t, h, thirdLessonSlug)
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
@@ -303,26 +301,4 @@ func progressCookie(courseSlug string, lessonSlugs ...string) progress.GuestProg
 		guest = guest.Record(courseSlug, slug)
 	}
 	return guest
-}
-
-// finishLesson marks the acting learner's progress on a lesson finished,
-// creating the row when they have not taken it.
-func finishLesson(t *testing.T, h *testsupport.Harness, slug string) {
-	t.Helper()
-	ctx := t.Context()
-	lesson := lessonBySlug(t, h, slug)
-	owner := h.DB.Enrollment.Query().
-		Where(
-			enrollment.UserID(actingUserID(t, h)),
-			enrollment.CourseID(*lesson.CourseID),
-		).
-		OnlyX(ctx)
-
-	h.DB.LessonProgress.Create().
-		SetUserID(actingUserID(t, h)).
-		SetCourseID(*lesson.CourseID).
-		SetEnrollmentID(owner.ID).
-		SetLessonID(lesson.ID).
-		SetState("finished").
-		SaveX(ctx)
 }
