@@ -82,6 +82,8 @@ type Tx struct {
 	StaffMember *StaffMemberClient
 	// StaffRole is the client for interacting with the StaffRole builders.
 	StaffRole *StaffRoleClient
+	// StaffRoleGrant is the client for interacting with the StaffRoleGrant builders.
+	StaffRoleGrant *StaffRoleGrantClient
 	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
 	StaffRolePermission *StaffRolePermissionClient
 	// Tag is the client for interacting with the Tag builders.
@@ -258,6 +260,7 @@ func (tx *Tx) init() {
 	tx.Session = NewSessionClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)
 	tx.StaffRole = NewStaffRoleClient(tx.config)
+	tx.StaffRoleGrant = NewStaffRoleGrantClient(tx.config)
 	tx.StaffRolePermission = NewStaffRolePermissionClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
 	tx.Tagging = NewTaggingClient(tx.config)

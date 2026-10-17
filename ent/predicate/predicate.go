@@ -111,6 +111,9 @@ type StaffMember func(*sql.Selector)
 // StaffRole is the predicate function for staffrole builders.
 type StaffRole func(*sql.Selector)
 
+// StaffRoleGrant is the predicate function for staffrolegrant builders.
+type StaffRoleGrant func(*sql.Selector)
+
 // StaffRolePermission is the predicate function for staffrolepermission builders.
 type StaffRolePermission func(*sql.Selector)
 

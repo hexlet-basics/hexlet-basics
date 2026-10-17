@@ -42,6 +42,7 @@ import (
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
@@ -99,6 +100,7 @@ const (
 	TypeSession                   = "Session"
 	TypeStaffMember               = "StaffMember"
 	TypeStaffRole                 = "StaffRole"
+	TypeStaffRoleGrant            = "StaffRoleGrant"
 	TypeStaffRolePermission       = "StaffRolePermission"
 	TypeTag                       = "Tag"
 	TypeTagging                   = "Tagging"
@@ -29466,6 +29468,9 @@ type StaffRoleMutation struct {
 	permissions        map[int]struct{}
 	removedpermissions map[int]struct{}
 	clearedpermissions bool
+	grants             map[int]struct{}
+	removedgrants      map[int]struct{}
+	clearedgrants      bool
 	done               bool
 	oldValue           func(context.Context) (*StaffRole, error)
 	predicates         []predicate.StaffRole
@@ -29780,6 +29785,60 @@ func (m *StaffRoleMutation) ResetPermissions() {
 	m.removedpermissions = nil
 }
 
+// AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by ids.
+func (m *StaffRoleMutation) AddGrantIDs(ids ...int) {
+	if m.grants == nil {
+		m.grants = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.grants[ids[i]] = struct{}{}
+	}
+}
+
+// ClearGrants clears the "grants" edge to the StaffRoleGrant entity.
+func (m *StaffRoleMutation) ClearGrants() {
+	m.clearedgrants = true
+}
+
+// GrantsCleared reports if the "grants" edge to the StaffRoleGrant entity was cleared.
+func (m *StaffRoleMutation) GrantsCleared() bool {
+	return m.clearedgrants
+}
+
+// RemoveGrantIDs removes the "grants" edge to the StaffRoleGrant entity by IDs.
+func (m *StaffRoleMutation) RemoveGrantIDs(ids ...int) {
+	if m.removedgrants == nil {
+		m.removedgrants = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.grants, ids[i])
+		m.removedgrants[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedGrants returns the removed IDs of the "grants" edge to the StaffRoleGrant entity.
+func (m *StaffRoleMutation) RemovedGrantsIDs() (ids []int) {
+	for id := range m.removedgrants {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// GrantsIDs returns the "grants" edge IDs in the mutation.
+func (m *StaffRoleMutation) GrantsIDs() (ids []int) {
+	for id := range m.grants {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetGrants resets all changes to the "grants" edge.
+func (m *StaffRoleMutation) ResetGrants() {
+	m.grants = nil
+	m.clearedgrants = false
+	m.removedgrants = nil
+}
+
 // Where appends a list predicates to the StaffRoleMutation builder.
 func (m *StaffRoleMutation) Where(ps ...predicate.StaffRole) {
 	m.predicates = append(m.predicates, ps...)
@@ -29973,9 +30032,12 @@ func (m *StaffRoleMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *StaffRoleMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.permissions != nil {
 		edges = append(edges, staffrole.EdgePermissions)
+	}
+	if m.grants != nil {
+		edges = append(edges, staffrole.EdgeGrants)
 	}
 	return edges
 }
@@ -29990,15 +30052,24 @@ func (m *StaffRoleMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case staffrole.EdgeGrants:
+		ids := make([]ent.Value, 0, len(m.grants))
+		for id := range m.grants {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *StaffRoleMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedpermissions != nil {
 		edges = append(edges, staffrole.EdgePermissions)
+	}
+	if m.removedgrants != nil {
+		edges = append(edges, staffrole.EdgeGrants)
 	}
 	return edges
 }
@@ -30013,15 +30084,24 @@ func (m *StaffRoleMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case staffrole.EdgeGrants:
+		ids := make([]ent.Value, 0, len(m.removedgrants))
+		for id := range m.removedgrants {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *StaffRoleMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedpermissions {
 		edges = append(edges, staffrole.EdgePermissions)
+	}
+	if m.clearedgrants {
+		edges = append(edges, staffrole.EdgeGrants)
 	}
 	return edges
 }
@@ -30032,6 +30112,8 @@ func (m *StaffRoleMutation) EdgeCleared(name string) bool {
 	switch name {
 	case staffrole.EdgePermissions:
 		return m.clearedpermissions
+	case staffrole.EdgeGrants:
+		return m.clearedgrants
 	}
 	return false
 }
@@ -30051,8 +30133,556 @@ func (m *StaffRoleMutation) ResetEdge(name string) error {
 	case staffrole.EdgePermissions:
 		m.ResetPermissions()
 		return nil
+	case staffrole.EdgeGrants:
+		m.ResetGrants()
+		return nil
 	}
 	return fmt.Errorf("unknown StaffRole edge %s", name)
+}
+
+// StaffRoleGrantMutation represents an operation that mutates the StaffRoleGrant nodes in the graph.
+type StaffRoleGrantMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
+	permission    *string
+	clearedFields map[string]struct{}
+	role          *int
+	clearedrole   bool
+	done          bool
+	oldValue      func(context.Context) (*StaffRoleGrant, error)
+	predicates    []predicate.StaffRoleGrant
+}
+
+var _ ent.Mutation = (*StaffRoleGrantMutation)(nil)
+
+// staffrolegrantOption allows management of the mutation configuration using functional options.
+type staffrolegrantOption func(*StaffRoleGrantMutation)
+
+// newStaffRoleGrantMutation creates new mutation for the StaffRoleGrant entity.
+func newStaffRoleGrantMutation(c config, op Op, opts ...staffrolegrantOption) *StaffRoleGrantMutation {
+	m := &StaffRoleGrantMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeStaffRoleGrant,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withStaffRoleGrantID sets the ID field of the mutation.
+func withStaffRoleGrantID(id int) staffrolegrantOption {
+	return func(m *StaffRoleGrantMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *StaffRoleGrant
+		)
+		m.oldValue = func(ctx context.Context) (*StaffRoleGrant, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().StaffRoleGrant.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withStaffRoleGrant sets the old StaffRoleGrant of the mutation.
+func withStaffRoleGrant(node *StaffRoleGrant) staffrolegrantOption {
+	return func(m *StaffRoleGrantMutation) {
+		m.oldValue = func(context.Context) (*StaffRoleGrant, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m StaffRoleGrantMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m StaffRoleGrantMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *StaffRoleGrantMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *StaffRoleGrantMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().StaffRoleGrant.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *StaffRoleGrantMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *StaffRoleGrantMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the StaffRoleGrant entity.
+// If the StaffRoleGrant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleGrantMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *StaffRoleGrantMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *StaffRoleGrantMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *StaffRoleGrantMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the StaffRoleGrant entity.
+// If the StaffRoleGrant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleGrantMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *StaffRoleGrantMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetRoleID sets the "role_id" field.
+func (m *StaffRoleGrantMutation) SetRoleID(i int) {
+	m.role = &i
+}
+
+// RoleID returns the value of the "role_id" field in the mutation.
+func (m *StaffRoleGrantMutation) RoleID() (r int, exists bool) {
+	v := m.role
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRoleID returns the old "role_id" field's value of the StaffRoleGrant entity.
+// If the StaffRoleGrant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleGrantMutation) OldRoleID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRoleID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRoleID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRoleID: %w", err)
+	}
+	return oldValue.RoleID, nil
+}
+
+// ResetRoleID resets all changes to the "role_id" field.
+func (m *StaffRoleGrantMutation) ResetRoleID() {
+	m.role = nil
+}
+
+// SetPermission sets the "permission" field.
+func (m *StaffRoleGrantMutation) SetPermission(s string) {
+	m.permission = &s
+}
+
+// Permission returns the value of the "permission" field in the mutation.
+func (m *StaffRoleGrantMutation) Permission() (r string, exists bool) {
+	v := m.permission
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPermission returns the old "permission" field's value of the StaffRoleGrant entity.
+// If the StaffRoleGrant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleGrantMutation) OldPermission(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPermission is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPermission requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPermission: %w", err)
+	}
+	return oldValue.Permission, nil
+}
+
+// ResetPermission resets all changes to the "permission" field.
+func (m *StaffRoleGrantMutation) ResetPermission() {
+	m.permission = nil
+}
+
+// ClearRole clears the "role" edge to the StaffRole entity.
+func (m *StaffRoleGrantMutation) ClearRole() {
+	m.clearedrole = true
+	m.clearedFields[staffrolegrant.FieldRoleID] = struct{}{}
+}
+
+// RoleCleared reports if the "role" edge to the StaffRole entity was cleared.
+func (m *StaffRoleGrantMutation) RoleCleared() bool {
+	return m.clearedrole
+}
+
+// RoleIDs returns the "role" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RoleID instead. It exists only for internal usage by the builders.
+func (m *StaffRoleGrantMutation) RoleIDs() (ids []int) {
+	if id := m.role; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRole resets all changes to the "role" edge.
+func (m *StaffRoleGrantMutation) ResetRole() {
+	m.role = nil
+	m.clearedrole = false
+}
+
+// Where appends a list predicates to the StaffRoleGrantMutation builder.
+func (m *StaffRoleGrantMutation) Where(ps ...predicate.StaffRoleGrant) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the StaffRoleGrantMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *StaffRoleGrantMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.StaffRoleGrant, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *StaffRoleGrantMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *StaffRoleGrantMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (StaffRoleGrant).
+func (m *StaffRoleGrantMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *StaffRoleGrantMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, staffrolegrant.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, staffrolegrant.FieldUpdatedAt)
+	}
+	if m.role != nil {
+		fields = append(fields, staffrolegrant.FieldRoleID)
+	}
+	if m.permission != nil {
+		fields = append(fields, staffrolegrant.FieldPermission)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *StaffRoleGrantMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case staffrolegrant.FieldCreatedAt:
+		return m.CreatedAt()
+	case staffrolegrant.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case staffrolegrant.FieldRoleID:
+		return m.RoleID()
+	case staffrolegrant.FieldPermission:
+		return m.Permission()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *StaffRoleGrantMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case staffrolegrant.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case staffrolegrant.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case staffrolegrant.FieldRoleID:
+		return m.OldRoleID(ctx)
+	case staffrolegrant.FieldPermission:
+		return m.OldPermission(ctx)
+	}
+	return nil, fmt.Errorf("unknown StaffRoleGrant field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StaffRoleGrantMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case staffrolegrant.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case staffrolegrant.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case staffrolegrant.FieldRoleID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRoleID(v)
+		return nil
+	case staffrolegrant.FieldPermission:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPermission(v)
+		return nil
+	}
+	return fmt.Errorf("unknown StaffRoleGrant field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *StaffRoleGrantMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *StaffRoleGrantMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StaffRoleGrantMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown StaffRoleGrant numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *StaffRoleGrantMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *StaffRoleGrantMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *StaffRoleGrantMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown StaffRoleGrant nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *StaffRoleGrantMutation) ResetField(name string) error {
+	switch name {
+	case staffrolegrant.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case staffrolegrant.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case staffrolegrant.FieldRoleID:
+		m.ResetRoleID()
+		return nil
+	case staffrolegrant.FieldPermission:
+		m.ResetPermission()
+		return nil
+	}
+	return fmt.Errorf("unknown StaffRoleGrant field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *StaffRoleGrantMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.role != nil {
+		edges = append(edges, staffrolegrant.EdgeRole)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *StaffRoleGrantMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case staffrolegrant.EdgeRole:
+		if id := m.role; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *StaffRoleGrantMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *StaffRoleGrantMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *StaffRoleGrantMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedrole {
+		edges = append(edges, staffrolegrant.EdgeRole)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *StaffRoleGrantMutation) EdgeCleared(name string) bool {
+	switch name {
+	case staffrolegrant.EdgeRole:
+		return m.clearedrole
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *StaffRoleGrantMutation) ClearEdge(name string) error {
+	switch name {
+	case staffrolegrant.EdgeRole:
+		m.ClearRole()
+		return nil
+	}
+	return fmt.Errorf("unknown StaffRoleGrant unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *StaffRoleGrantMutation) ResetEdge(name string) error {
+	switch name {
+	case staffrolegrant.EdgeRole:
+		m.ResetRole()
+		return nil
+	}
+	return fmt.Errorf("unknown StaffRoleGrant edge %s", name)
 }
 
 // StaffRolePermissionMutation represents an operation that mutates the StaffRolePermission nodes in the graph.

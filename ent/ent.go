@@ -41,6 +41,7 @@ import (
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
@@ -147,6 +148,7 @@ func checkColumn(t, c string) error {
 			session.Table:                   session.ValidColumn,
 			staffmember.Table:               staffmember.ValidColumn,
 			staffrole.Table:                 staffrole.ValidColumn,
+			staffrolegrant.Table:            staffrolegrant.ValidColumn,
 			staffrolepermission.Table:       staffrolepermission.ValidColumn,
 			tag.Table:                       tag.ValidColumn,
 			tagging.Table:                   tagging.ValidColumn,

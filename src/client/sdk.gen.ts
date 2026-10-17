@@ -797,6 +797,21 @@ export const adminListLessonProgress = <ThrowOnError extends boolean = false>(op
 });
 
 /**
+ * The catalog of Permissions, generated from the operations' declarations.
+ */
+export const adminListPermissions = <ThrowOnError extends boolean = false>(options?: Options<AdminListPermissionsData, ThrowOnError>): RequestResult<AdminListPermissionsResponses, AdminListPermissionsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListPermissionsResponses, AdminListPermissionsErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
+  url: '/api/admin/management/permissions',
+  ...options
+});
+
+/**
  * The permission matrix for a role.
  */
 export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminGetRolePermissionsData, ThrowOnError>): RequestResult<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError>({

@@ -8,6 +8,7 @@ package apiconv
 
 import (
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -167,8 +168,9 @@ type Converter interface {
 	ToStaffRoles(source []*ent.StaffRole) []api.StaffRole
 
 	// StaffRoleDetail carries the full permission matrix (loaded via
-	// WithPermissions).
+	// WithPermissions) and the declared Permissions it holds (WithGrants).
 	// goverter:map Edges.Permissions Permissions
+	// goverter:map Edges.Grants Grants | grantNames
 	ToStaffRoleDetail(source *ent.StaffRole) api.StaffRoleDetail
 
 	// goverter:map RoleID RoleId
@@ -601,9 +603,21 @@ func LocalesFromPq(v pq.StringArray) []string {
 }
 
 // staffRolePermissionsCount is the size of the role's loaded permissions edge,
-// mirroring StaffRoleResource#permissions_count.
+// mirroring StaffRoleResource#permissions_count, plus its declared grants: a
+// role holding only grants must not read as having none.
 func staffRolePermissionsCount(r *ent.StaffRole) int32 {
-	return int32(len(r.Edges.Permissions))
+	return int32(len(r.Edges.Permissions) + len(r.Edges.Grants))
+}
+
+// grantNames lists the Permissions a role holds, by name and in a stable order.
+// It is never nil: the contract's grants is a required array.
+func grantNames(grants []*ent.StaffRoleGrant) []string {
+	names := make([]string, 0, len(grants))
+	for _, g := range grants {
+		names = append(names, g.Permission)
+	}
+	slices.Sort(names)
+	return names
 }
 
 // landingOutcomesImageNull keeps OutcomesImage null until the landing-page

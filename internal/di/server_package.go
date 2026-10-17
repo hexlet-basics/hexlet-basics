@@ -160,7 +160,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return staffroles.NewPermissions(db), nil
+		tx, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return staffroles.NewPermissions(db, tx), nil
 	}),
 	do.Lazy[*sitemap.Sitemap](func(i do.Injector) (*sitemap.Sitemap, error) {
 		db, err := do.Invoke[*ent.Client](i)

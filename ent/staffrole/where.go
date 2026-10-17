@@ -318,6 +318,29 @@ func HasPermissionsWith(preds ...predicate.StaffRolePermission) predicate.StaffR
 	})
 }
 
+// HasGrants applies the HasEdge predicate on the "grants" edge.
+func HasGrants() predicate.StaffRole {
+	return predicate.StaffRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, GrantsTable, GrantsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasGrantsWith applies the HasEdge predicate on the "grants" edge with a given conditions (other predicates).
+func HasGrantsWith(preds ...predicate.StaffRoleGrant) predicate.StaffRole {
+	return predicate.StaffRole(func(s *sql.Selector) {
+		step := newGrantsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.StaffRole) predicate.StaffRole {
 	return predicate.StaffRole(sql.AndPredicates(predicates...))

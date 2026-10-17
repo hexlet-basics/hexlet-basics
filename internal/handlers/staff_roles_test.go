@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds two roles; editor owns two permission rows.
+// staff_member_roles.yml seeds two roles; editor owns one matrix row (banners) and one grant (blog_posts.read).
 var (
 	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )
@@ -32,7 +32,7 @@ func TestAdminListRoles(t *testing.T) {
 	require.Len(t, page.Items, totalRoles)
 	assert.Equal(t, "editor", page.Items[0].Name)
 	assert.Equal(t, "moderator", page.Items[1].Name)
-	// editor owns two permission rows.
+	// editor owns one matrix row and one grant.
 	assert.Equal(t, int32(2), page.Items[0].PermissionsCount)
 	assert.Equal(t, int32(0), page.Items[1].PermissionsCount)
 }
@@ -45,7 +45,8 @@ func TestAdminGetRole(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Len(t, got.Permissions, 2)
+	assert.Len(t, got.Permissions, 1)
+	assert.Equal(t, []string{"blog_posts.read"}, got.Grants)
 }
 
 func TestAdminCreateRole(t *testing.T) {
@@ -60,6 +61,7 @@ func TestAdminCreateRole(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.Equal(t, "support", created.Name)
 	assert.Empty(t, created.Permissions)
+	assert.Empty(t, created.Grants)
 }
 
 func TestAdminCreateRoleDuplicateName(t *testing.T) {
@@ -86,8 +88,9 @@ func TestAdminUpdateRole(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor-renamed", updated.Name)
 	assert.True(t, updated.Description.Null)
-	// Permissions are untouched by a role update.
-	assert.Len(t, updated.Permissions, 2)
+	// Permissions and grants are untouched by a role update.
+	assert.Len(t, updated.Permissions, 1)
+	assert.Equal(t, []string{"blog_posts.read"}, updated.Grants)
 }
 
 func TestAdminDeleteRole(t *testing.T) {
@@ -113,12 +116,12 @@ func TestAdminGetRolePermissions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Len(t, got.Permissions, 2)
+	assert.Len(t, got.Permissions, 1)
 }
 
 // TestAdminUpdateRolePermissions upserts the matrix: updates an existing row
-// (banners) and inserts a new one (reviews), leaving the untouched row
-// (blog_posts) in place — matching the legacy find_or_initialize sync.
+// (banners) and inserts a new one (reviews) — matching the legacy
+// find_or_initialize sync.
 func TestAdminUpdateRolePermissions(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
@@ -128,12 +131,13 @@ func TestAdminUpdateRolePermissions(t *testing.T) {
 			{Resource: api.PermissionResourceBanners, CanIndex: true, CanCreate: true, CanUpdate: true, CanDestroy: true},
 			{Resource: api.PermissionResourceReviews, CanIndex: true, CanCreate: false, CanUpdate: false, CanDestroy: false},
 		},
+		Grants: []string{"blog_posts.read"},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	// blog_posts (untouched) + banners (updated) + reviews (inserted) = 3.
-	assert.Len(t, updated.Permissions, 3)
+	// banners (updated) + reviews (inserted) = 2.
+	assert.Len(t, updated.Permissions, 2)
 
 	byResource := map[api.PermissionResource]api.StaffRolePermission{}
 	for _, p := range updated.Permissions {
@@ -142,6 +146,60 @@ func TestAdminUpdateRolePermissions(t *testing.T) {
 	assert.True(t, byResource[api.PermissionResourceBanners].CanDestroy, "banners upgraded to full CRUD")
 	assert.True(t, byResource[api.PermissionResourceReviews].CanIndex)
 	assert.False(t, byResource[api.PermissionResourceReviews].CanCreate)
-	_, hasBlog := byResource[api.PermissionResourceBlogPosts]
-	assert.True(t, hasBlog, "unlisted blog_posts permission is left untouched")
+}
+
+// TestAdminUpdateRolePermissionsReplacesTheGrants checks that the grants
+// submitted are exactly the grants the role holds afterwards: the new ones are
+// added, the ones left out are removed, the ones kept stay.
+func TestAdminUpdateRolePermissionsReplacesTheGrants(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	updated, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
+		Permissions: []api.RolePermissionInput{},
+		Grants:      []string{"blog_posts.update", "blog_posts.create", "blog_posts.create"},
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+	require.NoError(t, err)
+
+	assert.Equal(t, []string{"blog_posts.create", "blog_posts.update"}, updated.Grants)
+
+	again, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
+		Permissions: []api.RolePermissionInput{},
+		Grants:      []string{},
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+	require.NoError(t, err)
+	assert.Empty(t, again.Grants)
+}
+
+// TestAdminUpdateRolePermissionsRefusesAnUnknownGrant keeps a typo from being
+// stored as a Permission that opens nothing, and writes nothing else of the
+// save either.
+func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	_, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
+		Permissions: []api.RolePermissionInput{},
+		Grants:      []string{"blog_posts.publish"},
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+
+	require.Error(t, err)
+	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
+	got, err := h.Client.AdminGetRole(context.Background(), api.AdminGetRoleParams{ID: roleEditorID})
+	require.NoError(t, err)
+	assert.Equal(t, []string{"blog_posts.read"}, got.Grants)
+}
+
+// TestAdminListPermissions serves the catalog the roles screen offers, the one
+// read from the operations' declarations in the contract.
+func TestAdminListPermissions(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	got, err := h.Client.AdminListPermissions(context.Background())
+	require.NoError(t, err)
+
+	assert.Equal(t, []api.Permission{
+		{Name: "blog_posts.create", Kind: api.PermissionKindWrite},
+		{Name: "blog_posts.delete", Kind: api.PermissionKindWrite},
+		{Name: "blog_posts.read", Kind: api.PermissionKindRead},
+		{Name: "blog_posts.update", Kind: api.PermissionKindWrite},
+	}, got.Permissions)
 }

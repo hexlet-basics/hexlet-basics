@@ -381,6 +381,15 @@ func (UnimplementedHandler) AdminListMessages(ctx context.Context, params AdminL
 	return r, ht.ErrNotImplemented
 }
 
+// AdminListPermissions implements adminListPermissions operation.
+//
+// The catalog of Permissions, generated from the operations' declarations.
+//
+// GET /api/admin/management/permissions
+func (UnimplementedHandler) AdminListPermissions(ctx context.Context) (r AdminListPermissionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListReviews implements adminListReviews operation.
 //
 // GET /api/admin/reviews

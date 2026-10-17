@@ -646,7 +646,6 @@ export const zOAuthDecision = z.object({
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
-  'blog_posts',
   'banners',
   'reviews',
   'leads',
@@ -858,7 +857,8 @@ export const zRolePermissionInput = z.object({
  * The full permission matrix submitted for a role.
  */
 export const zRolePermissionsInput = z.object({
-  permissions: z.array(zRolePermissionInput)
+  permissions: z.array(zRolePermissionInput),
+  grants: z.array(z.string())
 });
 
 /**
@@ -962,7 +962,8 @@ export const zStaffRoleDetail = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   name: z.string(),
   description: z.string().nullable(),
-  permissions: z.array(zStaffRolePermission)
+  permissions: z.array(zStaffRolePermission),
+  grants: z.array(z.string())
 });
 
 /**
@@ -1554,6 +1555,11 @@ export const zAdminListLessonProgressQuery = z.object({
  * The request has succeeded.
  */
 export const zAdminListLessonProgressResponse = zLessonProgressPage;
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminListPermissionsResponse = zPermissionCatalog;
 
 export const zAdminGetRolePermissionsPath = z.object({
   roleId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })

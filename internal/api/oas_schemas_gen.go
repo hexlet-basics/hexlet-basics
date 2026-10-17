@@ -457,6 +457,14 @@ type AdminListMessagesUnauthorized ProblemDetails
 
 func (*AdminListMessagesUnauthorized) adminListMessagesRes() {}
 
+type AdminListPermissionsForbidden ProblemDetails
+
+func (*AdminListPermissionsForbidden) adminListPermissionsRes() {}
+
+type AdminListPermissionsUnauthorized ProblemDetails
+
+func (*AdminListPermissionsUnauthorized) adminListPermissionsRes() {}
+
 type AdminListReviewsForbidden ProblemDetails
 
 func (*AdminListReviewsForbidden) adminListReviewsRes() {}
@@ -6349,12 +6357,101 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-// Admin resources a staff role can be granted permissions on.
+// A Permission an admin operation can require, as declared on the operations in this contract with
+// `x-permission`. The catalog is read from those declarations, never kept by hand.
+// Ref: #/components/schemas/Permission
+type Permission struct {
+	Name string         `json:"name"`
+	Kind PermissionKind `json:"kind"`
+}
+
+// GetName returns the value of Name.
+func (s *Permission) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *Permission) GetKind() PermissionKind {
+	return s.Kind
+}
+
+// SetName sets the value of Name.
+func (s *Permission) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *Permission) SetKind(val PermissionKind) {
+	s.Kind = val
+}
+
+// Every Permission an admin operation can require.
+// Ref: #/components/schemas/PermissionCatalog
+type PermissionCatalog struct {
+	Permissions []Permission `json:"permissions"`
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *PermissionCatalog) GetPermissions() []Permission {
+	return s.Permissions
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *PermissionCatalog) SetPermissions(val []Permission) {
+	s.Permissions = val
+}
+
+func (*PermissionCatalog) adminListPermissionsRes() {}
+
+// Whether an operation only reads or can change data (ADR-0017).
+// Ref: #/components/schemas/PermissionKind
+type PermissionKind string
+
+const (
+	PermissionKindRead  PermissionKind = "read"
+	PermissionKindWrite PermissionKind = "write"
+)
+
+// AllValues returns all PermissionKind values.
+func (PermissionKind) AllValues() []PermissionKind {
+	return []PermissionKind{
+		PermissionKindRead,
+		PermissionKindWrite,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s PermissionKind) MarshalText() ([]byte, error) {
+	switch s {
+	case PermissionKindRead:
+		return []byte(s), nil
+	case PermissionKindWrite:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *PermissionKind) UnmarshalText(data []byte) error {
+	switch PermissionKind(data) {
+	case PermissionKindRead:
+		*s = PermissionKindRead
+		return nil
+	case PermissionKindWrite:
+		*s = PermissionKindWrite
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Admin resources a staff role can be granted permissions on through the create/read/update/delete
+// matrix. Resources that moved to declared Permissions (ADR-0017) leave this list as they move.
 // Ref: #/components/schemas/PermissionResource
 type PermissionResource string
 
 const (
-	PermissionResourceBlogPosts             PermissionResource = "blog_posts"
 	PermissionResourceBanners               PermissionResource = "banners"
 	PermissionResourceReviews               PermissionResource = "reviews"
 	PermissionResourceLeads                 PermissionResource = "leads"
@@ -6370,7 +6467,6 @@ const (
 // AllValues returns all PermissionResource values.
 func (PermissionResource) AllValues() []PermissionResource {
 	return []PermissionResource{
-		PermissionResourceBlogPosts,
 		PermissionResourceBanners,
 		PermissionResourceReviews,
 		PermissionResourceLeads,
@@ -6387,8 +6483,6 @@ func (PermissionResource) AllValues() []PermissionResource {
 // MarshalText implements encoding.TextMarshaler.
 func (s PermissionResource) MarshalText() ([]byte, error) {
 	switch s {
-	case PermissionResourceBlogPosts:
-		return []byte(s), nil
 	case PermissionResourceBanners:
 		return []byte(s), nil
 	case PermissionResourceReviews:
@@ -6417,9 +6511,6 @@ func (s PermissionResource) MarshalText() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler.
 func (s *PermissionResource) UnmarshalText(data []byte) error {
 	switch PermissionResource(data) {
-	case PermissionResourceBlogPosts:
-		*s = PermissionResourceBlogPosts
-		return nil
 	case PermissionResourceBanners:
 		*s = PermissionResourceBanners
 		return nil
@@ -7198,6 +7289,9 @@ func (s *RolePermissionInput) SetCanDestroy(val bool) {
 // Ref: #/components/schemas/RolePermissionsInput
 type RolePermissionsInput struct {
 	Permissions []RolePermissionInput `json:"permissions"`
+	// The declared Permissions the role holds, replacing its current set. Names must come from the catalog
+	// (`GET /admin/management/permissions`).
+	Grants []string `json:"grants"`
 }
 
 // GetPermissions returns the value of Permissions.
@@ -7205,9 +7299,19 @@ func (s *RolePermissionsInput) GetPermissions() []RolePermissionInput {
 	return s.Permissions
 }
 
+// GetGrants returns the value of Grants.
+func (s *RolePermissionsInput) GetGrants() []string {
+	return s.Grants
+}
+
 // SetPermissions sets the value of Permissions.
 func (s *RolePermissionsInput) SetPermissions(val []RolePermissionInput) {
 	s.Permissions = val
+}
+
+// SetGrants sets the value of Grants.
+func (s *RolePermissionsInput) SetGrants(val []string) {
+	s.Grants = val
 }
 
 // Email + password login.
@@ -7661,6 +7765,8 @@ type StaffRoleDetail struct {
 	Name        string                `json:"name"`
 	Description NilString             `json:"description"`
 	Permissions []StaffRolePermission `json:"permissions"`
+	// Names of the declared Permissions the role holds (see `Permission`).
+	Grants []string `json:"grants"`
 }
 
 // GetID returns the value of ID.
@@ -7683,6 +7789,11 @@ func (s *StaffRoleDetail) GetPermissions() []StaffRolePermission {
 	return s.Permissions
 }
 
+// GetGrants returns the value of Grants.
+func (s *StaffRoleDetail) GetGrants() []string {
+	return s.Grants
+}
+
 // SetID sets the value of ID.
 func (s *StaffRoleDetail) SetID(val int32) {
 	s.ID = val
@@ -7701,6 +7812,11 @@ func (s *StaffRoleDetail) SetDescription(val NilString) {
 // SetPermissions sets the value of Permissions.
 func (s *StaffRoleDetail) SetPermissions(val []StaffRolePermission) {
 	s.Permissions = val
+}
+
+// SetGrants sets the value of Grants.
+func (s *StaffRoleDetail) SetGrants(val []string) {
+	s.Grants = val
 }
 
 func (*StaffRoleDetail) adminCreateRoleRes()            {}
@@ -8271,6 +8387,7 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 func (*ValidationError) adminCreateBlogPostRes()            {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
+func (*ValidationError) adminUpdateRolePermissionsRes()     {}
 func (*ValidationError) adminUploadAttachmentRes()          {}
 func (*ValidationError) checkLessonRes()                    {}
 func (*ValidationError) createLeadRes()                     {}

@@ -1880,8 +1880,6 @@ func (s *OAuthConsent) Validate() error {
 
 func (s PermissionResource) Validate() error {
 	switch s {
-	case "blog_posts":
-		return nil
 	case "banners":
 		return nil
 	case "reviews":
@@ -2313,6 +2311,17 @@ func (s *RolePermissionsInput) Validate() error {
 			Error: err,
 		})
 	}
+	if err := func() error {
+		if s.Grants == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "grants",
+			Error: err,
+		})
+	}
 	if len(failures) > 0 {
 		return &validate.Error{Fields: failures}
 	}
@@ -2688,6 +2697,17 @@ func (s *StaffRoleDetail) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "permissions",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if s.Grants == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "grants",
 			Error: err,
 		})
 	}

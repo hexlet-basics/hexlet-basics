@@ -9,19 +9,25 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/permissions"
 )
 
 // ErrForbidden means the user may not perform the operation.
 var ErrForbidden = errors.New("staff permission is required")
 
 // Policy decides which admin operations a user may perform. An administrator
-// may do everything. A staff member may do what their role's permission matrix
-// grants on the operation's resource, in the locales their record lists —
-// legacy `authorize_staff_resource!` and `authorize_staff_locale!`. Anything the
-// table below does not name is for administrators only, so a new admin
-// operation is closed until someone classifies it.
+// may do everything. A staff member may do what their role is granted, in the
+// locales their record lists — legacy `authorize_staff_locale!`.
+//
+// What an operation needs comes from one of two places while resources move
+// over (ADR-0017): the Permission it declares in the contract, which the role
+// must hold as a grant, or, for the resources not yet migrated, the table in
+// rules.go and the role's create/read/update/delete matrix. Anything neither
+// names is for administrators only, so a new admin operation is closed until
+// someone classifies it.
 type Policy struct {
 	db *ent.Client
 }
@@ -44,6 +50,22 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 	}
 	if staff == nil || !slices.Contains(staff.AllowedLocales, locale) {
 		return ErrForbidden
+	}
+
+	if required, ok := permissions.For(operation); ok {
+		held, err := p.db.StaffRoleGrant.Query().
+			Where(
+				staffrolegrant.RoleID(staff.RoleID),
+				staffrolegrant.Permission(required.Permission),
+			).
+			Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if !held {
+			return ErrForbidden
+		}
+		return nil
 	}
 
 	rule, ok := rules[operation]
@@ -100,12 +122,13 @@ func granted(p *ent.StaffRolePermission, a action) bool {
 	return false
 }
 
-// IsClassified reports whether operation is classified: administrators-only
-// operations are listed too, so a test can tell "closed on purpose" from
-// "forgotten".
+// IsClassified reports whether operation is classified: it declares a
+// Permission, or the table names it. Administrators-only operations are listed
+// too, so a test can tell "closed on purpose" from "forgotten".
 func IsClassified(operation string) bool {
+	_, declared := permissions.For(operation)
 	_, ok := rules[operation]
-	return ok || adminOnly[operation]
+	return declared || ok || adminOnly[operation]
 }
 
 // OperationName turns an OpenAPI operationId (adminListBanners) into the ogen

@@ -238,6 +238,12 @@ type Handler interface {
 	//
 	// GET /api/admin/messages
 	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
+	// AdminListPermissions implements adminListPermissions operation.
+	//
+	// The catalog of Permissions, generated from the operations' declarations.
+	//
+	// GET /api/admin/management/permissions
+	AdminListPermissions(ctx context.Context) (AdminListPermissionsRes, error)
 	// AdminListReviews implements adminListReviews operation.
 	//
 	// GET /api/admin/reviews

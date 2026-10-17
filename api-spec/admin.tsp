@@ -181,29 +181,29 @@ model BlogPostRelatedCoursesInput {
 @tag("Admin: Blog Posts")
 @useAuth(AdminSession)
 interface AdminBlogPosts {
-  @get @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
+  @get @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | UnauthorizedError | ForbiddenError | ApiError;
 
   // 404 comes from the shared ApiError response (ent not-found), like every
   // other admin get — so no operation-specific NotFoundError member is needed.
-  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+  @get @route("/{id}") @extension("x-permission", #{ name: "blog_posts.read", kind: "read" }) @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 
-  @post @useAuth(AdminSession) @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
+  @post @useAuth(AdminSession) @extension("x-permission", #{ name: "blog_posts.create", kind: "write" }) @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
     @statusCode statusCode: 201;
     @body post: BlogPost;
   } | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
-  @put @useAuth(AdminSession) @route("/{id}") @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
-  @delete @useAuth(AdminSession) @route("/{id}") @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+  @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "blog_posts.delete", kind: "write" }) @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Set the related/promoted courses for a post by hand. */
-  @post @useAuth(AdminSession) @route("/{id}/related_courses") @operationId("adminSetBlogPostRelatedCourses")
+  @post @useAuth(AdminSession) @route("/{id}/related_courses") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminSetBlogPostRelatedCourses")
   relatedCourses(@path id: int32, @body body: BlogPostRelatedCoursesInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue the AI pick of the post's related courses (legacy
       FindRelatedCoursesForBlogPostJob); the job replaces the set when done.
       A missing id surfaces as 404 via the central ent-error handler. */
-  @post @useAuth(AdminSession) @route("/{id}/suggest_related_courses") @operationId("adminSuggestBlogPostRelatedCourses")
+  @post @useAuth(AdminSession) @route("/{id}/suggest_related_courses") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminSuggestBlogPostRelatedCourses")
   suggestRelatedCourses(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
@@ -504,6 +504,25 @@ model RolePermissionInput {
 /** The full permission matrix submitted for a role. */
 model RolePermissionsInput {
   permissions: RolePermissionInput[];
+
+  /**
+   * The declared Permissions the role holds, replacing its current set. Names
+   * must come from the catalog (`GET /admin/management/permissions`).
+   */
+  grants: string[];
+}
+
+/** Every Permission an admin operation can require. */
+model PermissionCatalog {
+  permissions: Permission[];
+}
+
+@route("/admin/management/permissions")
+@tag("Admin: Roles")
+@useAuth(AdminSession)
+interface AdminPermissions {
+  /** The catalog of Permissions, generated from the operations' declarations. */
+  @get @operationId("adminListPermissions") list(): PermissionCatalog | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/management/role_permissions")
@@ -514,7 +533,7 @@ interface AdminRolePermissions {
   @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Replace the permission matrix for a role. */
-  @put @useAuth(AdminSession) @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | UnauthorizedError | ForbiddenError | ApiError;
+  @put @useAuth(AdminSession) @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 model StaffMemberInput {

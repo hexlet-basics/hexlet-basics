@@ -255,7 +255,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover: blogposts.NewRemover(transactor),
-		Permissions: staffroles.NewPermissions(db),
+		Permissions: staffroles.NewPermissions(db, transactor),
 		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker),
 		Sitemap:     sitemap.New(db),
 	})

@@ -37,6 +37,7 @@ import (
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
@@ -620,6 +621,21 @@ func init() {
 	staffrole.DefaultUpdatedAt = staffroleDescUpdatedAt.Default.(func() time.Time)
 	// staffrole.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	staffrole.UpdateDefaultUpdatedAt = staffroleDescUpdatedAt.UpdateDefault.(func() time.Time)
+	staffrolegrantMixin := schema.StaffRoleGrant{}.Mixin()
+	staffrolegrantMixinFields0 := staffrolegrantMixin[0].Fields()
+	_ = staffrolegrantMixinFields0
+	staffrolegrantFields := schema.StaffRoleGrant{}.Fields()
+	_ = staffrolegrantFields
+	// staffrolegrantDescCreatedAt is the schema descriptor for created_at field.
+	staffrolegrantDescCreatedAt := staffrolegrantMixinFields0[0].Descriptor()
+	// staffrolegrant.DefaultCreatedAt holds the default value on creation for the created_at field.
+	staffrolegrant.DefaultCreatedAt = staffrolegrantDescCreatedAt.Default.(func() time.Time)
+	// staffrolegrantDescUpdatedAt is the schema descriptor for updated_at field.
+	staffrolegrantDescUpdatedAt := staffrolegrantMixinFields0[1].Descriptor()
+	// staffrolegrant.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	staffrolegrant.DefaultUpdatedAt = staffrolegrantDescUpdatedAt.Default.(func() time.Time)
+	// staffrolegrant.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	staffrolegrant.UpdateDefaultUpdatedAt = staffrolegrantDescUpdatedAt.UpdateDefault.(func() time.Time)
 	staffrolepermissionMixin := schema.StaffRolePermission{}.Mixin()
 	staffrolepermissionMixinFields0 := staffrolepermissionMixin[0].Fields()
 	_ = staffrolepermissionMixinFields0

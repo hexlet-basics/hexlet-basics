@@ -74,6 +74,12 @@ func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *ap
 	return success[api.BlogPost](c.Client.AdminSetBlogPostRelatedCourses(ctx, request, params))
 }
 
+// AdminSuggestBlogPostRelatedCourses unwraps like the others, so a refusal is an
+// error instead of a response nobody reads.
+func (c *Client) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params api.AdminSuggestBlogPostRelatedCoursesParams) (*api.AdminSuggestBlogPostRelatedCoursesNoContent, error) {
+	return success[api.AdminSuggestBlogPostRelatedCoursesNoContent](c.Client.AdminSuggestBlogPostRelatedCourses(ctx, params))
+}
+
 func (c *Client) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (*api.CourseCategoryPage, error) {
 	return success[api.CourseCategoryPage](c.Client.AdminListCourseCategories(ctx, params))
 }
@@ -188,6 +194,10 @@ func (c *Client) AdminUpdateRole(ctx context.Context, request *api.RoleInput, pa
 
 func (c *Client) AdminDeleteRole(ctx context.Context, params api.AdminDeleteRoleParams) error {
 	return noContent[api.AdminDeleteRoleNoContent](c.Client.AdminDeleteRole(ctx, params))
+}
+
+func (c *Client) AdminListPermissions(ctx context.Context) (*api.PermissionCatalog, error) {
+	return success[api.PermissionCatalog](c.Client.AdminListPermissions(ctx))
 }
 
 func (c *Client) AdminGetRolePermissions(ctx context.Context, params api.AdminGetRolePermissionsParams) (*api.StaffRoleDetail, error) {
