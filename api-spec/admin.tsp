@@ -162,11 +162,12 @@ interface AdminBanners {
 // by hand or suggested by the AI job).
 // ---------------------------------------------------------------------------
 
+/** The input of a post: never its Publication State. A new post is a draft and
+    the state changes only through the publish, unpublish and archive operations. */
 model BlogPostInput {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
 
   /** Trusted editor HTML, stored and returned without sanitization. */
   richBody: string;
@@ -208,6 +209,20 @@ interface AdminBlogPosts {
       A missing id surfaces as 404 via the central ent-error handler. */
   @post @useAuth(AdminSession) @route("/{id}/suggest_related_courses") @extension("x-permission", #{ name: "blog_posts.update", kind: "write" }) @operationId("adminSuggestBlogPostRelatedCourses")
   suggestRelatedCourses(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Publish a draft or archived post. A state is not an update: each change of
+      Publication State is its own operation with its own Permission. An illegal
+      move, or repeating the current state, is a 409 with a localized `detail`. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/publish") @extension("x-permission", #{ name: "blog_posts.publish", kind: "write" }) @operationId("adminPublishBlogPost")
+  publish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Take a published post back to draft. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/unpublish") @extension("x-permission", #{ name: "blog_posts.unpublish", kind: "write" }) @operationId("adminUnpublishBlogPost")
+  unpublish(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Archive a draft or published post. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/archive") @extension("x-permission", #{ name: "blog_posts.archive", kind: "write" }) @operationId("adminArchiveBlogPost")
+  archive(@path id: int32): BlogPost | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------

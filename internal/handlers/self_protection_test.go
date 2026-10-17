@@ -229,6 +229,7 @@ func TestTheLastAdministratorCannotBeDeletedByAStaffMember(t *testing.T) {
 func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_roles.update")
+	grantsBefore := h.DB.StaffRoleGrant.Query().CountX(t.Context())
 
 	_, err := h.Client.AdminUpdateRolePermissions(t.Context(),
 		&api.RolePermissionsInput{Grants: []string{"staff_roles.update", "users.update"}},
@@ -243,7 +244,7 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 	require.True(t, ok, "got %T", res)
 	assert.Contains(t, forbidden.Detail.Value, "your own staff role")
 	held := h.DB.StaffRoleGrant.Query().CountX(t.Context())
-	assert.Equal(t, 4, held, "three fixture grants and the delegated one, nothing added")
+	assert.Equal(t, grantsBefore, held, "the refused saves added nothing")
 
 	// The grants of another role are theirs to change.
 	_, err = h.Client.AdminUpdateRolePermissions(t.Context(),

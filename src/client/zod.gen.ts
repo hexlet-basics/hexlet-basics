@@ -164,6 +164,18 @@ export const zBannerPage = z.object({
 });
 
 /**
+ * The input of a post: never its Publication State. A new post is a draft and
+ *     the state changes only through the publish, unpublish and archive operations.
+ */
+export const zBlogPostInput = z.object({
+  name: z.string().nullable(),
+  slug: z.string().nullable(),
+  description: z.string().nullable(),
+  richBody: z.string(),
+  coverAttachmentId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable()
+});
+
+/**
  * The set of courses promoted on a blog post.
  */
 export const zBlogPostRelatedCoursesInput = z.object({
@@ -178,15 +190,6 @@ export const zBlogPostState = z.enum([
   'published',
   'archived'
 ]);
-
-export const zBlogPostInput = z.object({
-  name: z.string().nullable(),
-  slug: z.string().nullable(),
-  description: z.string().nullable(),
-  state: zBlogPostState.nullable(),
-  richBody: z.string(),
-  coverAttachmentId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable()
-});
 
 /**
  * The free book page (ru marketing funnel, legacy `books#show`).
@@ -1345,6 +1348,24 @@ export const zAdminUpdateBlogPostPath = z.object({
  */
 export const zAdminUpdateBlogPostResponse = zBlogPost;
 
+export const zAdminArchiveBlogPostPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminArchiveBlogPostResponse = zBlogPost;
+
+export const zAdminPublishBlogPostPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminPublishBlogPostResponse = zBlogPost;
+
 export const zAdminSetBlogPostRelatedCoursesBody = zBlogPostRelatedCoursesInput;
 
 export const zAdminSetBlogPostRelatedCoursesPath = z.object({
@@ -1364,6 +1385,15 @@ export const zAdminSuggestBlogPostRelatedCoursesPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zAdminSuggestBlogPostRelatedCoursesResponse = z.void();
+
+export const zAdminUnpublishBlogPostPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminUnpublishBlogPostResponse = zBlogPost;
 
 /**
  * The request has succeeded.

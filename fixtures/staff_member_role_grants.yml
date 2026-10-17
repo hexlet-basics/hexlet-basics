@@ -19,3 +19,15 @@
   permission: banners.create
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+# The blog updater edits and cannot publish; the blog publisher publishes and
+# cannot edit: publishing is not an update (ADR-0017).
+- id: {{ id "staff_grant_blog_updater_update" }}
+  role_id: {{ id "staff_role_blog_updater" }}
+  permission: blog_posts.update
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'
+- id: {{ id "staff_grant_blog_publisher_publish" }}
+  role_id: {{ id "staff_role_blog_publisher" }}
+  permission: blog_posts.publish
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'

@@ -15,6 +15,71 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// AdminArchiveBlogPostParams is parameters of adminArchiveBlogPost operation.
+type AdminArchiveBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminArchiveBlogPostParams(packed middleware.Parameters) (params AdminArchiveBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminArchiveBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminArchiveBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminCreateCategoryQnaItemParams is parameters of adminCreateCategoryQnaItem operation.
 type AdminCreateCategoryQnaItemParams struct {
 	CategoryId int32
@@ -6610,6 +6675,71 @@ func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
+// AdminPublishBlogPostParams is parameters of adminPublishBlogPost operation.
+type AdminPublishBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminPublishBlogPostParams(packed middleware.Parameters) (params AdminPublishBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminPublishBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminPublishBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminReviewCourseParams is parameters of adminReviewCourse operation.
 type AdminReviewCourseParams struct {
 	ID int32
@@ -6879,6 +7009,71 @@ func unpackAdminSuggestBlogPostRelatedCoursesParams(packed middleware.Parameters
 }
 
 func decodeAdminSuggestBlogPostRelatedCoursesParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminSuggestBlogPostRelatedCoursesParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUnpublishBlogPostParams is parameters of adminUnpublishBlogPost operation.
+type AdminUnpublishBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminUnpublishBlogPostParams(packed middleware.Parameters) (params AdminUnpublishBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUnpublishBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUnpublishBlogPostParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]

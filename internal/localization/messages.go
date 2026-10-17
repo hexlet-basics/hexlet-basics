@@ -209,6 +209,30 @@ var (
 			Other: "The last administrator cannot be removed or demoted",
 		},
 	}
+	IllegalStateTransition = Message{
+		value: i18n.Message{
+			ID:    "state.illegal_transition",
+			Other: "Cannot move from {{.From}} to {{.To}}: the current state does not allow it",
+		},
+	}
+	PublicationStateDraft = Message{
+		value: i18n.Message{
+			ID:    "state.draft",
+			Other: "draft",
+		},
+	}
+	PublicationStatePublished = Message{
+		value: i18n.Message{
+			ID:    "state.published",
+			Other: "published",
+		},
+	}
+	PublicationStateArchived = Message{
+		value: i18n.Message{
+			ID:    "state.archived",
+			Other: "archived",
+		},
+	}
 )
 
 var statusMessages = map[int]Message{

@@ -32,6 +32,14 @@ func (s *ActiveBanner) SetBanner(val NilBanner) {
 	s.Banner = val
 }
 
+type AdminArchiveBlogPostForbidden ProblemDetails
+
+func (*AdminArchiveBlogPostForbidden) adminArchiveBlogPostRes() {}
+
+type AdminArchiveBlogPostUnauthorized ProblemDetails
+
+func (*AdminArchiveBlogPostUnauthorized) adminArchiveBlogPostRes() {}
+
 type AdminCreateBannerForbidden ProblemDetails
 
 func (*AdminCreateBannerForbidden) adminCreateBannerRes() {}
@@ -514,6 +522,14 @@ type AdminListUsersUnauthorized ProblemDetails
 
 func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 
+type AdminPublishBlogPostForbidden ProblemDetails
+
+func (*AdminPublishBlogPostForbidden) adminPublishBlogPostRes() {}
+
+type AdminPublishBlogPostUnauthorized ProblemDetails
+
+func (*AdminPublishBlogPostUnauthorized) adminPublishBlogPostRes() {}
+
 type AdminReviewCourseForbidden ProblemDetails
 
 func (*AdminReviewCourseForbidden) adminReviewCourseRes() {}
@@ -597,6 +613,14 @@ func (*AdminSuggestBlogPostRelatedCoursesNoContent) adminSuggestBlogPostRelatedC
 type AdminSuggestBlogPostRelatedCoursesUnauthorized ProblemDetails
 
 func (*AdminSuggestBlogPostRelatedCoursesUnauthorized) adminSuggestBlogPostRelatedCoursesRes() {}
+
+type AdminUnpublishBlogPostForbidden ProblemDetails
+
+func (*AdminUnpublishBlogPostForbidden) adminUnpublishBlogPostRes() {}
+
+type AdminUnpublishBlogPostUnauthorized ProblemDetails
+
+func (*AdminUnpublishBlogPostUnauthorized) adminUnpublishBlogPostRes() {}
 
 type AdminUpdateBannerForbidden ProblemDetails
 
@@ -1895,19 +1919,23 @@ func (s *BlogPost) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
+func (*BlogPost) adminArchiveBlogPostRes()           {}
 func (*BlogPost) adminCreateBlogPostRes()            {}
 func (*BlogPost) adminGetBlogPostRes()               {}
+func (*BlogPost) adminPublishBlogPostRes()           {}
 func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
+func (*BlogPost) adminUnpublishBlogPostRes()         {}
 func (*BlogPost) adminUpdateBlogPostRes()            {}
 func (*BlogPost) getNextBlogPostRes()                {}
 func (*BlogPost) likeBlogPostRes()                   {}
 
+// The input of a post: never its Publication State. A new post is a draft and the state changes only
+// through the publish, unpublish and archive operations.
 // Ref: #/components/schemas/BlogPostInput
 type BlogPostInput struct {
-	Name        NilString        `json:"name"`
-	Slug        NilString        `json:"slug"`
-	Description NilString        `json:"description"`
-	State       NilBlogPostState `json:"state"`
+	Name        NilString `json:"name"`
+	Slug        NilString `json:"slug"`
+	Description NilString `json:"description"`
 	// Trusted editor HTML, stored and returned without sanitization.
 	RichBody string `json:"richBody"`
 	// Attachment id from `POST /admin/attachments`, or null to keep/clear.
@@ -1927,11 +1955,6 @@ func (s *BlogPostInput) GetSlug() NilString {
 // GetDescription returns the value of Description.
 func (s *BlogPostInput) GetDescription() NilString {
 	return s.Description
-}
-
-// GetState returns the value of State.
-func (s *BlogPostInput) GetState() NilBlogPostState {
-	return s.State
 }
 
 // GetRichBody returns the value of RichBody.
@@ -1957,11 +1980,6 @@ func (s *BlogPostInput) SetSlug(val NilString) {
 // SetDescription sets the value of Description.
 func (s *BlogPostInput) SetDescription(val NilString) {
 	s.Description = val
-}
-
-// SetState sets the value of State.
-func (s *BlogPostInput) SetState(val NilBlogPostState) {
-	s.State = val
 }
 
 // SetRichBody sets the value of RichBody.

@@ -209,11 +209,14 @@ export type BlogPost = {
   createdAt: string;
 };
 
+/**
+ * The input of a post: never its Publication State. A new post is a draft and
+ *     the state changes only through the publish, unpublish and archive operations.
+ */
 export type BlogPostInput = {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
   /**
    * Trusted editor HTML, stored and returned without sanitization.
    */
@@ -2314,6 +2317,82 @@ export type AdminUpdateBlogPostResponses = {
 
 export type AdminUpdateBlogPostResponse = AdminUpdateBlogPostResponses[keyof AdminUpdateBlogPostResponses];
 
+export type AdminArchiveBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/archive';
+};
+
+export type AdminArchiveBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminArchiveBlogPostError = AdminArchiveBlogPostErrors[keyof AdminArchiveBlogPostErrors];
+
+export type AdminArchiveBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminArchiveBlogPostResponse = AdminArchiveBlogPostResponses[keyof AdminArchiveBlogPostResponses];
+
+export type AdminPublishBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/publish';
+};
+
+export type AdminPublishBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminPublishBlogPostError = AdminPublishBlogPostErrors[keyof AdminPublishBlogPostErrors];
+
+export type AdminPublishBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminPublishBlogPostResponse = AdminPublishBlogPostResponses[keyof AdminPublishBlogPostResponses];
+
 export type AdminSetBlogPostRelatedCoursesData = {
   body: BlogPostRelatedCoursesInput;
   path: {
@@ -2395,6 +2474,44 @@ export type AdminSuggestBlogPostRelatedCoursesResponses = {
 };
 
 export type AdminSuggestBlogPostRelatedCoursesResponse = AdminSuggestBlogPostRelatedCoursesResponses[keyof AdminSuggestBlogPostRelatedCoursesResponses];
+
+export type AdminUnpublishBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/unpublish';
+};
+
+export type AdminUnpublishBlogPostErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUnpublishBlogPostError = AdminUnpublishBlogPostErrors[keyof AdminUnpublishBlogPostErrors];
+
+export type AdminUnpublishBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminUnpublishBlogPostResponse = AdminUnpublishBlogPostResponses[keyof AdminUnpublishBlogPostResponses];
 
 export type AdminGetMyCapabilitiesData = {
   body?: never;

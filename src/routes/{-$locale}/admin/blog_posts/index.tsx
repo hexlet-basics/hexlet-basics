@@ -65,6 +65,10 @@ function BlogPostsList() {
     {
       accessorKey: "state",
       header: t(($) => $.models.attributes.blog_post.state),
+      cell: ({ row }) => {
+        const state = row.original.state;
+        return state ? t(($) => $.models.attributes.blog_post["state/values"][state]) : "";
+      },
       enableSorting: false,
     },
     {

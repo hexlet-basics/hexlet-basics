@@ -155,7 +155,8 @@ func TestAnOperationReportsTheAccessItDeclaresInsteadOfAPermission(t *testing.T)
 
 func TestKnownTellsCatalogNamesFromInventedOnes(t *testing.T) {
 	assert.True(t, permissions.Known("blog_posts.delete"))
-	assert.False(t, permissions.Known("blog_posts.publish"))
+	assert.True(t, permissions.Known("blog_posts.publish"))
+	assert.False(t, permissions.Known("blog_posts.frobnicate"))
 	assert.False(t, permissions.Known(""))
 }
 

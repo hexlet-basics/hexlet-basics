@@ -68,5 +68,11 @@
   },
   "users.last_administrator": {
     "other": "No se puede eliminar ni degradar al último administrador"
-  }
+  },
+  "state.illegal_transition": {
+    "other": "No se puede pasar de «{{.From}}» a «{{.To}}»: el estado actual no lo permite"
+  },
+  "state.draft": { "other": "borrador" },
+  "state.published": { "other": "publicado" },
+  "state.archived": { "other": "archivado" }
 }

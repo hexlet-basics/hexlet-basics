@@ -6,6 +6,7 @@ package api
 type OperationName = string
 
 const (
+	AdminArchiveBlogPostOperation               OperationName = "AdminArchiveBlogPost"
 	AdminCreateBannerOperation                  OperationName = "AdminCreateBanner"
 	AdminCreateBlogPostOperation                OperationName = "AdminCreateBlogPost"
 	AdminCreateCategoryQnaItemOperation         OperationName = "AdminCreateCategoryQnaItem"
@@ -59,11 +60,13 @@ const (
 	AdminListRolesOperation                     OperationName = "AdminListRoles"
 	AdminListStaffMembersOperation              OperationName = "AdminListStaffMembers"
 	AdminListUsersOperation                     OperationName = "AdminListUsers"
+	AdminPublishBlogPostOperation               OperationName = "AdminPublishBlogPost"
 	AdminReviewCourseOperation                  OperationName = "AdminReviewCourse"
 	AdminReviewCourseLessonOperation            OperationName = "AdminReviewCourseLesson"
 	AdminSearchUsersOperation                   OperationName = "AdminSearchUsers"
 	AdminSetBlogPostRelatedCoursesOperation     OperationName = "AdminSetBlogPostRelatedCourses"
 	AdminSuggestBlogPostRelatedCoursesOperation OperationName = "AdminSuggestBlogPostRelatedCourses"
+	AdminUnpublishBlogPostOperation             OperationName = "AdminUnpublishBlogPost"
 	AdminUpdateBannerOperation                  OperationName = "AdminUpdateBanner"
 	AdminUpdateBlogPostOperation                OperationName = "AdminUpdateBlogPost"
 	AdminUpdateCategoryQnaItemOperation         OperationName = "AdminUpdateCategoryQnaItem"

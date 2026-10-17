@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
+//
+// Archive a draft or published post.
+//
+// POST /api/admin/blog_posts/{id}/archive
+func (UnimplementedHandler) AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (r AdminArchiveBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminCreateBanner implements adminCreateBanner operation.
 //
 // Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
@@ -438,6 +447,17 @@ func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminList
 	return r, ht.ErrNotImplemented
 }
 
+// AdminPublishBlogPost implements adminPublishBlogPost operation.
+//
+// Publish a draft or archived post. A state is not an update: each change of Publication State is its
+// own operation with its own Permission. An illegal move, or repeating the current state, is a 409
+// with a localized `detail`.
+//
+// POST /api/admin/blog_posts/{id}/publish
+func (UnimplementedHandler) AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (r AdminPublishBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminReviewCourse implements adminReviewCourse operation.
 //
 // Enqueue AI re-review of every current lesson version.
@@ -481,6 +501,15 @@ func (UnimplementedHandler) AdminSetBlogPostRelatedCourses(ctx context.Context, 
 //
 // POST /api/admin/blog_posts/{id}/suggest_related_courses
 func (UnimplementedHandler) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (r AdminSuggestBlogPostRelatedCoursesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
+//
+// Take a published post back to draft.
+//
+// POST /api/admin/blog_posts/{id}/unpublish
+func (UnimplementedHandler) AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (r AdminUnpublishBlogPostRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

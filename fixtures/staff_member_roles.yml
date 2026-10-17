@@ -12,3 +12,13 @@
   description:
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+- id: {{ id "staff_role_blog_updater" }}
+  name: blog updater
+  description: Edits blog posts but cannot publish them
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'
+- id: {{ id "staff_role_blog_publisher" }}
+  name: blog publisher
+  description: Publishes blog posts but cannot edit them
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'

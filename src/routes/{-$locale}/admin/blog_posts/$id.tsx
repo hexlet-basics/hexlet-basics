@@ -13,6 +13,7 @@ import {
   adminUpdateBlogPostMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zBlogPostInput } from "@/client/zod.gen";
+import { BlogPostStatePanel } from "@/components/admin/BlogPostStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { blogPostToForm, useBlogPostFields } from "@/components/admin/resources/blogPost";
@@ -61,6 +62,7 @@ function EditBlogPost() {
             onCancel={backToList}
             isPending={mutation.isPending}
           />
+          <BlogPostStatePanel post={data} />
           <RelatedCoursesPanel
             key={`related-${data.id}-${data.relatedCourseIds.join(",")}`}
             postId={postId}

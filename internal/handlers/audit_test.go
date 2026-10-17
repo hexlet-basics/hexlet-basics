@@ -57,7 +57,6 @@ func blogInput(name, slug string) *api.BlogPostInput {
 		Name:        api.NewNilString(name),
 		Slug:        api.NewNilString(slug),
 		Description: api.NewNilString("d"),
-		State:       api.NewNilBlogPostState(api.BlogPostStateDraft),
 		RichBody:    "<p>Body</p>",
 	}
 }
@@ -102,7 +101,6 @@ func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
 		Name:        api.NewNilString("Renamed"),
 		Slug:        api.NewNilString(*before.Slug),
 		Description: api.NilString{Null: true},
-		State:       api.NewNilBlogPostState(api.BlogPostState(*before.State)),
 		RichBody:    "<p>new</p>",
 	}, api.AdminUpdateBlogPostParams{ID: fixtures.ID32("blog_post_second_post")})
 	require.NoError(t, err)

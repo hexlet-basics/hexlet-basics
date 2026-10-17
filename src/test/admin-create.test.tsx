@@ -59,7 +59,7 @@ const cases: Case[] = [
       ["Name *", "Hello"],
       ["Slug *", "hello"],
     ],
-    sent: { name: "Hello", slug: "hello", state: "draft" },
+    sent: { name: "Hello", slug: "hello" },
   },
   {
     name: "a course landing page",
