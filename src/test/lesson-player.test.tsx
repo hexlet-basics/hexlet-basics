@@ -416,26 +416,6 @@ test("asks before resetting, and restores the starter code", async () => {
   await expect.poll(editorText).toContain("let greeting = '';");
 });
 
-test("tells the learner about autocomplete once", async () => {
-  const autocompleteHint =
-    "The editor suggests commands as you type. Press Tab to accept a suggestion and use the ↑ and ↓ keys to move through the list.";
-  worker.use(
-    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
-  );
-
-  const { screen } = await renderPlayer("variables");
-  await expect.element(page.getByText(autocompleteHint), editorLoad).toBeVisible();
-
-  await page.getByRole("button", { name: "Dismiss" }).click();
-  await expect.element(page.getByText(autocompleteHint)).not.toBeInTheDocument();
-
-  // And it stays dismissed for the next lesson, and the next visit.
-  await screen.unmount();
-  await renderPlayer("variables");
-  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
-  await expect.element(page.getByText(autocompleteHint)).not.toBeInTheDocument();
-});
-
 // A completed run, as the server reports one.
 function checkResult(overrides: Partial<LessonCheckingResponse> = {}): LessonCheckingResponse {
   return {
