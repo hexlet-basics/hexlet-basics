@@ -13,20 +13,23 @@ linters:
     - usetesting
   settings:
     forbidigo:
+      # With analyze-types the matched text is <package>.<Type>.<Method>, so a
+      # pattern names the ent or database/sql type it guards and does not catch
+      # a same-named method on an unrelated type.
       forbid:
         # Persistence goes through ent builders; raw SQL in production code
         # splits the package between two idioms. Tests and testsupport (savepoints,
         # reading the outbox) are exempt below.
-        - pattern: '^.*\.(ExecContext|QueryContext|QueryRowContext)$'
+        - pattern: '^sql\.(DB|Tx|Conn)\.(ExecContext|QueryContext|QueryRowContext)$'
           msg: use ent query builders instead of raw SQL
         # The next two apply to tests only (see exclusions). A test arranges its
         # data from fixtures/ and never makes a row to act on: creating one is the
         # act of the code under test, so a test that does it says why with a nolint.
-        - pattern: '^.*\.(Create|CreateBulk)$'
+        - pattern: '^ent\.\w+Client\.(Create|CreateBulk)$'
           msg: creating rows in a test is not arrange; add the case to fixtures/ and look it up with fixtures.ID, or say with a nolint why the creation is the act under test
         - pattern: '^(sql\.Open|store\.NewDB)$'
           msg: creating rows in a test is not arrange; a test does not open its own connection, testsupport hands out one that is rolled back with the test
-      analyze-types: false
+      analyze-types: true
   exclusions:
     paths:
       - internal/testsupport
