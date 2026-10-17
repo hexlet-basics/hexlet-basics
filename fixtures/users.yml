@@ -180,3 +180,11 @@
   admin: false
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+
+# An account with no email at all (a legacy one): there is nobody to mail.
+- id: {{ id "user_without_email" }}
+  first_name: Without
+  last_name: Email
+  admin: false
+  created_at: '2026-07-26 20:50:42'
+  updated_at: '2026-07-26 20:50:42'

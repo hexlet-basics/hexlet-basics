@@ -165,7 +165,7 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	orphan := r.db.CourseLesson.Create().SetSlug("orphan").SaveX(ctx)
+	orphan := r.lesson(t, "orphan")
 
 	_, err := r.progress.StartLesson(ctx, r.learner(t, "user_admin_learner"), orphan.ID, locale)
 
@@ -245,7 +245,7 @@ func TestCourseStateOfAnUnknownCourseIsNotFound(t *testing.T) {
 func TestCourseStateOfACourseWithNoVersionHasNoLessons(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	bare := r.db.Course.Create().SetSlug("bare").SaveX(ctx)
+	bare := r.course(t, "bare")
 
 	guest, err := r.progress.CourseState(ctx, progress.Learner{}, bare.ID)
 	require.NoError(t, err)

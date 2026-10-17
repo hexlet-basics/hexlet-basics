@@ -29,7 +29,13 @@ func (SuggestRelatedCoursesArgs) InsertOpts() river.InsertOpts {
 
 // SuggestRelatedCourses picks blog-post related courses with suggester.
 func SuggestRelatedCourses(suggester RelatedCoursesSuggester) Module {
-	return module(&suggestRelatedCoursesWorker{suggester: suggester})
+	return module(SuggestRelatedCoursesWorker(suggester))
+}
+
+// SuggestRelatedCoursesWorker is the worker alone, without its registration, so that a test
+// can work a job through it in a transaction (rivertest.Worker).
+func SuggestRelatedCoursesWorker(suggester RelatedCoursesSuggester) river.Worker[SuggestRelatedCoursesArgs] {
+	return &suggestRelatedCoursesWorker{suggester: suggester}
 }
 
 type suggestRelatedCoursesWorker struct {

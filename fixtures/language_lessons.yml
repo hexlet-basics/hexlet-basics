@@ -192,3 +192,9 @@
   language_id: {{ id "course_javascript" }}
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+
+# A lesson that belongs to no course (its course column is empty).
+- id: {{ id "lesson_orphan" }}
+  slug: orphan
+  created_at: '2026-07-26 20:50:41'
+  updated_at: '2026-07-26 20:50:41'

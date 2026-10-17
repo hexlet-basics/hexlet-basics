@@ -138,6 +138,31 @@ func (r *rig) dropLessonsAfterTheFirst(t *testing.T) {
 func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
+	// Every lesson finished, the enrollment still open: the only fixture learner
+	// the promotion has anything to close for.
+	allDone := r.learner(t, "user_learner_all_lessons_done")
+	courseID := r.course(t, jsSlug).ID
+
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
+
+	state, err := r.progress.CourseState(ctx, allDone, courseID)
+	require.NoError(t, err)
+	assert.Equal(t, progress.StateFinished, state.State)
+	finished := testsupport.PublishedEvents[events.CourseFinished](t, r.services)
+	require.Len(t, finished, 1, "nobody else has nothing left to do")
+	assert.Equal(t, jsSlug, finished[0].Slug)
+	assert.Equal(t, 1, finished[0].OccurrenceCount)
+
+	// A learner already finished is not selected again, so no fact repeats.
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
+	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, r.services), 1)
+}
+
+// A new version that drops the lessons a learner had left leaves them with
+// nothing to do, so the promotion finishes their course.
+func TestReevaluateCompletionFinishesTheCourseOfALearnerWhoseRemainingLessonsWereDropped(t *testing.T) {
+	r := newRig(t)
+	ctx := t.Context()
 	adminLearner := r.learner(t, "user_admin_learner")
 	courseID := r.course(t, jsSlug).ID
 	r.dropLessonsAfterTheFirst(t) // adminLearner finished the only lesson that is left
@@ -147,33 +172,32 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *t
 	state, err := r.progress.CourseState(ctx, adminLearner, courseID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)
-	finished := testsupport.PublishedEvents[events.CourseFinished](t, r.services)
-	require.Len(t, finished, 1)
-	assert.Equal(t, jsSlug, finished[0].Slug)
-	assert.Equal(t, 1, finished[0].OccurrenceCount)
+	announced := testsupport.PublishedCount(t, r.services)
+	require.NotZero(t, announced)
 
 	// A learner already finished is not selected again, so no fact repeats.
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
-	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, r.services), 1)
+	assert.Equal(t, announced, testsupport.PublishedCount(t, r.services))
 }
 
 func TestReevaluateCompletionLeavesLearnersWithWorkLeftAlone(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	adminLearner := r.learner(t, "user_admin_learner")
 
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, r.course(t, jsSlug).ID, locale))
 
-	state, err := r.progress.CourseState(ctx, adminLearner, r.course(t, jsSlug).ID)
-	require.NoError(t, err)
-	assert.Equal(t, progress.StateStarted, state.State)
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
+	// Work left: the second lesson, or a lesson not even started.
+	for _, label := range []string{"user_admin_learner", "user_learner_with_a_gap", "user_learner_hidden_cards"} {
+		state, err := r.progress.CourseState(ctx, r.learner(t, label), r.course(t, jsSlug).ID)
+		require.NoError(t, err)
+		assert.Equal(t, progress.StateStarted, state.State, label)
+	}
 }
 
 func TestReevaluateCompletionCompletesNobodyForAVersionWithNoLessons(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	bare := r.db.Course.Create().SetSlug("bare").SaveX(ctx)
+	bare := r.course(t, "bare")
 
 	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, bare.ID, locale))
 

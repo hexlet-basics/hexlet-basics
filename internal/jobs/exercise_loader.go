@@ -38,7 +38,13 @@ func (ExerciseLoaderArgs) InsertOpts() river.InsertOpts {
 
 // ExerciseLoader runs course-version builds with loader.
 func ExerciseLoader(loader *courseloader.Loader) Module {
-	return module(&exerciseLoaderWorker{loader: loader})
+	return module(ExerciseLoaderWorker(loader))
+}
+
+// ExerciseLoaderWorker is the worker alone, without its registration, so that a test
+// can work a job through it in a transaction (rivertest.Worker).
+func ExerciseLoaderWorker(loader *courseloader.Loader) river.Worker[ExerciseLoaderArgs] {
+	return &exerciseLoaderWorker{loader: loader}
 }
 
 type exerciseLoaderWorker struct {

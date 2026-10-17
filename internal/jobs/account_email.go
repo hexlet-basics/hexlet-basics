@@ -51,7 +51,13 @@ func (AccountEmailArgs) InsertOpts() river.InsertOpts {
 
 // AccountEmail delivers account emails through sender.
 func AccountEmail(sender AccountEmailSender) Module {
-	return module(&accountEmailWorker{sender: sender})
+	return module(AccountEmailWorker(sender))
+}
+
+// AccountEmailWorker is the worker alone, without its registration, so that a test
+// can work a job through it in a transaction (rivertest.Worker).
+func AccountEmailWorker(sender AccountEmailSender) river.Worker[AccountEmailArgs] {
+	return &accountEmailWorker{sender: sender}
 }
 
 type accountEmailWorker struct {

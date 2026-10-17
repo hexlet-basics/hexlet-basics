@@ -106,19 +106,10 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 func TestPassingALessonThatLeavesAGapKeepsTheCourseOpen(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	adminLearner := r.learner(t, "user_admin_learner") // finished the first lesson only
+	// Inherited data: the first and the third lessons are finished, the second is not.
+	gapLearner := r.learner(t, "user_learner_with_a_gap")
 
-	// Close the third lesson behind the learner's back, as inherited data would.
-	third := r.lesson(t, thirdLesson)
-	r.db.LessonProgress.Create().
-		SetUserID(adminLearner.UserID).
-		SetCourseID(r.course(t, jsSlug).ID).
-		SetEnrollmentID(r.db.Enrollment.Query().Where(enrollment.UserID(adminLearner.UserID)).OnlyX(ctx).ID).
-		SetLessonID(third.ID).
-		SetState(progress.StateFinished).
-		ExecX(ctx)
-
-	result, err := r.progress.CheckSolution(ctx, r.check(t, adminLearner, firstLesson))
+	result, err := r.progress.CheckSolution(ctx, r.check(t, gapLearner, firstLesson))
 	require.NoError(t, err)
 
 	assert.False(t, result.CourseFinished, "the second lesson is still unfinished")

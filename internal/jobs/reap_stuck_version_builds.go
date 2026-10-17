@@ -51,7 +51,13 @@ func (w *reapStuckVersionBuildsWorker) Work(ctx context.Context, _ *river.Job[Re
 // ReapStuckVersionBuilds sweeps builds whose worker died, hourly. It runs
 // wherever builds run, since it writes the same version rows.
 func ReapStuckVersionBuilds(loader *courseloader.Loader, logger *slog.Logger) Module {
-	return module(&reapStuckVersionBuildsWorker{loader: loader, logger: logger}, reapStuckVersionBuildsSchedule())
+	return module(ReapStuckVersionBuildsWorker(loader, logger), reapStuckVersionBuildsSchedule())
+}
+
+// ReapStuckVersionBuildsWorker is the worker alone, without its schedule, so that a
+// test can work a sweep through it in a transaction (rivertest.Worker).
+func ReapStuckVersionBuildsWorker(loader *courseloader.Loader, logger *slog.Logger) river.Worker[ReapStuckVersionBuildsArgs] {
+	return &reapStuckVersionBuildsWorker{loader: loader, logger: logger}
 }
 
 // reapStuckVersionBuildsSchedule is the sweep's recurring insert. River runs the scheduler only

@@ -10,6 +10,7 @@ import (
 
 	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/testsupport"
@@ -21,8 +22,7 @@ var magicLinkURL = regexp.MustCompile(`https://code-basics\.test/ru/magic_links/
 
 func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u, err := db.User.Create().SetEmail("mail-sender@example.com").Save(t.Context())
-	require.NoError(t, err)
+	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
 	tokens := emailtokens.New("test-email-secret")
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, tokens, recorder, testsupport.NewTranslator(t), siteURL)
@@ -31,7 +31,7 @@ func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 
 	sent := recorder.Sent()
 	require.Len(t, sent, 1)
-	assert.Equal(t, "mail-sender@example.com", sent[0].To)
+	assert.Equal(t, "blank-user@example.com", sent[0].To)
 	assert.Equal(t, "Ссылка для входа", sent[0].Subject)
 	match := magicLinkURL.FindStringSubmatch(sent[0].HTML)
 	require.NotNil(t, match, "the email must carry a ru Magic Link: %s", sent[0].HTML)
@@ -42,8 +42,7 @@ func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 
 func TestSenderMailsSpanishPasswordResetLink(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u, err := db.User.Create().SetEmail("mail-sender-es@example.com").Save(t.Context())
-	require.NoError(t, err)
+	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)
@@ -69,8 +68,7 @@ func TestSenderSkipsDeletedUser(t *testing.T) {
 
 func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
-	u, err := db.User.Create().SetEmail("mail-cooldown@example.com").Save(t.Context())
-	require.NoError(t, err)
+	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
 	client, err := jobs.NewInsertOnlyClient(nil, slog.New(slog.DiscardHandler), nil, nil)
 	require.NoError(t, err)
 
@@ -92,13 +90,12 @@ func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 
 func TestSenderRefusesAnUnknownPurpose(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u, err := db.User.Create().SetEmail("mail-sender-purpose@example.com").Save(t.Context())
-	require.NoError(t, err)
+	u := db.User.GetX(t.Context(), fixtures.ID("user_blank"))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)
 
-	err = sender.Send(t.Context(), emailtokens.Purpose("newsletter"), u.ID, "en")
+	err := sender.Send(t.Context(), emailtokens.Purpose("newsletter"), u.ID, "en")
 
 	require.ErrorContains(t, err, "unknown account email purpose")
 	assert.Empty(t, recorder.Sent())
@@ -106,8 +103,7 @@ func TestSenderRefusesAnUnknownPurpose(t *testing.T) {
 
 func TestSenderSkipsAUserWithoutAnEmail(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u, err := db.User.Create().Save(t.Context())
-	require.NoError(t, err)
+	u := db.User.GetX(t.Context(), fixtures.ID("user_without_email"))
 	recorder := &mailer.Recorder{}
 	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
 		testsupport.NewTranslator(t), siteURL)

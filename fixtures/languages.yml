@@ -305,3 +305,14 @@
   slug: unlisted-card
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+
+# A course with nothing built: no version, no lesson, no module.
+- id: {{ id "course_bare" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  order: 10
+  progress: completed
+  slug: bare
+  created_at: '2026-07-26 20:50:41'
+  updated_at: '2026-07-26 20:50:41'

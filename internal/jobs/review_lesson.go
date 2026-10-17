@@ -36,7 +36,13 @@ func (ReviewLessonArgs) InsertOpts() river.InsertOpts {
 
 // ReviewLesson summarizes lessons with reviewer.
 func ReviewLesson(reviewer LessonReviewer) Module {
-	return module(&reviewLessonWorker{reviewer: reviewer})
+	return module(ReviewLessonWorker(reviewer))
+}
+
+// ReviewLessonWorker is the worker alone, without its registration, so that a test
+// can work a job through it in a transaction (rivertest.Worker).
+func ReviewLessonWorker(reviewer LessonReviewer) river.Worker[ReviewLessonArgs] {
+	return &reviewLessonWorker{reviewer: reviewer}
 }
 
 type reviewLessonWorker struct {
