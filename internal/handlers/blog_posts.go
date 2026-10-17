@@ -2,18 +2,12 @@ package handlers
 
 import (
 	"context"
-	"strings"
 
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/blogpost"
-	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/jobs"
 )
 
@@ -24,40 +18,17 @@ import (
 // coverAttachmentId is deferred until blob covers land (same deferral as the
 // course cover).
 
-const (
-	// wordsPerMinute mirrors the legacy reading-time divisor (BlogPostResource).
-	wordsPerMinute = 260
-	// blogPostRecordType/coverName key the polymorphic ActiveStorage rows to a
-	// BlogPost (Rails stores the model class name).
-	blogPostRecordType = "BlogPost"
-	coverName          = "cover"
-)
-
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.BlogPost.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	posts, err := s.db.BlogPost.Query().
-		WithCreator().
-		Order(ent.Desc(blogpost.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	items, err := s.blogPostsToAPI(ctx, posts)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.BlogPostPage{Items: items, Total: int32(total), Page: page.Page, PerPage: page.PerPage}, nil
+	return listPageWith(ctx, params.Page, params.PerPage,
+		func() *ent.BlogPostQuery {
+			return s.db.BlogPost.Query().WithCreator().Order(ent.Desc(blogpost.FieldID))
+		},
+		s.blogPostsToAPI,
+		func(items []api.BlogPost, total, page, perPage int32) api.AdminListBlogPostsRes {
+			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminGetBlogPost returns one blog post; a missing id surfaces as ent
@@ -68,19 +39,12 @@ func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPo
 
 // getAdminBlogPost is the shared read model every write handler echoes back.
 func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, error) {
-	post, err := s.db.BlogPost.Query().
-		Where(blogpost.IDEQ(id)).
-		WithCreator().
-		Only(ctx)
+	post, err := s.blogReader.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-
-	items, err := s.blogPostsToAPI(ctx, []*ent.BlogPost{post})
-	if err != nil {
-		return nil, err
-	}
-	return &items[0], nil
+	item := s.conv.ToBlogPost(post)
+	return &item, nil
 }
 
 // AdminCreateBlogPost creates a post. The input-to-builder mapping is the
@@ -117,16 +81,10 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 }
 
 // AdminDeleteBlogPost removes a post with its dependents (the likes and related
-// courses go with it, in one transaction, inside the remover).
+// courses go with it, in one transaction, inside the remover, which also
+// reports a missing post as not-found).
 func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDeleteBlogPostParams) (api.AdminDeleteBlogPostRes, error) {
-	id := int(params.ID)
-
-	// Ensure the post exists first (404 for a missing id, before any write).
-	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
-		return nil, err
-	}
-
-	if err := s.postRemover.Remove(ctx, id); err != nil {
+	if err := s.postRemover.Remove(ctx, int(params.ID)); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteBlogPostNoContent{}, nil
@@ -139,11 +97,6 @@ func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 // as 409 centrally.
 func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams) (api.AdminSetBlogPostRelatedCoursesRes, error) {
 	id := int(params.ID)
-
-	// Ensure the post exists first (404 for a missing id, before any write).
-	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
-		return nil, err
-	}
 
 	courseIDs := lo.Map(req.CourseIds, func(courseID int32, _ int) int { return int(courseID) })
 	if err := s.relatedCoursesSet.Replace(ctx, id, courseIDs); err != nil {
@@ -170,142 +123,13 @@ func (s *Server) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params 
 	return &api.AdminSuggestBlogPostRelatedCoursesNoContent{}, nil
 }
 
-// blogPostsToAPI assembles the read model for a set of posts. The cover and like
-// count are not columns on blog_posts, so they are fetched in two batched
-// queries keyed by post id rather than per-post, keeping the list handler off an
-// N+1 path.
-func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]api.BlogPost, error) {
-	if len(posts) == 0 {
-		return []api.BlogPost{}, nil
-	}
-
-	ids := lo.Map(posts, func(p *ent.BlogPost, _ int) int { return p.ID })
-
-	coverKeyByPost, err := s.blogCoverKeys(ctx, ids)
+// blogPostsToAPI is the read model of a set of posts: the blog reader assembles
+// them (cover, likes, promoted courses, reading time) and the converter copies
+// the result to the contract.
+func (s *Server) blogPostsToAPI(ctx context.Context, rows []*ent.BlogPost) ([]api.BlogPost, error) {
+	posts, err := s.blogReader.Assemble(ctx, rows)
 	if err != nil {
 		return nil, err
 	}
-	likesByPost, err := s.blogLikeCounts(ctx, ids)
-	if err != nil {
-		return nil, err
-	}
-	relatedByPost, err := s.blogRelatedCourseIDs(ctx, ids)
-	if err != nil {
-		return nil, err
-	}
-
-	items := make([]api.BlogPost, len(posts))
-	for i, p := range posts {
-		items[i] = api.BlogPost{
-			ID:                      int32(p.ID),
-			Creator:                 s.conv.ToPublicUser(p.Edges.Creator),
-			Name:                    apiconv.NilStringFromPtr(p.Name),
-			Slug:                    apiconv.NilStringFromPtr(p.Slug),
-			Description:             apiconv.NilStringFromPtr(p.Description),
-			State:                   nilBlogPostState(p.State),
-			Locale:                  apiconv.NilStringFromPtr(p.Locale),
-			RichBodyHtml:            p.RichBody,
-			ReadingTime:             readingTime(p.RichBody),
-			LikesCount:              int32(likesByPost[p.ID]),
-			RelatedCourseItemsCount: int32(p.RelatedCourseItemsCount),
-			RelatedCourseIds:        relatedByPost[p.ID],
-			CoverThumbVariant:       s.coverVariant(coverKeyByPost[p.ID]),
-			CoverListVariant:        s.coverVariant(coverKeyByPost[p.ID]),
-			CoverMainVariant:        s.coverVariant(coverKeyByPost[p.ID]),
-			CreatedAt:               p.CreatedAt,
-		}
-	}
-	return items, nil
-}
-
-// blogCoverKeys returns each post's cover blob storage key by id (posts without
-// a cover are simply absent from the map).
-func (s *Server) blogCoverKeys(ctx context.Context, ids []int) (map[int]string, error) {
-	rows, err := s.db.ActiveStorageAttachment.Query().
-		Where(
-			activestorageattachment.RecordType(blogPostRecordType),
-			activestorageattachment.Name(coverName),
-			activestorageattachment.RecordIDIn(ids...),
-		).
-		WithBlob().
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	withBlob := lo.Filter(rows, func(r *ent.ActiveStorageAttachment, _ int) bool { return r.Edges.Blob != nil })
-	return lo.SliceToMap(withBlob, func(r *ent.ActiveStorageAttachment) (int, string) {
-		return r.RecordID, r.Edges.Blob.Key
-	}), nil
-}
-
-// blogRelatedCourseIDs returns each post's promoted-course ids in display
-// order (the `order` column filled by the related-courses action, id as the
-// tie-breaker for legacy rows without it). Posts without items map to an empty
-// slice via the make below, so the API field is always an array, never null.
-func (s *Server) blogRelatedCourseIDs(ctx context.Context, ids []int) (map[int][]int32, error) {
-	rows, err := s.db.BlogPostRelatedCourseItem.Query().
-		Where(blogpostrelatedcourseitem.BlogPostIDIn(ids...)).
-		Order(
-			ent.Asc(blogpostrelatedcourseitem.FieldOrder),
-			ent.Asc(blogpostrelatedcourseitem.FieldID),
-		).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	out := make(map[int][]int32, len(ids))
-	for _, id := range ids {
-		out[id] = []int32{}
-	}
-	for _, r := range rows {
-		out[r.BlogPostID] = append(out[r.BlogPostID], int32(r.CourseID))
-	}
-	return out, nil
-}
-
-// blogLikeCounts returns each post's like count by id via a single grouped
-// aggregate over blog_post_likes.
-func (s *Server) blogLikeCounts(ctx context.Context, ids []int) (map[int]int, error) {
-	type blogLikeCountRow struct {
-		BlogPostID int `json:"blog_post_id"`
-		Count      int `json:"count"`
-	}
-	var rows []blogLikeCountRow
-	err := s.db.BlogPostLike.Query().
-		Where(blogpostlike.BlogPostIDIn(ids...)).
-		GroupBy(blogpostlike.FieldBlogPostID).
-		Aggregate(ent.As(ent.Count(), "count")).
-		Scan(ctx, &rows)
-	if err != nil {
-		return nil, err
-	}
-	return lo.SliceToMap(rows, func(r blogLikeCountRow) (int, int) { return r.BlogPostID, r.Count }), nil
-}
-
-// nilBlogPostState bridges the nullable ent state string to the API enum.
-func nilBlogPostState(v *string) api.NilBlogPostState {
-	if v == nil {
-		return api.NilBlogPostState{Null: true}
-	}
-	return api.NewNilBlogPostState(api.BlogPostState(*v))
-}
-
-// coverVariant builds the (nullable) cover URL from a blob key. The bytes are
-// served by this server's own `/api/storage/{key}` path (PublicURL origin); the same
-// URL fills all three variant fields until image variants land (ADR-0005).
-func (s *Server) coverVariant(key string) api.NilString {
-	if key == "" {
-		return api.NilString{Null: true}
-	}
-	return api.NewNilString(s.cfg.PublicURL + "/api/storage/" + key)
-}
-
-// readingTime estimates minutes-to-read from the rich body, matching the legacy
-// serializer EXACTLY for deploy parity. Legacy is `(split.size / 260).ceil` in
-// Ruby, where both operands are Integers — so `/` already floors and `.ceil` is a
-// no-op. That means it is floor division, not round-up: a <260-word post reads as
-// 0. We reproduce that with integer division (not math.Ceil) on purpose.
-func readingTime(richBodyHTML string) int32 {
-	words := len(strings.Fields(htmltext.PlainText(richBodyHTML)))
-	return int32(words / wordsPerMinute)
+	return s.conv.ToBlogPosts(posts), nil
 }

@@ -24,15 +24,15 @@ func newReader(t *testing.T) (*blogposts.Reader, *ent.Client) {
 func TestGetAssemblesCoverLikesAndRelatedCourses(t *testing.T) {
 	reader, _ := newReader(t)
 
-	post, err := reader.Get(t.Context(), fixtures.ID("blog_post_hello_world"))
+	post, err := reader.Get(t.Context(), fixtures.ID(fixtures.BlogPostHelloWorld))
 	require.NoError(t, err)
 
 	assert.Equal(t, "https://blog.example.test/api/storage/blogcoverkey001", post.CoverURL)
 	assert.Equal(t, 2, post.LikesCount)
 	assert.Equal(t, []int{
-		fixtures.ID("course_javascript"),
-		fixtures.ID("course_ruby"),
-		fixtures.ID("course_python"),
+		fixtures.ID(fixtures.CourseJavascript),
+		fixtures.ID(fixtures.CourseRuby),
+		fixtures.ID(fixtures.CoursePython),
 	}, post.RelatedCourseIDs, "in display order")
 	assert.NotNil(t, post.Creator)
 }
@@ -40,7 +40,7 @@ func TestGetAssemblesCoverLikesAndRelatedCourses(t *testing.T) {
 func TestGetOfAPostWithNothingAttachedHasNoCoverLikesOrCourses(t *testing.T) {
 	reader, _ := newReader(t)
 
-	post, err := reader.Get(t.Context(), fixtures.ID("blog_post_second_post"))
+	post, err := reader.Get(t.Context(), fixtures.ID(fixtures.BlogPostSecondPost))
 	require.NoError(t, err)
 
 	assert.Empty(t, post.CoverURL)
@@ -60,7 +60,7 @@ func TestGetOfAMissingPostIsNotFound(t *testing.T) {
 func TestAShortPostReadsInAMinute(t *testing.T) {
 	reader, _ := newReader(t)
 
-	post, err := reader.Get(t.Context(), fixtures.ID("blog_post_hello_world"))
+	post, err := reader.Get(t.Context(), fixtures.ID(fixtures.BlogPostHelloWorld))
 	require.NoError(t, err)
 
 	assert.Equal(t, 1, post.ReadingTime)
@@ -93,8 +93,8 @@ func TestAssembleKeepsTheOrderOfTheRows(t *testing.T) {
 func TestLikeCountsAPersonOnce(t *testing.T) {
 	reader, db := newReader(t)
 	likes := blogposts.NewLiker(db)
-	postID := fixtures.ID("blog_post_second_post")
-	userID := fixtures.ID("user_admin_learner")
+	postID := fixtures.ID(fixtures.BlogPostSecondPost)
+	userID := fixtures.ID(fixtures.UserAdminLearner)
 
 	require.NoError(t, likes.Like(t.Context(), postID, userID))
 	require.NoError(t, likes.Like(t.Context(), postID, userID), "a repeat like is not an error")
@@ -107,6 +107,6 @@ func TestLikeCountsAPersonOnce(t *testing.T) {
 func TestLikeOfAMissingPostIsNotFound(t *testing.T) {
 	_, db := newReader(t)
 
-	err := blogposts.NewLiker(db).Like(t.Context(), 1, fixtures.ID("user_admin_learner"))
+	err := blogposts.NewLiker(db).Like(t.Context(), 1, fixtures.ID(fixtures.UserAdminLearner))
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }

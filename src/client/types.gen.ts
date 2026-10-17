@@ -117,15 +117,15 @@ export type BlogPost = {
   richBodyHtml: string;
   readingTime: number;
   likesCount: number;
-  relatedCourseItemsCount: number;
   /**
    * Promoted-course ids in display order, so the admin related-courses
    *       editor can round-trip the set it writes.
    */
   relatedCourseIds: Array<number>;
-  coverThumbVariant: string | null;
-  coverListVariant: string | null;
-  coverMainVariant: string | null;
+  /**
+   * The cover image, served by the asset store; null for a post without one.
+   */
+  coverUrl: string | null;
   createdAt: string;
 };
 

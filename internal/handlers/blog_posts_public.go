@@ -6,8 +6,6 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/blogpost"
-	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/internal/api"
 )
 
@@ -100,52 +98,30 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 	if err != nil {
 		return nil, err
 	}
-	return s.blogPostToAPI(ctx, row)
+	return s.blogPostToAPI(ctx, row.ID)
 }
 
 // LikeBlogPost records the signed-in user's like and returns the post.
 //
 // Legacy counted a like once per browser session; the Go stack has no server
-// session, so the rule is one like per user and post. Like legacy, it is a
-// check before the insert, not a constraint: a unique index would make legacy's
-// own repeat likes fail during the rollback window (ADR-0015: additive
-// migrations only), and the table may already hold duplicate pairs. A repeat
-// like is ignored rather than failing — the answer is the post, unchanged. Two
-// truly concurrent clicks can still both insert, as they could on legacy.
+// session, so the rule is one like per user and post, kept by the blog module:
+// a repeat like is ignored rather than failing, so the answer is the post,
+// unchanged. A missing post is not found.
 func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (api.LikeBlogPostRes, error) {
 	liker := MustAuthenticatedUser(ctx)
 
-	row, err := s.db.BlogPost.Query().
-		Where(blogpost.IDEQ(int(params.ID))).
-		WithCreator().
-		Only(ctx)
-	if err != nil {
+	if err := s.blogLikes.Like(ctx, int(params.ID), liker.ID); err != nil {
 		return nil, err
 	}
-
-	liked, err := s.db.BlogPostLike.Query().
-		Where(blogpostlike.BlogPostID(row.ID), blogpostlike.UserID(liker.ID)).
-		Exist(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if !liked {
-		if err := s.db.BlogPostLike.Create().
-			SetBlogPostID(row.ID).
-			SetUserID(liker.ID).
-			Exec(ctx); err != nil {
-			return nil, err
-		}
-	}
-
-	return s.blogPostToAPI(ctx, row)
+	return s.blogPostToAPI(ctx, int(params.ID))
 }
 
 // blogPostToAPI is the single-post read model shared by next and like.
-func (s *Server) blogPostToAPI(ctx context.Context, row *ent.BlogPost) (*api.BlogPost, error) {
-	items, err := s.blogPostsToAPI(ctx, []*ent.BlogPost{row})
+func (s *Server) blogPostToAPI(ctx context.Context, id int) (*api.BlogPost, error) {
+	post, err := s.blogReader.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return &items[0], nil
+	item := s.conv.ToBlogPost(post)
+	return &item, nil
 }

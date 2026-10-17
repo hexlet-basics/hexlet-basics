@@ -4757,11 +4757,8 @@ components:
         - richBodyHtml
         - readingTime
         - likesCount
-        - relatedCourseItemsCount
         - relatedCourseIds
-        - coverThumbVariant
-        - coverListVariant
-        - coverMainVariant
+        - coverUrl
         - createdAt
       properties:
         id:
@@ -4793,9 +4790,6 @@ components:
         likesCount:
           type: integer
           format: int32
-        relatedCourseItemsCount:
-          type: integer
-          format: int32
         relatedCourseIds:
           type: array
           items:
@@ -4804,15 +4798,10 @@ components:
           description: |-
             Promoted-course ids in display order, so the admin related-courses
                   editor can round-trip the set it writes.
-        coverThumbVariant:
+        coverUrl:
           type: string
           nullable: true
-        coverListVariant:
-          type: string
-          nullable: true
-        coverMainVariant:
-          type: string
-          nullable: true
+          description: The cover image, served by the asset store; null for a post without one.
         createdAt:
           type: string
           format: date-time
