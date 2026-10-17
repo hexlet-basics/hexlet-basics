@@ -108,6 +108,7 @@ function Show() {
   const { slug } = Route.useParams();
   const { t, i18n } = useTranslation();
   const { unfinished } = Route.useSearch();
+  const { user } = Route.useRouteContext();
   const { data: view, isPending, isError } = useQuery(getCourseOptions({ path: { slug } }));
 
   if (isPending) {
@@ -278,16 +279,20 @@ function Show() {
           </SimpleGrid>
         </Box>
 
-        <Card bg="indigo.0" p="xl">
-          <Group justify="space-between">
-            <Text fz="h3">{t(($) => $.courses.show.demo_description)}</Text>
-            <Flex h="100%" justify="end">
-              <EnterButton view={view} my="auto" size="xl">
-                {t(($) => $.courses.show.demo_start)}
-              </EnterButton>
-            </Flex>
-          </Group>
-        </Card>
+        {/* The demo pitch is for visitors: a signed-in learner already has the
+          hero button, and is not being invited to try anything. */}
+        {!user && (
+          <Card bg="indigo.0" p="xl">
+            <Group justify="space-between">
+              <Text fz="h3">{t(($) => $.courses.show.demo_description)}</Text>
+              <Flex h="100%" justify="end">
+                <EnterButton view={view} my="auto" size="xl">
+                  {t(($) => $.courses.show.demo_start)}
+                </EnterButton>
+              </Flex>
+            </Group>
+          </Card>
+        )}
 
         <QnaBlock items={view.qnaItems} />
       </Container>
