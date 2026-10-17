@@ -55,7 +55,7 @@ const (
 type Source struct {
 	Channel        Channel
 	ConnectedAppID *int
-	TokenID        *int
+	TokenID        *string
 }
 
 type sourceKey struct{}

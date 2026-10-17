@@ -75,7 +75,7 @@ func (_u *AuditRecordUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		_spec.ClearField(auditrecord.FieldConnectedAppID, field.TypeInt)
 	}
 	if _u.mutation.TokenIDCleared() {
-		_spec.ClearField(auditrecord.FieldTokenID, field.TypeInt)
+		_spec.ClearField(auditrecord.FieldTokenID, field.TypeString)
 	}
 	if _u.mutation.RequestIDCleared() {
 		_spec.ClearField(auditrecord.FieldRequestID, field.TypeString)
@@ -199,7 +199,7 @@ func (_u *AuditRecordUpdateOne) sqlSave(ctx context.Context) (_node *AuditRecord
 		_spec.ClearField(auditrecord.FieldConnectedAppID, field.TypeInt)
 	}
 	if _u.mutation.TokenIDCleared() {
-		_spec.ClearField(auditrecord.FieldTokenID, field.TypeInt)
+		_spec.ClearField(auditrecord.FieldTokenID, field.TypeString)
 	}
 	if _u.mutation.RequestIDCleared() {
 		_spec.ClearField(auditrecord.FieldRequestID, field.TypeString)

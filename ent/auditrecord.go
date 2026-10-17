@@ -28,7 +28,7 @@ type AuditRecord struct {
 	// ConnectedAppID holds the value of the "connected_app_id" field.
 	ConnectedAppID *int `json:"connected_app_id,omitempty"`
 	// TokenID holds the value of the "token_id" field.
-	TokenID *int `json:"token_id,omitempty"`
+	TokenID *string `json:"token_id,omitempty"`
 	// RequestID holds the value of the "request_id" field.
 	RequestID *string `json:"request_id,omitempty"`
 	// Address holds the value of the "address" field.
@@ -59,9 +59,9 @@ func (*AuditRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case auditrecord.FieldChanges, auditrecord.FieldReads:
 			values[i] = new([]byte)
-		case auditrecord.FieldID, auditrecord.FieldActorUserID, auditrecord.FieldConnectedAppID, auditrecord.FieldTokenID:
+		case auditrecord.FieldID, auditrecord.FieldActorUserID, auditrecord.FieldConnectedAppID:
 			values[i] = new(sql.NullInt64)
-		case auditrecord.FieldChannel, auditrecord.FieldRequestID, auditrecord.FieldAddress, auditrecord.FieldUserAgent, auditrecord.FieldOperation, auditrecord.FieldEntityType, auditrecord.FieldEntityID, auditrecord.FieldLocale, auditrecord.FieldOutcome:
+		case auditrecord.FieldChannel, auditrecord.FieldTokenID, auditrecord.FieldRequestID, auditrecord.FieldAddress, auditrecord.FieldUserAgent, auditrecord.FieldOperation, auditrecord.FieldEntityType, auditrecord.FieldEntityID, auditrecord.FieldLocale, auditrecord.FieldOutcome:
 			values[i] = new(sql.NullString)
 		case auditrecord.FieldOccurredAt:
 			values[i] = new(sql.NullTime)
@@ -113,11 +113,11 @@ func (_m *AuditRecord) assignValues(columns []string, values []any) error {
 				*_m.ConnectedAppID = int(value.Int64)
 			}
 		case auditrecord.FieldTokenID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field token_id", values[i])
 			} else if value.Valid {
-				_m.TokenID = new(int)
-				*_m.TokenID = int(value.Int64)
+				_m.TokenID = new(string)
+				*_m.TokenID = value.String
 			}
 		case auditrecord.FieldRequestID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -243,7 +243,7 @@ func (_m *AuditRecord) String() string {
 	builder.WriteString(", ")
 	if v := _m.TokenID; v != nil {
 		builder.WriteString("token_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	if v := _m.RequestID; v != nil {

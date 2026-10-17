@@ -72,13 +72,13 @@ func (_c *AuditRecordCreate) SetNillableConnectedAppID(v *int) *AuditRecordCreat
 }
 
 // SetTokenID sets the "token_id" field.
-func (_c *AuditRecordCreate) SetTokenID(v int) *AuditRecordCreate {
+func (_c *AuditRecordCreate) SetTokenID(v string) *AuditRecordCreate {
 	_c.mutation.SetTokenID(v)
 	return _c
 }
 
 // SetNillableTokenID sets the "token_id" field if the given value is not nil.
-func (_c *AuditRecordCreate) SetNillableTokenID(v *int) *AuditRecordCreate {
+func (_c *AuditRecordCreate) SetNillableTokenID(v *string) *AuditRecordCreate {
 	if v != nil {
 		_c.SetTokenID(*v)
 	}
@@ -292,7 +292,7 @@ func (_c *AuditRecordCreate) createSpec() (*AuditRecord, *sqlgraph.CreateSpec) {
 		_node.ConnectedAppID = &value
 	}
 	if value, ok := _c.mutation.TokenID(); ok {
-		_spec.SetField(auditrecord.FieldTokenID, field.TypeInt, value)
+		_spec.SetField(auditrecord.FieldTokenID, field.TypeString, value)
 		_node.TokenID = &value
 	}
 	if value, ok := _c.mutation.RequestID(); ok {
