@@ -200,8 +200,9 @@ var secondAdminID = fixtures.ID(fixtures.UserSecondAdmin)
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
-	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(false).ExecX(t.Context())
+	// The fixtures have three administrators: user_admin_learner (the caller), user_second_admin
+	// and the staff member user_admin_staff; the caller is left the only one.
+	leaveOnlyAlice(t, h)
 
 	_, err := h.Client.DeleteAccount(t.Context())
 

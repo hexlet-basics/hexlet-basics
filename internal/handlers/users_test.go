@@ -200,8 +200,9 @@ func TestAdminDeleteUser(t *testing.T) {
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
-	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(false).ExecX(ctx)
+	// The fixtures have three administrators: user_admin_learner (the caller), user_second_admin
+	// and the staff member user_admin_staff; the caller is left the only one.
+	leaveOnlyAlice(t, h)
 	input := &api.UserInput{
 		Email:     "admin-learner@example.com",
 		FirstName: api.NilString{Null: true},

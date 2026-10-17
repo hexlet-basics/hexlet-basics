@@ -309,6 +309,26 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	}
 }
 
+// ActAs is the same stack, over the same transaction, with every request signed
+// in as another fixture user: the second person of a scenario that needs one to
+// act on what the first sees, which a harness of its own could not do because it
+// has a transaction of its own. The caller's harness keeps acting as before.
+func (h *Harness) ActAs(t *testing.T, userLabel string) *Harness {
+	t.Helper()
+	security := newHarnessSecurity(t, h.DB, userLabel)
+	doer := *h.doer
+	doer.jwt = security.jwt
+	client, err := api.NewClient("http://test", security, api.WithClient(&doer))
+	if err != nil {
+		t.Fatalf("new api client: %v", err)
+	}
+	other := *h
+	other.Client = &Client{Client: client}
+	other.doer = &doer
+	other.UserID = security.userID
+	return &other
+}
+
 // Mocks are the two external boundaries the harness cannot run for real, preset
 // to what most tests want: a passing exercise runner and a short canned chat
 // reply. A test that needs another answer sets the mock's Func; it never asserts

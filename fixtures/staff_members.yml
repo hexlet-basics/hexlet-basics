@@ -4,17 +4,19 @@
 # the user/role delete tests remove — a staff_member FK child would otherwise
 # block those deletes. allowed_locales is a native pg text array, written here as
 # the Postgres array literal. user_id is unique (one staff record per user).
-- id: {{ id "staff_member_staff_editor" }}
-  user_id: {{ id "user_staff_editor" }}
-  role_id: {{ id "staff_role_editor" }}
-  allowed_locales: '{ru,en}'
-  created_at: '2026-07-26 20:50:29'
-  updated_at: '2026-07-26 20:50:29'
 
-# user_admin_staff: an administrator who is also staff, on the editor role (see users.yml).
+# user_admin_staff: an administrator who is also staff, on the editor role (see
+# users.yml). Written first so it is the oldest record, as the user is.
 - id: {{ id "staff_member_admin_staff" }}
   user_id: {{ id "user_admin_staff" }}
   role_id: {{ id "staff_role_editor" }}
   allowed_locales: '{ru,en}'
   created_at: '2026-07-26 20:50:44'
   updated_at: '2026-07-26 20:50:44'
+
+- id: {{ id "staff_member_staff_editor" }}
+  user_id: {{ id "user_staff_editor" }}
+  role_id: {{ id "staff_role_editor" }}
+  allowed_locales: '{ru,en}'
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
