@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,6 +23,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
@@ -74,7 +76,8 @@ func newLoaderWithCompletion(
 	// Promotion re-evaluates completion and never runs a submission, so the
 	// loader's progress module needs no exercise runner.
 	tracker := progress.New(db, txStore, publisher, progress.UnavailableRunner{})
-	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker)
+	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker,
+		courseloader.WithClock(func() time.Time { return testsupport.Today }))
 }
 
 // newLoader builds a loader that fetches the committed fixture course.
@@ -89,8 +92,8 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 
 	// Arrange: a course with a freshly-created version, the state the loader
 	// requires. (Its own writes roll back with the test transaction.)
-	course := db.Course.Create().SetSlug("loader-test-lang").SetName("Loader Test").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	course := db.Course.GetX(ctx, fixtures.ID("course_loadable"))
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	loader := newLoader(t, db, txStore)
 	require.NoError(t, loader.Run(ctx, version.ID))
@@ -120,7 +123,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	lvs := db.CourseLessonVersion.Query().Where(courselessonversion.CourseVersionID(version.ID)).AllX(ctx)
 	require.Len(t, lvs, 1)
 	assert.Equal(t, 1, *lvs[0].NaturalOrder)
-	assert.Equal(t, "/exercises-loader-test-lang/modules/10-basics/10-hello-world", derefStr(lvs[0].PathToCode))
+	assert.Equal(t, "/exercises-loadable/modules/10-basics/10-hello-world", derefStr(lvs[0].PathToCode))
 	assert.Contains(t, derefStr(lvs[0].OriginalCode), "Hello, World!")
 
 	// Three lesson infos (en/es/ru); theory images rewritten to /storage URLs.
@@ -136,13 +139,9 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.Create().SetSlug("loader-skip-lang").SetName("Skip").SaveX(ctx)
+	course := db.Course.GetX(ctx, fixtures.ID("course_loadable"))
 	// A version already 'built' must not be rebuilt or have its result overwritten.
-	version := db.CourseVersion.Create().
-		SetCourseID(course.ID).
-		SetState("built").
-		SetResult("Success").
-		SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_built"))
 
 	loader := newLoaderWith(t, db, txStore, unreachableFetcher())
 	require.NoError(t, loader.Run(ctx, version.ID))
@@ -155,21 +154,42 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 	assert.Equal(t, 0, n)
 }
 
+// A version's job can reach the worker twice. The first run claims the version
+// and builds it; the second finds it no longer `created`, so it does not touch
+// git, rebuild, or overwrite the result.
+func TestLoaderBuildsAVersionOnceWhenItsJobIsDeliveredTwice(t *testing.T) {
+	db, txStore := testsupport.NewClientWithTransactor(t)
+	ctx := context.Background()
+	id := fixtures.ID("version_loadable_created")
+
+	require.NoError(t, newLoader(t, db, txStore).Run(ctx, id))
+	built := db.CourseVersion.GetX(ctx, id)
+	require.Equal(t, "built", derefStr(built.State))
+
+	// A second delivery that reached git would fail: git is unreachable here.
+	require.NoError(t, newLoaderWith(t, db, txStore, unreachableFetcher()).Run(ctx, id))
+
+	again := db.CourseVersion.GetX(ctx, id)
+	assert.Equal(t, "built", derefStr(again.State))
+	assert.Equal(t, derefStr(built.Result), derefStr(again.Result))
+	assert.True(t, built.UpdatedAt.Equal(again.UpdatedAt), "the second delivery wrote nothing")
+}
+
 func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.Create().SetSlug("loader-rebuild-lang").SetName("Rebuild").SaveX(ctx)
+	course := db.Course.GetX(ctx, fixtures.ID("course_loadable"))
 	loader := newLoader(t, db, txStore)
 
 	// First build.
-	v1 := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	v1 := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 	require.NoError(t, loader.Run(ctx, v1.ID))
 	module1 := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).OnlyX(ctx)
 	lesson1 := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
-	v2 := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	v2 := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created_second"))
 	require.NoError(t, loader.Run(ctx, v2.ID))
 
 	modules := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
@@ -193,17 +213,17 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.Create().SetSlug("loader-fail-lang").SetName("Fail").SaveX(ctx)
+	course := db.Course.GetX(ctx, fixtures.ID("course_loadable"))
 
 	// v1 builds successfully and is promoted live.
-	v1 := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	v1 := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 	require.NoError(t, newLoader(t, db, txStore).Run(ctx, v1.ID))
 	course = db.Course.GetX(ctx, course.ID)
 	require.Equal(t, v1.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
 	badLoader := newLoaderWith(t, db, txStore, repoFetcher(t.TempDir()))
-	v2 := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	v2 := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created_second"))
 	require.Error(t, badLoader.Run(ctx, v2.ID))
 
 	// v2 is failed with the error recorded...
@@ -228,8 +248,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 	)
 	require.NoError(t, os.WriteFile(imagePath, []byte("<svg><script>alert(1)</script></svg>"), 0o644))
 
-	course := db.Course.Create().SetSlug("loader-invalid-image-lang").SetName("Invalid Image").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err := loader.Run(ctx, version.ID)
@@ -258,8 +277,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 	require.NoError(t, os.Remove(imagePath))
 	require.NoError(t, os.Symlink(externalImagePath, imagePath))
 
-	course := db.Course.Create().SetSlug("loader-image-escape-lang").SetName("Image Escape").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err = loader.Run(ctx, version.ID)
@@ -285,8 +303,7 @@ func TestLoaderUploadsTheoryImagesFromTheLessonAssetsDir(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644))
 
-	course := db.Course.Create().SetSlug("loader-lesson-assets-lang").SetName("Lesson Assets").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	require.NoError(t, newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID))
 
@@ -312,8 +329,7 @@ func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644))
 
-	course := db.Course.Create().SetSlug("loader-climb-lang").SetName("Climb").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	err = newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 

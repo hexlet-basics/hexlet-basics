@@ -28,7 +28,7 @@ func (l *Loader) ReapStuck(ctx context.Context) ([]*ent.CourseVersion, error) {
 		Where(
 			courseversion.State(stateBuilding),
 			// Inclusive bound, matching the legacy `updated_at: ..2.hours.ago` range.
-			courseversion.UpdatedAtLTE(time.Now().Add(-StuckBuildAfter)),
+			courseversion.UpdatedAtLTE(l.now().Add(-StuckBuildAfter)),
 		).
 		All(ctx)
 	if err != nil {

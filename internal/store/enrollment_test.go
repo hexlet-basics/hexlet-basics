@@ -28,11 +28,11 @@ func TestSecondEnrollmentForTheSamePairIsRejectedByTheDatabase(t *testing.T) {
 	client := testsupport.NewClient(t)
 	existing := firstEnrollmentIn(t, client, enrolledCourseSlug)
 
-	_, err := client.Enrollment.Create().
-		SetUserID(existing.UserID).
-		SetCourseID(existing.CourseID).
-		SetState("started").
-		Save(t.Context())
+	_, err := client.Enrollment.Create(). //nolint:forbidigo // the insert is the act: the constraint is what the test is about
+						SetUserID(existing.UserID).
+						SetCourseID(existing.CourseID).
+						SetState("started").
+						Save(t.Context())
 
 	require.Error(t, err)
 	assert.True(t, ent.IsConstraintError(err), "want a constraint error, got %v", err)
@@ -47,11 +47,11 @@ func TestSecondEnrollmentInAnotherCourseIsAccepted(t *testing.T) {
 		Where(course.SlugEQ(otherCourseSlug)).
 		OnlyX(t.Context())
 
-	created, err := client.Enrollment.Create().
-		SetUserID(existing.UserID).
-		SetCourseID(other.ID).
-		SetState("started").
-		Save(t.Context())
+	created, err := client.Enrollment.Create(). //nolint:forbidigo // the insert is the act: the constraint is what the test is about
+							SetUserID(existing.UserID).
+							SetCourseID(other.ID).
+							SetState("started").
+							Save(t.Context())
 
 	require.NoError(t, err)
 	assert.Equal(t, other.ID, created.CourseID)

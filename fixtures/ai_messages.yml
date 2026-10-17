@@ -1,8 +1,9 @@
 # Fixtures for `ai_messages`, HAND-CURATED. The admin messages list maps id,
 # role, content, user_id (null on assistant replies), token counts and the
-# course/lesson identity enriched through the chat's lesson progress. 8001/8002
-# are a user question + assistant reply in the hello-world lesson chat (7001); 8003
-# is a lone question in the variables lesson chat (7002).
+# course/lesson identity enriched through the chat's lesson progress. The first
+# two are a user question + assistant reply in user_admin_learner's hello-world
+# lesson chat; the third is a lone question in user_staff_editor's variables
+# lesson chat.
 - id: {{ id "ai_message_admin_learner_javascript_hello_world_user" }}
   ai_chat_id: {{ id "ai_chat_admin_learner_javascript_hello_world" }}
   role: user

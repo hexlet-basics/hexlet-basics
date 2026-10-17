@@ -3,7 +3,7 @@
 # version in language_lesson_versions.yml already points at.
 #
 # The ids deliberately disagree with `order` on JavaScript's current version
-# (965227298): id 2 is ordered last. The feed orders its plan by `order`, and
+# (version_javascript_current): the strings module is ordered last. The feed orders its plan by `order`, and
 # this is what lets the golden file prove it.
 - id: {{ id "module_version_javascript_10_basics_current" }}
   language_id: {{ id "course_javascript" }}
@@ -33,7 +33,7 @@
   order: 10
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-# JavaScript's retired version (545350298) had its own snapshot of module 1;
+# JavaScript's retired version (version_javascript_retired) had its own snapshot of module 1;
 # it has no infos, so no read picks it up.
 - id: {{ id "module_version_javascript_10_basics_retired" }}
   language_id: {{ id "course_javascript" }}
@@ -129,3 +129,24 @@
   order: 10
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+- id: {{ id "module_version_rebuildable_basics_current" }}
+  language_id: {{ id "course_rebuildable" }}
+  language_version_id: {{ id "version_rebuildable_current" }}
+  module_id: {{ id "module_rebuildable_basics" }}
+  order: 10
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "module_version_null_state_basics_current" }}
+  language_id: {{ id "course_null_state" }}
+  language_version_id: {{ id "version_null_state_current" }}
+  module_id: {{ id "module_null_state_basics" }}
+  order: 10
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "module_version_shrinkable_basics_current" }}
+  language_id: {{ id "course_shrinkable" }}
+  language_version_id: {{ id "version_shrinkable_current" }}
+  module_id: {{ id "module_shrinkable_basics" }}
+  order: 10
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

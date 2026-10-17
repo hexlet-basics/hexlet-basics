@@ -1,5 +1,5 @@
 # Fixtures for `language_category_items`, HAND-CURATED (legacy had a single
-# row). Everything hangs off programming-ru (948254963) so one category page
+# row). Everything hangs off category_programming_ru so one category page
 # has several courses: four published, listed ru pages whose courses differ in
 # `order` (three share one, to exercise the tie-breaker), plus an en page the
 # ru page must leave out. The javascript pages stay out: a test deletes them,

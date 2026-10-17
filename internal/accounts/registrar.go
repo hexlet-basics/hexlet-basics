@@ -39,8 +39,21 @@ type Registrar struct {
 }
 
 // NewRegistrar builds the production account registrar.
-func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher) *Registrar {
-	return &Registrar{store: txStore, publisher: publisher, now: time.Now}
+func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher, opts ...RegistrarOption) *Registrar {
+	registrar := &Registrar{store: txStore, publisher: publisher, now: time.Now}
+	for _, opt := range opts {
+		opt(registrar)
+	}
+	return registrar
+}
+
+// RegistrarOption adjusts a Registrar as it is built.
+type RegistrarOption func(*Registrar)
+
+// WithClock makes the registrar stamp the sign-up fact with now instead of the
+// wall clock, so a test can assert on the exact time the fact carries.
+func WithClock(now func() time.Time) RegistrarOption {
+	return func(r *Registrar) { r.now = now }
 }
 
 // Register creates the user and publishes the corresponding domain fact in the

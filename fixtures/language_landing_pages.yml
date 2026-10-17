@@ -1,6 +1,6 @@
-# Fixtures for `language_landing_pages`, exported from the legacy Rails fixtures by
-# `make fixtures-import`. Loaded by testfixtures inside each test's rollback
-# transaction. Regenerate; do not hand-tune unless you stop regenerating.
+# Fixtures for `language_landing_pages`, exported once from the legacy Rails fixtures and then
+# given labels (internal/fixtures): edit it by hand, `mise run fixtures:import`
+# skips a file that exists.
 - id: {{ id "landing_page_go_ru" }}
   created_at: '2026-07-26 20:50:29'
   description: Изучите язык программирования в интерактивной онлайн-среде. Десятки

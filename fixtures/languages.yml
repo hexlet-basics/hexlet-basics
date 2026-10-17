@@ -1,6 +1,6 @@
-# Fixtures for `languages`, exported from the legacy Rails fixtures by
-# `make fixtures-import`. Loaded by testfixtures inside each test's rollback
-# transaction. Regenerate; do not hand-tune unless you stop regenerating.
+# Fixtures for `languages`, exported once from the legacy Rails fixtures and then
+# given labels (internal/fixtures): edit it by hand, `mise run fixtures:import`
+# skips a file that exists.
 - id: {{ id "course_javascript" }}
   category_id:
   created_at: '2026-07-26 20:50:29'
@@ -316,3 +316,66 @@
   slug: bare
   created_at: '2026-07-26 20:50:41'
   updated_at: '2026-07-26 20:50:41'
+
+# A course nothing has been built for: versions of every state hang off it, for the loader to build, skip and reap. The harness clock reads testsupport.Today (2026-07-27 12:00 UTC); the reaper gives up on a build idle for two hours.
+- id: {{ id "course_loadable" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  name: Loadable
+  order: 10
+  progress: completed
+  slug: loadable
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# A course whose slug was never set.
+- id: {{ id "course_loadable_without_slug" }}
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  name: No slug
+  order: 10
+  progress: completed
+  slug: 
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# A course the loader has built once: the module basics and the lessons hello-world.
+- id: {{ id "course_rebuildable" }}
+  current_version_id: {{ id "version_rebuildable_current" }}
+  learn_as: second_language
+  lessons_count: 1
+  members_count: 0
+  name: Rebuildable
+  order: 10
+  progress: completed
+  slug: rebuildable
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# A course the loader has built once: the module basics and the lessons hello-world.
+- id: {{ id "course_null_state" }}
+  current_version_id: {{ id "version_null_state_current" }}
+  learn_as: second_language
+  lessons_count: 1
+  members_count: 0
+  name: Null_state
+  order: 10
+  progress: completed
+  slug: null-state
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# A course the loader has built once: the module basics and the lessons hello-world, second-lesson.
+- id: {{ id "course_shrinkable" }}
+  current_version_id: {{ id "version_shrinkable_current" }}
+  learn_as: second_language
+  lessons_count: 2
+  members_count: 0
+  name: Shrinkable
+  order: 10
+  progress: completed
+  slug: shrinkable
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

@@ -244,7 +244,8 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if !raced && m.Op().Is(ent.OpCreate) {
 				raced = true
-				r.db.Enrollment.Create().SetUserID(blankUser.UserID).SetCourseID(courseID).SetState(progress.StateStarted).ExecX(ctx)
+				r.db.Enrollment.Create(). //nolint:forbidigo // the competing request that wins the race is the act
+								SetUserID(blankUser.UserID).SetCourseID(courseID).SetState(progress.StateStarted).ExecX(ctx)
 			}
 			return next.Mutate(ctx, m)
 		})
@@ -270,9 +271,9 @@ func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if !raced && m.Op().Is(ent.OpCreate) {
 				raced = true
-				r.db.LessonProgress.Create().
-					SetUserID(adminLearner.UserID).SetCourseID(courseID).SetEnrollmentID(enrolled.ID).
-					SetLessonID(second.ID).SetState(progress.StateStarted).ExecX(ctx)
+				r.db.LessonProgress.Create(). //nolint:forbidigo // the competing request that wins the race is the act
+								SetUserID(adminLearner.UserID).SetCourseID(courseID).SetEnrollmentID(enrolled.ID).
+								SetLessonID(second.ID).SetState(progress.StateStarted).ExecX(ctx)
 			}
 			return next.Mutate(ctx, m)
 		})

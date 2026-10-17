@@ -16,16 +16,29 @@ linters:
       forbid:
         # Persistence goes through ent builders; raw SQL in production code
         # splits the package between two idioms. Tests and testsupport (savepoints,
-        # cleanup of non-ent tables) are exempt below.
+        # reading the outbox) are exempt below.
         - pattern: '^.*\.(ExecContext|QueryContext|QueryRowContext)$'
           msg: use ent query builders instead of raw SQL
+        # The next two apply to tests only (see exclusions). A test arranges its
+        # data from fixtures/ and never makes a row to act on: creating one is the
+        # act of the code under test, so a test that does it says why with a nolint.
+        - pattern: '^.*\.(Create|CreateBulk)$'
+          msg: creating rows in a test is not arrange; add the case to fixtures/ and look it up with fixtures.ID, or say with a nolint why the creation is the act under test
+        - pattern: '^(sql\.Open|store\.NewDB)$'
+          msg: creating rows in a test is not arrange; a test does not open its own connection, testsupport hands out one that is rolled back with the test
       analyze-types: false
   exclusions:
     paths:
       - internal/testsupport
     rules:
+      # Raw SQL stays available to tests (reading the outbox).
       - path: _test\.go
         linters: [forbidigo]
+        text: use ent query builders
+      # The test-only rules above do not apply to production code.
+      - path-except: _test\.go
+        linters: [forbidigo]
+        text: creating rows in a test
       # The handler tests read responses from httptest.ResponseRecorder, whose
       # body is an in-memory buffer: there is nothing to close.
       - path: internal/handlers/.*_test\.go

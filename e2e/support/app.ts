@@ -13,7 +13,7 @@ export const admin = { email: "admin-learner@example.com", name: "Admin Learner"
 export const learner = { email: "staff-editor@example.com", name: "Staff Editor" };
 
 /** A fixture user with neither the admin flag nor a staff record. */
-export const outsider = { email: "blank-user@example.com", name: "Carol Clark" };
+export const outsider = { email: "blank-user@example.com", name: "Blank User" };
 
 /**
  * Opens a page and waits for it to settle. The server renders every page, but

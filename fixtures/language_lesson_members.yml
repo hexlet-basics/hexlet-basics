@@ -2,7 +2,7 @@
 # the Go admin read tests. Each row's owner is a real Enrollment from
 # language_members.yml and a real user from users.yml, so a test that inserts
 # alongside them does not trip the baseline's FKs. Course = JavaScript
-# (82481401); lessons from language_lessons.yml.
+# (course_javascript); lessons from language_lessons.yml.
 - id: {{ id "lesson_progress_admin_learner_javascript_hello_world" }}
   user_id: {{ id "user_admin_learner" }}
   language_id: {{ id "course_javascript" }}
@@ -127,3 +127,27 @@
   state: finished
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_progress_learner_finished_rebuildable_rebuildable_hello_world" }}
+  user_id: {{ id "user_learner_finished_rebuildable" }}
+  language_id: {{ id "course_rebuildable" }}
+  language_member_id: {{ id "enrollment_learner_finished_rebuildable_rebuildable" }}
+  lesson_id: {{ id "lesson_rebuildable_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "lesson_progress_learner_null_state_null_state_hello_world" }}
+  user_id: {{ id "user_learner_null_state" }}
+  language_id: {{ id "course_null_state" }}
+  language_member_id: {{ id "enrollment_learner_null_state_null_state" }}
+  lesson_id: {{ id "lesson_null_state_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "lesson_progress_learner_finished_kept_lesson_shrinkable_hello_world" }}
+  user_id: {{ id "user_learner_finished_kept_lesson" }}
+  language_id: {{ id "course_shrinkable" }}
+  language_member_id: {{ id "enrollment_learner_finished_kept_lesson_shrinkable" }}
+  lesson_id: {{ id "lesson_shrinkable_hello_world" }}
+  state: finished
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

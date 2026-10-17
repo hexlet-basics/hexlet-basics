@@ -35,7 +35,7 @@ func newRiver(t *testing.T) *river.Client[*sql.Tx] {
 
 func newRiverWith(t *testing.T, workers *river.Workers) *river.Client[*sql.Tx] {
 	t.Helper()
-	pool, err := store.NewDB(testdb.DatabaseURL())
+	pool, err := store.NewDB(testdb.DatabaseURL()) //nolint:forbidigo // a lifecycle test: a real River client needs a pool, and nothing is written
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = pool.Close() })
 

@@ -1,8 +1,8 @@
 # Fixtures for `book_requests`, HAND-CURATED from the legacy Rails fixture (its
 # `full` user has a requested book). `make fixtures-import` is non-destructive
-# and skips existing files, so this survives re-imports. Bob holds the request:
-# Alice is the harness user, and the request and download tests need her
-# without one. Loaded by testfixtures inside each test's rollback transaction.
+# and skips existing files, so this survives re-imports. user_staff_editor holds the
+# request: user_admin_learner is the harness user, and the request and download
+# tests need them without one. Loaded by testfixtures inside each test's rollback transaction.
 - id: {{ id "book_request_staff_editor" }}
   user_id: {{ id "user_staff_editor" }}
   state: requested

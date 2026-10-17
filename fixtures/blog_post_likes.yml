@@ -1,5 +1,6 @@
-# Fixtures for `blog_post_likes`. Two likes on post 6001 (likesCount = 2); post
-# 6002 has none (likesCount = 0). user_id points at users.yml.
+# Fixtures for `blog_post_likes`. Two likes on blog_post_hello_world (likesCount
+# = 2); blog_post_second_post has none (likesCount = 0). user_id points at
+# users.yml.
 - id: {{ id "blog_post_like_hello_world_admin_learner" }}
   blog_post_id: {{ id "blog_post_hello_world" }}
   user_id: {{ id "user_admin_learner" }}

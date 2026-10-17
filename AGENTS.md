@@ -188,10 +188,36 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   lesson code (that needs an environment the stack lacks).
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
-- **Fixtures** in `fixtures/` are the starting data (converted from the legacy
-  Rails set via `mise run fixtures:import`, which borrows the Rails runtime). Their
-  ids are legacy crc32 values, so **assert on business facts (slug, order),
-  never on raw ids** — see `courses_test.go` for the pattern.
+- **A test never creates the data it arranges: it reads it from `fixtures/`.**
+  Every row there is named for the case it exists for, with a label:
+  `{{ id "user_removed" }}` in the YAML (primary keys and references alike), and
+  `fixtures.ID("user_removed")` (`fixtures.ID32` for the contract's int32) in a
+  test. `NewHarnessAs(t, "user_learner_with_a_gap")` signs a request in as that
+  user. Ids count up in the order rows are written (the application reads
+  "oldest first" off the id, so write older rows first); a label no row defines
+  panics, in a test and in the YAML. A case a test needs and no row has becomes a
+  new row, with a comment above it saying what it is for, never an
+  `.Create()` in the test: `forbidigo` rejects `.Create()`, `.CreateBulk()`,
+  `sql.Open` and `store.NewDB` in `_test.go`, and a test whose creation is the
+  act under test (a sign-up, a concurrent request that wins a race, a database
+  constraint) says so with a `//nolint:forbidigo // why`. Flipping one flag on a
+  fixture row (`admin=false`, `ClearCurrentVersionID`) or deleting a row is fine;
+  a state two tests share is a row of its own. Do not assert how many rows a
+  table holds (a new fixture breaks that) or a raw id; count the rows you start
+  from, and assert on business facts (slug, order, label). A test that depends on
+  today's date does not read the wall clock: the harness's clock is
+  `testsupport.Today` (`assistant.WithClock`, `courseloader.WithClock`,
+  `accounts.WithClock`) and the fixtures are written relative to it.
+  The fixtures were exported once from the legacy Rails set and have been edited
+  by hand since; `mise run fixtures:import` skips every file that exists, and
+  `mise run db:fixtures` and the e2e database load them through `cmd/fixtures`,
+  the same loader the test containers use.
+- A test owns no connection and cleans nothing up: it gets a transaction that is
+  rolled back (`testsupport.NewClient*`, `NewHarness*`), the way a Rails test does.
+  Jobs are worked in it with `rivertest.Worker` (`jobs.<Kind>Worker`), and what
+  was queued or published is read back through the same transaction
+  (`rivertest.RequireInsertedTx`, `testsupport.PublishedEvents`). Nothing runs a
+  live River client or Watermill router against the shared database.
 - Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
   explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
   tests, and builds a `Server` through `testsupport`.

@@ -1,6 +1,6 @@
-# Fixtures for `language_versions`, exported from the legacy Rails fixtures by
-# `make fixtures-import`. Loaded by testfixtures inside each test's rollback
-# transaction. Regenerate; do not hand-tune unless you stop regenerating.
+# Fixtures for `language_versions`, exported once from the legacy Rails fixtures and then
+# given labels (internal/fixtures): edit it by hand, `mise run fixtures:import`
+# skips a file that exists.
 - id: {{ id "version_ruby_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-ruby
@@ -221,3 +221,94 @@
   state: ready
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+# Freshly created: the state the loader builds.
+- id: {{ id "version_loadable_created" }}
+  language_id: {{ id "course_loadable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# A later freshly created version, for a rebuild.
+- id: {{ id "version_loadable_created_second" }}
+  language_id: {{ id "course_loadable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# A third, for a second rebuild.
+- id: {{ id "version_loadable_created_third" }}
+  language_id: {{ id "course_loadable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# Already built, long ago: it must not be built again nor have its result overwritten.
+- id: {{ id "version_loadable_built" }}
+  language_id: {{ id "course_loadable" }}
+  state: built
+  result: Success
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-27 09:00:00'
+# Building for three hours: the worker is gone, so the reaper fails it.
+- id: {{ id "version_loadable_stuck" }}
+  language_id: {{ id "course_loadable" }}
+  state: building
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-27 09:00:00'
+# Building for one hour: still within the two the reaper allows.
+- id: {{ id "version_loadable_building" }}
+  language_id: {{ id "course_loadable" }}
+  state: building
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-27 11:00:00'
+# Created three hours ago and never picked up: waiting is not building, the reaper leaves it.
+- id: {{ id "version_loadable_queued" }}
+  language_id: {{ id "course_loadable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-27 09:00:00'
+# Freshly created, for a course that has no slug: the loader cannot name the build.
+- id: {{ id "version_loadable_without_slug_created" }}
+  language_id: {{ id "course_loadable_without_slug" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "version_rebuildable_current" }}
+  language_id: {{ id "course_rebuildable" }}
+  state: built
+  result: Success
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# The version promoted next.
+- id: {{ id "version_rebuildable_created_second" }}
+  language_id: {{ id "course_rebuildable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# And the one after.
+- id: {{ id "version_rebuildable_created_third" }}
+  language_id: {{ id "course_rebuildable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "version_null_state_current" }}
+  language_id: {{ id "course_null_state" }}
+  state: built
+  result: Success
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# The version promoted next.
+- id: {{ id "version_null_state_created_second" }}
+  language_id: {{ id "course_null_state" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "version_shrinkable_current" }}
+  language_id: {{ id "course_shrinkable" }}
+  state: built
+  result: Success
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+# The version that drops the second lesson.
+- id: {{ id "version_shrinkable_created_next" }}
+  language_id: {{ id "course_shrinkable" }}
+  state: created
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

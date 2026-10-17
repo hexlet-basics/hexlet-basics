@@ -1,6 +1,6 @@
 # Fixtures for `language_category_qna_items`, HAND-CURATED. language_category_id
-# points at categories from language_categories.yml (272447109=layouting-ru).
-# testfixtures disables referential integrity during load. Two items under one
+# points at categories from language_categories.yml (category_layouting_ru).
+# Two items under one
 # category plus one under another, to prove the nested list scopes by parent.
 - id: {{ id "category_qna_layouting_ru" }}
   language_category_id: {{ id "category_layouting_ru" }}

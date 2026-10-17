@@ -1,13 +1,12 @@
-package accounts
+package accounts_test
 
 import (
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log/slog"
-	"strings"
+	"strconv"
 	"testing"
 	"time"
 
@@ -15,51 +14,41 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/ids"
-	"hexletbasics/internal/store"
-	"hexletbasics/internal/testsupport/testdb"
+	"hexletbasics/internal/testsupport"
 )
 
+const newUserEmail = "new-sign-up@example.com"
+
 func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
-	db := testdb.Open(t)
-	txStore := store.New(db)
-	logger := slog.New(slog.DiscardHandler)
-	registrar := NewRegistrar(txStore, events.NewPublisher(txStore, logger))
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	occurredAt := time.Date(2026, time.July, 29, 10, 11, 12, 0, time.UTC)
-	registrar.now = func() time.Time { return occurredAt }
-	email := strings.ToLower(fmt.Sprintf("watermill-%s@example.com", ids.New()))
+	registrar := accounts.NewRegistrar(txStore, events.NewPublisher(txStore, slog.New(slog.DiscardHandler)),
+		accounts.WithClock(func() time.Time { return occurredAt }))
 	firstName := "Ada"
 
-	u, err := registrar.Register(t.Context(), Registration{
-		Email: email, Password: "secret", FirstName: &firstName, Locale: "ru",
+	u, err := registrar.Register(t.Context(), accounts.Registration{
+		Email: newUserEmail, Password: "secret", FirstName: &firstName, Locale: "ru",
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() {
-		_, _ = db.ExecContext(context.Background(),
-			`DELETE FROM watermill_domain_events WHERE payload->>'user_id' = $1`,
-			fmt.Sprint(u.ID),
-		)
-		_, _ = db.ExecContext(context.Background(), `DELETE FROM users WHERE id = $1`, u.ID)
-	})
 
-	entClient := store.NewClient(db)
-	saved, err := entClient.User.Query().Where(user.ID(u.ID)).Only(t.Context())
+	saved, err := db.User.Query().Where(user.ID(u.ID)).Only(t.Context())
 	require.NoError(t, err)
-	assert.Equal(t, email, *saved.Email)
+	assert.Equal(t, newUserEmail, *saved.Email)
 
 	var payloadJSON, metadataJSON []byte
-	err = db.QueryRowContext(t.Context(), `
+	err = tx.QueryRowContext(t.Context(), `
 		SELECT payload, metadata
 		FROM watermill_domain_events
 		WHERE payload->>'user_id' = $1
-	`, fmt.Sprint(u.ID)).Scan(&payloadJSON, &metadataJSON)
+	`, strconv.Itoa(u.ID)).Scan(&payloadJSON, &metadataJSON)
 	require.NoError(t, err)
 
 	var payload events.UserSignedUp
 	require.NoError(t, json.Unmarshal(payloadJSON, &payload))
 	assert.Equal(t, u.ID, payload.UserID)
-	assert.Equal(t, email, *payload.Email)
+	assert.Equal(t, newUserEmail, *payload.Email)
 	assert.Equal(t, firstName, *payload.FirstName)
 	assert.Equal(t, "ru", payload.Locale)
 	assert.Equal(t, occurredAt, payload.OccurredAt)
@@ -77,27 +66,22 @@ func (failingPublisher) Publish(context.Context, *sql.Tx, events.Event) error {
 }
 
 func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
-	db := testdb.Open(t)
-	registrar := NewRegistrar(store.New(db), failingPublisher{})
-	email := fmt.Sprintf("watermill-rollback-%s@example.com", ids.New())
+	db, _, txStore := testsupport.NewClientWithTxAndTransactor(t)
+	registrar := accounts.NewRegistrar(txStore, failingPublisher{})
 
-	_, err := registrar.Register(t.Context(), Registration{
-		Email: email, Password: "secret", Locale: "en",
+	_, err := registrar.Register(t.Context(), accounts.Registration{
+		Email: newUserEmail, Password: "secret", Locale: "en",
 	})
 	require.ErrorContains(t, err, "outbox unavailable")
 
-	var users int
-	require.NoError(t, db.QueryRowContext(t.Context(),
-		`SELECT count(*) FROM users WHERE email = $1`, email,
-	).Scan(&users))
-	assert.Zero(t, users)
+	assert.False(t, db.User.Query().Where(user.Email(newUserEmail)).ExistX(t.Context()), "no user is left behind")
 }
 
 func TestRegistrarRejectsPasswordBeforeOpeningTransaction(t *testing.T) {
-	registrar := NewRegistrar(nil, nil)
-	_, err := registrar.Register(t.Context(), Registration{
+	registrar := accounts.NewRegistrar(nil, nil)
+	_, err := registrar.Register(t.Context(), accounts.Registration{
 		Email:    "long-password@example.com",
 		Password: string(make([]byte, 73)),
 	})
-	require.ErrorIs(t, err, ErrPasswordProcessing)
+	require.ErrorIs(t, err, accounts.ErrPasswordProcessing)
 }

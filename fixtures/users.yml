@@ -188,3 +188,39 @@
   admin: false
   created_at: '2026-07-26 20:50:42'
   updated_at: '2026-07-26 20:50:42'
+
+# Enrolled in the rebuildable course with its only lesson finished: promoting a version with that lesson completes them.
+- id: {{ id "user_learner_finished_rebuildable" }}
+  email: learner-finished-rebuildable@example.com
+  first_name: Loader
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# Enrolled in the rebuildable course with nothing finished: a promotion leaves them in progress.
+- id: {{ id "user_learner_unfinished_rebuildable" }}
+  email: learner-unfinished-rebuildable@example.com
+  first_name: Loader
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# Enrolled with a NULL state (rows older than the state machine have it) and the only lesson finished: they must be able to complete.
+- id: {{ id "user_learner_null_state" }}
+  email: learner-null-state@example.com
+  first_name: Loader
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+
+# Finished the lesson the next version keeps, not the one it drops: the promotion completes them.
+- id: {{ id "user_learner_finished_kept_lesson" }}
+  email: learner-finished-kept-lesson@example.com
+  first_name: Loader
+  last_name: Learner
+  admin: false
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

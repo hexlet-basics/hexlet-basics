@@ -1,7 +1,7 @@
 # Fixtures for `language_landing_page_qna_items`, HAND-CURATED.
 # language_landing_page_id points at landing pages from
-# language_landing_pages.yml (59175011=go-ru, 88212034=ruby-ru). testfixtures
-# disables referential integrity during load. Two items under one landing page
+# language_landing_pages.yml (landing_page_go_ru, landing_page_ruby_ru). Two
+# items under one landing page
 # plus one under another, to prove the nested list scopes by parent.
 - id: {{ id "landing_page_qna_go_ru" }}
   language_landing_page_id: {{ id "landing_page_go_ru" }}

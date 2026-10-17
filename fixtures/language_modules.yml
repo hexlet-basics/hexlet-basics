@@ -5,8 +5,8 @@
 # fill descriptions with Faker, which would change the Yandex feed golden file
 # on every re-export.
 #
-# JavaScript (82481401) gets three modules so its feed offer is emitted; Ruby
-# (207281424) gets one so the feed's "fewer than three modules" skip has a
+# JavaScript (course_javascript) gets three modules so its feed offer is emitted; Ruby
+# (course_ruby) gets one so the feed's "fewer than three modules" skip has a
 # course to skip. Slugs avoid `basics`, which lesson_progress_test seeds for
 # JavaScript at runtime under the (language_id, slug) unique index.
 - id: {{ id "module_javascript_10_basics" }}
@@ -124,3 +124,24 @@
   state: active
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+- id: {{ id "module_rebuildable_basics" }}
+  language_id: {{ id "course_rebuildable" }}
+  slug: basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "module_null_state_basics" }}
+  language_id: {{ id "course_null_state" }}
+  slug: basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "module_shrinkable_basics" }}
+  language_id: {{ id "course_shrinkable" }}
+  slug: basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

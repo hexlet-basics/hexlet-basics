@@ -12,7 +12,7 @@
 # order by. `language_version_id` is the COURSE version. The two id spaces overlap
 # by coincidence in these fixtures, so the difference is easy to miss.
 #
-# Visible in the lesson list (locale=en AND version=965227298, JS current):
+# Visible in the lesson list (locale=en AND version=version_javascript_current):
 - id: {{ id "lesson_version_info_javascript_strings_current_en" }}
   name: Strings
   description: Working with strings
@@ -67,7 +67,7 @@
       description: A name bound to a value
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
-# Excluded: not the current version (545350298 is a JS version, but not the
+# Excluded: not the current version (version_javascript_retired is a JS version, but not the
 # course's current_version_id) — must NOT appear in the lesson list.
 - id: {{ id "lesson_version_info_javascript_hello_world_retired_en" }}
   name: Old Hello

@@ -1,9 +1,8 @@
-# Fixtures for `staff_members`, HAND-CURATED. A single seed: bob (1002) as editor
-# (9001). Deliberately avoids carol (1003) and the moderator role (9002), which
+# Fixtures for `staff_members`, HAND-CURATED. A single seed: user_staff_editor as
+# staff_role_editor. Deliberately avoids user_blank and staff_role_moderator, which
 # the user/role delete tests remove — a staff_member FK child would otherwise
 # block those deletes. allowed_locales is a native pg text array, written here as
 # the Postgres array literal. user_id is unique (one staff record per user).
-# testfixtures disables referential integrity during load.
 - id: {{ id "staff_member_staff_editor" }}
   user_id: {{ id "user_staff_editor" }}
   role_id: {{ id "staff_role_editor" }}

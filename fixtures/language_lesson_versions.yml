@@ -9,15 +9,15 @@
 #
 # 2. `natural_order` on the CURRENT version's rows is the Position sequential
 #    progression gates on: 1..N across the whole course, in build order. The
-#    retired version (545350298) carries none — a Lesson only has a Position
+#    retired version (version_javascript_retired) carries none — a Lesson only has a Position
 #    relative to one Course Version.
 #
 # `path_to_code` is where the lesson's Makefile lives inside the exercise image.
 # The runner needs it; the course version supplies the image itself and the name
 # of the file the submitted code replaces.
 #
-# testfixtures disables FKs during load, so module_version_id parents need not
-# exist. Course = JavaScript (82481401), current version 965227298.
+# Course = JavaScript (course_javascript), current version
+# version_javascript_current.
 # Starter lessons for every other catalog course, so each course page offers Start/Continue.
 - id: {{ id "lesson_version_ruby_hello_world_ruby_current" }}
   language_id: {{ id "course_ruby" }}
@@ -382,3 +382,39 @@
   natural_order: 9
   created_at: '2026-07-26 20:50:40'
   updated_at: '2026-07-26 20:50:40'
+- id: {{ id "lesson_version_rebuildable_hello_world_current" }}
+  language_id: {{ id "course_rebuildable" }}
+  language_version_id: {{ id "version_rebuildable_current" }}
+  lesson_id: {{ id "lesson_rebuildable_hello_world" }}
+  module_version_id: {{ id "module_version_rebuildable_basics_current" }}
+  natural_order: 1
+  path_to_code: /exercises-rebuildable/modules/10-basics/10-hello-world
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "lesson_version_null_state_hello_world_current" }}
+  language_id: {{ id "course_null_state" }}
+  language_version_id: {{ id "version_null_state_current" }}
+  lesson_id: {{ id "lesson_null_state_hello_world" }}
+  module_version_id: {{ id "module_version_null_state_basics_current" }}
+  natural_order: 1
+  path_to_code: /exercises-null-state/modules/10-basics/10-hello-world
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "lesson_version_shrinkable_hello_world_current" }}
+  language_id: {{ id "course_shrinkable" }}
+  language_version_id: {{ id "version_shrinkable_current" }}
+  lesson_id: {{ id "lesson_shrinkable_hello_world" }}
+  module_version_id: {{ id "module_version_shrinkable_basics_current" }}
+  natural_order: 1
+  path_to_code: /exercises-shrinkable/modules/10-basics/10-hello-world
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'
+- id: {{ id "lesson_version_shrinkable_second_lesson_current" }}
+  language_id: {{ id "course_shrinkable" }}
+  language_version_id: {{ id "version_shrinkable_current" }}
+  lesson_id: {{ id "lesson_shrinkable_second_lesson" }}
+  module_version_id: {{ id "module_version_shrinkable_basics_current" }}
+  natural_order: 2
+  path_to_code: /exercises-shrinkable/modules/10-basics/20-second-lesson
+  created_at: '2026-07-26 20:50:43'
+  updated_at: '2026-07-26 20:50:43'

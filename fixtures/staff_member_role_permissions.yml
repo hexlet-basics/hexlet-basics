@@ -1,5 +1,5 @@
 # Fixtures for `staff_member_role_permissions`, HAND-CURATED. Two rows for the
-# "editor" role (9001): blog_posts (index) and banners (index + create). Unique
+# staff_role_editor role: blog_posts (index) and banners (index + create). Unique
 # on (role_id, resource). Resources are PermissionResource enum values.
 - id: {{ id "staff_permission_editor_blog_posts" }}
   role_id: {{ id "staff_role_editor" }}

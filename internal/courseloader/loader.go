@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"time"
 
 	"github.com/samber/lo"
 	"github.com/samber/oops"
@@ -52,6 +53,7 @@ type Loader struct {
 	assets     *assetstore.Store
 	fetcher    Fetcher
 	completion CompletionReevaluator
+	now        func() time.Time
 }
 
 // defaultEventLocale matches the translator's fallback: the loader runs in the
@@ -66,8 +68,23 @@ func NewLoader(
 	assets *assetstore.Store,
 	fetcher Fetcher,
 	completion CompletionReevaluator,
+	opts ...Option,
 ) *Loader {
-	return &Loader{db: db, txStore: txStore, assets: assets, fetcher: fetcher, completion: completion}
+	loader := &Loader{db: db, txStore: txStore, assets: assets, fetcher: fetcher, completion: completion, now: time.Now}
+	for _, opt := range opts {
+		opt(loader)
+	}
+	return loader
+}
+
+// Option adjusts a Loader as it is built.
+type Option func(*Loader)
+
+// WithClock makes the loader read the time from now instead of the wall clock.
+// The reaper judges a build stuck by how long ago it last changed, so a test
+// fixes the day its fixtures were written on and writes them hours before it.
+func WithClock(now func() time.Time) Option {
+	return func(l *Loader) { l.now = now }
 }
 
 // CompletionReevaluator is the progress seam invoked at promotion. Promoting a

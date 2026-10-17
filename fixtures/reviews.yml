@@ -1,8 +1,7 @@
 # Fixtures for `reviews`, HAND-CURATED. `language_id` points at courses from
-# languages.yml (ruby=207281424, 1c=322905520, both with a current version) and
+# languages.yml (course_ruby, course_1c, both with a current version) and
 # `user_id` at users.yml, so the embedded course/user render in tests.
-# testfixtures disables referential integrity during load and wraps each test in
-# a rollback transaction. first_name/last_name are the reviewer's own display
+# first_name/last_name are the reviewer's own display
 # name (distinct from the linked user).
 - id: {{ id "review_admin_learner_ruby_published" }}
   body: Отличный курс, всё понятно
@@ -26,7 +25,7 @@
   state: draft
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
-# The public list: a newer, unpinned ru review sorts above the pinned 5001
+# The public list: a newer, unpinned ru review sorts above the pinned first review
 # (legacy ordered by id only), a ru draft stays off it, and an en published
 # review is all the en list shows.
 - id: {{ id "review_staff_editor_1c_published" }}

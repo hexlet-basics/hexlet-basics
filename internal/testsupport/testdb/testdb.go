@@ -164,16 +164,3 @@ func setupFailed(err error) int {
 	fmt.Fprintf(os.Stderr, "test database setup failed: %v\n", err)
 	return 1
 }
-
-// Open opens a pool on the package's database and closes it when the test and
-// its other cleanups are done, so a cleanup registered afterwards can still
-// use it.
-func Open(t testing.TB) *sql.DB {
-	t.Helper()
-	db, err := sql.Open("pgx", DatabaseURL())
-	if err != nil {
-		t.Fatalf("open test database: %v", err)
-	}
-	t.Cleanup(func() { _ = db.Close() })
-	return db
-}

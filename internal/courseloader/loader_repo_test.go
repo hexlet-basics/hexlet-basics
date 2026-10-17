@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -51,8 +52,7 @@ func TestLoaderStoresTipsAndDefinitionsAndLeavesAnAbsentDescriptionNull(t *testi
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := t.Context()
 	repo := miniRepo(t, "name: Hello\ntips:\n  - first tip\ndefinitions:\n  - name: term\n    description: its meaning\n", "theory")
-	course := db.Course.Create().SetSlug("loader-tips-lang").SetName("Tips").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	require.NoError(t, newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID))
 
@@ -69,8 +69,7 @@ func TestLoaderRewritesEveryLocalTheoryImageAndLeavesTheRestAlone(t *testing.T) 
 	theory := "one ![a](./assets/a.png) two ![remote](https://example.com/r.png) " +
 		"three ![again](./assets/a.png) four ![ref][pic]\n\n[pic]: ./assets/a.png\n"
 	repo := miniRepo(t, "name: Hello\ndescription: d\n", theory)
-	course := db.Course.Create().SetSlug("loader-images-lang").SetName("Images").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	require.NoError(t, newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID))
 
@@ -87,8 +86,7 @@ func TestLoaderFailsTheBuildWhenATheoryImageIsMissing(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := t.Context()
 	repo := miniRepo(t, "name: Hello\n", "![gone](./assets/missing.png)")
-	course := db.Course.Create().SetSlug("loader-missing-image-lang").SetName("Missing").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	err := newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 
@@ -103,8 +101,8 @@ func TestLoaderFailsAVersionWhoseRepoCannotBeParsed(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := t.Context()
 	repo := t.TempDir() // no spec.yml
-	course := db.Course.Create().SetSlug("loader-unparsable-lang").SetName("Unparsable").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	course := db.Course.GetX(ctx, fixtures.ID("course_loadable"))
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_created"))
 
 	err := newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 
@@ -119,8 +117,7 @@ func TestLoaderFailsAVersionWhoseRepoCannotBeParsed(t *testing.T) {
 func TestLoaderFailsACourseWithoutASlug(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := t.Context()
-	course := db.Course.Create().SetName("No slug").SaveX(ctx)
-	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
+	version := db.CourseVersion.GetX(ctx, fixtures.ID("version_loadable_without_slug_created"))
 
 	err := newLoaderWith(t, db, txStore, unreachableFetcher()).Run(ctx, version.ID)
 

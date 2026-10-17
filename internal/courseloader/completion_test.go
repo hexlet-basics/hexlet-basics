@@ -2,17 +2,13 @@ package courseloader_test
 
 import (
 	"context"
-	"io/fs"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent"
-	"hexletbasics/ent/courselesson"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -23,27 +19,19 @@ func TestPromotionFinishesALearnerWhoHasCompletedTheNewVersion(t *testing.T) {
 	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
-
-	course := db.Course.Create().SetSlug("loader-completion-lang").SetName("Completion").SaveX(ctx)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
-
-	// A first build gives the course its lesson, which the learner finishes.
-	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, first.ID))
-
-	learner := enrollLearner(t, db, course.ID, seedLearner(t, db, "completion@example.com"))
-	lesson := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
-	finishLessonFor(t, db, learner, lesson)
+	// The rebuildable course was built once and has its only lesson finished by
+	// user_learner_finished_rebuildable.
+	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_finished_rebuildable_rebuildable"))
 
 	// Promoting a version with the same single lesson completes them.
-	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, second.ID))
+	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 
 	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
 	require.Len(t, finished, 1)
-	assert.Equal(t, "loader-completion-lang", finished[0].Slug)
+	assert.Equal(t, "rebuildable", finished[0].Slug)
 	assert.Equal(t, 1, finished[0].OccurrenceCount, "the learner's finished enrollments")
 }
 
@@ -53,21 +41,15 @@ func TestPromotionLeavesAnUnfinishedLearnerInProgress(t *testing.T) {
 	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
-
-	course := db.Course.Create().SetSlug("loader-incomplete-lang").SetName("Incomplete").SaveX(ctx)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
+	// Enrolled in the rebuildable course, nothing finished.
+	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_unfinished_rebuildable_rebuildable"))
 
-	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, first.ID))
-
-	// Enrolled, nothing finished.
-	learner := enrollLearner(t, db, course.ID, seedLearner(t, db, "incomplete@example.com"))
-
-	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, second.ID))
+	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
 
 	assert.Equal(t, "started", *db.Enrollment.GetX(ctx, learner.ID).State)
-	assert.Empty(t, testsupport.PublishedEvents[events.CourseFinished](t, services))
+	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
+	assert.Len(t, finished, 1, "only the learner who had finished the lesson is closed")
 }
 
 // A learner already finished is not selected again, so the fact is not
@@ -76,51 +58,14 @@ func TestPromotionDoesNotRepublishForAnAlreadyFinishedLearner(t *testing.T) {
 	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
-
-	course := db.Course.Create().SetSlug("loader-refinish-lang").SetName("Refinish").SaveX(ctx)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
-	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, first.ID))
-
-	learner := enrollLearner(t, db, course.ID, seedLearner(t, db, "refinish@example.com"))
-	lesson := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
-	finishLessonFor(t, db, learner, lesson)
-
-	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, second.ID))
+	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_second")))
 	require.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
 
-	third := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, third.ID))
+	require.NoError(t, loader.Run(ctx, fixtures.ID("version_rebuildable_created_third")))
 
 	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1, "the second promotion finds nothing to finish")
-}
-
-// seedLearner creates the account the enrollment's FK requires.
-func seedLearner(t *testing.T, db *ent.Client, email string) int {
-	t.Helper()
-	return db.User.Create().SetEmail(email).SaveX(t.Context()).ID
-}
-
-func enrollLearner(t *testing.T, db *ent.Client, courseID, userID int) *ent.Enrollment {
-	t.Helper()
-	return db.Enrollment.Create().
-		SetUserID(userID).
-		SetCourseID(courseID).
-		SetState("started").
-		SaveX(t.Context())
-}
-
-func finishLessonFor(t *testing.T, db *ent.Client, enrolled *ent.Enrollment, lesson *ent.CourseLesson) {
-	t.Helper()
-	db.LessonProgress.Create().
-		SetUserID(enrolled.UserID).
-		SetCourseID(enrolled.CourseID).
-		SetEnrollmentID(enrolled.ID).
-		SetLessonID(lesson.ID).
-		SetState("finished").
-		SaveX(t.Context())
 }
 
 // The scenario the ticket exists for: a build that REMOVES a lesson completes
@@ -131,31 +76,19 @@ func TestPromotionFinishesLearnersWhenAVersionDropsALesson(t *testing.T) {
 	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
+	// The shrinkable course was built with two lessons; the learner finished only
+	// the first.
+	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_finished_kept_lesson_shrinkable"))
+	require.Equal(t, "started", *learner.State, "still in progress while the second lesson exists")
 
-	course := db.Course.Create().SetSlug("loader-shrink-lang").SetName("Shrink").SaveX(ctx)
-
-	// First build carries two lessons; the learner finishes only the first.
-	wide := newLoaderWithCompletion(t, db, txStore, repoFetcher(twoLessonRepo(t)), services.Events)
-	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, wide.Run(ctx, first.ID))
-
-	learner := enrollLearner(t, db, course.ID, seedLearner(t, db, "shrink@example.com"))
-	kept := db.CourseLesson.Query().
-		Where(courselesson.CourseID(course.ID), courselesson.SlugEQ("hello-world")).
-		OnlyX(ctx)
-	finishLessonFor(t, db, learner, kept)
-
-	require.Equal(t, "started", *db.Enrollment.GetX(ctx, learner.ID).State,
-		"still in progress while the second lesson exists")
-
-	// The next build drops the second lesson, which completes them.
+	// The next build is the committed fixture course: one lesson, the second is dropped.
 	narrow := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
-	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, narrow.Run(ctx, second.ID))
+	require.NoError(t, narrow.Run(ctx, fixtures.ID("version_shrinkable_created_next")))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
-	require.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
-	assert.Equal(t, "loader-shrink-lang", testsupport.PublishedEvents[events.CourseFinished](t, services)[0].Slug)
+	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
+	require.Len(t, finished, 1)
+	assert.Equal(t, "shrinkable", finished[0].Slug)
 }
 
 // A learner whose state column is NULL is started — the legacy baseline allows
@@ -164,58 +97,12 @@ func TestPromotionFinishesALearnerWhoseStateIsNull(t *testing.T) {
 	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
 	services := testsupport.NewServices(t, tx, txStore)
-
-	course := db.Course.Create().SetSlug("loader-nullstate-lang").SetName("Null").SaveX(ctx)
 	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
+	learner := db.Enrollment.GetX(ctx, fixtures.ID("enrollment_learner_null_state_null_state"))
+	require.Nil(t, learner.State, "the fixture enrollment has no state")
 
-	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, first.ID))
-
-	learner := enrollLearner(t, db, course.ID, seedLearner(t, db, "nullstate@example.com"))
-	db.Enrollment.UpdateOneID(learner.ID).ClearState().ExecX(ctx)
-	lesson := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
-	finishLessonFor(t, db, learner, lesson)
-
-	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, loader.Run(ctx, second.ID))
+	require.NoError(t, loader.Run(ctx, fixtures.ID("version_null_state_created_second")))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
-}
-
-// twoLessonRepo is the committed fixture course with its single lesson
-// duplicated under a second slug, so a later build of the unmodified fixture
-// removes one.
-func twoLessonRepo(t *testing.T) string {
-	t.Helper()
-	dir := t.TempDir()
-	require.NoError(t, copyTree(fixtureRepo(t), dir))
-
-	basics := filepath.Join(dir, "modules", "10-basics")
-	require.NoError(t, copyTree(
-		filepath.Join(basics, "10-hello-world"),
-		filepath.Join(basics, "20-second-lesson"),
-	))
-	return dir
-}
-
-func copyTree(src, dst string) error {
-	return filepath.WalkDir(src, func(path string, entry fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, err := filepath.Rel(src, path)
-		if err != nil {
-			return err
-		}
-		target := filepath.Join(dst, rel)
-		if entry.IsDir() {
-			return os.MkdirAll(target, 0o755)
-		}
-		body, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		return os.WriteFile(target, body, 0o644)
-	})
 }

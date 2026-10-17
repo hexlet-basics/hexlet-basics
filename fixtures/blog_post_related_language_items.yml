@@ -1,6 +1,6 @@
-# Fixtures for `blog_post_related_language_items`, HAND-CURATED. Post 6001
+# Fixtures for `blog_post_related_language_items`, HAND-CURATED. blog_post_hello_world
 # promotes three courses (matching its related_language_items_count: 3 in
-# blog_posts.yml); post 6002 promotes none. Course ids are from languages.yml
+# blog_posts.yml); blog_post_second_post promotes none. Course ids are from languages.yml
 # (javascript / ruby / python).
 - id: {{ id "blog_post_related_hello_world_javascript" }}
   blog_post_id: {{ id "blog_post_hello_world" }}
