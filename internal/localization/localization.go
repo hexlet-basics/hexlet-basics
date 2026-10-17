@@ -67,11 +67,7 @@ func (t *Translator) Middleware(next http.Handler) http.Handler {
 		header := r.Header.Get("Accept-Language")
 		localizer := i18n.NewLocalizer(t.bundle, header)
 		ctx := context.WithValue(r.Context(), localizerContextKey{}, localizer)
-		tags, _, err := language.ParseAcceptLanguage(header)
-		if err != nil || len(tags) == 0 {
-			tags = []language.Tag{language.English}
-		}
-		tag, _, _ := t.matcher.Match(tags...)
+		tag, _ := language.MatchStrings(t.matcher, header)
 		base, _ := tag.Base()
 		ctx = context.WithValue(ctx, localeContextKey{}, base.String())
 		next.ServeHTTP(w, r.WithContext(ctx))
