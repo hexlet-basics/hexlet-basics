@@ -49,6 +49,40 @@ func (c *OpenAI) Complete(ctx context.Context, instructions, prompt string) (str
 	return resp.Choices[0].Message.Content, nil
 }
 
+// CompleteJSON runs a single system+user chat completion constrained to a JSON
+// Schema and returns the JSON text. Structured Outputs (strict) make the
+// provider guarantee the shape, so callers decode the answer directly instead
+// of fishing it out of prose or a Markdown code fence. The API requires the
+// schema's root to be an object.
+func (c *OpenAI) CompleteJSON(ctx context.Context, instructions, prompt, name string, schema any) (string, error) {
+	resp, err := c.client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Model: c.model,
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(instructions),
+			openai.UserMessage(prompt),
+		},
+		ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{
+			OfJSONSchema: &shared.ResponseFormatJSONSchemaParam{
+				JSONSchema: shared.ResponseFormatJSONSchemaJSONSchemaParam{
+					Name:   name,
+					Schema: schema,
+					Strict: openai.Bool(true),
+				},
+			},
+		},
+	})
+	if err != nil {
+		return "", oops.Wrapf(err, "openai structured completion")
+	}
+	if len(resp.Choices) == 0 {
+		return "", oops.Errorf("openai structured completion returned no choices")
+	}
+	if refusal := resp.Choices[0].Message.Refusal; refusal != "" {
+		return "", oops.Errorf("openai structured completion refused: %s", refusal)
+	}
+	return resp.Choices[0].Message.Content, nil
+}
+
 // Stream runs a chat completion over turns and hands each content delta to
 // onDelta as it arrives. The SDK's accumulator collects the final usage, which
 // the API only sends when asked for it (include_usage) — without it a streamed

@@ -27,15 +27,36 @@ import (
 // "..." suffix included — Rails `String#truncate(2000)`, which legacy used.
 const maxTextLength = 2000
 
-// suggestInstructions is the legacy job's system prompt, verbatim (including
-// the heredoc's trailing newline). The prompt language is intentional, not the
-// post's locale: it is what the legacy job sent for every post.
+// suggestInstructions is the legacy job's system prompt (including the
+// heredoc's trailing newline), except the output sentence: the answer is now
+// constrained by suggestSchema, so it asks for the `course_ids` field instead
+// of a bare array. The prompt language is intentional, not the post's locale:
+// it is what the legacy job sent for every post.
 const suggestInstructions = `Ты — ассистент, который помогает подобрать курсы.
 У тебя есть текст статьи блога и список курсов.
 Выбери пять курсов подходящих под тему статьи в порядке приоритета. Первый наиболее близок, последний - наименее.
-Верни результат в виде JSON-массива идентификаторов курсов (по полю ` + "`id`" + `) отсортированный по похожести.
+Верни идентификаторы курсов (по полю ` + "`id`" + `) в поле ` + "`course_ids`" + `, отсортированные по похожести.
 Первыми должны идти наиболее близкие курсы.
 `
+
+// suggestSchema is the structured shape of the model's answer. The API demands
+// an object at the root, hence the wrapper around the id list.
+var suggestSchema = map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		"course_ids": map[string]any{
+			"type":  "array",
+			"items": map[string]any{"type": "integer"},
+		},
+	},
+	"required":             []string{"course_ids"},
+	"additionalProperties": false,
+}
+
+// suggestion is the decoded answer.
+type suggestion struct {
+	CourseIDs []int `json:"course_ids"`
+}
 
 // Replacer swaps a post's related-courses set: the admin's hand-picked set and
 // the AI pick both go through it.
@@ -87,21 +108,22 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 	})
 }
 
-// Completer is the LLM seam (implemented by assistant.OpenAI; tests fake it).
-type Completer interface {
-	Complete(ctx context.Context, instructions, prompt string) (string, error)
+// JSONCompleter is the LLM seam (implemented by assistant.OpenAI; tests fake
+// it): one completion constrained to a JSON Schema, answered as JSON text.
+type JSONCompleter interface {
+	CompleteJSON(ctx context.Context, instructions, prompt, name string, schema any) (string, error)
 }
 
 // Suggester performs one suggestion job.
 type Suggester struct {
 	db       *ent.Client
 	replacer *Replacer
-	llm      Completer
+	llm      JSONCompleter
 	logger   *slog.Logger
 }
 
 // NewSuggester wires the worker-side dependencies.
-func NewSuggester(db *ent.Client, replacer *Replacer, llm Completer, logger *slog.Logger) *Suggester {
+func NewSuggester(db *ent.Client, replacer *Replacer, llm JSONCompleter, logger *slog.Logger) *Suggester {
 	return &Suggester{db: db, replacer: replacer, llm: llm, logger: logger}
 }
 
@@ -134,7 +156,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	if err != nil {
 		return err
 	}
-	answer, err := s.llm.Complete(ctx, suggestInstructions, prompt)
+	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema)
 	if err != nil {
 		return oops.Wrapf(err, "suggest related courses for post %d", blogPostID)
 	}
@@ -186,18 +208,11 @@ func suggestPrompt(richBody string, candidates []candidate) (string, error) {
 	return "Текст статьи: " + text + "\n\n" + "Список курсов: " + string(courses), nil
 }
 
-// parseCourseIDs reads the LLM's JSON id array, tolerating the Markdown code
-// fence (```json … ```) models like to wrap it in — the legacy
-// `gsub(/\A```(?:json)?|```\z/, "").strip`.
+// parseCourseIDs decodes the structured answer into the ordered id list.
 func parseCourseIDs(answer string) ([]int, error) {
-	raw := strings.TrimSpace(answer)
-	raw = strings.TrimPrefix(raw, "```json")
-	raw = strings.TrimPrefix(raw, "```")
-	raw = strings.TrimSuffix(raw, "```")
-
-	var ids []int
-	if err := json.Unmarshal([]byte(strings.TrimSpace(raw)), &ids); err != nil {
+	var parsed suggestion
+	if err := json.Unmarshal([]byte(answer), &parsed); err != nil {
 		return nil, oops.Wrapf(err, "decode course id list %q", answer)
 	}
-	return ids, nil
+	return parsed.CourseIDs, nil
 }

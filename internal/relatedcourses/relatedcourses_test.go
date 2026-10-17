@@ -19,13 +19,13 @@ import (
 )
 
 // answeringModel is the LLM boundary answering with a fixed text.
-func answeringModel(answer string) *testsupport.CompleterMock {
-	return &testsupport.CompleterMock{
-		CompleteFunc: func(context.Context, string, string) (string, error) { return answer, nil },
+func answeringModel(answer string) *testsupport.JSONCompleterMock {
+	return &testsupport.JSONCompleterMock{
+		CompleteJSONFunc: func(context.Context, string, string, string, any) (string, error) { return answer, nil },
 	}
 }
 
-func newSuggester(db *ent.Client, transactor store.Transactor, llm *testsupport.CompleterMock) *relatedcourses.Suggester {
+func newSuggester(db *ent.Client, transactor store.Transactor, llm *testsupport.JSONCompleterMock) *relatedcourses.Suggester {
 	return relatedcourses.NewSuggester(db, relatedcourses.NewReplacer(transactor), llm,
 		slog.New(slog.NewTextHandler(io.Discard, nil)))
 }
@@ -43,12 +43,12 @@ func relatedSlugs(t *testing.T, db *ent.Client, postID int) []string {
 	})
 }
 
-// Post 6001 is ru. The fenced answer names ruby, an invented id, the
+// Post 6001 is ru. The answer names ruby, an invented id, the
 // pre-course (a real course without a landing page, so never offered), python,
 // and ruby again: only the offered ids survive, once each, in the LLM's order.
 func TestSuggestRelatedCoursesReplacesTheSetInOrder(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	llm := answeringModel("```json\n[207281424, 999999, 596063838, 617920698, 207281424]\n```")
+	llm := answeringModel(`{"course_ids": [207281424, 999999, 596063838, 617920698, 207281424]}`)
 
 	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
@@ -78,7 +78,7 @@ func TestOfferedCandidatesAreThePublishedMainPagesOfTheLocale(t *testing.T) {
 // An empty answer leaves the fixture set (javascript, ruby, python) untouched.
 func TestSuggestRelatedCoursesKeepsTheSetOnAnEmptyAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	llm := answeringModel("```\n[]\n```")
+	llm := answeringModel(`{"course_ids": []}`)
 
 	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
@@ -86,7 +86,7 @@ func TestSuggestRelatedCoursesKeepsTheSetOnAnEmptyAnswer(t *testing.T) {
 	assert.Equal(t, 3, db.BlogPost.GetX(t.Context(), 6001).RelatedCourseItemsCount)
 }
 
-// An answer that is not a JSON id list fails the job, so River retries it, and
+// An answer that is not the structured object fails the job, so River retries it, and
 // nothing is written.
 func TestSuggestRelatedCoursesFailsOnAnUnreadableAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
@@ -101,8 +101,8 @@ func TestSuggestRelatedCoursesFailsOnAnUnreadableAnswer(t *testing.T) {
 // the post keeps the courses it has.
 func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	llm := &testsupport.CompleterMock{
-		CompleteFunc: func(context.Context, string, string) (string, error) {
+	llm := &testsupport.JSONCompleterMock{
+		CompleteJSONFunc: func(context.Context, string, string, string, any) (string, error) {
 			return "", errors.New("model unavailable")
 		},
 	}
@@ -118,7 +118,7 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 func TestSuggestRelatedCoursesFailsForAPostThatIsGone(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 
-	err := newSuggester(db, transactor, answeringModel("[207281424]")).SuggestRelatedCourses(t.Context(), 999999)
+	err := newSuggester(db, transactor, answeringModel(`{"course_ids": [207281424]}`)).SuggestRelatedCourses(t.Context(), 999999)
 
 	require.Error(t, err)
 	assert.Empty(t, relatedSlugs(t, db, 999999))
