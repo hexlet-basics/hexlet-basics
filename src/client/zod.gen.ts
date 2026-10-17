@@ -221,6 +221,14 @@ export const zCourseLessonReviewPage = z.object({
 });
 
 /**
+ * A course reduced to what a select needs.
+ */
+export const zCourseOption = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string()
+});
+
+/**
  * Publication/readiness state of a course.
  */
 export const zCourseReadiness = z.enum([
@@ -1479,6 +1487,11 @@ export const zAdminCreateCourseBody = zCourseInput;
  * The request has succeeded and a new resource has been created as a result.
  */
 export const zAdminCreateCourseResponse = zCourse;
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminListCourseOptionsResponse = z.array(zCourseOption);
 
 export const zAdminGetCoursePath = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })

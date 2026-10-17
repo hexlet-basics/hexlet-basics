@@ -46,6 +46,7 @@ const (
 	AdminListCourseLandingPagesOperation        OperationName = "AdminListCourseLandingPages"
 	AdminListCourseLessonReviewsOperation       OperationName = "AdminListCourseLessonReviews"
 	AdminListCourseLessonsOperation             OperationName = "AdminListCourseLessons"
+	AdminListCourseOptionsOperation             OperationName = "AdminListCourseOptions"
 	AdminListCoursesOperation                   OperationName = "AdminListCourses"
 	AdminListLandingPageQnaItemsOperation       OperationName = "AdminListLandingPageQnaItems"
 	AdminListLeadsOperation                     OperationName = "AdminListLeads"

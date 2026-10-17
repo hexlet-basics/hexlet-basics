@@ -579,6 +579,17 @@ export type CourseModule = {
 };
 
 /**
+ * A course reduced to what a select needs.
+ */
+export type CourseOption = {
+  id: number;
+  /**
+   * The course's name, or its slug when it has none.
+   */
+  name: string;
+};
+
+/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -3056,6 +3067,42 @@ export type AdminCreateCourseResponses = {
 };
 
 export type AdminCreateCourseResponse = AdminCreateCourseResponses[keyof AdminCreateCourseResponses];
+
+export type AdminListCourseOptionsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/courses/options';
+};
+
+export type AdminListCourseOptionsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseOptionsError = AdminListCourseOptionsErrors[keyof AdminListCourseOptionsErrors];
+
+export type AdminListCourseOptionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<CourseOption>;
+};
+
+export type AdminListCourseOptionsResponse = AdminListCourseOptionsResponses[keyof AdminListCourseOptionsResponses];
 
 export type AdminGetCourseData = {
   body?: never;

@@ -2054,6 +2054,46 @@ paths:
               $ref: '#/components/schemas/CourseInput'
       security:
         - AdminSession: []
+  /api/admin/courses/options:
+    get:
+      operationId: adminListCourseOptions
+      description: Every course as id and name, unpaginated and oldest first, for selects.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseOption'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Courses'
+      security:
+        - AdminSession: []
   /api/admin/courses/{id}:
     get:
       operationId: adminGetCourse
@@ -5652,6 +5692,19 @@ components:
       description: |-
         A module of a course version in one locale (legacy:
         `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
+    CourseOption:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          description: The course's name, or its slug when it has none.
+      description: A course reduced to what a select needs.
     CoursePage:
       type: object
       required:

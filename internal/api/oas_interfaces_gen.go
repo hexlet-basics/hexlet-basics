@@ -161,6 +161,10 @@ type AdminListCourseLessonsRes interface {
 	adminListCourseLessonsRes()
 }
 
+type AdminListCourseOptionsRes interface {
+	adminListCourseOptionsRes()
+}
+
 type AdminListCoursesRes interface {
 	adminListCoursesRes()
 }

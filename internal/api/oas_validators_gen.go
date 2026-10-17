@@ -47,6 +47,14 @@ func (s AdminListCategoryQnaItemsOKApplicationJSON) Validate() error {
 	return nil
 }
 
+func (s AdminListCourseOptionsOKApplicationJSON) Validate() error {
+	alias := ([]CourseOption)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s AdminListLandingPageQnaItemsOKApplicationJSON) Validate() error {
 	alias := ([]QnaItem)(s)
 	if alias == nil {

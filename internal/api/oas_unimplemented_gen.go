@@ -339,6 +339,15 @@ func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params A
 	return r, ht.ErrNotImplemented
 }
 
+// AdminListCourseOptions implements adminListCourseOptions operation.
+//
+// Every course as id and name, unpaginated and oldest first, for selects.
+//
+// GET /api/admin/courses/options
+func (UnimplementedHandler) AdminListCourseOptions(ctx context.Context) (r AdminListCourseOptionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListCourses implements adminListCourses operation.
 //
 // GET /api/admin/courses

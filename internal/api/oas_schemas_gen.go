@@ -432,6 +432,18 @@ type AdminListCourseLessonsUnauthorized ProblemDetails
 
 func (*AdminListCourseLessonsUnauthorized) adminListCourseLessonsRes() {}
 
+type AdminListCourseOptionsForbidden ProblemDetails
+
+func (*AdminListCourseOptionsForbidden) adminListCourseOptionsRes() {}
+
+type AdminListCourseOptionsOKApplicationJSON []CourseOption
+
+func (*AdminListCourseOptionsOKApplicationJSON) adminListCourseOptionsRes() {}
+
+type AdminListCourseOptionsUnauthorized ProblemDetails
+
+func (*AdminListCourseOptionsUnauthorized) adminListCourseOptionsRes() {}
+
 type AdminListCoursesForbidden ProblemDetails
 
 func (*AdminListCoursesForbidden) adminListCoursesRes() {}
@@ -3531,6 +3543,34 @@ func (s *CourseModule) SetDescription(val NilString) {
 // SetLessons sets the value of Lessons.
 func (s *CourseModule) SetLessons(val []LearnerLesson) {
 	s.Lessons = val
+}
+
+// A course reduced to what a select needs.
+// Ref: #/components/schemas/CourseOption
+type CourseOption struct {
+	ID int32 `json:"id"`
+	// The course's name, or its slug when it has none.
+	Name string `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseOption) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseOption) GetName() string {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *CourseOption) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseOption) SetName(val string) {
+	s.Name = val
 }
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)

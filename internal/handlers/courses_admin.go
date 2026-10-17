@@ -31,6 +31,30 @@ func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCours
 	)
 }
 
+// AdminListCourseOptions serves selects: every course as id and name, with no
+// page, so a picker cannot silently lose the courses past a page boundary. The
+// order is oldest first, a stable order for a list people scan by name; a
+// course without a name is listed by its slug, the one label every course has.
+func (s *Server) AdminListCourseOptions(ctx context.Context) (api.AdminListCourseOptionsRes, error) {
+	rows, err := s.db.Course.Query().
+		Select(course.FieldID, course.FieldSlug, course.FieldName).
+		Order(ent.Asc(course.FieldID)).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	options := make(api.AdminListCourseOptionsOKApplicationJSON, 0, len(rows))
+	for _, row := range rows {
+		name := apiconv.StringFromPtr(row.Slug)
+		if row.Name != nil && *row.Name != "" {
+			name = *row.Name
+		}
+		options = append(options, api.CourseOption{ID: int32(row.ID), Name: name})
+	}
+	return &options, nil
+}
+
 func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (api.AdminGetCourseRes, error) {
 	return s.getAdminCourse(ctx, params.ID)
 }

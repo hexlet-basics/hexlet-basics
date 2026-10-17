@@ -214,6 +214,12 @@ type Handler interface {
 	//
 	// GET /api/admin/course_lessons
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
+	// AdminListCourseOptions implements adminListCourseOptions operation.
+	//
+	// Every course as id and name, unpaginated and oldest first, for selects.
+	//
+	// GET /api/admin/courses/options
+	AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error)
 	// AdminListCourses implements adminListCourses operation.
 	//
 	// GET /api/admin/courses
