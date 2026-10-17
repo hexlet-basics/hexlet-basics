@@ -31,11 +31,13 @@ import (
 // (user info, JWT profile, introspection) are deliberate stubs: the MCP endpoint
 // verifies a token by looking it up (VerifyAccessToken), not through them.
 type storage struct {
-	db      *ent.Client
-	tx      store.Transactor
-	issuer  string
-	now     func() time.Time
-	signing ed25519.PrivateKey
+	db     *ent.Client
+	tx     store.Transactor
+	issuer string
+	// resource is the canonical MCP URL every token is issued for.
+	resource string
+	now      func() time.Time
+	signing  ed25519.PrivateKey
 }
 
 var _ op.Storage = (*storage)(nil)
@@ -96,7 +98,7 @@ func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, 
 	if err != nil {
 		return nil, fmt.Errorf("create authorization request: %w", err)
 	}
-	return &authRequest{row: row}, nil
+	return &authRequest{row: row, resource: s.resource}, nil
 }
 
 // AuthRequestByID loads a request that has not expired.
@@ -107,7 +109,7 @@ func (s *storage) AuthRequestByID(ctx context.Context, id string) (op.AuthReques
 	if err != nil {
 		return nil, fmt.Errorf("authorization request: %w", err)
 	}
-	return &authRequest{row: row}, nil
+	return &authRequest{row: row, resource: s.resource}, nil
 }
 
 // AuthRequestByCode finds the request an authorization code was issued for,
@@ -120,7 +122,7 @@ func (s *storage) AuthRequestByCode(ctx context.Context, code string) (op.AuthRe
 	if err != nil {
 		return nil, fmt.Errorf("authorization code: %w", err)
 	}
-	return &authRequest{row: row}, nil
+	return &authRequest{row: row, resource: s.resource}, nil
 }
 
 // SaveAuthCode records the hash of the code issued for a request. A request
@@ -151,7 +153,10 @@ func (s *storage) DeleteAuthRequest(ctx context.Context, id string) error {
 }
 
 // authRequest adapts a stored request to op.AuthRequest.
-type authRequest struct{ row *ent.OAuthAuthRequest }
+type authRequest struct {
+	row      *ent.OAuthAuthRequest
+	resource string
+}
 
 var _ op.AuthRequest = (*authRequest)(nil)
 
@@ -160,9 +165,9 @@ func (a *authRequest) GetACR() string      { return "" }
 func (a *authRequest) GetAMR() []string    { return nil }
 func (a *authRequest) GetClientID() string { return a.row.ClientID }
 
-// GetAudience is the client for now; binding it to the MCP endpoint's canonical
-// URL through the `resource` parameter is a later step of ADR-0019.
-func (a *authRequest) GetAudience() []string { return []string{a.row.ClientID} }
+// GetAudience is the canonical MCP URL: the authorization request was admitted
+// only for that resource (RFC 8707), so the token is bound to it.
+func (a *authRequest) GetAudience() []string { return []string{a.resource} }
 func (a *authRequest) GetAuthTime() time.Time {
 	if a.row.AuthTime == nil {
 		return time.Time{}
@@ -323,19 +328,20 @@ func (s *storage) TokenRequestByRefreshToken(ctx context.Context, refresh string
 	if err != nil {
 		return nil, fmt.Errorf("refresh token: %w", err)
 	}
-	return &refreshRequest{row: row, scopes: row.Scopes}, nil
+	return &refreshRequest{row: row, scopes: row.Scopes, resource: s.resource}, nil
 }
 
 // refreshRequest adapts a stored refresh token to op.RefreshTokenRequest.
 type refreshRequest struct {
-	row    *ent.OAuthRefreshToken
-	scopes []string
+	row      *ent.OAuthRefreshToken
+	scopes   []string
+	resource string
 }
 
 var _ op.RefreshTokenRequest = (*refreshRequest)(nil)
 
 func (r *refreshRequest) GetAMR() []string            { return nil }
-func (r *refreshRequest) GetAudience() []string       { return []string{r.row.ClientID} }
+func (r *refreshRequest) GetAudience() []string       { return []string{r.resource} }
 func (r *refreshRequest) GetAuthTime() time.Time      { return r.row.AuthTime }
 func (r *refreshRequest) GetClientID() string         { return r.row.ClientID }
 func (r *refreshRequest) GetScopes() []string         { return r.scopes }

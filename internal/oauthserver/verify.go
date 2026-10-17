@@ -22,6 +22,11 @@ type Token struct {
 	ClientID string
 	UserID   int
 	Scopes   []string
+	// Audience is the resource the token is bound to: the canonical MCP URL. A
+	// resource server must check that it is itself in it. It is not stored per
+	// token, since this server has exactly one resource and admits no other
+	// (RFC 8707), so every token on file is for it.
+	Audience []string
 }
 
 // VerifyAccessToken is how a resource server (the MCP endpoint) accepts a bearer
@@ -47,7 +52,7 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 	if err != nil {
 		return Token{}, err
 	}
-	return Token{ID: row.ID, ClientID: row.ClientID, UserID: userID, Scopes: row.Scopes}, nil
+	return Token{ID: row.ID, ClientID: row.ClientID, UserID: userID, Scopes: row.Scopes, Audience: []string{s.resource}}, nil
 }
 
 // liveAccessToken loads an access token that is on file, unexpired and issued to

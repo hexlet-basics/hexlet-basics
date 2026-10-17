@@ -105,6 +105,7 @@ func (s *Server) Deny(ctx context.Context, requestID string) (string, error) {
 	query := target.Query()
 	query.Set("error", "access_denied")
 	query.Set("error_description", "The user denied the request.")
+	query.Set("iss", s.issuer)
 	if req.State != "" {
 		query.Set("state", req.State)
 	}

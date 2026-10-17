@@ -103,6 +103,7 @@ type Deps struct {
 // Server is the authorization server.
 type Server struct {
 	issuer   string
+	resource string
 	app      Application
 	storage  *storage
 	provider *op.Provider
@@ -127,11 +128,12 @@ func New(deps Deps) (*Server, error) {
 	key := sha256.Sum256([]byte(deps.Config.EncryptionKey))
 	signing := deriveSigningKey(deps.Config.EncryptionKey)
 	st := &storage{
-		db:      deps.DB,
-		tx:      deps.Transactor,
-		issuer:  deps.Config.Issuer,
-		now:     deps.Now,
-		signing: signing,
+		db:       deps.DB,
+		tx:       deps.Transactor,
+		issuer:   deps.Config.Issuer,
+		resource: deps.Config.Issuer + mcpPath,
+		now:      deps.Now,
+		signing:  signing,
 	}
 
 	opts := []op.Option{
@@ -175,7 +177,7 @@ func New(deps Deps) (*Server, error) {
 		return nil, fmt.Errorf("oauthserver: build provider: %w", err)
 	}
 
-	s := &Server{issuer: deps.Config.Issuer, app: deps.App, storage: st, provider: provider}
+	s := &Server{issuer: deps.Config.Issuer, resource: st.resource, app: deps.App, storage: st, provider: provider}
 	s.handler = s.routes()
 	return s, nil
 }
@@ -201,6 +203,11 @@ func (s *Server) routes() http.Handler {
 	mux.Handle(introspectPath, http.NotFoundHandler())
 	// The device grant is not offered either: its storage is not implemented.
 	mux.Handle(deviceAuthzPath, http.NotFoundHandler())
+	// Authorization and token are the library's, behind the package's admission
+	// policy (scopes, resource) and the iss parameter (policy.go).
+	mux.HandleFunc(authorizePath, s.authorize)
+	mux.HandleFunc(callbackPath, s.authorizeCallback)
+	mux.HandleFunc(tokenPath, s.token)
 	mux.Handle("/oauth/", s.provider)
 	return mux
 }

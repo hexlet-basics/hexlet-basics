@@ -337,29 +337,3 @@ func TestRevokingATokenEndsItAtOnce(t *testing.T) {
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.ErrorIs(t, err, oauthserver.ErrInvalidToken)
 }
-
-func TestScopesTheClientWasNotRegisteredForAreDropped(t *testing.T) {
-	o := testsupport.NewOAuth(t)
-	o.SeedClient(oauthserver.ScopeCatalogRead)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
-	// Start re-registers the client for the scopes it names, so ask for more than
-	// that on a fresh request against the same registration.
-	query := url.Values{
-		"client_id": {testsupport.OAuthClientID}, "redirect_uri": {testsupport.OAuthRedirectURI},
-		"response_type": {"code"}, "scope": {"catalog:read admin"}, "state": {"s"},
-		"code_challenge": {testsupport.PKCEChallenge()}, "code_challenge_method": {"S256"},
-	}
-	res := o.Do(http.MethodGet, "/oauth/authorize?"+query.Encode(), nil)
-	require.Equal(t, http.StatusFound, res.StatusCode)
-	to, err := res.Location()
-	require.NoError(t, err)
-
-	session := testsupport.SessionFor(t, o.DB, alice)
-	var consent struct {
-		Scopes []string `json:"scopes"`
-	}
-	res = o.Do(http.MethodGet, "/api/oauth/consents/"+to.Query().Get("id"), nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
-	decode(t, res, &consent)
-	assert.Equal(t, []string{"catalog:read"}, consent.Scopes)
-	_ = flow
-}

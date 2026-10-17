@@ -119,13 +119,20 @@ func (o *OAuth) Advance(d time.Duration) { o.now = o.now.Add(d) }
 // custom scopes (replacing an earlier registration), and returns its row.
 func (o *OAuth) SeedClient(scopes ...string) *ent.OAuthClient {
 	o.t.Helper()
+	return o.SeedClientURIs([]string{OAuthRedirectURI}, scopes...)
+}
+
+// SeedClientURIs is SeedClient with the redirect URIs the client registered, for
+// a test about which redirects match.
+func (o *OAuth) SeedClientURIs(redirectURIs []string, scopes ...string) *ent.OAuthClient {
+	o.t.Helper()
 	ctx := o.t.Context()
 	_, err := o.DB.OAuthClient.Delete().Exec(ctx)
 	require.NoError(o.t, err)
 	row, err := o.DB.OAuthClient.Create().
 		SetClientID(OAuthClientID).
 		SetName("Test MCP client").
-		SetRedirectUris([]string{OAuthRedirectURI}).
+		SetRedirectUris(redirectURIs).
 		SetScopes(scopes).
 		Save(ctx)
 	require.NoError(o.t, err)
@@ -179,6 +186,12 @@ type Flow struct {
 	// RequestID is the authorization request id the consent screen is opened with
 	// (from the authorize redirect).
 	RequestID string
+	// RedirectURI is the redirect_uri the authorization request named; the token
+	// request repeats it.
+	RedirectURI string
+	// Callback is where Approve was sent back to at the client, with the code
+	// and iss it carries.
+	Callback *url.URL
 	// Authorize is the response of GET /oauth/authorize.
 	Authorize *http.Response
 	session   Session
@@ -190,7 +203,28 @@ type Flow struct {
 // the consent screen, is in Authorize.
 func (o *OAuth) Start(userID int, scopes ...string) *Flow {
 	o.t.Helper()
-	o.SeedClient(scopes...)
+	return o.StartWith(userID, StartOptions{Scopes: scopes})
+}
+
+// StartOptions shapes the flow of StartWith beyond the defaults of Start.
+type StartOptions struct {
+	// Scopes are registered for the client and requested.
+	Scopes []string
+	// RedirectURIs are what the client registers; the default is OAuthRedirectURI.
+	RedirectURIs []string
+	// Params edits the authorization request's query before it is sent (to add a
+	// resource, change the redirect_uri, or drop a parameter).
+	Params func(url.Values)
+}
+
+// StartWith is Start with the registration and the request open to change.
+func (o *OAuth) StartWith(userID int, opts StartOptions) *Flow {
+	o.t.Helper()
+	scopes := opts.Scopes
+	if opts.RedirectURIs == nil {
+		opts.RedirectURIs = []string{OAuthRedirectURI}
+	}
+	o.SeedClientURIs(opts.RedirectURIs, scopes...)
 	f := &Flow{o: o, UserID: userID, State: "state-" + ids.New(), session: SessionFor(o.t, o.DB, userID)}
 	query := url.Values{
 		"client_id":             {OAuthClientID},
@@ -201,6 +235,10 @@ func (o *OAuth) Start(userID int, scopes ...string) *Flow {
 		"code_challenge":        {PKCEChallenge()},
 		"code_challenge_method": {"S256"},
 	}
+	if opts.Params != nil {
+		opts.Params(query)
+	}
+	f.RedirectURI = query.Get("redirect_uri")
 	f.Authorize = o.Do(http.MethodGet, "/oauth/authorize?"+query.Encode(), nil)
 	if loc, err := f.Authorize.Location(); err == nil {
 		f.RequestID = loc.Query().Get("id")
@@ -245,6 +283,7 @@ func (f *Flow) Approve() string {
 	require.Equal(f.o.t, http.StatusFound, res.StatusCode)
 	back, err := res.Location()
 	require.NoError(f.o.t, err)
+	f.Callback = back
 	require.Equal(f.o.t, f.State, back.Query().Get("state"))
 	code := back.Query().Get("code")
 	require.NotEmpty(f.o.t, code, "redirect carried no code: %s", back)
@@ -266,13 +305,23 @@ type Tokens struct {
 // the raw response too, so a test can assert on a refusal.
 func (f *Flow) Exchange(code, verifier string) (Tokens, *http.Response) {
 	f.o.t.Helper()
-	res := f.o.Do(http.MethodPost, "/oauth/token", url.Values{
+	return f.ExchangeWith(code, verifier, nil)
+}
+
+// ExchangeWith is Exchange with extra token request parameters (a resource).
+func (f *Flow) ExchangeWith(code, verifier string, extra url.Values) (Tokens, *http.Response) {
+	f.o.t.Helper()
+	form := url.Values{
 		"grant_type":    {"authorization_code"},
 		"client_id":     {OAuthClientID},
-		"redirect_uri":  {OAuthRedirectURI},
+		"redirect_uri":  {f.RedirectURI},
 		"code":          {code},
 		"code_verifier": {verifier},
-	})
+	}
+	for k, v := range extra {
+		form[k] = v
+	}
+	res := f.o.Do(http.MethodPost, "/oauth/token", form)
 	var tokens Tokens
 	if res.StatusCode == http.StatusOK {
 		require.NoError(f.o.t, json.NewDecoder(res.Body).Decode(&tokens))

@@ -171,3 +171,40 @@ What the first implementation settled, and where it stops short of the text abov
   parameter, the `resource` parameter and audience binding (the audience is the
   client for now), and refresh-token reuse detection. Loopback redirects already
   match on any port, because the library does that for native clients.
+
+## Addendum: scopes, resource, `iss` and loopback redirects (#841)
+
+- **Canonical MCP URL.** One value, `OAUTH_ISSUER` plus `/mcp`
+  (`Server.Resource()`), built once from configuration and never from the `Host`
+  header; there is no second setting to drift from the issuer. It is the
+  audience of every access token.
+- **Scope admission.** The Scopes `catalog:read`, `progress:read` and `admin`,
+  plus `openid` and `offline_access`, are admitted; a custom Scope is admitted
+  only when the client row lists it. Anything else (an unknown name, `profile`,
+  `email`, a Scope the client was not registered for) is refused with
+  `invalid_scope` redirected to the client, with the supported list in the
+  description. We chose a refusal over the library's silent drop because a client
+  that believed it held `admin` would fail later in a confusing way; the cost is
+  that a client sending generic `profile email` scopes must stop. The check is
+  an `AuthorizeValidator` over the library's own validation
+  (`internal/oauthserver/policy.go`). The flow does not need `openid`; without
+  it the library still issues an ID token, which clients ignore.
+- **`resource` (RFC 8707).** Every value of `resource` at the authorization and
+  token endpoints must equal the canonical URL, otherwise `invalid_target` (a
+  redirect at the authorization endpoint, a 400 at the token endpoint, which does
+  not spend the code). An absent `resource` is accepted and bound to the same
+  URL, since this server has a single resource. The audience is not stored per
+  token: `VerifyAccessToken` returns `Token.Audience` as the canonical URL, which
+  a resource server must find itself in. Deleting the row still revokes at once.
+  The ID token's `aud` carries the URL as well as the client id.
+- **`iss` (RFC 9207).** Every redirect to the client from the authorization
+  endpoint, its callback and the consent denial carries `iss`, errors included;
+  the hop to the consent screen does not. The metadata document, built here for
+  both well-known paths, declares `authorization_response_iss_parameter_supported`.
+- **Loopback redirects.** The library, not our code, matches them: for a native
+  client, once both the registered and the requested URI are loopback hosts, only
+  path and query are compared, so any port matches, and so do another loopback
+  address or name (`localhost`, `[::1]`) and the other scheme. That reaches only
+  the user's own machine. A non-loopback redirect must equal a registered one
+  exactly, and a plain-`http` non-loopback redirect is refused even if
+  registered. Tests pin all of this.
