@@ -96,8 +96,7 @@ func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
 }
 
 // The navigation tab's rows: every lesson of the current version, in course
-// order, named. The player joins this to the progress payload by slug, so the
-// two arrays line up entry for entry.
+// order, named, each with the visitor's standing in it.
 func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
@@ -115,9 +114,9 @@ func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
 		"in course order")
 	assert.Equal(t, "Variables", view.Lessons[1].Name.Value, "named, or the nav list has no labels")
 
-	require.False(t, view.Progress.Null)
-	assert.Equal(t, view.Lessons[2].Slug, view.Progress.Value.Lessons[2].Slug,
-		"the two arrays are joined by slug, so they must agree entry for entry")
+	assert.Equal(t, []int32{1, 2, 3},
+		[]int32{view.Lessons[0].Position, view.Lessons[1].Position, view.Lessons[2].Position},
+		"a position is the lesson's place in the course")
 }
 
 // A course nobody has written copy for is still readable: the landing page is
@@ -158,7 +157,7 @@ func TestGetCourseLessonStartsNothing(t *testing.T) {
 }
 
 // The read carries the same progress the course page carries, so the player
-// renders the checkmarks and the "next" target from the server's answer.
+// renders the checkmarks and where to resume from the server's answer.
 func TestGetCourseLessonReturnsProgress(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
@@ -170,11 +169,51 @@ func TestGetCourseLessonReturnsProgress(t *testing.T) {
 	view := res.(*api.CourseLessonView)
 
 	require.False(t, view.Progress.Null)
-	progress := view.Progress.Value
-	assert.Equal(t, secondLessonSlug, progress.NextLessonSlug.Value)
-	require.Len(t, progress.Lessons, 3)
-	assert.True(t, progress.Lessons[0].Finished)
-	assert.False(t, progress.Lessons[1].Finished)
+	assert.Equal(t, secondLessonSlug, view.Progress.Value.NextLesson.Value.Slug)
+	require.Len(t, view.Lessons, 3)
+	assert.True(t, view.Lessons[0].Finished)
+	assert.False(t, view.Lessons[1].Finished)
+}
+
+// Back and forward follow course order, whatever the learner has finished: the
+// first lesson has nothing before it, the last nothing after it.
+func TestGetCourseLessonNamesTheLessonsOnEitherSide(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	adjacent := func(slug string) api.AdjacentLessons {
+		res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{CourseSlug: jsCourseSlug, Slug: slug})
+		require.NoError(t, err)
+		return res.(*api.CourseLessonView).Adjacent
+	}
+
+	first := adjacent(firstLessonSlug)
+	assert.True(t, first.Previous.Null)
+	assert.Equal(t, secondLessonSlug, first.Next.Value.Slug)
+
+	middle := adjacent(secondLessonSlug)
+	assert.Equal(t, firstLessonSlug, middle.Previous.Value.Slug)
+	assert.Equal(t, thirdLessonSlug, middle.Next.Value.Slug)
+	assert.Equal(t, "Variables", adjacent(firstLessonSlug).Next.Value.Name.Value, "named, not just addressed")
+
+	last := adjacent(thirdLessonSlug)
+	assert.Equal(t, secondLessonSlug, last.Previous.Value.Slug)
+	assert.True(t, last.Next.Null)
+}
+
+// The Next Lesson is where the learner resumes, not the lesson after this one:
+// on the last lesson, with the second still to do, "next" has nowhere to go but
+// the learner still resumes at the second.
+func TestGetCourseLessonKeepsTheNextLessonApartFromAdjacentLessons(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+		CourseSlug: jsCourseSlug,
+		Slug:       thirdLessonSlug,
+	})
+	require.NoError(t, err)
+	view := res.(*api.CourseLessonView)
+
+	assert.True(t, view.Adjacent.Next.Null)
+	assert.Equal(t, secondLessonSlug, view.Progress.Value.NextLesson.Value.Slug)
 }
 
 // Theory is public: a visitor reads any lesson with no session, which is what
@@ -192,7 +231,7 @@ func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
 
 	assert.Equal(t, thirdLessonSlug, view.Lesson.Slug)
 	require.False(t, view.Progress.Null)
-	assert.False(t, view.Progress.Value.Lessons[2].Finished, "a first visit has finished nothing")
+	assert.False(t, view.Lessons[2].Finished, "a first visit has finished nothing")
 }
 
 // A lesson of another course, an unknown slug, and a lesson the current build

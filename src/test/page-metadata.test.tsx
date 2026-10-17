@@ -77,11 +77,19 @@ const landingPage: CourseLandingPage = {
 const progress: CourseProgress = {
   state: null,
   completion: 0,
-  nextLessonSlug: "variables",
-  lessons: [{ slug: "variables", position: 1, finished: false }],
+  nextLesson: { id: 1002, slug: "variables", name: "Variables" },
 };
 
-const lessons = [{ id: 1002, name: "Variables", description: null, slug: "variables" }];
+const lessons = [
+  {
+    id: 1002,
+    name: "Variables",
+    description: null,
+    slug: "variables",
+    position: 1,
+    finished: false,
+  },
+];
 
 // Longer than the description's bound, with the line breaks and runs of spaces
 // raw markdown has, so both the cut and the squash are visible.
@@ -112,6 +120,7 @@ const lessonView: CourseLessonView = {
   },
   landingPage,
   lessons,
+  adjacent: { previous: null, next: null },
   progress,
 };
 

@@ -192,15 +192,6 @@ type Converter interface {
 
 	ToCourseLessonListItems(source []*ent.CourseLessonTranslation) []api.CourseLessonListItem
 
-	// Module rows are version infos with their module version, its lesson
-	// versions and their lessons loaded (WithVersion → WithLessonVersions →
-	// WithLesson), the lesson versions already in course order.
-	// goverter:map Edges.Version.ModuleID ID
-	// goverter:map . LessonSlugs | moduleLessonSlugs
-	ToCourseModuleListItem(source *ent.CourseModuleTranslation) api.CourseModuleListItem
-
-	ToCourseModuleListItems(source []*ent.CourseModuleTranslation) []api.CourseModuleListItem
-
 	// Lesson progress projections require WithCourse and WithLesson; the lesson
 	// query additionally eager-loads locale-filtered infos in ascending id order.
 	// goverter:map UserID UserId
@@ -237,38 +228,140 @@ type Converter interface {
 	ToCourseLessonReviews(source []*ent.CourseLessonReview) []api.CourseLessonReview
 }
 
-// ToEnrollment projects a learner's Enrollment together with the computed
-// progress that belongs to it. goverter maps ent rows field by field; this one
-// is hand-written because the payload is half row, half computation — the
-// percentage and the availability flags exist nowhere in storage.
-func ToEnrollment(row *ent.Enrollment, state *progress.CourseState) api.Enrollment {
+// ToEnrollment projects a learner's Enrollment: the record alone. Where the
+// learner stands (Completion, the Next Lesson) is computed against the current
+// Version and travels as CourseProgress.
+func ToEnrollment(row *ent.Enrollment) api.Enrollment {
 	return api.Enrollment{
-		ID:             int32(row.ID),
-		UserId:         int32(row.UserID),
-		CourseId:       int32(row.CourseID),
-		State:          nilEnrollmentState(row.State),
-		Completion:     int32(state.Completion),
-		NextLessonName: NilStringFromPtr(state.NextLessonSlug),
-		Progress:       ToCourseProgress(state),
+		ID:       int32(row.ID),
+		UserId:   int32(row.UserID),
+		CourseId: int32(row.CourseID),
+		State:    nilEnrollmentState(row.State),
 	}
 }
 
-// ToCourseProgress projects the computed course state.
-func ToCourseProgress(state *progress.CourseState) api.CourseProgress {
-	lessons := make([]api.LessonProgressItem, 0, len(state.Lessons))
+// ToCourseProgress projects the computed course state. The Next Lesson is
+// named by the caller, who has the lessons of the visitor's locale; the state
+// knows only its slug.
+func ToCourseProgress(state *progress.CourseState, next api.NilLessonRef) api.CourseProgress {
+	return api.CourseProgress{
+		State:      nilEnrollmentState(&state.State),
+		Completion: int32(state.Completion),
+		NextLesson: next,
+	}
+}
+
+// ToLearnerLessons lists a Version's lessons in one locale with the visitor's
+// standing in each: the checkmark travels with the row, so no screen joins two
+// lists. infos are the translations of the lessons in course order, each with its
+// lesson loaded (WithLesson); the standing comes from the computed state.
+//
+// A lesson the state does not know has no Position and is not finished: the
+// state and the infos read the same Version, so that is a lesson added since
+// the state was computed, not a case to fail on.
+func ToLearnerLessons(infos []*ent.CourseLessonTranslation, state *progress.CourseState) []api.LearnerLesson {
+	standing := make(map[string]progress.LessonState, len(state.Lessons))
 	for _, lesson := range state.Lessons {
-		lessons = append(lessons, api.LessonProgressItem{
-			Slug:     lesson.Slug,
-			Position: int32(lesson.Position),
-			Finished: lesson.Finished,
+		standing[lesson.Slug] = lesson
+	}
+
+	lessons := make([]api.LearnerLesson, 0, len(infos))
+	for _, info := range infos {
+		slug := ""
+		if info.Edges.Lesson != nil {
+			slug = lo.FromPtr(info.Edges.Lesson.Slug)
+		}
+		lesson := standing[slug]
+		lessons = append(lessons, api.LearnerLesson{
+			ID:          int32(info.CourseLessonID),
+			Slug:        slug,
+			Name:        NilStringFromPtr(info.Name),
+			Description: NilStringFromPtr(info.Description),
+			Position:    int32(lesson.Position),
+			Finished:    lesson.Finished,
 		})
 	}
-	return api.CourseProgress{
-		State:          nilEnrollmentState(&state.State),
-		Completion:     int32(state.Completion),
-		NextLessonSlug: NilStringFromPtr(state.NextLessonSlug),
-		Lessons:        lessons,
+	return lessons
+}
+
+// ToCourseModules lists a Version's modules in one locale, each with its
+// lessons as the learner sees them. rows are the module translations with their
+// lesson versions and lessons loaded (WithVersion → WithLessonVersions →
+// WithLesson), lessons already in course order; lessons are the Version's
+// LearnerLessons, from which each module takes its own. A module's lesson that
+// is not translated into the locale is simply not listed, as in the flat list.
+func ToCourseModules(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []api.CourseModule {
+	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
+
+	modules := make([]api.CourseModule, 0, len(rows))
+	for _, row := range rows {
+		moduleID := 0
+		if row.Edges.Version != nil {
+			moduleID = row.Edges.Version.ModuleID
+		}
+		modules = append(modules, api.CourseModule{
+			ID:          int32(moduleID),
+			Name:        NilStringFromPtr(row.Name),
+			Description: NilStringFromPtr(row.Description),
+			Lessons: lo.FilterMap(moduleLessonSlugs(row), func(slug string, _ int) (api.LearnerLesson, bool) {
+				lesson, ok := bySlug[slug]
+				return lesson, ok
+			}),
+		})
 	}
+	return modules
+}
+
+// NextLessonRef names the Next Lesson from the lessons of the visitor's locale.
+// Null when there is none, and when the lessons do not contain it: a lesson with
+// no translation in the locale has no page there to point at.
+func NextLessonRef(slug *string, lessons []api.LearnerLesson) api.NilLessonRef {
+	if slug == nil {
+		return api.NilLessonRef{Null: true}
+	}
+	for _, lesson := range lessons {
+		if lesson.Slug == *slug {
+			return api.NewNilLessonRef(lessonRef(lesson))
+		}
+	}
+	return api.NilLessonRef{Null: true}
+}
+
+// NamedLessonRef is a reference to the lesson with slug and id, called name, for
+// a caller that resolved them itself. Null when there is no slug.
+func NamedLessonRef(slug *string, id int, name *string) api.NilLessonRef {
+	if slug == nil {
+		return api.NilLessonRef{Null: true}
+	}
+	return api.NewNilLessonRef(api.LessonRef{ID: int32(id), Slug: *slug, Name: NilStringFromPtr(name)})
+}
+
+func lessonRef(l api.LearnerLesson) api.LessonRef {
+	return api.LessonRef{ID: l.ID, Slug: l.Slug, Name: l.Name}
+}
+
+// AdjacentLessons are the lessons on either side of the one with slug, in the
+// order lessons are given: course order, whatever the learner has finished.
+// Either is null at the edge of the course.
+func AdjacentLessons(slug string, lessons []api.LearnerLesson) api.AdjacentLessons {
+	adjacent := api.AdjacentLessons{
+		Previous: api.NilLessonRef{Null: true},
+		Next:     api.NilLessonRef{Null: true},
+	}
+	index := lo.IndexOf(lo.Map(lessons, func(l api.LearnerLesson, _ int) string { return l.Slug }), slug)
+	if index < 0 {
+		return adjacent
+	}
+	ref := func(l api.LearnerLesson) api.NilLessonRef {
+		return api.NewNilLessonRef(lessonRef(l))
+	}
+	if index > 0 {
+		adjacent.Previous = ref(lessons[index-1])
+	}
+	if index < len(lessons)-1 {
+		adjacent.Next = ref(lessons[index+1])
+	}
+	return adjacent
 }
 
 // LessonContent is one Lesson as the player needs it, drawn from the three

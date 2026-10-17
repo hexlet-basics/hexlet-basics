@@ -31,6 +31,33 @@ func (s *ActiveBanner) SetBanner(val NilBanner) {
 	s.Banner = val
 }
 
+// The Lessons on either side of one Lesson in course order. Not the Next Lesson.
+// Ref: #/components/schemas/AdjacentLessons
+type AdjacentLessons struct {
+	Previous NilLessonRef `json:"previous"`
+	Next     NilLessonRef `json:"next"`
+}
+
+// GetPrevious returns the value of Previous.
+func (s *AdjacentLessons) GetPrevious() NilLessonRef {
+	return s.Previous
+}
+
+// GetNext returns the value of Next.
+func (s *AdjacentLessons) GetNext() NilLessonRef {
+	return s.Next
+}
+
+// SetPrevious sets the value of Previous.
+func (s *AdjacentLessons) SetPrevious(val NilLessonRef) {
+	s.Previous = val
+}
+
+// SetNext sets the value of Next.
+func (s *AdjacentLessons) SetNext(val NilLessonRef) {
+	s.Next = val
+}
+
 type AdminCreateBannerForbidden ProblemDetails
 
 func (*AdminCreateBannerForbidden) adminCreateBannerRes() {}
@@ -3389,16 +3416,14 @@ type CourseLessonView struct {
 	// Null for a course with no landing page, which is a course nobody has written copy for yet — not a
 	// reason to fail the read.
 	LandingPage NilCourseLandingPage `json:"landingPage"`
-	// Every Lesson of the course's current version, in course order — the same list the course landing
-	// read returns.
-	//
-	// The player's navigation tab is this list joined to `progress.lessons` by slug: names and order from
-	// here, checks from there. Both screens render from the same two arrays, which is what keeps the
-	// Course page's list and the player's from disagreeing.
-	Lessons []CourseLessonListItem `json:"lessons"`
+	// Every Lesson of the course's current version, in course order, each with the visitor's standing in
+	// it — the same list the course landing read returns, so the Course page and the player cannot
+	// disagree.
+	Lessons []LearnerLesson `json:"lessons"`
+	// The Lessons before and after this one in course order, for back/forward.
+	Adjacent AdjacentLessons `json:"adjacent"`
 	// Where the visitor stands in the course this lesson belongs to — the same payload the course
-	// landing read returns, for a signed-in learner and a guest alike. The player reads `nextLessonSlug`
-	// for where "next" goes.
+	// landing read returns, for a signed-in learner and a guest alike.
 	//
 	// Null only for a course with no built version.
 	Progress NilCourseProgress `json:"progress"`
@@ -3415,8 +3440,13 @@ func (s *CourseLessonView) GetLandingPage() NilCourseLandingPage {
 }
 
 // GetLessons returns the value of Lessons.
-func (s *CourseLessonView) GetLessons() []CourseLessonListItem {
+func (s *CourseLessonView) GetLessons() []LearnerLesson {
 	return s.Lessons
+}
+
+// GetAdjacent returns the value of Adjacent.
+func (s *CourseLessonView) GetAdjacent() AdjacentLessons {
+	return s.Adjacent
 }
 
 // GetProgress returns the value of Progress.
@@ -3435,8 +3465,13 @@ func (s *CourseLessonView) SetLandingPage(val NilCourseLandingPage) {
 }
 
 // SetLessons sets the value of Lessons.
-func (s *CourseLessonView) SetLessons(val []CourseLessonListItem) {
+func (s *CourseLessonView) SetLessons(val []LearnerLesson) {
 	s.Lessons = val
+}
+
+// SetAdjacent sets the value of Adjacent.
+func (s *CourseLessonView) SetAdjacent(val AdjacentLessons) {
+	s.Adjacent = val
 }
 
 // SetProgress sets the value of Progress.
@@ -3448,54 +3483,54 @@ func (*CourseLessonView) getCourseLessonRes() {}
 
 // A module of a course version in one locale (legacy: `Language::Module::Version::Info`, as
 // `Language::ModuleResource` served it).
-// Ref: #/components/schemas/CourseModuleListItem
-type CourseModuleListItem struct {
+// Ref: #/components/schemas/CourseModule
+type CourseModule struct {
 	// The module's stable id, as legacy's resource exposed it.
 	ID          int32     `json:"id"`
 	Name        NilString `json:"name"`
 	Description NilString `json:"description"`
-	// The module's lessons in this version, in course order, by slug.
-	LessonSlugs []string `json:"lessonSlugs"`
+	// The module's lessons in this version, in course order.
+	Lessons []LearnerLesson `json:"lessons"`
 }
 
 // GetID returns the value of ID.
-func (s *CourseModuleListItem) GetID() int32 {
+func (s *CourseModule) GetID() int32 {
 	return s.ID
 }
 
 // GetName returns the value of Name.
-func (s *CourseModuleListItem) GetName() NilString {
+func (s *CourseModule) GetName() NilString {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *CourseModuleListItem) GetDescription() NilString {
+func (s *CourseModule) GetDescription() NilString {
 	return s.Description
 }
 
-// GetLessonSlugs returns the value of LessonSlugs.
-func (s *CourseModuleListItem) GetLessonSlugs() []string {
-	return s.LessonSlugs
+// GetLessons returns the value of Lessons.
+func (s *CourseModule) GetLessons() []LearnerLesson {
+	return s.Lessons
 }
 
 // SetID sets the value of ID.
-func (s *CourseModuleListItem) SetID(val int32) {
+func (s *CourseModule) SetID(val int32) {
 	s.ID = val
 }
 
 // SetName sets the value of Name.
-func (s *CourseModuleListItem) SetName(val NilString) {
+func (s *CourseModule) SetName(val NilString) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *CourseModuleListItem) SetDescription(val NilString) {
+func (s *CourseModule) SetDescription(val NilString) {
 	s.Description = val
 }
 
-// SetLessonSlugs sets the value of LessonSlugs.
-func (s *CourseModuleListItem) SetLessonSlugs(val []string) {
-	s.LessonSlugs = val
+// SetLessons sets the value of Lessons.
+func (s *CourseModule) SetLessons(val []LearnerLesson) {
+	s.Lessons = val
 }
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
@@ -3560,9 +3595,10 @@ type CourseProgress struct {
 	State NilEnrollmentState `json:"state"`
 	// The share of the Course's current Lessons finished (0–100).
 	Completion int32 `json:"completion"`
-	// The first unfinished Lesson in course order — where the learner resumes.
-	NextLessonSlug NilString            `json:"nextLessonSlug"`
-	Lessons        []LessonProgressItem `json:"lessons"`
+	// The Next Lesson: the first unfinished Lesson in course order, where the learner resumes. Null when
+	// there is none to offer: the Course is finished or has no lessons, or that lesson has no translation
+	// in the request locale and so no page there.
+	NextLesson NilLessonRef `json:"nextLesson"`
 }
 
 // GetState returns the value of State.
@@ -3575,14 +3611,9 @@ func (s *CourseProgress) GetCompletion() int32 {
 	return s.Completion
 }
 
-// GetNextLessonSlug returns the value of NextLessonSlug.
-func (s *CourseProgress) GetNextLessonSlug() NilString {
-	return s.NextLessonSlug
-}
-
-// GetLessons returns the value of Lessons.
-func (s *CourseProgress) GetLessons() []LessonProgressItem {
-	return s.Lessons
+// GetNextLesson returns the value of NextLesson.
+func (s *CourseProgress) GetNextLesson() NilLessonRef {
+	return s.NextLesson
 }
 
 // SetState sets the value of State.
@@ -3595,17 +3626,10 @@ func (s *CourseProgress) SetCompletion(val int32) {
 	s.Completion = val
 }
 
-// SetNextLessonSlug sets the value of NextLessonSlug.
-func (s *CourseProgress) SetNextLessonSlug(val NilString) {
-	s.NextLessonSlug = val
+// SetNextLesson sets the value of NextLesson.
+func (s *CourseProgress) SetNextLesson(val NilLessonRef) {
+	s.NextLesson = val
 }
-
-// SetLessons sets the value of Lessons.
-func (s *CourseProgress) SetLessons(val []LessonProgressItem) {
-	s.Lessons = val
-}
-
-func (*CourseProgress) startLessonRes() {}
 
 // Publication/readiness state of a course.
 // Ref: #/components/schemas/CourseReadiness
@@ -3732,12 +3756,11 @@ type CourseView struct {
 	// where legacy sent the visitor to the site root: a page that is gone says so. It travels in the body
 	// rather than as a 3xx because the HTTP clients on both ends follow redirects themselves, so the
 	// visitor's browser would never see one. Null for a live page.
-	MovedTo NilString              `json:"movedTo"`
-	Lessons []CourseLessonListItem `json:"lessons"`
+	MovedTo NilString       `json:"movedTo"`
+	Lessons []LearnerLesson `json:"lessons"`
 	// The modules of the course's current version in the request locale, in course order — the learning
-	// program's accordion. Each names its lessons by slug, joined to `lessons` for names, so the flat list
-	// stays the one source of lesson rows the page and the player share.
-	Modules []CourseModuleListItem `json:"modules"`
+	// program's accordion, each with its lessons.
+	Modules []CourseModule `json:"modules"`
 	// The landing page's questions and answers, oldest first; empty without a landing page.
 	QnaItems []QnaItem `json:"qnaItems"`
 	// The current user's enrollment, when signed in.
@@ -3765,12 +3788,12 @@ func (s *CourseView) GetMovedTo() NilString {
 }
 
 // GetLessons returns the value of Lessons.
-func (s *CourseView) GetLessons() []CourseLessonListItem {
+func (s *CourseView) GetLessons() []LearnerLesson {
 	return s.Lessons
 }
 
 // GetModules returns the value of Modules.
-func (s *CourseView) GetModules() []CourseModuleListItem {
+func (s *CourseView) GetModules() []CourseModule {
 	return s.Modules
 }
 
@@ -3805,12 +3828,12 @@ func (s *CourseView) SetMovedTo(val NilString) {
 }
 
 // SetLessons sets the value of Lessons.
-func (s *CourseView) SetLessons(val []CourseLessonListItem) {
+func (s *CourseView) SetLessons(val []LearnerLesson) {
 	s.Lessons = val
 }
 
 // SetModules sets the value of Modules.
-func (s *CourseView) SetModules(val []CourseModuleListItem) {
+func (s *CourseView) SetModules(val []CourseModule) {
 	s.Modules = val
 }
 
@@ -3886,6 +3909,45 @@ func (s *CurrentUser) SetUser(val NilUser) {
 	s.User = val
 }
 
+// One course on the dashboard: the enrollment, where the learner stands, and the card to draw.
+// Ref: #/components/schemas/DashboardCourse
+type DashboardCourse struct {
+	Enrollment Enrollment     `json:"enrollment"`
+	Progress   CourseProgress `json:"progress"`
+	// The course's main catalog entry in the request locale.
+	Card CourseCatalogItem `json:"card"`
+}
+
+// GetEnrollment returns the value of Enrollment.
+func (s *DashboardCourse) GetEnrollment() Enrollment {
+	return s.Enrollment
+}
+
+// GetProgress returns the value of Progress.
+func (s *DashboardCourse) GetProgress() CourseProgress {
+	return s.Progress
+}
+
+// GetCard returns the value of Card.
+func (s *DashboardCourse) GetCard() CourseCatalogItem {
+	return s.Card
+}
+
+// SetEnrollment sets the value of Enrollment.
+func (s *DashboardCourse) SetEnrollment(val Enrollment) {
+	s.Enrollment = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *DashboardCourse) SetProgress(val CourseProgress) {
+	s.Progress = val
+}
+
+// SetCard sets the value of Card.
+func (s *DashboardCourse) SetCard(val CourseCatalogItem) {
+	s.Card = val
+}
+
 // DeleteAccountNoContent is response for DeleteAccount operation.
 type DeleteAccountNoContent struct{}
 
@@ -3928,18 +3990,15 @@ func (s *EmailInput) SetEmail(val string) {
 	s.Email = val
 }
 
-// A learner's enrollment in a course (table `language_members`).
+// A learner's record of where they are in one course (table `language_members`). It remembers; what it
+// adds up to (Completion, the Next Lesson) is computed against the current Version and travels as
+// CourseProgress.
 // Ref: #/components/schemas/Enrollment
 type Enrollment struct {
 	ID       int32              `json:"id"`
 	UserId   int32              `json:"userId"`
 	CourseId int32              `json:"courseId"`
 	State    NilEnrollmentState `json:"state"`
-	// Completion: the share of the course's current lessons finished (0–100).
-	Completion     int32     `json:"completion"`
-	NextLessonName NilString `json:"nextLessonName"`
-	// Where the learner stands, and what they may take next.
-	Progress CourseProgress `json:"progress"`
 }
 
 // GetID returns the value of ID.
@@ -3962,21 +4021,6 @@ func (s *Enrollment) GetState() NilEnrollmentState {
 	return s.State
 }
 
-// GetCompletion returns the value of Completion.
-func (s *Enrollment) GetCompletion() int32 {
-	return s.Completion
-}
-
-// GetNextLessonName returns the value of NextLessonName.
-func (s *Enrollment) GetNextLessonName() NilString {
-	return s.NextLessonName
-}
-
-// GetProgress returns the value of Progress.
-func (s *Enrollment) GetProgress() CourseProgress {
-	return s.Progress
-}
-
 // SetID sets the value of ID.
 func (s *Enrollment) SetID(val int32) {
 	s.ID = val
@@ -3995,21 +4039,6 @@ func (s *Enrollment) SetCourseId(val int32) {
 // SetState sets the value of State.
 func (s *Enrollment) SetState(val NilEnrollmentState) {
 	s.State = val
-}
-
-// SetCompletion sets the value of Completion.
-func (s *Enrollment) SetCompletion(val int32) {
-	s.Completion = val
-}
-
-// SetNextLessonName sets the value of NextLessonName.
-func (s *Enrollment) SetNextLessonName(val NilString) {
-	s.NextLessonName = val
-}
-
-// SetProgress sets the value of Progress.
-func (s *Enrollment) SetProgress(val CourseProgress) {
-	s.Progress = val
 }
 
 // Enrollment and lesson-progress lifecycle (legacy `MemberState`).
@@ -4488,6 +4517,80 @@ func (s *LeadPage) SetPerPage(val int32) {
 
 func (*LeadPage) adminListLeadsRes() {}
 
+// A Lesson as the course page and the player list it, with the visitor's standing in it. The checkmark
+// travels with the row, so no screen has to join two lists.
+// Ref: #/components/schemas/LearnerLesson
+type LearnerLesson struct {
+	ID          int32     `json:"id"`
+	Slug        string    `json:"slug"`
+	Name        NilString `json:"name"`
+	Description NilString `json:"description"`
+	// Position in the current Version, 1..N across the whole Course.
+	Position int32 `json:"position"`
+	// Whether the visitor has finished it (a guest's cookie counts).
+	Finished bool `json:"finished"`
+}
+
+// GetID returns the value of ID.
+func (s *LearnerLesson) GetID() int32 {
+	return s.ID
+}
+
+// GetSlug returns the value of Slug.
+func (s *LearnerLesson) GetSlug() string {
+	return s.Slug
+}
+
+// GetName returns the value of Name.
+func (s *LearnerLesson) GetName() NilString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *LearnerLesson) GetDescription() NilString {
+	return s.Description
+}
+
+// GetPosition returns the value of Position.
+func (s *LearnerLesson) GetPosition() int32 {
+	return s.Position
+}
+
+// GetFinished returns the value of Finished.
+func (s *LearnerLesson) GetFinished() bool {
+	return s.Finished
+}
+
+// SetID sets the value of ID.
+func (s *LearnerLesson) SetID(val int32) {
+	s.ID = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *LearnerLesson) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetName sets the value of Name.
+func (s *LearnerLesson) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *LearnerLesson) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetPosition sets the value of Position.
+func (s *LearnerLesson) SetPosition(val int32) {
+	s.Position = val
+}
+
+// SetFinished sets the value of Finished.
+func (s *LearnerLesson) SetFinished(val bool) {
+	s.Finished = val
+}
+
 // The learner's in-lesson chat, plus whether they may ask again today. The quota flag rides along with
 // the history so the panel renders its disabled state on first paint instead of discovering it from a
 // refused question.
@@ -4937,45 +5040,6 @@ func (s *LessonProgress) SetCourseLessonName(val string) {
 	s.CourseLessonName = val
 }
 
-// Per-Lesson state for the course and lesson pages: the checkmarks.
-// Ref: #/components/schemas/LessonProgressItem
-type LessonProgressItem struct {
-	Slug string `json:"slug"`
-	// Position in the current Version, 1..N across the whole Course.
-	Position int32 `json:"position"`
-	Finished bool  `json:"finished"`
-}
-
-// GetSlug returns the value of Slug.
-func (s *LessonProgressItem) GetSlug() string {
-	return s.Slug
-}
-
-// GetPosition returns the value of Position.
-func (s *LessonProgressItem) GetPosition() int32 {
-	return s.Position
-}
-
-// GetFinished returns the value of Finished.
-func (s *LessonProgressItem) GetFinished() bool {
-	return s.Finished
-}
-
-// SetSlug sets the value of Slug.
-func (s *LessonProgressItem) SetSlug(val string) {
-	s.Slug = val
-}
-
-// SetPosition sets the value of Position.
-func (s *LessonProgressItem) SetPosition(val int32) {
-	s.Position = val
-}
-
-// SetFinished sets the value of Finished.
-func (s *LessonProgressItem) SetFinished(val bool) {
-	s.Finished = val
-}
-
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/LessonProgressPage
@@ -5030,6 +5094,45 @@ func (s *LessonProgressPage) SetPerPage(val int32) {
 }
 
 func (*LessonProgressPage) adminListLessonProgressRes() {}
+
+// A lesson named for a link or a button: how to address it, to open it or start it, and what to call
+// it.
+// Ref: #/components/schemas/LessonRef
+type LessonRef struct {
+	ID   int32     `json:"id"`
+	Slug string    `json:"slug"`
+	Name NilString `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *LessonRef) GetID() int32 {
+	return s.ID
+}
+
+// GetSlug returns the value of Slug.
+func (s *LessonRef) GetSlug() string {
+	return s.Slug
+}
+
+// GetName returns the value of Name.
+func (s *LessonRef) GetName() NilString {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *LessonRef) SetID(val int32) {
+	s.ID = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *LessonRef) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetName sets the value of Name.
+func (s *LessonRef) SetName(val NilString) {
+	s.Name = val
+}
 
 type ListQuerySortOrder string
 
@@ -5125,55 +5228,33 @@ func (s *Locale) UnmarshalText(data []byte) error {
 // The signed-in user's dashboard (legacy: `MyController#show`).
 // Ref: #/components/schemas/MyDashboard
 type MyDashboard struct {
-	StartedEnrollments  []Enrollment `json:"startedEnrollments"`
-	FinishedEnrollments []Enrollment `json:"finishedEnrollments"`
-	// Landing page (catalog item) keyed by course id, for each enrollment.
-	LandingPagesByCourseId MyDashboardLandingPagesByCourseId `json:"landingPagesByCourseId"`
+	// Courses in progress, newest enrollment first.
+	Started []DashboardCourse `json:"started"`
+	// Finished courses, newest enrollment first.
+	Finished []DashboardCourse `json:"finished"`
 }
 
-// GetStartedEnrollments returns the value of StartedEnrollments.
-func (s *MyDashboard) GetStartedEnrollments() []Enrollment {
-	return s.StartedEnrollments
+// GetStarted returns the value of Started.
+func (s *MyDashboard) GetStarted() []DashboardCourse {
+	return s.Started
 }
 
-// GetFinishedEnrollments returns the value of FinishedEnrollments.
-func (s *MyDashboard) GetFinishedEnrollments() []Enrollment {
-	return s.FinishedEnrollments
+// GetFinished returns the value of Finished.
+func (s *MyDashboard) GetFinished() []DashboardCourse {
+	return s.Finished
 }
 
-// GetLandingPagesByCourseId returns the value of LandingPagesByCourseId.
-func (s *MyDashboard) GetLandingPagesByCourseId() MyDashboardLandingPagesByCourseId {
-	return s.LandingPagesByCourseId
+// SetStarted sets the value of Started.
+func (s *MyDashboard) SetStarted(val []DashboardCourse) {
+	s.Started = val
 }
 
-// SetStartedEnrollments sets the value of StartedEnrollments.
-func (s *MyDashboard) SetStartedEnrollments(val []Enrollment) {
-	s.StartedEnrollments = val
-}
-
-// SetFinishedEnrollments sets the value of FinishedEnrollments.
-func (s *MyDashboard) SetFinishedEnrollments(val []Enrollment) {
-	s.FinishedEnrollments = val
-}
-
-// SetLandingPagesByCourseId sets the value of LandingPagesByCourseId.
-func (s *MyDashboard) SetLandingPagesByCourseId(val MyDashboardLandingPagesByCourseId) {
-	s.LandingPagesByCourseId = val
+// SetFinished sets the value of Finished.
+func (s *MyDashboard) SetFinished(val []DashboardCourse) {
+	s.Finished = val
 }
 
 func (*MyDashboard) getMyDashboardRes() {}
-
-// Landing page (catalog item) keyed by course id, for each enrollment.
-type MyDashboardLandingPagesByCourseId map[string]CourseCatalogItem
-
-func (s *MyDashboardLandingPagesByCourseId) init() MyDashboardLandingPagesByCourseId {
-	m := *s
-	if m == nil {
-		m = map[string]CourseCatalogItem{}
-		*s = m
-	}
-	return m
-}
 
 // NewNilBanner returns new NilBanner with value set to v.
 func NewNilBanner(v Banner) NilBanner {
@@ -5799,6 +5880,51 @@ func (o NilLandingPageState) Get() (v LandingPageState, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilLessonRef returns new NilLessonRef with value set to v.
+func NewNilLessonRef(v LessonRef) NilLessonRef {
+	return NilLessonRef{
+		Value: v,
+	}
+}
+
+// NilLessonRef is nullable LessonRef.
+type NilLessonRef struct {
+	Value LessonRef
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilLessonRef) SetTo(v LessonRef) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilLessonRef) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilLessonRef) SetToNull() {
+	o.Null = true
+	var v LessonRef
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilLessonRef) Get() (v LessonRef, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilLessonRef) Or(d LessonRef) LessonRef {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7763,6 +7889,11 @@ func (s *StaffRolePermission) SetCanUpdate(val bool) {
 func (s *StaffRolePermission) SetCanDestroy(val bool) {
 	s.CanDestroy = val
 }
+
+// StartLessonNoContent is response for StartLesson operation.
+type StartLessonNoContent struct{}
+
+func (*StartLessonNoContent) startLessonRes() {}
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
 type SwitchLocaleNoContent struct {

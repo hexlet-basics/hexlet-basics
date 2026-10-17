@@ -140,7 +140,7 @@ export default function LessonWorkspace({
 
   // Passing opens the reference solution, and a lesson already finished opens it
   // from the start: revisiting is not the same as being stuck.
-  const finished = view.progress?.lessons.find((item) => item.slug === lesson.slug)?.finished;
+  const finished = view.lessons.find((item) => item.slug === lesson.slug)?.finished;
   const solutionUnlocked = Boolean(finished) || Boolean(result?.passed);
 
   return (

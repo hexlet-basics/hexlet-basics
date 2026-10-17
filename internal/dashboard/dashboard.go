@@ -7,6 +7,10 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/progress"
@@ -19,6 +23,17 @@ type Course struct {
 	Enrollment *ent.Enrollment
 	Card       *ent.CourseLandingPage
 	State      *progress.CourseState
+
+	// NextLesson is the Next Lesson as the request locale knows it: its id and
+	// what it is called. Nil when there is none, or it has no translation in the
+	// locale and so no page there; the state knows the lesson only by its slug.
+	NextLesson *NextLesson
+}
+
+// NextLesson is a lesson to resume at, addressed and named.
+type NextLesson struct {
+	ID   int
+	Name string
 }
 
 // Courses is the dashboard: what the learner is working on and what they have
@@ -75,18 +90,83 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 		return Courses{}, err
 	}
 
+	next, err := d.nextLessons(ctx, locale, states)
+	if err != nil {
+		return Courses{}, err
+	}
+
 	var dashboard Courses
 	for _, e := range enrollments {
 		card, ok := cards[e.CourseID]
 		if !ok {
 			continue
 		}
-		course := Course{Enrollment: e, Card: card, State: states[e.CourseID]}
-		if course.State.State == progress.StateFinished {
-			dashboard.Finished = append(dashboard.Finished, course)
+		state := states[e.CourseID]
+		listed := Course{Enrollment: e, Card: card, State: state}
+		if state.NextLessonSlug != nil {
+			if lesson, ok := next[lessonKey{courseID: e.CourseID, slug: *state.NextLessonSlug}]; ok {
+				listed.NextLesson = &lesson
+			}
+		}
+		if state.State == progress.StateFinished {
+			dashboard.Finished = append(dashboard.Finished, listed)
 		} else {
-			dashboard.Started = append(dashboard.Started, course)
+			dashboard.Started = append(dashboard.Started, listed)
 		}
 	}
 	return dashboard, nil
+}
+
+// lessonKey names a lesson across courses: slugs are unique only within one.
+type lessonKey struct {
+	courseID int
+	slug     string
+}
+
+// nextLessons resolves each course's Next Lesson in locale, in one query for
+// every course. A lesson that has no translation in the locale has no entry: the
+// dashboard then shows the course without a resume link rather than a slug where
+// a name belongs.
+func (d *Dashboard) nextLessons(
+	ctx context.Context,
+	locale string,
+	states map[int]*progress.CourseState,
+) (map[lessonKey]NextLesson, error) {
+	var courseIDs []int
+	var slugs []string
+	for courseID, state := range states {
+		if state.NextLessonSlug != nil {
+			courseIDs = append(courseIDs, courseID)
+			slugs = append(slugs, *state.NextLessonSlug)
+		}
+	}
+	if len(slugs) == 0 {
+		return nil, nil
+	}
+
+	rows, err := d.db.CourseLessonTranslation.Query().
+		Where(
+			courselessontranslation.LocaleEQ(locale),
+			courselessontranslation.HasCourseVersionWith(
+				courseversion.HasCurrentCoursesWith(course.IDIn(courseIDs...)),
+			),
+			courselessontranslation.HasLessonWith(courselesson.SlugIn(slugs...)),
+		).
+		WithLesson().
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	lessons := make(map[lessonKey]NextLesson, len(rows))
+	for _, row := range rows {
+		if row.Edges.Lesson == nil || row.Edges.Lesson.Slug == nil || row.Name == nil {
+			continue
+		}
+		lessons[lessonKey{courseID: row.CourseID, slug: *row.Edges.Lesson.Slug}] = NextLesson{
+			ID:   row.CourseLessonID,
+			Name: *row.Name,
+		}
+	}
+	return lessons, nil
 }

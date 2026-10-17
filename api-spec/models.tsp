@@ -159,20 +159,26 @@ model CourseCatalogItem {
   course: Course;
 }
 
-/** A learner's enrollment in a course (table `language_members`). */
+/**
+ * A learner's record of where they are in one course (table `language_members`).
+ * It remembers; what it adds up to (Completion, the Next Lesson) is computed
+ * against the current Version and travels as CourseProgress.
+ */
 model Enrollment {
   id: int32;
   userId: int32;
   courseId: int32;
   state: EnrollmentState | null;
+}
 
-  /** Completion: the share of the course's current lessons finished (0–100). */
-  completion: int32;
-
-  nextLessonName: string | null;
-
-  /** Where the learner stands, and what they may take next. */
-  progress: CourseProgress;
+/**
+ * A lesson named for a link or a button: how to address it, to open it or start
+ * it, and what to call it.
+ */
+model LessonRef {
+  id: int32;
+  slug: string;
+  name: string | null;
 }
 
 /**
@@ -185,20 +191,37 @@ model CourseProgress {
   /** The share of the Course's current Lessons finished (0–100). */
   completion: int32;
 
-  /** The first unfinished Lesson in course order — where the learner resumes. */
-  nextLessonSlug: string | null;
-
-  lessons: LessonProgressItem[];
+  /**
+   * The Next Lesson: the first unfinished Lesson in course order, where the
+   * learner resumes. Null when there is none to offer: the Course is finished or
+   * has no lessons, or that lesson has no translation in the request locale and
+   * so no page there.
+   */
+  nextLesson: LessonRef | null;
 }
 
-/** Per-Lesson state for the course and lesson pages: the checkmarks. */
-model LessonProgressItem {
+/**
+ * A Lesson as the course page and the player list it, with the visitor's
+ * standing in it. The checkmark travels with the row, so no screen has to join
+ * two lists.
+ */
+model LearnerLesson {
+  id: int32;
   slug: string;
+  name: string | null;
+  description: string | null;
 
   /** Position in the current Version, 1..N across the whole Course. */
   position: int32;
 
+  /** Whether the visitor has finished it (a guest's cookie counts). */
   finished: boolean;
+}
+
+/** The Lessons on either side of one Lesson in course order. Not the Next Lesson. */
+model AdjacentLessons {
+  previous: LessonRef | null;
+  next: LessonRef | null;
 }
 
 // ---- Course categories & landing pages ------------------------------------
@@ -308,15 +331,15 @@ model CourseLessonListItem {
 
 /** A module of a course version in one locale (legacy:
 `Language::Module::Version::Info`, as `Language::ModuleResource` served it). */
-model CourseModuleListItem {
+model CourseModule {
   /** The module's stable id, as legacy's resource exposed it. */
   id: int32;
 
   name: string | null;
   description: string | null;
 
-  /** The module's lessons in this version, in course order, by slug. */
-  lessonSlugs: string[];
+  /** The module's lessons in this version, in course order. */
+  lessons: LearnerLesson[];
 }
 
 /** A learner's progress through one lesson (legacy: `LanguageLessonMember`,

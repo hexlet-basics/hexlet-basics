@@ -89,13 +89,22 @@ model UserCreated {
   @body user: User;
 }
 
+/** One course on the dashboard: the enrollment, where the learner stands, and the card to draw. */
+model DashboardCourse {
+  enrollment: Enrollment;
+  progress: CourseProgress;
+
+  /** The course's main catalog entry in the request locale. */
+  card: CourseCatalogItem;
+}
+
 /** The signed-in user's dashboard (legacy: `MyController#show`). */
 model MyDashboard {
-  startedEnrollments: Enrollment[];
-  finishedEnrollments: Enrollment[];
+  /** Courses in progress, newest enrollment first. */
+  started: DashboardCourse[];
 
-  /** Landing page (catalog item) keyed by course id, for each enrollment. */
-  landingPagesByCourseId: Record<CourseCatalogItem>;
+  /** Finished courses, newest enrollment first. */
+  finished: DashboardCourse[];
 }
 
 // ---- Session / current user ----------------------------------------------

@@ -3,9 +3,9 @@ package handlers_test
 import (
 	"context"
 	"net/http"
-	"strconv"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -28,16 +28,62 @@ func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	require.Len(t, dashboard.StartedEnrollments, 1)
-	assert.Empty(t, dashboard.FinishedEnrollments)
+	require.Len(t, dashboard.Started, 1)
+	assert.Empty(t, dashboard.Finished)
 
-	started := dashboard.StartedEnrollments[0]
-	assert.Equal(t, int32(33), started.Completion)
-	assert.Equal(t, secondLessonSlug, started.Progress.NextLessonSlug.Value)
+	started := dashboard.Started[0]
+	assert.Equal(t, int32(33), started.Progress.Completion)
+	assert.Equal(t, jsCourseSlug, started.Card.Course.Slug, "each course carries its own card")
+	assert.Equal(t, started.Enrollment.CourseId, started.Card.Course.ID)
+}
 
-	card, ok := dashboard.LandingPagesByCourseId[strconv.Itoa(int(started.CourseId))]
-	require.True(t, ok, "each enrollment is paired with its catalogue card")
-	assert.Equal(t, jsCourseSlug, card.Course.Slug)
+// The resume link is labelled with the lesson's name, as the course page names
+// it, never with its slug. This learner has finished nothing, so they resume at
+// the first lesson, which has a Russian translation.
+func TestDashboardNamesTheNextLessonAsTheCoursePageDoes(t *testing.T) {
+	h := testsupport.NewHarnessAs(t, "user_quota_used_today")
+	testsupport.SpeakTo(h, "ru")
+	ctx := t.Context()
+
+	res, err := h.Client.GetMyDashboard(ctx)
+	require.NoError(t, err)
+	next := res.(*api.MyDashboard).Started[0].Progress.NextLesson.Value
+
+	page, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	require.NoError(t, err)
+	lesson, ok := lo.Find(page.(*api.CourseView).Lessons, func(l api.LearnerLesson) bool { return l.Slug == next.Slug })
+	require.True(t, ok)
+
+	assert.Equal(t, firstLessonSlug, next.Slug)
+	require.False(t, next.Name.Null, "the lesson is translated into the locale")
+	assert.Equal(t, lesson.Name.Value, next.Name.Value)
+	assert.NotEqual(t, next.Slug, next.Name.Value)
+}
+
+// A lesson not translated into the locale has no page there to resume at, so the
+// dashboard shows the course without a resume link rather than a slug where a
+// name belongs.
+func TestDashboardGivesAnUntranslatedNextLessonNoLink(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	res, err := h.Client.GetMyDashboard(t.Context())
+	require.NoError(t, err)
+	course := res.(*api.MyDashboard).Started[0]
+
+	assert.True(t, course.Progress.NextLesson.Null, "the second lesson has no ru translation")
+	assert.InDelta(t, 33, course.Progress.Completion, 0, "the standing is unaffected")
+}
+
+// A finished course has nowhere to resume.
+func TestDashboardGivesAFinishedCourseNoNextLesson(t *testing.T) {
+	h := testsupport.NewHarnessAs(t, "user_learner_finished_javascript")
+	testsupport.SpeakTo(h, "ru")
+
+	res, err := h.Client.GetMyDashboard(t.Context())
+	require.NoError(t, err)
+
+	assert.True(t, res.(*api.MyDashboard).Finished[0].Progress.NextLesson.Null)
 }
 
 // A finished course moves to the other list rather than disappearing.
@@ -50,9 +96,9 @@ func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 	require.NoError(t, err)
 	dashboard := res.(*api.MyDashboard)
 
-	assert.Empty(t, dashboard.StartedEnrollments)
-	require.Len(t, dashboard.FinishedEnrollments, 1)
-	assert.Equal(t, int32(100), dashboard.FinishedEnrollments[0].Completion)
+	assert.Empty(t, dashboard.Started)
+	require.Len(t, dashboard.Finished, 1)
+	assert.Equal(t, int32(100), dashboard.Finished[0].Progress.Completion)
 }
 
 // Both lists at once, each carrying its own course's card.
@@ -65,9 +111,10 @@ func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 	require.NoError(t, err)
 	dashboard := res.(*api.MyDashboard)
 
-	require.Len(t, dashboard.StartedEnrollments, 1)
-	require.Len(t, dashboard.FinishedEnrollments, 1)
-	assert.Len(t, dashboard.LandingPagesByCourseId, 2)
+	require.Len(t, dashboard.Started, 1)
+	require.Len(t, dashboard.Finished, 1)
+	assert.NotEqual(t, dashboard.Started[0].Card.Course.ID, dashboard.Finished[0].Card.Course.ID,
+		"each carries its own course's card")
 }
 
 // A course with no main catalogue entry has no card to render, so it is
@@ -83,9 +130,8 @@ func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
 	require.NoError(t, err)
 	dashboard := res.(*api.MyDashboard)
 
-	require.Len(t, dashboard.StartedEnrollments, 1, "only the course with a card")
-	assert.NotEqual(t, int32(cardless.ID), dashboard.StartedEnrollments[0].CourseId)
-	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(cardless.ID))
+	require.Len(t, dashboard.Started, 1, "only the course with a card")
+	assert.NotEqual(t, int32(cardless.ID), dashboard.Started[0].Enrollment.CourseId)
 }
 
 // The card follows the legacy dashboard scope, `LandingPage.web.where(main:
@@ -102,9 +148,9 @@ func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) 
 	require.NoError(t, err)
 	dashboard := res.(*api.MyDashboard)
 
-	require.Len(t, dashboard.StartedEnrollments, 1, "only JavaScript has a public card")
-	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(draft))
-	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(foreign))
+	require.Len(t, dashboard.Started, 1, "only JavaScript has a public card")
+	assert.NotEqual(t, int32(draft), dashboard.Started[0].Enrollment.CourseId)
+	assert.NotEqual(t, int32(foreign), dashboard.Started[0].Enrollment.CourseId)
 }
 
 // Unlike the catalogue, the dashboard never required `listed`: a learner's own
@@ -118,7 +164,9 @@ func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
 	require.NoError(t, err)
 	dashboard := res.(*api.MyDashboard)
 
-	assert.Contains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(hidden))
+	assert.True(t, lo.ContainsBy(dashboard.Started, func(c api.DashboardCourse) bool {
+		return c.Enrollment.CourseId == int32(hidden)
+	}))
 }
 
 // A visitor is refused, cookie or no cookie: the dashboard is the incentive to

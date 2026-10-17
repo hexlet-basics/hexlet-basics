@@ -30,9 +30,9 @@ import (
 // 404 rather than the other locale's copy. The page shown is the one the URL
 // names, not the course's main page, so a secondary page keeps its own copy.
 //
-// The lesson list model stays the shared one; per-learner state travels in the
-// progress payload instead, because the same list model feeds the admin lesson
-// index where a learner's state is meaningless.
+// Each lesson in the list carries the visitor's standing in it, so the page
+// joins nothing; the course's own standing (Completion, the Next Lesson) travels
+// as the progress payload.
 //
 // An anonymous request is not an error: it returns the same payload with no
 // enrollment, which is exactly what the page renders for a visitor today.
@@ -55,12 +55,23 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		return nil, err
 	}
 
-	lessons, err := s.currentLessonList(ctx, crs)
+	// Everyone gets a standing, because everyone has one: a visitor who has
+	// finished nothing stands at the beginning, and that is a fact about the
+	// course, not about having an account. Deriving it client-side instead would
+	// be a second implementation of what finished means.
+	learner := currentLearner(ctx)
+	state, err := s.progress.CourseState(ctx, learner, crs.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	modules, err := s.currentModuleList(ctx, crs)
+	infos, err := s.currentLessonInfos(ctx, crs)
+	if err != nil {
+		return nil, err
+	}
+	lessons := apiconv.ToLearnerLessons(infos, state)
+
+	moduleRows, err := s.currentModuleRows(ctx, crs)
 	if err != nil {
 		return nil, err
 	}
@@ -75,23 +86,15 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		LandingPage: landing,
 		MovedTo:     movedTo,
 		Lessons:     lessons,
-		Modules:     modules,
+		Modules:     apiconv.ToCourseModules(moduleRows, lessons),
 		QnaItems:    qnaItems,
 		Enrollment:  api.NilEnrollment{Null: true},
 		Progress:    api.NilCourseProgress{Null: true},
 	}
-
-	// Everyone gets a standing, because everyone has one: a visitor who has
-	// finished nothing stands at the beginning, and that is a fact about the
-	// course, not about having an account. Deriving it client-side instead would
-	// be a second implementation of what finished means.
-	learner := currentLearner(ctx)
-	state, err := s.progress.CourseState(ctx, learner, crs.ID)
-	if err != nil {
-		return nil, err
-	}
 	if len(state.Lessons) > 0 {
-		view.Progress = api.NewNilCourseProgress(apiconv.ToCourseProgress(state))
+		view.Progress = api.NewNilCourseProgress(
+			apiconv.ToCourseProgress(state, apiconv.NextLessonRef(state.NextLessonSlug, lessons)),
+		)
 	}
 
 	if !learner.SignedIn() {
@@ -108,7 +111,7 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	case err != nil:
 		return nil, err
 	}
-	view.Enrollment = api.NewNilEnrollment(apiconv.ToEnrollment(enrolled, state))
+	view.Enrollment = api.NewNilEnrollment(apiconv.ToEnrollment(enrolled))
 	return view, nil
 }
 
@@ -169,17 +172,18 @@ func (s *Server) mainLandingPage(ctx context.Context, crs *ent.Course) (api.NilC
 	return api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page)), nil
 }
 
-// currentLessonList is the lessons of the course's current version, in the
-// request locale, ordered as the course orders them.
+// currentLessonInfos is the translations of the lessons of the course's current
+// version in the request locale, each with its lesson loaded, ordered as the
+// course orders them.
 //
 // Course order is the Position on the lesson's version row — the same number the
-// progress payload's positions come from, so the two arrays the pages join line
-// up entry for entry. Ordering by the row's own id instead would be legacy crc32
-// ids in a random sequence, and ordering by the lesson's `natural_order` would
-// read a column the loader stopped writing.
-func (s *Server) currentLessonList(ctx context.Context, crs *ent.Course) ([]api.CourseLessonListItem, error) {
+// progress state's positions come from, so a lesson row and its standing line up.
+// Ordering by the row's own id instead would be legacy crc32 ids in a random
+// sequence, and ordering by the lesson's `natural_order` would read a column the
+// loader stopped writing.
+func (s *Server) currentLessonInfos(ctx context.Context, crs *ent.Course) ([]*ent.CourseLessonTranslation, error) {
 	if crs.CurrentVersionID == nil {
-		return []api.CourseLessonListItem{}, nil
+		return nil, nil
 	}
 
 	infos, err := s.db.CourseLessonTranslation.Query().
@@ -198,27 +202,22 @@ func (s *Server) currentLessonList(ctx context.Context, crs *ent.Course) ([]api.
 	if err != nil {
 		return nil, err
 	}
-	return s.conv.ToCourseLessonListItems(infos), nil
+	return infos, nil
 }
 
-// currentModuleList is the modules of the course's current version, in the
+// currentModuleRows is the modules of the course's current version, in the
 // request locale, each with its lessons in course order — the learning
 // program legacy's course page rendered as an accordion.
 //
 // Modules are ordered by their version row's Position, as the loader built
 // them; the translation id breaks ties. A module's lessons are ordered by the
-// same natural order currentLessonList uses, so a module's slugs read in the
+// same natural order currentLessonInfos uses, so a module's lessons read in the
 // order the flat list shows them.
-func (s *Server) currentModuleList(ctx context.Context, crs *ent.Course) ([]api.CourseModuleListItem, error) {
+func (s *Server) currentModuleRows(ctx context.Context, crs *ent.Course) ([]*ent.CourseModuleTranslation, error) {
 	if crs.CurrentVersionID == nil {
-		return []api.CourseModuleListItem{}, nil
+		return nil, nil
 	}
-
-	rows, err := curriculum.Modules(ctx, s.db, s.i18n.Locale(ctx), *crs.CurrentVersionID)
-	if err != nil {
-		return nil, err
-	}
-	return s.conv.ToCourseModuleListItems(rows), nil
+	return curriculum.Modules(ctx, s.db, s.i18n.Locale(ctx), *crs.CurrentVersionID)
 }
 
 // landingQnaItems is the landing page's questions and answers, oldest first,

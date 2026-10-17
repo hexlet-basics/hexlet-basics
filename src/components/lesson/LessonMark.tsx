@@ -1,7 +1,6 @@
 import { Box, Center, rem } from "@mantine/core";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import type { LessonProgressItem } from "@/client/types.gen";
 
 // The mark beside a lesson's name: a check when it is finished, and an empty slot
 // of the same width otherwise so the names line up. Lessons may be taken in any
@@ -9,10 +8,10 @@ import type { LessonProgressItem } from "@/client/types.gen";
 //
 // Shared by the player's lesson list and the course page, so the two screens
 // mark the same lesson the same way from the same payload.
-export default function LessonMark({ state }: { state: LessonProgressItem | undefined }) {
+export default function LessonMark({ finished }: { finished: boolean }) {
   const { t } = useTranslation();
 
-  if (state?.finished) {
+  if (finished) {
     return (
       <Center c="green" aria-label={t(($) => $.courses.lessons.show.finished)}>
         <IconCircleCheck size={16} />

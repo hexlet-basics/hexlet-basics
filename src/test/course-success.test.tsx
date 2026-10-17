@@ -5,6 +5,7 @@ import type {
   Course,
   CourseLandingPage,
   CourseView,
+  CourseProgress,
   EnrollmentState,
   User,
 } from "@/client/types.gen";
@@ -79,30 +80,29 @@ const landingPage: CourseLandingPage = {
 
 // The course read for a learner whose Enrollment is in `state`, or who has none.
 function courseView(state: EnrollmentState | null): CourseView {
-  const progress = {
+  const progress: CourseProgress = {
     state,
     completion: state === "finished" ? 100 : 0,
-    nextLessonSlug: state === "finished" ? null : "hello-world",
-    lessons: [{ slug: "hello-world", position: 1, finished: state === "finished" }],
+    nextLesson:
+      state === "finished" ? null : { id: 1001, slug: "hello-world", name: "Hello, World!" },
   };
   return {
     course,
     landingPage,
     movedTo: null,
-    lessons: [{ id: 1001, name: "Hello, World!", description: null, slug: "hello-world" }],
+    lessons: [
+      {
+        id: 1001,
+        name: "Hello, World!",
+        description: null,
+        slug: "hello-world",
+        position: 1,
+        finished: state === "finished",
+      },
+    ],
     modules: [],
     qnaItems: [],
-    enrollment: state
-      ? {
-          id: 5,
-          userId: user.id,
-          courseId: course.id,
-          state,
-          completion: progress.completion,
-          nextLessonName: null,
-          progress,
-        }
-      : null,
+    enrollment: state ? { id: 5, userId: user.id, courseId: course.id, state } : null,
     progress,
   };
 }

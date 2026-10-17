@@ -9,14 +9,9 @@ import { NavLink } from "@/components/RouterLink";
 export default function LessonNavigation({ view }: { view: CourseLessonView }) {
   const courseSlug = view.lesson.course.slug;
 
-  // Names and order come from `lessons`, checks from `progress`, joined
-  // by slug — the same pair the course page renders, so the two cannot disagree.
-  const stateBySlug = new Map(view.progress?.lessons.map((item) => [item.slug, item]) ?? []);
-
   return (
     <Box p="lg">
       {view.lessons.map((item) => {
-        const state = stateBySlug.get(item.slug);
         const current = item.slug === view.lesson.slug;
 
         return (
@@ -27,7 +22,7 @@ export default function LessonNavigation({ view }: { view: CourseLessonView }) {
             label={item.name}
             active={current}
             aria-current={current ? "page" : undefined}
-            leftSection={<LessonMark state={state} />}
+            leftSection={<LessonMark finished={item.finished} />}
           />
         );
       })}

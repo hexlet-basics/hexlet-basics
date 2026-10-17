@@ -19,48 +19,46 @@ import (
 // acting user has finished the first of the three current lessons.
 func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.False(t, view.Enrollment.Null)
-	progress := view.Enrollment.Value.Progress
+	progress := view.Progress.Value
 
 	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value)
 	assert.Equal(t, int32(33), progress.Completion, "one of three current lessons")
-	assert.Equal(t, secondLessonSlug, progress.NextLessonSlug.Value, "resume at the first unfinished lesson")
+	assert.Equal(t, secondLessonSlug, progress.NextLesson.Value.Slug, "resume at the first unfinished lesson")
 
-	require.Len(t, progress.Lessons, 3)
+	require.Len(t, view.Lessons, 3)
 	assert.Equal(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug},
-		[]string{progress.Lessons[0].Slug, progress.Lessons[1].Slug, progress.Lessons[2].Slug},
+		[]string{view.Lessons[0].Slug, view.Lessons[1].Slug, view.Lessons[2].Slug},
 		"in course order")
 
-	assert.True(t, progress.Lessons[0].Finished)
-	assert.False(t, progress.Lessons[1].Finished)
-	assert.False(t, progress.Lessons[2].Finished)
+	assert.True(t, view.Lessons[0].Finished)
+	assert.False(t, view.Lessons[1].Finished)
+	assert.False(t, view.Lessons[2].Finished)
 }
 
 // Lessons may be taken in any order: a learner who finished the third lesson but
 // not the second has exactly those marked, and the course is still unfinished.
 func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 	h := testsupport.NewHarnessAs(t, "user_learner_with_a_gap")
-	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
-	progress := view.Enrollment.Value.Progress
+	progress := view.Progress.Value
 
 	assert.Equal(t, int32(66), progress.Completion, "two of three, never clamped")
-	assert.Equal(t, secondLessonSlug, progress.NextLessonSlug.Value, "the gap is where they resume")
-	assert.False(t, progress.Lessons[1].Finished)
-	assert.True(t, progress.Lessons[2].Finished)
+	assert.Equal(t, secondLessonSlug, progress.NextLesson.Value.Slug, "the gap is where they resume")
+	assert.False(t, view.Lessons[1].Finished)
+	assert.True(t, view.Lessons[2].Finished)
 	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value, "a gap leaves the course unfinished")
 }
 
@@ -88,9 +86,9 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	progress := view.Progress.Value
 	assert.True(t, progress.State.Null, "nothing started")
 	assert.Equal(t, int32(0), progress.Completion)
-	assert.Equal(t, firstLessonSlug, progress.NextLessonSlug.Value)
-	assert.False(t, progress.Lessons[0].Finished)
-	assert.False(t, progress.Lessons[1].Finished)
+	assert.Equal(t, firstLessonSlug, progress.NextLesson.Value.Slug)
+	assert.False(t, view.Lessons[0].Finished)
+	assert.False(t, view.Lessons[1].Finished)
 }
 
 // The learning program: the current version's modules in the request locale,
@@ -113,9 +111,9 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 		"ru translations only, ordered by the module version's order")
 
 	require.NotEmpty(t, view.Modules)
-	assert.Equal(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug}, view.Modules[0].LessonSlugs,
-		"a module's lessons in course order")
-	assert.Empty(t, view.Modules[1].LessonSlugs)
+	assert.Equal(t, []string{firstLessonSlug}, moduleLessonSlugs(view.Modules[0]),
+		"a module lists the lessons translated into the locale: the others have no page here")
+	assert.Empty(t, view.Modules[1].Lessons)
 }
 
 // The landing page's questions and answers travel with the course, oldest
@@ -144,10 +142,9 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 // derived from the lessons the cookie names, and only those.
 func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
-	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 
@@ -157,42 +154,41 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 
 	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value)
 	assert.Equal(t, int32(66), progress.Completion, "two of three")
-	assert.Equal(t, thirdLessonSlug, progress.NextLessonSlug.Value)
-	assert.True(t, progress.Lessons[0].Finished)
-	assert.True(t, progress.Lessons[1].Finished)
-	assert.False(t, progress.Lessons[2].Finished)
+	assert.Equal(t, thirdLessonSlug, progress.NextLesson.Value.Slug)
+	assert.True(t, view.Lessons[0].Finished)
+	assert.True(t, view.Lessons[1].Finished)
+	assert.False(t, view.Lessons[2].Finished)
 }
 
 // A visitor who took the third lesson first has that one marked and not the two
 // before it: a later lesson no longer implies the earlier ones.
 func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
-	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	progress := res.(*api.CourseView).Progress.Value
+	view := res.(*api.CourseView)
+	progress := view.Progress.Value
 
 	assert.Equal(t, int32(33), progress.Completion)
-	assert.Equal(t, firstLessonSlug, progress.NextLessonSlug.Value)
-	assert.False(t, progress.Lessons[0].Finished)
-	assert.False(t, progress.Lessons[1].Finished)
-	assert.True(t, progress.Lessons[2].Finished)
+	assert.Equal(t, firstLessonSlug, progress.NextLesson.Value.Slug)
+	assert.False(t, view.Lessons[0].Finished)
+	assert.False(t, view.Lessons[1].Finished)
+	assert.True(t, view.Lessons[2].Finished)
 }
 
 // A cookie naming a lesson the current version dropped resolves to nothing, so
 // the guest starts that course over rather than being stranded.
 func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
-	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 
 	require.False(t, view.Progress.Null)
 	assert.Equal(t, int32(0), view.Progress.Value.Completion)
-	assert.False(t, view.Progress.Value.Lessons[0].Finished)
+	assert.False(t, view.Lessons[0].Finished)
 }
 
 // A tampered cookie is not progress: it is discarded on the way in, leaving the
@@ -301,4 +297,14 @@ func progressCookie(courseSlug string, lessonSlugs ...string) progress.GuestProg
 		guest = guest.Record(courseSlug, slug)
 	}
 	return guest
+}
+
+// moduleLessonSlugs are the slugs of a module's lessons, in the order the module
+// lists them.
+func moduleLessonSlugs(m api.CourseModule) []string {
+	slugs := make([]string, 0, len(m.Lessons))
+	for _, lesson := range m.Lessons {
+		slugs = append(slugs, lesson.Slug)
+	}
+	return slugs
 }
