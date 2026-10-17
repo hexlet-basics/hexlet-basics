@@ -641,17 +641,24 @@ gets half of `MCP_MAX_RESPONSE_BYTES`, the longest string is cut with the usual
 `truncation` hint, and the hint says the full text is on the website, at `url`.
 An id that is malformed, or that names nothing a visitor may read (missing,
 draft, archived, in another locale), is a tool error that says which; a landing
-page that was archived and moved says where.
+page that was archived and moved says where. The halving has a floor: below about
+1.5 KB for `MCP_MAX_RESPONSE_BYTES` (the config minimum is 1 KB) the room left for
+the hint (700 bytes) leaves none for the document, and `search` and `fetch`
+answer a tool error naming the limit instead of a cut result.
 
 **A finding, not changed here.** `getCourse` and `getCourseLesson` answer a
 request for a landing page that is a draft, or for a lesson of a course that is
 not completed, whatever its state: the website does not link to them, but the
 URL works (`coursepages` checks the slug and the locale, and an archived page's
 redirect, not the state). The HTTP behaviour is not this ticket's to change, so
-`fetch` guards against it instead: a course is fetched only when its landing
-page is published and its Course completed, a lesson only when its Course is
-completed, so `fetch` is never more permissive than `search`. Whether the HTTP
-operations should answer 404 for those is a question for the owner of the
+`fetch` guards against it instead, and so adds a rule of its own to what #851
+said the tools add (nothing): a course is fetched only when its landing page is
+published and listed and its Course completed, a lesson only when its Course is
+completed. That is the part of search's scope that the view carries; a lesson's
+other condition (some listed landing page of its course in the locale) is not in
+its view and is not re-checked, so a `fetch` of a lesson whose course has no
+listed page may answer where search would not have found it. Whether the HTTP
+operations should answer 404 for drafts is a question for the owner of the
 public course pages.
 
 **Not done here.** The site has no search box; the operation is in the contract

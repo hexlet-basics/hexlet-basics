@@ -254,8 +254,8 @@ func (s *Server) fetch(ctx context.Context, c call) (result, error) {
 // The website serves a landing page by its URL whatever its state, and a lesson
 // of a course that is not completed yet, because it never links to them; an id is
 // a link an assistant holds, and what a search can never return a fetch must not
-// start to hand out, so a page that is not published, or a course that is not
-// completed, is not found here, as it is for search.
+// start to hand out, so a landing page that is not published and listed, or a
+// course that is not completed, is not found here, as it is for search.
 func (s *Server) fetchCourse(ctx context.Context, ref search.Ref) (*document, error) {
 	res, err := s.deps.Catalogue.GetCourse(ctx, api.GetCourseParams{Slug: ref.Slug})
 	if missing(err) {
@@ -272,6 +272,7 @@ func (s *Server) fetchCourse(ctx context.Context, ref search.Ref) (*document, er
 		return nil, userError{fmt.Errorf("%s has moved: read %s instead", search.CourseID(ref.Slug), search.CourseID(view.MovedTo.Value))}
 	}
 	if view.LandingPage.Null || view.LandingPage.Value.State != api.NewNilLandingPageState(api.LandingPageStatePublished) ||
+		view.LandingPage.Value.Listed != api.NewNilBool(true) ||
 		view.Course.Readiness != api.NewNilCourseReadiness(api.CourseReadinessCompleted) {
 		return nil, nil
 	}

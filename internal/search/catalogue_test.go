@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
@@ -247,7 +248,7 @@ func TestAPageBeyondTheWindowIsEmptyButTheTotalIsTold(t *testing.T) {
 func TestNoLearnerWrittenTextIsSearched(t *testing.T) {
 	db := testsupport.NewClient(t)
 	// The review's author wrote the body, and the site shows it on a course page.
-	review := db.Review.Query().FirstX(t.Context())
+	review := db.Review.GetX(t.Context(), fixtures.ID(fixtures.ReviewAdminLearnerRubyPublished))
 	require.Equal(t, "Отличный курс, всё понятно", *review.Body)
 
 	client, queries, _ := recording(t)

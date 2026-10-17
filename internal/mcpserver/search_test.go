@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -237,6 +238,18 @@ func TestAnIdThatNamesNothingAVisitorMayReadIsAClearToolError(t *testing.T) {
 			assert.Nil(t, result.StructuredContent)
 		})
 	}
+}
+
+// A landing page the lists do not show is not one search returns, and fetch does
+// not hand it out either, though the website would serve its URL.
+func TestAnUnlistedCourseIsNotFetched(t *testing.T) {
+	o := testsupport.NewOAuth(t)
+	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
+	require.False(t, callTool(t, session, "fetch", map[string]any{"id": "course:ruby-ru"}).IsError, "listed, it is fetched")
+
+	o.DB.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("ruby-ru")).SetListed(false).ExecX(t.Context())
+
+	assert.True(t, callTool(t, session, "fetch", map[string]any{"id": "course:ruby-ru"}).IsError)
 }
 
 func TestAnArchivedCourseSaysWhereItMovedInsteadOfAnswering(t *testing.T) {
