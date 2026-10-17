@@ -191,10 +191,14 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		Dashboard: dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
-		Events:    services.Events,
-		I18n:      translator,
-		Errors:    errorHandler,
-		OAuth:     server,
+		// The administrators' write and read side of users, which the user admin
+		// tools reach: the real ones, as in NewHarness.
+		UserEditor:    accounts.NewEditor(db),
+		UserDirectory: accounts.NewDirectory(db),
+		Events:        services.Events,
+		I18n:          translator,
+		Errors:        errorHandler,
+		OAuth:         server,
 		// What the admin operations that are tools reach: the roles screen's
 		// writer, the blog post remover and the related-courses replacer, the
 		// real ones over the test transaction as in NewHarness.
