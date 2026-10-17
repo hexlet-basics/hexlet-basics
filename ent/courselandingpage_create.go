@@ -387,6 +387,10 @@ func (_c *CourseLandingPageCreate) defaults() {
 		v := courselandingpage.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.State(); !ok {
+		v := courselandingpage.DefaultState
+		_c.mutation.SetState(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.

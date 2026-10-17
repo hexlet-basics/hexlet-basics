@@ -201,6 +201,10 @@ func (_c *ReviewCreate) defaults() {
 		v := review.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.State(); !ok {
+		v := review.DefaultState
+		_c.mutation.SetState(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.

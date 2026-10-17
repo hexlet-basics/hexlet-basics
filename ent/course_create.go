@@ -255,6 +255,10 @@ func (_c *CourseCreate) defaults() {
 		v := course.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.Readiness(); !ok {
+		v := course.DefaultReadiness
+		_c.mutation.SetReadiness(v)
+	}
 	if _, ok := _c.mutation.EnrollmentsCount(); !ok {
 		v := course.DefaultEnrollmentsCount
 		_c.mutation.SetEnrollmentsCount(v)

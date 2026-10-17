@@ -211,6 +211,10 @@ func init() {
 	course.DefaultUpdatedAt = courseDescUpdatedAt.Default.(func() time.Time)
 	// course.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	course.UpdateDefaultUpdatedAt = courseDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// courseDescReadiness is the schema descriptor for readiness field.
+	courseDescReadiness := courseFields[3].Descriptor()
+	// course.DefaultReadiness holds the default value on creation for the readiness field.
+	course.DefaultReadiness = courseDescReadiness.Default.(string)
 	// courseDescEnrollmentsCount is the schema descriptor for enrollments_count field.
 	courseDescEnrollmentsCount := courseFields[5].Descriptor()
 	// course.DefaultEnrollmentsCount holds the default value on creation for the enrollments_count field.
@@ -264,6 +268,10 @@ func init() {
 	courselandingpage.DefaultUpdatedAt = courselandingpageDescUpdatedAt.Default.(func() time.Time)
 	// courselandingpage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	courselandingpage.UpdateDefaultUpdatedAt = courselandingpageDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// courselandingpageDescState is the schema descriptor for state field.
+	courselandingpageDescState := courselandingpageFields[7].Descriptor()
+	// courselandingpage.DefaultState holds the default value on creation for the state field.
+	courselandingpage.DefaultState = courselandingpageDescState.Default.(string)
 	courselessonMixin := schema.CourseLesson{}.Mixin()
 	courselessonMixinFields0 := courselessonMixin[0].Fields()
 	_ = courselessonMixinFields0
@@ -599,6 +607,10 @@ func init() {
 	review.DefaultUpdatedAt = reviewDescUpdatedAt.Default.(func() time.Time)
 	// review.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	review.UpdateDefaultUpdatedAt = reviewDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// reviewDescState is the schema descriptor for state field.
+	reviewDescState := reviewFields[6].Descriptor()
+	// review.DefaultState holds the default value on creation for the state field.
+	review.DefaultState = reviewDescState.Default.(string)
 	sessionFields := schema.Session{}.Fields()
 	_ = sessionFields
 	// sessionDescID is the schema descriptor for id field.
