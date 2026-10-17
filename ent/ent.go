@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -118,6 +119,7 @@ func checkColumn(t, c string) error {
 			aichat.Table:                    aichat.ValidColumn,
 			aimessage.Table:                 aimessage.ValidColumn,
 			attachment.Table:                attachment.ValidColumn,
+			auditrecord.Table:               auditrecord.ValidColumn,
 			banner.Table:                    banner.ValidColumn,
 			blogpost.Table:                  blogpost.ValidColumn,
 			blogpostlike.Table:              blogpostlike.ValidColumn,

@@ -284,6 +284,9 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		handler,
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
+		// The production unit of work, over the savepoint transactor: the audit
+		// record and the change share a savepoint, as they share a commit.
+		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator)),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
@@ -398,6 +401,14 @@ func SpeakTo(h *Harness, locale string) {
 	h.doer.locale = locale
 }
 
+// Identify makes every following request carry the given request id and user
+// agent, the way a proxy and a browser would, so a test can read them back off
+// an Audit Record.
+func Identify(h *Harness, requestID, agent string) {
+	h.doer.requestID = requestID
+	h.doer.agent = agent
+}
+
 // ArriveFrom makes every following request come through the ingress on
 // behalf of a client at ip, the way production sees a browser.
 func ArriveFrom(h *Harness, ip string) {
@@ -487,6 +498,9 @@ type inProcessDoer struct {
 	locale string
 	// realIP is the client address the ingress would forward.
 	realIP string
+	// requestID and agent are what a client or proxy would send; empty leaves
+	// the header to the default.
+	requestID, agent string
 	// setCookies are the raw Set-Cookie headers of the last response.
 	setCookies []string
 }
@@ -508,6 +522,12 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	}
 	if d.realIP != "" {
 		r.Header.Set("X-Real-IP", d.realIP)
+	}
+	if d.requestID != "" {
+		r.Header.Set("X-Request-ID", d.requestID)
+	}
+	if d.agent != "" {
+		r.Header.Set("User-Agent", d.agent)
 	}
 	// A streamed body (the generated multipart encoder writes through a pipe)
 	// has no length on the client side; over a socket net/http sends it chunked

@@ -157,3 +157,95 @@ hand to the same shape.
 Departures from the text above: none. The locale is still the `Accept-Language`
 match, not a request argument; ADR-0018's locale argument is not part of this
 slice.
+
+## Addendum: how an Audit Record joins the business transaction
+
+Settled by the audit tracer slice, blog posts. It closes the "Not designed yet"
+item under Consequences. It meets the ADR as written: a change and its record
+share one transaction, from one place, shared by the website and MCP; no
+departure.
+
+**The problem.** The generated server hands a handler a context, not a
+transaction, and handlers query through `s.db`, an autocommit client. A record
+written "in the same transaction" needs the handler's own writes to run on a
+transaction the recorder also holds.
+
+**One unit of work, selected by the contract.** `handlers.NewAuditMiddleware`
+is an ogen middleware (`api.WithMiddleware`, wired in `di` and in the test
+harness). It runs after security and body decoding, and only for an operation
+whose declared Permission (`x-permission`) has kind `write`; everything else
+passes through. For such an operation it opens one transaction through
+`store.Transactor`, runs the handler, and on success writes the Audit Record
+through the same transaction before commit. A handler error rolls everything
+back, so a change that failed leaves no record; a record that cannot be written
+fails the operation, so a change never commits without one. A resource that
+declares its Permissions in TypeSpec is audited with no code of its own, which
+is the whole mechanism later tickets inherit: #845 only has to declare the
+remaining admin writes.
+
+**How the handler joins without knowing.** `store.WithAmbientTx` puts the
+transaction in the context, and two things honour it:
+
+- the ent client built by `store.NewClient` is wrapped in a routing driver that
+  sends a statement to the context's transaction when there is one and to the
+  pool when there is not (ent hands the caller's context to every `Exec`,
+  `Query` and `Tx`). A handler keeps writing `s.db.BlogPost.Create()`, and its
+  read-after-write (`getAdminBlogPost`) sees the write;
+- `Store.WithinTx` called with such a context joins it instead of opening a
+  second transaction, so `blogposts.Remover`, `relatedcourses.Replacer` and the
+  other modules that own an atomic step become part of the operation's commit.
+  They keep their own atomicity when called outside one (a worker, a test).
+
+Considered and not chosen: a `s.dbFor(ctx)` helper replacing `s.db` in every
+write handler (per-handler code, and a forgotten call silently writes outside
+the transaction); a decorator around `api.Handler` (needs a method per
+operation, regenerated with the contract); an ent hook alone (it can observe a
+mutation but cannot make the write share a transaction).
+
+**What a record holds, and how changes are captured.** `audit.Hook` is an ent
+hook installed by `store.NewClient` and `store.NewTxClient`; it does nothing
+unless an `audit.Recorder` is in the context. With one, it notes every
+mutation: entity type, id, operation and, for each field, the old and new value
+as JSON. An update of one row reads the old values first (ent allows that for
+`UpdateOne`) and leaves out a field set to what it already was; `created_at`
+and `updated_at` are ent's own and are skipped. A delete of one row records
+entity and id, not old values, because ent offers no generic read of the row
+being deleted; a bulk update or delete (a `Where`) is recorded without id. The
+record is filed under the first single-row change (the post, not the likes
+deleted before it), and one operation is always one record however many rows it
+touched. An operation that changes no row still leaves its record.
+
+**Secrets.** The marker is ent's own `Sensitive()`, not a new annotation: it
+already means "keep this out of output", `User.password_digest` and
+`confirmation_token` carry it, and a second marker could disagree with it. An
+ent template (`ent/template/auditsecret.tmpl`) generates `ent.AuditSecretFields`
+from the schema, so marking a field is enough. A secret field appears in
+`changes` as `{"name": ..., "secret": true}` with no values, and only when it
+changed.
+
+**Who, where, how.** The actor is the authenticated user of the context; the
+address is `WithClientIP`'s; user agent and request id come from the HTTP
+request (the request id is `X-Request-ID` if sent, else the OpenTelemetry trace
+id, else a random one); the locale is the `Accept-Language` match, unchanged;
+the channel is `web`, from `audit.SourceFrom(ctx)`. The MCP server sets
+`audit.WithSource` (channel `mcp`, Connected App and token ids) and runs its
+tool calls through the same middleware, so it records the same way; the columns
+for both ids exist and are nullable. The names in code are Audit Record, never
+"event".
+
+**The table.** `audit_records` (migration `audit_records`): no foreign keys,
+since a record outlives the user, app and entity it names; primary key
+`(id, occurred_at)` so the table can become monthly-partitioned (#846) without
+a rewrite, which this slice does not do, nor retention. A
+row-level `BEFORE UPDATE OR DELETE` trigger raises an error, in the migration
+because production Go may not issue raw SQL (`forbidigo`); a row trigger is
+cloned onto partitions, a statement trigger is not. Retention drops whole
+partitions, which the trigger does not see. A test proves the database refuses
+both statements.
+
+**Left for the next tickets, and not designed out.** Refusals never reach the
+middleware (they are rejected in `HandleAdminSession`), and a handler failure
+rolls back its own record; `audit.Write` already takes an outcome and an
+`Entry` without a user, so #845 writes `forbidden` and `failed` records from
+the security handler and from the middleware's error path, each in its own short
+transaction. Reads of personal data (#850) go through Watermill, not this path.

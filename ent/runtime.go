@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -84,6 +85,12 @@ func init() {
 	attachmentDescCreatedAt := attachmentFields[4].Descriptor()
 	// attachment.DefaultCreatedAt holds the default value on creation for the created_at field.
 	attachment.DefaultCreatedAt = attachmentDescCreatedAt.Default.(func() time.Time)
+	auditrecordFields := schema.AuditRecord{}.Fields()
+	_ = auditrecordFields
+	// auditrecordDescOccurredAt is the schema descriptor for occurred_at field.
+	auditrecordDescOccurredAt := auditrecordFields[0].Descriptor()
+	// auditrecord.DefaultOccurredAt holds the default value on creation for the occurred_at field.
+	auditrecord.DefaultOccurredAt = auditrecordDescOccurredAt.Default.(func() time.Time)
 	bannerMixin := schema.Banner{}.Mixin()
 	bannerMixinFields0 := bannerMixin[0].Fields()
 	_ = bannerMixinFields0

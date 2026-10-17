@@ -21,6 +21,9 @@ type AiMessage func(*sql.Selector)
 // Attachment is the predicate function for attachment builders.
 type Attachment func(*sql.Selector)
 
+// AuditRecord is the predicate function for auditrecord builders.
+type AuditRecord func(*sql.Selector)
+
 // Banner is the predicate function for banner builders.
 type Banner func(*sql.Selector)
 

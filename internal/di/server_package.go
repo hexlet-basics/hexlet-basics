@@ -508,6 +508,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		// WithMiddleware is the unit of work of every admin write: the
+		// transaction, and the Audit Record written inside it (ADR-0017).
 		// WithErrorHandler installs the central ent-error -> HTTP-status
 		// mapping (404/409), so handlers return raw ent errors instead of
 		// typed DTOs.
@@ -515,6 +521,7 @@ var serverPackage = do.Package(
 			handler,
 			handler.Security(),
 			api.WithErrorHandler(errorHandler.Write),
+			api.WithMiddleware(handlers.NewAuditMiddleware(txStore, translator)),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),

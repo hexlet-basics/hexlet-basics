@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -70,6 +71,8 @@ type Client struct {
 	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
+	// AuditRecord is the client for interacting with the AuditRecord builders.
+	AuditRecord *AuditRecordClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
 	// BlogPost is the client for interacting with the BlogPost builders.
@@ -150,6 +153,7 @@ func (c *Client) init() {
 	c.AiChat = NewAiChatClient(c.config)
 	c.AiMessage = NewAiMessageClient(c.config)
 	c.Attachment = NewAttachmentClient(c.config)
+	c.AuditRecord = NewAuditRecordClient(c.config)
 	c.Banner = NewBannerClient(c.config)
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.BlogPostLike = NewBlogPostLikeClient(c.config)
@@ -279,6 +283,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AiChat:                    NewAiChatClient(cfg),
 		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
+		AuditRecord:               NewAuditRecordClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
@@ -335,6 +340,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AiChat:                    NewAiChatClient(cfg),
 		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
+		AuditRecord:               NewAuditRecordClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
@@ -397,7 +403,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.Attachment, c.AuditRecord, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
 		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
 		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
@@ -415,7 +421,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.Attachment, c.AuditRecord, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
 		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
 		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
@@ -441,6 +447,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AiMessage.mutate(ctx, m)
 	case *AttachmentMutation:
 		return c.Attachment.mutate(ctx, m)
+	case *AuditRecordMutation:
+		return c.AuditRecord.mutate(ctx, m)
 	case *BannerMutation:
 		return c.Banner.mutate(ctx, m)
 	case *BlogPostMutation:
@@ -1236,6 +1244,139 @@ func (c *AttachmentClient) mutate(ctx context.Context, m *AttachmentMutation) (V
 		return (&AttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Attachment mutation op: %q", m.Op())
+	}
+}
+
+// AuditRecordClient is a client for the AuditRecord schema.
+type AuditRecordClient struct {
+	config
+}
+
+// NewAuditRecordClient returns a client for the AuditRecord from the given config.
+func NewAuditRecordClient(c config) *AuditRecordClient {
+	return &AuditRecordClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `auditrecord.Hooks(f(g(h())))`.
+func (c *AuditRecordClient) Use(hooks ...Hook) {
+	c.hooks.AuditRecord = append(c.hooks.AuditRecord, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `auditrecord.Intercept(f(g(h())))`.
+func (c *AuditRecordClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AuditRecord = append(c.inters.AuditRecord, interceptors...)
+}
+
+// Create returns a builder for creating a AuditRecord entity.
+func (c *AuditRecordClient) Create() *AuditRecordCreate {
+	mutation := newAuditRecordMutation(c.config, OpCreate)
+	return &AuditRecordCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuditRecord entities.
+func (c *AuditRecordClient) CreateBulk(builders ...*AuditRecordCreate) *AuditRecordCreateBulk {
+	return &AuditRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AuditRecordClient) MapCreateBulk(slice any, setFunc func(*AuditRecordCreate, int)) *AuditRecordCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AuditRecordCreateBulk{err: fmt.Errorf("calling to AuditRecordClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AuditRecordCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AuditRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuditRecord.
+func (c *AuditRecordClient) Update() *AuditRecordUpdate {
+	mutation := newAuditRecordMutation(c.config, OpUpdate)
+	return &AuditRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuditRecordClient) UpdateOne(_m *AuditRecord) *AuditRecordUpdateOne {
+	mutation := newAuditRecordMutation(c.config, OpUpdateOne, withAuditRecord(_m))
+	return &AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuditRecordClient) UpdateOneID(id int) *AuditRecordUpdateOne {
+	mutation := newAuditRecordMutation(c.config, OpUpdateOne, withAuditRecordID(id))
+	return &AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuditRecord.
+func (c *AuditRecordClient) Delete() *AuditRecordDelete {
+	mutation := newAuditRecordMutation(c.config, OpDelete)
+	return &AuditRecordDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AuditRecordClient) DeleteOne(_m *AuditRecord) *AuditRecordDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AuditRecordClient) DeleteOneID(id int) *AuditRecordDeleteOne {
+	builder := c.Delete().Where(auditrecord.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuditRecordDeleteOne{builder}
+}
+
+// Query returns a query builder for AuditRecord.
+func (c *AuditRecordClient) Query() *AuditRecordQuery {
+	return &AuditRecordQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAuditRecord},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AuditRecord entity by its id.
+func (c *AuditRecordClient) Get(ctx context.Context, id int) (*AuditRecord, error) {
+	return c.Query().Where(auditrecord.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuditRecordClient) GetX(ctx context.Context, id int) *AuditRecord {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AuditRecordClient) Hooks() []Hook {
+	return c.hooks.AuditRecord
+}
+
+// Interceptors returns the client interceptors.
+func (c *AuditRecordClient) Interceptors() []Interceptor {
+	return c.inters.AuditRecord
+}
+
+func (c *AuditRecordClient) mutate(ctx context.Context, m *AuditRecordMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AuditRecordCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AuditRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AuditRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AuditRecordDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AuditRecord mutation op: %q", m.Op())
 	}
 }
 
