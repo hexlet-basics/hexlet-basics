@@ -26,9 +26,7 @@ func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, 
 // with its permission count.
 func (s *Server) AdminListRoles(ctx context.Context, params api.AdminListRolesParams) (api.AdminListRolesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.StaffRoleQuery {
-			return s.db.StaffRole.Query().WithPermissions().Order(ent.Asc(staffrole.FieldName))
-		},
+		s.db.StaffRole.Query().WithPermissions().Order(ent.Asc(staffrole.FieldName)),
 		s.conv.ToStaffRoles,
 		func(items []api.StaffRole, total, page, perPage int32) *api.StaffRolePage {
 			return &api.StaffRolePage{Items: items, Total: total, Page: page, PerPage: perPage}

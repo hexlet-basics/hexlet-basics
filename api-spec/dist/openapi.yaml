@@ -160,8 +160,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -481,8 +479,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -702,8 +698,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -1035,8 +1029,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -1452,8 +1444,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -1865,8 +1855,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -1906,8 +1894,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -1993,8 +1979,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -2266,8 +2250,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -2307,8 +2289,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -2441,8 +2421,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -2659,8 +2637,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -2871,8 +2847,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -3006,8 +2980,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -3047,8 +3019,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -3407,8 +3377,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -4367,8 +4335,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -4531,25 +4497,7 @@ components:
         format: int32
         minimum: 1
         maximum: 100
-      explode: false
-    ListQuery.sortField:
-      name: sortField
-      in: query
-      required: false
-      description: Sort field (ransack `sf`).
-      schema:
-        type: string
-      explode: false
-    ListQuery.sortOrder:
-      name: sortOrder
-      in: query
-      required: false
-      description: Sort order (ransack `so`).
-      schema:
-        type: string
-        enum:
-          - asc
-          - desc
+        default: 20
       explode: false
   schemas:
     ActiveBanner:

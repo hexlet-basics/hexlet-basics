@@ -1,8 +1,6 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState, SortingState } from "@tanstack/react-table";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteRoleMutation,
@@ -11,6 +9,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { StaffRole } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { useCrudPager } from "@/components/admin/useCrudPager";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -23,15 +22,11 @@ function RolesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const pager = useCrudPager();
 
   const { data, isLoading } = useQuery(
     adminListRolesOptions({
-      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+      query: pager.query,
     }),
   );
 
@@ -46,17 +41,14 @@ function RolesList() {
     {
       accessorKey: "name",
       header: t(($) => $.models.attributes.base.name),
-      enableSorting: false,
     },
     {
       accessorKey: "description",
       header: t(($) => $.models.attributes.base.description),
-      enableSorting: false,
     },
     {
       accessorKey: "permissionsCount",
       header: t(($) => $.models.attributes.staff_role.permissions_count),
-      enableSorting: false,
     },
     {
       id: "actions",
@@ -104,10 +96,7 @@ function RolesList() {
         columns={columns}
         data={data?.items ?? []}
         total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        sorting={sorting}
-        onSortingChange={setSorting}
+        {...pager.props(data?.perPage)}
         isLoading={isLoading}
       />
     </Stack>

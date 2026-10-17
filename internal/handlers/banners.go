@@ -46,7 +46,7 @@ func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error)
 // AdminListBanners returns a page of banners, newest first.
 func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (api.AdminListBannersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.BannerQuery { return s.db.Banner.Query().Order(ent.Desc(banner.FieldID)) },
+		s.db.Banner.Query().Order(ent.Desc(banner.FieldID)),
 		s.conv.ToBanners,
 		func(items []api.Banner, total, page, perPage int32) *api.BannerPage {
 			return &api.BannerPage{Items: items, Total: total, Page: page, PerPage: perPage}

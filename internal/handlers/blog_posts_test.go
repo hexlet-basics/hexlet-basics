@@ -130,12 +130,28 @@ func TestAdminCreateBlogPost(t *testing.T) {
 	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
 	assert.Equal(t, "<p>We moved to Go.</p>", post.RichBodyHtml)
 	// The creator is the authenticated admin (the harness signs in as the
-	// fixture admin), and the locale is pinned to the default until request
-	// locale reaches handlers.
+	// fixture admin), and the locale is the request's (English without a header).
 	assert.Equal(t, "Admin Learner", post.Creator.Name.Value)
 	assert.Equal(t, "en", post.Locale.Value)
 	assert.Equal(t, int32(0), post.LikesCount)
 	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
+}
+
+// TestAdminCreateBlogPostStampsRequestLocale: the post carries the admin UI's
+// language, not a pinned default.
+func TestAdminCreateBlogPostStampsRequestLocale(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	post, err := h.Client.AdminCreateBlogPost(context.Background(), &api.BlogPostInput{
+		Name:        api.NewNilString("Заметки"),
+		Slug:        api.NewNilString("zametki"),
+		Description: api.NewNilString("Описание"),
+		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
+		RichBody:    "<p>Текст</p>",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "ru", post.Locale.Value)
 }
 
 func TestAdminUpdateBlogPost(t *testing.T) {

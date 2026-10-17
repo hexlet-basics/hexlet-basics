@@ -18,9 +18,7 @@ func withStaffMemberEdges(q *ent.StaffMemberQuery) *ent.StaffMemberQuery {
 
 func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (api.AdminListStaffMembersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.StaffMemberQuery {
-			return withStaffMemberEdges(s.db.StaffMember.Query()).Order(ent.Desc(staffmember.FieldID))
-		},
+		withStaffMemberEdges(s.db.StaffMember.Query()).Order(ent.Desc(staffmember.FieldID)),
 		s.conv.ToStaffMembers,
 		func(items []api.StaffMember, total, page, perPage int32) *api.StaffMemberPage {
 			return &api.StaffMemberPage{Items: items, Total: total, Page: page, PerPage: perPage}

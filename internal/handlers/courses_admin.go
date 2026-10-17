@@ -23,7 +23,7 @@ func withCourseVersion(q *ent.CourseQuery) *ent.CourseQuery {
 
 func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (api.AdminListCoursesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.CourseQuery { return withCourseVersion(s.db.Course.Query()).Order(ent.Desc(course.FieldID)) },
+		withCourseVersion(s.db.Course.Query()).Order(ent.Desc(course.FieldID)),
 		s.conv.ToCourses,
 		func(items []api.Course, total, page, perPage int32) *api.CoursePage {
 			return &api.CoursePage{Items: items, Total: total, Page: page, PerPage: perPage}

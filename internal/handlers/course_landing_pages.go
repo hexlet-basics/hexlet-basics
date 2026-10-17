@@ -21,9 +21,7 @@ func withLandingCourse(q *ent.CourseLandingPageQuery) *ent.CourseLandingPageQuer
 
 func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (api.AdminListCourseLandingPagesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.CourseLandingPageQuery {
-			return withLandingCourse(s.db.CourseLandingPage.Query()).Order(ent.Desc(courselandingpage.FieldID))
-		},
+		withLandingCourse(s.db.CourseLandingPage.Query()).Order(ent.Desc(courselandingpage.FieldID)),
 		s.conv.ToCourseLandingPages,
 		func(items []api.CourseLandingPage, total, page, perPage int32) *api.CourseLandingPagePage {
 			return &api.CourseLandingPagePage{Items: items, Total: total, Page: page, PerPage: perPage}

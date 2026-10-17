@@ -1,12 +1,4 @@
-import {
-  EmptyState,
-  Group,
-  Pagination,
-  Skeleton,
-  Stack,
-  Table,
-  UnstyledButton,
-} from "@mantine/core";
+import { EmptyState, Group, Pagination, Skeleton, Stack, Table } from "@mantine/core";
 import { IconDatabaseOff } from "@tabler/icons-react";
 import {
   type ColumnDef,
@@ -15,20 +7,18 @@ import {
   type PaginationState,
   type RowData,
   rowPaginationFeature,
-  rowSortingFeature,
-  type SortingState,
   tableFeatures,
   useTable,
 } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 
 // Table v9 no longer bundles every feature — each one is registered here, and an
-// unregistered feature simply has no API. The admin lists sort and paginate and
-// nothing else, so those two are all we take. Deliberately absent are the
-// `sortedRowModel` / `paginatedRowModel` slots: the server already returns one
-// ordered page, so a client-side row model would re-sort and re-slice that page
-// (wrong results, not just wasted work). The core row model is automatic in v9.
-const features = tableFeatures({ rowSortingFeature, rowPaginationFeature });
+// unregistered feature simply has no API. The admin lists paginate and nothing
+// else (the server orders; no column sorts), so that is all we take.
+// Deliberately absent is the `paginatedRowModel` slot: the server already
+// returns one page, so a client-side row model would re-slice that page (wrong
+// results, not just wasted work). The core row model is automatic in v9.
+const features = tableFeatures({ rowPaginationFeature });
 
 // v9 threads the feature set through every table type, so the column type is
 // exported pre-applied: a resource declares `CrudColumnDef<Course>[]` and stays
@@ -53,8 +43,6 @@ export interface CrudListProps<T extends RowData> {
   total: number;
   pagination: PaginationState;
   onPaginationChange: OnChangeFn<PaginationState>;
-  sorting: SortingState;
-  onSortingChange: OnChangeFn<SortingState>;
   isLoading?: boolean;
 }
 
@@ -64,23 +52,19 @@ export function CrudList<T extends RowData>({
   total,
   pagination,
   onPaginationChange,
-  sorting,
-  onSortingChange,
   isLoading,
 }: CrudListProps<T>) {
   const { t } = useTranslation();
-  const pageCount = Math.max(1, Math.ceil(total / pagination.pageSize));
+  const pageCount = Math.max(1, Math.ceil(total / Math.max(1, pagination.pageSize)));
 
   const table = useTable({
     features,
     data,
     columns,
-    state: { pagination, sorting },
+    state: { pagination },
     manualPagination: true,
-    manualSorting: true,
     pageCount,
     onPaginationChange,
-    onSortingChange,
   });
 
   return (
@@ -90,28 +74,11 @@ export function CrudList<T extends RowData>({
           <Table.Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const sorted = header.column.getIsSorted();
-                  return (
-                    <Table.Th key={header.id}>
-                      {/* A sortable header is a button, which brings the pointer
-                          cursor and keyboard access with it. */}
-                      <Group
-                        component={canSort ? UnstyledButton : "div"}
-                        onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
-                        gap={4}
-                        wrap="nowrap"
-                        fw="inherit"
-                        fz="inherit"
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {sorted === "asc" && "▲"}
-                        {sorted === "desc" && "▼"}
-                      </Group>
-                    </Table.Th>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <Table.Th key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </Table.Th>
+                ))}
               </Table.Tr>
             ))}
           </Table.Thead>

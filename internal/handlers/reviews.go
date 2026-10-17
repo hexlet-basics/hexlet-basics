@@ -16,7 +16,7 @@ import (
 // empty page, not an error, as legacy's `with_locale` scope gave it.
 func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.ReviewQuery { return reviews.Public(s.db, s.i18n.Locale(ctx)) },
+		reviews.Public(s.db, s.i18n.Locale(ctx)),
 		s.conv.ToReviews,
 		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
 			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
@@ -27,7 +27,7 @@ func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicRev
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.ReviewQuery { return reviews.WithEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)) },
+		reviews.WithEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)),
 		s.conv.ToReviews,
 		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
 			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
