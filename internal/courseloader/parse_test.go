@@ -24,7 +24,7 @@ func TestParseSpecRejectsUnknownFields(t *testing.T) {
 `
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "spec.yml"), []byte(spec), 0o644))
 
-	_, err := parseSpec(dir)
+	_, err := parseSpec(openRepo(t, dir))
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "field exercise_test_filenam not found")
@@ -38,7 +38,7 @@ descriptio: typo
 `
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "description.en.yml"), []byte(description), 0o644))
 
-	_, err := parseModuleInfos(dir)
+	_, err := parseModuleInfos(openRepo(t, dir), ".")
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "field descriptio not found")
@@ -56,7 +56,7 @@ definition: typo
 `
 	require.NoError(t, os.WriteFile(filepath.Join(localeDir, "data.yml"), []byte(data), 0o644))
 
-	_, err := parseLessonInfos(dir)
+	_, err := parseLessonInfos(openRepo(t, dir), ".")
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "field definition not found")
@@ -69,7 +69,7 @@ func TestParseSpecReportsEveryMissingKeyInOrder(t *testing.T) {
 	spec := "language:\n  name: JavaScript\n  extension: js\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "spec.yml"), []byte(spec), 0o644))
 
-	_, err := parseSpec(dir)
+	_, err := parseSpec(openRepo(t, dir))
 
 	require.Error(t, err)
 	message := err.Error()
@@ -90,4 +90,27 @@ func TestIsRemoteRef(t *testing.T) {
 	assert.False(t, isRemoteRef("http_flow.png"))
 	assert.False(t, isRemoteRef("./assets/a.png"))
 	assert.False(t, isRemoteRef("../assets/a.png"))
+}
+
+// openRepo opens dir the way Parse does: confined to it.
+func openRepo(t *testing.T, dir string) repository {
+	t.Helper()
+	root, err := os.OpenRoot(dir)
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = root.Close() })
+	return repository{fsys: root.FS(), dir: dir}
+}
+
+// A cloned repo is untrusted: a symlink that leaves it must not put the host's
+// files into the database.
+func TestParseRefusesASymlinkOutOfTheRepo(t *testing.T) {
+	outside := filepath.Join(t.TempDir(), "secret.yml")
+	require.NoError(t, os.WriteFile(outside, []byte("language:\n  name: Leaked\n"), 0o644))
+	dir := t.TempDir()
+	require.NoError(t, os.Symlink(outside, filepath.Join(dir, "spec.yml")))
+
+	_, err := Parse(dir, "js")
+
+	require.Error(t, err)
+	assert.NotContains(t, err.Error(), "Leaked")
 }

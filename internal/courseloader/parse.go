@@ -24,7 +24,9 @@ import (
 	"bytes"
 	"cmp"
 	"errors"
+	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -109,12 +111,19 @@ type Definition struct {
 // the DB course's slug (not derivable from the repo alone) and is only used to
 // build each lesson's path_to_code, matching legacy exactly.
 func Parse(dir, courseSlug string) (*Course, error) {
-	spec, err := parseSpec(dir)
+	root, err := os.OpenRoot(dir)
+	if err != nil {
+		return nil, oops.Wrapf(err, "open course repo %s", dir)
+	}
+	defer func() { _ = root.Close() }()
+	repo := repository{fsys: root.FS(), dir: dir}
+
+	spec, err := parseSpec(repo)
 	if err != nil {
 		return nil, err
 	}
 
-	modules, err := parseModules(filepath.Join(dir, "modules"), spec, courseSlug)
+	modules, err := parseModules(repo, "modules", spec, courseSlug)
 	if err != nil {
 		return nil, err
 	}
@@ -124,17 +133,32 @@ func Parse(dir, courseSlug string) (*Course, error) {
 	return &Course{Spec: *spec, Modules: modules}, nil
 }
 
-func parseSpec(dir string) (*Spec, error) {
-	path := filepath.Join(dir, "spec.yml")
-	raw, err := os.ReadFile(path)
+// repository is a course repo opened for reading. Everything is read through
+// fsys, which is rooted at the repo (os.Root): a symlink in a cloned repo that
+// points outside of it — spec.yml -> /etc/passwd — fails to open instead of
+// putting a host file into the database. Paths handed to it are slash-separated
+// and relative to the repo; dir only turns them back into the absolute paths
+// the loader needs for image uploads.
+type repository struct {
+	fsys fs.FS
+	dir  string
+}
+
+// abs is the OS path of a repo-relative path.
+func (r repository) abs(rel string) string {
+	return filepath.Join(r.dir, filepath.FromSlash(rel))
+}
+
+func parseSpec(repo repository) (*Spec, error) {
+	raw, err := fs.ReadFile(repo.fsys, "spec.yml")
 	if err != nil {
-		return nil, oops.Wrapf(err, "read %s", path)
+		return nil, oops.Wrapf(err, "read %s", repo.abs("spec.yml"))
 	}
 	var doc struct {
 		Course Spec `yaml:"language"`
 	}
 	if err := decodeYAML(raw, &doc); err != nil {
-		return nil, oops.Wrapf(err, "parse %s", path)
+		return nil, oops.Wrapf(err, "parse %s", repo.abs("spec.yml"))
 	}
 	s := doc.Course
 	// Mirror legacy's fetch("...") — a missing key is a hard error, not a blank
@@ -160,10 +184,10 @@ func parseSpec(dir string) (*Spec, error) {
 	return &s, nil
 }
 
-func parseModules(modulesDir string, spec *Spec, courseSlug string) ([]Module, error) {
-	dirs, err := subdirs(modulesDir)
+func parseModules(repo repository, modulesDir string, spec *Spec, courseSlug string) ([]Module, error) {
+	dirs, err := subdirs(repo, modulesDir)
 	if err != nil {
-		return nil, oops.Wrapf(err, "read modules dir %s", modulesDir)
+		return nil, oops.Wrapf(err, "read modules dir %s", repo.abs(modulesDir))
 	}
 
 	modules := make([]Module, 0, len(dirs))
@@ -172,9 +196,9 @@ func parseModules(modulesDir string, spec *Spec, courseSlug string) ([]Module, e
 		if err != nil {
 			return nil, oops.Wrapf(err, "module dir %q", name)
 		}
-		moduleDir := filepath.Join(modulesDir, name)
+		moduleDir := path.Join(modulesDir, name)
 
-		infos, err := parseModuleInfos(moduleDir)
+		infos, err := parseModuleInfos(repo, moduleDir)
 		if err != nil {
 			return nil, err
 		}
@@ -182,7 +206,7 @@ func parseModules(modulesDir string, spec *Spec, courseSlug string) ([]Module, e
 			return nil, oops.Errorf("module %q has no description.<locale>.yml", slug)
 		}
 
-		lessons, err := parseLessons(moduleDir, name, spec, courseSlug)
+		lessons, err := parseLessons(repo, moduleDir, name, spec, courseSlug)
 		if err != nil {
 			return nil, err
 		}
@@ -196,39 +220,39 @@ func parseModules(modulesDir string, spec *Spec, courseSlug string) ([]Module, e
 	return modules, nil
 }
 
-func parseModuleInfos(moduleDir string) ([]ModuleInfo, error) {
-	files, err := filepath.Glob(filepath.Join(moduleDir, "description.*.yml"))
+func parseModuleInfos(repo repository, moduleDir string) ([]ModuleInfo, error) {
+	// Glob returns its matches sorted, which keeps the locale order deterministic.
+	files, err := fs.Glob(repo.fsys, path.Join(moduleDir, "description.*.yml"))
 	if err != nil {
-		return nil, oops.Wrapf(err, "glob module infos in %s", moduleDir)
+		return nil, oops.Wrapf(err, "glob module infos in %s", repo.abs(moduleDir))
 	}
-	slices.Sort(files) // deterministic locale order
 
 	infos := make([]ModuleInfo, 0, len(files))
 	for _, file := range files {
-		locale := localeFromDescriptionFile(filepath.Base(file))
+		locale := localeFromDescriptionFile(path.Base(file))
 		if locale == "" {
 			continue
 		}
-		raw, err := os.ReadFile(file)
+		raw, err := fs.ReadFile(repo.fsys, file)
 		if err != nil {
-			return nil, oops.Wrapf(err, "read %s", file)
+			return nil, oops.Wrapf(err, "read %s", repo.abs(file))
 		}
 		var data struct {
 			Name        string `yaml:"name"`
 			Description string `yaml:"description"`
 		}
 		if err := decodeYAML(raw, &data); err != nil {
-			return nil, oops.Wrapf(err, "parse %s", file)
+			return nil, oops.Wrapf(err, "parse %s", repo.abs(file))
 		}
 		infos = append(infos, ModuleInfo{Locale: locale, Name: data.Name, Description: data.Description})
 	}
 	return infos, nil
 }
 
-func parseLessons(moduleDir, moduleDirName string, spec *Spec, courseSlug string) ([]Lesson, error) {
-	dirs, err := subdirs(moduleDir)
+func parseLessons(repo repository, moduleDir, moduleDirName string, spec *Spec, courseSlug string) ([]Lesson, error) {
+	dirs, err := subdirs(repo, moduleDir)
 	if err != nil {
-		return nil, oops.Wrapf(err, "read module dir %s", moduleDir)
+		return nil, oops.Wrapf(err, "read module dir %s", repo.abs(moduleDir))
 	}
 
 	lessons := make([]Lesson, 0, len(dirs))
@@ -237,18 +261,18 @@ func parseLessons(moduleDir, moduleDirName string, spec *Spec, courseSlug string
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson dir %q", name)
 		}
-		lessonDir := filepath.Join(moduleDir, name)
+		lessonDir := path.Join(moduleDir, name)
 
-		testCode, err := readFile(filepath.Join(lessonDir, spec.ExerciseTestFilename))
+		testCode, err := readFile(repo, path.Join(lessonDir, spec.ExerciseTestFilename))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson %q test file", slug)
 		}
-		originalCode, err := readFile(filepath.Join(lessonDir, spec.ExerciseFilename))
+		originalCode, err := readFile(repo, path.Join(lessonDir, spec.ExerciseFilename))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson %q exercise file", slug)
 		}
 
-		infos, err := parseLessonInfos(lessonDir)
+		infos, err := parseLessonInfos(repo, lessonDir)
 		if err != nil {
 			return nil, err
 		}
@@ -273,25 +297,25 @@ func parseLessons(moduleDir, moduleDirName string, spec *Spec, courseSlug string
 	return lessons, nil
 }
 
-func parseLessonInfos(lessonDir string) ([]LessonInfo, error) {
-	dirs, err := subdirs(lessonDir)
+func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
+	dirs, err := subdirs(repo, lessonDir)
 	if err != nil {
-		return nil, oops.Wrapf(err, "read lesson dir %s", lessonDir)
+		return nil, oops.Wrapf(err, "read lesson dir %s", repo.abs(lessonDir))
 	}
 
 	infos := make([]LessonInfo, 0)
 	for _, name := range dirs {
-		localeDir := filepath.Join(lessonDir, name)
+		localeDir := path.Join(lessonDir, name)
 		// A locale dir is exactly one that carries a data.yml — this is how the
 		// legacy loader tells `en/`/`ru/` apart from `assets/`.
-		dataPath := filepath.Join(localeDir, "data.yml")
-		if _, err := os.Stat(dataPath); err != nil {
+		dataPath := path.Join(localeDir, "data.yml")
+		if _, err := fs.Stat(repo.fsys, dataPath); err != nil {
 			continue
 		}
 
-		raw, err := os.ReadFile(dataPath)
+		raw, err := fs.ReadFile(repo.fsys, dataPath)
 		if err != nil {
-			return nil, oops.Wrapf(err, "read %s", dataPath)
+			return nil, oops.Wrapf(err, "read %s", repo.abs(dataPath))
 		}
 		var data struct {
 			Name        string       `yaml:"name"`
@@ -300,21 +324,21 @@ func parseLessonInfos(lessonDir string) ([]LessonInfo, error) {
 			Definitions []Definition `yaml:"definitions"`
 		}
 		if err := decodeYAML(raw, &data); err != nil {
-			return nil, oops.Wrapf(err, "parse %s", dataPath)
+			return nil, oops.Wrapf(err, "parse %s", repo.abs(dataPath))
 		}
 
-		theory, err := readFile(filepath.Join(localeDir, "README.md"))
+		theory, err := readFile(repo, path.Join(localeDir, "README.md"))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson locale %q theory", name)
 		}
-		instructions, err := readFile(filepath.Join(localeDir, "EXERCISE.md"))
+		instructions, err := readFile(repo, path.Join(localeDir, "EXERCISE.md"))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson locale %q instructions", name)
 		}
 
 		infos = append(infos, LessonInfo{
 			Locale:       name,
-			Dir:          localeDir,
+			Dir:          repo.abs(localeDir),
 			Name:         data.Name,
 			Description:  data.Description,
 			Theory:       theory,
@@ -385,10 +409,10 @@ func localeFromDescriptionFile(base string) string {
 	return parts[1]
 }
 
-// subdirs returns the names of immediate subdirectories of dir, sorted (os.ReadDir
+// subdirs returns the names of immediate subdirectories of dir, sorted (fs.ReadDir
 // already sorts by name). A missing directory is an error the caller wraps.
-func subdirs(dir string) ([]string, error) {
-	entries, err := os.ReadDir(dir)
+func subdirs(repo repository, dir string) ([]string, error) {
+	entries, err := fs.ReadDir(repo.fsys, dir)
 	if err != nil {
 		return nil, err
 	}
@@ -401,8 +425,8 @@ func subdirs(dir string) ([]string, error) {
 	return names, nil
 }
 
-func readFile(path string) (string, error) {
-	raw, err := os.ReadFile(path)
+func readFile(repo repository, name string) (string, error) {
+	raw, err := fs.ReadFile(repo.fsys, name)
 	if err != nil {
 		return "", err
 	}
