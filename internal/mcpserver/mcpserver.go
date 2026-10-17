@@ -138,7 +138,11 @@ func New(deps Deps) (*Server, error) {
 	// responses, because nothing here streams.
 	streamable := mcp.NewStreamableHTTPHandler(
 		func(*http.Request) *mcp.Server { return mcpServer },
-		&mcp.StreamableHTTPOptions{Stateless: true, JSONResponse: true},
+		&mcp.StreamableHTTPOptions{
+			Stateless: true, JSONResponse: true,
+			// Large enough for the upload tool's base64 argument (see upload.go).
+			MaxRequestBodyBytes: requestBodyLimit(deps.API != nil && slices.Contains(adminOperations, "adminUploadAttachment")),
+		},
 	)
 	metadataURL := deps.Issuer + metadataPathForResource
 	protected := auth.RequireBearerToken(s.verify, &auth.RequireBearerTokenOptions{

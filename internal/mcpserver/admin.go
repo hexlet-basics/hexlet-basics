@@ -32,6 +32,7 @@ import (
 var adminOperations = []string{
 	"adminListBanners",
 	"adminUpdateBanner",
+	"adminUploadAttachment",
 }
 
 // adminLocales are the locales staff work in. The tool's locale argument is
@@ -110,6 +111,12 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	}
 	if op.Body != nil {
 		properties[bodyArgument] = op.Body
+		if op.BodyRequired {
+			required = append(required, bodyArgument)
+		}
+	}
+	if op.Multipart != nil {
+		properties[bodyArgument] = uploadSchema(op.Multipart)
 		if op.BodyRequired {
 			required = append(required, bodyArgument)
 		}
@@ -296,6 +303,18 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 		}
 	}
 	var body []byte
+	contentType := "application/json"
+	if op.Multipart != nil {
+		known[bodyArgument] = true
+		if raw, ok := args[bodyArgument]; ok {
+			var problem string
+			if body, contentType, problem = multipartBody(op.Multipart, raw); problem != "" {
+				return nil, problem
+			}
+		} else if op.BodyRequired {
+			return nil, "the body argument is required"
+		}
+	}
 	if op.Body != nil {
 		known[bodyArgument] = true
 		if raw, ok := args[bodyArgument]; ok {
@@ -325,7 +344,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	}
 	req.Header.Set("Accept", "application/json")
 	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Content-Type", contentType)
 	}
 	// The locale the call is made in is the one the HTTP check reads: the
 	// request's Accept-Language, here set from the argument and from nothing else.

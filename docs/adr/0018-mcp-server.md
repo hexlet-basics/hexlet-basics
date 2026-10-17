@@ -342,3 +342,34 @@ reason as the column.
 - **Rate limiting.** The tools register through `addTool` in the `personal` Class
   of #851 (30 calls per user per window by default), behind the Scope check.
 - **Guest progress** does not exist over MCP: a bearer token always has a user.
+
+## Addendum: the attachment upload tool (#856)
+
+`adminUploadAttachment` is the first tool whose operation takes a multipart
+request. It is not a second upload path: the tool call is still an HTTP request
+served by the generated server (#854), so the security handler (`any-staff`,
+the `admin` Scope, `mcp.write`), validation, `assetstore.Put` (size, raster
+allowlist, sniffed type), the `x-unit-of-work: standalone` handling and the Audit
+Record (written after the call in its own transaction, channel `mcp`, Connected
+App and token) are the website's.
+
+**Input.** The registry reads the operation's request body from the contract: a
+`multipart/form-data` body of exactly one binary part is a "file operation"
+(anything else multipart is refused when the server is built). Its `body`
+argument is `{fileName, contentBase64, contentType?}`; `buildRequest` builds the
+multipart body with the part named as the contract names it. `contentType` is
+advisory, as on the website, where the stored type comes from the bytes. The
+output is the contract's `Attachment` (id, url, filename, contentType, byteSize).
+An upload is `ClassWrite` (it is an admin write), like every other write.
+
+**Limits.** The website's limit, `assetstore.MaxUploadBytes` (15 MiB), is the
+tool's: the length of the base64 text is checked before it is decoded, so an
+oversized argument costs no decoded copy, and the tool answers "too large" and
+stores nothing. Invalid base64, a missing name and unknown fields are tool
+errors. The multipart envelope cap of the website's route (`UploadBodyLimit`) is
+not needed in process: the tool builds the envelope itself, from at most
+15 MiB. Departure to note: the SDK's default `/mcp` request limit of 4 MiB would
+refuse the base64 of a 15 MiB file (20 MiB), so the limit of the `/mcp` endpoint
+is raised to the base64 length of the largest upload plus 1 MiB. It applies to
+every tool, but only to callers with a valid token (the bearer check runs before
+the body is read), and a request still has to fit the rate limit.

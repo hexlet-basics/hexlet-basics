@@ -13,11 +13,13 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"gocloud.dev/blob/memblob"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/oauthclient"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/handlers"
@@ -170,8 +172,13 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	sessions := session.New(db, session.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
+	// An in-memory bucket, as in the harness: the upload tool stores into it and
+	// the attachment row lands in the test's transaction.
+	bucket := memblob.OpenBucket(nil)
+	t.Cleanup(func() { _ = bucket.Close() })
 	handler := handlers.NewServer(handlers.Deps{
 		DB:        db,
+		Assets:    assetstore.New(db, bucket, testConfig.PublicURL),
 		Config:    &config.Config{GuestCookieSecret: testConfig.GuestCookieSecret, EmailTokenSecret: testConfig.EmailTokenSecret},
 		Sessions:  sessions,
 		Starter:   services.Starter,
