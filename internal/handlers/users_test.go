@@ -14,6 +14,10 @@ import (
 
 // users.yml seeds these three.
 
+// typeaheadCap is how many users the admin typeahead returns at most (the legacy
+// `.limit(20)`).
+const typeaheadCap = 20
+
 // userByEmail resolves a fixture user by its email (a stable business key),
 // reading its id back rather than hard-coding it.
 func userByEmail(t *testing.T, h *testsupport.Harness, email string) api.UserCrud {
@@ -36,7 +40,7 @@ func TestAdminListUsers(t *testing.T) {
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
 
-	page, err := h.Client.AdminListUsers(ctx, api.AdminListUsersParams{})
+	page, err := h.Client.AdminListUsers(ctx, api.AdminListUsersParams{PerPage: api.NewOptInt32(100)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
@@ -77,9 +81,10 @@ func TestAdminSearchUsers(t *testing.T) {
 	assert.Equal(t, "staff-editor@example.com", got[0].Email.Value)
 
 	// Matches on email substring.
+	// Every fixture user matches; the typeahead returns at most twenty of them.
 	got, err = h.Client.AdminSearchUsers(ctx, api.AdminSearchUsersParams{Q: "example.com"})
 	require.NoError(t, err)
-	assert.Len(t, got, totalUsers)
+	assert.Len(t, got, min(totalUsers, typeaheadCap))
 }
 
 func TestAdminSearchUsersBlank(t *testing.T) {
@@ -196,7 +201,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
-	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(ctx)
+	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(false).ExecX(ctx)
 	input := &api.UserInput{
 		Email:     "admin-learner@example.com",
 		FirstName: api.NilString{Null: true},
@@ -213,7 +218,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	// With a second administrator the same changes go through.
-	h.DB.User.UpdateOneID(danaID).SetAdmin(true).ExecX(ctx)
+	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(true).ExecX(ctx)
 	_, err = h.Client.AdminUpdateUser(ctx, input, api.AdminUpdateUserParams{ID: int32(h.UserID)})
 	require.NoError(t, err)
 }

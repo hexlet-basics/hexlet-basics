@@ -28,8 +28,8 @@ func TestAdminReviewCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	// JavaScript (82481401): its CURRENT version's infos across every locale —
-	// the en trio plus the ru hello-world info. The old-version info (2004)
+	// JavaScript: its CURRENT version's infos across every locale —
+	// the en trio plus the ru hello-world info. The old-version info
 	// must not be re-reviewed.
 	err := h.Client.AdminReviewCourse(ctx, api.AdminReviewCourseParams{ID: fixtures.ID32("course_javascript")})
 	require.NoError(t, err)
@@ -53,7 +53,7 @@ func TestAdminReviewCourseLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	// hello-world (1001): every info of the lesson — current en, old-version
+	// hello-world: every info of the lesson — current en, old-version
 	// en, and ru — so historical summaries refresh too (legacy lesson.infos).
 	err := h.Client.AdminReviewCourseLesson(ctx, api.AdminReviewCourseLessonParams{ID: fixtures.ID32("lesson_javascript_hello_world")})
 	require.NoError(t, err)

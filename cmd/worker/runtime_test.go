@@ -2,50 +2,41 @@ package main
 
 import (
 	"context"
-	"database/sql"
+	"errors"
 	"io"
 	"log/slog"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
-	"github.com/riverqueue/river"
-	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/store"
-	"hexletbasics/internal/testsupport/testdb"
 )
 
 const eventually = 10 * time.Second
 
-// newRiver is a real worker client over the test database with one no-op worker.
-func newRiver(t *testing.T) *river.Client[*sql.Tx] {
-	t.Helper()
-	workers := river.NewWorkers()
-	river.AddWorker(workers, river.WorkFunc(func(context.Context, *river.Job[jobs.AccountEmailArgs]) error {
-		return nil
-	}))
-	return newRiverWith(t, workers)
+// fakeJobs is the job queue as the runtime sees it: it starts, it stops, and it
+// says when it has stopped. The runtime's ordering is what the tests are about,
+// so nothing here needs a database.
+type fakeJobs struct {
+	startErr error
+	stopOnce sync.Once
+	stopped  chan struct{}
 }
 
-func newRiverWith(t *testing.T, workers *river.Workers) *river.Client[*sql.Tx] {
-	t.Helper()
-	pool, err := store.NewDB(testdb.DatabaseURL()) //nolint:forbidigo // a lifecycle test: a real River client needs a pool, and nothing is written
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = pool.Close() })
+func newJobs() *fakeJobs { return &fakeJobs{stopped: make(chan struct{})} }
 
-	client, err := river.NewClient(riverdatabasesql.New(pool), &river.Config{
-		Queues:  map[string]river.QueueConfig{river.QueueDefault: {MaxWorkers: 1}},
-		Workers: workers,
-	})
-	require.NoError(t, err)
-	return client
+func (f *fakeJobs) Start(context.Context) error { return f.startErr }
+
+func (f *fakeJobs) Stop(context.Context) error {
+	f.stopOnce.Do(func() { close(f.stopped) })
+	return nil
 }
+
+func (f *fakeJobs) Stopped() <-chan struct{} { return f.stopped }
 
 // watermillRouter is a Watermill router as the application's event runtime: the
 // router reports readiness on a bidirectional channel, the runtime on a
@@ -77,7 +68,7 @@ func stopped(ch <-chan struct{}) bool {
 }
 
 func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
-	jobQueue := newRiver(t)
+	jobQueue := newJobs()
 	router := newRouter(t)
 	app := application{jobs: jobQueue, events: router}
 	signalCtx, signal := context.WithCancel(context.Background())
@@ -106,7 +97,7 @@ func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 }
 
 func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
-	jobQueue := newRiver(t)
+	jobQueue := newJobs()
 	router := newRouter(t)
 	// A router that is already running cannot be run again, so Run fails.
 	go func() { _ = router.Run(t.Context()) }()
@@ -131,14 +122,14 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 }
 
 func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
-	// A worker bundle with no workers is a configuration River refuses to start.
-	jobQueue := newRiverWith(t, river.NewWorkers())
+	jobQueue := newJobs()
+	jobQueue.startErr = errors.New("job queue cannot start")
 	router := newRouter(t)
 	app := application{jobs: jobQueue, events: router}
 
 	err := app.run(context.Background(), func() {})
 
-	require.ErrorContains(t, err, "at least one Worker must be added")
+	require.ErrorContains(t, err, "job queue cannot start")
 	select {
 	case <-router.Running():
 		t.Fatal("the event router started although the job queue failed")

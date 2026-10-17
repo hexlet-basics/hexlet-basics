@@ -44,7 +44,6 @@ func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
 }
 
 func TestIDResolvesALabelOfTheRepositoryFixtures(t *testing.T) {
-	assert.Equal(t, ID("user_admin_learner"), ID("user_admin_learner"))
 	assert.NotEqual(t, ID("user_admin_learner"), ID("user_blank"))
 	assert.Panics(t, func() { ID("no_such_label") })
 }

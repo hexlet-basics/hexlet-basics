@@ -13,9 +13,9 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )

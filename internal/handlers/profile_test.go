@@ -195,12 +195,12 @@ func TestSwitchLocaleRemembersAVisitorsChoiceInACookie(t *testing.T) {
 	assert.Nil(t, h.DB.User.GetX(t.Context(), h.UserID).Locale)
 }
 
-var danaID = fixtures.ID("user_second_admin")
+var secondAdminID = fixtures.ID("user_second_admin")
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	// The fixtures have two administrators, user_admin_learner (the caller) and user_second_admin.
-	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(t.Context())
+	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(false).ExecX(t.Context())
 
 	_, err := h.Client.DeleteAccount(t.Context())
 

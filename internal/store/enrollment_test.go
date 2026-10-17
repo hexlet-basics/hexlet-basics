@@ -14,7 +14,7 @@ import (
 
 // enrolledCourseSlug is the course the fixture Enrollments belong to;
 // otherCourseSlug is any other published course. Both are addressed by slug,
-// never by id — fixture ids are legacy crc32 values.
+// never by id — fixture ids change whenever a row is added.
 const (
 	enrolledCourseSlug = "javascript"
 	otherCourseSlug    = "ruby"

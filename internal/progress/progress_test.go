@@ -61,9 +61,13 @@ func (r *rig) course(t *testing.T, slug string) *ent.Course {
 	return r.db.Course.Query().Where(course.SlugEQ(slug)).OnlyX(t.Context())
 }
 
+// lesson is the JavaScript lesson with the slug: other fixture courses have a
+// lesson of the same name, so the slug alone does not say which.
 func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 	t.Helper()
-	return r.db.CourseLesson.Query().Where(courselesson.SlugEQ(slug)).OnlyX(t.Context())
+	return r.db.CourseLesson.Query().
+		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixtures.ID("course_javascript"))).
+		OnlyX(t.Context())
 }
 
 // learner is a fixture account by label: user_admin_learner has finished the
@@ -165,7 +169,7 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	orphan := r.lesson(t, "orphan")
+	orphan := r.db.CourseLesson.GetX(ctx, fixtures.ID("lesson_orphan"))
 
 	_, err := r.progress.StartLesson(ctx, r.learner(t, "user_admin_learner"), orphan.ID, locale)
 

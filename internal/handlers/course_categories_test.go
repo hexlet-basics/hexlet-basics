@@ -13,7 +13,7 @@ import (
 )
 
 // categoryBySlug resolves a fixture category by its stable business key. Fixture
-// ids are Rails crc32 ids (large, not hand-picked), so tests key off slug and
+// ids follow the order fixture rows are written in and change when one is added, so tests key off slug and
 // read the id back rather than hard-coding it.
 func categoryBySlug(t *testing.T, h *testsupport.Harness, slug string) api.CourseCategory {
 	t.Helper()

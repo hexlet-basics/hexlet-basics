@@ -41,7 +41,7 @@ func (s *logSink) logger() *slog.Logger { return slog.New(slog.NewTextHandler(s,
 func TestRuntimeAnnouncesTheStartAndTheShutdown(t *testing.T) {
 	router := newRouter(t)
 	logs := &logSink{}
-	app := application{jobs: newRiver(t), events: router, logger: logs.logger()}
+	app := application{jobs: newJobs(), events: router, logger: logs.logger()}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)
@@ -75,7 +75,7 @@ func TestRuntimeReportsAnEventRouterThatCannotDrain(t *testing.T) {
 		return nil
 	})
 	logs := &logSink{}
-	app := application{jobs: newRiver(t), events: watermillRouter{router}, logger: logs.logger()}
+	app := application{jobs: newJobs(), events: watermillRouter{router}, logger: logs.logger()}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)

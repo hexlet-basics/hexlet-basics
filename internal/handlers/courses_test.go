@@ -15,7 +15,7 @@ import (
 //
 // Driven through the generated client against the in-process server, so it also
 // covers routing and response decoding. Fixtures come from the legacy Rails set
-// (crc32 ids), so assertions are on business facts, not raw ids. The decisive
+// (ids follow row order and change when one is added), so assertions are on business facts, not raw ids. The decisive
 // one: typescript (order 1) sorts before javascript (order 2) even though
 // typescript's Course id is the larger of the two — proving `order` drives the
 // sort, not the id.

@@ -43,7 +43,9 @@ const Password = "password"
 // the loader resets the sequences to.
 const firstID = 1001
 
-// definition is a row's primary key line: `- id: {{ id "label" }}`.
+// definition is a row's primary key line: `- id: {{ id "label" }}`, written
+// exactly so, first in the row. A row spelled any other way is not numbered and
+// the template then fails on the first reference to it.
 var definition = regexp.MustCompile(`^- id: \{\{\s*id\s+"([^"]+)"\s*\}\}\s*$`)
 
 // labels maps every label to its id.
@@ -68,6 +70,7 @@ func scan(dir string) (labels, error) {
 	return found, nil
 }
 
+// scanFile numbers the rows of one file, continuing from next.
 func scanFile(path string, found labels, next *int) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -88,7 +91,10 @@ func scanFile(path string, found labels, next *int) error {
 		found[m[1]] = *next
 		*next++
 	}
-	return scanner.Err()
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("read fixture file %s: %w", filepath.Base(path), err)
+	}
+	return nil
 }
 
 func (l labels) id(label string) (int, error) {
@@ -173,7 +179,7 @@ func PasswordDigest() (string, error) {
 func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	numbered, err := scan(dir)
 	if err != nil {
-		return err
+		return fmt.Errorf("number fixture rows: %w", err)
 	}
 	// The template options come before Directory: it reads and renders the files
 	// while the options are applied, in order.

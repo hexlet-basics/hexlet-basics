@@ -12,15 +12,15 @@ import (
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 // The harness acts as the fixture admin (user_admin_learner), who has finished the first
 // lesson of the JavaScript course and is enrolled in it. Lessons are addressed
-// by slug throughout: fixture ids are legacy crc32 values.
+// by slug throughout: fixture ids change whenever a row is added.
 const (
 	firstLessonSlug  = "hello-world" // position 1, finished by the acting user
 	secondLessonSlug = "variables"   // position 2, the first one still to do
@@ -205,10 +205,13 @@ func TestStartLessonLetsAGuestTakeAnyLesson(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 }
 
+// lessonBySlug is the JavaScript lesson with the slug: other fixture courses
+// have a lesson of the same name (a course the loader built once has a
+// hello-world too), so the slug alone does not say which.
 func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.CourseLesson {
 	t.Helper()
 	return h.DB.CourseLesson.Query().
-		Where(courselesson.SlugEQ(slug)).
+		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixtures.ID("course_javascript"))).
 		OnlyX(t.Context())
 }
 

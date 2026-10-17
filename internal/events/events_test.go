@@ -13,7 +13,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
 )
 
 func TestObserverLogsIdentityWithoutPII(t *testing.T) {

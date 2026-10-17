@@ -20,8 +20,8 @@ import (
 // reading and creating banners, in ru and en; user_admin_learner is an
 // administrator.
 var (
-	adminID = fixtures.ID("user_admin_learner")
-	bobID   = fixtures.ID("user_staff_editor")
+	adminID  = fixtures.ID("user_admin_learner")
+	editorID = fixtures.ID("user_staff_editor")
 )
 
 func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
@@ -35,13 +35,13 @@ func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
 		allowed   bool
 	}{
 		"administrator may do anything":        {adminID, "es", "AdminDeleteUser", true},
-		"granted bit":                          {bobID, "ru", "AdminListBlogPosts", true},
-		"another granted bit on a resource":    {bobID, "en", "AdminCreateBanner", true},
-		"bit the role lacks":                   {bobID, "ru", "AdminCreateBlogPost", false},
-		"resource the role has no row for":     {bobID, "ru", "AdminListReviews", false},
-		"locale outside the staff record":      {bobID, "es", "AdminListBlogPosts", false},
-		"operation only administrators may do": {bobID, "ru", "AdminListUsers", false},
-		"upload needs only being staff":        {bobID, "ru", "AdminUploadAttachment", true},
+		"granted bit":                          {editorID, "ru", "AdminListBlogPosts", true},
+		"another granted bit on a resource":    {editorID, "en", "AdminCreateBanner", true},
+		"bit the role lacks":                   {editorID, "ru", "AdminCreateBlogPost", false},
+		"resource the role has no row for":     {editorID, "ru", "AdminListReviews", false},
+		"locale outside the staff record":      {editorID, "es", "AdminListBlogPosts", false},
+		"operation only administrators may do": {editorID, "ru", "AdminListUsers", false},
+		"upload needs only being staff":        {editorID, "ru", "AdminUploadAttachment", true},
 	} {
 		u := db.User.GetX(t.Context(), c.user)
 		err := policy.Allow(t.Context(), u, c.locale, c.operation)
@@ -96,7 +96,7 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
-	editor := db.User.Query().Where(user.ID(bobID)).WithStaffMember().OnlyX(t.Context())
+	editor := db.User.Query().Where(user.ID(editorID)).WithStaffMember().OnlyX(t.Context())
 
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminListBlogPosts"))
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminCreateBlogPost"), staffroles.ErrForbidden)
@@ -107,7 +107,7 @@ func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 func TestPolicyGrantsUpdateAndDestroyOnlyWhenTheRoleHasThem(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := staffroles.NewPolicy(db)
-	editor := db.User.GetX(t.Context(), bobID)
+	editor := db.User.GetX(t.Context(), editorID)
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateBlogPost"), staffroles.ErrForbidden)
@@ -126,4 +126,3 @@ func TestPolicyGrantsUpdateAndDestroyOnlyWhenTheRoleHasThem(t *testing.T) {
 		ExecX(t.Context())
 	assert.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"))
 }
-
