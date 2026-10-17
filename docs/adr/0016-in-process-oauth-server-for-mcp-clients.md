@@ -136,3 +136,38 @@ may actually do comes from the user's Permissions at the moment of the call
   Dynamic Registration, how they handle loopback redirects, and whether they
   check `iss`. A wildcard redirect registered by a client was accepted by
   Hydra's registration; whether it matched at authorization was not tested.
+
+## Addendum: the tracer slice (#836)
+
+What the first implementation settled, and where it stops short of the text above.
+
+- **Switch and configuration.** `OAUTH_ENABLED` (default off), `OAUTH_ISSUER`
+  (a bare origin; `https` required in production) and `OAUTH_ENCRYPTION_KEY`
+  (at least 32 characters). The last two are required only when the flag is on,
+  so the default configuration needs none of them.
+- **Seam.** The package is given `oauthserver.Application`, which names the
+  signed-in user. The consent screen's three operations are TypeSpec operations
+  under `/api/oauth/consents/{requestId}` (read; `approve` and `deny` need the
+  XSRF header too); the handlers call `Pending`, `Approve` and `Deny`. A test
+  runs `go list -deps` and fails if the package depends on `internal/handlers`.
+- **ID-token signing key.** An Ed25519 key derived from the encryption secret,
+  not a stored or per-process RSA key: every replica signs and verifies alike
+  and there is no second secret in the database. Nothing authorizes with an ID
+  token.
+- **Access tokens** are the library's encrypted compact JWE of `id:subject`. The
+  table holds ids, refresh tokens and authorization codes are kept as SHA-256
+  hashes, and `VerifyAccessToken` decrypts and then looks the id up.
+- **PKCE.** S256 and a challenge are enforced in `CreateAuthRequest`; the
+  library alone accepts a missing challenge and `plain`.
+- **Closed library surface.** `/oauth/introspect` (every client is public) and
+  `/oauth/device_authorization` answer 404, and the metadata document is the
+  library's narrowed to `code`, `authorization_code` and `refresh_token`, S256
+  and public clients.
+- **A client row lists the custom scopes it may request.** That is the minimum
+  the library needs to keep `catalog:read` instead of dropping it; the policy
+  for what a registration may list is still scope admission.
+- **Not yet done**, each for its own ticket: `registration_endpoint` (not
+  advertised, since it would answer 404), the `iss` authorization-response
+  parameter, the `resource` parameter and audience binding (the audience is the
+  client for now), and refresh-token reuse detection. Loopback redirects already
+  match on any port, because the library does that for native clients.
