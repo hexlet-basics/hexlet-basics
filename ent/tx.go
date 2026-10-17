@@ -22,6 +22,8 @@ type Tx struct {
 	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
+	// AuditRecord is the client for interacting with the AuditRecord builders.
+	AuditRecord *AuditRecordClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
 	// BlogPost is the client for interacting with the BlogPost builders.
@@ -230,6 +232,7 @@ func (tx *Tx) init() {
 	tx.AiChat = NewAiChatClient(tx.config)
 	tx.AiMessage = NewAiMessageClient(tx.config)
 	tx.Attachment = NewAttachmentClient(tx.config)
+	tx.AuditRecord = NewAuditRecordClient(tx.config)
 	tx.Banner = NewBannerClient(tx.config)
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)

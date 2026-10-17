@@ -56,6 +56,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		handler,
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
+		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator)),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

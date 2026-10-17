@@ -68,6 +68,18 @@ func (f AttachmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AttachmentMutation", m)
 }
 
+// The AuditRecordFunc type is an adapter to allow the use of ordinary
+// function as AuditRecord mutator.
+type AuditRecordFunc func(context.Context, *ent.AuditRecordMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AuditRecordFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AuditRecordMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AuditRecordMutation", m)
+}
+
 // The BannerFunc type is an adapter to allow the use of ordinary
 // function as Banner mutator.
 type BannerFunc func(context.Context, *ent.BannerMutation) (ent.Value, error)

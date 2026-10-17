@@ -113,6 +113,30 @@ var (
 		Columns:    AttachmentsColumns,
 		PrimaryKey: []*schema.Column{AttachmentsColumns[0]},
 	}
+	// AuditRecordsColumns holds the columns for the "audit_records" table.
+	AuditRecordsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "occurred_at", Type: field.TypeTime},
+		{Name: "actor_user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "channel", Type: field.TypeString},
+		{Name: "connected_app_id", Type: field.TypeInt, Nullable: true},
+		{Name: "token_id", Type: field.TypeInt, Nullable: true},
+		{Name: "request_id", Type: field.TypeString, Nullable: true},
+		{Name: "address", Type: field.TypeString, Nullable: true},
+		{Name: "user_agent", Type: field.TypeString, Nullable: true},
+		{Name: "operation", Type: field.TypeString},
+		{Name: "entity_type", Type: field.TypeString, Nullable: true},
+		{Name: "entity_id", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "outcome", Type: field.TypeString},
+		{Name: "changes", Type: field.TypeJSON, Nullable: true},
+	}
+	// AuditRecordsTable holds the schema information for the "audit_records" table.
+	AuditRecordsTable = &schema.Table{
+		Name:       "audit_records",
+		Columns:    AuditRecordsColumns,
+		PrimaryKey: []*schema.Column{AuditRecordsColumns[0]},
+	}
 	// BannersColumns holds the columns for the "banners" table.
 	BannersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -988,6 +1012,7 @@ var (
 		AiChatsTable,
 		AiMessagesTable,
 		AttachmentsTable,
+		AuditRecordsTable,
 		BannersTable,
 		BlogPostsTable,
 		BlogPostLikesTable,
@@ -1038,6 +1063,9 @@ func init() {
 	AiChatsTable.ForeignKeys[0].RefTable = LanguageLessonMembersTable
 	AiChatsTable.ForeignKeys[1].RefTable = UsersTable
 	AiMessagesTable.ForeignKeys[0].RefTable = AiChatsTable
+	AuditRecordsTable.Annotation = &entsql.Annotation{
+		Table: "audit_records",
+	}
 	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[0].RefTable = BlogPostsTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[1].RefTable = LanguagesTable
