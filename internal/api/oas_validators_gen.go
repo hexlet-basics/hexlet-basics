@@ -1867,14 +1867,6 @@ func (s *OAuthConsent) Validate() error {
 
 func (s PermissionResource) Validate() error {
 	switch s {
-	case "banners":
-		return nil
-	case "reviews":
-		return nil
-	case "leads":
-		return nil
-	case "messages":
-		return nil
 	case "language_categories":
 		return nil
 	case "language_lessons":

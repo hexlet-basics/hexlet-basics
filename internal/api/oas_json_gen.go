@@ -17277,14 +17277,6 @@ func (s *PermissionResource) Decode(d *jx.Decoder) error {
 	}
 	// Try to use constant string.
 	switch PermissionResource(v) {
-	case PermissionResourceBanners:
-		*s = PermissionResourceBanners
-	case PermissionResourceReviews:
-		*s = PermissionResourceReviews
-	case PermissionResourceLeads:
-		*s = PermissionResourceLeads
-	case PermissionResourceMessages:
-		*s = PermissionResourceMessages
 	case PermissionResourceLanguageCategories:
 		*s = PermissionResourceLanguageCategories
 	case PermissionResourceLanguageLessons:

@@ -88,10 +88,6 @@ enum ReviewState {
  * Permissions (ADR-0017) leave this list as they move.
  */
 enum PermissionResource {
-  banners: "banners",
-  reviews: "reviews",
-  leads: "leads",
-  messages: "messages",
   courseCategories: "language_categories",
   courseLessons: "language_lessons",
   courseLessonReviews: "language_lesson_reviews",

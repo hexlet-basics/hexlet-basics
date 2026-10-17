@@ -1,10 +1,21 @@
 # Fixtures for `staff_member_role_grants`, HAND-CURATED. The staff_role_editor role
-# may read blog posts and nothing more: what the migration made of its former
-# blog_posts matrix row (index only), since fixtures load after migrations and
-# are not converted by them. Unique on (role_id, permission). Permissions are
-# the names the contract declares with `x-permission`.
+# may read blog posts and read and create banners: what the migrations made of
+# its former matrix rows (blog_posts index; banners index and create), since
+# fixtures load after migrations and are not converted by them. Unique on
+# (role_id, permission). Permissions are the names the contract declares with
+# `x-permission`.
 - id: {{ id "staff_grant_editor_blog_posts_read" }}
   role_id: {{ id "staff_role_editor" }}
   permission: blog_posts.read
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+- id: {{ id "staff_grant_editor_banners_read" }}
+  role_id: {{ id "staff_role_editor" }}
+  permission: banners.read
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+- id: {{ id "staff_grant_editor_banners_create" }}
+  role_id: {{ id "staff_role_editor" }}
+  permission: banners.create
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

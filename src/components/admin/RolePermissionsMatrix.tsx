@@ -15,16 +15,12 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 // Every admin surface a role can be scoped to. Mirrors the contract's
 // PermissionResource union — a new resource extends both in one PR.
 const RESOURCES: PermissionResource[] = [
-  "banners",
   "language_categories",
   "language_landing_pages",
   "language_lesson_members",
   "language_lesson_reviews",
   "language_lessons",
   "languages",
-  "leads",
-  "messages",
-  "reviews",
 ];
 
 const ABILITIES = ["canIndex", "canCreate", "canUpdate", "canDestroy"] as const;

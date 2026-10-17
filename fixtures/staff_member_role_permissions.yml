@@ -1,14 +1,4 @@
-# Fixtures for `staff_member_role_permissions`, HAND-CURATED. One row for the
-# staff_role_editor role: banners (index + create). Blog posts are no longer a
-# matrix resource; the editor's right to read them is a grant (see
-# staff_member_role_grants.yml). Unique on (role_id, resource). Resources are
-# PermissionResource enum values.
-- id: {{ id "staff_permission_editor_banners" }}
-  role_id: {{ id "staff_role_editor" }}
-  resource: banners
-  can_index: true
-  can_create: true
-  can_update: false
-  can_destroy: false
-  created_at: '2026-07-26 20:50:30'
-  updated_at: '2026-07-26 20:50:30'
+# Fixtures for `staff_member_role_permissions`, HAND-CURATED. Empty: every
+# resource moved to declared Permissions, which live in
+# staff_member_role_grants.yml.
+[]

@@ -1,7 +1,6 @@
 package staffroles_test
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -11,7 +10,6 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"hexletbasics/ent/staffmember"
-	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
@@ -20,9 +18,8 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// The fixtures seed user_staff_editor as an editor holding the blog_posts.read grant and
-// the banners matrix bits for reading and creating, in ru and en; user_admin_learner is an
-// administrator.
+// The fixtures seed user_staff_editor as an editor holding the blog_posts.read,
+// banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator.
 var (
 	adminID  = fixtures.ID(fixtures.UserAdminLearner)
 	editorID = fixtures.ID(fixtures.UserStaffEditor)
@@ -40,7 +37,8 @@ func TestPolicyFollowsTheRolesGrantsAndMatrix(t *testing.T) {
 	}{
 		"administrator may do anything":        {adminID, "es", "AdminDeleteUser", true},
 		"granted bit":                          {editorID, "ru", "AdminListBlogPosts", true},
-		"another granted bit on a resource":    {editorID, "en", "AdminCreateBanner", true},
+		"another grant of the same resource":   {editorID, "en", "AdminCreateBanner", true},
+		"grant the role lacks, same resource":  {editorID, "ru", "AdminDeleteBanner", false},
 		"bit the role lacks":                   {editorID, "ru", "AdminCreateBlogPost", false},
 		"resource the role has no row for":     {editorID, "ru", "AdminListReviews", false},
 		"locale outside the staff record":      {editorID, "es", "AdminListBlogPosts", false},
@@ -143,58 +141,6 @@ func TestPolicyIgnoresTheMatrixForBlogPosts(t *testing.T) {
 	assert.ErrorIs(t, err, staffroles.ErrForbidden)
 }
 
-// The cutover migration turns each bit of a role's blog_posts matrix row into
-// the grant that opens the same operations, so nobody gains or loses access.
-// It runs here over every combination of the four bits.
-func TestMigrationCarriesEveryBlogPostRightIntoGrants(t *testing.T) {
-	migration, err := os.ReadFile("../../migrations/20261016120000_staff_role_grants.sql")
-	require.NoError(t, err)
-	data := string(migration[strings.Index(string(migration), "INSERT INTO"):])
-
-	// What each bit of the old matrix opened, from the retired rules table.
-	opened := map[string][]string{
-		"index":   {"AdminListBlogPosts", "AdminGetBlogPost"},
-		"create":  {"AdminCreateBlogPost"},
-		"update":  {"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses"},
-		"destroy": {"AdminDeleteBlogPost"},
-	}
-	bits := []string{"index", "create", "update", "destroy"}
-
-	db, tx := testsupport.NewClientWithTx(t)
-	bob := db.User.GetX(t.Context(), editorID)
-	staff := bob.QueryStaffMember().OnlyX(t.Context())
-	// Start from the old shape: no grants yet.
-	db.StaffRoleGrant.Delete().ExecX(t.Context())
-
-	for mask := 0; mask < 1<<len(bits); mask++ {
-		role := db.StaffRole.Create().SetName(fmt.Sprintf("combo-%d", mask)).SaveX(t.Context())
-		db.StaffRolePermission.Create().SetRoleID(role.ID).SetResource("blog_posts").
-			SetCanIndex(mask&1 != 0).SetCanCreate(mask&2 != 0).
-			SetCanUpdate(mask&4 != 0).SetCanDestroy(mask&8 != 0).ExecX(t.Context())
-	}
-	_, err = tx.ExecContext(t.Context(), data)
-	require.NoError(t, err)
-
-	remaining := db.StaffRolePermission.Query().Where(staffrolepermission.Resource("blog_posts")).CountX(t.Context())
-	assert.Zero(t, remaining, "the matrix rows are replaced, not duplicated")
-
-	policy := staffroles.NewPolicy(db)
-	for mask := 0; mask < 1<<len(bits); mask++ {
-		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
-		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
-		for i, bit := range bits {
-			for _, operation := range opened[bit] {
-				err := policy.Allow(t.Context(), bob, "ru", operation)
-				if mask&(1<<i) != 0 {
-					assert.NoError(t, err, "bits %04b keep %s", mask, operation)
-				} else {
-					assert.ErrorIs(t, err, staffroles.ErrForbidden, "bits %04b still refuse %s", mask, operation)
-				}
-			}
-		}
-	}
-}
-
 // A database that fails is an error, never a quiet refusal and never a quiet
 // grant: the caller must be able to tell "not allowed" from "could not check".
 func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
@@ -210,11 +156,11 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 				`ALTER TABLE "`+table+`" RENAME TO "`+table+`_gone"`)
 			require.NoError(t, err)
 
-			// Each table answers for its own operation: blog posts declare a
-			// Permission, banners still use the matrix.
-			operation := "AdminListBanners"
+			// Each table answers for its own operation: banners declare a
+			// Permission, courses still use the matrix.
+			operation := "AdminListCourses"
 			if table == staffrolegrant.Table {
-				operation = "AdminListBlogPosts"
+				operation = "AdminListBanners"
 			}
 			err = staffroles.NewPolicy(db).Allow(t.Context(), bob, "ru", operation)
 

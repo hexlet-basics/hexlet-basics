@@ -44,14 +44,6 @@ func actionOf(operation string) action {
 // so far, ADR-0017) are not listed: the declaration is their rule, and each
 // resource leaves this table as it is migrated.
 var resourceOperations = map[api.PermissionResource][]string{
-	api.PermissionResourceBanners: {
-		"AdminListBanners", "AdminGetBanner", "AdminCreateBanner", "AdminUpdateBanner", "AdminDeleteBanner",
-	},
-	api.PermissionResourceReviews: {
-		"AdminListReviews", "AdminGetReview", "AdminCreateReview", "AdminUpdateReview", "AdminDeleteReview",
-	},
-	api.PermissionResourceLeads:    {"AdminListLeads"},
-	api.PermissionResourceMessages: {"AdminListMessages"},
 	api.PermissionResourceLanguageCategories: {
 		"AdminListCourseCategories", "AdminGetCourseCategory", "AdminCreateCourseCategory",
 		"AdminUpdateCourseCategory", "AdminDeleteCourseCategory",

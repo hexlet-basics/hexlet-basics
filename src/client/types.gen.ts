@@ -1020,7 +1020,7 @@ export type PermissionKind = 'read' | 'write';
  * create/read/update/delete matrix. Resources that moved to declared
  * Permissions (ADR-0017) leave this list as they move.
  */
-export type PermissionResource = 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
+export type PermissionResource = 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
