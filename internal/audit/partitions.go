@@ -27,7 +27,7 @@ type Driver interface {
 	Query(ctx context.Context, query string, args, v any) error
 }
 
-// Partitions maintains the monthly partitions of audit_records (ADR-0019,
+// Partitions maintains the monthly partitions of audit_records (ADR-0020,
 // ticket #846). It is the only code that may remove Audit Records, and it does
 // so by dropping a whole partition; there is no path that updates or deletes a
 // single record (the database trigger refuses both).

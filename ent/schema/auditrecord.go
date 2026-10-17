@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// AuditRecord is one line of the append-only audit trail (ADR-0019): who did
+// AuditRecord is one line of the append-only audit trail (ADR-0020): who did
 // what, through which channel, to which entity, and how it ended. The table is
 // written only by internal/audit, in the same transaction as the change it
 // describes, and a database trigger (see the migration) refuses UPDATE and

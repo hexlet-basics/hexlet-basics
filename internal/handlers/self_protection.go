@@ -11,7 +11,7 @@ import (
 	"hexletbasics/internal/selfprotection"
 )
 
-// Self-protection (ADR-0019 addendum). Whoever may manage staff must not be
+// Self-protection (ADR-0020 addendum). Whoever may manage staff must not be
 // able to remove their own footing or raise themselves. The rules live in the
 // selfprotection module, not in the screen, because the website and the MCP
 // server both reach the admin operations through these handlers: a check in the

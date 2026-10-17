@@ -12,7 +12,7 @@ import (
 // The ambient transaction is how one request-wide unit of work reaches code
 // that never sees a transaction. The generated ogen server hands handlers a
 // context and nothing else (ADR-0011), so the unit of work (the audit middleware,
-// ADR-0019 addendum) opens the transaction, parks it in the context with
+// ADR-0020 addendum) opens the transaction, parks it in the context with
 // WithAmbientTx, and from then on:
 //
 //   - the application ent client built by NewClient routes every query whose

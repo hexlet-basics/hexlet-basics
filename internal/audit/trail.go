@@ -8,7 +8,7 @@ import (
 	"hexletbasics/ent/auditrecord"
 )
 
-// The audit table is partitioned by month on occurred_at (ADR-0019, #846), so a
+// The audit table is partitioned by month on occurred_at (ADR-0020, #846), so a
 // query that does not bound occurred_at visits every partition and every index
 // of two years of records. The listing therefore always carries a window, and
 // these are the numbers it is held to.

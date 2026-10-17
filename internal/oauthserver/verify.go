@@ -22,7 +22,7 @@ type Token struct {
 	ID       string
 	ClientID string
 	// ConnectedAppID is the id of the oauth_clients row behind ClientID: the
-	// Connected App the Audit Record names (ADR-0020). The public client_id is
+	// Connected App the Audit Record names (ADR-0021). The public client_id is
 	// the application's own label, the row id is what the trail keeps.
 	ConnectedAppID int
 	UserID         int

@@ -17,7 +17,7 @@ import (
 // upload), the `body` argument is an object with the file's name, an optional
 // content type and the content as base64, and buildRequest turns it into the
 // multipart request the website sends. The request then goes through the same
-// generated server as any other call (ADR-0020 addendum, #856), so the
+// generated server as any other call (ADR-0021 addendum, #856), so the
 // Permission and capability check, validation, the size and type rules of
 // assetstore and the Audit Record are the website's, not a second upload path.
 

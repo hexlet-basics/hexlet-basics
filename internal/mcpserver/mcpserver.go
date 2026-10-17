@@ -1,6 +1,6 @@
-// Package mcpserver is the MCP endpoint at `/mcp` (ADR-0020): a stateless
+// Package mcpserver is the MCP endpoint at `/mcp` (ADR-0021): a stateless
 // Streamable HTTP server from the official SDK, whose every request carries an
-// OAuth bearer token issued by internal/oauthserver (ADR-0021).
+// OAuth bearer token issued by internal/oauthserver (ADR-0022).
 //
 // It serves tools that read the catalogue and the signed-in learner's own progress. A tool does not reimplement what the
 // website shows: it calls the same handler code as the HTTP operation it mirrors
@@ -31,7 +31,7 @@ import (
 
 const (
 	// Path is where the endpoint lives. It is also the path of the canonical
-	// resource URL, which oauthserver builds from the issuer (ADR-0021).
+	// resource URL, which oauthserver builds from the issuer (ADR-0022).
 	Path = "/mcp"
 	// metadataPath is the RFC 9728 well-known location of the resource's metadata,
 	// and metadataPathForResource the one for a resource that has a path: the
@@ -85,7 +85,7 @@ type Deps struct {
 	Catalogue Catalogue
 	// API serves an admin tool call: the generated api.Server, behind the
 	// locale middleware, so a call runs the code of the HTTP operation it mirrors,
-	// security handler and audit middleware included (ADR-0020 addendum). It is an
+	// security handler and audit middleware included (ADR-0021 addendum). It is an
 	// http.Handler on purpose: it gives the package no way to reach an operation
 	// without the checkpoint. Without it no admin tool is offered.
 	API http.Handler
@@ -134,7 +134,7 @@ func New(deps Deps) (*Server, error) {
 	}
 
 	// Stateless: one request, one response, no sessions and no long-lived
-	// streams, so the load is that of any other API call (ADR-0020). JSON
+	// streams, so the load is that of any other API call (ADR-0021). JSON
 	// responses, because nothing here streams.
 	streamable := mcp.NewStreamableHTTPHandler(
 		func(*http.Request) *mcp.Server { return mcpServer },
@@ -148,7 +148,7 @@ func New(deps Deps) (*Server, error) {
 	protected := auth.RequireBearerToken(s.verify, &auth.RequireBearerTokenOptions{
 		ResourceMetadataURL: metadataURL,
 		// The verifier has already refused an expired token by looking it up
-		// (ADR-0021), and the library does not carry an expiry.
+		// (ADR-0022), and the library does not carry an expiry.
 		AllowMissingExpiration: true,
 	})(streamable)
 
@@ -177,7 +177,7 @@ func (s *Server) Handler() http.Handler { return s.handler }
 // VerifyAccessToken decrypts and looks the token up but does not judge the
 // audience (it has one resource and says what it is), so this is where a token
 // meant for another resource is refused. A subject that is not a user (a client)
-// is refused too: nothing here may act as anything but a person (ADR-0021).
+// is refused too: nothing here may act as anything but a person (ADR-0022).
 // Every refusal is the same ErrInvalidToken, which answers 401 with the
 // challenge; only a failure of ours becomes a 500, and its detail stays in the
 // log.
@@ -205,7 +205,7 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 }
 
 // requireScope is the checkpoint of a catalogue tool: the connection must hold
-// the Scope, and the token's subject must be a user (ADR-0020). The endpoint
+// the Scope, and the token's subject must be a user (ADR-0021). The endpoint
 // middleware has checked the subject already; it is read again from the context
 // of the call so a tool cannot run without one.
 func requireScope(req *mcp.CallToolRequest, scope string) (userID int, denied *mcp.CallToolResult) {

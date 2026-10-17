@@ -25,7 +25,7 @@ import (
 	"hexletbasics/ent/oauthclient"
 )
 
-// Client ID Metadata Documents (ADR-0021 addendum, #847). A client whose id is
+// Client ID Metadata Documents (ADR-0022 addendum, #847). A client whose id is
 // an https URL is registered by fetching that URL the first time its id is seen
 // at the authorization endpoint. The fetch is triggered by an anonymous request
 // and goes to an address the requester chose, so it is the most dangerous thing

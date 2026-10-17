@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// StaffRoleGrant is one Permission a Staff Role holds (ADR-0019): a row exists
+// StaffRoleGrant is one Permission a Staff Role holds (ADR-0020): a row exists
 // exactly when the role has the Permission, so a grant is checked with one
 // indexed lookup and a new Permission is a catalog entry, not a column. The
 // permission name is a plain string because the catalog is generated from the

@@ -46,7 +46,7 @@ api-check, which is what the legacy chart did.
       name: "{{ .Release.Name }}-api-service"
       port:
         number: 80
-{{- /* The OAuth server and MCP endpoint (ADR-0021, ADR-0020), mounted by Go
+{{- /* The OAuth server and MCP endpoint (ADR-0022, ADR-0021), mounted by Go
 only when OAUTH_ENABLED / MCP_ENABLED are on; while off they answer 404, so
 routing them is harmless. These must stay ahead of the `/` catch-all below.
 /oauth/ is a Prefix. The well-known documents and /mcp are Exact, and since the

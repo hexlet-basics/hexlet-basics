@@ -410,7 +410,7 @@ model StaffRoleDetail {
   grants: string[];
 }
 
-/** Whether an operation only reads or can change data (ADR-0019). */
+/** Whether an operation only reads or can change data (ADR-0020). */
 enum PermissionKind {
   read: "read",
   write: "write",
@@ -515,7 +515,7 @@ model Lead {
   createdAt: utcDateTime;
 }
 
-// ---- Audit trail (ADR-0019) -------------------------------------------------
+// ---- Audit trail (ADR-0020) -------------------------------------------------
 
 /**
  * The old and new value of one field an operation changed. `old` is absent on a

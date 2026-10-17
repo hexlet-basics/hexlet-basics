@@ -1,4 +1,4 @@
--- ADR-0019: a Staff Role holds Permissions as grants, one row each, instead of
+-- ADR-0020: a Staff Role holds Permissions as grants, one row each, instead of
 -- create/read/update/delete bits per resource. Blog posts move first; the other
 -- resources keep the matrix until their own migration.
 CREATE TABLE "staff_member_role_grants" (

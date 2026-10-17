@@ -1,5 +1,5 @@
 // Package permissions is the catalog of Permissions an admin operation can
-// require (ADR-0019). Each operation declares its Permission and whether it
+// require (ADR-0020). Each operation declares its Permission and whether it
 // reads or writes with `x-permission` in the TypeSpec; this package reads those
 // declarations out of the generated OpenAPI document, so the catalog is never
 // kept by hand and cannot drift from the contract.
@@ -269,7 +269,7 @@ func IsClassified(operation string) bool {
 }
 
 // IsAdminWrite reports whether an operation changes data on the admin surface:
-// the operations whose every call must leave an Audit Record (ADR-0019). It is
+// the operations whose every call must leave an Audit Record (ADR-0020). It is
 // read from the contract's security requirement, Permission kind and HTTP
 // method, never from a Go list.
 func IsAdminWrite(operation string) bool {
@@ -307,7 +307,7 @@ func (d *Declarations) Standalone(operation string) bool { return d.standalone[o
 
 // PersonalDataEntity reports whether an operation reads personal data, as the
 // contract declares with `x-personal-data`, and the ent type it reads (User,
-// Lead). Every such read leaves an Audit Record (ADR-0019); a read of the
+// Lead). Every such read leaves an Audit Record (ADR-0020); a read of the
 // catalogue or of content declares nothing and leaves none.
 func PersonalDataEntity(operation string) (entity string, ok bool) {
 	return declared.PersonalDataEntity(operation)
@@ -356,7 +356,7 @@ func Known(name string) bool {
 }
 
 // MCPCapabilities are the capability Permissions an operation needs on top of
-// its own when it is called over MCP (ADR-0019), all of them: mcp.write for an
+// its own when it is called over MCP (ADR-0020), all of them: mcp.write for an
 // operation that changes data on the admin surface, mcp.read for the rest, and
 // the capability the contract declares with `x-requires-capability` (mcp.manage
 // for every operation on users, staff members, Staff Roles and their grants,

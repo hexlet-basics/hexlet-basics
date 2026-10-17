@@ -513,7 +513,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 }
 
 // TestSessionPlaceholderOpensNothingOverHTTP pins the property the in-process
-// request rests on (ADR-0020 addendum, #854): the session cookie a tool call's
+// request rests on (ADR-0021 addendum, #854): the session cookie a tool call's
 // request carries is a placeholder that only satisfies the generated server's
 // security code, and it is worth nothing to a client. Sent over HTTP, where the
 // context holds no Principal, the session lookup finds no session under it and

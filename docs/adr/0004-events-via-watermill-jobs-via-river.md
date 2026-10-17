@@ -52,7 +52,7 @@ arguments-unique River job; the job performs the amoCRM call so Watermill
 remains routing-only and River owns external-call retries. The amoCRM
 `source_uid` also includes the lead id to make redelivery idempotent.
 
-`staff_read_personal_data` is a Go-only addition (ADR-0019, reads of personal
+`staff_read_personal_data` is a Go-only addition (ADR-0020, reads of personal
 data): published by the server after a staff read, consumed in the worker by
 `staff_read_personal_data_to_audit_v1`, which writes the Audit Record.
 

@@ -1,4 +1,4 @@
--- ADR-0019, second slice: banners, reviews, leads and messages move from the
+-- ADR-0020, second slice: banners, reviews, leads and messages move from the
 -- create/read/update/delete matrix to declared Permissions. Each bit becomes the
 -- grant that opens exactly the operations the old policy let that bit open
 -- (can_index: list and get, can_create: create, can_update: update, can_destroy:

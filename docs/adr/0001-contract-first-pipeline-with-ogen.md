@@ -1,6 +1,6 @@
 # Contract-first API pipeline with ogen
 
-Amended by [ADR-0021](0021-in-process-oauth-server-for-mcp-clients.md): the
+Amended by [ADR-0022](0022-in-process-oauth-server-for-mcp-clients.md): the
 endpoints an RFC defines (OAuth authorization, token, registration, discovery)
 are hand-written outside the contract on purpose.
 

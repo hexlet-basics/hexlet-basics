@@ -1,4 +1,4 @@
--- ADR-0019: every resource of the create/read/update/delete matrix has been
+-- ADR-0020: every resource of the create/read/update/delete matrix has been
 -- carried into grants by the migrations before this one, and nothing reads the
 -- table any more. Rows left over name a resource that no operation uses (the
 -- earlier migrations delete the ones they convert), so dropping the table loses

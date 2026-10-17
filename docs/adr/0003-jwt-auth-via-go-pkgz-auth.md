@@ -5,7 +5,7 @@ status: superseded by ADR-0017
 # Authentication via go-pkgz/auth JWT tokens
 
 Amended by [ADR-0011](0011-contract-declared-authentication.md) and
-[ADR-0021](0021-in-process-oauth-server-for-mcp-clients.md) (an OAuth bearer
+[ADR-0022](0022-in-process-oauth-server-for-mcp-clients.md) (an OAuth bearer
 token is a second credential next to the session cookie that replaced the JWT,
 accepted only on `/mcp`).
 

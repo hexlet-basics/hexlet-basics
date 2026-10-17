@@ -1,5 +1,5 @@
 // Package selfprotection holds the rules that keep whoever may manage staff
-// from removing their own footing or raising themselves (ADR-0019 addendum).
+// from removing their own footing or raising themselves (ADR-0020 addendum).
 // They live in a module, not in a screen or a handler body, because the website
 // and the MCP server both reach the admin operations through the same handlers:
 // a check in one adapter would bind only that one.

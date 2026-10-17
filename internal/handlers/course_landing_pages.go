@@ -39,7 +39,7 @@ func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.Ad
 	return &api.AdminDeleteCourseLandingPageNoContent{}, nil
 }
 
-// A state is not an update (ADR-0019, state transitions addendum): the
+// A state is not an update (ADR-0020, state transitions addendum): the
 // Publication State of a landing page moves only through the three operations
 // below, each with its own Permission, and the legal moves are the
 // landingpages module's (the shared transitions.Publish, Unpublish and

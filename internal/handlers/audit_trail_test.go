@@ -271,7 +271,7 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	assert.Equal(t, []string{"1", "2"}, page.Items[0].Reads.Value.Ids)
 }
 
-// Reading the trail is itself a read of personal data (ADR-0019): the call
+// Reading the trail is itself a read of personal data (ADR-0020): the call
 // leaves a record of AuditRecord rows being read once the worker has run, and
 // the ids are those of the records the page showed.
 func TestReadingTheTrailIsRecordedAsAReadOfPersonalData(t *testing.T) {

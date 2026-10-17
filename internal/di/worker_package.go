@@ -229,7 +229,7 @@ var workerPackage = do.Package(
 		return events.NewRuntime(db, logger,
 			eventhandlers.LeadCreated(riverClient),
 			// Writes the Audit Record of a staff read of personal data, which the
-			// server only publishes (ADR-0019).
+			// server only publishes (ADR-0020).
 			eventhandlers.StaffReadPersonalData(entClient),
 		)
 	}),

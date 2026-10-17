@@ -50,7 +50,7 @@ operation called over MCP is allowed when the user's role holds the operation's
 Permission *and* the `mcp.*` Permission matching its kind (`mcp.read` for a
 read, `mcp.write` for a write, `mcp.manage` for operations on users, staff and
 roles). It is evaluated from the database on every call, so taking a Permission
-away works at once. A Connected App's Scope can only narrow it (ADR-0021).
+away works at once. A Connected App's Scope can only narrow it (ADR-0022).
 Catalogue and learner operations need no Staff Role: they need only the Scope
 (`catalog:read`, `progress:read`) and a user as the token's subject.
 
@@ -97,7 +97,7 @@ Reads of the catalogue and of content are not recorded.
 ## Consequences
 
 - This reaches every admin operation and the roles screen, and has to land
-  before any MCP admin tool (ADR-0020).
+  before any MCP admin tool (ADR-0021).
 - Not designed yet: how the single place that writes a record inside the
   business transaction is wired through ogen, which hands handlers a context
   and not a transaction. It needs its own design before the audit work starts.
@@ -155,7 +155,7 @@ deletes the row; the fixtures, which load after migrations, are rewritten by
 hand to the same shape.
 
 Departures from the text above: none. The locale is still the `Accept-Language`
-match, not a request argument; ADR-0020's locale argument is not part of this
+match, not a request argument; ADR-0021's locale argument is not part of this
 slice.
 
 ## Addendum: the matrix is retired

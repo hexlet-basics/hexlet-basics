@@ -16,7 +16,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// A state is not an update (ADR-0019, state transitions addendum), for banners,
+// A state is not an update (ADR-0020, state transitions addendum), for banners,
 // reviews and course landing pages as for blog posts: the Publication State moves
 // only through publish, unpublish and archive. The three resources share one
 // table of legal moves (internal/transitions), so one set of scenarios runs over

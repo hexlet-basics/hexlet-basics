@@ -22,7 +22,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// A staff read of personal data is recorded asynchronously (ADR-0019): the
+// A staff read of personal data is recorded asynchronously (ADR-0020): the
 // request publishes a fact, and the worker's consumer writes the Audit Record.
 // These tests go through the operation, then deliver the fact the way the
 // worker does, and read the record.

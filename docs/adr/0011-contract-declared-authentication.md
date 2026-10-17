@@ -7,7 +7,7 @@ status: accepted
 Amended by [ADR-0017](0017-server-side-sessions.md): sessions are server-side and
 there is no XSRF token scheme.
 
-Amended by [ADR-0019](0019-contract-declared-permissions-and-audit-trail.md)
+Amended by [ADR-0020](0020-contract-declared-permissions-and-audit-trail.md)
 (what an administrator or staff member may do is declared per operation in the
 contract, no longer in a hand-kept table).
 

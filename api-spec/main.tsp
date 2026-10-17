@@ -36,7 +36,7 @@ using OpenAPI;
  * below keep the legacy paths they mirror.
  *
  * `x-capabilities` lists the Permissions no operation requires yet but a Staff
- * Role can be granted: the MCP layer and the audit page check them (ADR-0019).
+ * Role can be granted: the MCP layer and the audit page check them (ADR-0020).
  * The administrator flag never implies them.
  *
  * `x-requires-capability` on an operation names a capability Permission it

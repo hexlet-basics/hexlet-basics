@@ -1,4 +1,4 @@
-// Package audit writes the Audit Records of ADR-0019: one append-only row per
+// Package audit writes the Audit Records of ADR-0020: one append-only row per
 // administrative operation, in the same transaction as the change.
 //
 // Three small pieces make up the single shared place, and none of them knows
@@ -14,7 +14,7 @@
 //
 // The unit of work that opens the transaction and calls Write lives with the
 // transport (handlers.NewAuditMiddleware for the website; the MCP server calls
-// the same operations through the same middleware, ADR-0020), because only it
+// the same operations through the same middleware, ADR-0021), because only it
 // knows the request. This package depends on ent only.
 package audit
 
@@ -87,7 +87,7 @@ type Entry struct {
 	Outcome   Outcome
 
 	// The rest is for a read of personal data, which is recorded from a domain
-	// event some time after the request (ADR-0019). OccurredAt is when the read
+	// event some time after the request (ADR-0020). OccurredAt is when the read
 	// happened, not when the record was written; EntityType and EntityID file the
 	// record under what was read (the id only for a read of one row); Reads says
 	// how much was touched. A change leaves all four empty: its time is now, and

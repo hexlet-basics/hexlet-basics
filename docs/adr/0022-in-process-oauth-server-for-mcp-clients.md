@@ -28,7 +28,7 @@ process, so ADR-0010 is unchanged: no third runtime, no second database.
 
 - RFC 8414 metadata, advertising `registration_endpoint`, S256 as the only PKCE
   method, and `authorization_response_iss_parameter_supported`. Protected
-  resource metadata (RFC 9728) is the MCP endpoint's side (ADR-0020).
+  resource metadata (RFC 9728) is the MCP endpoint's side (ADR-0021).
 - PKCE S256 is mandatory for every client. Redirect URIs match exactly, except
   that a loopback redirect may use any port (RFC 8252), because native clients
   pick a free port per run.
@@ -88,7 +88,7 @@ domains signs in once more there.
 **Scopes.** A Scope records what a user consented to give a Connected App, and
 is deliberately coarse: `catalog:read`, `progress:read`, `admin`. What a call
 may actually do comes from the user's Permissions at the moment of the call
-(ADR-0019); a Scope can only narrow that, never widen it.
+(ADR-0020); a Scope can only narrow that, never widen it.
 
 ## Considered Options
 
@@ -217,7 +217,7 @@ What the first implementation settled, and where it stops short of the text abov
 
 - **Endpoint.** `POST /oauth/register` (RFC 7591, JSON in and out, `201` with `Cache-Control: no-store`), advertised as `registration_endpoint` in both metadata documents. It is ours entirely (`internal/oauthserver/registration.go`); the library has none. A client row is public by construction, so a registration can only ever produce a public client with the `authorization_code` and `refresh_token` grants and the `code` response type.
 - **Refusals** (`400`, RFC 7591 `invalid_redirect_uri` or `invalid_client_metadata`, nothing stored): a redirect URI that is not `https` or `http` on a loopback host (`localhost`, `127.0.0.0/8`, `::1`), is relative, has a custom scheme, a fragment, userinfo (the `http://127.0.0.1@evil` lookalike) or a wildcard (literal or `%2A`), or more than ten redirect URIs; any grant other than the two above, or `refresh_token` without `authorization_code`; any response type but `code`; a `token_endpoint_auth_method` other than `none`; any scope outside `catalog:read`, `progress:read`, `admin` and `offline_access` (`openid` and `profile` included: a client row cannot use them); a body that is not one JSON object, is not `application/json` (`415`) or exceeds 16 KiB (`413`). The request is judged by an allow-list of fields: `client_secret`, `audience`, `resource`, `client_id`, `jwks`, `software_statement`, `skip_consent` and any other unknown field are refused, never ignored, because a field ignored today could gain meaning by accident. Harmless descriptive metadata (`client_uri`, `logo_uri`, `tos_uri`, `policy_uri`, `contacts`, `software_id`, `software_version`, `application_type`) is accepted and dropped.
-- **Default scopes.** A registration that names no scope may later request `catalog:read` and `progress:read`: read-only, never `admin`, which a client must ask for by name (the user still consents, and their Permissions still decide, ADR-0019). The client row stores the custom Scopes only; `offline_access` is admitted for every client.
+- **Default scopes.** A registration that names no scope may later request `catalog:read` and `progress:read`: read-only, never `admin`, which a client must ask for by name (the user still consents, and their Permissions still decide, ADR-0020). The client row stores the custom Scopes only; `offline_access` is admitted for every client.
 - **Name.** `client_name` is stored as plain text, trimmed, control characters removed, at most 100 characters, `Unnamed application` when absent. It is what the consent screen shows, so it is untrusted text, and escaping stays the screen's job.
 - **Rate limit.** Nothing in the repository limited requests, so the package has the smallest limiter that does the job: a fixed window per client address, in memory, `OAUTH_REGISTRATION_LIMIT` attempts (default 10) per `OAUTH_REGISTRATION_WINDOW` (default `1h`), a `429` with `Retry-After` beyond it. Every attempt spends it, refused ones included, so probing the validation is not free. The address comes from the existing client-IP middleware (`handlers.WithClientIP`, now also wrapped around the OAuth routes) and reaches the package through `Deps.ClientAddress`, never from a header read in the package; an unresolved address shares one bucket, and an IPv6 address counts as its /64. Memory is bounded: past 100,000 addresses in one window new addresses wait for the window to pass. Being in memory, the budget is per replica. There is no separate cap on the clients one address may own: ten an hour from one address is the cap, and an unused row costs a few hundred bytes; pruning clients that never completed a flow is left for when the table shows it needs it. The client-IP middleware trusts the forwarding headers as `realip` does (ADR-0015 chose it for attribution); an attacker who can put a public address first in `X-Forwarded-For` on a request that reaches the pod directly would pick their own bucket, which is the ingress's job to prevent by overwriting the header.
 - **Supersedes** the "not yet done" note on `registration_endpoint` in the #836 addendum.

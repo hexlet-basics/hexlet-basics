@@ -19,7 +19,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// The audit trail of ADR-0019: an admin change of a blog post leaves exactly one
+// The audit trail of ADR-0020: an admin change of a blog post leaves exactly one
 // Audit Record, written in the change's own transaction.
 
 // records returns the Audit Records of an operation, oldest first.

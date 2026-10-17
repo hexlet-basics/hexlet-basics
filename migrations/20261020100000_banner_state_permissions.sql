@@ -1,4 +1,4 @@
--- ADR-0019, state transitions slice: publishing, unpublishing and archiving a
+-- ADR-0020, state transitions slice: publishing, unpublishing and archiving a
 -- banner become operations of their own (banners.publish,
 -- banners.unpublish, banners.archive), no longer a field of the update.
 -- The state used to be settable through the update, so every role holding

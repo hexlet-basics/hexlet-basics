@@ -58,7 +58,7 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 	return &api.AdminDeleteBannerNoContent{}, nil
 }
 
-// A state is not an update (ADR-0019, state transitions addendum): the
+// A state is not an update (ADR-0020, state transitions addendum): the
 // Publication State of a banner moves only through the three operations below,
 // each with its own Permission, and the legal moves are the banners module's
 // (the shared transitions.Publish, Unpublish and Archive). A new banner is a
