@@ -348,10 +348,10 @@ func handlerDeps(
 	leadRecorder := leads.NewRecorder(transactor, services.Events)
 	// The real chat over the real progress module: only the model is mocked.
 	return handlers.Deps{
-		DB:      db,
+		DB:       db,
 		Settings: testConfig.settings,
-		Starter: services.Starter,
-		Jobs:    services.Jobs,
+		Starter:  services.Starter,
+		Jobs:     services.Jobs,
 		// The real replacer over the savepoint transactor, so a failed replace
 		// rolls back exactly as it does in production.
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),

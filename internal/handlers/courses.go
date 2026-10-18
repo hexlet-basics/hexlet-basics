@@ -33,10 +33,10 @@ import (
 // path.
 type Server struct {
 	api.UnimplementedHandler
-	db      *ent.Client
-	conv    apiconv.Converter
+	db       *ent.Client
+	conv     apiconv.Converter
 	settings Settings
-	starter VersionBuildStarter
+	starter  VersionBuildStarter
 	// jobs schedules the background work handlers trigger: lesson reviews, the
 	// related-courses pick, account emails.
 	jobs JobEnqueuer
