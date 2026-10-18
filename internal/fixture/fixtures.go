@@ -78,7 +78,7 @@ func scan(dir string) (labels, error) {
 
 // scanFile numbers the rows of one file, continuing from next.
 func scanFile(path string, found labels, next *int) error {
-	f, err := os.Open(path)
+	f, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
 	if err != nil {
 		return errs.Wrapf(err, "open fixture file")
 	}
@@ -170,7 +170,7 @@ func ID(label Label) int {
 
 // ID32 is ID as the int32 the HTTP contract uses for identifiers.
 func ID32(label Label) int32 {
-	return int32(ID(label))
+	return int32(ID(label)) //nolint:gosec // G115: ids come from the committed fixtures/, small serial values far below int32
 }
 
 // Dir finds the repository's fixtures/ directory from the working directory

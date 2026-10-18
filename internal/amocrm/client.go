@@ -224,7 +224,7 @@ type statusClient struct {
 // errors, so the only errors left for the generated decoder to produce come
 // from responses amoCRM accepted.
 func (c statusClient) Do(request *http.Request) (*http.Response, error) {
-	response, err := c.http.Do(request)
+	response, err := c.http.Do(request) //nolint:gosec // G704: the host is the configured amoCRM subdomain, never request input
 	if err != nil {
 		return nil, newRequestError(0, "send amoCRM lead", err, true)
 	}

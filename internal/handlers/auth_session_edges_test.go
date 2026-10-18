@@ -29,7 +29,7 @@ func signedIn(t *testing.T, router http.Handler, email string) *http.Cookie {
 // would admit the visitor was recognized.
 func TestAGarbledSessionCookieDoesNotOpenTheAdminArea(t *testing.T) {
 	router := newAuthRouter(t)
-	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"}
+	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
 	resp := do(t, router, http.MethodGet, "/api/admin/course_categories", "", garbled)
 

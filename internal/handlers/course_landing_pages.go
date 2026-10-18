@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 )
 
 // The route is `/admin/course_landing_pages`; the domain concept is a course
@@ -62,5 +63,5 @@ func (s *Server) AdminArchiveCourseLandingPage(ctx context.Context, params api.A
 
 // getAdminCourseLandingPage is the read model a state move echoes back.
 func (s *Server) getAdminCourseLandingPage(ctx context.Context, id int) (*api.CourseLandingPage, error) {
-	return s.db.CourseLandingPage.AdminGet(ctx, int32(id), s.conv.ToCourseLandingPage)
+	return s.db.CourseLandingPage.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourseLandingPage)
 }

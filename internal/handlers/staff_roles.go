@@ -7,6 +7,7 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/permission"
 	"hexletbasics/internal/permissioncatalog"
 )
@@ -15,7 +16,7 @@ import (
 // StaffRoleDetail projection returned by create/update/get and the permission
 // endpoints. A missing id surfaces as ent's not-found error (404 centrally).
 func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, error) {
-	return s.db.StaffRole.AdminGet(ctx, int32(id), s.conv.ToStaffRoleDetail)
+	return s.db.StaffRole.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToStaffRoleDetail)
 }
 
 // --- Roles ------------------------------------------------------------------

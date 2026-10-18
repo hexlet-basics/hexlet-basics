@@ -102,7 +102,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	token, err := manager.Issue(t.Context(), u)
 	require.NoError(t, err)
 
-	return router, []*http.Cookie{{Name: auth.CookieName, Value: token}}
+	return router, []*http.Cookie{{Name: auth.CookieName, Value: token}} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 }
 
 func newAttachmentRouter(t *testing.T) http.Handler {

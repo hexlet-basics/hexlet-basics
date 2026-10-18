@@ -503,7 +503,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	// The locale the call is made in is the one the HTTP check reads: the
 	// request's Accept-Language, here set from the argument and from nothing else.
 	req.Header.Set("Accept-Language", locale)
-	req.AddCookie(&http.Cookie{Name: sessionCookie, Value: cookiePlaceholder})
+	req.AddCookie(&http.Cookie{Name: sessionCookie, Value: cookiePlaceholder}) //nolint:gosec // G124: an in-process request cookie, never sent as Set-Cookie; Secure/HttpOnly/SameSite are response attributes
 	// What an Audit Record keeps of the caller: the MCP client's user agent, and
 	// the address and request id the proxy and client sent with the /mcp request.
 	for _, h := range []string{"User-Agent", "X-Forwarded-For", "X-Real-IP", "X-Request-ID"} {

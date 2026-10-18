@@ -19,7 +19,7 @@ func TestRuntimeReportsNotReadyAfterTheSignal(t *testing.T) {
 	addr := freeAddr(t)
 	probes := health.New(func(context.Context) error { return nil })
 	handler := probes.Wrap(http.NotFoundHandler())
-	server := &http.Server{Addr: addr, Handler: handler}
+	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: handler}
 	app := application{http: server, httpAddr: addr, drain: probes.Drain}
 	signalCtx, signal := context.WithCancel(context.Background())
 	readyz := func() int {
@@ -60,7 +60,7 @@ func get(ctx context.Context, url string) (*http.Response, error) {
 
 func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 	addr := freeAddr(t)
-	server := &http.Server{Addr: addr, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})}
 	app := application{http: server, httpAddr: addr}
@@ -104,7 +104,7 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 	release := make(chan struct{})
 	t.Cleanup(func() { close(release) })
 	inFlight := make(chan struct{})
-	server := &http.Server{Handler: http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+	server := &http.Server{ReadHeaderTimeout: time.Second, Handler: http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		close(inFlight)
 		<-release
 	})}
