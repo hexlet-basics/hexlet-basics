@@ -83,8 +83,8 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		handler,
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
-		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
-		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+		api.WithNotFound(handlers.NewNotFoundHandler(errorHandler)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
 	att := handlers.NewAttachmentHandler(assets, errorHandler)

@@ -8,7 +8,7 @@ package transition
 type PublicationState string
 
 // Vocabulary names this set of states for an adapter that words a refused move.
-func (PublicationState) Vocabulary() string { return "publication_state" }
+func (PublicationState) Vocabulary() Vocabulary { return PublicationStates }
 
 const (
 	Draft     PublicationState = "draft"

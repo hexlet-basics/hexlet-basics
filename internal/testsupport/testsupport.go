@@ -194,6 +194,22 @@ func HarnessUser(h *Harness) (int, bool) {
 // generated ProblemDetailsStatusCode type.
 func (h *Harness) LastStatus() int { return h.doer.status }
 
+// Send issues a request the generated client cannot make (an unknown path, a
+// method the route does not allow) through the same pipeline and returns the
+// response, which the caller reads and closes.
+func (h *Harness) Send(t *testing.T, method, path string) *http.Response {
+	t.Helper()
+	request, err := http.NewRequestWithContext(t.Context(), method, "http://test"+path, nil)
+	if err != nil {
+		t.Fatalf("new request: %v", err)
+	}
+	response, err := h.doer.Do(request)
+	if err != nil {
+		t.Fatalf("send %s %s: %v", method, path, err)
+	}
+	return response
+}
+
 // ResponseCookies are the raw Set-Cookie headers of the most recent call. The
 // generated client decodes that header as a single comma-separated array and so
 // reports only the first cookie; a test that cares which cookies were actually
@@ -255,8 +271,8 @@ func NewHarnessAs(t *testing.T, userLabel fixture.Label) *Harness {
 			handlers.NewAuditMiddleware(transactor, translator, errorHandler),
 			handlers.NewPersonalDataReadMiddleware(services.Events, translator, errorHandler),
 		),
-		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
-		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+		api.WithNotFound(handlers.NewNotFoundHandler(errorHandler)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 	)
 	if err != nil {
 		t.Fatalf("new api server: %v", err)

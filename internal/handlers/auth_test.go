@@ -56,8 +56,8 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		handler.Security(),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithMiddleware(handlers.NewAuditMiddleware(transactor, translator, errorHandler)),
-		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
-		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+		api.WithNotFound(handlers.NewNotFoundHandler(errorHandler)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
 	// The same pipeline as production: cross-origin protection, the session, then

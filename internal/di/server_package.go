@@ -607,8 +607,8 @@ var serverPackage = do.Package(
 				handlers.NewPersonalDataReadMiddleware(publisher, translator, errorHandler),
 			),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
-			api.WithNotFound(handlers.NewNotFoundHandler(translator)),
-			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+			api.WithNotFound(handlers.NewNotFoundHandler(errorHandler)),
+			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 		)
 	}),
 	do.Lazy[*handlers.AttachmentHandler](func(i do.Injector) (*handlers.AttachmentHandler, error) {
