@@ -49,7 +49,7 @@ describe("admin field generator", () => {
   it("describes each input property by kind, required and nullable", () => {
     const { fields } = describeResource(spec, widget);
 
-    expect(fields.map((f) => [f.name, f.kind, f.required, f.nullable])).toEqual([
+    expect(fields.map((f) => [f.name, f.kind, f.required, f.nullable])).toStrictEqual([
       ["title", "text", true, false],
       ["state", "select", false, true],
       ["startsAt", "datetime", false, true],
@@ -76,7 +76,7 @@ describe("admin field generator", () => {
   it("carries enum values with their /values label keys, through $ref and allOf", () => {
     const { fields } = describeResource(spec, widget);
 
-    expect(fields.find((f) => f.name === "state")?.enumValues).toEqual([
+    expect(fields.find((f) => f.name === "state")?.enumValues).toStrictEqual([
       { value: "draft", labelKey: "models.attributes.widget.state/values.draft" },
       { value: "published", labelKey: "models.attributes.widget.state/values.published" },
     ]);
@@ -99,7 +99,7 @@ describe("admin field generator", () => {
   it("describes the scalar properties of the read model as list columns", () => {
     const { columns } = describeResource(spec, widget);
 
-    expect(columns.map((c) => [c.name, c.kind])).toEqual([
+    expect(columns.map((c) => [c.name, c.kind])).toStrictEqual([
       ["id", "number"],
       ["title", "text"],
       ["state", "select"],

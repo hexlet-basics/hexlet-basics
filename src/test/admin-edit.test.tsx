@@ -74,7 +74,7 @@ test("a role's permissions are shown by resource and saved as the admin ticked t
 
   const confirmation = page.getByText("Record updated");
   await expect.element(confirmation).toBeVisible();
-  expect(received?.grants).toEqual(["blog_posts.create"]);
+  expect(received?.grants).toStrictEqual(["blog_posts.create"]);
 });
 
 const category: CourseCategory = {
@@ -122,7 +122,7 @@ test("an admin adds a question to a category's FAQ", async () => {
 
   const confirmation = page.getByText("Record created");
   await expect.element(confirmation).toBeVisible();
-  expect(created).toEqual({ question: "Why?", answer: "Because." });
+  expect(created).toStrictEqual({ question: "Why?", answer: "Because." });
 });
 
 test("an admin edits a question and is told it was saved", async () => {
@@ -145,7 +145,7 @@ test("an admin edits a question and is told it was saved", async () => {
 
   const confirmation = page.getByText("Record updated");
   await expect.element(confirmation).toBeVisible();
-  expect(updated).toEqual({ question: "Is it free?", answer: "Always." });
+  expect(updated).toStrictEqual({ question: "Is it free?", answer: "Always." });
 });
 
 test("an admin deletes a question after confirming", async () => {

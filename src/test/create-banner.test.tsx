@@ -46,6 +46,7 @@ test("creates a banner with the default enum selections", async () => {
     startsAt: null,
     finishesAt: null,
   });
-  expect(received).not.toHaveProperty("state"); // a new banner is a draft; the state has its own operations
+  // A new banner is a draft: the state has its own operations.
+  expect(received).not.toHaveProperty("state");
   await expect.poll(() => router.state.location.pathname).toBe("/admin/banners");
 });

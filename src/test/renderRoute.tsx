@@ -18,6 +18,18 @@ import { localeOf } from "@/lib/locale-path";
 import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";
 
+// The application's file routes carry their parents from the generated tree, so
+// each is rebuilt here from its own options under the parent the test gives it.
+const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
+  createRoute({
+    ...(fileRoute.options as object),
+    getParentRoute: () => parent,
+    path: pattern,
+  } as never) as AnyRoute;
+
+const under = (pattern: string, prefix: string) =>
+  pattern === prefix || pattern.startsWith(`${prefix}/`);
+
 // Mounts a real file route — its loader, its component, its staticData — at a
 // real URL, under a synthetic root.
 //
@@ -73,18 +85,10 @@ export async function renderRoute(
   // guards run as they do for a visitor; any other page hangs off the root. The
   // file routes carry their parents from the generated tree, so each is rebuilt
   // here from its own options.
-  const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
-    createRoute({
-      ...(fileRoute.options as object),
-      getParentRoute: () => parent,
-      path: pattern,
-    } as never) as AnyRoute;
   const LOCALE = "/{-$locale}";
   const ADMIN = `${LOCALE}/admin`;
   const layout = make(localeLayoutRoute, rootRoute, LOCALE);
   const adminLayout = make(adminLayoutRoute, layout, ADMIN.slice(LOCALE.length));
-  const under = (pattern: string, prefix: string) =>
-    pattern === prefix || pattern.startsWith(`${prefix}/`);
   const top: AnyRoute[] = [];
   const inLocale: AnyRoute[] = [adminLayout];
   const inAdmin: AnyRoute[] = [];

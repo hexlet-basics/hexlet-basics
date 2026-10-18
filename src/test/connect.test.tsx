@@ -46,7 +46,7 @@ test("a guest is sent to sign in and the request id travels with them", async ()
   const { router } = await openConsent(null);
 
   await expect.poll(() => router.state.location.pathname).toBe("/session/new");
-  expect(router.state.location.search).toEqual({ redirect: "/connect?id=req-1" });
+  expect({ ...router.state.location.search }).toStrictEqual({ redirect: "/connect?id=req-1" });
 });
 
 test("the consent screen shows who asks, where it returns and what it asks for", async () => {

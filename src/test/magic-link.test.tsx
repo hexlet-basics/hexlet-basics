@@ -39,7 +39,7 @@ test("a followed link signs the visitor in and takes them home", async () => {
   const { router, queryClient } = await openLink("good");
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru");
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toEqual({ user });
+  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
 });
 
 test("a refused link sends the visitor back to the request form", async () => {
@@ -52,7 +52,7 @@ test("a refused link sends the visitor back to the request form", async () => {
   const { router, queryClient } = await openLink("stale");
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru/magic_links/new");
-  expect(router.state.location.search).toEqual({ invalid: true });
+  expect({ ...router.state.location.search }).toStrictEqual({ invalid: true });
   expect(queryClient.getQueryData(getCurrentUserQueryKey())).toBeUndefined();
 });
 
@@ -81,5 +81,5 @@ test("the request form confirms the same way for any email", async () => {
   await expect
     .element(page.getByText("If an account exists for this email, we've sent a sign-in link."))
     .toBeVisible();
-  expect(received).toEqual([{ email: "nobody@example.com" }]);
+  expect(received).toStrictEqual([{ email: "nobody@example.com" }]);
 });

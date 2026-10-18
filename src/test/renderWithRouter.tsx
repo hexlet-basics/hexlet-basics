@@ -32,7 +32,7 @@ export async function renderWithRouter(
   const route = createRoute({
     getParentRoute: () => rootRoute,
     path,
-    component: () => <>{ui}</>,
+    component: () => ui,
   });
   const router = createRouter({
     routeTree: rootRoute.addChildren([route]),
@@ -40,7 +40,7 @@ export async function renderWithRouter(
   });
 
   // router.navigate is generic over the route tree, which a Mock cannot carry,
-  // so the mock takes any arguments and is cast back onto the router.
+  // so the mock takes any arguments and is assigned onto the router as it is.
   const navigate = vi.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
   router.navigate = navigate;
 

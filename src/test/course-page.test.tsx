@@ -221,7 +221,7 @@ test("a learner mid-course sees the landing copy, the marked lessons, and Contin
     .toBeVisible();
 
   // Every current lesson, in course order.
-  expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
+  expect(lessonNames()).toStrictEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   expect(page.getByLabelText("Finished").elements()).toHaveLength(1);
@@ -234,14 +234,14 @@ test("a learner mid-course sees the landing copy, the marked lessons, and Contin
   await expect.element(page.getByText("Completed 33%")).toBeVisible();
 
   // Nothing started by merely loading the page.
-  expect(starts).toEqual([]);
+  expect(starts).toStrictEqual([]);
 
   // Continue enters the Next Lesson — started first, then navigated to.
   await page.getByRole("button", { name: "Continue Learning" }).click();
   await expect
     .poll(() => router.state.location.pathname)
     .toBe("/languages/javascript/lessons/variables");
-  expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
+  expect(starts).toStrictEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 });
 
 test("a finished learner is told so and offered no lesson", async () => {
@@ -288,7 +288,7 @@ test("lays the program out by module, the first one open, and answers the landin
   await expect.element(page.getByRole("link", { name: "Variables" })).toBeVisible();
   // Only the open module's lessons are shown; the next is folded until asked
   // for, and opening it folds the first, as legacy's accordion did.
-  expect(lessonNames()).toEqual(["Hello, World!", "Variables"]);
+  expect(lessonNames()).toStrictEqual(["Hello, World!", "Variables"]);
   await page.getByRole("button", { name: "Text" }).click();
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   await expect.element(page.getByText("Working with strings.")).toBeVisible();
@@ -315,7 +315,7 @@ test("a finished learner is pointed on to the Hexlet program, tagged as a referr
     .getAttribute("href");
   const url = new URL(href ?? "");
   expect(`${url.origin}${url.pathname}`).toBe("https://ru.hexlet.io/programs/js");
-  expect(Object.fromEntries(url.searchParams)).toEqual({
+  expect(Object.fromEntries(url.searchParams)).toStrictEqual({
     ref: "1",
     utm_source: "code-basics",
     utm_medium: "referral",
@@ -332,7 +332,7 @@ test("a guest carrying progress sees the same page and the same action", async (
   // A landing page shows no completion to someone who has not started.
   await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
   expect(page.getByText("Completed 33%").elements()).toHaveLength(0);
-  expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
+  expect(lessonNames()).toStrictEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
   expect(page.getByLabelText("Finished").elements()).toHaveLength(1);
@@ -341,7 +341,7 @@ test("a guest carrying progress sees the same page and the same action", async (
   await expect
     .poll(() => router.state.location.pathname)
     .toBe("/languages/javascript/lessons/variables");
-  expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
+  expect(starts).toStrictEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 });
 
 test("a first-time visitor sees every lesson as a plain link and Try It", async () => {
@@ -352,7 +352,7 @@ test("a first-time visitor sees every lesson as a plain link and Try It", async 
   await expect.element(page.getByRole("button", { name: "Try It" })).toBeVisible();
   expect(page.getByText("Completed 0%").elements()).toHaveLength(0);
   expect(page.getByLabelText("Finished").elements()).toHaveLength(0);
-  expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
+  expect(lessonNames()).toStrictEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Variables" })).toBeVisible();
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
 
@@ -360,7 +360,7 @@ test("a first-time visitor sees every lesson as a plain link and Try It", async 
   await expect
     .poll(() => router.state.location.pathname)
     .toBe("/languages/javascript/lessons/hello-world");
-  expect(starts).toEqual([{ id: "1001", pathname: "/languages/javascript" }]);
+  expect(starts).toStrictEqual([{ id: "1001", pathname: "/languages/javascript" }]);
 });
 
 test("a landing page slug that is not served here is not found", async () => {
@@ -460,7 +460,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
   worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
   // The fresh read is held until the test lets it go, so what the learner is
   // shown while it is in flight can be looked at.
-  let release = () => {};
+  let release!: () => void;
   const held = new Promise<void>((resolve) => {
     release = resolve;
   });
@@ -485,7 +485,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
 
   await page.getByRole("button", { name: "Continue Learning" }).click();
   await expect.poll(() => reads).toBe(1);
-  expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
+  expect(starts).toStrictEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 
   // While the lesson is read afresh the learner is still on the course page:
   // the cached copy, marks and all, is never put in front of them.

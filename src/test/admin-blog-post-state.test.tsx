@@ -125,7 +125,7 @@ test("archiving and unpublishing call their own operations", async () => {
     .element(page.getByRole("button", { name: "Unpublish", exact: true }))
     .not.toBeInTheDocument();
 
-  expect(called).toEqual(["unpublish", "archive"]);
+  expect(called).toStrictEqual(["unpublish", "archive"]);
 });
 
 test("a refused transition tells the admin and keeps the state", async () => {

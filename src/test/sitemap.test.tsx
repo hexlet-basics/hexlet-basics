@@ -79,7 +79,7 @@ test("the ru site lists both sites, each linking into its own locale", async () 
     .element(page.getByRole("link", { name: "Программирование" }))
     .toHaveAttribute("href", "/ru/language_categories/programming-ru");
 
-  expect(router.state.matches.at(-1)?.meta).toEqual([{ title: "CodeBasics | Карта сайта" }]);
+  expect(router.state.matches.at(-1)?.meta).toStrictEqual([{ title: "CodeBasics | Карта сайта" }]);
 });
 
 test("the en site has no sitemap", async () => {

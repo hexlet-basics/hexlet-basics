@@ -77,7 +77,7 @@ test("a lead carries the first visit and the Metrika client id, then returns hom
   await submitTelegram("@dora");
 
   await expect.poll(() => received).toHaveLength(1);
-  expect(received[0]).toEqual({
+  expect(received[0]).toStrictEqual({
     contactMethod: "telegram",
     contactValue: "@dora",
     ymClientId: "1700000000123456789",

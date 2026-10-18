@@ -14,7 +14,7 @@ const PREFIX_CASES = [
 
 describe("PREFIXED_LOCALES", () => {
   it("is every contract locale except the unprefixed default", () => {
-    expect([...PREFIXED_LOCALES].sort()).toEqual(["es", "ru"]);
+    expect([...PREFIXED_LOCALES].toSorted()).toStrictEqual(["es", "ru"]);
   });
 });
 
