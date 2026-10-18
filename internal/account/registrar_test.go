@@ -15,6 +15,7 @@ import (
 
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/account"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
@@ -84,4 +85,22 @@ func TestRegistrarRejectsPasswordBeforeOpeningTransaction(t *testing.T) {
 		Password: string(make([]byte, 73)),
 	})
 	require.ErrorIs(t, err, account.ErrPasswordProcessing)
+}
+
+// A unique violation on a user field is a refusal of the input, not a conflict
+// of state: it is domain.ErrInvalid, and the error names the field so the
+// adapter can put the message where the person can fix it.
+func TestRegistrarNamesTheFieldOfATakenEmail(t *testing.T) {
+	db, _, txStore := testsupport.NewClientWithTxAndTransactor(t)
+	registrar := account.NewRegistrar(txStore, events.NewPublisher(txStore, slog.New(slog.DiscardHandler)))
+	taken := db.User.Query().Where(user.EmailNotNil()).FirstX(t.Context())
+
+	_, err := registrar.Register(t.Context(), account.Registration{
+		Email: *taken.Email, Password: "secret", Locale: "en",
+	})
+
+	require.ErrorIs(t, err, domain.ErrInvalid)
+	field, ok := domain.FieldOf(err)
+	require.True(t, ok)
+	assert.Equal(t, "email", field)
 }

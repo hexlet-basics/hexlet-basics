@@ -3,10 +3,10 @@ package handlers
 import (
 	"context"
 	"errors"
-	"net/http"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/account"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/selfprotection"
 )
@@ -23,9 +23,10 @@ import (
 // handler, are recorded by the audit middleware as failed calls.
 
 // refusal is a handler error that carries its own status and a localized,
-// client-safe explanation for the Problem Details `detail`.
+// client-safe explanation for the Problem Details `detail`. Its status is its
+// cause's: a domain error in the chain (ErrForbidden, ErrConflict) that the one
+// errorStatus table maps.
 type refusal struct {
-	status  int
 	message localization.Message
 	// data fills the placeholders of message; a value that is itself a
 	// localization.Message is translated first (a state's name, say).
@@ -42,18 +43,15 @@ func (e *refusal) Error() string {
 
 func (e *refusal) Unwrap() error { return e.cause }
 
-// HTTPStatus lets the central error writer pick the status.
-func (e *refusal) HTTPStatus() int { return e.status }
-
 func forbid(message localization.Message) error {
-	return &refusal{status: http.StatusForbidden, message: message}
+	return &refusal{message: message, cause: domain.ErrForbidden}
 }
 
 // lastAdminError gives the last-administrator refusal its 409 and message; any
 // other error passes through.
 func lastAdminError(err error) error {
 	if errors.Is(err, account.ErrLastAdmin) {
-		return &refusal{status: http.StatusConflict, message: localization.LastAdministrator, cause: err}
+		return &refusal{message: localization.LastAdministrator, cause: err}
 	}
 	return err
 }

@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/internal/coursepage"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/progress"
@@ -109,10 +110,10 @@ func TestCoursePageIsNotFoundForAnUnknownOrForeignSlug(t *testing.T) {
 	r := newRig(t)
 
 	_, err := r.pages.Course(t.Context(), progress.Learner{}, "en", "no-such-page")
-	require.ErrorIs(t, err, coursepage.ErrNotFound)
+	require.ErrorIs(t, err, domain.ErrNotFound)
 
 	_, err = r.pages.Course(t.Context(), progress.Learner{}, untranslated, enLanding)
-	require.ErrorIs(t, err, coursepage.ErrNotFound, "a page of another locale")
+	require.ErrorIs(t, err, domain.ErrNotFound, "a page of another locale")
 }
 
 // An archived page names where it moved: the page it points at, else the
@@ -142,7 +143,7 @@ func TestCoursePageSaysWhereAnArchivedPageMoved(t *testing.T) {
 		ClearLandingPageToRedirectID().ExecX(ctx)
 	r.db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ(ruLanding)).SetMain(false).ExecX(ctx)
 	_, err = r.pages.Course(ctx, progress.Learner{}, "ru", archivedRu)
-	require.ErrorIs(t, err, coursepage.ErrNotFound)
+	require.ErrorIs(t, err, domain.ErrNotFound)
 }
 
 // The lesson page: prose of the locale, the current version, the source link,
@@ -190,10 +191,10 @@ func TestLessonPageIsNotFound(t *testing.T) {
 		"another course's": {"en", "typescript", "no-such-lesson"},
 	} {
 		_, err := r.pages.Lesson(ctx, progress.Learner{}, args[0], args[1], args[2])
-		require.ErrorIs(t, err, coursepage.ErrNotFound, name)
+		require.ErrorIs(t, err, domain.ErrNotFound, name)
 	}
 
 	r.db.Course.Update().Where(course.SlugEQ(jsCourse)).ClearCurrentVersionID().ExecX(ctx)
 	_, err := r.pages.Lesson(ctx, progress.Learner{}, "en", jsCourse, secondLesson)
-	require.ErrorIs(t, err, coursepage.ErrNotFound, "nothing built")
+	require.ErrorIs(t, err, domain.ErrNotFound, "nothing built")
 }
