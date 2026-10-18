@@ -38,7 +38,7 @@ test("returns a new account to the lesson it signed up from, read afresh", async
     .poll(() => router.state.location.pathname)
     .toBe("/languages/javascript/lessons/variables");
   // The guest's copy is gone, so the player reads the progress the sign-up
-  // merged into the account instead of the guest's locks.
+  // Merged into the account instead of the guest's locks.
   expect(queryClient.getQueryData(lessonKey)).toBeUndefined();
 });
 

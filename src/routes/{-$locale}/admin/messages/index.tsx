@@ -13,7 +13,7 @@ import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
 
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
-// mining student questions; the per-lesson summaries live under lesson reviews.
+// Mining student questions; the per-lesson summaries live under lesson reviews.
 export const Route = createFileRoute("/{-$locale}/admin/messages/")({
   validateSearch: zAdminListMessagesQuery,
   component: MessagesList,

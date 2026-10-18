@@ -15,8 +15,8 @@ import { worker } from "@/test/msw";
 import { renderWithRouter } from "@/test/renderWithRouter";
 
 // The list engine on its own, mounted the way a resource's index route uses it:
-// the hook is handed the generated list options and delete mutation, and the
-// resource contributes columns only.
+// The hook is handed the generated list options and delete mutation, and the
+// Resource contributes columns only.
 
 const banner = (id: number, body: string): Banner => ({
   id,

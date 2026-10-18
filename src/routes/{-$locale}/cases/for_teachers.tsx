@@ -21,8 +21,8 @@ import { ButtonLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
 // The case for school and university teachers, ported from legacy
-// cases/for_teachers. Legacy served it for ru only (`require_russian_locale`),
-// so its one video is the ru one.
+// Cases/for_teachers. Legacy served it for ru only (`require_russian_locale`),
+// So its one video is the ru one.
 export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
   beforeLoad: ({ params }) => {
     if (params.locale !== "ru") {
@@ -30,8 +30,8 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
     }
   },
   // Legacy meta: title, the description cut as Rails `truncate(160)` cut it,
-  // and the social tags. Legacy pointed the canonical at the book page by
-  // mistake; it is the page's own URL here.
+  // And the social tags. Legacy pointed the canonical at the book page by
+  // Mistake; it is the page's own URL here.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
 });
 
 // Rails String#truncate: at most `length` characters, the "..." omission
-// included, cut at a character boundary.
+// Included, cut at a character boundary.
 function truncate(text: string, length: number): string {
   return text.length > length ? `${text.slice(0, length - 3)}...` : text;
 }

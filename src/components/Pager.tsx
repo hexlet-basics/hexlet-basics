@@ -3,14 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { pageCount } from "@/lib/page-count";
 
 // The public pager, ported from legacy XPaging: Mantine Pagination whose pages
-// and arrows are real links to `?page=N` on the current page, so every page is
-// reachable (and server-rendered) by URL. Hidden when there is only one page.
+// And arrows are real links to `?page=N` on the current page, so every page is
+// Reachable (and server-rendered) by URL. Hidden when there is only one page.
 //
 // The controls are rendered by Pagination itself, which only lets a caller
-// swap their root through getItemProps/getControlProps — so this is the one
-// place a router Link is passed as `component` rather than built with
-// createLink. The link is relative to the current location and changes only
-// the search, so nothing untyped (no path params) is threaded through.
+// Swap their root through getItemProps/getControlProps — so this is the one
+// Place a router Link is passed as `component` rather than built with
+// CreateLink. The link is relative to the current location and changes only
+// The search, so nothing untyped (no path params) is threaded through.
 // Page one is the bare URL, as legacy canonicalised the list.
 const linkTo = (target: number) => ({
   component: Link,

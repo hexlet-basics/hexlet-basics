@@ -19,11 +19,11 @@ const refusedLink = (locale: string | undefined) => ({
 });
 
 // The emailed Password Reset link (legacy passwords#edit). The loader checks the
-// link before the form is shown, so nobody types a new password into a dead
-// one; a refused link goes back to the request form, which says it is no longer
-// valid. The check answers 204 with no data to cache, so it calls the SDK
-// directly rather than going through queryClient.query (ADR-0008). Submitting signs the visitor in and takes
-// them home.
+// Link before the form is shown, so nobody types a new password into a dead
+// One; a refused link goes back to the request form, which says it is no longer
+// Valid. The check answers 204 with no data to cache, so it calls the SDK
+// Directly rather than going through queryClient.query (ADR-0008). Submitting signs the visitor in and takes
+// Them home.
 export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
   loader: async ({ params }) => {
     try {
@@ -57,7 +57,7 @@ function Edit() {
     },
     onError: (error) => {
       // The link can die between the check and the submission: it expired,
-      // or it was already used from another tab.
+      // Or it was already used from another tab.
       if (isApiError(error, 404)) {
         void navigate(refusedLink(locale));
         return;

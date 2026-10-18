@@ -11,9 +11,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // What a page cached for one visitor shows the next. The course page carries the
-// visitor's progress, so a copy read as a guest must not outlive the sign-in (or
-// the sign-out) that changes who is looking. Each test caches the page as the
-// previous visitor, runs one flow, and opens the page again.
+// Visitor's progress, so a copy read as a guest must not outlive the sign-in (or
+// The sign-out) that changes who is looking. Each test caches the page as the
+// Previous visitor, runs one flow, and opens the page again.
 
 const ada: User = {
   id: 7,
@@ -50,7 +50,7 @@ const course: Course = {
 };
 
 // The same course as seen by whoever is asking: Ada has finished a third of it,
-// a guest has not started.
+// A guest has not started.
 function courseFor(visitor: "ada" | "guest"): CourseView {
   const lessons = [
     {
@@ -107,7 +107,7 @@ function serverWith(signedIn: boolean) {
 }
 
 // The course page, read and on screen as `visitor` sees it, beside the route a
-// flow runs on.
+// Flow runs on.
 async function courseOpenedAs(
   visitor: "ada" | "guest",
   also: { route: never; path: string }[] = [],

@@ -7,33 +7,33 @@ import { useTranslation } from "react-i18next";
 import { pageCount } from "@/lib/page-count";
 
 // Table v9 no longer bundles every feature — each one is registered here, and an
-// unregistered feature simply has no API. The admin lists paginate and nothing
-// else (the server orders; no column sorts), so that is all we take.
+// Unregistered feature simply has no API. The admin lists paginate and nothing
+// Else (the server orders; no column sorts), so that is all we take.
 // Deliberately absent is the `paginatedRowModel` slot: the server already
-// returns one page, so a client-side row model would re-slice that page (wrong
-// results, not just wasted work). The core row model is automatic in v9.
+// Returns one page, so a client-side row model would re-slice that page (wrong
+// Results, not just wasted work). The core row model is automatic in v9.
 const features = tableFeatures({ rowPaginationFeature });
 
-// v9 threads the feature set through every table type, so the column type is
+// V9 threads the feature set through every table type, so the column type is
 // exported pre-applied: a resource declares `CrudColumnDef<Course>[]` and stays
-// unaware of which features the shared engine registers.
+// Unaware of which features the shared engine registers.
 //
 // The `TValue` generic is left at its `unknown` default, which is what plain
-// literal columns (accessorKey + a custom cell / display columns) produce — no
+// Literal columns (accessorKey + a custom cell / display columns) produce — no
 // `any` needed since our cells read `row.original`, never a typed `getValue()`.
 export type CrudColumnDef<T extends RowData> = ColumnDef<typeof features, T>;
 
 // Generic admin list, the read half of the CRUD engine (Wave 1). It is purely
-// presentational over TanStack Table in *manual* mode: the owning route runs the
-// generated list hook and feeds server-paginated rows plus the table state back
-// in, so filtering/ordering stay in SQL (never client-side over one page). Per
-// resource you supply only `columns` (including an optional actions column) —
-// everything below is shared.
+// Presentational over TanStack Table in *manual* mode: the owning route runs the
+// Generated list hook and feeds server-paginated rows plus the table state back
+// In, so filtering/ordering stay in SQL (never client-side over one page). Per
+// Resource you supply only `columns` (including an optional actions column) —
+// Everything below is shared.
 export interface CrudListProps<T extends RowData> {
   columns: CrudColumnDef<T>[];
   data?: T[];
   // Total rows across all pages (from the `XxxPage` envelope), used to derive the
-  // page count for the pager — the table itself only ever holds one page.
+  // Page count for the pager — the table itself only ever holds one page.
   total: number;
   pagination: PaginationState;
   onPaginationChange: OnChangeFn<PaginationState>;

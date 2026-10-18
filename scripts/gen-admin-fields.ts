@@ -5,13 +5,13 @@ import { describeResource, renderModule } from "./admin-fields.ts";
 import type { OpenApi, ResourceConfig } from "./admin-fields.ts";
 
 // Writes src/components/admin/generated/<resource>.ts for every admin resource
-// below, from api-spec/dist/openapi.yaml. Run by `mise run gen:admin` (part of
+// Below, from api-spec/dist/openapi.yaml. Run by `mise run gen:admin` (part of
 // `mise run gen`, so `gen:check` fails when the committed output is stale).
 // Deliberately a standalone script, not a hey-api plugin: the descriptors are
-// ours, the client generator stays on its stock configuration.
+// Ours, the client generator stays on its stock configuration.
 
 // Labels live under `models.attributes.<model>`; the legacy catalog keeps the
-// shared ones (name, slug, description) under `base`.
+// Shared ones (name, slug, description) under `base`.
 const base = { name: "base", slug: "base", description: "base" };
 
 const resources: ResourceConfig[] = [
@@ -63,7 +63,7 @@ const outDir = join(root, "src/components/admin/generated");
 const spec = parse(readFileSync(specPath, "utf8")) as OpenApi;
 
 // Start from an empty directory so a resource dropped from the list above does
-// not leave its module behind.
+// Not leave its module behind.
 mkdirSync(outDir, { recursive: true });
 for (const file of readdirSync(outDir)) {
   rmSync(join(outDir, file));

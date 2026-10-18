@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { dateTime } from "@/lib/time-ago";
 
 // The day depends on the machine's time zone, so the assertions pin the shape of
-// the format, which is what follows the language.
+// The format, which is what follows the language.
 describe("dateTime", () => {
   const iso = "2026-07-26T12:30:00Z";
 

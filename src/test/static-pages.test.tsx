@@ -11,8 +11,8 @@ import { renderRoute } from "@/test/renderRoute";
 import { renderWithProviders } from "@/test/renderWithProviders";
 
 // The data-free pages (ADR-0015) through their real routes: a static page, the
-// ru-only cases and the error pages. Asserted is what a visitor and a crawler
-// read: the body, the head, and which page answers.
+// Ru-only cases and the error pages. Asserted is what a visitor and a crawler
+// Read: the body, the head, and which page answers.
 
 function renderPage(initialPath: string, locale?: "ru" | "es") {
   return renderRoute(pageRoute, { path: "/{-$locale}/pages/$id", initialPath, locale });
@@ -124,9 +124,9 @@ test("a load that fails is the 500 page", async () => {
 });
 
 // Every page body, in both languages it is written in, through the real route:
-// the title heading and a body that is not empty. The legal texts are long
-// hardcoded markup, so a broken tag or an import that no longer resolves is
-// what this catches.
+// The title heading and a body that is not empty. The legal texts are long
+// Hardcoded markup, so a broken tag or an import that no longer resolves is
+// What this catches.
 const PAGE_IDS = ["about", "authors", "cookie_policy", "privacy", "tos"];
 const LOCALES = [
   { locale: undefined, prefix: "" },

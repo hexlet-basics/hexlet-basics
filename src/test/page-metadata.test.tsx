@@ -14,9 +14,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // What a search engine and a shared link see for the Course page and a Lesson:
-// the head each route composes from its payload, read off the loaded match —
-// the same tags the server renders into the HTML, since head() runs on the
-// loader's data before the page is streamed.
+// The head each route composes from its payload, read off the loaded match —
+// The same tags the server renders into the HTML, since head() runs on the
+// Loader's data before the page is streamed.
 
 const cover = "https://cdn.example.com/covers/javascript-list.png";
 
@@ -92,7 +92,7 @@ const lessons = [
 ];
 
 // Longer than the description's bound, with the line breaks and runs of spaces
-// raw markdown has, so both the cut and the squash are visible.
+// Raw markdown has, so both the cut and the squash are visible.
 const theory = `A variable is a name bound to a value.\n\n\`\`\`js\nlet   greeting = 'hello';\n\`\`\`\n\n${"Variables hold values that change. ".repeat(10)}`;
 
 const lessonView: CourseLessonView = {
@@ -136,8 +136,8 @@ const courseView: CourseView = {
 };
 
 // The player lays out by the viewport, and below the sm breakpoint it mounts
-// the theory twice (its own pane and a workspace tab), so the lesson is read
-// at a desktop viewport, restored once the file is done.
+// The theory twice (its own pane and a workspace tab), so the lesson is read
+// At a desktop viewport, restored once the file is done.
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
@@ -165,7 +165,7 @@ test("a lesson is titled, described and linked the way legacy did it", async () 
   expect(meta).toContainEqual({ title: "CodeBasics | Variables | JavaScript for beginners" });
 
   // Version, lesson, raw theory — cut mid-word to 217 characters and an
-  // ellipsis, then whitespace squashed, which is why it ends up shorter than 220.
+  // Ellipsis, then whitespace squashed, which is why it ends up shorter than 220.
   expect(meta).toContainEqual({
     name: "description",
     content:
@@ -174,7 +174,7 @@ test("a lesson is titled, described and linked the way legacy did it", async () 
   });
 
   // Open Graph as legacy emitted it for a lesson: an article, with no
-  // og:description and no Twitter card.
+  // Og:description and no Twitter card.
   expect(meta).toContainEqual({ property: "og:type", content: "article" });
   expect(meta).toContainEqual({ property: "og:locale", content: "en" });
   expect(meta).toContainEqual({

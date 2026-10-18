@@ -9,10 +9,10 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // A Course's Readiness is changed by action buttons, one per operation, never by
-// the form (the same pattern as the Publication State panels, see
-// admin-publication-state.test.tsx). Through the real routes under the real admin
-// guard: the buttons offered are the values other than the current one, a click
-// calls that operation and the course shown is the one it answered with.
+// The form (the same pattern as the Publication State panels, see
+// Admin-publication-state.test.tsx). Through the real routes under the real admin
+// Guard: the buttons offered are the values other than the current one, a click
+// Calls that operation and the course shown is the one it answered with.
 
 const course = (readiness: CourseReadiness | null): Course =>
   ({

@@ -4,9 +4,9 @@ import { courseFields } from "@/components/admin/generated/course";
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Course form values ARE the generated request body (CourseInput).
-// repositoryUrl is derived from the slug on read and ignored on write, and
-// coverAttachmentId is deferred with the attachment wave — both stay null and
-// get no field.
+// RepositoryUrl is derived from the slug on read and ignored on write, and
+// CoverAttachmentId is deferred with the attachment wave — both stay null and
+// Get no field.
 
 export const emptyCourse: CourseInput = {
   slug: "",
@@ -27,7 +27,7 @@ export function courseToForm(course: Course): CourseInput {
 }
 
 // Fields come from the contract (generated/course.ts); what is listed here is
-// only what the schema cannot say.
+// Only what the schema cannot say.
 export function useCourseFields(): CrudFieldSpec<CourseInput>[] {
   return useGeneratedFields<CourseInput>(courseFields, {
     set: { slug: { required: true } },

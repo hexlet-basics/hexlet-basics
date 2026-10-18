@@ -8,8 +8,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case exercising the select + datetime field types: the
-// enum defaults ride along in the payload, blank dates serialize as null, and the
-// app confirms + navigates back.
+// Enum defaults ride along in the payload, blank dates serialize as null, and the
+// App confirms + navigates back.
 test("creates a banner with the default enum selections", async () => {
   let received: BannerInput | undefined;
   worker.use(

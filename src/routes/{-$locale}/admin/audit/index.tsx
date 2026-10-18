@@ -26,9 +26,9 @@ import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 
 // The audit trail (ADR-0020): every change a staff member made and every read of
-// personal data, newest first. The API needs the capability Permission
+// Personal data, newest first. The API needs the capability Permission
 // `audit.read` on the caller's Staff Role (an administrator included), refuses a
-// window wider than 92 days, and records that the trail was read.
+// Window wider than 92 days, and records that the trail was read.
 export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   // The generated query schema of the list operation: the page, the filters and
   // the window live in the address, so a filtered view can be shared and survives
@@ -55,34 +55,16 @@ const NO_FILTERS = {
 type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
-// the morning of the 5th wherever they are.
-const startOfDay = (day: string) => dayjs(day).toISOString();
+// The morning of the 5th wherever they are.
+const startOfDay = (day: string) => new Date(`${day}T00:00:00`).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
-// window at the next local midnight.
-const endOfDay = (day: string) => dayjs(day).add(1, "day").toISOString();
-
-const filtersOf = (search: AuditSearch): Filters => ({
-  actorUserId: search.actorUserId?.toString() ?? "",
-  channel: search.channel ?? "",
-  operation: search.operation ?? "",
-  entityType: search.entityType ?? "",
-  entityId: search.entityId ?? "",
-  from: search.from ? dayjs(search.from).format("YYYY-MM-DD") : "",
-  to: search.to ? dayjs(search.to).subtract(1, "day").format("YYYY-MM-DD") : "",
-});
-
-// A blank input is no filter: it stays out of the address and the request.
-const searchOf = (filters: Filters): AuditSearch => ({
-  actorUserId: filters.actorUserId === "" ? undefined : Number(filters.actorUserId),
-  // "" (any channel) is no member of the enum, so it parses to nothing.
-  channel: zAdminListAuditRecordsQuery.shape.channel.safeParse(filters.channel).data,
-  operation: filters.operation || undefined,
-  entityType: filters.entityType || undefined,
-  entityId: filters.entityId || undefined,
-  from: filters.from === "" ? undefined : startOfDay(filters.from),
-  to: filters.to === "" ? undefined : endOfDay(filters.to),
-});
+// Window at the next local midnight.
+const endOfDay = (day: string) => {
+  const next = new Date(`${day}T00:00:00`);
+  next.setDate(next.getDate() + 1);
+  return next.toISOString();
+};
 
 const CHANNEL_COLOR = { web: "blue", mcp: "grape" } as const;
 const OUTCOME_COLOR = { succeeded: "green", forbidden: "orange", failed: "red" } as const;
@@ -108,13 +90,24 @@ function AuditTrail() {
     adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
   );
 
-  // Applying starts from the first page: the old one may not exist in the narrowed trail.
-  const apply = (filters: Filters) =>
-    navigate({ search: { ...searchOf(filters), perPage: search.perPage } });
-
-  const form = useAppForm({
-    defaultValues: filtersOf(search),
-    onSubmit: ({ value }) => apply(value),
+  const apply = (event: SyntheticEvent) => {
+    event.preventDefault();
+    setApplied(draft);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+  const reset = () => {
+    setDraft(NO_FILTERS);
+    setApplied(NO_FILTERS);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+  const field = (name: keyof Filters) => ({
+    value: draft[name],
+    // The value is read before the updater runs: React clears `currentTarget`
+    // Once the handler returns, and the updater runs later.
+    onChange: (event: { currentTarget: { value: string } }) => {
+      const { value } = event.currentTarget;
+      setDraft((current) => ({ ...current, [name]: value }));
+    },
   });
   const reset = () => {
     form.reset(NO_FILTERS);
@@ -279,7 +272,7 @@ function AuditTrail() {
 }
 
 // One record in full: where it came from, what it changed (old and new value of
-// each field; a secret field names itself and nothing else) and what it read
+// Each field; a secret field names itself and nothing else) and what it read
 // (a count and ids, never values).
 function RecordDetails({ record }: { record: AuditRecord }) {
   const { t } = useTranslation();

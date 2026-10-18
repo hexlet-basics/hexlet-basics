@@ -11,8 +11,8 @@ import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // A course category, at its legacy URL, ported from legacy
-// language_categories/show: the category's courses, a consultation form for
-// signed-in ru visitors, and the category's questions.
+// Language_categories/show: the category's courses, a consultation form for
+// Signed-in ru visitors, and the category's questions.
 export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
   loader: async ({ context, params }) => {
     try {
@@ -22,12 +22,12 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
       });
     } catch (error) {
       // A missing slug and a category of another language are the same to a
-      // visitor: there is no such page.
+      // Visitor: there is no such page.
       rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: title and description built around the category header, the
-  // canonical link and the social tags.
+  // Canonical link and the social tags.
   head: ({ loaderData, match }) => {
     if (!loaderData) {
       return {};

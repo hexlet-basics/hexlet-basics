@@ -3,8 +3,8 @@ import type { Locale } from "@/lib/i18n";
 
 // The one place that knows how a locale shows in a URL path (ADR-0002 /
 // ADR-0008): the default locale is unprefixed, every other contract locale is
-// the first segment. The Go side of the same rule is localization.PathPrefix;
-// both are checked against the same table (see locale-path.test.ts).
+// The first segment. The Go side of the same rule is localization.PathPrefix;
+// Both are checked against the same table (see locale-path.test.ts).
 
 // The prefixed locale a path starts with, if any. `/ruby` is not `/ru`.
 function prefixOf(pathname: string): (typeof PREFIXED_LOCALES)[number] | undefined {
@@ -13,7 +13,7 @@ function prefixOf(pathname: string): (typeof PREFIXED_LOCALES)[number] | undefin
 }
 
 // The backend has no locale-prefixed routes of its own, so API requests carry
-// the frontend route locale explicitly through Accept-Language.
+// The frontend route locale explicitly through Accept-Language.
 export function localeOf(pathname: string): Locale {
   return prefixOf(pathname) ?? DEFAULT_LOCALE;
 }

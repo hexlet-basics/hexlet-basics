@@ -33,7 +33,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 }
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
-// hey-api generated `listCourses` hook and link to the real course route.
+// Hey-api generated `listCourses` hook and link to the real course route.
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());

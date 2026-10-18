@@ -15,8 +15,8 @@ import { visit } from "unist-util-visit";
 import { classifyLanguage, plainTextLanguage } from "@/lib/shiki";
 
 // Markdown renderer for authored content (lesson theory, instructions, tips),
-// ported from legacy. Content is GFM with raw HTML allowed, so tables, external
-// links and inline markup all render the way course authors wrote them.
+// Ported from legacy. Content is GFM with raw HTML allowed, so tables, external
+// Links and inline markup all render the way course authors wrote them.
 
 type HastElement = NonNullable<ExtraProps["node"]>;
 
@@ -64,9 +64,9 @@ function createDirectivePlugin(components: DirectiveComponents) {
 }
 
 // A fenced block (```lang ... ```) is handled through `pre`, not `code`.
-// react-markdown v10 dropped `code`'s `inline` flag, and a fence with no
-// language gets no `language-*` class — keying off that class alone would treat
-// such a block as inline code and collapse its newlines (legacy issue #592).
+// React-markdown v10 dropped `code`'s `inline` flag, and a fence with no
+// Language gets no `language-*` class — keying off that class alone would treat
+// Such a block as inline code and collapse its newlines (legacy issue #592).
 // The `pre` hast node carries both the language and the original text.
 function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProps) {
   const codeNode = node?.children.find(
@@ -83,8 +83,8 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
     .replace(/\n$/, "");
 
   // A language with no shiki grammar is never passed through: the highlighter
-  // throws "Language `x` not found" on it (legacy issue #597). Unknown tags fall
-  // back to plain text.
+  // Throws "Language `x` not found" on it (legacy issue #597). Unknown tags fall
+  // Back to plain text.
   const language = requestedLanguage
     ? classifyLanguage(requestedLanguage).language
     : plainTextLanguage;
@@ -93,7 +93,7 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
 }
 
 // Only inline code (single backticks) reaches the `code` handler; fenced blocks
-// are intercepted by `pre` above.
+// Are intercepted by `pre` above.
 function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps) {
   const code = (node?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))
@@ -103,7 +103,7 @@ function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraPr
 }
 
 // Headings inside authored prose are one step down from the page's own, so a
-// theory `##` never competes with the lesson title.
+// Theory `##` never competes with the lesson title.
 const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
     overflowWrap: "break-word",
@@ -127,7 +127,7 @@ export default function MarkdownViewer({
   const preparedComponents = {
     pre: MarkdownCodeBlock,
     // A wide table scrolls inside its own container instead of stretching the
-    // pane it sits in.
+    // Pane it sits in.
     table: (props: ComponentPropsWithoutRef<"table">) => (
       <Table.ScrollContainer minWidth={800}>
         <table>{props.children}</table>

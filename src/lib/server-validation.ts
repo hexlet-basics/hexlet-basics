@@ -2,9 +2,9 @@ import { zProblemDetails } from "@/client/zod.gen";
 import { isApiError } from "@/lib/api-error";
 
 // The API answers a write that fails validation with 422 and a Problem Details
-// body whose `errors` extension holds the messages keyed by field, covering
-// rules the Zod schema cannot express (an email already taken). Parsing it with
-// the generated `zProblemDetails` keeps this in step with the contract.
+// Body whose `errors` extension holds the messages keyed by field, covering
+// Rules the Zod schema cannot express (an email already taken). Parsing it with
+// The generated `zProblemDetails` keeps this in step with the contract.
 function validationErrors(error: unknown): Record<string, string[]> | undefined {
   if (!isApiError(error, 422)) {
     return undefined;
@@ -18,10 +18,10 @@ function validationErrors(error: unknown): Record<string, string[]> | undefined 
 export const isValidationError = (error: unknown): boolean => validationErrors(error) !== undefined;
 
 // A TanStack Form `validators.onSubmitAsync` that runs the submission and hands
-// a 422 back in the form's own `{ fields }` shape, which is the library's way
-// to put server errors on fields: they render through the same field `error`
-// as the Zod ones and clear themselves on the next validation, with no state
-// to reset by hand. Any other failure is left to the mutation's onError.
+// A 422 back in the form's own `{ fields }` shape, which is the library's way
+// To put server errors on fields: they render through the same field `error`
+// As the Zod ones and clear themselves on the next validation, with no state
+// To reset by hand. Any other failure is left to the mutation's onError.
 export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promise<unknown>) {
   return async ({ value }: { value: TValue }) => {
     try {
@@ -42,6 +42,6 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
 }
 
 // Every message of a 422, flattened, for a screen that has no form fields to put
-// them on (a filter bar): empty when the failure is not a validation error.
+// Them on (a filter bar): empty when the failure is not a validation error.
 export const validationMessages = (error: unknown): string[] =>
   Object.values(validationErrors(error) ?? {}).flat();

@@ -7,8 +7,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The public reviews page, driven through its real route with the API faked at
-// the HTTP boundary. Asserted is what a visitor sees: the reviews, the page it
-// asked for, and the pager's links.
+// The HTTP boundary. Asserted is what a visitor sees: the reviews, the page it
+// Asked for, and the pager's links.
 
 const user: User = {
   id: 1,

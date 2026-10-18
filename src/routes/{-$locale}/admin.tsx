@@ -7,7 +7,7 @@ import { adminGetMyCapabilitiesOptions } from "@/client/@tanstack/react-query.ge
 import { requireAdmin } from "@/lib/auth";
 
 // Admin back-office layout. The guard runs in beforeLoad so a non-admin never
-// even loads a child route's data (SSR-safe: `user` is resolved in the root).
+// Even loads a child route's data (SSR-safe: `user` is resolved in the root).
 export const Route = createFileRoute("/{-$locale}/admin")({
   beforeLoad: ({ context, location }) => {
     requireAdmin(context.user, location.href);
@@ -16,12 +16,12 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 });
 
 // Nav entries. An entry with a `capability` is shown only to a staff member whose
-// role holds that capability Permission (ADR-0020): the administrator flag does
-// not imply it, so the menu asks the API what the caller holds. Each new CRUD
-// resource adds one line here; the screens themselves
-// are driven by the shared engine (CrudList/CrudForm). Ordered content-first,
-// then community/marketing, then management — mirrors how the legacy back
-// office grouped its menu.
+// Role holds that capability Permission (ADR-0020): the administrator flag does
+// Not imply it, so the menu asks the API what the caller holds. Each new CRUD
+// Resource adds one line here; the screens themselves
+// Are driven by the shared engine (CrudList/CrudForm). Ordered content-first,
+// Then community/marketing, then management — mirrors how the legacy back
+// Office grouped its menu.
 const NAV = [
   {
     to: "/{-$locale}/admin/courses",
@@ -111,7 +111,7 @@ function AdminLayout() {
   const [opened, { toggle }] = useDisclosure();
   const { pathname } = useLocation();
   // Until the answer arrives nothing behind a capability is shown, so the menu
-  // never offers an entry it may have to take back.
+  // Never offers an entry it may have to take back.
   const { data: capabilities } = useQuery(adminGetMyCapabilitiesOptions());
   const held = capabilities?.held ?? [];
   const entries = NAV.filter((entry) => {

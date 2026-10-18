@@ -40,8 +40,8 @@ import { timeAgo } from "@/lib/time-ago";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // A blog post, at its legacy URL, ported from legacy blog_posts/show. Reading on
-// scrolls into the next older post (legacy useInfiniteItems), and the address
-// bar follows whichever post is being read.
+// Scrolls into the next older post (legacy useInfiniteItems), and the address
+// Bar follows whichever post is being read.
 export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
   loader: async ({ context, params }) => {
     try {
@@ -51,12 +51,12 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       });
     } catch (error) {
       // A draft, a post in another language and a missing slug are all the
-      // same to a visitor: there is no such page.
+      // Same to a visitor: there is no such page.
       rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: the post's name and description, its canonical URL, the cover
-  // as og:image, and a schema.org Article carrying the like count.
+  // As og:image, and a schema.org Article carrying the like count.
   head: ({ loaderData, match }) => {
     if (!loaderData) {
       return {};
@@ -105,10 +105,10 @@ function Show() {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   // The chain rewrites the address bar as the reader moves on, and the router
-  // sees that as a navigation: `slug` changes under us. Following it would tear
-  // the chain down and jump the page back to a single post, so the page stays
-  // anchored to the post it was opened on and adopts a new slug only when it
-  // is not one the chain itself wrote (a real navigation, e.g. a recommended post).
+  // Sees that as a navigation: `slug` changes under us. Following it would tear
+  // The chain down and jump the page back to a single post, so the page stays
+  // Anchored to the post it was opened on and adopts a new slug only when it
+  // Is not one the chain itself wrote (a real navigation, e.g. a recommended post).
   const [chainSlugs, setChainSlugs] = useState<string[]>([]);
   const [anchor, setAnchor] = useState(slug);
   if (slug !== anchor && !chainSlugs.includes(slug)) {
@@ -149,8 +149,8 @@ function Show() {
 }
 
 // The post and the older posts appended under it as the reader reaches the
-// bottom. As in legacy, every appended post shows the first post's related
-// courses and recommendations (they are page-level data).
+// Bottom. As in legacy, every appended post shows the first post's related
+// Courses and recommendations (they are page-level data).
 function PostChain({
   first,
   onChainSlugs,
@@ -193,19 +193,19 @@ function PostChain({
   const posts = [first, ...(next.data?.pages ?? [])];
 
   // Tells the page which slugs are this chain's own, so it can tell the address
-  // bar following the reader from a real navigation. Reported as soon as a post
-  // is loaded — well before the reader scrolls to it and the URL changes.
+  // Bar following the reader from a real navigation. Reported as soon as a post
+  // Is loaded — well before the reader scrolls to it and the URL changes.
   const loadedSlugs = posts.map((post) => post.slug ?? "").join("\n");
   useEffect(() => {
     onChainSlugs(loadedSlugs.split("\n"));
   }, [loadedSlugs, onChainSlugs]);
 
   // Keeps the address bar on the post crossing a line a quarter down the
-  // viewport (the issue #587 geometry of legacy useInfiniteItems). The URL is
-  // replaced behind the router's back on purpose — it records where the reader
-  // is, it is not a navigation, so no loader runs and the chain is not torn down.
+  // Viewport (the issue #587 geometry of legacy useInfiniteItems). The URL is
+  // Replaced behind the router's back on purpose — it records where the reader
+  // Is, it is not a navigation, so no loader runs and the chain is not torn down.
   // The chain is in the page's locale, so each post's path is built under the
-  // page's own locale segment, by the router that owns the prefix rule.
+  // Page's own locale segment, by the router that owns the prefix rule.
   const router = useRouter();
   const { locale } = Route.useParams();
   const [current, setCurrent] = useState(0);
@@ -242,8 +242,8 @@ function PostChain({
 }
 
 // One post of the chain. A root margin that leaves a zero-height band at 25% of
-// the viewport makes it intersecting exactly while it spans that line; across
-// the gap between two posts the last one to span it stays current.
+// The viewport makes it intersecting exactly while it spans that line; across
+// The gap between two posts the last one to span it stays current.
 function ChainPost({
   index,
   onCrossLine,
@@ -364,9 +364,9 @@ function PostBody({
 }
 
 // Legacy posted the like and redirected back with a flash: "thanks" for a new
-// like, "already counted" for a repeat one. The API answers both with the post,
-// so a count that did not move is the repeat. A visitor is sent to sign in, as
-// the legacy auth guard did.
+// Like, "already counted" for a repeat one. The API answers both with the post,
+// So a count that did not move is the repeat. A visitor is sent to sign in, as
+// The legacy auth guard did.
 function LikeButton({ post }: { post: BlogPost }) {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();

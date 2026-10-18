@@ -7,7 +7,7 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The Connected Apps page, driven through its real route with the API faked at
-// the HTTP boundary: the list, the confirm step, the revoke and its refresh.
+// The HTTP boundary: the list, the confirm step, the revoke and its refresh.
 
 const user: User = {
   id: 1,

@@ -32,25 +32,25 @@ interface RouterContext {
 }
 
 // The incoming request's Cookie header, for the cookie provider below. Server
-// only: in the browser the provider reads document.cookie itself.
+// Only: in the browser the provider reads document.cookie itself.
 const getRequestCookies = createIsomorphicFn()
   .server(() => getRequestHeader("cookie"))
   .client(() => undefined);
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   // Resolve the current user from the httpOnly session cookie server-side, so
-  // authenticated pages (and the admin guard) render on the server (ADR-0008).
+  // Authenticated pages (and the admin guard) render on the server (ADR-0008).
   // Cached in the shared QueryClient, so this is one fetch per request.
   //
   // The language is also set here from the URL prefix: a miss under `/ru/...`
-  // is rendered without the `{-$locale}` layout's beforeLoad having run, and
-  // its 404 would otherwise come out in the `en` default.
+  // Is rendered without the `{-$locale}` layout's beforeLoad having run, and
+  // Its 404 would otherwise come out in the `en` default.
   beforeLoad: async ({ context, location }) => {
     await context.i18n.changeLanguage(localeOf(location.pathname));
     return {
       user: await resolveCurrentUser(context.queryClient),
       // A string, so it travels with the dehydrated router and the browser's
-      // first render reads the same cookies the server rendered with.
+      // First render reads the same cookies the server rendered with.
       cookieHeader: getRequestCookies(),
     };
   },
@@ -62,8 +62,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
   }),
   // A path the locale layout refuses (`/unknownpage`, `/xx/...`, `/en/...`)
-  // never mounts that layout, so its 404 brings the site chrome itself. Every
-  // other miss renders the router's default 404 inside the layout.
+  // Never mounts that layout, so its 404 brings the site chrome itself. Every
+  // Other miss renders the router's default 404 inside the layout.
   notFoundComponent: () => (
     <ApplicationLayout>
       <NotFoundPage />
@@ -74,11 +74,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   // The `{-$locale}` layout has already run changeLanguage in beforeLoad, so
-  // i18n.language is the resolved locale by the time the document renders.
+  // I18n.language is the resolved locale by the time the document renders.
   const { i18n, cookieHeader } = Route.useRouteContext();
 
   // Effects run only in the browser, so the first visit is recorded from the
-  // page the visitor actually landed on — once, whichever page that is.
+  // Page the visitor actually landed on — once, whichever page that is.
   useEffect(() => {
     recordFirstVisit();
   }, []);

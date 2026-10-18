@@ -19,7 +19,7 @@ import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";
 
 // The application's file routes carry their parents from the generated tree, so
-// each is rebuilt here from its own options under the parent the test gives it.
+// Each is rebuilt here from its own options under the parent the test gives it.
 const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
   createRoute({
     ...(fileRoute.options as object),
@@ -31,17 +31,17 @@ const under = (pattern: string, prefix: string) =>
   pattern === prefix || pattern.startsWith(`${prefix}/`);
 
 // Mounts a real file route — its loader, its component, its staticData — at a
-// real URL, under a synthetic root.
+// Real URL, under a synthetic root.
 //
 // The root is synthetic because the application's own `__root.tsx` renders
 // `<html>`, `<head>` and Start's `<Scripts>`, which cannot be nested inside a
-// test container. Everything below the root is the real thing: the route module
-// under test is passed in, not reimplemented, so what a test drives is what a
-// visitor's URL resolves to.
+// Test container. Everything below the root is the real thing: the route module
+// Under test is passed in, not reimplemented, so what a test drives is what a
+// Visitor's URL resolves to.
 //
 // One QueryClient serves both the router context and the provider, so a loader's
-// prefetch is what the hooks under it read — the same arrangement
-// setupRouterSsrQueryIntegration gives the app.
+// Prefetch is what the hooks under it read — the same arrangement
+// SetupRouterSsrQueryIntegration gives the app.
 export async function renderRoute(
   route: AnyRoute,
   {
@@ -57,17 +57,17 @@ export async function renderRoute(
     // The URL to open, which must match that pattern.
     initialPath: string;
     // Who is visiting. The application resolves this in the root route's
-    // beforeLoad, which the synthetic root does not run, so a test that cares
-    // whether the visitor is a guest says so here. The default is a guest.
+    // BeforeLoad, which the synthetic root does not run, so a test that cares
+    // Whether the visitor is a guest says so here. The default is a guest.
     user?: AuthUser | null;
     // The language the page renders in. The application sets it in the
     // `{-$locale}` layout's beforeLoad, which the synthetic root does not run;
-    // the default is the unprefixed en.
+    // The default is the unprefixed en.
     locale?: Locale;
     // Wraps the router, for a page that needs a sized container to render into.
     wrap?: (element: ReactNode) => ReactNode;
     // Further real routes mounted beside the one under test, each at its own
-    // path pattern, for a test that follows the page into another one.
+    // Path pattern, for a test that follows the page into another one.
     also?: { route: AnyRoute; path: string }[];
   },
 ) {
@@ -80,11 +80,11 @@ export async function renderRoute(
 
   const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()();
   // The application's own layouts, outermost first: the `{-$locale}` layout (site
-  // chrome, locale check) and, under it, the admin layout (its guard). A page is
-  // mounted as a child of the deepest layout its path is under, so the chrome and
-  // guards run as they do for a visitor; any other page hangs off the root. The
-  // file routes carry their parents from the generated tree, so each is rebuilt
-  // here from its own options.
+  // Chrome, locale check) and, under it, the admin layout (its guard). A page is
+  // Mounted as a child of the deepest layout its path is under, so the chrome and
+  // Guards run as they do for a visitor; any other page hangs off the root. The
+  // File routes carry their parents from the generated tree, so each is rebuilt
+  // Here from its own options.
   const LOCALE = "/{-$locale}";
   const ADMIN = `${LOCALE}/admin`;
   const layout = make(localeLayoutRoute, rootRoute, LOCALE);
@@ -109,7 +109,7 @@ export async function renderRoute(
   layout.addChildren(inLocale as never[]);
 
   // The locale layout switches the router's i18n to the URL's locale before a
-  // route's head runs; the synthetic root has no such layout, so it is done here.
+  // Route's head runs; the synthetic root has no such layout, so it is done here.
   const i18n = createI18n();
   await i18n.changeLanguage(locale ?? localeOf(initialPath));
 

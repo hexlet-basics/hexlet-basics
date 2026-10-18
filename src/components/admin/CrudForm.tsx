@@ -5,8 +5,8 @@ import { useAppForm, submitForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
 
 // One editable field, described declaratively. `name` is checked against the
-// resource's input model, so a typo or a renamed contract field fails at compile
-// time — the whole point of driving the form off the generated types.
+// Resource's input model, so a typo or a renamed contract field fails at compile
+// Time — the whole point of driving the form off the generated types.
 export interface CrudFieldSpec<T> {
   name: keyof T & string;
   label: string;
@@ -27,26 +27,26 @@ export interface CrudFieldSpec<T> {
 export interface CrudFormProps<T extends Record<string, unknown>> {
   fields: CrudFieldSpec<T>[];
   // The generated `zXxxInput` schema, typed to the form values on BOTH the output
-  // and input side (`ZodType<T, T>`). zod v4 implements Standard Schema keyed to
-  // its input type, and TanStack Form's validator wants `StandardSchemaV1<T>`;
-  // fixing input=output=T lets `zXxxInput` satisfy it directly, with no cast.
+  // And input side (`ZodType<T, T>`). zod v4 implements Standard Schema keyed to
+  // Its input type, and TanStack Form's validator wants `StandardSchemaV1<T>`;
+  // Fixing input=output=T lets `zXxxInput` satisfy it directly, with no cast.
   schema: ZodType<T, T>;
   defaultValues: T;
   // Submits the validated values. Return the mutation's promise (mutateAsync):
-  // the resource mutation (useResourceMutation) toasts success/failure, and the
-  // form awaits it only to put a 422's per-field messages on the fields.
+  // The resource mutation (useResourceMutation) toasts success/failure, and the
+  // Form awaits it only to put a 422's per-field messages on the fields.
   onSubmit: (values: T) => Promise<unknown>;
   submitLabel: string;
   // Invoked when the user cancels. The route owns navigation so the engine stays
-  // resource-agnostic and the destination keeps TanStack Router's typed links.
+  // Resource-agnostic and the destination keeps TanStack Router's typed links.
   onCancel: () => void;
 }
 
 // Generic admin form, the write half of the CRUD engine (Wave 1). Owns the
 // Mantine card shell and submit/cancel; per resource you pass the generated Zod
-// validator, typed default values, and a field list. The same component backs
-// both create and edit — the route decides which mutation `onSubmit` runs and
-// seeds `defaultValues` accordingly.
+// Validator, typed default values, and a field list. The same component backs
+// Both create and edit — the route decides which mutation `onSubmit` runs and
+// Seeds `defaultValues` accordingly.
 export function CrudForm<T extends Record<string, unknown>>({
   fields,
   schema,

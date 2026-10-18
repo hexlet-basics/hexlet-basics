@@ -7,8 +7,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin's AI pick of a post's related courses (legacy `related_courses`
-// member action): the button only enqueues the job, so what the admin sees is
-// the confirmation, and what the API sees is the post it was asked about.
+// Member action): the button only enqueues the job, so what the admin sees is
+// The confirmation, and what the API sees is the post it was asked about.
 
 const author: User = {
   id: 1,

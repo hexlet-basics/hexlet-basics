@@ -8,9 +8,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The OAuth consent screen and the sign-in that leads back to it, driven through
-// their real routes with the API faked at the HTTP boundary. The consent
-// operations are contract operations; the protocol endpoints they hand the
-// browser on to are not under test here.
+// Their real routes with the API faked at the HTTP boundary. The consent
+// Operations are contract operations; the protocol endpoints they hand the
+// Browser on to are not under test here.
 
 const user: User = {
   id: 1,

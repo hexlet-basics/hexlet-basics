@@ -25,8 +25,8 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The lesson player, driven through its real route with the API faked at the
 // HTTP boundary — the seam the admin screens are tested at. What is asserted is
-// what a learner can see: the words on the page, the marks in the lesson list,
-// and the requests the page did (and did not) make.
+// What a learner can see: the words on the page, the marks in the lesson list,
+// And the requests the page did (and did not) make.
 
 const course: Course = {
   id: 1,
@@ -149,7 +149,7 @@ function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView
 }
 
 // A signed-in learner, for the tests that need one. Everything else here is a
-// guest, which is the harder case and the one legacy under-tested.
+// Guest, which is the harder case and the one legacy under-tested.
 const learner: AuthUser = {
   id: 7,
   firstName: "Ada",
@@ -165,7 +165,7 @@ const learner: AuthUser = {
 };
 
 // The real route at a real URL, so the loader and the route's chrome run as they
-// do for a visitor. The lesson layout gives the panes the viewport to divide.
+// Do for a visitor. The lesson layout gives the panes the viewport to divide.
 function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
   return renderRoute(lessonRoute, {
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
@@ -175,27 +175,27 @@ function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
 }
 
 // The layout switches on the viewport, not on the container, so each test sets
-// the viewport it means: a desktop unless it says otherwise, and the viewport
-// the suite was started with once the file is done.
+// The viewport it means: a desktop unless it says otherwise, and the viewport
+// The suite was started with once the file is done.
 const desktop = { width: 1200, height: 800 };
 const phone = { width: 375, height: 667 };
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 beforeEach(() => page.viewport(desktop.width, desktop.height));
 
 // What monaco has painted, with the non-breaking spaces it renders text with
-// turned back into ordinary ones so assertions read like the code does.
+// Turned back into ordinary ones so assertions read like the code does.
 function editorText() {
   return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00A0", " ");
 }
 
 // The editor is a lazy chunk of a few hundred modules, and the first test to
-// open it waits for vite to transform all of them, so waiting on it gets a
-// budget of its own rather than the default second. The budget is sized for a
-// cold CI runner, not for a warm laptop.
+// Open it waits for vite to transform all of them, so waiting on it gets a
+// Budget of its own rather than the default second. The budget is sized for a
+// Cold CI runner, not for a warm laptop.
 const editorLoad = { timeout: 30_000 };
 
 // Everything the player keeps between visits lives here; a test that seeds it
-// must not leak into the next one.
+// Must not leak into the next one.
 afterEach(() => localStorage.clear());
 
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
@@ -292,7 +292,7 @@ test("starts nothing by loading the page", async () => {
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
 
   // The router preloads on hover, so a read that started a lesson would enroll a
-  // learner in every lesson they pointed at (ADR-0012).
+  // Learner in every lesson they pointed at (ADR-0012).
   expect(started).toBe(0);
 });
 
@@ -301,7 +301,7 @@ test("divides the two panes where the learner left the divider", async () => {
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
   );
   // What a previous visit stored — a reload reads it back rather than resetting
-  // to the default split.
+  // To the default split.
   Cookies.set("lesson_panes", "70");
 
   await renderPlayer("variables");
@@ -339,7 +339,7 @@ test("opens the editor with the lesson's starter code, after the theory", async 
   await renderPlayer("variables");
 
   // The theory does not wait for the editor: it renders from the payload, while
-  // monaco arrives on its own lazy import afterwards.
+  // Monaco arrives on its own lazy import afterwards.
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
 
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
@@ -370,7 +370,7 @@ test("finds yesterday's work still there, and keeps it per lesson", async () => 
   await expect.poll(editorText, editorLoad).toContain("let greeting = 'yesterday';");
 
   // The next lesson opens on its own starter code, not on the work done in the
-  // one before it.
+  // One before it.
   await screen.unmount();
   await renderPlayer("strings");
   await expect.poll(editorText, editorLoad).toContain("// strings");
@@ -386,7 +386,7 @@ test("keeps what the learner typed when they come back to the lesson", async () 
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
 
   // The code area of the editor pane — the theory has code blocks of its own —
-  // and not monaco's hidden input, because that is what a learner clicks.
+  // And not monaco's hidden input, because that is what a learner clicks.
   await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
   await userEvent.keyboard("// mine");
   await expect.poll(editorText).toContain("// mine");
@@ -442,8 +442,8 @@ function checkResult(overrides: Partial<LessonCheckingResponse> = {}): LessonChe
 }
 
 // The visitor here is a guest — no session, progress carried in a cookie the
-// browser never reads. The page is the same page a signed-in learner gets, which
-// is the point: nothing on this screen branches on whether there is an account.
+// Browser never reads. The page is the same page a signed-in learner gets, which
+// Is the point: nothing on this screen branches on whether there is an account.
 test("runs the solution and says it passed", async () => {
   const submitted: unknown[] = [];
   worker.use(
@@ -533,8 +533,8 @@ test("says when the request itself failed, rather than leaving it to be read as 
 });
 
 // Some courses (TypeScript) start from an empty file. The contract refuses an
-// empty submission, so running it would come back as a 400 and read as a network
-// failure; the page says what is missing instead and asks the server nothing.
+// Empty submission, so running it would come back as a 400 and read as a network
+// Failure; the page says what is missing instead and asks the server nothing.
 test("asks for a solution rather than sending an empty one", async () => {
   let checks = 0;
   worker.use(
@@ -548,7 +548,7 @@ test("asks for a solution rather than sending an empty one", async () => {
   );
 
   // An empty buffer leaves monaco's input element zero-wide, so "visible" would
-  // never hold for it.
+  // Never hold for it.
   await renderPlayer("variables");
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeInTheDocument();
   await page.getByRole("button", { name: "Run" }).click();
@@ -564,8 +564,8 @@ test("asks for a solution rather than sending an empty one", async () => {
 });
 
 // The learner is moved to the output pane the moment they press run, and the
-// check can take seconds (a container starts); the pane must say so rather than
-// sit empty.
+// Check can take seconds (a container starts); the pane must say so rather than
+// Sit empty.
 test("shows that the check is running while it is", async () => {
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
@@ -698,7 +698,7 @@ test("keeps the reference solution behind a wait until the lesson is passed", as
     .element(page.getByText("let greeting = 'hello'; // the author's answer"))
     .toBeVisible();
   // The learner's own code, beside the author's, so the comparison is on one
-  // screen — and it is the buffer, not the editor's copy of it.
+  // Screen — and it is the buffer, not the editor's copy of it.
   await expect
     .element(page.getByRole("tabpanel", { name: "Solution" }).getByText("let greeting = '';"))
     .toBeVisible();
@@ -769,7 +769,7 @@ test("previews a markup course's page under the editor, as the learner writes it
   await expect.element(preview).toHaveAttribute("srcdoc", "<h1>Hello</h1>\n");
 
   // The learner's markup cannot reach the page around it: no scripts, and an
-  // opaque origin whose document the page cannot open either.
+  // Opaque origin whose document the page cannot open either.
   const frame = preview.element() as HTMLIFrameElement;
   expect(frame.getAttribute("sandbox")).toBe("");
   expect(frame.contentDocument).toBeNull();
@@ -889,7 +889,7 @@ test("lets a learner revisiting a finished lesson move on straight away", async 
 });
 
 // The course read for a learner whose Enrollment is in `state` — what the
-// completion page checks before it congratulates anyone.
+// Completion page checks before it congratulates anyone.
 function courseView(state: EnrollmentState): CourseView {
   const progress = lastLessonView().progress ?? null;
   return {
@@ -909,7 +909,7 @@ test("says so on the last lesson, and leads to the completion page", async () =>
     http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
     http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
     // The pass has finished the Enrollment on the server. The course is read by
-    // its landing page's slug, which is what the completion page is addressed by.
+    // Its landing page's slug, which is what the completion page is addressed by.
     http.get("*/api/languages/javascript-ru", () => HttpResponse.json(courseView("finished"))),
   );
 
@@ -923,7 +923,7 @@ test("says so on the last lesson, and leads to the completion page", async () =>
     ),
   });
   // A course read left from an earlier visit to the Course page, taken before
-  // the pass: served as it is, it would bounce the learner back as unfinished.
+  // The pass: served as it is, it would bounce the learner back as unfinished.
   queryClient.setQueryData(
     getCourseQueryKey({ path: { slug: "javascript-ru" } }),
     courseView("started"),
@@ -988,7 +988,7 @@ test("offers a guest sign-up in place of Next, and tells them it keeps their pro
   await expect.element(page.getByText(prompt)).toBeVisible();
 
   // Both lead to sign-up and carry the way back to this lesson. The merge that
-  // credits what was passed is the server's, and is covered by its tests.
+  // Credits what was passed is the server's, and is covered by its tests.
   for (const name of ["Next →", "register"]) {
     const href = page.getByRole("link", { name, exact: true }).element().getAttribute("href");
     const url = new URL(href ?? "", location.origin);
@@ -1031,8 +1031,8 @@ async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
 }
 
 // The two panes — theory and navigation, then the workspace — as locators, and
-// how wide each is drawn: on a phone one fills the screen and the other is
-// folded to nothing.
+// How wide each is drawn: on a phone one fills the screen and the other is
+// Folded to nothing.
 function panes() {
   const [theory, workspace] = Array.from(
     document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
@@ -1126,7 +1126,7 @@ test("on a phone, has no divider to drag", async () => {
   await expect.poll(paneWidths).toEqual([0, phone.width]);
 
   // No grip to take hold of, and the keys that move a desktop's divider move
-  // nothing here.
+  // Nothing here.
   expect(document.querySelector(".mantine-Splitter-thumb")).toBeNull();
   document.querySelector<HTMLElement>(".mantine-Splitter-handle")?.focus();
   await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowLeft}");
@@ -1148,7 +1148,7 @@ test("on a phone, fits the theory to the screen, wide code and all", async () =>
   await expect.element(panes().workspace.getByText("A long line:")).toBeInViewport();
 
   // The page itself never scrolls sideways: the wide block scrolls inside its
-  // own box, so the prose around it reads at the screen's width.
+  // Own box, so the prose around it reads at the screen's width.
   expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(phone.width);
 });
 
@@ -1284,7 +1284,7 @@ function squiggles() {
 
 test("underlines a syntax error in a language monaco has no service of", async () => {
   // C has no language service in monaco, so the underline can only come from the
-  // syntax check.
+  // Syntax check.
   const c = lessonView({
     lesson: { ...lesson, exerciseExtension: "c", preparedCode: "int main(void) { return 0; }\n" },
   });

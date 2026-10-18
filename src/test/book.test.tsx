@@ -8,7 +8,7 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The free book page, driven through its real route with the API faked at the
 // HTTP boundary: which button a visitor gets, what a request does, and that
-// the page exists for ru only.
+// The page exists for ru only.
 
 const user: User = {
   id: 1,

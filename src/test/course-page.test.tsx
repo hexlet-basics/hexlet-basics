@@ -18,8 +18,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The Course page, driven through its real route with the API faked at the HTTP
-// boundary. What is asserted is what a visitor sees — the landing copy, the
-// marks in the lesson list, the one button — and the requests pressing it made.
+// Boundary. What is asserted is what a visitor sees — the landing copy, the
+// Marks in the lesson list, the one button — and the requests pressing it made.
 
 const course: Course = {
   id: 1,
@@ -69,7 +69,7 @@ const landingPage: CourseLandingPage = {
 };
 
 // One standing, as the server sends it: the course's own progress, and which of
-// its lessons carry a check. The page is expected to render them as given.
+// Its lessons carry a check. The page is expected to render them as given.
 interface Standing {
   progress: CourseProgress;
   finished: string[];
@@ -106,7 +106,7 @@ const lessonRows = (finished: string[]): LearnerLesson[] => [
 ];
 
 // Three payloads the server can send, each a fact about where the visitor
-// stands.
+// Stands.
 
 // Has finished the first lesson: the second is next.
 const midCourse: Standing = {
@@ -135,7 +135,7 @@ const firstVisit: Standing = {
 };
 
 // `enrolled` is a learner who has started the course: only they have a completion
-// to show on its landing page.
+// To show on its landing page.
 function courseView(standing: Standing, enrolled = false): CourseView {
   return {
     course,
@@ -164,9 +164,9 @@ const learner: AuthUser = {
 };
 
 // The real route at a real URL. Start commands are recorded from before the
-// first render, together with where the visitor was when each arrived — so a
-// test can tell "nothing started on load" and "started, then navigated" apart
-// from their opposites.
+// First render, together with where the visitor was when each arrived — so a
+// Test can tell "nothing started on load" and "started, then navigated" apart
+// From their opposites.
 async function renderCourse(
   user: AuthUser | null = null,
   initialPath = "/languages/javascript",
@@ -186,7 +186,7 @@ async function renderCourse(
     initialPath,
     user,
     // The lesson player beside it, for a test that follows the button into the
-    // lesson; it divides a real height, so it gets one.
+    // Lesson; it divides a real height, so it gets one.
     ...(withPlayer && {
       also: [{ route: lessonRoute, path: "/{-$locale}/languages/$slug/lessons/$lessonSlug" }],
       wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
@@ -198,7 +198,7 @@ async function renderCourse(
 }
 
 // The lesson entries in the list, in the order a visitor reads them. The marks
-// are labelled icons, so they are asserted by accessible name, not here.
+// Are labelled icons, so they are asserted by accessible name, not here.
 function lessonNames() {
   return page
     .getByRole("link")
@@ -287,7 +287,7 @@ test("lays the program out by module, the first one open, and answers the landin
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
   await expect.element(page.getByRole("link", { name: "Variables" })).toBeVisible();
   // Only the open module's lessons are shown; the next is folded until asked
-  // for, and opening it folds the first, as legacy's accordion did.
+  // For, and opening it folds the first, as legacy's accordion did.
   expect(lessonNames()).toStrictEqual(["Hello, World!", "Variables"]);
   await page.getByRole("button", { name: "Text" }).click();
   await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
@@ -324,7 +324,7 @@ test("a finished learner is pointed on to the Hexlet program, tagged as a referr
 
 test("a guest carrying progress sees the same page and the same action", async () => {
   // The same payload a signed-in learner gets: the guest's position is the
-  // cookie, and the page has no reason to know the difference.
+  // Cookie, and the page has no reason to know the difference.
   worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
 
   const { router, starts } = await renderCourse(null);
@@ -417,7 +417,7 @@ test("stays on the course page when the start command fails", async () => {
 });
 
 // The Next Lesson as the lesson player reads it, with the standing it carries:
-// the marks are what the pass the start followed has changed.
+// The marks are what the pass the start followed has changed.
 function variablesView(standing: Standing): CourseLessonView {
   return {
     lesson: {
@@ -459,7 +459,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
   onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
   worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
   // The fresh read is held until the test lets it go, so what the learner is
-  // shown while it is in flight can be looked at.
+  // Shown while it is in flight can be looked at.
   let release!: () => void;
   const held = new Promise<void>((resolve) => {
     release = resolve;
@@ -477,7 +477,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
     withPlayer: true,
   });
   // What a hover over the list would have preloaded before the pass: the same
-  // lesson, with nothing finished yet.
+  // Lesson, with nothing finished yet.
   queryClient.setQueryData(
     getCourseLessonQueryKey({ path: { courseSlug: "javascript", slug: "variables" } }),
     variablesView(firstVisit),
@@ -488,7 +488,7 @@ test("enters the lesson as it stands after the start, not as a hover cached it",
   expect(starts).toStrictEqual([{ id: "1002", pathname: "/languages/javascript" }]);
 
   // While the lesson is read afresh the learner is still on the course page:
-  // the cached copy, marks and all, is never put in front of them.
+  // The cached copy, marks and all, is never put in front of them.
   expect(page.getByRole("heading", { name: "JavaScript: Variables" }).elements()).toHaveLength(0);
   await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
 

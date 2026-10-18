@@ -13,8 +13,8 @@ import type { Permission } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // The Permissions a role holds, edited on its page. The list is the catalog the
-// contract's operations declare (ADR-0020), grouped by the resource each name
-// starts with, so a new Permission appears here with no change to this screen.
+// Contract's operations declare (ADR-0020), grouped by the resource each name
+// Starts with, so a new Permission appears here with no change to this screen.
 // One save replaces the role's whole set, so submitting the screen is idempotent.
 export function RolePermissions({ roleId }: { roleId: number }) {
   const { data } = useQuery(adminGetRolePermissionsOptions({ path: { roleId } }));
@@ -35,7 +35,7 @@ export function RolePermissions({ roleId }: { roleId: number }) {
   );
 }
 
-// resourceOf is the part of a Permission name before the dot.
+// ResourceOf is the part of a Permission name before the dot.
 const resourceOf = (permission: Permission) => permission.name.split(".")[0] ?? permission.name;
 
 function PermissionsForm({

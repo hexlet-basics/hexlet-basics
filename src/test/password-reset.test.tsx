@@ -27,7 +27,7 @@ function openLink(token: string) {
     path: "/{-$locale}/password/$token/edit",
     initialPath: `/ru/password/${token}/edit`,
     // The /ru prefix is what the redirect must keep, and the layout renders the
-    // page in the language of that prefix.
+    // Page in the language of that prefix.
   });
 }
 

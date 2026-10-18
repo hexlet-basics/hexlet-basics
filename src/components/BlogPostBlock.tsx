@@ -7,7 +7,7 @@ import { timeAgo } from "@/lib/time-ago";
 import { HoverLift } from "./HoverLift";
 
 // Blog post card, ported from legacy BlogPostBlock. Reading time is the legacy
-// hardcoded five minutes: the serializer's readingTime was never shown.
+// Hardcoded five minutes: the serializer's readingTime was never shown.
 export default function BlogPostBlock({ post, lazy }: { post: BlogPost; lazy?: boolean }) {
   const { t, i18n } = useTranslation();
 

@@ -6,9 +6,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The header's language menu: every entry is a plain link to the same page
-// under the other locale's prefix, query included. Following one asks the API
-// for nothing (the SSR server remembers the locale of the page it serves), so
-// the browser can prefetch or open it without side effects.
+// Under the other locale's prefix, query included. Following one asks the API
+// For nothing (the SSR server remembers the locale of the page it serves), so
+// The browser can prefetch or open it without side effects.
 
 // The header shows its menus from the desktop width up.
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };

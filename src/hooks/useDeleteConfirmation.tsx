@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 // Opens the standard admin delete-confirm modal (shared labels + red confirm),
-// so route lists only supply what to delete and the callback. Adapted from 1mail.
+// So route lists only supply what to delete and the callback. Adapted from 1mail.
 export function useDeleteConfirmation() {
   const { t } = useTranslation();
 

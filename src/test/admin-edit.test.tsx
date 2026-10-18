@@ -14,9 +14,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin edit pages that carry a nested editor under the record's own form,
-// through their real routes under the real admin guard: the role's permissions
-// and a category's FAQ. The API is faked at the HTTP boundary; asserted is
-// what an admin sees and what the API is sent.
+// Through their real routes under the real admin guard: the role's permissions
+// And a category's FAQ. The API is faked at the HTTP boundary; asserted is
+// What an admin sees and what the API is sent.
 
 const role: StaffRoleDetail = {
   id: 5,

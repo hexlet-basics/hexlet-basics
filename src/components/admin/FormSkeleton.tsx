@@ -1,8 +1,8 @@
 import { Card, Skeleton, Stack } from "@mantine/core";
 
 // The shape of a CrudForm while the record it edits is still loading: the same
-// card, a few label-and-input pairs and the button row, so the form does not
-// jump when the data arrives.
+// Card, a few label-and-input pairs and the button row, so the form does not
+// Jump when the data arrives.
 export default function FormSkeleton({ fields = 4 }: { fields?: number }) {
   return (
     <Card withBorder p="xl" maw={720}>

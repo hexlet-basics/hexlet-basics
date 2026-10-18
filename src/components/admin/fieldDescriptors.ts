@@ -1,7 +1,7 @@
 // The shape of what `scripts/gen-admin-fields.ts` writes into `./generated/*.ts`:
-// one descriptor per form field (from the resource's `XxxInput` schema) and per
-// list column (from the read model), derived from the OpenAPI contract so a
-// field added in TypeSpec shows up here after `mise run gen`.
+// One descriptor per form field (from the resource's `XxxInput` schema) and per
+// List column (from the read model), derived from the OpenAPI contract so a
+// Field added in TypeSpec shows up here after `mise run gen`.
 
 export type FieldKind =
   | "text"
@@ -14,7 +14,7 @@ export type FieldKind =
 
 export interface EnumValueDescriptor {
   value: string;
-  // i18n key of the value's label: `models.attributes.<model>.<field>/values.<value>`.
+  // I18n key of the value's label: `models.attributes.<model>.<field>/values.<value>`.
   labelKey: string;
 }
 
@@ -25,7 +25,7 @@ export interface FieldDescriptor {
   // In the schema's `required` list and not nullable: the form must send a value.
   required: boolean;
   nullable: boolean;
-  // i18n key of the label: `models.attributes.<model>.<snake_case_field>`.
+  // I18n key of the label: `models.attributes.<model>.<snake_case_field>`.
   labelKey: string;
   // Set for `kind: "select"`.
   enumValues?: EnumValueDescriptor[];

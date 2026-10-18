@@ -24,7 +24,7 @@ const post: BlogPost = {
 };
 
 // The picker of a post's related courses lists every course the catalog has, not
-// a first page of them: a course past the hundredth is still one an admin can pick.
+// A first page of them: a course past the hundredth is still one an admin can pick.
 test("the related-courses picker offers every course, however many there are", async () => {
   const options: CourseOption[] = Array.from({ length: 150 }, (_, index) => ({
     id: index + 1,

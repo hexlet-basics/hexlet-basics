@@ -8,7 +8,7 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the users resource — also exercises the engine's
-// checkbox field type (admin flag) end to end.
+// Checkbox field type (admin flag) end to end.
 test("creates a user", async () => {
   let received: UserInput | undefined;
   worker.use(
@@ -45,7 +45,7 @@ test("creates a user", async () => {
 });
 
 // A 422 from the API lands on the field it names, through the same CrudForm
-// every resource shares, and the form stays put for another try.
+// Every resource shares, and the form stays put for another try.
 test("shows a refused field of a new user at that field", async () => {
   worker.use(
     http.post("*/admin/api/users", () =>

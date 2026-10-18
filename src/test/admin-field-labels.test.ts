@@ -5,10 +5,10 @@ import ru from "@/locales/ru/translation";
 import type { FieldDescriptor } from "@/components/admin/fieldDescriptors";
 
 // The generated descriptors name their labels by i18n key, and nothing in the
-// source mentions those keys as literals, so `lint:i18n` cannot see them. This
-// is the check that a form field added in the contract has a label in every
-// catalog (list columns are checked where a route uses them, see
-// useGeneratedColumns).
+// Source mentions those keys as literals, so `lint:i18n` cannot see them. This
+// Is the check that a form field added in the contract has a label in every
+// Catalog (list columns are checked where a route uses them, see
+// UseGeneratedColumns).
 const modules = import.meta.glob<Record<string, unknown>>("@/components/admin/generated/*.ts", {
   eager: true,
 });

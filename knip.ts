@@ -1,14 +1,14 @@
 import type { KnipConfig } from "knip";
 
 // Unused files, exports and dependencies of the frontend and the TypeSpec
-// tooling. legacy/ is the Rails app being retired and has its own package.json.
+// Tooling. legacy/ is the Rails app being retired and has its own package.json.
 const config: KnipConfig = {
   ignore: ["legacy/**", "src/client/**", "src/types/**"],
   ignoreDependencies: [
     // Run by name from the SSR image (Dockerfile.web), never imported.
     "srvx",
     // The frontend state library the plan names (docs/FRONTEND_PLAN.md), not
-    // used by any screen yet.
+    // Used by any screen yet.
     "zustand",
     // Run as `pnpm exec tanstack search-docs`, never imported (see AGENTS.md).
     "@tanstack/cli",

@@ -8,7 +8,7 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case: an admin fills the create form, it POSTs the
-// right body to the API, and the app confirms + navigates back to the list.
+// Right body to the API, and the app confirms + navigates back to the list.
 test("creates a course category", async () => {
   let received: CourseCategoryInput | undefined;
   worker.use(

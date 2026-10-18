@@ -3,8 +3,8 @@ import { PREFIXED_LOCALES } from "@/lib/i18n";
 import { localeOf, localize, stripLocale } from "@/lib/locale-path";
 
 // Cross-reference: the same prefix rule is tested in Go by TestPathPrefix in
-// internal/localization/paths_test.go. Keep the (locale, prefix) table below
-// identical on both sides: en carries no prefix, every other locale carries
+// Internal/localization/paths_test.go. Keep the (locale, prefix) table below
+// Identical on both sides: en carries no prefix, every other locale carries
 // `/<locale>`.
 const PREFIX_CASES = [
   ["en", ""],

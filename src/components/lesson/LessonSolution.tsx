@@ -8,17 +8,17 @@ import { getEditorSettings } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
 
 // How long a learner who has not passed waits before the reference solution can
-// be opened. Long enough that reading it is a last resort, short enough that
-// nobody is stuck on one lesson forever.
+// Be opened. Long enough that reading it is a last resort, short enough that
+// Nobody is stuck on one lesson forever.
 const waitingTime = 20 * 60 * 1000;
 
 // The author's answer, beside the learner's own so the two can be compared on
-// one screen.
+// One screen.
 //
 // It opens as soon as the lesson is passed. Before that it is behind a wait,
-// with the time left on screen so a stuck learner knows whether to keep trying.
+// With the time left on screen so a stuck learner knows whether to keep trying.
 // The wait restarts on every page load, exactly as legacy's does — reproduced
-// rather than quietly fixed, so this port has one variable and not several.
+// Rather than quietly fixed, so this port has one variable and not several.
 export default function LessonSolution({
   courseSlug,
   extension,
@@ -58,8 +58,8 @@ export default function LessonSolution({
 }
 
 // The countdown lives in its own component so its once-a-second tick re-renders
-// only the clock. Held by LessonSolution, the tick re-rendered the highlighted
-// code too, which replaced its DOM and dropped the learner's text selection
+// Only the clock. Held by LessonSolution, the tick re-rendered the highlighted
+// Code too, which replaced its DOM and dropped the learner's text selection
 // (issue #742).
 function SolutionWait({ onReveal }: { onReveal: () => void }) {
   const { t } = useTranslation();

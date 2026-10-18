@@ -40,39 +40,39 @@ import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
-// current lessons, and one button that puts the learner in it.
+// Current lessons, and one button that puts the learner in it.
 //
 // Ported from legacy `languages/show`, module accordion and Q&A included. What
-// did not come across is what would branch on having an account or add a way
-// in: the lead and sign-up forms, the promo video, and the two extra calls to
-// action, which would each be a second way in that skips the start command.
+// Did not come across is what would branch on having an account or add a way
+// In: the lead and sign-up forms, the promo video, and the two extra calls to
+// Action, which would each be a second way in that skips the start command.
 //
 // The loader prefetches into the request-scoped QueryClient, so the landing
-// copy is in the server-rendered HTML (ADR-0008). Loading this page starts
-// nothing: the router preloads on hover, so progress begins only when the
-// button is pressed (ADR-0012).
+// Copy is in the server-rendered HTML (ADR-0008). Loading this page starts
+// Nothing: the router preloads on hover, so progress begins only when the
+// Button is pressed (ADR-0012).
 //
 // `unfinished` is set by the completion page when it bounces a learner whose
 // Enrollment is not finished: legacy's flash warning, carried in the URL so it
-// survives a server-side redirect.
+// Survives a server-side redirect.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
   loader: async ({ context, params }) => {
     // The banner is prefetched so it is in the server-rendered HTML; fetched on
-    // the client only, it would pop in after hydration. It is decoration, so
-    // failing to read it must not take the page down.
+    // The client only, it would pop in after hydration. It is decoration, so
+    // Failing to read it must not take the page down.
     const banner = context.queryClient
       .query({ ...getActiveBannerOptions(), staleTime: "static" })
       .catch(() => null);
     try {
       const [view] = await Promise.all([
         // Carries the visitor's progress, so it takes the client's default
-        // staleness and is dropped when who is visiting changes.
+        // Staleness and is dropped when who is visiting changes.
         context.queryClient.query(getCourseOptions({ path: { slug: params.slug } })),
         banner,
       ]);
       // An archived landing page moved: legacy answered it with a permanent
-      // redirect, which keeps old links and search results pointing somewhere.
+      // Redirect, which keeps old links and search results pointing somewhere.
       if (view.movedTo) {
         throw redirect({
           to: "/{-$locale}/languages/$slug",
@@ -83,18 +83,18 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       return view;
     } catch (error) {
       // The slug is a landing page's, in this locale's site: an unknown one and
-      // one of another locale are the same to a visitor, there is no such page.
+      // One of another locale are the same to a visitor, there is no such page.
       // Thrown here, not left to the error page, so the answer is a 404.
       rethrowMissingAsNotFound(error);
     }
   },
   // Legacy languages#show meta: the landing page's meta title and description,
-  // the canonical link, the social block with the course cover, and Open Graph
-  // typed as a website in the page's locale.
+  // The canonical link, the social block with the course cover, and Open Graph
+  // Typed as a website in the page's locale.
   //
-  // og:url is the canonical. Legacy built it from the landing page's slug, the
-  // slug it resolved the page by; this page is resolved by the course's slug,
-  // which is also what legacy's canonical used, so the page's own URL is both.
+  // Og:url is the canonical. Legacy built it from the landing page's slug, the
+  // Slug it resolved the page by; this page is resolved by the course's slug,
+  // Which is also what legacy's canonical used, so the page's own URL is both.
   head: ({ loaderData, match }) => {
     if (!loaderData) {
       return {};
@@ -179,7 +179,7 @@ function Show() {
                   <IconClock size={16} />
                   {t(($) => $.courses.show.updated_at, {
                     // UTC on both sides, so the server's date and the browser's
-                    // hydrated one cannot disagree across a midnight.
+                    // Hydrated one cannot disagree across a midnight.
                     date: new Date(updatedAt).toLocaleDateString(i18n.language, {
                       dateStyle: "long",
                       timeZone: "UTC",
@@ -310,12 +310,12 @@ function Show() {
 }
 
 // The learning program, as legacy's accordion laid it out: a panel per module,
-// the first one open, each with its lessons beside the module's description.
+// The first one open, each with its lessons beside the module's description.
 //
 // A lesson in the panel is a link carrying its mark; each row already knows
-// whether it is finished, so nothing is joined here. A lesson no module in this
-// locale claims is listed after the panels rather than dropped, and a course
-// with no modules is the flat list alone.
+// Whether it is finished, so nothing is joined here. A lesson no module in this
+// Locale claims is listed after the panels rather than dropped, and a course
+// With no modules is the flat list alone.
 function LearningProgram({ view }: { view: CourseView }) {
   const claimed = new Set(
     view.modules.flatMap((module) => module.lessons.map((item) => item.slug)),
@@ -358,17 +358,17 @@ function LearningProgram({ view }: { view: CourseView }) {
 }
 
 // The one way into the course. Its label and target are read from the progress
-// payload and nothing else — not from the enrollment, not from whether there is
-// an account — so a guest, whose position is the cookie, gets the same button a
-// signed-in learner does:
+// Payload and nothing else — not from the enrollment, not from whether there is
+// An account — so a guest, whose position is the cookie, gets the same button a
+// Signed-in learner does:
 //
 // - nothing finished: Try, into the Next Lesson (the first one);
 // - something finished: Continue, into the Next Lesson;
 // - no Next Lesson: the course is finished and no lesson is offered.
 //
 // It is a button rather than a link because pressing it issues the start command
-// before navigating. A link would enter the lesson without starting it, and
-// would be preloaded on hover besides.
+// Before navigating. A link would enter the lesson without starting it, and
+// Would be preloaded on hover besides.
 function CourseAction({ view }: { view: CourseView }) {
   const { t } = useTranslation();
   const { course, progress } = view;
@@ -380,7 +380,7 @@ function CourseAction({ view }: { view: CourseView }) {
 
   if (progress.nextLesson === null) {
     // No lesson to offer is the end of the course only when it is finished: a
-    // next lesson with no page in this locale is no button, not a finish.
+    // Next lesson with no page in this locale is no button, not a finish.
     if (progress.state !== "finished") {
       return null;
     }
@@ -407,7 +407,7 @@ function CourseAction({ view }: { view: CourseView }) {
   const lesson = progress.nextLesson;
 
   // Navigation waits on the command's success: the lesson is entered started or
-  // not at all.
+  // Not at all.
   return (
     <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
       {view.lessons.some((item) => item.finished)
@@ -418,9 +418,9 @@ function CourseAction({ view }: { view: CourseView }) {
 }
 
 // A secondary way into the course, as legacy's page had two more beside the
-// hero's: it goes through the same start command as the hero button, into the
-// learner's Next Lesson (the first one for a visitor), so none of them is a
-// way in that skips the start.
+// Hero's: it goes through the same start command as the hero button, into the
+// Learner's Next Lesson (the first one for a visitor), so none of them is a
+// Way in that skips the start.
 function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
   const { enter, isPending } = useEnterLesson(view.course.slug);
   const lesson = view.progress?.nextLesson ?? view.lessons[0];
@@ -431,11 +431,11 @@ function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
 }
 
 // The Hexlet program the course leads on to, tagged as a referral from here as
-// legacy tagged it. The parameters are set on the parsed URL rather than
-// appended, so a landing address that already carries a query stays well formed.
+// Legacy tagged it. The parameters are set on the parsed URL rather than
+// Appended, so a landing address that already carries a query stays well formed.
 function programLink(landingPage: string): string {
   // An address the admin form let through malformed is linked as written
-  // rather than taking the page down with it.
+  // Rather than taking the page down with it.
   if (!URL.canParse(landingPage)) {
     return landingPage;
   }

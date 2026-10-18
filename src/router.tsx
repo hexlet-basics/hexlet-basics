@@ -11,11 +11,11 @@ import { routeTree } from "./routeTree.gen";
 
 // Start calls getRouter() per request, so each SSR render gets a fresh
 // QueryClient. setupRouterSsrQueryIntegration wires dehydration/hydration and
-// wraps the tree in QueryClientProvider.
+// Wraps the tree in QueryClientProvider.
 export function getRouter() {
   const queryClient = new QueryClient({ defaultOptions: queryDefaults });
   // Request-scoped i18n instance; the `{-$locale}` layout resolves the URL
-  // locale in beforeLoad and calls changeLanguage on it.
+  // Locale in beforeLoad and calls changeLanguage on it.
   const i18n = createI18n();
 
   const router = createRouter({
@@ -24,17 +24,17 @@ export function getRouter() {
     context: { queryClient, i18n, user: null },
     defaultPreload: "intent",
     // Legacy errors#show for every route: a match that finds nothing renders
-    // the 404 page and a load that throws the 500 page, in place of the route
-    // and so inside the site layout. The server answers with the same status.
+    // The 404 page and a load that throws the 500 page, in place of the route
+    // And so inside the site layout. The server answers with the same status.
     defaultNotFoundComponent: NotFoundPage,
     defaultErrorComponent: ServerErrorPage,
     scrollRestoration: true,
     defaultViewTransition: true,
     // On hydration the client does not rerun beforeLoad — it adopts the
-    // server's results — so the `{-$locale}` layout never calls changeLanguage
-    // on the browser's own i18n instance, and every page repaints in the `en`
-    // default. The resolved language travels with the dehydrated router and
-    // is applied before the first client render.
+    // Server's results — so the `{-$locale}` layout never calls changeLanguage
+    // On the browser's own i18n instance, and every page repaints in the `en`
+    // Default. The resolved language travels with the dehydrated router and
+    // Is applied before the first client render.
     dehydrate: () => ({ locale: i18n.language }),
     hydrate: async ({ locale }) => {
       await i18n.changeLanguage(locale);

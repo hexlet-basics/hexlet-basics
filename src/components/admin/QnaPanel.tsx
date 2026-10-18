@@ -15,7 +15,7 @@ interface QnaPanelProps {
 
 // The nested FAQ editor shown on a category's / landing page's edit screen
 // (legacy nested `qna_items` resources). Presentational: the route owns the
-// parent-scoped queries and mutations, so the panel works for both parents.
+// Parent-scoped queries and mutations, so the panel works for both parents.
 export function QnaPanel({ items, onCreate, onUpdate, onDelete, isPending }: QnaPanelProps) {
   const { t } = useTranslation();
 

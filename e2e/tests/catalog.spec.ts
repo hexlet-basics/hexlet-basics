@@ -22,7 +22,7 @@ test("a course page shows its landing copy and syllabus, and a lesson opens from
 });
 
 // The one test that follows a link the site itself renders: the API resolves a
-// course page by its landing page's slug, so a link built from anything else
+// Course page by its landing page's slug, so a link built from anything else
 // (the course's own slug) would be a 500 that no test with a faked API sees.
 test("a course opens from its card in the catalog", async ({ site }) => {
   await site.catalog.open();

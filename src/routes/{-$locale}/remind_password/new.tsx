@@ -8,9 +8,9 @@ import { createPasswordReminderMutation } from "@/client/@tanstack/react-query.g
 import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
 
 // Password Reset request form, ported from legacy remind_passwords/new. Unlike
-// legacy, an unknown email is no longer reported: the API answers the same for
-// any email, so every submission ends on one confirmation. `invalid` is set by
-// the password/$token/edit route when it refuses a followed link.
+// Legacy, an unknown email is no longer reported: the API answers the same for
+// Any email, so every submission ends on one confirmation. `invalid` is set by
+// The password/$token/edit route when it refuses a followed link.
 export const Route = createFileRoute("/{-$locale}/remind_password/new")({
   validateSearch: z.object({ invalid: z.boolean().optional() }),
   component: New,
@@ -25,10 +25,25 @@ function New() {
     onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
-  useInvalidLinkNotice(
-    invalid,
-    t(($) => $.flash.passwords.edit.error),
-  );
+  // The refused-link notice is a flash, so it is shown once on arrival like the
+  // Other flashes; the id keeps StrictMode's double effect from stacking two.
+  useEffect(() => {
+    if (invalid) {
+      notifications.show({
+        id: "invalid-link",
+        color: "red",
+        message: t(($) => $.flash.passwords.edit.error),
+      });
+    }
+  }, [invalid, t]);
+
+  const form = useAppForm({
+    defaultValues: { email: "" },
+    validators: { onSubmit: zEmailInput },
+    onSubmit: async ({ value }) => {
+      await mutation.mutateAsync({ body: value });
+    },
+  });
 
   return (
     <Container my="xl">

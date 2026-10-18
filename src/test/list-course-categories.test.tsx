@@ -7,12 +7,12 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case for the read half of the CRUD engine: the list
-// hook fetches a server-paginated page and CrudList renders its rows and pager.
+// Hook fetches a server-paginated page and CrudList renders its rows and pager.
 //
 // This exists because Table v9 only exposes an API when its feature is
-// registered — a CrudList missing `rowSortingFeature`/`rowPaginationFeature`
-// still type-checks and then renders nothing (or throws in a header). One list
-// covers all 14: every admin list is the same CrudList with other columns.
+// Registered — a CrudList missing `rowSortingFeature`/`rowPaginationFeature`
+// Still type-checks and then renders nothing (or throws in a header). One list
+// Covers all 14: every admin list is the same CrudList with other columns.
 test("renders a server-paginated list through the CRUD engine", async () => {
   worker.use(
     http.get("*/admin/course_categories", () =>
@@ -38,7 +38,7 @@ test("renders a server-paginated list through the CRUD engine", async () => {
           },
         ],
         // More than one page of 25, so the pager renders — that is what proves
-        // the pagination feature is live rather than merely typed.
+        // The pagination feature is live rather than merely typed.
         total: 30,
       }),
     ),
@@ -51,7 +51,7 @@ test("renders a server-paginated list through the CRUD engine", async () => {
   });
 
   // Cell role with `exact`, because getByText matches case-insensitively and
-  // each row carries the same word in both its name and its slug.
+  // Each row carries the same word in both its name and its slug.
   await expect.element(page.getByRole("cell", { name: "Frontend", exact: true })).toBeVisible();
   await expect.element(page.getByRole("cell", { name: "backend", exact: true })).toBeVisible();
   await expect.element(page.getByRole("button", { name: "2" })).toBeVisible();

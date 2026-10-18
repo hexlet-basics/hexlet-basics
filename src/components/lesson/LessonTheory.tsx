@@ -7,19 +7,19 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import { AnchorLink } from "@/components/RouterLink";
 
 // Everything a learner reads: where they are, the theory, what they are asked to
-// do, the tips, the questions everyone asks, and the way to fix what they just
-// read. Ported from legacy's LessonTabContent.
+// Do, the tips, the questions everyone asks, and the way to fix what they just
+// Read. Ported from legacy's LessonTabContent.
 //
 // Breadcrumbs run home → course → lesson. Legacy has a category above the
-// course, but the public category read is unimplemented and blocked on a missing
-// schema, so that level waits for the category work rather than being faked.
+// Course, but the public category read is unimplemented and blocked on a missing
+// Schema, so that level waits for the category work rather than being faked.
 export default function LessonTheory({ view }: { view: CourseLessonView }) {
   const { t } = useTranslation();
   const { lesson, landingPage } = view;
   const courseSlug = lesson.course.slug;
 
   // The marketing name of the course, not the course's own `name` — the string a
-  // learner recognises, and what legacy titles this page with.
+  // Learner recognises, and what legacy titles this page with.
   const courseName = landingPage?.name ?? lesson.course.name ?? courseSlug;
 
   const questions = t(($) => $.courses.lessons.show.common_questions, {

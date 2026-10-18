@@ -3,10 +3,10 @@ import type { FirstVisit } from "@/client/types.gen";
 import { zFirstVisit } from "@/client/zod.gen";
 
 // First-visit attribution (ADR-0015). Legacy asked ahoy's visit for the UTM
-// parameters, the landing page and the referrer when a lead came in; ahoy is
-// not ported, so the browser writes them to a cookie on the visitor's first
-// page and the lead form sends them along. Written once and never refreshed:
-// what amoCRM should credit is where the visitor first came from.
+// Parameters, the landing page and the referrer when a lead came in; ahoy is
+// Not ported, so the browser writes them to a cookie on the visitor's first
+// Page and the lead form sends them along. Written once and never refreshed:
+// What amoCRM should credit is where the visitor first came from.
 const COOKIE_NAME = "first_visit";
 // Ahoy's visitor cookie lived two years; the first visit is kept as long.
 const COOKIE_TTL_DAYS = 730;

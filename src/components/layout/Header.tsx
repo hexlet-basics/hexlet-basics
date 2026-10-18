@@ -53,14 +53,14 @@ import { localize } from "@/lib/locale-path";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
 // Query hooks — the current user from `GET /me` (getCurrentUserOptions) and the
-// courses menu from `listCourses` — never hand-written fetches. Navigation uses
-// the typed TanStack Router `Link`; the optional `{-$locale}` prefix is
-// preserved automatically, so links carry no explicit locale. Links point only
-// at routes that exist today; auth-gated destinations (dashboard) are added as
-// those pages are ported.
+// Courses menu from `listCourses` — never hand-written fetches. Navigation uses
+// The typed TanStack Router `Link`; the optional `{-$locale}` prefix is
+// Preserved automatically, so links carry no explicit locale. Links point only
+// At routes that exist today; auth-gated destinations (dashboard) are added as
+// Those pages are ported.
 // The top-bar controls, as Mantine's header examples do them: a subtle button
-// whose hover is a background tint, not an underline, and which keeps a focus
-// ring. `gray` keeps the label in the body text colour in both schemes.
+// Whose hover is a background tint, not an underline, and which keeps a focus
+// Ring. `gray` keeps the label in the body text colour in both schemes.
 const navButtonProps = { variant: "subtle", color: "gray", c: "inherit", fw: 500 } as const;
 
 function NavButton(props: ButtonProps) {
@@ -117,8 +117,8 @@ export default function Header() {
 }
 
 // The signed-in user, resolved from the session cookie via `GET /me`. Returns
-// null while anonymous (or until the auth backend lands, when `/me` resolves to
-// no user).
+// Null while anonymous (or until the auth backend lands, when `/me` resolves to
+// No user).
 function useCurrentUser(): User | null {
   const { data } = useQuery(getCurrentUserOptions());
   return data?.user ?? null;
@@ -273,9 +273,9 @@ function AuthLinks() {
 }
 
 // Locale switcher: each entry is a plain link to the same page, query included,
-// under the other locale's prefix (`/`, `/ru`, `/es`). Following it is an
-// ordinary page load that changes nothing by itself, so the browser may prefetch
-// it; the SSR server remembers the locale of the page it then serves (see
+// Under the other locale's prefix (`/`, `/ru`, `/es`). Following it is an
+// Ordinary page load that changes nothing by itself, so the browser may prefetch
+// It; the SSR server remembers the locale of the page it then serves (see
 // `rememberLocale`), and the stored `users.locale` is edited in the profile only.
 const LOCALES = [
   { code: "en", label: "English" },
@@ -309,8 +309,8 @@ function LocaleSwitcher() {
 
 // Both icons are rendered and the colour scheme hides one by CSS
 // (Mantine's `mantine-light-hidden`/`mantine-dark-hidden`): the server cannot know the browser's scheme, so
-// choosing the icon in JS would differ between the server and the first client
-// render and fail hydration for every dark-theme visitor.
+// Choosing the icon in JS would differ between the server and the first client
+// Render and fail hydration for every dark-theme visitor.
 export function ThemeSwitcher() {
   const { t } = useTranslation();
   const { toggleColorScheme } = useMantineColorScheme();
@@ -325,8 +325,8 @@ export function ThemeSwitcher() {
 }
 
 // Marketing "solutions" menu, ru-only, ported from legacy. Every target but
-// the teachers' case is an external Hexlet URL, kept in the locale files' links;
-// that one is a local route.
+// The teachers' case is an external Hexlet URL, kept in the locale files' links;
+// That one is a local route.
 // Legacy opened each in a new tab.
 function SolutionsMenu() {
   const { t } = useTranslation();

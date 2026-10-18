@@ -10,9 +10,9 @@ import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import { ButtonLink } from "@/components/RouterLink";
 
 // The bar under the workspace, where the buttons that act on the exercise live:
-// reset, Previous, Run, Next — legacy's order. It sits below the tabs rather than
-// inside the editor pane so that running a solution is one press away from
-// whichever tab the learner is on.
+// Reset, Previous, Run, Next — legacy's order. It sits below the tabs rather than
+// Inside the editor pane so that running a solution is one press away from
+// Whichever tab the learner is on.
 export default function LessonControls({
   view,
   passed,
@@ -22,7 +22,7 @@ export default function LessonControls({
 }: {
   view: CourseLessonView;
   // Passed in this visit or finished before it — the same fact that opens the
-  // reference solution, so Next and the solution can never disagree.
+  // Reference solution, so Next and the solution can never disagree.
   passed: boolean;
   onReset: () => void;
   onRun: () => void;
@@ -33,12 +33,12 @@ export default function LessonControls({
   const courseSlug = view.lesson.course.slug;
 
   // The neighbours in course order are the server's answer, with the course's
-  // own order behind it, not something derived here from a position in a list.
+  // Own order behind it, not something derived here from a position in a list.
   const prevLesson = view.adjacent.previous ?? undefined;
   const nextLesson = view.adjacent.next ?? undefined;
 
   // Resetting throws away whatever the learner has written, and there is no undo
-  // once the buffer is overwritten — so it asks first.
+  // Once the buffer is overwritten — so it asks first.
   const confirmReset = () =>
     modals.openConfirmModal({
       title: t(($) => $.common.confirm),
@@ -98,9 +98,9 @@ export default function LessonControls({
 }
 
 // Next, for a signed-in learner — or, on the last lesson, Finish, which leads
-// to the course completion page. Unavailable until the lesson is passed, as in legacy, so the button
-// tells the learner what is expected; `passed` already covers a lesson finished
-// on an earlier visit, because revisiting is not the same as being stuck.
+// To the course completion page. Unavailable until the lesson is passed, as in legacy, so the button
+// Tells the learner what is expected; `passed` already covers a lesson finished
+// On an earlier visit, because revisiting is not the same as being stuck.
 function ForwardButton({
   view,
   nextLesson,
@@ -116,8 +116,8 @@ function ForwardButton({
   const { enter, isPending } = useEnterLesson(courseSlug);
 
   // The last lesson reads as completion and leads to the completion page, as in
-  // legacy. Passing it finished the Enrollment that page checks for, and the
-  // check dropped the cached course read so the page sees it (LessonWorkspace).
+  // Legacy. Passing it finished the Enrollment that page checks for, and the
+  // Check dropped the cached course read so the page sees it (LessonWorkspace).
   if (!nextLesson) {
     return (
       <StepLink
@@ -146,7 +146,7 @@ function ForwardButton({
 }
 
 // Where Next sits for a guest, as in legacy: a link to sign up, carrying the
-// way back to this lesson, and unavailable until the lesson is passed.
+// Way back to this lesson, and unavailable until the lesson is passed.
 function GuestSignUp({ passed }: { passed: boolean }) {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
@@ -161,11 +161,11 @@ function GuestSignUp({ passed }: { passed: boolean }) {
 }
 
 // A step through the course, in the controls' one style: a link while the step
-// is open to the learner, and a disabled button in its place while it is not —
-// a button because an anchor to nowhere would still be focusable and followable.
+// Is open to the learner, and a disabled button in its place while it is not —
+// A button because an anchor to nowhere would still be focusable and followable.
 //
 // The link options are checked against the route tree the way TanStack Router
-// documents for a component that wraps a link.
+// Documents for a component that wraps a link.
 interface StepLinkProps<TRouter extends RegisteredRouter = RegisteredRouter, TOptions = unknown> {
   enabled: boolean;
   label: string;

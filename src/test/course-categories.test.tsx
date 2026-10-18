@@ -13,9 +13,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The public course categories, driven through their real routes with the API
-// faked at the HTTP boundary. Asserted is what a visitor sees: the categories,
-// a category's courses and questions
-// and the page's head.
+// Faked at the HTTP boundary. Asserted is what a visitor sees: the categories,
+// A category's courses and questions
+// And the page's head.
 
 const programming: CourseCategory = {
   id: 1,

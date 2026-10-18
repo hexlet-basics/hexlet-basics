@@ -3,13 +3,13 @@ import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 
 // The HTTP errors that have their own wording; any other code reads the
-// generic one.
+// Generic one.
 type ErrorCode = 403 | 404 | 500;
 
 // Typed selectors cannot take a runtime key, so each code names its strings.
 // The generic description falls back to the generic *header*, as legacy
-// errors#show did (`default: codes.other.header`); `codes.other.description`
-// was never shown.
+// Errors#show did (`default: codes.other.header`); `codes.other.description`
+// Was never shown.
 function errorText(t: TFunction, code: number): { header: string; description: string } {
   switch (code as ErrorCode) {
     case 403: {
@@ -40,8 +40,8 @@ function errorText(t: TFunction, code: number): { header: string; description: s
 }
 
 // The error page, ported from legacy errors/show: the code, a header and what
-// to do about it. The status line itself is the router's: a not-found match
-// answers 404 and a failed load 500.
+// To do about it. The status line itself is the router's: a not-found match
+// Answers 404 and a failed load 500.
 function ErrorPage({ code }: { code: number }) {
   const { t } = useTranslation();
   const { header, description } = errorText(t, code);
@@ -58,9 +58,9 @@ function ErrorPage({ code }: { code: number }) {
 }
 
 // Legacy errors/show had its own 403 wording. No ported page answers 403:
-// legacy's web pages redirected a visitor without access (the admin guards
-// still do), and its API's `head :forbidden` carried no page. The page is here
-// for the first surface that refuses rather than redirects.
+// Legacy's web pages redirected a visitor without access (the admin guards
+// Still do), and its API's `head :forbidden` carried no page. The page is here
+// For the first surface that refuses rather than redirects.
 export function ForbiddenPage() {
   return <ErrorPage code={403} />;
 }

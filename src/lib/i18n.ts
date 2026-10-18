@@ -12,10 +12,10 @@ export type { Locale } from "@/client";
 // The locale set is owned by the contract (`enum Locale` in api-spec/common.tsp).
 
 // `en` is the default and is served unprefixed; `ru`/`es` live behind a path
-// prefix (legacy `scope "(:suffix)", suffix: /es|ru/`, ADR-0002 / ADR-0008).
+// Prefix (legacy `scope "(:suffix)", suffix: /es|ru/`, ADR-0002 / ADR-0008).
 export const DEFAULT_LOCALE: Locale = "en";
 // Locales that appear as a URL prefix: the contract's set minus the unprefixed
-// default, so a new contract locale is routed without a second list to edit.
+// Default, so a new contract locale is routed without a second list to edit.
 export const PREFIXED_LOCALES = zLocale.options.filter(
   (locale): locale is Exclude<Locale, typeof DEFAULT_LOCALE> => locale !== DEFAULT_LOCALE,
 );
@@ -29,9 +29,9 @@ export function isLocale(value: string): value is Locale {
 }
 
 // One i18next instance per request (created in getRouter), never a module
-// singleton: on the SSR server a shared instance would let concurrent `/ru` and
+// Singleton: on the SSR server a shared instance would let concurrent `/ru` and
 // `/es` renders clobber each other's language. Resources are bundled and init is
-// synchronous, so strings are available on first server paint.
+// Synchronous, so strings are available on first server paint.
 export function createI18n(): I18n {
   const instance = createInstance();
 

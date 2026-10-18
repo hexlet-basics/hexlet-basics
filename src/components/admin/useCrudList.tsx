@@ -20,7 +20,7 @@ interface Page {
 interface ListQuery {
   page: number;
   // Left out until the user picks a size: the server's default is declared once in
-  // the contract and echoed back in every response's `perPage`.
+  // The contract and echoed back in every response's `perPage`.
   perPage?: number;
   // The text filter, on the lists whose operation takes one.
   q?: string;
@@ -42,39 +42,39 @@ interface CrudListOptions<
   // The generated list query options, e.g. `adminListBannersOptions`.
   list: (options: { query: ListQuery }) => UseQueryOptions<TPage, TListError, TPage, TListKey>;
   // The generated list query key, e.g. `adminListBannersQueryKey`: what a delete
-  // invalidates.
+  // Invalidates.
   listKey: () => QueryKey;
   // The generated delete mutation, e.g. `adminDeleteBannerMutation`. Left out for
-  // a resource that cannot be deleted; its rows then carry no delete button.
+  // A resource that cannot be deleted; its rows then carry no delete button.
   remove?: () => UseMutationOptions<TDeleteData, TDeleteError, TDeleteVars>;
   // Show a search box that filters the list on the server (`q`). Only for a list
-  // whose operation declares `q`.
+  // Whose operation declares `q`.
   searchable?: boolean;
 }
 
 interface ActionsColumnOptions<TItem> {
   // The row's edit link: a typed `<EditLink to=... params=... />`. The route path
-  // stays with the resource, where the router can check it.
+  // Stays with the resource, where the router can check it.
   edit: (row: TItem) => ReactNode;
   // A resource's own row actions (a build, a review), shown between edit and
-  // delete.
+  // Delete.
   extra?: (row: TItem) => ReactNode;
   // What the delete confirmation names, e.g. the banner's text.
   describe: (row: TItem) => ReactNode;
 }
 
 // Stands in for the delete mutation of a resource that has none; no button ever
-// runs it.
+// Runs it.
 const noMutation = {};
 
 // The list engine of an admin index route: it owns the pagination state, runs the
-// generated list query, and (when the resource can be deleted) the confirmed
-// delete with its toasts and the list's invalidation. A route keeps only its
-// title and columns, and hands in the generated hooks it uses.
+// Generated list query, and (when the resource can be deleted) the confirmed
+// Delete with its toasts and the list's invalidation. A route keeps only its
+// Title and columns, and hands in the generated hooks it uses.
 //
 // `props` is spread into `CrudList`; `actionsColumn` builds the shared last
-// column (edit link and delete button); `query` is the list's query state, for a
-// route that mixes in a second source of rows (the users search).
+// Column (edit link and delete button); `query` is the list's query state, for a
+// Route that mixes in a second source of rows (the users search).
 export function useCrudList<
   TPage extends Page,
   TListError,
@@ -128,7 +128,7 @@ export function useCrudList<
   });
 
   // The size is 0 until the first response says what the server used; the table
-  // renders no pager before there is data anyway.
+  // Renders no pager before there is data anyway.
   const pagination: PaginationState = {
     pageIndex: (search.page ?? 1) - 1,
     pageSize: search.perPage ?? query.data?.perPage ?? 0,
@@ -185,6 +185,8 @@ export function useCrudList<
       pagination,
       onPaginationChange,
       isLoading: query.isLoading,
+      // A new term starts from the first page: the old page may not exist in the
+      // Narrowed list.
       search: searchable
         ? {
             value: text,

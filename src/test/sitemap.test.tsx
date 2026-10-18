@@ -8,8 +8,8 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The HTML sitemap, driven through its real route with the API faked at the
 // HTTP boundary. Asserted is what a visitor sees: a section per site, ru then
-// en, each in its own language and linking into its own locale, and that only
-// the ru site has the page.
+// En, each in its own language and linking into its own locale, and that only
+// The ru site has the page.
 
 const sitemap: Sitemap = {
   landingPages: [

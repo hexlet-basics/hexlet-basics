@@ -1,6 +1,6 @@
 // Input attributes for auth forms, ported verbatim from legacy. They tune
-// autofill, keyboards, and autocapitalization so password managers and mobile
-// keyboards behave on the login/registration screens.
+// Autofill, keyboards, and autocapitalization so password managers and mobile
+// Keyboards behave on the login/registration screens.
 export const authInputModeProps = {
   autoCapitalize: "none" as const,
   inputMode: "email" as const,

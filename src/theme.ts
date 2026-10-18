@@ -1,14 +1,14 @@
 import { Anchor, createTheme } from "@mantine/core";
 
 // Site-wide Mantine theme. `Anchor` is blue by default, which suits links
-// inside content but not the header and footer navigation: those take
+// Inside content but not the header and footer navigation: those take
 // `variant="nav"` and keep the surrounding text colour (underline on hover
-// stays Anchor's default).
+// Stays Anchor's default).
 //
 // Headings shrink with the viewport as Bootstrap 5's RFS does: below 1200px
 // (`xl`) the size is `rem + vw`, from there up it is Mantine's own size, so the
-// desktop looks as before. The coefficients are Bootstrap's own for h1–h4
-// scaled to Mantine's sizes (34, 26, 22, 18px); h5 and h6 are too small to shrink.
+// Desktop looks as before. The coefficients are Bootstrap's own for h1–h4
+// Scaled to Mantine's sizes (34, 26, 22, 18px); h5 and h6 are too small to shrink.
 export const theme = createTheme({
   headings: {
     sizes: {

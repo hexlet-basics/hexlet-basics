@@ -5,13 +5,13 @@ import { isApiError } from "@/lib/api-error";
 import { onIdentityChanged } from "@/lib/identity";
 
 // The emailed Magic Link (legacy magic_links#show). Following it signs the
-// visitor in and takes them home; a refused link — expired, forged, outlived by
-// an email change, or issued by the Rails app — sends them back to the request
-// form, which says the link is no longer valid.
+// Visitor in and takes them home; a refused link — expired, forged, outlived by
+// An email change, or issued by the Rails app — sends them back to the request
+// Form, which says the link is no longer valid.
 //
 // `ssr: false` keeps the call in the browser: the API answers with the session
-// cookie, and a server-side fetch would keep that cookie in the Node process
-// instead of handing it to the visitor.
+// Cookie, and a server-side fetch would keep that cookie in the Node process
+// Instead of handing it to the visitor.
 export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
   ssr: false,
   loader: async ({ context, params }) => {
@@ -21,10 +21,10 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
         throwOnError: true,
       });
       // The response is the signed-in user. The redirect below is itself the
-      // navigation that reads every page afresh, so there is no router to reload.
+      // Navigation that reads every page afresh, so there is no router to reload.
       await onIdentityChanged(context.queryClient, null, user);
       // Legacy had no message of its own for this one and fell back to the
-      // application's generic success; the loader runs in the browser only.
+      // Application's generic success; the loader runs in the browser only.
       notifications.show({
         color: "green",
         message: context.i18n.t(($) => $.flash.application.base.success),

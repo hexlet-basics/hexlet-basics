@@ -18,10 +18,10 @@ interface Props {
 }
 
 // The consultation request form, ported from legacy LeadFormBlock and shared by
-// every page that embeds it (leads/new, the book page, course completion, the
-// catalog pages). It leaves gating (signed in, ru only) to the embedding page,
-// as legacy did. The Metrika client id and the first-visit attribution are
-// read at submit time, not render time: both live only in the browser.
+// Every page that embeds it (leads/new, the book page, course completion, the
+// Catalog pages). It leaves gating (signed in, ru only) to the embedding page,
+// As legacy did. The Metrika client id and the first-visit attribution are
+// Read at submit time, not render time: both live only in the browser.
 export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
             aria-label={t(($) => $.models.attributes.lead.contact_value)}
             required
             // Opt-in only: the course completion page puts the visitor straight
-            // into the form, as legacy did.
+            // Into the form, as legacy did.
             // oxlint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={autoFocus}
             mb="sm"

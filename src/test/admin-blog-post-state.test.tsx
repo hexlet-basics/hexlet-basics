@@ -9,9 +9,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The Publication State of a blog post is changed by action buttons, one per
-// operation, never by the form. Through the real routes under the real admin
-// guard: the buttons offered follow the current state, a click calls that
-// operation and the post shown is the one it answered with.
+// Operation, never by the form. Through the real routes under the real admin
+// Guard: the buttons offered follow the current state, a click calls that
+// Operation and the post shown is the one it answered with.
 
 function post(state: BlogPostState): BlogPost {
   return {

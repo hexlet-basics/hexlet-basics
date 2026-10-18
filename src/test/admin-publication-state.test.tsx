@@ -14,10 +14,10 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The Publication State of a banner, a review and a landing page is changed by
-// action buttons, one per operation, never by the form (the same pattern as the
-// blog post, admin-blog-post-state.test.tsx). Through the real routes under the
-// real admin guard: the buttons offered follow the current state, a click calls
-// that operation and the record shown is the one it answered with.
+// Action buttons, one per operation, never by the form (the same pattern as the
+// Blog post, admin-blog-post-state.test.tsx). Through the real routes under the
+// Real admin guard: the buttons offered follow the current state, a click calls
+// That operation and the record shown is the one it answered with.
 
 const banner = (state: PublicationState): Banner => ({
   id: 7,

@@ -6,10 +6,10 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 // Application shell, ported from legacy ApplicationLayout. Wraps every public
-// page with a fixed-height header and a footer; the floating community-chat
-// button mirrors the legacy Affix. Mounted once in the `{-$locale}` layout
-// route so it covers the catalog, course, and auth pages without per-page
-// duplication.
+// Page with a fixed-height header and a footer; the floating community-chat
+// Button mirrors the legacy Affix. Mounted once in the `{-$locale}` layout
+// Route so it covers the catalog, course, and auth pages without per-page
+// Duplication.
 export default function ApplicationLayout({ children }: PropsWithChildren) {
   const { t } = useTranslation();
 

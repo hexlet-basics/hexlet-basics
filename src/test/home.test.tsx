@@ -7,8 +7,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The home page through its real route, inside the real site layout: the hero,
-// the course grid a visitor picks a course from, the latest posts and the
-// registration form.
+// The course grid a visitor picks a course from, the latest posts and the
+// Registration form.
 
 function catalogItem(id: number, slug: string, name: string): CourseCatalogItem {
   const course: Course = {

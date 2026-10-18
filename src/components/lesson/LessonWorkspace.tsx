@@ -23,21 +23,21 @@ import { hasPreview } from "@/lib/editor-languages";
 import { lessonCodeKey } from "@/lib/lesson-code";
 
 // Only the markup courses show a preview, so every other course is spared the
-// chunk rather than shipped a component it never renders.
+// Chunk rather than shipped a component it never renders.
 const LessonPreview = lazy(() => import("@/components/lesson/LessonPreview"));
 
 // The right-hand half of the player: what the learner does, as opposed to what
-// they read. It owns the buffer, because everything here works on it — the
-// editor writes it, reset restores it, and the check submits it — and it owns
-// the outcome of the last run, which is what the output and the solution are
-// rendered from. The outcome is held by the page, because the assistant in the
-// other pane is asked about it too.
+// They read. It owns the buffer, because everything here works on it — the
+// Editor writes it, reset restores it, and the check submits it — and it owns
+// The outcome of the last run, which is what the output and the solution are
+// Rendered from. The outcome is held by the page, because the assistant in the
+// Other pane is asked about it too.
 //
 // The tabs keep every pane mounted: switching to the output and back must not
-// remount the editor, which would cost the learner what they had typed.
+// Remount the editor, which would cost the learner what they had typed.
 //
 // On a phone this pane also carries the theory as a tab of its own, as legacy
-// does, so re-reading the task never means leaving the editor's side.
+// Does, so re-reading the task never means leaving the editor's side.
 export default function LessonWorkspace({
   view,
   phone,
@@ -65,9 +65,9 @@ export default function LessonWorkspace({
     key: lessonCodeKey(courseSlug, lesson.slug),
     defaultValue: starterCode,
     // Read straight away rather than in an effect: the value is only ever
-    // rendered inside the editor, which is client-only, so there is no
-    // server-rendered markup for it to disagree with — and reading it late would
-    // let monaco paint the starter code over work the learner already has.
+    // Rendered inside the editor, which is client-only, so there is no
+    // Server-rendered markup for it to disagree with — and reading it late would
+    // Let monaco paint the starter code over work the learner already has.
     getInitialValueInEffect: false,
   });
 
@@ -85,14 +85,14 @@ export default function LessonWorkspace({
     onSuccess: async (outcome) => {
       setResult(outcome);
       // The server has just recorded progress; the marks in the lesson list and
-      // everything else the payload carries are re-read rather than guessed at
-      // here.
+      // Everything else the payload carries are re-read rather than guessed at
+      // Here.
       await queryClient.invalidateQueries({
         queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
       });
       // A pass also moves the course's own progress, and on the last lesson it
-      // finishes the Enrollment the completion page checks for. The Course page
-      // is read by its landing page's slug, so that is the key.
+      // Finishes the Enrollment the completion page checks for. The Course page
+      // Is read by its landing page's slug, so that is the key.
       if (outcome.passed && view.landingPage) {
         await queryClient.invalidateQueries({
           queryKey: getCourseQueryKey({ path: { slug: view.landingPage.slug } }),
@@ -100,7 +100,7 @@ export default function LessonWorkspace({
       }
     },
     // A network failure must never read as a wrong answer, so it says what it
-    // was and leaves the page where it stood.
+    // Was and leaves the page where it stood.
     onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 
@@ -110,8 +110,8 @@ export default function LessonWorkspace({
     }
 
     // The contract refuses an empty submission, and the starter code of some
-    // courses is empty: pressing run on it would come back as a 400, which the
-    // error handler below reads as a network failure.
+    // Courses is empty: pressing run on it would come back as a 400, which the
+    // Error handler below reads as a network failure.
     if (code.trim() === "") {
       notifications.show({ message: t(($) => $.courses.lessons.show.empty_solution) });
       return;
@@ -127,11 +127,11 @@ export default function LessonWorkspace({
   };
 
   // For a learner whose focus is outside the editor; inside it, monaco's own
-  // binding runs the check (see LessonEditor).
+  // Binding runs the check (see LessonEditor).
   useHotkeys([["mod+Enter", run]]);
 
   // Passing opens the reference solution, and a lesson already finished opens it
-  // from the start: revisiting is not the same as being stuck.
+  // From the start: revisiting is not the same as being stuck.
   const finished = view.lessons.find((item) => item.slug === lesson.slug)?.finished;
   const solutionUnlocked = Boolean(finished) || Boolean(result?.passed);
 
@@ -139,7 +139,7 @@ export default function LessonWorkspace({
     <Stack h="100%" gap={0}>
       <Tabs
         // A phone turned into a desktop loses the theory tab; the editor takes
-        // its place rather than leaving the pane blank.
+        // Its place rather than leaving the pane blank.
         value={!phone && tab === "lesson" ? "editor" : tab}
         onChange={setTab}
         display="flex"
@@ -178,7 +178,7 @@ export default function LessonWorkspace({
             <Box flex={1} mih={0}>
               <LessonEditor
                 // Monaco is handed its buffer once, so moving to another lesson
-                // has to give it a new editor rather than a new prop.
+                // Has to give it a new editor rather than a new prop.
                 key={lesson.slug}
                 courseSlug={courseSlug}
                 extension={lesson.exerciseExtension}
@@ -192,8 +192,8 @@ export default function LessonWorkspace({
 
             {hasPreview(courseSlug) && (
               // Client-only for the same reason the editor is: the buffer is read
-              // from storage on the first client render, so markup the server
-              // rendered from the starter code would disagree with it.
+              // From storage on the first client render, so markup the server
+              // Rendered from the starter code would disagree with it.
               <ClientOnly>
                 <Suspense>
                   <Box flex="none">

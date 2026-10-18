@@ -18,8 +18,8 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // Courses admin (legacy `/admin/courses`; the domain concept is Course).
 // No delete, parity with legacy. Each row carries the two lifecycle actions:
-// build a new exercise version (river job, auto-promoted on success) and
-// enqueue AI review of every current lesson.
+// Build a new exercise version (river job, auto-promoted on success) and
+// Enqueue AI review of every current lesson.
 export const Route = createFileRoute("/{-$locale}/admin/courses/")({
   validateSearch: zAdminListCoursesQuery,
   component: CoursesList,

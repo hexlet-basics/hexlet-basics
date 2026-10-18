@@ -16,7 +16,7 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The public blog, driven through its real routes with the API faked at the
 // HTTP boundary. Asserted is what a reader sees: the posts, the body, the
-// promoted courses, and what a like answers.
+// Promoted courses, and what a like answers.
 
 const author: User = {
   id: 1,

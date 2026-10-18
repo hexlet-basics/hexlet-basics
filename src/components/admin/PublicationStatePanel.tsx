@@ -4,17 +4,17 @@ import { transitionsFrom } from "@/lib/publicationState";
 import type { PublicationState, StateTransition } from "@/lib/publicationState";
 
 // What the panel needs of one transition's mutation: the generated mutation of
-// that operation, wired by the resource's own panel.
+// That operation, wired by the resource's own panel.
 export interface StateMutation {
   isPending: boolean;
   mutate: (variables: { path: { id: number } }) => void;
 }
 
 // The Publication State of a record and the buttons that change it, shared by
-// every resource that has one. A state is not an update: the form does not carry
-// it, each button calls its own operation (its own Permission on the server).
+// Every resource that has one. A state is not an update: the form does not carry
+// It, each button calls its own operation (its own Permission on the server).
 // Only the moves legal for the current state are offered; the server stays the
-// judge and refuses the rest with a 409.
+// Judge and refuses the rest with a 409.
 export function PublicationStatePanel({
   id,
   title,

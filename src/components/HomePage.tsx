@@ -43,7 +43,7 @@ const SHOWCASE = [
 ] as const;
 
 // A figure tile of the hero row. The tint is Mantine's `light` variant colour
-// variable, which resolves per colour scheme, so it needs no scheme check in
+// Variable, which resolves per colour scheme, so it needs no scheme check in
 // JS and cannot differ between the server and the first client render.
 function Tile({
   color,
@@ -68,9 +68,9 @@ function Tile({
 }
 
 // The home page, ported from legacy home#index: hero, the three figures, the
-// course grid, the review showcase, the latest blog posts, the FAQ, and then
-// the registration form for a guest. Legacy's consultation block for a signed-in
-// ru learner is gone, here and on the other pages that had it.
+// Course grid, the review showcase, the latest blog posts, the FAQ, and then
+// The registration form for a guest. Legacy's consultation block for a signed-in
+// Ru learner is gone, here and on the other pages that had it.
 export default function HomePage() {
   const { t } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());

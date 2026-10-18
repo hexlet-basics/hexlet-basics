@@ -11,15 +11,15 @@ import { renderWithProviders } from "./renderWithProviders";
 
 interface RenderWithRouterOptions {
   // Memory-history entry the router starts on. Default carries a `locale` param
-  // so components calling useParams({ strict: false }) see the app's shape.
+  // So components calling useParams({ strict: false }) see the app's shape.
   initialPath?: string;
   // Route pattern the component mounts under. Must line up with initialPath.
   path?: string;
 }
 
 // Mounts `ui` inside a minimal in-memory TanStack router so components that call
-// useNavigate/useParams/Link render without the real route tree. Navigation is
-// NOT performed by default — `router.navigate` is a spy the test asserts against.
+// UseNavigate/useParams/Link render without the real route tree. Navigation is
+// NOT performed — `router.navigate` is a spy the test asserts against.
 export async function renderWithRouter(
   ui: ReactNode,
   {
@@ -39,8 +39,8 @@ export async function renderWithRouter(
     history: createMemoryHistory({ initialEntries: [initialPath] }),
   });
 
-  // router.navigate is generic over the route tree, which a Mock cannot carry,
-  // so the mock takes any arguments and is assigned onto the router as it is.
+  // Router.navigate is generic over the route tree, which a Mock cannot carry,
+  // So the mock takes any arguments and is assigned onto the router as it is.
   const navigate = vi.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
   router.navigate = navigate;
 

@@ -8,9 +8,9 @@ import { createMagicLinkMutation } from "@/client/@tanstack/react-query.gen";
 import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
 
 // Magic Link request form, ported from legacy magic_links/new. The API answers
-// the same whether or not the email is registered, so the page does too: every
-// submission ends on one "check your inbox" confirmation. `invalid` is set by
-// the $token route when it refuses a followed link.
+// The same whether or not the email is registered, so the page does too: every
+// Submission ends on one "check your inbox" confirmation. `invalid` is set by
+// The $token route when it refuses a followed link.
 export const Route = createFileRoute("/{-$locale}/magic_links/new")({
   validateSearch: z.object({ invalid: z.boolean().optional() }),
   component: New,
@@ -25,10 +25,25 @@ function New() {
     onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
-  useInvalidLinkNotice(
-    invalid,
-    t(($) => $.flash.magic_links.show.error),
-  );
+  // The refused-link notice is a flash, so it is shown once on arrival like the
+  // Other flashes; the id keeps StrictMode's double effect from stacking two.
+  useEffect(() => {
+    if (invalid) {
+      notifications.show({
+        id: "invalid-link",
+        color: "red",
+        message: t(($) => $.flash.magic_links.show.error),
+      });
+    }
+  }, [invalid, t]);
+
+  const form = useAppForm({
+    defaultValues: { email: "" },
+    validators: { onSubmit: zEmailInput },
+    onSubmit: async ({ value }) => {
+      await mutation.mutateAsync({ body: value });
+    },
+  });
 
   return (
     <Container my="xl">

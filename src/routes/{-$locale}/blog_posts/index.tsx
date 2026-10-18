@@ -9,14 +9,14 @@ import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import { seoHead } from "@/lib/seo-head";
 
 // The blog, at its legacy URL, ported from legacy blog_posts/index. The list is
-// the first page only: legacy paginated server-side but its pager was commented
-// out, so page one is all a visitor could reach. The loader prefetches it so the
-// posts are in the server-rendered HTML (ADR-0008).
+// The first page only: legacy paginated server-side but its pager was commented
+// Out, so page one is all a visitor could reach. The loader prefetches it so the
+// Posts are in the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/blog_posts/")({
   loader: ({ context }) =>
     context.queryClient.query({ ...listBlogPostsOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the blog description, the canonical link
-  // and the social tags.
+  // And the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({

@@ -8,10 +8,10 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The audit trail page through its real route and the admin layout, with the API
-// faked at the HTTP boundary. Asserted is what a staff member sees: the records
-// with channel and outcome, the details of a change and of a read, the filters
-// the page sends, the menu entry that only the holder of audit.read gets, and
-// the refusals.
+// Faked at the HTTP boundary. Asserted is what a staff member sees: the records
+// With channel and outcome, the details of a change and of a read, the filters
+// The page sends, the menu entry that only the holder of audit.read gets, and
+// The refusals.
 
 function record(overrides: Partial<AuditRecord>): AuditRecord {
   return {

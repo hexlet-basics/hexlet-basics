@@ -8,8 +8,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the reviews resource — also exercises the engine's
-// number field type (courseId): a filled number submits as a number, an empty
-// one as null.
+// Number field type (courseId): a filled number submits as a number, an empty
+// One as null.
 test("creates a review", async () => {
   let received: ReviewInput | undefined;
   worker.use(

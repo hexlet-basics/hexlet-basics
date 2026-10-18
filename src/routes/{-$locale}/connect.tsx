@@ -12,11 +12,11 @@ import {
 import { requireAuth } from "@/lib/auth";
 
 // The OAuth consent screen (ADR-0022): an assistant (an MCP client) was sent
-// here by the authorization endpoint with the id of its request. A guest signs
-// in first and comes back, because `requireAuth` carries this URL, request id
-// included, through the sign-in page. The screen shows who asks, where the
-// browser returns to and what is asked, and the decision is one of two contract
-// operations whose answer is the next place for the browser to go.
+// Here by the authorization endpoint with the id of its request. A guest signs
+// In first and comes back, because `requireAuth` carries this URL, request id
+// Included, through the sign-in page. The screen shows who asks, where the
+// Browser returns to and what is asked, and the decision is one of two contract
+// Operations whose answer is the next place for the browser to go.
 const connectSearchSchema = z.object({
   id: z.string().optional().catch(undefined),
 });
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/{-$locale}/connect")({
     requireAuth(context.user, location.href);
   },
   // An unknown, expired or already decided request is a normal outcome (a stale
-  // tab), not a crash: the page says so instead of showing the error screen.
+  // Tab), not a crash: the page says so instead of showing the error screen.
   loader: ({ context, deps }) =>
     deps.id
       ? context.queryClient
@@ -53,8 +53,8 @@ export const Route = createFileRoute("/{-$locale}/connect")({
 });
 
 // What each scope the server can offer means to a person. Scope names contain a
-// colon, which i18next reads as a namespace separator, so the catalog uses
-// underscored keys; a scope without an entry is shown as it is.
+// Colon, which i18next reads as a namespace separator, so the catalog uses
+// Underscored keys; a scope without an entry is shown as it is.
 function useScopeLabel() {
   const { t } = useTranslation();
   const labels: Record<string, string> = {
@@ -68,9 +68,9 @@ function useScopeLabel() {
 }
 
 // A redirect that stays on this computer (RFC 8252 native apps, or a page of a
-// developer) is legitimate, but it is also what a page that wants your approval
-// to land on a program running locally looks like, so the screen says so. The
-// host arrives with its port, and an IPv6 literal is bracketed.
+// Developer) is legitimate, but it is also what a page that wants your approval
+// To land on a program running locally looks like, so the screen says so. The
+// Host arrives with its port, and an IPv6 literal is bracketed.
 function isLocalHost(host: string): boolean {
   const name = host
     .replace(/:\d+$/, "")
@@ -80,8 +80,8 @@ function isLocalHost(host: string): boolean {
 }
 
 // The next place is outside the router: the authorization endpoint's callback
-// on this origin, or the client's own redirect URI. Leaving takes a full
-// navigation.
+// On this origin, or the client's own redirect URI. Leaving takes a full
+// Navigation.
 const leave = ({ redirectUrl }: { redirectUrl: string }) => window.location.assign(redirectUrl);
 
 function Connect() {

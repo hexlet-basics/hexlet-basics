@@ -17,7 +17,7 @@ import TosRu from "@/components/pages/TosRu";
 import { seoHead } from "@/lib/seo-head";
 
 // The static pages, at their legacy URLs (`resources :pages, only: :show`),
-// ported from legacy pages/show. Their bodies are hardcoded markup with no data
+// Ported from legacy pages/show. Their bodies are hardcoded markup with no data
 // (ADR-0015), written in ru and en only.
 const PAGES = {
   ru: {
@@ -43,8 +43,8 @@ function isPageId(id: string): id is PageId {
 }
 
 // The legal pages are not meant to rank, so they carry no canonical link. Legacy
-// meant the same (its DISALLOWED_PAGES) but set the canonical unconditionally
-// first, so every page emitted one; this follows the intent.
+// Meant the same (its DISALLOWED_PAGES) but set the canonical unconditionally
+// First, so every page emitted one; this follows the intent.
 const WITHOUT_CANONICAL: ReadonlySet<PageId> = new Set<PageId>(["cookie_policy", "privacy", "tos"]);
 
 export const Route = createFileRoute("/{-$locale}/pages/$id")({
@@ -55,8 +55,8 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
     }
   },
   // Legacy meta: the page title and description, the social tags and, but for
-  // the legal pages, the canonical link. es has no page strings of its own in
-  // legacy, which fell back to en, and the es catalog carries those en strings.
+  // The legal pages, the canonical link. es has no page strings of its own in
+  // Legacy, which fell back to en, and the es catalog carries those en strings.
   head: ({ match }) => {
     const { id } = match.params;
     if (!isPageId(id)) {
@@ -111,7 +111,7 @@ function pageMeta(t: TFunction, id: PageId): { title: string; description: strin
 }
 
 // Legacy typographyStyles: body text at the large line height, every heading
-// below h1 brought down to the small sizes.
+// Below h1 brought down to the small sizes.
 const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
     overflowWrap: "break-word",

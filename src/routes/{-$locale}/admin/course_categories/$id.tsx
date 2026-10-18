@@ -84,7 +84,7 @@ function EditCourseCategory() {
         <>
           <CrudForm
             // Remount per row so the form re-seeds its default values from the
-            // loaded category instead of keeping a stale initial snapshot.
+            // Loaded category instead of keeping a stale initial snapshot.
             key={data.id}
             fields={fields}
             schema={zCourseCategoryInput}

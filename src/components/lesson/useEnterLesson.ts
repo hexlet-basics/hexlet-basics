@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 import { getCourseLessonQueryKey, startLessonMutation } from "@/client/@tanstack/react-query.gen";
 
 // The one way into a lesson that begins progress: issue the start command, and
-// only once it succeeds go there. The Course page's Try/Continue and the
-// player's Next both enter through it, so the two cannot drift apart.
+// Only once it succeeds go there. The Course page's Try/Continue and the
+// Player's Next both enter through it, so the two cannot drift apart.
 //
 // Progress begins through this command and nothing else: the router preloads on
-// hover, so a lesson page that started itself on load would enroll a learner in
-// every lesson they pointed at (ADR-0012). That is also why callers render a
-// button rather than a link — a link would be preloaded, and could be opened
-// around the command.
+// Hover, so a lesson page that started itself on load would enroll a learner in
+// Every lesson they pointed at (ADR-0012). That is also why callers render a
+// Button rather than a link — a link would be preloaded, and could be opened
+// Around the command.
 export function useEnterLesson(courseSlug: string) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export function useEnterLesson(courseSlug: string) {
   const start = useMutation({
     ...startLessonMutation(),
     // A refusal or a network failure leaves the visitor where they are; landing
-    // in a lesson that was never started would be worse than staying put.
+    // In a lesson that was never started would be worse than staying put.
     onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 

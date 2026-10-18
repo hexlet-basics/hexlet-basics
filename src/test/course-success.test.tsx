@@ -15,7 +15,7 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The course completion page, driven through its real route with the course
-// read faked at the HTTP boundary: who sees it, and where everyone else goes.
+// Read faked at the HTTP boundary: who sees it, and where everyone else goes.
 
 const user: User = {
   id: 1,

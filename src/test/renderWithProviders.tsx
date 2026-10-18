@@ -10,12 +10,12 @@ import { createI18n } from "@/lib/i18n";
 import { queryDefaults } from "@/lib/query-client";
 
 // Mirrors the provider stack from __root.tsx so components render the same way
-// they do in the app: Mantine + Modals + Notifications, a request-scoped i18n
-// instance (so `t(($) => $.x)` resolves), and a fresh QueryClient per render with
-// retries off so failed requests surface immediately.
+// They do in the app: Mantine + Modals + Notifications, a request-scoped i18n
+// Instance (so `t(($) => $.x)` resolves), and a fresh QueryClient per render with
+// Retries off so failed requests surface immediately.
 //
 // Components that use the router (useNavigate/useParams/Link) need
-// renderWithRouter instead.
+// RenderWithRouter instead.
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -26,7 +26,7 @@ function makeQueryClient() {
 }
 
 // `queryClient` and `i18n` are passed in by renderRoute, so a route loader and
-// the hooks under it share one cache and one language, as they do in the app.
+// The hooks under it share one cache and one language, as they do in the app.
 export function renderWithProviders(
   ui: ReactNode,
   queryClient = makeQueryClient(),
@@ -37,7 +37,7 @@ export function renderWithProviders(
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18n}>
           <CookiesProvider>
-            {/* env="test": no transitions and portals rendered in place, so nothing
+            {/* Env="test": no transitions and portals rendered in place, so nothing
               of a test (a modal still closing when it ends) outlives its tree. */}
             <MantineProvider env="test">
               <ModalsProvider>
