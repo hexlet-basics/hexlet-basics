@@ -1,5 +1,11 @@
 # Observability: Sentry for errors, OTLP tracing, Prometheus deferred
 
+> **Extended by [ADR-0026](0026-logging-conventions.md).** The logging part (slog plus
+> tint) stays; ADR-0026 adds JSON off a terminal, `trace_id` correlation,
+> `LOG_LEVEL` and redaction. Error reporting to Sentry also follows
+> [ADR-0018](0018-errors-via-oops.md) (`oops` attributes) and
+> [ADR-0027](0027-worker-conventions-river-and-watermill.md) (jobs report on the final attempt).
+
 Error tracking stays on **Sentry** (self-hosted, as in legacy) via the
 `getsentry/sentry-go` SDK. Logs use `slog` + `lmittmann/tint`. OpenTelemetry
 **traces** use ogen's native spans. The OpenTelemetry SDK is built by the
