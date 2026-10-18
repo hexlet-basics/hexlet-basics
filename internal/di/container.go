@@ -15,6 +15,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/health"
 )
 
 // ServerDependencies is the process-level root of the synchronous application
@@ -23,6 +24,7 @@ type ServerDependencies struct {
 	Logger           *slog.Logger   `do:""`
 	SentryClient     *sentry.Client `do:""`
 	HTTPServer       *http.Server   `do:""`
+	Probes           *health.Probes `do:""`
 	Database         *ent.Client    `do:""`
 	Bucket           *blob.Bucket   `do:""`
 	OpenTelemetrySDK *otelconf.SDK  `do:""`

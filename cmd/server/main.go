@@ -44,6 +44,7 @@ func run(signalCtx context.Context, stopSignals func()) error {
 		http:     dependencies.HTTPServer,
 		httpAddr: dependencies.HTTPServer.Addr,
 		logger:   dependencies.Logger,
+		drain:    dependencies.Probes.Drain,
 	}
 	runtimeErr := app.run(signalCtx, stopSignals)
 

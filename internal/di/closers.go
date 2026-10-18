@@ -35,6 +35,15 @@ func (c *databaseCloser) Shutdown() error {
 	return nil
 }
 
+// HealthCheck is the readiness probe's database check (ADR-0023): one cheap
+// query through the pool, which fails when the database is unreachable.
+func (c *databaseCloser) HealthCheck(ctx context.Context) error {
+	if _, err := c.client.User.Query().Exist(ctx); err != nil {
+		return fmt.Errorf("pinging database: %w", err)
+	}
+	return nil
+}
+
 type bucketCloser struct{ bucket *blob.Bucket }
 
 func (c *bucketCloser) Shutdown() error {
