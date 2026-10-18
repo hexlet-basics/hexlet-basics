@@ -46,7 +46,7 @@ func (c call) decode(v any) error {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(v); err != nil {
-		return userError{fmt.Errorf("invalid arguments: %w", err)}
+		return userError{errs.Wrapf(err, "invalid arguments")}
 	}
 	return nil
 }
@@ -69,7 +69,7 @@ type userError struct{ error }
 
 // errNotFound is what a tool answers for a record that does not exist or that a
 // visitor may not read: the two are the same answer, as on the website.
-func errNotFound(what string) error { return userError{fmt.Errorf("%s not found", what)} }
+func errNotFound(what string) error { return userError{errors.New(what + " not found")} }
 
 // addTool registers a tool behind the checkpoint every tool shares, in this
 // order: the Scope and the rate limit of its Class (admit), a context that ends
@@ -105,7 +105,7 @@ func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context
 		case ent.IsNotFound(err):
 			return toolError("not found"), nil
 		case err != nil:
-			return nil, fmt.Errorf("%s: %w", spec.name, err)
+			return nil, errs.With("tool", spec.name).Wrapf(err, "run tool")
 		}
 		return s.finish(spec.name, res)
 	})
@@ -130,14 +130,14 @@ func hints(readOnly, destructive, idempotent bool) *mcp.ToolAnnotations {
 func (s *Server) finish(name string, res result) (*mcp.CallToolResult, error) {
 	raw, err := json.Marshal(res.data)
 	if err != nil {
-		return nil, fmt.Errorf("encode %s result: %w", name, err)
+		return nil, errs.With("tool", name).Wrapf(err, "encode result")
 	}
 	// Round-trip through JSON so the content is exactly what the contract's
 	// encoders produce (omitted optional fields, null for nullable ones), not
 	// the Go shape of the generated types.
 	var data map[string]any
 	if err := json.Unmarshal(raw, &data); err != nil {
-		return nil, fmt.Errorf("decode %s result: %w", name, err)
+		return nil, errs.With("tool", name).Wrapf(err, "decode result")
 	}
 	text := res.text
 	if !fit(data, len(text), s.limits.MaxResponseBytes, res.list) {

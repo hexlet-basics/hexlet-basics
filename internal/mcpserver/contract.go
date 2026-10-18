@@ -1,7 +1,6 @@
 package mcpserver
 
 import (
-	"fmt"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -27,7 +26,7 @@ func responseSchema(operationID string) (map[string]any, error) {
 		} `yaml:"components"`
 	}
 	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
-		return nil, fmt.Errorf("parse OpenAPI: %w", err)
+		return nil, errs.Wrapf(err, "parse OpenAPI")
 	}
 
 	for _, methods := range doc.Paths {
@@ -45,17 +44,17 @@ func responseSchema(operationID string) (map[string]any, error) {
 			}
 			body, ok := op.Responses["200"].Content["application/json"]
 			if !ok || body.Schema == nil {
-				return nil, fmt.Errorf("operation %s declares no JSON 200 response", operationID)
+				return nil, errs.With("operation", operationID).Errorf("operation declares no JSON 200 response")
 			}
 			resolved, err := inline(body.Schema, doc.Components.Schemas, nil)
 			if err != nil {
-				return nil, fmt.Errorf("operation %s: %w", operationID, err)
+				return nil, errs.With("operation", operationID).Wrapf(err, "operation schema")
 			}
 			schema, _ := resolved.(map[string]any)
 			return schema, nil
 		}
 	}
-	return nil, fmt.Errorf("operation %s is not in the contract", operationID)
+	return nil, errs.With("operation", operationID).Errorf("operation is not in the contract")
 }
 
 // inline replaces every `$ref` under node with the schema it names, and turns
@@ -68,16 +67,16 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 		if ref, ok := n["$ref"].(string); ok {
 			name, found := strings.CutPrefix(ref, "#/components/schemas/")
 			if !found {
-				return nil, fmt.Errorf("unsupported reference %q", ref)
+				return nil, errs.With("ref", ref).Errorf("unsupported reference")
 			}
 			for _, seen := range stack {
 				if seen == name {
-					return nil, fmt.Errorf("reference cycle through %s", name)
+					return nil, errs.With("schema", name).Errorf("reference cycle")
 				}
 			}
 			target, ok := components[name]
 			if !ok {
-				return nil, fmt.Errorf("unknown schema %q", name)
+				return nil, errs.With("schema", name).Errorf("unknown schema")
 			}
 			return inline(target, components, append(stack, name))
 		}

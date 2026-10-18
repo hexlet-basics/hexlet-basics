@@ -2,6 +2,7 @@ package mcpserver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -49,7 +50,7 @@ func (s *Server) pageProperties() map[string]any {
 // a useful page) and note says so for the text of the result.
 func (s *Server) resolve(a pageArgs) (page, perPage int, note string, err error) {
 	if a.Page < 0 || a.PerPage < 0 {
-		return 0, 0, "", userError{fmt.Errorf("page and perPage must be at least 1")}
+		return 0, 0, "", userError{errors.New("page and perPage must be at least 1")}
 	}
 	page = max(a.Page, 1)
 	perPage = a.PerPage
@@ -129,7 +130,7 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		spec.class = ClassCatalogue
 		output, err := s.outputSchema(t.name)
 		if err != nil {
-			return fmt.Errorf("build %s output schema: %w", t.name, err)
+			return errs.With("tool", t.name).Wrapf(err, "build output schema")
 		}
 		spec.output = output
 		s.addTool(server, spec, t.run)
@@ -174,7 +175,7 @@ func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 	}
 	all, err := s.deps.Catalogue.ListCourses(ctx)
 	if err != nil {
-		return result{}, fmt.Errorf("list courses: %w", err)
+		return result{}, errs.Wrapf(err, "list courses")
 	}
 	items := slicePage(all, page, perPage)
 	slugs := make([]string, len(items))
@@ -199,7 +200,7 @@ func (s *Server) listCategories(ctx context.Context, c call) (result, error) {
 	}
 	all, err := s.deps.Catalogue.ListPublicCourseCategories(ctx)
 	if err != nil {
-		return result{}, fmt.Errorf("list course categories: %w", err)
+		return result{}, errs.Wrapf(err, "list course categories")
 	}
 	items := slicePage(all, page, perPage)
 	slugs := make([]string, len(items))
@@ -293,7 +294,7 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	params := api.ListBlogPostsParams{Page: api.NewOptInt32(int32(page)), PerPage: api.NewOptInt32(int32(perPage))}
 	posts, err := s.deps.Catalogue.ListBlogPosts(ctx, params)
 	if err != nil {
-		return result{}, fmt.Errorf("list blog posts: %w", err)
+		return result{}, errs.Wrapf(err, "list blog posts")
 	}
 	slugs := make([]string, len(posts.Items))
 	for i, post := range posts.Items {
@@ -331,5 +332,5 @@ func notFoundOf(res any, what string) error {
 	if _, ok := res.(*api.NotFoundError); ok {
 		return errNotFound(what)
 	}
-	return fmt.Errorf("unexpected %s result %T", what, res)
+	return errs.With("what", what, "result_type", fmt.Sprintf("%T", res)).Errorf("unexpected result")
 }
