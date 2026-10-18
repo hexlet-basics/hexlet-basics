@@ -231,7 +231,7 @@ transaction in the context, and two things honour it:
   `Query` and `Tx`). A handler keeps writing `s.db.BlogPost.Create()`, and its
   read-after-write (`getAdminBlogPost`) sees the write;
 - `Store.WithinTx` called with such a context joins it instead of opening a
-  second transaction, so `blog.Remover`, `relatedcourses.Replacer` and the
+  second transaction, so `blog.Remover`, `relatedcourse.Replacer` and the
   other modules that own an atomic step become part of the operation's commit.
   They keep their own atomicity when called outside one (a worker, a test).
 
@@ -640,14 +640,14 @@ while the response models keep showing it.
   the answer is the resource;
 - Permission: `<resource>.<verb>` in the glossary's resource term, kind `write`
   (`blog_posts.publish`, `blog_posts.unpublish`, `blog_posts.archive`);
-- handler: the operation names its `transitions.Transition` and runs it; the blog
-  post version is `transitionBlogPost` in `internal/handlers/blog_posts.go`.
+- handler: the operation names its `transition.Transition` and runs it; the blog
+  post version is `blog.Editor.move` in `internal/blog/states.go`.
 
 **The table is code, written once.** `internal/transition` holds the generic
-`Transition[S]{To, From}`: `Check(current)` returns a typed `*transitions.Illegal`
-(the state it is in, the state it asked for). The handler maps it with
-`refuseTransition` (`internal/handlers/publication_state.go`) to a refusal like the
-self-protection ones: **409** with a localized RFC 9457 `detail`
+`Transition[S]{To, From}`: `Check(current)` returns a typed `*transition.IllegalError`
+(the state it is in, the state it asked for, and the vocabulary they belong to). The
+HTTP error table maps it (`detailFor` in `internal/handlers/errors.go`, ADR-0028) as
+a conflict, like the self-protection refusals: **409** with a localized RFC 9457 `detail`
 (`state.illegal_transition`, naming both states through the `state.draft`,
 `state.published` and `state.archived` messages in ru, en and es). The contract
 needed no change: 409 falls under the shared default error response. The blog post
@@ -743,7 +743,7 @@ workflow, but it is a state, so it follows the same rule with these differences:
   legal (a completed Course may return to development), so each lists the two
   other values as `From`; repeating the current value is refused with the same
   409 (`state.illegal_transition`), its two values named through the new
-  `readiness.*` messages in ru, en and es (`refuseTransitionNamed` takes the names). A
+  `readiness.*` messages in ru, en and es (`detailFor` names them through the vocabulary). A
   Course with no readiness counts as a draft.
 - **A new Course is a draft:** create sets it explicitly; `readiness` is skipped in
   the generated `SetInput` and absent from `CourseInput` and the clients, while the
