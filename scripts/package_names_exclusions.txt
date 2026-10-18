@@ -1,0 +1,27 @@
+# internal/ packages that still have a plural or ent-colliding name (ADR: singular
+# package names). Each rename removes its entry in the same commit.
+accountemails
+accounts
+banners
+blogposts
+books
+coursecategories
+courselessons
+coursepages
+courses
+emailtokens
+eventhandlers
+feeds
+fixtures
+ids
+landingpages
+leads
+lessonreviews
+permissions
+qnaitems
+relatedcourses
+reviews
+sessions
+staffroles
+transitions
+versionbuilds
