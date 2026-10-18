@@ -1,3 +1,5 @@
+//go:build docker
+
 package exerciserunner
 
 import (
@@ -101,20 +103,20 @@ func TestRunCapsRunawayOutput(t *testing.T) {
 	assert.LessOrEqual(t, len(outcome.Output), 512)
 }
 
-// dockerRunner builds a runner against the local daemon, and skips the test
-// when there is none — the rest of the suite needs Docker for its database
-// containers, so this only skips where Docker is genuinely absent.
+// dockerRunner builds a runner against the local daemon. These tests carry the
+// `docker` build tag, so asking for them (`mise run test:docker`) and finding no
+// daemon or no image is a failure, not a skip.
 func dockerRunner(t *testing.T) *Docker {
 	t.Helper()
 
 	runner, err := New(OptionsFrom(testConfig()))
 	if err != nil {
-		t.Skipf("no docker client: %v", err)
+		t.Fatalf("no docker client: %v", err)
 	}
 	t.Cleanup(func() { _ = runner.Close() })
 
 	if _, err := runner.docker.Ping(context.Background(), client.PingOptions{}); err != nil {
-		t.Skipf("no docker daemon: %v", err)
+		t.Fatalf("no docker daemon: %v", err)
 	}
 	pullImage(t, runner)
 	return runner
@@ -129,15 +131,13 @@ func pullImage(t *testing.T, runner *Docker) {
 	}
 	pulled, err := runner.docker.ImagePull(ctx, runnerImage, client.ImagePullOptions{})
 	if err != nil {
-		// A daemon with no registry access is an environment without the image,
-		// not a failing runner.
-		t.Skipf("cannot pull %s: %v", runnerImage, err)
+		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
 	defer func() { _ = pulled.Close() }()
 	// The pull returns before it finishes; starting a container against a
 	// half-present image is the classic way to get a confusing failure.
 	if err := pulled.Wait(ctx); err != nil {
-		t.Skipf("cannot pull %s: %v", runnerImage, err)
+		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
 }
 

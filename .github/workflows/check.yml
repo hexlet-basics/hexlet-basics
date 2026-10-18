@@ -260,6 +260,10 @@ jobs:
       # from a template of the Atlas migrations and the committed fixtures.
       - run: mise run test
 
+      # The exercise runner's container lifecycle needs a real daemon, which the
+      # runner has; `test` leaves these out (build tag `docker`).
+      - run: mise run test:docker
+
   # Builds both images without pushing, so a PR that breaks a Dockerfile (or
   # the files it copies) fails here rather than on the release run.
   build-images:

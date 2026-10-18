@@ -1,3 +1,5 @@
+//go:build docker
+
 package exerciserunner
 
 import (

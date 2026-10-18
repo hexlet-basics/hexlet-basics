@@ -179,6 +179,9 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   shuffle disables go's result cache, so locally unchanged packages show `(cached)`). In CI tests run in a random
   order and `go` prints the seed, so a test must not depend on another's side
   effects; replay an order with `mise run test -- -shuffle=<seed> ./pkg`.
+- `mise run test:docker` — the tests that need a real Docker daemon (build tag
+  `docker`, `internal/exerciserunner`: the container lifecycle). `mise run test` leaves them
+  out; CI runs them as a separate step. A test of that kind goes in a `//go:build docker` file.
 - `mise run test:cover` — the Go suite over `cmd/` and `internal/` with
   coverage, failing under the total in `.testcoverage.yml` (generated code and
   `testsupport` excluded). `pnpm test:coverage` does the same for the frontend

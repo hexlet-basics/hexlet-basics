@@ -393,6 +393,10 @@ description = "Run the Go suite; DB packages clone their database on the db daem
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
 run = 'eval "set -- $usage_go_test_args"; go test ${CI:+-shuffle=on} "$@"'
 
+["test:docker"]
+description = "Run the tests that need a real Docker daemon (build tag `docker`: the exercise runner's container lifecycle). Not part of `test`; CI runs it"
+run = "go test -tags=docker ./internal/exerciserunner"
+
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (needs `mise run db:up`)"
 run = [
