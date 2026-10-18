@@ -21,8 +21,10 @@ export interface FieldOverrides<T> {
 // A generated key the catalog lacks would render as the raw key; fail the render
 // instead so a contract change without its label cannot ship quietly.
 function labelFor(i18n: I18n, key: string): string {
-  if (!i18n.exists(key)) throw new Error(`missing i18n label ${key}`);
-  return String(i18n.t(key));
+  if (!i18n.exists(key)) {
+    throw new Error(`missing i18n label ${key}`);
+  }
+  return i18n.t(key);
 }
 
 const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {
@@ -54,8 +56,12 @@ export function useGeneratedFields<T>(
         label: label(descriptor.labelKey),
       };
       const type = widgets[descriptor.kind];
-      if (type) spec.type = type;
-      if (descriptor.required) spec.required = true;
+      if (type) {
+        spec.type = type;
+      }
+      if (descriptor.required) {
+        spec.required = true;
+      }
       if (descriptor.enumValues) {
         spec.options = descriptor.enumValues.map((option) => ({
           value: option.value,
@@ -83,7 +89,9 @@ export function useGeneratedColumns<T extends object>(
   const { i18n } = useTranslation();
   return names.map((name) => {
     const descriptor = descriptors.find((candidate) => candidate.name === name);
-    if (!descriptor) throw new Error(`no generated column ${name}`);
+    if (!descriptor) {
+      throw new Error(`no generated column ${name}`);
+    }
     return { accessorKey: name, header: labelFor(i18n, descriptor.labelKey) };
   });
 }

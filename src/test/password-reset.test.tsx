@@ -57,8 +57,8 @@ test("a valid link signs the visitor in with the new password and takes them hom
   await page.getByRole("button", { name: "Сохранить пароль" }).click();
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru");
-  expect(received).toEqual([{ password: "new-password" }]);
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toEqual({ user });
+  expect(received).toStrictEqual([{ password: "new-password" }]);
+  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
 });
 
 test("a refused link sends the visitor back to the request form", async () => {
@@ -71,7 +71,9 @@ test("a refused link sends the visitor back to the request form", async () => {
   const { router } = await openLink("stale");
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru/remind_password/new");
-  expect(router.state.location.search).toEqual({ invalid: true });
+  expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    invalid: true,
+  });
 });
 
 test("a short password is refused before it is sent", async () => {
@@ -123,5 +125,5 @@ test("the request form confirms the same way for any email", async () => {
       page.getByText("If an account exists for this email, we've sent a password reset link."),
     )
     .toBeVisible();
-  expect(received).toEqual([{ email: "nobody@example.com" }]);
+  expect(received).toStrictEqual([{ email: "nobody@example.com" }]);
 });

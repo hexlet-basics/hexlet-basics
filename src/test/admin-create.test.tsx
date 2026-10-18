@@ -16,7 +16,7 @@ import { renderRoute } from "@/test/renderRoute";
 // goes back to the resource's list. The forms are one engine (CrudForm) fed by a
 // field spec per resource, so each case covers a resource's spec and its route.
 
-type Case = {
+interface Case {
   name: string;
   route: AnyRoute;
   resource: string;
@@ -24,7 +24,7 @@ type Case = {
   fields: [string, string][];
   // What the API must receive of it.
   sent: object;
-};
+}
 
 const cases: Case[] = [
   {
@@ -99,8 +99,10 @@ test.each(cases)("an admin creates $name and is taken back to the list", async (
   const confirmation = page.getByText("Record created");
   await expect.element(confirmation).toBeVisible();
   expect(received).toMatchObject(c.sent);
-  expect(received).not.toHaveProperty("state"); // a new record is a draft; the state has its own operations
-  expect(received).not.toHaveProperty("readiness"); // a new course is a draft; its readiness has its own operations
+  // A new record is a draft: the state has its own operations.
+  expect(received).not.toHaveProperty("state");
+  // A new course is a draft too: its readiness has its own operations.
+  expect(received).not.toHaveProperty("readiness");
   await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
 });
 

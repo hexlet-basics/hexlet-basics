@@ -1,12 +1,8 @@
 import { ActionIcon, Box, Button, Divider, Group, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
-import {
-  type RegisteredRouter,
-  useLocation,
-  useRouteContext,
-  type ValidateLinkOptions,
-} from "@tanstack/react-router";
+import { useLocation, useRouteContext } from "@tanstack/react-router";
+import type { RegisteredRouter, ValidateLinkOptions } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { CourseLessonView, LessonRef } from "@/client/types.gen";
@@ -58,7 +54,9 @@ export default function LessonControls({
           <ActionIcon
             variant="light"
             size="lg"
-            onClick={confirmReset}
+            onClick={() => {
+              confirmReset();
+            }}
             aria-label={t(($) => $.helpers.reset)}
           >
             <IconRepeat size={18} />
@@ -168,11 +166,11 @@ function GuestSignUp({ passed }: { passed: boolean }) {
 //
 // The link options are checked against the route tree the way TanStack Router
 // documents for a component that wraps a link.
-type StepLinkProps<TRouter extends RegisteredRouter = RegisteredRouter, TOptions = unknown> = {
+interface StepLinkProps<TRouter extends RegisteredRouter = RegisteredRouter, TOptions = unknown> {
   enabled: boolean;
   label: string;
   linkOptions: ValidateLinkOptions<TRouter, TOptions>;
-};
+}
 
 function StepLink<TRouter extends RegisteredRouter, TOptions>(
   props: StepLinkProps<TRouter, TOptions>,

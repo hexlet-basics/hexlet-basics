@@ -1,19 +1,16 @@
-import {
-  ActionIcon,
-  Anchor,
-  type AnchorProps,
-  type ActionIconProps,
-  Button,
-  type ButtonProps,
-  Card,
-  type CardProps,
-  NavLink as MantineNavLink,
-  type NavLinkProps,
-  Text,
-  type TextProps,
+import { ActionIcon, Anchor, Button, Card, NavLink as MantineNavLink, Text } from "@mantine/core";
+import type {
+  AnchorProps,
+  ActionIconProps,
+  ButtonProps,
+  CardProps,
+  NavLinkProps,
+  TextProps,
 } from "@mantine/core";
-import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { forwardRef, type PropsWithChildren } from "react";
+import { createLink } from "@tanstack/react-router";
+import type { LinkComponent } from "@tanstack/react-router";
+import { forwardRef } from "react";
+import type { PropsWithChildren } from "react";
 
 // Typed TanStack Router links rendered as Mantine controls. Mantine's
 // polymorphic `component={Link}` loses the router's `to`/`params` inference (so a

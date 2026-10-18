@@ -13,6 +13,7 @@ import { renderRoute } from "@/test/renderRoute";
 // The header shows its menus from the desktop width up.
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 beforeEach(() => page.viewport(1200, 800));
+
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 function openPage(initialPath: string, locale: "ru") {
@@ -34,21 +35,24 @@ test("links each language to the same page and query under its prefix", async ()
     .toHaveAttribute("href", "/es/pages/about?from=mail");
 });
 
+// The test page must stay: the link would otherwise navigate it away.
+const stay = (event: Event) => event.preventDefault();
+
 test("sends no request to the API when a language is followed", async () => {
   const requested: string[] = [];
   worker.events.on("request:start", ({ request }) => requested.push(new URL(request.url).pathname));
-  // The test page must stay: the link would otherwise navigate it away.
-  const stay = (event: Event) => event.preventDefault();
   document.addEventListener("click", stay, true);
 
   try {
     await openPage("/ru/pages/about", "ru");
     await page.getByRole("button", { name: "Русский" }).first().click();
     await page.getByRole("menuitem", { name: "English" }).click();
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 200);
+    });
   } finally {
     document.removeEventListener("click", stay, true);
   }
 
-  expect(requested.filter((path) => path.includes("locale"))).toEqual([]);
+  expect(requested.filter((path) => path.includes("locale"))).toStrictEqual([]);
 });

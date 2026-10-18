@@ -9,16 +9,13 @@ import type { ReactNode } from "react";
 import { vi } from "vitest";
 import { renderWithProviders } from "./renderWithProviders";
 
-type RenderWithRouterOptions = {
+interface RenderWithRouterOptions {
   // Memory-history entry the router starts on. Default carries a `locale` param
   // so components calling useParams({ strict: false }) see the app's shape.
   initialPath?: string;
   // Route pattern the component mounts under. Must line up with initialPath.
   path?: string;
-  // Let navigation happen, for a component whose state lives in the address (a
-  // list's page and filter). The default spies and does nothing.
-  navigate?: "spy" | "real";
-};
+}
 
 // Mounts `ui` inside a minimal in-memory TanStack router so components that call
 // useNavigate/useParams/Link render without the real route tree. Navigation is
@@ -35,7 +32,7 @@ export async function renderWithRouter(
   const route = createRoute({
     getParentRoute: () => rootRoute,
     path,
-    component: () => <>{ui}</>,
+    component: () => ui,
   });
   const router = createRouter({
     routeTree: rootRoute.addChildren([route]),
@@ -43,9 +40,9 @@ export async function renderWithRouter(
   });
 
   // router.navigate is generic over the route tree, which a Mock cannot carry,
-  // so the mock takes any arguments and is cast back onto the router.
+  // so the mock takes any arguments and is assigned onto the router as it is.
   const navigate = vi.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
-  if (navigation === "spy") router.navigate = navigate as unknown as typeof router.navigate;
+  router.navigate = navigate;
 
   const screen = await renderWithProviders(<RouterProvider router={router} />);
   return { screen, navigate };

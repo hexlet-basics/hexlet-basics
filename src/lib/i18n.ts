@@ -7,8 +7,9 @@ import en from "@/locales/en/translation";
 import es from "@/locales/es/translation";
 import ru from "@/locales/ru/translation";
 
+export type { Locale } from "@/client";
+
 // The locale set is owned by the contract (`enum Locale` in api-spec/common.tsp).
-export type { Locale };
 
 // `en` is the default and is served unprefixed; `ru`/`es` live behind a path
 // prefix (legacy `scope "(:suffix)", suffix: /es|ru/`, ADR-0002 / ADR-0008).

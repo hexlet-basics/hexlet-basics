@@ -41,12 +41,13 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
         color: "green",
         message: t(($) => $.flash.users.create.success),
       });
-      if (redirect) await navigate({ href: redirect });
-      else await navigate({ to: "/{-$locale}" });
+      await (redirect ? navigate({ href: redirect }) : navigate({ to: "/{-$locale}" }));
     },
     // A 422 is shown at the fields (submitWithServerErrors), not as a toast.
     onError: (error) => {
-      if (isValidationError(error)) return;
+      if (isValidationError(error)) {
+        return;
+      }
       notifications.show({
         color: "red",
         message: t(($) => $.flash.users.create.error),

@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { adminListLeadsOptions, adminListLeadsQueryKey } from "@/client/@tanstack/react-query.gen";
 import { zAdminListLeadsQuery } from "@/client/zod.gen";
 import type { Lead } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
 

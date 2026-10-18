@@ -28,7 +28,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
   // Legacy gave this page no og:description and no Twitter card, so the shared
   // social block is off and only the Open Graph block is asked for.
   head: ({ loaderData, match }) => {
-    if (!loaderData) return {};
+    if (!loaderData) {
+      return {};
+    }
     const { i18n } = match.context;
     const { lesson, landingPage } = loaderData;
     // The copy is a YAML block scalar ending in a newline, which legacy squished.
@@ -74,5 +76,5 @@ function lessonDescription({ lesson }: CourseLessonView): string {
 // Rails' `squish`: every whitespace run to one space, both ends trimmed.
 // es-toolkit has no counterpart, so this one line stays.
 function squish(text: string): string {
-  return text.replace(/\s+/g, " ").trim();
+  return text.replaceAll(/\s+/g, " ").trim();
 }

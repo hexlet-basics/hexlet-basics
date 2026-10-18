@@ -9,7 +9,9 @@ declare global {
 }
 
 export function metrikaClientId(): string | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") {
+    return null;
+  }
   return typeof window.ymClientId === "string" && window.ymClientId !== ""
     ? window.ymClientId
     : null;

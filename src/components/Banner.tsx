@@ -19,8 +19,8 @@ const backgrounds: Record<BannerBackground, string> = {
 // Inline markdown: the block wrapper and links are dropped, because the link is
 // the banner's own `url`, set on the whole strip.
 const inlineComponents = {
-  p: ({ children }: ComponentPropsWithoutRef<"p">) => <>{children}</>,
-  a: ({ children }: ComponentPropsWithoutRef<"a">) => <>{children}</>,
+  p: ({ children }: ComponentPropsWithoutRef<"p">) => children,
+  a: ({ children }: ComponentPropsWithoutRef<"a">) => children,
 };
 
 // The site banner, ported from legacy Banner: the live banner of the request
@@ -30,7 +30,9 @@ const inlineComponents = {
 export function Banner() {
   const { data } = useQuery(getActiveBannerOptions());
   const banner = data?.banner;
-  if (!banner) return null;
+  if (!banner) {
+    return null;
+  }
 
   const content = (
     <Markdown

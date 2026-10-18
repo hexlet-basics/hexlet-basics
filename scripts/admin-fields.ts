@@ -50,7 +50,9 @@ export interface ResourceDescriptors {
 
 function schemaNamed(spec: OpenApi, name: string): Schema {
   const schema = spec.components.schemas[name];
-  if (!schema) throw new Error(`schema ${name} is not in the OpenAPI document`);
+  if (!schema) {
+    throw new Error(`schema ${name} is not in the OpenAPI document`);
+  }
   return schema;
 }
 
@@ -61,10 +63,11 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
   let nullable = schema.nullable === true;
   let current = schema;
   for (;;) {
+    const [only, ...others] = current.allOf ?? [];
     if (current.$ref) {
       current = schemaNamed(spec, current.$ref.replace("#/components/schemas/", ""));
-    } else if (current.allOf?.length === 1 && current.allOf[0]) {
-      current = current.allOf[0];
+    } else if (only && others.length === 0) {
+      current = only;
     } else {
       return { shape: current, nullable: nullable || current.nullable === true };
     }
@@ -73,15 +76,25 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
 }
 
 export function snakeCase(name: string): string {
-  return name.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  return name.replaceAll(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
 function kindOf(shape: Schema): FieldKind | undefined {
-  if (shape.enum) return "select";
-  if (shape.type === "string") return shape.format === "date-time" ? "datetime" : "text";
-  if (shape.type === "boolean") return "boolean";
-  if (shape.type === "integer" || shape.type === "number") return "number";
-  if (shape.type === "array" && shape.items?.type && !shape.items.enum) return "multiselect";
+  if (shape.enum) {
+    return "select";
+  }
+  if (shape.type === "string") {
+    return shape.format === "date-time" ? "datetime" : "text";
+  }
+  if (shape.type === "boolean") {
+    return "boolean";
+  }
+  if (shape.type === "integer" || shape.type === "number") {
+    return "number";
+  }
+  if (shape.type === "array" && shape.items?.type && !shape.items.enum) {
+    return "multiselect";
+  }
   return undefined;
 }
 
@@ -97,7 +110,9 @@ function labelKeys(config: ResourceConfig, field: string) {
 function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, schema: Schema) {
   const { shape, nullable } = resolve(spec, schema);
   const kind = kindOf(shape);
-  if (!kind) return undefined;
+  if (!kind) {
+    return;
+  }
   const { labelKey, enumKey } = labelKeys(config, name);
   const enumValues: EnumValueDescriptor[] | undefined = shape.enum?.map((value) => ({
     value,
@@ -109,7 +124,7 @@ function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, s
 export function describeResource(spec: OpenApi, config: ResourceConfig): ResourceDescriptors {
   const input = schemaNamed(spec, config.input);
   const item = schemaNamed(spec, config.item);
-  const required = new Set(input.required ?? []);
+  const required = new Set(input.required);
 
   const skipped = new Set(config.skipFields);
   const inputProperties = Object.entries(input.properties ?? {}).filter(
@@ -142,8 +157,7 @@ const header = (name: string) =>
 // the output depends on nothing but the descriptors (oxfmt then lays it out).
 export function renderModule(name: string, data: ResourceDescriptors): string {
   return (
-    `${header(name)}` +
-    `import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
+    `${header(name)}import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
     `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, null, 2)};\n\n` +
     `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, null, 2)};\n`
   );

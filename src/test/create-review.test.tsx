@@ -51,6 +51,7 @@ test("creates a review", async () => {
     body: "Great course",
     firstName: "Eva",
   });
-  expect(received).not.toHaveProperty("state"); // a new review is a draft; the state has its own operations
+  // A new review is a draft: the state has its own operations.
+  expect(received).not.toHaveProperty("state");
   await expect.poll(() => router.state.location.pathname).toBe("/admin/reviews");
 });

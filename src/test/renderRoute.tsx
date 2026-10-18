@@ -1,21 +1,34 @@
 import { QueryClient } from "@tanstack/react-query";
 import {
-  type AnyRoute,
   createMemoryHistory,
   createRootRouteWithContext,
   createRoute,
   createRouter,
   RouterProvider,
 } from "@tanstack/react-router";
+import type { AnyRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import { Route as localeLayoutRoute } from "@/routes/{-$locale}";
 import { Route as adminLayoutRoute } from "@/routes/{-$locale}/admin";
 import type { AuthUser } from "@/lib/auth";
-import { createI18n, type Locale } from "@/lib/i18n";
+import { createI18n } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { localeOf } from "@/lib/locale-path";
 import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";
+
+// The application's file routes carry their parents from the generated tree, so
+// each is rebuilt here from its own options under the parent the test gives it.
+const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
+  createRoute({
+    ...(fileRoute.options as object),
+    getParentRoute: () => parent,
+    path: pattern,
+  } as never) as AnyRoute;
+
+const under = (pattern: string, prefix: string) =>
+  pattern === prefix || pattern.startsWith(`${prefix}/`);
 
 // Mounts a real file route — its loader, its component, its staticData — at a
 // real URL, under a synthetic root.
@@ -72,18 +85,10 @@ export async function renderRoute(
   // guards run as they do for a visitor; any other page hangs off the root. The
   // file routes carry their parents from the generated tree, so each is rebuilt
   // here from its own options.
-  const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
-    createRoute({
-      ...(fileRoute.options as object),
-      getParentRoute: () => parent,
-      path: pattern,
-    } as never) as AnyRoute;
   const LOCALE = "/{-$locale}";
   const ADMIN = `${LOCALE}/admin`;
   const layout = make(localeLayoutRoute, rootRoute, LOCALE);
   const adminLayout = make(adminLayoutRoute, layout, ADMIN.slice(LOCALE.length));
-  const under = (pattern: string, prefix: string) =>
-    pattern === prefix || pattern.startsWith(`${prefix}/`);
   const top: AnyRoute[] = [];
   const inLocale: AnyRoute[] = [adminLayout];
   const inAdmin: AnyRoute[] = [];
@@ -97,7 +102,9 @@ export async function renderRoute(
     }
   };
   mount(route, path);
-  for (const extra of also) mount(extra.route, extra.path);
+  for (const extra of also) {
+    mount(extra.route, extra.path);
+  }
   adminLayout.addChildren(inAdmin as never[]);
   layout.addChildren(inLocale as never[]);
 

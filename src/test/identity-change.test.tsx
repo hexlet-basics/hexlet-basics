@@ -231,5 +231,5 @@ test("pointing at a lesson preloads it and starts nothing", async () => {
   await page.getByRole("link", { name: "Variables" }).hover();
 
   await expect.poll(() => preloads).toBeGreaterThan(0);
-  expect(starts).toEqual([]);
+  expect(starts).toStrictEqual([]);
 });

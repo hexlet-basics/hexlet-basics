@@ -117,7 +117,10 @@ function lessonRows(finished: string[] = []): LearnerLesson[] {
 }
 
 const lessonRef = (slug: string): LessonRef => {
-  const row = lessonRows().find((item) => item.slug === slug) as LearnerLesson;
+  const row = lessonRows().find((item) => item.slug === slug);
+  if (!row) {
+    throw new Error(`no lesson row ${slug}`);
+  }
   return { id: row.id, slug, name: row.name };
 };
 
@@ -178,12 +181,11 @@ const desktop = { width: 1200, height: 800 };
 const phone = { width: 375, height: 667 };
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 beforeEach(() => page.viewport(desktop.width, desktop.height));
-afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
 function editorText() {
-  return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00a0", " ");
+  return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00A0", " ");
 }
 
 // The editor is a lazy chunk of a few hundred modules, and the first test to
@@ -195,6 +197,8 @@ const editorLoad = { timeout: 30_000 };
 // Everything the player keeps between visits lives here; a test that seeds it
 // must not leak into the next one.
 afterEach(() => localStorage.clear());
+
+afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 test("renders the lesson a learner reads, titled from the course's landing copy", async () => {
   worker.use(
@@ -237,7 +241,7 @@ test("lists every lesson in course order, marking the finished ones", async () =
   // The list itself — the control bar's Previous links to a lesson too.
   const links = page.getByRole("tabpanel", { name: "Navigation" }).getByRole("link").elements();
   const lessonLinks = links.filter((el) => el.getAttribute("href")?.includes("/lessons/"));
-  expect(lessonLinks.map((el) => el.textContent?.trim())).toEqual([
+  expect(lessonLinks.map((el) => el.textContent?.trim())).toStrictEqual([
     "Hello, World!",
     "Variables",
     "Strings",
@@ -304,11 +308,11 @@ test("divides the two panes where the learner left the divider", async () => {
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
 
   // The handle is what makes the divider draggable at all.
-  expect(document.querySelectorAll(".mantine-Splitter-handle").length).toBe(1);
+  expect(document.querySelectorAll(".mantine-Splitter-handle")).toHaveLength(1);
 
-  const panes = document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane");
-  expect(panes.length).toBe(2);
-  expect(panes[0]?.style.cssText).toContain("70%");
+  const paneElements = document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane");
+  expect(paneElements).toHaveLength(2);
+  expect(paneElements[0]?.style.cssText).toContain("70%");
 
   Cookies.remove("lesson_panes");
 });
@@ -346,7 +350,7 @@ test("opens the editor with the lesson's starter code, after the theory", async 
   const remote = performance
     .getEntriesByType("resource")
     .filter((entry) => !entry.name.startsWith(location.origin));
-  expect(remote).toEqual([]);
+  expect(remote).toStrictEqual([]);
 });
 
 test("finds yesterday's work still there, and keeps it per lesson", async () => {
@@ -460,7 +464,7 @@ test("runs the solution and says it passed", async () => {
   await expect.element(page.getByText("1 example, 0 failures")).toBeVisible();
 
   // What was sent: the buffer, against the version the page was loaded with.
-  expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
+  expect(submitted).toStrictEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
 });
 
 test("reports a failing solution without taking the lesson away", async () => {
@@ -566,7 +570,9 @@ test("shows that the check is running while it is", async () => {
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
     http.post("*/lessons/1002/check", async () => {
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 600);
+      });
       return HttpResponse.json(checkResult());
     }),
   );
@@ -603,7 +609,7 @@ test("renders the runner's colours instead of their escape codes", async () => {
           passed: false,
           result: "failed",
           status: 1,
-          output: "\u001b[31mexpected hello\u001b[39m",
+          output: "\u001B[31mexpected hello\u001B[39m",
           lessonHasBeenFinished: false,
         }),
       ),
@@ -624,7 +630,9 @@ test("refuses a second run while one is in flight", async () => {
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
     http.post("*/lessons/1002/check", async () => {
       checks += 1;
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 300);
+      });
       return HttpResponse.json(checkResult());
     }),
   );
@@ -728,7 +736,7 @@ test("gives a signed-in learner the same run a guest gets", async () => {
   await page.getByRole("button", { name: "Run" }).click();
 
   await expect.element(page.getByText("Tests passed")).toBeVisible();
-  expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
+  expect(submitted).toStrictEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
 });
 
 // A markup course: the exercise is a page, and the learner watches it take shape.
@@ -805,10 +813,10 @@ test("carries reset, Previous, Run and Next under the editor, in legacy's order"
   await expect.element(page.getByRole("button", { name: "Run" })).toBeVisible();
 
   const bar = page.getByRole("button", { name: "Run" }).element().parentElement;
-  const controls = Array.from(bar?.children ?? []).map(
+  const controls = [...(bar?.children ?? [])].map(
     (el) => el.getAttribute("aria-label") ?? el.textContent?.trim(),
   );
-  expect(controls).toEqual(["Reset", "← Previous", "Run", "Next →"]);
+  expect(controls).toStrictEqual(["Reset", "← Previous", "Run", "Next →"]);
 });
 
 test("goes back with a plain link, and has nowhere to go back to on the first lesson", async () => {
@@ -864,7 +872,7 @@ test("moves a learner on: Next waits for the pass, then starts the next lesson b
   await expect.element(page.getByRole("heading", { name: "JavaScript: Strings" })).toBeVisible();
   expect(router.state.location.pathname).toBe("/languages/javascript/lessons/strings");
   // Started exactly once, and before the page it leads to was read (ADR-0012).
-  expect(requests).toEqual(["start 1003", "read strings"]);
+  expect(requests).toStrictEqual(["start 1003", "read strings"]);
 });
 
 test("lets a learner revisiting a finished lesson move on straight away", async () => {
@@ -1030,7 +1038,9 @@ function panes() {
     document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
     (el) => page.elementLocator(el),
   );
-  if (!theory || !workspace) throw new Error("the player has no panes");
+  if (!theory || !workspace) {
+    throw new Error("the player has no panes");
+  }
   return { theory, workspace };
 }
 function paneWidths() {
@@ -1120,7 +1130,7 @@ test("on a phone, has no divider to drag", async () => {
   expect(document.querySelector(".mantine-Splitter-thumb")).toBeNull();
   document.querySelector<HTMLElement>(".mantine-Splitter-handle")?.focus();
   await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowLeft}");
-  expect(paneWidths()).toEqual([0, phone.width]);
+  expect(paneWidths()).toStrictEqual([0, phone.width]);
 });
 
 test("on a phone, fits the theory to the screen, wide code and all", async () => {
@@ -1174,7 +1184,9 @@ function streamedAnswer(chunks: string[]) {
   const encoder = new TextEncoder();
   const body = new ReadableStream({
     start(controller) {
-      for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+      for (const chunk of chunks) {
+        controller.enqueue(encoder.encode(chunk));
+      }
       controller.close();
     },
   });
@@ -1222,7 +1234,7 @@ test("shows the learner's chat and streams the answer to a new question", async 
   await expect.element(page.getByText(/and assign it\./)).toBeVisible();
 
   // The question goes out with the editor's buffer; nothing has been run yet.
-  expect(asked).toEqual([
+  expect(asked).toStrictEqual([
     { message: "How do I declare one?", userCode: "let greeting = '';\n", output: "" },
   ]);
 });

@@ -13,16 +13,15 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
+import type { PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
-import { z } from "zod";
+import type { SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
 import type { AuditRecord } from "@/client/types.gen";
-import { zAdminListAuditRecordsQuery } from "@/client/zod.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
-import { submitForm, useAppForm } from "@/lib/form";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 

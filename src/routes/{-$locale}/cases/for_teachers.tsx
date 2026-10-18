@@ -25,7 +25,9 @@ import { seoHead } from "@/lib/seo-head";
 // so its one video is the ru one.
 export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
   beforeLoad: ({ params }) => {
-    if (params.locale !== "ru") throw notFound();
+    if (params.locale !== "ru") {
+      throw notFound();
+    }
   },
   // Legacy meta: title, the description cut as Rails `truncate(160)` cut it,
   // and the social tags. Legacy pointed the canonical at the book page by

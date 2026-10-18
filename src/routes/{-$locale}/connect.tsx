@@ -74,10 +74,15 @@ function useScopeLabel() {
 function isLocalHost(host: string): boolean {
   const name = host
     .replace(/:\d+$/, "")
-    .replace(/^\[|\]$/g, "")
+    .replaceAll(/^\[|\]$/g, "")
     .toLowerCase();
   return name === "localhost" || name === "::1" || /^127(\.\d{1,3}){3}$/.test(name);
 }
+
+// The next place is outside the router: the authorization endpoint's callback
+// on this origin, or the client's own redirect URI. Leaving takes a full
+// navigation.
+const leave = ({ redirectUrl }: { redirectUrl: string }) => window.location.assign(redirectUrl);
 
 function Connect() {
   const { t } = useTranslation();
@@ -85,10 +90,6 @@ function Connect() {
   const consent = Route.useLoaderData();
   const scopeLabel = useScopeLabel();
 
-  // The next place is outside the router: the authorization endpoint's callback
-  // on this origin, or the client's own redirect URI. Leaving takes a full
-  // navigation.
-  const leave = ({ redirectUrl }: { redirectUrl: string }) => window.location.assign(redirectUrl);
   const onError = () => notifications.show({ color: "red", message: t(($) => $.connect.error) });
   const approve = useMutation({ ...approveOAuthConsentMutation(), onSuccess: leave, onError });
   const deny = useMutation({ ...denyOAuthConsentMutation(), onSuccess: leave, onError });

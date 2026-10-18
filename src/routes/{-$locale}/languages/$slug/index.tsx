@@ -18,8 +18,8 @@ import {
   Stack,
   Text,
   Title,
-  type ButtonProps,
 } from "@mantine/core";
+import type { ButtonProps } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
@@ -96,7 +96,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   // slug it resolved the page by; this page is resolved by the course's slug,
   // which is also what legacy's canonical used, so the page's own URL is both.
   head: ({ loaderData, match }) => {
-    if (!loaderData) return {};
+    if (!loaderData) {
+      return {};
+    }
     const { i18n } = match.context;
     const { course, landingPage } = loaderData;
     return seoHead({
@@ -372,12 +374,16 @@ function CourseAction({ view }: { view: CourseView }) {
   const { course, progress } = view;
   const { enter, isPending } = useEnterLesson(course.slug);
 
-  if (!progress) return null;
+  if (!progress) {
+    return null;
+  }
 
   if (progress.nextLesson === null) {
     // No lesson to offer is the end of the course only when it is finished: a
     // next lesson with no page in this locale is no button, not a finish.
-    if (progress.state !== "finished") return null;
+    if (progress.state !== "finished") {
+      return null;
+    }
     return (
       <Group>
         <Text size="lg" fw="bold">
@@ -418,7 +424,9 @@ function CourseAction({ view }: { view: CourseView }) {
 function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
   const { enter, isPending } = useEnterLesson(view.course.slug);
   const lesson = view.progress?.nextLesson ?? view.lessons[0];
-  if (!lesson) return null;
+  if (!lesson) {
+    return null;
+  }
   return <Button {...props} loading={isPending} onClick={() => enter(lesson)} />;
 }
 
@@ -428,7 +436,9 @@ function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
 function programLink(landingPage: string): string {
   // An address the admin form let through malformed is linked as written
   // rather than taking the page down with it.
-  if (!URL.canParse(landingPage)) return landingPage;
+  if (!URL.canParse(landingPage)) {
+    return landingPage;
+  }
   const url = new URL(landingPage);
   url.searchParams.set("utm_source", "code-basics");
   url.searchParams.set("utm_medium", "referral");

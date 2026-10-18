@@ -5,7 +5,6 @@ import {
   Box,
   Burger,
   Button,
-  type ButtonProps,
   Divider,
   Drawer,
   Group,
@@ -20,6 +19,7 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
+import type { ButtonProps } from "@mantine/core";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDisclosure } from "@mantine/hooks";
 import {

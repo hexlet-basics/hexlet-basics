@@ -139,6 +139,7 @@ const courseView: CourseView = {
 // the theory twice (its own pane and a workspace tab), so the lesson is read
 // at a desktop viewport, restored once the file is done.
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 test("a lesson is titled, described and linked the way legacy did it", async () => {

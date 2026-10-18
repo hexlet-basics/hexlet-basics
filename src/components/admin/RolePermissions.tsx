@@ -20,7 +20,9 @@ export function RolePermissions({ roleId }: { roleId: number }) {
   const { data } = useQuery(adminGetRolePermissionsOptions({ path: { roleId } }));
   const { data: catalog } = useQuery(adminListPermissionsOptions());
 
-  if (!data || !catalog) return null;
+  if (!data || !catalog) {
+    return null;
+  }
 
   // Remount the form when a fresh set arrives so its state re-seeds.
   return (
@@ -58,7 +60,24 @@ function PermissionsForm({
     errorMessage: t(($) => $.admin.crud.saveError),
   });
 
-  const groups = Object.entries(Object.groupBy(catalog, resourceOf));
+  const byResource = new Map<string, Permission[]>();
+  for (const permission of catalog) {
+    byResource.set(resourceOf(permission), [
+      ...(byResource.get(resourceOf(permission)) ?? []),
+      permission,
+    ]);
+  }
+  const groups = [...byResource];
+
+  const toggleGrant = (name: string) => {
+    setGrants((current) => {
+      const next = new Set(current);
+      if (!next.delete(name)) {
+        next.add(name);
+      }
+      return next;
+    });
+  };
 
   return (
     <Card withBorder p="xl" maw={720}>

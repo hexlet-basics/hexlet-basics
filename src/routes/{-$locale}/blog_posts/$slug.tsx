@@ -25,7 +25,8 @@ import {
 } from "@tabler/icons-react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
 import { getNextBlogPost } from "@/client/sdk.gen";
@@ -57,7 +58,9 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
   // Legacy meta: the post's name and description, its canonical URL, the cover
   // as og:image, and a schema.org Article carrying the like count.
   head: ({ loaderData, match }) => {
-    if (!loaderData) return {};
+    if (!loaderData) {
+      return {};
+    }
     const { post } = loaderData;
     const article = {
       "@context": "https://schema.org",
@@ -87,7 +90,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
         {
           type: "application/ld+json",
           // `<` escaped so a post name cannot close the script element.
-          children: JSON.stringify(article).replace(/</g, "\\u003c"),
+          children: JSON.stringify(article).replaceAll("<", String.raw`\u003c`),
         },
       ],
     };
@@ -108,9 +111,13 @@ function Show() {
   // is not one the chain itself wrote (a real navigation, e.g. a recommended post).
   const [chainSlugs, setChainSlugs] = useState<string[]>([]);
   const [anchor, setAnchor] = useState(slug);
-  if (slug !== anchor && !chainSlugs.includes(slug)) setAnchor(slug);
+  if (slug !== anchor && !chainSlugs.includes(slug)) {
+    setAnchor(slug);
+  }
   const { data } = useQuery(getBlogPostOptions({ path: { slug: anchor } }));
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
   const { post, recommendedPosts, relatedLandingPages } = data;
 
   return (
@@ -178,7 +185,9 @@ function PostChain({
   const nearEnd = entry?.isIntersecting ?? false;
   const { fetchNextPage, isFetching, isError } = next;
   useEffect(() => {
-    if (nearEnd && !isFetching && !isError) void fetchNextPage();
+    if (nearEnd && !isFetching && !isError) {
+      void fetchNextPage();
+    }
   }, [nearEnd, isFetching, isError, fetchNextPage]);
 
   const posts = [first, ...(next.data?.pages ?? [])];
@@ -248,7 +257,9 @@ function ChainPost({
   const onLine = entry?.isIntersecting ?? false;
 
   useEffect(() => {
-    if (onLine) onCrossLine(index);
+    if (onLine) {
+      onCrossLine(index);
+    }
   }, [onLine, index, onCrossLine]);
 
   return (

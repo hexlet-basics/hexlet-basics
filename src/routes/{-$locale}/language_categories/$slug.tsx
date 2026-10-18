@@ -29,7 +29,9 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
   // Legacy meta: title and description built around the category header, the
   // canonical link and the social tags.
   head: ({ loaderData, match }) => {
-    if (!loaderData) return {};
+    if (!loaderData) {
+      return {};
+    }
     const { i18n } = match.context;
     const name = loaderData.category.header ?? "";
     return seoHead({
@@ -47,7 +49,9 @@ function Show() {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getPublicCourseCategoryOptions({ path: { slug } }));
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
   const { category, landingPages, qnaItems } = data;
 
   return (

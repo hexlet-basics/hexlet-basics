@@ -145,7 +145,14 @@ function DeleteAccount() {
 
   return (
     <Box mt="xl">
-      <Anchor component="button" type="button" c="red" onClick={confirm}>
+      <Anchor
+        component="button"
+        type="button"
+        c="red"
+        onClick={() => {
+          confirm();
+        }}
+      >
         {t(($) => $.account.profiles.edit.delete)}
       </Anchor>
     </Box>

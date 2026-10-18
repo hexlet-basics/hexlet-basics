@@ -1,7 +1,6 @@
 import {
   AspectRatio,
   Card,
-  type CardProps,
   Group,
   Image,
   NumberFormatter,
@@ -9,6 +8,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import type { CardProps } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type { PropsWithChildren } from "react";

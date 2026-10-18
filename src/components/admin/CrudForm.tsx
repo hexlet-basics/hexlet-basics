@@ -69,9 +69,10 @@ export function CrudForm<T extends Record<string, unknown>>({
           <form.AppField key={spec.name} name={spec.name}>
             {(field) => {
               switch (spec.type) {
-                case "textarea":
+                case "textarea": {
                   return <field.TextareaField label={spec.label} required={spec.required} />;
-                case "select":
+                }
+                case "select": {
                   return (
                     <field.SelectField
                       label={spec.label}
@@ -79,13 +80,17 @@ export function CrudForm<T extends Record<string, unknown>>({
                       required={spec.required}
                     />
                   );
-                case "datetime":
+                }
+                case "datetime": {
                   return <field.DateTimeField label={spec.label} required={spec.required} />;
-                case "number":
+                }
+                case "number": {
                   return <field.NumberField label={spec.label} required={spec.required} />;
-                case "checkbox":
+                }
+                case "checkbox": {
                   return <field.CheckboxField label={spec.label} />;
-                case "multiselect":
+                }
+                case "multiselect": {
                   return (
                     <field.MultiSelectField
                       label={spec.label}
@@ -93,11 +98,14 @@ export function CrudForm<T extends Record<string, unknown>>({
                       required={spec.required}
                     />
                   );
-                case "richtext":
+                }
+                case "richtext": {
                   return <field.RichTextField label={spec.label} />;
+                }
                 case "text":
-                case undefined:
+                case undefined: {
                   return <field.TextField label={spec.label} required={spec.required} />;
+                }
               }
             }}
           </form.AppField>

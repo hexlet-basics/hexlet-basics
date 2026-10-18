@@ -39,7 +39,7 @@ test("a legal page carries no canonical", async () => {
   await expect
     .element(page.getByRole("heading", { name: "Условия использования образовательной платформы" }))
     .toBeVisible();
-  expect(router.state.matches.at(-1)?.links ?? []).toEqual([]);
+  expect(router.state.matches.at(-1)?.links ?? []).toStrictEqual([]);
 });
 
 test("an es page reads the ru body under the en title, as legacy did", async () => {

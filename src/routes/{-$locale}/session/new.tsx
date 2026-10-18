@@ -45,8 +45,11 @@ function New() {
         color: "green",
         message: t(($) => $.flash.sessions.create.success),
       });
-      if (redirect) void navigate({ href: redirect });
-      else void navigate({ to: "/{-$locale}" });
+      if (redirect) {
+        void navigate({ href: redirect });
+      } else {
+        void navigate({ to: "/{-$locale}" });
+      }
     },
     onError: () =>
       notifications.show({

@@ -1,4 +1,5 @@
-import { DEFAULT_LOCALE, type Locale, PREFIXED_LOCALES } from "@/lib/i18n";
+import { DEFAULT_LOCALE, PREFIXED_LOCALES } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 // The one place that knows how a locale shows in a URL path (ADR-0002 /
 // ADR-0008): the default locale is unprefixed, every other contract locale is
@@ -20,13 +21,17 @@ export function localeOf(pathname: string): Locale {
 // The path without its locale prefix, always starting with `/`.
 export function stripLocale(pathname: string): string {
   const prefix = prefixOf(pathname);
-  if (!prefix) return pathname;
+  if (!prefix) {
+    return pathname;
+  }
   return pathname.slice(pathname.indexOf(prefix) + prefix.length) || "/";
 }
 
 // The same page in another locale (the language switcher's link target).
 export function localize(pathname: string, locale: Locale): string {
   const base = stripLocale(pathname);
-  if (locale === DEFAULT_LOCALE) return base;
+  if (locale === DEFAULT_LOCALE) {
+    return base;
+  }
   return `/${locale}${base === "/" ? "" : base}`;
 }

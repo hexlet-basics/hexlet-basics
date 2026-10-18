@@ -19,7 +19,9 @@ export class ApiError extends Error {
 // becomes an ApiError. A network error or an abort has no status and passes
 // through as it is.
 export function apiErrorOf(error: unknown, response: Response | undefined): unknown {
-  if (!response || response.ok) return error;
+  if (!response || response.ok) {
+    return error;
+  }
   return new ApiError(response.status, error);
 }
 
@@ -30,6 +32,8 @@ export function isApiError(error: unknown, status?: number): error is ApiError {
 // For a loader's catch: a 404 from the API is a missing page, so it becomes the
 // router's `notFound()`; anything else is rethrown as it was.
 export function rethrowMissingAsNotFound(error: unknown): never {
-  if (isApiError(error, 404)) throw notFound();
+  if (isApiError(error, 404)) {
+    throw notFound();
+  }
   throw error;
 }

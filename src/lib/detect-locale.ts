@@ -1,14 +1,19 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, getRequestHeader, setCookie } from "@tanstack/react-start/server";
-import { isLocale, type Locale } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 // First app-supported locale in Accept-Language (region stripped), mirroring
 // legacy `locale_from_header`.
 function localeFromAcceptLanguage(header: string | undefined): Locale | undefined {
-  if (!header) return undefined;
+  if (!header) {
+    return undefined;
+  }
   for (const part of header.split(",")) {
     const tag = part.split(";")[0]?.trim().split("-")[0];
-    if (tag && isLocale(tag)) return tag;
+    if (tag && isLocale(tag)) {
+      return tag;
+    }
   }
   return undefined;
 }
@@ -30,7 +35,9 @@ export const rememberLocale = createIsomorphicFn()
       sameSite: "lax",
     });
   })
-  .client((): void => {});
+  .client((): void => {
+    // Nothing to remember in the browser: the cookie is set while serving.
+  });
 
 // Locale to redirect the unprefixed root to, or undefined to stay on `en`.
 // The remembered locale wins, then a Russian-preferring Accept-Language goes to

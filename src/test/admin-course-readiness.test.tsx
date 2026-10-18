@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { Course, CourseReadiness } from "@/client/types.gen";
 import { Route as courseEditRoute } from "@/routes/{-$locale}/admin/courses/$id";
@@ -37,7 +37,7 @@ const edit = () =>
 const button = (name: string) => page.getByRole("button", { name, exact: true });
 
 describe("the course admin screens", () => {
-  test.each<[CourseReadiness, string[], string[]]>([
+  it.each<[CourseReadiness, string[], string[]]>([
     ["draft", ["Mark as in development", "Mark as completed"], ["Mark as draft"]],
     ["in_development", ["Mark as draft", "Mark as completed"], ["Mark as in development"]],
     ["completed", ["Mark as draft", "Mark as in development"], ["Mark as completed"]],
@@ -54,7 +54,7 @@ describe("the course admin screens", () => {
     }
   });
 
-  test("the form has no readiness field", async () => {
+  it("the form has no readiness field", async () => {
     worker.use(http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))));
 
     await edit();
@@ -63,7 +63,7 @@ describe("the course admin screens", () => {
     await expect.element(page.getByLabelText("Course readiness")).not.toBeInTheDocument();
   });
 
-  test("saving the form sends no readiness", async () => {
+  it("saving the form sends no readiness", async () => {
     let sent: Record<string, unknown> | undefined;
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
@@ -80,7 +80,7 @@ describe("the course admin screens", () => {
     expect(sent).not.toHaveProperty("readiness");
   });
 
-  test("marking a course calls that operation and shows the new readiness", async () => {
+  it("marking a course calls that operation and shows the new readiness", async () => {
     const called: string[] = [];
     let readiness: CourseReadiness = "draft";
     worker.use(
@@ -104,10 +104,10 @@ describe("the course admin screens", () => {
     await button("Mark as draft").click();
     await expect.element(button("Mark as draft")).not.toBeInTheDocument();
 
-    expect(called).toEqual(["mark_completed", "mark_draft"]);
+    expect(called).toStrictEqual(["mark_completed", "mark_draft"]);
   });
 
-  test("a refused change tells the admin and keeps the readiness", async () => {
+  it("a refused change tells the admin and keeps the readiness", async () => {
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
       http.post("*/admin/courses/7/mark_in_development", () =>
@@ -122,7 +122,7 @@ describe("the course admin screens", () => {
     await expect.element(button("Mark as in development")).toBeVisible();
   });
 
-  test("the list shows each course's readiness in words", async () => {
+  it("the list shows each course's readiness in words", async () => {
     worker.use(
       http.get("*/admin/courses", () =>
         HttpResponse.json({ items: [course("in_development")], total: 1, page: 1, perPage: 25 }),
