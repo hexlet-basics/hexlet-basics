@@ -26,6 +26,9 @@ Run two independent Go processes from the same codebase:
   River client for transactional job enqueueing.
 - `cmd/worker` runs Watermill subscribers and River workers.
 
+Resource teardown (closing the database, bucket, Sentry and OpenTelemetry after
+the actors stop) is superseded by ADR-0023: it runs through `injector.Shutdown`.
+
 The DI package exposes separate `NewServer` and `NewWorker` graphs. The server
 graph has no River queues or worker registry and cannot execute jobs.
 
