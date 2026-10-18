@@ -124,17 +124,18 @@ function ForTeachers() {
           </List>
         </Stack>
         <Box>
-          <Box
-            component="video"
+          <video
             src={learningVideo}
             autoPlay
             loop
             muted
             playsInline
-            w="100%"
-            h="60%"
-            bdrs="md"
-            style={{ objectFit: "cover" }}
+            style={{
+              width: "100%",
+              height: "60%",
+              borderRadius: "var(--mantine-radius-md)",
+              objectFit: "cover",
+            }}
           />
         </Box>
       </SimpleGrid>

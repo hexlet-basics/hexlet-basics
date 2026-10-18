@@ -45,7 +45,7 @@ export default function BlogPostBlock({ post, lazy }: { post: BlogPost; lazy?: b
           </Group>
           <Group gap={5}>
             <IconClock size={14} />
-            <Text>~{t(($) => $.common.time.minutes, { count: 5 })}</Text>
+            <Text>{`~${t(($) => $.common.time.minutes, { count: 5 })}`}</Text>
           </Group>
         </Group>
       </CardLink>

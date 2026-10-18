@@ -41,6 +41,7 @@ client.setConfig({ baseUrl: PLACEHOLDER_ORIGIN });
 // per-request — and safe on the singleton because the cookie is read inside the
 // request-scoped isomorphic fn (Start's async request context), not by mutating
 // shared client state.
+// oxlint-disable-next-line oxc/no-async-endpoint-handlers -- a fetch interceptor, not an Express handler
 client.interceptors.request.use(async (request) => {
   const { pathname, search } = new URL(request.url);
   // The dead branch is stripped per build target, so `process` never leaks

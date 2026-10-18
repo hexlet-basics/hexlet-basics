@@ -318,8 +318,12 @@ export function ThemeSwitcher() {
 
   return (
     <ActionIcon aria-label={label} onClick={toggleColorScheme} size="sm" variant="transparent">
-      <IconSun stroke={1.2} size={14} className="mantine-light-hidden" />
-      <IconMoon stroke={1.2} size={14} className="mantine-dark-hidden" />
+      <Box component="span" lightHidden>
+        <IconSun stroke={1.2} size={14} />
+      </Box>
+      <Box component="span" darkHidden>
+        <IconMoon stroke={1.2} size={14} />
+      </Box>
     </ActionIcon>
   );
 }

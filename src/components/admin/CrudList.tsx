@@ -42,6 +42,9 @@ export interface CrudListProps<T extends RowData> {
   search?: { value: string; onChange: (value: string) => void };
 }
 
+// The placeholder rows shown while a page loads; they have no identity of their own.
+const SKELETON_ROWS = ["first", "second", "third", "fourth", "fifth"];
+
 export function CrudList<T extends RowData>({
   columns,
   data = [],
@@ -67,10 +70,10 @@ export function CrudList<T extends RowData>({
   // Three states of the body, as early returns instead of a nested ternary.
   function renderBody(): ReactNode {
     if (isLoading) {
-      return Array.from({ length: 5 }, (_, row) => (
+      return SKELETON_ROWS.map((row) => (
         <Table.Tr key={row}>
-          {columns.map((_column, column) => (
-            <Table.Td key={column}>
+          {table.getAllLeafColumns().map((column) => (
+            <Table.Td key={column.id}>
               <Skeleton h={16} />
             </Table.Td>
           ))}

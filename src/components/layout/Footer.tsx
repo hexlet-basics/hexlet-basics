@@ -19,6 +19,10 @@ import {
   listPublicCourseCategoriesOptions,
 } from "@/client/@tanstack/react-query.gen";
 
+// The legal address of the company that runs the Russian site.
+const COMPANY_ADDRESS =
+  "108813 г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3";
+
 // Split a list into `count` roughly-equal chunks (replaces legacy es-toolkit
 // `chunk`, which isn't a dependency of the Go stack).
 function chunk<T>(items: T[], size: number): T[][] {
@@ -69,7 +73,7 @@ export default function Footer() {
             </Stack>
 
             {landingGroups.map((group, index) => (
-              <Stack key={index} gap="sm">
+              <Stack key={group.map((lp) => lp.id).join("-")} gap="sm">
                 <Text fw="bold" fz="sm">
                   {t(($) => $.layouts.shared.footer.courses, {
                     group: String(index + 1),
@@ -162,10 +166,7 @@ export default function Footer() {
                 >
                   ООО «Хекслет Рус»
                 </Anchor>
-                <Text fz="sm">
-                  108813 г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д.
-                  3А, стр. 1, помещ. 10/3
-                </Text>
+                <Text fz="sm">{COMPANY_ADDRESS}</Text>
                 <Text fz="sm">ОГРН 1217300010476</Text>
               </Stack>
             )}

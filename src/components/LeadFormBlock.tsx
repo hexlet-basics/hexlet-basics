@@ -44,6 +44,10 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
     />
   );
 
+  const sentMessage = (
+    <Trans t={t} i18nKey={($) => $.flash.leads.create.success} components={{ a: communityLink }} />
+  );
+
   const defaultValues: LeadInput = {
     contactMethod: "telegram",
     contactValue: "",
@@ -65,13 +69,7 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
       }
       notifications.show({
         color: "green",
-        message: (
-          <Trans
-            t={t}
-            i18nKey={($) => $.flash.leads.create.success}
-            components={{ a: communityLink }}
-          />
-        ),
+        message: sentMessage,
       });
       await (redirectHref
         ? navigate({ href: redirectHref })

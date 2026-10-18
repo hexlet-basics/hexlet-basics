@@ -119,6 +119,14 @@ const typographyStyles: TypographyProps["styles"] = (theme) => ({
 // A stable default, so an omitted `components` prop is the same object on every render.
 const noComponents: DirectiveComponents = {};
 
+function MarkdownTable(props: ComponentPropsWithoutRef<"table">) {
+  return (
+    <Table.ScrollContainer minWidth={800}>
+      <table>{props.children}</table>
+    </Table.ScrollContainer>
+  );
+}
+
 export default function MarkdownViewer({
   children,
   allowHtml = false,
@@ -128,11 +136,7 @@ export default function MarkdownViewer({
     pre: MarkdownCodeBlock,
     // A wide table scrolls inside its own container instead of stretching the
     // pane it sits in.
-    table: (props: ComponentPropsWithoutRef<"table">) => (
-      <Table.ScrollContainer minWidth={800}>
-        <table>{props.children}</table>
-      </Table.ScrollContainer>
-    ),
+    table: MarkdownTable,
     code: MarkdownInlineCode,
     ...components,
   };

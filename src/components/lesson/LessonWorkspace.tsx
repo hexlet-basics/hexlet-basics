@@ -158,7 +158,7 @@ export default function LessonWorkspace({
         display="flex"
         flex={1}
         mih={0}
-        style={{ flexDirection: "column" }}
+        styles={{ root: { flexDirection: "column" } }}
         keepMountedMode="display-none"
       >
         <Tabs.List grow>
@@ -211,9 +211,9 @@ export default function LessonWorkspace({
           {/* A plain scrolling box rather than a ScrollArea: the output has to fill
               the pane, and a ScrollArea's content wrapper is only as tall as its
               content. */}
-          <Box h="100%" style={{ overflow: "auto" }}>
+          <div style={{ height: "100%", overflow: "auto" }}>
             <LessonOutput result={result} running={check.isPending} />
-          </Box>
+          </div>
         </Tabs.Panel>
 
         <Tabs.Panel value="tests" h="100%" mih={0}>

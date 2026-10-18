@@ -296,8 +296,9 @@ function PostBody({
 
       <Typography>
         {/* Trusted editor HTML, stored and served as written (see blog_posts.go). */}
-        <Box
+        <div
           className="blog-post-content"
+          // oxlint-disable-next-line react/no-danger -- trusted editor HTML, see above
           dangerouslySetInnerHTML={{ __html: post.richBodyHtml }}
         />
       </Typography>

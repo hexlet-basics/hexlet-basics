@@ -142,7 +142,12 @@ export default function LessonPage({
           min={isDesktop ? "25%" : "0%"}
           inert={!isDesktop && !theoryOpened}
         >
-          <Tabs defaultValue="lesson" h="100%" display="flex" style={{ flexDirection: "column" }}>
+          <Tabs
+            defaultValue="lesson"
+            h="100%"
+            display="flex"
+            styles={{ root: { flexDirection: "column" } }}
+          >
             <Tabs.List grow>
               {burger}
               <Tabs.Tab value="lesson">{t(($) => $.courses.lessons.show.lesson)}</Tabs.Tab>

@@ -2,8 +2,8 @@ import { CodeHighlight } from "@mantine/code-highlight";
 import {
   Alert,
   Anchor,
-  Box,
   Center,
+  Flex,
   List,
   Loader,
   Paper,
@@ -119,12 +119,7 @@ export default function LessonOutput({
   }
 
   return (
-    <Box
-      p="xs"
-      mih="100%"
-      display="flex"
-      style={{ flexDirection: "column", boxSizing: "border-box" }}
-    >
+    <Flex direction="column" p="xs" mih="100%">
       <Alert
         color={result.passed ? "green" : "yellow"}
         icon={result.passed ? <IconCheck size={16} /> : <IconAlertTriangle size={16} />}
@@ -153,6 +148,6 @@ export default function LessonOutput({
       {result.passed && !user && <GuestPrompt />}
 
       <CodeHighlight code={result.output} language={ansiLanguage} withCopyButton={false} flex={1} />
-    </Box>
+    </Flex>
   );
 }

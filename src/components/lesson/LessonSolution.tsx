@@ -1,7 +1,7 @@
 import { CodeHighlight } from "@mantine/code-highlight";
 import { Alert, Button, Center, Image, Stack, Text, Title } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import waitingClock from "@/assets/waiting_clock.webp";
 import { getEditorSettings } from "@/lib/editor-languages";
@@ -65,11 +65,19 @@ export default function LessonSolution({
 // (issue #742).
 function SolutionWait({ onReveal }: { onReveal: () => void }) {
   const { t } = useTranslation();
-  const [expiresAt] = useState(() => Date.now() + waitingTime);
+  // Set by the first tick, which runs when the component mounts.
+  const expiresAt = useRef(0);
   const [remaining, setRemaining] = useState(waitingTime);
-  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), MS_PER_SECOND, {
-    autoInvoke: true,
-  });
+  useInterval(
+    () => {
+      if (expiresAt.current === 0) {
+        expiresAt.current = Date.now() + waitingTime;
+      }
+      setRemaining(Math.max(0, expiresAt.current - Date.now()));
+    },
+    MS_PER_SECOND,
+    { autoInvoke: true },
+  );
 
   if (remaining > 0) {
     const seconds = Math.ceil(remaining / MS_PER_SECOND);

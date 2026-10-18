@@ -65,7 +65,7 @@ function StartedCourse({ course }: { course: DashboardCourse }) {
         <Stack w="100%" p="sm" gap="xs">
           <Title order={3}>{title}</Title>
 
-          {progress.nextLesson?.name && <Text>{progress.nextLesson.name} →</Text>}
+          {progress.nextLesson?.name && <Text>{`${progress.nextLesson.name} →`}</Text>}
 
           <Progress.Root mt="auto">
             <Progress.Section aria-label={`${progress.completion}%`} value={progress.completion} />

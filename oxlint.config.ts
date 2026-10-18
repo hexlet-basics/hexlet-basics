@@ -31,6 +31,34 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "react/function-component-definition": [
+      "error",
+      {
+        namedComponents: ["function-declaration", "function-expression", "arrow-function"],
+        unnamedComponents: ["arrow-function", "function-expression"],
+      },
+    ],
+    "react/no-unstable-nested-components": [
+      "error",
+      { propNamePattern: "{render*,edit,extra,cell}" },
+    ],
+    "react/jsx-no-literals": [
+      "error",
+      {
+        allowedStrings: [
+          "✕",
+          "support@hexlet.io",
+          "8 800 100 22 47",
+          "+7 495 085 21 62",
+          "ООО «Хекслет Рус»",
+          "ОГРН 1217300010476",
+          "Failed to load courses",
+        ],
+      },
+    ],
+    "react/no-multi-comp": ["error", { ignoreStateless: true }],
+    "react/jsx-props-no-spreading": ["error", { custom: "ignore", exceptions: ["html"] }],
+    "react/jsx-max-depth": ["error", { max: 6 }],
     "eslint/prefer-arrow-callback": ["error", { allowNamedFunctions: true }],
     "node/no-process-env": [
       "error",
@@ -76,16 +104,12 @@ export default defineConfig({
     "react/only-export-components": "off",
     // The automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
-    // User-facing strings are policed by lint:i18n (pages are exempt there on purpose).
-    "react/jsx-no-literals": "off",
     // Demands deep readonly on generated client and library types we cannot change.
     "typescript/prefer-readonly-parameter-types": "off",
     // Taste rule, would reorder about 1000 object literals that are grouped by meaning.
     "eslint/sort-keys": "off",
     // Bans conventional short names (t, i, e, _) with no safety gain.
     "eslint/id-length": "off",
-    // Mantine layouts nest deeply by design, splitting only adds indirection.
-    "react/jsx-max-depth": "off",
     // Conditional rendering with a ternary is idiomatic React.
     "eslint/no-ternary": "off",
     // Taste rule, undefined is the idiomatic absent value next to optional props.
@@ -116,18 +140,12 @@ export default defineConfig({
     "import/max-dependencies": "off",
     // Taste rule, TypeScript members are public by default.
     "typescript/explicit-member-accessibility": "off",
-    // The legal pages hold English prose with hundreds of quotes, escaping them hides the text.
-    "react/no-unescaped-entities": "off",
     // CamelCase and PascalCase module names and TanStack $param routes are the repo convention.
     "unicorn/filename-case": "off",
     // Contradicts require-await and return-await, returning a promise directly is fine.
     "typescript/promise-function-async": "off",
-    // Spreading Mantine and TanStack Form props is the library idiom.
-    "react/jsx-props-no-spreading": "off",
     // Component modules default-export by convention and lazy imports rely on it.
     "import/no-default-export": "off",
-    // Small colocated helper components are intended.
-    "react/no-multi-comp": "off",
     // Taste threshold, page components are long declarative JSX.
     "eslint/max-lines-per-function": "off",
     // Taste threshold.
@@ -150,32 +168,14 @@ export default defineConfig({
     "typescript/no-confusing-void-expression": "off",
     // Side-effect imports (css, polyfills, setup) are the point.
     "import/no-unassigned-import": "off",
-    // Mantine components take style and className by design.
-    "react/forbid-component-props": "off",
-    // False positive on render callbacks such as columns and actionsColumn edit and extra, which are not component definitions.
-    "react/no-unstable-nested-components": "off",
-    // Contradicts itself on forwardRef wrappers and createLink components and has no safety value.
-    "react/function-component-definition": "off",
-    // ForwardRef wrappers are named by the const they are assigned to.
-    "react/display-name": "off",
     // Generated admin resources and e2e specs reach siblings with ../, the @/ alias covers src only.
     "import/no-relative-parent-imports": "off",
     // Monaco and the i18n catalogs are namespace modules.
     "import/no-namespace": "off",
     // StarterKit is the package default export and also a named one, both are the same value.
     "import/no-named-as-default": "off",
-    // False positive, the matched function is a fetch interceptor not an Express handler.
-    "oxc/no-async-endpoint-handlers": "off",
-    // Keys of skeleton placeholders and of positional lists (footer groups, repeated audit changes) have no better identity.
-    "react/no-array-index-key": "off",
     // Assertions sit at untyped boundaries (request.json(), Object.keys, JSON.parse, test router doubles) where a guard would only repeat zod validation.
     "typescript/no-unsafe-type-assertion": "off",
-    // DangerouslySetInnerHTML carries the JSON-LD script of the blog article, escaped on purpose.
-    "react/no-danger": "off",
-    // Handlers come from records and hooks (actions[name].run), naming them handleX adds nothing.
-    "react/jsx-handler-names": "off",
-    // A lazily initialised per-mount constant has no setter to destructure.
-    "react/hook-use-state": "off",
     // The default allows JSX only in .jsx files; this repo writes it in .tsx.
     "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
     // An unhandled promise is a silently swallowed failure; mark deliberate
@@ -208,6 +208,15 @@ export default defineConfig({
     ],
   },
   overrides: [
+    {
+      // The legal pages are the text itself, one component per language, so the
+      // prose has to sit in the JSX as written and its quotes are not escaped.
+      files: ["src/components/pages/**"],
+      rules: {
+        "react/jsx-no-literals": "off",
+        "react/no-unescaped-entities": "off",
+      },
+    },
     {
       // These run in Node, not in the browser. A build script cannot use the async
       // fs API without top-level await, which node/no-top-level-await bans, so it

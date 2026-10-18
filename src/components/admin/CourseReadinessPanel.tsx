@@ -67,17 +67,20 @@ export function CourseReadinessPanel({ course }: { course: Course }) {
           </Badge>
         </Group>
         <Group>
-          {transitionsFromReadiness(course.readiness).map((name) => (
-            <Button
-              key={name}
-              variant="light"
-              color={actions[name].color}
-              loading={actions[name].isPending}
-              onClick={actions[name].run}
-            >
-              {actions[name].label}
-            </Button>
-          ))}
+          {transitionsFromReadiness(course.readiness).map((name) => {
+            const handleRun = actions[name].run;
+            return (
+              <Button
+                key={name}
+                variant="light"
+                color={actions[name].color}
+                loading={actions[name].isPending}
+                onClick={handleRun}
+              >
+                {actions[name].label}
+              </Button>
+            );
+          })}
         </Group>
       </Group>
     </Card>
