@@ -15,24 +15,13 @@ overrides:
 allowBuilds:
   '@swc/core': true
   msw: true
-  # Only the grammar sources are used (tree-sitter CLI compiles them); no node-gyp build.
-  tree-sitter-javascript: false
-  tree-sitter-typescript: false
-  tree-sitter-go: false
+  # Only the grammar sources are used (the lesson editor loads their wasm builds); no node-gyp build.
   tree-sitter-c: false
   tree-sitter-cpp: false
   tree-sitter-c-sharp: false
   '@tree-sitter-grammars/tree-sitter-kotlin': false
   tree-sitter-make: false
   tree-sitter-bash: false
-  tree-sitter-json: false
-  '@tree-sitter-grammars/tree-sitter-yaml': false
-  '@tree-sitter-grammars/tree-sitter-toml': false
-  tree-sitter-ruby: false
-  tree-sitter-python: false
-  tree-sitter-css: false
-  tree-sitter-html: false
-  tree-sitter-embedded-template: false
 minimumReleaseAgeExclude:
   - nanoid@3.3.18
   - framer-motion@12.43.0 || 13.4.3

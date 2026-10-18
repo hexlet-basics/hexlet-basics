@@ -14,10 +14,6 @@ const config: KnipConfig = {
     "@tanstack/cli",
     // TypeSpec packages are loaded by the compiler from api-spec/*.tsp.
     "@typespec/.*",
-    // Grammar sources that `mise run lint:syntax` compiles with the tree-sitter CLI.
-    // (The ones the lesson editor loads as wasm assets are imported, so knip sees them.)
-    "tree-sitter-(css|embedded-template|go|html|javascript|json|python|ruby|typescript)",
-    "@tree-sitter-grammars/tree-sitter-(toml|yaml)",
   ],
   ignoreExportsUsedInFile: true,
   entry: ["i18next.config.ts", "src/routes/**/*.{ts,tsx}"],
