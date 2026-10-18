@@ -24,6 +24,8 @@ func PlainText(fragment string) string {
 			plain.WriteByte(' ')
 		case html.ErrorToken:
 			return plain.String()
+		case html.StartTagToken, html.EndTagToken, html.SelfClosingTagToken, html.CommentToken, html.DoctypeToken:
+			// Markup carries no text of its own.
 		}
 	}
 }

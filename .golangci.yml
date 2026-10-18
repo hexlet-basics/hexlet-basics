@@ -8,8 +8,6 @@ linters:
     - exhaustruct # deprecated upstream, replaced by exhaustruct_v5, which is on
     - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
     - wsl # deprecated upstream, replaced by wsl_v5, which is on
-    - exhaustive # ticket #910, blocked by two known MCP bugs
-    - nilerr # ticket #910, blocked by two known MCP bugs
     # Pending: enabled by the commits that follow, each with its findings fixed.
     - paralleltest
     - tparallel
