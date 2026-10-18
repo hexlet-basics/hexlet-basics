@@ -1,10 +1,6 @@
 import { notifications } from "@mantine/notifications";
-import {
-  type QueryKey,
-  type UseMutationOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { QueryKey, UseMutationOptions } from "@tanstack/react-query";
 import { isValidationError } from "@/lib/server-validation";
 
 // The three things every admin CRUD mutation repeats — invalidate the affected
@@ -47,7 +43,9 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
       onDone?.(data, variables);
     },
     onError: (error) => {
-      if (fieldErrors && isValidationError(error)) return;
+      if (fieldErrors && isValidationError(error)) {
+        return;
+      }
       notifications.show({ color: "red", message: errorMessage });
     },
   });

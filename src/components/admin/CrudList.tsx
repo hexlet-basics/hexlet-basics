@@ -1,15 +1,8 @@
 import { EmptyState, Group, Pagination, Skeleton, Stack, Table, TextInput } from "@mantine/core";
 import { IconDatabaseOff } from "@tabler/icons-react";
-import {
-  type ColumnDef,
-  flexRender,
-  type OnChangeFn,
-  type PaginationState,
-  type RowData,
-  rowPaginationFeature,
-  tableFeatures,
-  useTable,
-} from "@tanstack/react-table";
+import { flexRender, rowPaginationFeature, tableFeatures, useTable } from "@tanstack/react-table";
+import type { ColumnDef, OnChangeFn, PaginationState, RowData } from "@tanstack/react-table";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { pageCount } from "@/lib/page-count";
 
@@ -71,6 +64,47 @@ export function CrudList<T extends RowData>({
     onPaginationChange,
   });
 
+  // Three states of the body, as early returns instead of a nested ternary.
+  function renderBody(): ReactNode {
+    if (isLoading) {
+      return Array.from({ length: 5 }, (_, row) => (
+        <Table.Tr key={row}>
+          {columns.map((_column, column) => (
+            <Table.Td key={column}>
+              <Skeleton h={16} />
+            </Table.Td>
+          ))}
+        </Table.Tr>
+      ));
+    }
+    if (data.length === 0) {
+      return (
+        <Table.Tr>
+          <Table.Td colSpan={columns.length}>
+            <EmptyState
+              icon={<IconDatabaseOff />}
+              title={t(($) => $.admin.crud.empty)}
+              size="sm"
+              py="xl"
+            />
+          </Table.Td>
+        </Table.Tr>
+      );
+    }
+    return table.getRowModel().rows.map((row) => (
+      <Table.Tr key={row.id}>
+        {/* `getAllCells` and not `getVisibleCells`: the latter belongs to
+            `columnVisibilityFeature`, and no admin list hides columns —
+            taking the core accessor keeps that feature unregistered. */}
+        {row.getAllCells().map((cell) => (
+          <Table.Td key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </Table.Td>
+        ))}
+      </Table.Tr>
+    ));
+  }
+
   return (
     <Stack>
       {search && (
@@ -94,43 +128,7 @@ export function CrudList<T extends RowData>({
               </Table.Tr>
             ))}
           </Table.Thead>
-          <Table.Tbody>
-            {isLoading ? (
-              Array.from({ length: 5 }, (_, row) => (
-                <Table.Tr key={row}>
-                  {columns.map((_column, column) => (
-                    <Table.Td key={column}>
-                      <Skeleton h={16} />
-                    </Table.Td>
-                  ))}
-                </Table.Tr>
-              ))
-            ) : data.length === 0 ? (
-              <Table.Tr>
-                <Table.Td colSpan={columns.length}>
-                  <EmptyState
-                    icon={<IconDatabaseOff />}
-                    title={t(($) => $.admin.crud.empty)}
-                    size="sm"
-                    py="xl"
-                  />
-                </Table.Td>
-              </Table.Tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <Table.Tr key={row.id}>
-                  {/* `getAllCells` and not `getVisibleCells`: the latter belongs to
-                      `columnVisibilityFeature`, and no admin list hides columns —
-                      taking the core accessor keeps that feature unregistered. */}
-                  {row.getAllCells().map((cell) => (
-                    <Table.Td key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </Table.Td>
-                  ))}
-                </Table.Tr>
-              ))
-            )}
-          </Table.Tbody>
+          <Table.Tbody>{renderBody()}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
 

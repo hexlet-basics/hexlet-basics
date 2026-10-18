@@ -12,26 +12,30 @@ type ErrorCode = 403 | 404 | 500;
 // was never shown.
 function errorText(t: TFunction, code: number): { header: string; description: string } {
   switch (code as ErrorCode) {
-    case 403:
+    case 403: {
       return {
         header: t(($) => $.errors.show.codes["403"].header),
         description: t(($) => $.errors.show.codes["403"].description),
       };
-    case 404:
+    }
+    case 404: {
       return {
         header: t(($) => $.errors.show.codes["404"].header),
         description: t(($) => $.errors.show.codes["404"].description),
       };
-    case 500:
+    }
+    case 500: {
       return {
         header: t(($) => $.errors.show.codes["500"].header),
         description: t(($) => $.errors.show.codes["500"].description),
       };
-    default:
+    }
+    default: {
       return {
         header: t(($) => $.errors.show.codes.other.header),
         description: t(($) => $.errors.show.codes.other.header),
       };
+    }
   }
 }
 

@@ -125,11 +125,11 @@ const spacesBySlug: Record<string, boolean> = {
 
 const defaultTabSize = 4;
 
-export type EditorSettings = {
+export interface EditorSettings {
   language: string;
   tabSize: number;
   insertSpaces: boolean;
-};
+}
 
 function languageFor(courseSlug: string, extension?: string | null): string {
   const fromExtension = extension ? languageByExtension[extension.toLowerCase()] : undefined;

@@ -10,7 +10,8 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { type SplitterPaneSize, useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import type { SplitterPaneSize } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -112,10 +113,14 @@ export default function LessonPage({
         h="100%"
         sizes={sizes}
         onSizeChange={(next) => {
-          if (isDesktop) setTheoryPercent(Number.parseFloat(String(next[0])));
+          if (isDesktop) {
+            setTheoryPercent(Number.parseFloat(String(next[0])));
+          }
         }}
         onResizeEnd={(_handle, next) => {
-          if (isDesktop) saveTheoryPercent(Number.parseFloat(String(next[0])));
+          if (isDesktop) {
+            saveTheoryPercent(Number.parseFloat(String(next[0])));
+          }
         }}
         withHandle={isDesktop}
         // The line defaults to the page background, so only the thumb showed.

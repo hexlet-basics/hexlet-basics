@@ -5,6 +5,7 @@ import type { AuditRecord, AuditRecordPage } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/admin/audit/index";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
+import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
 // The audit trail page through its real route and the admin layout, with the API
@@ -147,10 +148,7 @@ test("applying the filters sends them with the window to the API", async () => {
 test("a window the API refuses is explained", async () => {
   worker.use(
     http.get("*/admin/audit_records", () =>
-      HttpResponse.json(
-        { errors: { from: ["the period may not be longer than 92 days"] } },
-        { status: 422 },
-      ),
+      validationProblem({ from: ["the period may not be longer than 92 days"] }),
     ),
   );
 

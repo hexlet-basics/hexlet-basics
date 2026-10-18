@@ -19,6 +19,8 @@ export async function onIdentityChanged(
   user?: User | null,
 ): Promise<void> {
   queryClient.clear();
-  if (user) queryClient.setQueryData(getCurrentUserQueryKey(), { user });
+  if (user) {
+    queryClient.setQueryData(getCurrentUserQueryKey(), { user });
+  }
   await router?.invalidate();
 }

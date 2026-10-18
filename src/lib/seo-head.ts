@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/site-url";
 // set it; the root route's fallback title is the bare name.
 export const SITE_NAME = "CodeBasics";
 
-type SeoHead = {
+interface SeoHead {
   i18n: I18n;
   title: string;
   description?: string;
@@ -22,7 +22,7 @@ type SeoHead = {
   // image, which is what the lesson page emitted without the rest of the
   // social block.
   openGraph?: { type: "website" | "article"; locale: string };
-};
+}
 
 // The head legacy's meta-tags gem rendered from a controller's `seo_tags`:
 // `CodeBasics | <title>`, the description, the og/twitter pair and the

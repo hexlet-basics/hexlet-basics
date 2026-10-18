@@ -53,5 +53,5 @@ test("the related-courses picker offers every course, however many there are", a
   await page.getByRole("button", { name: "Save" }).last().click();
 
   await expect.element(page.getByText("Record updated")).toBeVisible();
-  expect(saved).toEqual({ courseIds: [150] });
+  expect(saved).toStrictEqual({ courseIds: [150] });
 });

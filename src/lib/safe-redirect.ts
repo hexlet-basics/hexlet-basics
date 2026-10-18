@@ -12,8 +12,12 @@ const BASE = new URL("http://redirect.invalid");
 // innocently enough for a string check to miss one, and the URL parser — the
 // one navigation uses — resolves each to another host.
 export function safeRedirectPath(value: string): string | undefined {
-  if (!URL.canParse(value, BASE)) return undefined;
+  if (!URL.canParse(value, BASE)) {
+    return undefined;
+  }
   const url = new URL(value, BASE);
-  if (url.origin !== BASE.origin) return undefined;
+  if (url.origin !== BASE.origin) {
+    return undefined;
+  }
   return `${url.pathname}${url.search}${url.hash}`;
 }

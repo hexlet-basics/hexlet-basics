@@ -8,7 +8,9 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 // the xs breakpoint. Nothing is rendered for a page with no questions.
 export default function QnaBlock({ items }: { items: QnaItem[] }) {
   const { t } = useTranslation();
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
     <Stack py="xl">

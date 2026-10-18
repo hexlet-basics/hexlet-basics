@@ -91,13 +91,13 @@ test("disconnecting asks first, and only a yes revokes the app and refreshes the
   await expect.element(page.getByText(/Disconnect “Claude Code”\?/)).toBeVisible();
   // Backing out revokes nothing.
   await page.getByRole("button", { name: "No" }).click();
-  expect(revoked).toEqual([]);
+  expect(revoked).toStrictEqual([]);
 
   await page.getByRole("button", { name: "Disconnect" }).first().click();
   await page.getByRole("dialog").getByRole("button", { name: "Disconnect" }).click();
 
   await expect.element(page.getByText("The application was disconnected")).toBeVisible();
-  expect(revoked).toEqual(["7"]);
+  expect(revoked).toStrictEqual(["7"]);
   await expect.element(page.getByText("Editor Helper")).toBeVisible();
   await expect.poll(() => page.getByText("Claude Code").elements().length).toBe(0);
 });

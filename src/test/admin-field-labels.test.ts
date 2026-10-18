@@ -16,14 +16,14 @@ const modules = import.meta.glob<Record<string, unknown>>("@/components/admin/ge
 const catalogs = { ru, en, es };
 
 function lookup(catalog: unknown, key: string): unknown {
-  return key.split(".").reduce<unknown>(
-    (node, part) => {
-      return typeof node === "object" && node !== null
+  let node = (catalog as { translation: unknown }).translation;
+  for (const part of key.split(".")) {
+    node =
+      typeof node === "object" && node !== null
         ? (node as Record<string, unknown>)[part]
         : undefined;
-    },
-    (catalog as { translation: unknown }).translation,
-  );
+  }
+  return node;
 }
 
 describe("generated admin descriptors", () => {
@@ -42,10 +42,8 @@ describe("generated admin descriptors", () => {
     expect(Object.keys(modules).length).toBeGreaterThan(0);
   });
 
-  for (const [locale, catalog] of Object.entries(catalogs)) {
-    it(`has every label key in the ${locale} catalog`, () => {
-      const missing = [...new Set(keys)].filter((key) => typeof lookup(catalog, key) !== "string");
-      expect(missing).toEqual([]);
-    });
-  }
+  it.each(Object.entries(catalogs))("has every label key in the %s catalog", (_locale, catalog) => {
+    const missing = [...new Set(keys)].filter((key) => typeof lookup(catalog, key) !== "string");
+    expect(missing).toStrictEqual([]);
+  });
 });

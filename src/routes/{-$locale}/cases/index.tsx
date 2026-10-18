@@ -9,7 +9,9 @@ import { seoHead } from "@/lib/seo-head";
 // (`require_russian_locale`, whose RoutingError is a 404).
 export const Route = createFileRoute("/{-$locale}/cases/")({
   beforeLoad: ({ params }) => {
-    if (params.locale !== "ru") throw notFound();
+    if (params.locale !== "ru") {
+      throw notFound();
+    }
   },
   // Legacy meta: title and description only.
   head: ({ match }) => {

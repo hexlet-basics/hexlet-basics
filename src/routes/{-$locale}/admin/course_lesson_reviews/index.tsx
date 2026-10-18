@@ -7,7 +7,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCourseLessonReviewsQuery } from "@/client/zod.gen";
 import type { CourseLessonReview } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
 

@@ -36,7 +36,9 @@ const downloadHref: DownloadBookData["url"] = "/api/book/download";
 // ru suffix only, so `/book` and `/es/book` are not pages at all.
 export const Route = createFileRoute("/{-$locale}/book")({
   beforeLoad: ({ params }) => {
-    if (params.locale !== "ru") throw notFound();
+    if (params.locale !== "ru") {
+      throw notFound();
+    }
   },
   loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the description cut to 160 characters as
@@ -88,6 +90,35 @@ function Show() {
     },
   ] as const;
 
+  function renderAction() {
+    if (data?.requested) {
+      return (
+        <Button
+          component="a"
+          href={downloadHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          mt="md"
+          variant="outline"
+          size="lg"
+        >
+          {t(($) => $.books.show.download)}
+        </Button>
+      );
+    }
+    if (user) {
+      return <RequestButton />;
+    }
+    // Legacy's request posted through its auth guard, which sent a visitor to
+    // sign in.
+    return (
+      <ButtonLink to="/{-$locale}/session/new" mt="md" variant="outline" size="lg">
+        {t(($) => $.books.show.request)}
+      </ButtonLink>
+    );
+  }
+  const action = renderAction();
+
   return (
     <Container size="lg" my="xl">
       <Grid>
@@ -100,27 +131,7 @@ function Show() {
           </Title>
           <Text fz="lg">{t(($) => $.books.show.description)}</Text>
 
-          {data?.requested ? (
-            <Button
-              component="a"
-              href={downloadHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              mt="md"
-              variant="outline"
-              size="lg"
-            >
-              {t(($) => $.books.show.download)}
-            </Button>
-          ) : user ? (
-            <RequestButton />
-          ) : (
-            // Legacy's request posted through its auth guard, which sent a
-            // visitor to sign in.
-            <ButtonLink to="/{-$locale}/session/new" mt="md" variant="outline" size="lg">
-              {t(($) => $.books.show.request)}
-            </ButtonLink>
-          )}
+          {action}
 
           <Grid mt={40} gap="md">
             {features.map(({ key, title, explanation, icon: Icon }) => (

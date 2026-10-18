@@ -9,7 +9,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { Course } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
-import { type ReadinessTransition, transitionsFromReadiness } from "@/lib/courseReadiness";
+import { transitionsFromReadiness } from "@/lib/courseReadiness";
+import type { ReadinessTransition } from "@/lib/courseReadiness";
 
 // A Course's Readiness and the buttons that change it. A state is not an update:
 // the course form does not carry it, each button calls its own operation (its own

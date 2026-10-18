@@ -144,7 +144,9 @@ test("a learner with lessons left is sent to the course page with the warning", 
   const { router } = await openSuccess(user);
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/javascript");
-  expect(router.state.location.search).toEqual({ unfinished: true });
+  expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    unfinished: true,
+  });
   expect(page.getByRole("button", { name: "Отправить" }).query()).toBeNull();
 });
 
@@ -154,7 +156,9 @@ test("a signed-in visitor who never enrolled is sent to the course page too", as
   const { router } = await openSuccess(user);
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/javascript");
-  expect(router.state.location.search).toEqual({ unfinished: true });
+  expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    unfinished: true,
+  });
 });
 
 test("a guest is sent to sign in first", async () => {

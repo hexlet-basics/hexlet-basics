@@ -7,7 +7,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListManagementUsersQuery } from "@/client/zod.gen";
 import type { UserCrud } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 

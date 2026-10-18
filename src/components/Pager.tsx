@@ -11,6 +11,13 @@ import { pageCount } from "@/lib/page-count";
 // place a router Link is passed as `component` rather than built with
 // createLink. The link is relative to the current location and changes only
 // the search, so nothing untyped (no path params) is threaded through.
+// Page one is the bare URL, as legacy canonicalised the list.
+const linkTo = (target: number) => ({
+  component: Link,
+  to: ".",
+  search: target === 1 ? {} : { page: target },
+});
+
 export default function Pager({
   total,
   page,
@@ -21,14 +28,9 @@ export default function Pager({
   perPage: number;
 }) {
   const last = pageCount(total, perPage);
-  if (last <= 1) return null;
-
-  // Page one is the bare URL, as legacy canonicalised the list.
-  const linkTo = (target: number) => ({
-    component: Link,
-    to: ".",
-    search: target === 1 ? {} : { page: target },
-  });
+  if (last <= 1) {
+    return null;
+  }
 
   const controlPage = {
     first: 1,

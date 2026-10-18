@@ -5,6 +5,7 @@ import type { UserInput } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/admin/users/new";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
+import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the users resource — also exercises the engine's
@@ -48,9 +49,7 @@ test("creates a user", async () => {
 // every resource shares, and the form stays put for another try.
 test("shows a refused field of a new user at that field", async () => {
   worker.use(
-    http.post("*/admin/api/users", () =>
-      HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
-    ),
+    http.post("*/admin/api/users", () => validationProblem({ email: ["has already been taken"] })),
   );
 
   const { router } = await renderRoute(Route, {

@@ -1,4 +1,5 @@
-import { test as base, type TestType } from "@playwright/test";
+import { test as base } from "@playwright/test";
+import type { TestType } from "@playwright/test";
 import { Site } from "./site";
 
 /**

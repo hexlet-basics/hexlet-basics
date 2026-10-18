@@ -22,7 +22,9 @@ import {
 // Split a list into `count` roughly-equal chunks (replaces legacy es-toolkit
 // `chunk`, which isn't a dependency of the Go stack).
 function chunk<T>(items: T[], size: number): T[][] {
-  if (size <= 0) return [items];
+  if (size <= 0) {
+    return [items];
+  }
   const result: T[][] = [];
   for (let i = 0; i < items.length; i += size) {
     result.push(items.slice(i, i + size));

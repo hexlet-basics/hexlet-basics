@@ -14,7 +14,9 @@ const COOKIE_TTL_DAYS = 730;
 // Records the current page as the first visit unless one is already recorded.
 // Browser-only: it reads the address bar and document.referrer.
 export function recordFirstVisit(): void {
-  if (Cookies.get(COOKIE_NAME) !== undefined) return;
+  if (Cookies.get(COOKIE_NAME) !== undefined) {
+    return;
+  }
 
   const params = new URLSearchParams(window.location.search);
   const visit: FirstVisit = {
@@ -38,7 +40,9 @@ export function recordFirstVisit(): void {
 // (a cookie edited by hand or written by an older shape).
 export function readFirstVisit(): FirstVisit | null {
   const raw = Cookies.get(COOKIE_NAME);
-  if (raw === undefined) return null;
+  if (raw === undefined) {
+    return null;
+  }
   try {
     const parsed = zFirstVisit.safeParse(JSON.parse(raw));
     return parsed.success ? parsed.data : null;

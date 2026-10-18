@@ -17,10 +17,10 @@ import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";
 // monaco is pointed at this application's own copy instead of a CDN's.
 const MonacoEditor = lazy(async () => {
   await import("@/lib/monaco");
-  return await import("@monaco-editor/react");
+  return import("@monaco-editor/react");
 });
 
-type LessonEditorProps = {
+interface LessonEditorProps {
   courseSlug: string;
   // The solution file's extension, which names the language the learner writes.
   extension: string | null;
@@ -37,7 +37,7 @@ type LessonEditorProps = {
   // listened for on the document: monaco binds Ctrl+Enter itself, to inserting a
   // line below, and would swallow the keystroke and add a blank line to boot.
   onRun: () => void;
-};
+}
 
 // Where the learner writes their solution.
 export default function LessonEditor(props: LessonEditorProps) {
@@ -88,16 +88,22 @@ function EditorPane({
   // next move is to type. `resetCount` starts at 0, which is the mount, where
   // monaco already holds the buffer it was given.
   useEffect(() => {
-    if (!instance || resetCount === 0) return;
+    if (!instance || resetCount === 0) {
+      return;
+    }
 
     instance.setValue(starterCode);
-    if (!isTouchScreen) instance.focus();
+    if (!isTouchScreen) {
+      instance.focus();
+    }
   }, [resetCount, starterCode, instance, isTouchScreen]);
 
   // Taking focus on a touch screen would open an on-screen keyboard over half
   // the exercise before the learner has read it.
   useEffect(() => {
-    if (isTouchScreen) return;
+    if (isTouchScreen) {
+      return;
+    }
 
     instance?.layout();
     instance?.focus();

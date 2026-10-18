@@ -53,7 +53,7 @@ test("the profile saves the edited names", async () => {
   await page.getByRole("button", { name: "Save" }).click();
 
   await expect.element(page.getByText("Данные успешно обновлены")).toBeVisible();
-  expect(received).toEqual([{ firstName: "Dora", lastName: "Explorer" }]);
+  expect(received).toStrictEqual([{ firstName: "Dora", lastName: "Explorer" }]);
 });
 
 test("a name the API would refuse is refused before it is sent", async () => {
@@ -91,6 +91,6 @@ test("deleting the account, once confirmed, signs out and goes home", async () =
 
   await expect.poll(() => router.state.location.pathname).toBe("/");
   expect(deleted).toBe(true);
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toEqual({ user: null });
+  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user: null });
   await expect.element(page.getByText("Аккаунт успешно удален")).toBeVisible();
 });

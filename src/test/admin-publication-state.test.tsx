@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { Banner, CourseLandingPage, Review } from "@/client/types.gen";
 import type { PublicationState } from "@/lib/publicationState";
@@ -149,7 +149,7 @@ const noQna = http.get("*/admin/course_landing_pages/7/qna_items", () => HttpRes
 const button = (name: string) => page.getByRole("button", { name, exact: true });
 
 describe.each(subjects)("the $name admin screens", (subject) => {
-  test.each<[PublicationState, string[], string[]]>([
+  it.each<[PublicationState, string[], string[]]>([
     ["draft", ["Publish", "Archive"], ["Unpublish"]],
     ["published", ["Unpublish", "Archive"], ["Publish"]],
     ["archived", ["Publish"], ["Unpublish", "Archive"]],
@@ -169,7 +169,7 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     }
   });
 
-  test("the form has no state field", async () => {
+  it("the form has no state field", async () => {
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
@@ -181,7 +181,7 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await expect.element(page.getByLabelText("State")).not.toBeInTheDocument();
   });
 
-  test("publishing calls the publish operation and shows the new state", async () => {
+  it("publishing calls the publish operation and shows the new state", async () => {
     let state: PublicationState = "draft";
     let published = false;
     worker.use(
@@ -203,7 +203,7 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await expect.element(button("Publish")).not.toBeInTheDocument();
   });
 
-  test("archiving and unpublishing call their own operations", async () => {
+  it("archiving and unpublishing call their own operations", async () => {
     const called: string[] = [];
     let state: PublicationState = "published";
     worker.use(
@@ -227,10 +227,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await button("Archive").click();
     await expect.element(button("Unpublish")).not.toBeInTheDocument();
 
-    expect(called).toEqual(["unpublish", "archive"]);
+    expect(called).toStrictEqual(["unpublish", "archive"]);
   });
 
-  test("a refused transition tells the admin and keeps the state", async () => {
+  it("a refused transition tells the admin and keeps the state", async () => {
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
@@ -246,7 +246,7 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await expect.element(button("Publish")).toBeVisible();
   });
 
-  test("the list shows each record's state", async () => {
+  it("the list shows each record's state", async () => {
     worker.use(
       http.get(`*/admin/${subject.resource}`, () =>
         HttpResponse.json({
