@@ -13,7 +13,6 @@ linters:
     - tparallel
     - lll
     - goconst
-    - testpackage
   settings:
     cyclop:
       # The default of 10 flags a function the size of a plain parse or a retry
@@ -25,6 +24,11 @@ linters:
       # several things.
       lines: 100
       statements: 60
+    testpackage:
+      # A test file that reads the unexported names of its package says so in its
+      # name (*_internal_test.go, the linter's default marker); every other test
+      # file is an external package and sees what a caller sees.
+      skip-regexp: '(export|internal)_test\.go'
     varnamelen:
       # The names Go code reads by convention: an index, an id, the comma-ok
       # boolean, a transaction, a database client, an HTTP writer and request.
