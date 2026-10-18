@@ -43,7 +43,7 @@ test("returns a new account to the lesson it signed up from, read afresh", async
 });
 
 test("drops a redirect that would leave the site", async () => {
-  for (const hostile of ["/\\evil.com", "//evil.com", "https://evil.com/languages"]) {
+  for (const hostile of [String.raw`/\evil.com`, "//evil.com", "https://evil.com/languages"]) {
     const { router, screen } = await renderSignUp(hostile);
     await signUp();
     await expect.poll(() => router.state.location.href).toBe("/");

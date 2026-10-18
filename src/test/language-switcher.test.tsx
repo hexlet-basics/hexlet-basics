@@ -13,6 +13,7 @@ import { renderRoute } from "@/test/renderRoute";
 // The header shows its menus from the desktop width up.
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 beforeEach(() => page.viewport(1200, 800));
+
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 function openPage(initialPath: string, locale: "ru") {

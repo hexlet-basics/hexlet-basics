@@ -1,18 +1,19 @@
 import { QueryClient } from "@tanstack/react-query";
 import {
-  type AnyRoute,
   createMemoryHistory,
   createRootRouteWithContext,
   createRoute,
   createRouter,
   RouterProvider,
 } from "@tanstack/react-router";
+import type { AnyRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import { Route as localeLayoutRoute } from "@/routes/{-$locale}";
 import { Route as adminLayoutRoute } from "@/routes/{-$locale}/admin";
 import type { AuthUser } from "@/lib/auth";
-import { createI18n, type Locale } from "@/lib/i18n";
+import { createI18n } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { localeOf } from "@/lib/locale-path";
 import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";

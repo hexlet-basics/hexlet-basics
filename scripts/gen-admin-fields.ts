@@ -1,12 +1,8 @@
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
-import {
-  describeResource,
-  type OpenApi,
-  renderModule,
-  type ResourceConfig,
-} from "./admin-fields.ts";
+import { describeResource, renderModule } from "./admin-fields.ts";
+import type { OpenApi, ResourceConfig } from "./admin-fields.ts";
 
 // Writes src/components/admin/generated/<resource>.ts for every admin resource
 // below, from api-spec/dist/openapi.yaml. Run by `mise run gen:admin` (part of

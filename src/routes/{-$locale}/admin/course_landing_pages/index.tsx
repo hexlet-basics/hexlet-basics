@@ -8,7 +8,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCourseLandingPagesQuery } from "@/client/zod.gen";
 import type { CourseLandingPage } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
@@ -45,7 +46,7 @@ function CourseLandingPagesList() {
       accessorKey: "state",
       header: t(($) => $.models.attributes.course_landing_page.state),
       cell: ({ row }) => {
-        const state = row.original.state;
+        const { state } = row.original;
         return state
           ? t(($) => $.models.attributes.course_landing_page["state/values"][state])
           : "";

@@ -8,7 +8,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListUsersQuery } from "@/client/zod.gen";
 import type { UserCrud } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { userColumns } from "@/components/admin/generated/user";
 import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";

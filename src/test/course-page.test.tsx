@@ -70,7 +70,10 @@ const landingPage: CourseLandingPage = {
 
 // One standing, as the server sends it: the course's own progress, and which of
 // its lessons carry a check. The page is expected to render them as given.
-type Standing = { progress: CourseProgress; finished: string[] };
+interface Standing {
+  progress: CourseProgress;
+  finished: string[];
+}
 
 const lessonRef = (id: number, slug: string, name: string): LessonRef => ({ id, slug, name });
 

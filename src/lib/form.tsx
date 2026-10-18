@@ -2,20 +2,23 @@ import {
   Button,
   type ButtonProps,
   Checkbox,
-  type CheckboxProps,
   Input,
   MultiSelect,
-  type MultiSelectProps,
   NumberInput,
-  type NumberInputProps,
   Select,
-  type SelectProps,
   Textarea,
-  type TextareaProps,
   TextInput,
-  type TextInputProps,
 } from "@mantine/core";
-import { DateTimePicker, type DateTimePickerProps } from "@mantine/dates";
+import type {
+  CheckboxProps,
+  MultiSelectProps,
+  NumberInputProps,
+  SelectProps,
+  TextareaProps,
+  TextInputProps,
+} from "@mantine/core";
+import { DateTimePicker } from "@mantine/dates";
+import type { DateTimePickerProps } from "@mantine/dates";
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";

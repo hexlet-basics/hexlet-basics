@@ -2,7 +2,8 @@ import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-r
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
 import { rememberLocale } from "@/lib/detect-locale";
-import { DEFAULT_LOCALE, isPrefixedLocale, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, isPrefixedLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 // A route can ask for chrome other than the site layout. Declared per route
 // rather than matched on the URL here, so the page that wants a bare shell says

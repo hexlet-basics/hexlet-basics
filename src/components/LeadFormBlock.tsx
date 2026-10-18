@@ -10,12 +10,12 @@ import { readFirstVisit } from "@/lib/first-visit";
 import { useAppForm, submitForm } from "@/lib/form";
 import { metrikaClientId } from "@/lib/metrika";
 
-type Props = {
+interface Props {
   autoFocus?: boolean;
   // Where to go once the lead is sent. Legacy redirected every form to its
   // `from` parameter or, without one, to the home page.
   redirectHref?: string;
-};
+}
 
 // The consultation request form, ported from legacy LeadFormBlock and shared by
 // every page that embeds it (leads/new, the book page, course completion, the

@@ -75,7 +75,7 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
 }
 
 export function snakeCase(name: string): string {
-  return name.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  return name.replaceAll(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
 function kindOf(shape: Schema): FieldKind | undefined {
@@ -110,7 +110,7 @@ function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, s
   const { shape, nullable } = resolve(spec, schema);
   const kind = kindOf(shape);
   if (!kind) {
-    return undefined;
+    return;
   }
   const { labelKey, enumKey } = labelKeys(config, name);
   const enumValues: EnumValueDescriptor[] | undefined = shape.enum?.map((value) => ({
@@ -156,7 +156,7 @@ const header = (name: string) =>
 // the output depends on nothing but the descriptors (oxfmt then lays it out).
 export function renderModule(name: string, data: ResourceDescriptors): string {
   return (
-    `${header(name)}` +
+    header(name) +
     `import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
     `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, null, 2)};\n\n` +
     `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, null, 2)};\n`

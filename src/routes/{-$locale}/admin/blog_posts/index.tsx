@@ -9,7 +9,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListBlogPostsQuery } from "@/client/zod.gen";
 import type { BlogPost } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
@@ -51,7 +52,7 @@ function BlogPostsList() {
       accessorKey: "state",
       header: t(($) => $.models.attributes.blog_post.state),
       cell: ({ row }) => {
-        const state = row.original.state;
+        const { state } = row.original;
         return state ? t(($) => $.models.attributes.blog_post["state/values"][state]) : "";
       },
     },

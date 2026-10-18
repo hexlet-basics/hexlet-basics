@@ -1,5 +1,7 @@
-import { Button, type ButtonProps } from "@mantine/core";
-import { createLink, type LinkComponent } from "@tanstack/react-router";
+import { Button } from "@mantine/core";
+import type { ButtonProps } from "@mantine/core";
+import { createLink } from "@tanstack/react-router";
+import type { LinkComponent } from "@tanstack/react-router";
 import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 

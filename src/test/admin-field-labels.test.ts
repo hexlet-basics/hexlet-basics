@@ -16,14 +16,15 @@ const modules = import.meta.glob<Record<string, unknown>>("@/components/admin/ge
 const catalogs = { ru, en, es };
 
 function lookup(catalog: unknown, key: string): unknown {
-  return key.split(".").reduce<unknown>(
-    (node, part) => {
-      return typeof node === "object" && node !== null
-        ? (node as Record<string, unknown>)[part]
-        : undefined;
-    },
-    (catalog as { translation: unknown }).translation,
-  );
+  return key
+    .split(".")
+    .reduce<unknown>(
+      (node, part) =>
+        typeof node === "object" && node !== null
+          ? (node as Record<string, unknown>)[part]
+          : undefined,
+      (catalog as { translation: unknown }).translation,
+    );
 }
 
 describe("generated admin descriptors", () => {

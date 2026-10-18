@@ -8,7 +8,8 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCourseCategoriesQuery } from "@/client/zod.gen";
 import type { CourseCategory } from "@/client/types.gen";
-import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { CrudList } from "@/components/admin/CrudList";
+import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { courseCategoryColumns } from "@/components/admin/generated/courseCategory";
 import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";

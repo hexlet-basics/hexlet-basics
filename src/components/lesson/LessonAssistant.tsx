@@ -14,10 +14,12 @@ import {
 import { useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { APICallError, TextStreamChatTransport, type UIMessage } from "ai";
+import { APICallError, TextStreamChatTransport } from "ai";
+import type { UIMessage } from "ai";
 import { IconCheck, IconLock } from "@tabler/icons-react";
 import { useLocation } from "@tanstack/react-router";
-import { type SubmitEvent, useState } from "react";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   listAssistantMessagesOptions,

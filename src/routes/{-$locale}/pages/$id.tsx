@@ -1,13 +1,5 @@
-import {
-  Box,
-  Container,
-  Grid,
-  TableOfContents,
-  Text,
-  Title,
-  Typography,
-  type TypographyProps,
-} from "@mantine/core";
+import { Box, Container, Grid, TableOfContents, Text, Title, Typography } from "@mantine/core";
+import type { TypographyProps } from "@mantine/core";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import type { TFunction } from "i18next";
 import type { ComponentType } from "react";
@@ -53,7 +45,7 @@ function isPageId(id: string): id is PageId {
 // The legal pages are not meant to rank, so they carry no canonical link. Legacy
 // meant the same (its DISALLOWED_PAGES) but set the canonical unconditionally
 // first, so every page emitted one; this follows the intent.
-const WITHOUT_CANONICAL: readonly PageId[] = ["cookie_policy", "privacy", "tos"];
+const WITHOUT_CANONICAL: ReadonlySet<PageId> = new Set<PageId>(["cookie_policy", "privacy", "tos"]);
 
 export const Route = createFileRoute("/{-$locale}/pages/$id")({
   // An unknown page is a 404, as legacy's RoutingError was.
@@ -76,7 +68,7 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
       i18n,
       title,
       description,
-      canonicalPath: WITHOUT_CANONICAL.includes(id) ? undefined : match.pathname,
+      canonicalPath: WITHOUT_CANONICAL.has(id) ? undefined : match.pathname,
     });
   },
   component: Show,
@@ -85,31 +77,36 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
 // Typed selectors cannot take a runtime key, so each page names its own strings.
 function pageMeta(t: TFunction, id: PageId): { title: string; description: string } {
   switch (id) {
-    case "about":
+    case "about": {
       return {
         title: t(($) => $.pages.parts.about.title),
         description: t(($) => $.pages.parts.about.meta.description),
       };
-    case "authors":
+    }
+    case "authors": {
       return {
         title: t(($) => $.pages.parts.authors.title),
         description: t(($) => $.pages.parts.authors.meta.description),
       };
-    case "cookie_policy":
+    }
+    case "cookie_policy": {
       return {
         title: t(($) => $.pages.parts.cookie_policy.title),
         description: t(($) => $.pages.parts.cookie_policy.meta.description),
       };
-    case "privacy":
+    }
+    case "privacy": {
       return {
         title: t(($) => $.pages.parts.privacy.title),
         description: t(($) => $.pages.parts.privacy.meta.description),
       };
-    case "tos":
+    }
+    case "tos": {
       return {
         title: t(($) => $.pages.parts.tos.title),
         description: t(($) => $.pages.parts.tos.meta.description),
       };
+    }
   }
 }
 

@@ -178,12 +178,13 @@ const desktop = { width: 1200, height: 800 };
 const phone = { width: 375, height: 667 };
 const startingViewport = { width: window.innerWidth, height: window.innerHeight };
 beforeEach(() => page.viewport(desktop.width, desktop.height));
+
 afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
 function editorText() {
-  return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00a0", " ");
+  return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00A0", " ");
 }
 
 // The editor is a lazy chunk of a few hundred modules, and the first test to
@@ -304,10 +305,10 @@ test("divides the two panes where the learner left the divider", async () => {
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
 
   // The handle is what makes the divider draggable at all.
-  expect(document.querySelectorAll(".mantine-Splitter-handle").length).toBe(1);
+  expect(document.querySelectorAll(".mantine-Splitter-handle")).toHaveLength(1);
 
   const panes = document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane");
-  expect(panes.length).toBe(2);
+  expect(panes).toHaveLength(2);
   expect(panes[0]?.style.cssText).toContain("70%");
 
   Cookies.remove("lesson_panes");
@@ -603,7 +604,7 @@ test("renders the runner's colours instead of their escape codes", async () => {
           passed: false,
           result: "failed",
           status: 1,
-          output: "\u001b[31mexpected hello\u001b[39m",
+          output: "\u001B[31mexpected hello\u001B[39m",
           lessonHasBeenFinished: false,
         }),
       ),
@@ -805,7 +806,7 @@ test("carries reset, Previous, Run and Next under the editor, in legacy's order"
   await expect.element(page.getByRole("button", { name: "Run" })).toBeVisible();
 
   const bar = page.getByRole("button", { name: "Run" }).element().parentElement;
-  const controls = Array.from(bar?.children ?? []).map(
+  const controls = [...(bar?.children ?? [])].map(
     (el) => el.getAttribute("aria-label") ?? el.textContent?.trim(),
   );
   expect(controls).toEqual(["Reset", "← Previous", "Run", "Next →"]);

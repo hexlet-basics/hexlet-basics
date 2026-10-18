@@ -30,7 +30,7 @@ const grammars: Record<string, () => Promise<{ default: string }>> = {
 // error is the one that explains the rest.
 const maxProblems = 5;
 
-export type SyntaxProblem = {
+export interface SyntaxProblem {
   // A parser could not read this text, or expected a token that is not there.
   kind: "unexpected" | "missing";
   // For `missing`, the token the grammar expected, e.g. `)`.
@@ -40,16 +40,16 @@ export type SyntaxProblem = {
   startColumn: number;
   endLineNumber: number;
   endColumn: number;
-};
+}
 
 export function canCheckSyntax(language: string): boolean {
   return language in grammars;
 }
 
-type Runtime = {
+interface Runtime {
   Parser: typeof Parser;
   Language: typeof Language;
-};
+}
 
 let runtime: Promise<Runtime> | undefined;
 const parsers = new Map<string, Promise<Parser>>();

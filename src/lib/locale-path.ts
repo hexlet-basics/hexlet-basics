@@ -1,4 +1,5 @@
-import { DEFAULT_LOCALE, type Locale, PREFIXED_LOCALES } from "@/lib/i18n";
+import { DEFAULT_LOCALE, PREFIXED_LOCALES } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 // The one place that knows how a locale shows in a URL path (ADR-0002 /
 // ADR-0008): the default locale is unprefixed, every other contract locale is

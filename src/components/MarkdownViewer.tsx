@@ -1,8 +1,10 @@
 import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
-import { Table, type TypographyProps, Typography } from "@mantine/core";
+import { Table, Typography } from "@mantine/core";
+import type { TypographyProps } from "@mantine/core";
 import type { Directives } from "mdast-util-directive";
 import type { ComponentPropsWithoutRef } from "react";
-import Markdown, { type ExtraProps } from "react-markdown";
+import Markdown from "react-markdown";
+import type { ExtraProps } from "react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeRaw from "rehype-raw";
 import remarkDirective from "remark-directive";
@@ -26,11 +28,11 @@ type DirectiveComponents = Record<
   }>
 >;
 
-type MarkdownViewerProps = {
+interface MarkdownViewerProps {
   children: string;
   allowHtml?: boolean;
   components?: DirectiveComponents;
-};
+}
 
 function isDirective(node: Node): node is Directives {
   return (
@@ -54,7 +56,7 @@ function createDirectivePlugin(components: DirectiveComponents) {
           if (!node.data) {
             node.data = {};
           }
-          const data = node.data;
+          const { data } = node;
           data.hName = componentKey;
           data.hProperties = node.attributes || {};
         }
@@ -77,7 +79,7 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
   const className = Array.isArray(rawClassName)
     ? rawClassName.join(" ")
     : String(rawClassName ?? "");
-  const requestedLanguage = className.match(/language-(\w+)/)?.[1];
+  const requestedLanguage = /language-(\w+)/.exec(className)?.[1];
 
   const code = (codeNode?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))

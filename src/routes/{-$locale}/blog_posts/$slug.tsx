@@ -25,7 +25,8 @@ import {
 } from "@tabler/icons-react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
 import { getNextBlogPost } from "@/client/sdk.gen";
@@ -89,7 +90,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
         {
           type: "application/ld+json",
           // `<` escaped so a post name cannot close the script element.
-          children: JSON.stringify(article).replace(/</g, "\\u003c"),
+          children: JSON.stringify(article).replaceAll("<", String.raw`\u003c`),
         },
       ],
     };

@@ -10,7 +10,8 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { type SplitterPaneSize, useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import type { SplitterPaneSize } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

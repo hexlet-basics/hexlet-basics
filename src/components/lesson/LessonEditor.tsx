@@ -20,7 +20,7 @@ const MonacoEditor = lazy(async () => {
   return await import("@monaco-editor/react");
 });
 
-type LessonEditorProps = {
+interface LessonEditorProps {
   courseSlug: string;
   // The solution file's extension, which names the language the learner writes.
   extension: string | null;
@@ -37,7 +37,7 @@ type LessonEditorProps = {
   // listened for on the document: monaco binds Ctrl+Enter itself, to inserting a
   // line below, and would swallow the keystroke and add a blank line to boot.
   onRun: () => void;
-};
+}
 
 // Where the learner writes their solution.
 export default function LessonEditor(props: LessonEditorProps) {

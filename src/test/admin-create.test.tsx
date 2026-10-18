@@ -16,7 +16,7 @@ import { renderRoute } from "@/test/renderRoute";
 // goes back to the resource's list. The forms are one engine (CrudForm) fed by a
 // field spec per resource, so each case covers a resource's spec and its route.
 
-type Case = {
+interface Case {
   name: string;
   route: AnyRoute;
   resource: string;
@@ -24,7 +24,7 @@ type Case = {
   fields: [string, string][];
   // What the API must receive of it.
   sent: object;
-};
+}
 
 const cases: Case[] = [
   {

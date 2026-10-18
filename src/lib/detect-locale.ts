@@ -1,6 +1,7 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, getRequestHeader, setCookie } from "@tanstack/react-start/server";
-import { isLocale, type Locale } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 // First app-supported locale in Accept-Language (region stripped), mirroring
 // legacy `locale_from_header`.

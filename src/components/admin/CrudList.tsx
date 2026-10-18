@@ -1,15 +1,7 @@
 import { EmptyState, Group, Pagination, Skeleton, Stack, Table, TextInput } from "@mantine/core";
 import { IconDatabaseOff } from "@tabler/icons-react";
-import {
-  type ColumnDef,
-  flexRender,
-  type OnChangeFn,
-  type PaginationState,
-  type RowData,
-  rowPaginationFeature,
-  tableFeatures,
-  useTable,
-} from "@tanstack/react-table";
+import { flexRender, rowPaginationFeature, tableFeatures, useTable } from "@tanstack/react-table";
+import type { ColumnDef, OnChangeFn, PaginationState, RowData } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { pageCount } from "@/lib/page-count";
 

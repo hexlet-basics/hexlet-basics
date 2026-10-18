@@ -76,5 +76,5 @@ function lessonDescription({ lesson }: CourseLessonView): string {
 // Rails' `squish`: every whitespace run to one space, both ends trimmed.
 // es-toolkit has no counterpart, so this one line stays.
 function squish(text: string): string {
-  return text.replace(/\s+/g, " ").trim();
+  return text.replaceAll(/\s+/g, " ").trim();
 }

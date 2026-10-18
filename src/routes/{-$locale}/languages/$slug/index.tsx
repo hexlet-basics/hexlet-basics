@@ -18,8 +18,8 @@ import {
   Stack,
   Text,
   Title,
-  type ButtonProps,
 } from "@mantine/core";
+import type { ButtonProps } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
