@@ -52,12 +52,8 @@ func NewAPIErrorHandler(
 // NewError creates ogen's generated default response for an error returned by
 // an application handler.
 func (h *APIErrorHandler) NewError(ctx context.Context, err error) *api.ProblemDetailsStatusCode {
-	status := errorStatus(err)
-	h.report(ctx, nil, status, err)
-	return &api.ProblemDetailsStatusCode{
-		StatusCode: status,
-		Response:   h.problem(ctx, status, err),
-	}
+	status, problem := h.answer(ctx, nil, err)
+	return &api.ProblemDetailsStatusCode{StatusCode: status, Response: problem}
 }
 
 // NewError implements ogen's generated convenient-error seam.
@@ -69,13 +65,23 @@ func (s *Server) NewError(ctx context.Context, err error) *api.ProblemDetailsSta
 // handler runs. ogen's generated convenient-error encoder owns handler-returned
 // errors; this hook covers decode, security, and response-encoding errors.
 func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+	status, problem := h.answer(ctx, r, err)
+	h.send(ctx, w, status, problem)
+}
+
+// answer is the one path from an error to its status and Problem Details body:
+// both ogen seams call it, so they cannot answer the same error differently.
+func (h *APIErrorHandler) answer(ctx context.Context, r *http.Request, err error) (int, api.ProblemDetails) {
 	status := errorStatus(err)
 	h.report(ctx, r, status, err)
+	return status, h.problem(ctx, status, err)
+}
 
+// send writes a Problem Details document with its status.
+func (h *APIErrorHandler) send(ctx context.Context, w http.ResponseWriter, status int, problem api.ProblemDetails) {
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(status)
 	encoder := new(jx.Encoder)
-	problem := h.problem(ctx, status, err)
 	problem.Encode(encoder)
 	if _, writeErr := encoder.WriteTo(w); writeErr != nil {
 		h.logger.ErrorContext(ctx, "writing error response", "err", writeErr)
@@ -133,15 +139,8 @@ func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) ap
 		Title:  h.translator.StatusText(ctx, status),
 		Status: apiconv.Int32FromInt(status),
 	}
-	if message, data, ok := detailFor(err); ok {
-		translated := make(map[string]any, len(data))
-		for key, value := range data {
-			if named, isMessage := value.(localization.Message); isMessage {
-				value = h.translator.Text(ctx, named)
-			}
-			translated[key] = value
-		}
-		problem.Detail = api.NewOptString(h.translator.TextWith(ctx, message, translated))
+	if found, ok := detailFor(err); ok {
+		problem.Detail = api.NewOptString(h.detailText(ctx, found))
 	}
 	if status == http.StatusUnprocessableEntity {
 		if fields := h.fieldErrors(ctx, status, err); len(fields) > 0 {
@@ -177,7 +176,9 @@ type invalidInputError struct {
 	text string
 }
 
-func (e *invalidInputError) Error() string { return domain.ErrInvalid.Error() + ": field " + e.field }
+// Error is static (ADR-0018): the field and the wording are fields of the value,
+// which fieldErrors reads, not text.
+func (e *invalidInputError) Error() string { return domain.ErrInvalid.Error() }
 
 func (e *invalidInputError) Unwrap() error { return domain.ErrInvalid }
 
@@ -194,10 +195,11 @@ func invalidText(field, text string) error {
 }
 
 // notFoundError is a domain.ErrNotFound that says what was not found, so details can
-// give it an explanation of its own.
-type notFoundError string
+// give it an explanation of its own. The message is static; what is the value's
+// identity, compared by errors.Is against the rows of details.
+type notFoundError struct{ what string }
 
-func (n notFoundError) Error() string { return string(n) + ": " + domain.ErrNotFound.Error() }
+func (notFoundError) Error() string { return domain.ErrNotFound.Error() }
 
 // Is makes every notFoundError match domain.ErrNotFound.
 func (notFoundError) Is(target error) bool { return target == domain.ErrNotFound }
@@ -205,11 +207,11 @@ func (notFoundError) Is(target error) bool { return target == domain.ErrNotFound
 // Not-founds that answer with their own explanation instead of the bare status
 // text. Each is a domain.ErrNotFound, listed in details.
 var (
-	errLessonNotFound       error = notFoundError("lesson")
-	errCourseNotFound       error = notFoundError("course")
-	errEmailLinkInvalid     error = notFoundError("email link")
-	errOAuthRequestNotFound error = notFoundError("oauth request")
-	errConnectedAppNotFound error = notFoundError("connected app")
+	errLessonNotFound       error = notFoundError{what: "lesson"}
+	errCourseNotFound       error = notFoundError{what: "course"}
+	errEmailLinkInvalid     error = notFoundError{what: "email link"}
+	errOAuthRequestNotFound error = notFoundError{what: "oauth request"}
+	errConnectedAppNotFound error = notFoundError{what: "connected app"}
 )
 
 // details is the table from an error to the localized explanation the client
@@ -233,45 +235,61 @@ var details = []struct {
 
 // stateNames are the localized names of the states in each vocabulary
 // (transition.Vocabulary): Publication States (GLOSSARY) are shared by every
-// resource that has them, a Course's Readiness has a vocabulary of its own.
-var stateNames = map[string]map[string]localization.Message{
-	"publication_state": {
-		"draft":     localization.PublicationStateDraft,
-		"published": localization.PublicationStatePublished,
-		"archived":  localization.PublicationStateArchived,
+// resource that has them, a Course's Readiness has a vocabulary of its own. A
+// test checks that every state transition lists has a name here.
+var stateNames = map[transition.Vocabulary]map[transition.State]localization.Message{
+	transition.PublicationStates: {
+		transition.State(transition.Draft):     localization.PublicationStateDraft,
+		transition.State(transition.Published): localization.PublicationStatePublished,
+		transition.State(transition.Archived):  localization.PublicationStateArchived,
 	},
-	"course_readiness": {
-		"draft":          localization.ReadinessDraft,
-		"in_development": localization.ReadinessInDevelopment,
-		"completed":      localization.ReadinessCompleted,
+	transition.CourseReadiness: {
+		transition.State(transition.ReadinessDraft):         localization.ReadinessDraft,
+		transition.State(transition.ReadinessInDevelopment): localization.ReadinessInDevelopment,
+		transition.State(transition.ReadinessCompleted):     localization.ReadinessCompleted,
 	},
 }
 
-// detailFor finds the localized explanation of err, and the values for its
-// placeholders (a value that is itself a localization.Message is translated
-// first). A refused state move names both states in their vocabulary.
-func detailFor(err error) (localization.Message, map[string]any, bool) {
+// detail is the localized explanation of an error: a message and, for a refused
+// state move, the move whose two states fill the message's placeholders.
+type detail struct {
+	message localization.Message
+	move    *transition.IllegalError
+}
+
+// detailFor finds the localized explanation of err. A refused state move names
+// both states in their vocabulary.
+func detailFor(err error) (detail, bool) {
 	if illegal, ok := transition.IsIllegal(err); ok {
-		return localization.IllegalStateTransition, map[string]any{
-			"From": stateName(illegal.Vocabulary, illegal.From),
-			"To":   stateName(illegal.Vocabulary, illegal.To),
-		}, true
+		return detail{message: localization.IllegalStateTransition, move: illegal}, true
 	}
 	for _, row := range details {
 		if errors.Is(err, row.err) {
-			return row.message, nil, true
+			return detail{message: row.message}, true
 		}
 	}
-	return localization.Message{}, nil, false
+	return detail{}, false
 }
 
-// stateName is the localized name of a state, or the raw value of one the
-// vocabulary does not know (a legacy row with a state of its own).
-func stateName(vocabulary, state string) any {
-	if message, ok := stateNames[vocabulary][state]; ok {
-		return message
+// detailText is the explanation in the caller's language, with a refused move's
+// states named in their vocabulary.
+func (h *APIErrorHandler) detailText(ctx context.Context, found detail) string {
+	if found.move == nil {
+		return h.translator.Text(ctx, found.message)
 	}
-	return state
+	return h.translator.TextWith(ctx, found.message, struct{ From, To string }{
+		From: h.stateText(ctx, found.move.Vocabulary, found.move.From),
+		To:   h.stateText(ctx, found.move.Vocabulary, found.move.To),
+	})
+}
+
+// stateText is the localized name of a state, or the raw value of one the
+// vocabulary does not know (a legacy row with a state of its own).
+func (h *APIErrorHandler) stateText(ctx context.Context, vocabulary transition.Vocabulary, state transition.State) string {
+	if message, ok := stateNames[vocabulary][state]; ok {
+		return h.translator.Text(ctx, message)
+	}
+	return string(state)
 }
 
 func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status int, err error) {
@@ -313,22 +331,29 @@ func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status in
 	})
 }
 
-// NewNotFoundHandler localizes requests that do not match an ogen route.
-func NewNotFoundHandler(translator *localization.Translator) http.HandlerFunc {
+// NewNotFoundHandler answers a request that matches no ogen route with Problem
+// Details like every other non-2xx (ADR-0028).
+func NewNotFoundHandler(problems *APIErrorHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, translator.StatusText(r.Context(), http.StatusNotFound), http.StatusNotFound)
+		problems.unmatched(w, r, http.StatusNotFound)
 	}
 }
 
 // NewMethodNotAllowedHandler preserves ogen's Allow/OPTIONS behavior while
-// localizing the human-readable 405 body.
-func NewMethodNotAllowedHandler(translator *localization.Translator) func(http.ResponseWriter, *http.Request, string) {
+// answering the 405 as Problem Details.
+func NewMethodNotAllowedHandler(problems *APIErrorHandler) func(http.ResponseWriter, *http.Request, string) {
 	return func(w http.ResponseWriter, r *http.Request, allowed string) {
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 		w.Header().Set("Allow", allowed)
-		http.Error(w, translator.StatusText(r.Context(), http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		problems.unmatched(w, r, http.StatusMethodNotAllowed)
 	}
+}
+
+// unmatched answers a routing failure: a bare status, since nothing about the
+// request is wrong beyond where it went, and not a failure worth reporting.
+func (h *APIErrorHandler) unmatched(w http.ResponseWriter, r *http.Request, status int) {
+	h.send(r.Context(), w, status, h.problem(r.Context(), status, nil))
 }

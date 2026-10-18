@@ -11,6 +11,10 @@ import (
 	"github.com/samber/oops"
 )
 
+// errs is the package template for errors (ADR-0018): static messages, the
+// data in With.
+var errs = oops.In("config")
+
 // developmentSecretPrefix marks every secret committed in .env.example for local
 // use; such a value is public, so production must never run on one.
 const developmentSecretPrefix = "dev-insecure-" //nolint:gosec // G101: the public marker of a development secret, not a credential
@@ -20,7 +24,7 @@ const developmentSecretPrefix = "dev-insecure-" //nolint:gosec // G101: the publ
 // `env` tag of the setting they constrain. A rule that tags express badly (one
 // across settings) is a crossChecks method on the root; a section that matters
 // only when its flag is on (OAuth, MCP) is excluded from the root's tags
-// (`validate:"-"`) and checked by the root's crossChecks via section.
+// (`validate:"-"`) and checked by the root's crossChecks via violations.
 var validate = newValidator()
 
 // appEnvKey carries the APP_ENV a check runs under into the custom rules.
@@ -59,29 +63,40 @@ type crossChecker interface {
 
 // check validates a parsed root and returns one error naming every violated
 // setting by its variable, or nil. A secret's value never appears in it: a
-// message states the rule, not the input.
+// problem states the rule, not the input. The message is static; the problems
+// travel as the "problems" attribute (Problems reads them back, and the logger
+// prints them with the error). crossChecks runs even when the tags already
+// failed, so one start-up reports every problem at once; it must stay free of
+// side effects for that reason and only read the parsed root.
 func check(root crossChecker, appEnv AppEnv) error {
 	problems := violations(root, "", appEnv)
 	problems = append(problems, root.crossChecks()...)
 	if len(problems) == 0 {
 		return nil
 	}
-	return oops.Errorf("invalid configuration:\n  %s", strings.Join(problems, "\n  "))
+	return errs.With("problems", problems).Errorf("invalid configuration")
 }
 
-// section reports the violations of a nested config section whose env prefix is
-// prefix; a root calls it for the sections it validates conditionally.
-func section(value any, prefix string, appEnv AppEnv) []string {
-	return violations(value, prefix, appEnv)
+// Problems lists what check found wrong, one line per violated setting named by
+// its variable, or nil when err is not a configuration failure.
+func Problems(err error) []string {
+	oopsErr, ok := oops.AsOops(err)
+	if !ok {
+		return nil
+	}
+	problems, _ := oopsErr.Context()["problems"].([]string)
+	return problems
 }
 
+// violations reports the violations of value; prefix is the env prefix of a
+// nested section a root validates conditionally (OAuth, MCP).
 func violations(value any, prefix string, appEnv AppEnv) []string {
 	err := validate.StructCtx(context.WithValue(context.Background(), appEnvKey{}, appEnv), value)
 	if err == nil {
 		return nil
 	}
-	var invalid validator.ValidationErrors
-	if !errors.As(err, &invalid) {
+	invalid, ok := errors.AsType[validator.ValidationErrors](err)
+	if !ok {
 		return []string{"config cannot be validated: " + err.Error()}
 	}
 	problems := make([]string, 0, len(invalid))

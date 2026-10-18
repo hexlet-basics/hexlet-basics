@@ -28,7 +28,8 @@ const maxQuestions = 100
 const reviewInstructions = `Проанализируй вопросы, которые задают студенты ассистенту по уроку. Вопросы будут переданы ниже.
 Суммируй основные претензиии и пожелания. Предложи как поменять урок.`
 
-// Completer is the LLM seam (implemented by assistant.OpenAI; tests fake it).
+// Completer is the LLM seam (implemented by assistant.OpenAI); testsupport's
+// CompleterMock is the test substitute (ADR-0025).
 type Completer interface {
 	Complete(ctx context.Context, instructions, prompt string) (string, error)
 }

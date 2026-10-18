@@ -33,7 +33,7 @@ type Consent struct {
 
 // Pending describes the authorization request the browser arrived with.
 func (s *Server) Pending(ctx context.Context, requestID string) (Consent, error) {
-	account, ok := s.app.SignedIn(ctx)
+	account, ok := s.signedIn(ctx)
 	if !ok {
 		return Consent{}, ErrNotSignedIn
 	}
@@ -57,7 +57,7 @@ func (s *Server) Pending(ctx context.Context, requestID string) (Consent, error)
 // code and sends the user back to the client. The callback URL is built from the
 // configured issuer, not from the incoming request.
 func (s *Server) Approve(ctx context.Context, requestID string) (string, error) {
-	account, ok := s.app.SignedIn(ctx)
+	account, ok := s.signedIn(ctx)
 	if !ok {
 		return "", ErrNotSignedIn
 	}
@@ -87,7 +87,7 @@ func (s *Server) Approve(ctx context.Context, requestID string) (string, error) 
 // error=access_denied and the client's state (RFC 6749 section 4.1.2.1). The
 // request is deleted, so nothing it held can be approved afterwards.
 func (s *Server) Deny(ctx context.Context, requestID string) (string, error) {
-	if _, ok := s.app.SignedIn(ctx); !ok {
+	if _, ok := s.signedIn(ctx); !ok {
 		return "", ErrNotSignedIn
 	}
 	req, err := s.openRequest(ctx, requestID)

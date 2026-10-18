@@ -7,7 +7,7 @@ package transition
 type Readiness string
 
 // Vocabulary names this set of states for an adapter that words a refused move.
-func (Readiness) Vocabulary() string { return "course_readiness" }
+func (Readiness) Vocabulary() Vocabulary { return CourseReadiness }
 
 const (
 	ReadinessDraft         Readiness = "draft"

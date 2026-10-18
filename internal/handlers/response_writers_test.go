@@ -40,7 +40,7 @@ func (flakyFlusher) FlushError() error { return errGone }
 // method is a 405 that names what is allowed.
 func TestMethodNotAllowedHandlerAnswersOptionsWithNoContent(t *testing.T) {
 	t.Parallel()
-	handler := handlers.NewMethodNotAllowedHandler(testsupport.NewTranslator(t))
+	handler := handlers.NewMethodNotAllowedHandler(testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 
 	options := httptest.NewRecorder()
 	handler(options, httptest.NewRequestWithContext(t.Context(), http.MethodOptions, "/api/me", nil), "GET")

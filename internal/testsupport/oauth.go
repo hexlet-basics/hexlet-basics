@@ -157,7 +157,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		Config:        cfg,
 		DB:            db,
 		Transactor:    transactor,
-		App:           handlers.OAuthSession{},
+		SignedIn:      handlers.OAuthSignedIn,
 		ClientAddress: handlers.ClientIP,
 		Now:           func() time.Time { return o.now },
 	}, serverOpts...)
@@ -184,8 +184,8 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 			handlers.NewAuditMiddleware(transactor, translator, errorHandler),
 			handlers.NewPersonalDataReadMiddleware(services.Events, translator, errorHandler),
 		),
-		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
-		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+		api.WithNotFound(handlers.NewNotFoundHandler(errorHandler)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
 	// The endpoint's rate limiter runs on the same controllable clock as the

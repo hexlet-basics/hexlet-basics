@@ -45,7 +45,7 @@ func TestLoadServerNamesEveryMissingRequiredSetting(t *testing.T) {
 
 	require.Nil(t, cfg)
 	for _, name := range []string{"DATABASE_URL", "PUBLIC_URL", "SITE_URL", "APP_HOST", "BLOB_BUCKET_URL", "GUEST_COOKIE_SECRET"} {
-		require.ErrorContains(t, err, name)
+		requireProblem(t, err, name)
 	}
 }
 
@@ -56,7 +56,7 @@ func TestLoadWorkerNamesAMissingDeployCriticalSetting(t *testing.T) {
 	cfg, err := LoadWorker()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "DATABASE_URL")
+	requireProblem(t, err, "DATABASE_URL")
 }
 
 // The worker serves no visitor, so it has no cookie to sign and no public host
@@ -76,10 +76,10 @@ func TestLoadRefusesAnUnknownAppEnv(t *testing.T) {
 	t.Setenv("APP_ENV", "staging")
 
 	_, err := LoadServer()
-	require.ErrorContains(t, err, "APP_ENV")
+	requireProblem(t, err, "APP_ENV")
 
 	_, err = LoadWorker()
-	require.ErrorContains(t, err, "APP_ENV")
+	requireProblem(t, err, "APP_ENV")
 }
 
 func TestAppEnvDefaultsToDevelopment(t *testing.T) {
@@ -99,7 +99,7 @@ func TestLoadRejectsEmptyGuestCookieSecret(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "GUEST_COOKIE_SECRET is required")
+	requireProblem(t, err, "GUEST_COOKIE_SECRET is required")
 }
 
 func TestLoadRejectsDevelopmentGuestCookieSecretInProduction(t *testing.T) {
@@ -110,8 +110,8 @@ func TestLoadRejectsDevelopmentGuestCookieSecretInProduction(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "invalid configuration")
-	require.ErrorContains(t, err, "GUEST_COOKIE_SECRET must differ from the public development value")
+	requireProblem(t, err, "invalid configuration")
+	requireProblem(t, err, "GUEST_COOKIE_SECRET must differ from the public development value")
 }
 
 func TestLoadAcceptsExplicitProductionGuestCookieSecret(t *testing.T) {
@@ -143,7 +143,7 @@ func TestLoadRejectsEmptyEmailTokenSecret(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "EMAIL_TOKEN_SECRET is required")
+	requireProblem(t, err, "EMAIL_TOKEN_SECRET is required")
 }
 
 func TestLoadRejectsDevelopmentEmailTokenSecretInProduction(t *testing.T) {
@@ -154,7 +154,7 @@ func TestLoadRejectsDevelopmentEmailTokenSecretInProduction(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "EMAIL_TOKEN_SECRET must differ from the public development value")
+	requireProblem(t, err, "EMAIL_TOKEN_SECRET must differ from the public development value")
 }
 
 func TestLoadWorkerRequiresPostboxInProduction(t *testing.T) {
@@ -165,7 +165,7 @@ func TestLoadWorkerRequiresPostboxInProduction(t *testing.T) {
 	cfg, err := LoadWorker()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
+	requireProblem(t, err, "MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
 }
 
 func TestLoadLogsEmailOutsideProductionWithoutPostbox(t *testing.T) {
@@ -197,7 +197,7 @@ func TestAuditRetentionCanBeShortenedButNotRemoved(t *testing.T) {
 
 	t.Setenv("AUDIT_RETENTION_MONTHS", "0")
 	_, err = LoadWorker()
-	require.ErrorContains(t, err, "AUDIT_RETENTION_MONTHS")
+	requireProblem(t, err, "AUDIT_RETENTION_MONTHS")
 }
 
 func TestLogLevelDefaultsToInfoAndFollowsTheEnvironment(t *testing.T) {
@@ -221,5 +221,5 @@ func TestLoadRefusesAnUnknownLogLevel(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "LOG_LEVEL")
+	requireProblem(t, err, "LOG_LEVEL")
 }
