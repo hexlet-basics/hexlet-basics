@@ -13,6 +13,7 @@ import (
 )
 
 func TestTranslatorSelectsRequestLanguage(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -48,6 +49,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 }
 
 func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -64,6 +66,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 }
 
 func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -72,6 +75,7 @@ func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 }
 
 func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 	ctx := context.Background()
@@ -81,6 +85,7 @@ func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
 }
 
 func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 	ctx := context.Background()
@@ -95,6 +100,7 @@ func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
 }
 
 func TestTranslatorKeepsNetHTTPTextForAStatusItHasNoCatalogEntryFor(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 

@@ -12,6 +12,7 @@ import (
 // operation that has an id, so a typo cannot silently leave an operation
 // without the capability it was meant to need.
 func TestRequiredCapabilityMustNameAListedCapability(t *testing.T) {
+	t.Parallel()
 	for name, doc := range map[string]string{
 		"an unlisted capability": `
 paths:

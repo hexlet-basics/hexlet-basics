@@ -10,11 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/getsentry/sentry-go"
-	"go.opentelemetry.io/contrib/otelconf"
-	"gocloud.dev/blob"
-
-	"hexletbasics/ent"
 	"hexletbasics/internal/di"
 )
 
@@ -56,40 +51,15 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	// that cancellation, and gets its own deadline.
 	cleanupCtx, cancelCleanup := context.WithTimeout(context.WithoutCancel(signalCtx), shutdownTimeout)
 	defer cancelCleanup()
-	closeResources(
-		cleanupCtx,
-		dependencies.Logger,
-		dependencies.Bucket,
-		dependencies.Database,
-		dependencies.OpenTelemetrySDK,
-		dependencies.SentryClient,
-	)
+	// Every actor has stopped by now, so the injector may release the resources
+	// they used (ADR-0023).
+	if err := dependencies.Shutdown(cleanupCtx); err != nil {
+		dependencies.Logger.ErrorContext(cleanupCtx, "releasing resources", "err", err)
+	}
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
 		dependencies.Logger.Error("worker runtime failed", "err", runtimeErr)
 		return runtimeErr
 	}
 	return nil
-}
-
-func closeResources(
-	ctx context.Context,
-	logger *slog.Logger,
-	bucket *blob.Bucket,
-	db *ent.Client,
-	otelSDK *otelconf.SDK,
-	sentryClient *sentry.Client,
-) {
-	if err := bucket.Close(); err != nil {
-		logger.Error("closing blob bucket", "err", err)
-	}
-	if err := db.Close(); err != nil {
-		logger.Error("closing database", "err", err)
-	}
-	if err := otelSDK.Shutdown(ctx); err != nil {
-		logger.Error("shutting down OpenTelemetry", "err", err)
-	}
-	if !sentryClient.FlushWithContext(ctx) {
-		logger.Error("flushing Sentry events timed out")
-	}
 }

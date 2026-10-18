@@ -17,6 +17,7 @@ import (
 // The adapter hands over content deltas in order and reads the token usage
 // from the final chunk, which the API only sends when the request asks for it.
 func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
+	t.Parallel()
 	var request map[string]any
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
@@ -53,6 +54,7 @@ func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
 // the caller decodes the answer without cleaning it; a refusal is an error, not
 // an empty answer.
 func TestOpenAICompleteJSONSendsTheSchemaAndReportsRefusals(t *testing.T) {
+	t.Parallel()
 	var request map[string]any
 	message := `{"role":"assistant","content":"{\"course_ids\":[1]}"}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

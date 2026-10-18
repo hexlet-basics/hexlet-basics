@@ -36,3 +36,30 @@ Community build.
 - The Atlas CLI cannot be a `go tool`: its public `cmd/atlas` module is frozen at
   a 0.13.x snapshot. Tests use the `ariga.io/atlas` Go library (Apache-2.0)
   instead.
+- The pin lives in two places, `mise.toml` and the Dockerfile's
+  `arigaio/atlas:<v>-community` image; `mise run lint:atlas-pin` (part of `lint`)
+  fails when they disagree. The nightly workflow runs `mise run
+  lint:atlas-retention`, which fails once the pinned binary is no longer
+  downloadable from Ariga's release server, so the bump happens before a new
+  machine or CI run breaks.
+
+## Exit plan
+
+The data-access stack has one vendor behind it twice over: ent and Atlas are both
+maintained by Ariga. The exit is **sqlc** over the same Atlas-owned migrations
+(the schema stays; only the query layer and the generated client change). A
+working slice is on the `prototype/sqlc-slice` branch and is the evidence that
+the move is feasible; it is not a plan to move.
+
+Triggers, any one of which starts the exit:
+
+1. No ent release for 12 months.
+2. A Go toolchain bump we need breaks `go generate ./ent` and there is no tagged
+   fix.
+3. Atlas Community drops `migrate new`, `migrate hash`, `migrate apply` or
+   `migrate diff`.
+
+The first response to trigger 1 or 2 is not the exit: pin ent to its `master`
+branch (a pseudo-version in `go.mod`), which usually carries the fix before a
+tag. Only if that fails, or on trigger 3 with no other migration runner that
+covers the same four commands, do we move to sqlc.
