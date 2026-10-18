@@ -201,11 +201,15 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 	return signed, nil
 }
 
+// compensateTimeout is how long the cleanup of a failed upload may take, on a
+// context that outlives the request.
+const compensateTimeout = 5 * time.Second
+
 // compensate deletes a partially written blob. A cancelled request must not
 // leave the blob behind, so the cleanup keeps the context's values but not its
 // cancellation, with a deadline of its own.
 func (s *Store) compensate(ctx context.Context, key string, cause error) error {
-	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), compensateTimeout)
 	defer cancel()
 
 	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {

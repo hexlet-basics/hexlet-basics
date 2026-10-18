@@ -105,7 +105,7 @@ func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, 
 		// Nobody can sign in without a screen, so there is no silent grant.
 		return nil, oidc.ErrLoginRequired()
 	}
-	id, err := randomToken(16)
+	id, err := randomToken(idBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (s
 	}
 	// Without a refresh token there is nothing to rotate: the token is a family
 	// of its own, which only an explicit revocation can end.
-	family, err := randomToken(16)
+	family, err := randomToken(idBytes)
 	if err != nil {
 		return "", time.Time{}, err
 	}
@@ -286,7 +286,7 @@ func (s *storage) CreateAccessAndRefreshTokens(
 	err = s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		var family string
 		if current == "" {
-			family, err = randomToken(16)
+			family, err = randomToken(idBytes)
 			if err != nil {
 				return err
 			}
@@ -315,11 +315,11 @@ func (s *storage) CreateAccessAndRefreshTokens(
 			}
 		}
 
-		refreshID, err := randomToken(16)
+		refreshID, err := randomToken(idBytes)
 		if err != nil {
 			return err
 		}
-		refresh, err = randomToken(32)
+		refresh, err = randomToken(secretBytes)
 		if err != nil {
 			return err
 		}
@@ -577,7 +577,7 @@ func (s *storage) ValidateJWTProfileScopes(context.Context, string, []string) ([
 func (s *storage) insertAccessToken(
 	ctx context.Context, db *ent.Client, owner tokenOwner, userID int, refreshID, familyID string,
 ) (string, time.Time, error) {
-	id, err := randomToken(16)
+	id, err := randomToken(idBytes)
 	if err != nil {
 		return "", time.Time{}, err
 	}
@@ -662,4 +662,11 @@ func PurgeExpired(ctx context.Context, db *ent.Client, now time.Time) (int, erro
 var (
 	errNotAwaitingCode = errors.New("authorization request is not awaiting a code")
 	errNoClientSecret  = errors.New("clients have no secret: authenticate with PKCE")
+)
+
+// The entropy of the random strings the storage hands out: ids and families,
+// and the secret of a refresh token.
+const (
+	idBytes     = 16
+	secretBytes = 32
 )

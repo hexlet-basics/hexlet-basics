@@ -141,7 +141,7 @@ func newGuardedClient(allow func(netip.Addr) bool, timeout time.Duration) *http.
 			ForceAttemptHTTP2:      true,
 			TLSClientConfig:        &tls.Config{MinVersion: tls.VersionTLS12},
 			TLSHandshakeTimeout:    timeout,
-			MaxResponseHeaderBytes: 16 << 10,
+			MaxResponseHeaderBytes: maxDocumentHeaderBytes,
 			DisableKeepAlives:      true,
 		},
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
@@ -456,3 +456,7 @@ func writeDocumentError(w http.ResponseWriter, e *documentError) {
 	w.WriteHeader(e.status)
 	writeJSON(w, map[string]string{"error": code, "error_description": e.reason})
 }
+
+// maxDocumentHeaderBytes bounds the response headers of a client metadata
+// document.
+const maxDocumentHeaderBytes = 16 << 10

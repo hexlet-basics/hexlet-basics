@@ -36,6 +36,14 @@ const (
 	QueueLLM = "llm"
 )
 
+// The workers of each queue, sized as the comment on queues says.
+const (
+	defaultWorkers = 10
+	mailWorkers    = 5
+	buildWorkers   = 2
+	llmWorkers     = 3
+)
+
 // DiscardedRetention is how long River keeps a job that used every attempt
 // (state `discarded`). Those rows are the dead-letter store: an operator reads
 // the failure there and replays the job with River's own retry, so they must
@@ -49,10 +57,10 @@ const DiscardedRetention = 30 * 24 * time.Hour
 // rate limits; River's default queue keeps the remaining light jobs.
 func queues() map[string]river.QueueConfig {
 	return map[string]river.QueueConfig{
-		river.QueueDefault: {MaxWorkers: 10},
-		QueueMail:          {MaxWorkers: 5},
-		QueueBuilds:        {MaxWorkers: 2},
-		QueueLLM:           {MaxWorkers: 3},
+		river.QueueDefault: {MaxWorkers: defaultWorkers},
+		QueueMail:          {MaxWorkers: mailWorkers},
+		QueueBuilds:        {MaxWorkers: buildWorkers},
+		QueueLLM:           {MaxWorkers: llmWorkers},
 	}
 }
 

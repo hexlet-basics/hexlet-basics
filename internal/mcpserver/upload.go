@@ -62,6 +62,9 @@ func uploadSchema(file *multipartFile) map[string]any {
 	}
 }
 
+// bytesPerMiB turns the upload limit into the MiB the message names.
+const bytesPerMiB = 1 << 20
+
 // multipartBody builds the form body and its Content-Type from the tool's
 // `body` argument. A problem is the caller's mistake, reported as a tool error;
 // whether the bytes are an allowed image is for the generated server to answer,
@@ -80,7 +83,7 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 		return nil, "", "body.contentBase64 is required"
 	}
 	if len(in.ContentBase64) > maxUploadBase64 {
-		return nil, "", fmt.Sprintf("the file is too large: at most %d bytes (%d MiB) are accepted, as on the website", assetstore.MaxUploadBytes, assetstore.MaxUploadBytes>>20)
+		return nil, "", fmt.Sprintf("the file is too large: at most %d bytes (%d MiB) are accepted, as on the website", assetstore.MaxUploadBytes, assetstore.MaxUploadBytes/bytesPerMiB)
 	}
 	content, err := base64.StdEncoding.DecodeString(in.ContentBase64)
 	if err != nil {

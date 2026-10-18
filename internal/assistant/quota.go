@@ -37,6 +37,9 @@ func NewQuota(db *ent.Client) *Quota {
 	return &Quota{db: db, now: time.Now}
 }
 
+// day is the quota's period: the questions of one UTC day are counted.
+const day = 24 * time.Hour
+
 // Exhausted reports whether the learner has used up today's questions.
 //
 // Today is counted from the start of the UTC day — legacy's Date.current under
@@ -46,7 +49,7 @@ func NewQuota(db *ent.Client) *Quota {
 // process's local wall clock, and a question asked late in the evening west of
 // Greenwich would land on yesterday.
 func (q *Quota) Exhausted(ctx context.Context, userID int) (bool, error) {
-	dayStart := q.now().UTC().Truncate(24 * time.Hour)
+	dayStart := q.now().UTC().Truncate(day)
 	asked, err := q.db.AiMessage.Query().
 		Where(
 			aimessage.UserID(userID),

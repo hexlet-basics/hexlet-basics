@@ -596,7 +596,7 @@ func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, i
 	// denormalized counter: that counter includes Lessons later Versions
 	// dropped, which is why the legacy serializer had to clamp at 100%.
 	if len(lessons) > 0 {
-		state.Completion = finishedCount * 100 / len(lessons)
+		state.Completion = finishedCount * percent / len(lessons)
 	}
 
 	return state, finishedCount
@@ -639,3 +639,6 @@ func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int
 	// result, and indexing a nil map reads as "not finished".
 	return byCourse[courseID], nil
 }
+
+// percent is what a share is multiplied by to be read as one.
+const percent = 100

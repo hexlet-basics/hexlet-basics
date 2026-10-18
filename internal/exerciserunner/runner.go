@@ -395,6 +395,9 @@ func (d *Docker) hostConfig() *container.HostConfig {
 	}
 }
 
+// submissionFileMode is the mode of a file placed in the container.
+const submissionFileMode = 0o644
+
 // tarFile wraps the submitted code as the tar archive CopyToContainer takes,
 // with the destination path baked in so the copy lands exactly on the file the
 // reference solution ships.
@@ -404,7 +407,7 @@ func tarFile(destination, content string) (io.Reader, error) {
 
 	if err := archive.WriteHeader(&tar.Header{
 		Name: strings.TrimPrefix(path.Clean(destination), "/"),
-		Mode: 0o644,
+		Mode: submissionFileMode,
 		Size: int64(len(content)),
 	}); err != nil {
 		return nil, errs.Wrapf(err, "write submission header")

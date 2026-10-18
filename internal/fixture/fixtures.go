@@ -85,7 +85,7 @@ func scanFile(path string, found labels, next *int) error {
 	defer func() { _ = f.Close() }()
 
 	scanner := bufio.NewScanner(f)
-	scanner.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
+	scanner.Buffer(make([]byte, 0, scannerStartBytes), scannerMaxLineBytes)
 	for scanner.Scan() {
 		m := definition.FindStringSubmatch(scanner.Text())
 		if m == nil {
@@ -248,3 +248,10 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 // errNoRepositoryRoot is what the search for the fixtures directory answers
 // when no parent directory holds go.mod.
 var errNoRepositoryRoot = errors.New("find the repository root: go.mod not found")
+
+// The line buffer of the fixture scanner: it starts small and may grow to hold
+// the longest line a fixture file has.
+const (
+	scannerStartBytes   = 64 << 10
+	scannerMaxLineBytes = 4 << 20
+)

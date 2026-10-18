@@ -75,16 +75,31 @@ type Limits struct {
 	Now func() time.Time
 }
 
+// The sizes, the timeout and the per-window rates of DefaultLimits. A Connected
+// App speaks for many users, so its rates are ten times those of one user.
+const (
+	defaultPageSize      = 50
+	defaultResponseBytes = 100 * 1024
+	defaultToolTimeout   = 30 * time.Second
+
+	defaultUserCatalogue   = 60
+	defaultUserPersonal    = 30
+	defaultUserWrite       = 10
+	defaultClientCatalogue = 10 * defaultUserCatalogue
+	defaultClientPersonal  = 10 * defaultUserPersonal
+	defaultClientWrite     = 10 * defaultUserWrite
+)
+
 // DefaultLimits are the values config applies when nothing is set; they are
 // repeated in internal/config's env defaults, which production reads.
 func DefaultLimits() Limits {
 	return Limits{
-		MaxPageSize:      50,
-		MaxResponseBytes: 100 * 1024,
-		ToolTimeout:      30 * time.Second,
+		MaxPageSize:      defaultPageSize,
+		MaxResponseBytes: defaultResponseBytes,
+		ToolTimeout:      defaultToolTimeout,
 		RateWindow:       time.Minute,
-		User:             Rates{Catalogue: 60, Personal: 30, Write: 10},
-		Client:           Rates{Catalogue: 600, Personal: 300, Write: 100},
+		User:             Rates{Catalogue: defaultUserCatalogue, Personal: defaultUserPersonal, Write: defaultUserWrite},
+		Client:           Rates{Catalogue: defaultClientCatalogue, Personal: defaultClientPersonal, Write: defaultClientWrite},
 		Now:              time.Now,
 	}
 }

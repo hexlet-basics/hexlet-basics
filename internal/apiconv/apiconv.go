@@ -754,6 +754,12 @@ func NilLandingPageStateFromPtr(v *string) api.NilLandingPageState {
 	return nilEnumOf[api.LandingPageState, api.NilLandingPageState](v)
 }
 
+// minutesPerLesson is the legacy estimate of a lesson's length.
+const (
+	minutesPerLesson = 15
+	minutesPerHour   = 60
+)
+
 // courseDuration mirrors Language#duration: estimated hours from the lesson
 // count (lessons_count * 15 minutes, integer-divided to hours). Guards nil
 // because a listed landing page may reference a course absent from the current
@@ -762,7 +768,7 @@ func courseDuration(c *ent.Course) int32 {
 	if c == nil {
 		return 0
 	}
-	return Int32FromInt(c.LessonsCount * 15 / 60)
+	return Int32FromInt(c.LessonsCount * minutesPerLesson / minutesPerHour)
 }
 
 // LocalesFromPq bridges the native pg text-array column to the api's plain
@@ -837,18 +843,26 @@ func hexletProgramLandingPage(c *ent.Course) api.NilString {
 	return api.NewNilString(*c.HexletProgramLandingPage)
 }
 
+// The legacy serializer's placeholder rating, kept for parity: the number of
+// ratings, and the value by the parity of the course id.
+const (
+	placeholderRatingCount = 89
+	placeholderRatingEven  = 4
+	placeholderRatingOdd   = 5
+)
+
 // ratingCount reproduces the legacy serializer's placeholder rating count. The
 // real aggregate over reviews is not implemented yet (the legacy code carries
 // the same TODO); this keeps parity until it is.
-func ratingCount(*ent.Course) int32 { return 89 }
+func ratingCount(*ent.Course) int32 { return placeholderRatingCount }
 
 // ratingValue reproduces the legacy serializer's placeholder rating: a fixed
 // value keyed off id parity, pending a real reviews aggregate.
 func ratingValue(c *ent.Course) float64 {
 	if c.ID%2 == 0 {
-		return 4
+		return placeholderRatingEven
 	}
-	return 5
+	return placeholderRatingOdd
 }
 
 // coverVariantNull keeps the cover variant URLs null until course cover assets

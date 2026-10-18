@@ -21,6 +21,16 @@ const truncationKey = "truncation"
 // must not become the thing that fills the result.
 const maxListedCuts = 6
 
+// What the cut weighs and keeps: a string is a candidate from longStringBytes,
+// and a shortening keeps between minKeepRatio and maxKeepRatio of it, never
+// less than minKeptBytes.
+const (
+	longStringBytes = 256
+	minKeepRatio    = 0.05
+	maxKeepRatio    = 0.9
+	minKeptBytes    = 128
+)
+
 // truncationSchema describes the hint, for the output schemas. It is the
 // property and its type only: the same paragraph on each of 90 tools was a
 // tenth of the tool list, so what the hint contains is told once, in the
@@ -181,7 +191,7 @@ func largest(data map[string]any) *node {
 				walk(fmt.Sprintf("%s[%d]", path, i), child, func(nv any) { x[i] = nv })
 			}
 		case string:
-			if len(x) > 256 {
+			if len(x) > longStringBytes {
 				consider(node{path: path, size: len(x), value: x, set: set})
 			}
 		}
@@ -194,14 +204,14 @@ func largest(data map[string]any) *node {
 // part of a string, and records what it did (merging with an earlier cut of the
 // same place, so the hint reports the first size, not the last).
 func shorten(cuts []cut, n *node, ratio float64) []cut {
-	ratio = min(max(ratio, 0.05), 0.9)
+	ratio = min(max(ratio, minKeepRatio), maxKeepRatio)
 	switch x := n.value.(type) {
 	case []any:
 		keep := min(max(int(float64(len(x))*ratio), 1), len(x)-1)
 		n.set(x[:keep])
 		return record(cuts, cut{path: n.path, kept: keep, total: len(x), unit: "items"})
 	case string:
-		keep := min(max(int(float64(len(x))*ratio), 128), len(x)-1)
+		keep := min(max(int(float64(len(x))*ratio), minKeptBytes), len(x)-1)
 		// Never split a rune: the string must stay valid UTF-8 to stay valid JSON.
 		for keep > 0 && !utf8.RuneStart(x[keep]) {
 			keep--

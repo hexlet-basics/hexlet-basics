@@ -156,6 +156,10 @@ type Question struct {
 	Output   string
 }
 
+// framingTurns are the turns the chat adds to the history it sends: the
+// instructions and the question.
+const framingTurns = 2
+
 // Ask streams the model's answer to q. Everything that decides the outcome —
 // the quota, the lesson's text — is settled before it returns, and
 // so is the model's first token: a model that fails straight away is an error
@@ -294,7 +298,7 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 		return nil, 0, oops.Wrapf(err, "load assistant chat for lesson %d", q.LessonID)
 	}
 
-	turns := make([]Turn, 0, len(previous)+2)
+	turns := make([]Turn, 0, len(previous)+framingTurns)
 	turns = append(turns, Turn{Role: RoleSystem, Content: c.i18n.TextWith(ctx, localization.AssistantInstructions, map[string]string{
 		"Course":       lo.FromPtr(crs.Slug),
 		"Lesson":       lo.FromPtr(info.Name),

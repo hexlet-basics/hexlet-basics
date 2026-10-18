@@ -66,7 +66,7 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 			output: object(map[string]any{
 				"courseSlug": map[string]any{"type": "string"},
 				"state":      lessonState,
-				"completion": map[string]any{"type": "integer", "minimum": 0, "maximum": 100},
+				"completion": map[string]any{"type": "integer", "minimum": 0, "maximum": maxCompletion},
 				"nextLesson": map[string]any{"type": []string{"string", "null"}, "description": "Slug of the Next Lesson; null when every lesson is finished."},
 				"lessons": map[string]any{"type": "array", "items": object(map[string]any{
 					"slug":     map[string]any{"type": "string"},
@@ -205,3 +205,6 @@ var (
 	errLessonSlugRequired = errors.New("invalid arguments: lessonSlug is required")
 	errCourseSlugRequired = errors.New("invalid arguments: courseSlug is required")
 )
+
+// maxCompletion is the completion of a finished course, in percent.
+const maxCompletion = 100

@@ -16,6 +16,10 @@ import (
 	"hexletbasics/internal/fixture"
 )
 
+// labelsFileMode is the permission of the generated file: owner-only is what
+// gosec asks of a file a tool writes; git does not keep the mode.
+const labelsFileMode = 0o600
+
 func main() {
 	dir := flag.String("dir", "fixtures", "directory of the fixture YAML files")
 	out := flag.String("out", "labels_gen.go", "file to write")
@@ -29,7 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := os.WriteFile(*out, src, 0o600); err != nil {
+	if err := os.WriteFile(*out, src, labelsFileMode); err != nil {
 		log.Fatal(err)
 	}
 }

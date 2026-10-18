@@ -37,7 +37,7 @@ func NewRuntime(
 	handlers ...cqrs.EventHandler,
 ) (*Runtime, error) {
 	watermillLogger := watermill.NewSlogLogger(logger)
-	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: 15 * time.Second}, watermillLogger)
+	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: routerCloseTimeout}, watermillLogger)
 	if err != nil {
 		return nil, errs.Wrapf(err, "create Watermill router")
 	}
@@ -119,10 +119,10 @@ func deliveryMiddleware(
 		poisonQueue,
 		reportPoisoned(sentryClient),
 		middleware.Retry{
-			MaxRetries:          3,
-			InitialInterval:     100 * time.Millisecond,
-			MaxInterval:         2 * time.Second,
-			Multiplier:          2,
+			MaxRetries:          handlerRetries,
+			InitialInterval:     handlerRetryInitial,
+			MaxInterval:         handlerRetryMax,
+			Multiplier:          handlerRetryMultiplier,
 			ResetContextOnRetry: true,
 			Logger:              logger,
 		}.Middleware,
@@ -192,3 +192,13 @@ func (r *Runtime) Running() <-chan struct{} { return r.router.Running() }
 
 // Close drains subscribers and in-flight handlers.
 func (r *Runtime) Close() error { return r.router.Close() }
+
+// How the router closes and how a handler is retried before its message goes to
+// the poison queue.
+const (
+	routerCloseTimeout     = 15 * time.Second
+	handlerRetries         = 3
+	handlerRetryInitial    = 100 * time.Millisecond
+	handlerRetryMax        = 2 * time.Second
+	handlerRetryMultiplier = 2
+)

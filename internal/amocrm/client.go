@@ -36,13 +36,37 @@ type Client struct {
 	initErr error
 }
 
+// requestTimeout bounds one request to amoCRM.
+const requestTimeout = 15 * time.Second
+
+// The ids of the custom fields of an amoCRM lead in the Hexlet account, which
+// the reports there are built on; the lead carries each under its code.
+const (
+	fieldUTMContent  = 316_913
+	fieldUTMMedium   = 316_915
+	fieldUTMCampaign = 316_917
+	fieldUTMSource   = 316_919
+	fieldUTMTerm     = 316_921
+	fieldUTMReferrer = 316_923
+	fieldReferrer    = 316_927
+	fieldFrom        = 316_937
+	fieldYMUID       = 316_941
+	fieldYMCounter   = 316_943
+	fieldGCLID       = 316_945
+	fieldYCLID       = 316_947
+	fieldFBCLID      = 316_949
+	fieldGAUTM       = 957_711
+	// fieldSourceForm has no code in amoCRM, only an id.
+	fieldSourceForm = 936_587
+)
+
 // NewClient builds the external integration adapter.
 func NewClient(baseURL, token, ymCounter string) *Client {
 	client := &Client{
 		baseURL: strings.TrimRight(baseURL, "/"),
 		token:   token,
 		http: &http.Client{
-			Timeout: 15 * time.Second,
+			Timeout: requestTimeout,
 			// Redirects from an account-specific endpoint indicate configuration
 			// drift. Do not turn one River attempt into multiple HTTP requests.
 			CheckRedirect: func(*http.Request, []*http.Request) error {
@@ -111,24 +135,24 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 		PipelineID:        generated.NewOptInt64(leadPipelineID),
 		ResponsibleUserID: generated.NewOptInt64(responsibleUserID),
 		CustomFieldsValues: customFields(
-			customField{id: 316_913, code: "UTM_CONTENT", value: event.UTMContent},
-			customField{id: 316_915, code: "UTM_MEDIUM", value: event.UTMMedium},
-			customField{id: 316_917, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
-			customField{id: 316_919, code: "UTM_SOURCE", value: event.UTMSource},
-			customField{id: 316_921, code: "UTM_TERM", value: event.UTMTerm},
-			customField{id: 316_923, code: "UTM_REFERRER", value: event.Referrer},
-			customField{id: 316_927, code: "REFERRER", value: event.Referrer},
-			customField{id: 316_937, code: "FROM", value: landing("from")},
-			customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
-			customField{id: 316_943, code: "_YM_COUNTER", value: new(b.ymCounter)},
-			customField{id: 316_945, code: "GCLID", value: landing("gclid")},
+			customField{id: fieldUTMContent, code: "UTM_CONTENT", value: event.UTMContent},
+			customField{id: fieldUTMMedium, code: "UTM_MEDIUM", value: event.UTMMedium},
+			customField{id: fieldUTMCampaign, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
+			customField{id: fieldUTMSource, code: "UTM_SOURCE", value: event.UTMSource},
+			customField{id: fieldUTMTerm, code: "UTM_TERM", value: event.UTMTerm},
+			customField{id: fieldUTMReferrer, code: "UTM_REFERRER", value: event.Referrer},
+			customField{id: fieldReferrer, code: "REFERRER", value: event.Referrer},
+			customField{id: fieldFrom, code: "FROM", value: landing("from")},
+			customField{id: fieldYMUID, code: "_YM_UID", value: event.YMClientID},
+			customField{id: fieldYMCounter, code: "_YM_COUNTER", value: new(b.ymCounter)},
+			customField{id: fieldGCLID, code: "GCLID", value: landing("gclid")},
 			// Legacy sent the Metrika client id here ahead of the landing
 			// page's yclid; kept as is, since amoCRM reports are built on it.
-			customField{id: 316_947, code: "YCLID", value: lo.CoalesceOrEmpty(event.YMClientID, landing("yclid"))},
-			customField{id: 316_949, code: "FBCLID", value: landing("fbclid")},
-			customField{id: 957_711, code: "GA_UTM", value: landing("ga_utm")},
+			customField{id: fieldYCLID, code: "YCLID", value: lo.CoalesceOrEmpty(event.YMClientID, landing("yclid"))},
+			customField{id: fieldFBCLID, code: "FBCLID", value: landing("fbclid")},
+			customField{id: fieldGAUTM, code: "GA_UTM", value: landing("ga_utm")},
 			// The source-form field has no code in amoCRM, only an id.
-			customField{id: 936_587, value: new(source)},
+			customField{id: fieldSourceForm, value: new(source)},
 		),
 	}
 	return generated.UnsortedFormCreateItem{

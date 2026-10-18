@@ -43,6 +43,9 @@ func (l *limiter) allow(address string) (bool, time.Duration) {
 	return l.counter.Allow(ratelimit.Charge{Key: addressKey(address), Limit: l.limit})
 }
 
+// customerPrefixBits is the size of the block an IPv6 customer is handed.
+const customerPrefixBits = 64
+
 // addressKey names the bucket of an address. An IPv6 customer is handed a whole
 // /64, so counting single addresses would let one machine mint a new budget per
 // request; the prefix is the unit instead. Anything that is not an IP shares one
@@ -55,7 +58,7 @@ func addressKey(address string) string {
 	}
 	ip = ip.Unmap()
 	if ip.Is6() {
-		if p, err := ip.Prefix(64); err == nil {
+		if p, err := ip.Prefix(customerPrefixBits); err == nil {
 			return p.String()
 		}
 	}

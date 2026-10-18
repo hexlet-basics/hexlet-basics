@@ -33,7 +33,6 @@ linters:
     - testpackage # white-box tests of unexported rules are deliberate, 38 files
     # Pending: enabled by later commits of the series that clear their findings.
     - forcetypeassert
-    - mnd
     - paralleltest
     - tparallel
   settings:
