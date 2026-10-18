@@ -277,7 +277,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: $/.github/actions/build-image
+      # Not `$/...`: that form unpacks the whole repository as an action, and the
+      # runner fails on a symlink under .agents/skills.
+      - uses: ./.github/actions/build-image # zizmor: ignore[self-repository]
         with:
           file: ${{ matrix.file }}
           lock: ${{ matrix.lock }}
