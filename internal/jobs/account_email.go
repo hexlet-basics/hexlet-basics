@@ -9,6 +9,11 @@ import (
 	"hexletbasics/internal/emailtoken"
 )
 
+// accountEmailMaxAttempts: five attempts with River's backoff span about six
+// minutes, past which a sign-in link is no longer what the visitor waits for,
+// and the failure is already in Sentry.
+const accountEmailMaxAttempts = 5
+
 // accountEmailCooldown is how long a second request for the same email to the
 // same User is a no-op. Legacy kept the same one-minute cooldown in its cache.
 const accountEmailCooldown = time.Minute
@@ -35,12 +40,10 @@ type AccountEmailArgs struct {
 func (AccountEmailArgs) Kind() string { return "account_email" }
 
 // InsertOpts makes the cooldown River uniqueness over (purpose, user) for one
-// minute, and bounds retries: five attempts with River's backoff span about
-// six minutes, past which a sign-in link is no longer what the visitor waits
-// for, and the failure is already in Sentry.
+// minute, and bounds retries (see accountEmailMaxAttempts).
 func (AccountEmailArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		MaxAttempts: 5,
+		MaxAttempts: accountEmailMaxAttempts,
 		Queue:       QueueMail,
 		UniqueOpts: river.UniqueOpts{
 			ByArgs:   true,

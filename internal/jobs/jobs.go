@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"time"
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
@@ -34,6 +35,14 @@ const (
 	// QueueLLM carries paid, rate-limited LLM calls.
 	QueueLLM = "llm"
 )
+
+// DiscardedRetention is how long River keeps a job that used every attempt
+// (state `discarded`). Those rows are the dead-letter store: an operator reads
+// the failure there and replays the job with River's own retry, so they must
+// outlive a long weekend plus the time to fix the cause. River's default is
+// also a week-scale value, but a default can change under us; this one is
+// ours. Completed and cancelled rows keep River's defaults.
+const DiscardedRetention = 30 * 24 * time.Hour
 
 // queues is the worker's concurrency budget per queue. Builds are heavy (git,
 // parsing, uploads) so few run at once; LLM concurrency stays under provider
@@ -111,21 +120,36 @@ func NewWorkerClient(
 	meterProvider metric.MeterProvider,
 	modules ...Module,
 ) (*river.Client[*sql.Tx], error) {
+	return river.NewClient(
+		riverdatabasesql.New(db),
+		workerConfig(logger, errorHandler, tracerProvider, meterProvider, modules),
+	)
+}
+
+// workerConfig is the worker client's River configuration.
+func workerConfig(
+	logger *slog.Logger,
+	errorHandler *ErrorHandler,
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
+	modules []Module,
+) *river.Config {
 	workers := river.NewWorkers()
 	var periodic []*river.PeriodicJob
 	for _, m := range modules {
 		m.register(workers)
 		periodic = append(periodic, m.periodic...)
 	}
-	return river.NewClient(riverdatabasesql.New(db), &river.Config{
-		ErrorHandler:        errorHandler,
-		FetchOnlyKnownKinds: true,
-		Logger:              logger,
-		PeriodicJobs:        periodic,
-		Plugins:             openTelemetryPlugins(tracerProvider, meterProvider),
-		Queues:              queues(),
-		Workers:             workers,
-	})
+	return &river.Config{
+		ErrorHandler:                errorHandler,
+		DiscardedJobRetentionPeriod: DiscardedRetention,
+		FetchOnlyKnownKinds:         true,
+		Logger:                      logger,
+		PeriodicJobs:                periodic,
+		Plugins:                     openTelemetryPlugins(tracerProvider, meterProvider),
+		Queues:                      queues(),
+		Workers:                     workers,
+	}
 }
 
 // openTelemetryPlugins keeps River's observability policy consistent between
