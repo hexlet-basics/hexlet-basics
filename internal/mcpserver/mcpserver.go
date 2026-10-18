@@ -28,6 +28,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/oauthserver"
+	"hexletbasics/internal/progress"
 )
 
 // errs is the package template for errors (ADR-0018): static messages, the data
@@ -94,8 +95,13 @@ type Deps struct {
 	// http.Handler on purpose: it gives the package no way to reach an operation
 	// without the checkpoint. Without it no admin tool is offered.
 	API http.Handler
-	// Learner serves the learner tools; the token's user is the only subject.
-	Learner Learner
+	// MyDashboard and MyCourseProgress serve the learner tools; the token's user
+	// is the only subject, passed explicitly, and nothing a caller could use to
+	// name another person. They are functions, not an interface: handlers.Server
+	// supplies them and handlers imports this package, so a type from there
+	// cannot be named here, and no second implementation or test substitute exists.
+	MyDashboard      func(ctx context.Context, userID int) (*api.MyDashboard, error)
+	MyCourseProgress func(ctx context.Context, userID int, courseSlug string) (*progress.LearnerCourse, error)
 	// Issuer is the authorization server's origin, advertised in the resource
 	// metadata so a client that was refused knows where to sign in.
 	Issuer string
@@ -104,10 +110,11 @@ type Deps struct {
 	// Limits are the page, response, timeout and rate limits of the tools; a
 	// zero field takes its default.
 	Limits Limits
-	// Capabilities tells which capability Permissions a user holds, so `tools/list`
-	// can leave out the admin tools a call would be refused. Optional: without it
-	// the list is narrowed by Scope only.
-	Capabilities Capabilities
+	// HeldCapabilities tells which capability Permissions a user holds, so
+	// `tools/list` can leave out the admin tools a call would be refused: the same
+	// judgement the checkpoint makes on every admin call, asked once for the list.
+	// Optional: without it the list is narrowed by Scope only.
+	HeldCapabilities func(ctx context.Context, userID int) ([]string, error)
 }
 
 // Server is the MCP endpoint.
