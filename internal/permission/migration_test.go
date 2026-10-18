@@ -1,4 +1,4 @@
-package staffroles_test
+package permission_test
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/staffroles"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -168,7 +168,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 		`SELECT count(*) FROM "staff_member_role_permissions" WHERE "resource" = $1`, resource).Scan(&remaining))
 	assert.Zero(t, remaining, "the matrix rows are replaced, not duplicated")
 
-	policy := staffroles.NewPolicy(db)
+	policy := permission.NewPolicy(db)
 	for mask := 0; mask < 1<<len(byBit); mask++ {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
@@ -178,7 +178,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 				if mask&(1<<i) != 0 {
 					assert.NoError(t, err, "bits %04b keep %s", mask, operation)
 				} else {
-					assert.ErrorIs(t, err, staffroles.ErrForbidden, "bits %04b still refuse %s", mask, operation)
+					assert.ErrorIs(t, err, permission.ErrForbidden, "bits %04b still refuse %s", mask, operation)
 				}
 			}
 		}
@@ -214,7 +214,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	_, err = tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)
 
-	policy := staffroles.NewPolicy(db)
+	policy := permission.NewPolicy(db)
 	for mask := 0; mask < 4; mask++ {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
@@ -224,7 +224,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 			if want {
 				assert.NoError(t, err, "combination %02b keeps %s", mask, operation)
 			} else {
-				assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %02b still refuses %s", mask, operation)
+				assert.ErrorIs(t, err, permission.ErrForbidden, "combination %02b still refuses %s", mask, operation)
 			}
 		}
 		check("AdminListCourses", true)
@@ -282,7 +282,7 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 	_, err = h.Tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)
 
-	policy := staffroles.NewPolicy(db)
+	policy := permission.NewPolicy(db)
 	for mask, roleID := range roles {
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 
@@ -291,7 +291,7 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 			if want {
 				assert.NoError(t, err, "combination %03b keeps %s", mask, operation)
 			} else {
-				assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %03b still refuses %s", mask, operation)
+				assert.ErrorIs(t, err, permission.ErrForbidden, "combination %03b still refuses %s", mask, operation)
 			}
 		}
 		updater := mask&holdsUpdate != 0
@@ -359,7 +359,7 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 			_, err = h.Tx.ExecContext(t.Context(), string(migration))
 			require.NoError(t, err)
 
-			policy := staffroles.NewPolicy(db)
+			policy := permission.NewPolicy(db)
 			for mask, roleID := range roles {
 				db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 
@@ -368,7 +368,7 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 					if want {
 						assert.NoError(t, err, "combination %03b keeps %s", mask, operation)
 					} else {
-						assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %03b still refuses %s", mask, operation)
+						assert.ErrorIs(t, err, permission.ErrForbidden, "combination %03b still refuses %s", mask, operation)
 					}
 				}
 				updater := mask&holdsUpdate != 0
@@ -430,7 +430,7 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 	_, err = h.Tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)
 
-	policy := staffroles.NewPolicy(db)
+	policy := permission.NewPolicy(db)
 	for mask, roleID := range roles {
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 
@@ -439,7 +439,7 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 			if want {
 				assert.NoError(t, err, "combination %03b keeps %s", mask, operation)
 			} else {
-				assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %03b still refuses %s", mask, operation)
+				assert.ErrorIs(t, err, permission.ErrForbidden, "combination %03b still refuses %s", mask, operation)
 			}
 		}
 		updater := mask&holdsUpdate != 0

@@ -18,10 +18,10 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -551,5 +551,5 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 // equal to the website's session cookie: under any other name the generated
 // server would refuse every tool call before the security handler ran.
 func TestThePlaceholderIsTheWebsitesSessionCookie(t *testing.T) {
-	assert.Equal(t, sessions.CookieName, mcpserver.SessionCookie)
+	assert.Equal(t, auth.CookieName, mcpserver.SessionCookie)
 }

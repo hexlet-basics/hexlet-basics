@@ -7,7 +7,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
 )
@@ -21,7 +21,7 @@ import (
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
-	return listFrom(ctx, params.Page, params.PerPage, func(ctx context.Context, page domain.Page) ([]blogposts.Post, int, error) {
+	return listFrom(ctx, params.Page, params.PerPage, func(ctx context.Context, page domain.Page) ([]blog.Post, int, error) {
 		return s.blogReader.List(ctx, params.Q.Value, page)
 	}, s.conv.ToBlogPosts,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
@@ -69,8 +69,8 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 }
 
 // postFieldsOf is the contract's BlogPostInput as the editor's command.
-func postFieldsOf(in *api.BlogPostInput) blogposts.PostFields {
-	return blogposts.PostFields{
+func postFieldsOf(in *api.BlogPostInput) blog.PostFields {
+	return blog.PostFields{
 		Name:        inputconv.StringPtr(in.Name),
 		Slug:        inputconv.StringPtr(in.Slug),
 		Description: inputconv.StringPtr(in.Description),

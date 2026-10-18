@@ -1,4 +1,4 @@
-package blogposts_test
+package blog_test
 
 import (
 	"testing"
@@ -6,18 +6,18 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 func TestEditorCreateStampsTheCreatorAndTheLocale(t *testing.T) {
-	editor := blogposts.NewEditor(testsupport.NewClient(t))
+	editor := blog.NewEditor(testsupport.NewClient(t))
 	name, slug := "Заметки", "zametki"
 
 	post, err := editor.Create(t.Context(), fixtures.ID(fixtures.UserAdminLearner), "ru",
-		blogposts.PostFields{Name: &name, Slug: &slug, RichBody: "<p>Текст</p>"})
+		blog.PostFields{Name: &name, Slug: &slug, RichBody: "<p>Текст</p>"})
 
 	require.NoError(t, err)
 	assert.Equal(t, fixtures.ID(fixtures.UserAdminLearner), post.CreatorID)
@@ -28,12 +28,12 @@ func TestEditorCreateStampsTheCreatorAndTheLocale(t *testing.T) {
 
 func TestEditorUpdateClearsWhatIsLeftOutAndKeepsTheLocale(t *testing.T) {
 	db := testsupport.NewClient(t)
-	editor := blogposts.NewEditor(db)
+	editor := blog.NewEditor(db)
 	id := fixtures.ID(fixtures.BlogPostHelloWorld)
 	before := db.BlogPost.GetX(t.Context(), id)
 	name := "Renamed"
 
-	after, err := editor.Update(t.Context(), id, blogposts.PostFields{Name: &name, RichBody: "<p>New</p>"})
+	after, err := editor.Update(t.Context(), id, blog.PostFields{Name: &name, RichBody: "<p>New</p>"})
 
 	require.NoError(t, err)
 	require.NotNil(t, after.Name)
@@ -44,9 +44,9 @@ func TestEditorUpdateClearsWhatIsLeftOutAndKeepsTheLocale(t *testing.T) {
 }
 
 func TestEditorUpdateOfAMissingPostIsNotFound(t *testing.T) {
-	editor := blogposts.NewEditor(testsupport.NewClient(t))
+	editor := blog.NewEditor(testsupport.NewClient(t))
 
-	_, err := editor.Update(t.Context(), 0, blogposts.PostFields{RichBody: "<p>x</p>"})
+	_, err := editor.Update(t.Context(), 0, blog.PostFields{RichBody: "<p>x</p>"})
 
 	require.ErrorIs(t, err, domain.ErrNotFound)
 }

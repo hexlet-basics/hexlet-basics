@@ -2,7 +2,6 @@
 # package names). Each rename removes its entry in the same commit.
 accountemails
 accounts
-blogposts
 books
 coursepages
 emailtokens
@@ -15,7 +14,5 @@ lessonreviews
 permissions
 qnaitems
 relatedcourses
-sessions
-staffroles
 transitions
 versionbuilds

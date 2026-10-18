@@ -1,4 +1,4 @@
-package blogposts_test
+package blog_test
 
 import (
 	"os"

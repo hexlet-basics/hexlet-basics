@@ -17,12 +17,12 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/oauthclient"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -164,7 +164,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	require.NoError(t, err)
 	o.Server = server
 
-	manager := sessions.New(db, sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+	manager := auth.New(db, auth.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
 	// The harness's collaborators, so every tool reaches the real module a
@@ -250,9 +250,9 @@ func SessionFor(t *testing.T, db *ent.Client, userID int) Session {
 	t.Helper()
 	u, err := db.User.Get(t.Context(), userID)
 	require.NoError(t, err)
-	value, err := sessions.New(db).Issue(t.Context(), u)
+	value, err := auth.New(db).Issue(t.Context(), u)
 	require.NoError(t, err)
-	return Session{Cookie: &http.Cookie{Name: sessions.CookieName, Value: value}}
+	return Session{Cookie: &http.Cookie{Name: auth.CookieName, Value: value}}
 }
 
 // Do sends one request through the router and returns the recorded response.

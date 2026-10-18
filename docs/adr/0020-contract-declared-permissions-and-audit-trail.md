@@ -7,7 +7,7 @@ status: accepted
 Amends [ADR-0011](0011-contract-declared-authentication.md).
 
 ADR-0011 declared *who is signed in* in the contract but left *what a staff
-member may do* to a hand-kept table in `internal/staffroles/rules.go`, keyed by
+member may do* to a hand-kept table in `internal/permission/rules.go`, keyed by
 operation name, with every operation that fits no resource marked
 "administrators only". An MCP client acting for a staff member makes that table
 the only thing between an agent and the whole admin surface, and nothing
@@ -137,7 +137,7 @@ there, because opening or closing every operation silently is worse.
 gets it from `GET /admin/management/permissions`, so its list cannot drift.
 
 **Enforcing.** Unchanged in where it happens: `Security.HandleAdminSession`
-runs `staffroles.Policy.Allow` before the request body is decoded. `Allow`
+runs `permission.Policy.Allow` before the request body is decoded. `Allow`
 passes an administrator, requires a staff record with the request's locale, and
 then, if the operation declares a Permission, requires a row in
 `staff_member_role_grants` for the role and that Permission; otherwise it falls
@@ -231,7 +231,7 @@ transaction in the context, and two things honour it:
   `Query` and `Tx`). A handler keeps writing `s.db.BlogPost.Create()`, and its
   read-after-write (`getAdminBlogPost`) sees the write;
 - `Store.WithinTx` called with such a context joins it instead of opening a
-  second transaction, so `blogposts.Remover`, `relatedcourses.Replacer` and the
+  second transaction, so `blog.Remover`, `relatedcourses.Replacer` and the
   other modules that own an atomic step become part of the operation's commit.
   They keep their own atomicity when called outside one (a worker, a test).
 
@@ -406,7 +406,7 @@ middleware once for each name `permissions.AdminWrites()` returns and fails if
 one leaves no record, so a new operation is covered by declaring it in TypeSpec.
 
 **Refusals.** A refusal is rejected in `Security.HandleAdminSession`, before
-any handler or transaction exists. There, a `staffroles.ErrForbidden` writes an
+any handler or transaction exists. There, a `permission.ErrForbidden` writes an
 Audit Record with outcome `forbidden` as one insert on the pooled client, which
 commits on its own, and then answers 403 as before. This covers every admin
 operation, reads included, because a refused read of users or leads is as

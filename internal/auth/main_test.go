@@ -1,4 +1,4 @@
-package staffroles_test
+package auth_test
 
 import (
 	"os"

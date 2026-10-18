@@ -9,15 +9,15 @@ import (
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/auth"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/coursepages"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/sessions"
-	"hexletbasics/internal/staffroles"
+	"hexletbasics/internal/permission"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -49,7 +49,7 @@ type Server struct {
 	assets *assetstore.Store
 	// sessions begins and ends the signed-in visitor's session (ADR-0017);
 	// security is the seam that recognises a request by it.
-	sessions *sessions.Manager
+	sessions *auth.Authenticator
 	security *Security
 	// credentials checks and changes passwords; registrar creates accounts and
 	// remover removes them.
@@ -80,11 +80,11 @@ type Server struct {
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
 	// blogPublic reads the posts a visitor may open.
-	blogPublic *blogposts.Public
+	blogPublic *blog.Public
 	// blogReader assembles posts (cover, likes, courses, reading time) for the
 	// admin and the public lists alike; blogLikes records a like.
-	blogReader *blogposts.Reader
-	blogLikes  *blogposts.Liker
+	blogReader *blog.Reader
+	blogLikes  *blog.Liker
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover PostRemover
 	// permissions writes a role's grants.
@@ -129,7 +129,7 @@ type Deps struct {
 	RelatedCoursesSet RelatedCoursesReplacer
 	Progress          ProgressTracker
 	Assets            *assetstore.Store
-	Sessions          *sessions.Manager
+	Sessions          *auth.Authenticator
 	Registrar         UserRegistrar
 	Remover           AccountRemover
 	UserEditor        UserEditor
@@ -180,7 +180,7 @@ func NewServer(deps Deps) *Server {
 		progress:          deps.Progress,
 		assets:            deps.Assets,
 		sessions:          deps.Sessions,
-		security:          newSecurity(deps.DB, deps.Sessions, staffroles.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
+		security:          newSecurity(deps.DB, deps.Sessions, permission.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
 		credentials:       accounts.NewCredentials(deps.DB),
 		registrar:         deps.Registrar,
 		remover:           deps.Remover,
@@ -198,9 +198,9 @@ func NewServer(deps Deps) *Server {
 		coursePages:       coursepages.New(deps.DB, landingpages.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
-		blogPublic:        blogposts.NewPublic(deps.DB),
-		blogReader:        blogposts.NewReader(deps.DB, deps.Settings.PublicURL),
-		blogLikes:         blogposts.NewLiker(deps.DB),
+		blogPublic:        blog.NewPublic(deps.DB),
+		blogReader:        blog.NewReader(deps.DB, deps.Settings.PublicURL),
+		blogLikes:         blog.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
 		selfProtection:    deps.SelfProtection,
 		bannerStates:      deps.BannerStates,

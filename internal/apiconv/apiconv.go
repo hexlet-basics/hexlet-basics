@@ -19,7 +19,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/progress"
 )
@@ -90,9 +90,9 @@ type Converter interface {
 	// goverter:map RichBody RichBodyHtml
 	// goverter:map RelatedCourseIDs RelatedCourseIds
 	// goverter:map CoverURL CoverUrl
-	ToBlogPost(source blogposts.Post) api.BlogPost
+	ToBlogPost(source blog.Post) api.BlogPost
 
-	ToBlogPosts(source []blogposts.Post) []api.BlogPost
+	ToBlogPosts(source []blog.Post) []api.BlogPost
 
 	ToSitemapBlogPost(source *ent.BlogPost) api.SitemapBlogPost
 

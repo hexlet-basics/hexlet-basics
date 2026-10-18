@@ -13,8 +13,8 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/permissions"
-	"hexletbasics/internal/staffroles"
 )
 
 // NewAdminDispatcher is what an MCP admin tool call is served by (ADR-0021
@@ -73,7 +73,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 		}
 		err = s.policy.HasCapability(ctx, u, capability)
 	}
-	if errors.Is(err, staffroles.ErrForbidden) {
+	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
 		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
 	}
@@ -97,18 +97,18 @@ func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, 
 		return nil, fmt.Errorf("load user for capabilities: %w", err)
 	}
 	held := []string{}
-	for _, permission := range permissions.Catalog() {
-		if !permission.Capability {
+	for _, entry := range permissions.Catalog() {
+		if !entry.Capability {
 			continue
 		}
-		err := s.policy.HasCapability(ctx, u, permission.Name)
-		if errors.Is(err, staffroles.ErrForbidden) {
+		err := s.policy.HasCapability(ctx, u, entry.Name)
+		if errors.Is(err, permission.ErrForbidden) {
 			continue
 		}
 		if err != nil {
-			return nil, fmt.Errorf("check capability %s: %w", permission.Name, err)
+			return nil, fmt.Errorf("check capability %s: %w", entry.Name, err)
 		}
-		held = append(held, permission.Name)
+		held = append(held, entry.Name)
 	}
 	return held, nil
 }

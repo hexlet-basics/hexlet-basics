@@ -1,6 +1,6 @@
-// Package blogposts holds the blog-post operations that span several tables
+// Package blog holds the blog-post operations that span several tables
 // and so need a transaction of their own.
-package blogposts
+package blog
 
 import (
 	"context"

@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/permissions"
-	"hexletbasics/internal/staffroles"
 )
 
 // AdminGetMyCapabilities lists the capability Permissions the caller holds
@@ -18,21 +18,21 @@ import (
 // contract's catalog, so a new capability appears without a change.
 func (s *Server) AdminGetMyCapabilities(ctx context.Context) (api.AdminGetMyCapabilitiesRes, error) {
 	u := MustAuthenticatedUser(ctx)
-	policy := staffroles.NewPolicy(s.db)
+	policy := permission.NewPolicy(s.db)
 
 	held := []string{}
-	for _, permission := range permissions.Catalog() {
-		if !permission.Capability {
+	for _, entry := range permissions.Catalog() {
+		if !entry.Capability {
 			continue
 		}
-		err := policy.HasCapability(ctx, u, permission.Name)
-		if errors.Is(err, staffroles.ErrForbidden) {
+		err := policy.HasCapability(ctx, u, entry.Name)
+		if errors.Is(err, permission.ErrForbidden) {
 			continue
 		}
 		if err != nil {
 			return nil, err
 		}
-		held = append(held, permission.Name)
+		held = append(held, entry.Name)
 	}
 	return &api.MyCapabilities{Held: held}, nil
 }

@@ -15,6 +15,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/emailtokens"
@@ -26,7 +27,6 @@ import (
 	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/store"
 )
 
@@ -179,7 +179,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		manager, err := do.Invoke[*sessions.Manager](i)
+		manager, err := do.Invoke[*auth.Authenticator](i)
 		if err != nil {
 			return nil, err
 		}
@@ -213,12 +213,12 @@ var workerPackage = do.Package(
 	}),
 	// The worker never serves a request, so it has no use for the session's
 	// cookie; it holds the manager only to remove expired sessions.
-	do.Lazy[*sessions.Manager](func(i do.Injector) (*sessions.Manager, error) {
+	do.Lazy[*auth.Authenticator](func(i do.Injector) (*auth.Authenticator, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return sessions.New(db), nil
+		return auth.New(db), nil
 	}),
 	do.Lazy[*events.Runtime](func(i do.Injector) (*events.Runtime, error) {
 		db, err := do.Invoke[*sql.DB](i)

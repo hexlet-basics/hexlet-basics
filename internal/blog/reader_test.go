@@ -1,4 +1,4 @@
-package blogposts_test
+package blog_test
 
 import (
 	"strings"
@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
 const origin = "https://blog.example.test/"
 
-func newReader(t *testing.T) (*blogposts.Reader, *ent.Client) {
+func newReader(t *testing.T) (*blog.Reader, *ent.Client) {
 	t.Helper()
 	db := testsupport.NewClient(t)
-	return blogposts.NewReader(db, origin), db
+	return blog.NewReader(db, origin), db
 }
 
 func TestGetAssemblesCoverLikesAndRelatedCourses(t *testing.T) {
@@ -69,16 +69,16 @@ func TestAShortPostReadsInAMinute(t *testing.T) {
 func TestReadingTimeRoundsUp(t *testing.T) {
 	words := func(n int) string { return "<p>" + strings.Repeat("word ", n) + "</p>" }
 
-	assert.Equal(t, 0, blogposts.ReadingTime(""))
-	assert.Equal(t, 1, blogposts.ReadingTime(words(1)))
-	assert.Equal(t, 1, blogposts.ReadingTime(words(260)))
-	assert.Equal(t, 2, blogposts.ReadingTime(words(261)))
+	assert.Equal(t, 0, blog.ReadingTime(""))
+	assert.Equal(t, 1, blog.ReadingTime(words(1)))
+	assert.Equal(t, 1, blog.ReadingTime(words(260)))
+	assert.Equal(t, 2, blog.ReadingTime(words(261)))
 }
 
 func TestAssembleKeepsTheOrderOfTheRows(t *testing.T) {
 	reader, db := newReader(t)
 	rows := db.BlogPost.Query().WithCreator().
-		Where(blogposts.Published("ru")).AllX(t.Context())
+		Where(blog.Published("ru")).AllX(t.Context())
 	require.GreaterOrEqual(t, len(rows), 2)
 
 	posts, err := reader.Assemble(t.Context(), rows)
@@ -92,7 +92,7 @@ func TestAssembleKeepsTheOrderOfTheRows(t *testing.T) {
 
 func TestLikeCountsAPersonOnce(t *testing.T) {
 	reader, db := newReader(t)
-	likes := blogposts.NewLiker(db)
+	likes := blog.NewLiker(db)
 	postID := fixtures.ID(fixtures.BlogPostSecondPost)
 	userID := fixtures.ID(fixtures.UserAdminLearner)
 
@@ -107,6 +107,6 @@ func TestLikeCountsAPersonOnce(t *testing.T) {
 func TestLikeOfAMissingPostIsNotFound(t *testing.T) {
 	_, db := newReader(t)
 
-	err := blogposts.NewLiker(db).Like(t.Context(), 1, fixtures.ID(fixtures.UserAdminLearner))
+	err := blog.NewLiker(db).Like(t.Context(), 1, fixtures.ID(fixtures.UserAdminLearner))
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }

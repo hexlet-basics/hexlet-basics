@@ -1,4 +1,4 @@
-package blogposts
+package blog
 
 import (
 	"context"

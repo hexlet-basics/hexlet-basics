@@ -7,8 +7,8 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/permissions"
-	"hexletbasics/internal/staffroles"
 )
 
 // roleDetail fetches a role with its grants and converts it to the
@@ -54,7 +54,7 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
-// AdminUpdateRolePermissions applies the submitted set; the staffroles
+// AdminUpdateRolePermissions applies the submitted set; the permission
 // module writes them in one transaction. A missing role is a 404,
 // before any write, and an undeclared grant a 422.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
@@ -65,7 +65,7 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 	}
 
 	if err := s.permissions.Check(ctx, roleID, req.Grants); err != nil {
-		if errors.Is(err, staffroles.ErrUnknownPermission) {
+		if errors.Is(err, permission.ErrUnknownPermission) {
 			return validationError("grants", err.Error()), nil
 		}
 		return nil, err

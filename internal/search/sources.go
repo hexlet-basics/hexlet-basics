@@ -17,7 +17,7 @@ import (
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/landingpages"
 )
@@ -345,12 +345,12 @@ func (posts) vector(m match, s *sql.Selector) string {
 	return vector(m.config, s.C(blogpost.FieldName), s.C(blogpost.FieldDescription), s.C(blogpost.FieldRichBody))
 }
 
-// scope is the public blog's own scope (blogposts.Published), for posts that
+// scope is the public blog's own scope (blog.Published), for posts that
 // have a slug to be addressed by.
 //
 // An unrestricted search takes the posts of the locale in any state.
 func (p posts) scope(m match) []predicate.BlogPost {
-	visible := blogposts.Published(m.locale)
+	visible := blog.Published(m.locale)
 	if m.unrestricted {
 		visible = blogpost.LocaleEQ(m.locale)
 	}

@@ -12,8 +12,8 @@ import (
 
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -66,7 +66,7 @@ func TestMustAuthenticatedUserPanicsWithoutOne(t *testing.T) {
 // an error page.
 func TestAGarbledSessionCookieIsNoSession(t *testing.T) {
 	router := newAuthRouter(t)
-	garbled := &http.Cookie{Name: sessions.CookieName, Value: "not-a-token"}
+	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"}
 
 	me := do(t, router, http.MethodGet, "/api/me", "", garbled)
 	require.Equal(t, http.StatusOK, me.StatusCode)

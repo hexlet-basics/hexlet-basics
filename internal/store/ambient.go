@@ -21,7 +21,7 @@ import (
 //     reads after a write see the write;
 //   - Store.WithinTx called with such a context joins it instead of opening a
 //     second, independent transaction, so modules that own an atomic step
-//     (blogposts.Remover, relatedcourses.Replacer) are inside the same commit.
+//     (blog.Remover, relatedcourses.Replacer) are inside the same commit.
 //
 // Without the key in the context nothing changes: autocommit and own
 // transactions as before.

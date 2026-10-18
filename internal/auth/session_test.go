@@ -1,4 +1,4 @@
-package sessions_test
+package auth_test
 
 import (
 	"net/http"
@@ -13,8 +13,8 @@ import (
 	"hexletbasics/ent"
 	session "hexletbasics/ent/session"
 	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/fixtures"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -29,14 +29,14 @@ func (c *clock) advance(d time.Duration) { c.now = c.now.Add(d) }
 type app struct {
 	t        *testing.T
 	db       *ent.Client
-	sessions *sessions.Manager
+	sessions *auth.Authenticator
 	handler  http.Handler
 }
 
-func newApp(t *testing.T, clk *clock, opts ...sessions.Option) *app {
+func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 	t.Helper()
 	db := testsupport.NewClient(t)
-	manager := sessions.New(db, append([]sessions.Option{sessions.WithClock(clk.Now)}, opts...)...)
+	manager := auth.New(db, append([]auth.Option{auth.WithClock(clk.Now)}, opts...)...)
 	a := &app{t: t, db: db, sessions: manager}
 
 	mux := http.NewServeMux()
@@ -84,7 +84,7 @@ func (a *app) signIn(label fixtures.Label, with ...*http.Cookie) *http.Cookie {
 	}
 	rec := a.do(http.MethodPost, "/signin/"+label.String(), planted)
 	require.Equal(a.t, http.StatusOK, rec.Code)
-	return cookieNamed(rec.Result(), sessions.CookieName)
+	return cookieNamed(rec.Result(), auth.CookieName)
 }
 
 func (a *app) me(cookie *http.Cookie) int {
@@ -134,7 +134,7 @@ func TestSigningInStartsASessionTheCookieNames(t *testing.T) {
 	// The cookie's lifetime is the session's maximum and never changes after
 	// sign-in, so a page rendered by a server that does not relay cookies cannot
 	// leave the browser holding a stale one.
-	assert.InDelta(t, int(sessions.MaxLifetime.Seconds()), cookie.MaxAge, 5)
+	assert.InDelta(t, int(auth.MaxLifetime.Seconds()), cookie.MaxAge, 5)
 	assert.Equal(t, fixtures.ID(fixtures.UserWithPassword), a.me(cookie))
 }
 
@@ -169,7 +169,7 @@ func TestSigningOutEndsTheSessionNotJustTheCookie(t *testing.T) {
 	rec := a.do(http.MethodPost, "/signout", cookie)
 	require.Equal(t, http.StatusOK, rec.Code)
 
-	cleared := cookieNamed(rec.Result(), sessions.CookieName)
+	cleared := cookieNamed(rec.Result(), auth.CookieName)
 	require.NotNil(t, cleared)
 	assert.Negative(t, cleared.MaxAge)
 	assert.Zero(t, a.me(cookie), "a copy of the cookie opens nothing")
@@ -207,10 +207,10 @@ func TestASessionNobodyUsesEndsAfterTheIdleWeek(t *testing.T) {
 	a := newApp(t, clk)
 	cookie := a.signIn(fixtures.UserWithPassword)
 
-	clk.advance(sessions.IdleTimeout - time.Hour)
+	clk.advance(auth.IdleTimeout - time.Hour)
 	require.Equal(t, fixtures.ID(fixtures.UserWithPassword), a.me(cookie))
 
-	clk.advance(sessions.IdleTimeout + time.Hour)
+	clk.advance(auth.IdleTimeout + time.Hour)
 	assert.Zero(t, a.me(cookie))
 }
 
@@ -260,7 +260,7 @@ func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	a.signIn(fixtures.UserBlank)
 	require.Equal(t, 2, a.rows())
 
-	clk.advance(sessions.MaxLifetime - time.Hour)
+	clk.advance(auth.MaxLifetime - time.Hour)
 	removed, err := a.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, removed, "a session within its lifetime stays, used or not")
@@ -273,7 +273,7 @@ func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 }
 
 func TestTheCookieIsSecureWhereTheSiteIsHTTPS(t *testing.T) {
-	a := newApp(t, newClock(), sessions.WithSecure(true))
+	a := newApp(t, newClock(), auth.WithSecure(true))
 
 	cookie := a.signIn(fixtures.UserWithPassword)
 
