@@ -5,7 +5,6 @@ import (
 	"cmp"
 	"context"
 	"database/sql"
-	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -174,7 +173,7 @@ func (l *Loader) claim(ctx context.Context, versionID int) (bool, error) {
 func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause error) error {
 	_, _ = l.db.CourseVersion.UpdateOne(version).
 		SetState(stateFailed).
-		SetResult(fmt.Sprintf("Error: %s", cause.Error())).
+		SetResult("Error: " + cause.Error()).
 		Save(ctx)
 	return cause
 }

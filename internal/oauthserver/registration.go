@@ -176,8 +176,7 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 	}
 	raw, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxRegistrationBody))
 	if err != nil {
-		var tooLarge *http.MaxBytesError
-		if errors.As(err, &tooLarge) {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 			return registration{}, &registrationError{
 				http.StatusRequestEntityTooLarge, "invalid_client_metadata", "the request is larger than it may be",
 			}

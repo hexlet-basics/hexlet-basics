@@ -4,7 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -13,7 +12,7 @@ import (
 // courses as {id, name} JSON.
 func TestSuggestPromptIsTheLegacyMessage(t *testing.T) {
 	prompt, err := suggestPrompt("<p>Hello <b>world</b> from\n  the blog</p>", []candidate{
-		{ID: 207281424, Name: lo.ToPtr("Курс Ruby")},
+		{ID: 207281424, Name: new("Курс Ruby")},
 	})
 	require.NoError(t, err)
 

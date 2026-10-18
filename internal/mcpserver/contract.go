@@ -1,6 +1,7 @@
 package mcpserver
 
 import (
+	"slices"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -69,10 +70,8 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 			if !found {
 				return nil, errs.With("ref", ref).Errorf("unsupported reference")
 			}
-			for _, seen := range stack {
-				if seen == name {
-					return nil, errs.With("schema", name).Errorf("reference cycle")
-				}
+			if slices.Contains(stack, name) {
+				return nil, errs.With("schema", name).Errorf("reference cycle")
 			}
 			target, ok := components[name]
 			if !ok {

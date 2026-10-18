@@ -222,7 +222,7 @@ func checkClientIDURL(clientID string) error {
 	if u.Path == "" || u.Path == "/" {
 		return errors.New("the client_id URL must have a path")
 	}
-	for _, segment := range strings.Split(u.Path, "/") {
+	for segment := range strings.SplitSeq(u.Path, "/") {
 		if segment == "." || segment == ".." {
 			return errors.New("the client_id URL must not contain dot segments")
 		}
@@ -270,8 +270,7 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 	}
 	_, err, _ = d.flight.Do(clientID, func() (any, error) { return nil, d.refresh(ctx, clientID) })
 	if err != nil {
-		var de *documentError
-		if errors.As(err, &de) {
+		if de, ok := errors.AsType[*documentError](err); ok {
 			d.remember(clientID, now)
 			return de
 		}
@@ -398,7 +397,7 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 	ttl := defaultDocumentTTL
 	var maxAge, sMaxAge *time.Duration
 	immediate := false
-	for _, directive := range strings.Split(h.Get("Cache-Control"), ",") {
+	for directive := range strings.SplitSeq(h.Get("Cache-Control"), ",") {
 		name, value, _ := strings.Cut(strings.ToLower(strings.TrimSpace(directive)), "=")
 		switch name {
 		case "no-store", "no-cache":

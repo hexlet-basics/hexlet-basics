@@ -22,7 +22,7 @@ func TestSecretNeverPrintsItsValue(t *testing.T) {
 	require.NoError(t, err)
 
 	outputs := map[string]string{
-		"%s":        fmt.Sprintf("%s", s), //nolint:perfsprint // the verb is the case under test
+		"%s":        fmt.Sprintf("%s", s),
 		"%v":        fmt.Sprintf("%v", s),
 		"%+v":       fmt.Sprintf("%+v", s),
 		"%#v":       fmt.Sprintf("%#v", s),

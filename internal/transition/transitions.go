@@ -50,8 +50,7 @@ func (e *Illegal) Error() string {
 
 // IsIllegal reports whether err is a refused move, and returns it.
 func IsIllegal(err error) (*Illegal, bool) {
-	var illegal *Illegal
-	if errors.As(err, &illegal) {
+	if illegal, ok := errors.AsType[*Illegal](err); ok {
 		return illegal, true
 	}
 	return nil, false

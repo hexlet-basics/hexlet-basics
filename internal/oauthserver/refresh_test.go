@@ -232,9 +232,7 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	var mu sync.Mutex
 	succeeded := 0
 	for range attempts {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 				"grant_type": {"refresh_token"}, "client_id": {racer.ClientID}, "refresh_token": {tokens.RefreshToken},
 			})
@@ -244,7 +242,7 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 				succeeded++
 				mu.Unlock()
 			}
-		}()
+		})
 	}
 	wg.Wait()
 

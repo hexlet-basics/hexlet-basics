@@ -13,12 +13,18 @@ linters:
     - fatcontext
     - forbidigo
     - gosec
+    - intrange
     - loggercheck
+    - modernize
     - nolintlint
     - noctx
+    - perfsprint
+    - predeclared
     - rowserrcheck
     - sloglint
     - sqlclosecheck
+    - thelper
+    - unconvert
     - usestdlibvars
     - usetesting
   settings:
