@@ -34,9 +34,9 @@ func TestLoadAcceptsAnEnabledOAuthServer(t *testing.T) {
 
 func TestLoadRejectsAnEnabledOAuthServerWithoutWhatItNeeds(t *testing.T) {
 	cases := map[string]struct{ issuer, key, want string }{
-		"no issuer":      {"", validOAuthKey, "OAUTH_ISSUER must be an origin"},
+		"no issuer":      {"", validOAuthKey, "OAUTH_ISSUER"},
 		"issuer path":    {"https://code-basics.com/app", validOAuthKey, "bare origin"},
-		"issuer no host": {"https:///", validOAuthKey, "OAUTH_ISSUER must be an origin"},
+		"issuer no host": {"https:///", validOAuthKey, "OAUTH_ISSUER"},
 		"short key":      {"https://code-basics.com", "short", "OAUTH_ENCRYPTION_KEY must be at least 32"},
 	}
 	for name, tc := range cases {

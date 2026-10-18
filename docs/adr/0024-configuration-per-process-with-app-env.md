@@ -44,9 +44,16 @@ constructors, so a component could read anything.
   dev stack's `DATABASE_URL`, `PUBLIC_URL`, `SITE_URL`, `APP_HOST` and
   `BLOB_BUCKET_URL`, so an existing checkout keeps working.
 
-**Not decided here.** Validator tags, a redacting `Secret` type and the
-`origin`/`notdevsecret` validators are separate tickets of the spec; the
-hand-written `validate*` functions stay until then.
+**Validation (ticket #919).** Rules are `go-playground/validator/v10` tags next
+to the `env` tags, plus the custom `origin` and `notdevsecret` (a `dev-insecure-`
+value in production). Rules across settings are a small `crossChecks` method on
+a root; the OAuth and MCP sections are checked only while their flag is on.
+Every violation is reported at once, named by variable, in one `oops` error
+that states the rule and never a value. Secrets are `config.Secret`, which
+prints as `[REDACTED]` through fmt, slog and JSON; `Reveal()` is the one way
+to read it. `.env` was never loaded by mise (its `[env]` only sets the dev
+stack's ports and URLs); `config.LoadDotenv()` in `cmd/*/main` reads it under
+`APP_ENV` unset or `development` only.
 
 **Ops note (the chart is outside this rewrite).** Before deploying, give both
 workloads `APP_ENV=production` (replacing `SENTRY_ENVIRONMENT=production`), and

@@ -528,7 +528,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
+		llm := assistant.NewOpenAI(cfg.OpenAIAccessToken.Reveal(), cfg.OpenAIModel)
 		return assistant.NewChat(db, txStore, tracker, llm, translator), nil
 	}),
 	// The progress module owns what a learner has finished. It writes and publishes
@@ -634,7 +634,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return handlers.NewGitHubWebhookHandler(starter, cfg.GitHubWebhookSecret, translator), nil
+		return handlers.NewGitHubWebhookHandler(starter, cfg.GitHubWebhookSecret.Reveal(), translator), nil
 	}),
 	// Both the raw router and the middleware-wrapped application handler have
 	// the same http.Handler interface. Named bindings keep those two seams
@@ -713,7 +713,7 @@ var serverPackage = do.Package(
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
 				Issuer:               cfg.OAuth.Issuer,
-				EncryptionKey:        cfg.OAuth.EncryptionKey,
+				EncryptionKey:        cfg.OAuth.EncryptionKey.Reveal(),
 				RegistrationLimit:    cfg.OAuth.RegistrationLimit,
 				RegistrationWindow:   cfg.OAuth.RegistrationWindow,
 				AccessTokenLifetime:  cfg.OAuth.AccessTokenTTL,
@@ -849,8 +849,8 @@ func handlerSettings(cfg *config.Server) handlers.Settings {
 		PublicURL:         cfg.PublicURL,
 		SiteURL:           cfg.SiteURL,
 		SecureCookies:     cfg.SecureCookies(),
-		GuestCookieSecret: cfg.GuestCookieSecret,
-		EmailTokenSecret:  cfg.EmailTokenSecret,
+		GuestCookieSecret: cfg.GuestCookieSecret.Reveal(),
+		EmailTokenSecret:  cfg.EmailTokenSecret.Reveal(),
 		CourseRepoBaseURL: cfg.CourseRepoBaseURL,
 		BookBlobKey:       cfg.BookBlobKey,
 	}
