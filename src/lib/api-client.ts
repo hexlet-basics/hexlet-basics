@@ -4,6 +4,8 @@ import { client } from "@/client/client.gen";
 import { apiErrorOf } from "@/lib/api-error";
 import { localeOf } from "@/lib/locale-path";
 
+export { client } from "@/client/client.gen";
+
 // Read the incoming SSR request's cookie header. Server-only (the client impl
 // is a no-op), so the server import is stripped from the browser bundle — the
 // browser sends the auth cookies itself (same-origin fetch).
@@ -68,5 +70,3 @@ client.interceptors.request.use(async (request) => {
 // A non-2xx answer reaches callers as one ApiError (status, parsed body), so
 // no route imports the HTTP library.
 client.interceptors.error.use(apiErrorOf);
-
-export { client };

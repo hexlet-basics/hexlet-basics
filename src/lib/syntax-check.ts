@@ -81,7 +81,8 @@ function parserFor(language: string): Promise<Parser> {
       if (!response.ok) {
         throw new Error(`grammar ${language}: ${response.status}`);
       }
-      created.setLanguage(await LanguageClass.load(new Uint8Array(await response.arrayBuffer())));
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      created.setLanguage(await LanguageClass.load(bytes));
       return created;
     })();
     // A failed load (offline, blocked asset) must not stick: the next edit retries.

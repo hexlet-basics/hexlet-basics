@@ -53,12 +53,10 @@ function createDirectivePlugin(components: DirectiveComponents) {
             return;
           }
 
-          if (!node.data) {
-            node.data = {};
-          }
+          node.data ??= {};
           const { data } = node;
           data.hName = componentKey;
-          data.hProperties = node.attributes || {};
+          data.hProperties = node.attributes ?? {};
         }
       });
     };
@@ -76,9 +74,7 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
   );
 
   const rawClassName = codeNode?.properties?.className;
-  const className = Array.isArray(rawClassName)
-    ? rawClassName.join(" ")
-    : String(rawClassName ?? "");
+  const className = Array.isArray(rawClassName) ? rawClassName.join(" ") : (rawClassName ?? "");
   const requestedLanguage = /language-(\w+)/.exec(className)?.[1];
 
   const code = (codeNode?.children ?? [])
@@ -120,10 +116,13 @@ const typographyStyles: TypographyProps["styles"] = (theme) => ({
   },
 });
 
+// A stable default, so an omitted `components` prop is the same object on every render.
+const noComponents: DirectiveComponents = {};
+
 export default function MarkdownViewer({
   children,
   allowHtml = false,
-  components = {},
+  components = noComponents,
 }: MarkdownViewerProps) {
   const preparedComponents = {
     pre: MarkdownCodeBlock,

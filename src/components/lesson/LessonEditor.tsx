@@ -17,7 +17,7 @@ import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";
 // monaco is pointed at this application's own copy instead of a CDN's.
 const MonacoEditor = lazy(async () => {
   await import("@/lib/monaco");
-  return await import("@monaco-editor/react");
+  return import("@monaco-editor/react");
 });
 
 interface LessonEditorProps {

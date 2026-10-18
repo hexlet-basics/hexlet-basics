@@ -24,7 +24,7 @@ function labelFor(i18n: I18n, key: string): string {
   if (!i18n.exists(key)) {
     throw new Error(`missing i18n label ${key}`);
   }
-  return String(i18n.t(key));
+  return i18n.t(key);
 }
 
 const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {

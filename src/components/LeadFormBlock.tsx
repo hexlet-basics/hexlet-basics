@@ -73,11 +73,9 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
           />
         ),
       });
-      if (redirectHref) {
-        await navigate({ href: redirectHref });
-      } else {
-        await navigate({ to: "/{-$locale}", params: { locale } });
-      }
+      await (redirectHref
+        ? navigate({ href: redirectHref })
+        : navigate({ to: "/{-$locale}", params: { locale } }));
     },
   });
 

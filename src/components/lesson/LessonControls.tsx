@@ -54,7 +54,9 @@ export default function LessonControls({
           <ActionIcon
             variant="light"
             size="lg"
-            onClick={confirmReset}
+            onClick={() => {
+              confirmReset();
+            }}
             aria-label={t(($) => $.helpers.reset)}
           >
             <IconRepeat size={18} />

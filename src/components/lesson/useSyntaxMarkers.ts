@@ -33,7 +33,8 @@ export function useSyntaxMarkers(
     let disposed = false;
 
     const check = async () => {
-      const version = ++latest;
+      latest += 1;
+      const version = latest;
       const problems = await findSyntaxProblems(language, model.getValue());
       if (disposed || version !== latest) {
         return;

@@ -121,7 +121,9 @@ function ConnectedApps() {
                     variant="default"
                     color="red"
                     loading={revoke.isPending && revoke.variables?.path.id === app.id}
-                    onClick={() => confirm(app)}
+                    onClick={() => {
+                      confirm(app);
+                    }}
                   >
                     {t(($) => $.account.connected_apps.revoke)}
                   </Button>

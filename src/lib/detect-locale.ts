@@ -35,7 +35,9 @@ export const rememberLocale = createIsomorphicFn()
       sameSite: "lax",
     });
   })
-  .client((): void => {});
+  .client((): void => {
+    // Nothing to remember in the browser: the cookie is set while serving.
+  });
 
 // Locale to redirect the unprefixed root to, or undefined to stay on `en`.
 // The remembered locale wins, then a Russian-preferring Accept-Language goes to

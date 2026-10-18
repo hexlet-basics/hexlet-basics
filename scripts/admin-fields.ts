@@ -63,10 +63,11 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
   let nullable = schema.nullable === true;
   let current = schema;
   for (;;) {
+    const [only, ...others] = current.allOf ?? [];
     if (current.$ref) {
       current = schemaNamed(spec, current.$ref.replace("#/components/schemas/", ""));
-    } else if (current.allOf?.length === 1 && current.allOf[0]) {
-      current = current.allOf[0];
+    } else if (only && others.length === 0) {
+      current = only;
     } else {
       return { shape: current, nullable: nullable || current.nullable === true };
     }
@@ -123,7 +124,7 @@ function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, s
 export function describeResource(spec: OpenApi, config: ResourceConfig): ResourceDescriptors {
   const input = schemaNamed(spec, config.input);
   const item = schemaNamed(spec, config.item);
-  const required = new Set(input.required ?? []);
+  const required = new Set(input.required);
 
   const skipped = new Set(config.skipFields);
   const inputProperties = Object.entries(input.properties ?? {}).filter(
@@ -156,8 +157,7 @@ const header = (name: string) =>
 // the output depends on nothing but the descriptors (oxfmt then lays it out).
 export function renderModule(name: string, data: ResourceDescriptors): string {
   return (
-    header(name) +
-    `import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
+    `${header(name)}import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
     `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, null, 2)};\n\n` +
     `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, null, 2)};\n`
   );

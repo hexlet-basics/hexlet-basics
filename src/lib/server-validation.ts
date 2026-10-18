@@ -29,7 +29,7 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
     } catch (error) {
       const errors = validationErrors(error);
       if (!errors) {
-        return;
+        return undefined;
       }
       return {
         fields: Object.fromEntries(
@@ -37,7 +37,7 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
         ),
       };
     }
-    return;
+    return undefined;
   };
 }
 
