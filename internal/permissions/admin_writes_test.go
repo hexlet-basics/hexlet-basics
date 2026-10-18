@@ -14,6 +14,7 @@ import (
 // kind write, an administrators-only or any-staff marker, or nothing but the
 // admin session scheme. Reads and public operations are never admin writes.
 func TestAnAdminWriteIsDecidedFromTheContractNotFromAList(t *testing.T) {
+	t.Parallel()
 	assert.True(t, permissions.IsAdminWrite("AdminCreateBlogPost"), "a Permission of kind write")
 	assert.True(t, permissions.IsAdminWrite("AdminUploadAttachment"), "an any-staff marker")
 	assert.True(t, permissions.IsAdminWrite("AdminCreateUser"), "a write Permission on what was administrators-only")
@@ -25,6 +26,7 @@ func TestAnAdminWriteIsDecidedFromTheContractNotFromAList(t *testing.T) {
 }
 
 func TestAnOperationOnlyAnAccessMarkerClassifiesIsJudgedByItsMethod(t *testing.T) {
+	t.Parallel()
 	d, err := permissions.Parse([]byte(`
 paths:
   /a:
@@ -47,6 +49,7 @@ paths:
 }
 
 func TestAStandaloneOperationIsReadFromTheContract(t *testing.T) {
+	t.Parallel()
 	assert.True(t, permissions.Standalone("AdminUploadAttachment"))
 	assert.False(t, permissions.Standalone("AdminCreateBlogPost"))
 

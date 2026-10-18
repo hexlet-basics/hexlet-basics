@@ -13,6 +13,7 @@ import (
 // both sides: English, the default, carries no prefix, every other locale
 // carries `/<locale>`.
 func TestPathPrefix(t *testing.T) {
+	t.Parallel()
 	cases := []struct{ locale, prefix string }{
 		{"en", ""},
 		{"ru", "/ru"},
