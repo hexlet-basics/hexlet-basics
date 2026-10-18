@@ -6925,7 +6925,7 @@ type ProblemDetails struct {
 	Instance OptString `json:"instance"`
 	// Field-level validation errors, keyed by field name (each value is the list of messages for that
 	// field). Present on a 422 only: a write that failed validation, including constraints the schema
-	// cannot express, like uniqueness (ADR-0025).
+	// cannot express, like uniqueness (ADR-0028).
 	Errors OptProblemDetailsErrors `json:"errors"`
 }
 
@@ -6993,7 +6993,7 @@ func (*ProblemDetails) createAssistantMessageRes() {}
 
 // Field-level validation errors, keyed by field name (each value is the list of messages for that
 // field). Present on a 422 only: a write that failed validation, including constraints the schema
-// cannot express, like uniqueness (ADR-0025).
+// cannot express, like uniqueness (ADR-0028).
 type ProblemDetailsErrors map[string][]string
 
 func (s *ProblemDetailsErrors) init() ProblemDetailsErrors {

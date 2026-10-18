@@ -11,7 +11,7 @@ import (
 )
 
 // Every non-2xx answer is RFC 9457 Problem Details, whatever the operation
-// declared (ADR-0025). Each case is one status the clients meet, reached through
+// declared (ADR-0028). Each case is one status the clients meet, reached through
 // a real operation, and read back through the generated client.
 
 func TestAMissingRecordAnswersProblemDetails404(t *testing.T) {

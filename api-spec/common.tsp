@@ -121,7 +121,7 @@ model ProblemDetails {
    * Field-level validation errors, keyed by field name (each value is the list
    * of messages for that field). Present on a 422 only: a write that failed
    * validation, including constraints the schema cannot express, like
-   * uniqueness (ADR-0025).
+   * uniqueness (ADR-0028).
    */
   errors?: Record<string[]>;
 }

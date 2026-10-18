@@ -9,7 +9,7 @@ import (
 )
 
 // requireProblem asserts that a generated-client call failed with a Problem
-// Details answer of the given status (ADR-0025): every non-2xx is one, whatever
+// Details answer of the given status (ADR-0028): every non-2xx is one, whatever
 // the operation declared.
 func requireProblem(t *testing.T, err error, status int) {
 	t.Helper()

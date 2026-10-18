@@ -85,7 +85,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	)
 
 	// A refusal is never an operation's own response: the shared default one is
-	// Problem Details for every status (ADR-0025).
+	// Problem Details for every status (ADR-0028).
 	assert.Contains(t, spec.Paths["/api/my"].Get.Responses, "default")
 	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "default")
 	assert.NotContains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "403")

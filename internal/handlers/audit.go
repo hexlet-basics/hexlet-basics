@@ -39,7 +39,7 @@ const requestIDHeader = "X-Request-ID"
 // in a short transaction of its own after the rollback and holding no changes:
 // the changes did not happen, and the error text or the row values could name
 // what the caller was never allowed to read. Every failure, a validation error
-// included, is the handler's error return (ADR-0025), so one test finds them
+// included, is the handler's error return (ADR-0028), so one test finds them
 // all. Refusals are recorded by the security handler, which
 // rejects them first (Security.HandleAdminSession).
 //
