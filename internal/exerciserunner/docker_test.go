@@ -168,8 +168,8 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 	runner := dockerRunner(t)
 	// Comfortably more than the daemon needs to create and start a container,
 	// and far short of the sleep below.
-	runner.opts.Timeout = 5 * time.Second
-	runner.opts.GraceTimeout = 10 * time.Second
+	runner.opts.Timeout = 3 * time.Second
+	runner.opts.GraceTimeout = 3 * time.Second
 
 	done := make(chan error, 1)
 	go func() {
@@ -183,7 +183,7 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 		// Whichever call the budget runs out on, the run ends rather than
 		// holding its concurrency slot until the process dies.
 		assert.ErrorIs(t, err, context.DeadlineExceeded)
-	case <-time.After(45 * time.Second):
+	case <-time.After(20 * time.Second):
 		t.Fatal("the read never gave up: a container that never exits wedges the runner")
 	}
 }
