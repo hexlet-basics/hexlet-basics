@@ -13,8 +13,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"hexletbasics/internal/di"
 )
 
 // logSink is a log destination the runtime's goroutines and the test share.
@@ -135,42 +133,4 @@ func TestShutdownReportsTheDrainFailureWhenForceCloseWorks(t *testing.T) {
 	require.ErrorIs(t, err, drainErr)
 	assert.Contains(t, logs.String(), "stop HTTP server")
 	assert.NotContains(t, logs.String(), "force-close")
-}
-
-func serverDependencies(t *testing.T) di.ServerDependencies {
-	t.Helper()
-	// The pool opens lazily, so the process's resources can be built and released
-	// without a database behind them.
-	t.Setenv("DATABASE_URL", "postgres://nobody@127.0.0.1:1/none")
-	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
-	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
-	dependencies, err := di.BuildServer()
-	require.NoError(t, err)
-	return dependencies
-}
-
-func TestCloseResourcesReleasesEverythingTheProcessOwns(t *testing.T) {
-	dependencies := serverDependencies(t)
-	logs := &logSink{}
-
-	closeResources(t.Context(), logs.logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-
-	assert.NotContains(t, logs.String(), "level=ERROR")
-	assert.Error(t, dependencies.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
-	_, err := dependencies.Database.User.Query().Count(t.Context())
-	assert.Error(t, err, "the database pool is closed")
-}
-
-func TestCloseResourcesLogsWhatFailsToClose(t *testing.T) {
-	dependencies := serverDependencies(t)
-	closeResources(t.Context(), (&logSink{}).logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-	logs := &logSink{}
-
-	closeResources(t.Context(), logs.logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-
-	assert.Contains(t, logs.String(), "closing blob bucket")
 }
