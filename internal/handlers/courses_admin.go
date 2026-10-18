@@ -7,7 +7,6 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/localization"
 )
 
 // Admin course endpoints. The API embeds the current version, so the generated
@@ -16,37 +15,37 @@ import (
 // the cover is deferred until the Attachments uploader lands, and repositoryUrl
 // is computed from the slug on read. There is no delete (parity with legacy).
 
-func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (api.AdminListCoursesRes, error) {
+func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (*api.CoursePage, error) {
 	return s.db.Course.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourses)
 }
 
 // AdminListCourseOptions serves selects: every course as id and name, with no
 // page.
-func (s *Server) AdminListCourseOptions(ctx context.Context) (api.AdminListCourseOptionsRes, error) {
+func (s *Server) AdminListCourseOptions(ctx context.Context) ([]api.CourseOption, error) {
 	rows, err := s.courseDirectory.Options(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	options := make(api.AdminListCourseOptionsOKApplicationJSON, 0, len(rows))
+	options := make([]api.CourseOption, 0, len(rows))
 	for _, row := range rows {
 		options = append(options, api.CourseOption{ID: int32(row.ID), Name: row.Name})
 	}
-	return &options, nil
+	return options, nil
 }
 
-func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (api.AdminGetCourseRes, error) {
+func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (*api.Course, error) {
 	return s.db.Course.AdminGet(ctx, params.ID, s.conv.ToCourse)
 }
 
 // AdminCreateCourse creates a course as a draft: the Readiness is not an input
 // (a state is not an update), so the column default applies and it moves only
 // through the mark-as operations.
-func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (api.AdminCreateCourseRes, error) {
+func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (*api.Course, error) {
 	return s.db.Course.AdminCreate(ctx, req, s.conv.ToCourse)
 }
 
-func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (api.AdminUpdateCourseRes, error) {
+func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (*api.Course, error) {
 	return s.db.Course.AdminUpdate(ctx, params.ID, req, s.conv.ToCourse)
 }
 
@@ -58,18 +57,18 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 // 409.
 
 // AdminMarkCourseDraft takes a course back to a draft.
-func (s *Server) AdminMarkCourseDraft(ctx context.Context, params api.AdminMarkCourseDraftParams) (api.AdminMarkCourseDraftRes, error) {
-	return moveReadiness(ctx, int(params.ID), s.courseReadiness.MarkDraft, s.getAdminCourse)
+func (s *Server) AdminMarkCourseDraft(ctx context.Context, params api.AdminMarkCourseDraftParams) (*api.Course, error) {
+	return moveState(ctx, int(params.ID), s.courseReadiness.MarkDraft, s.getAdminCourse)
 }
 
 // AdminMarkCourseInDevelopment marks a course as being developed.
-func (s *Server) AdminMarkCourseInDevelopment(ctx context.Context, params api.AdminMarkCourseInDevelopmentParams) (api.AdminMarkCourseInDevelopmentRes, error) {
-	return moveReadiness(ctx, int(params.ID), s.courseReadiness.MarkInDevelopment, s.getAdminCourse)
+func (s *Server) AdminMarkCourseInDevelopment(ctx context.Context, params api.AdminMarkCourseInDevelopmentParams) (*api.Course, error) {
+	return moveState(ctx, int(params.ID), s.courseReadiness.MarkInDevelopment, s.getAdminCourse)
 }
 
 // AdminMarkCourseCompleted marks a course as finished, which lists it publicly.
-func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminMarkCourseCompletedParams) (api.AdminMarkCourseCompletedRes, error) {
-	return moveReadiness(ctx, int(params.ID), s.courseReadiness.MarkCompleted, s.getAdminCourse)
+func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminMarkCourseCompletedParams) (*api.Course, error) {
+	return moveState(ctx, int(params.ID), s.courseReadiness.MarkCompleted, s.getAdminCourse)
 }
 
 // getAdminCourse is the admin course view a readiness move echoes back, the one
@@ -84,10 +83,10 @@ func (s *Server) getAdminCourse(ctx context.Context, id int) (*api.Course, error
 // live. Maps 1:1 to the legacy VersionsController#create → ExerciseLoaderJob. The
 // 201 body is the freshly-created (not yet built) version, so the admin UI can
 // poll its state.
-func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminCreateCourseVersionParams) (api.AdminCreateCourseVersionRes, error) {
+func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminCreateCourseVersionParams) (*api.CourseVersion, error) {
 	version, err := s.starter.Start(ctx, int(params.ID))
 	if errors.Is(err, domain.ErrNotFound) {
-		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
+		return nil, errCourseNotFound
 	}
 	if err != nil {
 		return nil, err
@@ -99,13 +98,13 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 
 // AdminReviewCourse asks for an AI review of every lesson of the course's
 // current version, all locales included.
-func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) (api.AdminReviewCourseRes, error) {
+func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) error {
 	err := s.lessonReviews.ReviewCourse(ctx, int(params.ID))
 	if errors.Is(err, domain.ErrNotFound) {
-		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
+		return errCourseNotFound
 	}
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminReviewCourseNoContent{}, nil
+	return nil
 }

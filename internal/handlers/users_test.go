@@ -142,8 +142,9 @@ func TestAdminCreateUser(t *testing.T) {
 }
 
 // TestAdminCreateUserDuplicateEmail is the parity proof for the baseline unique
-// email index: a duplicate surfaces as 409 via the central ErrorHandler, not a
-// 500, and no pre-check race exists.
+// email index: a duplicate is the person's input to fix, a 422 that names the
+// email field through the central ErrorHandler, not a 500, and no pre-check
+// race exists.
 func TestAdminCreateUserDuplicateEmail(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
@@ -154,8 +155,8 @@ func TestAdminCreateUserDuplicateEmail(t *testing.T) {
 		LastName:  api.NilString{Null: true},
 		Admin:     api.NilBool{Null: true},
 	})
-	require.Error(t, err)
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	problem := problemWithStatus(t, err, http.StatusUnprocessableEntity)
+	assert.Contains(t, problem.Response.Errors.Value, "email")
 }
 
 func TestAdminUpdateUser(t *testing.T) {

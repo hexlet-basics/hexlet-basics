@@ -13,211 +13,211 @@ type Handler interface {
 	// Archive a draft or published banner.
 	//
 	// POST /api/admin/banners/{id}/archive
-	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error)
+	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (*Banner, error)
 	// AdminArchiveBlogPost implements adminArchiveBlogPost operation.
 	//
 	// Archive a draft or published post.
 	//
 	// POST /api/admin/blog_posts/{id}/archive
-	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
+	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (*BlogPost, error)
 	// AdminArchiveCourseLandingPage implements adminArchiveCourseLandingPage operation.
 	//
 	// Archive a draft or published landing page.
 	//
 	// POST /api/admin/course_landing_pages/{id}/archive
-	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error)
+	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminArchiveReview implements adminArchiveReview operation.
 	//
 	// Archive a draft or published review.
 	//
 	// POST /api/admin/reviews/{id}/archive
-	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error)
+	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (*Review, error)
 	// AdminCreateBanner implements adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
 	// handler; banners carry no uniqueness constraint, so there is no 409 path.
 	//
 	// POST /api/admin/banners
-	AdminCreateBanner(ctx context.Context, req *BannerInput) (AdminCreateBannerRes, error)
+	AdminCreateBanner(ctx context.Context, req *BannerInput) (*Banner, error)
 	// AdminCreateBlogPost implements adminCreateBlogPost operation.
 	//
 	// POST /api/admin/blog_posts
-	AdminCreateBlogPost(ctx context.Context, req *BlogPostInput) (AdminCreateBlogPostRes, error)
+	AdminCreateBlogPost(ctx context.Context, req *BlogPostInput) (*BlogPost, error)
 	// AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 	//
 	// POST /api/admin/course_categories/{categoryId}/qna_items
-	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
+	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminCreateCourse implements adminCreateCourse operation.
 	//
 	// POST /api/admin/courses
-	AdminCreateCourse(ctx context.Context, req *CourseInput) (AdminCreateCourseRes, error)
+	AdminCreateCourse(ctx context.Context, req *CourseInput) (*Course, error)
 	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
 	// POST /api/admin/course_categories
-	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (*CourseCategory, error)
 	// AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 	//
 	// POST /api/admin/course_landing_pages
-	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
+	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (*CourseLandingPage, error)
 	// AdminCreateCourseVersion implements adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
 	//
 	// POST /api/admin/courses/{id}/versions
-	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
+	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (*CourseVersion, error)
 	// AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 	//
 	// POST /api/admin/course_landing_pages/{landingPageId}/qna_items
-	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
+	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminCreateReview implements adminCreateReview operation.
 	//
 	// POST /api/admin/reviews
-	AdminCreateReview(ctx context.Context, req *ReviewInput) (AdminCreateReviewRes, error)
+	AdminCreateReview(ctx context.Context, req *ReviewInput) (*Review, error)
 	// AdminCreateRole implements adminCreateRole operation.
 	//
 	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /api/admin/management/roles
-	AdminCreateRole(ctx context.Context, req *RoleInput) (AdminCreateRoleRes, error)
+	AdminCreateRole(ctx context.Context, req *RoleInput) (*StaffRoleDetail, error)
 	// AdminCreateStaffMember implements adminCreateStaffMember operation.
 	//
 	// POST /api/admin/management/staff_members
-	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (AdminCreateStaffMemberRes, error)
+	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (*StaffMember, error)
 	// AdminCreateUser implements adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /api/admin/api/users
-	AdminCreateUser(ctx context.Context, req *UserInput) (AdminCreateUserRes, error)
+	AdminCreateUser(ctx context.Context, req *UserInput) (*UserCrud, error)
 	// AdminDeleteBanner implements adminDeleteBanner operation.
 	//
 	// Delete a banner.
 	//
 	// DELETE /api/admin/banners/{id}
-	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error)
+	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
 	// AdminDeleteBlogPost implements adminDeleteBlogPost operation.
 	//
 	// DELETE /api/admin/blog_posts/{id}
-	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
+	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error
 	// AdminDeleteCategoryQnaItem implements adminDeleteCategoryQnaItem operation.
 	//
 	// DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
-	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
+	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error
 	// AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
 	// DELETE /api/admin/course_categories/{id}
-	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
+	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error
 	// AdminDeleteCourseLandingPage implements adminDeleteCourseLandingPage operation.
 	//
 	// DELETE /api/admin/course_landing_pages/{id}
-	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
+	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error
 	// AdminDeleteLandingPageQnaItem implements adminDeleteLandingPageQnaItem operation.
 	//
 	// DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
+	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error
 	// AdminDeleteReview implements adminDeleteReview operation.
 	//
 	// DELETE /api/admin/reviews/{id}
-	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error)
+	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error
 	// AdminDeleteRole implements adminDeleteRole operation.
 	//
 	// DELETE /api/admin/management/roles/{id}
-	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error)
+	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error
 	// AdminDeleteStaffMember implements adminDeleteStaffMember operation.
 	//
 	// DELETE /api/admin/management/staff_members/{id}
-	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error)
+	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error
 	// AdminDeleteUser implements adminDeleteUser operation.
 	//
 	// DELETE /api/admin/api/users/{id}
-	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
 	// AdminFetch implements adminFetch operation.
 	//
 	// Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
 	//
 	// GET /api/admin/search/record
-	AdminFetch(ctx context.Context, params AdminFetchParams) (AdminFetchRes, error)
+	AdminFetch(ctx context.Context, params AdminFetchParams) (*AdminRecord, error)
 	// AdminGetBanner implements adminGetBanner operation.
 	//
 	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /api/admin/banners/{id}
-	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error)
 	// AdminGetBlogPost implements adminGetBlogPost operation.
 	//
 	// GET /api/admin/blog_posts/{id}
-	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error)
 	// AdminGetCourse implements adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /api/admin/courses/{id}
-	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error)
 	// AdminGetCourseCategory implements adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /api/admin/course_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /api/admin/course_landing_pages/{id}
-	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser implements adminGetManagementUser operation.
 	//
 	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /api/admin/management/users/{id}
-	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error)
 	// AdminGetMyCapabilities implements adminGetMyCapabilities operation.
 	//
 	// The capabilities the caller holds; open to any staff member.
 	//
 	// GET /api/admin/capabilities
-	AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error)
+	AdminGetMyCapabilities(ctx context.Context) (*MyCapabilities, error)
 	// AdminGetReview implements adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /api/admin/reviews/{id}
-	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole implements adminGetRole operation.
 	//
 	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 	// handler.
 	//
 	// GET /api/admin/management/roles/{id}
-	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error)
 	// AdminGetRolePermissions implements adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
 	// GET /api/admin/management/role_permissions/{roleId}
-	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminGetStaffMember implements adminGetStaffMember operation.
 	//
 	// GET /api/admin/management/staff_members/{id}
-	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error)
 	// AdminGetUser implements adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 	// member.
 	//
 	// GET /api/admin/api/users/{id}
-	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error)
 	// AdminListAuditRecords implements adminListAuditRecords operation.
 	//
 	// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
@@ -225,39 +225,39 @@ type Handler interface {
 	// old values.
 	//
 	// GET /api/admin/audit_records
-	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (AdminListAuditRecordsRes, error)
+	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (*AuditRecordPage, error)
 	// AdminListBanners implements adminListBanners operation.
 	//
 	// List banners (paginated).
 	//
 	// GET /api/admin/banners
-	AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error)
+	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
 	// AdminListBlogPosts implements adminListBlogPosts operation.
 	//
 	// GET /api/admin/blog_posts
-	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
+	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error)
 	// AdminListCategoryQnaItems implements adminListCategoryQnaItems operation.
 	//
 	// GET /api/admin/course_categories/{categoryId}/qna_items
-	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
+	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error)
 	// AdminListCourseCategories implements adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
 	// GET /api/admin/course_categories
-	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
+	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error)
 	// AdminListCourseLandingPages implements adminListCourseLandingPages operation.
 	//
 	// GET /api/admin/course_landing_pages
-	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
+	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error)
 	// AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 	//
 	// GET /api/admin/course_lesson_reviews
-	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
+	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error)
 	// AdminListCourseLessons implements adminListCourseLessons operation.
 	//
 	// GET /api/admin/course_lessons
-	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
+	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error)
 	// AdminListCourseOptions implements adminListCourseOptions operation.
 	//
 	// Every course as id and name, unpaginated and oldest first, for selects. It is the post form's course
@@ -265,59 +265,59 @@ type Handler interface {
 	// without being allowed to edit courses.
 	//
 	// GET /api/admin/courses/options
-	AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error)
+	AdminListCourseOptions(ctx context.Context) ([]CourseOption, error)
 	// AdminListCourses implements adminListCourses operation.
 	//
 	// GET /api/admin/courses
-	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
+	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error)
 	// AdminListLandingPageQnaItems implements adminListLandingPageQnaItems operation.
 	//
 	// GET /api/admin/course_landing_pages/{landingPageId}/qna_items
-	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
+	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error)
 	// AdminListLeads implements adminListLeads operation.
 	//
 	// GET /api/admin/leads
-	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
+	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error)
 	// AdminListLessonProgress implements adminListLessonProgress operation.
 	//
 	// GET /api/admin/lesson_progress
-	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
+	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (*LessonProgressPage, error)
 	// AdminListManagementUsers implements adminListManagementUsers operation.
 	//
 	// GET /api/admin/management/users
-	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error)
+	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error)
 	// AdminListMessages implements adminListMessages operation.
 	//
 	// GET /api/admin/messages
-	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
+	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error)
 	// AdminListPermissions implements adminListPermissions operation.
 	//
 	// The catalog of Permissions, generated from the operations' declarations.
 	//
 	// GET /api/admin/management/permissions
-	AdminListPermissions(ctx context.Context) (AdminListPermissionsRes, error)
+	AdminListPermissions(ctx context.Context) (*PermissionCatalog, error)
 	// AdminListReviews implements adminListReviews operation.
 	//
 	// GET /api/admin/reviews
-	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error)
+	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error)
 	// AdminListRoles implements adminListRoles operation.
 	//
 	// GET /api/admin/management/roles
-	AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error)
+	AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error)
 	// AdminListStaffMembers implements adminListStaffMembers operation.
 	//
 	// GET /api/admin/management/staff_members
-	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error)
+	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error)
 	// AdminListUsers implements adminListUsers operation.
 	//
 	// GET /api/admin/api/users
-	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error)
 	// AdminMarkCourseCompleted implements adminMarkCourseCompleted operation.
 	//
 	// Mark a course as completed: it joins the public catalogue.
 	//
 	// POST /api/admin/courses/{id}/mark_completed
-	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (AdminMarkCourseCompletedRes, error)
+	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (*Course, error)
 	// AdminMarkCourseDraft implements adminMarkCourseDraft operation.
 	//
 	// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
@@ -325,13 +325,13 @@ type Handler interface {
 	// current value is a 409 with a localized `detail`.
 	//
 	// POST /api/admin/courses/{id}/mark_draft
-	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (AdminMarkCourseDraftRes, error)
+	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (*Course, error)
 	// AdminMarkCourseInDevelopment implements adminMarkCourseInDevelopment operation.
 	//
 	// Mark a course as in development.
 	//
 	// POST /api/admin/courses/{id}/mark_in_development
-	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (AdminMarkCourseInDevelopmentRes, error)
+	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (*Course, error)
 	// AdminPublishBanner implements adminPublishBanner operation.
 	//
 	// Publish a draft or archived banner. A state is not an update: each change of Publication State is
@@ -339,7 +339,7 @@ type Handler interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/banners/{id}/publish
-	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error)
+	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (*Banner, error)
 	// AdminPublishBlogPost implements adminPublishBlogPost operation.
 	//
 	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -347,7 +347,7 @@ type Handler interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/blog_posts/{id}/publish
-	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
+	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (*BlogPost, error)
 	// AdminPublishCourseLandingPage implements adminPublishCourseLandingPage operation.
 	//
 	// Publish a draft or archived landing page. A state is not an update: each change of Publication State
@@ -355,7 +355,7 @@ type Handler interface {
 	// 409 with a localized `detail`.
 	//
 	// POST /api/admin/course_landing_pages/{id}/publish
-	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error)
+	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminPublishReview implements adminPublishReview operation.
 	//
 	// Publish a draft or archived review. A state is not an update: each change of Publication State is
@@ -363,19 +363,19 @@ type Handler interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/reviews/{id}/publish
-	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error)
+	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (*Review, error)
 	// AdminReviewCourse implements adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
 	//
 	// POST /api/admin/courses/{id}/review
-	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
+	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) error
 	// AdminReviewCourseLesson implements adminReviewCourseLesson operation.
 	//
 	// Enqueue AI review for a single lesson.
 	//
 	// POST /api/admin/course_lessons/{id}/review
-	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
+	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) error
 	// AdminSearch implements adminSearch operation.
 	//
 	// Search every course, lesson and blog post by what they say, in the request locale, whatever state
@@ -385,134 +385,134 @@ type Handler interface {
 	// public `searchCatalogue` keeps its filters.
 	//
 	// GET /api/admin/search
-	AdminSearch(ctx context.Context, params AdminSearchParams) (AdminSearchRes, error)
+	AdminSearch(ctx context.Context, params AdminSearchParams) (*AdminSearchResultPage, error)
 	// AdminSearchUsers implements adminSearchUsers operation.
 	//
 	// Typeahead search by name/email.
 	//
 	// GET /api/admin/api/users/search
-	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
+	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error)
 	// AdminSetBlogPostRelatedCourses implements adminSetBlogPostRelatedCourses operation.
 	//
 	// Set the related/promoted courses for a post by hand.
 	//
 	// POST /api/admin/blog_posts/{id}/related_courses
-	AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
+	AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (*BlogPost, error)
 	// AdminSuggestBlogPostRelatedCourses implements adminSuggestBlogPostRelatedCourses operation.
 	//
 	// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
 	// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
-	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) error
 	// AdminUnpublishBanner implements adminUnpublishBanner operation.
 	//
 	// Take a published banner back to draft.
 	//
 	// POST /api/admin/banners/{id}/unpublish
-	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error)
+	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (*Banner, error)
 	// AdminUnpublishBlogPost implements adminUnpublishBlogPost operation.
 	//
 	// Take a published post back to draft.
 	//
 	// POST /api/admin/blog_posts/{id}/unpublish
-	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
+	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (*BlogPost, error)
 	// AdminUnpublishCourseLandingPage implements adminUnpublishCourseLandingPage operation.
 	//
 	// Take a published landing page back to draft.
 	//
 	// POST /api/admin/course_landing_pages/{id}/unpublish
-	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error)
+	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUnpublishReview implements adminUnpublishReview operation.
 	//
 	// Take a published review back to draft.
 	//
 	// POST /api/admin/reviews/{id}/unpublish
-	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error)
+	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (*Review, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
 	//
 	// PUT /api/admin/banners/{id}
-	AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
+	AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (*Banner, error)
 	// AdminUpdateBlogPost implements adminUpdateBlogPost operation.
 	//
 	// PUT /api/admin/blog_posts/{id}
-	AdminUpdateBlogPost(ctx context.Context, req *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
+	AdminUpdateBlogPost(ctx context.Context, req *BlogPostInput, params AdminUpdateBlogPostParams) (*BlogPost, error)
 	// AdminUpdateCategoryQnaItem implements adminUpdateCategoryQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
 	// PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
-	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
+	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminUpdateCourse implements adminUpdateCourse operation.
 	//
 	// PUT /api/admin/courses/{id}
-	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
+	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (*Course, error)
 	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /api/admin/course_categories/{id}
-	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
+	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /api/admin/course_landing_pages/{id}
-	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
+	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
 	// PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
+	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 	//
 	// PUT /api/admin/management/users/{id}
-	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
+	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error)
 	// AdminUpdateReview implements adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /api/admin/reviews/{id}
-	AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
+	AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (*Review, error)
 	// AdminUpdateRole implements adminUpdateRole operation.
 	//
 	// PUT /api/admin/management/roles/{id}
-	AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
+	AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error)
 	// AdminUpdateRolePermissions implements adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
 	// PUT /api/admin/management/role_permissions/{roleId}
-	AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
+	AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminUpdateStaffMember implements adminUpdateStaffMember operation.
 	//
 	// PUT /api/admin/management/staff_members/{id}
-	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
+	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error)
 	// AdminUpdateUser implements adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /api/admin/api/users/{id}
-	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (*UserCrud, error)
 	// AdminUploadAttachment implements adminUploadAttachment operation.
 	//
 	// Upload a file; returns the attachment to reference from a form.
 	//
 	// POST /api/admin/attachments
-	AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
+	AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (*Attachment, error)
 	// ApproveOAuthConsent implements approveOAuthConsent operation.
 	//
 	// Grant the request as the signed-in user.
 	//
 	// POST /api/oauth/consents/{requestId}/approve
-	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error)
+	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (*OAuthDecision, error)
 	// CheckLesson implements checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -522,19 +522,19 @@ type Handler interface {
 	// cookie rather than in rows. Any lesson may be submitted, in any order.
 	//
 	// POST /api/lessons/{id}/check
-	CheckLesson(ctx context.Context, req *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error)
+	CheckLesson(ctx context.Context, req *CheckLessonInput, params CheckLessonParams) (*LessonCheckingResponseHeaders, error)
 	// CheckPasswordResetToken implements checkPasswordResetToken operation.
 	//
 	// Validate a reset token before showing the form.
 	//
 	// GET /api/password/{token}/edit
-	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
+	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) error
 	// ConsumeMagicLink implements consumeMagicLink operation.
 	//
 	// Consume a magic link token; starts the session.
 	//
 	// GET /api/magic_links/{token}
-	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
+	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (*UserHeaders, error)
 	// CreateAssistantMessage implements createAssistantMessage operation.
 	//
 	// Ask the assistant and stream its answer back. Both turns are stored once the answer is complete,
@@ -550,55 +550,55 @@ type Handler interface {
 	// Request the book for the signed-in user. A repeat request changes nothing.
 	//
 	// POST /api/book/create_request
-	CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error)
+	CreateBookRequest(ctx context.Context) error
 	// CreateLead implements createLead operation.
 	//
 	// Submit a contact request.
 	//
 	// POST /api/leads
-	CreateLead(ctx context.Context, req *LeadInput) (CreateLeadRes, error)
+	CreateLead(ctx context.Context, req *LeadInput) (*Lead, error)
 	// CreateMagicLink implements createMagicLink operation.
 	//
 	// Email a one-time sign-in link.
 	//
 	// POST /api/magic_links
-	CreateMagicLink(ctx context.Context, req *EmailInput) (CreateMagicLinkRes, error)
+	CreateMagicLink(ctx context.Context, req *EmailInput) error
 	// CreatePasswordReminder implements createPasswordReminder operation.
 	//
 	// Email a password-reset link.
 	//
 	// POST /api/remind_password
-	CreatePasswordReminder(ctx context.Context, req *EmailInput) (CreatePasswordReminderRes, error)
+	CreatePasswordReminder(ctx context.Context, req *EmailInput) error
 	// CreateSession implements createSession operation.
 	//
 	// Log in with email + password; starts the session.
 	//
 	// POST /api/session
-	CreateSession(ctx context.Context, req *SessionInput) (CreateSessionRes, error)
+	CreateSession(ctx context.Context, req *SessionInput) (*UserHeaders, error)
 	// CreateUser implements createUser operation.
 	//
 	// Sign up; starts the session on success.
 	//
 	// POST /api/users
-	CreateUser(ctx context.Context, req *SignUpInput) (CreateUserRes, error)
+	CreateUser(ctx context.Context, req *SignUpInput) (*UserHeaders, error)
 	// DeleteAccount implements deleteAccount operation.
 	//
 	// Delete the current user's account.
 	//
 	// DELETE /api/account/profile
-	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
+	DeleteAccount(ctx context.Context) error
 	// DeleteSession implements deleteSession operation.
 	//
 	// Log out; ends the session.
 	//
 	// DELETE /api/session
-	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	DeleteSession(ctx context.Context) error
 	// DenyOAuthConsent implements denyOAuthConsent operation.
 	//
 	// Refuse the request; the application is told `access_denied`.
 	//
 	// POST /api/oauth/consents/{requestId}/deny
-	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error)
+	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (*OAuthDecision, error)
 	// DownloadBook implements downloadBook operation.
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -606,7 +606,7 @@ type Handler interface {
 	// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 	//
 	// GET /api/book/download
-	DownloadBook(ctx context.Context) (DownloadBookRes, error)
+	DownloadBook(ctx context.Context) (*DownloadBookFound, error)
 	// GetActiveBanner implements getActiveBanner operation.
 	//
 	// The newest published banner of the request locale whose window is open now: it started (or has no
@@ -619,7 +619,7 @@ type Handler interface {
 	// A published post in the request locale, by slug, with its page data.
 	//
 	// GET /api/blog_posts/{slug}
-	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
+	GetBlogPost(ctx context.Context, params GetBlogPostParams) (*BlogPostView, error)
 	// GetBook implements getBook operation.
 	//
 	// The book page's state for whoever is visiting; a visitor is answered too.
@@ -633,7 +633,7 @@ type Handler interface {
 	// is a 404.
 	//
 	// GET /api/languages/{slug}
-	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
+	GetCourse(ctx context.Context, params GetCourseParams) (*CourseView, error)
 	// GetCourseLesson implements getCourseLesson operation.
 	//
 	// Lesson player payload (theory, starter code, tests) by slug, plus the visitor's progress.
@@ -643,7 +643,7 @@ type Handler interface {
 	// for everyone.
 	//
 	// GET /api/languages/{courseSlug}/lessons/{slug}
-	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error)
+	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (*CourseLessonView, error)
 	// GetCurrentUser implements getCurrentUser operation.
 	//
 	// Resolve the current user from the session cookie (for SSR).
@@ -655,32 +655,32 @@ type Handler interface {
 	// The signed-in user's course dashboard.
 	//
 	// GET /api/my
-	GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error)
+	GetMyDashboard(ctx context.Context) (*MyDashboard, error)
 	// GetNextBlogPost implements getNextBlogPost operation.
 	//
 	// The next post to read after this one: the next older published post in the request locale.
 	//
 	// GET /api/blog_posts/{id}/next
-	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (*BlogPost, error)
 	// GetOAuthConsent implements getOAuthConsent operation.
 	//
 	// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
 	// already decided.
 	//
 	// GET /api/oauth/consents/{requestId}
-	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error)
+	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (*OAuthConsent, error)
 	// GetProfile implements getProfile operation.
 	//
 	// The editable profile of the current user.
 	//
 	// GET /api/account/profile/edit
-	GetProfile(ctx context.Context) (GetProfileRes, error)
+	GetProfile(ctx context.Context) (*User, error)
 	// GetPublicCourseCategory implements getPublicCourseCategory operation.
 	//
 	// A category and the courses it groups.
 	//
 	// GET /api/language_categories/{slug}
-	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
+	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (*CourseCategoryView, error)
 	// GetSitemap implements getSitemap operation.
 	//
 	// Everything the sitemap page lists, across the ru and en locales.
@@ -706,14 +706,14 @@ type Handler interface {
 	// Like a post once per signed-in user; a repeat like changes nothing.
 	//
 	// POST /api/blog_posts/{id}/likes
-	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error)
+	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (*BlogPost, error)
 	// ListAssistantMessages implements listAssistantMessages operation.
 	//
 	// The assistant chat history for the current user in this lesson, and their remaining quota. A lesson
 	// they never asked about answers an empty chat.
 	//
 	// GET /api/ai/lessons/{lessonId}/messages
-	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error)
+	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (*LessonAssistantChat, error)
 	// ListBlogPosts implements listBlogPosts operation.
 	//
 	// Paginated published blog posts.
@@ -726,7 +726,7 @@ type Handler interface {
 	// days (no refresh) has lapsed and is not listed.
 	//
 	// GET /api/oauth/connected_apps
-	ListConnectedApps(ctx context.Context) (ListConnectedAppsRes, error)
+	ListConnectedApps(ctx context.Context) (*ConnectedApps, error)
 	// ListCourses implements listCourses operation.
 	//
 	// List the published course catalog.
@@ -751,7 +751,7 @@ type Handler interface {
 	// one of the caller's apps.
 	//
 	// DELETE /api/oauth/connected_apps/{id}
-	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error)
+	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) error
 	// SearchCatalogue implements searchCatalogue operation.
 	//
 	// Search the public catalogue (courses, lessons and blog posts) by what they say, in the request
@@ -776,19 +776,19 @@ type Handler interface {
 	// course and lesson reads' business, and the page they go to next reads it from there.
 	//
 	// POST /api/lessons/{id}/start
-	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
+	StartLesson(ctx context.Context, params StartLessonParams) error
 	// UpdatePassword implements updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.
 	//
 	// PATCH /api/password/{token}
-	UpdatePassword(ctx context.Context, req *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)
+	UpdatePassword(ctx context.Context, req *ResetPasswordInput, params UpdatePasswordParams) (*UserHeaders, error)
 	// UpdateProfile implements updateProfile operation.
 	//
 	// Update the current user's profile.
 	//
 	// PATCH /api/account/profile
-	UpdateProfile(ctx context.Context, req *ProfileInput) (UpdateProfileRes, error)
+	UpdateProfile(ctx context.Context, req *ProfileInput) (*User, error)
 	// NewError creates *ProblemDetailsStatusCode from error returned by handler.
 	//
 	// Used for common default response.

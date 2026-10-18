@@ -64,10 +64,7 @@ func listTrail(h *testsupport.Harness, params api.AdminListAuditRecordsParams) (
 	if err != nil {
 		return nil, err
 	}
-	page, ok := res.(*api.AuditRecordPage)
-	if !ok {
-		return nil, assert.AnError
-	}
+	page := res
 	return page, nil
 }
 
@@ -216,12 +213,10 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 	}
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			res, err := h.Client.AdminListAuditRecords(context.Background(), c.params)
-			require.NoError(t, err)
+			_, err := h.Client.AdminListAuditRecords(context.Background(), c.params)
 
-			problem, ok := res.(*api.ValidationError)
-			require.True(t, ok, "got %T", res)
-			assert.Contains(t, problem.Errors, c.field)
+			problem := problemWithStatus(t, err, http.StatusUnprocessableEntity)
+			assert.Contains(t, problem.Response.Errors.Value, c.field)
 			assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
 		})
 	}
@@ -309,8 +304,7 @@ func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
 	t.Helper()
 	res, err := h.Client.AdminGetMyCapabilities(context.Background())
 	require.NoError(t, err)
-	held, ok := res.(*api.MyCapabilities)
-	require.True(t, ok, "got %T", res)
+	held := res
 	return held.Held
 }
 

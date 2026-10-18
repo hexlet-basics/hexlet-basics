@@ -26,8 +26,7 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 
 	res, err := h.Client.CreateLead(t.Context(), input)
 	require.NoError(t, err)
-	created, ok := res.(*api.Lead)
-	require.True(t, ok, "got %T", res)
+	created := res
 
 	stored := h.DB.Lead.Query().Where(lead.ID(int(created.ID))).OnlyX(t.Context())
 	assert.Equal(t, "+79990001122", lo.FromPtr(stored.Whatsapp))

@@ -1196,13 +1196,6 @@ export type MyDashboard = {
 };
 
 /**
- * A resource was not found.
- */
-export type NotFoundError = {
-  message: string;
-};
-
-/**
  * What the consent screen shows for one authorization request.
  */
 export type OAuthConsent = {
@@ -1288,6 +1281,15 @@ export type ProblemDetails = {
    * Optional URI identifying this particular occurrence.
    */
   instance?: string;
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Present on a 422 only: a write that failed
+   * validation, including constraints the schema cannot express, like
+   * uniqueness (ADR-0025).
+   */
+  errors?: {
+    [key: string]: Array<string>;
+  };
 };
 
 /**
@@ -1663,17 +1665,6 @@ export type UserInput = {
   admin: boolean | null;
 };
 
-/**
- * Field-level validation errors, keyed by field name (each value is the list
- * of messages for that field). Returned when a write fails validation —
- * including constraints the schema cannot express, like uniqueness.
- */
-export type ValidationError = {
-  errors: {
-    [key: string]: Array<string>;
-  };
-};
-
 export type AuditRecordQueryActorUserId = number;
 
 export type AuditRecordQueryChannel = 'web' | 'mcp';
@@ -1716,10 +1707,6 @@ export type DeleteAccountData = {
 
 export type DeleteAccountErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -1748,16 +1735,6 @@ export type UpdateProfileData = {
 
 export type UpdateProfileErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -1785,10 +1762,6 @@ export type GetProfileData = {
 };
 
 export type GetProfileErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -1825,14 +1798,6 @@ export type AdminListUsersData = {
 
 export type AdminListUsersErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -1860,14 +1825,6 @@ export type AdminCreateUserData = {
 };
 
 export type AdminCreateUserErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -1899,14 +1856,6 @@ export type AdminSearchUsersData = {
 
 export type AdminSearchUsersErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -1936,14 +1885,6 @@ export type AdminDeleteUserData = {
 };
 
 export type AdminDeleteUserErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -1975,14 +1916,6 @@ export type AdminGetUserData = {
 
 export type AdminGetUserErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2013,14 +1946,6 @@ export type AdminUpdateUserData = {
 
 export type AdminUpdateUserErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2048,20 +1973,6 @@ export type AdminUploadAttachmentData = {
 };
 
 export type AdminUploadAttachmentErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -2107,20 +2018,6 @@ export type AdminListAuditRecordsData = {
 
 export type AdminListAuditRecordsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2156,14 +2053,6 @@ export type AdminListBannersData = {
 
 export type AdminListBannersErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2191,14 +2080,6 @@ export type AdminCreateBannerData = {
 };
 
 export type AdminCreateBannerErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2230,14 +2111,6 @@ export type AdminDeleteBannerData = {
 
 export type AdminDeleteBannerErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2267,14 +2140,6 @@ export type AdminGetBannerData = {
 };
 
 export type AdminGetBannerErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2306,14 +2171,6 @@ export type AdminUpdateBannerData = {
 
 export type AdminUpdateBannerErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2343,14 +2200,6 @@ export type AdminArchiveBannerData = {
 };
 
 export type AdminArchiveBannerErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2382,14 +2231,6 @@ export type AdminPublishBannerData = {
 
 export type AdminPublishBannerErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2419,14 +2260,6 @@ export type AdminUnpublishBannerData = {
 };
 
 export type AdminUnpublishBannerErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2463,14 +2296,6 @@ export type AdminListBlogPostsData = {
 
 export type AdminListBlogPostsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2498,20 +2323,6 @@ export type AdminCreateBlogPostData = {
 };
 
 export type AdminCreateBlogPostErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -2543,14 +2354,6 @@ export type AdminDeleteBlogPostData = {
 
 export type AdminDeleteBlogPostErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2580,14 +2383,6 @@ export type AdminGetBlogPostData = {
 };
 
 export type AdminGetBlogPostErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2619,20 +2414,6 @@ export type AdminUpdateBlogPostData = {
 
 export type AdminUpdateBlogPostErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2662,14 +2443,6 @@ export type AdminArchiveBlogPostData = {
 };
 
 export type AdminArchiveBlogPostErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2701,14 +2474,6 @@ export type AdminPublishBlogPostData = {
 
 export type AdminPublishBlogPostErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2738,20 +2503,6 @@ export type AdminSetBlogPostRelatedCoursesData = {
 };
 
 export type AdminSetBlogPostRelatedCoursesErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -2783,14 +2534,6 @@ export type AdminSuggestBlogPostRelatedCoursesData = {
 
 export type AdminSuggestBlogPostRelatedCoursesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2821,14 +2564,6 @@ export type AdminUnpublishBlogPostData = {
 
 export type AdminUnpublishBlogPostErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2856,14 +2591,6 @@ export type AdminGetMyCapabilitiesData = {
 };
 
 export type AdminGetMyCapabilitiesErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2896,14 +2623,6 @@ export type AdminListCourseCategoriesData = {
 
 export type AdminListCourseCategoriesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -2931,14 +2650,6 @@ export type AdminCreateCourseCategoryData = {
 };
 
 export type AdminCreateCourseCategoryErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -2970,14 +2681,6 @@ export type AdminListCategoryQnaItemsData = {
 
 export type AdminListCategoryQnaItemsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3007,14 +2710,6 @@ export type AdminCreateCategoryQnaItemData = {
 };
 
 export type AdminCreateCategoryQnaItemErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3047,14 +2742,6 @@ export type AdminDeleteCategoryQnaItemData = {
 
 export type AdminDeleteCategoryQnaItemErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3086,14 +2773,6 @@ export type AdminUpdateCategoryQnaItemData = {
 
 export type AdminUpdateCategoryQnaItemErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3123,14 +2802,6 @@ export type AdminDeleteCourseCategoryData = {
 };
 
 export type AdminDeleteCourseCategoryErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3162,14 +2833,6 @@ export type AdminGetCourseCategoryData = {
 
 export type AdminGetCourseCategoryErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3199,14 +2862,6 @@ export type AdminUpdateCourseCategoryData = {
 };
 
 export type AdminUpdateCourseCategoryErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3243,14 +2898,6 @@ export type AdminListCourseLandingPagesData = {
 
 export type AdminListCourseLandingPagesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3278,14 +2925,6 @@ export type AdminCreateCourseLandingPageData = {
 };
 
 export type AdminCreateCourseLandingPageErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3317,14 +2956,6 @@ export type AdminDeleteCourseLandingPageData = {
 
 export type AdminDeleteCourseLandingPageErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3354,14 +2985,6 @@ export type AdminGetCourseLandingPageData = {
 };
 
 export type AdminGetCourseLandingPageErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3393,14 +3016,6 @@ export type AdminUpdateCourseLandingPageData = {
 
 export type AdminUpdateCourseLandingPageErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3430,14 +3045,6 @@ export type AdminArchiveCourseLandingPageData = {
 };
 
 export type AdminArchiveCourseLandingPageErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3469,14 +3076,6 @@ export type AdminPublishCourseLandingPageData = {
 
 export type AdminPublishCourseLandingPageErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3506,14 +3105,6 @@ export type AdminUnpublishCourseLandingPageData = {
 };
 
 export type AdminUnpublishCourseLandingPageErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3545,14 +3136,6 @@ export type AdminListLandingPageQnaItemsData = {
 
 export type AdminListLandingPageQnaItemsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3582,14 +3165,6 @@ export type AdminCreateLandingPageQnaItemData = {
 };
 
 export type AdminCreateLandingPageQnaItemErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3622,14 +3197,6 @@ export type AdminDeleteLandingPageQnaItemData = {
 
 export type AdminDeleteLandingPageQnaItemErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3661,14 +3228,6 @@ export type AdminUpdateLandingPageQnaItemData = {
 
 export type AdminUpdateLandingPageQnaItemErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3699,14 +3258,6 @@ export type AdminListCourseLessonReviewsData = {
 };
 
 export type AdminListCourseLessonReviewsErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3743,14 +3294,6 @@ export type AdminListCourseLessonsData = {
 
 export type AdminListCourseLessonsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3780,18 +3323,6 @@ export type AdminReviewCourseLessonData = {
 };
 
 export type AdminReviewCourseLessonErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -3828,14 +3359,6 @@ export type AdminListCoursesData = {
 
 export type AdminListCoursesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3864,14 +3387,6 @@ export type AdminCreateCourseData = {
 
 export type AdminCreateCourseErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3899,14 +3414,6 @@ export type AdminListCourseOptionsData = {
 };
 
 export type AdminListCourseOptionsErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -3938,14 +3445,6 @@ export type AdminGetCourseData = {
 
 export type AdminGetCourseErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -3975,14 +3474,6 @@ export type AdminUpdateCourseData = {
 };
 
 export type AdminUpdateCourseErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4014,14 +3505,6 @@ export type AdminMarkCourseCompletedData = {
 
 export type AdminMarkCourseCompletedErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4051,14 +3534,6 @@ export type AdminMarkCourseDraftData = {
 };
 
 export type AdminMarkCourseDraftErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4090,14 +3565,6 @@ export type AdminMarkCourseInDevelopmentData = {
 
 export type AdminMarkCourseInDevelopmentErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4128,18 +3595,6 @@ export type AdminReviewCourseData = {
 
 export type AdminReviewCourseErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4169,18 +3624,6 @@ export type AdminCreateCourseVersionData = {
 };
 
 export type AdminCreateCourseVersionErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -4217,14 +3660,6 @@ export type AdminListLeadsData = {
 
 export type AdminListLeadsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4256,14 +3691,6 @@ export type AdminListLessonProgressData = {
 
 export type AdminListLessonProgressErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4291,14 +3718,6 @@ export type AdminListPermissionsData = {
 };
 
 export type AdminListPermissionsErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4330,14 +3749,6 @@ export type AdminGetRolePermissionsData = {
 
 export type AdminGetRolePermissionsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4367,20 +3778,6 @@ export type AdminUpdateRolePermissionsData = {
 };
 
 export type AdminUpdateRolePermissionsErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -4413,14 +3810,6 @@ export type AdminListRolesData = {
 
 export type AdminListRolesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4448,14 +3837,6 @@ export type AdminCreateRoleData = {
 };
 
 export type AdminCreateRoleErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4487,14 +3868,6 @@ export type AdminDeleteRoleData = {
 
 export type AdminDeleteRoleErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4525,14 +3898,6 @@ export type AdminGetRoleData = {
 
 export type AdminGetRoleErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4562,14 +3927,6 @@ export type AdminUpdateRoleData = {
 };
 
 export type AdminUpdateRoleErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4602,14 +3959,6 @@ export type AdminListStaffMembersData = {
 
 export type AdminListStaffMembersErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4637,14 +3986,6 @@ export type AdminCreateStaffMemberData = {
 };
 
 export type AdminCreateStaffMemberErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4676,14 +4017,6 @@ export type AdminDeleteStaffMemberData = {
 
 export type AdminDeleteStaffMemberErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4714,14 +4047,6 @@ export type AdminGetStaffMemberData = {
 
 export type AdminGetStaffMemberErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4751,14 +4076,6 @@ export type AdminUpdateStaffMemberData = {
 };
 
 export type AdminUpdateStaffMemberErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4795,14 +4112,6 @@ export type AdminListManagementUsersData = {
 
 export type AdminListManagementUsersErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4833,14 +4142,6 @@ export type AdminGetManagementUserData = {
 
 export type AdminGetManagementUserErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4870,14 +4171,6 @@ export type AdminUpdateManagementUserData = {
 };
 
 export type AdminUpdateManagementUserErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -4914,14 +4207,6 @@ export type AdminListMessagesData = {
 
 export type AdminListMessagesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4957,14 +4242,6 @@ export type AdminListReviewsData = {
 
 export type AdminListReviewsErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4992,14 +4269,6 @@ export type AdminCreateReviewData = {
 };
 
 export type AdminCreateReviewErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -5031,14 +4300,6 @@ export type AdminDeleteReviewData = {
 
 export type AdminDeleteReviewErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5068,14 +4329,6 @@ export type AdminGetReviewData = {
 };
 
 export type AdminGetReviewErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -5107,14 +4360,6 @@ export type AdminUpdateReviewData = {
 
 export type AdminUpdateReviewErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5144,14 +4389,6 @@ export type AdminArchiveReviewData = {
 };
 
 export type AdminArchiveReviewErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -5183,14 +4420,6 @@ export type AdminPublishReviewData = {
 
 export type AdminPublishReviewErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5220,14 +4449,6 @@ export type AdminUnpublishReviewData = {
 };
 
 export type AdminUnpublishReviewErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -5265,14 +4486,6 @@ export type AdminSearchData = {
 
 export type AdminSearchErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5302,18 +4515,6 @@ export type AdminFetchData = {
 };
 
 export type AdminFetchErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -5345,14 +4546,6 @@ export type ListAssistantMessagesData = {
 
 export type ListAssistantMessagesErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5382,14 +4575,6 @@ export type CreateAssistantMessageData = {
 };
 
 export type CreateAssistantMessageErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * The learner has used up today's assistant questions.
    */
@@ -5491,14 +4676,6 @@ export type LikeBlogPostData = {
 
 export type LikeBlogPostErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5529,10 +4706,6 @@ export type GetNextBlogPostData = {
 
 export type GetNextBlogPostErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5562,10 +4735,6 @@ export type GetBlogPostData = {
 };
 
 export type GetBlogPostErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -5623,10 +4792,6 @@ export type CreateBookRequestData = {
 
 export type CreateBookRequestErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5654,10 +4819,6 @@ export type DownloadBookData = {
 };
 
 export type DownloadBookErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -5786,10 +4947,6 @@ export type GetPublicCourseCategoryData = {
 
 export type GetPublicCourseCategoryErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5849,10 +5006,6 @@ export type GetCourseLessonData = {
 
 export type GetCourseLessonErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5883,10 +5036,6 @@ export type GetCourseData = {
 
 export type GetCourseErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -5914,16 +5063,6 @@ export type CreateLeadData = {
 };
 
 export type CreateLeadErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -5954,16 +5093,6 @@ export type CheckLessonData = {
 };
 
 export type CheckLessonErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -6000,10 +5129,6 @@ export type StartLessonData = {
 
 export type StartLessonErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6031,12 +5156,6 @@ export type CreateMagicLinkData = {
 };
 
 export type CreateMagicLinkErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -6067,10 +5186,6 @@ export type ConsumeMagicLinkData = {
 };
 
 export type ConsumeMagicLinkErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -6162,10 +5277,6 @@ export type GetMyDashboardData = {
 
 export type GetMyDashboardErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6193,10 +5304,6 @@ export type ListConnectedAppsData = {
 };
 
 export type ListConnectedAppsErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
   /**
    * Default error response shared by every operation.
    *
@@ -6228,14 +5335,6 @@ export type RevokeConnectedAppData = {
 
 export type RevokeConnectedAppErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6265,14 +5364,6 @@ export type GetOAuthConsentData = {
 };
 
 export type GetOAuthConsentErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
   /**
    * Default error response shared by every operation.
    *
@@ -6304,14 +5395,6 @@ export type ApproveOAuthConsentData = {
 
 export type ApproveOAuthConsentErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6342,14 +5425,6 @@ export type DenyOAuthConsentData = {
 
 export type DenyOAuthConsentErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6379,16 +5454,6 @@ export type UpdatePasswordData = {
 };
 
 export type UpdatePasswordErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -6423,10 +5488,6 @@ export type CheckPasswordResetTokenData = {
 
 export type CheckPasswordResetTokenErrors = {
   /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6454,12 +5515,6 @@ export type CreatePasswordReminderData = {
 };
 
 export type CreatePasswordReminderErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -6556,10 +5611,6 @@ export type DeleteSessionData = {
 
 export type DeleteSessionErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -6587,12 +5638,6 @@ export type CreateSessionData = {
 };
 
 export type CreateSessionErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -6624,12 +5669,6 @@ export type CreateUserData = {
 };
 
 export type CreateUserErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *

@@ -7,7 +7,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/localization"
 )
 
 // These three admin lists (legacy `admin/course_lessons`,
@@ -21,7 +20,7 @@ import (
 
 // AdminListCourseLessons lists lessons as the admin index shows them: one row
 // per lesson for the request locale, from the current version's translation.
-func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (api.AdminListCourseLessonsRes, error) {
+func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (*api.CourseLessonListItemPage, error) {
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonTranslation, int, error) {
@@ -36,7 +35,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 
 // AdminListLessonProgress lists per-lesson progress rows, newest first, in the
 // request locale.
-func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (api.AdminListLessonProgressRes, error) {
+func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (*api.LessonProgressPage, error) {
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.LessonProgress, int, error) {
@@ -51,7 +50,7 @@ func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminLi
 
 // AdminListCourseLessonReviews lists the AI lesson reviews of the request locale
 // that have a summary, newest first.
-func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (api.AdminListCourseLessonReviewsRes, error) {
+func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (*api.CourseLessonReviewPage, error) {
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonReview, int, error) {
@@ -66,13 +65,13 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 
 // AdminReviewCourseLesson asks for an AI review of every translation of one
 // lesson: all locales and all versions, so the historical summaries refresh too.
-func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminReviewCourseLessonParams) (api.AdminReviewCourseLessonRes, error) {
+func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminReviewCourseLessonParams) error {
 	err := s.lessonReviews.ReviewLesson(ctx, int(params.ID))
 	if errors.Is(err, domain.ErrNotFound) {
-		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.LessonNotFound)}, nil
+		return errLessonNotFound
 	}
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminReviewCourseLessonNoContent{}, nil
+	return nil
 }

@@ -10,6 +10,8 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+
+	"hexletbasics/internal/domain"
 )
 
 // Transition is one operation's rule: it moves a resource to To, and only from
@@ -26,11 +28,21 @@ type Transition[S ~string] struct {
 }
 
 // Illegal is the typed error of a refused move: the state the resource is in and
-// the one the operation would have set. Handlers map it to a 409 with a
-// localized explanation.
+// the one the operation would have set. It is a domain.ErrConflict, and the
+// HTTP adapter words it from the states' names in their vocabulary.
 type Illegal struct {
 	From, To string
+	// Vocabulary names the set of states From and To belong to, for a state that
+	// declares one (see Vocabulary), so an adapter picks the right display names.
+	Vocabulary string
 }
+
+// Unwrap makes a refused move a conflict: the resource's state forbids it,
+// whoever asks.
+func (e *Illegal) Unwrap() error { return domain.ErrConflict }
+
+// Vocabulary is how a state type names its set of states.
+type Vocabulary interface{ Vocabulary() string }
 
 func (e *Illegal) Error() string {
 	return fmt.Sprintf("illegal state transition from %q to %q", e.From, e.To)
@@ -50,5 +62,9 @@ func (t Transition[S]) Check(current S) error {
 	if slices.Contains(t.From, current) {
 		return nil
 	}
-	return &Illegal{From: string(current), To: string(t.To)}
+	illegal := &Illegal{From: string(current), To: string(t.To)}
+	if named, ok := any(current).(Vocabulary); ok {
+		illegal.Vocabulary = named.Vocabulary()
+	}
+	return illegal
 }

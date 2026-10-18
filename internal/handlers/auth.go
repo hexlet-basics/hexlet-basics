@@ -16,10 +16,10 @@ import (
 // CreateSession authenticates once and reuses the loaded user for both the
 // session and the response, keeping password login free of duplicate database
 // queries.
-func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
+func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api.UserHeaders, error) {
 	u, err := s.credentials.Authenticate(ctx, req.Email, req.Password)
 	if errors.Is(err, account.ErrInvalidCredentials) {
-		return validationError("password", s.i18n.Text(ctx, localization.WrongCredentials)), nil
+		return nil, invalid("password", localization.WrongCredentials)
 	}
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (s *Server) mergeGuestProgress(ctx context.Context, userID int) ([]string, 
 }
 
 // CreateUser creates an account and signs it in.
-func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
+func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (*api.UserHeaders, error) {
 	var firstName *string
 	if value, ok := req.FirstName.Get(); ok {
 		firstName = &value
@@ -93,10 +93,10 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.Crea
 	})
 	if err != nil {
 		if errors.Is(err, account.ErrPasswordProcessing) {
-			return validationError("password", s.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
+			return nil, invalid("password", localization.PasswordProcessingFailed)
 		}
 		if field, ok := domain.FieldOf(err); ok && field == "email" {
-			return validationError("email", s.i18n.Text(ctx, localization.EmailTaken)), nil
+			return nil, invalid("email", localization.EmailTaken)
 		}
 		return nil, err
 	}
@@ -104,11 +104,11 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.Crea
 }
 
 // DeleteSession ends the session; the session middleware expires its cookie.
-func (s *Server) DeleteSession(ctx context.Context) (api.DeleteSessionRes, error) {
+func (s *Server) DeleteSession(ctx context.Context) error {
 	if err := s.sessions.End(ctx); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.DeleteSessionNoContent{}, nil
+	return nil
 }
 
 // GetCurrentUser answers who is signed in: the user the Identify middleware
@@ -120,10 +120,6 @@ func (s *Server) GetCurrentUser(ctx context.Context, _ api.GetCurrentUserParams)
 		return anonymousCurrentUser(), nil
 	}
 	return &api.CurrentUser{User: api.NewNilUser(s.conv.ToUser(u))}, nil
-}
-
-func validationError(field, message string) *api.ValidationError {
-	return &api.ValidationError{Errors: api.ValidationErrorErrors{field: {message}}}
 }
 
 func anonymousCurrentUser() *api.CurrentUser {

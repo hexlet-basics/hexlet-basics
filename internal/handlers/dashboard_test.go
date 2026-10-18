@@ -24,8 +24,7 @@ func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
-	dashboard, ok := res.(*api.MyDashboard)
-	require.True(t, ok, "got %T", res)
+	dashboard := res
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.Len(t, dashboard.Started, 1)
@@ -47,11 +46,11 @@ func TestDashboardNamesTheNextLessonAsTheCoursePageDoes(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
-	next := res.(*api.MyDashboard).Started[0].Progress.NextLesson.Value
+	next := res.Started[0].Progress.NextLesson.Value
 
 	page, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	lesson, ok := lo.Find(page.(*api.CourseView).Lessons, func(l api.LearnerLesson) bool { return l.Slug == next.Slug })
+	lesson, ok := lo.Find(page.Lessons, func(l api.LearnerLesson) bool { return l.Slug == next.Slug })
 	require.True(t, ok)
 
 	assert.Equal(t, firstLessonSlug, next.Slug)
@@ -69,7 +68,7 @@ func TestDashboardGivesAnUntranslatedNextLessonNoLink(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
-	course := res.(*api.MyDashboard).Started[0]
+	course := res.Started[0]
 
 	assert.True(t, course.Progress.NextLesson.Null, "the second lesson has no ru translation")
 	assert.InDelta(t, 33, course.Progress.Completion, 0, "the standing is unaffected")
@@ -83,7 +82,7 @@ func TestDashboardGivesAFinishedCourseNoNextLesson(t *testing.T) {
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
 
-	assert.True(t, res.(*api.MyDashboard).Finished[0].Progress.NextLesson.Null)
+	assert.True(t, res.Finished[0].Progress.NextLesson.Null)
 }
 
 // A finished course moves to the other list rather than disappearing.
@@ -94,7 +93,7 @@ func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
-	dashboard := res.(*api.MyDashboard)
+	dashboard := res
 
 	assert.Empty(t, dashboard.Started)
 	require.Len(t, dashboard.Finished, 1)
@@ -109,7 +108,7 @@ func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
-	dashboard := res.(*api.MyDashboard)
+	dashboard := res
 
 	require.Len(t, dashboard.Started, 1)
 	require.Len(t, dashboard.Finished, 1)
@@ -128,7 +127,7 @@ func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
-	dashboard := res.(*api.MyDashboard)
+	dashboard := res
 
 	require.Len(t, dashboard.Started, 1, "only the course with a card")
 	assert.NotEqual(t, int32(cardless.ID), dashboard.Started[0].Enrollment.CourseId)
@@ -146,7 +145,7 @@ func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) 
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
-	dashboard := res.(*api.MyDashboard)
+	dashboard := res
 
 	require.Len(t, dashboard.Started, 1, "only JavaScript has a public card")
 	assert.NotEqual(t, int32(draft), dashboard.Started[0].Enrollment.CourseId)
@@ -162,7 +161,7 @@ func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
-	dashboard := res.(*api.MyDashboard)
+	dashboard := res
 
 	assert.True(t, lo.ContainsBy(dashboard.Started, func(c api.DashboardCourse) bool {
 		return c.Enrollment.CourseId == int32(hidden)
@@ -175,8 +174,7 @@ func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
 func TestDashboardRefusesAGuest(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
-	res, err := h.Client.GetMyDashboard(context.Background())
-	require.NoError(t, err)
+	_, err := h.Client.GetMyDashboard(context.Background())
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.IsType(t, &api.ProblemDetails{}, res, "no dashboard is served")
 }

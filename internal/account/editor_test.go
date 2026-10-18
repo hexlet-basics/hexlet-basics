@@ -23,12 +23,15 @@ func TestEditorStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
 	assert.Equal(t, "mixed.case@example.test", *created.Email)
 }
 
-func TestEditorAnEmailInUseIsAConflict(t *testing.T) {
+func TestEditorAnEmailInUseIsInvalidInputNamingTheEmail(t *testing.T) {
 	editor := account.NewEditor(testsupport.NewClient(t))
 
 	_, err := editor.Create(t.Context(), account.UserFields{Email: "admin-learner@example.com"})
 
-	require.ErrorIs(t, err, domain.ErrConflict)
+	require.ErrorIs(t, err, domain.ErrInvalid)
+	field, ok := domain.FieldOf(err)
+	require.True(t, ok)
+	assert.Equal(t, "email", field)
 }
 
 func TestEditorUpdateClearsWhatIsLeftOut(t *testing.T) {

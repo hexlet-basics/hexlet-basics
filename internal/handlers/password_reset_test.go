@@ -18,10 +18,12 @@ import (
 
 func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) bool {
 	t.Helper()
-	res, err := h.Client.CreateSession(t.Context(), &api.SessionInput{Email: email, Password: password})
-	require.NoError(t, err)
-	_, ok := res.(*api.UserHeaders)
-	return ok
+	_, err := h.Client.CreateSession(t.Context(), &api.SessionInput{Email: email, Password: password})
+	if err == nil {
+		return true
+	}
+	requireProblem(t, err, http.StatusUnprocessableEntity)
+	return false
 }
 
 func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
@@ -29,10 +31,8 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 	testsupport.SpeakTo(h, "es")
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 
-	res, err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
+	err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
 	require.NoError(t, err)
-
-	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
 	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
 }
 
@@ -40,10 +40,8 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
-	res, err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "reset-nobody@example.com"})
+	err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "reset-nobody@example.com"})
 	require.NoError(t, err)
-
-	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
 }
@@ -53,15 +51,13 @@ func TestCheckPasswordResetToken(t *testing.T) {
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
-	res, err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
+	err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
 	require.NoError(t, err)
-	assert.IsType(t, &api.CheckPasswordResetTokenNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	res, err = h.Client.CheckPasswordResetToken(t.Context(),
+	err = h.Client.CheckPasswordResetToken(t.Context(),
 		api.CheckPasswordResetTokenParams{Token: token[:20] + "forged"})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
 
@@ -74,8 +70,7 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u)})
 	require.NoError(t, err)
 
-	session, ok := res.(*api.UserHeaders)
-	require.True(t, ok, "got %T", res)
+	session := res
 	assert.Equal(t, u.ID, int(session.Response.ID))
 	assert.True(t, startsSession(h.ResponseCookies()))
 	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
@@ -93,10 +88,9 @@ func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 		&api.ResetPasswordInput{Password: "new-password"}, api.UpdatePasswordParams{Token: token})
 	require.NoError(t, err)
 
-	res, err := h.Client.UpdatePassword(t.Context(),
+	_, err = h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "another-password"}, api.UpdatePasswordParams{Token: token})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 	assert.True(t, signsInWith(t, h, "with-password@example.com", "new-password"))
 }
@@ -105,12 +99,10 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 
-	res, err := h.Client.UpdatePassword(t.Context(),
+	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
 		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u, issuedAgo(emailtoken.Lifetime+time.Minute))})
-	require.NoError(t, err)
-
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 	assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
 	assert.True(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
@@ -128,9 +120,8 @@ func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, http.StatusBadRequest, h.LastStatus())
 
-	res, err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
+	err = h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
 	require.NoError(t, err)
-	assert.IsType(t, &api.CheckPasswordResetTokenNoContent{}, res)
 }
 
 // Resetting a password signs the account out wherever it was signed in: the
@@ -146,6 +137,6 @@ func TestUpdatePasswordEndsTheSessionsOfTheOldPassword(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = h.Client.GetProfile(t.Context())
-	require.NoError(t, err)
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus(), "the session from before the reset is dead")
 }

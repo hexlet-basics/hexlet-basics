@@ -97,40 +97,6 @@ model SearchListQuery {
 }
 
 /**
- * Field-level validation errors, keyed by field name (each value is the list
- * of messages for that field). Returned when a write fails validation —
- * including constraints the schema cannot express, like uniqueness.
- */
-@error
-model ValidationError {
-  @statusCode statusCode: 422;
-  errors: Record<string[]>;
-}
-
-/** A resource was not found. */
-@error
-model NotFoundError {
-  @statusCode statusCode: 404;
-  message: string;
-}
-
-/** The request is not authenticated (no/invalid session cookie). */
-@error
-model UnauthorizedError {
-  @statusCode statusCode: 401;
-  @header contentType: "application/problem+json";
-  @body body: ProblemDetails;
-}
-
-/** The caller is authenticated but lacks permission for this resource. */
-@error
-model ForbiddenError {
-  @statusCode statusCode: 403;
-  @header contentType: "application/problem+json";
-  @body body: ProblemDetails;
-}
-
-/**
  * RFC 9457 problem details returned by the transport when request decoding,
  * authorization, persistence, or an unexpected server failure prevents an
  * operation from producing its declared domain response.
@@ -150,6 +116,14 @@ model ProblemDetails {
 
   /** Optional URI identifying this particular occurrence. */
   instance?: string;
+
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Present on a 422 only: a write that failed
+   * validation, including constraints the schema cannot express, like
+   * uniqueness (ADR-0025).
+   */
+  errors?: Record<string[]>;
 }
 
 /**

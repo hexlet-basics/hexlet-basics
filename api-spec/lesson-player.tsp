@@ -70,8 +70,6 @@ interface LessonCheck {
   @operationId("checkLesson")
   check(@path id: int32, @body body: CheckLessonInput):
     | LessonCheckingResult
-    | NotFoundError
-    | ValidationError
     | ApiError;
 }
 
@@ -96,7 +94,7 @@ interface LessonStart {
    */
   @post
   @operationId("startLesson")
-  start(@path id: int32): NoContent | NotFoundError | ApiError;
+  start(@path id: int32): NoContent | ApiError;
 }
 
 // ---- AI assistant (in-lesson chat) ----------------------------------------
@@ -166,7 +164,7 @@ interface LessonAssistant {
    */
   @get
   @operationId("listAssistantMessages")
-  list(@path lessonId: int32): LessonAssistantChat | UnauthorizedError | NotFoundError | ApiError;
+  list(@path lessonId: int32): LessonAssistantChat | ApiError;
 
   /**
    * Ask the assistant and stream its answer back. Both turns are stored once
@@ -182,7 +180,5 @@ interface LessonAssistant {
   create(@path lessonId: int32, @body body: AssistantMessageInput):
     | AssistantAnswerStream
     | AssistantQuotaExceededError
-    | UnauthorizedError
-    | NotFoundError
     | ApiError;
 }

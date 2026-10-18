@@ -98,7 +98,7 @@ interface Courses {
   @get
   @route("/{slug}")
   @operationId("getCourse")
-  get(@path slug: string): CourseView | NotFoundError | ApiError;
+  get(@path slug: string): CourseView | ApiError;
 }
 
 /** The lesson page: the lesson itself, and where the visitor stands in it. */
@@ -153,7 +153,7 @@ interface CourseLessons {
   @get
   @route("/{slug}")
   @operationId("getCourseLesson")
-  get(@path courseSlug: string, @path slug: string): CourseLessonView | NotFoundError | ApiError;
+  get(@path courseSlug: string, @path slug: string): CourseLessonView | ApiError;
 }
 
 @route("/language_categories")
@@ -168,7 +168,7 @@ interface PublicCourseCategories {
   @get
   @route("/{slug}")
   @operationId("getPublicCourseCategory")
-  get(@path slug: string): CourseCategoryView | NotFoundError | ApiError;
+  get(@path slug: string): CourseCategoryView | ApiError;
 }
 
 @route("/blog_posts")
@@ -183,14 +183,14 @@ interface Blog {
   @get
   @route("/{slug}")
   @operationId("getBlogPost")
-  get(@path slug: string): BlogPostView | NotFoundError | ApiError;
+  get(@path slug: string): BlogPostView | ApiError;
 
   /** The next post to read after this one: the next older published post in
       the request locale. */
   @get
   @route("/{id}/next")
   @operationId("getNextBlogPost")
-  next(@path id: int32): BlogPost | NotFoundError | ApiError;
+  next(@path id: int32): BlogPost | ApiError;
 
   /** Like a post once per signed-in user; a repeat like changes nothing. */
   @post
@@ -200,7 +200,7 @@ interface Blog {
   like(@path id: int32): {
     @statusCode statusCode: 201;
     @body body: BlogPost;
-  } | NotFoundError | UnauthorizedError | ApiError;
+  } | ApiError;
 }
 
 /** The kinds of record the catalogue search finds. */
@@ -327,7 +327,7 @@ interface PublicLeads {
   create(@body body: LeadInput): {
     @statusCode statusCode: 201;
     @body lead: Lead;
-  } | ValidationError | UnauthorizedError | ApiError;
+  } | ApiError;
 }
 
 /** The free book page (ru marketing funnel, legacy `books#show`). */
@@ -349,7 +349,7 @@ interface Book {
   @useAuth(UserSession)
   @route("/create_request")
   @operationId("createBookRequest")
-  createRequest(): NoContent | UnauthorizedError | ApiError;
+  createRequest(): NoContent | ApiError;
 
   /**
    * Download the book: mark the request downloaded and redirect to the PDF in
@@ -364,7 +364,7 @@ interface Book {
   download(): {
     @statusCode statusCode: 302;
     @header("Location") location: string;
-  } | UnauthorizedError | ApiError;
+  } | ApiError;
 }
 
 // ---- Sitemap --------------------------------------------------------------

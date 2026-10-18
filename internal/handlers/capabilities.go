@@ -16,7 +16,7 @@ import (
 // operation never disagree, and it carries no administrator shortcut: an
 // administrator without the grant holds nothing here. The list is read from the
 // contract's catalog, so a new capability appears without a change.
-func (s *Server) AdminGetMyCapabilities(ctx context.Context) (api.AdminGetMyCapabilitiesRes, error) {
+func (s *Server) AdminGetMyCapabilities(ctx context.Context) (*api.MyCapabilities, error) {
 	u := MustAuthenticatedUser(ctx)
 	policy := permission.NewPolicy(s.db)
 

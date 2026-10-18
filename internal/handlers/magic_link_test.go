@@ -40,10 +40,8 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 	testsupport.SpeakTo(h, "es")
 	u := fixtureUser(t, h, fixture.UserBlank)
 
-	res, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
+	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
-
-	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
 }
 
@@ -51,7 +49,7 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserBlank)
 
-	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Blank-User@Example.com"})
+	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Blank-User@Example.com"})
 	require.NoError(t, err)
 
 	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
@@ -64,7 +62,7 @@ func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 	testsupport.SpeakTo(h, "en")
 	fixtureUser(t, h, fixture.UserBlank)
 
-	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
+	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
 
 	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
@@ -75,10 +73,8 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	before := h.DB.User.Query().CountX(t.Context())
 
-	res, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "magic-nobody@example.com"})
+	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "magic-nobody@example.com"})
 	require.NoError(t, err)
-
-	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
 	assert.Equal(t, before, h.DB.User.Query().CountX(t.Context()), "no account is created")
@@ -89,9 +85,8 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 	fixtureUser(t, h, fixture.UserBlank)
 
 	for range 2 {
-		res, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
+		err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 		require.NoError(t, err)
-		assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	}
 
 	// RequireEnqueued fails on a second job: River skipped the repeat.
@@ -108,8 +103,7 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 		api.ConsumeMagicLinkParams{Token: issueEmailToken(t, emailtoken.MagicLink, u)})
 	require.NoError(t, err)
 
-	session, ok := res.(*api.UserHeaders)
-	require.True(t, ok, "got %T", res)
+	session := res
 	assert.Equal(t, u.ID, int(session.Response.ID))
 	assert.True(t, startsSession(h.ResponseCookies()))
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug},
@@ -148,10 +142,8 @@ func TestConsumeMagicLinkRefusesDeadLinks(t *testing.T) {
 	}
 	for name, token := range cases {
 		t.Run(name, func(t *testing.T) {
-			res, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
-			require.NoError(t, err)
-
-			assert.IsType(t, &api.NotFoundError{}, res)
+			_, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
+			requireProblem(t, err, http.StatusNotFound)
 			assert.Equal(t, http.StatusNotFound, h.LastStatus())
 			assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
 		})

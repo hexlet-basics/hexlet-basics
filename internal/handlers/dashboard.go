@@ -20,7 +20,7 @@ import (
 // Only courses with a main catalogue entry appear, matching the legacy scope:
 // the dashboard renders course cards, so a course with none is not listed and
 // each listed course is complete.
-func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, error) {
+func (s *Server) GetMyDashboard(ctx context.Context) (*api.MyDashboard, error) {
 	dashboard, err := s.MyDashboard(ctx, MustAuthenticatedUser(ctx).ID)
 	if err != nil {
 		return nil, err

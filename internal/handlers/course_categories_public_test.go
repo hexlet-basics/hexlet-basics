@@ -19,8 +19,7 @@ func getCategoryView(t *testing.T, h *testsupport.Harness, slug string) *api.Cou
 	t.Helper()
 	res, err := h.Client.GetPublicCourseCategory(t.Context(), api.GetPublicCourseCategoryParams{Slug: slug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseCategoryView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	return view
 }
 

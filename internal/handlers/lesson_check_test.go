@@ -223,12 +223,11 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
-	res, err := h.Client.CheckLesson(ctx,
+	_, err := h.Client.CheckLesson(ctx,
 		&api.CheckLessonInput{Code: submittedCode, VersionId: fixture.ID32(fixture.LessonVersionJavascriptHelloWorldRetired)},
 		api.CheckLessonParams{ID: int32(lesson.ID)},
 	)
-	require.NoError(t, err)
-	require.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 // ---- Guests ---------------------------------------------------------------
@@ -321,7 +320,7 @@ const submittedCode = "console.log('hello, world!')"
 
 // checkLesson submits against the lesson's version in the course's current
 // build, which is the only version a client can legitimately have loaded.
-func checkLesson(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) (api.CheckLessonRes, error) {
+func checkLesson(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) (*api.LessonCheckingResponseHeaders, error) {
 	t.Helper()
 	return h.Client.CheckLesson(t.Context(),
 		&api.CheckLessonInput{
@@ -337,8 +336,7 @@ func submitSolution(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLess
 	t.Helper()
 	res, err := checkLesson(t, h, lesson)
 	require.NoError(t, err)
-	result, ok := res.(*api.LessonCheckingResponseHeaders)
-	require.True(t, ok, "unexpected check response %T (status %d)", res, h.LastStatus())
+	result := res
 	return result
 }
 

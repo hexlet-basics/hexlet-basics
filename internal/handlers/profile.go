@@ -8,7 +8,7 @@ import (
 
 // GetProfile returns the signed-in user's editable profile. The contract
 // guarantees a session, so the user is always in the context here.
-func (s *Server) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
+func (s *Server) GetProfile(ctx context.Context) (*api.User, error) {
 	u := MustAuthenticatedUser(ctx)
 	profile := s.conv.ToUser(u)
 	return &profile, nil
@@ -18,7 +18,7 @@ func (s *Server) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
 // rules are contract constraints, so the generated server has already refused
 // anything legacy's validations would have. A null clears the column, as
 // legacy's `update(struct.attributes)` did with a nil attribute.
-func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.UpdateProfileRes, error) {
+func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (*api.User, error) {
 	u := MustAuthenticatedUser(ctx)
 
 	update := u.Update()
@@ -45,13 +45,13 @@ func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.
 // device's session; here every other device's session stops working too,
 // because a session is only as good as the account it names and a removed
 // account is refused whatever session it carries.
-func (s *Server) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
+func (s *Server) DeleteAccount(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
 	if err := s.remover.Remove(ctx, u.ID); err != nil {
-		return nil, err
+		return err
 	}
 	if err := s.sessions.End(ctx); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.DeleteAccountNoContent{}, nil
+	return nil
 }

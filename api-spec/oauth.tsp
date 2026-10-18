@@ -49,21 +49,21 @@ interface OAuthConsents {
   @get
   @useAuth(UserSession)
   @operationId("getOAuthConsent")
-  get(@path requestId: string): OAuthConsent | UnauthorizedError | NotFoundError | ApiError;
+  get(@path requestId: string): OAuthConsent | ApiError;
 
   /** Grant the request as the signed-in user. */
   @post
   @route("/approve")
   @useAuth(UserSession)
   @operationId("approveOAuthConsent")
-  approve(@path requestId: string): OAuthDecision | UnauthorizedError | NotFoundError | ApiError;
+  approve(@path requestId: string): OAuthDecision | ApiError;
 
   /** Refuse the request; the application is told `access_denied`. */
   @post
   @route("/deny")
   @useAuth(UserSession)
   @operationId("denyOAuthConsent")
-  deny(@path requestId: string): OAuthDecision | UnauthorizedError | NotFoundError | ApiError;
+  deny(@path requestId: string): OAuthDecision | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -102,12 +102,12 @@ interface OAuthConnectedApps {
   @get
   @useAuth(UserSession)
   @operationId("listConnectedApps")
-  list(): ConnectedApps | UnauthorizedError | ApiError;
+  list(): ConnectedApps | ApiError;
 
   /** Revoke one app at once: every access and refresh token the user granted it ends. 404 when it is not one of the caller's apps. */
   @delete
   @route("/{id}")
   @useAuth(UserSession)
   @operationId("revokeConnectedApp")
-  revoke(@path id: int64): NoContent | UnauthorizedError | NotFoundError | ApiError;
+  revoke(@path id: int64): NoContent | ApiError;
 }

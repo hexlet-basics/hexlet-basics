@@ -23,14 +23,14 @@ import (
 // occurred_at: audit.Filter resolves the window (30 days back from now by
 // default, at most 92 days wide) and a request outside those rules is a 422
 // naming the offending field, rather than a scan of every partition.
-func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminListAuditRecordsParams) (api.AdminListAuditRecordsRes, error) {
+func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminListAuditRecordsParams) (*api.AuditRecordPage, error) {
 	filter := auditFilterOf(params)
 	// One instant for the check, the count and the page, so the window cannot
 	// shift between them.
 	now := time.Now()
 	query, err := filter.Query(s.db, now)
 	if err != nil {
-		return s.auditWindowProblem(ctx, err)
+		return nil, s.auditWindowProblem(err)
 	}
 
 	page, err := listFromWith(ctx, params.Page, params.PerPage,
@@ -89,14 +89,14 @@ func auditFilterOf(params api.AdminListAuditRecordsParams) audit.Filter {
 
 // auditWindowProblem turns a refused window or filter into the 422 the form
 // shows next to the field.
-func (s *Server) auditWindowProblem(ctx context.Context, err error) (api.AdminListAuditRecordsRes, error) {
+func (s *Server) auditWindowProblem(err error) error {
 	switch {
 	case errors.Is(err, audit.ErrWindowReversed):
-		return validationError("to", s.i18n.Text(ctx, localization.AuditWindowReversed)), nil
+		return invalid("to", localization.AuditWindowReversed)
 	case errors.Is(err, audit.ErrWindowTooWide):
-		return validationError("from", s.i18n.Text(ctx, localization.AuditWindowTooWide)), nil
+		return invalid("from", localization.AuditWindowTooWide)
 	case errors.Is(err, audit.ErrEntityIDWithoutType):
-		return validationError("entityId", s.i18n.Text(ctx, localization.AuditEntityIDNeedsType)), nil
+		return invalid("entityId", localization.AuditEntityIDNeedsType)
 	}
-	return nil, err
+	return err
 }

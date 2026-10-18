@@ -42,9 +42,8 @@ func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
-	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	row, err := h.DB.LessonProgress.Query().
@@ -70,9 +69,8 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	ctx := context.Background()
 	lesson := lessonLabeled(t, h, fixture.LessonSingleLessonPrinting)
 
-	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
 
 	count, err := h.DB.Enrollment.Query().
 		Where(
@@ -106,9 +104,8 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 
-	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "no row is written")
 	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "an already-finished lesson publishes nothing")
@@ -127,9 +124,8 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 
-	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	assert.Equal(t, before+1, h.DB.LessonProgress.Query().CountX(ctx), "one row, for this lesson")
@@ -145,7 +141,7 @@ func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 
 	// The dropped lesson adds nothing to the course's completion.
 	third := lessonBySlug(t, h, thirdLessonSlug)
-	_, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(third.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(third.ID)})
 	require.NoError(t, err)
 
 	view := courseViewOf(t, h)
@@ -159,7 +155,7 @@ func TestStartLessonLeavesTheLearnerAtTheFirstUnfinishedLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
-	_, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
 
 	view := courseViewOf(t, h)
@@ -178,7 +174,7 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 	rows := h.DB.LessonProgress.Query().CountX(ctx)
 	enrollments := h.DB.Enrollment.Query().CountX(ctx)
 
-	_, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
 
 	view := courseViewOf(t, h)
@@ -197,9 +193,8 @@ func TestStartLessonLetsAGuestTakeAnyLesson(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
 
-	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
+	err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 }
 
@@ -208,8 +203,7 @@ func courseViewOf(t *testing.T, h *testsupport.Harness) *api.CourseView {
 	t.Helper()
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	return view
 }
 
@@ -252,9 +246,7 @@ func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
 func TestStartLessonAnswersAnUnknownLessonAsNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: 2_000_000_000})
-	require.NoError(t, err)
-
-	assert.IsType(t, &api.NotFoundError{}, res)
+	err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: 2_000_000_000})
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
