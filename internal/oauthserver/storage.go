@@ -311,41 +311,9 @@ func (s *storage) CreateAccessAndRefreshTokens(
 	)
 
 	err = s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		var family string
-		if current == "" {
-			family, err = randomToken(idBytes)
-			if err != nil {
-				return err
-			}
-		} else {
-			// Spend the presented token, then end the access token it was paired
-			// with: only the new pair is alive afterwards.
-			hash := digest(current)
-
-			claimed, err := db.OAuthRefreshToken.Update().
-				Where(oauthrefreshtoken.TokenHash(hash), oauthrefreshtoken.UsedAtIsNil(), oauthrefreshtoken.ExpiresAtGT(s.now())).
-				SetUsedAt(s.now()).
-				Save(ctx)
-			if err != nil {
-				return errs.Wrapf(err, "spend refresh token")
-			}
-
-			if claimed == 0 {
-				return errRefreshNotSpendable
-			}
-
-			old, err := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.TokenHash(hash)).Only(ctx)
-			if err != nil {
-				return errs.Wrapf(err, "refresh token")
-			}
-
-			family = old.FamilyID
-
-			_, err = db.OAuthAccessToken.Delete().
-				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx)
-			if err != nil {
-				return errs.Wrapf(err, "delete paired access token")
-			}
+		family, err := s.familyFor(ctx, db, current)
+		if err != nil {
+			return err
 		}
 
 		refreshID, err := randomToken(idBytes)
@@ -747,3 +715,40 @@ const (
 	idBytes     = 16
 	secretBytes = 32
 )
+
+// familyFor is the refresh-token family a new pair belongs to: a fresh one for
+// a first grant, else the family of the presented token, which is spent here and
+// whose paired access token ends, so only the new pair is alive afterwards.
+// errRefreshNotSpendable says the token was not unused and live.
+func (s *storage) familyFor(ctx context.Context, db *ent.Client, current string) (string, error) {
+	if current == "" {
+		return randomToken(idBytes)
+	}
+
+	hash := digest(current)
+
+	claimed, err := db.OAuthRefreshToken.Update().
+		Where(oauthrefreshtoken.TokenHash(hash), oauthrefreshtoken.UsedAtIsNil(), oauthrefreshtoken.ExpiresAtGT(s.now())).
+		SetUsedAt(s.now()).
+		Save(ctx)
+	if err != nil {
+		return "", errs.Wrapf(err, "spend refresh token")
+	}
+
+	if claimed == 0 {
+		return "", errRefreshNotSpendable
+	}
+
+	old, err := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.TokenHash(hash)).Only(ctx)
+	if err != nil {
+		return "", errs.Wrapf(err, "refresh token")
+	}
+
+	_, err = db.OAuthAccessToken.Delete().
+		Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx)
+	if err != nil {
+		return "", errs.Wrapf(err, "delete paired access token")
+	}
+
+	return old.FamilyID, nil
+}

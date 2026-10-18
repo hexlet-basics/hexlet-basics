@@ -321,6 +321,17 @@ func (d *Declarations) PersonalDataReads() []string {
 // read records what one operation declares, or says what is wrong with it.
 // kinds is shared by all operations: a permission is read or write everywhere.
 func (d *Declarations) read(where, method string, op operationDecl, kinds map[string]Kind) error {
+	err := d.readExtensions(where, op)
+	if err != nil {
+		return err
+	}
+
+	return d.readPermission(where, method, op, kinds)
+}
+
+// readExtensions records the x-access, x-unit-of-work, x-requires-capability and
+// x-personal-data declarations of one operation.
+func (d *Declarations) readExtensions(where string, op operationDecl) error {
 	if op.Access != "" {
 		if op.Access != AnyStaff {
 			return errs.With("operation", where, "access", op.Access).Errorf("x-access is not any-staff")
@@ -373,6 +384,12 @@ func (d *Declarations) read(where, method string, op operationDecl, kinds map[st
 		d.personalData[operationName(op.OperationID)] = op.PersonalData
 	}
 
+	return nil
+}
+
+// readPermission records the x-permission of one operation, and whether it is an
+// admin write.
+func (d *Declarations) readPermission(where, method string, op operationDecl, kinds map[string]Kind) error {
 	if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
 		d.adminWrite[operationName(op.OperationID)] = true
 	}

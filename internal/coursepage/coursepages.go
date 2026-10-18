@@ -254,34 +254,52 @@ func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage,
 		return "", false, nil
 	}
 
-	var target *ent.CourseLandingPage
+	var (
+		target *ent.CourseLandingPage
+		err    error
+	)
 
 	if page.LandingPageToRedirectID != nil {
-		named, err := p.db.CourseLandingPage.Get(ctx, *page.LandingPageToRedirectID)
-		if ent.IsNotFound(err) {
-			return "", false, domain.ErrNotFound
-		}
-
-		if err != nil {
-			return "", false, errs.Wrapf(err, "load redirect target")
-		}
-
-		target = named
+		target, err = p.namedTarget(ctx, *page.LandingPageToRedirectID)
 	} else {
-		mains, err := p.catalog.MainPages(ctx, locale, page.CourseID)
-		if err != nil {
-			return "", false, err
-		}
+		target, err = p.mainTarget(ctx, page, locale)
+	}
 
-		main, ok := mains[page.CourseID]
-		if !ok || main.ID == page.ID {
-			return "", false, domain.ErrNotFound
-		}
-
-		target = main
+	if err != nil {
+		return "", false, err
 	}
 
 	return lo.FromPtr(target.Slug), true, nil
+}
+
+// namedTarget is the page an archived page's redirect names.
+func (p *Pages) namedTarget(ctx context.Context, id int) (*ent.CourseLandingPage, error) {
+	named, err := p.db.CourseLandingPage.Get(ctx, id)
+	if ent.IsNotFound(err) {
+		return nil, domain.ErrNotFound
+	}
+
+	if err != nil {
+		return nil, errs.Wrapf(err, "load redirect target")
+	}
+
+	return named, nil
+}
+
+// mainTarget is the course's main page in the locale, unless that is the
+// archived page itself: a page cannot redirect to itself.
+func (p *Pages) mainTarget(ctx context.Context, page *ent.CourseLandingPage, locale string) (*ent.CourseLandingPage, error) {
+	mains, err := p.catalog.MainPages(ctx, locale, page.CourseID)
+	if err != nil {
+		return nil, err
+	}
+
+	main, ok := mains[page.CourseID]
+	if !ok || main.ID == page.ID {
+		return nil, domain.ErrNotFound
+	}
+
+	return main, nil
 }
 
 // LessonPage is everything the lesson player shows.

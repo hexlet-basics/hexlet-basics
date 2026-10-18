@@ -494,13 +494,10 @@ func localeOf(args map[string]json.RawMessage) (string, string) {
 	return locale, ""
 }
 
-// buildRequest turns arguments into the HTTP request the operation takes. A
-// name the operation does not declare, or a required one that is missing, is
-// the caller's mistake and is reported as a tool error; whatever else is wrong
-// (a value of the wrong type, a body that breaks the schema) the generated
-// server's own validation answers, as it does over HTTP.
-func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMessage, locale string, forwarded http.Header) (*http.Request, string) {
-	known := map[string]bool{localeArgument: true}
+// routeArguments fills the operation's path template and query string from the
+// arguments, marking each declared name in known. A problem is the caller's
+// mistake, worded for a tool error.
+func routeArguments(op *operation, args map[string]json.RawMessage, known map[string]bool) (string, url.Values, string) {
 	path := op.Path
 	query := url.Values{}
 
@@ -510,7 +507,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 		raw, ok := args[arg.Name]
 		if !ok {
 			if arg.Required {
-				return nil, fmt.Sprintf("the %s argument is required", arg.Name)
+				return "", nil, fmt.Sprintf("the %s argument is required", arg.Name)
 			}
 
 			continue
@@ -518,7 +515,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 
 		values, err := scalars(raw)
 		if err != nil {
-			return nil, fmt.Sprintf("the %s argument must be a value or a list of values", arg.Name)
+			return "", nil, fmt.Sprintf("the %s argument must be a value or a list of values", arg.Name)
 		}
 
 		switch arg.In {
@@ -531,6 +528,13 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 		}
 	}
 
+	return path, query, ""
+}
+
+// requestBody is the request body and its content type from the body argument,
+// marking it in known when the operation takes one. A problem is the caller's
+// mistake, worded for a tool error.
+func requestBody(op *operation, args map[string]json.RawMessage, known map[string]bool) ([]byte, string, string) {
 	var body []byte
 
 	contentType := "application/json"
@@ -540,10 +544,10 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 		if raw, ok := args[bodyArgument]; ok {
 			var problem string
 			if body, contentType, problem = multipartBody(op.Multipart, raw); problem != "" {
-				return nil, problem
+				return nil, "", problem
 			}
 		} else if op.BodyRequired {
-			return nil, "the body argument is required"
+			return nil, "", "the body argument is required"
 		}
 	}
 
@@ -552,20 +556,47 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 		if raw, ok := args[bodyArgument]; ok {
 			body = raw
 		} else if op.BodyRequired {
-			return nil, "the body argument is required"
+			return nil, "", "the body argument is required"
 		}
 	}
 
-	names := make([]string, 0, len(args))
+	return body, contentType, ""
+}
+
+// unknownArguments is the argument names the operation does not declare, sorted.
+func unknownArguments(args map[string]json.RawMessage, known map[string]bool) []string {
+	var names []string
+
 	for name := range args {
 		if !known[name] {
 			names = append(names, name)
 		}
 	}
 
-	if len(names) > 0 {
-		sort.Strings(names)
+	sort.Strings(names)
 
+	return names
+}
+
+// buildRequest turns arguments into the HTTP request the operation takes. A
+// name the operation does not declare, or a required one that is missing, is
+// the caller's mistake and is reported as a tool error; whatever else is wrong
+// (a value of the wrong type, a body that breaks the schema) the generated
+// server's own validation answers, as it does over HTTP.
+func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMessage, locale string, forwarded http.Header) (*http.Request, string) {
+	known := map[string]bool{localeArgument: true}
+
+	path, query, problem := routeArguments(op, args, known)
+	if problem != "" {
+		return nil, problem
+	}
+
+	body, contentType, problem := requestBody(op, args, known)
+	if problem != "" {
+		return nil, problem
+	}
+
+	if names := unknownArguments(args, known); len(names) > 0 {
 		return nil, "unknown arguments: " + strings.Join(names, ", ")
 	}
 

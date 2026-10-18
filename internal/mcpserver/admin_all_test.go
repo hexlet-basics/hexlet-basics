@@ -101,22 +101,7 @@ func exampleOf(schema map[string]any) any {
 	}
 
 	if parts, ok := schema["allOf"].([]any); ok {
-		merged := map[string]any{}
-
-		for _, p := range parts {
-			part, _ := p.(map[string]any)
-			example := exampleOf(part)
-
-			combined, isObject := example.(map[string]any)
-			if !isObject {
-				// A scalar branch (a named enum) is the value itself.
-				return example
-			}
-
-			maps.Copy(merged, combined)
-		}
-
-		return merged
+		return allOfExample(parts)
 	}
 
 	for _, choice := range []string{"anyOf", "oneOf"} {
@@ -136,18 +121,7 @@ func exampleOf(schema map[string]any) any {
 
 	switch typ {
 	case "object":
-		out := map[string]any{}
-		props, _ := schema["properties"].(map[string]any)
-
-		required, _ := schema["required"].([]any)
-		for _, raw := range required {
-			name, _ := raw.(string)
-			if p, ok := props[name].(map[string]any); ok {
-				out[name] = exampleOf(p)
-			}
-		}
-
-		return out
+		return objectExample(schema)
 	case "array":
 		return []any{}
 	case "integer", "number":
@@ -166,4 +140,40 @@ func exampleOf(schema map[string]any) any {
 
 		return strings.Repeat("x", n)
 	}
+}
+
+// allOfExample merges the examples of an allOf's parts; a scalar part (a named
+// enum) is the value itself.
+func allOfExample(parts []any) any {
+	merged := map[string]any{}
+
+	for _, p := range parts {
+		part, _ := p.(map[string]any)
+		example := exampleOf(part)
+
+		combined, isObject := example.(map[string]any)
+		if !isObject {
+			return example
+		}
+
+		maps.Copy(merged, combined)
+	}
+
+	return merged
+}
+
+// objectExample is an object with its required properties only.
+func objectExample(schema map[string]any) map[string]any {
+	out := map[string]any{}
+	props, _ := schema["properties"].(map[string]any)
+
+	required, _ := schema["required"].([]any)
+	for _, raw := range required {
+		name, _ := raw.(string)
+		if p, ok := props[name].(map[string]any); ok {
+			out[name] = exampleOf(p)
+		}
+	}
+
+	return out
 }

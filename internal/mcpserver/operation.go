@@ -111,6 +111,36 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		Admin:        false,
 	}
 
+	params, err := buildParameters(doc, id, path, node)
+	if err != nil {
+		return nil, err
+	}
+
+	op.Params = params
+
+	if body, ok := node["requestBody"].(map[string]any); ok {
+		err := buildBody(doc, id, body, op)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	op.Response, err = successSchema(doc, id, node)
+	if err != nil {
+		return nil, err
+	}
+
+	op.Admin = requiresAdmin(node)
+
+	return op, nil
+}
+
+// buildParameters is the operation's path and query parameters, with the
+// references into components resolved. A path placeholder with no declared
+// parameter is an error: the tool could not fill it.
+func buildParameters(doc *contractDoc, id, path string, node map[string]any) ([]parameter, error) {
+	var params []parameter
+
 	for _, raw := range asList(node["parameters"]) {
 		part, _ := raw.(map[string]any)
 		if ref, ok := part["$ref"].(string); ok {
@@ -141,39 +171,49 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		}
 
 		param.Schema, _ = schema.(map[string]any)
-		op.Params = append(op.Params, param)
+		params = append(params, param)
 	}
 
 	for _, name := range pathParams(path) {
-		if !slices.ContainsFunc(op.Params, func(p parameter) bool { return p.In == "path" && p.Name == name }) {
+		if !slices.ContainsFunc(params, func(p parameter) bool { return p.In == "path" && p.Name == name }) {
 			return nil, errs.With("operation", id, "parameter", name).Errorf("path parameter is not declared")
 		}
 	}
 
-	if body, ok := node["requestBody"].(map[string]any); ok {
-		file, isMultipart, err := multipartFileOf(body["content"], doc)
-		if err != nil {
-			return nil, errs.With("operation", id).Wrapf(err, "request body")
-		}
+	return params, nil
+}
 
-		if isMultipart {
-			op.Multipart = &file
-		} else {
-			schema, found, err := jsonSchemaOf(body["content"], doc)
-			if err != nil {
-				return nil, errs.With("operation", id).Wrapf(err, "request body")
-			}
-
-			if !found {
-				return nil, errs.With("operation", id).Errorf("request body is not JSON")
-			}
-
-			op.Body = schema
-		}
-
-		op.BodyRequired, _ = body["required"].(bool)
+// buildBody reads the request body into op: the one file of a multipart form,
+// else the JSON schema.
+func buildBody(doc *contractDoc, id string, body map[string]any, op *operation) error {
+	file, isMultipart, err := multipartFileOf(body["content"], doc)
+	if err != nil {
+		return errs.With("operation", id).Wrapf(err, "request body")
 	}
 
+	if isMultipart {
+		op.Multipart = &file
+	} else {
+		schema, found, err := jsonSchemaOf(body["content"], doc)
+		if err != nil {
+			return errs.With("operation", id).Wrapf(err, "request body")
+		}
+
+		if !found {
+			return errs.With("operation", id).Errorf("request body is not JSON")
+		}
+
+		op.Body = schema
+	}
+
+	op.BodyRequired, _ = body["required"].(bool)
+
+	return nil
+}
+
+// successSchema is the JSON schema of the first 2xx response (in code order)
+// that has one; nil when none does.
+func successSchema(doc *contractDoc, id string, node map[string]any) (map[string]any, error) {
 	responses, _ := node["responses"].(map[string]any)
 
 	codes := make([]string, 0, len(responses))
@@ -194,21 +234,25 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		}
 
 		if found {
-			op.Response = schema
-
-			break
+			return schema, nil
 		}
 	}
 
+	return nil, nil //nolint:nilnil // no success schema is a valid answer: the operation returns no JSON body
+}
+
+// requiresAdmin reports whether the operation's security requirements name the
+// admin session.
+func requiresAdmin(node map[string]any) bool {
 	for _, requirement := range asList(node["security"]) {
 		if m, ok := requirement.(map[string]any); ok {
 			if _, admin := m["AdminSession"]; admin {
-				op.Admin = true
+				return true
 			}
 		}
 	}
 
-	return op, nil
+	return false
 }
 
 // jsonSchemaOf is the inlined schema of an application/json content entry;

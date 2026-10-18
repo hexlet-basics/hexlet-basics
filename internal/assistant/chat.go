@@ -215,76 +215,7 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 	answer, writer := io.Pipe()
 	started := make(chan error, 1)
 
-	go func() {
-		// Ask waits for exactly one signal: the first token (the question is
-		// then stored) or the failure that came instead of it.
-		signalled := false
-		signal := func(err error) {
-			if !signalled {
-				signalled = true
-
-				started <- err
-			}
-		}
-		// This goroutine is outside every recovery the request has (HTTP,
-		// River and Watermill each guard their own), so a panic in the model
-		// client would take the process down. Recover turns it into an error
-		// that fails the answer like any other (ADR-0018).
-		panicErr := oops.In("assistant").Recover(func() {
-			var text strings.Builder
-
-			chatID := 0
-			begin := func() error {
-				id, err := c.saveQuestion(storeCtx, question, lessonProgressID)
-				chatID = id
-
-				signal(err)
-
-				return err
-			}
-
-			usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
-				if !signalled {
-					err := begin()
-					if err != nil {
-						return err
-					}
-				}
-
-				text.WriteString(delta)
-				_, err := writer.Write([]byte(delta))
-
-				return errs.Wrapf(err, "write to the stream")
-			})
-			if err == nil && !signalled {
-				// An empty answer is still an answer.
-				err = begin()
-			}
-
-			if err != nil {
-				signal(err)
-				writer.CloseWithError(err)
-
-				return
-			}
-
-			writer.CloseWithError(c.saveAnswer(storeCtx, chatID, text.String(), usage))
-		})
-		if panicErr == nil {
-			return
-		}
-		// Before the first token Ask returns the error and the HTTP layer
-		// reports it; after it the response is already streaming and nothing
-		// else would, so the panic is sent to Sentry here.
-		if signalled {
-			if hub := sentry.GetHubFromContext(ctx); hub != nil {
-				hub.CaptureException(panicErr)
-			}
-		}
-
-		signal(panicErr)
-		writer.CloseWithError(panicErr)
-	}()
+	go c.streamAnswer(ctx, storeCtx, question, turns, lessonProgressID, writer, started)
 
 	err = <-started
 	if err != nil {
@@ -292,6 +223,83 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 	}
 
 	return answer, nil
+}
+
+// streamAnswer runs the model and pipes its answer to writer; it is the goroutine
+// Ask starts. started gets exactly one value: the error that came before the
+// first token, or nil once the question is stored.
+func (c *Chat) streamAnswer(
+	ctx, storeCtx context.Context, question Question, turns []Turn, lessonProgressID int,
+	writer *io.PipeWriter, started chan<- error,
+) {
+	// Ask waits for exactly one signal: the first token (the question is
+	// then stored) or the failure that came instead of it.
+	signalled := false
+	signal := func(err error) {
+		if !signalled {
+			signalled = true
+
+			started <- err
+		}
+	}
+	// This goroutine is outside every recovery the request has (HTTP,
+	// River and Watermill each guard their own), so a panic in the model
+	// client would take the process down. Recover turns it into an error
+	// that fails the answer like any other (ADR-0018).
+	panicErr := oops.In("assistant").Recover(func() {
+		var text strings.Builder
+
+		chatID := 0
+		begin := func() error {
+			id, err := c.saveQuestion(storeCtx, question, lessonProgressID)
+			chatID = id
+
+			signal(err)
+
+			return err
+		}
+
+		usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
+			if !signalled {
+				err := begin()
+				if err != nil {
+					return err
+				}
+			}
+
+			text.WriteString(delta)
+			_, err := writer.Write([]byte(delta))
+
+			return errs.Wrapf(err, "write to the stream")
+		})
+		if err == nil && !signalled {
+			// An empty answer is still an answer.
+			err = begin()
+		}
+
+		if err != nil {
+			signal(err)
+			writer.CloseWithError(err)
+
+			return
+		}
+
+		writer.CloseWithError(c.saveAnswer(storeCtx, chatID, text.String(), usage))
+	})
+	if panicErr == nil {
+		return
+	}
+	// Before the first token Ask returns the error and the HTTP layer
+	// reports it; after it the response is already streaming and nothing
+	// else would, so the panic is sent to Sentry here.
+	if signalled {
+		if hub := sentry.GetHubFromContext(ctx); hub != nil {
+			hub.CaptureException(panicErr)
+		}
+	}
+
+	signal(panicErr)
+	writer.CloseWithError(panicErr)
 }
 
 // turns builds what the model is sent: the lesson's system prompt, the

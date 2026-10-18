@@ -16,8 +16,6 @@ linters:
     - testpackage
     - cyclop
     - funlen
-    - gocognit
-    - nestif
   settings:
     varnamelen:
       # The names Go code reads by convention: an index, an id, the comma-ok
