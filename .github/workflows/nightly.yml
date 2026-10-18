@@ -93,3 +93,27 @@ jobs:
       - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
 
       - run: mise run lint:vulns
+
+  # Fills the image caches on main. A pull request's caches are private to its
+  # branch and may read only its own and the default branch's, and check.yml
+  # does not run on push to main, so without this every new PR built both
+  # images from scratch. Same action and scopes as check.yml's build-images.
+  warm-image-caches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        include:
+          - file: Dockerfile
+            lock: go.sum
+          - file: Dockerfile.web
+            lock: pnpm-lock.yaml
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: $/.github/actions/build-image
+        with:
+          file: ${{ matrix.file }}
+          lock: ${{ matrix.lock }}

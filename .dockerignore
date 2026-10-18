@@ -22,3 +22,7 @@ storage/
 **/*.tsbuildinfo
 .vitest-attachments/
 **/__screenshots__/
+
+# Cache-mount directories the build-image action fills in the workspace.
+cache-mount/
+scratch/
