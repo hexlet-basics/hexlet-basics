@@ -4,12 +4,20 @@ linters:
   default: standard
   enable:
     - bodyclose
+    - containedctx
     - contextcheck
+    - copyloopvar
+    - durationcheck
     - errorlint
+    - exptostd
+    - fatcontext
     - forbidigo
+    - loggercheck
+    - nolintlint
     - noctx
     - rowserrcheck
     - sqlclosecheck
+    - usestdlibvars
     - usetesting
   settings:
     forbidigo:
