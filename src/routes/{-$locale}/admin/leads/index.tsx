@@ -12,8 +12,8 @@ import type { ReactElement } from "react";
 
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
-  validateSearch: zAdminListLeadsQuery,
   component: LeadsList,
+  validateSearch: zAdminListLeadsQuery,
 });
 
 function LeadsList(): ReactElement {

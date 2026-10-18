@@ -15,6 +15,7 @@ import (
 // a real operation, and read back through the generated client.
 
 func TestAMissingRecordAnswersProblemDetails404(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "no-such-course"})
@@ -26,6 +27,7 @@ func TestAMissingRecordAnswersProblemDetails404(t *testing.T) {
 }
 
 func TestASignedOutCallAnswersProblemDetails401(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	_, err := h.Client.GetProfile(t.Context())
@@ -35,6 +37,7 @@ func TestASignedOutCallAnswersProblemDetails401(t *testing.T) {
 }
 
 func TestARefusalAnswersProblemDetails403WithADetail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID())})
@@ -44,6 +47,7 @@ func TestARefusalAnswersProblemDetails403WithADetail(t *testing.T) {
 }
 
 func TestBadInputAnswersProblemDetails422WithFieldErrors(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	taken := h.DB.User.Query().FirstX(t.Context())
 
@@ -57,6 +61,7 @@ func TestBadInputAnswersProblemDetails422WithFieldErrors(t *testing.T) {
 }
 
 func TestAUniqueViolationOnAnUndeclaredFieldAnswersProblemDetails409(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminCreateCourseCategory(t.Context(), &api.CourseCategoryInput{

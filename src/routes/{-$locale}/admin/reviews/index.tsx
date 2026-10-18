@@ -16,8 +16,8 @@ import { ButtonLink } from "@/components/RouterLink";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/")({
-  validateSearch: zAdminListReviewsQuery,
   component: ReviewsList,
+  validateSearch: zAdminListReviewsQuery,
 });
 
 function ReviewsList(): ReactElement {

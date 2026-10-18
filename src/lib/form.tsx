@@ -1,6 +1,5 @@
 import {
   Button,
-  type ButtonProps,
   Checkbox,
   Input,
   MultiSelect,
@@ -10,6 +9,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import type {
+  ButtonProps,
   CheckboxProps,
   MultiSelectProps,
   NumberInputProps,
@@ -24,9 +24,8 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import dayjs from "dayjs";
-import type { SyntheticEvent } from "react";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import type { ReactElement } from "react";
+import type { ReactElement, SyntheticEvent } from "react";
 
 // `L LT` (localized date + time) needs the localizedFormat plugin.
 dayjs.extend(localizedFormat);
@@ -48,7 +47,8 @@ const pickerToIso = (value: string | null): string | null =>
 // schemas generated from OpenAPI (`src/client/zod.gen.ts`), passed straight to
 // `validators.onSubmit` — zod v4 implements Standard Schema, which TanStack Form
 // consumes natively and maps issues back to fields by path.
-export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
+export const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts();
 
 // The text of one validation error: a string as it is, an issue by its message.
 function messageOf(entry: unknown): string {
@@ -249,7 +249,8 @@ function RichTextField({ label }: { label: string }): ReactElement {
 // The `onSubmit` of a native `<form>` driven by a TanStack form: stops the browser's
 // own submission and lets the form validate and submit.
 export const submitForm =
-  (form: { handleSubmit: () => Promise<void> }) => (event: SyntheticEvent) => {
+  (form: { handleSubmit: () => Promise<void> }) =>
+  (event: SyntheticEvent): void => {
     event.preventDefault();
     void form.handleSubmit();
   };
@@ -257,7 +258,7 @@ export const submitForm =
 // The submit button of a form: busy for as long as the submission runs. The forms
 // await their mutation in `onSubmit`, so the button needs no pending flag handed
 // down from it. Rendered inside `<form.AppForm>`, which supplies the context.
-function SubmitButton({ children, ...props }: ButtonProps) {
+function SubmitButton({ children, ...props }: ButtonProps): ReactElement {
   const form = useFormContext();
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
@@ -282,6 +283,6 @@ export const { useAppForm } = createFormHook({
     TextareaField,
   },
   fieldContext,
-  formComponents: {},
+  formComponents: { SubmitButton },
   formContext,
 });

@@ -18,8 +18,8 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
-  validateSearch: zAdminListBlogPostsQuery,
   component: BlogPostsList,
+  validateSearch: zAdminListBlogPostsQuery,
 });
 
 function BlogPostsList(): ReactElement {

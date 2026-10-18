@@ -15,8 +15,8 @@ import type { ReactElement } from "react";
 
 // Per-lesson progress (route keeps the legacy table name) — read-only.
 export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
-  validateSearch: zAdminListLessonProgressQuery,
   component: LessonProgressList,
+  validateSearch: zAdminListLessonProgressQuery,
 });
 
 function LessonProgressList(): ReactElement {

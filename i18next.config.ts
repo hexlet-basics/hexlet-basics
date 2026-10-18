@@ -1,11 +1,11 @@
 import { defineConfig } from "i18next-cli";
 
 // I18next-cli config for the Go-rewrite frontend. Its primary job here is
-// Regenerating the type definitions (`src/types/resources.d.ts` +
+// regenerating the type definitions (`src/types/resources.d.ts` +
 // `src/types/i18next.d.ts`) from the Russian source of truth after editing the
-// Locale files — run `pnpm exec i18next-cli types`. The `extract` block mirrors
-// The legacy setup so key extraction from source stays available, but the
-// Hand-maintained locale files under `src/locales` are never overwritten by it
+// locale files — run `pnpm exec i18next-cli types`. The `extract` block mirrors
+// the legacy setup so key extraction from source stays available, but the
+// hand-maintained locale files under `src/locales` are never overwritten by it
 // (they are ignored as inputs).
 const ignore = [
   "src/locales/**",
@@ -31,7 +31,7 @@ export default defineConfig({
       ...ignore,
       // Legal and about pages are written as one component per language
       // (PrivacyRu/PrivacyEn, TosRu/TosEn, ...), their text is the page, not a
-      // Catalog entry. The hardcoded-string rule does not apply to them.
+      // catalog entry. The hardcoded-string rule does not apply to them.
       "src/components/pages/**",
     ],
   },

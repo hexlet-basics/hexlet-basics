@@ -19,8 +19,8 @@ import type { ReactElement } from "react";
 
 // Banners admin list, rendered through the CRUD engine.
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
-  validateSearch: zAdminListBannersQuery,
   component: BannersList,
+  validateSearch: zAdminListBannersQuery,
 });
 
 function BannersList(): ReactElement {

@@ -2,6 +2,7 @@ import { Alert, Card, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useEffect } from "react";
+import type { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { zEmailInput } from "@/client/zod.gen";
 import { emailInputProps } from "@/lib/authFieldProps";
@@ -21,18 +22,18 @@ export function EmailRequestCard({
   >;
   success: string;
   submit: string;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const form = useAppForm({
     defaultValues: { email: "" },
-    validators: { onSubmit: zEmailInput },
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync({ body: value });
     },
+    validators: { onSubmit: zEmailInput },
   });
 
   return (
-    <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+    <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
       {mutation.isSuccess ? (
         <Alert color="green">{success}</Alert>
       ) : (
@@ -58,8 +59,10 @@ export function EmailRequestCard({
 
 // The refused-link notice is a flash, so it is shown once on arrival like the
 // other flashes; the id keeps StrictMode's double effect from stacking two.
-export function useInvalidLinkNotice(invalid: boolean | undefined, message: string) {
+export function useInvalidLinkNotice(invalid: boolean | undefined, message: string): void {
   useEffect(() => {
-    if (invalid) notifications.show({ id: "invalid-link", color: "red", message });
+    if (invalid) {
+      notifications.show({ color: "red", id: "invalid-link", message });
+    }
   }, [invalid, message]);
 }

@@ -21,8 +21,8 @@ import type { ReactElement } from "react";
 // (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
 // thin binding of the generated hooks to the shared CrudList/CrudForm.
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/")({
-  validateSearch: zAdminListCourseCategoriesQuery,
   component: CourseCategoriesList,
+  validateSearch: zAdminListCourseCategoriesQuery,
 });
 
 function CourseCategoriesList(): ReactElement {

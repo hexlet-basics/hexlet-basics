@@ -16,8 +16,8 @@ import { ButtonLink } from "@/components/RouterLink";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
-  validateSearch: zAdminListRolesQuery,
   component: RolesList,
+  validateSearch: zAdminListRolesQuery,
 });
 
 function RolesList(): ReactElement {

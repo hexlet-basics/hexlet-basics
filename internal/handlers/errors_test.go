@@ -19,7 +19,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
@@ -125,7 +124,7 @@ func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
 
 	transport := &sentry.MockTransport{}
 	client, err := telemetry.NewSentryClient(
-		&config.Config{SentryDSN: "https://public@example.com/1"},
+		"https://public@example.com/1", "", "",
 		telemetry.WithSentryTransport(transport),
 	)
 	require.NoError(t, err)

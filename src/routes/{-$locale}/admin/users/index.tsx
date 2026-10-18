@@ -21,8 +21,8 @@ import type { ReactElement } from "react";
 // namespacing artifact and is dropped from the UI path). The search box is the
 // list's own `q` filter, so a search pages and totals like the list does.
 export const Route = createFileRoute("/{-$locale}/admin/users/")({
-  validateSearch: zAdminListUsersQuery,
   component: UsersList,
+  validateSearch: zAdminListUsersQuery,
 });
 
 function UsersList(): ReactElement {

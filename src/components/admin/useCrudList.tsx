@@ -7,7 +7,8 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -123,11 +124,16 @@ export function useCrudList<
   // reads the search of whichever route it is mounted in.
   const search: ListQuery = useSearch({ strict: false });
   const navigate = useNavigate();
-  const setSearch = (patch: Partial<ListQuery>) =>
-    navigate({ to: ".", search: (prev) => ({ ...prev, ...patch }) });
+  const setSearch = (patch: Partial<ListQuery>): Promise<void> =>
+    navigate({ search: (prev) => ({ ...prev, ...patch }), to: "." });
 
-  const [search, setSearch] = useState("");
-  const [term] = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS);
+  // What the box shows follows the keystrokes; the address (and so the query)
+  // follows it a beat later. A new term starts from the first page: the old page
+  // may not exist in the narrowed list.
+  const [text, setText] = useState(search.q ?? "");
+  const applyTerm = useDebouncedCallback((term: string) => {
+    void setSearch({ page: undefined, q: term === "" ? undefined : term });
+  }, SEARCH_DEBOUNCE_MS);
 
   const query = useQuery(
     list({
@@ -154,15 +160,15 @@ export function useCrudList<
   };
   const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
     const next = typeof updater === "function" ? updater(pagination) : updater;
-    setPageIndex(next.pageIndex);
-    if (next.pageSize !== pagination.pageSize) {
-      setChosenSize(next.pageSize);
-    }
+    void setSearch({
+      page: next.pageIndex + 1,
+      perPage: next.pageSize === pagination.pageSize ? search.perPage : next.pageSize,
+    });
   };
 
   // Typed through the page, not read off it: a property read on a type parameter
   // widens to its constraint, and the rows would lose their own type.
-  const rows: TPage["items"] | undefined = query.data?.["items"];
+  const rows: TPage["items"] | undefined = query.data?.items;
 
   const actionsColumn = ({
     edit,
@@ -201,19 +207,17 @@ export function useCrudList<
   return {
     actionsColumn,
     props: {
-      data: query.data?.items ?? [],
+      data: rows,
       isLoading: query.isLoading,
       onPaginationChange,
       pagination,
-      // A new term starts from the first page: the old page may not exist in the
-      // narrowed list.
       search: searchable
         ? {
             onChange: (value: string): void => {
-              setSearch(value);
-              setPageIndex(0);
+              setText(value);
+              applyTerm(value.trim());
             },
-            value: search,
+            value: text,
           }
         : undefined,
       total: query.data?.total ?? 0,

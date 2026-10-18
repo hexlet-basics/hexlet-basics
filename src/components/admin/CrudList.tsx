@@ -43,11 +43,14 @@ export interface CrudListProps<T extends RowData> {
 }
 
 // The placeholder rows shown while a page loads; they have no identity of their own.
+// The rows of a list with no data yet: one stable reference, not a new array per render.
+const NO_ROWS: never[] = [];
+
 const SKELETON_ROWS = ["first", "second", "third", "fourth", "fifth"];
 
 export function CrudList<T extends RowData>({
   columns,
-  data = [],
+  data = NO_ROWS,
   total,
   pagination,
   onPaginationChange,

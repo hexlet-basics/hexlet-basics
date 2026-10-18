@@ -171,6 +171,6 @@ func TestInt32FromIntSaturatesInsteadOfWrapping(t *testing.T) {
 	assert.Equal(t, int32(42), Int32FromInt(42))
 	assert.Equal(t, int32(math.MaxInt32), Int32FromInt(math.MaxInt32+1))
 	assert.Equal(t, int32(math.MinInt32), Int32FromInt(math.MinInt32-1))
-	assert.Equal(t, int32(7), Int32FromPtr(lo.ToPtr(7)))
-	assert.Equal(t, int32(math.MaxInt32), *nilInt32From(lo.ToPtr(math.MaxInt32 + 1)))
+	assert.Equal(t, int32(7), Int32FromPtr(new(7)))
+	assert.Equal(t, int32(math.MaxInt32), *nilInt32From(new(math.MaxInt32 + 1)))
 }

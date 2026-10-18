@@ -12,7 +12,7 @@ import {
   registrationEmailInputProps,
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
 import type { ReactElement } from "react";

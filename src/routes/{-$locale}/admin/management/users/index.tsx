@@ -16,8 +16,8 @@ import type { ReactElement } from "react";
 // Management users (legacy `/admin/management/users`) — list + edit only,
 // no create/delete (parity with legacy: accounts are self-registered).
 export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
-  validateSearch: zAdminListManagementUsersQuery,
   component: ManagementUsersList,
+  validateSearch: zAdminListManagementUsersQuery,
 });
 
 function ManagementUsersList(): ReactElement {

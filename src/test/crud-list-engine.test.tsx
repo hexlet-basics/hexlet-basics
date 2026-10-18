@@ -95,7 +95,7 @@ describe("crud list engine", () => {
       }),
     );
 
-    await renderWithRouter(<Banners />);
+    await renderWithRouter(<Banners />, { navigate: "real" });
 
     await expect.element(page.getByRole("cell", { name: "Banner on page 1" })).toBeVisible();
     expect(requested[0]?.get("page")).toBe("1");
@@ -123,7 +123,7 @@ describe("crud list engine", () => {
       }),
     );
 
-    await renderWithRouter(<Banners />);
+    await renderWithRouter(<Banners />, { navigate: "real" });
     await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
 
     await page.getByRole("button", { name: "Delete" }).first().click();
@@ -162,7 +162,7 @@ describe("crud list engine", () => {
       }),
     );
 
-    await renderWithRouter(<Banners searchable />);
+    await renderWithRouter(<Banners searchable />, { navigate: "real" });
     await expect.element(page.getByRole("cell", { name: "Anything" })).toBeVisible();
     expect(requested[0]?.has("q")).toBe(false);
     await page.getByRole("button", { name: "2" }).click();
@@ -183,7 +183,7 @@ describe("crud list engine", () => {
       ),
     );
 
-    await renderWithRouter(<Banners />);
+    await renderWithRouter(<Banners />, { navigate: "real" });
 
     await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
     await expect.element(page.getByPlaceholder("Search…")).not.toBeInTheDocument();

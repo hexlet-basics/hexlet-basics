@@ -13,18 +13,21 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState } from "@tanstack/react-table";
+import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
-import type { ReactElement, SyntheticEvent } from "react";
+import type { ReactElement } from "react";
+import type { z } from "zod";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
 import type { AuditChange, AuditRecord } from "@/client/types.gen";
+import { zAdminListAuditRecordsQuery } from "@/client/zod.gen";
 import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
+import { submitForm, useAppForm } from "@/lib/form";
 import { isApiError } from "@/lib/api-error";
-import { validationMessages } from "@/lib/server-validation";
 import { HTTP_FORBIDDEN } from "@/lib/http-status";
+import { validationMessages } from "@/lib/server-validation";
 
 // The audit trail (ADR-0020): every change a staff member made and every read of
 // personal data, newest first. The API needs the capability Permission
@@ -34,25 +37,11 @@ export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   // The generated query schema of the list operation: the page, the filters and
   // the window live in the address, so a filtered view can be shared and survives
   // a reload.
-  validateSearch: zAdminListAuditRecordsQuery,
   component: AuditTrail,
+  validateSearch: zAdminListAuditRecordsQuery,
 });
 
-// What the filter bar holds before it is applied. Dates are the day pickers'
-// `YYYY-MM-DD` strings; the others are the raw text of the inputs.
-function isChannel(value: string): value is "mcp" | "web" {
-  return value === "web" || value === "mcp";
-}
-
-interface Filters {
-  actorUserId: string;
-  channel: string;
-  operation: string;
-  entityType: string;
-  entityId: string;
-  from: string;
-  to: string;
-}
+type AuditSearch = z.input<typeof zAdminListAuditRecordsQuery>;
 
 const PER_PAGE = 25;
 
@@ -71,15 +60,33 @@ type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
 // the morning of the 5th wherever they are.
-const startOfDay = (day: string): string => new Date(`${day}T00:00:00`).toISOString();
+const startOfDay = (day: string): string => dayjs(day).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
 // window at the next local midnight.
-const endOfDay = (day: string): string => {
-  const next = new Date(`${day}T00:00:00`);
-  next.setDate(next.getDate() + 1);
-  return next.toISOString();
-};
+const endOfDay = (day: string): string => dayjs(day).add(1, "day").toISOString();
+
+const filtersOf = (search: AuditSearch): Filters => ({
+  actorUserId: search.actorUserId?.toString() ?? "",
+  channel: search.channel ?? "",
+  entityId: search.entityId ?? "",
+  entityType: search.entityType ?? "",
+  from: search.from ? dayjs(search.from).format("YYYY-MM-DD") : "",
+  operation: search.operation ?? "",
+  to: search.to ? dayjs(search.to).subtract(1, "day").format("YYYY-MM-DD") : "",
+});
+
+// A blank input is no filter: it stays out of the address and the request.
+const searchOf = (filters: Filters): AuditSearch => ({
+  actorUserId: filters.actorUserId === "" ? undefined : Number(filters.actorUserId),
+  // "" (any channel) is no member of the enum, so it parses to nothing.
+  channel: zAdminListAuditRecordsQuery.shape.channel.safeParse(filters.channel).data,
+  entityId: filters.entityId || undefined,
+  entityType: filters.entityType || undefined,
+  from: filters.from === "" ? undefined : startOfDay(filters.from),
+  operation: filters.operation || undefined,
+  to: filters.to === "" ? undefined : endOfDay(filters.to),
+});
 
 const CHANNEL_COLOR = { mcp: "grape", web: "blue" } as const;
 const OUTCOME_COLOR = { failed: "red", forbidden: "orange", succeeded: "green" } as const;
@@ -94,7 +101,7 @@ function AuditTrail(): ReactElement {
     pageIndex: (search.page ?? 1) - 1,
     pageSize: search.perPage ?? PER_PAGE,
   };
-  const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
+  const onPaginationChange: OnChangeFn<PaginationState> = (updater): void => {
     const next = typeof updater === "function" ? updater(pagination) : updater;
     void navigate({
       search: (prev) => ({ ...prev, page: next.pageIndex + 1, perPage: next.pageSize }),
@@ -102,43 +109,18 @@ function AuditTrail(): ReactElement {
   };
 
   const { data, isLoading, error } = useQuery(
-    adminListAuditRecordsOptions({
-      query: {
-        page: pagination.pageIndex + 1,
-        perPage: pagination.pageSize,
-        ...(applied.actorUserId !== "" && { actorUserId: Number(applied.actorUserId) }),
-        ...(isChannel(applied.channel) && { channel: applied.channel }),
-        ...(applied.operation !== "" && { operation: applied.operation }),
-        ...(applied.entityType !== "" && { entityType: applied.entityType }),
-        ...(applied.entityId !== "" && { entityId: applied.entityId }),
-        ...(applied.from !== "" && { from: startOfDay(applied.from) }),
-        ...(applied.to !== "" && { to: endOfDay(applied.to) }),
-      },
-    }),
+    adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
   );
 
-  const apply = (event: SyntheticEvent): void => {
-    event.preventDefault();
-    setApplied(draft);
-    setPagination((current) => ({ ...current, pageIndex: 0 }));
-  };
-  const reset = (): void => {
-    setDraft(NO_FILTERS);
-    setApplied(NO_FILTERS);
-    setPagination((current) => ({ ...current, pageIndex: 0 }));
-  };
-  const field = (
-    name: keyof Filters,
-  ): { onChange: (event: { currentTarget: { value: string } }) => void; value: string } => ({
-    // The value is read before the updater runs: React clears `currentTarget`
-    // once the handler returns, and the updater runs later.
-    onChange: (event: { currentTarget: { value: string } }) => {
-      const { value } = event.currentTarget;
-      setDraft((current) => ({ ...current, [name]: value }));
-    },
-    value: draft[name],
+  // Applying starts from the first page: the old one may not exist in the narrowed trail.
+  const apply = (filters: Filters): Promise<void> =>
+    navigate({ search: { ...searchOf(filters), perPage: search.perPage } });
+
+  const form = useAppForm({
+    defaultValues: filtersOf(search),
+    onSubmit: ({ value }): Promise<void> => apply(value),
   });
-  const reset = () => {
+  const reset = (): void => {
     form.reset(NO_FILTERS);
     void apply(NO_FILTERS);
   };
@@ -209,27 +191,41 @@ function AuditTrail(): ReactElement {
       <form onSubmit={submitForm(form)}>
         <Stack gap="xs">
           <Group align="flex-end" gap="sm">
-            <TextInput
-              label={t(($) => $.admin.audit.filters.from)}
-              type="date"
-              {...field("from")}
-            />
-            <TextInput label={t(($) => $.admin.audit.filters.to)} type="date" {...field("to")} />
-            <TextInput
-              label={t(($) => $.admin.audit.filters.actorUserId)}
-              type="number"
-              min={1}
-              {...field("actorUserId")}
-            />
-            <NativeSelect
-              label={t(($) => $.admin.audit.filters.channel)}
-              data={[
-                { label: t(($) => $.admin.audit.filters.anyChannel), value: "" },
-                { label: t(($) => $.admin.audit.channel.web), value: "web" },
-                { label: t(($) => $.admin.audit.channel.mcp), value: "mcp" },
-              ]}
-              {...field("channel")}
-            />
+            <form.AppField name="from">
+              {(field) => (
+                <field.TextField label={t(($) => $.admin.audit.filters.from)} type="date" />
+              )}
+            </form.AppField>
+            <form.AppField name="to">
+              {(field) => (
+                <field.TextField label={t(($) => $.admin.audit.filters.to)} type="date" />
+              )}
+            </form.AppField>
+            <form.AppField name="actorUserId">
+              {(field) => (
+                <field.TextField
+                  label={t(($) => $.admin.audit.filters.actorUserId)}
+                  type="number"
+                  min={1}
+                />
+              )}
+            </form.AppField>
+            <form.Field name="channel">
+              {(field) => (
+                <NativeSelect
+                  label={t(($) => $.admin.audit.filters.channel)}
+                  data={[
+                    { label: t(($) => $.admin.audit.filters.anyChannel), value: "" },
+                    { label: t(($) => $.admin.audit.channel.web), value: "web" },
+                    { label: t(($) => $.admin.audit.channel.mcp), value: "mcp" },
+                  ]}
+                  value={field.state.value}
+                  onChange={(event) => {
+                    field.handleChange(event.currentTarget.value);
+                  }}
+                />
+              )}
+            </form.Field>
           </Group>
           <Group align="flex-end" gap="sm">
             <form.AppField name="operation">

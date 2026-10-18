@@ -16,8 +16,8 @@ import type { ReactElement } from "react";
 // AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
 export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")({
-  validateSearch: zAdminListCourseLessonReviewsQuery,
   component: LessonReviewsList,
+  validateSearch: zAdminListCourseLessonReviewsQuery,
 });
 
 function LessonReviewsList(): ReactElement {

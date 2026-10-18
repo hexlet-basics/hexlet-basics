@@ -16,8 +16,8 @@ import type { ReactElement } from "react";
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
 // mining student questions; the per-lesson summaries live under lesson reviews.
 export const Route = createFileRoute("/{-$locale}/admin/messages/")({
-  validateSearch: zAdminListMessagesQuery,
   component: MessagesList,
+  validateSearch: zAdminListMessagesQuery,
 });
 
 function MessagesList(): ReactElement {

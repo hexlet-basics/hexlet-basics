@@ -7,7 +7,7 @@ import { createLeadMutation } from "@/client/@tanstack/react-query.gen";
 import type { LeadInput } from "@/client/types.gen";
 import { zLeadInput } from "@/client/zod.gen";
 import { readFirstVisit } from "@/lib/first-visit";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { metrikaClientId } from "@/lib/metrika";
 import type { ReactElement } from "react";
 

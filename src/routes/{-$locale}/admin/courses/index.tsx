@@ -22,8 +22,8 @@ import type { ReactElement } from "react";
 // build a new exercise version (river job, auto-promoted on success) and
 // enqueue AI review of every current lesson.
 export const Route = createFileRoute("/{-$locale}/admin/courses/")({
-  validateSearch: zAdminListCoursesQuery,
   component: CoursesList,
+  validateSearch: zAdminListCoursesQuery,
 });
 
 function CoursesList(): ReactElement {

@@ -8,9 +8,9 @@ import type {
 } from "../src/components/admin/fieldDescriptors.ts";
 
 // The pure half of the admin field generator (the file half is
-// Gen-admin-fields.ts): from a parsed OpenAPI document and a resource's config it
-// Computes the descriptors of its form fields and list columns. Kept free of
-// Node APIs so a test can run it over a small fixture.
+// gen-admin-fields.ts): from a parsed OpenAPI document and a resource's config it
+// computes the descriptors of its form fields and list columns. Kept free of
+// node APIs so a test can run it over a small fixture.
 
 interface Schema {
   $ref?: string;
@@ -49,7 +49,7 @@ export interface ResourceConfig {
   // `model` (the legacy catalog keeps the shared ones under `base`).
   labelScopes?: Record<string, string>;
   // Input properties that are never a form field (ids the server derives or a
-  // Later wave fills); no descriptor, so no label is owed for them.
+  // later wave fills); no descriptor, so no label is owed for them.
   skipFields?: string[];
 }
 
@@ -69,7 +69,7 @@ function schemaNamed(spec: OpenApi, name: string): Schema {
 
 // A property is a plain schema, a bare $ref, or `allOf: [$ref]` + nullable (how
 // TypeSpec spells a nullable reference). Returns the schema that carries the
-// Shape, plus the nullability read off whichever level declared it.
+// shape, plus the nullability read off whichever level declared it.
 function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: boolean } {
   let nullable = schema.nullable === true;
   let current = schema;
@@ -157,7 +157,7 @@ export function describeResource(spec: OpenApi, config: ResourceConfig): Resourc
   });
 
   // Columns skip what a cell cannot show as-is (nested objects, lists of objects):
-  // Those stay a hand-written cell in the route.
+  // those stay a hand-written cell in the route.
   const columns = Object.entries(item.properties ?? {}).flatMap(([name, schema]) => {
     const described = describeProperty(spec, config, [name, schema]);
     return described && described.kind !== "multiselect" ? [described] : [];

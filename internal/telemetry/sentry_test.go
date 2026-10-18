@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/telemetry"
 )
 
@@ -17,7 +16,7 @@ func newSentryClient(t *testing.T) (*sentry.Client, *sentry.MockTransport) {
 
 	transport := &sentry.MockTransport{}
 	client, err := telemetry.NewSentryClient(
-		&config.Config{SentryDSN: "https://public@example.com/1"},
+		"https://public@example.com/1", "", "",
 		telemetry.WithSentryTransport(transport),
 	)
 	require.NoError(t, err)

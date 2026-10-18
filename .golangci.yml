@@ -241,10 +241,13 @@ linters:
       - path: _test\.go
         linters: [forbidigo]
         text: samber/oops
-      # Packages not yet migrated to oops (ADR-0018). Shrink this list, never grow it.
-      - path: ^(cmd/(fixturelabels|fixtures|server|worker)|internal/(accounts|amocrm|apiconv|assetstore|audit|coursepages|curriculum|di|domain|eventhandlers|events|exerciserunner|feeds|fixtures|handlers|jobs|leads|localization|permissions|progress|search|sessions|staffroles|store|telemetry))/
-        linters: [forbidigo]
-        text: samber/oops
+      # gosec in tests: file modes and permissions of scratch files, paths built
+      # from t.TempDir, int conversions of small fixture ids, and secret-looking
+      # names (test-secret, dev-insecure-*) are not findings. Production code is
+      # checked in full; the rest of gosec stays on for tests too.
+      - path: _test\.go
+        linters: [gosec]
+        text: "G(115|304|306|301|101):"
       # The handler and OAuth server tests read responses from
       # httptest.ResponseRecorder, whose body is an in-memory buffer: there is
       # nothing to close.
