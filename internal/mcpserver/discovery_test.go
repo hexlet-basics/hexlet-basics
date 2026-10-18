@@ -122,7 +122,7 @@ func TestTheToolListIsValidStableAndWithinItsBudget(t *testing.T) {
 			var parsed jsonschema.Schema
 			require.NoError(t, json.Unmarshal(raw, &parsed), "%s %s", tool.Name, kind)
 			_, err = parsed.Resolve(nil)
-			assert.NoError(t, err, "%s %s is a valid JSON Schema (2020-12)", tool.Name, kind)
+			require.NoError(t, err, "%s %s is a valid JSON Schema (2020-12)", tool.Name, kind)
 		}
 	}
 	t.Logf("tool list: %d tools, %d bytes (budget %d)", len(first.Tools), total, budget)

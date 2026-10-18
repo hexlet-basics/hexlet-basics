@@ -19,6 +19,7 @@ linters:
     - rowserrcheck
     - sloglint
     - sqlclosecheck
+    - testifylint
     - usestdlibvars
     - usetesting
   settings:

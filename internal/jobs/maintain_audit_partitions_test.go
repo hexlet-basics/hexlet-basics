@@ -56,7 +56,7 @@ func TestMaintainAuditPartitionsJobDropsTheExpiredAndCreatesTheNext(t *testing.T
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
 	assert.False(t, auditPartitionExists(t, tx, oldName), "the expired partition is dropped")
 	_, err = db.AuditRecord.Get(t.Context(), oldRecord.ID)
-	assert.Error(t, err, "the record went with its partition")
+	require.Error(t, err, "the record went with its partition")
 
 	now := time.Now().UTC()
 	assert.True(t, auditPartitionExists(t, tx, "audit_records_p"+now.Format("200601")), "the month in progress is kept")

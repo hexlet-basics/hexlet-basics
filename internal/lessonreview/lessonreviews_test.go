@@ -71,7 +71,7 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
-	assert.Equal(t, "", review.Summary, "no questions: the model is not asked, so its answer is not stored")
+	assert.Empty(t, review.Summary, "no questions: the model is not asked, so its answer is not stored")
 }
 
 // The en info of lesson_javascript_variables. Deleting the fixture review row

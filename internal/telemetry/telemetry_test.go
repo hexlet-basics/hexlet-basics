@@ -47,10 +47,10 @@ func TestNewOpenTelemetrySDKExportsConfiguredSpans(t *testing.T) {
 	requests := make(chan *collectortrace.ExportTraceServiceRequest, 1)
 	collector := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		request := &collectortrace.ExportTraceServiceRequest{}
-		require.NoError(t, proto.Unmarshal(body, request))
+		assert.NoError(t, proto.Unmarshal(body, request))
 		requests <- request
 		w.WriteHeader(http.StatusOK)
 	}))

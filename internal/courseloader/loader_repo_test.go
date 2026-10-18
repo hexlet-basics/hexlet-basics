@@ -91,7 +91,7 @@ func TestLoaderFailsTheBuildWhenATheoryImageIsMissing(t *testing.T) {
 	err := newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "open image")
+	require.ErrorContains(t, err, "open image")
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 	assert.Contains(t, derefStr(version.Result), "missing.png")
@@ -122,7 +122,7 @@ func TestLoaderFailsACourseWithoutASlug(t *testing.T) {
 	err := newLoaderWith(t, db, txStore, unreachableFetcher()).Run(ctx, version.ID)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "no slug")
+	require.ErrorContains(t, err, "no slug")
 	assert.Equal(t, "failed", derefStr(db.CourseVersion.GetX(ctx, version.ID).State))
 }
 

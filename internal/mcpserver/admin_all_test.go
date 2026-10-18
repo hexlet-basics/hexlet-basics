@@ -52,7 +52,7 @@ func TestEveryAdminToolSchemaBuildsAndAcceptsAnExample(t *testing.T) {
 			var input map[string]any
 			require.NoError(t, json.Unmarshal(raw, &input))
 			example := exampleOf(input)
-			assert.NoError(t, resolved.Validate(example), "%v", example)
+			require.NoError(t, resolved.Validate(example), "%v", example)
 
 			if tool.OutputSchema != nil {
 				raw, err := json.Marshal(tool.OutputSchema)

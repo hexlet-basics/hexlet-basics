@@ -125,7 +125,7 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 	// unfinished month is kept whole, as is the month in progress.
 	for _, month := range []time.Month{time.September, time.October} {
 		_, err = client.AuditRecord.Get(t.Context(), records[month].ID)
-		assert.NoError(t, err, "the record of %s is kept", month)
+		require.NoError(t, err, "the record of %s is kept", month)
 	}
 	assert.Contains(t, partitionNames(t, tx), "audit_records_default")
 }

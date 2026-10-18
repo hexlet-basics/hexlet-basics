@@ -23,7 +23,7 @@ func TestSentryHTTPHandlerReportsAndRepanics(t *testing.T) {
 
 	handler := telemetry.NewSentryHTTPHandler(client, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		hub := sentry.GetHubFromContext(r.Context())
-		require.Same(t, client, hub.Client())
+		assert.Same(t, client, hub.Client())
 		panic("boom")
 	}))
 	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/panic?source=test", nil)
@@ -48,8 +48,8 @@ func TestSentryHTTPHandlerIsolatesRequestHubs(t *testing.T) {
 	hubs := make(chan *sentry.Hub, 2)
 	handler := telemetry.NewSentryHTTPHandler(client, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		hub := sentry.GetHubFromContext(r.Context())
-		require.NotNil(t, hub)
-		require.Same(t, client, hub.Client())
+		assert.NotNil(t, hub)
+		assert.Same(t, client, hub.Client())
 		hubs <- hub
 	}))
 

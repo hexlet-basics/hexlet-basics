@@ -48,7 +48,7 @@ func TestRunServesUntilSignalledAndStopsCleanly(t *testing.T) {
 	signal()
 	select {
 	case err := <-done:
-		assert.NoError(t, err, "a signal is the normal way to stop, not a failure")
+		require.NoError(t, err, "a signal is the normal way to stop, not a failure")
 	case <-time.After(30 * time.Second):
 		t.Fatal("the process did not stop after the signal")
 	}

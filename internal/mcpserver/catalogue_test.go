@@ -110,7 +110,7 @@ func TestEveryCatalogueToolAnswersWithStructuredContentThatMatchesItsContractSch
 
 			content := structured(t, result)
 			require.Contains(t, schemas, name)
-			assert.NoError(t, schemas[name].Validate(content), "the content must match the advertised schema")
+			require.NoError(t, schemas[name].Validate(content), "the content must match the advertised schema")
 			assert.NotEmpty(t, textOf(t, result), "a short text accompanies the content")
 		})
 	}
@@ -332,7 +332,7 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 	raw, err := json.Marshal(content)
 	require.NoError(t, err)
 	assert.LessOrEqual(t, len(raw)+len(textOf(t, result)), limit)
-	assert.NoError(t, schemas["listCourses"].Validate(content), "a cut result still matches the schema")
+	require.NoError(t, schemas["listCourses"].Validate(content), "a cut result still matches the schema")
 
 	hint, ok := content["truncation"].(map[string]any)
 	require.True(t, ok, "the cut is announced inside the structured content")

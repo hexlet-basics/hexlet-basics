@@ -50,7 +50,7 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 
 	metadata := requireMap(t, body[0]["metadata"])
 	assert.Equal(t, "lead_form", metadata["form_id"])
-	assert.Equal(t, float64(123), metadata["form_sent_at"])
+	assert.InDelta(t, float64(123), metadata["form_sent_at"], 0.001)
 
 	embedded := requireMap(t, body[0]["_embedded"])
 	contacts := requireSlice(t, embedded["contacts"])
@@ -60,8 +60,8 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 
 	leads := requireSlice(t, embedded["leads"])
 	lead := requireMap(t, leads[0])
-	assert.Equal(t, float64(leadPipelineID), lead["pipeline_id"])
-	assert.Equal(t, float64(responsibleUserID), lead["responsible_user_id"])
+	assert.InDelta(t, float64(leadPipelineID), lead["pipeline_id"], 0.001)
+	assert.InDelta(t, float64(responsibleUserID), lead["responsible_user_id"], 0.001)
 	assertCustomField(t, lead["custom_fields_values"], "UTM_SOURCE", 316_919, utmSource)
 	assertCustomField(t, lead["custom_fields_values"], "_YM_COUNTER", 316_943, "counter")
 }
@@ -170,7 +170,7 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 			require.ErrorContains(t, err, "invalid lead")
 			assert.Equal(t, 1, requests, "one River attempt must make one HTTP request")
 			var classified interface{ Retryable() bool }
-			require.True(t, errors.As(err, &classified))
+			require.ErrorAs(t, err, &classified)
 			assert.Equal(t, tt.retryable, classified.Retryable())
 		})
 	}
@@ -203,7 +203,7 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 
 			require.ErrorContains(t, err, strconv.Itoa(tt.status))
 			var classified interface{ Retryable() bool }
-			require.True(t, errors.As(err, &classified))
+			require.ErrorAs(t, err, &classified)
 			assert.Equal(t, tt.retryable, classified.Retryable())
 		})
 	}
@@ -227,7 +227,7 @@ func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, 1, requests)
 	var classified interface{ Retryable() bool }
-	require.True(t, errors.As(err, &classified))
+	require.ErrorAs(t, err, &classified)
 	assert.False(t, classified.Retryable(), "amoCRM accepted the lead; a retry would duplicate it")
 }
 
@@ -242,7 +242,7 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 
 	require.ErrorContains(t, err, "connection reset")
 	var classified interface{ Retryable() bool }
-	require.True(t, errors.As(err, &classified))
+	require.ErrorAs(t, err, &classified)
 	assert.True(t, classified.Retryable())
 }
 
@@ -251,7 +251,7 @@ func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
 
 	var classified interface{ Retryable() bool }
-	require.True(t, errors.As(err, &classified))
+	require.ErrorAs(t, err, &classified)
 	assert.False(t, classified.Retryable())
 }
 
@@ -284,7 +284,7 @@ func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 
 	require.ErrorContains(t, err, "initialization failed")
 	var classified interface{ Retryable() bool }
-	require.True(t, errors.As(err, &classified))
+	require.ErrorAs(t, err, &classified)
 	assert.False(t, classified.Retryable())
 	assert.Error(t, errors.Unwrap(err), "the cause is kept")
 }
@@ -363,7 +363,7 @@ func assertCustomField(t *testing.T, value any, code string, id int, expected st
 			continue
 		}
 		if id != 0 {
-			assert.Equal(t, float64(id), field["field_id"])
+			assert.InDelta(t, float64(id), field["field_id"], 0.001)
 		}
 		values := requireSlice(t, field["values"])
 		assert.Equal(t, expected, requireMap(t, values[0])["value"])

@@ -14,7 +14,7 @@ func TestServerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 
 	require.NoError(t, deps.Shutdown(t.Context()))
 
-	assert.Error(t, deps.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
+	require.Error(t, deps.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
 	_, err = deps.Database.User.Query().Count(t.Context())
 	assert.Error(t, err, "the database pool is closed")
 }
@@ -26,7 +26,7 @@ func TestWorkerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 
 	require.NoError(t, deps.Shutdown(t.Context()))
 
-	assert.Error(t, deps.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
+	require.Error(t, deps.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
 	_, err = deps.Database.User.Query().Count(t.Context())
 	assert.Error(t, err, "the database pool is closed")
 }

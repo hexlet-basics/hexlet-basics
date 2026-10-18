@@ -20,7 +20,7 @@ func TestAmoCRMLeadWorkerCancelsPermanentFailures(t *testing.T) {
 
 	var cancelErr *river.JobCancelError
 	require.ErrorAs(t, err, &cancelErr)
-	assert.ErrorIs(t, err, cause)
+	require.ErrorIs(t, err, cause)
 }
 
 func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
@@ -29,9 +29,9 @@ func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
-	assert.ErrorIs(t, err, cause)
+	require.ErrorIs(t, err, cause)
 	var cancelErr *river.JobCancelError
-	assert.False(t, errors.As(err, &cancelErr))
+	assert.NotErrorAs(t, err, &cancelErr)
 }
 
 func TestAmoCRMLeadWorkerRetriesUnclassifiedFailures(t *testing.T) {
@@ -40,7 +40,7 @@ func TestAmoCRMLeadWorkerRetriesUnclassifiedFailures(t *testing.T) {
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
-	assert.ErrorIs(t, err, cause)
+	require.ErrorIs(t, err, cause)
 }
 
 type leadSyncerStub struct {

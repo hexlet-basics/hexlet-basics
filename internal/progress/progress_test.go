@@ -332,7 +332,7 @@ func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) 
 
 	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
-	assert.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, boom)
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }

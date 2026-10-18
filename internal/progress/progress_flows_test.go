@@ -445,7 +445,7 @@ func TestAFailingReadIsNeverAnEmptyAnswer(t *testing.T) {
 				call := op.prepare(t, r)
 				r.failReads(entity)
 
-				assert.ErrorIs(t, call(), errStore)
+				require.ErrorIs(t, call(), errStore)
 			})
 		}
 	}
@@ -460,7 +460,7 @@ func TestAFailingWriteLeavesNoPartialTransition(t *testing.T) {
 				before := testsupport.PublishedCount(t, r.services)
 				r.failWrites(entity)
 
-				assert.ErrorIs(t, call(), errStore)
+				require.ErrorIs(t, call(), errStore)
 				assert.Equal(t, before, testsupport.PublishedCount(t, r.services), "no fact outlives a failed transition")
 			})
 		}

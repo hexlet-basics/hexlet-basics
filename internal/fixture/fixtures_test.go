@@ -46,7 +46,7 @@ func TestScanRefusesALabelDefinedTwice(t *testing.T) {
 
 	_, err := scan(dir)
 
-	assert.ErrorContains(t, err, "fixture label is defined twice")
+	require.ErrorContains(t, err, "fixture label is defined twice")
 	assert.Equal(t, "same", labelOf(t, err))
 }
 
@@ -54,7 +54,7 @@ func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
 	t.Parallel()
 	_, err := labels{"known": firstID}.id("unknown")
 
-	assert.ErrorContains(t, err, "fixture label is not defined by any row")
+	require.ErrorContains(t, err, "fixture label is not defined by any row")
 	assert.Equal(t, "unknown", labelOf(t, err))
 }
 

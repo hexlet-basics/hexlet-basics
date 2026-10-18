@@ -36,7 +36,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 	)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		var request struct {
 			FromEmailAddress string
 			Destination      struct{ ToAddresses []string }
@@ -47,7 +47,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 				}
 			}
 		}
-		require.NoError(t, json.Unmarshal(body, &request))
+		assert.NoError(t, json.Unmarshal(body, &request))
 		mu.Lock()
 		sent = append(sent, postboxSent{
 			From:    request.FromEmailAddress,

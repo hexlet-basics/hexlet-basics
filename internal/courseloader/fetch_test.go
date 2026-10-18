@@ -61,7 +61,7 @@ func TestGitFetcherReportsAMissingRepoAndLeavesNothingBehind(t *testing.T) {
 		dir, cleanup, err := fetcher.Fetch(t.Context(), "nope")
 
 		require.Error(t, err)
-		assert.ErrorContains(t, err, "exercises-nope.git")
+		require.ErrorContains(t, err, "exercises-nope.git")
 		assert.Empty(t, dir)
 		cleanup()
 	}

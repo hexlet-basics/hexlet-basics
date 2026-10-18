@@ -32,16 +32,16 @@ func TestAuthenticateRefusesEveryFailureTheSameWay(t *testing.T) {
 	credentials := account.NewCredentials(db)
 
 	_, err := credentials.Authenticate(t.Context(), withPasswordEmail, "nope")
-	assert.ErrorIs(t, err, account.ErrInvalidCredentials, "wrong password")
+	require.ErrorIs(t, err, account.ErrInvalidCredentials, "wrong password")
 
 	_, err = credentials.Authenticate(t.Context(), "nobody@example.com", fixture.Password)
-	assert.ErrorIs(t, err, account.ErrInvalidCredentials, "unknown email")
+	require.ErrorIs(t, err, account.ErrInvalidCredentials, "unknown email")
 
 	_, err = credentials.Authenticate(t.Context(), blankEmail, fixture.Password)
-	assert.ErrorIs(t, err, account.ErrInvalidCredentials, "no password")
+	require.ErrorIs(t, err, account.ErrInvalidCredentials, "no password")
 
 	_, err = credentials.Authenticate(t.Context(), removedEmail, fixture.Password)
-	assert.ErrorIs(t, err, account.ErrInvalidCredentials, "removed account")
+	require.ErrorIs(t, err, account.ErrInvalidCredentials, "removed account")
 }
 
 func TestSetPasswordReplacesTheOldOne(t *testing.T) {
@@ -52,7 +52,7 @@ func TestSetPasswordReplacesTheOldOne(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = credentials.Authenticate(t.Context(), withPasswordEmail, fixture.Password)
-	assert.ErrorIs(t, err, account.ErrInvalidCredentials)
+	require.ErrorIs(t, err, account.ErrInvalidCredentials)
 	_, err = credentials.Authenticate(t.Context(), withPasswordEmail, "new")
 	assert.NoError(t, err)
 }
@@ -66,6 +66,6 @@ func TestEnsureAnotherAdmin(t *testing.T) {
 
 	// The fixtures hold a third administrator, the staff member user_admin_staff.
 	db.User.Update().Where(user.IDIn(secondAdmin, fixture.ID(fixture.UserAdminStaff))).SetAdmin(false).ExecX(t.Context())
-	assert.ErrorIs(t, account.EnsureAnotherAdmin(t.Context(), db, admin), account.ErrLastAdmin)
+	require.ErrorIs(t, account.EnsureAnotherAdmin(t.Context(), db, admin), account.ErrLastAdmin)
 	assert.NoError(t, account.EnsureAnotherAdmin(t.Context(), db, blank), "still not an administrator")
 }

@@ -251,7 +251,7 @@ func TestGuestCheckAddsToTheCookieAndWritesNoRows(t *testing.T) {
 	rows := h.DB.LessonProgress.Query().CountX(ctx)
 
 	result := submitSolution(t, h, lesson)
-	assert.True(t, result.Response.LessonHasBeenFinished == false,
+	assert.False(t, result.Response.LessonHasBeenFinished,
 		"a guest finishes nothing that a record could hold")
 
 	guest := testsupport.DecodeGuestCookie(t, h.ResponseCookies())
