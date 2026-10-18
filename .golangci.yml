@@ -23,12 +23,28 @@ linters:
     - forcetypeassert
     - testpackage
     - cyclop
-    - ireturn
     - funlen
     - gocognit
     - nestif
-    - interfacebloat
   settings:
+    ireturn:
+      # Returning an interface is the point where a library or a seam of ours
+      # declares one: the OIDC and Watermill and ent contracts we implement, the
+      # generated api response sum types, and the mailer's seam (AGENTS.md,
+      # "Interfaces": the exception for a boundary with a second adapter).
+      allow:
+        - anon
+        - error
+        - empty
+        - stdlib
+        - generic
+        - github.com/ThreeDotsLabs/watermill/.*
+        - github.com/zitadel/oidc/v3/.*
+        - entgo.io/ent/.*
+        - github.com/samber/do/v2.Injector
+        - hexletbasics/ent.Mutator
+        - hexletbasics/internal/api.*
+        - hexletbasics/internal/mailer.Mailer
     tagliatelle:
       case:
         rules:

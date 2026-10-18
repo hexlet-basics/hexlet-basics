@@ -53,7 +53,7 @@ import (
 // goverter:extend LocaleFromPtr
 // goverter:extend NilBlogPostStateFromPtr
 // goverter:extend NilStringFromEmpty
-type Converter interface {
+type Converter interface { //nolint:interfacebloat // goverter generates the implementation of this one interface, one method per mapping
 	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
 
 	// goverter:map Edges.Course Course
