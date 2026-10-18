@@ -60,7 +60,7 @@ const root = join(import.meta.dirname, "..");
 const specPath = join(root, "api-spec/dist/openapi.yaml");
 const outDir = join(root, "src/components/admin/generated");
 
-const spec = parse(readFileSync(specPath, "utf8")) as OpenApi;
+const spec = parse(readFileSync(specPath, "utf-8")) as OpenApi;
 
 // Start from an empty directory so a resource dropped from the list above does
 // Not leave its module behind.

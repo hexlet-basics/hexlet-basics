@@ -27,18 +27,22 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
     try {
       await submit(value);
     } catch (error) {
-      const errors = validationErrors(error);
-      if (!errors) {
-        return undefined;
-      }
-      return {
+      return fieldsOf(validationErrors(error));
+    }
+    return fieldsOf(undefined);
+  };
+}
+
+// The form's `{ fields }` shape for a set of field messages, or nothing to say
+// when the submission raised none.
+function fieldsOf(errors: Record<string, string[]> | undefined) {
+  return errors
+    ? {
         fields: Object.fromEntries(
           Object.entries(errors).map(([field, messages]) => [field, messages.join(", ")]),
         ),
-      };
-    }
-    return undefined;
-  };
+      }
+    : undefined;
 }
 
 // Every message of a 422, flattened, for a screen that has no form fields to put

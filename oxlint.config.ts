@@ -31,11 +31,21 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/func-style": ["error", "declaration", { allowArrowFunctions: true }],
+    "eslint/no-use-before-define": ["error", { functions: false }],
+    "eslint/no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
+    "unicorn/no-useless-undefined": [
+      "error",
+      { checkArguments: false, checkArrowFunctionBody: false },
+    ],
+    "unicorn/text-encoding-identifier-case": ["error", { withDash: true }],
     "eslint/capitalized-comments": ["error", "always", { ignoreConsecutiveComments: true }],
     "eslint/sort-imports": ["error", { ignoreDeclarationSort: true }],
     "eslint/one-var": ["error", "never"],
     // Rules switched off, each with its reason.
-    // the automatic JSX runtime needs no React import.
+    // Pending: the rule flags every route component that is not exported next to Route.
+    "react/only-export-components": "off",
+    // The automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
     // User-facing strings are policed by lint:i18n (pages are exempt there on purpose).
     "react/jsx-no-literals": "off",
@@ -79,14 +89,8 @@ export default defineConfig({
     "import/max-dependencies": "off",
     // Taste rule, TypeScript members are public by default.
     "typescript/explicit-member-accessibility": "off",
-    // Route modules and components are hoisted function declarations referenced from Route, and it contradicts function-component-definition.
-    "eslint/func-style": "off",
-    // TanStack route modules declare Route first and the hoisted component functions below it.
-    "eslint/no-use-before-define": "off",
     // The legal pages hold English prose with hundreds of quotes, escaping them hides the text.
     "react/no-unescaped-entities": "off",
-    // TanStack route files export Route next to their component by design.
-    "react/only-export-components": "off",
     // CamelCase and PascalCase module names and TanStack $param routes are the repo convention.
     "unicorn/filename-case": "off",
     // Contradicts require-await and return-await, returning a promise directly is fine.
@@ -133,12 +137,6 @@ export default defineConfig({
     "eslint/no-await-in-loop": "off",
     // Tests assert that javascript: urls are neutralised.
     "eslint/no-script-url": "off",
-    // Its fix drops arguments that zod .catch(undefined), mutate(undefined) and createIsomorphicFn callbacks need to type-check.
-    "unicorn/no-useless-undefined": "off",
-    // The HTML charset meta must read utf-8, the fix writes utf8.
-    "unicorn/text-encoding-identifier-case": "off",
-    // Type-only imports stay a separate statement because import/consistent-type-specifier-style requires it (import/no-duplicates still catches real duplicates).
-    "eslint/no-duplicate-imports": "off",
     // False positive on render callbacks such as columns and actionsColumn edit and extra, which are not component definitions.
     "react/no-unstable-nested-components": "off",
     // Contradicts itself on forwardRef wrappers and createLink components and has no safety value.
