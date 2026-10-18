@@ -22,6 +22,12 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoom              = errors.New("boom")
+	errOutboxUnavailable = errors.New("outbox unavailable")
+)
+
 // A staff read of personal data is recorded asynchronously (ADR-0020): the
 // request publishes a fact, and the worker's consumer writes the Audit Record.
 // These tests go through the operation, then deliver the fact the way the
@@ -229,7 +235,7 @@ func TestAnErrorAnswerIsNotARead(t *testing.T) {
 	read := personalDataMiddleware(t, h.Events)
 
 	_, err := read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, func(middleware.Request) (middleware.Response, error) {
-		return middleware.Response{}, errors.New("boom")
+		return middleware.Response{}, errBoom
 	})
 	require.Error(t, err)
 	_, err = read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, answers(`{"status":404,"title":"Not Found"}`))
@@ -265,7 +271,7 @@ func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 type brokenPublisher struct{}
 
 func (brokenPublisher) PublishStandalone(context.Context, events.Event) error {
-	return errors.New("outbox unavailable")
+	return errOutboxUnavailable
 }
 
 func personalDataMiddleware(t *testing.T, publisher events.StandalonePublisher) middleware.Middleware {

@@ -20,6 +20,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errOutboxUnavailable = errors.New("outbox unavailable")
+)
+
 const newUserEmail = "new-sign-up@example.com"
 
 func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
@@ -63,7 +68,7 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 type failingPublisher struct{}
 
 func (failingPublisher) Publish(context.Context, *sql.Tx, events.Event) error {
-	return errors.New("outbox unavailable")
+	return errOutboxUnavailable
 }
 
 func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {

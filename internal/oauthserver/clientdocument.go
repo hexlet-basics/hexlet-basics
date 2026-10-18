@@ -198,33 +198,44 @@ func isDocumentID(clientID string) bool {
 	return len(clientID) >= len("https://") && strings.EqualFold(clientID[:len("https://")], "https://")
 }
 
+// What checkClientIDURL answers, in the order it checks.
+var (
+	errClientIDTooLong     = errors.New("the client_id URL is too long")
+	errClientIDNotHTTPS    = errors.New("the client_id must be an absolute https URL")
+	errClientIDCredentials = errors.New("the client_id URL must not carry credentials")
+	errClientIDFragment    = errors.New("the client_id URL must not have a fragment")
+	errClientIDPort        = errors.New("the client_id URL must use the default https port")
+	errClientIDNoPath      = errors.New("the client_id URL must have a path")
+	errClientIDDotSegments = errors.New("the client_id URL must not contain dot segments")
+)
+
 // checkClientIDURL holds a client id to what the specification requires of one,
 // plus the rules of this server: https, a path, no credentials, no fragment, no
 // dot segments, and the default port, so the URL names an ordinary public web
 // resource and nothing else.
 func checkClientIDURL(clientID string) error {
 	if len(clientID) > maxClientIDLen {
-		return errors.New("the client_id URL is too long")
+		return errClientIDTooLong
 	}
 	u, err := url.Parse(clientID)
 	if err != nil || u.Scheme != "https" || u.Opaque != "" || u.Hostname() == "" {
-		return errors.New("the client_id must be an absolute https URL")
+		return errClientIDNotHTTPS
 	}
 	if u.User != nil {
-		return errors.New("the client_id URL must not carry credentials")
+		return errClientIDCredentials
 	}
 	if u.Fragment != "" || strings.Contains(clientID, "#") {
-		return errors.New("the client_id URL must not have a fragment")
+		return errClientIDFragment
 	}
 	if port := u.Port(); port != "" && port != "443" {
-		return errors.New("the client_id URL must use the default https port")
+		return errClientIDPort
 	}
 	if u.Path == "" || u.Path == "/" {
-		return errors.New("the client_id URL must have a path")
+		return errClientIDNoPath
 	}
 	for segment := range strings.SplitSeq(u.Path, "/") {
 		if segment == "." || segment == ".." {
-			return errors.New("the client_id URL must not contain dot segments")
+			return errClientIDDotSegments
 		}
 	}
 	return nil

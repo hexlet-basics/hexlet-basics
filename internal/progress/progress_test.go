@@ -21,6 +21,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoom = errors.New("docker is down")
+)
+
 // The progress module over the test's own transaction: the real rules, the real
 // transitions and the real event publisher, with the exercise runner the one
 // mock. Asserted is what a learner or a guest is left with — the rows, the
@@ -324,15 +329,14 @@ func (r *rig) check(t *testing.T, learner progress.Learner, lessonSlug string) p
 func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	boom := errors.New("docker is down")
 	r.mocks.Runner.RunFunc = func(_ context.Context, _ progress.Submission) (progress.Outcome, error) {
-		return progress.Outcome{}, boom
+		return progress.Outcome{}, errBoom
 	}
 	blankUser := r.learner(t, fixture.UserBlank)
 
 	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
-	require.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, errBoom)
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }

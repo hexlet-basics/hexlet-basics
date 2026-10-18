@@ -29,6 +29,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errGitIsUnreachable = errors.New("git is unreachable")
+)
+
 // repoFetcher is the git boundary answering with a local checkout instead of
 // cloning, so the loader runs fully offline against a fixture course.
 func repoFetcher(dir string) *testsupport.FetcherMock {
@@ -43,7 +48,7 @@ func repoFetcher(dir string) *testsupport.FetcherMock {
 func unreachableFetcher() *testsupport.FetcherMock {
 	return &testsupport.FetcherMock{
 		FetchFunc: func(context.Context, string) (string, func(), error) {
-			return "", nil, errors.New("git is unreachable")
+			return "", nil, errGitIsUnreachable
 		},
 	}
 }

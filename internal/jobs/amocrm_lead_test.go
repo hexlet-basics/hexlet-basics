@@ -12,6 +12,11 @@ import (
 	"hexletbasics/internal/events"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errCause = errors.New("connection reset")
+)
+
 func TestAmoCRMLeadWorkerCancelsPermanentFailures(t *testing.T) {
 	cause := classifiedLeadError{retryable: false}
 	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: cause}}
@@ -35,12 +40,11 @@ func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
 }
 
 func TestAmoCRMLeadWorkerRetriesUnclassifiedFailures(t *testing.T) {
-	cause := errors.New("connection reset")
-	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: cause}}
+	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: errCause}}
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
-	require.ErrorIs(t, err, cause)
+	require.ErrorIs(t, err, errCause)
 }
 
 type leadSyncerStub struct {

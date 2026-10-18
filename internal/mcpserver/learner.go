@@ -160,7 +160,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 		return result{}, err
 	}
 	if args.LessonSlug == "" {
-		return result{}, userError{errors.New("invalid arguments: lessonSlug is required")}
+		return result{}, userError{errLessonSlugRequired}
 	}
 	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
 	if err != nil {
@@ -188,7 +188,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 // course is an answer the agent can act on, not a failure of ours.
 func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*progress.LearnerCourse, error) {
 	if slug == "" {
-		return nil, userError{errors.New("invalid arguments: courseSlug is required")}
+		return nil, userError{errCourseSlugRequired}
 	}
 	course, err := s.deps.MyCourseProgress(ctx, userID, slug)
 	if ent.IsNotFound(err) {
@@ -199,3 +199,9 @@ func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*p
 	}
 	return course, nil
 }
+
+// The answers to a call that omits the slug the tool is about.
+var (
+	errLessonSlugRequired = errors.New("invalid arguments: lessonSlug is required")
+	errCourseSlugRequired = errors.New("invalid arguments: courseSlug is required")
+)

@@ -47,6 +47,7 @@ func (c *client) LoginURL(requestID string) string {
 func (c *client) AccessTokenType() op.AccessTokenType { return op.AccessTokenTypeBearer }
 func (c *client) IDTokenLifetime() time.Duration      { return time.Hour }
 func (c *client) DevMode() bool                       { return false }
+
 //nolint:revive // var-naming: the name is op.Client's
 func (c *client) RestrictAdditionalIdTokenScopes() func([]string) []string {
 	return func(scopes []string) []string { return scopes }

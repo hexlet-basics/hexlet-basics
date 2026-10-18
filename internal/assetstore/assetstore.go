@@ -32,7 +32,10 @@ var (
 	// ErrTooLarge means the uploaded bytes exceed MaxUploadBytes.
 	ErrTooLarge = errors.New("asset is too large")
 	// ErrNotFound means the requested storage key does not exist.
-	ErrNotFound = fmt.Errorf("asset %w", domain.ErrNotFound)
+	ErrNotFound = errors.Join(errAssetNotFound, domain.ErrNotFound)
+
+	// errAssetNotFound is the message of ErrNotFound.
+	errAssetNotFound = errors.New("asset not found")
 )
 
 var extensionsByContentType = map[string]string{

@@ -69,7 +69,12 @@ type userError struct{ error }
 
 // errNotFound is what a tool answers for a record that does not exist or that a
 // visitor may not read: the two are the same answer, as on the website.
-func errNotFound(what string) error { return userError{errors.New(what + " not found")} }
+func errNotFound(what string) error { return userError{notFoundError{what}} }
+
+// notFoundError says what was not found.
+type notFoundError struct{ what string }
+
+func (e notFoundError) Error() string { return e.what + " not found" }
 
 // addTool registers a tool behind the checkpoint every tool shares, in this
 // order: the Scope and the rate limit of its Class (admit), a context that ends

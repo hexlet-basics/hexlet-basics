@@ -187,6 +187,10 @@ func jsonSchemaOf(content any, doc *contractDoc) (map[string]any, bool, error) {
 	return schema, schema != nil, nil
 }
 
+// errMultipartParts is what the registry answers for a multipart form that is
+// not exactly one part.
+var errMultipartParts = errors.New("a multipart form must have exactly one part")
+
 // multipartFileOf finds the file part of a multipart/form-data entry; found is
 // false when the content has none. A form that is not exactly one binary part is an error:
 // the base64 tool input carries one file and nothing else, so the registry
@@ -204,7 +208,7 @@ func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error)
 	schema, _ := resolved.(map[string]any)
 	properties, _ := schema["properties"].(map[string]any)
 	if len(properties) != 1 {
-		return multipartFile{}, false, errors.New("a multipart form must have exactly one part")
+		return multipartFile{}, false, errMultipartParts
 	}
 	for name, raw := range properties {
 		part, _ := raw.(map[string]any)

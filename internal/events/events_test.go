@@ -17,6 +17,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errFlaky       = errors.New("flaky")
+	errAlwaysFails = errors.New("always fails")
+)
+
 func TestObserverLogsIdentityWithoutPII(t *testing.T) {
 	var output bytes.Buffer
 	logger := slog.New(slog.NewJSONHandler(&output, nil))
@@ -99,7 +105,7 @@ func TestDeliveryRetriesAHandlerThatPanics(t *testing.T) {
 
 func TestDeliveryMovesAnAlwaysFailingMessageToThePoisonQueue(t *testing.T) {
 	poisoned, err := deliver(t, func(*message.Message) ([]*message.Message, error) {
-		return nil, errors.New("always fails")
+		return nil, errAlwaysFails
 	})
 
 	require.NoError(t, err, "the message is acked so the consumer group moves on")
@@ -124,7 +130,7 @@ func TestPoisonedMessageIsReportedToSentry(t *testing.T) {
 	_, err = deliverReporting(t, client, func(*message.Message) ([]*message.Message, error) {
 		attempts++
 		if attempts == 1 {
-			return nil, errors.New("flaky")
+			return nil, errFlaky
 		}
 		return nil, nil
 	})
@@ -132,7 +138,7 @@ func TestPoisonedMessageIsReportedToSentry(t *testing.T) {
 	assert.Empty(t, transport.Events(), "a message a retry saved is not an incident")
 
 	_, err = deliverReporting(t, client, func(*message.Message) ([]*message.Message, error) {
-		return nil, errors.New("always fails")
+		return nil, errAlwaysFails
 	})
 	require.NoError(t, err)
 

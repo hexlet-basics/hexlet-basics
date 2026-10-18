@@ -215,7 +215,7 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 			return nil, auth.ErrInvalidToken
 		}
 		s.deps.Logger.ErrorContext(ctx, "verify MCP access token", slog.Any("err", err))
-		return nil, errors.New("token verification is unavailable")
+		return nil, errVerificationUnavailable
 	}
 	if !slices.Contains(token.Audience, s.resource) || token.UserID <= 0 {
 		return nil, auth.ErrInvalidToken
@@ -260,3 +260,7 @@ func toolError(message string) *mcp.CallToolResult {
 func summarize(noun string, names []string) string {
 	return fmt.Sprintf("%d %s: %s", len(names), noun, strings.Join(names, ", "))
 }
+
+// errVerificationUnavailable is what an MCP client is told when the token could
+// not be verified for a reason that is ours; the cause is logged, not sent.
+var errVerificationUnavailable = errors.New("token verification is unavailable")

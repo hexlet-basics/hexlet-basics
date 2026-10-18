@@ -24,6 +24,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errLlmUnavailable = errors.New("llm unavailable")
+)
+
 // work runs one job through worker inside the test's transaction and returns
 // what River recorded about it: the event it ended in and the job row as an
 // operator would see it, and the error the worker returned. Nothing is
@@ -57,7 +62,7 @@ func TestReviewLessonJobCompletesWhenTheReviewSucceeds(t *testing.T) {
 }
 
 func TestReviewLessonJobSurfacesAFailedReviewAndStaysRetryable(t *testing.T) {
-	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{err: errors.New("llm unavailable")}),
+	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{err: errLlmUnavailable}),
 		jobs.ReviewLessonArgs{LessonInfoID: 1})
 
 	require.ErrorContains(t, err, "llm unavailable")
@@ -75,7 +80,7 @@ func TestSuggestRelatedCoursesJobCompletesWhenTheSuggestionSucceeds(t *testing.T
 }
 
 func TestSuggestRelatedCoursesJobSurfacesAFailedSuggestionAndStaysRetryable(t *testing.T) {
-	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: errors.New("llm unavailable")}),
+	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: errLlmUnavailable}),
 		jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 
 	require.ErrorContains(t, err, "llm unavailable")

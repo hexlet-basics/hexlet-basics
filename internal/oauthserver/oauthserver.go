@@ -132,12 +132,16 @@ type Server struct {
 	handler       http.Handler
 }
 
+// errEncryptionKeyRequired is what New answers when the key that seals the
+// provider's tokens is missing.
+var errEncryptionKeyRequired = errors.New("oauthserver: encryption key is required")
+
 // New builds the Server. It fails on a configuration the provider rejects (an
 // issuer that is not an origin, a missing key) so a misconfigured deployment
 // refuses to start rather than answering with a broken metadata document.
 func New(deps Deps, opts ...Option) (*Server, error) {
 	if deps.Config.EncryptionKey == "" {
-		return nil, errors.New("oauthserver: encryption key is required")
+		return nil, errEncryptionKeyRequired
 	}
 	if deps.Now == nil {
 		deps.Now = time.Now

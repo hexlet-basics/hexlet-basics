@@ -164,7 +164,7 @@ func (s *storage) SaveAuthCode(ctx context.Context, id, code string) error {
 		return errs.Wrapf(err, "save authorization code")
 	}
 	if n == 0 {
-		return errors.New("authorization request is not awaiting a code")
+		return errNotAwaitingCode
 	}
 	return nil
 }
@@ -530,7 +530,7 @@ func keyID(key any) string {
 
 // AuthorizeClientIDSecret always refuses: every client is public.
 func (s *storage) AuthorizeClientIDSecret(context.Context, string, string) error {
-	return errors.New("clients have no secret: authenticate with PKCE")
+	return errNoClientSecret
 }
 
 func (s *storage) Health(context.Context) error { return nil }
@@ -656,3 +656,10 @@ func PurgeExpired(ctx context.Context, db *ent.Client, now time.Time) (int, erro
 	}
 	return total + n, nil
 }
+
+// What the storage answers for a code that cannot be saved, and for a client
+// secret nobody has.
+var (
+	errNotAwaitingCode = errors.New("authorization request is not awaiting a code")
+	errNoClientSecret  = errors.New("clients have no secret: authenticate with PKCE")
+)

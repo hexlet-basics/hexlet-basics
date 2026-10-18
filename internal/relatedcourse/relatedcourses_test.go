@@ -19,6 +19,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errModelUnavailable = errors.New("model unavailable")
+)
+
 var helloWorldPost = fixture.ID(fixture.BlogPostHelloWorld)
 
 // answeringModel is the LLM boundary answering with a fixed text.
@@ -107,7 +112,7 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := &testsupport.JSONCompleterMock{
 		CompleteJSONFunc: func(context.Context, string, string, string, any) (string, error) {
-			return "", errors.New("model unavailable")
+			return "", errModelUnavailable
 		},
 	}
 

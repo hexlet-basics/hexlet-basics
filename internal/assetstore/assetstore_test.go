@@ -21,6 +21,12 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errAttachmentInsertFailed = errors.New("attachment insert failed")
+	errSourceReadFailed       = errors.New("source read failed")
+)
+
 var pngHeader = []byte{
 	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
 }
@@ -130,7 +136,7 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 	store, db, bucket := newStore(t)
 	db.Attachment.Use(func(ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(context.Context, ent.Mutation) (ent.Value, error) {
-			return nil, errors.New("attachment insert failed")
+			return nil, errAttachmentInsertFailed
 		})
 	})
 	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
@@ -160,7 +166,7 @@ type failAfterFirstRead struct {
 
 func (r *failAfterFirstRead) Read(p []byte) (int, error) {
 	if r.read {
-		return 0, errors.New("source read failed")
+		return 0, errSourceReadFailed
 	}
 	r.read = true
 	return copy(p, r.data), nil

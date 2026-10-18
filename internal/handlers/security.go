@@ -17,8 +17,12 @@ import (
 
 var (
 	errUnauthenticated = errors.New("request is not authenticated")
-	errAdminRequired   = errors.Join(errors.New("administrator access is required"), domain.ErrForbidden)
-	errCrossOrigin     = errors.Join(errors.New("cross-origin request refused"), domain.ErrForbidden)
+	errAdminRequired   = errors.Join(errAdministratorOnly, domain.ErrForbidden)
+	errCrossOrigin     = errors.Join(errRefusedCrossOrigin, domain.ErrForbidden)
+
+	// The messages of errAdminRequired and errCrossOrigin.
+	errAdministratorOnly  = errors.New("administrator access is required")
+	errRefusedCrossOrigin = errors.New("cross-origin request refused")
 )
 
 type authenticatedUserContextKey struct{}

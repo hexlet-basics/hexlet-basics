@@ -18,6 +18,11 @@ import (
 	"hexletbasics/internal/testsupport/testdb"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errWant = errors.New("load localization")
+)
+
 // configureWorkerEnvironment is everything the worker is given: no cookie
 // secret and no public host, which only the server needs.
 func configureWorkerEnvironment(t *testing.T) {
@@ -106,14 +111,13 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 func TestServerProviderReturnsDependencyError(t *testing.T) {
 	configureTestEnvironment(t)
 
-	wantErr := errors.New("load localization")
 	injector := newServerContainer()
 	do.Override(injector, func(do.Injector) (*localization.Translator, error) {
-		return nil, wantErr
+		return nil, errWant
 	})
 
 	_, err := do.Invoke[*http.Server](injector)
-	require.ErrorIs(t, err, wantErr)
+	require.ErrorIs(t, err, errWant)
 }
 
 func TestBuildServerReturnsStartupError(t *testing.T) {

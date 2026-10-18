@@ -19,6 +19,11 @@ import (
 	"hexletbasics/internal/events"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errReset = errors.New("connection reset")
+)
+
 func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 	t.Parallel()
 	var body []map[string]any
@@ -235,7 +240,7 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 	t.Parallel()
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
-		return nil, errors.New("connection reset")
+		return nil, errReset
 	})
 
 	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
@@ -299,13 +304,12 @@ func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
 
 func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
 	t.Parallel()
-	reset := errors.New("connection reset")
 	client := NewClient("https://example.amocrm.test", "secret", "")
-	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, reset })
+	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, errReset })
 
 	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
 
-	assert.ErrorIs(t, err, reset)
+	assert.ErrorIs(t, err, errReset)
 }
 
 // A refusal that says nothing still says something, and one that says too much

@@ -14,6 +14,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoomSecretValue4242 = errors.New("boom: secret value 4242")
+)
+
 // Every admin write operation of the contract leaves an Audit Record, whatever
 // marks it (a write Permission, an administrators-only or any-staff marker, or
 // only the admin session scheme). The operations are enumerated from the
@@ -50,7 +55,7 @@ func TestEveryAdminWriteOperationRecordsAFailure(t *testing.T) {
 			audited := auditMiddleware(t, h)
 
 			_, err := audited(middleware.Request{Context: t.Context(), OperationName: operation}, func(middleware.Request) (middleware.Response, error) {
-				return middleware.Response{}, errors.New("boom: secret value 4242")
+				return middleware.Response{}, errBoomSecretValue4242
 			})
 			require.Error(t, err)
 

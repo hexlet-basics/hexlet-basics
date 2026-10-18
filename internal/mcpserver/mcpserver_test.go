@@ -23,6 +23,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errPqSecretDetail = errors.New("pq: secret detail")
+)
+
 // alice is a fixture user.
 var alice = fixture.ID(fixture.UserAdminLearner)
 
@@ -243,7 +248,7 @@ func TestTokenIsAcceptedOnlyForTheCanonicalResourceAndAUserSubject(t *testing.T)
 
 func TestVerifierFailureOfOursIsAServerErrorWithoutDetail(t *testing.T) {
 	server, err := mcpserver.New(mcpserver.Deps{
-		Verifier:  verifier{err: errors.New("pq: secret detail")},
+		Verifier:  verifier{err: errPqSecretDetail},
 		Catalogue: emptyCatalogue{},
 		Issuer:    testsupport.OAuthIssuer,
 	})

@@ -188,7 +188,7 @@ func Dir() (string, error) {
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", errors.New("find the repository root: go.mod not found")
+			return "", errNoRepositoryRoot
 		}
 		dir = parent
 	}
@@ -244,3 +244,7 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	}
 	return nil
 }
+
+// errNoRepositoryRoot is what the search for the fixtures directory answers
+// when no parent directory holds go.mod.
+var errNoRepositoryRoot = errors.New("find the repository root: go.mod not found")

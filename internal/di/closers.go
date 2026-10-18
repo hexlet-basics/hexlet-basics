@@ -54,9 +54,13 @@ func (c *bucketCloser) Shutdown() error {
 
 type sentryCloser struct{ client *sentry.Client }
 
+// errSentryFlushTimeout is what the closer answers when Sentry's queue was not
+// delivered before the shutdown deadline.
+var errSentryFlushTimeout = errors.New("flushing Sentry events timed out")
+
 func (c *sentryCloser) Shutdown(ctx context.Context) error {
 	if !c.client.FlushWithContext(ctx) {
-		return errors.New("flushing Sentry events timed out")
+		return errSentryFlushTimeout
 	}
 	return nil
 }

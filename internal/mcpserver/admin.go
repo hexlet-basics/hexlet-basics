@@ -197,11 +197,22 @@ func adminNeeds(op *operation) toolNeeds {
 	return needs
 }
 
+// errNotAdminOperation is what adminTool answers for an operation the
+// AdminSession scheme does not guard: the checkpoint would not run for it.
+var errNotAdminOperation = errors.New("is not an admin operation (it does not require the AdminSession scheme), so the checkpoint would not run for it")
+
+// errNotAScalar and errEmptyScalars are what scalars answers for a value that is
+// not a string, number or boolean, or for an empty list of them.
+var (
+	errNotAScalar   = errors.New("not a scalar")
+	errEmptyScalars = errors.New("empty")
+)
+
 // adminTool describes an operation as a tool: named after its operationId, with
 // input and output schemas derived from the contract.
 func adminTool(op *operation) (*mcp.Tool, error) {
 	if !op.Admin {
-		return nil, errors.New("is not an admin operation (it does not require the AdminSession scheme), so the checkpoint would not run for it")
+		return nil, errNotAdminOperation
 	}
 
 	properties := map[string]any{
@@ -537,11 +548,11 @@ func scalars(raw json.RawMessage) ([]string, error) {
 			}
 			out = append(out, string(b))
 		default:
-			return nil, errors.New("not a scalar")
+			return nil, errNotAScalar
 		}
 	}
 	if len(out) == 0 {
-		return nil, errors.New("empty")
+		return nil, errEmptyScalars
 	}
 	return out, nil
 }

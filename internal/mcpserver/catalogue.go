@@ -47,12 +47,15 @@ func (s *Server) pageProperties() map[string]any {
 	}
 }
 
+// errPageArguments is the answer to a negative page or perPage.
+var errPageArguments = errors.New("page and perPage must be at least 1")
+
 // resolve checks the arguments and applies the page size limit: a perPage above
 // the limit is clamped (not refused, an agent asking for "everything" still gets
 // a useful page) and note says so for the text of the result.
 func (s *Server) resolve(a pageArgs) (int, int, string, error) {
 	if a.Page < 0 || a.PerPage < 0 {
-		return 0, 0, "", userError{errors.New("page and perPage must be at least 1")}
+		return 0, 0, "", userError{errPageArguments}
 	}
 	page := max(a.Page, 1)
 	perPage := a.PerPage

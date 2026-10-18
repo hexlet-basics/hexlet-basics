@@ -16,6 +16,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errStop = errors.New("workers still busy")
+)
+
 // logSink is a log destination the runtime's goroutines and the test share.
 type logSink struct {
 	mu  sync.Mutex
@@ -119,9 +124,8 @@ func (j stuckJobs) Stop(context.Context) error {
 func (j stuckJobs) Stopped() <-chan struct{} { return j.done }
 
 func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
-	stopErr := errors.New("workers still busy")
 	logs := &logSink{}
-	jobs := stuckJobs{stopErr: stopErr, done: make(chan struct{})}
+	jobs := stuckJobs{stopErr: errStop, done: make(chan struct{})}
 	app := application{jobs: jobs, events: newRouter(t), logger: logs.logger()}
 	signalCtx, signal := context.WithCancel(context.Background())
 
@@ -132,7 +136,7 @@ func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
 	select {
 	case err := <-errCh:
 		require.ErrorIs(t, err, errRuntimeSignal)
-		require.ErrorIs(t, err, stopErr)
+		require.ErrorIs(t, err, errStop)
 		require.ErrorContains(t, err, "stop job queue")
 	case <-time.After(eventually):
 		t.Fatal("worker did not stop")

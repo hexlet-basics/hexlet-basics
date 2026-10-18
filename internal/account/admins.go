@@ -11,7 +11,10 @@ import (
 
 // ErrLastAdmin refuses a change that would leave the system with no
 // administrator: nobody could then manage users, staff or roles.
-var ErrLastAdmin = errors.Join(domain.ErrConflict, errors.New("the last administrator cannot be removed"))
+var ErrLastAdmin = errors.Join(domain.ErrConflict, errLastAdmin)
+
+// errLastAdmin is the message of ErrLastAdmin.
+var errLastAdmin = errors.New("the last administrator cannot be removed")
 
 // EnsureAnotherAdmin is called before userID stops being an administrator
 // (demoted, deleted or removing their own account). It returns ErrLastAdmin when

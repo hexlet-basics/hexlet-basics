@@ -20,6 +20,11 @@ import (
 	"hexletbasics/internal/health"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errJobQueueCannotStart = errors.New("job queue cannot start")
+)
+
 const eventually = 10 * time.Second
 
 // fakeJobs is the job queue as the runtime sees it: it starts, it stops, and it
@@ -127,7 +132,7 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 
 func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
 	jobQueue := newJobs()
-	jobQueue.startErr = errors.New("job queue cannot start")
+	jobQueue.startErr = errJobQueueCannotStart
 	router := newRouter(t)
 	app := application{jobs: jobQueue, events: router}
 

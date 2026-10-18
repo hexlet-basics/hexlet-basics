@@ -15,6 +15,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errClose = errors.New("close failed")
+	errDrain = errors.New("drain failed")
+)
+
 // logSink is a log destination the runtime's goroutines and the test share.
 type logSink struct {
 	mu  sync.Mutex
@@ -110,28 +116,25 @@ func (s stuckServer) Shutdown(context.Context) error { return s.shutdownErr }
 func (s stuckServer) Close() error { return s.closeErr }
 
 func TestShutdownReportsBothFailuresWhenTheServerCannotBeStopped(t *testing.T) {
-	drainErr := errors.New("drain failed")
-	closeErr := errors.New("close failed")
 	logs := &logSink{}
-	app := application{http: stuckServer{shutdownErr: drainErr, closeErr: closeErr}, logger: logs.logger()}
+	app := application{http: stuckServer{shutdownErr: errDrain, closeErr: errClose}, logger: logs.logger()}
 
 	err := app.shutdown(t.Context(), func() {})
 
-	require.ErrorIs(t, err, drainErr)
-	require.ErrorIs(t, err, closeErr)
+	require.ErrorIs(t, err, errDrain)
+	require.ErrorIs(t, err, errClose)
 	require.ErrorContains(t, err, "stop HTTP server")
 	require.ErrorContains(t, err, "force-close HTTP server")
 	assert.NotContains(t, logs.String(), "runtime shutdown failed", "shutdown returns the failure and does not log it")
 }
 
 func TestShutdownReportsTheDrainFailureWhenForceCloseWorks(t *testing.T) {
-	drainErr := errors.New("drain failed")
 	logs := &logSink{}
-	app := application{http: stuckServer{shutdownErr: drainErr}, logger: logs.logger()}
+	app := application{http: stuckServer{shutdownErr: errDrain}, logger: logs.logger()}
 
 	err := app.shutdown(t.Context(), func() {})
 
-	require.ErrorIs(t, err, drainErr)
+	require.ErrorIs(t, err, errDrain)
 	require.ErrorContains(t, err, "stop HTTP server")
 	assert.NotContains(t, err.Error(), "force-close")
 }

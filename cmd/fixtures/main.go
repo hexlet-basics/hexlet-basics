@@ -23,13 +23,16 @@ func main() {
 	}
 }
 
+// errConnRequired is what run answers when no connection string is given.
+var errConnRequired = errors.New("-conn is required")
+
 func run() error {
 	conn := flag.String("conn", "", "PostgreSQL connection string")
 	dir := flag.String("dir", "fixtures", "directory of fixture files")
 	anyDatabase := flag.Bool("any-database", false, `load into a database whose name does not contain "test" (the development database)`)
 	flag.Parse()
 	if *conn == "" {
-		return errors.New("-conn is required")
+		return errConnRequired
 	}
 
 	db, err := sql.Open("pgx", *conn)

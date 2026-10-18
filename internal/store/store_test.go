@@ -14,6 +14,17 @@ import (
 	"hexletbasics/ent"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errCallbackBusinessWriteFailed = errors.New("business write failed")
+	errBegin                       = errors.New("begin failed")
+	errCommit                      = errors.New("commit failed")
+	errCallback                    = errors.New("callback failed")
+	errRollback                    = errors.New("rollback failed")
+	errUseConnector                = errors.New("use connector")
+	errPrepareNotSupported         = errors.New("prepare not supported")
+)
+
 func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
 	state := &transactionState{}
 	txStore := New(openTransactionDB(t, state))
@@ -32,15 +43,14 @@ func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
 }
 
 func TestWithinTxRollsBackAndPreservesCallbackError(t *testing.T) {
-	callbackErr := errors.New("business write failed")
 	state := &transactionState{}
 	txStore := New(openTransactionDB(t, state))
 
 	err := txStore.WithinTx(t.Context(), func(*sql.Tx, *ent.Client) error {
-		return callbackErr
+		return errCallbackBusinessWriteFailed
 	})
 
-	require.ErrorIs(t, err, callbackErr)
+	require.ErrorIs(t, err, errCallbackBusinessWriteFailed)
 	assert.Zero(t, state.commits)
 	assert.Equal(t, 1, state.rollbacks)
 }
@@ -60,43 +70,39 @@ func TestWithinTxRollsBackPanic(t *testing.T) {
 
 func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 	t.Run("begin", func(t *testing.T) {
-		beginErr := errors.New("begin failed")
-		state := &transactionState{beginErr: beginErr}
+		state := &transactionState{beginErr: errBegin}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
 			func(*sql.Tx, *ent.Client) error { return nil },
 		)
 
-		require.ErrorIs(t, err, beginErr)
+		require.ErrorIs(t, err, errBegin)
 		assert.ErrorContains(t, err, "begin transaction")
 	})
 
 	t.Run("commit", func(t *testing.T) {
-		commitErr := errors.New("commit failed")
-		state := &transactionState{commitErr: commitErr}
+		state := &transactionState{commitErr: errCommit}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
 			func(*sql.Tx, *ent.Client) error { return nil },
 		)
 
-		require.ErrorIs(t, err, commitErr)
+		require.ErrorIs(t, err, errCommit)
 		assert.ErrorContains(t, err, "commit transaction")
 	})
 
 	t.Run("rollback", func(t *testing.T) {
-		callbackErr := errors.New("callback failed")
-		rollbackErr := errors.New("rollback failed")
-		state := &transactionState{rollbackErr: rollbackErr}
+		state := &transactionState{rollbackErr: errRollback}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
-			func(*sql.Tx, *ent.Client) error { return callbackErr },
+			func(*sql.Tx, *ent.Client) error { return errCallback },
 		)
 
-		require.ErrorIs(t, err, callbackErr)
-		require.ErrorIs(t, err, rollbackErr)
+		require.ErrorIs(t, err, errCallback)
+		require.ErrorIs(t, err, errRollback)
 		assert.ErrorContains(t, err, "rollback transaction")
 	})
 }
@@ -158,7 +164,7 @@ func (transactionConnector) Driver() driver.Driver {
 type transactionDriver struct{}
 
 func (transactionDriver) Open(string) (driver.Conn, error) {
-	return nil, errors.New("use connector")
+	return nil, errUseConnector
 }
 
 type transactionConn struct {
@@ -166,7 +172,7 @@ type transactionConn struct {
 }
 
 func (*transactionConn) Prepare(string) (driver.Stmt, error) {
-	return nil, errors.New("prepare not supported")
+	return nil, errPrepareNotSupported
 }
 
 func (*transactionConn) Close() error { return nil }

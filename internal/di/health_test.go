@@ -15,6 +15,11 @@ import (
 	"hexletbasics/internal/health"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errDatabaseIsDown = errors.New("database is down")
+)
+
 func probe(t *testing.T, handler http.Handler, path string) int {
 	t.Helper()
 	rec := httptest.NewRecorder()
@@ -40,7 +45,7 @@ func failDatabase(t *testing.T, injector do.Injector) {
 	require.NoError(t, err)
 	client.Intercept(ent.InterceptFunc(func(ent.Querier) ent.Querier {
 		return ent.QuerierFunc(func(context.Context, ent.Query) (ent.Value, error) {
-			return nil, errors.New("database is down")
+			return nil, errDatabaseIsDown
 		})
 	}))
 }
