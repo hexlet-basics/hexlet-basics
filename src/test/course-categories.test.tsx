@@ -111,7 +111,7 @@ test("a category shows its courses and questions, with the legacy head", async (
   expect(match?.meta).toContainEqual({ title: "CodeBasics | Courses in the Programming category" });
   expect(match?.meta).toContainEqual({
     name: "description",
-    content: expect.stringContaining("in the Programming category"),
+    content: expect.stringContaining("in the Programming category") as string,
   });
   expect(match?.links).toContainEqual({
     rel: "canonical",

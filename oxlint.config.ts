@@ -24,6 +24,14 @@ export default defineConfig({
     // A union grown by the contract must fail the switch, not fall into default.
     "typescript/switch-exhaustiveness-check": "error",
     "typescript/no-deprecated": "error",
+    // `any` switches the checker off for everything it touches; use `unknown`
+    // and narrow, or a precise type.
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-argument": "error",
     // TanStack Router signals redirects and 404s by throwing plain objects.
     "typescript/only-throw-error": [
       "error",

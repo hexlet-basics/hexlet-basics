@@ -1,7 +1,7 @@
 import { Box, Stack, useComputedColorScheme } from "@mantine/core";
 import { useCallbackRef, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
-import type { Monaco } from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor";
 import type { editor } from "monaco-editor";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -68,7 +68,7 @@ function EditorPane({
     getInitialValueInEffect: false,
   });
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
-  const [monacoApi, setMonacoApi] = useState<Monaco>();
+  const [monacoApi, setMonacoApi] = useState<typeof Monaco>();
   const settings = getEditorSettings(courseSlug, extension);
 
   useSyntaxMarkers(instance, monacoApi, settings.language);
@@ -78,7 +78,7 @@ function EditorPane({
   // a stale run.
   const run = useCallbackRef(onRun);
 
-  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco) => {
     mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
     setInstance(mounted);
     setMonacoApi(monaco);
