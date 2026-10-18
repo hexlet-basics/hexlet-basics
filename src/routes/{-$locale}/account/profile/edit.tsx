@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Card, Center, Container, Stack, Title } from "@mantine/core";
+import { Anchor, Box, Card, Center, Container, Stack, Title } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import type { ProfileInput } from "@/client/types.gen";
 import { zProfileInput } from "@/client/zod.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
 
 // The signed-in user's profile, ported from legacy account/profiles#edit
@@ -72,13 +72,7 @@ function Edit() {
 
         <Center w="100%">
           <Card shadow="sm" withBorder p="xl" w={{ base: "100%", xs: "70%", sm: "50%" }}>
-            <Stack
-              component="form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void form.handleSubmit();
-              }}
-            >
+            <Stack component="form" onSubmit={submitForm(form)}>
               <form.AppField name="firstName">
                 {(field) => (
                   <field.TextField
@@ -97,9 +91,11 @@ function Edit() {
                 )}
               </form.AppField>
 
-              <Button type="submit" fullWidth mt="xl" loading={update.isPending}>
-                {t(($) => $.helpers.submit.save)}
-              </Button>
+              <form.AppForm>
+                <form.SubmitButton fullWidth mt="xl">
+                  {t(($) => $.helpers.submit.save)}
+                </form.SubmitButton>
+              </form.AppForm>
             </Stack>
 
             <DeleteAccount />

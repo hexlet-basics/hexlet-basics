@@ -1,4 +1,4 @@
-import { Button, Card, Container, Stack, Title } from "@mantine/core";
+import { Card, Container, Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/react-router";
@@ -7,7 +7,7 @@ import { updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
 import { checkPasswordResetToken } from "@/client/sdk.gen";
 import { zResetPasswordInput } from "@/client/zod.gen";
 import { newPasswordInputProps } from "@/lib/authFieldProps";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isApiError } from "@/lib/api-error";
 
@@ -82,13 +82,7 @@ function Edit() {
         </Title>
 
         <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
-          <Stack
-            component="form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void form.handleSubmit();
-            }}
-          >
+          <Stack component="form" onSubmit={submitForm(form)}>
             <form.AppField name="password">
               {(field) => (
                 <field.TextField
@@ -100,9 +94,9 @@ function Edit() {
               )}
             </form.AppField>
 
-            <Button type="submit" fullWidth loading={mutation.isPending}>
-              {t(($) => $.passwords.edit.submit)}
-            </Button>
+            <form.AppForm>
+              <form.SubmitButton fullWidth>{t(($) => $.passwords.edit.submit)}</form.SubmitButton>
+            </form.AppForm>
           </Stack>
         </Card>
       </Stack>

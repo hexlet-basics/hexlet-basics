@@ -46,7 +46,7 @@ function PermissionsForm({
   initialGrants: string[];
 }) {
   const { t } = useTranslation();
-  const [grants, setGrants] = useState(new Set(initialGrants));
+  const [grants, setGrants] = useState(initialGrants);
 
   const mutation = useResourceMutation({
     mutation: adminUpdateRolePermissionsMutation(),
@@ -58,58 +58,41 @@ function PermissionsForm({
     errorMessage: t(($) => $.admin.crud.saveError),
   });
 
-  const byResource = new Map<string, Permission[]>();
-  for (const permission of catalog) {
-    byResource.set(resourceOf(permission), [
-      ...(byResource.get(resourceOf(permission)) ?? []),
-      permission,
-    ]);
-  }
-  const groups = [...byResource];
-
-  const toggleGrant = (name: string) => {
-    setGrants((current) => {
-      const next = new Set(current);
-      if (!next.delete(name)) next.add(name);
-      return next;
-    });
-  };
+  const groups = Object.entries(Object.groupBy(catalog, resourceOf));
 
   return (
     <Card withBorder p="xl" maw={720}>
       <Title order={4} mb="md">
         {t(($) => $.admin.permissions.title)}
       </Title>
-      <Stack gap="md">
-        {groups.map(([resource, permissions]) => (
-          <Stack key={resource} gap="xs">
-            <Text fw={600}>{resource}</Text>
-            {permissions.map((permission) => (
-              <Group key={permission.name} gap="sm">
-                <Checkbox
-                  checked={grants.has(permission.name)}
-                  label={permission.name}
-                  onChange={() => toggleGrant(permission.name)}
-                />
-                {permission.capability && (
-                  <Badge variant="outline" color="red">
-                    {t(($) => $.admin.permissions.capability)}
+      <Checkbox.Group value={grants} onChange={setGrants}>
+        <Stack gap="md">
+          {groups.map(([resource, permissions = []]) => (
+            <Stack key={resource} gap="xs">
+              <Text fw={600}>{resource}</Text>
+              {permissions.map((permission) => (
+                <Group key={permission.name} gap="sm">
+                  <Checkbox value={permission.name} label={permission.name} />
+                  {permission.capability && (
+                    <Badge variant="outline" color="red">
+                      {t(($) => $.admin.permissions.capability)}
+                    </Badge>
+                  )}
+                  <Badge variant="light" color={permission.kind === "read" ? "gray" : "orange"}>
+                    {permission.kind === "read"
+                      ? t(($) => $.admin.permissions.kindRead)
+                      : t(($) => $.admin.permissions.kindWrite)}
                   </Badge>
-                )}
-                <Badge variant="light" color={permission.kind === "read" ? "gray" : "orange"}>
-                  {permission.kind === "read"
-                    ? t(($) => $.admin.permissions.kindRead)
-                    : t(($) => $.admin.permissions.kindWrite)}
-                </Badge>
-              </Group>
-            ))}
-          </Stack>
-        ))}
-      </Stack>
+                </Group>
+              ))}
+            </Stack>
+          ))}
+        </Stack>
+      </Checkbox.Group>
       <Group justify="flex-end" mt="md">
         <Button
           loading={mutation.isPending}
-          onClick={() => mutation.mutate({ path: { roleId }, body: { grants: [...grants] } })}
+          onClick={() => mutation.mutate({ path: { roleId }, body: { grants } })}
         >
           {t(($) => $.admin.crud.save)}
         </Button>

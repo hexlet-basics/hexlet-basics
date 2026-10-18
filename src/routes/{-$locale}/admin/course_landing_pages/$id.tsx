@@ -91,7 +91,6 @@ function EditCourseLandingPage() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: pageId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <CourseLandingPageStatePanel page={data} />
           <QnaPanel

@@ -1,18 +1,9 @@
-import {
-  ActionIcon,
-  Button,
-  Card,
-  Group,
-  Stack,
-  Textarea,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@mantine/core";
-import { useState } from "react";
+import { ActionIcon, Button, Card, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { QnaItem, QnaItemInput } from "@/client/types.gen";
+import { zQnaItemInput } from "@/client/zod.gen";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
+import { submitForm, useAppForm } from "@/lib/form";
 
 interface QnaPanelProps {
   items: QnaItem[];
@@ -43,110 +34,71 @@ export function QnaPanel({ items, onCreate, onUpdate, onDelete, isPending }: Qna
             isPending={isPending}
           />
         ))}
-        <NewQnaItemForm onCreate={onCreate} isPending={isPending} />
+        <QnaItemForm onSave={onCreate} isPending={isPending} />
       </Stack>
     </Card>
   );
 }
 
+// One question and its answer: an existing item (saved, or deleted) when `item`
+// is given, otherwise the blank form that adds one. The generated
+// `zQnaItemInput` is the rule for both, so an empty field cannot be submitted.
 function QnaItemForm({
   item,
   onSave,
   onDelete,
   isPending,
 }: {
-  item: QnaItem;
+  item?: QnaItem;
   onSave: (input: QnaItemInput) => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   isPending?: boolean;
 }) {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
-  const [question, setQuestion] = useState(item.question);
-  const [answer, setAnswer] = useState(item.answer);
+  const form = useAppForm({
+    defaultValues: { question: item?.question ?? "", answer: item?.answer ?? "" },
+    validators: { onSubmit: zQnaItemInput },
+    onSubmit: ({ value, formApi }) => {
+      onSave(value);
+      if (!item) formApi.reset();
+    },
+  });
 
   return (
-    <Stack gap="xs">
+    <Stack component="form" gap="xs" onSubmit={submitForm(form)}>
+      {!item && <Title order={6}>{t(($) => $.admin.qna.add)}</Title>}
       <Group align="flex-start" wrap="nowrap">
         <Stack gap="xs" flex={1}>
-          <TextInput
-            label={t(($) => $.models.attributes.qna_item.question)}
-            value={question}
-            onChange={(event) => setQuestion(event.currentTarget.value)}
-          />
-          <Textarea
-            label={t(($) => $.models.attributes.qna_item.answer)}
-            autosize
-            minRows={2}
-            value={answer}
-            onChange={(event) => setAnswer(event.currentTarget.value)}
-          />
+          <form.AppField name="question">
+            {(field) => <field.TextField label={t(($) => $.models.attributes.qna_item.question)} />}
+          </form.AppField>
+          <form.AppField name="answer">
+            {(field) => (
+              <field.TextareaField
+                minRows={2}
+                label={t(($) => $.models.attributes.qna_item.answer)}
+              />
+            )}
+          </form.AppField>
         </Stack>
-        <Tooltip label={t(($) => $.admin.crud.delete)}>
-          <ActionIcon
-            color="red"
-            variant="light"
-            mt={28}
-            aria-label={t(($) => $.admin.crud.delete)}
-            onClick={() => confirmDelete({ description: item.question, onConfirm: onDelete })}
-          >
-            ✕
-          </ActionIcon>
-        </Tooltip>
+        {item && onDelete && (
+          <Tooltip label={t(($) => $.admin.crud.delete)}>
+            <ActionIcon
+              color="red"
+              variant="light"
+              mt={28}
+              aria-label={t(($) => $.admin.crud.delete)}
+              onClick={() => confirmDelete({ description: item.question, onConfirm: onDelete })}
+            >
+              ✕
+            </ActionIcon>
+          </Tooltip>
+        )}
       </Group>
       <Group justify="flex-end">
-        <Button
-          size="xs"
-          variant="light"
-          loading={isPending}
-          disabled={question.trim() === "" || answer.trim() === ""}
-          onClick={() => onSave({ question, answer })}
-        >
-          {t(($) => $.admin.crud.save)}
-        </Button>
-      </Group>
-    </Stack>
-  );
-}
-
-function NewQnaItemForm({
-  onCreate,
-  isPending,
-}: {
-  onCreate: (input: QnaItemInput) => void;
-  isPending?: boolean;
-}) {
-  const { t } = useTranslation();
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-
-  return (
-    <Stack gap="xs">
-      <Title order={6}>{t(($) => $.admin.qna.add)}</Title>
-      <TextInput
-        label={t(($) => $.models.attributes.qna_item.question)}
-        value={question}
-        onChange={(event) => setQuestion(event.currentTarget.value)}
-      />
-      <Textarea
-        label={t(($) => $.models.attributes.qna_item.answer)}
-        autosize
-        minRows={2}
-        value={answer}
-        onChange={(event) => setAnswer(event.currentTarget.value)}
-      />
-      <Group justify="flex-end">
-        <Button
-          size="xs"
-          loading={isPending}
-          disabled={question.trim() === "" || answer.trim() === ""}
-          onClick={() => {
-            onCreate({ question, answer });
-            setQuestion("");
-            setAnswer("");
-          }}
-        >
-          {t(($) => $.admin.crud.create)}
+        <Button type="submit" size="xs" variant={item ? "light" : "filled"} loading={isPending}>
+          {item ? t(($) => $.admin.crud.save) : t(($) => $.admin.crud.create)}
         </Button>
       </Group>
     </Stack>

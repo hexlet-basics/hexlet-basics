@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Stack } from "@mantine/core";
+import { Anchor, Box, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -7,7 +7,7 @@ import { createLeadMutation } from "@/client/@tanstack/react-query.gen";
 import type { LeadInput } from "@/client/types.gen";
 import { zLeadInput } from "@/client/zod.gen";
 import { readFirstVisit } from "@/lib/first-visit";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { metrikaClientId } from "@/lib/metrika";
 
 type Props = {
@@ -82,14 +82,7 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
   });
 
   return (
-    <Stack
-      component="form"
-      gap={0}
-      onSubmit={(event) => {
-        event.preventDefault();
-        void form.handleSubmit();
-      }}
-    >
+    <Stack component="form" gap={0} onSubmit={submitForm(form)}>
       <form.AppField name="contactMethod">
         {(field) => (
           <field.SelectField
@@ -121,9 +114,9 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
           components={{ a: communityLink }}
         />
       </Box>
-      <Button type="submit" fullWidth loading={mutation.isPending}>
-        {t(($) => $.helpers.send)}
-      </Button>
+      <form.AppForm>
+        <form.SubmitButton fullWidth>{t(($) => $.helpers.send)}</form.SubmitButton>
+      </form.AppForm>
     </Stack>
   );
 }

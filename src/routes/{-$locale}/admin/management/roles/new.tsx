@@ -42,7 +42,6 @@ function NewRole() {
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
-        isPending={mutation.isPending}
       />
     </Stack>
   );

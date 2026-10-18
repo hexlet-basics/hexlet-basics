@@ -92,7 +92,6 @@ function EditCourseCategory() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: categoryId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <QnaPanel
             items={qna.data ?? []}

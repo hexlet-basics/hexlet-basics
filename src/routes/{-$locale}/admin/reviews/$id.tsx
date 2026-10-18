@@ -56,7 +56,6 @@ function EditReview() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: reviewId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <ReviewStatePanel review={data} />
         </>

@@ -9,17 +9,20 @@ import {
   Stack,
   Table,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { PaginationState } from "@tanstack/react-table";
-import { type SyntheticEvent, useState } from "react";
+import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
+import { useState } from "react";
+import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
 import type { AuditRecord } from "@/client/types.gen";
+import { zAdminListAuditRecordsQuery } from "@/client/zod.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
+import { submitForm, useAppForm } from "@/lib/form";
 import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 
@@ -28,22 +31,20 @@ import { validationMessages } from "@/lib/server-validation";
 // `audit.read` on the caller's Staff Role (an administrator included), refuses a
 // window wider than 92 days, and records that the trail was read.
 export const Route = createFileRoute("/{-$locale}/admin/audit/")({
+  // The generated query schema of the list operation: the page, the filters and
+  // the window live in the address, so a filtered view can be shared and survives
+  // a reload.
+  validateSearch: zAdminListAuditRecordsQuery,
   component: AuditTrail,
 });
 
-// What the filter bar holds before it is applied. Dates are the day pickers'
-// `YYYY-MM-DD` strings; the others are the raw text of the inputs.
-interface Filters {
-  actorUserId: string;
-  channel: string;
-  operation: string;
-  entityType: string;
-  entityId: string;
-  from: string;
-  to: string;
-}
+type AuditSearch = z.input<typeof zAdminListAuditRecordsQuery>;
 
-const NO_FILTERS: Filters = {
+const PER_PAGE = 25;
+
+// What the filter bar holds before it is applied: the raw text of the inputs,
+// and for the window the day pickers' `YYYY-MM-DD` strings.
+const NO_FILTERS = {
   actorUserId: "",
   channel: "",
   operation: "",
@@ -52,65 +53,73 @@ const NO_FILTERS: Filters = {
   from: "",
   to: "",
 };
+type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
 // the morning of the 5th wherever they are.
-const startOfDay = (day: string) => new Date(`${day}T00:00:00`).toISOString();
+const startOfDay = (day: string) => dayjs(day).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
 // window at the next local midnight.
-const endOfDay = (day: string) => {
-  const next = new Date(`${day}T00:00:00`);
-  next.setDate(next.getDate() + 1);
-  return next.toISOString();
-};
+const endOfDay = (day: string) => dayjs(day).add(1, "day").toISOString();
+
+const filtersOf = (search: AuditSearch): Filters => ({
+  actorUserId: search.actorUserId?.toString() ?? "",
+  channel: search.channel ?? "",
+  operation: search.operation ?? "",
+  entityType: search.entityType ?? "",
+  entityId: search.entityId ?? "",
+  from: search.from ? dayjs(search.from).format("YYYY-MM-DD") : "",
+  to: search.to ? dayjs(search.to).subtract(1, "day").format("YYYY-MM-DD") : "",
+});
+
+// A blank input is no filter: it stays out of the address and the request.
+const searchOf = (filters: Filters): AuditSearch => ({
+  actorUserId: filters.actorUserId === "" ? undefined : Number(filters.actorUserId),
+  channel: filters.channel === "" ? undefined : (filters.channel as AuditSearch["channel"]),
+  operation: filters.operation || undefined,
+  entityType: filters.entityType || undefined,
+  entityId: filters.entityId || undefined,
+  from: filters.from === "" ? undefined : startOfDay(filters.from),
+  to: filters.to === "" ? undefined : endOfDay(filters.to),
+});
 
 const CHANNEL_COLOR = { web: "blue", mcp: "grape" } as const;
 const OUTCOME_COLOR = { succeeded: "green", forbidden: "orange", failed: "red" } as const;
 
 function AuditTrail() {
   const { t } = useTranslation();
-
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 25 });
-  const [draft, setDraft] = useState<Filters>(NO_FILTERS);
-  const [applied, setApplied] = useState<Filters>(NO_FILTERS);
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [selected, setSelected] = useState<AuditRecord | null>(null);
 
+  const pagination: PaginationState = {
+    pageIndex: (search.page ?? 1) - 1,
+    pageSize: search.perPage ?? PER_PAGE,
+  };
+  const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
+    const next = typeof updater === "function" ? updater(pagination) : updater;
+    void navigate({
+      search: (prev) => ({ ...prev, page: next.pageIndex + 1, perPage: next.pageSize }),
+    });
+  };
+
   const { data, isLoading, error } = useQuery(
-    adminListAuditRecordsOptions({
-      query: {
-        page: pagination.pageIndex + 1,
-        perPage: pagination.pageSize,
-        ...(applied.actorUserId !== "" && { actorUserId: Number(applied.actorUserId) }),
-        ...(applied.channel !== "" && { channel: applied.channel as "web" | "mcp" }),
-        ...(applied.operation !== "" && { operation: applied.operation }),
-        ...(applied.entityType !== "" && { entityType: applied.entityType }),
-        ...(applied.entityId !== "" && { entityId: applied.entityId }),
-        ...(applied.from !== "" && { from: startOfDay(applied.from) }),
-        ...(applied.to !== "" && { to: endOfDay(applied.to) }),
-      },
-    }),
+    adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
   );
 
-  const apply = (event: SyntheticEvent) => {
-    event.preventDefault();
-    setApplied(draft);
-    setPagination((current) => ({ ...current, pageIndex: 0 }));
-  };
-  const reset = () => {
-    setDraft(NO_FILTERS);
-    setApplied(NO_FILTERS);
-    setPagination((current) => ({ ...current, pageIndex: 0 }));
-  };
-  const field = (name: keyof Filters) => ({
-    value: draft[name],
-    // The value is read before the updater runs: React clears `currentTarget`
-    // once the handler returns, and the updater runs later.
-    onChange: (event: { currentTarget: { value: string } }) => {
-      const { value } = event.currentTarget;
-      setDraft((current) => ({ ...current, [name]: value }));
-    },
+  // Applying starts from the first page: the old one may not exist in the narrowed trail.
+  const apply = (filters: Filters) =>
+    navigate({ search: { ...searchOf(filters), perPage: search.perPage } });
+
+  const form = useAppForm({
+    defaultValues: filtersOf(search),
+    onSubmit: ({ value }) => apply(value),
   });
+  const reset = () => {
+    form.reset(NO_FILTERS);
+    void apply(NO_FILTERS);
+  };
 
   const columns: CrudColumnDef<AuditRecord>[] = [
     {
@@ -169,43 +178,63 @@ function AuditTrail() {
     <Stack>
       <Title order={2}>{t(($) => $.admin.resources.audit)}</Title>
 
-      <form onSubmit={apply}>
+      <form onSubmit={submitForm(form)}>
         <Stack gap="xs">
           <Group align="flex-end" gap="sm">
-            <TextInput
-              label={t(($) => $.admin.audit.filters.from)}
-              type="date"
-              {...field("from")}
-            />
-            <TextInput label={t(($) => $.admin.audit.filters.to)} type="date" {...field("to")} />
-            <TextInput
-              label={t(($) => $.admin.audit.filters.actorUserId)}
-              type="number"
-              min={1}
-              {...field("actorUserId")}
-            />
-            <NativeSelect
-              label={t(($) => $.admin.audit.filters.channel)}
-              data={[
-                { value: "", label: t(($) => $.admin.audit.filters.anyChannel) },
-                { value: "web", label: t(($) => $.admin.audit.channel.web) },
-                { value: "mcp", label: t(($) => $.admin.audit.channel.mcp) },
-              ]}
-              {...field("channel")}
-            />
+            <form.AppField name="from">
+              {(field) => (
+                <field.TextField label={t(($) => $.admin.audit.filters.from)} type="date" />
+              )}
+            </form.AppField>
+            <form.AppField name="to">
+              {(field) => (
+                <field.TextField label={t(($) => $.admin.audit.filters.to)} type="date" />
+              )}
+            </form.AppField>
+            <form.AppField name="actorUserId">
+              {(field) => (
+                <field.TextField
+                  label={t(($) => $.admin.audit.filters.actorUserId)}
+                  type="number"
+                  min={1}
+                />
+              )}
+            </form.AppField>
+            <form.Field name="channel">
+              {(field) => (
+                <NativeSelect
+                  label={t(($) => $.admin.audit.filters.channel)}
+                  data={[
+                    { value: "", label: t(($) => $.admin.audit.filters.anyChannel) },
+                    { value: "web", label: t(($) => $.admin.audit.channel.web) },
+                    { value: "mcp", label: t(($) => $.admin.audit.channel.mcp) },
+                  ]}
+                  value={field.state.value}
+                  onChange={(event) => field.handleChange(event.currentTarget.value)}
+                />
+              )}
+            </form.Field>
           </Group>
           <Group align="flex-end" gap="sm">
-            <TextInput
-              label={t(($) => $.admin.audit.filters.operation)}
-              placeholder="AdminUpdateBlogPost"
-              {...field("operation")}
-            />
-            <TextInput
-              label={t(($) => $.admin.audit.filters.entityType)}
-              placeholder="BlogPost"
-              {...field("entityType")}
-            />
-            <TextInput label={t(($) => $.admin.audit.filters.entityId)} {...field("entityId")} />
+            <form.AppField name="operation">
+              {(field) => (
+                <field.TextField
+                  label={t(($) => $.admin.audit.filters.operation)}
+                  placeholder="AdminUpdateBlogPost"
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="entityType">
+              {(field) => (
+                <field.TextField
+                  label={t(($) => $.admin.audit.filters.entityType)}
+                  placeholder="BlogPost"
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="entityId">
+              {(field) => <field.TextField label={t(($) => $.admin.audit.filters.entityId)} />}
+            </form.AppField>
             <Button type="submit">{t(($) => $.admin.audit.filters.apply)}</Button>
             <Button type="button" variant="default" onClick={reset}>
               {t(($) => $.admin.audit.filters.reset)}
@@ -233,7 +262,7 @@ function AuditTrail() {
         data={data?.items ?? []}
         total={data?.total ?? 0}
         pagination={pagination}
-        onPaginationChange={setPagination}
+        onPaginationChange={onPaginationChange}
         isLoading={isLoading}
       />
 

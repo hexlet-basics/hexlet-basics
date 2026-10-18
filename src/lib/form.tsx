@@ -1,4 +1,6 @@
 import {
+  Button,
+  type ButtonProps,
   Checkbox,
   type CheckboxProps,
   Input,
@@ -19,6 +21,7 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import dayjs from "dayjs";
+import type { SyntheticEvent } from "react";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
 // `L LT` (localized date + time) needs the localizedFormat plugin.
@@ -41,7 +44,8 @@ const pickerToIso = (value: string | null): string | null =>
 // schemas generated from OpenAPI (`src/client/zod.gen.ts`), passed straight to
 // `validators.onSubmit` — zod v4 implements Standard Schema, which TanStack Form
 // consumes natively and maps issues back to fields by path.
-export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
+export const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts();
 
 function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
   if (!isTouched || errors.length === 0) return undefined;
@@ -208,6 +212,30 @@ function RichTextField({ label }: { label: string }) {
   );
 }
 
+// The `onSubmit` of a native `<form>` driven by a TanStack form: stops the browser's
+// own submission and lets the form validate and submit.
+export const submitForm =
+  (form: { handleSubmit: () => Promise<void> }) => (event: SyntheticEvent) => {
+    event.preventDefault();
+    void form.handleSubmit();
+  };
+
+// The submit button of a form: busy for as long as the submission runs. The forms
+// await their mutation in `onSubmit`, so the button needs no pending flag handed
+// down from it. Rendered inside `<form.AppForm>`, which supplies the context.
+function SubmitButton({ children, ...props }: ButtonProps) {
+  const form = useFormContext();
+  return (
+    <form.Subscribe selector={(state) => state.isSubmitting}>
+      {(isSubmitting) => (
+        <Button type="submit" loading={isSubmitting} {...props}>
+          {children}
+        </Button>
+      )}
+    </form.Subscribe>
+  );
+}
+
 export const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
@@ -219,7 +247,7 @@ export const { useAppForm } = createFormHook({
     MultiSelectField,
     RichTextField,
   },
-  formComponents: {},
+  formComponents: { SubmitButton },
   fieldContext,
   formContext,
 });

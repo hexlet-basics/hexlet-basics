@@ -60,7 +60,6 @@ function EditBlogPost() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: postId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <BlogPostStatePanel post={data} />
           <RelatedCoursesPanel

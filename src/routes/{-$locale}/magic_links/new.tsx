@@ -1,14 +1,11 @@
-import { Alert, Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createMagicLinkMutation } from "@/client/@tanstack/react-query.gen";
-import { zEmailInput } from "@/client/zod.gen";
-import { emailInputProps } from "@/lib/authFieldProps";
-import { useAppForm } from "@/lib/form";
+import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
 
 // Magic Link request form, ported from legacy magic_links/new. The API answers
 // the same whether or not the email is registered, so the page does too: every
@@ -28,25 +25,10 @@ function New() {
     onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
-  // The refused-link notice is a flash, so it is shown once on arrival like the
-  // other flashes; the id keeps StrictMode's double effect from stacking two.
-  useEffect(() => {
-    if (invalid) {
-      notifications.show({
-        id: "invalid-link",
-        color: "red",
-        message: t(($) => $.flash.magic_links.show.error),
-      });
-    }
-  }, [invalid, t]);
-
-  const form = useAppForm({
-    defaultValues: { email: "" },
-    validators: { onSubmit: zEmailInput },
-    onSubmit: async ({ value }) => {
-      await mutation.mutateAsync({ body: value });
-    },
-  });
+  useInvalidLinkNotice(
+    invalid,
+    t(($) => $.flash.magic_links.show.error),
+  );
 
   return (
     <Container my="xl">
@@ -55,33 +37,11 @@ function New() {
           {t(($) => $.magic_links.new.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
-          {mutation.isSuccess ? (
-            <Alert color="green">{t(($) => $.flash.magic_links.create.success)}</Alert>
-          ) : (
-            <Stack
-              component="form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void form.handleSubmit();
-              }}
-            >
-              <form.AppField name="email">
-                {(field) => (
-                  <field.TextField
-                    label={t(($) => $.models.attributes.user.email)}
-                    required
-                    {...emailInputProps}
-                  />
-                )}
-              </form.AppField>
-
-              <Button type="submit" fullWidth loading={mutation.isPending}>
-                {t(($) => $.magic_links.new.submit)}
-              </Button>
-            </Stack>
-          )}
-        </Card>
+        <EmailRequestCard
+          mutation={mutation}
+          success={t(($) => $.flash.magic_links.create.success)}
+          submit={t(($) => $.magic_links.new.submit)}
+        />
 
         <Text mt="xs">
           <Anchor component={Link} to="/session/new" fw="bold">

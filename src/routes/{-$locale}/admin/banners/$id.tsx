@@ -56,7 +56,6 @@ function EditBanner() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: bannerId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <BannerStatePanel banner={data} />
         </>

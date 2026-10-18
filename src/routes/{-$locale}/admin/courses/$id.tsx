@@ -56,7 +56,6 @@ function EditCourse() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: courseId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <CourseReadinessPanel course={data} />
         </>

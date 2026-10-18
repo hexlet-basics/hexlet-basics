@@ -1,7 +1,7 @@
 import { Button, Card, Group, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { ZodType } from "zod";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
 
 // One editable field, described declaratively. `name` is checked against the
@@ -40,7 +40,6 @@ export interface CrudFormProps<T extends Record<string, unknown>> {
   // Invoked when the user cancels. The route owns navigation so the engine stays
   // resource-agnostic and the destination keeps TanStack Router's typed links.
   onCancel: () => void;
-  isPending?: boolean;
 }
 
 // Generic admin form, the write half of the CRUD engine (Wave 1). Owns the
@@ -55,7 +54,6 @@ export function CrudForm<T extends Record<string, unknown>>({
   onSubmit,
   submitLabel,
   onCancel,
-  isPending,
 }: CrudFormProps<T>) {
   const { t } = useTranslation();
 
@@ -66,13 +64,7 @@ export function CrudForm<T extends Record<string, unknown>>({
 
   return (
     <Card withBorder p="xl" maw={720}>
-      <Stack
-        component="form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void form.handleSubmit();
-        }}
-      >
+      <Stack component="form" onSubmit={submitForm(form)}>
         {fields.map((spec) => (
           <form.AppField key={spec.name} name={spec.name}>
             {(field) => {
@@ -115,9 +107,9 @@ export function CrudForm<T extends Record<string, unknown>>({
           <Button variant="default" onClick={onCancel}>
             {t(($) => $.admin.crud.cancel)}
           </Button>
-          <Button type="submit" loading={isPending}>
-            {submitLabel}
-          </Button>
+          <form.AppForm>
+            <form.SubmitButton>{submitLabel}</form.SubmitButton>
+          </form.AppForm>
         </Group>
       </Stack>
     </Card>

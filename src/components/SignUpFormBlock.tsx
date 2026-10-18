@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Stack, Text } from "@mantine/core";
+import { Anchor, Box, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
@@ -12,7 +12,7 @@ import {
   registrationEmailInputProps,
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
 
@@ -65,13 +65,7 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
   });
 
   return (
-    <Stack
-      component="form"
-      onSubmit={(event) => {
-        event.preventDefault();
-        void form.handleSubmit();
-      }}
-    >
+    <Stack component="form" onSubmit={submitForm(form)}>
       <form.AppField name="firstName">
         {(field) => (
           <field.TextField
@@ -108,9 +102,11 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
         </Anchor>
       </Box>
 
-      <Button type="submit" fullWidth loading={mutation.isPending}>
-        {t(($) => $.helpers.submit.user_sign_up_form.create)}
-      </Button>
+      <form.AppForm>
+        <form.SubmitButton fullWidth>
+          {t(($) => $.helpers.submit.user_sign_up_form.create)}
+        </form.SubmitButton>
+      </form.AppForm>
 
       <Text fz="sm" mt="xs">
         <Trans

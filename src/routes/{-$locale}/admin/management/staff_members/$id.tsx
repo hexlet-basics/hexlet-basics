@@ -57,7 +57,6 @@ function EditStaffMember() {
           onSubmit={(values) => mutation.mutateAsync({ path: { id: memberId }, body: values })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
-          isPending={mutation.isPending}
         />
       )}
     </Stack>

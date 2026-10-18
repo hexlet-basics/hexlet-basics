@@ -56,7 +56,6 @@ function EditRole() {
             onSubmit={(values) => mutation.mutateAsync({ path: { id: roleId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
-            isPending={mutation.isPending}
           />
           <RolePermissions roleId={roleId} />
         </>

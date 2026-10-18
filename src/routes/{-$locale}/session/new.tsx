@@ -1,4 +1,4 @@
-import { Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
@@ -7,7 +7,7 @@ import { z } from "zod";
 import { createSessionMutation } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
 import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
-import { useAppForm } from "@/lib/form";
+import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 
@@ -71,13 +71,7 @@ function New() {
         </Title>
 
         <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
-          <Stack
-            component="form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void form.handleSubmit();
-            }}
-          >
+          <Stack component="form" onSubmit={submitForm(form)}>
             <form.AppField name="email">
               {(field) => (
                 <field.TextField
@@ -98,9 +92,11 @@ function New() {
               )}
             </form.AppField>
 
-            <Button type="submit" fullWidth loading={mutation.isPending}>
-              {t(($) => $.helpers.submit.user_sign_in_form.create)}
-            </Button>
+            <form.AppForm>
+              <form.SubmitButton fullWidth>
+                {t(($) => $.helpers.submit.user_sign_in_form.create)}
+              </form.SubmitButton>
+            </form.AppForm>
 
             <Anchor component={Link} to="/remind_password/new" ta="center">
               {t(($) => $.sessions.new.forgot_password)}
