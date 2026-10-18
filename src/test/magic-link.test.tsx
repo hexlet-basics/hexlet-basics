@@ -52,7 +52,9 @@ test("a refused link sends the visitor back to the request form", async () => {
   const { router, queryClient } = await openLink("stale");
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru/magic_links/new");
-  expect({ ...router.state.location.search }).toStrictEqual({ invalid: true });
+  expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    invalid: true,
+  });
   expect(queryClient.getQueryData(getCurrentUserQueryKey())).toBeUndefined();
 });
 
