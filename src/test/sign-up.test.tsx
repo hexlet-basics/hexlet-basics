@@ -4,6 +4,7 @@ import { page } from "vitest/browser";
 import { getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
 import { Route as signUpRoute } from "@/routes/{-$locale}/users/new";
 import { worker } from "@/test/msw";
+import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
 // The sign-up page, driven through its real route with the API faked at the
@@ -57,9 +58,7 @@ describe("sign up", () => {
   it("shows a refused email at its field instead of as a toast", async () => {
     expect.hasAssertions();
     worker.use(
-      http.post("*/users", () =>
-        HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
-      ),
+      http.post("*/users", () => validationProblem({ email: ["has already been taken"] })),
     );
     const { router } = await renderRoute(signUpRoute, {
       path: "/{-$locale}/users/new",

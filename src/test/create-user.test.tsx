@@ -5,6 +5,7 @@ import type { UserInput } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/admin/users/new";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
+import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the users resource — also exercises the engine's
@@ -52,7 +53,7 @@ describe("create user", () => {
     expect.hasAssertions();
     worker.use(
       http.post("*/admin/api/users", () =>
-        HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
+        validationProblem({ email: ["has already been taken"] }),
       ),
     );
 
