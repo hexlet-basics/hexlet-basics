@@ -2,7 +2,7 @@
 // pages, and the moves between its states. A state is not an update: each move
 // is an operation of its own on the server (publish, unpublish, archive).
 //
-// The table mirrors internal/transitions on the server, and only to pick the
+// The table mirrors internal/transition on the server, and only to pick the
 // buttons the admin screens offer. The server stays the judge and refuses an
 // illegal move with a 409.
 export type PublicationState = "draft" | "published" | "archived";

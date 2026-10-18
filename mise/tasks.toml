@@ -135,8 +135,8 @@ description = "Regenerate the ent ORM from ent/schema"
 run = "go generate ./ent"
 
 ["gen:fixtures"]
-description = "Generate the fixture label variables (internal/fixtures/labels_gen.go) from fixtures/*.yml"
-run = "go generate ./internal/fixtures"
+description = "Generate the fixture label variables (internal/fixture/labels_gen.go) from fixtures/*.yml"
+run = "go generate ./internal/fixture"
 
 ["gen:mocks"]
 description = "Generate the harness mocks (moq) from the production interfaces they replace"
