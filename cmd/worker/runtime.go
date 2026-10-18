@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"sync/atomic"
 
 	"golang.org/x/sync/errgroup"
@@ -22,6 +23,20 @@ type jobRuntime interface {
 	Stopped() <-chan struct{}
 }
 
+// httpRuntime is the health-only listener.
+type httpRuntime interface {
+	ListenAndServe() error
+	Shutdown(context.Context) error
+	Close() error
+}
+
+// readiness is what the runtime tells /readyz: Started once the job queue and
+// the event router run, Drain when it begins to stop (ADR-0023).
+type readiness interface {
+	Started()
+	Drain()
+}
+
 type eventRuntime interface {
 	Run(context.Context) error
 	// Running is closed once the router has started every handler.
@@ -36,6 +51,11 @@ type application struct {
 	jobs   jobRuntime
 	events eventRuntime
 	logger *slog.Logger
+	// health, when set, is the health-only listener (/healthz, /readyz). It
+	// starts with the runtime and is stopped last, so /readyz can report 503
+	// while the queue and router drain.
+	health httpRuntime
+	probes readiness
 }
 
 func (a *application) run(signalCtx context.Context, stopSignals func()) error {
@@ -94,6 +114,9 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			select {
 			case <-a.events.Running():
 				state.markEventsStarted()
+				if a.probes != nil {
+					a.probes.Started()
+				}
 			case <-groupCtx.Done():
 			}
 		}()
@@ -105,6 +128,18 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		}
 		return errEventRouterStopped
 	})
+
+	if a.health != nil {
+		group.Go(func() error {
+			if err := a.health.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+				return fmt.Errorf("serve health: %w", err)
+			}
+			// A closed listener is the shutdown's doing; wait for the group to
+			// finish rather than ending it early.
+			<-groupCtx.Done()
+			return nil
+		})
+	}
 
 	group.Go(func() error {
 		<-groupCtx.Done()
@@ -121,6 +156,9 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(parent), shutdownTimeout)
 	defer cancel()
 
+	if a.probes != nil {
+		a.probes.Drain()
+	}
 	if a.logger != nil {
 		a.logger.Info("shutting down async worker")
 	}
@@ -138,6 +176,15 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 			stopErr := fmt.Errorf("stop job queue: %w", err)
 			shutdownErrors = append(shutdownErrors, stopErr)
 			a.logShutdownError(stopErr)
+		}
+	}
+
+	if a.health != nil {
+		if err := a.health.Shutdown(ctx); err != nil {
+			stopErr := fmt.Errorf("stop health listener: %w", err)
+			shutdownErrors = append(shutdownErrors, stopErr)
+			a.logShutdownError(stopErr)
+			_ = a.health.Close()
 		}
 	}
 

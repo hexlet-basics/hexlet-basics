@@ -70,3 +70,23 @@ func TestReadyzIs503AfterTheProcessStartsDraining(t *testing.T) {
 	assert.Equal(t, http.StatusServiceUnavailable, probe(t, handler, "/readyz"))
 	assert.Equal(t, http.StatusOK, probe(t, handler, "/healthz"))
 }
+
+func TestWorkerHealthServerIsReadyOnlyAfterStartAndWhileTheDatabaseWorks(t *testing.T) {
+	configureWorkerEnvironment(t)
+	injector := newWorkerContainer()
+	t.Cleanup(func() { _ = injector.Shutdown() })
+	server, err := do.InvokeNamed[*http.Server](injector, healthServerServiceName)
+	require.NoError(t, err)
+	probes, err := do.Invoke[*health.Probes](injector)
+	require.NoError(t, err)
+
+	assert.Equal(t, http.StatusOK, probe(t, server.Handler, "/healthz"))
+	assert.Equal(t, http.StatusServiceUnavailable, probe(t, server.Handler, "/readyz"), "before start")
+
+	probes.Started()
+	assert.Equal(t, http.StatusOK, probe(t, server.Handler, "/readyz"))
+
+	failDatabase(t, injector)
+	assert.Equal(t, http.StatusServiceUnavailable, probe(t, server.Handler, "/readyz"), "database down")
+	assert.Equal(t, http.StatusOK, probe(t, server.Handler, "/healthz"))
+}

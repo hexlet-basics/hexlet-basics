@@ -1,8 +1,11 @@
 package di
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
+	"net/http"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
@@ -21,6 +24,7 @@ import (
 	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/health"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreview"
 	"hexletbasics/internal/localization"
@@ -33,6 +37,40 @@ import (
 // workerPackage contains the asynchronous graph: course loading, external
 // integrations, River workers, and Watermill subscribers.
 var workerPackage = do.Package(
+	// Readiness is the database (ADR-0023), and only once the job queue and the
+	// event router have started: cmd/worker calls Started and Drain.
+	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
+		if _, err := do.Invoke[*databaseCloser](i); err != nil {
+			return nil, err
+		}
+		return health.NewAwaitingStart(func(ctx context.Context) error {
+			var errs []error
+			for _, err := range i.HealthCheckWithContext(ctx) {
+				errs = append(errs, err)
+			}
+			return errors.Join(errs...)
+		}), nil
+	}),
+	// The worker's only HTTP surface: /healthz and /readyz on HEALTH_ADDR. Named
+	// because the server graph's *http.Server is a different service.
+	do.LazyNamed[*http.Server](healthServerServiceName, func(i do.Injector) (*http.Server, error) {
+		cfg, err := do.Invoke[*config.Worker](i)
+		if err != nil {
+			return nil, err
+		}
+		probes, err := do.Invoke[*health.Probes](i)
+		if err != nil {
+			return nil, err
+		}
+		return &http.Server{
+			Addr:              cfg.HealthAddr,
+			Handler:           probes.Wrap(http.NotFoundHandler()),
+			ReadHeaderTimeout: readHeaderTimeout,
+			ReadTimeout:       readTimeout,
+			WriteTimeout:      writeTimeout,
+			IdleTimeout:       idleTimeout,
+		}, nil
+	}),
 	// The process's own configuration root; see serverPackage.
 	do.Lazy[*config.Worker](func(do.Injector) (*config.Worker, error) {
 		return config.LoadWorker()

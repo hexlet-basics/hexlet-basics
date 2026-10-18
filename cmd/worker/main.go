@@ -51,6 +51,8 @@ func run(signalCtx context.Context, stopSignals func()) error {
 		jobs:   dependencies.RiverClient,
 		events: dependencies.EventRuntime,
 		logger: dependencies.Logger,
+		health: dependencies.HealthServer,
+		probes: dependencies.Probes,
 	}
 	runtimeErr := app.run(signalCtx, stopSignals)
 

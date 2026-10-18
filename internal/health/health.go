@@ -20,12 +20,27 @@ const readyTimeout = 2 * time.Second
 type Probes struct {
 	check    func(context.Context) error
 	draining atomic.Bool
+	// awaiting is true until Started is called, for a process (the worker) that
+	// is not ready the moment it begins to listen.
+	awaiting atomic.Bool
 }
 
 // New returns Probes whose readiness is the result of check.
 func New(check func(context.Context) error) *Probes {
 	return &Probes{check: check}
 }
+
+// NewAwaitingStart returns Probes that answer /readyz with 503 until Started
+// is called. The worker uses it: its listener comes up before its job queue and
+// event router, and a pod that has not started them is not ready.
+func NewAwaitingStart(check func(context.Context) error) *Probes {
+	p := New(check)
+	p.awaiting.Store(true)
+	return p
+}
+
+// Started makes an AwaitingStart process ready (subject to the check).
+func (p *Probes) Started() { p.awaiting.Store(false) }
 
 // Drain makes /readyz answer 503 from now on. The server calls it on SIGTERM,
 // before the HTTP drain begins, so the endpoint is taken out of rotation while
@@ -45,7 +60,7 @@ func (p *Probes) Wrap(next http.Handler) http.Handler {
 }
 
 func (p *Probes) ready(w http.ResponseWriter, r *http.Request) {
-	if p.draining.Load() {
+	if p.draining.Load() || p.awaiting.Load() {
 		http.Error(w, "shutting down", http.StatusServiceUnavailable)
 		return
 	}

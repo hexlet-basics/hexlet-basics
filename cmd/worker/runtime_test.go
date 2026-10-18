@@ -5,7 +5,10 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"net/http"
+	"net/http/httptest"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -14,6 +17,8 @@ import (
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"hexletbasics/internal/health"
 )
 
 const eventually = 10 * time.Second
@@ -135,4 +140,65 @@ func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
 		t.Fatal("the event router started although the job queue failed")
 	default:
 	}
+}
+
+// readyz is the worker's readiness as the kubelet sees it: the health handler
+// answering in-process.
+func readyz(t *testing.T, handler http.Handler) int {
+	t.Helper()
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/readyz", nil))
+	return rec.Code
+}
+
+func TestReadyzIsUnavailableBeforeTheRuntimeStartsOKWhileItRunsAndUnavailableAfterItStops(t *testing.T) {
+	probes := health.NewAwaitingStart(func(context.Context) error { return nil })
+	handler := probes.Wrap(http.NotFoundHandler())
+	router := newRouter(t)
+	app := application{jobs: newJobs(), events: router, probes: probes}
+	require.Equal(t, http.StatusServiceUnavailable, readyz(t, handler), "before start")
+	signalCtx, signal := context.WithCancel(context.Background())
+
+	errCh := make(chan error, 1)
+	go func() { errCh <- app.run(signalCtx, func() {}) }()
+	require.Eventually(t, func() bool { return readyz(t, handler) == http.StatusOK }, eventually, 10*time.Millisecond, "while running")
+	signal()
+	require.ErrorIs(t, <-errCh, errRuntimeSignal)
+
+	assert.Equal(t, http.StatusServiceUnavailable, readyz(t, handler), "after stop")
+}
+
+// healthServer is a health listener that records being shut down.
+type healthServer struct {
+	served   chan struct{}
+	shutdown atomic.Bool
+}
+
+func (h *healthServer) ListenAndServe() error {
+	close(h.served)
+	for !h.shutdown.Load() {
+		time.Sleep(time.Millisecond)
+	}
+	return http.ErrServerClosed
+}
+
+func (h *healthServer) Shutdown(context.Context) error { h.shutdown.Store(true); return nil }
+func (h *healthServer) Close() error                   { h.shutdown.Store(true); return nil }
+
+func TestHealthListenerStartsAndStopsWithTheWorker(t *testing.T) {
+	listener := &healthServer{served: make(chan struct{})}
+	app := application{jobs: newJobs(), events: newRouter(t), health: listener}
+	signalCtx, signal := context.WithCancel(context.Background())
+
+	errCh := make(chan error, 1)
+	go func() { errCh <- app.run(signalCtx, func() {}) }()
+	select {
+	case <-listener.served:
+	case <-time.After(eventually):
+		t.Fatal("the health listener did not start")
+	}
+	signal()
+	require.ErrorIs(t, <-errCh, errRuntimeSignal)
+
+	assert.True(t, listener.shutdown.Load(), "the health listener is stopped")
 }
