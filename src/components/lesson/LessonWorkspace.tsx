@@ -111,7 +111,9 @@ export default function LessonWorkspace({
   });
 
   const run = () => {
-    if (check.isPending) return;
+    if (check.isPending) {
+      return;
+    }
 
     // The contract refuses an empty submission, and the starter code of some
     // courses is empty: pressing run on it would come back as a 400, which the

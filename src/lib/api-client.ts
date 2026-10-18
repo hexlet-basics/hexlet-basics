@@ -48,7 +48,9 @@ client.interceptors.request.use(async (request) => {
     : `${pathname}${search}`;
   const headers = new Headers(request.headers);
   const cookie = getRequestCookie();
-  if (cookie) headers.set("cookie", cookie);
+  if (cookie) {
+    headers.set("cookie", cookie);
+  }
   headers.set("accept-language", getRequestLocale());
   // A new Request is the way to change the URL; the body is read out because a
   // streamed one cannot be handed to a new Request without `duplex`.

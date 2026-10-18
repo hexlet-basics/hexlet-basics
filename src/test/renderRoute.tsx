@@ -97,7 +97,9 @@ export async function renderRoute(
     }
   };
   mount(route, path);
-  for (const extra of also) mount(extra.route, extra.path);
+  for (const extra of also) {
+    mount(extra.route, extra.path);
+  }
   adminLayout.addChildren(inAdmin as never[]);
   layout.addChildren(inLocale as never[]);
 

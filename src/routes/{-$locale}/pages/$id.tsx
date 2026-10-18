@@ -58,14 +58,18 @@ const WITHOUT_CANONICAL: readonly PageId[] = ["cookie_policy", "privacy", "tos"]
 export const Route = createFileRoute("/{-$locale}/pages/$id")({
   // An unknown page is a 404, as legacy's RoutingError was.
   beforeLoad: ({ params }) => {
-    if (!isPageId(params.id)) throw notFound();
+    if (!isPageId(params.id)) {
+      throw notFound();
+    }
   },
   // Legacy meta: the page title and description, the social tags and, but for
   // the legal pages, the canonical link. es has no page strings of its own in
   // legacy, which fell back to en, and the es catalog carries those en strings.
   head: ({ match }) => {
     const { id } = match.params;
-    if (!isPageId(id)) return {};
+    if (!isPageId(id)) {
+      return {};
+    }
     const { i18n } = match.context;
     const { title, description } = pageMeta(i18n.t, id);
     return seoHead({
@@ -126,7 +130,9 @@ const typographyStyles: TypographyProps["styles"] = (theme) => ({
 function Show() {
   const { t, i18n } = useTranslation();
   const { id } = Route.useParams();
-  if (!isPageId(id)) return null;
+  if (!isPageId(id)) {
+    return null;
+  }
   // Only ru and en bodies exist; es reads the ru one, as legacy did.
   const Body = PAGES[i18n.language === "en" ? "en" : "ru"][id];
 

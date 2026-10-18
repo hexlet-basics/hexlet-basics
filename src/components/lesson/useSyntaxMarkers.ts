@@ -22,7 +22,9 @@ export function useSyntaxMarkers(
 
   useEffect(() => {
     const model = instance?.getModel();
-    if (!instance || !monaco || !model || !canCheckSyntax(language)) return;
+    if (!instance || !monaco || !model || !canCheckSyntax(language)) {
+      return;
+    }
 
     let timer: ReturnType<typeof setTimeout> | undefined;
     // Parsing is async (the grammar loads on first use), so a slow answer for an
@@ -33,7 +35,9 @@ export function useSyntaxMarkers(
     const check = async () => {
       const version = ++latest;
       const problems = await findSyntaxProblems(language, model.getValue());
-      if (disposed || version !== latest) return;
+      if (disposed || version !== latest) {
+        return;
+      }
 
       monaco.editor.setModelMarkers(
         model,

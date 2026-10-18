@@ -1030,7 +1030,9 @@ function panes() {
     document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
     (el) => page.elementLocator(el),
   );
-  if (!theory || !workspace) throw new Error("the player has no panes");
+  if (!theory || !workspace) {
+    throw new Error("the player has no panes");
+  }
   return { theory, workspace };
 }
 function paneWidths() {
@@ -1174,7 +1176,9 @@ function streamedAnswer(chunks: string[]) {
   const encoder = new TextEncoder();
   const body = new ReadableStream({
     start(controller) {
-      for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+      for (const chunk of chunks) {
+        controller.enqueue(encoder.encode(chunk));
+      }
       controller.close();
     },
   });

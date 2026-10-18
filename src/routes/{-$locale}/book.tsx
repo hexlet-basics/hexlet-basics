@@ -36,7 +36,9 @@ const downloadHref: DownloadBookData["url"] = "/api/book/download";
 // ru suffix only, so `/book` and `/es/book` are not pages at all.
 export const Route = createFileRoute("/{-$locale}/book")({
   beforeLoad: ({ params }) => {
-    if (params.locale !== "ru") throw notFound();
+    if (params.locale !== "ru") {
+      throw notFound();
+    }
   },
   loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the description cut to 160 characters as

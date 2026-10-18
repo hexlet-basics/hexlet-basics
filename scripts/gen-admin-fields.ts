@@ -69,7 +69,9 @@ const spec = parse(readFileSync(specPath, "utf8")) as OpenApi;
 // Start from an empty directory so a resource dropped from the list above does
 // not leave its module behind.
 mkdirSync(outDir, { recursive: true });
-for (const file of readdirSync(outDir)) rmSync(join(outDir, file));
+for (const file of readdirSync(outDir)) {
+  rmSync(join(outDir, file));
+}
 
 for (const config of resources) {
   writeFileSync(

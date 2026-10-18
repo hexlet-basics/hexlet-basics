@@ -5,10 +5,14 @@ import { isLocale, type Locale } from "@/lib/i18n";
 // First app-supported locale in Accept-Language (region stripped), mirroring
 // legacy `locale_from_header`.
 function localeFromAcceptLanguage(header: string | undefined): Locale | undefined {
-  if (!header) return undefined;
+  if (!header) {
+    return undefined;
+  }
   for (const part of header.split(",")) {
     const tag = part.split(";")[0]?.trim().split("-")[0];
-    if (tag && isLocale(tag)) return tag;
+    if (tag && isLocale(tag)) {
+      return tag;
+    }
   }
   return undefined;
 }

@@ -65,7 +65,9 @@ function parserFor(language: string): Promise<Parser> {
   if (!parser) {
     parser = (async () => {
       const loadGrammar = grammars[language];
-      if (!loadGrammar) throw new Error(`no grammar for ${language}`);
+      if (!loadGrammar) {
+        throw new Error(`no grammar for ${language}`);
+      }
 
       runtime ??= loadRuntime();
       const [{ Parser: ParserClass, Language: LanguageClass }, grammar] = await Promise.all([
@@ -76,7 +78,9 @@ function parserFor(language: string): Promise<Parser> {
       // Fetched here and handed over as bytes: given a URL, the library first sniffs
       // `process.versions.node`, which throws wherever a `process` stub lacks `versions`.
       const response = await fetch(grammar.default);
-      if (!response.ok) throw new Error(`grammar ${language}: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`grammar ${language}: ${response.status}`);
+      }
       created.setLanguage(await LanguageClass.load(new Uint8Array(await response.arrayBuffer())));
       return created;
     })();
@@ -90,7 +94,9 @@ function parserFor(language: string): Promise<Parser> {
 // The syntax errors in `code`, or none when the language has no grammar or the
 // grammar could not be loaded — the editor works the same without the hints.
 export async function findSyntaxProblems(language: string, code: string): Promise<SyntaxProblem[]> {
-  if (!canCheckSyntax(language)) return [];
+  if (!canCheckSyntax(language)) {
+    return [];
+  }
 
   let parser: Parser;
   try {
@@ -100,7 +106,9 @@ export async function findSyntaxProblems(language: string, code: string): Promis
   }
 
   const tree = parser.parse(code);
-  if (!tree) return [];
+  if (!tree) {
+    return [];
+  }
 
   try {
     const problems: SyntaxProblem[] = [];
@@ -114,7 +122,9 @@ export async function findSyntaxProblems(language: string, code: string): Promis
 // Walks only the branches that contain an error, and stops at the first error node
 // on each: what is inside an ERROR node is the parser's own guesswork.
 function collect(node: Node, problems: SyntaxProblem[]): void {
-  if (problems.length >= maxProblems || !node.hasError) return;
+  if (problems.length >= maxProblems || !node.hasError) {
+    return;
+  }
 
   if (node.isMissing) {
     problems.push(toProblem("missing", node));
@@ -122,7 +132,9 @@ function collect(node: Node, problems: SyntaxProblem[]): void {
     problems.push(toProblem("unexpected", node));
   } else {
     for (const child of node.children) {
-      if (child) collect(child, problems);
+      if (child) {
+        collect(child, problems);
+      }
     }
   }
 }
@@ -133,7 +145,9 @@ function toProblem(kind: SyntaxProblem["kind"], node: Node): SyntaxProblem {
 
   // An ERROR node can swallow the rest of the file, which as one red block hides
   // the code under it: mark the line it starts on.
-  if (end.row !== start.row) end = { row: start.row, column: Number.MAX_SAFE_INTEGER };
+  if (end.row !== start.row) {
+    end = { row: start.row, column: Number.MAX_SAFE_INTEGER };
+  }
 
   // A missing token has no width, and monaco draws nothing for an empty range.
   const endColumn = end.column === start.column ? end.column + 1 : end.column;

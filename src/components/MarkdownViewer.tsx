@@ -47,9 +47,13 @@ function createDirectivePlugin(components: DirectiveComponents) {
         if (isDirective(node)) {
           const componentKey = `::${node.name}`;
           const component = components[componentKey];
-          if (!component) return;
+          if (!component) {
+            return;
+          }
 
-          if (!node.data) node.data = {};
+          if (!node.data) {
+            node.data = {};
+          }
           const data = node.data;
           data.hName = componentKey;
           data.hProperties = node.attributes || {};

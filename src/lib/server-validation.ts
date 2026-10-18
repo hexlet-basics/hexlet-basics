@@ -6,7 +6,9 @@ import { isApiError } from "@/lib/api-error";
 // rules the Zod schema cannot express (an email already taken). Parsing it with
 // the generated `zProblemDetails` keeps this in step with the contract.
 function validationErrors(error: unknown): Record<string, string[]> | undefined {
-  if (!isApiError(error, 422)) return undefined;
+  if (!isApiError(error, 422)) {
+    return undefined;
+  }
   const parsed = zProblemDetails.safeParse(error.body);
   return parsed.success ? parsed.data.errors : undefined;
 }
@@ -26,7 +28,9 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
       await submit(value);
     } catch (error) {
       const errors = validationErrors(error);
-      if (!errors) return undefined;
+      if (!errors) {
+        return undefined;
+      }
       return {
         fields: Object.fromEntries(
           Object.entries(errors).map(([field, messages]) => [field, messages.join(", ")]),

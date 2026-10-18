@@ -50,7 +50,9 @@ export interface ResourceDescriptors {
 
 function schemaNamed(spec: OpenApi, name: string): Schema {
   const schema = spec.components.schemas[name];
-  if (!schema) throw new Error(`schema ${name} is not in the OpenAPI document`);
+  if (!schema) {
+    throw new Error(`schema ${name} is not in the OpenAPI document`);
+  }
   return schema;
 }
 
@@ -77,11 +79,21 @@ export function snakeCase(name: string): string {
 }
 
 function kindOf(shape: Schema): FieldKind | undefined {
-  if (shape.enum) return "select";
-  if (shape.type === "string") return shape.format === "date-time" ? "datetime" : "text";
-  if (shape.type === "boolean") return "boolean";
-  if (shape.type === "integer" || shape.type === "number") return "number";
-  if (shape.type === "array" && shape.items?.type && !shape.items.enum) return "multiselect";
+  if (shape.enum) {
+    return "select";
+  }
+  if (shape.type === "string") {
+    return shape.format === "date-time" ? "datetime" : "text";
+  }
+  if (shape.type === "boolean") {
+    return "boolean";
+  }
+  if (shape.type === "integer" || shape.type === "number") {
+    return "number";
+  }
+  if (shape.type === "array" && shape.items?.type && !shape.items.enum) {
+    return "multiselect";
+  }
   return undefined;
 }
 
@@ -97,7 +109,9 @@ function labelKeys(config: ResourceConfig, field: string) {
 function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, schema: Schema) {
   const { shape, nullable } = resolve(spec, schema);
   const kind = kindOf(shape);
-  if (!kind) return undefined;
+  if (!kind) {
+    return undefined;
+  }
   const { labelKey, enumKey } = labelKeys(config, name);
   const enumValues: EnumValueDescriptor[] | undefined = shape.enum?.map((value) => ({
     value,

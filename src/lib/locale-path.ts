@@ -20,13 +20,17 @@ export function localeOf(pathname: string): Locale {
 // The path without its locale prefix, always starting with `/`.
 export function stripLocale(pathname: string): string {
   const prefix = prefixOf(pathname);
-  if (!prefix) return pathname;
+  if (!prefix) {
+    return pathname;
+  }
   return pathname.slice(pathname.indexOf(prefix) + prefix.length) || "/";
 }
 
 // The same page in another locale (the language switcher's link target).
 export function localize(pathname: string, locale: Locale): string {
   const base = stripLocale(pathname);
-  if (locale === DEFAULT_LOCALE) return base;
+  if (locale === DEFAULT_LOCALE) {
+    return base;
+  }
   return `/${locale}${base === "/" ? "" : base}`;
 }

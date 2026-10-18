@@ -24,7 +24,7 @@ export default function CourseCatalog() {
   const isRuLocale = i18n.language === "ru";
   const { data, isPending, isError } = useQuery(listCoursesOptions());
 
-  if (isPending)
+  if (isPending) {
     return (
       <Container my="xl">
         <Skeleton h={40} w="40%" mb="xl" />
@@ -35,13 +35,15 @@ export default function CourseCatalog() {
         </SimpleGrid>
       </Container>
     );
+  }
 
-  if (isError || !data)
+  if (isError || !data) {
     return (
       <Center h="100vh">
         <Text c="red">Failed to load courses</Text>
       </Center>
     );
+  }
 
   return (
     <Container size="lg" my="xl">

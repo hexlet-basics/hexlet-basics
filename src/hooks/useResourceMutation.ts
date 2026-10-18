@@ -47,7 +47,9 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
       onDone?.(data, variables);
     },
     onError: (error) => {
-      if (fieldErrors && isValidationError(error)) return;
+      if (fieldErrors && isValidationError(error)) {
+        return;
+      }
       notifications.show({ color: "red", message: errorMessage });
     },
   });

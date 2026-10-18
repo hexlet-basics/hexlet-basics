@@ -27,7 +27,9 @@ export const Route = createFileRoute("/{-$locale}")({
     const locale: Locale = prefix ?? DEFAULT_LOCALE;
     await context.i18n.changeLanguage(locale);
     // The root `/` remembers the locale itself, after deciding whether to redirect.
-    if (prefix !== undefined || location.pathname !== "/") rememberLocale(locale);
+    if (prefix !== undefined || location.pathname !== "/") {
+      rememberLocale(locale);
+    }
 
     return { locale };
   },

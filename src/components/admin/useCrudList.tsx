@@ -139,10 +139,10 @@ export function useCrudList<
   };
   const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
     const next = typeof updater === "function" ? updater(pagination) : updater;
-    void setSearch({
-      page: next.pageIndex + 1,
-      perPage: next.pageSize !== pagination.pageSize ? next.pageSize : search.perPage,
-    });
+    setPageIndex(next.pageIndex);
+    if (next.pageSize !== pagination.pageSize) {
+      setChosenSize(next.pageSize);
+    }
   };
 
   // Typed through the page, not read off it: a property read on a type parameter

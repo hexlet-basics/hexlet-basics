@@ -177,7 +177,9 @@ function AssistantChat({
       void queryClient.invalidateQueries({ queryKey: historyKey });
     },
     onError: (failure) => {
-      if (isQuotaExceeded(failure)) return;
+      if (isQuotaExceeded(failure)) {
+        return;
+      }
       notifications.show({ message: t(($) => $.common.errors.network) });
     },
   });
@@ -189,7 +191,9 @@ function AssistantChat({
   const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const text = input.trim();
-    if (!text || busy) return;
+    if (!text || busy) {
+      return;
+    }
 
     // The editor state travels with each question, read at the moment it is
     // asked rather than when the chat was created.
@@ -296,7 +300,9 @@ function assistantTransport(lessonId: number) {
       } catch (error) {
         // Every status is handed to the transport, which reports a refusal
         // (the quota's 429 among them) as an APICallError with its status.
-        if (isApiError(error)) return new Response(null, { status: error.status });
+        if (isApiError(error)) {
+          return new Response(null, { status: error.status });
+        }
         throw error;
       }
     },

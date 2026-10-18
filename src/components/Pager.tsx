@@ -21,7 +21,9 @@ export default function Pager({
   perPage: number;
 }) {
   const last = pageCount(total, perPage);
-  if (last <= 1) return null;
+  if (last <= 1) {
+    return null;
+  }
 
   // Page one is the bare URL, as legacy canonicalised the list.
   const linkTo = (target: number) => ({

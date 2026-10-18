@@ -88,16 +88,22 @@ function EditorPane({
   // next move is to type. `resetCount` starts at 0, which is the mount, where
   // monaco already holds the buffer it was given.
   useEffect(() => {
-    if (!instance || resetCount === 0) return;
+    if (!instance || resetCount === 0) {
+      return;
+    }
 
     instance.setValue(starterCode);
-    if (!isTouchScreen) instance.focus();
+    if (!isTouchScreen) {
+      instance.focus();
+    }
   }, [resetCount, starterCode, instance, isTouchScreen]);
 
   // Taking focus on a touch screen would open an on-screen keyboard over half
   // the exercise before the learner has read it.
   useEffect(() => {
-    if (isTouchScreen) return;
+    if (isTouchScreen) {
+      return;
+    }
 
     instance?.layout();
     instance?.focus();
