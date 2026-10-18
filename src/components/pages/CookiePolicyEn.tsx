@@ -72,12 +72,11 @@ export default function CookiePolicyEn(): ReactElement {
         cookies served may vary depending on the specific Online Properties you visit):
       </p>
 
-      <strong>Performance and functionality cookies:</strong>
+      <strong>Strictly necessary cookies:</strong>
 
       <p>
-        These cookies are used to enhance the performance and functionality of our Website but are
-        non-essential to their use. However, without these cookies, certain functionality (like
-        videos) may become unavailable.
+        These cookies are required for the Website to work and cannot be rejected. They are set only
+        by us, are HttpOnly and are not used for tracking or advertising.
       </p>
 
       <div>
@@ -85,13 +84,13 @@ export default function CookiePolicyEn(): ReactElement {
           <tbody>
             <tr>
               <td>Name:</td>
-              <td>XSRF-TOKEN</td>
+              <td>session</td>
             </tr>
             <tr>
               <td>Purpose:</td>
               <td>
-                This cookie is written to help with site security in preventing Cross-Site Request
-                Forgery attacks.
+                This cookie keeps you signed in. It holds a random identifier of your session and no
+                personal data.
               </td>
             </tr>
             <tr>
@@ -99,18 +98,34 @@ export default function CookiePolicyEn(): ReactElement {
               <td>code-basics.com</td>
             </tr>
             <tr>
-              <td>Service:</td>
+              <td>Type:</td>
+              <td>server_cookie</td>
+            </tr>
+            <tr>
+              <td>Expires in:</td>
+              <td>31 days after sign-in</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td>Name:</td>
+              <td>guest_progress</td>
+            </tr>
+            <tr>
+              <td>Purpose:</td>
               <td>
-                Advertiser's website domain{" "}
-                <Link
-                  to="/{-$locale}/pages/$id"
-                  params={{ id: "cookie_policy" }}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View Service Privacy Policy
-                </Link>
+                This cookie remembers which lessons you have completed before you sign in, so that
+                your progress is not lost. It is signed so that it cannot be altered.
               </td>
+            </tr>
+            <tr>
+              <td>Provider:</td>
+              <td>code-basics.com</td>
             </tr>
             <tr>
               <td>Type:</td>
@@ -118,7 +133,7 @@ export default function CookiePolicyEn(): ReactElement {
             </tr>
             <tr>
               <td>Expires in:</td>
-              <td>session</td>
+              <td>365 days</td>
             </tr>
           </tbody>
         </table>
