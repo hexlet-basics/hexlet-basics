@@ -68,7 +68,11 @@ func ParseID(id string) (Ref, error) {
 			return Ref{}, ErrBadID
 		}
 
-		return Ref{Type: Type(kind), Slug: rest}, nil
+		return Ref{
+			Type:       Type(kind),
+			Slug:       rest,
+			CourseSlug: "",
+		}, nil
 	case Lesson:
 		course, lesson, ok := strings.Cut(rest, "/")
 		if !ok || course == "" || lesson == "" || strings.Contains(lesson, "/") {

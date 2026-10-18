@@ -150,11 +150,31 @@ func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
 	assert.True(t, slices.IsSorted(names), "ordered by name")
 	assert.Equal(t, lo.Uniq(names), names, "each Permission once")
 	assert.Subset(t, catalog, []permissioncatalog.Permission{
-		{Name: "blog_posts.create", Kind: permissioncatalog.Write},
-		{Name: "blog_posts.delete", Kind: permissioncatalog.Write},
-		{Name: "blog_posts.read", Kind: permissioncatalog.Read},
-		{Name: "blog_posts.update", Kind: permissioncatalog.Write},
-		{Name: "banners.read", Kind: permissioncatalog.Read},
+		{
+			Name:       "blog_posts.create",
+			Kind:       permissioncatalog.Write,
+			Capability: false,
+		},
+		{
+			Name:       "blog_posts.delete",
+			Kind:       permissioncatalog.Write,
+			Capability: false,
+		},
+		{
+			Name:       "blog_posts.read",
+			Kind:       permissioncatalog.Read,
+			Capability: false,
+		},
+		{
+			Name:       "blog_posts.update",
+			Kind:       permissioncatalog.Write,
+			Capability: false,
+		},
+		{
+			Name:       "banners.read",
+			Kind:       permissioncatalog.Read,
+			Capability: false,
+		},
 	})
 }
 

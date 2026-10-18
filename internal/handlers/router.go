@@ -101,7 +101,11 @@ func StreamResponses(next http.Handler) http.Handler {
 		_ = controller.SetWriteDeadline(time.Time{})
 
 		w.Header().Set("X-Accel-Buffering", "no")
-		next.ServeHTTP(&flushingWriter{ResponseWriter: w, controller: controller}, r)
+		next.ServeHTTP(&flushingWriter{
+			ResponseWriter: w,
+			controller:     controller,
+			started:        false,
+		}, r)
 	})
 }
 

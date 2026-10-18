@@ -50,9 +50,21 @@ func addRecordAt(t *testing.T, client *ent.Client, at time.Time) *ent.AuditRecor
 	t.Helper()
 	require.NoError(t, audit.Write(t.Context(), client, audit.Entry{
 		OccurredAt: at,
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  "AdminUpdateBlogPost",
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, nil))
 
 	return client.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context())

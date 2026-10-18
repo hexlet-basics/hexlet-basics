@@ -178,7 +178,11 @@ type documentError struct {
 func (e *documentError) Error() string { return e.reason }
 
 func invalidDocument(format string, args ...any) *documentError {
-	return &documentError{status: http.StatusBadRequest, reason: fmt.Sprintf(format, args...)}
+	return &documentError{
+		status:     http.StatusBadRequest,
+		reason:     fmt.Sprintf(format, args...),
+		retryAfter: 0,
+	}
 }
 
 // documentClients resolves client ids that are URLs into client rows.
@@ -198,7 +202,15 @@ func newDocumentClients(client *http.Client, lim *limiter, db *ent.Client, now f
 		client = newGuardedClient(publicAddress, documentTimeout)
 	}
 
-	return &documentClients{client: client, limiter: lim, db: db, now: now, failures: map[string]time.Time{}}
+	return &documentClients{
+		client:   client,
+		limiter:  lim,
+		db:       db,
+		now:      now,
+		failures: map[string]time.Time{},
+		flight:   singleflight.Group{},
+		mu:       sync.Mutex{},
+	}
 }
 
 // isDocumentID reports whether a client id is the kind this file handles. Any
@@ -286,7 +298,11 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 			return nil
 		}
 	case !ent.IsNotFound(err):
-		return &documentError{status: http.StatusInternalServerError, reason: "could not load the client"}
+		return &documentError{
+			status:     http.StatusInternalServerError,
+			reason:     "could not load the client",
+			retryAfter: 0,
+		}
 	}
 
 	if d.failed(clientID, now) {
@@ -307,7 +323,11 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 			return de
 		}
 
-		return &documentError{status: http.StatusInternalServerError, reason: "could not store the client"}
+		return &documentError{
+			status:     http.StatusInternalServerError,
+			reason:     "could not store the client",
+			retryAfter: 0,
+		}
 	}
 
 	return nil

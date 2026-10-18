@@ -46,7 +46,12 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 			return next.Mutate(ctx, m)
 		}
 
-		change := Change{Entity: m.Type(), Op: opName(m.Op())}
+		change := Change{
+			Entity: m.Type(),
+			Op:     opName(m.Op()),
+			ID:     "",
+			Fields: nil,
+		}
 		secret := ent.AuditSecretFields[m.Type()]
 
 		var old map[string]any
@@ -165,12 +170,22 @@ func deletedFields(row map[string]any, secret []string) []FieldChange {
 		}
 
 		if slices.Contains(secret, name) {
-			out = append(out, FieldChange{Name: name, Secret: true})
+			out = append(out, FieldChange{
+				Name:   name,
+				Secret: true,
+				Old:    nil,
+				New:    nil,
+			})
 
 			continue
 		}
 
-		out = append(out, FieldChange{Name: name, Old: value})
+		out = append(out, FieldChange{
+			Name:   name,
+			Old:    value,
+			New:    nil,
+			Secret: false,
+		})
 	}
 
 	return out
@@ -199,7 +214,12 @@ func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldCh
 				continue
 			}
 
-			out = append(out, FieldChange{Name: name, Secret: true})
+			out = append(out, FieldChange{
+				Name:   name,
+				Secret: true,
+				Old:    nil,
+				New:    nil,
+			})
 
 			continue
 		}
@@ -208,7 +228,12 @@ func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldCh
 			continue
 		}
 
-		fc := FieldChange{Name: name}
+		fc := FieldChange{
+			Name:   name,
+			Old:    nil,
+			New:    nil,
+			Secret: false,
+		}
 		if old != nil {
 			fc.Old = toJSON(oldValue)
 		}

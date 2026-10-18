@@ -58,7 +58,10 @@ func TestMethodNotAllowedHandlerAnswersOptionsWithNoContent(t *testing.T) {
 func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
 	t.Parallel()
 	handler := testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t))
-	client := &goneClient{}
+	client := &goneClient{
+		header: nil,
+		status: 0,
+	}
 
 	assert.NotPanics(t, func() {
 		handler.Write(t.Context(), client, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil), io.ErrUnexpectedEOF)
@@ -90,7 +93,10 @@ func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 	assert.True(t, recorder.Flushed, "the chunk is on the wire, not buffered")
 	assert.Equal(t, "no", recorder.Header().Get("X-Accel-Buffering"), "nginx must not buffer it either")
 
-	serve(&goneClient{})
+	serve(&goneClient{
+		header: nil,
+		status: 0,
+	})
 	require.ErrorIs(t, writeErr, errGone)
 
 	serve(flakyFlusher{httptest.NewRecorder()})

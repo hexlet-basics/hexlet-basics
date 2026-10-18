@@ -26,7 +26,13 @@ func (s *Server) SearchCatalogue(ctx context.Context, params api.SearchCatalogue
 
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]search.Hit, int, error) {
-			return s.searcher.Search(ctx, search.Query{Text: params.Q, Locale: locale, Types: types, Page: page})
+			return s.searcher.Search(ctx, search.Query{
+				Text:         params.Q,
+				Locale:       locale,
+				Types:        types,
+				Page:         page,
+				Unrestricted: false,
+			})
 		},
 		func(hits []search.Hit) []api.SearchResult {
 			results := make([]api.SearchResult, len(hits))

@@ -318,7 +318,9 @@ func TestGetCourseIsNotFoundForAnArchivedPageWithNowhereToGo(t *testing.T) {
 // progressCookie is a visitor's whole state: the lessons they finished in the
 // JavaScript course.
 func progressCookie(lessonSlugs ...string) progress.GuestProgress {
-	guest := progress.GuestProgress{}
+	guest := progress.GuestProgress{
+		Entries: nil,
+	}
 	for _, slug := range lessonSlugs {
 		guest = guest.Record(jsCourseSlug, slug)
 	}

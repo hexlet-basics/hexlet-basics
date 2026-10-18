@@ -133,7 +133,10 @@ func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
-		Body:     &failAfterFirstRead{data: data},
+		Body: &failAfterFirstRead{
+			data: data,
+			read: false,
+		},
 	})
 
 	require.Error(t, err)
@@ -197,8 +200,9 @@ func TestDownloadURLFallsBackToTheReadRoute(t *testing.T) {
 	store, _, _ := newStore(t)
 
 	got, err := store.DownloadURL(context.Background(), "a b.pdf", assetstore.Delivery{
-		ContentType: "application/pdf",
-		Expiry:      time.Minute,
+		ContentType:        "application/pdf",
+		Expiry:             time.Minute,
+		ContentDisposition: "",
 	})
 
 	require.NoError(t, err)
@@ -239,7 +243,11 @@ func TestDownloadURLReportsABucketThatFails(t *testing.T) {
 	store, _, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
 
-	_, err := store.DownloadURL(context.Background(), "book.pdf", assetstore.Delivery{Expiry: time.Minute})
+	_, err := store.DownloadURL(context.Background(), "book.pdf", assetstore.Delivery{
+		Expiry:             time.Minute,
+		ContentType:        "",
+		ContentDisposition: "",
+	})
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "sign download url")
@@ -252,7 +260,10 @@ func TestPutReportsAnUnreadableUpload(t *testing.T) {
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
-		Body:     &failAfterFirstRead{read: true},
+		Body: &failAfterFirstRead{
+			read: true,
+			data: nil,
+		},
 	})
 
 	require.Error(t, err)

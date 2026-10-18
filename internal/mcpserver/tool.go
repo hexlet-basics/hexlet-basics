@@ -91,7 +91,11 @@ func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context
 		OutputSchema: withTruncation(outputShape(spec.output)),
 		Annotations:  annotations(spec.class),
 	}
-	s.note(tool, toolNeeds{scope: spec.scope})
+	s.note(tool, toolNeeds{
+		scope:        spec.scope,
+		permission:   "",
+		capabilities: nil,
+	})
 	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		userID, clientID, denied := s.admit(req, spec.scope, spec.class)
 		if denied != nil {

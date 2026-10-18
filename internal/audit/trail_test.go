@@ -21,7 +21,15 @@ import (
 func TestTheWindowDefaultsToThirtyDaysBackFromNow(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 
-	from, to, err := audit.Filter{}.Window(now)
+	from, to, err := audit.Filter{
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+		From:        nil,
+		To:          nil,
+	}.Window(now)
 
 	require.NoError(t, err)
 	assert.Equal(t, now, to)
@@ -32,7 +40,15 @@ func TestTheWindowCountsBackFromAGivenEnd(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 	end := now.Add(-100 * 24 * time.Hour)
 
-	from, to, err := audit.Filter{To: &end}.Window(now)
+	from, to, err := audit.Filter{
+		To:          &end,
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+		From:        nil,
+	}.Window(now)
 
 	require.NoError(t, err)
 	assert.Equal(t, end, to)
@@ -42,21 +58,61 @@ func TestTheWindowCountsBackFromAGivenEnd(t *testing.T) {
 func TestTheWindowIsRefusedWhenReversedOrTooWide(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 
-	_, _, err := audit.Filter{From: new(now), To: new(now.Add(-time.Hour))}.Window(now)
+	_, _, err := audit.Filter{
+		From:        new(now),
+		To:          new(now.Add(-time.Hour)),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+	}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowReversed)
 
-	_, _, err = audit.Filter{From: new(now), To: new(now)}.Window(now)
+	_, _, err = audit.Filter{
+		From:        new(now),
+		To:          new(now),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+	}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowReversed, "an empty window reads nothing")
 
-	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow - time.Second)), To: new(now)}.Window(now)
+	_, _, err = audit.Filter{
+		From:        new(now.Add(-audit.MaxWindow - time.Second)),
+		To:          new(now),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+	}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowTooWide)
 
-	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow)), To: new(now)}.Window(now)
+	_, _, err = audit.Filter{
+		From:        new(now.Add(-audit.MaxWindow)),
+		To:          new(now),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
+	}.Window(now)
 	assert.NoError(t, err, "exactly the maximum is allowed")
 }
 
 func TestAnEntityIdNeedsItsType(t *testing.T) {
-	_, err := audit.Filter{EntityID: new("5")}.Query(nil, time.Now())
+	_, err := audit.Filter{
+		EntityID:    new("5"),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		From:        nil,
+		To:          nil,
+	}.Query(nil, time.Now())
 
 	require.ErrorIs(t, err, audit.ErrEntityIDWithoutType)
 }
@@ -120,20 +176,47 @@ func TestAFilteredQueryReadsOnlyThePartitionsOfItsWindow(t *testing.T) {
 		require.NoError(t, partitions.EnsureAhead(t.Context(), month))
 	}
 
-	rec := &recorder{tx: tx}
+	rec := &recorder{
+		tx:      tx,
+		queries: nil,
+	}
 	client := ent.NewClient(ent.Driver(entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: rec})))
 	window := audit.Filter{
-		From: new(time.Date(2024, 9, 5, 0, 0, 0, 0, time.UTC)),
-		To:   new(time.Date(2024, 9, 20, 0, 0, 0, 0, time.UTC)),
+		From:        new(time.Date(2024, 9, 5, 0, 0, 0, 0, time.UTC)),
+		To:          new(time.Date(2024, 9, 20, 0, 0, 0, 0, time.UTC)),
+		ActorUserID: nil,
+		Channel:     nil,
+		Operation:   nil,
+		EntityType:  nil,
+		EntityID:    nil,
 	}
 
 	filters := map[string]audit.Filter{
 		"window only": window,
-		"by actor":    {From: window.From, To: window.To, ActorUserID: new(7)},
-		"by entity":   {From: window.From, To: window.To, EntityType: new("BlogPost"), EntityID: new("3")},
+		"by actor": {
+			From:        window.From,
+			To:          window.To,
+			ActorUserID: new(7),
+			Channel:     nil,
+			Operation:   nil,
+			EntityType:  nil,
+			EntityID:    nil,
+		},
+		"by entity": {
+			From:        window.From,
+			To:          window.To,
+			EntityType:  new("BlogPost"),
+			EntityID:    new("3"),
+			ActorUserID: nil,
+			Channel:     nil,
+			Operation:   nil,
+		},
 		"by channel and operation": {
 			From: window.From, To: window.To,
 			Channel: new(audit.ChannelMCP), Operation: new("AdminUpdateBlogPost"),
+			ActorUserID: nil,
+			EntityType:  nil,
+			EntityID:    nil,
 		},
 	}
 	for name, filter := range filters {
@@ -160,7 +243,10 @@ func TestAFilteredQueryReadsOnlyThePartitionsOfItsWindow(t *testing.T) {
 // is the cost the window exists to prevent.
 func TestWithoutABoundEveryPartitionIsRead(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
-	rec := &recorder{tx: tx}
+	rec := &recorder{
+		tx:      tx,
+		queries: nil,
+	}
 	unbounded := ent.NewClient(ent.Driver(entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: rec})))
 
 	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), time.Date(2024, 10, 17, 0, 0, 0, 0, time.UTC)))

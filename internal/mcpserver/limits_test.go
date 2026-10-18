@@ -18,10 +18,13 @@ import (
 func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) {
 	now := time.Now()
 	m := newMeter(Limits{
-		RateWindow: time.Minute,
-		User:       Rates{Catalogue: 3, Personal: 2, Write: 1},
-		Client:     Rates{Catalogue: 6, Personal: 5, Write: 4},
-		Now:        func() time.Time { return now },
+		RateWindow:       time.Minute,
+		User:             Rates{Catalogue: 3, Personal: 2, Write: 1},
+		Client:           Rates{Catalogue: 6, Personal: 5, Write: 4},
+		Now:              func() time.Time { return now },
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
 	}.withDefaults())
 
 	for class, userLimit := range map[Class]int{ClassCatalogue: 3, ClassPersonal: 2, ClassWrite: 1} {
@@ -44,9 +47,13 @@ func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) 
 func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 	now := time.Now()
 	m := newMeter(Limits{
-		User:   Rates{Catalogue: 100, Personal: 100, Write: 100},
-		Client: Rates{Catalogue: 100, Personal: 100, Write: 2},
-		Now:    func() time.Time { return now },
+		User:             Rates{Catalogue: 100, Personal: 100, Write: 100},
+		Client:           Rates{Catalogue: 100, Personal: 100, Write: 2},
+		Now:              func() time.Time { return now },
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
 	}.withDefaults())
 
 	first, _ := m.allow(ClassWrite, 1, "app")
@@ -74,7 +81,23 @@ func TestDefaultLimitsAreStricterForPersonalReadsAndWrites(t *testing.T) {
 		assert.Greater(t, r.Personal, r.Write)
 	}
 
-	filled := Limits{MaxPageSize: 3, User: Rates{Write: 1}}.withDefaults()
+	filled := Limits{
+		MaxPageSize: 3,
+		User: Rates{
+			Write:     1,
+			Catalogue: 0,
+			Personal:  0,
+		},
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}.withDefaults()
 	assert.Equal(t, 3, filled.MaxPageSize, "a value that is set stays")
 	assert.Equal(t, 1, filled.User.Write)
 	assert.Equal(t, d.User.Catalogue, filled.User.Catalogue, "a value that is not set takes its default")
@@ -89,7 +112,56 @@ func requestFor(userID, client string, scopes ...string) *mcp.CallToolRequest {
 
 func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 	now := time.Now()
-	s := &Server{limits: Limits{Now: func() time.Time { return now }}.withDefaults()}
+	s := &Server{
+		limits: Limits{
+			Now:              func() time.Time { return now },
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+		}.withDefaults(),
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}
 	s.limits.User = Rates{Catalogue: 3, Personal: 2, Write: 1}
 	s.meter = newMeter(s.limits)
 	req := requestFor("7", "app", oauthserver.ScopeCatalogRead)
@@ -114,7 +186,40 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 }
 
 func TestAdmitRefusesAMissingScopeOrSubjectBeforeCounting(t *testing.T) {
-	s := &Server{limits: DefaultLimits()}
+	s := &Server{
+		limits: DefaultLimits(),
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}
 	s.meter = newMeter(s.limits)
 
 	for name, req := range map[string]*mcp.CallToolRequest{

@@ -44,6 +44,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			result: progress.ResultPassed,
 			passed: true,
 			output: "1 test, 0 failures",
+			status: 0,
 		},
 		{
 			name:   "a failing submission, with what it printed",
@@ -51,6 +52,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			result: progress.ResultFailed,
 			status: 1,
 			output: "expected 3, got 2",
+			passed: false,
 		},
 		{
 			// What GNU `timeout` reports when it kills a non-terminating program.
@@ -58,6 +60,8 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			script: "echo 'looping'; exit 124",
 			result: progress.ResultFailedInfinity,
 			status: 124,
+			passed: false,
+			output: "",
 		},
 	}
 
@@ -160,6 +164,8 @@ func runScript(t *testing.T, runner *Docker, script string) (progress.Outcome, e
 		TestDir:      "/submission",
 		ExerciseFile: "/submission/solution.txt",
 		Code:         "the learner's code\n",
+		VersionID:    0,
+		UserID:       0,
 	}
 
 	status, output, err := runner.run(t.Context(), submission, []string{"sh", "-c", script})
@@ -203,7 +209,14 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
 	runner := dockerRunner(t)
 	runner.opts.ImageTag = "3"
-	submission := progress.Submission{Image: "alpine", VersionID: 20260812}
+	submission := progress.Submission{
+		Image:        "alpine",
+		VersionID:    20260812,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	}
 	pinned, _ := runner.imageRefs(submission)
 
 	t.Cleanup(func() {

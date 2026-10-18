@@ -189,7 +189,11 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 // (mcp.read or mcp.write by kind, mcp.manage where declared) and the operation's
 // own Permission when it is one (the audit trail's audit.read).
 func adminNeeds(op *operation) toolNeeds {
-	needs := toolNeeds{scope: oauthserver.ScopeAdmin}
+	needs := toolNeeds{
+		scope:        oauthserver.ScopeAdmin,
+		permission:   "",
+		capabilities: nil,
+	}
 	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs.permission = requirement.Permission
 		if permissioncatalog.IsCapability(requirement.Permission) {
@@ -440,7 +444,11 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 // id of the client the token was issued to, and the access token's own id (not
 // the bearer, which is that id encrypted).
 func sourceOf(info *auth.TokenInfo) audit.Source {
-	source := audit.Source{Channel: audit.ChannelMCP}
+	source := audit.Source{
+		Channel:        audit.ChannelMCP,
+		ConnectedAppID: nil,
+		TokenID:        nil,
+	}
 	if id, ok := info.Extra[extraConnectedAppID].(int); ok && id > 0 {
 		source.ConnectedAppID = &id
 	}
@@ -640,7 +648,11 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 	}
 
 	if op.Response == nil || len(body) == 0 {
-		return s.finish(op.ID, result{text: op.ID + ": done", data: map[string]any{}})
+		return s.finish(op.ID, result{
+			text: op.ID + ": done",
+			data: map[string]any{},
+			list: nil,
+		})
 	}
 
 	var decoded any
@@ -652,5 +664,9 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 		decoded = map[string]any{"result": decoded}
 	}
 
-	return s.finish(op.ID, result{text: fmt.Sprintf("%s: %s", op.ID, http.StatusText(res.StatusCode)), data: decoded})
+	return s.finish(op.ID, result{
+		text: fmt.Sprintf("%s: %s", op.ID, http.StatusText(res.StatusCode)),
+		data: decoded,
+		list: nil,
+	})
 }

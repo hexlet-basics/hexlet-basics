@@ -24,7 +24,12 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 		expected string
 		locale   string
 	}{
-		{name: "missing header", expected: "Wrong email or password", locale: "en"},
+		{
+			name:     "missing header",
+			expected: "Wrong email or password",
+			locale:   "en",
+			header:   "",
+		},
 		{name: "Russian region", header: "ru-RU", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},
 		{name: "Spanish", header: "es", expected: "Correo electrónico o contraseña incorrectos", locale: "es"},
 		{name: "quality priority", header: "es;q=0.7, ru-RU;q=0.9", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},

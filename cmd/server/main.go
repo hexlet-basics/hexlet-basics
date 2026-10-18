@@ -54,10 +54,11 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	slog.SetDefault(dependencies.Logger)
 
 	app := application{
-		http:     dependencies.HTTPServer,
-		httpAddr: dependencies.HTTPServer.Addr,
-		logger:   dependencies.Logger,
-		drain:    dependencies.Probes.Drain,
+		http:            dependencies.HTTPServer,
+		httpAddr:        dependencies.HTTPServer.Addr,
+		logger:          dependencies.Logger,
+		drain:           dependencies.Probes.Drain,
+		shutdownTimeout: 0,
 	}
 	runtimeErr := app.run(signalCtx, stopSignals)
 

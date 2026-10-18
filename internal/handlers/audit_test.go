@@ -52,7 +52,12 @@ func fieldOf(changes []audit.Change, name string) (audit.FieldChange, bool) {
 		}
 	}
 
-	return audit.FieldChange{}, false
+	return audit.FieldChange{
+		Name:   "",
+		Old:    nil,
+		New:    nil,
+		Secret: false,
+	}, false
 }
 
 // blogInput is a complete input: the contract requires every field, null or not.

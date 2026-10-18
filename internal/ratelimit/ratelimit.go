@@ -43,7 +43,12 @@ type keyWindow struct {
 // New builds a limiter whose counters reset window after their first attempt.
 // now is the clock, injected so a test can move time without sleeping.
 func New(window time.Duration, now func() time.Time) *Limiter {
-	return &Limiter{window: window, now: now, windows: map[string]*keyWindow{}}
+	return &Limiter{
+		window:  window,
+		now:     now,
+		windows: map[string]*keyWindow{},
+		mu:      sync.Mutex{},
+	}
 }
 
 // Allow spends one attempt of every charge, or none: the attempt is refused as
@@ -86,7 +91,10 @@ func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
 
 	for i, c := range charges {
 		if current[i] == nil {
-			current[i] = &keyWindow{start: now}
+			current[i] = &keyWindow{
+				start: now,
+				count: 0,
+			}
 			l.windows[c.Key] = current[i]
 		}
 

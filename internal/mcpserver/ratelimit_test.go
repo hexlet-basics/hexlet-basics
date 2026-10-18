@@ -44,7 +44,20 @@ func accepted(t *testing.T, session *mcp.ClientSession) {
 func TestCallerOverTheUserLimitIsToldWhenToRetryAndGetsItsBudgetBack(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
 		RateWindow: 90 * time.Second,
-		User:       mcpserver.Rates{Catalogue: 2},
+		User: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
@@ -65,7 +78,23 @@ func TestCallerOverTheUserLimitIsToldWhenToRetryAndGetsItsBudgetBack(t *testing.
 }
 
 func TestOneUsersBudgetIsNotAnotherUsers(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Catalogue: 1}}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	first := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 	second := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
@@ -77,7 +106,23 @@ func TestOneUsersBudgetIsNotAnotherUsers(t *testing.T) {
 }
 
 func TestOneConnectedAppsBudgetIsNotAnotherAppsAndIsSharedByItsUsers(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{Client: mcpserver.Rates{Catalogue: 2}}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		Client: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	// Alice and Bob through the app Connect registers, Alice also through another.
 	aliceHere := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 	bobHere := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob(), oauthserver.ScopeCatalogRead).AccessToken, russian)
@@ -95,8 +140,21 @@ func TestOneConnectedAppsBudgetIsNotAnotherAppsAndIsSharedByItsUsers(t *testing.
 
 func TestCallRefusedForTheAppsLimitDoesNotSpendTheUsersBudget(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User:   mcpserver.Rates{Catalogue: 2},
-		Client: mcpserver.Rates{Catalogue: 1},
+		User: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Now:              nil,
 	}))
 	here := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 	there := o.MCPClient(o.ConnectAs(secondClient, alice(), oauthserver.ScopeCatalogRead).AccessToken, russian)
@@ -111,7 +169,23 @@ func TestCallRefusedForTheAppsLimitDoesNotSpendTheUsersBudget(t *testing.T) {
 }
 
 func TestCallRefusedForItsScopeSpendsNoBudget(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Catalogue: 1}}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	withoutScope := connect(t, o, alice(), oauthserver.ScopeProgressRead)
 	withScope := o.MCPClient(o.ConnectAs(secondClient, alice(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
@@ -139,14 +213,42 @@ func (c slowCatalogue) ListCourses(ctx context.Context) ([]api.CourseCatalogItem
 }
 
 func TestTimeoutCancelsTheHandlersContext(t *testing.T) {
-	catalogue := slowCatalogue{cancelled: make(chan error, 1)}
+	catalogue := slowCatalogue{
+		cancelled: make(chan error, 1),
+		Catalogue: nil,
+	}
 	server, err := mcpserver.New(mcpserver.Deps{
 		Verifier: verifier{token: oauthserver.Token{
 			UserID: alice(), ClientID: "c", Scopes: []string{oauthserver.ScopeCatalogRead}, Audience: []string{testsupport.MCPEndpoint},
-		}},
+			ID:             "",
+			ConnectedAppID: 0,
+		},
+			err: nil,
+		},
 		Catalogue: catalogue,
 		Issuer:    testsupport.OAuthIssuer,
-		Limits:    mcpserver.Limits{ToolTimeout: 50 * time.Millisecond},
+		Limits: mcpserver.Limits{
+			ToolTimeout:      50 * time.Millisecond,
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			RateWindow:       0,
+			User: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		API:              nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		HeldCapabilities: nil,
 	})
 	require.NoError(t, err)
 

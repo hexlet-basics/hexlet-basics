@@ -26,7 +26,30 @@ func (noVerifier) Resource() string { return "https://inspect.test/mcp" }
 func ToolScopes(t *testing.T) map[string]string {
 	t.Helper()
 
-	s, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test"})
+	s, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test",
+		Catalogue:        nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		Limits: Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		HeldCapabilities: nil,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}

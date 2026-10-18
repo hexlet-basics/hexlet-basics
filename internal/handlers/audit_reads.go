@@ -96,7 +96,10 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 func touched(response any) (audit.Reads, bool) {
 	raw, err := json.Marshal(response)
 	if err != nil {
-		return audit.Reads{}, false
+		return audit.Reads{
+			Count: 0,
+			IDs:   nil,
+		}, false
 	}
 
 	var value any
@@ -105,7 +108,10 @@ func touched(response any) (audit.Reads, bool) {
 	decoder.UseNumber()
 
 	if err := decoder.Decode(&value); err != nil {
-		return audit.Reads{}, false
+		return audit.Reads{
+			Count: 0,
+			IDs:   nil,
+		}, false
 	}
 
 	switch v := value.(type) {
@@ -121,11 +127,17 @@ func touched(response any) (audit.Reads, bool) {
 		}
 	}
 
-	return audit.Reads{}, false
+	return audit.Reads{
+		Count: 0,
+		IDs:   nil,
+	}, false
 }
 
 func readsOf(rows []any) audit.Reads {
-	reads := audit.Reads{Count: len(rows)}
+	reads := audit.Reads{
+		Count: len(rows),
+		IDs:   nil,
+	}
 	for _, row := range rows {
 		if len(reads.IDs) == audit.MaxReadIDs {
 			break

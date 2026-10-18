@@ -258,7 +258,21 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 // caller that exhausted one can still read the other.
 func TestLearnerToolsAreLimitedAsPersonalDataReads(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User: mcpserver.Rates{Personal: 1, Catalogue: 5},
+		User: mcpserver.Rates{
+			Personal:  1,
+			Catalogue: 5,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
 	session := o.MCPClient(o.Connect(alice(), oauthserver.ScopeProgressRead, oauthserver.ScopeCatalogRead).AccessToken, russian)
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
+	"time"
 
 	"github.com/ogen-go/ogen/middleware"
 	"go.opentelemetry.io/otel/trace"
@@ -147,12 +148,18 @@ func auditEntry(ctx context.Context, operation string, i18n *localization.Transl
 	info, _ := ctx.Value(requestInfoKey{}).(requestInfo)
 
 	entry := audit.Entry{
-		Source:    audit.SourceFrom(ctx),
-		Operation: operation,
-		Locale:    i18n.Locale(ctx),
-		Outcome:   outcome,
-		RequestID: requestID(ctx, info),
-		UserAgent: info.userAgent,
+		Source:     audit.SourceFrom(ctx),
+		Operation:  operation,
+		Locale:     i18n.Locale(ctx),
+		Outcome:    outcome,
+		RequestID:  requestID(ctx, info),
+		UserAgent:  info.userAgent,
+		Actor:      nil,
+		Address:    "",
+		OccurredAt: time.Time{},
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}
 	if user, ok := AuthenticatedUser(ctx); ok {
 		id := user.ID

@@ -92,9 +92,20 @@ func TestReadOutputScrubsInvalidUTF8(t *testing.T) {
 func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 	t.Parallel()
 
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
-	command := runner.command(progress.Submission{TestDir: "/exercises-go/modules/10-basics/20-vars"})
+	command := runner.command(progress.Submission{
+		TestDir:      "/exercises-go/modules/10-basics/20-vars",
+		Image:        "",
+		VersionID:    0,
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	assert.Equal(t,
 		[]string{"timeout", "6", "make", "--silent", "-C", "/exercises-go/modules/10-basics/20-vars", "test"},
@@ -127,7 +138,11 @@ func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 	t.Parallel()
 
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	host := runner.hostConfig()
 
@@ -150,13 +165,21 @@ func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
 
 	cfg := testConfig()
 	cfg.ReadonlyRootfs = true
-	runner := &Docker{opts: OptionsFrom(cfg)}
+	runner := &Docker{
+		opts:   OptionsFrom(cfg),
+		docker: nil,
+		slots:  nil,
+	}
 
 	host := runner.hostConfig()
 
 	assert.True(t, host.ReadonlyRootfs)
 	assert.Contains(t, host.Tmpfs, "/tmp")
-	assert.Empty(t, (&Docker{opts: OptionsFrom(testConfig())}).hostConfig().Tmpfs,
+	assert.Empty(t, (&Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}).hostConfig().Tmpfs,
 		"and no scratch mount when the rootfs is writable anyway")
 }
 
@@ -206,11 +229,19 @@ func testConfig() config.ExerciseRunnerConfig {
 func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 	t.Parallel()
 
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, source := runner.imageRefs(progress.Submission{
-		Image:     "hexletbasics/exercises-javascript",
-		VersionID: 965227298,
+		Image:        "hexletbasics/exercises-javascript",
+		VersionID:    965227298,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "hexletbasics/exercises-javascript:lv965227298", pinned)
@@ -223,11 +254,19 @@ func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 	t.Parallel()
 
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, source := runner.imageRefs(progress.Submission{
-		Image:     "ghcr.io/hexlet-basics/exercises-go:2026-08",
-		VersionID: 1,
+		Image:        "ghcr.io/hexlet-basics/exercises-go:2026-08",
+		VersionID:    1,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "ghcr.io/hexlet-basics/exercises-go:2026-08", pinned)
@@ -238,11 +277,19 @@ func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 func TestImageRefsPinAnImageOnAPortedRegistry(t *testing.T) {
 	t.Parallel()
 
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, _ := runner.imageRefs(progress.Submission{
-		Image:     "registry.example.com:5000/exercises-go",
-		VersionID: 7,
+		Image:        "registry.example.com:5000/exercises-go",
+		VersionID:    7,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "registry.example.com:5000/exercises-go:lv7", pinned)

@@ -87,7 +87,11 @@ func (t Transition[S]) Check(current S) error {
 		return nil
 	}
 
-	illegal := &IllegalError{From: State(current), To: State(t.To)}
+	illegal := &IllegalError{
+		From:       State(current),
+		To:         State(t.To),
+		Vocabulary: "",
+	}
 	if named, ok := any(current).(Named); ok {
 		illegal.Vocabulary = named.Vocabulary()
 	}

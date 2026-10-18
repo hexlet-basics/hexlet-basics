@@ -110,7 +110,12 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 
 		state := states[e.CourseID]
 
-		listed := Course{Enrollment: e, Card: card, State: state}
+		listed := Course{
+			Enrollment: e,
+			Card:       card,
+			State:      state,
+			NextLesson: nil,
+		}
 		if state.NextLessonSlug != nil {
 			if lesson, ok := next[lessonKey{courseID: e.CourseID, slug: *state.NextLessonSlug}]; ok {
 				listed.NextLesson = &lesson

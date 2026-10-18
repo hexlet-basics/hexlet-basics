@@ -84,7 +84,12 @@ func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 func (r *rig) learner(t *testing.T, label fixture.Label) progress.Learner {
 	t.Helper()
 
-	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID}
+	return progress.Learner{
+		UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}
 }
 
 func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
@@ -105,12 +110,17 @@ func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
 // guestWith is a visitor whose cookie names exactly these JavaScript lessons as
 // finished.
 func guestWith(lessonSlugs ...string) progress.Learner {
-	guest := progress.GuestProgress{}
+	guest := progress.GuestProgress{
+		Entries: nil,
+	}
 	for _, slug := range lessonSlugs {
 		guest = guest.Record(jsSlug, slug)
 	}
 
-	return progress.Learner{Guest: guest}
+	return progress.Learner{
+		Guest:  guest,
+		UserID: 0,
+	}
 }
 
 func lessonSlugs(state *progress.CourseState) []string {
@@ -203,7 +213,12 @@ func TestStartLessonLetsAGuestTakeAnyLessonAndWritesNothing(t *testing.T) {
 	before := r.db.LessonProgress.Query().CountX(ctx)
 
 	// A first-time visitor may open any lesson, and one with progress too.
-	for _, learner := range []progress.Learner{{}, guestWith(firstLesson)} {
+	for _, learner := range []progress.Learner{{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, guestWith(firstLesson)} {
 		_, err := r.progress.StartLesson(ctx, learner, r.lesson(t, thirdLesson).ID, locale)
 		require.NoError(t, err)
 	}
@@ -224,7 +239,12 @@ func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
 		completed int
 		next      string
 	}{
-		{"a first visit has not started", progress.Learner{}, "", 0, firstLesson},
+		{"a first visit has not started", progress.Learner{
+			UserID: 0,
+			Guest: progress.GuestProgress{
+				Entries: nil,
+			},
+		}, "", 0, firstLesson},
 		{"a visitor part way is started", guestWith(firstLesson, secondLesson), progress.StateStarted, 66, thirdLesson},
 		{"a visitor who took a later lesson first has only that one", guestWith(thirdLesson), progress.StateStarted, 33, firstLesson},
 		{"a visitor who finished every lesson has finished", guestWith(firstLesson, secondLesson, thirdLesson), progress.StateFinished, 100, ""},
@@ -253,7 +273,12 @@ func TestCourseStateOfAnUnknownCourseIsNotFound(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 
-	_, err := r.progress.CourseState(ctx, progress.Learner{}, -1)
+	_, err := r.progress.CourseState(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, -1)
 	assert.True(t, ent.IsNotFound(err), "a guest: %v", err)
 
 	_, err = r.progress.CourseState(ctx, r.learner(t, fixture.UserAdminLearner), -1)
@@ -265,7 +290,12 @@ func TestCourseStateOfACourseWithNoVersionHasNoLessons(t *testing.T) {
 	ctx := t.Context()
 	bare := r.course(t, "bare")
 
-	guest, err := r.progress.CourseState(ctx, progress.Learner{}, bare.ID)
+	guest, err := r.progress.CourseState(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, bare.ID)
 	require.NoError(t, err)
 	assert.Empty(t, guest.Lessons)
 	assert.Zero(t, guest.Completion)
@@ -388,13 +418,27 @@ func TestCheckCannotGradeAVersionBuiltWithoutAnImage(t *testing.T) {
 }
 
 func TestUnavailableRunnerFailsLoudly(t *testing.T) {
-	_, err := progress.UnavailableRunner{}.Run(t.Context(), progress.Submission{})
+	_, err := progress.UnavailableRunner{}.Run(t.Context(), progress.Submission{
+		Image:        "",
+		VersionID:    0,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	assert.ErrorIs(t, err, progress.ErrRunnerUnavailable)
 }
 
 func TestSubmissionWithImageChangesOnlyTheImage(t *testing.T) {
-	original := progress.Submission{Image: "repo", VersionID: 7, Code: "x"}
+	original := progress.Submission{
+		Image:        "repo",
+		VersionID:    7,
+		Code:         "x",
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+	}
 
 	pinned := original.WithImage("repo:7")
 

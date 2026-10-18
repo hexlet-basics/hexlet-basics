@@ -316,6 +316,8 @@ func bannerSubject() stateSubject {
 
 			return ok && banner.Body == "Free programming courses — start learning today"
 		},
+		nullable:   false,
+		clearState: nil,
 	}
 }
 

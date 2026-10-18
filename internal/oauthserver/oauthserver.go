@@ -224,8 +224,11 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 
 	s := &Server{
 		issuer: deps.Config.Issuer, resource: st.resource, signedIn: deps.SignedIn, storage: st, provider: provider,
-		limiter:       newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
-		clientAddress: clientAddress,
+		limiter:        newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
+		clientAddress:  clientAddress,
+		documents:      nil,
+		metadataClient: nil,
+		handler:        nil,
 	}
 	for _, opt := range opts {
 		opt(s)

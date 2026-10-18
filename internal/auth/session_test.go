@@ -37,7 +37,12 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 	t.Helper()
 	db := testsupport.NewClient(t)
 	manager := auth.New(db, append([]auth.Option{auth.WithClock(clk.Now)}, opts...)...)
-	a := &app{t: t, db: db, sessions: manager}
+	a := &app{
+		t:        t,
+		db:       db,
+		sessions: manager,
+		handler:  nil,
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /signin/{label}", func(w http.ResponseWriter, r *http.Request) {

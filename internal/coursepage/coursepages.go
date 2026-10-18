@@ -139,13 +139,14 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	}
 
 	page := &CoursePage{
-		Course:   crs,
-		Landing:  landing,
-		MovedTo:  movedTo,
-		State:    state,
-		Infos:    infos,
-		Modules:  modules,
-		QnaItems: qna,
+		Course:     crs,
+		Landing:    landing,
+		MovedTo:    movedTo,
+		State:      state,
+		Infos:      infos,
+		Modules:    modules,
+		QnaItems:   qna,
+		Enrollment: nil,
 	}
 	if !learner.SignedIn() {
 		return page, nil

@@ -43,7 +43,15 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (*api.Lead,
 func firstVisitOf(input api.OptNilFirstVisit) leadcapture.FirstVisit {
 	visit, ok := input.Get()
 	if !ok {
-		return leadcapture.FirstVisit{}
+		return leadcapture.FirstVisit{
+			UTMSource:   nil,
+			UTMMedium:   nil,
+			UTMCampaign: nil,
+			UTMContent:  nil,
+			UTMTerm:     nil,
+			LandingPage: nil,
+			Referrer:    nil,
+		}
 	}
 
 	return leadcapture.FirstVisit{

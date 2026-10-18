@@ -36,7 +36,13 @@ type fakeJobs struct {
 	stopped  chan struct{}
 }
 
-func newJobs() *fakeJobs { return &fakeJobs{stopped: make(chan struct{})} }
+func newJobs() *fakeJobs {
+	return &fakeJobs{
+		stopped:  make(chan struct{}),
+		startErr: nil,
+		stopOnce: sync.Once{},
+	}
+}
 
 func (f *fakeJobs) Start(context.Context) error { return f.startErr }
 
@@ -82,7 +88,13 @@ func stopped(ch <-chan struct{}) bool {
 func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 	jobQueue := newJobs()
 	router := newRouter(t)
-	app := application{jobs: jobQueue, events: router}
+	app := application{
+		jobs:   jobQueue,
+		events: router,
+		logger: nil,
+		health: nil,
+		probes: nil,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	var stopSignalsCalled bool
@@ -122,7 +134,13 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 		t.Fatal("the event router did not start")
 	}
 
-	app := application{jobs: jobQueue, events: router}
+	app := application{
+		jobs:   jobQueue,
+		events: router,
+		logger: nil,
+		health: nil,
+		probes: nil,
+	}
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(context.Background(), func() {}) }()
@@ -141,7 +159,13 @@ func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
 	jobQueue := newJobs()
 	jobQueue.startErr = errJobQueueCannotStart
 	router := newRouter(t)
-	app := application{jobs: jobQueue, events: router}
+	app := application{
+		jobs:   jobQueue,
+		events: router,
+		logger: nil,
+		health: nil,
+		probes: nil,
+	}
 
 	err := app.run(context.Background(), func() {})
 
@@ -169,7 +193,13 @@ func TestReadyzIsUnavailableBeforeTheRuntimeStartsOKWhileItRunsAndUnavailableAft
 	probes := health.NewAwaitingStart(func(context.Context) error { return nil })
 	handler := probes.Wrap(http.NotFoundHandler())
 	router := newRouter(t)
-	app := application{jobs: newJobs(), events: router, probes: probes}
+	app := application{
+		jobs:   newJobs(),
+		events: router,
+		probes: probes,
+		logger: nil,
+		health: nil,
+	}
 
 	require.Equal(t, http.StatusServiceUnavailable, readyz(t, handler), "before start")
 
@@ -213,8 +243,17 @@ func (h *healthServer) Close() error {
 }
 
 func TestHealthListenerStartsAndStopsWithTheWorker(t *testing.T) {
-	listener := &healthServer{served: make(chan struct{})}
-	app := application{jobs: newJobs(), events: newRouter(t), health: listener}
+	listener := &healthServer{
+		served:   make(chan struct{}),
+		shutdown: atomic.Bool{},
+	}
+	app := application{
+		jobs:   newJobs(),
+		events: newRouter(t),
+		health: listener,
+		logger: nil,
+		probes: nil,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)

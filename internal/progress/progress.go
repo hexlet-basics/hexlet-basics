@@ -611,7 +611,12 @@ func (p *Progress) guestCourseState(ctx context.Context, learner Learner, course
 // one place the next Lesson and completion are decided, whether the learner is a
 // guest, one Course is asked for, or a dashboard asks for many.
 func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, int) {
-	state := &CourseState{Lessons: make([]LessonState, 0, len(lessons))}
+	state := &CourseState{
+		Lessons:        make([]LessonState, 0, len(lessons)),
+		State:          "",
+		Completion:     0,
+		NextLessonSlug: nil,
+	}
 	finishedCount := 0
 
 	for _, l := range lessons {

@@ -238,7 +238,35 @@ func (emptyCatalogue) ListCourses(context.Context) ([]api.CourseCatalogItem, err
 func status(t *testing.T, v verifier) int {
 	t.Helper()
 
-	server, err := mcpserver.New(mcpserver.Deps{Verifier: v, Catalogue: emptyCatalogue{}, Issuer: testsupport.OAuthIssuer})
+	server, err := mcpserver.New(mcpserver.Deps{
+		Verifier: v,
+		Catalogue: emptyCatalogue{
+			Catalogue: nil,
+		},
+		Issuer:           testsupport.OAuthIssuer,
+		API:              nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		Limits: mcpserver.Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		HeldCapabilities: nil,
+	})
 	require.NoError(t, err)
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/mcp", strings.NewReader("{}"))
 	req.Header.Set("Authorization", "Bearer anything")
@@ -250,7 +278,14 @@ func status(t *testing.T, v verifier) int {
 }
 
 func TestTokenIsAcceptedOnlyForTheCanonicalResourceAndAUserSubject(t *testing.T) {
-	good := oauthserver.Token{UserID: alice(), Scopes: []string{"catalog:read"}, Audience: []string{testsupport.MCPEndpoint}}
+	good := oauthserver.Token{
+		UserID:         alice(),
+		Scopes:         []string{"catalog:read"},
+		Audience:       []string{testsupport.MCPEndpoint},
+		ID:             "",
+		ClientID:       "",
+		ConnectedAppID: 0,
+	}
 
 	other := good
 	other.Audience = []string{"https://elsewhere.example/mcp"}
@@ -259,18 +294,74 @@ func TestTokenIsAcceptedOnlyForTheCanonicalResourceAndAUserSubject(t *testing.T)
 	client := good
 	client.UserID = 0
 
-	assert.NotEqual(t, http.StatusUnauthorized, status(t, verifier{token: good}), "a token for the endpoint passes")
-	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{token: other}), "another audience")
-	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{token: none}), "no audience")
-	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{token: client}), "a client subject")
-	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{err: oauthserver.ErrInvalidToken}), "an unknown token")
+	assert.NotEqual(t, http.StatusUnauthorized, status(t, verifier{
+		token: good,
+		err:   nil,
+	}), "a token for the endpoint passes")
+	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{
+		token: other,
+		err:   nil,
+	}), "another audience")
+	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{
+		token: none,
+		err:   nil,
+	}), "no audience")
+	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{
+		token: client,
+		err:   nil,
+	}), "a client subject")
+	assert.Equal(t, http.StatusUnauthorized, status(t, verifier{
+		err: oauthserver.ErrInvalidToken,
+		token: oauthserver.Token{
+			ID:             "",
+			ClientID:       "",
+			ConnectedAppID: 0,
+			UserID:         0,
+			Scopes:         nil,
+			Audience:       nil,
+		},
+	}), "an unknown token")
 }
 
 func TestVerifierFailureOfOursIsAServerErrorWithoutDetail(t *testing.T) {
 	server, err := mcpserver.New(mcpserver.Deps{
-		Verifier:  verifier{err: errPqSecretDetail},
-		Catalogue: emptyCatalogue{},
-		Issuer:    testsupport.OAuthIssuer,
+		Verifier: verifier{
+			err: errPqSecretDetail,
+			token: oauthserver.Token{
+				ID:             "",
+				ClientID:       "",
+				ConnectedAppID: 0,
+				UserID:         0,
+				Scopes:         nil,
+				Audience:       nil,
+			},
+		},
+		Catalogue: emptyCatalogue{
+			Catalogue: nil,
+		},
+		Issuer:           testsupport.OAuthIssuer,
+		API:              nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		Limits: mcpserver.Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		HeldCapabilities: nil,
 	})
 	require.NoError(t, err)
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/mcp", strings.NewReader("{}"))

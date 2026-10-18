@@ -191,7 +191,12 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 	// the first check, and the chat hangs off the learner's lesson progress.
 	locale := c.i18n.Locale(ctx)
 
-	learner := progress.Learner{UserID: q.UserID}
+	learner := progress.Learner{
+		UserID: q.UserID,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}
 	if _, err := c.lessons.StartLesson(ctx, learner, q.LessonID, locale); err != nil {
 		return nil, err
 	}

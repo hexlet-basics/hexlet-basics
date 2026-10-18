@@ -16,7 +16,21 @@ import (
 // checkpoint (it leaves no Audit Record).
 func TestAdminToolsAreRateLimitedByClass(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User: mcpserver.Rates{Personal: 1, Write: 1},
+		User: mcpserver.Rates{
+			Personal:  1,
+			Write:     1,
+			Catalogue: 0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
 	o.Grant(editor(), "banners.update", "mcp.read", "mcp.write")
 	session := connect(t, o, bob(), oauthserver.ScopeAdmin)

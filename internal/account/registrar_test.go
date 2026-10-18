@@ -78,6 +78,7 @@ func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
 
 	_, err := registrar.Register(t.Context(), account.Registration{
 		Email: newUserEmail, Password: "secret", Locale: "en",
+		FirstName: nil,
 	})
 	require.ErrorContains(t, err, "outbox unavailable")
 
@@ -87,8 +88,10 @@ func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
 func TestRegistrarRejectsPasswordBeforeOpeningTransaction(t *testing.T) {
 	registrar := account.NewRegistrar(nil, nil)
 	_, err := registrar.Register(t.Context(), account.Registration{
-		Email:    "long-password@example.com",
-		Password: string(make([]byte, 73)),
+		Email:     "long-password@example.com",
+		Password:  string(make([]byte, 73)),
+		FirstName: nil,
+		Locale:    "",
 	})
 	require.ErrorIs(t, err, account.ErrPasswordProcessing)
 }
@@ -103,6 +106,7 @@ func TestRegistrarNamesTheFieldOfATakenEmail(t *testing.T) {
 
 	_, err := registrar.Register(t.Context(), account.Registration{
 		Email: *taken.Email, Password: "secret", Locale: "en",
+		FirstName: nil,
 	})
 
 	require.ErrorIs(t, err, domain.ErrInvalid)

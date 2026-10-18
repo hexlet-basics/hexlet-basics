@@ -143,6 +143,7 @@ func (r *Reader) Assemble(ctx context.Context, rows []*ent.BlogPost) ([]Post, er
 			ReadingTime:      readingTime(row.RichBody),
 			LikesCount:       likes[row.ID],
 			RelatedCourseIDs: related[row.ID],
+			CoverURL:         "",
 		}
 		if key := covers[row.ID]; key != "" {
 			posts[i].CoverURL = assetstore.URL(r.publicURL, key)

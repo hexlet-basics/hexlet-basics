@@ -57,7 +57,9 @@ type suggesterStub struct{ err error }
 func (s suggesterStub) SuggestRelatedCourses(context.Context, int) error { return s.err }
 
 func TestReviewLessonJobCompletesWhenTheReviewSucceeds(t *testing.T) {
-	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{}), jobs.ReviewLessonArgs{LessonInfoID: 1})
+	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{
+		err: nil,
+	}), jobs.ReviewLessonArgs{LessonInfoID: 1})
 
 	require.NoError(t, err)
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
@@ -75,7 +77,9 @@ func TestReviewLessonJobSurfacesAFailedReviewAndStaysRetryable(t *testing.T) {
 }
 
 func TestSuggestRelatedCoursesJobCompletesWhenTheSuggestionSucceeds(t *testing.T) {
-	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
+	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{
+		err: nil,
+	}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 
 	require.NoError(t, err)
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
@@ -169,7 +173,11 @@ func TestJobsCancelWhenTheErrorIsOneRetryingCannotFix(t *testing.T) {
 			return work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: err}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 		},
 		"account email": func(err error) (*rivertest.WorkResult, error) {
-			return work(t, jobs.AccountEmailWorker(senderStub{err: err}), jobs.AccountEmailArgs{UserID: 1})
+			return work(t, jobs.AccountEmailWorker(senderStub{err: err}), jobs.AccountEmailArgs{
+				UserID:  1,
+				Purpose: "",
+				Locale:  "",
+			})
 		},
 	}
 	for kind, run := range kinds {

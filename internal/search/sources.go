@@ -174,6 +174,7 @@ func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, err
 			// The course's own readiness, which says whether the page is a course
 			// that can be learned yet.
 			Readiness: readinessOf(row.Edges.Course),
+			Snippet:   "",
 		}})
 	}
 
@@ -328,6 +329,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 			Title: titleOf(lessonSlug, row.Name),
 			Path:  pagePath(m.locale, "/languages/"+courseSlug+"/lessons/"+lessonSlug),
 			State: lessonStates[row.CourseLessonID], Readiness: courseReadiness[row.CourseID],
+			Snippet: "",
 		}})
 	}
 
@@ -406,11 +408,13 @@ func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
 
 		slug := *row.Slug
 		out = append(out, candidate{rank: rank, typ: Post, id: row.ID, hit: Hit{
-			Type:  Post,
-			ID:    PostID(slug),
-			Title: titleOf(slug, row.Name),
-			Path:  pagePath(m.locale, "/blog_posts/"+slug),
-			State: lo.FromPtr(row.State),
+			Type:      Post,
+			ID:        PostID(slug),
+			Title:     titleOf(slug, row.Name),
+			Path:      pagePath(m.locale, "/blog_posts/"+slug),
+			State:     lo.FromPtr(row.State),
+			Snippet:   "",
+			Readiness: "",
 		}})
 	}
 

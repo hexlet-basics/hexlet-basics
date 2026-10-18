@@ -51,6 +51,19 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 	err := client.CreateLead(t.Context(), events.LeadCreated{
 		LeadID: 10, UserID: 20, Email: &email, FirstName: &firstName,
 		UTMSource: &utmSource, OccurredAt: time.Unix(123, 0),
+		UserName:    "",
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
 	})
 	require.NoError(t, err)
 	require.Len(t, body, 1)
@@ -84,7 +97,21 @@ func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
 
 	body := sendLead(t, events.LeadCreated{
 		LeadID: 10, LandingPage: &landing, Referrer: &referrer, IP: &ip,
-		OccurredAt: time.Unix(123, 0),
+		OccurredAt:  time.Unix(123, 0),
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
 	})
 
 	metadata := requireMap(t, body["metadata"])
@@ -109,7 +136,27 @@ func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
 	landing := "https://code-basics.com/?yclid=y-1"
 	clientID := "1700000000123456789"
 
-	body := sendLead(t, events.LeadCreated{LeadID: 10, LandingPage: &landing, YMClientID: &clientID})
+	body := sendLead(t, events.LeadCreated{
+		LeadID:      10,
+		LandingPage: &landing,
+		YMClientID:  &clientID,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	fields := requireMap(t, requireSlice(t, requireMap(t, body["_embedded"])["leads"])[0])["custom_fields_values"]
 	assertCustomField(t, fields, "YCLID", 316_947, clientID)
@@ -121,7 +168,27 @@ func TestCreateLeadDropsAnIPv6Address(t *testing.T) {
 
 	ip := "2001:db8::1"
 
-	body := sendLead(t, events.LeadCreated{LeadID: 10, IP: &ip})
+	body := sendLead(t, events.LeadCreated{
+		LeadID:      10,
+		IP:          &ip,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		OccurredAt:  time.Time{},
+	})
 
 	assert.NotContains(t, requireMap(t, body["metadata"]), "ip")
 }
@@ -185,7 +252,27 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 				}, nil
 			})
 
-			err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+			err := client.CreateLead(t.Context(), events.LeadCreated{
+				LeadID:      1,
+				UserID:      0,
+				UserName:    "",
+				FirstName:   nil,
+				LastName:    nil,
+				YMClientID:  nil,
+				UTMSource:   nil,
+				UTMMedium:   nil,
+				UTMCampaign: nil,
+				UTMTerm:     nil,
+				UTMContent:  nil,
+				Email:       nil,
+				Phone:       nil,
+				Telegram:    nil,
+				WhatsApp:    nil,
+				LandingPage: nil,
+				Referrer:    nil,
+				IP:          nil,
+				OccurredAt:  time.Time{},
+			})
 
 			require.ErrorContains(t, err, "invalid lead")
 			assert.Equal(t, 1, requests, "one River attempt must make one HTTP request")
@@ -222,7 +309,27 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 				}, nil
 			})
 
-			err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+			err := client.CreateLead(t.Context(), events.LeadCreated{
+				LeadID:      1,
+				UserID:      0,
+				UserName:    "",
+				FirstName:   nil,
+				LastName:    nil,
+				YMClientID:  nil,
+				UTMSource:   nil,
+				UTMMedium:   nil,
+				UTMCampaign: nil,
+				UTMTerm:     nil,
+				UTMContent:  nil,
+				Email:       nil,
+				Phone:       nil,
+				Telegram:    nil,
+				WhatsApp:    nil,
+				LandingPage: nil,
+				Referrer:    nil,
+				IP:          nil,
+				OccurredAt:  time.Time{},
+			})
 
 			require.ErrorContains(t, err, strconv.Itoa(tt.status))
 
@@ -248,7 +355,27 @@ func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 		}, nil
 	})
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.Error(t, err)
 	assert.Equal(t, 1, requests)
@@ -266,7 +393,27 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 		return nil, errReset
 	})
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, "connection reset")
 
@@ -277,7 +424,27 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 
 func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 	t.Parallel()
-	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	var classified interface{ Retryable() bool }
 	require.ErrorAs(t, err, &classified)
@@ -303,7 +470,27 @@ func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
 	}))
 	t.Cleanup(moved.Close)
 
-	err := NewClient(moved.URL, "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient(moved.URL, "secret", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, strconv.Itoa(http.StatusFound))
 	assert.Equal(t, 1, asked)
@@ -314,7 +501,27 @@ func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
 // the same client — and keeps the cause for the logs.
 func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 	t.Parallel()
-	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, "initialization failed")
 
@@ -326,7 +533,27 @@ func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 
 func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
 	t.Parallel()
-	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.EqualError(t, err, "amoCRM is not configured")
 	assert.NoError(t, errors.Unwrap(err))
@@ -338,7 +565,27 @@ func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, errReset })
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	assert.ErrorIs(t, err, errReset)
 }
@@ -362,10 +609,50 @@ func TestCreateLeadWordsARefusalForTheLogs(t *testing.T) {
 		return client
 	}
 
-	empty := problem(`{}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	empty := problem(`{}`).CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 	require.EqualError(t, empty, "amoCRM returned 400: request failed")
 
-	long := problem(`{"detail":"`+strings.Repeat("x", 5000)+`"}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	long := problem(`{"detail":"`+strings.Repeat("x", 5000)+`"}`).CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 	require.Error(t, long)
 	assert.LessOrEqual(t, len(long.Error()), maxErrorMessageBytes+len("amoCRM returned 400: "))
 }

@@ -50,8 +50,17 @@ func (s *logSink) logger() *slog.Logger { return slog.New(slog.NewTextHandler(s,
 
 func TestRuntimeAnnouncesTheStartAndTheShutdown(t *testing.T) {
 	router := newRouter(t)
-	logs := &logSink{}
-	app := application{jobs: newJobs(), events: router, logger: logs.logger()}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
+	app := application{
+		jobs:   newJobs(),
+		events: router,
+		logger: logs.logger(),
+		health: nil,
+		probes: nil,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)
@@ -93,8 +102,17 @@ func TestRuntimeReportsAnEventRouterThatCannotDrain(t *testing.T) {
 		return nil
 	})
 
-	logs := &logSink{}
-	app := application{jobs: newJobs(), events: watermillRouter{router}, logger: logs.logger()}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
+	app := application{
+		jobs:   newJobs(),
+		events: watermillRouter{router},
+		logger: logs.logger(),
+		health: nil,
+		probes: nil,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)
@@ -146,9 +164,18 @@ func (j stuckJobs) Stop(context.Context) error {
 func (j stuckJobs) Stopped() <-chan struct{} { return j.done }
 
 func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
-	logs := &logSink{}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
 	jobs := stuckJobs{stopErr: errStop, done: make(chan struct{})}
-	app := application{jobs: jobs, events: newRouter(t), logger: logs.logger()}
+	app := application{
+		jobs:   jobs,
+		events: newRouter(t),
+		logger: logs.logger(),
+		health: nil,
+		probes: nil,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)

@@ -256,7 +256,7 @@ func (c *Common) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "h
 // caller's business (LoadDotenv), so production and tests never read one.
 // Every violated rule is reported at once, named by variable.
 func LoadServer() (*Server, error) {
-	cfg := &Server{}
+	cfg := new(Server)
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse server config from environment")
 	}
@@ -271,7 +271,7 @@ func LoadServer() (*Server, error) {
 // LoadWorker reads the asynchronous process's configuration. It parses only the
 // worker's own settings, so a deployment need not give it a server-only secret.
 func LoadWorker() (*Worker, error) {
-	cfg := &Worker{}
+	cfg := new(Worker)
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse worker config from environment")
 	}

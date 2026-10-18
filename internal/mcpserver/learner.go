@@ -56,6 +56,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 				"Completion and next lesson, with the course card.",
 			input:  object(map[string]any{}),
 			output: dashboardSchema,
+			scope:  "",
+			class:  0,
 		}, s.myDashboard},
 		{toolSpec{
 			name:  myCourseProgressTool,
@@ -74,6 +76,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 					"state":    lessonState,
 				}, "slug", "position", "state")},
 			}, "courseSlug", "state", "completion", "nextLesson", "lessons"),
+			scope: "",
+			class: 0,
 		}, s.myCourseProgress},
 		{toolSpec{
 			name:  myLessonProgressTool,
@@ -91,6 +95,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 				"state":       lessonState,
 				"passedCheck": map[string]any{"type": "boolean"},
 			}, "courseSlug", "lessonSlug", "position", "state", "passedCheck"),
+			scope: "",
+			class: 0,
 		}, s.myLessonProgress},
 	}
 
@@ -119,6 +125,7 @@ func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
 		text: fmt.Sprintf("%d courses in progress, %d finished",
 			len(dashboard.Started), len(dashboard.Finished)),
 		data: dashboard,
+		list: nil,
 	}, nil
 }
 
@@ -156,6 +163,7 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 			"nextLesson": course.NextLessonSlug,
 			"lessons":    lessons,
 		},
+		list: nil,
 	}, nil
 }
 
@@ -188,6 +196,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 				"state":       l.State,
 				"passedCheck": l.State == progress.StateFinished,
 			},
+			list: nil,
 		}, nil
 	}
 

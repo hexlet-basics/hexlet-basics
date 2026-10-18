@@ -38,12 +38,14 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 				"GUEST_COOKIE_SECRET": developmentGuestCookieSecret,
 				"EMAIL_TOKEN_SECRET":  developmentEmailTokenSecret,
 			},
-			want: []string{"GUEST_COOKIE_SECRET", "EMAIL_TOKEN_SECRET"},
+			want:  []string{"GUEST_COOKIE_SECRET", "EMAIL_TOKEN_SECRET"},
+			unset: nil,
 		},
 		{
-			name: "oauth enabled with nothing else set",
-			env:  map[string]string{"OAUTH_ENABLED": "true"},
-			want: []string{"OAUTH_ISSUER", "OAUTH_ENCRYPTION_KEY"},
+			name:  "oauth enabled with nothing else set",
+			env:   map[string]string{"OAUTH_ENABLED": "true"},
+			want:  []string{"OAUTH_ISSUER", "OAUTH_ENCRYPTION_KEY"},
+			unset: nil,
 		},
 		{
 			name: "oauth issuer with a path and a short key",
@@ -52,7 +54,8 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 				"OAUTH_ISSUER":         "https://code-basics.com/oauth",
 				"OAUTH_ENCRYPTION_KEY": "short",
 			},
-			want: []string{"OAUTH_ISSUER", "OAUTH_ENCRYPTION_KEY"},
+			want:  []string{"OAUTH_ISSUER", "OAUTH_ENCRYPTION_KEY"},
+			unset: nil,
 		},
 		{
 			name: "oauth lifetimes out of order and mcp limits at zero",
@@ -71,6 +74,7 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 				"OAUTH_ACCESS_TOKEN_TTL", "OAUTH_REFRESH_TOKEN_TTL", "OAUTH_REGISTRATION_LIMIT",
 				"MCP_MAX_PAGE_SIZE", "MCP_TOOL_TIMEOUT",
 			},
+			unset: nil,
 		},
 		{
 			name: "http oauth issuer in production",
@@ -80,7 +84,8 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 				"OAUTH_ISSUER":         "http://code-basics.com",
 				"OAUTH_ENCRYPTION_KEY": validOAuthKey,
 			},
-			want: []string{"OAUTH_ISSUER"},
+			want:  []string{"OAUTH_ISSUER"},
+			unset: nil,
 		},
 	}
 	for _, tt := range tests {

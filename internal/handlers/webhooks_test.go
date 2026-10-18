@@ -78,7 +78,9 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 
 	// The loader was queued; look up exactly that version (robust against fixture
 	// versions the ruby course already has).
-	queued := testsupport.RequireEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	queued := testsupport.RequireEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 
 	version := db.CourseVersion.GetX(context.Background(), queued.VersionID)
 	require.NotNil(t, version.State)
@@ -97,7 +99,9 @@ func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 	h.Handle(rec, req)
 
 	assert.Equal(t, http.StatusUnauthorized, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
@@ -111,7 +115,9 @@ func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
 			h.Handle(rec, rawWebhookRequest("workflow_run", `{}`, signature))
 
 			assert.Equal(t, http.StatusUnauthorized, rec.Code)
-			testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+			testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+				VersionID: 0,
+			})
 		})
 	}
 }
@@ -132,7 +138,9 @@ func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
 		h.Handle(rec, rawWebhookRequest("ping", body, signature))
 
 		assert.Equal(t, http.StatusNoContent, rec.Code)
-		testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+		testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+			VersionID: 0,
+		})
 	})
 
 	t.Run("tampered payload", func(t *testing.T) {
@@ -142,7 +150,9 @@ func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
 		h.Handle(rec, rawWebhookRequest("ping", body+"!", signature))
 
 		assert.Equal(t, http.StatusUnauthorized, rec.Code)
-		testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+		testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+			VersionID: 0,
+		})
 	})
 }
 
@@ -154,7 +164,9 @@ func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby")))
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
@@ -165,7 +177,9 @@ func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "push", map[string]any{"not": "a workflow run"}))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
@@ -182,7 +196,9 @@ func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
 	h.Handle(rec, rawWebhookRequest("workflow_run", body, signature))
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
@@ -193,7 +209,9 @@ func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", map[string]any{"action": "completed"}))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
@@ -207,7 +225,9 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", payload))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
@@ -221,7 +241,9 @@ func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", payload))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
@@ -235,7 +257,9 @@ func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
 			h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess(repo)))
 
 			assert.Equal(t, http.StatusNoContent, rec.Code)
-			testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+			testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+				VersionID: 0,
+			})
 		})
 	}
 }
@@ -248,7 +272,9 @@ func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-nonexistent-course")))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }
 
 func TestGitHubWebhookRejectsOversizedBody(t *testing.T) {
@@ -259,5 +285,7 @@ func TestGitHubWebhookRejectsOversizedBody(t *testing.T) {
 	h.Handle(rec, rawWebhookRequest("workflow_run", strings.Repeat("x", (5<<20)+1), "sha256=deadbeef"))
 
 	assert.Equal(t, http.StatusRequestEntityTooLarge, rec.Code)
-	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }

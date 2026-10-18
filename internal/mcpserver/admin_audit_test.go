@@ -41,9 +41,21 @@ func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation 
 
 	entry := audit.Entry{
 		OccurredAt: time.Now().Add(-ago),
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  operation,
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}
 	if mutate != nil {
 		mutate(&entry)
@@ -233,7 +245,21 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 
 func TestReadingTheTrailSpendsThePersonalDataRateClass(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User: mcpserver.Rates{Personal: 1, Write: 100},
+		User: mcpserver.Rates{
+			Personal:  1,
+			Write:     100,
+			Catalogue: 0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 	args := map[string]any{"locale": "en"}
@@ -281,7 +307,23 @@ func TestTrailToolDeclaresTheFiltersAndARequiredLocale(t *testing.T) {
 func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	const limit = 6000
 
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		MaxResponseBytes: limit,
+		MaxPageSize:      0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 	for i := range 40 {
@@ -320,9 +362,22 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 	user := fixture.ID(fixture.UserWithPassword)
 	require.NoError(t, o.DB.User.UpdateOneID(user).SetPasswordDigest(digest).SetFirstName("Renamed").Exec(ctx))
 	require.NoError(t, audit.Write(t.Context(), o.DB, audit.Entry{
-		Source:    audit.Source{Channel: audit.ChannelWeb},
-		Operation: "AdminUpdateUser",
-		Outcome:   audit.OutcomeSucceeded,
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
+		Operation:  "AdminUpdateUser",
+		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		OccurredAt: time.Time{},
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, recorder))
 
 	result := call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "operation": "AdminUpdateUser"})

@@ -174,7 +174,23 @@ func TestUploadRejectsWhatTheWebsiteRejects(t *testing.T) {
 }
 
 func TestUploadSpendsTheWriteBudget(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Write: 1}}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User: mcpserver.Rates{
+			Write:     1,
+			Catalogue: 0,
+			Personal:  0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	o.Grant(editor(), "mcp.write")
 	session := connect(t, o, bob(), oauthserver.ScopeAdmin)
 

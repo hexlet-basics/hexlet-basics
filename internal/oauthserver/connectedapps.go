@@ -85,7 +85,12 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 	see := func(clientID string, connected, issued time.Time, scopes []string, live bool) {
 		g := byClient[clientID]
 		if g == nil {
-			g = &grants{connectedAt: connected}
+			g = &grants{
+				connectedAt: connected,
+				live:        false,
+				newest:      time.Time{},
+				scopes:      nil,
+			}
 			byClient[clientID] = g
 		}
 

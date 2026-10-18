@@ -50,11 +50,16 @@ func (s *logSink) logger() *slog.Logger { return slog.New(slog.NewTextHandler(s,
 
 func TestRuntimeAnnouncesItsAddressAndTheShutdown(t *testing.T) {
 	addr := freeAddr(t)
-	logs := &logSink{}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
 	app := application{
-		http:     &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.NotFoundHandler()},
-		httpAddr: addr,
-		logger:   logs.logger(),
+		http:            &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.NotFoundHandler()},
+		httpAddr:        addr,
+		logger:          logs.logger(),
+		drain:           nil,
+		shutdownTimeout: 0,
 	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
@@ -85,7 +90,13 @@ func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 	t.Cleanup(func() { _ = taken.Close() })
 
 	addr := taken.Addr().String()
-	app := application{http: &http.Server{ReadHeaderTimeout: time.Second, Addr: addr}, httpAddr: addr}
+	app := application{
+		http:            &http.Server{ReadHeaderTimeout: time.Second, Addr: addr},
+		httpAddr:        addr,
+		logger:          nil,
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 
 	err = app.run(context.Background(), func() {})
 
@@ -95,7 +106,13 @@ func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 func TestRuntimeReportsAServerThatStopsOnItsOwn(t *testing.T) {
 	addr := freeAddr(t)
 	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.NotFoundHandler()}
-	app := application{http: server, httpAddr: addr}
+	app := application{
+		http:            server,
+		httpAddr:        addr,
+		logger:          nil,
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(context.Background(), func() {}) }()
@@ -130,8 +147,17 @@ func (s stuckServer) Shutdown(context.Context) error { return s.shutdownErr }
 func (s stuckServer) Close() error { return s.closeErr }
 
 func TestShutdownReportsBothFailuresWhenTheServerCannotBeStopped(t *testing.T) {
-	logs := &logSink{}
-	app := application{http: stuckServer{shutdownErr: errDrain, closeErr: errClose}, logger: logs.logger()}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
+	app := application{
+		http:            stuckServer{shutdownErr: errDrain, closeErr: errClose},
+		logger:          logs.logger(),
+		httpAddr:        "",
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 
 	err := app.shutdown(t.Context(), func() {})
 
@@ -143,8 +169,20 @@ func TestShutdownReportsBothFailuresWhenTheServerCannotBeStopped(t *testing.T) {
 }
 
 func TestShutdownReportsTheDrainFailureWhenForceCloseWorks(t *testing.T) {
-	logs := &logSink{}
-	app := application{http: stuckServer{shutdownErr: errDrain}, logger: logs.logger()}
+	logs := &logSink{
+		mu:  sync.Mutex{},
+		buf: bytes.Buffer{},
+	}
+	app := application{
+		http: stuckServer{
+			shutdownErr: errDrain,
+			closeErr:    nil,
+		},
+		logger:          logs.logger(),
+		httpAddr:        "",
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 
 	err := app.shutdown(t.Context(), func() {})
 

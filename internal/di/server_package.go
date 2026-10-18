@@ -813,6 +813,7 @@ var serverPackage = do.Package(
 			Transactor:    txStore,
 			SignedIn:      handlers.OAuthSignedIn,
 			ClientAddress: handlers.ClientIP,
+			Now:           nil,
 		})
 	}),
 	// The MCP endpoint (ADR-0021): verifies tokens with the OAuth server and
@@ -873,7 +874,9 @@ var serverPackage = do.Package(
 					Personal:  cfg.MCP.RateClientPersonal,
 					Write:     cfg.MCP.RateClientWrite,
 				},
+				Now: nil,
 			},
+			Logger: nil,
 		})
 	}),
 	// Readiness is the database only (ADR-0023): the injector asks every built

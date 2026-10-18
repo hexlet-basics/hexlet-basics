@@ -67,7 +67,10 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 
 	for _, path := range tests {
 		t.Run(path, func(t *testing.T) {
-			handler := &paginationContractHandler{}
+			handler := &paginationContractHandler{
+				UnimplementedHandler: api.UnimplementedHandler{},
+				calls:                0,
+			}
 			router := newPaginationRouter(t, handler)
 			rec := httptest.NewRecorder()
 
@@ -81,7 +84,10 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 
 func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	t.Parallel()
-	router := newPaginationRouter(t, &paginationContractHandler{})
+	router := newPaginationRouter(t, &paginationContractHandler{
+		UnimplementedHandler: api.UnimplementedHandler{},
+		calls:                0,
+	})
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/reviews?page=0", nil)
 	req.Header.Set("Accept-Language", "ru")
 
@@ -98,7 +104,10 @@ func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 
 func TestRouterErrorsUseRequestLocale(t *testing.T) {
 	t.Parallel()
-	router := newPaginationRouter(t, &paginationContractHandler{})
+	router := newPaginationRouter(t, &paginationContractHandler{
+		UnimplementedHandler: api.UnimplementedHandler{},
+		calls:                0,
+	})
 	tests := []struct {
 		name       string
 		method     string
@@ -108,11 +117,12 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 		allowValue string
 	}{
 		{
-			name:   "not found",
-			method: http.MethodGet,
-			path:   "/missing",
-			status: http.StatusNotFound,
-			body:   "No encontrado",
+			name:       "not found",
+			method:     http.MethodGet,
+			path:       "/missing",
+			status:     http.StatusNotFound,
+			body:       "No encontrado",
+			allowValue: "",
 		},
 		{
 			name:       "method not allowed",
@@ -159,7 +169,10 @@ func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := &paginationContractHandler{}
+			handler := &paginationContractHandler{
+				UnimplementedHandler: api.UnimplementedHandler{},
+				calls:                0,
+			}
 			router := newPaginationRouter(t, handler)
 			rec := httptest.NewRecorder()
 

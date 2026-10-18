@@ -287,7 +287,23 @@ func TestEveryCatalogueToolRefusesAConnectionWithoutTheCatalogReadScope(t *testi
 }
 
 func TestPageSizeAboveTheLimitIsClampedAndSaidSo(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxPageSize: 2}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		MaxPageSize:      2,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	t.Run("a list the tool pages itself", func(t *testing.T) {
@@ -351,7 +367,23 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T) {
 	const limit = 3000
 
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		MaxResponseBytes: limit,
+		MaxPageSize:      0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 	schemas := outputSchemas(t, session)
 
@@ -405,7 +437,23 @@ func TestResponseUnderTheLimitCarriesNoHint(t *testing.T) {
 func TestARecordThatCannotBeShortenedToTheLimitIsRefusedByName(t *testing.T) {
 	const limit = 2000
 
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		MaxResponseBytes: limit,
+		MaxPageSize:      0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	result := callTool(t, session, "getCourseLesson", map[string]any{"courseSlug": jsCourse, "slug": firstLesson})
@@ -416,7 +464,23 @@ func TestARecordThatCannotBeShortenedToTheLimitIsRefusedByName(t *testing.T) {
 }
 
 func TestCallThatOverrunsTheTimeoutIsCancelledAndToldSo(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{ToolTimeout: 1}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		ToolTimeout:      1,
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	result := callTool(t, session, "listCourses", nil)

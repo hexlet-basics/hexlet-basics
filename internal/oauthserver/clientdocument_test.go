@@ -20,7 +20,12 @@ const documentRedirect = "https://app.example.com/callback"
 // authorizeDocument sends the authorization request of a document client and
 // returns the flow, whose Authorize response is the answer.
 func authorizeDocument(o *testsupport.OAuth, clientID, redirect string, scopes ...string) *testsupport.Flow {
-	return o.StartWith(alice(), testsupport.StartOptions{ClientID: clientID, RedirectURIs: []string{redirect}, Scopes: scopes})
+	return o.StartWith(alice(), testsupport.StartOptions{
+		ClientID:     clientID,
+		RedirectURIs: []string{redirect},
+		Scopes:       scopes,
+		Params:       nil,
+	})
 }
 
 func storedClient(t *testing.T, o *testsupport.OAuth, clientID string) bool {

@@ -27,7 +27,12 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 
 	before := r.db.LessonProgress.Query().CountX(ctx)
 
-	passed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{}, firstLesson))
+	passed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, firstLesson))
 	require.NoError(t, err)
 	require.NotNil(t, passed.Guest, "a first pass is worth a cookie")
 	assert.True(t, passed.Guest.Has(jsSlug, firstLesson))
@@ -35,13 +40,19 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 	assert.Zero(t, r.db.LessonProgress.Query().CountX(ctx)-before, "and leaves no rows")
 
 	// The same lesson again finishes nothing new, so there is nothing to write.
-	again, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{Guest: *passed.Guest}, firstLesson))
+	again, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		Guest:  *passed.Guest,
+		UserID: 0,
+	}, firstLesson))
 	require.NoError(t, err)
 	assert.Nil(t, again.Guest)
 
 	// A failing run never moves them.
 	r.failTheRun()
-	failed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{Guest: *passed.Guest}, secondLesson))
+	failed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		Guest:  *passed.Guest,
+		UserID: 0,
+	}, secondLesson))
 	require.NoError(t, err)
 	assert.False(t, failed.Outcome.Passed)
 	assert.Nil(t, failed.Guest)

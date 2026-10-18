@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -37,9 +38,22 @@ func openPool(t *testing.T) (*store.Store, *ent.Client) {
 // capture without the caller knowing.
 func probe(ctx context.Context, client *ent.Client, operation string) error {
 	return audit.Write(ctx, client, audit.Entry{
-		Source:    audit.Source{Channel: audit.ChannelWeb},
-		Operation: operation,
-		Outcome:   audit.OutcomeSucceeded,
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
+		Operation:  operation,
+		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		OccurredAt: time.Time{},
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, nil)
 }
 

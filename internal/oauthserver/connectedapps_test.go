@@ -231,6 +231,7 @@ func connectOtherClient(t *testing.T, o *testsupport.OAuth, userID int) (testsup
 	got := decodeJSON[registered](t, res)
 	f := o.StartWith(userID, testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: got.ClientID, RedirectURIs: got.RedirectURIs,
+		Params: nil,
 	})
 	tokens, exchange := f.Exchange(f.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)

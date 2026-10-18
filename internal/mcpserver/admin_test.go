@@ -498,7 +498,15 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 	// One call per tool must reach the checkpoint, so the budgets are not the
 	// subject here.
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User:             rates,
+		Client:           rates,
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Now:              nil,
+	}))
 	// A role with nothing: bob's grants are removed, and no mcp.* is held.
 	o.DB.StaffRoleGrant.Delete().ExecX(t.Context())
 	session, _ := admin(t, o, bob())

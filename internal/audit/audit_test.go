@@ -68,7 +68,11 @@ func TestSourceDefaultsToTheWebsite(t *testing.T) {
 	assert.Equal(t, audit.ChannelWeb, audit.SourceFrom(t.Context()).Channel)
 
 	app := 7
-	got := audit.SourceFrom(audit.WithSource(t.Context(), audit.Source{Channel: audit.ChannelMCP, ConnectedAppID: &app}))
+	got := audit.SourceFrom(audit.WithSource(t.Context(), audit.Source{
+		Channel:        audit.ChannelMCP,
+		ConnectedAppID: &app,
+		TokenID:        nil,
+	}))
 	assert.Equal(t, audit.ChannelMCP, got.Channel)
 	assert.Equal(t, 7, *got.ConnectedAppID)
 }

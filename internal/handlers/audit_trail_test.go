@@ -31,9 +31,21 @@ func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation st
 
 	entry := audit.Entry{
 		OccurredAt: at,
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  operation,
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}
 	if mutate != nil {
 		mutate(&entry)
@@ -253,13 +265,36 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	h.DB.Banner.UpdateOneID(banner).SetBody("Cyber Monday sale").ExecX(ctx)
 	h.DB.User.UpdateOneID(carol).SetPasswordDigest("digest-the-trail-must-not-keep").ExecX(ctx)
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		OccurredAt: at, Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation: "AdminUpdateBanner", Outcome: audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, changes))
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		OccurredAt: at, Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation: "AdminListUsers", Outcome: audit.OutcomeSucceeded,
-		Reads: &audit.Reads{Count: 2, IDs: []string{"1", "2"}},
+		Reads:      &audit.Reads{Count: 2, IDs: []string{"1", "2"}},
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
 	}, nil))
 
 	page, err := listTrail(h, api.AdminListAuditRecordsParams{Operation: api.NewOptString("AdminUpdateBanner")})

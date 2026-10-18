@@ -114,7 +114,11 @@ func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
 	t.Parallel()
 	cfg, _ := fakePostbox(t, http.StatusBadRequest)
 
-	err := NewPostbox(cfg).Send(t.Context(), Message{To: "learner@example.com", Subject: "Welcome"})
+	err := NewPostbox(cfg).Send(t.Context(), Message{
+		To:      "learner@example.com",
+		Subject: "Welcome",
+		HTML:    "",
+	})
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "send email via postbox")
@@ -125,8 +129,25 @@ func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
 
 	logger := slog.New(slog.DiscardHandler)
 
-	assert.IsType(t, &Postbox{}, New(config.MailConfig{PostboxAccessKeyID: "key"}, logger))
-	assert.IsType(t, &Log{}, New(config.MailConfig{}, logger))
+	assert.IsType(t, &Postbox{
+		client: nil,
+		from:   "",
+	}, New(config.MailConfig{
+		PostboxAccessKeyID:     "key",
+		From:                   "",
+		PostboxEndpoint:        "",
+		PostboxRegion:          "",
+		PostboxSecretAccessKey: "",
+	}, logger))
+	assert.IsType(t, &Log{
+		logger: nil,
+	}, New(config.MailConfig{
+		From:                   "",
+		PostboxEndpoint:        "",
+		PostboxRegion:          "",
+		PostboxAccessKeyID:     "",
+		PostboxSecretAccessKey: "",
+	}, logger))
 }
 
 func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
@@ -146,9 +167,20 @@ func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 func TestRecorderKeepsMessagesInOrderAndHandsOutACopy(t *testing.T) {
 	t.Parallel()
 
-	recorder := &Recorder{}
-	require.NoError(t, recorder.Send(t.Context(), Message{To: "a@example.com"}))
-	require.NoError(t, recorder.Send(t.Context(), Message{To: "b@example.com"}))
+	recorder := &Recorder{
+		mu:   sync.Mutex{},
+		sent: nil,
+	}
+	require.NoError(t, recorder.Send(t.Context(), Message{
+		To:      "a@example.com",
+		Subject: "",
+		HTML:    "",
+	}))
+	require.NoError(t, recorder.Send(t.Context(), Message{
+		To:      "b@example.com",
+		Subject: "",
+		HTML:    "",
+	}))
 
 	sent := recorder.Sent()
 	sent[0].To = "changed@example.com"

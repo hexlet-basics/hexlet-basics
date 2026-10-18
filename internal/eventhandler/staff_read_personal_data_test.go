@@ -26,6 +26,9 @@ func TestStaffReadPersonalDataIsRecordedAtTheTimeOfTheRead(t *testing.T) {
 		ActorUserID: &actor, Channel: "mcp", ConnectedAppID: &app, TokenID: &token,
 		Operation: "AdminGetLead", EntityType: "Lead", EntityIDs: []string{"11"}, Count: 1,
 		RequestID: "req-1", OccurredAt: readAt,
+		Address:   "",
+		UserAgent: "",
+		Locale:    "",
 	}))
 
 	row := client.AuditRecord.Query().Where(auditrecord.Operation("AdminGetLead")).OnlyX(t.Context())

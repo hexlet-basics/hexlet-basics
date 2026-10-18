@@ -59,14 +59,24 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	go func() {
 		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
 		if err != nil {
-			arrived <- firstChunk{err: err}
+			arrived <- firstChunk{
+				err:  err,
+				res:  nil,
+				body: nil,
+				line: "",
+			}
 
 			return
 		}
 
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			arrived <- firstChunk{err: err}
+			arrived <- firstChunk{
+				err:  err,
+				res:  nil,
+				body: nil,
+				line: "",
+			}
 
 			return
 		}

@@ -244,13 +244,25 @@ func (s *Server) addFindTools(server *mcp.Server) {
 		return s.findTools(ctx, req, info)
 	})
 	// No Scope: any signed-in caller may look, and what it finds is what it may use.
-	s.note(tool, toolNeeds{})
+	s.note(tool, toolNeeds{
+		scope:        "",
+		permission:   "",
+		capabilities: nil,
+	})
 }
 
 func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *auth.TokenInfo) (*mcp.CallToolResult, error) {
-	c := call{args: req.Params.Arguments}
+	c := call{
+		args:     req.Params.Arguments,
+		userID:   0,
+		clientID: "",
+	}
 
-	args := findToolsArgs{Detail: detailDescription}
+	args := findToolsArgs{
+		Detail: detailDescription,
+		Query:  "",
+		Limit:  0,
+	}
 	if err := c.decode(&args); err != nil {
 		return toolError(err.Error()), nil
 	}
@@ -297,7 +309,11 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 
 	text := fmt.Sprintf("%d of %d matching tools", len(rows), len(matched))
 
-	return s.finish(findToolsName, result{text: text, data: map[string]any{"total": len(matched), "tools": rows}})
+	return s.finish(findToolsName, result{
+		text: text,
+		data: map[string]any{"total": len(matched), "tools": rows},
+		list: nil,
+	})
 }
 
 // describe is what a tool needs, as findTools says it.

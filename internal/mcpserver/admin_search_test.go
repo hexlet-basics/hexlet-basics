@@ -35,14 +35,54 @@ type searchCase struct {
 
 func searchCases() []searchCase {
 	return []searchCase{
-		{tool: "adminListBanners", permission: "banners.read", q: "BLACK"},
-		{tool: "adminListBlogPosts", permission: "blog_posts.read", q: "HELLO WORLD"},
-		{tool: "adminListReviews", permission: "reviews.read", q: "PETROV"},
-		{tool: "adminListCourses", permission: "courses.read", q: "PYTHON"},
-		{tool: "adminListCourseLandingPages", permission: "course_landing_pages.read", q: "RUBY-"},
-		{tool: "adminListCourseLessons", permission: "course_lessons.read", q: "VARIABLES"},
-		{tool: "adminListLeads", permission: "leads.read", q: "ANNA@"},
-		{tool: "adminListMessages", permission: "messages.read", q: "CONSOLE.LOG"},
+		{
+			tool:       "adminListBanners",
+			permission: "banners.read",
+			q:          "BLACK",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListBlogPosts",
+			permission: "blog_posts.read",
+			q:          "HELLO WORLD",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListReviews",
+			permission: "reviews.read",
+			q:          "PETROV",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourses",
+			permission: "courses.read",
+			q:          "PYTHON",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourseLandingPages",
+			permission: "course_landing_pages.read",
+			q:          "RUBY-",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourseLessons",
+			permission: "course_lessons.read",
+			q:          "VARIABLES",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListLeads",
+			permission: "leads.read",
+			q:          "ANNA@",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListMessages",
+			permission: "messages.read",
+			q:          "CONSOLE.LOG",
+			extra:      nil,
+		},
 		{tool: "adminListUsers", permission: "users.read", extra: []string{"mcp.manage"}, q: "SECOND-ADMIN@"},
 	}
 }

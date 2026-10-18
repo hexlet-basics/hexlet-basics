@@ -139,7 +139,14 @@ func New(deps Deps) (*Server, error) {
 	}
 
 	limits := deps.Limits.withDefaults()
-	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
+	s := &Server{
+		deps:     deps,
+		resource: deps.Verifier.Resource(),
+		limits:   limits,
+		meter:    newMeter(limits),
+		handler:  nil,
+		registry: nil,
+	}
 
 	mcpServer := mcp.NewServer(&mcp.Implementation{Name: serverName, Title: "Hexlet Basics"}, &mcp.ServerOptions{
 		Instructions: instructionsText,

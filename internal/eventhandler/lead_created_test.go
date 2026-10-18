@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"time"
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
@@ -38,12 +39,54 @@ func TestLeadCreatedEnqueuesTheAmoCRMJobOnce(t *testing.T) {
 	require.NoError(t, err)
 
 	handler := eventhandler.LeadCreated(txInserter{client: client, tx: tx})
-	event := &events.LeadCreated{LeadID: 42, UserID: 7}
+	event := &events.LeadCreated{
+		LeadID:      42,
+		UserID:      7,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	}
 
 	require.NoError(t, handler.Handle(t.Context(), event))
 	require.NoError(t, handler.Handle(t.Context(), event))
 
-	job := rivertest.RequireInsertedTx[*riverdatabasesql.Driver](t.Context(), t, tx, jobs.AmoCRMLeadArgs{}, nil)
+	job := rivertest.RequireInsertedTx[*riverdatabasesql.Driver](t.Context(), t, tx, jobs.AmoCRMLeadArgs{
+		Event: events.LeadCreated{
+			LeadID:      0,
+			UserID:      0,
+			UserName:    "",
+			FirstName:   nil,
+			LastName:    nil,
+			YMClientID:  nil,
+			UTMSource:   nil,
+			UTMMedium:   nil,
+			UTMCampaign: nil,
+			UTMTerm:     nil,
+			UTMContent:  nil,
+			Email:       nil,
+			Phone:       nil,
+			Telegram:    nil,
+			WhatsApp:    nil,
+			LandingPage: nil,
+			Referrer:    nil,
+			IP:          nil,
+			OccurredAt:  time.Time{},
+		},
+	}, nil)
 	assert.Equal(t, *event, job.Args.Event)
 	assert.Equal(t, "lead_created_to_amocrm_v1", handler.HandlerName())
 }

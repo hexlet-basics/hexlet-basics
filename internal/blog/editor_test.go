@@ -17,7 +17,12 @@ func TestEditorCreateStampsTheCreatorAndTheLocale(t *testing.T) {
 	name, slug := "Заметки", "zametki"
 
 	post, err := editor.Create(t.Context(), fixture.ID(fixture.UserAdminLearner), "ru",
-		blog.PostFields{Name: &name, Slug: &slug, RichBody: "<p>Текст</p>"})
+		blog.PostFields{
+			Name:        &name,
+			Slug:        &slug,
+			RichBody:    "<p>Текст</p>",
+			Description: nil,
+		})
 
 	require.NoError(t, err)
 	assert.Equal(t, fixture.ID(fixture.UserAdminLearner), post.CreatorID)
@@ -33,7 +38,12 @@ func TestEditorUpdateClearsWhatIsLeftOutAndKeepsTheLocale(t *testing.T) {
 	before := db.BlogPost.GetX(t.Context(), id)
 	name := "Renamed"
 
-	after, err := editor.Update(t.Context(), id, blog.PostFields{Name: &name, RichBody: "<p>New</p>"})
+	after, err := editor.Update(t.Context(), id, blog.PostFields{
+		Name:        &name,
+		RichBody:    "<p>New</p>",
+		Slug:        nil,
+		Description: nil,
+	})
 
 	require.NoError(t, err)
 	require.NotNil(t, after.Name)
@@ -46,7 +56,12 @@ func TestEditorUpdateClearsWhatIsLeftOutAndKeepsTheLocale(t *testing.T) {
 func TestEditorUpdateOfAMissingPostIsNotFound(t *testing.T) {
 	editor := blog.NewEditor(testsupport.NewClient(t))
 
-	_, err := editor.Update(t.Context(), 0, blog.PostFields{RichBody: "<p>x</p>"})
+	_, err := editor.Update(t.Context(), 0, blog.PostFields{
+		RichBody:    "<p>x</p>",
+		Name:        nil,
+		Slug:        nil,
+		Description: nil,
+	})
 
 	require.ErrorIs(t, err, domain.ErrNotFound)
 }

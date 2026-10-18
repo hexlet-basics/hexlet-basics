@@ -75,8 +75,10 @@ func TestAnUnknownScopeIsRefusedWithInvalidScopeNotDropped(t *testing.T) {
 		"email",
 	} {
 		f := o.StartWith(alice(), testsupport.StartOptions{
-			Scopes: []string{oauthserver.ScopeCatalogRead},
-			Params: func(q url.Values) { q.Set("scope", scope) },
+			Scopes:       []string{oauthserver.ScopeCatalogRead},
+			Params:       func(q url.Values) { q.Set("scope", scope) },
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
 		q := refusal(t, f)
 		assert.Equal(t, "invalid_scope", q.Get("error"), scope)
@@ -93,8 +95,10 @@ func TestAKnownScopeTheClientWasNotRegisteredForIsRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	f := o.StartWith(alice(), testsupport.StartOptions{
-		Scopes: []string{oauthserver.ScopeCatalogRead},
-		Params: func(q url.Values) { q.Set("scope", "catalog:read admin") },
+		Scopes:       []string{oauthserver.ScopeCatalogRead},
+		Params:       func(q url.Values) { q.Set("scope", "catalog:read admin") },
+		RedirectURIs: nil,
+		ClientID:     "",
 	})
 
 	assert.Equal(t, "invalid_scope", refusal(t, f).Get("error"))
@@ -115,6 +119,8 @@ func TestTheResourceBindsTheTokenAudienceToTheCanonicalMCPURL(t *testing.T) {
 					q["resource"] = resource
 				}
 			},
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
 		require.Equal(t, http.StatusFound, f.Authorize.StatusCode, name)
 		code := f.Approve()
@@ -150,8 +156,10 @@ func TestAnotherResourceIsRefusedWithInvalidTarget(t *testing.T) {
 		{mcpResource, "https://other.example/mcp"}, // one wrong value among right ones
 	} {
 		f := o.StartWith(alice(), testsupport.StartOptions{
-			Scopes: []string{oauthserver.ScopeCatalogRead},
-			Params: func(q url.Values) { q["resource"] = resource },
+			Scopes:       []string{oauthserver.ScopeCatalogRead},
+			Params:       func(q url.Values) { q["resource"] = resource },
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
 		q := refusal(t, f)
 		assert.Equal(t, "invalid_target", q.Get("error"), resource)
@@ -210,8 +218,10 @@ func TestTheAuthorizationResponseCarriesTheIssuer(t *testing.T) {
 
 	// The request is refused.
 	f = o.StartWith(alice(), testsupport.StartOptions{
-		Scopes: []string{oauthserver.ScopeCatalogRead},
-		Params: func(q url.Values) { q.Set("scope", "superpower") },
+		Scopes:       []string{oauthserver.ScopeCatalogRead},
+		Params:       func(q url.Values) { q.Set("scope", "superpower") },
+		RedirectURIs: nil,
+		ClientID:     "",
 	})
 	assert.Equal(t, testsupport.OAuthIssuer, refusal(t, f).Get("iss"))
 
@@ -247,6 +257,7 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 			Scopes:       []string{oauthserver.ScopeCatalogRead},
 			RedirectURIs: registered,
 			Params:       func(q url.Values) { q.Set("redirect_uri", redirect) },
+			ClientID:     "",
 		})
 		if f.Authorize.StatusCode != http.StatusFound {
 			return false
@@ -306,6 +317,7 @@ func TestAPlainHTTPRedirectOnANonLoopbackHostIsRefusedEvenWhenRegistered(t *test
 		Scopes:       []string{oauthserver.ScopeCatalogRead},
 		RedirectURIs: []string{redirect},
 		Params:       func(q url.Values) { q.Set("redirect_uri", redirect) },
+		ClientID:     "",
 	})
 
 	// There is no trusted redirect to send the error to: the browser stays here.

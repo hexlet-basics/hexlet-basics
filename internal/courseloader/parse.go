@@ -304,8 +304,9 @@ func parseLessons(repo repository, moduleDir, moduleDirName string, spec *Spec, 
 			PreparedCode: prepareCode(originalCode),
 			// Matches legacy path_to_code: an absolute path INSIDE the runtime
 			// container's extracted /exercises-<slug> tree, used by `make -C <path>`.
-			PathToCode: "/exercises-" + courseSlug + "/modules/" + moduleDirName + "/" + name,
-			Infos:      infos,
+			PathToCode:   "/exercises-" + courseSlug + "/modules/" + moduleDirName + "/" + name,
+			Infos:        infos,
+			NaturalOrder: 0,
 		})
 	}
 

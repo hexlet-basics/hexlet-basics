@@ -16,7 +16,9 @@ const testSecret = "test-secret"
 
 func TestGuestCookieRoundTripsProgress(t *testing.T) {
 	codec := progress.NewGuestCodec(testSecret)
-	stored := progress.GuestProgress{}.
+	stored := progress.GuestProgress{
+		Entries: nil,
+	}.
 		Record("javascript", "variables").
 		Record("python", "hello-world")
 
@@ -35,7 +37,9 @@ func TestGuestCookieRoundTripsProgress(t *testing.T) {
 // one, and moves it to the most-recently-touched end. Lessons are a set: any
 // order, and recording one twice stores it once.
 func TestGuestProgressKeepsOneEntryPerCourse(t *testing.T) {
-	stored := progress.GuestProgress{}.
+	stored := progress.GuestProgress{
+		Entries: nil,
+	}.
 		Record("javascript", "hello-world").
 		Record("python", "intro").
 		Record("javascript", "variables").
@@ -53,7 +57,9 @@ func TestGuestProgressKeepsOneEntryPerCourse(t *testing.T) {
 // so an unsigned edit would be a way to mint completions.
 func TestGuestCookieRejectsATamperedPayload(t *testing.T) {
 	codec := progress.NewGuestCodec(testSecret)
-	value, err := codec.Encode(progress.GuestProgress{}.Record("javascript", "hello-world"))
+	value, err := codec.Encode(progress.GuestProgress{
+		Entries: nil,
+	}.Record("javascript", "hello-world"))
 	require.NoError(t, err)
 
 	payload, signature, _ := strings.Cut(value, ".")
@@ -66,7 +72,9 @@ func TestGuestCookieRejectsATamperedPayload(t *testing.T) {
 // A cookie signed with another secret is not ours.
 func TestGuestCookieRejectsAForeignSignature(t *testing.T) {
 	value, err := progress.NewGuestCodec("someone-elses-secret").
-		Encode(progress.GuestProgress{}.Record("javascript", "hello-world"))
+		Encode(progress.GuestProgress{
+			Entries: nil,
+		}.Record("javascript", "hello-world"))
 	require.NoError(t, err)
 
 	_, err = progress.NewGuestCodec(testSecret).Decode(value)
@@ -87,7 +95,9 @@ func TestGuestCookieRejectsGarbage(t *testing.T) {
 func TestGuestCookieEvictsLeastRecentlyTouchedCourses(t *testing.T) {
 	codec := progress.NewGuestCodec(testSecret)
 
-	stored := progress.GuestProgress{}
+	stored := progress.GuestProgress{
+		Entries: nil,
+	}
 	for i := range 200 {
 		stored = stored.Record(
 			fmt.Sprintf("course-with-a-fairly-long-slug-%03d", i),
@@ -110,7 +120,9 @@ func TestGuestCookieEvictsLeastRecentlyTouchedCourses(t *testing.T) {
 func TestGuestCookieIsHttpOnlyAndLongLived(t *testing.T) {
 	codec := progress.NewGuestCodec(testSecret)
 
-	cookie, err := codec.Cookie(progress.GuestProgress{}.Record("javascript", "hello-world"), true)
+	cookie, err := codec.Cookie(progress.GuestProgress{
+		Entries: nil,
+	}.Record("javascript", "hello-world"), true)
 	require.NoError(t, err)
 
 	assert.Equal(t, progress.GuestCookieName, cookie.Name)

@@ -38,7 +38,10 @@ func (AmoCRMLeadArgs) InsertOpts() river.InsertOpts {
 
 // AmoCRMLead syncs created leads to amoCRM through syncer.
 func AmoCRMLead(syncer LeadSyncer) Module {
-	return module(&amoCRMLeadWorker{syncer: syncer})
+	return module(&amoCRMLeadWorker{
+		syncer:         syncer,
+		WorkerDefaults: river.WorkerDefaults[AmoCRMLeadArgs]{},
+	})
 }
 
 type amoCRMLeadWorker struct {

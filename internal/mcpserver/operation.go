@@ -96,7 +96,18 @@ func readOperation(operationID string) (*operation, error) {
 }
 
 func buildOperation(doc *contractDoc, id, method, path string, node map[string]any) (*operation, error) {
-	op := &operation{ID: id, Method: method, Path: path, Description: asString(node["description"])}
+	op := &operation{
+		ID:           id,
+		Method:       method,
+		Path:         path,
+		Description:  asString(node["description"]),
+		Params:       nil,
+		Body:         nil,
+		BodyRequired: false,
+		Multipart:    nil,
+		Response:     nil,
+		Admin:        false,
+	}
 
 	for _, raw := range asList(node["parameters"]) {
 		p, _ := raw.(map[string]any)
@@ -109,7 +120,13 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 			p, _ = doc.Components.Parameters[name].(map[string]any)
 		}
 
-		param := parameter{Name: asString(p["name"]), In: asString(p["in"]), Description: asString(p["description"])}
+		param := parameter{
+			Name:        asString(p["name"]),
+			In:          asString(p["in"]),
+			Description: asString(p["description"]),
+			Required:    false,
+			Schema:      nil,
+		}
 
 		param.Required, _ = p["required"].(bool)
 		if param.In != "path" && param.In != "query" {
@@ -225,7 +242,9 @@ func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error)
 
 	entry, ok := entries["multipart/form-data"].(map[string]any)
 	if !ok {
-		return multipartFile{}, false, nil
+		return multipartFile{
+			Field: "",
+		}, false, nil
 	}
 
 	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
@@ -249,7 +268,9 @@ func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error)
 		return multipartFile{Field: name}, true, nil
 	}
 
-	return multipartFile{}, false, nil
+	return multipartFile{
+		Field: "",
+	}, false, nil
 }
 
 func asList(v any) []any {

@@ -74,6 +74,8 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 			},
 		},
 		payload: newPayloadBuilder(ymCounter),
+		api:     nil,
+		initErr: nil,
 	}
 
 	api, err := generated.NewClient(
@@ -132,8 +134,16 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 		FirstName: optString(event.FirstName),
 		LastName:  optString(event.LastName),
 		CustomFieldsValues: customFields(
-			customField{code: "EMAIL", value: event.Email},
-			customField{code: "PHONE", value: event.Phone},
+			customField{
+				code:  "EMAIL",
+				value: event.Email,
+				id:    0,
+			},
+			customField{
+				code:  "PHONE",
+				value: event.Phone,
+				id:    0,
+			},
 		),
 	}
 	landing := landingQuery(event.LandingPage)
@@ -159,7 +169,11 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{id: fieldFBCLID, code: "FBCLID", value: landing("fbclid")},
 			customField{id: fieldGAUTM, code: "GA_UTM", value: landing("ga_utm")},
 			// The source-form field has no code in amoCRM, only an id.
-			customField{id: fieldSourceForm, value: new(source)},
+			customField{
+				id:    fieldSourceForm,
+				value: new(source),
+				code:  "",
+			},
 		),
 	}
 

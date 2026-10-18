@@ -93,6 +93,7 @@ func TestAPublicClientWithAnHTTPSRedirectRegistersAndCompletesTheFlow(t *testing
 
 	f := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"catalog:read"},
+		Params: nil,
 	})
 	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
 	require.NotEmpty(t, f.RequestID)
@@ -134,6 +135,7 @@ func TestARegisteredClientCannotRequestAScopeItDidNotRegisterFor(t *testing.T) {
 
 	f := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"admin"},
+		Params: nil,
 	})
 
 	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)

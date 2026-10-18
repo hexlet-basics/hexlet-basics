@@ -27,7 +27,11 @@ type Probes struct {
 
 // New returns Probes whose readiness is the result of check.
 func New(check func(context.Context) error) *Probes {
-	return &Probes{check: check}
+	return &Probes{
+		check:    check,
+		draining: atomic.Bool{},
+		awaiting: atomic.Bool{},
+	}
 }
 
 // NewAwaitingStart returns Probes that answer /readyz with 503 until Started

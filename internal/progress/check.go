@@ -86,7 +86,12 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		return nil, errs.With("lesson_id", check.LessonID).Wrapf(err, "run submission for lesson")
 	}
 
-	result := &CheckResult{Outcome: outcome}
+	result := &CheckResult{
+		Outcome:        outcome,
+		LessonFinished: false,
+		CourseFinished: false,
+		Guest:          nil,
+	}
 
 	err = p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		occurredAt := p.now()

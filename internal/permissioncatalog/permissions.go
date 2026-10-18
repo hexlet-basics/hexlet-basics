@@ -112,6 +112,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		standalone:   map[string]bool{},
 		personalData: map[string]string{},
 		required:     map[string]string{},
+		catalog:      nil,
 	}
 	kinds := map[string]Kind{}
 

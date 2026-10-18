@@ -71,7 +71,11 @@ func SourceFrom(ctx context.Context) Source {
 		return s
 	}
 
-	return Source{Channel: ChannelWeb}
+	return Source{
+		Channel:        ChannelWeb,
+		ConnectedAppID: nil,
+		TokenID:        nil,
+	}
 }
 
 // Entry is everything an Audit Record says except the changes, which come from
@@ -140,7 +144,10 @@ type recorderKey struct{}
 // WithRecorder returns a context in which row changes are noted, and the
 // Recorder that holds them.
 func WithRecorder(ctx context.Context) (context.Context, *Recorder) {
-	r := &Recorder{}
+	r := &Recorder{
+		mu:      sync.Mutex{},
+		changes: nil,
+	}
 
 	return context.WithValue(ctx, recorderKey{}, r), r
 }

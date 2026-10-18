@@ -222,7 +222,10 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 		slog.New(slog.NewJSONHandler(&bytes.Buffer{}, nil)),
 	)
 	server, err := api.NewServer(
-		&failingCoursesHandler{errorHandler: errorHandler},
+		&failingCoursesHandler{
+			errorHandler:         errorHandler,
+			UnimplementedHandler: api.UnimplementedHandler{},
+		},
 		nil,
 		api.WithErrorHandler(errorHandler.Write),
 	)

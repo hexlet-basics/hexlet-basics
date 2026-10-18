@@ -261,9 +261,35 @@ func TestConsentOperationsOfTheServerNeedASignedInUser(t *testing.T) {
 }
 
 func TestTheServerRefusesAConfigurationItCannotRunWith(t *testing.T) {
-	_, err := oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{Issuer: "https://code-basics.test"}})
+	_, err := oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{Issuer: "https://code-basics.test",
+		EncryptionKey:        "",
+		RegistrationLimit:    0,
+		RegistrationWindow:   0,
+		AccessTokenLifetime:  0,
+		RefreshTokenLifetime: 0,
+	},
+		DB:            nil,
+		Transactor:    nil,
+		SignedIn:      nil,
+		ClientAddress: nil,
+		Now:           nil,
+	})
 	require.ErrorContains(t, err, "encryption key")
 
-	_, err = oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{EncryptionKey: "k", Issuer: "not an origin"}})
+	_, err = oauthserver.New(oauthserver.Deps{
+		Config: oauthserver.Config{
+			EncryptionKey:        "k",
+			Issuer:               "not an origin",
+			RegistrationLimit:    0,
+			RegistrationWindow:   0,
+			AccessTokenLifetime:  0,
+			RefreshTokenLifetime: 0,
+		},
+		DB:            nil,
+		Transactor:    nil,
+		SignedIn:      nil,
+		ClientAddress: nil,
+		Now:           nil,
+	})
 	require.Error(t, err)
 }

@@ -85,6 +85,10 @@ func (t *Tokens) Issue(purpose Purpose, u *ent.User) (string, error) {
 		Subject:     strconv.Itoa(u.ID),
 		IssuedAt:    jwt.NewNumericDate(now),
 		ExpiresAt:   jwt.NewNumericDate(now.Add(Lifetime)),
+		Issuer:      "",
+		Audience:    nil,
+		NotBefore:   nil,
+		ID:          "",
 	})
 
 	signed, err := token.SignedString(t.secret)

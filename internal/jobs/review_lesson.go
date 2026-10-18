@@ -42,7 +42,10 @@ func ReviewLesson(reviewer LessonReviewer) Module {
 // ReviewLessonWorker is the worker alone, without its registration, so that a test
 // can work a job through it in a transaction (rivertest.Worker).
 func ReviewLessonWorker(reviewer LessonReviewer) river.Worker[ReviewLessonArgs] {
-	return &reviewLessonWorker{reviewer: reviewer}
+	return &reviewLessonWorker{
+		reviewer:       reviewer,
+		WorkerDefaults: river.WorkerDefaults[ReviewLessonArgs]{},
+	}
 }
 
 type reviewLessonWorker struct {

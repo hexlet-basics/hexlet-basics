@@ -178,7 +178,15 @@ func TestToolsAnnounceWhatTheyDo(t *testing.T) {
 func newOAuthWithRates(t *testing.T, rates mcpserver.Rates) *testsupport.OAuth {
 	t.Helper()
 
-	return testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
+	return testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User:             rates,
+		Client:           rates,
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Now:              nil,
+	}))
 }
 
 func ogenName(operationID string) string { return string(operationID[0]-32) + operationID[1:] }

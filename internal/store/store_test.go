@@ -26,7 +26,16 @@ var (
 )
 
 func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
-	state := &transactionState{}
+	state := &transactionState{
+		mu:          sync.Mutex{},
+		begins:      0,
+		execs:       0,
+		commits:     0,
+		rollbacks:   0,
+		beginErr:    nil,
+		commitErr:   nil,
+		rollbackErr: nil,
+	}
 	txStore := New(openTransactionDB(t, state))
 
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
@@ -44,7 +53,16 @@ func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
 }
 
 func TestWithinTxRollsBackAndPreservesCallbackError(t *testing.T) {
-	state := &transactionState{}
+	state := &transactionState{
+		mu:          sync.Mutex{},
+		begins:      0,
+		execs:       0,
+		commits:     0,
+		rollbacks:   0,
+		beginErr:    nil,
+		commitErr:   nil,
+		rollbackErr: nil,
+	}
 	txStore := New(openTransactionDB(t, state))
 
 	err := txStore.WithinTx(t.Context(), func(*sql.Tx, *ent.Client) error {
@@ -57,7 +75,16 @@ func TestWithinTxRollsBackAndPreservesCallbackError(t *testing.T) {
 }
 
 func TestWithinTxRollsBackPanic(t *testing.T) {
-	state := &transactionState{}
+	state := &transactionState{
+		mu:          sync.Mutex{},
+		begins:      0,
+		execs:       0,
+		commits:     0,
+		rollbacks:   0,
+		beginErr:    nil,
+		commitErr:   nil,
+		rollbackErr: nil,
+	}
 	txStore := New(openTransactionDB(t, state))
 
 	assert.PanicsWithValue(t, "boom", func() {
@@ -71,7 +98,16 @@ func TestWithinTxRollsBackPanic(t *testing.T) {
 
 func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 	t.Run("begin", func(t *testing.T) {
-		state := &transactionState{beginErr: errBegin}
+		state := &transactionState{
+			beginErr:    errBegin,
+			mu:          sync.Mutex{},
+			begins:      0,
+			execs:       0,
+			commits:     0,
+			rollbacks:   0,
+			commitErr:   nil,
+			rollbackErr: nil,
+		}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
@@ -83,7 +119,16 @@ func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 	})
 
 	t.Run("commit", func(t *testing.T) {
-		state := &transactionState{commitErr: errCommit}
+		state := &transactionState{
+			commitErr:   errCommit,
+			mu:          sync.Mutex{},
+			begins:      0,
+			execs:       0,
+			commits:     0,
+			rollbacks:   0,
+			beginErr:    nil,
+			rollbackErr: nil,
+		}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
@@ -95,7 +140,16 @@ func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 	})
 
 	t.Run("rollback", func(t *testing.T) {
-		state := &transactionState{rollbackErr: errRollback}
+		state := &transactionState{
+			rollbackErr: errRollback,
+			mu:          sync.Mutex{},
+			begins:      0,
+			execs:       0,
+			commits:     0,
+			rollbacks:   0,
+			beginErr:    nil,
+			commitErr:   nil,
+		}
 
 		err := New(openTransactionDB(t, state)).WithinTx(
 			t.Context(),
@@ -112,7 +166,16 @@ func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 // what the callback does with it must not end that transaction or close the pool:
 // a nested Tx joins the outer one and Close leaves the connection alone.
 func TestWithinTxClientNeitherOwnsTheTransactionNorClosesThePool(t *testing.T) {
-	state := &transactionState{}
+	state := &transactionState{
+		mu:          sync.Mutex{},
+		begins:      0,
+		execs:       0,
+		commits:     0,
+		rollbacks:   0,
+		beginErr:    nil,
+		commitErr:   nil,
+		rollbackErr: nil,
+	}
 	db := openTransactionDB(t, state)
 
 	err := New(db).WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {

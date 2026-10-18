@@ -150,7 +150,10 @@ func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) e
 		}
 	}
 
-	return assistant.Usage{}, nil
+	return assistant.Usage{
+		InputTokens:  0,
+		OutputTokens: 0,
+	}, nil
 }
 
 // A learner reading the course in Russian is tutored in Russian, from the

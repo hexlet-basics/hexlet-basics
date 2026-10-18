@@ -33,7 +33,11 @@ func newCatalogue(t *testing.T) (*search.Catalogue, *ent.Client) {
 func ask(t *testing.T, c *search.Catalogue, locale, text string, types ...search.Type) ([]search.Hit, int) {
 	t.Helper()
 	hits, total, err := c.Search(t.Context(), search.Query{
-		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50},
+		Text: text, Locale: locale, Types: types, Page: domain.Page{
+			Limit:  50,
+			Offset: 0,
+		},
+		Unrestricted: false,
 	})
 	require.NoError(t, err)
 
@@ -111,16 +115,24 @@ func TestWhatAVisitorCannotReadIsNotFoundUntilItIsPublic(t *testing.T) {
 	}{
 		"an archived post": {locale: "ru", text: "Archived notes", hidden: "post:archived-notes", reveal: func(ctx context.Context, db *ent.Client) {
 			db.BlogPost.Update().Where(blogpost.SlugEQ("archived-notes")).SetState("published").ExecX(ctx)
-		}},
+		},
+			hide: nil,
+		},
 		"a draft post": {locale: "en", text: "Second post", hidden: "post:second-post", reveal: func(ctx context.Context, db *ent.Client) {
 			db.BlogPost.Update().Where(blogpost.SlugEQ("second-post")).SetState("published").ExecX(ctx)
-		}},
+		},
+			hide: nil,
+		},
 		"a draft landing page": {locale: "ru", text: "Node.js", hidden: "course:nodejs-ru", reveal: func(ctx context.Context, db *ent.Client) {
 			db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("nodejs-ru")).SetState("published").ExecX(ctx)
-		}},
+		},
+			hide: nil,
+		},
 		"an archived landing page": {locale: "ru", text: "архив", hidden: "course:javascript-ru-archived", reveal: func(ctx context.Context, db *ent.Client) {
 			db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("javascript-ru-archived")).SetState("published").ExecX(ctx)
-		}},
+		},
+			hide: nil,
+		},
 		"an unlisted landing page": {locale: "ru", text: "Ruby", hidden: "course:ruby-ru",
 			hide: func(ctx context.Context, db *ent.Client) {
 				db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("ruby-ru")).SetListed(false).ExecX(ctx)
@@ -216,6 +228,8 @@ func TestPagesOfAnAnswerAreTheAnswerInOrderWithoutGapsOrRepeats(t *testing.T) {
 	for offset := 0; offset < total; offset += 3 {
 		hits, pagedTotal, err := c.Search(t.Context(), search.Query{
 			Text: "Привет", Locale: "ru", Page: domain.Page{Offset: offset, Limit: 3},
+			Types:        nil,
+			Unrestricted: false,
 		})
 		require.NoError(t, err)
 		assert.Equal(t, total, pagedTotal)
@@ -240,7 +254,16 @@ func TestAnythingTheVisitorTypesIsASearchNotAnError(t *testing.T) {
 	c, _ := newCatalogue(t)
 
 	for _, text := range []string{`"unclosed`, "a & b | !c", "(", "-", "':*", "or ", "   ", "\x00", strings.Repeat("слово ", 400)} {
-		_, _, err := c.Search(t.Context(), search.Query{Text: text, Locale: "ru", Page: domain.Page{Limit: 10}})
+		_, _, err := c.Search(t.Context(), search.Query{
+			Text:   text,
+			Locale: "ru",
+			Page: domain.Page{
+				Limit:  10,
+				Offset: 0,
+			},
+			Types:        nil,
+			Unrestricted: false,
+		})
 		assert.NoError(t, err, "%q", text)
 	}
 }
@@ -250,6 +273,8 @@ func TestAPageBeyondTheWindowIsEmptyButTheTotalIsTold(t *testing.T) {
 
 	hits, total, err := c.Search(t.Context(), search.Query{
 		Text: "Привет", Locale: "ru", Page: domain.Page{Offset: 5000, Limit: 10},
+		Types:        nil,
+		Unrestricted: false,
 	})
 
 	require.NoError(t, err)
@@ -360,7 +385,11 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 			require.NoError(t, err)
 
 			hits, _, err := search.NewCatalogue(client).Search(t.Context(), search.Query{
-				Text: "hello", Locale: locale, Page: domain.Page{Limit: 50}, Unrestricted: tc.unrestricted,
+				Text: "hello", Locale: locale, Page: domain.Page{
+					Limit:  50,
+					Offset: 0,
+				}, Unrestricted: tc.unrestricted,
+				Types: nil,
 			})
 			require.NoError(t, err)
 			require.NotEmpty(t, hits)
@@ -395,7 +424,10 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 func askAsEditor(t *testing.T, c *search.Catalogue, locale, text string, types ...search.Type) []search.Hit {
 	t.Helper()
 	hits, total, err := c.Search(t.Context(), search.Query{
-		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50}, Unrestricted: true,
+		Text: text, Locale: locale, Types: types, Page: domain.Page{
+			Limit:  50,
+			Offset: 0,
+		}, Unrestricted: true,
 	})
 	require.NoError(t, err)
 	assert.Equal(t, len(hits), total)
@@ -414,7 +446,15 @@ func hitOf(t *testing.T, hits []search.Hit, id string) search.Hit {
 
 	require.Failf(t, "no such hit", "%s is not among %v", id, ids(hits))
 
-	return search.Hit{}
+	return search.Hit{
+		Type:      "",
+		ID:        "",
+		Title:     "",
+		Snippet:   "",
+		Path:      "",
+		State:     "",
+		Readiness: "",
+	}
 }
 
 // Each record is one a visitor cannot read (the cases above prove the public
@@ -427,8 +467,22 @@ func TestAnEditorsSearchFindsWhatIsNotPublicAndSaysItsState(t *testing.T) {
 	}{
 		"a draft landing page":     {locale: "ru", text: "Node.js", id: "course:nodejs-ru", state: "draft", readiness: "completed", types: []search.Type{search.Course}},
 		"an archived landing page": {locale: "ru", text: "архив", id: "course:javascript-ru-archived", state: "archived", readiness: "completed", types: []search.Type{search.Course}},
-		"an archived post":         {locale: "ru", text: "Archived notes", id: "post:archived-notes", state: "archived", types: []search.Type{search.Post}},
-		"a draft post":             {locale: "en", text: "Second post", id: "post:second-post", state: "draft", types: []search.Type{search.Post}},
+		"an archived post": {
+			locale:    "ru",
+			text:      "Archived notes",
+			id:        "post:archived-notes",
+			state:     "archived",
+			types:     []search.Type{search.Post},
+			readiness: "",
+		},
+		"a draft post": {
+			locale:    "en",
+			text:      "Second post",
+			id:        "post:second-post",
+			state:     "draft",
+			types:     []search.Type{search.Post},
+			readiness: "",
+		},
 	}
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {

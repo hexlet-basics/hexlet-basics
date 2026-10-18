@@ -254,9 +254,19 @@ func outcomeOf(status int, output string) progress.Outcome {
 	case 0:
 		return progress.Outcome{Passed: true, Result: progress.ResultPassed, Output: output, Status: status}
 	case timeoutExitStatus:
-		return progress.Outcome{Result: progress.ResultFailedInfinity, Output: "", Status: status}
+		return progress.Outcome{
+			Result: progress.ResultFailedInfinity,
+			Output: "",
+			Status: status,
+			Passed: false,
+		}
 	default:
-		return progress.Outcome{Result: progress.ResultFailed, Output: output, Status: status}
+		return progress.Outcome{
+			Result: progress.ResultFailed,
+			Output: output,
+			Status: status,
+			Passed: false,
+		}
 	}
 }
 
@@ -450,7 +460,10 @@ func tarFile(destination, content string) (io.Reader, error) {
 // stdout and stderr are merged deliberately: a learner reads one console, and
 // the tests write their failures to whichever they please.
 func readOutput(stream io.Reader, limit int) (string, error) {
-	capped := &cappedWriter{limit: limit}
+	capped := &cappedWriter{
+		limit: limit,
+		buf:   bytes.Buffer{},
+	}
 	if _, err := stdcopy.StdCopy(capped, capped, stream); err != nil && !errors.Is(err, io.EOF) {
 		return "", errs.Wrapf(err, "read container output")
 	}

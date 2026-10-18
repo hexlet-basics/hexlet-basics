@@ -46,13 +46,79 @@ func TestNewRefusesAnAllowlistEntryThatIsNotInTheContract(t *testing.T) {
 
 	adminOperations = []string{"adminNoSuchOperation"}
 
-	err := (&Server{}).addAdminTools(nil)
+	err := (&Server{
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		limits: Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}).addAdminTools(nil)
 
 	require.ErrorContains(t, err, "not in the contract")
 }
 
 func TestAToolRefusesAParameterThatCollidesWithAReservedArgument(t *testing.T) {
-	op := &operation{ID: "x", Admin: true, Params: []parameter{{Name: "locale", In: "query"}}}
+	op := &operation{
+		ID:    "x",
+		Admin: true,
+		Params: []parameter{{
+			Name:        "locale",
+			In:          "query",
+			Required:    false,
+			Description: "",
+			Schema:      nil,
+		}},
+		Method:       "",
+		Path:         "",
+		Description:  "",
+		Body:         nil,
+		BodyRequired: false,
+		Multipart:    nil,
+		Response:     nil,
+	}
 
 	_, err := adminTool(op)
 

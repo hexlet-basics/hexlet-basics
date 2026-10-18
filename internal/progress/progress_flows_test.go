@@ -112,12 +112,16 @@ func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
-	stale := progress.GuestProgress{}.
+	stale := progress.GuestProgress{
+		Entries: nil,
+	}.
 		Record("no-such-course", firstLesson).
 		Record(jsSlug, "a-lesson-the-build-dropped")
 
 	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, stale, locale))
-	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{}, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{
+		Entries: nil,
+	}, locale))
 
 	assert.Empty(t, r.finishedSlugs(t, blankUser))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
@@ -420,7 +424,8 @@ func operations() []operation {
 					return err
 				}
 			},
-			reads: []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
+			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
+			writes: nil,
 		},
 		{
 			name: "reading a guest's course",
@@ -434,7 +439,8 @@ func operations() []operation {
 					return err
 				}
 			},
-			reads: []string{ent.TypeCourse, ent.TypeCourseLessonVersion},
+			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion},
+			writes: nil,
 		},
 		{
 			name: "merging a guest's progress",

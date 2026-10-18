@@ -52,7 +52,9 @@ func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+		BlogPostID: 0,
+	})
 }
 
 func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
@@ -64,7 +66,9 @@ func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, jobs.SuggestRelatedCoursesArgs{BlogPostID: fixture.ID(fixture.BlogPostHelloWorld)},
-		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
+		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+			BlogPostID: 0,
+		}))
 	require.Len(t, records(t, h, "AdminSuggestBlogPostRelatedCourses"), 1)
 }
 
@@ -96,7 +100,10 @@ func TestAnOperationMarkedAdministratorsOnlyIsRecordedEndToEnd(t *testing.T) {
 func TestAStandaloneOperationRunsItsHandlerWithoutATransactionOpen(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	tracked := &trackedTransactor{inner: h.Transactor}
+	tracked := &trackedTransactor{
+		inner: h.Transactor,
+		open:  atomic.Int32{},
+	}
 	audited := handlers.NewAuditMiddleware(tracked, testsupport.NewTranslator(t),
 		testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 

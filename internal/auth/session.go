@@ -81,7 +81,11 @@ func WithErrorFunc(fn func(http.ResponseWriter, *http.Request, error)) Option {
 
 // New builds a Authenticator whose sessions live in db.
 func New(db *ent.Client, opts ...Option) *Authenticator {
-	cfg := options{clock: time.Now}
+	cfg := options{
+		clock:  time.Now,
+		secure: false,
+		onErr:  nil,
+	}
 	for _, opt := range opts {
 		opt(&cfg)
 	}

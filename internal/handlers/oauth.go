@@ -17,7 +17,10 @@ import (
 func OAuthSignedIn(ctx context.Context) (oauthserver.Account, bool) {
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
-		return oauthserver.Account{}, false
+		return oauthserver.Account{
+			ID:   0,
+			Name: "",
+		}, false
 	}
 
 	name := strings.TrimSpace(ptrValue(u.FirstName) + " " + ptrValue(u.LastName))

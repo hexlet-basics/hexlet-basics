@@ -202,13 +202,21 @@ func (e *invalidInputError) Unwrap() error { return domain.ErrInvalid }
 // invalid reports input the caller can fix: field names the request property
 // and message says what is wrong with it.
 func invalid(field string, message localization.Message) error {
-	return &invalidInputError{field: field, message: message}
+	return &invalidInputError{
+		field:   field,
+		message: message,
+		text:    "",
+	}
 }
 
 // invalidText is invalid for a message that echoes the caller's own input and
 // has no translation.
 func invalidText(field, text string) error {
-	return &invalidInputError{field: field, text: text}
+	return &invalidInputError{
+		field:   field,
+		text:    text,
+		message: localization.Message{},
+	}
 }
 
 // notFoundError is a domain.ErrNotFound that says what was not found, so details can
@@ -290,11 +298,17 @@ func detailFor(err error) (detail, bool) {
 
 	for _, row := range details() {
 		if errors.Is(err, row.err) {
-			return detail{message: row.message}, true
+			return detail{
+				message: row.message,
+				move:    nil,
+			}, true
 		}
 	}
 
-	return detail{}, false
+	return detail{
+		message: localization.Message{},
+		move:    nil,
+	}, false
 }
 
 // detailText is the explanation in the caller's language, with a refused move's

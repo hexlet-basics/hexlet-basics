@@ -11,7 +11,6 @@ linters:
     - exhaustive # ticket #910, blocked by two known MCP bugs
     - nilerr # ticket #910, blocked by two known MCP bugs
     # Pending: enabled by the commits that follow, each with its findings fixed.
-    - exhaustruct_v5
     - varnamelen
     - paralleltest
     - tparallel
@@ -50,6 +49,22 @@ linters:
         - hexletbasics/ent.Mutator
         - hexletbasics/internal/api.*
         - hexletbasics/internal/mailer.Mailer
+    exhaustruct_v5:
+      # Our own types, where a field left out is a decision to leave it out. The
+      # structs of libraries, ent builders and the generated contract are filled
+      # partially by design: their zero values are defined.
+      explicit-mode: true
+      enforce-patterns:
+        - 'hexletbasics/.*'
+      # Options structs whose zero value means "the default", by their own
+      # documentation: the ent annotations the generators read and the embedded
+      # mixin base.
+      optional-patterns:
+        - 'hexletbasics/ent/schema\.(?:Admin.*|TimestampsMixin)'
+      ignore-patterns:
+        - 'hexletbasics/internal/api\..*'
+        - 'hexletbasics/internal/amocrm/generated\..*'
+        - 'hexletbasics/ent\..*'
     tagliatelle:
       case:
         rules:

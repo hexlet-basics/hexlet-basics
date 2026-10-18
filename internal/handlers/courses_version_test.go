@@ -33,7 +33,9 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	assert.Equal(t, courseRubyIDA(), row.CourseID)
 
 	// The loader job was enqueued for exactly this version.
-	queued := testsupport.RequireEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{})
+	queued := testsupport.RequireEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 	assert.Equal(t, int(version.ID), queued.VersionID)
 }
 
@@ -47,5 +49,7 @@ func TestAdminCreateCourseVersionNotFound(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
 	// A missing course enqueues nothing.
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	})
 }

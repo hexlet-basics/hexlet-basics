@@ -86,7 +86,9 @@ func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 // nothing, so that course resets rather than corrupting the account.
 func TestSignInIgnoresAGuestLessonMissingFromTheCurrentVersion(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, "removed-in-a-later-build"))
+	h := testsupport.NewGuestHarness(t, progress.GuestProgress{
+		Entries: nil,
+	}.Record(jsCourseSlug, "removed-in-a-later-build"))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 

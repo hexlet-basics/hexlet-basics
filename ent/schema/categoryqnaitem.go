@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/field"
 )
 
 // CategoryQnaItem maps the legacy `language_category_qna_items` table — a
@@ -27,14 +26,7 @@ func (CategoryQnaItem) Annotations() []schema.Annotation {
 }
 
 func (CategoryQnaItem) Fields() []ent.Field {
-	return []ent.Field{
-		field.Int("course_category_id").StorageKey("language_category_id").
-			Annotations(AdminInputField{Skip: true}),
-		field.String("question").Optional().Nillable().
-			Annotations(AdminInputField{Required: true}),
-		field.String("answer").Optional().Nillable().
-			Annotations(AdminInputField{Required: true}),
-	}
+	return qnaItemFields("course_category_id", "language_category_id")
 }
 
 func (CategoryQnaItem) Mixin() []ent.Mixin {

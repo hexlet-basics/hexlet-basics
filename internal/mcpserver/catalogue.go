@@ -97,22 +97,38 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 			title:       "List courses",
 			description: "Lists the published courses in catalogue order. An item's slug is the one getCourse takes.",
 			input:       object(s.pageProperties()),
+			name:        "",
+			output:      nil,
+			scope:       "",
+			class:       0,
 		}, s.listCourses},
 		{listCategoriesTool, toolSpec{
 			title:       "List course categories",
 			description: "Lists the course categories (programming languages and topics) of the request locale. The slug of an item is the one getPublicCourseCategory takes.",
 			input:       object(s.pageProperties()),
+			name:        "",
+			output:      nil,
+			scope:       "",
+			class:       0,
 		}, s.listCategories},
 		{getCategoryTool, toolSpec{
 			title:       "Get a course category",
 			description: "A course category by slug, with the courses it groups and its questions and answers.",
 			input:       object(map[string]any{"slug": slugArg("The category's slug, as listPublicCourseCategories returns it.")}, "slug"),
+			name:        "",
+			output:      nil,
+			scope:       "",
+			class:       0,
 		}, s.getCategory},
 		{getCourseTool, toolSpec{
 			title: "Get a course",
 			description: "A course page: the course, its landing copy, lessons in order and modules. " +
 				"The slug is the landing page's, as listCourses returns it (javascript-ru).",
-			input: object(map[string]any{"slug": slugArg("The landing page slug, as listCourses returns it.")}, "slug"),
+			input:  object(map[string]any{"slug": slugArg("The landing page slug, as listCourses returns it.")}, "slug"),
+			name:   "",
+			output: nil,
+			scope:  "",
+			class:  0,
 		}, s.getCourse},
 		{getCourseLessonTool, toolSpec{
 			title: "Get a lesson",
@@ -122,16 +138,28 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 				"courseSlug": slugArg("The course's own slug (course.slug in getCourse)."),
 				"slug":       slugArg("The lesson's slug, from the lessons of getCourse."),
 			}, "courseSlug", "slug"),
+			name:   "",
+			output: nil,
+			scope:  "",
+			class:  0,
 		}, s.getCourseLesson},
 		{listBlogPostsTool, toolSpec{
 			title:       "List blog posts",
 			description: "Published blog posts of the request locale, newest first, in pages. The slug of an item is the one getBlogPost takes.",
 			input:       object(s.pageProperties()),
+			name:        "",
+			output:      nil,
+			scope:       "",
+			class:       0,
 		}, s.listBlogPosts},
 		{getBlogPostTool, toolSpec{
 			title:       "Get a blog post",
 			description: "A published blog post by slug, with posts to read next and the courses it promotes.",
 			input:       object(map[string]any{"slug": slugArg("The post's slug, as listBlogPosts returns it.")}, "slug"),
+			name:        "",
+			output:      nil,
+			scope:       "",
+			class:       0,
 		}, s.getBlogPost},
 	}
 
@@ -260,6 +288,7 @@ func (s *Server) getCategory(ctx context.Context, c call) (result, error) {
 	return result{
 		text: fmt.Sprintf("Category %s with %d courses", args.Slug, len(view.LandingPages)),
 		data: view,
+		list: nil,
 	}, nil
 }
 
@@ -277,6 +306,7 @@ func (s *Server) getCourse(ctx context.Context, c call) (result, error) {
 	return result{
 		text: fmt.Sprintf("Course %s with %d lessons", args.Slug, len(view.Lessons)),
 		data: view,
+		list: nil,
 	}, nil
 }
 
@@ -299,6 +329,7 @@ func (s *Server) getCourseLesson(ctx context.Context, c call) (result, error) {
 	return result{
 		text: fmt.Sprintf("Lesson %s of course %s", args.Slug, args.CourseSlug),
 		data: view,
+		list: nil,
 	}, nil
 }
 
@@ -347,6 +378,7 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 	return result{
 		text: "Blog post " + args.Slug,
 		data: view,
+		list: nil,
 	}, nil
 }
 

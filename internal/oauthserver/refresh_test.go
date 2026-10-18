@@ -75,6 +75,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 	other := decodeJSON[registered](t, res)
 	flow := o.StartWith(alice(), testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: other.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
+		Params: nil,
 	})
 	otherClient, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, res.StatusCode)
@@ -175,6 +176,10 @@ func TestTokensExpireOnTheirOwnLifetimes(t *testing.T) {
 func TestConfiguredLifetimesApply(t *testing.T) {
 	o := testsupport.NewOAuthWith(t, oauthserver.Config{
 		AccessTokenLifetime: 5 * time.Minute, RefreshTokenLifetime: time.Hour,
+		Issuer:             "",
+		EncryptionKey:      "",
+		RegistrationLimit:  0,
+		RegistrationWindow: 0,
 	})
 	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	assert.InDelta(t, 300, tokens.ExpiresIn, 5)
@@ -230,6 +235,7 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	racer := decodeJSON[registered](t, res)
 	flow := o.StartWith(alice(), testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: racer.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
+		Params: nil,
 	})
 	tokens, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, res.StatusCode)

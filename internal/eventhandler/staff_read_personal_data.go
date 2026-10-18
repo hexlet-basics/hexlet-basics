@@ -42,6 +42,7 @@ func StaffReadPersonalData(client *ent.Client) cqrs.EventHandler {
 				OccurredAt: event.OccurredAt,
 				EntityType: event.EntityType,
 				Reads:      &audit.Reads{Count: event.Count, IDs: event.EntityIDs},
+				EntityID:   "",
 			}
 			// A read of exactly one row is filed under it, like a change.
 			if event.Count == 1 && len(event.EntityIDs) == 1 {

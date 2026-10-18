@@ -56,7 +56,12 @@ func PurgeOAuthTokens(db *ent.Client, logger *slog.Logger) Module {
 // PurgeOAuthTokensWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
 func PurgeOAuthTokensWorker(db *ent.Client, logger *slog.Logger) river.Worker[PurgeOAuthTokensArgs] {
-	return &purgeOAuthTokensWorker{db: db, logger: logger, now: time.Now}
+	return &purgeOAuthTokensWorker{
+		db:             db,
+		logger:         logger,
+		now:            time.Now,
+		WorkerDefaults: river.WorkerDefaults[PurgeOAuthTokensArgs]{},
+	}
 }
 
 // purgeOAuthTokensSchedule is the recurring insert, without unique options for

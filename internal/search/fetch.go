@@ -155,6 +155,8 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 		Type: Course, ID: CourseID(cmd.Ref.Slug), Title: title, Text: d.String(),
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, CourseSlug: courseSlug,
 		State: lo.FromPtr(page.State), Readiness: readinessOf(page.Edges.Course), Listed: page.Listed,
+		Build:    "",
+		Position: nil,
 	}, nil
 }
 
@@ -193,6 +195,8 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.CourseSlug+"/lessons/"+cmd.Ref.Slug),
 		Slug: cmd.Ref.Slug, CourseSlug: cmd.Ref.CourseSlug,
 		State: lo.FromPtr(lesson.State), Readiness: lo.FromPtr(parent.Readiness), Position: lesson.NaturalOrder,
+		Listed: nil,
+		Build:  "",
 	}
 	if t.Edges.CourseVersion != nil {
 		rec.Build = lo.FromPtr(t.Edges.CourseVersion.State)
@@ -220,6 +224,11 @@ func (c *Catalogue) fetchPost(ctx context.Context, cmd FetchRecord) (*Record, er
 	return &Record{
 		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: d.String(),
 		Path: pagePath(cmd.Locale, "/blog_posts/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, State: lo.FromPtr(post.State),
+		CourseSlug: "",
+		Readiness:  "",
+		Listed:     nil,
+		Build:      "",
+		Position:   nil,
 	}, nil
 }
 

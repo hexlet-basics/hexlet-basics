@@ -72,6 +72,7 @@ func MaintainAuditPartitionsWorker(partitions *audit.Partitions, retentionMonths
 		retentionMonths: retentionMonths,
 		logger:          logger,
 		now:             time.Now,
+		WorkerDefaults:  river.WorkerDefaults[MaintainAuditPartitionsArgs]{},
 	}
 }
 

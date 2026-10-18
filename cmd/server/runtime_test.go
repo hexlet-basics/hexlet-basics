@@ -20,7 +20,13 @@ func TestRuntimeReportsNotReadyAfterTheSignal(t *testing.T) {
 	probes := health.New(func(context.Context) error { return nil })
 	handler := probes.Wrap(http.NotFoundHandler())
 	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: handler}
-	app := application{http: server, httpAddr: addr, drain: probes.Drain}
+	app := application{
+		http:            server,
+		httpAddr:        addr,
+		drain:           probes.Drain,
+		logger:          nil,
+		shutdownTimeout: 0,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 	readyz := func() int {
 		rec := httptest.NewRecorder()
@@ -74,7 +80,13 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})}
-	app := application{http: server, httpAddr: addr}
+	app := application{
+		http:            server,
+		httpAddr:        addr,
+		logger:          nil,
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	var stopSignalsCalled atomic.Bool
@@ -129,7 +141,13 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 	})}
 	go func() { _ = server.Serve(listener) }()
 
-	app := application{http: server, shutdownTimeout: 200 * time.Millisecond}
+	app := application{
+		http:            server,
+		shutdownTimeout: 200 * time.Millisecond,
+		httpAddr:        "",
+		logger:          nil,
+		drain:           nil,
+	}
 
 	clientErr := make(chan error, 1)
 

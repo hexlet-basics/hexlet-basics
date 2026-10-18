@@ -51,7 +51,11 @@ func ReapExpiredSessions(manager *auth.Authenticator, logger *slog.Logger) Modul
 // ReapExpiredSessionsWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
 func ReapExpiredSessionsWorker(manager *auth.Authenticator, logger *slog.Logger) river.Worker[ReapExpiredSessionsArgs] {
-	return &reapExpiredSessionsWorker{sessions: manager, logger: logger}
+	return &reapExpiredSessionsWorker{
+		sessions:       manager,
+		logger:         logger,
+		WorkerDefaults: river.WorkerDefaults[ReapExpiredSessionsArgs]{},
+	}
 }
 
 // reapExpiredSessionsSchedule is the sweep's recurring insert. Like the other

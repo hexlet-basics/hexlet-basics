@@ -284,7 +284,9 @@ func TestGuestCheckFinishesALessonOutOfOrder(t *testing.T) {
 // it to what the cookie carries.
 func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{
+		Entries: nil,
+	}.Record(jsCourseSlug, firstLessonSlug))
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
 	result := submitSolution(t, h, lesson)
@@ -375,7 +377,12 @@ func TestCheckReportsASolutionThatNeverTerminatedAsItsOwnResult(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
-		return progress.Outcome{Result: progress.ResultFailedInfinity, Status: 124}, nil
+		return progress.Outcome{
+			Result: progress.ResultFailedInfinity,
+			Status: 124,
+			Passed: false,
+			Output: "",
+		}, nil
 	}
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 

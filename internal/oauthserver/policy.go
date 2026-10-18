@@ -46,7 +46,10 @@ type authorizer struct {
 	s *Server
 }
 
-var _ op.AuthorizeValidator = authorizer{}
+var _ op.AuthorizeValidator = authorizer{
+	Provider: nil,
+	s:        nil,
+}
 
 type resourceKey struct{}
 

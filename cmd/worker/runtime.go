@@ -67,7 +67,10 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	// started: a signal that lands in the middle of the start would otherwise skip
 	// stopping a queue that then finishes starting, and nothing would ever stop it.
 	jobsStartSettled := make(chan struct{})
-	state := &runtimeState{}
+	state := &runtimeState{
+		jobsStarted:   atomic.Bool{},
+		eventsStarted: atomic.Bool{},
+	}
 
 	group.Go(func() error {
 		select {

@@ -19,7 +19,10 @@ var (
 
 func TestAmoCRMLeadWorkerCancelsPermanentFailures(t *testing.T) {
 	cause := classifiedLeadError{retryable: false}
-	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: cause}}
+	worker := &amoCRMLeadWorker{
+		syncer:         leadSyncerStub{err: cause},
+		WorkerDefaults: river.WorkerDefaults[AmoCRMLeadArgs]{},
+	}
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
@@ -30,7 +33,10 @@ func TestAmoCRMLeadWorkerCancelsPermanentFailures(t *testing.T) {
 
 func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
 	cause := classifiedLeadError{retryable: true}
-	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: cause}}
+	worker := &amoCRMLeadWorker{
+		syncer:         leadSyncerStub{err: cause},
+		WorkerDefaults: river.WorkerDefaults[AmoCRMLeadArgs]{},
+	}
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
@@ -41,7 +47,10 @@ func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
 }
 
 func TestAmoCRMLeadWorkerRetriesUnclassifiedFailures(t *testing.T) {
-	worker := &amoCRMLeadWorker{syncer: leadSyncerStub{err: errCause}}
+	worker := &amoCRMLeadWorker{
+		syncer:         leadSyncerStub{err: errCause},
+		WorkerDefaults: river.WorkerDefaults[AmoCRMLeadArgs]{},
+	}
 
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 

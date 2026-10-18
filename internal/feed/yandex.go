@@ -68,15 +68,87 @@ const xmlDeclaration = `<?xml version="1.0"?>` + "\n"
 // offer, in its order.
 func fixedParams() []param {
 	return []param{
-		{Name: "Продолжительность", Unit: "месяц", Text: "1"},
-		{Name: "Формат обучения", Text: "Самостоятельно"},
-		{Name: "Сложность", Text: "Для новичков"},
-		{Name: "Тип обучения", Text: "Курс"},
-		{Name: "Результат обучения", Text: "Сертификат"},
-		{Name: "Есть бесплатная часть", Text: "true"},
-		{Name: "Есть текстовые уроки", Text: "true"},
-		{Name: "Есть тренажеры", Text: "true"},
-		{Name: "Есть сообщество", Text: "true"},
+		{
+			Name:    "Продолжительность",
+			Unit:    "месяц",
+			Text:    "1",
+			XMLName: xml.Name{},
+			Order:   "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Формат обучения",
+			Text:    "Самостоятельно",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Сложность",
+			Text:    "Для новичков",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Тип обучения",
+			Text:    "Курс",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Результат обучения",
+			Text:    "Сертификат",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть бесплатная часть",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть текстовые уроки",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть тренажеры",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть сообщество",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
 	}
 }
 
@@ -135,6 +207,7 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 			Sets:        sets{Set: categories},
 			Offers:      offers{Offer: items},
 		},
+		XMLName: xml.Name{},
 	}
 
 	var buf bytes.Buffer
@@ -267,6 +340,9 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		CurrencyID:  currencyID,
 		Params:      fixedParams(),
 		Description: lo.FromPtr(page.Description),
+		Price:       0,
+		SetIDs:      "",
+		Plan:        nil,
 	}
 	if page.LanguageCategoryID != nil {
 		o.SetIDs = strconv.Itoa(*page.LanguageCategoryID)
@@ -274,11 +350,13 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 
 	for i, module := range plan {
 		o.Plan = append(o.Plan, param{
-			Name:  "План",
-			Order: strconv.Itoa(i + 1),
-			Unit:  lo.FromPtr(module.Name),
-			Hours: planHours,
-			CDATA: planIndent + lo.FromPtr(module.Description) + "\n",
+			Name:    "План",
+			Order:   strconv.Itoa(i + 1),
+			Unit:    lo.FromPtr(module.Name),
+			Hours:   planHours,
+			CDATA:   planIndent + lo.FromPtr(module.Description) + "\n",
+			XMLName: xml.Name{},
+			Text:    "",
 		})
 		for _, lv := range module.Edges.Version.Edges.LessonVersions {
 			o.Plan = append(o.Plan, param{
@@ -287,6 +365,11 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 					"/languages", url.PathEscape(lo.FromPtr(crs.Slug)),
 					"lessons", url.PathEscape(lo.FromPtr(lv.Edges.Lesson.Slug)),
 				}, "/")),
+				XMLName: xml.Name{},
+				Order:   "",
+				Unit:    "",
+				Hours:   "",
+				CDATA:   "",
 			})
 		}
 	}
