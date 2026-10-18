@@ -3,7 +3,9 @@
 // src/components/admin/resources/review.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const reviewFields: FieldDescriptor[] = [
+export const reviewFields: FieldDescriptor<
+  "pinned" | "courseId" | "userId" | "body" | "firstName" | "lastName"
+>[] = [
   {
     kind: "boolean",
     labelKey: "models.attributes.review.pinned",

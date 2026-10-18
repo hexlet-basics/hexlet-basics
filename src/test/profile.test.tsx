@@ -7,6 +7,7 @@ import { Route as editRoute } from "@/routes/{-$locale}/account/profile/edit";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { zProfileInput } from "@/client/zod.gen";
 
 // One character past the 40 a first name may have.
 const OVER_LIMIT = 41;
@@ -47,7 +48,7 @@ describe("profile", () => {
     const received: ProfileInput[] = [];
     worker.use(
       http.patch("*/api/account/profile", async ({ request }) => {
-        const body = (await request.json()) as ProfileInput;
+        const body = zProfileInput.parse(await request.json());
         received.push(body);
         return HttpResponse.json({ ...user, ...body });
       }),

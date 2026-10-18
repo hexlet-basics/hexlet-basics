@@ -5,28 +5,28 @@ import type { Browser } from "./browser";
 export class Catalog {
   readonly #browser: Browser;
 
-  constructor(browser: Browser) {
+  public constructor(browser: Browser) {
     this.#browser = browser;
   }
 
-  async open(): Promise<void> {
+  public async open(): Promise<void> {
     await this.#browser.visit("/languages");
   }
 
-  async openCoursePage(path: string): Promise<void> {
+  public async openCoursePage(path: string): Promise<void> {
     await this.#browser.visit(path);
   }
 
   /** A course's card is a link named by its title and blurb; `title` matches its start. */
-  async expectCourseCard(title: string): Promise<void> {
+  public async expectCourseCard(title: string): Promise<void> {
     await expect(this.#browser.page.getByRole("link", { name: courseCard(title) })).toBeVisible();
   }
 
-  async openCourseCard(title: string): Promise<void> {
+  public async openCourseCard(title: string): Promise<void> {
     await this.#browser.page.getByRole("link", { name: courseCard(title) }).click();
   }
 
-  async openLesson(name: string): Promise<void> {
+  public async openLesson(name: string): Promise<void> {
     await this.#browser.page.getByRole("link", { name }).click();
   }
 }

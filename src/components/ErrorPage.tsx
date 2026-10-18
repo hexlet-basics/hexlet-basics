@@ -4,16 +4,14 @@ import { useTranslation } from "react-i18next";
 import { HTTP_FORBIDDEN, HTTP_NOT_FOUND, HTTP_SERVER_ERROR } from "@/lib/http-status";
 import type { ReactElement } from "react";
 
-// The HTTP errors that have their own wording; any other code reads the
-// generic one.
-type ErrorCode = typeof HTTP_FORBIDDEN | typeof HTTP_NOT_FOUND | typeof HTTP_SERVER_ERROR;
-
-// Typed selectors cannot take a runtime key, so each code names its strings.
+// Typed selectors cannot take a runtime key, so each code names its strings. The
+// HTTP errors that have their own wording are the cases; any other code reads
+// the generic one.
 // The generic description falls back to the generic *header*, as legacy
 // errors#show did (`default: codes.other.header`); `codes.other.description`
 // was never shown.
 function errorText(t: TFunction, code: number): { header: string; description: string } {
-  switch (code as ErrorCode) {
+  switch (code) {
     case HTTP_FORBIDDEN: {
       return {
         description: t(($) => $.errors.show.codes["403"].description),

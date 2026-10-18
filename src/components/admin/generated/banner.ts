@@ -3,7 +3,9 @@
 // src/components/admin/resources/banner.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const bannerFields: FieldDescriptor[] = [
+export const bannerFields: FieldDescriptor<
+  "background" | "locale" | "body" | "url" | "startsAt" | "finishesAt"
+>[] = [
   {
     enumValues: [
       {

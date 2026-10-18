@@ -5,7 +5,7 @@ import type { Browser } from "./browser";
 export class Locale {
   readonly #browser: Browser;
 
-  constructor(browser: Browser) {
+  public constructor(browser: Browser) {
     this.#browser = browser;
   }
 
@@ -16,7 +16,11 @@ export class Locale {
    * navigates on its own and network idle right after the click could
    * otherwise pass before the navigation has started.
    */
-  async switch(from: string, to: string, arrived: { path: string; lang: string }): Promise<void> {
+  public async switch(
+    from: string,
+    to: string,
+    arrived: { path: string; lang: string },
+  ): Promise<void> {
     await this.#browser.header.getByRole("button", { name: from }).click();
     await this.#browser.page.getByRole("menuitem", { name: to }).click();
     await this.#browser.expectPath(arrived.path);

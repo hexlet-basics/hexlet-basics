@@ -9,7 +9,7 @@ import { Route as landingEditRoute } from "@/routes/{-$locale}/admin/course_land
 import { Route as landingListRoute } from "@/routes/{-$locale}/admin/course_landing_pages/index";
 import { Route as reviewEditRoute } from "@/routes/{-$locale}/admin/reviews/$id";
 import { Route as reviewListRoute } from "@/routes/{-$locale}/admin/reviews/index";
-import { admin } from "@/test/fixtures";
+import { admin, eva, ruby } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { Locator } from "vitest/browser";
@@ -33,22 +33,21 @@ const banner = (state: PublicationState): Banner => ({
 });
 
 // The embedded account and course are only read for their name and slug.
-const review = (state: PublicationState): Review =>
-  ({
-    body: "Great course",
-    course: { slug: "ruby" },
-    courseId: 2,
-    createdAt: "2026-01-01T00:00:00Z",
-    firstName: "Eva",
-    fullName: "Eva",
-    id: 7,
-    lastName: null,
-    locale: "en",
-    pinned: false,
-    state,
-    user: { firstName: "Eva", id: 1, lastName: null, name: "Eva" },
-    userId: 1,
-  }) as unknown as Review;
+const review = (state: PublicationState): Review => ({
+  body: "Great course",
+  course: ruby,
+  courseId: 2,
+  createdAt: "2026-01-01T00:00:00Z",
+  firstName: "Eva",
+  fullName: "Eva",
+  id: 7,
+  lastName: null,
+  locale: "en",
+  pinned: false,
+  state,
+  user: eva,
+  userId: 1,
+});
 
 const landing = (state: PublicationState): CourseLandingPage => ({
   courseId: 2,

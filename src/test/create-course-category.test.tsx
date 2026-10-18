@@ -6,6 +6,7 @@ import { Route } from "@/routes/{-$locale}/admin/course_categories/new";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { zCourseCategoryInput } from "@/client/zod.gen";
 
 // Positive full-cycle use-case: an admin fills the create form, it POSTs the
 // right body to the API, and the app confirms + navigates back to the list.
@@ -15,7 +16,7 @@ describe("create course category", () => {
     let received: CourseCategoryInput | null = null;
     worker.use(
       http.post("*/admin/course_categories", async ({ request }) => {
-        received = (await request.json()) as CourseCategoryInput;
+        received = zCourseCategoryInput.parse(await request.json());
         return HttpResponse.json({
           createdAt: "2026-01-01T00:00:00Z",
           description: null,

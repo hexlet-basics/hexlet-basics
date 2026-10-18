@@ -3,7 +3,7 @@
 // src/components/admin/resources/staffMember.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const staffMemberFields: FieldDescriptor[] = [
+export const staffMemberFields: FieldDescriptor<"userId" | "roleId" | "allowedLocales">[] = [
   {
     kind: "number",
     labelKey: "models.attributes.staff_member.user_id",

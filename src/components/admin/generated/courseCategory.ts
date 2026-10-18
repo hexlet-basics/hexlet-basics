@@ -3,7 +3,7 @@
 // src/components/admin/resources/courseCategory.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const courseCategoryFields: FieldDescriptor[] = [
+export const courseCategoryFields: FieldDescriptor<"name" | "header" | "slug" | "description">[] = [
   {
     kind: "text",
     labelKey: "models.attributes.course_category.name",

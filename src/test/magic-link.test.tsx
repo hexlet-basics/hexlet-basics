@@ -8,6 +8,8 @@ import { Route as requestRoute } from "@/routes/{-$locale}/magic_links/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { zEmailInput } from "@/client/zod.gen";
+import { searchOf } from "@/test/search";
 
 const user: User = {
   admin: false,
@@ -56,7 +58,7 @@ describe("magic link", () => {
     const { router, queryClient } = await openLink("stale");
 
     await expect.poll(() => router.state.location.pathname).toBe("/ru/magic_links/new");
-    expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    expect(searchOf(router)).toStrictEqual({
       invalid: true,
     });
     expect(queryClient.getQueryData(getCurrentUserQueryKey())).toBeUndefined();
@@ -76,7 +78,7 @@ describe("magic link", () => {
     const received: EmailInput[] = [];
     worker.use(
       http.post("*/magic_links", async ({ request }) => {
-        received.push((await request.json()) as EmailInput);
+        received.push(zEmailInput.parse(await request.json()));
         return new HttpResponse(null, { status: 204 });
       }),
     );

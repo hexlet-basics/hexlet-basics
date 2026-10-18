@@ -1,8 +1,7 @@
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { parse } from "yaml";
-import { describeResource, renderModule } from "./admin-fields.ts";
-import type { OpenApi, ResourceConfig } from "./admin-fields.ts";
+import { describeResource, parseOpenApi, renderModule } from "./admin-fields.ts";
+import type { ResourceConfig } from "./admin-fields.ts";
 
 // Writes src/components/admin/generated/<resource>.ts for every admin resource
 // Below, from api-spec/dist/openapi.yaml. Run by `mise run gen:admin` (part of
@@ -60,7 +59,7 @@ const root = path.join(import.meta.dirname, "..");
 const specPath = path.join(root, "api-spec/dist/openapi.yaml");
 const outDir = path.join(root, "src/components/admin/generated");
 
-const spec = parse(readFileSync(specPath, "utf-8")) as OpenApi;
+const spec = parseOpenApi(readFileSync(specPath, "utf-8"));
 
 // Start from an empty directory so a resource dropped from the list above does
 // Not leave its module behind.

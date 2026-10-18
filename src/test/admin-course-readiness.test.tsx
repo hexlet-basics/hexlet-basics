@@ -4,11 +4,12 @@ import { page } from "vitest/browser";
 import type { Course, CourseReadiness } from "@/client/types.gen";
 import { Route as courseEditRoute } from "@/routes/{-$locale}/admin/courses/$id";
 import { Route as courseListRoute } from "@/routes/{-$locale}/admin/courses/index";
-import { admin } from "@/test/fixtures";
+import { admin, ruby } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { Locator } from "vitest/browser";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { z } from "zod";
 
 // A Course's Readiness is changed by action buttons, one per operation, never by
 // the form (the same pattern as the Publication State panels, see
@@ -16,18 +17,7 @@ import type { RenderedRoute } from "@/test/renderRoute";
 // guard: the buttons offered are the values other than the current one, a click
 // calls that operation and the course shown is the one it answered with.
 
-const course = (readiness: CourseReadiness | null): Course =>
-  ({
-    createdAt: "2026-01-01T00:00:00Z",
-    currentVersion: null,
-    hexletProgramLandingPage: null,
-    id: 7,
-    learnAs: "first_language",
-    lessonsCount: 3,
-    readiness,
-    repositoryUrl: null,
-    slug: "ruby",
-  }) as unknown as Course;
+const course = (readiness: CourseReadiness | null): Course => ({ ...ruby, readiness });
 
 const edit = (): Promise<RenderedRoute> =>
   renderRoute(courseEditRoute, {
@@ -79,7 +69,7 @@ describe("the course admin screens", () => {
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
       http.put("*/admin/courses/7", async ({ request }) => {
-        sent = (await request.json()) as Record<string, unknown>;
+        sent = z.record(z.string(), z.unknown()).parse(await request.json());
         return HttpResponse.json(course("draft"));
       }),
     );

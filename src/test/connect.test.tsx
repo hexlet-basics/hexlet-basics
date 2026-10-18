@@ -7,6 +7,7 @@ import { Route as signInRoute } from "@/routes/{-$locale}/session/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { searchOf } from "@/test/search";
 
 // The OAuth consent screen and the sign-in that leads back to it, driven through
 // their real routes with the API faked at the HTTP boundary. The consent
@@ -49,7 +50,7 @@ describe("connect", () => {
     const { router } = await openConsent(null);
 
     await expect.poll(() => router.state.location.pathname).toBe("/session/new");
-    expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    expect(searchOf(router)).toStrictEqual({
       redirect: "/connect?id=req-1",
     });
   }, 60_000);

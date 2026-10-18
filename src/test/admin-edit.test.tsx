@@ -13,6 +13,7 @@ import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { zRolePermissionsInput } from "@/client/zod.gen";
 
 // The admin edit pages that carry a nested editor under the record's own form,
 // through their real routes under the real admin guard: the role's permissions
@@ -52,7 +53,7 @@ describe("admin edit", () => {
       http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
       http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
       http.put("*/admin/management/role_permissions/5", async ({ request }) => {
-        received.push((await request.json()) as RolePermissionsInput);
+        received.push(zRolePermissionsInput.parse(await request.json()));
         return HttpResponse.json(role);
       }),
     );

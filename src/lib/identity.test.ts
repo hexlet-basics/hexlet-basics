@@ -3,8 +3,9 @@ import { describe, expect, it } from "vitest";
 import { getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { User } from "@/client/types.gen";
 import { onIdentityChanged } from "@/lib/identity";
+import { admin } from "@/test/fixtures";
 
-const user = { id: 7, name: "Ada" } as User;
+const user: User = { ...admin, id: 7, name: "Ada" };
 
 // A router that only records what the cache held when it was asked to reload.
 function routerOver(queryClient: QueryClient): {

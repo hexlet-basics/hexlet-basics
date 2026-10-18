@@ -37,6 +37,7 @@ import { ButtonLink } from "@/components/RouterLink";
 import { isApiError } from "@/lib/api-error";
 import { lessonCodeKey } from "@/lib/lesson-code";
 import { HTTP_TOO_MANY_REQUESTS } from "@/lib/http-status";
+import { zAssistantMessageInput } from "@/client/zod.gen";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
 // sign in, a learner gets their chat for this lesson and can ask about the code
@@ -287,7 +288,7 @@ function assistantTransport(lessonId: number): TextStreamChatTransport<UIMessage
       }
       try {
         const { data, response } = await createAssistantMessage({
-          body: JSON.parse(init.body) as AssistantMessageInput,
+          body: zAssistantMessageInput.parse(JSON.parse(init.body)),
           parseAs: "stream",
           path: { lessonId },
           signal: init?.signal ?? undefined,

@@ -38,7 +38,21 @@ export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   component: AuditTrail,
 });
 
-type AuditSearch = z.input<typeof zAdminListAuditRecordsQuery>;
+// What the filter bar holds before it is applied. Dates are the day pickers'
+// `YYYY-MM-DD` strings; the others are the raw text of the inputs.
+function isChannel(value: string): value is "mcp" | "web" {
+  return value === "web" || value === "mcp";
+}
+
+interface Filters {
+  actorUserId: string;
+  channel: string;
+  operation: string;
+  entityType: string;
+  entityId: string;
+  from: string;
+  to: string;
+}
 
 const PER_PAGE = 25;
 
@@ -88,7 +102,19 @@ function AuditTrail(): ReactElement {
   };
 
   const { data, isLoading, error } = useQuery(
-    adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
+    adminListAuditRecordsOptions({
+      query: {
+        page: pagination.pageIndex + 1,
+        perPage: pagination.pageSize,
+        ...(applied.actorUserId !== "" && { actorUserId: Number(applied.actorUserId) }),
+        ...(isChannel(applied.channel) && { channel: applied.channel }),
+        ...(applied.operation !== "" && { operation: applied.operation }),
+        ...(applied.entityType !== "" && { entityType: applied.entityType }),
+        ...(applied.entityId !== "" && { entityId: applied.entityId }),
+        ...(applied.from !== "" && { from: startOfDay(applied.from) }),
+        ...(applied.to !== "" && { to: endOfDay(applied.to) }),
+      },
+    }),
   );
 
   const apply = (event: SyntheticEvent): void => {

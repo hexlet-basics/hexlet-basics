@@ -9,9 +9,9 @@ const NOT_FOUND = 404;
  * private field and `test` hands a scenario only the Site.
  */
 export class Browser {
-  readonly page: Page;
+  public readonly page: Page;
 
-  constructor(page: Page) {
+  public constructor(page: Page) {
     this.page = page;
   }
 
@@ -21,31 +21,31 @@ export class Browser {
    * filled before that would be overwritten by the hydrating form. Network idle
    * after the page's last script has run is how the suite knows that is over.
    */
-  async visit(path: string): Promise<void> {
+  public async visit(path: string): Promise<void> {
     await this.page.goto(path);
     await this.settled();
   }
 
   /** Waits out a navigation the page started itself, such as the language switch. */
-  async settled(): Promise<void> {
+  public async settled(): Promise<void> {
     await this.page.waitForLoadState("networkidle");
   }
 
   /** The site header: the signed-in user's name, or the sign-in link, lives here. */
-  get header(): Locator {
+  public get header(): Locator {
     return this.page.getByRole("banner");
   }
 
-  async expectPath(path: string): Promise<void> {
+  public async expectPath(path: string): Promise<void> {
     await expect(this.page).toHaveURL(path);
   }
 
-  async expectHeading(name: string | RegExp, level?: number): Promise<void> {
+  public async expectHeading(name: string | RegExp, level?: number): Promise<void> {
     await expect(this.page.getByRole("heading", { level, name })).toBeVisible();
   }
 
   /** Opens an address the site has no page for and sees the not-found page. */
-  async expectNotFound(path: string): Promise<void> {
+  public async expectNotFound(path: string): Promise<void> {
     const response = await this.page.goto(path);
     expect(response?.status()).toBe(NOT_FOUND);
     await this.expectHeading("Page Not Found");

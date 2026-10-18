@@ -6,6 +6,7 @@ import { Route } from "@/routes/{-$locale}/admin/reviews/new";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { zReviewInput } from "@/client/zod.gen";
 
 // Positive create flow for the reviews resource — also exercises the engine's
 // number field type (courseId): a filled number submits as a number, an empty
@@ -16,7 +17,7 @@ describe("create review", () => {
     let received: ReviewInput | null = null;
     worker.use(
       http.post("*/admin/reviews", async ({ request }) => {
-        received = (await request.json()) as ReviewInput;
+        received = zReviewInput.parse(await request.json());
         return HttpResponse.json({
           body: "Great course",
           course: null,

@@ -7,6 +7,7 @@ import { Route as newLeadRoute } from "@/routes/{-$locale}/leads/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { zLeadInput } from "@/client/zod.gen";
 
 const user: User = {
   admin: false,
@@ -48,7 +49,7 @@ const firstVisit: FirstVisit = {
 function acceptLeads(received: LeadInput[]): void {
   worker.use(
     http.post("*/leads", async ({ request }) => {
-      received.push((await request.json()) as LeadInput);
+      received.push(zLeadInput.parse(await request.json()));
       return HttpResponse.json(created, { status: 201 });
     }),
   );

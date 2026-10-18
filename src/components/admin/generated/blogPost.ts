@@ -3,7 +3,7 @@
 // src/components/admin/resources/blogPost.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const blogPostFields: FieldDescriptor[] = [
+export const blogPostFields: FieldDescriptor<"name" | "slug" | "description" | "richBody">[] = [
   {
     kind: "text",
     labelKey: "models.attributes.base.name",

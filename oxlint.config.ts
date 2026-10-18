@@ -248,8 +248,6 @@ export default defineConfig({
     "typescript/no-unsafe-call": "error",
     "typescript/no-unsafe-member-access": "error",
     "typescript/no-unsafe-return": "error",
-    // Assertions sit at untyped boundaries (request.json(), Object.keys, JSON.parse, test router doubles) where a guard would only repeat zod validation.
-    "typescript/no-unsafe-type-assertion": "off",
     // TanStack Router signals redirects and 404s by throwing plain objects.
     "typescript/only-throw-error": [
       "error",

@@ -3,7 +3,7 @@
 // src/components/admin/resources/course.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const courseFields: FieldDescriptor[] = [
+export const courseFields: FieldDescriptor<"slug" | "learnAs" | "hexletProgramLandingPage">[] = [
   {
     kind: "text",
     labelKey: "models.attributes.course.slug",

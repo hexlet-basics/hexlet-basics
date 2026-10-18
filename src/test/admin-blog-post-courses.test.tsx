@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type { BlogPost, CourseOption } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/admin/blog_posts/$id";
-import { admin } from "@/test/fixtures";
+import { admin, eva } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -12,7 +12,7 @@ const COURSE_ID = 150;
 const post: BlogPost = {
   coverUrl: null,
   createdAt: "2026-01-01T00:00:00Z",
-  creator: { id: 1, name: "Ada" } as BlogPost["creator"],
+  creator: eva,
   description: null,
   id: 3,
   likesCount: 0,

@@ -14,6 +14,7 @@ import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/succe
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
+import { searchOf } from "@/test/search";
 
 const FULL_COMPLETION = 100;
 
@@ -150,7 +151,7 @@ describe("course success", () => {
     const { router } = await openSuccess(user);
 
     await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/javascript");
-    expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    expect(searchOf(router)).toStrictEqual({
       unfinished: true,
     });
     expect(page.getByRole("button", { name: "Отправить" }).query()).toBeNull();
@@ -163,7 +164,7 @@ describe("course success", () => {
     const { router } = await openSuccess(user);
 
     await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/javascript");
-    expect({ ...(router.state.location.search as Record<string, unknown>) }).toStrictEqual({
+    expect(searchOf(router)).toStrictEqual({
       unfinished: true,
     });
   }, 60_000);

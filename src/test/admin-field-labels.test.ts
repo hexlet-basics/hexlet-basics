@@ -9,19 +9,23 @@ import type { FieldDescriptor } from "@/components/admin/fieldDescriptors";
 // is the check that a form field added in the contract has a label in every
 // catalog (list columns are checked where a route uses them, see
 // useGeneratedColumns).
-const modules = import.meta.glob<Record<string, unknown>>("@/components/admin/generated/*.ts", {
-  eager: true,
-});
+const modules = import.meta.glob<Record<string, FieldDescriptor[]>>(
+  "@/components/admin/generated/*.ts",
+  {
+    eager: true,
+  },
+);
 
 const catalogs = { en, es, ru };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 function lookup(catalog: unknown, key: string): unknown {
-  let node = (catalog as { translation: unknown }).translation;
+  let node = isRecord(catalog) ? catalog.translation : undefined;
   for (const part of key.split(".")) {
-    node =
-      typeof node === "object" && node !== null
-        ? (node as Record<string, unknown>)[part]
-        : undefined;
+    node = isRecord(node) ? node[part] : undefined;
   }
   return node;
 }
@@ -31,7 +35,7 @@ describe("generated admin descriptors", () => {
     Object.entries(module)
       .filter(([exportName]) => exportName.endsWith("Fields"))
       .flatMap(([, descriptors]) =>
-        (descriptors as FieldDescriptor[]).flatMap((descriptor) =>
+        descriptors.flatMap((descriptor) =>
           [
             descriptor.labelKey,
             (descriptor.enumValues ?? []).map((value) => value.labelKey),

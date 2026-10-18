@@ -3,7 +3,25 @@
 // src/components/admin/resources/courseLandingPage.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const courseLandingPageFields: FieldDescriptor[] = [
+export const courseLandingPageFields: FieldDescriptor<
+  | "courseId"
+  | "slug"
+  | "name"
+  | "main"
+  | "listed"
+  | "footer"
+  | "footerName"
+  | "order"
+  | "landingPageToRedirectId"
+  | "metaTitle"
+  | "metaDescription"
+  | "header"
+  | "description"
+  | "usedInHeader"
+  | "usedInDescription"
+  | "outcomesHeader"
+  | "outcomesDescription"
+>[] = [
   {
     kind: "number",
     labelKey: "models.attributes.course_landing_page.course_id",

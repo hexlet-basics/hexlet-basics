@@ -1,6 +1,7 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
+import type { AnyRoute } from "@tanstack/react-router";
 import type { Course, CourseView, User } from "@/client/types.gen";
 import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index";
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
@@ -111,7 +112,7 @@ function serverWith(signedIn: boolean): { signedIn: boolean } {
 // flow runs on.
 async function courseOpenedAs(
   visitor: "ada" | "guest",
-  also: { route: never; path: string }[] = [],
+  also: { route: AnyRoute; path: string }[] = [],
 ): Promise<RenderedRoute> {
   const rendered = await renderRoute(courseRoute, {
     also,
@@ -138,7 +139,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { path: "/{-$locale}/session/new", route: signInRoute as never },
+      { path: "/{-$locale}/session/new", route: signInRoute },
     ]);
 
     await router.navigate({ href: "/session/new" });
@@ -161,7 +162,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { path: "/{-$locale}/magic_links/$token", route: consumeRoute as never },
+      { path: "/{-$locale}/magic_links/$token", route: consumeRoute },
     ]);
 
     await router.navigate({ href: "/magic_links/good" });
@@ -182,7 +183,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { path: "/{-$locale}/password/$token/edit", route: resetRoute as never },
+      { path: "/{-$locale}/password/$token/edit", route: resetRoute },
     ]);
 
     await router.navigate({ href: "/password/good/edit" });
@@ -232,7 +233,7 @@ describe("identity change", () => {
       }),
     );
     await courseOpenedAs("ada", [
-      { path: "/{-$locale}/languages/$slug/lessons/$lessonSlug", route: lessonRoute as never },
+      { path: "/{-$locale}/languages/$slug/lessons/$lessonSlug", route: lessonRoute },
     ]);
 
     await page.getByRole("link", { name: "Variables" }).hover();

@@ -944,9 +944,10 @@ describe("lesson player", () => {
 
     // The learner's markup cannot reach the page around it: no scripts, and an
     // opaque origin whose document the page cannot open either.
-    const frame = preview.element() as HTMLIFrameElement;
+    const frame = preview.element();
+    expect(frame).toBeInstanceOf(HTMLIFrameElement);
     expect(frame.getAttribute("sandbox")).toBe("");
-    expect(frame.contentDocument).toBeNull();
+    expect(Reflect.get(frame, "contentDocument")).toBeNull();
 
     // It follows the buffer, not the starter code it opened with.
     await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();

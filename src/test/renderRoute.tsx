@@ -23,10 +23,10 @@ import { renderWithProviders } from "./renderWithProviders";
 // each is rebuilt here from its own options under the parent the test gives it.
 const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string): AnyRoute =>
   createRoute({
-    ...(fileRoute.options as object),
+    ...fileRoute.options,
     getParentRoute: () => parent,
     path: pattern,
-  } as never) as AnyRoute;
+  });
 
 const under = (pattern: string, prefix: string): boolean =>
   pattern === prefix || pattern.startsWith(`${prefix}/`);
@@ -87,7 +87,11 @@ export async function renderRoute(
     },
   });
 
-  const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()();
+  const rootRoute = createRootRouteWithContext<{
+    i18n: ReturnType<typeof createI18n>;
+    queryClient: QueryClient;
+    user: AuthUser | null;
+  }>()();
   // The application's own layouts, outermost first: the `{-$locale}` layout (site
   // chrome, locale check) and, under it, the admin layout (its guard). A page is
   // mounted as a child of the deepest layout its path is under, so the chrome and
@@ -114,8 +118,8 @@ export async function renderRoute(
   for (const extra of also) {
     mount(extra.route, extra.path);
   }
-  adminLayout.addChildren(inAdmin as never[]);
-  layout.addChildren(inLocale as never[]);
+  adminLayout.addChildren(inAdmin);
+  layout.addChildren(inLocale);
 
   // The locale layout switches the router's i18n to the URL's locale before a
   // route's head runs; the synthetic root has no such layout, so it is done here.
@@ -123,18 +127,18 @@ export async function renderRoute(
   await i18n.changeLanguage(locale ?? localeOf(initialPath));
 
   const router = createRouter({
-    context: { i18n, queryClient, user } as never,
+    context: { i18n, queryClient, user },
     defaultErrorComponent: ServerErrorPage,
     // The application's error pages, as getRouter sets them.
     defaultNotFoundComponent: NotFoundPage,
     // Links preload on hover, as in getRouter.
     defaultPreload: "intent",
     history: createMemoryHistory({ initialEntries: [initialPath] }),
-    routeTree: rootRoute.addChildren([...top, layout] as never[]),
+    routeTree: rootRoute.addChildren([...top, layout]),
   });
 
   const screen = await renderWithProviders(
-    wrap(<RouterProvider router={router as never} />),
+    wrap(<RouterProvider router={router} />),
     queryClient,
     i18n,
   );

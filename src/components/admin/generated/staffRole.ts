@@ -3,7 +3,7 @@
 // src/components/admin/resources/staffRole.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const staffRoleFields: FieldDescriptor[] = [
+export const staffRoleFields: FieldDescriptor<"name" | "description">[] = [
   {
     kind: "text",
     labelKey: "models.attributes.base.name",

@@ -17,14 +17,14 @@ import { Session } from "./session";
  * the Site, by type or at run time.
  */
 export class Site {
-  readonly session: Session;
-  readonly catalog: Catalog;
-  readonly lesson: Lesson;
-  readonly admin: Admin;
-  readonly locale: Locale;
+  public readonly session: Session;
+  public readonly catalog: Catalog;
+  public readonly lesson: Lesson;
+  public readonly admin: Admin;
+  public readonly locale: Locale;
   readonly #browser: Browser;
 
-  constructor(page: Page) {
+  public constructor(page: Page) {
     this.#browser = new Browser(page);
     this.session = new Session(this.#browser);
     this.catalog = new Catalog(this.#browser);
@@ -34,17 +34,17 @@ export class Site {
   }
 
   /** The address the person is on. */
-  async expectPath(path: string): Promise<void> {
+  public async expectPath(path: string): Promise<void> {
     await this.#browser.expectPath(path);
   }
 
   /** A heading the person can see, of a level when the page's outline matters. */
-  async expectHeading(name: string | RegExp, level?: number): Promise<void> {
+  public async expectHeading(name: string | RegExp, level?: number): Promise<void> {
     await this.#browser.expectHeading(name, level);
   }
 
   /** The person follows an address the site has no page for. */
-  async expectNotFound(path: string): Promise<void> {
+  public async expectNotFound(path: string): Promise<void> {
     await this.#browser.expectNotFound(path);
   }
 }

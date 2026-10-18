@@ -6,6 +6,7 @@ import { Route } from "@/routes/{-$locale}/admin/banners/new";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { zBannerInput } from "@/client/zod.gen";
 
 // Positive full-cycle use-case exercising the select + datetime field types: the
 // enum defaults ride along in the payload, blank dates serialize as null, and the
@@ -16,7 +17,7 @@ describe("create banner", () => {
     let received: BannerInput | null = null;
     worker.use(
       http.post("*/admin/banners", async ({ request }) => {
-        received = (await request.json()) as BannerInput;
+        received = zBannerInput.parse(await request.json());
         return HttpResponse.json({
           background: "cta_gradient",
           body: "Promo",

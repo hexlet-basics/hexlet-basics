@@ -50,14 +50,25 @@ const pickerToIso = (value: string | null): string | null =>
 // consumes natively and maps issues back to fields by path.
 export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
 
+// The text of one validation error: a string as it is, an issue by its message.
+function messageOf(entry: unknown): string {
+  if (typeof entry === "string") {
+    return entry;
+  }
+  return typeof entry === "object" &&
+    entry !== null &&
+    "message" in entry &&
+    typeof entry.message === "string"
+    ? entry.message
+    : "";
+}
+
 function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
   if (!isTouched || errors.length === 0) {
     return undefined;
   }
   return errors
-    .map((entry) =>
-      typeof entry === "string" ? entry : ((entry as { message?: string } | null)?.message ?? ""),
-    )
+    .map((entry) => messageOf(entry))
     .filter(Boolean)
     .join(", ");
 }

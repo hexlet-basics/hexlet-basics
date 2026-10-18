@@ -1,11 +1,9 @@
-import { parse } from "yaml";
 import { describe, expect, it } from "vitest";
-import { describeResource, renderModule } from "../../scripts/admin-fields";
-import type { OpenApi } from "../../scripts/admin-fields";
+import { describeResource, parseOpenApi, renderModule } from "../../scripts/admin-fields";
 
 // A miniature contract in the shape the TypeSpec pipeline emits: a request body
 // (`WidgetInput`), the read model (`Widget`), and the schemas they $ref.
-const spec = parse(`
+const spec = parseOpenApi(`
 components:
   schemas:
     WidgetState:
@@ -41,7 +39,7 @@ components:
         locales: { type: array, items: { type: string } }
         optionalNote: { type: string }
         richBody: { type: string }
-`) as OpenApi;
+`);
 
 const widget = { input: "WidgetInput", item: "Widget", model: "widget", name: "widget" };
 

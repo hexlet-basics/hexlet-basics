@@ -116,8 +116,9 @@ describe("course categories", () => {
     expect(match?.meta).toContainEqual({
       title: "CodeBasics | Courses in the Programming category",
     });
+    const description: unknown = expect.stringContaining("in the Programming category");
     expect(match?.meta).toContainEqual({
-      content: expect.stringContaining("in the Programming category") as string,
+      content: description,
       name: "description",
     });
     expect(match?.links).toContainEqual({

@@ -1,3 +1,5 @@
+import { parse } from "yaml";
+import { z } from "zod";
 import type {
   ColumnDescriptor,
   EnumValueDescriptor,
@@ -24,6 +26,15 @@ interface Schema {
 
 export interface OpenApi {
   components: { schemas: Record<string, Schema> };
+}
+
+// The OpenAPI document in a YAML text, checked for the part this generator reads.
+export function parseOpenApi(text: string): OpenApi {
+  return z
+    .custom<OpenApi>(
+      (value) => typeof value === "object" && value !== null && "components" in value,
+    )
+    .parse(parse(text));
 }
 
 export interface ResourceConfig {
@@ -167,10 +178,17 @@ const header = (name: string): string =>
 // satisfy the sort-keys rule that applies to the code they are committed as.
 const DESCRIPTOR_KEYS = ["enumValues", "kind", "labelKey", "name", "nullable", "required", "value"];
 
+// The union of the property names a resource's form fields cover.
+function fieldNames(data: ResourceDescriptors): string {
+  return data.fields.length === 0
+    ? "never"
+    : data.fields.map((field) => JSON.stringify(field.name)).join(" | ");
+}
+
 export function renderModule(name: string, data: ResourceDescriptors): string {
   return (
     `${header(name)}import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
-    `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, DESCRIPTOR_KEYS, 2)};\n\n` +
+    `export const ${name}Fields: FieldDescriptor<${fieldNames(data)}>[] = ${JSON.stringify(data.fields, DESCRIPTOR_KEYS, 2)};\n\n` +
     `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, DESCRIPTOR_KEYS, 2)};\n`
   );
 }

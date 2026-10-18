@@ -18,9 +18,11 @@ export interface EnumValueDescriptor {
   labelKey: string;
 }
 
-export interface FieldDescriptor {
+// `TName` narrows `name` to the property names a generated module lists, so a form
+// built from it is checked against the input type it submits.
+export interface FieldDescriptor<TName extends string = string> {
   // The contract's camelCase property name.
-  name: string;
+  name: TName;
   kind: FieldKind;
   // In the schema's `required` list and not nullable: the form must send a value.
   required: boolean;

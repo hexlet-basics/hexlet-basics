@@ -26,7 +26,7 @@ export function HoverLift({
         boxShadow: "0 18px 45px rgba(0,0,0,0.14)",
         scale: hoverScale,
         y: -lift,
-        ...(whileHover as object),
+        ...(typeof whileHover === "object" && !Array.isArray(whileHover) ? whileHover : {}),
       }}
       transition={{
         damping: 35,

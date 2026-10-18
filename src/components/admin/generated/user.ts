@@ -3,7 +3,7 @@
 // src/components/admin/resources/user.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const userFields: FieldDescriptor[] = [
+export const userFields: FieldDescriptor<"email" | "firstName" | "lastName" | "admin">[] = [
   {
     kind: "text",
     labelKey: "models.attributes.user.email",

@@ -40,7 +40,7 @@ const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {
 // renders: labels resolve through i18n here (the descriptors carry only keys),
 // then the resource's overrides apply. A hook, like every i18n-reading helper.
 export function useGeneratedFields<T>(
-  descriptors: FieldDescriptor[],
+  descriptors: FieldDescriptor<keyof T & string>[],
   overrides: FieldOverrides<T> = {},
 ): CrudFieldSpec<T>[] {
   const { i18n } = useTranslation();
@@ -53,7 +53,7 @@ export function useGeneratedFields<T>(
     .map((descriptor): CrudFieldSpec<T> => {
       const spec: CrudFieldSpec<T> = {
         label: label(descriptor.labelKey),
-        name: descriptor.name as keyof T & string,
+        name: descriptor.name,
       };
       const type = widgets[descriptor.kind];
       if (type) {
@@ -72,7 +72,7 @@ export function useGeneratedFields<T>(
     });
 
   const rank = (name: string): number => {
-    const index = order.indexOf(name as keyof T & string);
+    const index = order.map(String).indexOf(name);
     return index === -1 ? order.length : index;
   };
   // Array.sort is stable, so unlisted fields keep the contract's order.

@@ -7,6 +7,7 @@ import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
+import { zUserInput } from "@/client/zod.gen";
 
 // Positive create flow for the users resource — also exercises the engine's
 // checkbox field type (admin flag) end to end.
@@ -16,7 +17,7 @@ describe("create user", () => {
     let received: UserInput | null = null;
     worker.use(
       http.post("*/admin/api/users", async ({ request }) => {
-        received = (await request.json()) as UserInput;
+        received = zUserInput.parse(await request.json());
         return HttpResponse.json({
           admin: true,
           email: "dora@example.com",
