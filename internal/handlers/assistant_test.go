@@ -24,6 +24,7 @@ import (
 // question and its answer; the history comes back oldest first, with the
 // lesson identity the panel shows.
 func TestListAssistantMessagesReturnsTheLessonChat(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
@@ -44,6 +45,7 @@ func TestListAssistantMessagesReturnsTheLessonChat(t *testing.T) {
 // table in production; the learner only ever sees the conversation. The
 // fixture chat on the first lesson holds a system prompt.
 func TestListAssistantMessagesHidesProviderRoles(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 	require.True(t, h.DB.AiMessage.Query().Where(aimessage.RoleEQ("system")).ExistX(t.Context()), "the fixtures hold a system prompt")
@@ -58,6 +60,7 @@ func TestListAssistantMessagesHidesProviderRoles(t *testing.T) {
 // Before the first question there is no chat, and reading the panel must not
 // create one — nor start the lesson.
 func TestListAssistantMessagesIsEmptyBeforeTheFirstQuestion(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	chats := h.DB.AiChat.Query().CountX(t.Context())
@@ -74,6 +77,7 @@ func TestListAssistantMessagesIsEmptyBeforeTheFirstQuestion(t *testing.T) {
 // complete, stores the question and the answer with its token usage. The
 // learner never started the lesson; asking starts it.
 func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -114,6 +118,7 @@ func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
 // The model sees the lesson it tutors (system prompt from the lesson's info in
 // the request locale), and the question arrives wrapped with the editor state.
 func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Assistant.StreamFunc = echoModel
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -149,6 +154,7 @@ func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) e
 // A learner reading the course in Russian is tutored in Russian, from the
 // Russian lesson text.
 func TestAskAssistantPromptFollowsTheLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Assistant.StreamFunc = echoModel
 	testsupport.SpeakTo(h, "ru")
@@ -163,6 +169,7 @@ func TestAskAssistantPromptFollowsTheLocale(t *testing.T) {
 // A follow-up question carries the conversation so far, between the system
 // prompt and the new question.
 func TestAskAssistantSendsTheChatHistory(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Assistant.StreamFunc = echoModel
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -186,6 +193,7 @@ func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 // Seven questions a day (the fixture learner has asked seven today). Over the quota the operation answers 429 before the
 // model is called, stores nothing, and the history reports the disabled state.
 func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedToday)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -207,6 +215,7 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 
 // The quota is per day: yesterday's questions do not count against today.
 func TestAskAssistantQuotaResetsDaily(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedYesterday)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
@@ -218,6 +227,7 @@ func TestAskAssistantQuotaResetsDaily(t *testing.T) {
 // Any lesson may be asked about, in any order (ADR-0016): the learner has not
 // reached the third lesson, and the assistant still answers and stores the turn.
 func TestAskAssistantAnswersAboutALessonOutOfOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
 	messages := h.DB.AiMessage.Query().CountX(t.Context())
@@ -232,6 +242,7 @@ func TestAskAssistantAnswersAboutALessonOutOfOrder(t *testing.T) {
 // status rather than an empty answer, and the question is not stored — it
 // does not count against their quota.
 func TestAskAssistantReportsAModelFailureBeforeStreaming(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -253,6 +264,7 @@ func TestAskAssistantReportsAModelFailureBeforeStreaming(t *testing.T) {
 // panic recovery, so a panic in the model client would take the process down.
 // It comes back as an ordinary failure instead.
 func TestAskAssistantSurvivesAPanicBeforeStreaming(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -272,6 +284,7 @@ func TestAskAssistantSurvivesAPanicBeforeStreaming(t *testing.T) {
 // A panic after the answer began ends the answer like any other failure
 // mid-answer: the question is spent and nothing is stored for the answer.
 func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -298,6 +311,7 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 // completes: otherwise cutting the connection just before the end would be a
 // way round the quota. The broken answer itself is not stored.
 func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -322,6 +336,7 @@ func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
 
 // The chat is a signed-in feature: a visitor is refused by the contract.
 func TestAskAssistantRequiresASignedInLearner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 

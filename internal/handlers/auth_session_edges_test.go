@@ -28,6 +28,7 @@ func signedIn(t *testing.T, router http.Handler, email string) *http.Cookie {
 // area: the answer is 401, as for any protected operation, never a 403 that
 // would admit the visitor was recognized.
 func TestAGarbledSessionCookieDoesNotOpenTheAdminArea(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
@@ -39,6 +40,7 @@ func TestAGarbledSessionCookieDoesNotOpenTheAdminArea(t *testing.T) {
 // A signed-in learner who is not staff is refused with 403 rather than 401:
 // they are known, they just may not.
 func TestASignedInLearnerWhoIsNotStaffIsForbiddenTheAdminArea(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	cookie := signedIn(t, router, "not-staff@example.com")
 
@@ -52,6 +54,7 @@ func TestASignedInLearnerWhoIsNotStaffIsForbiddenTheAdminArea(t *testing.T) {
 // cookie rides along; the same write from the site itself, or from a client that
 // is not a browser, goes through.
 func TestACrossSiteWriteIsRefused(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	cookie := signedIn(t, router, "cross-site@example.com")
 	const edit = `{"firstName":"Grace","lastName":null}`
@@ -78,6 +81,7 @@ func TestACrossSiteWriteIsRefused(t *testing.T) {
 // Signing up and signing in are different ways in, and must not be different
 // sessions: the cookie that comes back has the same attributes either way.
 func TestSignUpAndSignInStartSessionsOfOneShape(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	const email, password = "one-shape@example.com", "s3cret-pass"
 
@@ -99,6 +103,7 @@ func TestSignUpAndSignInStartSessionsOfOneShape(t *testing.T) {
 // A visitor who is not signed in costs the server nothing: no session row and
 // no cookie, however many pages they read.
 func TestAnAnonymousReadStartsNoSession(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 	before := db.Session.Query().CountX(t.Context())

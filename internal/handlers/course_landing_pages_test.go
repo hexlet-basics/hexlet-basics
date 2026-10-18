@@ -66,6 +66,7 @@ func landingBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Course
 }
 
 func TestAdminListCourseLandingPages(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
@@ -87,6 +88,7 @@ func TestAdminListCourseLandingPages(t *testing.T) {
 }
 
 func TestAdminGetCourseLandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -100,6 +102,7 @@ func TestAdminGetCourseLandingPage(t *testing.T) {
 }
 
 func TestAdminGetCourseLandingPageNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -109,6 +112,7 @@ func TestAdminGetCourseLandingPageNotFound(t *testing.T) {
 }
 
 func TestAdminCreateCourseLandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
@@ -137,6 +141,7 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 }
 
 func TestAdminUpdateCourseLandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -162,6 +167,7 @@ func TestAdminUpdateCourseLandingPage(t *testing.T) {
 }
 
 func TestAdminDeleteCourseLandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)

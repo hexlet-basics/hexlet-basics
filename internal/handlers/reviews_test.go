@@ -32,6 +32,7 @@ func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review 
 }
 
 func TestAdminListReviews(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalReviews := h.DB.Review.Query().CountX(ctx)
@@ -48,6 +49,7 @@ func TestAdminListReviews(t *testing.T) {
 }
 
 func TestAdminListReviewsEmbedsCourseAndUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	r := reviewByBody(t, h, "Отличный курс, всё понятно")
@@ -64,6 +66,7 @@ func TestAdminListReviewsEmbedsCourseAndUser(t *testing.T) {
 }
 
 func TestAdminGetReview(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -78,6 +81,7 @@ func TestAdminGetReview(t *testing.T) {
 }
 
 func TestAdminGetReviewNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -87,6 +91,7 @@ func TestAdminGetReviewNotFound(t *testing.T) {
 }
 
 func TestAdminCreateReview(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalReviews := h.DB.Review.Query().CountX(ctx)
@@ -115,6 +120,7 @@ func TestAdminCreateReview(t *testing.T) {
 }
 
 func TestAdminUpdateReview(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -140,6 +146,7 @@ func TestAdminUpdateReview(t *testing.T) {
 }
 
 func TestAdminDeleteReview(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalReviews := h.DB.Review.Query().CountX(ctx)

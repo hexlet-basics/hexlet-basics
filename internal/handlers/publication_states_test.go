@@ -204,6 +204,7 @@ func capitalized(verb string) string {
 }
 
 func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		for verb, legal := range legalMoves {
 			for _, from := range []string{"draft", "published", "archived"} {
@@ -230,6 +231,7 @@ func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t 
 }
 
 func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		for locale, want := range map[string]string{
 			"ru": "«опубликовано»",
@@ -251,6 +253,7 @@ func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
 }
 
 func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		if !subject.nullable {
 			continue
@@ -270,6 +273,7 @@ func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
 // Each move is a write operation with a Permission of its own, named with the
 // GLOSSARY term of the resource.
 func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
+	t.Parallel()
 	for operation, resource := range map[string]string{"Banner": "banners", "Review": "reviews", "CourseLandingPage": "course_landing_pages"} {
 		for verb := range legalMoves {
 			got, ok := permissioncatalog.For("Admin" + capitalized(verb) + operation)
@@ -280,6 +284,7 @@ func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
 }
 
 func TestAMoveOfAMissingRowIs404(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		t.Run(subject.name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
@@ -296,6 +301,7 @@ func TestAMoveOfAMissingRowIs404(t *testing.T) {
 // takes it away: nothing else of the old update is lost, because the public
 // queries read the state column and nothing is cached or copied.
 func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		t.Run(subject.name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
@@ -319,6 +325,7 @@ func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
 // A role that may edit may not publish, and the reverse: the state is not an
 // update. Unpublishing and archiving are granted apart from publishing too.
 func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		t.Run(subject.name+" update only", func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel)
@@ -355,6 +362,7 @@ func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 }
 
 func TestEachMoveLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
+	t.Parallel()
 	for _, subject := range stateSubjects {
 		for verb, legal := range legalMoves {
 			from := legal[0]

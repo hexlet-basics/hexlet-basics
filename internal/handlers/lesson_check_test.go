@@ -24,6 +24,7 @@ import (
 // the Lesson Progress is created lazily, so arriving by a direct link does not
 // lose the work.
 func TestCheckFinishesALesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -64,6 +65,7 @@ func TestCheckFinishesALesson(t *testing.T) {
 // A failed check is still work done on the lesson: it is recorded, and the
 // lesson stays started rather than being left untouched.
 func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
@@ -93,6 +95,7 @@ func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
 // Lessons may be taken in any order (ADR-0016): the third before the first
 // finishes that lesson and only that lesson.
 func TestCheckFinishesALessonTakenOutOfOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
@@ -113,6 +116,7 @@ func TestCheckFinishesALessonTakenOutOfOrder(t *testing.T) {
 // The last unfinished lesson of a course finishes the course as well, and the
 // learner is enrolled by the submission itself.
 func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonLabeled(t, h, fixture.LessonSingleLessonPrinting)
@@ -140,6 +144,7 @@ func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 // Re-submitting to a lesson already passed is safe: experimenting must not
 // double-count anything the CRM reads.
 func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -169,6 +174,7 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 // course by passing anything, rather than having no submission left that would
 // notice.
 func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerAllLessonsDone)
 	ctx := t.Context()
 
@@ -193,6 +199,7 @@ func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
 // order — does not block them, but keeps the course open until they close it.
 // The learner has finished the first and the third of four lessons.
 func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerFourLessonsGap)
 	ctx := t.Context()
 	crs := h.DB.Course.GetX(ctx, fixture.ID(fixture.CourseWithFourLessons))
@@ -219,6 +226,7 @@ func TestCheckKeepsACourseWithAGapUnfinished(t *testing.T) {
 // A lesson version belonging to a superseded build is refused: the tests the
 // code was written against are no longer the ones that would run.
 func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -235,6 +243,7 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 // A visitor with no cookie may take any lesson of a course. Their pass comes
 // back as a signed cookie and leaves no rows behind.
 func TestGuestCheckAddsToTheCookieAndWritesNoRows(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -260,6 +269,7 @@ func TestGuestCheckAddsToTheCookieAndWritesNoRows(t *testing.T) {
 // A guest may take a lesson out of order too: the cookie names that lesson and
 // not the ones before it.
 func TestGuestCheckFinishesALessonOutOfOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
 
@@ -274,6 +284,7 @@ func TestGuestCheckFinishesALessonOutOfOrder(t *testing.T) {
 // Replaying the cookie a previous pass returned and passing another lesson adds
 // it to what the cookie carries.
 func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, firstLessonSlug))
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
@@ -288,6 +299,7 @@ func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
 // A failed guest check records the fact and nothing else: the cookie changes
 // only on a pass.
 func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
 		return testsupport.FailingOutcome(), nil
@@ -304,6 +316,7 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 // nothing, so that course starts over for the visitor: the next pass is the only
 // lesson the cookie counts.
 func TestGuestCheckIgnoresALessonTheCurrentVersionDropped(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
 
 	first := lessonBySlug(t, h, firstLessonSlug)
@@ -356,6 +369,7 @@ func currentLessonVersionID(t *testing.T, h *testsupport.Harness, lesson *ent.Co
 // A solution that never terminates is its own answer, not a plain failure: the
 // learner is told to look for a loop, and the lesson stays started.
 func TestCheckReportsASolutionThatNeverTerminatedAsItsOwnResult(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
 		return progress.Outcome{Result: progress.ResultFailedInfinity, Status: 124}, nil

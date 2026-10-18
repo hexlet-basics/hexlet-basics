@@ -75,3 +75,19 @@
   related_language_items_count: 0
   created_at: '2026-07-27 12:00:00'
   updated_at: '2026-07-27 12:00:00'
+# Deleted by the delete tests, which run in parallel with the tests that replace
+# blog_post_hello_world's related courses: a delete and a replace of one post's
+# dependents take the same locks in opposite order and deadlock, so the delete
+# has a post of its own, with the like and promoted courses a delete takes with
+# it. An unpublished English draft, so no public blog list shows it.
+- id: {{ id "blog_post_to_delete" }}
+  name: Post to delete
+  slug: post-to-delete
+  description: A draft the delete tests remove
+  locale: en
+  state: draft
+  rich_body: '<p>Soon gone</p>'
+  creator_id: {{ id "user_admin_learner" }}
+  related_language_items_count: 2
+  created_at: '2026-07-27 13:00:00'
+  updated_at: '2026-07-27 13:00:00'

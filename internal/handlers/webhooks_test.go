@@ -64,6 +64,7 @@ func workflowRunSuccess(repo string) map[string]any {
 }
 
 func TestGitHubWebhookTriggersBuild(t *testing.T) {
+	t.Parallel()
 	h, db, services := newWebhookHandler(t, webhookSecret)
 
 	rec := httptest.NewRecorder()
@@ -82,6 +83,7 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 }
 
 func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	req := signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby"))
@@ -95,6 +97,7 @@ func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 }
 
 func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
+	t.Parallel()
 	for _, signature := range []string{"", "not-a-signature", "md5=deadbeef"} {
 		t.Run(signature, func(t *testing.T) {
 			h, _, services := newWebhookHandler(t, webhookSecret)
@@ -109,6 +112,7 @@ func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
 }
 
 func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
+	t.Parallel()
 	const (
 		secret    = "It's a Secret to Everybody"
 		body      = "Hello, World!"
@@ -137,6 +141,7 @@ func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
 }
 
 func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, "")
 
 	rec := httptest.NewRecorder()
@@ -147,6 +152,7 @@ func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	rec := httptest.NewRecorder()
@@ -157,6 +163,7 @@ func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
 }
 
 func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
+	t.Parallel()
 	body := `{`
 	mac := hmac.New(sha256.New, []byte(webhookSecret))
 	mac.Write([]byte(body))
@@ -172,6 +179,7 @@ func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	rec := httptest.NewRecorder()
@@ -182,6 +190,7 @@ func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
@@ -195,6 +204,7 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
@@ -208,6 +218,7 @@ func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
+	t.Parallel()
 	for _, repo := range []string{"ruby", "exercises-"} {
 		t.Run(repo, func(t *testing.T) {
 			h, _, services := newWebhookHandler(t, webhookSecret)
@@ -222,6 +233,7 @@ func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
 }
 
 func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	rec := httptest.NewRecorder()
@@ -232,6 +244,7 @@ func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
 }
 
 func TestGitHubWebhookRejectsOversizedBody(t *testing.T) {
+	t.Parallel()
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	rec := httptest.NewRecorder()

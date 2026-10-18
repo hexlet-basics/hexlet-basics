@@ -18,6 +18,7 @@ import (
 // handler turns the call away before any handler or transaction exists, and the
 // refusal still leaves an Audit Record of its own.
 func TestARefusedChangeIsRecordedAsForbidden(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	testsupport.ArriveFrom(h, "198.51.100.9")
 	testsupport.Identify(h, "req-refused-1", "Agent/2.0")
@@ -45,6 +46,7 @@ func TestARefusedChangeIsRecordedAsForbidden(t *testing.T) {
 // caller was refused because they may not read or change it, and the body they
 // sent was never decoded into anything the record could keep.
 func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	input := permissionsPostInput("refused-secret")
@@ -62,6 +64,7 @@ func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
 
 // A read the role may not do is a refusal too, not only a change.
 func TestARefusedReadIsRecordedAsForbidden(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
@@ -75,6 +78,7 @@ func TestARefusedReadIsRecordedAsForbidden(t *testing.T) {
 
 // An administrator is not refused, and is not recorded as if they had been.
 func TestAnAllowedCallLeavesNoForbiddenRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminListBlogPosts(context.Background(), api.AdminListBlogPostsParams{})

@@ -241,3 +241,32 @@
   admin: false
   created_at: '2026-07-26 20:50:43'
   updated_at: '2026-07-26 20:50:43'
+
+# Signed in by the lead naming tests: a user with an email and no name, so the sales
+# team reads the lead by the email. A test that cleared these columns on
+# user_admin_learner would take a key lock on that shared row and deadlock with
+# every parallel test that inserts a lead for it.
+- id: {{ id "user_without_a_name" }}
+  email: without-a-name@example.com
+  admin: false
+  created_at: '2026-07-26 20:50:44'
+  updated_at: '2026-07-26 20:50:44'
+
+# Like user_without_a_name, with no email either: the lead is read by the user's number.
+- id: {{ id "user_without_a_name_or_email" }}
+  admin: false
+  created_at: '2026-07-26 20:50:45'
+  updated_at: '2026-07-26 20:50:45'
+
+# Carries the should_be_lead tagging (taggings.yml) that submitting a lead removes.
+# The tagging used to sit on user_admin_learner, the default harness user, so every
+# parallel test that created a lead as that user deleted the same tagging and
+# updated the same tag counter, and deadlocked. Now only the test of that removal
+# signs in as this user.
+- id: {{ id "user_flagged_as_lead" }}
+  email: flagged-as-lead@example.com
+  first_name: Flagged
+  last_name: Lead
+  admin: false
+  created_at: '2026-07-26 20:50:46'
+  updated_at: '2026-07-26 20:50:46'

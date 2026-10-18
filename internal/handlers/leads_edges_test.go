@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -11,14 +10,15 @@ import (
 
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/tag"
-	"hexletbasics/ent/tagging"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
 // The contact method names the column the value lands in: WhatsApp has its own.
 func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	input := leadFromTheSite()
 	input.ContactMethod = api.LeadInputContactMethodWhatsapp
@@ -37,27 +37,21 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 // The sales team reads the lead by a name: the user's own, else their email,
 // else a number — never an empty string.
 func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
-		name    string
-		prepare func(context.Context, *testsupport.Harness)
-		want    func(*testsupport.Harness) string
+		name string
+		user fixture.Label
+		want func(*testsupport.Harness) string
 	}{
-		{"by email when they have no name",
-			func(ctx context.Context, h *testsupport.Harness) {
-				h.DB.User.UpdateOneID(h.UserID).ClearFirstName().ClearLastName().ExecX(ctx)
-			},
-			func(*testsupport.Harness) string { return "admin-learner@example.com" }},
-		{"by number when they have neither",
-			func(ctx context.Context, h *testsupport.Harness) {
-				h.DB.User.UpdateOneID(h.UserID).ClearFirstName().ClearLastName().ClearEmail().ExecX(ctx)
-			},
+		{"by email when they have no name", fixture.UserWithoutAName,
+			func(*testsupport.Harness) string { return "without-a-name@example.com" }},
+		{"by number when they have neither", fixture.UserWithoutANameOrEmail,
 			func(h *testsupport.Harness) string { return fmt.Sprintf("User #%d", h.UserID) }},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-			c.prepare(t.Context(), h)
+			h := testsupport.NewHarnessAs(t, c.user)
 
 			_, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 			require.NoError(t, err)
@@ -70,31 +64,34 @@ func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 }
 
 // A user who was never flagged is no change: the lead is stored and the tag's
-// counter is untouched, whether the flag was never raised for them or there is
-// no such tag at all.
+// counter is untouched. The default harness user carries no should_be_lead
+// tagging, so this needs no delete and runs in parallel.
 func TestCreateLeadLeavesTheTagAloneForAUserWhoNeverHadIt(t *testing.T) {
-	t.Run("the tag exists but not on the user", func(t *testing.T) {
-		h := testsupport.NewHarness(t)
-		ctx := t.Context()
-		h.DB.Tagging.Delete().Where(tagging.TaggableType("User"), tagging.TaggableID(h.UserID)).ExecX(ctx)
-		before := h.DB.Tag.Query().Where(tag.Name("should_be_lead")).OnlyX(ctx).TaggingsCount
+	t.Parallel()
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	before := h.DB.Tag.Query().Where(tag.Name("should_be_lead")).OnlyX(ctx).TaggingsCount
 
-		_, err := h.Client.CreateLead(ctx, leadFromTheSite())
-		require.NoError(t, err)
+	_, err := h.Client.CreateLead(ctx, leadFromTheSite())
+	require.NoError(t, err)
 
-		after := h.DB.Tag.Query().Where(tag.Name("should_be_lead")).OnlyX(ctx).TaggingsCount
-		assert.Equal(t, before, after)
-	})
+	after := h.DB.Tag.Query().Where(tag.Name("should_be_lead")).OnlyX(ctx).TaggingsCount
+	assert.Equal(t, before, after)
+}
 
-	t.Run("there is no such tag", func(t *testing.T) {
-		h := testsupport.NewHarness(t)
-		ctx := t.Context()
-		h.DB.Tagging.Delete().ExecX(ctx)
-		h.DB.Tag.Delete().Where(tag.Name("should_be_lead")).ExecX(ctx)
+// A database without the tag at all is no change either: the lead is stored.
+//
+// Not parallel: the lead code finds the tag by name and expects one, so there
+// is one should_be_lead row for every test, and this one deletes it and every
+// tagging, which would block or deadlock with any test that touches them.
+func TestCreateLeadIsStoredWhenThereIsNoShouldBeLeadTag(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	h.DB.Tagging.Delete().ExecX(ctx)
+	h.DB.Tag.Delete().Where(tag.Name("should_be_lead")).ExecX(ctx)
 
-		_, err := h.Client.CreateLead(ctx, leadFromTheSite())
-		require.NoError(t, err)
+	_, err := h.Client.CreateLead(ctx, leadFromTheSite())
+	require.NoError(t, err)
 
-		assert.True(t, h.DB.Lead.Query().Where(lead.UserID(h.UserID)).ExistX(ctx))
-	})
+	assert.True(t, h.DB.Lead.Query().Where(lead.UserID(h.UserID)).ExistX(ctx))
 }

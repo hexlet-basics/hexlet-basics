@@ -16,6 +16,7 @@ import (
 // staff_members.yml seeds the editor (staff_member_staff_editor) and an administrator who is staff (staff_member_admin_staff).
 
 func TestAdminListStaffMembers(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
@@ -34,6 +35,7 @@ func TestAdminListStaffMembers(t *testing.T) {
 }
 
 func TestAdminGetStaffMember(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -46,6 +48,7 @@ func TestAdminGetStaffMember(t *testing.T) {
 }
 
 func TestAdminGetStaffMemberNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -55,6 +58,7 @@ func TestAdminGetStaffMemberNotFound(t *testing.T) {
 }
 
 func TestAdminCreateStaffMember(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)
@@ -79,6 +83,7 @@ func TestAdminCreateStaffMember(t *testing.T) {
 // TestAdminCreateStaffMemberDuplicateUser proves the unique user_id index: a
 // user already having a staff record surfaces as 409.
 func TestAdminCreateStaffMemberDuplicateUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -92,6 +97,7 @@ func TestAdminCreateStaffMemberDuplicateUser(t *testing.T) {
 }
 
 func TestAdminUpdateStaffMember(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -107,6 +113,7 @@ func TestAdminUpdateStaffMember(t *testing.T) {
 }
 
 func TestAdminDeleteStaffMember(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalStaffMembers := h.DB.StaffMember.Query().CountX(ctx)

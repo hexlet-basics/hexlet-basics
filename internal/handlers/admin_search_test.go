@@ -17,6 +17,7 @@ import (
 // total and the page both follow it. The rows come from the committed fixtures.
 
 func TestAdminListBannersSearchIsCaseInsensitiveAndKeepsTheTotal(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListBanners(context.Background(), api.AdminListBannersParams{Q: api.NewOptString("BLACK friday")})
@@ -27,6 +28,7 @@ func TestAdminListBannersSearchIsCaseInsensitiveAndKeepsTheTotal(t *testing.T) {
 }
 
 func TestAdminListBannersSearchComposesWithThePageWindow(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	// "fr" is in two English banners ("Free", "Friday"): the match is wider than
@@ -42,6 +44,7 @@ func TestAdminListBannersSearchComposesWithThePageWindow(t *testing.T) {
 }
 
 func TestAdminListBannersBlankSearchListsEverything(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -54,6 +57,7 @@ func TestAdminListBannersBlankSearchListsEverything(t *testing.T) {
 }
 
 func TestAdminListBannersSearchTreatsLikeWildcardsAsText(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListBanners(context.Background(), api.AdminListBannersParams{Q: api.NewOptString("%")})
@@ -63,6 +67,7 @@ func TestAdminListBannersSearchTreatsLikeWildcardsAsText(t *testing.T) {
 }
 
 func TestAdminListCoursesSearchMatchesTheSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListCourses(context.Background(), api.AdminListCoursesParams{Q: api.NewOptString("PYTHON")})
@@ -73,6 +78,7 @@ func TestAdminListCoursesSearchMatchesTheSlug(t *testing.T) {
 }
 
 func TestAdminListCourseLandingPagesSearchMatchesTheSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListCourseLandingPages(context.Background(), api.AdminListCourseLandingPagesParams{Q: api.NewOptString("RUBY-")})
@@ -83,6 +89,7 @@ func TestAdminListCourseLandingPagesSearchMatchesTheSlug(t *testing.T) {
 }
 
 func TestAdminListReviewsSearchMatchesTheReviewerAndTheText(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

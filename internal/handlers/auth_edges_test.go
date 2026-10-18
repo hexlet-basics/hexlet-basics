@@ -20,6 +20,7 @@ import (
 // An email already registered is refused as taken, on the email field, and no
 // second account is made.
 func TestSignUpRefusesATakenEmail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	taken := h.DB.User.Query().FirstX(t.Context())
 	before := h.DB.User.Query().CountX(t.Context())
@@ -36,6 +37,7 @@ func TestSignUpRefusesATakenEmail(t *testing.T) {
 // A password the hash cannot take (bcrypt stops at 72 bytes) is refused on the
 // password field rather than failing the request.
 func TestSignUpRefusesAPasswordTheHashCannotTake(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	_, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
@@ -51,6 +53,7 @@ func TestSignUpRefusesAPasswordTheHashCannotTake(t *testing.T) {
 // programming error in the contract's security wiring, not a user mistake: it
 // panics loudly instead of continuing as nobody.
 func TestMustAuthenticatedUserPanicsWithoutOne(t *testing.T) {
+	t.Parallel()
 	assert.Panics(t, func() { handlers.MustAuthenticatedUser(context.Background()) })
 }
 
@@ -58,6 +61,7 @@ func TestMustAuthenticatedUserPanicsWithoutOne(t *testing.T) {
 // visitor is anonymous on a public read and refused on a protected one, never
 // an error page.
 func TestAGarbledSessionCookieIsNoSession(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 

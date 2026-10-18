@@ -22,6 +22,7 @@ var (
 )
 
 func TestAdminListCategoryQnaItems(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -41,6 +42,7 @@ func TestAdminListCategoryQnaItems(t *testing.T) {
 }
 
 func TestAdminCreateCategoryQnaItem(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -59,6 +61,7 @@ func TestAdminCreateCategoryQnaItem(t *testing.T) {
 }
 
 func TestAdminUpdateCategoryQnaItem(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -74,6 +77,7 @@ func TestAdminUpdateCategoryQnaItem(t *testing.T) {
 // TestAdminUpdateCategoryQnaItemWrongParent proves the nested scoping: item 7001
 // belongs to qnaCategoryID, so addressing it under a different category is 404.
 func TestAdminUpdateCategoryQnaItemWrongParent(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -86,6 +90,7 @@ func TestAdminUpdateCategoryQnaItemWrongParent(t *testing.T) {
 }
 
 func TestAdminDeleteCategoryQnaItem(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -99,6 +104,7 @@ func TestAdminDeleteCategoryQnaItem(t *testing.T) {
 }
 
 func TestAdminListLandingPageQnaItems(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -114,6 +120,7 @@ func TestAdminListLandingPageQnaItems(t *testing.T) {
 }
 
 func TestAdminLandingPageQnaItemLifecycle(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

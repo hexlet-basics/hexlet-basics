@@ -76,6 +76,7 @@ func problemOf(t *testing.T, err error) api.ProblemDetails {
 }
 
 func TestStaffMemberCannotChangeTheirOwnStaffRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update", "staff_members.delete", "staff_members.create")
 
@@ -104,6 +105,7 @@ func TestStaffMemberCannotChangeTheirOwnStaffRecord(t *testing.T) {
 }
 
 func TestStaffMemberCannotMoveAnotherRecordOntoThemselves(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
 	carol := staffRecordOf(t, h, carolID, int(moderator))
@@ -114,6 +116,7 @@ func TestStaffMemberCannotMoveAnotherRecordOntoThemselves(t *testing.T) {
 }
 
 func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update", "staff_members.delete")
 	carol := staffRecordOf(t, h, carolID, int(moderator))
@@ -126,6 +129,7 @@ func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
 }
 
 func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 	record := fixture.ID(fixture.StaffMemberAdminStaff)
 
@@ -144,6 +148,7 @@ func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T)
 }
 
 func TestARefusedSelfChangeIsRecordedAsFailed(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
 
@@ -158,6 +163,7 @@ func TestARefusedSelfChangeIsRecordedAsFailed(t *testing.T) {
 }
 
 func TestTheRefusalIsExplainedInTheCallersLanguage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_members.update")
 	testsupport.SpeakTo(h, "ru")
@@ -167,6 +173,7 @@ func TestTheRefusalIsExplainedInTheCallersLanguage(t *testing.T) {
 }
 
 func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID)})
@@ -181,6 +188,7 @@ func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) 
 }
 
 func TestAnotherAdministratorMayDeleteAnAdministrator(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, danaLabel)
 	// alice owns content rows that keep her from being deleted, so an administrator
 	// of the case's own, made the way an administrator makes one, stands in for
@@ -192,6 +200,7 @@ func TestAnotherAdministratorMayDeleteAnAdministrator(t *testing.T) {
 }
 
 func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	leaveOnlyAlice(t, h)
 
@@ -208,6 +217,7 @@ func TestTheLastAdministratorFlagCannotBeClearedWithOneAdministrator(t *testing.
 }
 
 func TestAnAdministratorFlagCanBeClearedWithTwoAdministrators(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.DB.User.UpdateOneID(adminStaffID).SetAdmin(false).ExecX(t.Context())
 
@@ -217,6 +227,7 @@ func TestAnAdministratorFlagCanBeClearedWithTwoAdministrators(t *testing.T) {
 }
 
 func TestTheLastAdministratorCannotBeDeletedByAStaffMember(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "users.delete")
 	leaveOnlyAlice(t, h)
@@ -227,6 +238,7 @@ func TestTheLastAdministratorCannotBeDeletedByAStaffMember(t *testing.T) {
 }
 
 func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "staff_roles.update")
 	grantsBefore := h.DB.StaffRoleGrant.Query().CountX(t.Context())
@@ -248,6 +260,7 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 }
 
 func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
+	t.Parallel()
 	// An administrator who is also staff, on the very role whose grants change.
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 
@@ -259,6 +272,7 @@ func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
 }
 
 func TestOnlyAnAdministratorChangesTheAdministratorFlag(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	delegate(t, h, "users.update", "users.create")
 
@@ -290,6 +304,7 @@ func TestOnlyAnAdministratorChangesTheAdministratorFlag(t *testing.T) {
 }
 
 func TestAdministratorMayCreateAnotherAdministrator(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	created, err := h.Client.AdminCreateUser(t.Context(), userInput("boss@example.com", true))
