@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -44,7 +43,7 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	dependencies, err := di.BuildWorker()
 	if err != nil {
 		slog.ErrorContext(signalCtx, "building worker dependencies", "err", err)
-		return fmt.Errorf("building worker dependencies: %w", err)
+		return errs.Wrapf(err, "building worker dependencies")
 	}
 
 	app := application{

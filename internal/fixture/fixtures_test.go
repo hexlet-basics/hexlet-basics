@@ -1,14 +1,24 @@
 package fixture
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/samber/oops"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 )
+
+// labelOf reads the label an error carries as data: the message is static (ADR-0018).
+func labelOf(t *testing.T, err error) any {
+	t.Helper()
+	oopsErr, ok := errors.AsType[oops.OopsError](err)
+	require.True(t, ok)
+	return oopsErr.Context()["label"]
+}
 
 func write(t *testing.T, dir, name, body string) {
 	t.Helper()
@@ -36,14 +46,16 @@ func TestScanRefusesALabelDefinedTwice(t *testing.T) {
 
 	_, err := scan(dir)
 
-	assert.ErrorContains(t, err, `"same" is defined twice`)
+	assert.ErrorContains(t, err, "fixture label is defined twice")
+	assert.Equal(t, "same", labelOf(t, err))
 }
 
 func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
 	t.Parallel()
 	_, err := labels{"known": firstID}.id("unknown")
 
-	assert.ErrorContains(t, err, `"unknown" is not defined`)
+	assert.ErrorContains(t, err, "fixture label is not defined by any row")
+	assert.Equal(t, "unknown", labelOf(t, err))
 }
 
 func TestIDResolvesALabelOfTheRepositoryFixtures(t *testing.T) {

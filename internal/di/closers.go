@@ -3,7 +3,6 @@ package di
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/samber/do/v2"
@@ -30,7 +29,7 @@ type databaseCloser struct{ client *ent.Client }
 
 func (c *databaseCloser) Shutdown() error {
 	if err := c.client.Close(); err != nil {
-		return fmt.Errorf("closing database: %w", err)
+		return errs.Wrapf(err, "closing database")
 	}
 	return nil
 }
@@ -39,7 +38,7 @@ func (c *databaseCloser) Shutdown() error {
 // query through the pool, which fails when the database is unreachable.
 func (c *databaseCloser) HealthCheck(ctx context.Context) error {
 	if _, err := c.client.User.Query().Exist(ctx); err != nil {
-		return fmt.Errorf("pinging database: %w", err)
+		return errs.Wrapf(err, "pinging database")
 	}
 	return nil
 }
@@ -48,7 +47,7 @@ type bucketCloser struct{ bucket *blob.Bucket }
 
 func (c *bucketCloser) Shutdown() error {
 	if err := c.bucket.Close(); err != nil {
-		return fmt.Errorf("closing blob bucket: %w", err)
+		return errs.Wrapf(err, "closing blob bucket")
 	}
 	return nil
 }

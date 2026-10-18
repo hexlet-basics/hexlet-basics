@@ -3,7 +3,6 @@ package account
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/predicate"
@@ -46,7 +45,7 @@ func (r *Remover) Remove(ctx context.Context, userID int) error {
 			return err
 		}
 		if _, err := tx.UserAccount.Delete().Where(useraccount.UserID(userID)).Exec(ctx); err != nil {
-			return fmt.Errorf("delete linked accounts: %w", err)
+			return errs.Wrapf(err, "delete linked accounts")
 		}
 		err := tx.User.UpdateOneID(userID).
 			SetState(StateRemoved).
@@ -59,7 +58,7 @@ func (r *Remover) Remove(ctx context.Context, userID int) error {
 			ClearPhone().
 			Exec(ctx)
 		if err != nil {
-			return fmt.Errorf("mark user removed: %w", err)
+			return errs.Wrapf(err, "mark user removed")
 		}
 		return nil
 	})

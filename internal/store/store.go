@@ -5,7 +5,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -99,7 +98,7 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("begin transaction: %w", err)
+		return errs.Wrapf(err, "begin transaction")
 	}
 	// This also protects panic paths. Explicit rollback below is what lets us
 	// report rollback failures without obscuring the callback error.
@@ -110,10 +109,10 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 		if rollbackErr == nil || errors.Is(rollbackErr, sql.ErrTxDone) {
 			return err
 		}
-		return errors.Join(err, fmt.Errorf("rollback transaction: %w", rollbackErr))
+		return errors.Join(err, errs.Wrapf(rollbackErr, "rollback transaction"))
 	}
 	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("commit transaction: %w", err)
+		return errs.Wrapf(err, "commit transaction")
 	}
 	return nil
 }

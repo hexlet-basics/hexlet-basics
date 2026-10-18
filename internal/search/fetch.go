@@ -73,7 +73,7 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 	case Post:
 		rec, err = c.fetchPost(ctx, cmd)
 	default:
-		return nil, fmt.Errorf("fetch a record of type %q: %w", cmd.Ref.Type, ErrBadID)
+		return nil, errs.With("type", cmd.Ref.Type).Wrapf(ErrBadID, "fetch a record of unknown type")
 	}
 	if err != nil {
 		return nil, domain.FromStore(err)

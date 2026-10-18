@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -59,7 +58,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			a.logger.InfoContext(groupCtx, "backend listening", "addr", a.httpAddr)
 		}
 		if err := a.http.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			return fmt.Errorf("serve HTTP: %w", err)
+			return errs.Wrapf(err, "serve HTTP")
 		}
 		return errHTTPServerStopped
 	})
@@ -87,12 +86,12 @@ func (a *application) shutdown(parent context.Context, cancelProcess context.Can
 		a.logger.InfoContext(ctx, "shutting down")
 	}
 	if err := a.http.Shutdown(ctx); err != nil {
-		stopErr := fmt.Errorf("stop HTTP server: %w", err)
+		stopErr := errs.Wrapf(err, "stop HTTP server")
 		if a.logger != nil {
 			a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", stopErr)
 		}
 		if closeErr := a.http.Close(); closeErr != nil {
-			forceCloseErr := fmt.Errorf("force-close HTTP server: %w", closeErr)
+			forceCloseErr := errs.Wrapf(closeErr, "force-close HTTP server")
 			if a.logger != nil {
 				a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", forceCloseErr)
 			}

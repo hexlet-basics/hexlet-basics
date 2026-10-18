@@ -3,7 +3,6 @@ package events
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -38,7 +37,7 @@ func NewRuntime(
 	watermillLogger := watermill.NewSlogLogger(logger)
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: 15 * time.Second}, watermillLogger)
 	if err != nil {
-		return nil, fmt.Errorf("create Watermill router: %w", err)
+		return nil, errs.Wrapf(err, "create Watermill router")
 	}
 	poisonPublisher, err := wmsql.NewPublisher(
 		wmsql.BeginnerFromStdSQL(db),
@@ -46,7 +45,7 @@ func NewRuntime(
 		watermillLogger,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("create poison queue publisher: %w", err)
+		return nil, errs.Wrapf(err, "create poison queue publisher")
 	}
 	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher)
 	if err != nil {
@@ -56,7 +55,7 @@ func NewRuntime(
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
 	if err != nil {
-		return nil, fmt.Errorf("create domain event observer subscriber: %w", err)
+		return nil, errs.Wrapf(err, "create domain event observer subscriber")
 	}
 	// The observer takes every event type, so it is a raw handler rather than a
 	// typed cqrs handler.
@@ -83,10 +82,10 @@ func NewRuntime(
 			Logger:            watermillLogger,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("create Watermill event processor: %w", err)
+			return nil, errs.Wrapf(err, "create Watermill event processor")
 		}
 		if err := processor.AddHandlers(handlers...); err != nil {
-			return nil, fmt.Errorf("register domain event handlers: %w", err)
+			return nil, errs.Wrapf(err, "register domain event handlers")
 		}
 	}
 
@@ -107,7 +106,7 @@ func deliveryMiddleware(
 ) ([]message.HandlerMiddleware, error) {
 	poisonQueue, err := middleware.PoisonQueue(poison, PoisonTopic)
 	if err != nil {
-		return nil, fmt.Errorf("create poison queue middleware: %w", err)
+		return nil, errs.Wrapf(err, "create poison queue middleware")
 	}
 	return []message.HandlerMiddleware{
 		poisonQueue,
@@ -151,7 +150,7 @@ func newSubscriber(
 // supervisor to observe router termination directly.
 func (r *Runtime) Run(ctx context.Context) error {
 	if err := r.router.Run(ctx); err != nil {
-		return fmt.Errorf("run Watermill router: %w", err)
+		return errs.Wrapf(err, "run Watermill router")
 	}
 	return nil
 }

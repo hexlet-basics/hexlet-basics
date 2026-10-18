@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"hexletbasics/ent"
@@ -18,8 +17,8 @@ import (
 
 var (
 	errUnauthenticated = errors.New("request is not authenticated")
-	errAdminRequired   = fmt.Errorf("administrator access is required: %w", domain.ErrForbidden)
-	errCrossOrigin     = fmt.Errorf("cross-origin request refused: %w", domain.ErrForbidden)
+	errAdminRequired   = errors.Join(errors.New("administrator access is required"), domain.ErrForbidden)
+	errCrossOrigin     = errors.Join(errors.New("cross-origin request refused"), domain.ErrForbidden)
 )
 
 type authenticatedUserContextKey struct{}
@@ -194,7 +193,7 @@ func (s *Security) attach(ctx context.Context) (context.Context, error) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {
-		return ctx, fmt.Errorf("load authenticated user: %w", err)
+		return ctx, errs.Wrapf(err, "load authenticated user")
 	}
 	return context.WithValue(ctx, authenticatedUserContextKey{}, u), nil
 }

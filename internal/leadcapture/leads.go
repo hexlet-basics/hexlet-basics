@@ -90,7 +90,7 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 	err := r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		u, err := db.User.Get(ctx, submission.UserID)
 		if err != nil {
-			return fmt.Errorf("load lead user %d: %w", submission.UserID, err)
+			return errs.With("user_id", submission.UserID).Wrapf(err, "load lead user")
 		}
 
 		courses, err := coursesData(ctx, db, submission.UserID)
@@ -112,11 +112,11 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			create.SetWhatsapp(submission.ContactValue)
 		default:
 			// The contract's enum rejects anything else before it gets here.
-			return fmt.Errorf("unknown contact method %q", submission.ContactMethod)
+			return errs.With("contact_method", submission.ContactMethod).Errorf("unknown contact method")
 		}
 		created, err = create.Save(ctx)
 		if err != nil {
-			return fmt.Errorf("create lead: %w", err)
+			return errs.Wrapf(err, "create lead")
 		}
 
 		if err := removeShouldBeLead(ctx, db, u.ID); err != nil {
@@ -145,7 +145,7 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			IP:          submission.IP,
 			OccurredAt:  r.now().UTC(),
 		}); err != nil {
-			return fmt.Errorf("publish lead created: %w", err)
+			return errs.Wrapf(err, "publish lead created")
 		}
 		return nil
 	})
@@ -171,7 +171,7 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf("load %s tag: %w", shouldBeLeadTag, err)
+		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "load lead tag")
 	}
 
 	removed, err := db.Tagging.Delete().
@@ -183,13 +183,13 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 		).
 		Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("remove %s from user %d: %w", shouldBeLeadTag, userID, err)
+		return errs.With("tag", shouldBeLeadTag, "user_id", userID).Wrapf(err, "remove lead tag from user")
 	}
 	if removed == 0 {
 		return nil
 	}
 	if err := db.Tag.UpdateOneID(t.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
-		return fmt.Errorf("count %s taggings: %w", shouldBeLeadTag, err)
+		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "count lead taggings")
 	}
 	return nil
 }
@@ -213,7 +213,7 @@ func coursesData(ctx context.Context, db *ent.Client, userID int) (string, error
 		Order(ent.Asc(enrollment.FieldID)).
 		All(ctx)
 	if err != nil {
-		return "", fmt.Errorf("load lead enrollments: %w", err)
+		return "", errs.Wrapf(err, "load lead enrollments")
 	}
 
 	data := lo.Map(enrollments, func(e *ent.Enrollment, _ int) courseData {
@@ -228,7 +228,7 @@ func coursesData(ctx context.Context, db *ent.Client, userID int) (string, error
 	})
 	encoded, err := json.Marshal(data)
 	if err != nil {
-		return "", fmt.Errorf("encode courses data: %w", err)
+		return "", errs.Wrapf(err, "encode courses data")
 	}
 	return string(encoded), nil
 }

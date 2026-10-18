@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -40,11 +39,11 @@ type maintainAuditPartitionsWorker struct {
 func (w *maintainAuditPartitionsWorker) Work(ctx context.Context, _ *river.Job[MaintainAuditPartitionsArgs]) error {
 	now := w.now()
 	if err := w.partitions.EnsureAhead(ctx, now); err != nil {
-		return fmt.Errorf("maintain audit partitions: %w", err)
+		return errs.Wrapf(err, "maintain audit partitions")
 	}
 	dropped, err := w.partitions.DropExpired(ctx, now, w.retentionMonths)
 	if err != nil {
-		return fmt.Errorf("maintain audit partitions: %w", err)
+		return errs.Wrapf(err, "maintain audit partitions")
 	}
 	for _, name := range dropped {
 		w.logger.InfoContext(ctx, "dropped expired audit partition",

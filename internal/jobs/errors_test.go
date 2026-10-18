@@ -78,7 +78,8 @@ func TestErrorHandlerCapturesJobPanics(t *testing.T) {
 	assert.Nil(t, result, "observability must not cancel the job")
 	events := transport.Events()
 	require.Len(t, events, 1)
-	require.Len(t, events[0].Exception, 1)
-	assert.Equal(t, "job panic: boom", events[0].Exception[0].Value)
+	// The panic value travels as an attribute (read by telemetry's BeforeSend), not in the message.
+	require.NotEmpty(t, events[0].Exception)
+	assert.Equal(t, "job panic", events[0].Exception[len(events[0].Exception)-1].Value)
 	assert.Equal(t, "goroutine 1 [running]", events[0].Contexts["river"]["panic_trace"])
 }

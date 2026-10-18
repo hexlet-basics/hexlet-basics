@@ -77,7 +77,7 @@ func FromStore(err error, uniques ...Unique) error {
 	case isDomain(err):
 		return err
 	case ent.IsNotFound(err):
-		return fmt.Errorf("%w: %w", ErrNotFound, err)
+		return errors.Join(ErrNotFound, err)
 	case ent.IsConstraintError(err):
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok && pgErr.Code == uniqueViolation {
 			for _, unique := range uniques {
@@ -86,7 +86,7 @@ func FromStore(err error, uniques ...Unique) error {
 				}
 			}
 		}
-		return fmt.Errorf("%w: %w", ErrConflict, err)
+		return errors.Join(ErrConflict, err)
 	default:
 		return err
 	}
