@@ -16,6 +16,7 @@ import (
 // The player payload: the lesson's prose for the request locale, the code and
 // tests of the course's current build, and where the learner stands.
 func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -61,6 +62,7 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 // picks the canonical one, and it is the one of the request's locale: the course
 // page is served only under its own locale, so the link back must name that one.
 func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -81,6 +83,7 @@ func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 }
 
 func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -97,6 +100,7 @@ func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
 // The navigation tab's rows: every lesson of the current version, in course
 // order, named, each with the visitor's standing in it.
 func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -121,6 +125,7 @@ func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
 // A course nobody has written copy for is still readable: the landing page is
 // null rather than the read failing.
 func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 
@@ -140,6 +145,7 @@ func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
 // Reading a lesson never starts it: the frontend preloads routes on hover, so a
 // read with that effect would enroll a learner in every lesson they point at.
 func TestGetCourseLessonStartsNothing(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	rows := h.DB.LessonProgress.Query().CountX(ctx)
@@ -157,6 +163,7 @@ func TestGetCourseLessonStartsNothing(t *testing.T) {
 // The read carries the same progress the course page carries, so the player
 // renders the checkmarks and where to resume from the server's answer.
 func TestGetCourseLessonReturnsProgress(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -176,6 +183,7 @@ func TestGetCourseLessonReturnsProgress(t *testing.T) {
 // Back and forward follow course order, whatever the learner has finished: the
 // first lesson has nothing before it, the last nothing after it.
 func TestGetCourseLessonNamesTheLessonsOnEitherSide(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	adjacent := func(slug string) api.AdjacentLessons {
 		res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{CourseSlug: jsCourseSlug, Slug: slug})
@@ -201,6 +209,7 @@ func TestGetCourseLessonNamesTheLessonsOnEitherSide(t *testing.T) {
 // on the last lesson, with the second still to do, "next" has nowhere to go but
 // the learner still resumes at the second.
 func TestGetCourseLessonKeepsTheNextLessonApartFromAdjacentLessons(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -217,6 +226,7 @@ func TestGetCourseLessonKeepsTheNextLessonApartFromAdjacentLessons(t *testing.T)
 // Theory is public: a visitor reads any lesson with no session, which is what
 // keeps the page answering the search that led here.
 func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -234,6 +244,7 @@ func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
 // A lesson of another course, an unknown slug, and a lesson the current build
 // dropped are all the same answer: this course has no such lesson.
 func TestGetCourseLessonIsNotFoundOutsideTheCurrentBuild(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 
@@ -256,6 +267,7 @@ func TestGetCourseLessonIsNotFoundOutsideTheCurrentBuild(t *testing.T) {
 // A lesson with no translation for the request locale is not a lesson this
 // visitor can read, which is how legacy treated it too.
 func TestGetCourseLessonIsNotFoundInAnUntranslatedLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	testsupport.SpeakTo(h, "es")

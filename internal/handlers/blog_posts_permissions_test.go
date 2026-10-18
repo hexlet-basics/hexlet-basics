@@ -77,11 +77,12 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminDeleteBlogPost": {"blog_posts.delete", func(h *testsupport.Harness) error {
-		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+		return h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostToDelete)})
 	}},
 }
 
 func TestARoleWithoutTheGrantIsRefusedEachBlogPostOperation(t *testing.T) {
+	t.Parallel()
 	for name, op := range blogPostOperations {
 		if op.permission == "blog_posts.read" {
 			continue // the editor holds it, see the next test
@@ -97,6 +98,7 @@ func TestARoleWithoutTheGrantIsRefusedEachBlogPostOperation(t *testing.T) {
 }
 
 func TestARoleWithTheGrantMayUseTheOperation(t *testing.T) {
+	t.Parallel()
 	for name, op := range blogPostOperations {
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel)
@@ -114,6 +116,7 @@ func TestARoleWithTheGrantMayUseTheOperation(t *testing.T) {
 // A grant opens only the operations that declare it: holding the right to read
 // is not the right to change.
 func TestAGrantDoesNotOpenAnotherPermissionsOperations(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	require.NoError(t, blogPostOperations["AdminListBlogPosts"].call(h))
@@ -122,6 +125,7 @@ func TestAGrantDoesNotOpenAnotherPermissionsOperations(t *testing.T) {
 }
 
 func TestAnAdministratorMayUseEveryBlogPostOperation(t *testing.T) {
+	t.Parallel()
 	for name, op := range blogPostOperations {
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
@@ -135,6 +139,7 @@ func TestAnAdministratorMayUseEveryBlogPostOperation(t *testing.T) {
 // The grant does not carry across locales: the staff record still decides
 // where the role may act.
 func TestAGrantDoesNotWidenTheStaffMembersLocales(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 	testsupport.SpeakTo(h, "es")
 

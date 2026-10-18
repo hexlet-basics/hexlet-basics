@@ -19,6 +19,7 @@ var (
 )
 
 func TestAdminListCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCourses := h.DB.Course.Query().CountX(ctx)
@@ -35,6 +36,7 @@ func TestAdminListCourses(t *testing.T) {
 }
 
 func TestAdminGetCourse(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -49,6 +51,7 @@ func TestAdminGetCourse(t *testing.T) {
 }
 
 func TestAdminGetCourseNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -58,6 +61,7 @@ func TestAdminGetCourseNotFound(t *testing.T) {
 }
 
 func TestAdminCreateCourse(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCourses := h.DB.Course.Query().CountX(ctx)
@@ -86,6 +90,7 @@ func TestAdminCreateCourse(t *testing.T) {
 // TestAdminCreateCourseDuplicateSlug proves the languages_slug_index uniqueness:
 // a slug already present (elixir) surfaces as 409 via the central handler.
 func TestAdminCreateCourseDuplicateSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -101,6 +106,7 @@ func TestAdminCreateCourseDuplicateSlug(t *testing.T) {
 }
 
 func TestAdminUpdateCourse(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -124,6 +130,7 @@ func TestAdminUpdateCourse(t *testing.T) {
 // The picker list is not paginated: every course is on it, so a form never
 // silently misses one.
 func TestAdminListCourseOptionsIsNotPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCourses := h.DB.Course.Query().CountX(ctx)

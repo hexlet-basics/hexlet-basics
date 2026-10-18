@@ -39,6 +39,7 @@ func (flakyFlusher) FlushError() error { return errGone }
 // OPTIONS is answered with no content, whatever the route allows; any other
 // method is a 405 that names what is allowed.
 func TestMethodNotAllowedHandlerAnswersOptionsWithNoContent(t *testing.T) {
+	t.Parallel()
 	handler := handlers.NewMethodNotAllowedHandler(testsupport.NewTranslator(t))
 
 	options := httptest.NewRecorder()
@@ -54,6 +55,7 @@ func TestMethodNotAllowedHandlerAnswersOptionsWithNoContent(t *testing.T) {
 // The error answer is still sent when the client has gone: the handler logs the
 // failed write and returns instead of panicking.
 func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
+	t.Parallel()
 	handler := testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t))
 	client := &goneClient{}
 
@@ -66,6 +68,7 @@ func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
 // A streamed answer is flushed as it is written, and a client that is gone
 // stops the copy feeding it.
 func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
+	t.Parallel()
 	var written int
 	var writeErr error
 	next := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -92,6 +95,7 @@ func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 // A status written after the body has begun is a failure mid-answer: the
 // connection is cut rather than a JSON error glued to a short answer.
 func TestStreamResponsesCutsAnAnswerThatFailsMidway(t *testing.T) {
+	t.Parallel()
 	failMidway := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("partial"))
 		w.WriteHeader(http.StatusInternalServerError)

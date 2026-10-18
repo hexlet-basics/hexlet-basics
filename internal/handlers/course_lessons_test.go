@@ -23,6 +23,7 @@ import (
 // leaving its three current-en lessons; the other courses' starter lessons are
 // listed beside them, so JavaScript's rows are picked out by slug.
 func TestAdminListCourseLessons(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -70,6 +71,7 @@ func TestAdminListCourseLessons(t *testing.T) {
 // TestAdminListLessonProgress: newest first, with course/lesson slugs and the
 // lesson name enriched from the en info.
 func TestAdminListLessonProgress(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -104,6 +106,7 @@ func TestAdminListLessonProgress(t *testing.T) {
 // TestAdminListCourseLessonReviews: only en reviews with a non-empty summary
 // (with_summary). The empty-summary and ru fixtures must be filtered out.
 func TestAdminListCourseLessonReviews(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -135,6 +138,7 @@ func TestAdminListCourseLessonReviews(t *testing.T) {
 // TestAdminListCourseLessonsPaginated exercises the paginated path with the
 // filtered count intact.
 func TestAdminListCourseLessonsPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

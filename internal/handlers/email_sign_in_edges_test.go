@@ -18,6 +18,7 @@ import (
 // password field, the old password keeps working and the link is still good for
 // another try with a password that fits.
 func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)

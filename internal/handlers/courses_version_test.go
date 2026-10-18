@@ -15,6 +15,7 @@ import (
 )
 
 func TestAdminCreateCourseVersion(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -37,6 +38,7 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 }
 
 func TestAdminCreateCourseVersionNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

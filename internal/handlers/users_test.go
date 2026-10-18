@@ -36,6 +36,7 @@ func userByEmail(t *testing.T, h *testsupport.Harness, email string) api.UserCru
 }
 
 func TestAdminListUsers(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -53,6 +54,7 @@ func TestAdminListUsers(t *testing.T) {
 }
 
 func TestAdminListUsersPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -69,6 +71,7 @@ func TestAdminListUsersPaginated(t *testing.T) {
 }
 
 func TestAdminSearchUsers(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -88,6 +91,7 @@ func TestAdminSearchUsers(t *testing.T) {
 }
 
 func TestAdminSearchUsersBlank(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -98,6 +102,7 @@ func TestAdminSearchUsersBlank(t *testing.T) {
 }
 
 func TestAdminGetUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -111,6 +116,7 @@ func TestAdminGetUser(t *testing.T) {
 }
 
 func TestAdminGetUserNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -120,6 +126,7 @@ func TestAdminGetUserNotFound(t *testing.T) {
 }
 
 func TestAdminCreateUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -146,6 +153,7 @@ func TestAdminCreateUser(t *testing.T) {
 // email field through the central ErrorHandler, not a 500, and no pre-check
 // race exists.
 func TestAdminCreateUserDuplicateEmail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -160,6 +168,7 @@ func TestAdminCreateUserDuplicateEmail(t *testing.T) {
 }
 
 func TestAdminUpdateUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -183,6 +192,7 @@ func TestAdminUpdateUser(t *testing.T) {
 }
 
 func TestAdminDeleteUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -199,6 +209,7 @@ func TestAdminDeleteUser(t *testing.T) {
 }
 
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	// The fixtures have three administrators: user_admin_learner (the caller), user_second_admin
@@ -228,6 +239,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 }
 
 func TestAdminStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	created, err := h.Client.AdminCreateUser(t.Context(), &api.UserInput{

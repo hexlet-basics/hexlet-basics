@@ -34,6 +34,7 @@ func bannerByBody(t *testing.T, h *testsupport.Harness, body string) api.Banner 
 // banners.yml seeds these.
 
 func TestAdminListBanners(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalBanners := h.DB.Banner.Query().CountX(ctx)
@@ -51,6 +52,7 @@ func TestAdminListBanners(t *testing.T) {
 }
 
 func TestAdminListBannersPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalBanners := h.DB.Banner.Query().CountX(ctx)
@@ -67,6 +69,7 @@ func TestAdminListBannersPaginated(t *testing.T) {
 }
 
 func TestAdminGetBanner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -83,6 +86,7 @@ func TestAdminGetBanner(t *testing.T) {
 }
 
 func TestAdminGetBannerNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -92,6 +96,7 @@ func TestAdminGetBannerNotFound(t *testing.T) {
 }
 
 func TestAdminCreateBanner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalBanners := h.DB.Banner.Query().CountX(ctx)
@@ -125,6 +130,7 @@ func TestAdminCreateBanner(t *testing.T) {
 // the central handler surfaces as 400 (not a 500). The generated client does not
 // validate the request body, so the empty body reaches the server.
 func TestAdminCreateBannerEmptyBody(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -141,6 +147,7 @@ func TestAdminCreateBannerEmptyBody(t *testing.T) {
 }
 
 func TestAdminUpdateBanner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -169,6 +176,7 @@ func TestAdminUpdateBanner(t *testing.T) {
 }
 
 func TestAdminDeleteBanner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalBanners := h.DB.Banner.Query().CountX(ctx)
@@ -188,6 +196,7 @@ func TestAdminDeleteBanner(t *testing.T) {
 // window. The ru fixtures also hold an over banner (newer than the live one)
 // and one that has not started, and neither is chosen.
 func TestGetActiveBannerPicksTheLiveBannerOfTheLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -200,6 +209,7 @@ func TestGetActiveBannerPicksTheLiveBannerOfTheLocale(t *testing.T) {
 }
 
 func TestGetActiveBannerInEnglishSkipsTheDraft(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "en")
 
@@ -213,6 +223,7 @@ func TestGetActiveBannerInEnglishSkipsTheDraft(t *testing.T) {
 
 // No banner targets es, so the answer is a null banner, not an error.
 func TestGetActiveBannerWithoutOneIsNull(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
 

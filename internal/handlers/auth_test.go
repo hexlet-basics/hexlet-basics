@@ -88,6 +88,7 @@ func do(t *testing.T, router http.Handler, method, path, body string, cookie *ht
 }
 
 func TestAuthRegisterLoginFlow(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "auth-flow@example.com"
@@ -176,6 +177,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 }
 
 func TestCurrentUserSurvivesEmailChange(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const oldEmail = "jwt-old-email@example.com"
@@ -207,6 +209,7 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 }
 
 func TestAuthLogoutClearsCookie(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 
 	resp := do(t, router, http.MethodPost, "/api/users",
@@ -239,6 +242,7 @@ func TestAuthLogoutClearsCookie(t *testing.T) {
 }
 
 func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 
 	resp := do(t, router, http.MethodPost, "/api/leads",
@@ -251,6 +255,7 @@ func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testin
 }
 
 func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "admin-revocation@example.com"
@@ -279,6 +284,7 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 }
 
 func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
+	t.Parallel()
 	router := newAuthRouter(t)
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/session",
 		strings.NewReader(`{"email":"missing@example.com","password":"wrong"}`))
@@ -298,6 +304,7 @@ func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 }
 
 func TestSignUpRejectsShortPassword(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 
@@ -316,6 +323,7 @@ func TestSignUpRejectsShortPassword(t *testing.T) {
 // refuses them as a bad request, and only a valid name is saved. Raw HTTP, so
 // the bodies are exactly what a client that skips the form could send.
 func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
+	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "profile-validation@example.com"

@@ -55,6 +55,7 @@ func readinessOf(t *testing.T, h *testsupport.Harness) *string {
 }
 
 func TestEveryChangeOfReadinessBetweenDistinctValuesWorksAndRepeatingIs409(t *testing.T) {
+	t.Parallel()
 	for _, from := range readinessValues {
 		for _, to := range readinessValues {
 			t.Run(from+" to "+to, func(t *testing.T) {
@@ -79,6 +80,7 @@ func TestEveryChangeOfReadinessBetweenDistinctValuesWorksAndRepeatingIs409(t *te
 }
 
 func TestARefusedReadinessChangeExplainsItselfInTheCallersLanguage(t *testing.T) {
+	t.Parallel()
 	for locale, want := range map[string]string{
 		"ru": "«в разработке»",
 		"en": "in development to in development",
@@ -98,6 +100,7 @@ func TestARefusedReadinessChangeExplainsItselfInTheCallersLanguage(t *testing.T)
 }
 
 func TestACourseWithoutReadinessCountsAsADraft(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.DB.Course.UpdateOneID(readinessCourseID).ClearReadiness().ExecX(t.Context())
 
@@ -111,6 +114,7 @@ func TestACourseWithoutReadinessCountsAsADraft(t *testing.T) {
 }
 
 func TestEachReadinessChangeDeclaresItsOwnWritePermission(t *testing.T) {
+	t.Parallel()
 	for operation, permission := range map[string]string{
 		"AdminMarkCourseDraft":         "courses.mark_draft",
 		"AdminMarkCourseInDevelopment": "courses.mark_in_development",
@@ -123,6 +127,7 @@ func TestEachReadinessChangeDeclaresItsOwnWritePermission(t *testing.T) {
 }
 
 func TestAReadinessChangeOfAMissingCourseIs404(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminMarkCourseCompleted(t.Context(), api.AdminMarkCourseCompletedParams{ID: 999999})
@@ -135,6 +140,7 @@ func TestAReadinessChangeOfAMissingCourseIs404(t *testing.T) {
 // marking a course completed lists it and marking it back withdraws it, with
 // nothing copied or cached by the operation.
 func TestWhatThePublicSeesFollowsTheReadiness(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	listed := func() bool {
 		testsupport.SpeakTo(h, "ru")
@@ -158,6 +164,7 @@ func TestWhatThePublicSeesFollowsTheReadiness(t *testing.T) {
 // A new course is a draft and the update never touches the readiness, so the
 // readiness changes only through the operations.
 func TestCreateMakesADraftAndUpdateKeepsTheReadiness(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	setReadiness(h, "in_development")
 
@@ -185,6 +192,7 @@ func TestCreateMakesADraftAndUpdateKeepsTheReadiness(t *testing.T) {
 // A role that may edit a course may not change its readiness, and the reverse:
 // the state is not an update. Each of the three changes is granted apart too.
 func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
+	t.Parallel()
 	input := &api.CourseInput{
 		Slug:                     api.NewNilString("go"),
 		LearnAs:                  api.NilCourseLearnAs{Null: true},
@@ -230,6 +238,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 }
 
 func TestEachReadinessChangeLeavesAnAuditRecordWithTheOldAndNewValue(t *testing.T) {
+	t.Parallel()
 	for operation, to := range map[string]string{
 		"AdminMarkCourseDraft":         "draft",
 		"AdminMarkCourseInDevelopment": "in_development",
