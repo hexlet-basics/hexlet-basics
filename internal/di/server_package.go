@@ -68,8 +68,7 @@ const (
 // serverPackage contains the synchronous graph: HTTP delivery, event
 // publishing, and insert-only River access.
 // handlerServices is what handlers.Server is built from, resolved by concrete
-// type: handlers.Deps holds interfaces, which the container cannot tell apart
-// by type alone.
+// type, the same types handlers.Deps holds.
 type handlerServices struct {
 	DB                *ent.Client                `do:""`
 	Config            *config.Server             `do:""`
@@ -449,9 +448,9 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// A nil *oauthserver.Server must not become a non-nil interface: the
-		// consent operations treat a nil seam as "the OAuth server is off".
-		var consents handlers.OAuthConsents
+		// nil means the OAuth server is off: the consent operations answer as if
+		// the request did not exist.
+		var consents *oauthserver.Server
 		if services.Config.OAuth.Enabled {
 			oauthServer, err := do.Invoke[*oauthserver.Server](i)
 			if err != nil {
@@ -759,10 +758,11 @@ var serverPackage = do.Package(
 			Catalogue: handler,
 			// The generated server with its security handler and audit
 			// middleware: the one checkpoint of every admin tool (ADR-0021).
-			Learner:      handler,
-			Capabilities: handler.Security(),
-			API:          handlers.NewAdminDispatcher(apiServer, translator),
-			Issuer:       cfg.OAuth.Issuer,
+			MyDashboard:      handler.MyDashboard,
+			MyCourseProgress: handler.MyCourseProgress,
+			HeldCapabilities: handler.Security().HeldCapabilities,
+			API:              handlers.NewAdminDispatcher(apiServer, translator),
+			Issuer:           cfg.OAuth.Issuer,
 			Limits: mcpserver.Limits{
 				MaxPageSize:      cfg.MCP.MaxPageSize,
 				MaxResponseBytes: cfg.MCP.MaxResponseBytes,

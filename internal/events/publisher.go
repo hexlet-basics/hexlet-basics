@@ -3,7 +3,6 @@ package events
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log/slog"
 
 	"github.com/ThreeDotsLabs/watermill"
@@ -53,16 +52,16 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 		p.logger,
 	)
 	if err != nil {
-		return fmt.Errorf("create Watermill transaction publisher: %w", err)
+		return errs.Wrapf(err, "create Watermill transaction publisher")
 	}
 	defer func() { _ = sqlPublisher.Close() }()
 
 	bus, err := cqrs.NewEventBusWithConfig(sqlPublisher, busConfig(p.logger))
 	if err != nil {
-		return fmt.Errorf("create Watermill event bus: %w", err)
+		return errs.Wrapf(err, "create Watermill event bus")
 	}
 	if err := bus.Publish(ctx, event); err != nil {
-		return fmt.Errorf("publish %s: %w", event.eventName(), err)
+		return errs.With("event", event.eventName()).Wrapf(err, "publish event")
 	}
 	return nil
 }
@@ -79,7 +78,7 @@ func busConfig(logger watermill.LoggerAdapter) cqrs.EventBusConfig {
 		Logger:    logger,
 		OnPublish: func(params cqrs.OnEventSendParams) error {
 			if params.EventName == "" {
-				return fmt.Errorf("domain event has no stable name")
+				return errs.Errorf("domain event has no stable name")
 			}
 			params.Message.Metadata.Set("schema_version", schemaVersion)
 			return nil

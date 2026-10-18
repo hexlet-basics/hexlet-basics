@@ -272,11 +272,11 @@ func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status in
 	spanContext := trace.SpanContextFromContext(ctx)
 	traceID := spanContext.TraceID().String()
 	spanID := spanContext.SpanID().String()
+	// The logger adds trace_id and span_id itself (internal/logging); the Sentry
+	// tags below stay, since Sentry has no access to the log pipeline.
 	attrs := []any{
 		"err", err,
 		"status", status,
-		"trace_id", traceID,
-		"span_id", spanID,
 	}
 	tags := map[string]string{
 		"trace_id": traceID,

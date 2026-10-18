@@ -243,7 +243,7 @@ var workerPackage = do.Package(
 		return jobs.NewWorkerClient(
 			db,
 			logger,
-			jobs.NewErrorHandler(sentryClient),
+			jobs.NewErrorHandler(sentryClient, logger),
 			otelSDK.TracerProvider(),
 			otelSDK.MeterProvider(),
 			modules...,
@@ -275,7 +275,11 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return events.NewRuntime(db, logger,
+		sentryClient, err := do.Invoke[*sentry.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return events.NewRuntime(db, logger, sentryClient,
 			eventhandler.LeadCreated(riverClient),
 			// Writes the Audit Record of a staff read of personal data, which the
 			// server only publishes (ADR-0020).

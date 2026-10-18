@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -43,8 +42,8 @@ func main() {
 func run(signalCtx context.Context, stopSignals func()) error {
 	dependencies, err := di.BuildWorker()
 	if err != nil {
-		slog.Error("building worker dependencies", "err", err)
-		return fmt.Errorf("building worker dependencies: %w", err)
+		slog.ErrorContext(signalCtx, "building worker dependencies", "err", err)
+		return errs.Wrapf(err, "building worker dependencies")
 	}
 
 	app := application{
@@ -67,7 +66,7 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	}
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		dependencies.Logger.Error("worker runtime failed", "err", runtimeErr)
+		dependencies.Logger.ErrorContext(cleanupCtx, "worker runtime failed", "err", runtimeErr)
 		return runtimeErr
 	}
 	return nil

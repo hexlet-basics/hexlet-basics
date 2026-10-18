@@ -9,21 +9,6 @@ import (
 	"hexletbasics/internal/oauthserver"
 )
 
-// OAuthConsents is the consent seam of the OAuth server (ADR-0022): what the
-// consent screen shows, and approving or denying it. *oauthserver.Server is the
-// implementation; the dependency points this way only, handlers know the
-// package and the package never knows handlers. nil means the OAuth server is
-// switched off, and the operations answer as if the request did not exist.
-type OAuthConsents interface {
-	Pending(ctx context.Context, requestID string) (oauthserver.Consent, error)
-	Approve(ctx context.Context, requestID string) (redirectURL string, err error)
-	Deny(ctx context.Context, requestID string) (redirectURL string, err error)
-	// ConnectedApps and Disconnect are the Connected Apps page: what the signed-in
-	// user has approved, and withdrawing one.
-	ConnectedApps(ctx context.Context) ([]oauthserver.ConnectedApp, error)
-	Disconnect(ctx context.Context, appID int) error
-}
-
 // OAuthSession is the application's half of the seam: who is signed in. The
 // consent operations are secured by the contract, so the user is the one the
 // session security handler already loaded into the context.

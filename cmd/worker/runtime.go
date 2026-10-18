@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"sync/atomic"
@@ -90,7 +89,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		}
 		close(jobsStartSettled)
 		if err != nil {
-			return fmt.Errorf("start job queue: %w", err)
+			return errs.Wrapf(err, "start job queue")
 		}
 		close(riverReady)
 
@@ -121,10 +120,10 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			}
 		}()
 		if a.logger != nil {
-			a.logger.Info("async worker started")
+			a.logger.InfoContext(groupCtx, "async worker started")
 		}
 		if err := a.events.Run(processCtx); err != nil {
-			return fmt.Errorf("run domain event router: %w", err)
+			return errs.Wrapf(err, "run domain event router")
 		}
 		return errEventRouterStopped
 	})
@@ -132,7 +131,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	if a.health != nil {
 		group.Go(func() error {
 			if err := a.health.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				return fmt.Errorf("serve health: %w", err)
+				return errs.Wrapf(err, "serve health")
 			}
 			// A closed listener is the shutdown's doing; wait for the group to
 			// finish rather than ending it early.
@@ -160,20 +159,20 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 		a.probes.Drain()
 	}
 	if a.logger != nil {
-		a.logger.Info("shutting down async worker")
+		a.logger.InfoContext(ctx, "shutting down async worker")
 	}
 
 	var shutdownErrors []error
 	if state.eventsWereStarted() {
 		if err := a.events.Close(); err != nil {
-			stopErr := fmt.Errorf("stop domain event router: %w", err)
+			stopErr := errs.Wrapf(err, "stop domain event router")
 			shutdownErrors = append(shutdownErrors, stopErr)
 			a.logShutdownError(stopErr)
 		}
 	}
 	if state.jobsWereStarted() {
 		if err := a.jobs.Stop(ctx); err != nil {
-			stopErr := fmt.Errorf("stop job queue: %w", err)
+			stopErr := errs.Wrapf(err, "stop job queue")
 			shutdownErrors = append(shutdownErrors, stopErr)
 			a.logShutdownError(stopErr)
 		}
@@ -181,7 +180,7 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 
 	if a.health != nil {
 		if err := a.health.Shutdown(ctx); err != nil {
-			stopErr := fmt.Errorf("stop health listener: %w", err)
+			stopErr := errs.Wrapf(err, "stop health listener")
 			shutdownErrors = append(shutdownErrors, stopErr)
 			a.logShutdownError(stopErr)
 			_ = a.health.Close()

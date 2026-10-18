@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/samber/oops"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -26,5 +28,7 @@ func TestRenderRefusesTwoLabelsThatSpellOneVariable(t *testing.T) {
 	t.Parallel()
 	_, err := render([]string{"user_removed", "user__removed"})
 
-	assert.ErrorContains(t, err, "both become UserRemoved")
+	oopsErr, ok := errors.AsType[oops.OopsError](err)
+	require.True(t, ok)
+	assert.Equal(t, "UserRemoved", oopsErr.Context()["identifier"])
 }

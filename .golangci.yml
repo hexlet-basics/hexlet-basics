@@ -16,10 +16,19 @@ linters:
     - nolintlint
     - noctx
     - rowserrcheck
+    - sloglint
     - sqlclosecheck
     - usestdlibvars
     - usetesting
   settings:
+    sloglint:
+      # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
+      # static messages, one call style (key-value pairs).
+      context: scope
+      static-msg: true
+      key-naming-case: snake
+      forbidden-keys: [error]
+      no-mixed-args: true
     forbidigo:
       # With analyze-types the matched text is <package>.<Type>.<Method>, so a
       # pattern names the ent or database/sql type it guards and does not catch
@@ -48,8 +57,7 @@ linters:
         - pattern: '^ent\.Is\w+$'
           msg: a handler does not read ent errors; the module returns domain errors (domain.FromStore) and the handler checks them with errors.Is
         # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
-        # may use it; production packages not yet migrated are listed in the
-        # exclusions below, and each migration removes its entry.
+        # may use it (see the exclusion below); production code may not.
         - pattern: '^fmt\.Errorf$'
           msg: build the error with samber/oops (errs.With(...).Wrapf), see ADR-0018
       analyze-types: true

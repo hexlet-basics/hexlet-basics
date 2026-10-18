@@ -47,7 +47,7 @@ type amoCRMLeadWorker struct {
 }
 
 func (w *amoCRMLeadWorker) Work(ctx context.Context, job *river.Job[AmoCRMLeadArgs]) error {
-	err := w.syncer.CreateLead(ctx, job.Args.Event)
+	err := cancelUnfixable(w.syncer.CreateLead(ctx, job.Args.Event))
 	if err == nil {
 		return nil
 	}

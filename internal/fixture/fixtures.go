@@ -62,7 +62,7 @@ type labels map[string]int
 func scan(dir string) (labels, error) {
 	files, err := filepath.Glob(filepath.Join(dir, "*.yml"))
 	if err != nil {
-		return nil, fmt.Errorf("list fixture files: %w", err)
+		return nil, errs.Wrapf(err, "list fixture files")
 	}
 	sort.Strings(files)
 
@@ -80,7 +80,7 @@ func scan(dir string) (labels, error) {
 func scanFile(path string, found labels, next *int) error {
 	f, err := os.Open(path)
 	if err != nil {
-		return fmt.Errorf("open fixture file: %w", err)
+		return errs.Wrapf(err, "open fixture file")
 	}
 	defer func() { _ = f.Close() }()
 
@@ -92,13 +92,13 @@ func scanFile(path string, found labels, next *int) error {
 			continue
 		}
 		if _, dup := found[m[1]]; dup {
-			return fmt.Errorf("fixture label %q is defined twice (again in %s)", m[1], filepath.Base(path))
+			return errs.With("label", m[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
 		}
 		found[m[1]] = *next
 		*next++
 	}
 	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("read fixture file %s: %w", filepath.Base(path), err)
+		return errs.With("file", filepath.Base(path)).Wrapf(err, "read fixture file")
 	}
 	return nil
 }
@@ -106,7 +106,7 @@ func scanFile(path string, found labels, next *int) error {
 func (l labels) id(label string) (int, error) {
 	id, ok := l[label]
 	if !ok {
-		return 0, fmt.Errorf("fixture label %q is not defined by any row", label)
+		return 0, errs.With("label", label).Errorf("fixture label is not defined by any row")
 	}
 	return id, nil
 }
@@ -139,7 +139,7 @@ func (l Label) String() string { return l.name }
 func LabelNames(dir string) ([]string, error) {
 	found, err := scan(dir)
 	if err != nil {
-		return nil, fmt.Errorf("number fixture rows: %w", err)
+		return nil, errs.Wrapf(err, "number fixture rows")
 	}
 	names := make([]string, 0, len(found))
 	for name := range found {
@@ -178,13 +178,13 @@ func ID32(label Label) int32 {
 func Dir() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", fmt.Errorf("get working directory: %w", err)
+		return "", errs.Wrapf(err, "get working directory")
 	}
 	for {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
 			return filepath.Join(dir, "fixtures"), nil
 		} else if !errors.Is(err, os.ErrNotExist) {
-			return "", fmt.Errorf("inspect repository root: %w", err)
+			return "", errs.Wrapf(err, "inspect repository root")
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
@@ -217,7 +217,7 @@ func PasswordDigest() (string, error) {
 func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	numbered, err := scan(dir)
 	if err != nil {
-		return fmt.Errorf("number fixture rows: %w", err)
+		return errs.Wrapf(err, "number fixture rows")
 	}
 	// The template options come before Directory: it reads and renders the files
 	// while the options are applied, in order.
@@ -237,10 +237,10 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	}
 	loader, err := testfixtures.New(options...)
 	if err != nil {
-		return fmt.Errorf("create fixture loader: %w", err)
+		return errs.Wrapf(err, "create fixture loader")
 	}
 	if err := loader.Load(); err != nil {
-		return fmt.Errorf("load fixtures: %w", err)
+		return errs.Wrapf(err, "load fixtures")
 	}
 	return nil
 }

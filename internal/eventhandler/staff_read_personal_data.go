@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ThreeDotsLabs/watermill/components/cqrs"
 
@@ -49,7 +48,7 @@ func StaffReadPersonalData(client *ent.Client) cqrs.EventHandler {
 				entry.EntityID = event.EntityIDs[0]
 			}
 			if err := audit.Write(ctx, client, entry, nil); err != nil {
-				return fmt.Errorf("record read of personal data: %w", err)
+				return errs.Wrapf(err, "record read of personal data")
 			}
 			return nil
 		},

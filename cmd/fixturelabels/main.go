@@ -44,10 +44,10 @@ func render(names []string) ([]byte, error) {
 	for _, name := range names {
 		ident := identifier(name)
 		if ident == "" {
-			return nil, fmt.Errorf("fixture label %q has no letters or digits to name a variable after", name)
+			return nil, errs.With("label", name).Errorf("fixture label has no letters or digits to name a variable after")
 		}
 		if other, dup := taken[ident]; dup {
-			return nil, fmt.Errorf("fixture labels %q and %q both become %s; rename one", other, name, ident)
+			return nil, errs.With("label", name, "other_label", other, "identifier", ident).Errorf("two fixture labels become the same variable; rename one")
 		}
 		taken[ident] = name
 		fmt.Fprintf(&buf, "\t%s = LabelOf(%q)\n", ident, name)
@@ -56,7 +56,7 @@ func render(names []string) ([]byte, error) {
 
 	src, err := format.Source(buf.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("format generated source: %w", err)
+		return nil, errs.Wrapf(err, "format generated source")
 	}
 	return src, nil
 }
