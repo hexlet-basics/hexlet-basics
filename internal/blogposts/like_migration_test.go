@@ -29,11 +29,11 @@ func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 
 	// Raw SQL is the arrange here: ent cannot write the duplicates the index
 	// forbids, and the legacy rows are the case under test.
-	_, err := tx.ExecContext(ctx, `DROP INDEX "`+likeIndex+`"`) //nolint:forbidigo // DDL: roll the migration back to the legacy schema
+	_, err := tx.ExecContext(ctx, `DROP INDEX "`+likeIndex+`"`)
 	require.NoError(t, err)
 	insert := func(userID *int, createdAt string) {
 		t.Helper()
-		_, err := tx.ExecContext(ctx, //nolint:forbidigo // legacy duplicates the index forbids are the arranged case
+		_, err := tx.ExecContext(ctx,
 			`INSERT INTO "blog_post_likes" ("blog_post_id", "user_id", "created_at", "updated_at") VALUES ($1, $2, $3, $3)`,
 			post, userID, createdAt)
 		require.NoError(t, err)
@@ -48,7 +48,7 @@ func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 	_, thisFile, _, _ := runtime.Caller(0)
 	statements, err := os.ReadFile(filepath.Join(filepath.Dir(thisFile), "..", "..", "migrations", "20261017210100_unique_blog_post_like.sql"))
 	require.NoError(t, err)
-	_, err = tx.ExecContext(ctx, string(statements)) //nolint:forbidigo // the migration file is the act under test
+	_, err = tx.ExecContext(ctx, string(statements))
 	require.NoError(t, err)
 
 	created := func(userID *int) []string {
@@ -57,7 +57,7 @@ func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 		if userID != nil {
 			user = sql.NullInt64{Int64: int64(*userID), Valid: true}
 		}
-		rows, err := tx.QueryContext(ctx, //nolint:forbidigo // reading back what the migration left
+		rows, err := tx.QueryContext(ctx,
 			`SELECT to_char("created_at", 'YYYY-MM-DD HH24:MI:SS') FROM "blog_post_likes"
 			 WHERE "blog_post_id" = $1 AND "user_id" IS NOT DISTINCT FROM $2 ORDER BY "created_at"`, post, user)
 		require.NoError(t, err)
@@ -76,7 +76,7 @@ func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 	assert.Len(t, created(nil), 2, "likes without a user are not pairs")
 
 	var indexes int
-	require.NoError(t, tx.QueryRowContext(ctx, //nolint:forbidigo // the index is the schema fact asserted
+	require.NoError(t, tx.QueryRowContext(ctx,
 		`SELECT count(*) FROM pg_indexes WHERE indexname = $1`, likeIndex).Scan(&indexes))
 	assert.Equal(t, 1, indexes, "the unique index exists")
 }
