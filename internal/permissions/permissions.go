@@ -10,10 +10,15 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/samber/oops"
 	"gopkg.in/yaml.v3"
 
 	apispec "hexletbasics/api-spec"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With.
+var errs = oops.In("permissions")
 
 // Kind says whether an operation only reads or can change data. Over MCP it
 // picks the `mcp.read` or `mcp.write` Permission an operation also needs.
@@ -101,7 +106,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		} `yaml:"paths"`
 	}
 	if err := yaml.Unmarshal(doc, &spec); err != nil {
-		return nil, fmt.Errorf("parse OpenAPI: %w", err)
+		return nil, errs.Wrapf(err, "parse openapi")
 	}
 
 	d := &Declarations{
@@ -116,10 +121,10 @@ func Parse(doc []byte) (*Declarations, error) {
 	kinds := map[string]Kind{}
 	for _, c := range spec.Capabilities {
 		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
-			return nil, fmt.Errorf("x-capabilities: %q needs a name and a kind of read or write", c.Name)
+			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
 		}
 		if _, dup := kinds[c.Name]; dup {
-			return nil, fmt.Errorf("x-capabilities: %s is listed twice", c.Name)
+			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry is listed twice")
 		}
 		kinds[c.Name] = c.Kind
 		d.capabilities[c.Name] = c.Kind
@@ -129,40 +134,40 @@ func Parse(doc []byte) (*Declarations, error) {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
 			if op.Access != "" {
 				if op.Access != AnyStaff {
-					return nil, fmt.Errorf("%s: x-access %q is not %s", where, op.Access, AnyStaff)
+					return nil, errs.With("operation", where, "access", op.Access).Errorf("x-access is not any-staff")
 				}
 				if op.Permission != nil {
-					return nil, fmt.Errorf("%s: declares both x-permission and x-access", where)
+					return nil, errs.With("operation", where).Errorf("operation declares both x-permission and x-access")
 				}
 				if op.OperationID == "" {
-					return nil, fmt.Errorf("%s: x-access needs an operationId", where)
+					return nil, errs.With("operation", where).Errorf("x-access needs an operationId")
 				}
 				d.access[operationName(op.OperationID)] = op.Access
 			}
 			if op.UnitOfWork != "" {
 				if op.UnitOfWork != unitStandalone {
-					return nil, fmt.Errorf("%s: x-unit-of-work %q is not %s", where, op.UnitOfWork, unitStandalone)
+					return nil, errs.With("operation", where, "unit_of_work", op.UnitOfWork).Errorf("x-unit-of-work is not standalone")
 				}
 				if op.OperationID == "" {
-					return nil, fmt.Errorf("%s: x-unit-of-work needs an operationId", where)
+					return nil, errs.With("operation", where).Errorf("x-unit-of-work needs an operationId")
 				}
 				d.standalone[operationName(op.OperationID)] = true
 			}
 			if op.Requires != "" {
 				if op.OperationID == "" {
-					return nil, fmt.Errorf("%s: x-requires-capability needs an operationId", where)
+					return nil, errs.With("operation", where).Errorf("x-requires-capability needs an operationId")
 				}
 				if _, ok := d.capabilities[op.Requires]; !ok {
-					return nil, fmt.Errorf("%s: x-requires-capability %q is not listed under x-capabilities", where, op.Requires)
+					return nil, errs.With("operation", where, "capability", op.Requires).Errorf("x-requires-capability is not listed under x-capabilities")
 				}
 				d.required[operationName(op.OperationID)] = op.Requires
 			}
 			if op.PersonalData != "" {
 				if op.OperationID == "" {
-					return nil, fmt.Errorf("%s: x-personal-data needs an operationId", where)
+					return nil, errs.With("operation", where).Errorf("x-personal-data needs an operationId")
 				}
 				if op.Permission == nil || op.Permission.Kind != Read {
-					return nil, fmt.Errorf("%s: x-personal-data belongs on an operation that declares a read Permission", where)
+					return nil, errs.With("operation", where).Errorf("x-personal-data belongs on an operation that declares a read permission")
 				}
 				d.personalData[operationName(op.OperationID)] = op.PersonalData
 			}
@@ -173,13 +178,13 @@ func Parse(doc []byte) (*Declarations, error) {
 				continue
 			}
 			if op.OperationID == "" || op.Permission.Name == "" {
-				return nil, fmt.Errorf("%s: x-permission needs an operationId and a name", where)
+				return nil, errs.With("operation", where).Errorf("x-permission needs an operationId and a name")
 			}
 			if op.Permission.Kind != Read && op.Permission.Kind != Write {
-				return nil, fmt.Errorf("%s: x-permission kind %q is neither read nor write", where, op.Permission.Kind)
+				return nil, errs.With("operation", where, "kind", op.Permission.Kind).Errorf("x-permission kind is neither read nor write")
 			}
 			if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
-				return nil, fmt.Errorf("%s: %s is declared both %s and %s", where, op.Permission.Name, known, op.Permission.Kind)
+				return nil, errs.With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).Errorf("permission is declared both read and write")
 			}
 			kinds[op.Permission.Name] = op.Permission.Kind
 			d.operations[operationName(op.OperationID)] = Requirement{Permission: op.Permission.Name, Kind: op.Permission.Kind}

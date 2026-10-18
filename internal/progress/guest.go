@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
 	"strings"
@@ -185,7 +184,7 @@ func (c *GuestCodec) ClearedCookie(secure bool) *http.Cookie {
 func (c *GuestCodec) sign(progress GuestProgress) (string, error) {
 	body, err := json.Marshal(progress)
 	if err != nil {
-		return "", fmt.Errorf("encode guest progress: %w", err)
+		return "", errs.Wrapf(err, "encode guest progress")
 	}
 	return base64.RawURLEncoding.EncodeToString(body) + "." +
 		base64.RawURLEncoding.EncodeToString(c.mac(body)), nil
@@ -226,7 +225,7 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 	case ent.IsNotFound(err):
 		return nil
 	case err != nil:
-		return fmt.Errorf("load course %q: %w", entry.CourseSlug, err)
+		return errs.With("course_slug", entry.CourseSlug).Wrapf(err, "load course")
 	}
 
 	lessons, err := currentLessons(ctx, db, crs)
@@ -260,7 +259,7 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 			Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
 			Count(ctx)
 		if err != nil {
-			return fmt.Errorf("count started enrollments: %w", err)
+			return errs.Wrapf(err, "count started enrollments")
 		}
 		if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
 			OccurrenceCount: count,
@@ -268,7 +267,7 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 			Locale:          locale,
 			OccurredAt:      occurredAt,
 		}); err != nil {
-			return fmt.Errorf("publish course started: %w", err)
+			return errs.Wrapf(err, "publish course started")
 		}
 	}
 
@@ -305,7 +304,7 @@ func (p *Progress) creditLessons(
 		Select(lessonprogress.FieldLessonID).
 		All(ctx)
 	if err != nil {
-		return fmt.Errorf("load lesson progress: %w", err)
+		return errs.Wrapf(err, "load lesson progress")
 	}
 	isHeld := lo.SliceToMap(held, func(row *ent.LessonProgress) (int, bool) { return row.LessonID, true })
 
@@ -320,7 +319,7 @@ func (p *Progress) creditLessons(
 			Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lo.Keys(isHeld)...)).
 			SetState(StateFinished).
 			Save(ctx); err != nil {
-			return fmt.Errorf("finish lesson progress: %w", err)
+			return errs.Wrapf(err, "finish lesson progress")
 		}
 	}
 
@@ -335,7 +334,7 @@ func (p *Progress) creditLessons(
 				SetState(StateFinished)
 		})
 		if _, err := db.LessonProgress.CreateBulk(builders...).Save(ctx); err != nil {
-			return fmt.Errorf("create finished lesson progress: %w", err)
+			return errs.Wrapf(err, "create finished lesson progress")
 		}
 	}
 
@@ -360,7 +359,7 @@ func (p *Progress) creditLessons(
 			},
 		} {
 			if err := p.publisher.Publish(ctx, tx, event); err != nil {
-				return fmt.Errorf("publish merge fact: %w", err)
+				return errs.Wrapf(err, "publish merge fact")
 			}
 		}
 	}
