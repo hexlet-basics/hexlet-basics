@@ -144,7 +144,7 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 // derived from the lessons the cookie names, and only those.
 func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
@@ -167,7 +167,7 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 // before it: a later lesson no longer implies the earlier ones.
 func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(thirdLessonSlug))
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
@@ -185,7 +185,7 @@ func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 // the guest starts that course over rather than being stranded.
 func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
+	h := testsupport.NewVisitorHarness(t, progressCookie("removed-in-a-later-build"))
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
@@ -202,7 +202,7 @@ func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
-	testsupport.ForgeGuestCookie(t, h, progressCookie(jsCourseSlug, thirdLessonSlug))
+	testsupport.ForgeGuestCookie(t, h, progressCookie(thirdLessonSlug))
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
@@ -298,12 +298,12 @@ func TestGetCourseIsNotFoundForAnArchivedPageWithNowhereToGo(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
 
-// progressCookie is a visitor's whole state: the lessons they finished in one
-// course.
-func progressCookie(courseSlug string, lessonSlugs ...string) progress.GuestProgress {
+// progressCookie is a visitor's whole state: the lessons they finished in the
+// JavaScript course.
+func progressCookie(lessonSlugs ...string) progress.GuestProgress {
 	guest := progress.GuestProgress{}
 	for _, slug := range lessonSlugs {
-		guest = guest.Record(courseSlug, slug)
+		guest = guest.Record(jsCourseSlug, slug)
 	}
 	return guest
 }

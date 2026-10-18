@@ -146,7 +146,7 @@ func TestRegistrationRefusals(t *testing.T) {
 	set := func(key string, value any) func(map[string]any) {
 		return func(m map[string]any) { m[key] = value }
 	}
-	var manyRedirects []string
+	manyRedirects := make([]string, 0, 50)
 	for i := range 50 {
 		manyRedirects = append(manyRedirects, fmt.Sprintf("https://app.example.com/cb%d", i))
 	}

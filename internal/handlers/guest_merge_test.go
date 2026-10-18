@@ -25,7 +25,7 @@ import (
 // finished.
 func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateUser(ctx, &api.SignUpInput{
@@ -49,7 +49,7 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 // merge is a union, and a later lesson does not pull the earlier ones with it.
 func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(thirdLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateSession(ctx, signInAsActingUser(t, h))
@@ -67,7 +67,7 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 // An account that already has everything the cookie names is untouched.
 func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(firstLessonSlug))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 

@@ -40,6 +40,7 @@ func SuggestRelatedCoursesWorker(suggester RelatedCoursesSuggester) river.Worker
 
 type suggestRelatedCoursesWorker struct {
 	river.WorkerDefaults[SuggestRelatedCoursesArgs]
+
 	suggester RelatedCoursesSuggester
 }
 

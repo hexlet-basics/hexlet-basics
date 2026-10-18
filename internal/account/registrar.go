@@ -58,7 +58,7 @@ func WithClock(now func() time.Time) RegistrarOption {
 
 // Register creates the user and publishes the corresponding domain fact in the
 // same PostgreSQL transaction.
-func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.User, err error) {
+func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User, error) {
 	hash, err := hashPassword(input.Password)
 	if err != nil {
 		return nil, err

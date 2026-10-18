@@ -102,7 +102,7 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 // the guest's progress credited, the sign-in recorded.
 func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(firstLessonSlug, secondLessonSlug))
 	u := fixtureUser(t, h, fixture.UserBlank)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(),

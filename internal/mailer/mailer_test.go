@@ -38,14 +38,22 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 		body, err := io.ReadAll(r.Body)
 		assert.NoError(t, err)
 		var request struct {
-			FromEmailAddress string
-			Destination      struct{ ToAddresses []string }
-			Content          struct {
+			FromEmailAddress string `json:"FromEmailAddress"`
+			Destination      struct {
+				ToAddresses []string `json:"ToAddresses"`
+			} `json:"Destination"`
+			Content struct {
 				Simple struct {
-					Subject struct{ Data string }
-					Body    struct{ Html struct{ Data string } }
-				}
-			}
+					Subject struct {
+						Data string `json:"Data"`
+					} `json:"Subject"`
+					Body struct {
+						Html struct {
+							Data string `json:"Data"`
+						} `json:"Html"`
+					} `json:"Body"`
+				} `json:"Simple"`
+			} `json:"Content"`
 		}
 		assert.NoError(t, json.Unmarshal(body, &request))
 		mu.Lock()

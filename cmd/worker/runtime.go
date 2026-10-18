@@ -17,15 +17,15 @@ var (
 )
 
 type jobRuntime interface {
-	Start(context.Context) error
-	Stop(context.Context) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
 	Stopped() <-chan struct{}
 }
 
 // httpRuntime is the health-only listener.
 type httpRuntime interface {
 	ListenAndServe() error
-	Shutdown(context.Context) error
+	Shutdown(ctx context.Context) error
 	Close() error
 }
 
@@ -37,7 +37,7 @@ type readiness interface {
 }
 
 type eventRuntime interface {
-	Run(context.Context) error
+	Run(ctx context.Context) error
 	// Running is closed once the router has started every handler.
 	Running() <-chan struct{}
 	Close() error

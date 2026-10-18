@@ -15,7 +15,7 @@ import (
 const leadCreatedHandlerName = "lead_created_to_amocrm_v1"
 
 type inserter interface {
-	Insert(context.Context, river.JobArgs, *river.InsertOpts) (*rivertype.JobInsertResult, error)
+	Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error)
 }
 
 // LeadCreated routes the domain fact to River; the Watermill consumer stays

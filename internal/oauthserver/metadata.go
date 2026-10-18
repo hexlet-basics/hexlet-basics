@@ -2,6 +2,7 @@ package oauthserver
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/zitadel/oidc/v3/pkg/oidc"
@@ -51,5 +52,14 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 	out["client_id_metadata_document_supported"] = true
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
-	_ = json.NewEncoder(w).Encode(out)
+	writeJSON(w, out)
+}
+
+// writeJSON writes the body of a response whose status and headers are already
+// sent. A write that fails means the client went away, which is routine and
+// cannot be answered any more, so it is noted at debug level and nothing else.
+func writeJSON(w http.ResponseWriter, body any) {
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		slog.Debug("write json response", "err", err)
+	}
 }

@@ -59,7 +59,6 @@ func TestCheckFinishesALesson(t *testing.T) {
 	require.Len(t, finished, 1)
 	assert.Equal(t, 2, finished[0].OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
 	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
-
 }
 
 // A failed check is still work done on the lesson: it is recorded, and the
@@ -317,7 +316,7 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 // lesson the cookie counts.
 func TestGuestCheckIgnoresALessonTheCurrentVersionDropped(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
+	h := testsupport.NewVisitorHarness(t, progressCookie("removed-in-a-later-build"))
 
 	first := lessonBySlug(t, h, firstLessonSlug)
 	result := submitSolution(t, h, first)

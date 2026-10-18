@@ -122,7 +122,7 @@ func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
 	// The records written by this very call and the fixtures are not in the way:
 	// the three seeded rows are the only ones in the window except the ones the
 	// listing's own refusals left, so assert on relative order.
-	var ids []int64
+	ids := make([]int64, 0, len(page.Items))
 	for _, item := range page.Items {
 		ids = append(ids, item.ID)
 	}
@@ -153,7 +153,7 @@ func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
 	only := func(params api.AdminListAuditRecordsParams) []int64 {
 		page, err := listTrail(h, params)
 		require.NoError(t, err)
-		var ids []int64
+		ids := make([]int64, 0, len(page.Items))
 		for _, item := range page.Items {
 			ids = append(ids, item.ID)
 		}

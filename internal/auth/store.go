@@ -59,18 +59,12 @@ func (s *store) DeleteCtx(ctx context.Context, token string) error {
 	return err
 }
 
-// deleteExpired removes every session whose expiry has passed and reports how
-// many it removed.
-func (s *store) deleteExpired(ctx context.Context) (int, error) {
-	return s.db.Session.Delete().Where(session.ExpiryLTE(s.clock().UTC())).Exec(ctx)
+func (s *store) Find(token string) ([]byte, bool, error) {
+	return s.FindCtx(context.Background(), token)
 }
 
 // The context-free methods scs's Store interface demands. scs prefers the Ctx
 // variants when a store has them, so these are only the interface's price.
-
-func (s *store) Find(token string) ([]byte, bool, error) {
-	return s.FindCtx(context.Background(), token)
-}
 
 func (s *store) Commit(token string, data []byte, expiry time.Time) error {
 	return s.CommitCtx(context.Background(), token, data, expiry)
@@ -78,4 +72,10 @@ func (s *store) Commit(token string, data []byte, expiry time.Time) error {
 
 func (s *store) Delete(token string) error {
 	return s.DeleteCtx(context.Background(), token)
+}
+
+// deleteExpired removes every session whose expiry has passed and reports how
+// many it removed.
+func (s *store) deleteExpired(ctx context.Context) (int, error) {
+	return s.db.Session.Delete().Where(session.ExpiryLTE(s.clock().UTC())).Exec(ctx)
 }

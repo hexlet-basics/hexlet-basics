@@ -98,7 +98,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 func TestTheFamilySurvivesSeveralRotations(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	var spent []string
+	spent := make([]string, 0, 5)
 	for range 5 {
 		spent = append(spent, tokens.RefreshToken)
 		next, res := o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)

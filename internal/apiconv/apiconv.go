@@ -288,7 +288,7 @@ type Converter interface {
 	// version both carry the Lesson Version id, as the legacy serializer emitted
 	// them (one from the Translation's FK column, one from the row it points at);
 	// the check operation reads the former.
-	// goverter:map Course Course
+	// goverter:map Course
 	// goverter:map Lesson.ID ID
 	// goverter:map Lesson.Slug Slug
 	// goverter:map Lesson.CreatedAt CreatedAt
@@ -609,7 +609,7 @@ func assistantMessageLessonName(source *ent.AiMessage) string {
 // on a pointer receiver.
 type nilSetter[V any, N any] interface {
 	*N
-	SetTo(V)
+	SetTo(value V)
 	SetToNull()
 }
 

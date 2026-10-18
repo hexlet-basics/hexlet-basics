@@ -23,8 +23,9 @@ import (
 func searchItems(t *testing.T, result *mcp.CallToolResult) []map[string]any {
 	t.Helper()
 	require.False(t, result.IsError, "%+v", result.Content)
-	var items []map[string]any
-	for _, item := range result.StructuredContent.(map[string]any)["items"].([]any) {
+	listed := result.StructuredContent.(map[string]any)["items"].([]any)
+	items := make([]map[string]any, 0, len(listed))
+	for _, item := range listed {
 		items = append(items, item.(map[string]any))
 	}
 	return items

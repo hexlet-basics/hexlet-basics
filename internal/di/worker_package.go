@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"maps"
 	"net/http"
+	"slices"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
@@ -44,11 +46,7 @@ var workerPackage = do.Package(
 			return nil, err
 		}
 		return health.NewAwaitingStart(func(ctx context.Context) error {
-			var errs []error
-			for _, err := range i.HealthCheckWithContext(ctx) {
-				errs = append(errs, err)
-			}
-			return errors.Join(errs...)
+			return errors.Join(slices.Collect(maps.Values(i.HealthCheckWithContext(ctx)))...)
 		}), nil
 	}),
 	// The worker's only HTTP surface: /healthz and /readyz on HEALTH_ADDR. Named

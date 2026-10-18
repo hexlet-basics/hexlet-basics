@@ -217,7 +217,7 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 // imageRefs are the two references a submission needs: the pinned one it is
 // graded in, and the moving one that is pulled to create it. They are equal
 // when the Course Version already named a tag, which is its own pin.
-func (d *Docker) imageRefs(submission progress.Submission) (pinned, source string) {
+func (d *Docker) imageRefs(submission progress.Submission) (string, string) {
 	repository := submission.Image
 	if named, err := reference.Parse(repository); err == nil {
 		_, tagged := named.(reference.Tagged)

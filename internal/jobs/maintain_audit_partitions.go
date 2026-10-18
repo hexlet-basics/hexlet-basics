@@ -26,6 +26,7 @@ func (MaintainAuditPartitionsArgs) Kind() string { return "maintain_audit_partit
 
 type maintainAuditPartitionsWorker struct {
 	river.WorkerDefaults[MaintainAuditPartitionsArgs]
+
 	partitions      *audit.Partitions
 	retentionMonths int
 	logger          *slog.Logger

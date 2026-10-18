@@ -181,15 +181,7 @@ func (l landingPages) snippets(ctx context.Context, m match, ids []int) (map[int
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[int]string, len(rows))
-	for _, row := range rows {
-		value, err := row.Value("snippet")
-		if err != nil {
-			return nil, errs.Wrapf(err, "read snippet")
-		}
-		out[row.ID] = textOf(value)
-	}
-	return out, nil
+	return snippetsOf(rows, func(row *ent.CourseLandingPage) int { return row.ID })
 }
 
 // lessons are the lessons of the current build of the courses the catalogue
@@ -327,15 +319,7 @@ func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]stri
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[int]string, len(rows))
-	for _, row := range rows {
-		value, err := row.Value("snippet")
-		if err != nil {
-			return nil, errs.Wrapf(err, "read snippet")
-		}
-		out[row.ID] = textOf(value)
-	}
-	return out, nil
+	return snippetsOf(rows, func(row *ent.CourseLessonTranslation) int { return row.ID })
 }
 
 // posts are the published blog posts of the locale.
@@ -406,13 +390,21 @@ func (p posts) snippets(ctx context.Context, m match, ids []int) (map[int]string
 	if err != nil {
 		return nil, err
 	}
+	return snippetsOf(rows, func(row *ent.BlogPost) int { return row.ID })
+}
+
+// snippetsOf reads the "snippet" column the query selected beside each row's
+// id, by id; both sources that headline a match select it the same way.
+func snippetsOf[R interface {
+	Value(name string) (ent.Value, error)
+}](rows []R, id func(R) int) (map[int]string, error) {
 	out := make(map[int]string, len(rows))
 	for _, row := range rows {
 		value, err := row.Value("snippet")
 		if err != nil {
 			return nil, errs.Wrapf(err, "read snippet")
 		}
-		out[row.ID] = textOf(value)
+		out[id(row)] = textOf(value)
 	}
 	return out, nil
 }

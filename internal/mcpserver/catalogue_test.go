@@ -196,8 +196,9 @@ func TestOnlyPublishedPostsOfTheLocaleAreReadable(t *testing.T) {
 	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
 
 	posts := structured(t, callTool(t, session, "listBlogPosts", nil))
-	var slugs []string
-	for _, p := range posts["items"].([]any) {
+	listed := posts["items"].([]any)
+	slugs := make([]string, 0, len(listed))
+	for _, p := range listed {
 		slugs = append(slugs, p.(map[string]any)["slug"].(string))
 	}
 	assert.ElementsMatch(t, []string{"hello-world", "learning-ruby", "oldest-post"}, slugs, "no draft, archived or English post")
@@ -306,7 +307,7 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 	}
 	all := structured(t, callTool(t, session, "listCourses", nil))["courses"].([]any)
 	require.Len(t, all, total)
-	var want []string
+	want := make([]string, 0, len(all))
 	for _, c := range all {
 		want = append(want, c.(map[string]any)["slug"].(string))
 	}

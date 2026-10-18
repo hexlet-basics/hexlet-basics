@@ -43,9 +43,10 @@ const (
 var ErrInvalid = errors.New("email token is invalid")
 
 type claims struct {
+	jwt.RegisteredClaims
+
 	Purpose     Purpose `json:"pur"`
 	Fingerprint string  `json:"fp"`
-	jwt.RegisteredClaims
 }
 
 // Tokens signs with a secret of its own (config.EmailTokenSecret).

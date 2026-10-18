@@ -207,11 +207,13 @@ func TestHidingAToolIsNotAuthorizingTheOthers(t *testing.T) {
 	}
 }
 
-func findTools(t *testing.T, session *mcp.ClientSession, args map[string]any) (total int, tools []map[string]any) {
+func findTools(t *testing.T, session *mcp.ClientSession, args map[string]any) (int, []map[string]any) {
 	t.Helper()
 	content := structured(t, callTool(t, session, "findTools", args))
-	total = int(content["total"].(float64))
-	for _, row := range content["tools"].([]any) {
+	total := int(content["total"].(float64))
+	rows := content["tools"].([]any)
+	tools := make([]map[string]any, 0, len(rows))
+	for _, row := range rows {
 		tools = append(tools, row.(map[string]any))
 	}
 	return total, tools
@@ -306,7 +308,7 @@ func byName(tools []*mcp.Tool) map[string]*mcp.Tool {
 }
 
 func sortedKeys(m map[string]any) []string {
-	var out []string
+	out := make([]string, 0, len(m))
 	for k := range m {
 		out = append(out, k)
 	}
@@ -315,7 +317,7 @@ func sortedKeys(m map[string]any) []string {
 }
 
 func mapNames(rows []map[string]any) []string {
-	var out []string
+	out := make([]string, 0, len(rows))
 	for _, row := range rows {
 		out = append(out, row["name"].(string))
 	}

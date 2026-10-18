@@ -52,8 +52,9 @@ func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation 
 
 func itemIDs(t *testing.T, page map[string]any) []int {
 	t.Helper()
-	var ids []int
-	for _, item := range page["items"].([]any) {
+	listed := page["items"].([]any)
+	ids := make([]int, 0, len(listed))
+	for _, item := range listed {
 		ids = append(ids, int(item.(map[string]any)["id"].(float64)))
 	}
 	return ids

@@ -28,6 +28,7 @@ import (
 
 type failingCoursesHandler struct {
 	api.UnimplementedHandler
+
 	errorHandler *handlers.APIErrorHandler
 }
 

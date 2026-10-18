@@ -51,7 +51,8 @@ func New(window time.Duration, now func() time.Time) *Limiter {
 // (the Connected App) does not also lose budget on another (the user). When it
 // refuses, wait is how long until the key that is out of budget has it back
 // (the longest, if several are).
-func (l *Limiter) Allow(charges ...Charge) (ok bool, wait time.Duration) {
+func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
+	var wait time.Duration
 	now := l.now()
 	l.mu.Lock()
 	defer l.mu.Unlock()

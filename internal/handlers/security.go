@@ -100,27 +100,6 @@ func (s *Security) Pipeline(apiHandler http.Handler) http.Handler {
 	return protection.Handler(s.sessions.Middleware(identified))
 }
 
-// identify attaches the signed-in user to the request context when its session
-// names one, and does nothing otherwise.
-//
-// Contract-declared authentication (ADR-0011) covers operations that REQUIRE a
-// session: ogen runs their security handler and rejects the request. The
-// public reads are different: they must answer a visitor and a learner alike,
-// with the learner getting their progress, and ogen never invokes security for
-// an operation that declares none. This middleware supplies that optional
-// identity, and never fails a request: no session, or one that no longer names a
-// current user, leaves the context anonymous.
-func (s *Security) identify(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx, err := s.attach(r.Context())
-		if err != nil {
-			next.ServeHTTP(w, r)
-			return
-		}
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
 // HandleUserSession implements ogen's generated user-session security seam. The
 // cookie value ogen hands over is ignored: the session middleware has already
 // resolved it, and a session answers for itself.
@@ -163,6 +142,27 @@ func (s *Security) HandleAdminSession(
 		return ctx, errAdminRequired
 	}
 	return ctx, err
+}
+
+// identify attaches the signed-in user to the request context when its session
+// names one, and does nothing otherwise.
+//
+// Contract-declared authentication (ADR-0011) covers operations that REQUIRE a
+// session: ogen runs their security handler and rejects the request. The
+// public reads are different: they must answer a visitor and a learner alike,
+// with the learner getting their progress, and ogen never invokes security for
+// an operation that declares none. This middleware supplies that optional
+// identity, and never fails a request: no session, or one that no longer names a
+// current user, leaves the context anonymous.
+func (s *Security) identify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, err := s.attach(r.Context())
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 // recordRefusal leaves an Audit Record with outcome forbidden for a call the

@@ -149,7 +149,7 @@ func (d *Dashboard) nextLessons(
 		}
 	}
 	if len(slugs) == 0 {
-		return nil, nil
+		return map[lessonKey]NextLesson{}, nil
 	}
 
 	rows, err := d.db.CourseLessonTranslation.Query().

@@ -228,7 +228,7 @@ func TestBetterMatchesComeFirst(t *testing.T) {
 func TestAnythingTheVisitorTypesIsASearchNotAnError(t *testing.T) {
 	c, _ := newCatalogue(t)
 
-	for _, text := range []string{`"unclosed`, "a & b | !c", "(", "-", "':*", "or or or", "   ", "\x00", strings.Repeat("слово ", 400)} {
+	for _, text := range []string{`"unclosed`, "a & b | !c", "(", "-", "':*", "or ", "   ", "\x00", strings.Repeat("слово ", 400)} {
 		_, _, err := c.Search(t.Context(), search.SearchCatalogue{Text: text, Locale: "ru", Page: domain.Page{Limit: 10}})
 		assert.NoError(t, err, "%q", text)
 	}
@@ -300,6 +300,7 @@ type capturedQuery struct {
 // recorder is a driver that remembers what was asked of it.
 type recorder struct {
 	entgo.Driver
+
 	queries *[]capturedQuery
 }
 

@@ -33,7 +33,7 @@ func newWebhookHandler(t *testing.T, secret string) (*handlers.GitHubWebhookHand
 
 func rawWebhookRequest(event, body, signature string) *http.Request {
 	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/api/webhooks/github", strings.NewReader(body))
-	req.Header.Set("X-GitHub-Event", event)
+	req.Header.Set("X-Github-Event", event)
 	if signature != "" {
 		req.Header.Set("X-Hub-Signature-256", signature)
 	}

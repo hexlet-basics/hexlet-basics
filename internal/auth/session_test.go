@@ -235,7 +235,7 @@ func TestABusySessionIsWrittenBackAtMostOnceAnHour(t *testing.T) {
 	clk := newClock()
 	a := newApp(t, clk)
 	cookie := a.signIn(fixture.UserWithPassword)
-	stored := func() (data []byte, expiry time.Time) {
+	stored := func() ([]byte, time.Time) {
 		row := a.db.Session.Query().OnlyX(t.Context())
 		return row.Data, row.Expiry
 	}

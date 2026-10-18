@@ -73,8 +73,9 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 
-	var results []*progress.CheckResult
-	for _, slug := range []string{firstLesson, secondLesson, thirdLesson} {
+	slugs := []string{firstLesson, secondLesson, thirdLesson}
+	results := make([]*progress.CheckResult, 0, len(slugs))
+	for _, slug := range slugs {
 		result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, slug))
 		require.NoError(t, err)
 		results = append(results, result)

@@ -260,30 +260,6 @@ func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (s
 	return id, expires, err
 }
 
-func (s *storage) insertAccessToken(
-	ctx context.Context, db *ent.Client, owner tokenOwner, userID int, refreshID, familyID string,
-) (string, time.Time, error) {
-	id, err := randomToken(16)
-	if err != nil {
-		return "", time.Time{}, err
-	}
-	expires := s.now().Add(s.accessLifetime)
-	create := db.OAuthAccessToken.Create().
-		SetID(id).
-		SetClientID(owner.GetClientID()).
-		SetUserID(userID).
-		SetScopes(pq.StringArray(owner.GetScopes())).
-		SetFamilyID(familyID).
-		SetExpiresAt(expires)
-	if refreshID != "" {
-		create.SetRefreshTokenID(refreshID)
-	}
-	if err := create.Exec(ctx); err != nil {
-		return "", time.Time{}, errs.Wrapf(err, "create access token")
-	}
-	return id, expires, nil
-}
-
 // CreateAccessAndRefreshTokens issues a pair: for a first grant (no current
 // refresh token, which starts a new family) or in exchange for a refresh token,
 // which is marked used and replaced by a child in the same family.
@@ -378,55 +354,6 @@ func (s *storage) CreateAccessAndRefreshTokens(
 	return accessID, refresh, expires, nil
 }
 
-// errRefreshNotSpendable marks a refresh token that was not unused and live at
-// the moment of the exchange.
-var errRefreshNotSpendable = errors.New("refresh token cannot be spent")
-
-// refuseUnspendable answers an exchange that lost the race for a token: a token
-// that is on file and used is a replay (or the loser of a parallel exchange), and
-// revokes its family; anything else is simply unknown or expired.
-func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
-	row, err := s.db.OAuthRefreshToken.Query().
-		Where(oauthrefreshtoken.TokenHash(digest(refresh)), oauthrefreshtoken.ExpiresAtGT(s.now())).
-		Only(ctx)
-	switch {
-	case ent.IsNotFound(err):
-		return oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired")
-	case err != nil:
-		return errs.Wrapf(err, "refresh token")
-	}
-	return s.refuseReuse(ctx, row)
-}
-
-// refuseReuse revokes the family of a refresh token presented a second time and
-// returns the refusal. A used token is evidence it has been copied: whoever holds
-// the newer tokens, the thief and the owner alike, loses them, and the user must
-// sign in again (ADR-0022, the MCP authorization spec).
-func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
-	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
-		return oidc.ErrServerError().WithParent(err)
-	}
-	return oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again")
-}
-
-// revokeFamily deletes every access and refresh token descended from one
-// authorization, used refresh tokens included.
-func (s *storage) revokeFamily(ctx context.Context, familyID string) error {
-	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		return deleteFamily(ctx, db, familyID)
-	})
-}
-
-func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
-	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
-		return errs.Wrapf(err, "delete family access tokens")
-	}
-	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
-		return errs.Wrapf(err, "delete family refresh tokens")
-	}
-	return nil
-}
-
 // TokenRequestByRefreshToken finds the grant a presented refresh token belongs to.
 // A token that was already used is not a grant: it is a replay, and the family
 // is revoked before the request is refused.
@@ -443,22 +370,9 @@ func (s *storage) TokenRequestByRefreshToken(ctx context.Context, refresh string
 	return &refreshRequest{row: row, scopes: row.Scopes, resource: s.resource}, nil
 }
 
-// refreshRequest adapts a stored refresh token to op.RefreshTokenRequest.
-type refreshRequest struct {
-	row      *ent.OAuthRefreshToken
-	scopes   []string
-	resource string
-}
-
-var _ op.RefreshTokenRequest = (*refreshRequest)(nil)
-
-func (r *refreshRequest) GetAMR() []string            { return nil }
-func (r *refreshRequest) GetAudience() []string       { return []string{r.resource} }
-func (r *refreshRequest) GetAuthTime() time.Time      { return r.row.AuthTime }
-func (r *refreshRequest) GetClientID() string         { return r.row.ClientID }
-func (r *refreshRequest) GetScopes() []string         { return r.scopes }
-func (r *refreshRequest) GetSubject() string          { return strconv.Itoa(r.row.UserID) }
-func (r *refreshRequest) SetCurrentScopes(s []string) { r.scopes = s }
+// errRefreshNotSpendable marks a refresh token that was not unused and live at
+// the moment of the exchange.
+var errRefreshNotSpendable = errors.New("refresh token cannot be spent")
 
 // GetRefreshTokenInfo lets the revocation endpoint tell a refresh token from an
 // access token.
@@ -519,8 +433,6 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 	}
 }
 
-var errWrongClient = errors.New("token belongs to another client")
-
 // TerminateSession ends every grant a user made to one client.
 func (s *storage) TerminateSession(ctx context.Context, userID, clientID string) error {
 	id, err := strconv.Atoi(userID)
@@ -536,6 +448,56 @@ func (s *storage) TerminateSession(ctx context.Context, userID, clientID string)
 			Where(oauthrefreshtoken.UserID(id), oauthrefreshtoken.ClientID(clientID)).Exec(ctx)
 		return err
 	})
+}
+
+func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
+	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
+		return errs.Wrapf(err, "delete family access tokens")
+	}
+	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
+		return errs.Wrapf(err, "delete family refresh tokens")
+	}
+	return nil
+}
+
+func (s *storage) SigningKey(context.Context) (op.SigningKey, error) {
+	return signingKey{key: s.signing}, nil
+}
+
+// refreshRequest adapts a stored refresh token to op.RefreshTokenRequest.
+type refreshRequest struct {
+	row      *ent.OAuthRefreshToken
+	scopes   []string
+	resource string
+}
+
+var _ op.RefreshTokenRequest = (*refreshRequest)(nil)
+
+func (r *refreshRequest) GetAMR() []string            { return nil }
+func (r *refreshRequest) GetAudience() []string       { return []string{r.resource} }
+func (r *refreshRequest) GetAuthTime() time.Time      { return r.row.AuthTime }
+func (r *refreshRequest) GetClientID() string         { return r.row.ClientID }
+func (r *refreshRequest) GetScopes() []string         { return r.scopes }
+func (r *refreshRequest) GetSubject() string          { return strconv.Itoa(r.row.UserID) }
+func (r *refreshRequest) SetCurrentScopes(s []string) { r.scopes = s }
+
+func (s *storage) SignatureAlgorithms(context.Context) ([]jose.SignatureAlgorithm, error) {
+	return []jose.SignatureAlgorithm{jose.EdDSA}, nil
+}
+
+func (s *storage) KeySet(context.Context) ([]op.Key, error) {
+	return []op.Key{publicKey{key: s.signing.Public().(ed25519.PublicKey)}}, nil
+}
+
+var errWrongClient = errors.New("token belongs to another client")
+
+// GetClientByClientID loads a client for the current request.
+func (s *storage) GetClientByClientID(ctx context.Context, clientID string) (op.Client, error) {
+	row, err := s.db.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Only(ctx)
+	if err != nil {
+		return nil, errs.With("client_id", clientID).Wrapf(err, "load client")
+	}
+	return &client{row: row, loginBase: s.issuer + consentPagePath}, nil
 }
 
 // --- keys ------------------------------------------------------------------
@@ -566,35 +528,10 @@ func keyID(key any) string {
 	return digest(string(pub))[:16]
 }
 
-func (s *storage) SigningKey(context.Context) (op.SigningKey, error) {
-	return signingKey{key: s.signing}, nil
-}
-
-func (s *storage) SignatureAlgorithms(context.Context) ([]jose.SignatureAlgorithm, error) {
-	return []jose.SignatureAlgorithm{jose.EdDSA}, nil
-}
-
-func (s *storage) KeySet(context.Context) ([]op.Key, error) {
-	return []op.Key{publicKey{key: s.signing.Public().(ed25519.PublicKey)}}, nil
-}
-
-// --- clients ---------------------------------------------------------------
-
-// GetClientByClientID loads a client for the current request.
-func (s *storage) GetClientByClientID(ctx context.Context, clientID string) (op.Client, error) {
-	row, err := s.db.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Only(ctx)
-	if err != nil {
-		return nil, errs.With("client_id", clientID).Wrapf(err, "load client")
-	}
-	return &client{row: row, loginBase: s.issuer + consentPagePath}, nil
-}
-
 // AuthorizeClientIDSecret always refuses: every client is public.
 func (s *storage) AuthorizeClientIDSecret(context.Context, string, string) error {
 	return errors.New("clients have no secret: authenticate with PKCE")
 }
-
-// --- OpenID-only parts, stubbed --------------------------------------------
 
 func (s *storage) Health(context.Context) error { return nil }
 
@@ -606,6 +543,8 @@ func (s *storage) SetUserinfoFromScopes(_ context.Context, info *oidc.UserInfo, 
 	info.Subject = userID
 	return nil
 }
+
+// --- clients ---------------------------------------------------------------
 
 // SetUserinfoFromToken answers the userinfo endpoint with the subject only,
 // for a token that is still on file.
@@ -621,8 +560,10 @@ func (s *storage) SetIntrospectionFromToken(context.Context, *oidc.Introspection
 	return errUnsupported
 }
 
+// --- OpenID-only parts, stubbed --------------------------------------------
+
 func (s *storage) GetPrivateClaimsFromScopes(context.Context, string, string, []string) (map[string]any, error) {
-	return nil, nil
+	return nil, nil //nolint:nilnil // op.Storage's contract: no private claims is a nil map, not an error
 }
 
 func (s *storage) GetKeyByIDAndClientID(context.Context, string, string) (*jose.JSONWebKey, error) {
@@ -631,6 +572,65 @@ func (s *storage) GetKeyByIDAndClientID(context.Context, string, string) (*jose.
 
 func (s *storage) ValidateJWTProfileScopes(context.Context, string, []string) ([]string, error) {
 	return nil, errUnsupported
+}
+
+func (s *storage) insertAccessToken(
+	ctx context.Context, db *ent.Client, owner tokenOwner, userID int, refreshID, familyID string,
+) (string, time.Time, error) {
+	id, err := randomToken(16)
+	if err != nil {
+		return "", time.Time{}, err
+	}
+	expires := s.now().Add(s.accessLifetime)
+	create := db.OAuthAccessToken.Create().
+		SetID(id).
+		SetClientID(owner.GetClientID()).
+		SetUserID(userID).
+		SetScopes(pq.StringArray(owner.GetScopes())).
+		SetFamilyID(familyID).
+		SetExpiresAt(expires)
+	if refreshID != "" {
+		create.SetRefreshTokenID(refreshID)
+	}
+	if err := create.Exec(ctx); err != nil {
+		return "", time.Time{}, errs.Wrapf(err, "create access token")
+	}
+	return id, expires, nil
+}
+
+// refuseUnspendable answers an exchange that lost the race for a token: a token
+// that is on file and used is a replay (or the loser of a parallel exchange), and
+// revokes its family; anything else is simply unknown or expired.
+func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
+	row, err := s.db.OAuthRefreshToken.Query().
+		Where(oauthrefreshtoken.TokenHash(digest(refresh)), oauthrefreshtoken.ExpiresAtGT(s.now())).
+		Only(ctx)
+	switch {
+	case ent.IsNotFound(err):
+		return oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired")
+	case err != nil:
+		return errs.Wrapf(err, "refresh token")
+	}
+	return s.refuseReuse(ctx, row)
+}
+
+// refuseReuse revokes the family of a refresh token presented a second time and
+// returns the refusal. A used token is evidence it has been copied: whoever holds
+// the newer tokens, the thief and the owner alike, loses them, and the user must
+// sign in again (ADR-0022, the MCP authorization spec).
+func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
+	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
+		return oidc.ErrServerError().WithParent(err)
+	}
+	return oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again")
+}
+
+// revokeFamily deletes every access and refresh token descended from one
+// authorization, used refresh tokens included.
+func (s *storage) revokeFamily(ctx context.Context, familyID string) error {
+	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		return deleteFamily(ctx, db, familyID)
+	})
 }
 
 // PurgeExpired deletes what can no longer be used: expired access and refresh

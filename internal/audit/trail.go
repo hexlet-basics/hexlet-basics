@@ -49,12 +49,12 @@ type Filter struct {
 }
 
 // Window resolves the half-open [from, to) interval the query is bounded by.
-func (f Filter) Window(now time.Time) (from, to time.Time, err error) {
-	to = now
+func (f Filter) Window(now time.Time) (time.Time, time.Time, error) {
+	to := now
 	if f.To != nil {
 		to = *f.To
 	}
-	from = to.Add(-DefaultWindow)
+	from := to.Add(-DefaultWindow)
 	if f.From != nil {
 		from = *f.From
 	}

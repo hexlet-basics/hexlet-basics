@@ -113,6 +113,7 @@ func StreamResponses(next http.Handler) http.Handler {
 // before it writes.
 type flushingWriter struct {
 	http.ResponseWriter
+
 	controller *http.ResponseController
 	started    bool
 }

@@ -47,6 +47,7 @@ func ReviewLessonWorker(reviewer LessonReviewer) river.Worker[ReviewLessonArgs] 
 
 type reviewLessonWorker struct {
 	river.WorkerDefaults[ReviewLessonArgs]
+
 	reviewer LessonReviewer
 }
 

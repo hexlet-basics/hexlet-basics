@@ -125,6 +125,7 @@ func TestCallRefusedForItsScopeSpendsNoBudget(t *testing.T) {
 // handler's context.
 type slowCatalogue struct {
 	mcpserver.Catalogue
+
 	cancelled chan error
 }
 

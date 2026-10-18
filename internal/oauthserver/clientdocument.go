@@ -443,5 +443,5 @@ func writeDocumentError(w http.ResponseWriter, e *documentError) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(e.status)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": code, "error_description": e.reason})
+	writeJSON(w, map[string]string{"error": code, "error_description": e.reason})
 }

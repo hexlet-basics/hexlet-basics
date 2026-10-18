@@ -175,7 +175,7 @@ func TestStartLessonLeavesTheLearnerAtTheFirstUnfinishedLesson(t *testing.T) {
 // only a check changes what their cookie names.
 func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(firstLessonSlug))
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	rows := h.DB.LessonProgress.Query().CountX(ctx)

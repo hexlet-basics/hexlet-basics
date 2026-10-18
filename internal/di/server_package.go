@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"maps"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -709,7 +711,7 @@ var serverPackage = do.Package(
 		// Off, the service resolves to nil: the router and the consent seam
 		// only ask for it behind the same flag.
 		if !cfg.OAuth.Enabled {
-			return nil, nil
+			return nil, nil //nolint:nilnil // a do provider answers (T, error); nil is the documented "feature off" value its consumers check
 		}
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
@@ -735,7 +737,7 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		if !cfg.MCP.Enabled {
-			return nil, nil
+			return nil, nil //nolint:nilnil // as the OAuth server above: nil is "feature off"
 		}
 		oauthServer, err := do.Invoke[*oauthserver.Server](i)
 		if err != nil {
@@ -788,11 +790,7 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return health.New(func(ctx context.Context) error {
-			var errs []error
-			for _, err := range i.HealthCheckWithContext(ctx) {
-				errs = append(errs, err)
-			}
-			return errors.Join(errs...)
+			return errors.Join(slices.Collect(maps.Values(i.HealthCheckWithContext(ctx)))...)
 		}), nil
 	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {

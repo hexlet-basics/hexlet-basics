@@ -216,6 +216,8 @@ func firstOf(texts ...string) string {
 // body builds a Markdown text out of sections, leaving out the empty ones.
 type body struct{ b strings.Builder }
 
+func (d *body) String() string { return strings.TrimSpace(d.b.String()) }
+
 // title writes the heading of the whole text.
 func (d *body) title(text string) { d.b.WriteString("# " + text + "\n\n") }
 
@@ -229,8 +231,6 @@ func (d *body) section(heading, text string) {
 	}
 	d.b.WriteString(text + "\n\n")
 }
-
-func (d *body) String() string { return strings.TrimSpace(d.b.String()) }
 
 var (
 	blockEnd   = strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")

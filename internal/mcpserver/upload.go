@@ -66,7 +66,7 @@ func uploadSchema(file *multipartFile) map[string]any {
 // `body` argument. A problem is the caller's mistake, reported as a tool error;
 // whether the bytes are an allowed image is for the generated server to answer,
 // as it does over HTTP.
-func multipartBody(file *multipartFile, raw json.RawMessage) (body []byte, contentType, problem string) {
+func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, string) {
 	var in uploadBody
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.DisallowUnknownFields()

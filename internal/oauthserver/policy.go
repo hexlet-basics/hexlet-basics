@@ -38,6 +38,7 @@ var standardScopes = []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
 // holds something it was not given.
 type authorizer struct {
 	*op.Provider
+
 	s *Server
 }
 
@@ -128,6 +129,7 @@ func (s *Server) issuerWriter(w http.ResponseWriter) http.ResponseWriter {
 
 type issWriter struct {
 	http.ResponseWriter
+
 	issuer, own string
 }
 

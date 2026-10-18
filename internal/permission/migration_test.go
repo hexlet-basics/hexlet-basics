@@ -133,7 +133,9 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	migration, err := os.ReadFile("../../migrations/" + file)
 	require.NoError(t, err)
 	text := string(migration)
-	data := text[strings.Index(text, "INSERT INTO"):]
+	start := strings.Index(text, "INSERT INTO")
+	require.NotEqual(t, -1, start, "the migration inserts the roles")
+	data := text[start:]
 
 	byBit := [][]string{ops.index, ops.create, ops.update, ops.destroy}
 

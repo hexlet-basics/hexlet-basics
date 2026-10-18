@@ -27,6 +27,7 @@ func (PurgeOAuthTokensArgs) Kind() string { return "purge_oauth_tokens" }
 
 type purgeOAuthTokensWorker struct {
 	river.WorkerDefaults[PurgeOAuthTokensArgs]
+
 	db     *ent.Client
 	logger *slog.Logger
 	now    func() time.Time

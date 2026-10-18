@@ -38,7 +38,7 @@ func newLimiter(limit int, window time.Duration, now func() time.Time) *limiter 
 
 // allow spends one attempt of an address. When it refuses, wait is how long
 // until the address has its budget back.
-func (l *limiter) allow(address string) (ok bool, wait time.Duration) {
+func (l *limiter) allow(address string) (bool, time.Duration) {
 	return l.counter.Allow(ratelimit.Charge{Key: addressKey(address), Limit: l.limit})
 }
 

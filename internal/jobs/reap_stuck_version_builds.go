@@ -31,6 +31,7 @@ func (ReapStuckVersionBuildsArgs) InsertOpts() river.InsertOpts {
 
 type reapStuckVersionBuildsWorker struct {
 	river.WorkerDefaults[ReapStuckVersionBuildsArgs]
+
 	loader *courseloader.Loader
 	logger *slog.Logger
 }

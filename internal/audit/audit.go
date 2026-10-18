@@ -148,12 +148,6 @@ func recorderFrom(ctx context.Context) *Recorder {
 	return r
 }
 
-func (r *Recorder) add(c Change) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	r.changes = append(r.changes, c)
-}
-
 // Changes returns what was noted so far, in order.
 func (r *Recorder) Changes() []Change {
 	r.mu.Lock()
@@ -161,10 +155,17 @@ func (r *Recorder) Changes() []Change {
 	return append([]Change(nil), r.changes...)
 }
 
+func (r *Recorder) add(c Change) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.changes = append(r.changes, c)
+}
+
 // primary is the entity the record is filed under: the first single-row change.
 // An operation that deletes children by predicate and then the post therefore
 // files under the post, and an operation that changed no row files under none.
-func primary(changes []Change) (entity, id string) {
+// It returns the entity name and the row id.
+func primary(changes []Change) (string, string) {
 	for _, c := range changes {
 		if c.ID != "" {
 			return c.Entity, c.ID

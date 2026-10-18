@@ -148,8 +148,9 @@ func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
 	assert.Equal(t, "BlogPost", *rows[0].EntityType)
 	assert.Equal(t, strconv.Itoa(fixture.ID(fixture.BlogPostToDelete)), *rows[0].EntityID)
 
-	var entities []string
-	for _, c := range changesOf(t, rows[0]) {
+	changes := changesOf(t, rows[0])
+	entities := make([]string, 0, len(changes))
+	for _, c := range changes {
 		entities = append(entities, c.Entity)
 	}
 	assert.Contains(t, entities, "BlogPostLike")

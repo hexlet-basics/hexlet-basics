@@ -133,7 +133,7 @@ func newMeter(limits Limits) *meter {
 // Connected App's, or neither: a call refused because the app is out of budget
 // does not also cost the user one. When it refuses, wait is the time until the
 // caller may try again.
-func (m *meter) allow(class Class, userID int, clientID string) (ok bool, wait time.Duration) {
+func (m *meter) allow(class Class, userID int, clientID string) (bool, time.Duration) {
 	return m.counter.Allow(
 		ratelimit.Charge{Key: class.String() + "|user|" + strconv.Itoa(userID), Limit: m.limits.User.of(class)},
 		ratelimit.Charge{Key: class.String() + "|client|" + clientID, Limit: m.limits.Client.of(class)},
@@ -151,12 +151,12 @@ func (m *meter) allow(class Class, userID int, clientID string) (ok bool, wait t
 // the endpoint would also stop `initialize` and `tools/list`, which cost
 // nothing, and an SDK client reads it as a broken transport, not as a message
 // to the agent. The error names the wait, in the text and in `_meta`.
-func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (userID int, clientID string, denied *mcp.CallToolResult) {
-	userID, denied = requireScope(req, scope)
+func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (int, string, *mcp.CallToolResult) {
+	userID, denied := requireScope(req, scope)
 	if denied != nil {
 		return 0, "", denied
 	}
-	clientID, denied = s.spend(req, userID, class)
+	clientID, denied := s.spend(req, userID, class)
 	return userID, clientID, denied
 }
 
@@ -164,7 +164,8 @@ func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (use
 // refuses it when either budget is gone. Admin tools call it without admit's
 // Scope check, because their Scope is judged by the generated server's security
 // handler, which records a refusal.
-func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (clientID string, denied *mcp.CallToolResult) {
+func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (string, *mcp.CallToolResult) {
+	var clientID string
 	if client, ok := req.GetExtra().TokenInfo.Extra["client_id"].(string); ok {
 		clientID = client
 	}

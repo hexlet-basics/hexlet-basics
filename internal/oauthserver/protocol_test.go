@@ -40,7 +40,10 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 	// The ID token names that key and algorithm.
 	header, err := base64.RawURLEncoding.DecodeString(strings.Split(tokens.IDToken, ".")[0])
 	require.NoError(t, err)
-	var parsed struct{ Alg, Kid string }
+	var parsed struct {
+		Alg string `json:"alg"`
+		Kid string `json:"kid"`
+	}
 	require.NoError(t, json.Unmarshal(header, &parsed))
 	assert.Equal(t, "EdDSA", parsed.Alg)
 	assert.Equal(t, set.Keys[0].Kid, parsed.Kid)

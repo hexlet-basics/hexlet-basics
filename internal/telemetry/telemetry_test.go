@@ -92,8 +92,8 @@ tracer_provider:
 
 	select {
 	case request := <-requests:
-		require.Len(t, request.ResourceSpans, 1)
-		attributes := request.ResourceSpans[0].Resource.Attributes
+		require.Len(t, request.GetResourceSpans(), 1)
+		attributes := request.GetResourceSpans()[0].GetResource().GetAttributes()
 		assert.Contains(t, attributes, attribute("service.name", "hexlet-basics-api"))
 		assert.Contains(t, attributes, attribute("service.version", "test-release"))
 	case <-time.After(time.Second):

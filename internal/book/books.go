@@ -76,9 +76,11 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 
 // Requested reports whether the user has requested the book, in any state: the
 // page picks the request or the download button by it.
-func (r *Recorder) Requested(ctx context.Context, userID int) (requested bool, err error) {
-	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		requested, err = db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
+func (r *Recorder) Requested(ctx context.Context, userID int) (bool, error) {
+	var requested bool
+	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		exists, err := db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
+		requested = exists
 		return err
 	})
 	if err != nil {
@@ -89,8 +91,9 @@ func (r *Recorder) Requested(ctx context.Context, userID int) (requested bool, e
 
 // MarkDownloaded moves the user's request to downloaded, on every download as
 // legacy did, and reports whether there was a request to move.
-func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (marked bool, err error) {
-	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (bool, error) {
+	var marked bool
+	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		count, err := db.BookRequest.Update().
 			Where(bookrequest.UserID(userID)).
 			SetState(StateDownloaded).

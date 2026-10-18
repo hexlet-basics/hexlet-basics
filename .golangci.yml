@@ -38,24 +38,6 @@ linters:
     - forcetypeassert
     - err113
     - mnd
-    - embeddedstructfieldcheck
-    - funcorder
-    - nonamedreturns
-    - prealloc
-    - inamedparam
-    - nilnil
-    - tagalign
-    - errchkjson
-    - musttag
-    - dupl
-    - dupword
-    - protogetter
-    - whitespace
-    - canonicalheader
-    - dogsled
-    - gocritic
-    - godox
-    - unparam
   settings:
     sloglint:
       # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,

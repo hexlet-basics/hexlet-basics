@@ -94,7 +94,7 @@ func ExcludedAdminOperations() map[string]string { return maps.Clone(excludedAdm
 // way the registry does at start-up.
 func AdminToolsFromTheContract(t *testing.T) []*mcp.Tool {
 	t.Helper()
-	var tools []*mcp.Tool
+	tools := make([]*mcp.Tool, 0, len(adminOperations))
 	for _, id := range adminOperations {
 		op, err := readOperation(id)
 		if err != nil {

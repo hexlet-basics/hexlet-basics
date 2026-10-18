@@ -50,6 +50,7 @@ import (
 // path.
 type Server struct {
 	api.UnimplementedHandler
+
 	db       *ent.Client
 	conv     apiconv.Converter
 	settings Settings

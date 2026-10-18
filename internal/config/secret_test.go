@@ -14,7 +14,9 @@ const secretValue = "hunter2-very-secret"
 
 func TestSecretNeverPrintsItsValue(t *testing.T) {
 	s := Secret(secretValue)
-	holder := struct{ Key Secret }{s}
+	holder := struct {
+		Key Secret `json:"key"`
+	}{s}
 
 	var logs bytes.Buffer
 	slog.New(slog.NewJSONHandler(&logs, nil)).Info("loaded", "secret", s, "config", holder)

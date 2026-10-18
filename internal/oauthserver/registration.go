@@ -137,7 +137,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Pragma", "no-cache")
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{
+	writeJSON(w, map[string]any{
 		"client_id":                  clientID,
 		"client_id_issued_at":        s.storage.now().Unix(),
 		"client_name":                reg.name,
@@ -164,7 +164,7 @@ func writeRegistrationError(w http.ResponseWriter, e *registrationError) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(e.status)
-	_ = json.NewEncoder(w).Encode(e)
+	writeJSON(w, e)
 }
 
 // readRegistration reads and validates the body.
@@ -315,7 +315,7 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 // offered list: the three Scopes and offline_access, nothing else (not even
 // openid or profile, which a client row cannot use). No scope at all means the
 // read-only default.
-func requestedScopes(fields map[string]json.RawMessage) (custom []string, offline bool, err error) {
+func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) {
 	raw, ok := fields["scope"]
 	if !ok {
 		return slices.Clone(defaultRegistrationScopes), false, nil
@@ -330,7 +330,8 @@ func requestedScopes(fields map[string]json.RawMessage) (custom []string, offlin
 	}
 	// Never nil: the column is NOT NULL, and a client that asked only for
 	// offline_access holds no custom Scope.
-	custom = []string{}
+	custom := []string{}
+	var offline bool
 	for _, name := range names {
 		switch {
 		case name == oidc.ScopeOfflineAccess:

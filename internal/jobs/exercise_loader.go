@@ -56,6 +56,7 @@ func ExerciseLoaderWorker(loader *courseloader.Loader) river.Worker[ExerciseLoad
 
 type exerciseLoaderWorker struct {
 	river.WorkerDefaults[ExerciseLoaderArgs]
+
 	loader *courseloader.Loader
 }
 

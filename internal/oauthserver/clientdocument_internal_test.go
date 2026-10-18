@@ -84,7 +84,7 @@ func TestAHostnameThatResolvesToLoopbackIsRefusedAtDialTime(t *testing.T) {
 	assert.Contains(t, err.Error(), "not a public address")
 }
 
-func cutLast(s string, sep byte) (before, after string, found bool) {
+func cutLast(s string, sep byte) (string, string, bool) {
 	for i := len(s) - 1; i >= 0; i-- {
 		if s[i] == sep {
 			return s[:i], s[i+1:], true

@@ -122,18 +122,18 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 	}
 
 	if body, ok := node["requestBody"].(map[string]any); ok {
-		file, err := multipartFileOf(body["content"], doc)
+		file, isMultipart, err := multipartFileOf(body["content"], doc)
 		if err != nil {
 			return nil, errs.With("operation", id).Wrapf(err, "request body")
 		}
-		if file != nil {
-			op.Multipart = file
+		if isMultipart {
+			op.Multipart = &file
 		} else {
-			schema, err := jsonSchemaOf(body["content"], doc)
+			schema, found, err := jsonSchemaOf(body["content"], doc)
 			if err != nil {
 				return nil, errs.With("operation", id).Wrapf(err, "request body")
 			}
-			if schema == nil {
+			if !found {
 				return nil, errs.With("operation", id).Errorf("request body is not JSON")
 			}
 			op.Body = schema
@@ -151,11 +151,11 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 	sort.Strings(codes)
 	for _, code := range codes {
 		response, _ := responses[code].(map[string]any)
-		schema, err := jsonSchemaOf(response["content"], doc)
+		schema, found, err := jsonSchemaOf(response["content"], doc)
 		if err != nil {
 			return nil, errs.With("operation", id, "response", code).Wrapf(err, "response")
 		}
-		if schema != nil {
+		if found {
 			op.Response = schema
 			break
 		}
@@ -171,49 +171,49 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 	return op, nil
 }
 
-// jsonSchemaOf is the inlined schema of an application/json content entry, nil
-// when there is none.
-func jsonSchemaOf(content any, doc *contractDoc) (map[string]any, error) {
+// jsonSchemaOf is the inlined schema of an application/json content entry;
+// found is false when there is none.
+func jsonSchemaOf(content any, doc *contractDoc) (map[string]any, bool, error) {
 	entries, _ := content.(map[string]any)
 	entry, ok := entries["application/json"].(map[string]any)
 	if !ok || entry["schema"] == nil {
-		return nil, nil
+		return nil, false, nil
 	}
 	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	schema, _ := resolved.(map[string]any)
-	return schema, nil
+	return schema, schema != nil, nil
 }
 
-// multipartFileOf finds the file part of a multipart/form-data entry, nil when
-// the content has none. A form that is not exactly one binary part is an error:
+// multipartFileOf finds the file part of a multipart/form-data entry; found is
+// false when the content has none. A form that is not exactly one binary part is an error:
 // the base64 tool input carries one file and nothing else, so the registry
 // refuses an operation it would build a wrong request for.
-func multipartFileOf(content any, doc *contractDoc) (*multipartFile, error) {
+func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error) {
 	entries, _ := content.(map[string]any)
 	entry, ok := entries["multipart/form-data"].(map[string]any)
 	if !ok {
-		return nil, nil
+		return multipartFile{}, false, nil
 	}
 	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
 	if err != nil {
-		return nil, err
+		return multipartFile{}, false, err
 	}
 	schema, _ := resolved.(map[string]any)
 	properties, _ := schema["properties"].(map[string]any)
 	if len(properties) != 1 {
-		return nil, errors.New("a multipart form must have exactly one part")
+		return multipartFile{}, false, errors.New("a multipart form must have exactly one part")
 	}
 	for name, raw := range properties {
 		part, _ := raw.(map[string]any)
 		if part["type"] != "string" || part["format"] != "binary" {
-			return nil, errs.With("part", name).Errorf("multipart part is not a binary file")
+			return multipartFile{}, false, errs.With("part", name).Errorf("multipart part is not a binary file")
 		}
-		return &multipartFile{Field: name}, nil
+		return multipartFile{Field: name}, true, nil
 	}
-	return nil, nil
+	return multipartFile{}, false, nil
 }
 
 func asList(v any) []any {

@@ -65,6 +65,7 @@ func AccountEmailWorker(sender AccountEmailSender) river.Worker[AccountEmailArgs
 
 type accountEmailWorker struct {
 	river.WorkerDefaults[AccountEmailArgs]
+
 	sender AccountEmailSender
 }
 

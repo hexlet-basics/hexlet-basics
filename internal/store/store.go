@@ -27,7 +27,7 @@ import (
 // receives both views of the same PostgreSQL transaction: database/sql for
 // River and Watermill adapters, and ent for application persistence.
 type Transactor interface {
-	WithinTx(context.Context, func(*sql.Tx, *ent.Client) error) error
+	WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) error) error
 }
 
 // Store owns the application's transaction lifecycle over the shared SQL pool.

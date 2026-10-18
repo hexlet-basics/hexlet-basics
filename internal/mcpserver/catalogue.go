@@ -50,12 +50,13 @@ func (s *Server) pageProperties() map[string]any {
 // resolve checks the arguments and applies the page size limit: a perPage above
 // the limit is clamped (not refused, an agent asking for "everything" still gets
 // a useful page) and note says so for the text of the result.
-func (s *Server) resolve(a pageArgs) (page, perPage int, note string, err error) {
+func (s *Server) resolve(a pageArgs) (int, int, string, error) {
 	if a.Page < 0 || a.PerPage < 0 {
 		return 0, 0, "", userError{errors.New("page and perPage must be at least 1")}
 	}
-	page = max(a.Page, 1)
-	perPage = a.PerPage
+	page := max(a.Page, 1)
+	perPage := a.PerPage
+	var note string
 	if perPage == 0 {
 		perPage = s.limits.MaxPageSize
 	}

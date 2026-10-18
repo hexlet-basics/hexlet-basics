@@ -531,7 +531,10 @@ func scalars(raw json.RawMessage) ([]string, error) {
 			out = append(out, v)
 		case float64, bool:
 			// Re-encode, not format: 3 must stay 3, not 3.000000.
-			b, _ := json.Marshal(v)
+			b, err := json.Marshal(v)
+			if err != nil {
+				return nil, err
+			}
 			out = append(out, string(b))
 		default:
 			return nil, errors.New("not a scalar")

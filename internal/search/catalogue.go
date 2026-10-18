@@ -151,8 +151,9 @@ func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int
 
 // kind is a source with the type of record it holds.
 type kind struct {
-	typ Type
 	source
+
+	typ Type
 }
 
 // sources are the kinds the command asks for, all of them when it names none.
@@ -165,7 +166,7 @@ func (c *Catalogue) sources(types []Type) []kind {
 	var out []kind
 	for _, t := range Types {
 		if len(types) == 0 || slices.Contains(types, t) {
-			out = append(out, kind{t, all[t]})
+			out = append(out, kind{source: all[t], typ: t})
 		}
 	}
 	return out

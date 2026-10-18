@@ -19,6 +19,7 @@ import (
 
 type paginationContractHandler struct {
 	api.UnimplementedHandler
+
 	calls int
 }
 

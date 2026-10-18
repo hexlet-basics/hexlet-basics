@@ -233,7 +233,7 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 // the Scope, and the token's subject must be a user (ADR-0021). The endpoint
 // middleware has checked the subject already; it is read again from the context
 // of the call so a tool cannot run without one.
-func requireScope(req *mcp.CallToolRequest, scope string) (userID int, denied *mcp.CallToolResult) {
+func requireScope(req *mcp.CallToolRequest, scope string) (int, *mcp.CallToolResult) {
 	info := req.GetExtra().TokenInfo
 	if info == nil {
 		return 0, toolError("this connection is not signed in")

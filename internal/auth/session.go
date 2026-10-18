@@ -142,13 +142,6 @@ func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) 
 	return token, nil
 }
 
-// remember records on the session who u is and which password they are using.
-func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
-	m.sessions.Put(ctx, userIDKey, u.ID)
-	m.sessions.Put(ctx, epochKey, passwordEpoch(u))
-	m.sessions.Put(ctx, lastSeenKey, m.clock().Unix())
-}
-
 // End signs the visitor out: the session row is deleted and the cookie expired.
 func (m *Authenticator) End(ctx context.Context) error {
 	if err := m.sessions.Destroy(ctx); err != nil {
@@ -190,18 +183,25 @@ func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 	return u, nil
 }
 
-func (m *Authenticator) endStale(ctx context.Context) error {
-	if err := m.End(ctx); err != nil {
-		return err
-	}
-	return ErrUnauthenticated
-}
-
 // DeleteExpired removes the sessions whose time has passed and reports how many
 // it removed. Nothing reads them once they have expired; this is only
 // housekeeping, run by a periodic job.
 func (m *Authenticator) DeleteExpired(ctx context.Context) (int, error) {
 	return m.store.deleteExpired(ctx)
+}
+
+// remember records on the session who u is and which password they are using.
+func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
+	m.sessions.Put(ctx, userIDKey, u.ID)
+	m.sessions.Put(ctx, epochKey, passwordEpoch(u))
+	m.sessions.Put(ctx, lastSeenKey, m.clock().Unix())
+}
+
+func (m *Authenticator) endStale(ctx context.Context) error {
+	if err := m.End(ctx); err != nil {
+		return err
+	}
+	return ErrUnauthenticated
 }
 
 // passwordEpoch is the value a session compares to know its user's password has

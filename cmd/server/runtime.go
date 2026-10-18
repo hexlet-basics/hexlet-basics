@@ -17,7 +17,7 @@ var (
 
 type httpRuntime interface {
 	ListenAndServe() error
-	Shutdown(context.Context) error
+	Shutdown(ctx context.Context) error
 	Close() error
 }
 

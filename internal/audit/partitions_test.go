@@ -97,7 +97,6 @@ func TestARecordForAMonthWithoutAPartitionIsKeptAndMovedWhenItsMonthIsCreated(t 
 	moved := client.AuditRecord.GetX(t.Context(), orphan.ID)
 	assert.Equal(t, orphan.OccurredAt.UTC(), moved.OccurredAt.UTC(), "the record is carried over unchanged")
 	assert.Contains(t, partitionNames(t, tx), "audit_records_default", "the default partition is attached again")
-
 }
 
 func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {

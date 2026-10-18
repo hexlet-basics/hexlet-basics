@@ -45,7 +45,8 @@ func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 	insert(nil, "2026-01-01 09:00:00")
 	insert(nil, "2026-01-02 09:00:00")
 
-	_, thisFile, _, _ := runtime.Caller(0)
+	_, thisFile, _, ok := runtime.Caller(0)
+	require.True(t, ok)
 	statements, err := os.ReadFile(filepath.Join(filepath.Dir(thisFile), "..", "..", "migrations", "20261017210100_unique_blog_post_like.sql"))
 	require.NoError(t, err)
 	_, err = tx.ExecContext(ctx, string(statements))

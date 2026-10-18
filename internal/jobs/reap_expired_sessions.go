@@ -25,6 +25,7 @@ func (ReapExpiredSessionsArgs) Kind() string { return "reap_expired_sessions" }
 
 type reapExpiredSessionsWorker struct {
 	river.WorkerDefaults[ReapExpiredSessionsArgs]
+
 	sessions *auth.Authenticator
 	logger   *slog.Logger
 }

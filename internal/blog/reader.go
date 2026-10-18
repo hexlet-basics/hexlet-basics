@@ -207,8 +207,8 @@ func (r *Reader) likeCounts(ctx context.Context, ids []int) (map[int]int, error)
 }
 
 // readingTime is the minutes to read a rich body, rounded up so a short post
-// reads in 1 rather than 0 (legacy divided integers and floored; that was the
-// bug). An empty body stays 0.
+// reads in 1 rather than 0 (legacy divided integers and floored; that was
+// wrong). An empty body stays 0.
 func readingTime(richBodyHTML string) int {
 	words := len(strings.Fields(htmltext.PlainText(richBodyHTML)))
 	return (words + wordsPerMinute - 1) / wordsPerMinute

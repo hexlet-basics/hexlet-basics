@@ -43,6 +43,7 @@ func AmoCRMLead(syncer LeadSyncer) Module {
 
 type amoCRMLeadWorker struct {
 	river.WorkerDefaults[AmoCRMLeadArgs]
+
 	syncer LeadSyncer
 }
 

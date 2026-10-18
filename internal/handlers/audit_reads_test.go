@@ -71,7 +71,7 @@ func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
 	var reads readsOf
 	require.NoError(t, json.Unmarshal(row.Reads, &reads))
 	assert.Equal(t, 3, reads.Count)
-	var want []string
+	want := make([]string, 0, len(page.Items))
 	for _, user := range page.Items {
 		want = append(want, strconv.Itoa(int(user.ID)))
 	}
@@ -190,7 +190,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 	for _, operation := range operations {
 		t.Run(operation, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
-			read := personalDataMiddleware(t, h, h.Events)
+			read := personalDataMiddleware(t, h.Events)
 
 			_, err := read(middleware.Request{Context: t.Context(), OperationName: operation}, answers(`{"items":[{"id":7},{"id":9}],"total":2}`))
 			require.NoError(t, err)
@@ -213,7 +213,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, brokenPublisher{})
+	read := personalDataMiddleware(t, brokenPublisher{})
 
 	resp, err := read(middleware.Request{Context: t.Context(), OperationName: "AdminListLeads"}, answers(`{"items":[{"id":1}]}`))
 	require.NoError(t, err)
@@ -226,7 +226,7 @@ func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
 func TestAnErrorAnswerIsNotARead(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, h.Events)
+	read := personalDataMiddleware(t, h.Events)
 
 	_, err := read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, func(middleware.Request) (middleware.Response, error) {
 		return middleware.Response{}, errors.New("boom")
@@ -243,7 +243,7 @@ func TestAnErrorAnswerIsNotARead(t *testing.T) {
 func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, h.Events)
+	read := personalDataMiddleware(t, h.Events)
 
 	items := make([]map[string]int, audit.MaxReadIDs+50)
 	for i := range items {
@@ -268,7 +268,7 @@ func (brokenPublisher) PublishStandalone(context.Context, events.Event) error {
 	return errors.New("outbox unavailable")
 }
 
-func personalDataMiddleware(t *testing.T, h *testsupport.Harness, publisher events.StandalonePublisher) middleware.Middleware {
+func personalDataMiddleware(t *testing.T, publisher events.StandalonePublisher) middleware.Middleware {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
 	return handlers.NewPersonalDataReadMiddleware(publisher, translator, testsupport.NewAPIErrorHandler(t, translator))

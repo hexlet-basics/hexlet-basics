@@ -62,6 +62,7 @@ type Attachment struct {
 // without leaking the blob backend or its error model to callers.
 type Reader struct {
 	io.ReadSeekCloser
+
 	ContentType string
 	ModTime     time.Time
 }

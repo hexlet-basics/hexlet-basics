@@ -105,14 +105,14 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 		described[i] = map[string]any{"path": c.path, "kept": c.kept, "total": c.total, "unit": c.unit}
 	}
 	hint["cuts"] = described
-	hint["hint"] = "The response was cut to stay within " + strconv.Itoa(limit) + " bytes. " + continuation(data, cuts, list, hint)
+	hint["hint"] = "The response was cut to stay within " + strconv.Itoa(limit) + " bytes. " + continuation(cuts, list, hint)
 	data[truncationKey] = hint
 	return true
 }
 
 // continuation words how to read what was cut, and, for a list, adds the page
 // arguments that continue it.
-func continuation(data map[string]any, cuts []cut, list *listInfo, hint map[string]any) string {
+func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 	if list != nil {
 		for _, c := range cuts {
 			if c.path != list.key || c.unit != "items" {
@@ -171,8 +171,11 @@ func largest(data map[string]any) *node {
 			}
 		case []any:
 			if len(x) > 1 {
-				raw, _ := json.Marshal(x)
-				consider(node{path: path, size: len(raw), value: x, set: set})
+				// A value decoded from JSON always marshals; were it not, there
+				// is no size to weigh it by and it is not a candidate.
+				if raw, err := json.Marshal(x); err == nil {
+					consider(node{path: path, size: len(raw), value: x, set: set})
+				}
 			}
 			for i, child := range x {
 				walk(fmt.Sprintf("%s[%d]", path, i), child, func(nv any) { x[i] = nv })
