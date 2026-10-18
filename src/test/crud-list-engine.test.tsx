@@ -72,7 +72,7 @@ test("the first request leaves the page size to the server, the pager asks for t
     }),
   );
 
-  await renderWithRouter(<Banners />);
+  await renderWithRouter(<Banners />, { navigate: "real" });
 
   await expect.element(page.getByRole("cell", { name: "Banner on page 1" })).toBeVisible();
   expect(requested[0]?.get("page")).toBe("1");
@@ -99,7 +99,7 @@ test("deleting a row asks first, then removes it and refreshes the list", async 
     }),
   );
 
-  await renderWithRouter(<Banners />);
+  await renderWithRouter(<Banners />, { navigate: "real" });
   await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
 
   await page.getByRole("button", { name: "Delete" }).first().click();
@@ -142,7 +142,7 @@ test("a searchable list sends the typed term as q and starts again from the firs
     }),
   );
 
-  await renderWithRouter(<Banners searchable />);
+  await renderWithRouter(<Banners searchable />, { navigate: "real" });
   await expect.element(page.getByRole("cell", { name: "Anything" })).toBeVisible();
   expect(requested[0]?.has("q")).toBe(false);
   await page.getByRole("button", { name: "2" }).click();
@@ -162,7 +162,7 @@ test("a list that is not searchable shows no search box", async () => {
     ),
   );
 
-  await renderWithRouter(<Banners />);
+  await renderWithRouter(<Banners />, { navigate: "real" });
 
   await expect.element(page.getByRole("cell", { name: "Spring sale" })).toBeVisible();
   await expect.element(page.getByPlaceholder("Search…")).not.toBeInTheDocument();

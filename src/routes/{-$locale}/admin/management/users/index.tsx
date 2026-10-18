@@ -5,6 +5,7 @@ import {
   adminListManagementUsersOptions,
   adminListManagementUsersQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListManagementUsersQuery } from "@/client/zod.gen";
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -13,6 +14,7 @@ import { useCrudList } from "@/components/admin/useCrudList";
 // Management users (legacy `/admin/management/users`) — list + edit only,
 // no create/delete (parity with legacy: accounts are self-registered).
 export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
+  validateSearch: zAdminListManagementUsersQuery,
   component: ManagementUsersList,
 });
 

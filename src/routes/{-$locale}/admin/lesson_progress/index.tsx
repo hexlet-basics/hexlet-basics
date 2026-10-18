@@ -5,6 +5,7 @@ import {
   adminListLessonProgressOptions,
   adminListLessonProgressQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListLessonProgressQuery } from "@/client/zod.gen";
 import type { LessonProgress } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
@@ -12,6 +13,7 @@ import { useDateTime } from "@/hooks/useDateTime";
 
 // Per-lesson progress (route keeps the legacy table name) — read-only.
 export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
+  validateSearch: zAdminListLessonProgressQuery,
   component: LessonProgressList,
 });
 

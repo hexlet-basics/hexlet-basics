@@ -5,6 +5,7 @@ import {
   adminListCourseLessonReviewsOptions,
   adminListCourseLessonReviewsQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListCourseLessonReviewsQuery } from "@/client/zod.gen";
 import type { CourseLessonReview } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
@@ -13,6 +14,7 @@ import { useDateTime } from "@/hooks/useDateTime";
 // AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
 export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")({
+  validateSearch: zAdminListCourseLessonReviewsQuery,
   component: LessonReviewsList,
 });
 

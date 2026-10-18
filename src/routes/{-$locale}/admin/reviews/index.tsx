@@ -6,6 +6,7 @@ import {
   adminListReviewsOptions,
   adminListReviewsQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListReviewsQuery } from "@/client/zod.gen";
 import type { Review } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -13,6 +14,7 @@ import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/")({
+  validateSearch: zAdminListReviewsQuery,
   component: ReviewsList,
 });
 

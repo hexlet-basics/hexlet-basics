@@ -6,7 +6,8 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
@@ -95,18 +96,30 @@ export function useCrudList<
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
-  const [pageIndex, setPageIndex] = useState(0);
-  const [chosenSize, setChosenSize] = useState<number>();
+  // The page, its size and the text filter live in the address, as the route's
+  // generated list-query schema (`validateSearch`) declares them, so a list page
+  // can be shared and survives a reload. The hook serves every index route, so it
+  // reads the search of whichever route it is mounted in.
+  const search: ListQuery = useSearch({ strict: false });
+  const navigate = useNavigate();
+  const setSearch = (patch: Partial<ListQuery>) =>
+    navigate({ search: ((prev: ListQuery) => ({ ...prev, ...patch })) as never });
 
-  const [search, setSearch] = useState("");
-  const [term] = useDebouncedValue(search.trim(), 300);
+  // What the box shows follows the keystrokes; the address (and so the query)
+  // follows it a beat later. A new term starts from the first page: the old page
+  // may not exist in the narrowed list.
+  const [text, setText] = useState(search.q ?? "");
+  const applyTerm = useDebouncedCallback(
+    (term: string) => setSearch({ q: term === "" ? undefined : term, page: undefined }),
+    300,
+  );
 
   const query = useQuery(
     list({
       query: {
-        page: pageIndex + 1,
-        perPage: chosenSize,
-        q: searchable && term !== "" ? term : undefined,
+        page: search.page ?? 1,
+        perPage: search.perPage,
+        q: searchable ? search.q : undefined,
       },
     }),
   );
@@ -121,13 +134,15 @@ export function useCrudList<
   // The size is 0 until the first response says what the server used; the table
   // renders no pager before there is data anyway.
   const pagination: PaginationState = {
-    pageIndex,
-    pageSize: chosenSize ?? query.data?.perPage ?? 0,
+    pageIndex: (search.page ?? 1) - 1,
+    pageSize: search.perPage ?? query.data?.perPage ?? 0,
   };
   const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
     const next = typeof updater === "function" ? updater(pagination) : updater;
-    setPageIndex(next.pageIndex);
-    if (next.pageSize !== pagination.pageSize) setChosenSize(next.pageSize);
+    void setSearch({
+      page: next.pageIndex + 1,
+      perPage: next.pageSize !== pagination.pageSize ? next.pageSize : search.perPage,
+    });
   };
 
   const actionsColumn = ({
@@ -171,14 +186,12 @@ export function useCrudList<
       pagination,
       onPaginationChange,
       isLoading: query.isLoading,
-      // A new term starts from the first page: the old page may not exist in the
-      // narrowed list.
       search: searchable
         ? {
-            value: search,
+            value: text,
             onChange: (value: string) => {
-              setSearch(value);
-              setPageIndex(0);
+              setText(value);
+              applyTerm(value.trim());
             },
           }
         : undefined,

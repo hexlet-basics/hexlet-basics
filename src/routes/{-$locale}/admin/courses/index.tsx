@@ -7,6 +7,7 @@ import {
   adminListCoursesQueryKey,
   adminReviewCourseMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListCoursesQuery } from "@/client/zod.gen";
 import type { Course } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -19,6 +20,7 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 // build a new exercise version (river job, auto-promoted on success) and
 // enqueue AI review of every current lesson.
 export const Route = createFileRoute("/{-$locale}/admin/courses/")({
+  validateSearch: zAdminListCoursesQuery,
   component: CoursesList,
 });
 

@@ -2,6 +2,7 @@ import { Stack, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListLeadsOptions, adminListLeadsQueryKey } from "@/client/@tanstack/react-query.gen";
+import { zAdminListLeadsQuery } from "@/client/zod.gen";
 import type { Lead } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
@@ -9,6 +10,7 @@ import { useDateTime } from "@/hooks/useDateTime";
 
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
+  validateSearch: zAdminListLeadsQuery,
   component: LeadsList,
 });
 

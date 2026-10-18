@@ -6,6 +6,7 @@ import {
   adminListUsersOptions,
   adminListUsersQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListUsersQuery } from "@/client/zod.gen";
 import type { UserCrud } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -18,6 +19,7 @@ import { ButtonLink } from "@/components/RouterLink";
 // namespacing artifact and is dropped from the UI path). The search box is the
 // list's own `q` filter, so a search pages and totals like the list does.
 export const Route = createFileRoute("/{-$locale}/admin/users/")({
+  validateSearch: zAdminListUsersQuery,
   component: UsersList,
 });
 

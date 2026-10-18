@@ -6,6 +6,7 @@ import {
   adminListBannersOptions,
   adminListBannersQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListBannersQuery } from "@/client/zod.gen";
 import type { Banner } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -16,6 +17,7 @@ import { ButtonLink } from "@/components/RouterLink";
 
 // Banners admin list, rendered through the CRUD engine.
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
+  validateSearch: zAdminListBannersQuery,
   component: BannersList,
 });
 

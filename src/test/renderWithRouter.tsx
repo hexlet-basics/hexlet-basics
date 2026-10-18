@@ -15,14 +15,21 @@ type RenderWithRouterOptions = {
   initialPath?: string;
   // Route pattern the component mounts under. Must line up with initialPath.
   path?: string;
+  // Let navigation happen, for a component whose state lives in the address (a
+  // list's page and filter). The default spies and does nothing.
+  navigate?: "spy" | "real";
 };
 
 // Mounts `ui` inside a minimal in-memory TanStack router so components that call
 // useNavigate/useParams/Link render without the real route tree. Navigation is
-// NOT performed — `router.navigate` is a spy the test asserts against.
+// NOT performed by default — `router.navigate` is a spy the test asserts against.
 export async function renderWithRouter(
   ui: ReactNode,
-  { initialPath = "/admin", path = "/admin" }: RenderWithRouterOptions = {},
+  {
+    initialPath = "/admin",
+    path = "/admin",
+    navigate: navigation = "spy",
+  }: RenderWithRouterOptions = {},
 ) {
   const rootRoute = createRootRoute();
   const route = createRoute({
@@ -38,7 +45,7 @@ export async function renderWithRouter(
   // router.navigate is generic over the route tree, which a Mock cannot carry,
   // so the mock takes any arguments and is cast back onto the router.
   const navigate = vi.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
-  router.navigate = navigate as unknown as typeof router.navigate;
+  if (navigation === "spy") router.navigate = navigate as unknown as typeof router.navigate;
 
   const screen = await renderWithProviders(<RouterProvider router={router} />);
   return { screen, navigate };

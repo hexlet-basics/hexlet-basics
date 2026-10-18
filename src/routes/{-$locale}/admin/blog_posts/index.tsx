@@ -7,6 +7,7 @@ import {
   adminListBlogPostsQueryKey,
   adminSuggestBlogPostRelatedCoursesMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListBlogPostsQuery } from "@/client/zod.gen";
 import type { BlogPost } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
@@ -15,6 +16,7 @@ import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
+  validateSearch: zAdminListBlogPostsQuery,
   component: BlogPostsList,
 });
 

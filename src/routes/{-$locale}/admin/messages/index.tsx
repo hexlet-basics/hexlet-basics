@@ -5,6 +5,7 @@ import {
   adminListMessagesOptions,
   adminListMessagesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { zAdminListMessagesQuery } from "@/client/zod.gen";
 import type { LessonAssistantMessage } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
@@ -13,6 +14,7 @@ import { useDateTime } from "@/hooks/useDateTime";
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
 // mining student questions; the per-lesson summaries live under lesson reviews.
 export const Route = createFileRoute("/{-$locale}/admin/messages/")({
+  validateSearch: zAdminListMessagesQuery,
   component: MessagesList,
 });
 
