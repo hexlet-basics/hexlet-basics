@@ -52,6 +52,10 @@ linters:
         # are the module of an operation with no rules of its own, so they pass.
         - pattern: '^ent\.\w+Client\.(Query|Create|CreateBulk|MapCreateBulk|Update|UpdateOne|UpdateOneID|Delete|DeleteOne|DeleteOneID|Get|GetX)$'
           msg: a handler does not build ent queries; put the rule in a use-case module, or generate the admin CRUD from the schema's AdminCRUD annotation
+        # domain.FromStore is the one translator of ent's errors; a handler asks
+        # errors.Is(err, domain.ErrNotFound) and the like, never ent.Is*.
+        - pattern: '^ent\.Is\w+$'
+          msg: a handler does not read ent errors; the module returns domain errors (domain.FromStore) and the handler checks them with errors.Is
         # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
         # may use it; production packages not yet migrated are listed in the
         # exclusions below, and each migration removes its entry.
@@ -78,6 +82,12 @@ linters:
       - path: _test\.go
         linters: [forbidigo]
         text: a handler does not build ent queries
+      - path-except: ^internal/handlers/
+        linters: [forbidigo]
+        text: a handler does not read ent errors
+      - path: _test\.go
+        linters: [forbidigo]
+        text: a handler does not read ent errors
       # fmt.Errorf is allowed in tests.
       - path: _test\.go
         linters: [forbidigo]

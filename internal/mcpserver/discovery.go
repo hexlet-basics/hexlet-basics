@@ -75,13 +75,6 @@ func (s *Server) note(tool *mcp.Tool, needs toolNeeds) {
 	s.registry = append(s.registry, listedTool{tool: tool, needs: needs})
 }
 
-// Capabilities is what the list filter needs to know of who the caller is: the
-// capability Permissions the user's Staff Role holds. It is the same judgement
-// the checkpoint makes on every admin call, asked once for the list.
-type Capabilities interface {
-	HeldCapabilities(ctx context.Context, userID int) ([]string, error)
-}
-
 // visibleTo is the registered tools the connection's token would not be refused
 // at the door of, sorted by name so the order never depends on registration.
 //
@@ -95,9 +88,9 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 		return nil
 	}
 	var held map[string]bool
-	if s.deps.Capabilities != nil && slices.Contains(info.Scopes, oauthserver.ScopeAdmin) {
+	if s.deps.HeldCapabilities != nil && slices.Contains(info.Scopes, oauthserver.ScopeAdmin) {
 		if userID, err := strconv.Atoi(info.UserID); err == nil && userID > 0 {
-			names, err := s.deps.Capabilities.HeldCapabilities(ctx, userID)
+			names, err := s.deps.HeldCapabilities(ctx, userID)
 			if err != nil {
 				s.deps.Logger.ErrorContext(ctx, "read capabilities for the MCP tool list", slog.Any("err", err))
 			} else {

@@ -18,6 +18,7 @@ import (
 	"gocloud.dev/gcerrors"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/ident"
 )
 
@@ -32,7 +33,7 @@ var (
 	// ErrTooLarge means the uploaded bytes exceed MaxUploadBytes.
 	ErrTooLarge = errors.New("asset is too large")
 	// ErrNotFound means the requested storage key does not exist.
-	ErrNotFound = errors.New("asset not found")
+	ErrNotFound = fmt.Errorf("asset %w", domain.ErrNotFound)
 )
 
 var extensionsByContentType = map[string]string{

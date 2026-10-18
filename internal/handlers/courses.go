@@ -11,13 +11,30 @@ import (
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/blog"
+	"hexletbasics/internal/book"
+	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/coursepage"
+	"hexletbasics/internal/coursereview"
+	"hexletbasics/internal/curriculum"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feed"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/landingpage"
+	"hexletbasics/internal/leadcapture"
+	"hexletbasics/internal/lessonreview"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/permission"
+	"hexletbasics/internal/progress"
+	"hexletbasics/internal/qnaitem"
+	"hexletbasics/internal/relatedcourse"
+	"hexletbasics/internal/search"
+	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/sitebanner"
+	"hexletbasics/internal/sitemap"
+	"hexletbasics/internal/versionbuild"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -36,14 +53,14 @@ type Server struct {
 	db       *ent.Client
 	conv     apiconv.Converter
 	settings Settings
-	starter  VersionBuildStarter
+	starter  *versionbuild.Starter
 	// jobs schedules the background work handlers trigger: lesson reviews, the
 	// related-courses pick, account emails.
-	jobs JobEnqueuer
+	jobs *jobs.Enqueuer
 	// relatedCoursesSet replaces a post's related courses in one transaction.
-	relatedCoursesSet RelatedCoursesReplacer
+	relatedCoursesSet *relatedcourse.Replacer
 	// progress owns what a learner has finished; handlers never derive it.
-	progress ProgressTracker
+	progress *progress.Progress
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
 	// the upload operation only translates its outcome to the contract.
 	assets *assetstore.Store
@@ -54,21 +71,21 @@ type Server struct {
 	// credentials checks and changes passwords; registrar creates accounts and
 	// remover removes them.
 	credentials *account.Credentials
-	registrar   UserRegistrar
-	remover     AccountRemover
+	registrar   *account.Registrar
+	remover     *account.Remover
 	// userEditor and userDirectory are the administrators' write and read side of
 	// user records.
-	userEditor    UserEditor
-	userDirectory UserDirectory
+	userEditor    *account.Editor
+	userDirectory *account.Directory
 	events        events.StandalonePublisher
 	// emailTokens verifies the Magic Link and Password Reset links.
 	emailTokens *emailtoken.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
 	// leads stores a lead and raises LeadCreated in one transaction.
-	leads LeadCreator
+	leads *leadcapture.Recorder
 	// books stores a book request and raises BookRequested in one transaction.
-	books  BookRequester
+	books  *book.Recorder
 	i18n   *localization.Translator
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
@@ -86,84 +103,85 @@ type Server struct {
 	blogReader *blog.Reader
 	blogLikes  *blog.Liker
 	// postRemover deletes a post with its dependents in one transaction.
-	postRemover PostRemover
+	postRemover *blog.Remover
 	// permissions writes a role's grants.
-	permissions       PermissionWriter
-	selfProtection    SelfProtection
-	bannerStates      StateMover
-	reviewStates      StateMover
-	landingPageStates StateMover
-	courseReadiness   ReadinessMarker
+	permissions       *permission.Permissions
+	selfProtection    *selfprotection.Guard
+	bannerStates      *sitebanner.Editor
+	reviewStates      *coursereview.Editor
+	landingPageStates *landingpage.Editor
+	courseReadiness   *catalog.Readiness
 	// dashboard assembles the learner's courses with cards and progress.
-	dashboard CourseLister
+	dashboard *dashboard.Dashboard
 	// sitemap reads the rows behind the sitemap page.
-	sitemap SitemapReader
+	sitemap *sitemap.Sitemap
 	// searcher finds records of the public catalogue by text.
-	searcher          CatalogueSearcher
-	lessonReviews     LessonReviewScheduler
-	relatedSuggester  RelatedCoursesScheduler
-	landingPageQna    LandingPageQna
-	categoryQna       CategoryQna
-	postEditor        PostEditor
-	reviewDirectory   ReviewDirectory
-	courseDirectory   CourseDirectory
-	leadDirectory     LeadDirectory
-	messageDirectory  MessageDirectory
-	categoryDirectory CategoryDirectory
-	bannerDirectory   BannerDirectory
-	lessonDirectory   LessonDirectory
+	searcher          *search.Catalogue
+	lessonReviews     *lessonreview.Scheduler
+	relatedSuggester  *relatedcourse.Scheduler
+	landingPageQna    *qnaitem.LandingPage
+	categoryQna       *qnaitem.Category
+	postEditor        *blog.Editor
+	reviewDirectory   *coursereview.Directory
+	courseDirectory   *catalog.CourseDirectory
+	leadDirectory     *leadcapture.Directory
+	messageDirectory  *assistant.Directory
+	categoryDirectory *catalog.CategoryDirectory
+	bannerDirectory   *sitebanner.Directory
+	lessonDirectory   *curriculum.Directory
 	// oauth serves the consent screen of the OAuth server; nil while it is off.
-	oauth OAuthConsents
+	oauth *oauthserver.Server
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
-// parameters: most are interfaces the tests fill with moq mocks, and
-// a test that never reaches a collaborator (no lead is submitted through the
+// parameters: the fields are the concrete module types (ADR-0025), the only
+// mocks being the external boundaries, and a test that never reaches a
+// collaborator (no lead is submitted through the
 // auth router) simply leaves its field zero instead of passing a labelled nil.
 // Plain fields, no DI tags, so the handlers package stays injector-agnostic.
 type Deps struct {
 	DB                *ent.Client
 	Settings          Settings
-	Starter           VersionBuildStarter
-	Jobs              JobEnqueuer
-	RelatedCoursesSet RelatedCoursesReplacer
-	Progress          ProgressTracker
+	Starter           *versionbuild.Starter
+	Jobs              *jobs.Enqueuer
+	RelatedCoursesSet *relatedcourse.Replacer
+	Progress          *progress.Progress
 	Assets            *assetstore.Store
 	Sessions          *auth.Authenticator
-	Registrar         UserRegistrar
-	Remover           AccountRemover
-	UserEditor        UserEditor
-	UserDirectory     UserDirectory
+	Registrar         *account.Registrar
+	Remover           *account.Remover
+	UserEditor        *account.Editor
+	UserDirectory     *account.Directory
 	Events            events.StandalonePublisher
-	Leads             LeadCreator
-	Books             BookRequester
+	Leads             *leadcapture.Recorder
+	Books             *book.Recorder
 	I18n              *localization.Translator
 	Errors            *APIErrorHandler
 	YandexFeed        *feed.Yandex
 	Assistant         *assistant.Chat
-	PostRemover       PostRemover
-	Permissions       PermissionWriter
-	SelfProtection    SelfProtection
-	BannerStates      StateMover
-	ReviewStates      StateMover
-	LandingPageStates StateMover
-	CourseReadiness   ReadinessMarker
-	Dashboard         CourseLister
-	Sitemap           SitemapReader
-	Search            CatalogueSearcher
-	LessonReviews     LessonReviewScheduler
-	RelatedSuggester  RelatedCoursesScheduler
-	LandingPageQna    LandingPageQna
-	CategoryQna       CategoryQna
-	PostEditor        PostEditor
-	ReviewDirectory   ReviewDirectory
-	CourseDirectory   CourseDirectory
-	LeadDirectory     LeadDirectory
-	MessageDirectory  MessageDirectory
-	CategoryDirectory CategoryDirectory
-	BannerDirectory   BannerDirectory
-	LessonDirectory   LessonDirectory
-	OAuth             OAuthConsents
+	PostRemover       *blog.Remover
+	Permissions       *permission.Permissions
+	SelfProtection    *selfprotection.Guard
+	BannerStates      *sitebanner.Editor
+	ReviewStates      *coursereview.Editor
+	LandingPageStates *landingpage.Editor
+	CourseReadiness   *catalog.Readiness
+	Dashboard         *dashboard.Dashboard
+	Sitemap           *sitemap.Sitemap
+	Search            *search.Catalogue
+	LessonReviews     *lessonreview.Scheduler
+	RelatedSuggester  *relatedcourse.Scheduler
+	LandingPageQna    *qnaitem.LandingPage
+	CategoryQna       *qnaitem.Category
+	PostEditor        *blog.Editor
+	ReviewDirectory   *coursereview.Directory
+	CourseDirectory   *catalog.CourseDirectory
+	LeadDirectory     *leadcapture.Directory
+	MessageDirectory  *assistant.Directory
+	CategoryDirectory *catalog.CategoryDirectory
+	BannerDirectory   *sitebanner.Directory
+	LessonDirectory   *curriculum.Directory
+	OAuth             *oauthserver.Server
 }
 
 // NewServer wires the handler to its dependencies.

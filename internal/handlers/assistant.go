@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/domain"
 )
 
 // ListAssistantMessages returns the learner's in-lesson chat and whether they
@@ -20,7 +20,7 @@ func (s *Server) ListAssistantMessages(
 
 	history, err := s.assistant.History(ctx, u.ID, int(params.LessonId))
 	switch {
-	case ent.IsNotFound(err):
+	case errors.Is(err, domain.ErrNotFound):
 		return s.lessonNotFound(ctx), nil
 	case err != nil:
 		return nil, err
@@ -55,7 +55,7 @@ func (s *Server) CreateAssistantMessage(
 		// A declared outcome, not a failure: it never reaches the reporting path.
 		problem := api.CreateAssistantMessageTooManyRequests(s.errors.problem(ctx, http.StatusTooManyRequests, nil))
 		return &problem, nil
-	case ent.IsNotFound(err):
+	case errors.Is(err, domain.ErrNotFound):
 		return s.lessonNotFound(ctx), nil
 	case err != nil:
 		return nil, err
