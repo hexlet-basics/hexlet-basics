@@ -246,41 +246,9 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 		return reg, metadataError("%s", err)
 	}
 
-	// The grants a client row has are fixed (code and refresh), so a request is
-	// accepted when it asks for no more than that, and refused otherwise instead
-	// of being quietly narrowed: a client that wanted client_credentials must
-	// learn it will not get it.
-	grants, err := stringList(fields, "grant_types")
-	if err != nil {
-		return reg, metadataError("grant_types must be an array of strings")
-	}
-
-	for _, g := range grants {
-		if g != string(oidc.GrantTypeCode) && g != string(oidc.GrantTypeRefreshToken) {
-			return reg, metadataError("the grant type %q is not supported: only authorization_code and refresh_token", g)
-		}
-	}
-
-	if len(grants) > 0 && !slices.Contains(grants, string(oidc.GrantTypeCode)) {
-		return reg, metadataError("grant_types must include authorization_code")
-	}
-
-	responses, err := stringList(fields, "response_types")
-	if err != nil {
-		return reg, metadataError("response_types must be an array of strings")
-	}
-
-	for _, rt := range responses {
-		if rt != string(oidc.ResponseTypeCode) {
-			return reg, metadataError("the response type %q is not supported: only code", rt)
-		}
-	}
-
-	if raw, ok := fields["token_endpoint_auth_method"]; ok {
-		var method string
-		if json.Unmarshal(raw, &method) != nil || method != string(oidc.AuthMethodNone) {
-			return reg, metadataError("only public clients are registered: token_endpoint_auth_method must be none")
-		}
+	problem := checkSupported(fields)
+	if problem != nil {
+		return reg, problem
 	}
 
 	reg.scopes, reg.offlineAccess, err = requestedScopes(fields)
@@ -289,6 +257,51 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	}
 
 	return reg, nil
+}
+
+// checkSupported refuses a request that asks for more than the public
+// authorization-code client a row can be: other grant types, other response
+// types, or client authentication.
+//
+// The grants a client row has are fixed (code and refresh), so a request is
+// accepted when it asks for no more than that, and refused otherwise instead
+// of being quietly narrowed: a client that wanted client_credentials must
+// learn it will not get it.
+func checkSupported(fields map[string]json.RawMessage) *registrationError {
+	grants, err := stringList(fields, "grant_types")
+	if err != nil {
+		return metadataError("grant_types must be an array of strings")
+	}
+
+	for _, g := range grants {
+		if g != string(oidc.GrantTypeCode) && g != string(oidc.GrantTypeRefreshToken) {
+			return metadataError("the grant type %q is not supported: only authorization_code and refresh_token", g)
+		}
+	}
+
+	if len(grants) > 0 && !slices.Contains(grants, string(oidc.GrantTypeCode)) {
+		return metadataError("grant_types must include authorization_code")
+	}
+
+	responses, err := stringList(fields, "response_types")
+	if err != nil {
+		return metadataError("response_types must be an array of strings")
+	}
+
+	for _, rt := range responses {
+		if rt != string(oidc.ResponseTypeCode) {
+			return metadataError("the response type %q is not supported: only code", rt)
+		}
+	}
+
+	if raw, ok := fields["token_endpoint_auth_method"]; ok {
+		var method string
+		if json.Unmarshal(raw, &method) != nil || method != string(oidc.AuthMethodNone) {
+			return metadataError("only public clients are registered: token_endpoint_auth_method must be none")
+		}
+	}
+
+	return nil
 }
 
 // stringList reads an optional array of strings; absent is an empty list.
@@ -415,6 +428,11 @@ func checkRedirectURI(raw string) error {
 		return refusal(fmt.Sprintf("a redirect URI must not have a fragment: %q", raw))
 	}
 
+	return checkRedirectScheme(redirect, raw)
+}
+
+// checkRedirectScheme admits https, and http only on a loopback host.
+func checkRedirectScheme(redirect *url.URL, raw string) error {
 	switch strings.ToLower(redirect.Scheme) {
 	case "https":
 		return nil

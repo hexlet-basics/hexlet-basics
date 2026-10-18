@@ -71,40 +71,11 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 		return nil, errs.Wrapf(err, "list access tokens of user")
 	}
 
-	type grants struct {
-		live        bool
-		connectedAt time.Time
-		newest      time.Time
-		scopes      []string
-	}
-
-	byClient := map[string]*grants{}
+	byClient := grantLedger{}
 	// Times come from the token's own columns, never from created_at: that one
 	// is stamped by the process clock (and without a zone), while expiry and
 	// auth_time follow the injected clock the rest of the package runs on.
-	see := func(clientID string, connected, issued time.Time, scopes []string, live bool) {
-		grant := byClient[clientID]
-		if grant == nil {
-			grant = &grants{
-				connectedAt: connected,
-				live:        false,
-				newest:      time.Time{},
-				scopes:      nil,
-			}
-			byClient[clientID] = grant
-		}
-
-		if connected.Before(grant.connectedAt) {
-			grant.connectedAt = connected
-		}
-
-		if live {
-			grant.live = true
-			if issued.After(grant.newest) {
-				grant.newest, grant.scopes = issued, scopes
-			}
-		}
-	}
+	see := byClient.see
 	for _, r := range refresh {
 		// auth_time is when the user approved; every rotation inherits it.
 		see(r.ClientID, r.AuthTime, r.ExpiresAt.Add(-s.storage.refreshLifetime), r.Scopes, r.UsedAt == nil)
@@ -199,4 +170,41 @@ func (s *Server) Disconnect(ctx context.Context, appID int) error {
 	}
 
 	return s.storage.TerminateSession(ctx, strconv.Itoa(account.ID), row.ClientID)
+}
+
+// clientGrant is what one client's tokens add up to.
+type clientGrant struct {
+	live        bool
+	connectedAt time.Time
+	newest      time.Time
+	scopes      []string
+}
+
+// grantLedger is the grants of a user by client id.
+type grantLedger map[string]*clientGrant
+
+// see adds one token of a client: connected is when the user approved, issued
+// when the token was made, and live whether it still keeps the app connected.
+func (l grantLedger) see(clientID string, connected, issued time.Time, scopes []string, live bool) {
+	grant := l[clientID]
+	if grant == nil {
+		grant = &clientGrant{
+			connectedAt: connected,
+			live:        false,
+			newest:      time.Time{},
+			scopes:      nil,
+		}
+		l[clientID] = grant
+	}
+
+	if connected.Before(grant.connectedAt) {
+		grant.connectedAt = connected
+	}
+
+	if live {
+		grant.live = true
+		if issued.After(grant.newest) {
+			grant.newest, grant.scopes = issued, scopes
+		}
+	}
 }

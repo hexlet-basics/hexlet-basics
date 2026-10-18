@@ -14,9 +14,12 @@ linters:
     - lll
     - goconst
     - testpackage
-    - cyclop
     - funlen
   settings:
+    cyclop:
+      # The default of 10 flags a function the size of a plain parse or a retry
+      # loop; 15 is where a function has real branching worth splitting.
+      max-complexity: 15
     varnamelen:
       # The names Go code reads by convention: an index, an id, the comma-ok
       # boolean, a transaction, a database client, an HTTP writer and request.

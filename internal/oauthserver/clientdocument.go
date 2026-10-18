@@ -256,11 +256,17 @@ func checkClientIDURL(clientID string) error {
 		return errClientIDPort
 	}
 
-	if parsedURL.Path == "" || parsedURL.Path == "/" {
+	return checkClientIDPath(parsedURL.Path)
+}
+
+// checkClientIDPath requires a client id URL to name a resource below the root,
+// by a path with no dot segments.
+func checkClientIDPath(path string) error {
+	if path == "" || path == "/" {
 		return errClientIDNoPath
 	}
 
-	for segment := range strings.SplitSeq(parsedURL.Path, "/") {
+	for segment := range strings.SplitSeq(path, "/") {
 		if segment == "." || segment == ".." {
 			return errClientIDDotSegments
 		}

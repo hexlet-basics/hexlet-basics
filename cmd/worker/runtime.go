@@ -83,73 +83,11 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		}
 	})
 
-	group.Go(func() error {
-		err := a.jobs.Start(processCtx)
-		if err == nil {
-			state.markJobsStarted()
-		}
-
-		close(jobsStartSettled)
-
-		if err != nil {
-			return errs.Wrapf(err, "start job queue")
-		}
-
-		close(riverReady)
-
-		<-a.jobs.Stopped()
-
-		return errJobQueueStopped
-	})
-
-	group.Go(func() error {
-		select {
-		case <-riverReady:
-		case <-groupCtx.Done():
-			return nil
-		}
-
-		// The router counts as started only once it reports itself running.
-		// Watermill's Close waits for the handlers to come up, so closing a
-		// router that has not got there yet blocks for its whole close timeout;
-		// a shutdown that arrives earlier relies on the cancelled process
-		// context to stop it instead.
-		go func() {
-			select {
-			case <-a.events.Running():
-				state.markEventsStarted()
-
-				if a.probes != nil {
-					a.probes.Started()
-				}
-			case <-groupCtx.Done():
-			}
-		}()
-
-		if a.logger != nil {
-			a.logger.InfoContext(groupCtx, "async worker started")
-		}
-
-		err := a.events.Run(processCtx)
-		if err != nil {
-			return errs.Wrapf(err, "run domain event router")
-		}
-
-		return errEventRouterStopped
-	})
+	group.Go(func() error { return a.runJobs(processCtx, state, jobsStartSettled, riverReady) })
+	group.Go(func() error { return a.runEvents(processCtx, groupCtx, state, riverReady) })
 
 	if a.health != nil {
-		group.Go(func() error {
-			err := a.health.ListenAndServe()
-			if err != nil && !errors.Is(err, http.ErrServerClosed) {
-				return errs.Wrapf(err, "serve health")
-			}
-			// A closed listener is the shutdown's doing; wait for the group to
-			// finish rather than ending it early.
-			<-groupCtx.Done()
-
-			return nil
-		})
+		group.Go(func() error { return a.serveHealth(groupCtx) })
 	}
 
 	// The group keeps only its first error, and on a signal that is the
@@ -171,6 +109,78 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	}
 
 	return errors.Join(waitErr, shutdownErr)
+}
+
+// runJobs starts the job queue and blocks until it stops. settled is closed
+// once the start has either succeeded or failed, and ready after a success, so
+// the event router starts only behind a queue that is up.
+func (a *application) runJobs(processCtx context.Context, state *runtimeState, settled, ready chan<- struct{}) error {
+	err := a.jobs.Start(processCtx)
+	if err == nil {
+		state.markJobsStarted()
+	}
+
+	close(settled)
+
+	if err != nil {
+		return errs.Wrapf(err, "start job queue")
+	}
+
+	close(ready)
+
+	<-a.jobs.Stopped()
+
+	return errJobQueueStopped
+}
+
+// runEvents runs the domain event router once the job queue is ready.
+func (a *application) runEvents(processCtx, groupCtx context.Context, state *runtimeState, riverReady <-chan struct{}) error {
+	select {
+	case <-riverReady:
+	case <-groupCtx.Done():
+		return nil
+	}
+
+	// The router counts as started only once it reports itself running.
+	// Watermill's Close waits for the handlers to come up, so closing a
+	// router that has not got there yet blocks for its whole close timeout;
+	// a shutdown that arrives earlier relies on the cancelled process
+	// context to stop it instead.
+	go func() {
+		select {
+		case <-a.events.Running():
+			state.markEventsStarted()
+
+			if a.probes != nil {
+				a.probes.Started()
+			}
+		case <-groupCtx.Done():
+		}
+	}()
+
+	if a.logger != nil {
+		a.logger.InfoContext(groupCtx, "async worker started")
+	}
+
+	err := a.events.Run(processCtx)
+	if err != nil {
+		return errs.Wrapf(err, "run domain event router")
+	}
+
+	return errEventRouterStopped
+}
+
+// serveHealth serves the health listener until the group is done.
+func (a *application) serveHealth(groupCtx context.Context) error {
+	err := a.health.ListenAndServe()
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return errs.Wrapf(err, "serve health")
+	}
+	// A closed listener is the shutdown's doing; wait for the group to
+	// finish rather than ending it early.
+	<-groupCtx.Done()
+
+	return nil
 }
 
 // failure is what the process reports from run's result: the shutdown failures

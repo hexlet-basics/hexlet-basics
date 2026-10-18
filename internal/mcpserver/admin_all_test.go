@@ -104,14 +104,8 @@ func exampleOf(schema map[string]any) any {
 		return allOfExample(parts)
 	}
 
-	for _, choice := range []string{"anyOf", "oneOf"} {
-		if parts, ok := schema[choice].([]any); ok {
-			for _, p := range parts {
-				if pm, _ := p.(map[string]any); pm["type"] != "null" {
-					return exampleOf(pm)
-				}
-			}
-		}
+	if example, ok := choiceExample(schema); ok {
+		return example
 	}
 
 	typ := schema["type"]
@@ -176,4 +170,20 @@ func objectExample(schema map[string]any) map[string]any {
 	}
 
 	return out
+}
+
+// choiceExample is the example of the first non-null alternative of an anyOf or
+// oneOf; found is false when the schema has neither.
+func choiceExample(schema map[string]any) (any, bool) {
+	for _, choice := range []string{"anyOf", "oneOf"} {
+		if parts, ok := schema[choice].([]any); ok {
+			for _, p := range parts {
+				if pm, _ := p.(map[string]any); pm["type"] != "null" {
+					return exampleOf(pm), true
+				}
+			}
+		}
+	}
+
+	return nil, false
 }

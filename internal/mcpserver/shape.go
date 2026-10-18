@@ -58,31 +58,7 @@ func trimInput(node any) any {
 	case map[string]any:
 		out := make(map[string]any, len(n))
 		for key, value := range n {
-			switch {
-			case key == "title" || key == "example" || key == "examples" || strings.HasPrefix(key, "x-"):
-				continue
-			case key == "format" && slices.Contains([]any{"int32", "int64", "float", "double"}, value):
-				// The width of a number says nothing an agent can use; date-time
-				// and email do, and stay.
-				continue
-			case key == "description":
-				if text, ok := value.(string); ok {
-					out[key] = firstSentence(text, maxDescription)
-				}
-			case key == "properties":
-				properties, _ := value.(map[string]any)
-
-				trimmed := make(map[string]any, len(properties))
-				for name, property := range properties {
-					trimmed[name] = trimInput(property)
-				}
-
-				out[key] = trimmed
-			case key == "enum" || key == "required" || key == "const" || key == "default":
-				out[key] = value
-			default:
-				out[key] = trimInput(value)
-			}
+			trimEntry(out, key, value)
 		}
 
 		return out
@@ -95,6 +71,46 @@ func trimInput(node any) any {
 		return out
 	default:
 		return node
+	}
+}
+
+// trimEntry copies one entry of an input schema object into out, trimmed or
+// dropped.
+func trimEntry(out map[string]any, key string, value any) {
+	switch {
+	case decorative(key, value):
+		return
+	case key == "description":
+		if text, ok := value.(string); ok {
+			out[key] = firstSentence(text, maxDescription)
+		}
+	case key == "properties":
+		properties, _ := value.(map[string]any)
+
+		trimmed := make(map[string]any, len(properties))
+		for name, property := range properties {
+			trimmed[name] = trimInput(property)
+		}
+
+		out[key] = trimmed
+	case key == "enum" || key == "required" || key == "const" || key == "default":
+		out[key] = value
+	default:
+		out[key] = trimInput(value)
+	}
+}
+
+// decorative reports whether an entry of an input schema only decorates it.
+func decorative(key string, value any) bool {
+	switch {
+	case key == "title" || key == "example" || key == "examples" || strings.HasPrefix(key, "x-"):
+		return true
+	case key == "format":
+		// The width of a number says nothing an agent can use; date-time
+		// and email do, and stay.
+		return slices.Contains([]any{"int32", "int64", "float", "double"}, value)
+	default:
+		return false
 	}
 }
 
