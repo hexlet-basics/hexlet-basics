@@ -1402,14 +1402,16 @@ describe("lesson player", () => {
     await atDesktop();
     // C has no language service in monaco, so the underline can only come from the
     // syntax check.
-    const c = lessonView({
+    const cLesson = lessonView({
       lesson: {
         ...lesson,
         exerciseExtension: "c",
         preparedCode: "int main(void) { return 0; }\n",
       },
     });
-    worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(c)));
+    worker.use(
+      http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(cLesson)),
+    );
 
     await renderPlayer("variables");
     await expect.poll(editorText, editorLoad).toContain("int main(void)");

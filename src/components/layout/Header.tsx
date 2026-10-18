@@ -289,7 +289,7 @@ function LocaleSwitcher() {
 
   const hrefFor = (code: Locale) => localize(pathname, code) + searchStr;
 
-  const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
+  const current = LOCALES.find((locale) => locale.code === i18n.language) ?? LOCALES[0];
 
   return (
     <Menu shadow="md" width={160}>

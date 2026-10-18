@@ -89,7 +89,9 @@ describe("book", () => {
 
     const { router } = await openBook(null, "/es/book");
 
-    await expect.poll(() => router.state.matches.some((m) => m.status === "notFound")).toBe(true);
+    await expect
+      .poll(() => router.state.matches.some((match) => match.status === "notFound"))
+      .toBe(true);
     expect(page.getByRole("heading", { name: "Содержание" }).query()).toBeNull();
   }, 60_000);
 });

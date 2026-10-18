@@ -76,7 +76,7 @@ export function useGeneratedFields<T>(
     return index === -1 ? order.length : index;
   };
   // Array.sort is stable, so unlisted fields keep the contract's order.
-  return specs.toSorted((a, b) => rank(a.name) - rank(b.name));
+  return specs.toSorted((left, right) => rank(left.name) - rank(right.name));
 }
 
 // The plain columns of a list: a header from the generated label and the field

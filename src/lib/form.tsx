@@ -54,7 +54,9 @@ function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
     return undefined;
   }
   return errors
-    .map((e) => (typeof e === "string" ? e : ((e as { message?: string } | null)?.message ?? "")))
+    .map((entry) =>
+      typeof entry === "string" ? entry : ((entry as { message?: string } | null)?.message ?? ""),
+    )
     .filter(Boolean)
     .join(", ");
 }

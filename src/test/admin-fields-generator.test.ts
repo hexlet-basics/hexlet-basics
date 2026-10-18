@@ -50,7 +50,9 @@ describe("admin field generator", () => {
     expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
-    expect(fields.map((f) => [f.name, f.kind, f.required, f.nullable])).toStrictEqual([
+    expect(
+      fields.map((field) => [field.name, field.kind, field.required, field.nullable]),
+    ).toStrictEqual([
       ["title", "text", true, false],
       ["state", "select", false, true],
       ["startsAt", "datetime", false, true],
@@ -67,10 +69,10 @@ describe("admin field generator", () => {
     expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
-    expect(fields.find((f) => f.name === "startsAt")?.labelKey).toBe(
+    expect(fields.find((field) => field.name === "startsAt")?.labelKey).toBe(
       "models.attributes.widget.starts_at",
     );
-    expect(fields.find((f) => f.name === "richBody")?.labelKey).toBe(
+    expect(fields.find((field) => field.name === "richBody")?.labelKey).toBe(
       "models.attributes.widget.rich_body",
     );
   }, 60_000);
@@ -79,7 +81,7 @@ describe("admin field generator", () => {
     expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
-    expect(fields.find((f) => f.name === "state")?.enumValues).toStrictEqual([
+    expect(fields.find((field) => field.name === "state")?.enumValues).toStrictEqual([
       { value: "draft", labelKey: "models.attributes.widget.state/values.draft" },
       { value: "published", labelKey: "models.attributes.widget.state/values.published" },
     ]);
@@ -89,23 +91,25 @@ describe("admin field generator", () => {
     expect.hasAssertions();
     const { fields } = describeResource(spec, { ...widget, labelScopes: { title: "base" } });
 
-    expect(fields.find((f) => f.name === "title")?.labelKey).toBe("models.attributes.base.title");
+    expect(fields.find((field) => field.name === "title")?.labelKey).toBe(
+      "models.attributes.base.title",
+    );
   }, 60_000);
 
   it("leaves out the input fields a resource declares it has no form field for", () => {
     expect.hasAssertions();
     const { fields } = describeResource(spec, { ...widget, skipFields: ["seats", "pinned"] });
 
-    expect(fields.map((f) => f.name)).not.toContain("seats");
-    expect(fields.map((f) => f.name)).not.toContain("pinned");
-    expect(fields.map((f) => f.name)).toContain("title");
+    expect(fields.map((field) => field.name)).not.toContain("seats");
+    expect(fields.map((field) => field.name)).not.toContain("pinned");
+    expect(fields.map((field) => field.name)).toContain("title");
   }, 60_000);
 
   it("describes the scalar properties of the read model as list columns", () => {
     expect.hasAssertions();
     const { columns } = describeResource(spec, widget);
 
-    expect(columns.map((c) => [c.name, c.kind])).toStrictEqual([
+    expect(columns.map((column) => [column.name, column.kind])).toStrictEqual([
       ["id", "number"],
       ["title", "text"],
       ["state", "select"],

@@ -150,7 +150,9 @@ describe("static pages", () => {
   ];
 
   it.each(
-    PAGE_IDS.flatMap((id) => LOCALES.map((l) => ({ id, locale: l.locale, prefix: l.prefix }))),
+    PAGE_IDS.flatMap((id) =>
+      LOCALES.map((entry) => ({ id, locale: entry.locale, prefix: entry.prefix })),
+    ),
   )(
     "the $id page renders its body in $prefix",
     async ({ id, locale, prefix }) => {

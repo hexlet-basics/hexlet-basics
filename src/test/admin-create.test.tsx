@@ -87,34 +87,34 @@ async function fillInOrder(fields: readonly (readonly [string, string])[]): Prom
 describe("admin create", () => {
   it.each(cases)(
     "an admin creates $name and is taken back to the list",
-    async (c) => {
+    async (scenario) => {
       expect.hasAssertions();
       let received: unknown = null;
       worker.use(
-        http.post(`*/admin/${c.resource}`, async ({ request }) => {
+        http.post(`*/admin/${scenario.resource}`, async ({ request }) => {
           received = await request.json();
           return HttpResponse.json({ id: 1 });
         }),
       );
 
-      const { router } = await renderRoute(c.route, {
-        path: `/{-$locale}/admin/${c.resource}/new`,
-        initialPath: `/admin/${c.resource}/new`,
+      const { router } = await renderRoute(scenario.route, {
+        path: `/{-$locale}/admin/${scenario.resource}/new`,
+        initialPath: `/admin/${scenario.resource}/new`,
         user: admin,
       });
 
-      await fillInOrder(c.fields);
+      await fillInOrder(scenario.fields);
       const create = page.getByRole("button", { name: "Create" });
       await create.click();
 
       const confirmation = page.getByText("Record created");
       await expect.element(confirmation).toBeVisible();
-      expect(received).toMatchObject(c.sent);
+      expect(received).toMatchObject(scenario.sent);
       // A new record is a draft: the state has its own operations.
       expect(received).not.toHaveProperty("state");
       // A new course is a draft too: its readiness has its own operations.
       expect(received).not.toHaveProperty("readiness");
-      await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
+      await expect.poll(() => router.state.location.pathname).toBe(`/admin/${scenario.resource}`);
     },
     60_000,
   );

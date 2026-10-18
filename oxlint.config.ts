@@ -31,6 +31,10 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/id-length": [
+      "error",
+      { min: 2, exceptions: ["$", "t", "_"], checkGeneric: false, properties: "never" },
+    ],
     "react/function-component-definition": [
       "error",
       {
@@ -108,8 +112,6 @@ export default defineConfig({
     "typescript/prefer-readonly-parameter-types": "off",
     // Taste rule, would reorder about 1000 object literals that are grouped by meaning.
     "eslint/sort-keys": "off",
-    // Bans conventional short names (t, i, e, _) with no safety gain.
-    "eslint/id-length": "off",
     // Conditional rendering with a ternary is idiomatic React.
     "eslint/no-ternary": "off",
     // Taste rule, undefined is the idiomatic absent value next to optional props.

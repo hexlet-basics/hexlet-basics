@@ -30,8 +30,8 @@ function chunk<T>(items: T[], size: number): T[][] {
     return [items];
   }
   const result: T[][] = [];
-  for (let i = 0; i < items.length; i += size) {
-    result.push(items.slice(i, i + size));
+  for (let start = 0; start < items.length; start += size) {
+    result.push(items.slice(start, start + size));
   }
   return result;
 }
