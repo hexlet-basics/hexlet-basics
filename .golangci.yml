@@ -9,9 +9,7 @@ linters:
     - exhaustruct # deprecated upstream; and every ent/ogen builder or contract struct is built partially on purpose
     - exhaustruct_v5 # same: requiring every field of a generated struct buries the fields that matter
     - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
-    - wsl # deprecated upstream (wsl_v5), and a whitespace-style linter
-    - wsl_v5 # blank-line placement is style gofmt does not own; its 2k findings would only churn diffs
-    - nlreturn # whitespace style, as wsl
+    - wsl # deprecated upstream, replaced by wsl_v5, which is on
     # Conflicts with a rule of ours or with the Go idiom.
     - depguard # needs an import policy the repo has not written; the layering rules live in architecture tests
     - exhaustive # ticket #910, blocked by two known MCP bugs

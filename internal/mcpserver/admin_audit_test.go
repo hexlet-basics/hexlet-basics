@@ -30,6 +30,7 @@ import (
 func trailReader(t *testing.T, o *testsupport.OAuth, grants ...string) (*mcp.ClientSession, oauthserver.Token) {
 	t.Helper()
 	o.Grant(editor, grants...)
+
 	return admin(t, o, adminStaff)
 }
 
@@ -37,6 +38,7 @@ func trailReader(t *testing.T, o *testsupport.OAuth, grants ...string) (*mcp.Cli
 // past so that its position in a newest-first listing is known.
 func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation string, mutate func(*audit.Entry)) int {
 	t.Helper()
+
 	entry := audit.Entry{
 		OccurredAt: time.Now().Add(-ago),
 		Source:     audit.Source{Channel: audit.ChannelWeb},
@@ -46,17 +48,22 @@ func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation 
 	if mutate != nil {
 		mutate(&entry)
 	}
+
 	require.NoError(t, audit.Write(t.Context(), o.DB, entry, nil))
+
 	return o.DB.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context()).ID
 }
 
 func itemIDs(t *testing.T, page map[string]any) []int {
 	t.Helper()
+
 	listed := page["items"].([]any)
+
 	ids := make([]int, 0, len(listed))
 	for _, item := range listed {
 		ids = append(ids, int(item.(map[string]any)["id"].(float64)))
 	}
+
 	return ids
 }
 
@@ -242,25 +249,30 @@ func TestTrailToolDeclaresTheFiltersAndARequiredLocale(t *testing.T) {
 	require.NoError(t, err)
 
 	var tool *mcp.Tool
+
 	for _, candidate := range tools.Tools {
 		if candidate.Name == "adminListAuditRecords" {
 			tool = candidate
 		}
 	}
+
 	require.NotNil(t, tool)
 	assert.True(t, tool.Annotations.ReadOnlyHint)
 
 	raw, err := json.Marshal(tool.InputSchema)
 	require.NoError(t, err)
+
 	var input struct {
 		Required   []string       `json:"required"`
 		Properties map[string]any `json:"properties"`
 	}
 	require.NoError(t, json.Unmarshal(raw, &input))
 	assert.Equal(t, []string{"locale"}, input.Required, "only the locale is required")
+
 	for _, name := range []string{"actorUserId", "channel", "operation", "entityType", "entityId", "from", "to", "page", "perPage"} {
 		assert.Contains(t, input.Properties, name)
 	}
+
 	assert.NotContains(t, input.Properties, "body")
 }
 
@@ -268,13 +280,16 @@ func TestTrailToolDeclaresTheFiltersAndARequiredLocale(t *testing.T) {
 // the answer stays valid JSON that still matches the output schema.
 func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	const limit = 6000
+
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
+
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 	for i := range 40 {
 		seedTrail(t, o, time.Duration(i+1)*time.Minute, "AdminUpdateBanner", func(e *audit.Entry) {
 			e.UserAgent = "padding-padding-padding-padding-padding-padding-padding-padding"
 		})
 	}
+
 	schemas := outputSchemas(t, session)
 
 	result := call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "perPage": 100})
@@ -300,6 +315,7 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 
 	const digest = "$2a$10$brand-new-secret-digest-value"
+
 	ctx, recorder := audit.WithRecorder(t.Context())
 	user := fixture.ID(fixture.UserWithPassword)
 	require.NoError(t, o.DB.User.UpdateOneID(user).SetPasswordDigest(digest).SetFirstName("Renamed").Exec(ctx))
@@ -318,10 +334,12 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 	require.Len(t, changes, 1)
 
 	fields := map[string]map[string]any{}
+
 	for _, f := range changes[0].(map[string]any)["fields"].([]any) {
 		field := f.(map[string]any)
 		fields[field["name"].(string)] = field
 	}
+
 	secret, ok := fields["password_digest"]
 	require.True(t, ok, "a changed secret is still listed")
 	assert.Equal(t, true, secret["secret"])

@@ -101,23 +101,29 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", "POST, OPTIONS")
 		writeRegistrationError(w, &registrationError{http.StatusMethodNotAllowed, "invalid_request", "use POST"})
+
 		return
 	}
+
 	address, _ := s.clientAddress(r.Context())
 	if ok, wait := s.limiter.allow(address); !ok {
 		w.Header().Set("Retry-After", strconv.Itoa(int(wait/time.Second)+1))
 		writeRegistrationError(w, &registrationError{
 			http.StatusTooManyRequests, "temporarily_unavailable", "too many registrations from this address, try again later",
 		})
+
 		return
 	}
+
 	reg, regErr := s.readRegistration(w, r)
 	if regErr != nil {
 		writeRegistrationError(w, regErr)
+
 		return
 	}
 
 	clientID := ident.New()
+
 	_, err := s.storage.db.OAuthClient.Create().
 		SetClientID(clientID).
 		SetName(reg.name).
@@ -126,6 +132,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		Save(r.Context())
 	if err != nil {
 		writeRegistrationError(w, &registrationError{http.StatusInternalServerError, "server_error", "could not register the client"})
+
 		return
 	}
 
@@ -133,6 +140,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 	if reg.offlineAccess {
 		granted = append(granted, oidc.ScopeOfflineAccess)
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Pragma", "no-cache")
@@ -174,6 +182,7 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 			http.StatusUnsupportedMediaType, "invalid_client_metadata", "the request must be application/json",
 		}
 	}
+
 	raw, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxRegistrationBody))
 	if err != nil {
 		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
@@ -181,17 +190,21 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 				http.StatusRequestEntityTooLarge, "invalid_client_metadata", "the request is larger than it may be",
 			}
 		}
+
 		return registration{}, metadataError("the request body could not be read")
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(raw))
+
 	var fields map[string]json.RawMessage
 	if err := dec.Decode(&fields); err != nil || fields == nil {
 		return registration{}, metadataError("the body must be a JSON object")
 	}
+
 	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
 		return registration{}, metadataError("the body must be a single JSON object")
 	}
+
 	return parseMetadata(fields)
 }
 
@@ -206,6 +219,7 @@ func parseMetadata(fields map[string]json.RawMessage, extraFields ...string) (re
 			return registration{}, metadataError("the field %q is not accepted", name)
 		}
 	}
+
 	return parseRegistration(fields)
 }
 
@@ -216,14 +230,17 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	if err != nil {
 		return reg, metadataError("redirect_uris must be an array of strings")
 	}
+
 	if len(uris) == 0 || len(uris) > maxRedirectURIs {
 		return reg, redirectError("redirect_uris must list between 1 and %d URIs", maxRedirectURIs)
 	}
+
 	for _, uri := range uris {
 		if err := checkRedirectURI(uri); err != nil {
 			return reg, redirectError("%s", err)
 		}
 	}
+
 	reg.redirectURIs = uris
 
 	if reg.name, err = clientName(fields); err != nil {
@@ -238,11 +255,13 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	if err != nil {
 		return reg, metadataError("grant_types must be an array of strings")
 	}
+
 	for _, g := range grants {
 		if g != string(oidc.GrantTypeCode) && g != string(oidc.GrantTypeRefreshToken) {
 			return reg, metadataError("the grant type %q is not supported: only authorization_code and refresh_token", g)
 		}
 	}
+
 	if len(grants) > 0 && !slices.Contains(grants, string(oidc.GrantTypeCode)) {
 		return reg, metadataError("grant_types must include authorization_code")
 	}
@@ -251,6 +270,7 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	if err != nil {
 		return reg, metadataError("response_types must be an array of strings")
 	}
+
 	for _, rt := range responses {
 		if rt != string(oidc.ResponseTypeCode) {
 			return reg, metadataError("the response type %q is not supported: only code", rt)
@@ -267,6 +287,7 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	if reg.scopes, reg.offlineAccess, err = requestedScopes(fields); err != nil {
 		return reg, metadataError("%s", err)
 	}
+
 	return reg, nil
 }
 
@@ -276,10 +297,12 @@ func stringList(fields map[string]json.RawMessage, name string) ([]string, error
 	if !ok {
 		return nil, nil
 	}
+
 	var list []string
 	if err := json.Unmarshal(raw, &list); err != nil {
 		return nil, err
 	}
+
 	return list, nil
 }
 
@@ -292,22 +315,27 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 	if !ok {
 		return defaultClientName, nil
 	}
+
 	var name string
 	if err := json.Unmarshal(raw, &name); err != nil {
 		return "", refusal("client_name must be a string")
 	}
+
 	name = strings.TrimSpace(strings.Map(func(r rune) rune {
 		if unicode.IsControl(r) {
 			return -1
 		}
+
 		return r
 	}, name))
 	if utf8.RuneCountInString(name) > maxClientNameRunes {
 		return "", refusal(fmt.Sprintf("client_name may be at most %d characters", maxClientNameRunes))
 	}
+
 	if name == "" {
 		return defaultClientName, nil
 	}
+
 	return name, nil
 }
 
@@ -320,10 +348,12 @@ func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) 
 	if !ok {
 		return slices.Clone(defaultRegistrationScopes), false, nil
 	}
+
 	var scope string
 	if json.Unmarshal(raw, &scope) != nil {
 		return nil, false, refusal("scope must be a space-separated string")
 	}
+
 	names := strings.Fields(scope)
 	if len(names) == 0 {
 		return slices.Clone(defaultRegistrationScopes), false, nil
@@ -331,7 +361,9 @@ func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) 
 	// Never nil: the column is NOT NULL, and a client that asked only for
 	// offline_access holds no custom Scope.
 	custom := []string{}
+
 	var offline bool
+
 	for _, name := range names {
 		switch {
 		case name == oidc.ScopeOfflineAccess:
@@ -345,6 +377,7 @@ func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) 
 				name, strings.Join(append(slices.Clone(customScopes), oidc.ScopeOfflineAccess), ", ")))
 		}
 	}
+
 	return custom, offline, nil
 }
 
@@ -359,20 +392,25 @@ func checkRedirectURI(raw string) error {
 	if len(raw) > maxRedirectURILen {
 		return refusal("a redirect URI is too long")
 	}
+
 	lower := strings.ToLower(raw)
 	if strings.Contains(raw, "*") || strings.Contains(lower, "%2a") {
 		return refusal(fmt.Sprintf("wildcards are not allowed in a redirect URI: %q", raw))
 	}
+
 	u, err := url.Parse(raw)
 	if err != nil || !u.IsAbs() || u.Opaque != "" || u.Host == "" || u.Hostname() == "" {
 		return refusal(fmt.Sprintf("a redirect URI must be an absolute URL: %q", raw))
 	}
+
 	if u.User != nil {
 		return refusal(fmt.Sprintf("a redirect URI must not carry credentials: %q", raw))
 	}
+
 	if u.Fragment != "" || strings.Contains(raw, "#") {
 		return refusal(fmt.Sprintf("a redirect URI must not have a fragment: %q", raw))
 	}
+
 	switch strings.ToLower(u.Scheme) {
 	case "https":
 		return nil
@@ -380,6 +418,7 @@ func checkRedirectURI(raw string) error {
 		if isLoopbackHost(u.Hostname()) {
 			return nil
 		}
+
 		return refusal(fmt.Sprintf("plain http is allowed only for a loopback redirect: %q", raw))
 	default:
 		return refusal(fmt.Sprintf("a redirect URI must use https, or http on a loopback address: %q", raw))
@@ -390,6 +429,8 @@ func isLoopbackHost(host string) bool {
 	if strings.EqualFold(host, "localhost") {
 		return true
 	}
+
 	ip := net.ParseIP(host)
+
 	return ip != nil && ip.IsLoopback()
 }

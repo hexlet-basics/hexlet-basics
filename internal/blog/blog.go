@@ -35,6 +35,7 @@ func (r *Remover) Remove(ctx context.Context, postID int) error {
 			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
 			return oops.Wrapf(err, "delete related courses of post %d", postID)
 		}
+
 		if _, err := db.BlogPostLike.Delete().
 			Where(blogpostlike.BlogPostID(postID)).Exec(ctx); err != nil {
 			return oops.Wrapf(err, "delete likes of post %d", postID)

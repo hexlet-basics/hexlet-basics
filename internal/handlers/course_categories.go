@@ -34,5 +34,6 @@ func (s *Server) AdminDeleteCourseCategory(ctx context.Context, params api.Admin
 	if err := s.db.CourseCategory.AdminDelete(ctx, params.ID); err != nil {
 		return err
 	}
+
 	return nil
 }

@@ -54,16 +54,20 @@ func (f Filter) Window(now time.Time) (time.Time, time.Time, error) {
 	if f.To != nil {
 		to = *f.To
 	}
+
 	from := to.Add(-DefaultWindow)
 	if f.From != nil {
 		from = *f.From
 	}
+
 	if !from.Before(to) {
 		return time.Time{}, time.Time{}, ErrWindowReversed
 	}
+
 	if to.Sub(from) > MaxWindow {
 		return time.Time{}, time.Time{}, ErrWindowTooWide
 	}
+
 	return from, to, nil
 }
 
@@ -79,27 +83,34 @@ func (f Filter) Query(db *ent.Client, now time.Time) (*ent.AuditRecordQuery, err
 	if f.EntityID != nil && f.EntityType == nil {
 		return nil, ErrEntityIDWithoutType
 	}
+
 	from, to, err := f.Window(now)
 	if err != nil {
 		return nil, err
 	}
+
 	q := db.AuditRecord.Query().
 		Where(auditrecord.OccurredAtGTE(from), auditrecord.OccurredAtLT(to)).
 		Order(ent.Desc(auditrecord.FieldOccurredAt), ent.Desc(auditrecord.FieldID))
 	if f.ActorUserID != nil {
 		q = q.Where(auditrecord.ActorUserID(*f.ActorUserID))
 	}
+
 	if f.Channel != nil {
 		q = q.Where(auditrecord.Channel(string(*f.Channel)))
 	}
+
 	if f.Operation != nil {
 		q = q.Where(auditrecord.Operation(*f.Operation))
 	}
+
 	if f.EntityType != nil {
 		q = q.Where(auditrecord.EntityType(*f.EntityType))
 	}
+
 	if f.EntityID != nil {
 		q = q.Where(auditrecord.EntityID(*f.EntityID))
 	}
+
 	return q, nil
 }

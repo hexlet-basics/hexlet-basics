@@ -102,22 +102,27 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	if len(text) > maxTextBytes {
 		text = strings.ToValidUTF8(text[:maxTextBytes], "")
 	}
+
 	if text == "" || cmd.Page.Limit <= 0 {
 		return []Hit{}, 0, nil
 	}
+
 	config, ok := configs[cmd.Locale]
 	if !ok {
 		config = "simple"
 	}
+
 	m := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
 
 	sources := c.sources(cmd.Types)
 	total := 0
+
 	for _, src := range sources {
 		n, err := src.count(ctx, m)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
+
 		total += n
 	}
 
@@ -125,14 +130,18 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	if cmd.Page.Offset >= window {
 		return []Hit{}, total, nil
 	}
+
 	var candidates []candidate
+
 	for _, src := range sources {
 		found, err := src.top(ctx, m, window)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
+
 		candidates = append(candidates, found...)
 	}
+
 	slices.SortStableFunc(candidates, func(a, b candidate) int {
 		return cmp.Or(
 			-cmp.Compare(a.rank, b.rank),
@@ -146,6 +155,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
+
 	return hits, total, nil
 }
 
@@ -163,12 +173,15 @@ func (c *Catalogue) sources(types []Type) []kind {
 		Lesson: lessons{c.db},
 		Post:   posts{c.db},
 	}
+
 	var out []kind
+
 	for _, t := range Types {
 		if len(types) == 0 || slices.Contains(types, t) {
 			out = append(out, kind{source: all[t], typ: t})
 		}
 	}
+
 	return out
 }
 
@@ -181,23 +194,29 @@ func withSnippets(ctx context.Context, m match, kinds []kind, candidates []candi
 	for _, cand := range candidates {
 		byType[cand.typ] = append(byType[cand.typ], cand.id)
 	}
+
 	snippets := map[Type]map[int]string{}
+
 	for _, k := range kinds {
 		if len(byType[k.typ]) == 0 {
 			continue
 		}
+
 		found, err := k.snippets(ctx, m, byType[k.typ])
 		if err != nil {
 			return nil, domain.FromStore(err)
 		}
+
 		snippets[k.typ] = found
 	}
+
 	hits := make([]Hit, len(candidates))
 	for i, cand := range candidates {
 		hit := cand.hit
 		hit.Snippet = tidy(snippets[cand.typ][cand.id])
 		hits[i] = hit
 	}
+
 	return hits, nil
 }
 
@@ -214,6 +233,7 @@ func titleOf(slug string, names ...*string) string {
 			return strings.TrimSpace(*name)
 		}
 	}
+
 	return slug
 }
 
@@ -221,10 +241,12 @@ func titleOf(slug string, names ...*string) string {
 // post is stored as HTML, and a headline can cut through a tag.
 func tidy(snippet string) string {
 	plain := strings.Join(strings.Fields(htmlText(snippet)), " ")
+
 	runes := []rune(plain)
 	if len(runes) > snippetRunes {
 		return string(runes[:snippetRunes]) + "…"
 	}
+
 	return plain
 }
 
@@ -243,6 +265,7 @@ func rankOf(value func(string) (entgo.Value, error)) (float64, error) {
 	if err != nil {
 		return 0, errs.Wrapf(err, "read search rank")
 	}
+
 	switch rank := raw.(type) {
 	case float64:
 		return rank, nil

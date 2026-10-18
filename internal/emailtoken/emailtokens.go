@@ -72,6 +72,7 @@ func New(secret string, opts ...Option) *Tokens {
 	for _, opt := range opts {
 		opt(t)
 	}
+
 	return t
 }
 
@@ -85,16 +86,19 @@ func (t *Tokens) Issue(purpose Purpose, u *ent.User) (string, error) {
 		IssuedAt:    jwt.NewNumericDate(now),
 		ExpiresAt:   jwt.NewNumericDate(now.Add(Lifetime)),
 	})
+
 	signed, err := token.SignedString(t.secret)
 	if err != nil {
 		return "", oops.Wrapf(err, "sign %s token", purpose)
 	}
+
 	return signed, nil
 }
 
 // Verify returns the User a token was issued to, or ErrInvalid.
 func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, raw string) (*ent.User, error) {
 	var parsed claims
+
 	_, err := jwt.ParseWithClaims(raw, &parsed, func(*jwt.Token) (any, error) { return t.secret, nil },
 		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
 		jwt.WithExpirationRequired(),
@@ -103,6 +107,7 @@ func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, ra
 	if err != nil || parsed.Purpose != purpose {
 		return nil, ErrInvalid
 	}
+
 	id, err := strconv.Atoi(parsed.Subject)
 	if err != nil {
 		return nil, ErrInvalid
@@ -115,12 +120,15 @@ func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, ra
 	if ent.IsNotFound(err) {
 		return nil, ErrInvalid
 	}
+
 	if err != nil {
 		return nil, oops.Wrapf(err, "load user for %s token", purpose)
 	}
+
 	if fingerprint(purpose, u) != parsed.Fingerprint {
 		return nil, ErrInvalid
 	}
+
 	return u, nil
 }
 
@@ -128,6 +136,7 @@ func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, ra
 // email and the password digest out of a token that travels through mailboxes.
 func fingerprint(purpose Purpose, u *ent.User) string {
 	var bound string
+
 	switch purpose {
 	case MagicLink:
 		if u.Email != nil {
@@ -138,6 +147,8 @@ func fingerprint(purpose Purpose, u *ent.User) string {
 			bound = *u.PasswordDigest
 		}
 	}
+
 	sum := sha256.Sum256([]byte(string(purpose) + "\x00" + bound))
+
 	return base64.RawURLEncoding.EncodeToString(sum[:])
 }

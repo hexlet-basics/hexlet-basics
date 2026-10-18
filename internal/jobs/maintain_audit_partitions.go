@@ -42,16 +42,19 @@ func (w *maintainAuditPartitionsWorker) Work(ctx context.Context, _ *river.Job[M
 	if err := w.partitions.EnsureAhead(ctx, now); err != nil {
 		return errs.Wrapf(err, "maintain audit partitions")
 	}
+
 	dropped, err := w.partitions.DropExpired(ctx, now, w.retentionMonths)
 	if err != nil {
 		return errs.Wrapf(err, "maintain audit partitions")
 	}
+
 	for _, name := range dropped {
 		w.logger.InfoContext(ctx, "dropped expired audit partition",
 			slog.String("partition", name),
 			slog.Int("retention_months", w.retentionMonths),
 		)
 	}
+
 	return nil
 }
 

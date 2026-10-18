@@ -44,9 +44,11 @@ func (r *Remover) Remove(ctx context.Context, userID int) error {
 		if err := EnsureAnotherAdmin(ctx, tx, userID); err != nil {
 			return err
 		}
+
 		if _, err := tx.UserAccount.Delete().Where(useraccount.UserID(userID)).Exec(ctx); err != nil {
 			return errs.Wrapf(err, "delete linked accounts")
 		}
+
 		err := tx.User.UpdateOneID(userID).
 			SetState(StateRemoved).
 			ClearFirstName().
@@ -60,6 +62,7 @@ func (r *Remover) Remove(ctx context.Context, userID int) error {
 		if err != nil {
 			return errs.Wrapf(err, "mark user removed")
 		}
+
 		return nil
 	})
 }

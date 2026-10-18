@@ -30,7 +30,9 @@ func run() error {
 	conn := flag.String("conn", "", "PostgreSQL connection string")
 	dir := flag.String("dir", "fixtures", "directory of fixture files")
 	anyDatabase := flag.Bool("any-database", false, `load into a database whose name does not contain "test" (the development database)`)
+
 	flag.Parse()
+
 	if *conn == "" {
 		return errConnRequired
 	}
@@ -40,5 +42,6 @@ func run() error {
 		return errs.Wrapf(err, "open database")
 	}
 	defer func() { _ = db.Close() }()
+
 	return fixture.Load(db, *dir, *anyDatabase)
 }

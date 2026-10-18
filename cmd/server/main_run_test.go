@@ -17,6 +17,7 @@ func TestMainServesUntilTheProcessIsAskedToStop(t *testing.T) {
 	serverEnv(t, addr)
 
 	returned := make(chan struct{})
+
 	go func() {
 		main()
 		close(returned)
@@ -27,11 +28,14 @@ func TestMainServesUntilTheProcessIsAskedToStop(t *testing.T) {
 		if err != nil {
 			return false
 		}
+
 		_ = res.Body.Close()
+
 		return res.StatusCode == http.StatusOK
 	}, 30*time.Second, 50*time.Millisecond, "the process answers requests")
 
 	require.NoError(t, syscall.Kill(syscall.Getpid(), syscall.SIGTERM))
+
 	select {
 	case <-returned:
 	case <-time.After(30 * time.Second):

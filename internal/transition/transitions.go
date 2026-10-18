@@ -75,6 +75,7 @@ func IsIllegal(err error) (*IllegalError, bool) {
 	if illegal, ok := errors.AsType[*IllegalError](err); ok {
 		return illegal, true
 	}
+
 	return nil, false
 }
 
@@ -83,9 +84,11 @@ func (t Transition[S]) Check(current S) error {
 	if slices.Contains(t.From, current) {
 		return nil
 	}
+
 	illegal := &IllegalError{From: State(current), To: State(t.To)}
 	if named, ok := any(current).(Named); ok {
 		illegal.Vocabulary = named.Vocabulary()
 	}
+
 	return illegal
 }

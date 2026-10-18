@@ -25,10 +25,12 @@ type connectedApp struct {
 // listApps calls the contract operation as a signed-in browser.
 func listApps(t *testing.T, o *testsupport.OAuth, userID int) []connectedApp {
 	t.Helper()
+
 	res := o.Do(http.MethodGet, "/api/oauth/connected_apps", nil, func(r *http.Request) {
 		r.AddCookie(testsupport.SessionFor(t, o.DB, userID).Cookie)
 	})
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	return decodeJSON[struct {
 		Items []connectedApp `json:"items"`
 	}](t, res).Items
@@ -40,8 +42,10 @@ func listApps(t *testing.T, o *testsupport.OAuth, userID int) []connectedApp {
 func revokeApp(t *testing.T, o *testsupport.OAuth, userID, appID int, sameSite bool) *http.Response {
 	t.Helper()
 	s := testsupport.SessionFor(t, o.DB, userID)
+
 	return o.Do(http.MethodDelete, "/api/oauth/connected_apps/"+strconv.Itoa(appID), nil, func(r *http.Request) {
 		r.AddCookie(s.Cookie)
+
 		if !sameSite {
 			r.Header.Set("Sec-Fetch-Site", "cross-site")
 		}
@@ -101,6 +105,7 @@ func TestRevokingAnAppEndsItsAccessAndRefreshTokensAtOnce(t *testing.T) {
 	// family: the revoke ends all of it.
 	second, res := o.Refresh(testsupport.OAuthClientID, first.RefreshToken)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	otherFamily := o.Connect(alice, oauthserver.ScopeCatalogRead)
 	require.True(t, o.Accepts(second.AccessToken))
 	require.True(t, o.Accepts(otherFamily.AccessToken))
@@ -112,10 +117,12 @@ func TestRevokingAnAppEndsItsAccessAndRefreshTokensAtOnce(t *testing.T) {
 
 	assert.False(t, o.Accepts(second.AccessToken), "the token that worked a moment ago is refused")
 	assert.False(t, o.Accepts(otherFamily.AccessToken))
+
 	for _, refresh := range []string{second.RefreshToken, first.RefreshToken, otherFamily.RefreshToken} {
 		_, res = o.Refresh(testsupport.OAuthClientID, refresh)
 		assert.Equal(t, http.StatusBadRequest, res.StatusCode, "no refresh token survives, used ones included")
 	}
+
 	assert.Empty(t, listApps(t, o, alice))
 }
 
@@ -127,12 +134,15 @@ func TestRevokingAnAppLeavesOtherUsersAndOtherAppsAlone(t *testing.T) {
 
 	apps := listApps(t, o, alice)
 	require.Len(t, apps, 2)
+
 	var target connectedApp
+
 	for _, a := range apps {
 		if a.Name == "Test MCP client" {
 			target = a
 		}
 	}
+
 	require.NotZero(t, target.ID)
 	require.Equal(t, http.StatusNoContent, revokeApp(t, o, alice, target.ID, true).StatusCode)
 
@@ -178,10 +188,12 @@ func TestAnAppUnusedForThirtyDaysLapsesAndOneRefreshedStaysConnected(t *testing.
 	// Every few days the active app refreshes; the idle one does nothing, not
 	// even a refresh (an MCP call with a live access token is not a use).
 	refresh := active.RefreshToken
+
 	for range 7 {
 		o.Advance(5 * 24 * time.Hour)
 		tokens, res := o.Refresh(otherClientID, refresh)
 		require.Equal(t, http.StatusOK, res.StatusCode)
+
 		refresh = tokens.RefreshToken
 	}
 
@@ -209,6 +221,7 @@ func TestAnAppListedJustBeforeTheThirtiethDayIsGoneJustAfter(t *testing.T) {
 // one user apart. It returns the tokens and the new client_id.
 func connectOtherClient(t *testing.T, o *testsupport.OAuth, userID int) (testsupport.Tokens, string) {
 	t.Helper()
+
 	res := o.Register(map[string]any{
 		"client_name":   "Other",
 		"redirect_uris": []string{"https://other.example.com/callback"},
@@ -221,5 +234,6 @@ func connectOtherClient(t *testing.T, o *testsupport.OAuth, userID int) (testsup
 	})
 	tokens, exchange := f.Exchange(f.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)
+
 	return tokens, got.ClientID
 }

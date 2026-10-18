@@ -63,12 +63,14 @@ func accessOperations() []struct {
 func TestTheContractDeclaresMCPManageForTheAccessOperations(t *testing.T) {
 	declared := permissioncatalog.RequiredCapabilityOperations()
 	assert.Len(t, declared, 22)
+
 	for _, name := range declared {
 		assert.Contains(t, permissioncatalog.MCPCapabilities(name), "mcp.manage", name)
 		requirement, ok := permissioncatalog.For(name)
 		require.True(t, ok, name)
 		assert.Regexp(t, `^(users|staff_members|staff_roles)\.`, requirement.Permission, name)
 	}
+
 	assert.Equal(t, []string{"mcp.read"}, permissioncatalog.MCPCapabilities("AdminListBanners"))
 	assert.Equal(t, []string{"mcp.write", "mcp.manage"}, permissioncatalog.MCPCapabilities("AdminDeleteUser"))
 	assert.Equal(t, []string{"mcp.read", "mcp.manage"}, permissioncatalog.MCPCapabilities("AdminGetRolePermissions"))
@@ -76,6 +78,7 @@ func TestTheContractDeclaresMCPManageForTheAccessOperations(t *testing.T) {
 
 func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
+
 	for _, c := range accessOperations() {
 		t.Run(c.class, func(t *testing.T) {
 			o := newOAuthWithRates(t, rates)
@@ -86,6 +89,7 @@ func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 			refused := call(t, session, c.tool, c.args)
 
 			assertRefused(t, refused)
+
 			records := o.Records(ogenName(c.tool))
 			require.Len(t, records, 1)
 			assert.Equal(t, "forbidden", records[0].Outcome)
@@ -93,6 +97,7 @@ func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 			assert.Equal(t, token.ID, *records[0].TokenID)
 
 			o.Grant(editor, "mcp.manage")
+
 			allowed := call(t, session, c.tool, c.args)
 			assert.False(t, allowed.IsError, "%+v", allowed.Content)
 		})
@@ -101,6 +106,7 @@ func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 
 func TestAnAdministratorWithoutAnExplicitMCPManageGrantIsRefused(t *testing.T) {
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
+
 	for _, c := range accessOperations() {
 		t.Run(c.class, func(t *testing.T) {
 			o := newOAuthWithRates(t, rates)
@@ -108,6 +114,7 @@ func TestAnAdministratorWithoutAnExplicitMCPManageGrantIsRefused(t *testing.T) {
 			// holds the MCP capabilities of the kind but not mcp.manage.
 			o.Grant(editor, "mcp.read", "mcp.write")
 			session, _ := admin(t, o, adminStaff)
+
 			args := c.args
 			if c.tool == "adminUpdateStaffMember" {
 				// Not the caller's own record: that is refused by self-protection.
@@ -118,6 +125,7 @@ func TestAnAdministratorWithoutAnExplicitMCPManageGrantIsRefused(t *testing.T) {
 			assertRefused(t, call(t, session, c.tool, args))
 
 			o.Grant(editor, "mcp.manage")
+
 			allowed := call(t, session, c.tool, args)
 			assert.False(t, allowed.IsError, "%+v", allowed.Content)
 		})
@@ -143,24 +151,29 @@ func TestToolsAnnounceWhatTheyDo(t *testing.T) {
 	for _, tool := range mcpserver.AdminToolsFromTheContract(t) {
 		byName[tool.Name] = tool
 	}
+
 	for _, name := range []string{"adminDeleteBanner", "adminDeleteUser", "adminDeleteStaffMember", "adminDeleteRole", "adminDeleteReview"} {
 		require.Contains(t, byName, name)
 		require.NotNil(t, byName[name].Annotations.DestructiveHint, name)
 		assert.True(t, *byName[name].Annotations.DestructiveHint, name)
 		assert.False(t, byName[name].Annotations.ReadOnlyHint, name)
 	}
+
 	for name, tool := range byName {
 		switch {
 		case permissioncatalog.IsAdminWrite(ogenName(name)):
 			assert.False(t, tool.Annotations.ReadOnlyHint, name)
+
 			if tool.Annotations.DestructiveHint != nil && *tool.Annotations.DestructiveHint {
 				assert.Contains(t, name, "Delete", "only a delete is destructive: archive and unpublish keep the record")
 			}
 		default:
 			assert.True(t, tool.Annotations.ReadOnlyHint, name)
 		}
+
 		assert.NotEmpty(t, tool.Description, name)
 	}
+
 	assert.False(t, *byName["adminArchiveBanner"].Annotations.DestructiveHint)
 	assert.True(t, byName["adminUpdateBanner"].Annotations.IdempotentHint)
 }
@@ -169,6 +182,7 @@ func TestToolsAnnounceWhatTheyDo(t *testing.T) {
 // the checkpoint refuses is not stopped by the rate limit first.
 func newOAuthWithRates(t *testing.T, rates mcpserver.Rates) *testsupport.OAuth {
 	t.Helper()
+
 	return testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
 }
 
@@ -206,6 +220,7 @@ func TestSelfProtectionHoldsOverMCP(t *testing.T) {
 
 		member := o.DB.StaffMember.GetX(t.Context(), bobSeat)
 		assert.Equal(t, editor, member.RoleID, "the role is unchanged")
+
 		records := o.Records("AdminUpdateStaffMember")
 		require.Len(t, records, 1)
 		assert.Equal(t, "failed", records[0].Outcome)

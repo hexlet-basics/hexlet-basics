@@ -29,5 +29,6 @@ func (s *Scheduler) Suggest(ctx context.Context, postID int) error {
 	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).Only(ctx); err != nil {
 		return domain.FromStore(err)
 	}
+
 	return s.jobs.Enqueue(ctx, jobs.SuggestRelatedCoursesArgs{BlogPostID: postID})
 }

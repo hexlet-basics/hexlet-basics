@@ -21,6 +21,7 @@ func (s *Server) SearchCatalogue(ctx context.Context, params api.SearchCatalogue
 	if params.Type.IsSet() {
 		types = []search.Type{search.Type(params.Type.Value)}
 	}
+
 	locale := s.i18n.Locale(ctx)
 
 	return listFrom(ctx, params.Page, params.PerPage,
@@ -34,6 +35,7 @@ func (s *Server) SearchCatalogue(ctx context.Context, params api.SearchCatalogue
 					Type: api.SearchResultType(hit.Type), ID: hit.ID, Title: hit.Title, Snippet: hit.Snippet, Path: hit.Path,
 				}
 			}
+
 			return results
 		},
 		func(items []api.SearchResult, total, page, perPage int32) *api.SearchResultPage {
@@ -53,6 +55,7 @@ func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) 
 	if params.Type.IsSet() {
 		types = []search.Type{search.Type(params.Type.Value)}
 	}
+
 	locale := s.i18n.Locale(ctx)
 
 	page, err := listFrom(ctx, params.Page, params.PerPage,
@@ -67,6 +70,7 @@ func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) 
 					State: hit.State, Readiness: hit.Readiness,
 				}
 			}
+
 			return results
 		},
 		func(items []api.AdminSearchResult, total, page, perPage int32) *api.AdminSearchResultPage {
@@ -76,6 +80,7 @@ func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) 
 	if err != nil {
 		return nil, err
 	}
+
 	return page, nil
 }
 
@@ -87,13 +92,16 @@ func (s *Server) AdminFetch(ctx context.Context, params api.AdminFetchParams) (*
 	if err != nil {
 		return nil, domain.ErrNotFound
 	}
+
 	rec, err := s.searcher.Fetch(ctx, search.FetchRecord{Ref: ref, Locale: s.i18n.Locale(ctx)})
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil, err
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	meta := api.AdminRecordMetadata{
 		Type: api.SearchResultType(rec.Type), Slug: rec.Slug, State: rec.State, Readiness: rec.Readiness,
 		CourseSlug: optString(rec.CourseSlug), BuildState: optString(rec.Build),
@@ -101,9 +109,11 @@ func (s *Server) AdminFetch(ctx context.Context, params api.AdminFetchParams) (*
 	if rec.Listed != nil {
 		meta.Listed = api.NewOptBool(*rec.Listed)
 	}
+
 	if rec.Position != nil {
 		meta.Position = api.NewOptInt32(apiconv.Int32FromInt(*rec.Position))
 	}
+
 	return &api.AdminRecord{ID: rec.ID, Title: rec.Title, Text: rec.Text, Path: rec.Path, Metadata: meta}, nil
 }
 
@@ -112,5 +122,6 @@ func optString(value string) api.OptString {
 	if value == "" {
 		return api.OptString{}
 	}
+
 	return api.NewOptString(value)
 }

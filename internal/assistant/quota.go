@@ -50,6 +50,7 @@ const day = 24 * time.Hour
 // Greenwich would land on yesterday.
 func (q *Quota) Exhausted(ctx context.Context, userID int) (bool, error) {
 	dayStart := q.now().UTC().Truncate(day)
+
 	asked, err := q.db.AiMessage.Query().
 		Where(
 			aimessage.UserID(userID),
@@ -60,5 +61,6 @@ func (q *Quota) Exhausted(ctx context.Context, userID int) (bool, error) {
 	if err != nil {
 		return false, oops.Wrapf(err, "count today's assistant questions")
 	}
+
 	return asked >= DailyQuota, nil
 }

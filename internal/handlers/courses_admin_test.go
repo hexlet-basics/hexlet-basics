@@ -138,15 +138,18 @@ func TestAdminListCourseOptionsIsNotPaginated(t *testing.T) {
 	res, err := h.Client.AdminListCourseOptions(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
+
 	options := res
 	assert.Len(t, options, totalCourses)
 
 	var ruby *api.CourseOption
+
 	for i := range options {
 		if options[i].ID == int32(courseRubyIDA) {
 			ruby = &options[i]
 		}
 	}
+
 	require.NotNil(t, ruby, "ruby is among the options")
 	assert.NotEmpty(t, ruby.Name)
 }

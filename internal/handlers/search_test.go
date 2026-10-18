@@ -16,6 +16,7 @@ func searchIDs(page *api.SearchResultPage) []string {
 	for i, item := range page.Items {
 		ids[i] = item.ID
 	}
+
 	return ids
 }
 
@@ -52,6 +53,7 @@ func TestSearchCatalogueNarrowsToOneType(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NotEmpty(t, page.Items)
+
 	for _, item := range page.Items {
 		assert.Equal(t, api.SearchResultTypeLesson, item.Type)
 	}

@@ -42,6 +42,7 @@ func WithAmbientTx(ctx context.Context, tx *sql.Tx, client *ent.Client) context.
 
 func ambientFrom(ctx context.Context) (*ambient, bool) {
 	a, ok := ctx.Value(ambientKey{}).(*ambient)
+
 	return a, ok
 }
 
@@ -55,6 +56,7 @@ func (d routingDriver) Exec(ctx context.Context, query string, args, v any) erro
 	if a, ok := ambientFrom(ctx); ok {
 		return a.driver.Exec(ctx, query, args, v)
 	}
+
 	return d.Driver.Exec(ctx, query, args, v)
 }
 
@@ -62,6 +64,7 @@ func (d routingDriver) Query(ctx context.Context, query string, args, v any) err
 	if a, ok := ambientFrom(ctx); ok {
 		return a.driver.Query(ctx, query, args, v)
 	}
+
 	return d.Driver.Query(ctx, query, args, v)
 }
 
@@ -71,5 +74,6 @@ func (d routingDriver) Tx(ctx context.Context) (dialect.Tx, error) {
 	if a, ok := ambientFrom(ctx); ok {
 		return a.driver.Tx(ctx)
 	}
+
 	return d.Driver.Tx(ctx)
 }

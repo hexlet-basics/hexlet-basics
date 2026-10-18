@@ -50,6 +50,7 @@ func (c searchCase) args(q string) map[string]any {
 	if q != "" {
 		args["q"] = q
 	}
+
 	return args
 }
 
@@ -57,13 +58,16 @@ func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The list a caller gets holds the tools it may call, so it holds them all.
 	o.Grant(editor, "mcp.read", "mcp.manage")
+
 	for _, c := range searchCases {
 		o.Grant(editor, c.permission)
 	}
+
 	session, _ := admin(t, o, bob)
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	byName := map[string]*mcp.Tool{}
 	for _, tool := range tools.Tools {
 		byName[tool.Name] = tool
@@ -74,6 +78,7 @@ func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 		require.True(t, ok, c.tool)
 		raw, err := json.Marshal(tool.InputSchema)
 		require.NoError(t, err)
+
 		var schema struct {
 			Properties map[string]struct {
 				Type        string `json:"type"`
@@ -102,11 +107,13 @@ func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
 
 			items := found["items"].([]any)
 			require.NotEmpty(t, items)
+
 			for _, item := range items {
 				raw, err := json.Marshal(item)
 				require.NoError(t, err)
 				assert.Contains(t, strings.ToLower(string(raw)), strings.ToLower(c.q))
 			}
+
 			assert.Less(t, found["total"], everything["total"], "the total follows the filter")
 		})
 	}
@@ -139,6 +146,7 @@ func TestASearchOverPersonalDataIsRecordedAsAReadOfTheRowsItAnswered(t *testing.
 	require.Len(t, records, 1)
 	assert.Equal(t, "mcp", records[0].Channel)
 	assert.Equal(t, "Lead", *records[0].EntityType)
+
 	var reads struct {
 		Count int      `json:"count"`
 		IDs   []string `json:"ids"`

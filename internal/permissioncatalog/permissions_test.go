@@ -14,6 +14,7 @@ import (
 
 func TestAnOperationReportsTheDeclaredPermissionAndKind(t *testing.T) {
 	t.Parallel()
+
 	read, ok := permissioncatalog.For("AdminListBlogPosts")
 	require.True(t, ok)
 	assert.Equal(t, permissioncatalog.Requirement{Permission: "blog_posts.read", Kind: permissioncatalog.Read}, read)
@@ -28,6 +29,7 @@ func TestAnOperationReportsTheDeclaredPermissionAndKind(t *testing.T) {
 // legacy resource names replaced by the domain terms.
 func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) {
 	t.Parallel()
+
 	for permission, operations := range map[string][]string{
 		"banners.read":                {"AdminListBanners", "AdminGetBanner"},
 		"banners.create":              {"AdminCreateBanner"},
@@ -60,6 +62,7 @@ func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) 
 		if strings.HasSuffix(permission, ".read") {
 			wantKind = permissioncatalog.Read
 		}
+
 		for _, operation := range operations {
 			got, ok := permissioncatalog.For(operation)
 			require.True(t, ok, operation)
@@ -72,6 +75,7 @@ func TestEachRetiredMatrixBitBecameAPermissionOfTheSameOperations(t *testing.T) 
 // hold, named with the GLOSSARY terms.
 func TestFormerAdministratorsOnlyOperationsDeclarePermissions(t *testing.T) {
 	t.Parallel()
+
 	for permission, operations := range map[string][]string{
 		"users.read":                           {"AdminListUsers", "AdminSearchUsers", "AdminGetUser", "AdminListManagementUsers", "AdminGetManagementUser"},
 		"users.create":                         {"AdminCreateUser"},
@@ -99,6 +103,7 @@ func TestFormerAdministratorsOnlyOperationsDeclarePermissions(t *testing.T) {
 		if strings.HasSuffix(permission, ".read") {
 			wantKind = permissioncatalog.Read
 		}
+
 		for _, operation := range operations {
 			got, ok := permissioncatalog.For(operation)
 			require.True(t, ok, operation)
@@ -110,6 +115,7 @@ func TestFormerAdministratorsOnlyOperationsDeclarePermissions(t *testing.T) {
 
 func TestAnOperationWithoutADeclarationHasNoRequirement(t *testing.T) {
 	t.Parallel()
+
 	_, ok := permissioncatalog.For("AdminInventedOperation")
 	assert.False(t, ok)
 }
@@ -125,16 +131,19 @@ func TestTheCatalogHoldsTheCapabilityPermissions(t *testing.T) {
 		{Name: "mcp.manage", Kind: permissioncatalog.Write, Capability: true},
 		{Name: "audit.read", Kind: permissioncatalog.Read, Capability: true},
 	})
+
 	for _, name := range []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"} {
 		assert.True(t, permissioncatalog.IsCapability(name), name)
 		assert.True(t, permissioncatalog.Known(name), name)
 	}
+
 	assert.False(t, permissioncatalog.IsCapability("blog_posts.read"))
 	assert.False(t, permissioncatalog.IsCapability("mcp.invented"))
 }
 
 func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
 	t.Parallel()
+
 	catalog := permissioncatalog.Catalog()
 
 	names := lo.Map(catalog, func(p permissioncatalog.Permission, _ int) string { return p.Name })
@@ -170,6 +179,7 @@ func TestKnownTellsCatalogNamesFromInventedOnes(t *testing.T) {
 
 func TestMalformedDeclarationsAreRejected(t *testing.T) {
 	t.Parallel()
+
 	for name, doc := range map[string]string{
 		"not yaml": "paths: [",
 		"unknown kind": `

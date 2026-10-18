@@ -43,11 +43,13 @@ func newRig(t *testing.T) *rig {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 	tracker := progress.New(db, transactor, services.Events, testsupport.NewMocks().Runner)
+
 	return &rig{db: db, pages: coursepage.New(db, landingpage.NewCatalog(db), tracker, repoBase)}
 }
 
 func (r *rig) learner(t *testing.T) progress.Learner {
 	t.Helper()
+
 	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(fixture.UserAdminLearner)).ID}
 }
 

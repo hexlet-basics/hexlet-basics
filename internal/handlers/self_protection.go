@@ -33,5 +33,6 @@ func isAdministrator(u *ent.User) bool {
 // user the operation acts as.
 func actorOfRequest(ctx context.Context) selfprotection.Actor {
 	user := actorOf(ctx)
+
 	return selfprotection.Actor{ID: user.ID, Administrator: isAdministrator(user)}
 }

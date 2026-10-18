@@ -20,9 +20,11 @@ import (
 
 func auditPartitionExists(t *testing.T, tx *sql.Tx, name string) bool {
 	t.Helper()
+
 	var exists bool
 	require.NoError(t, tx.QueryRowContext(t.Context(),
 		"SELECT to_regclass($1) IS NOT NULL", name).Scan(&exists))
+
 	return exists
 }
 

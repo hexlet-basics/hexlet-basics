@@ -26,7 +26,9 @@ var alice = fixture.ID(fixture.UserAdminLearner)
 
 func decode(t *testing.T, res *http.Response, into any) {
 	t.Helper()
+
 	defer func() { _ = res.Body.Close() }()
+
 	require.NoError(t, json.NewDecoder(res.Body).Decode(into))
 }
 
@@ -89,6 +91,7 @@ func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 		Scopes       []string `json:"scopes"`
 		AccountName  string   `json:"accountName"`
 	}
+
 	session := testsupport.SessionFor(t, o.DB, alice)
 	res := o.Do(http.MethodGet, "/api/oauth/consents/"+flow.RequestID, nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 	require.Equal(t, http.StatusOK, res.StatusCode)
@@ -135,6 +138,7 @@ func TestDenyingTheConsentReturnsAccessDeniedToTheClient(t *testing.T) {
 
 	res := flow.Decide(false)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var decision struct {
 		RedirectURL string `json:"redirectUrl"`
 	}
@@ -206,6 +210,7 @@ func TestAuthorizationWithoutPKCES256IsRefused(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
 			o.SeedClient(oauthserver.ScopeCatalogRead)
+
 			query := url.Values{
 				"client_id":     {testsupport.OAuthClientID},
 				"redirect_uri":  {testsupport.OAuthRedirectURI},
@@ -276,6 +281,7 @@ func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 	assert.Zero(t, count)
 	stored, err := o.DB.OAuthRefreshToken.Query().Only(t.Context())
 	require.NoError(t, err)
+
 	res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 		"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {stored.TokenHash},
 	})
@@ -320,10 +326,12 @@ func TestRefreshExchangesTheTokenForANewPair(t *testing.T) {
 		res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 			"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {token},
 		})
+
 		var tokens testsupport.Tokens
 		if res.StatusCode == http.StatusOK {
 			decode(t, res, &tokens)
 		}
+
 		return tokens, res.StatusCode
 	}
 

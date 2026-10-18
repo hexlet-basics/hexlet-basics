@@ -16,6 +16,7 @@ import (
 // empty page, not an error, as legacy's `with_locale` scope gave it.
 func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.Review, int, error) {
 			return s.reviewDirectory.Public(ctx, locale, page)
@@ -55,6 +56,7 @@ func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteRe
 	if err := s.db.Review.AdminDelete(ctx, params.ID); err != nil {
 		return err
 	}
+
 	return nil
 }
 

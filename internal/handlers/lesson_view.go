@@ -26,15 +26,18 @@ func (s *Server) GetCourseLesson(
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil, errLessonNotFound
 	}
+
 	if err != nil {
 		return nil, err
 	}
 
 	lessons := s.conv.ToLearnerLessons(apiconv.LearnerLessonSources(page.Infos, page.State))
+
 	landing := api.NilCourseLandingPage{Null: true}
 	if page.Landing != nil {
 		landing = api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page.Landing))
 	}
+
 	return &api.CourseLessonView{
 		Lesson: s.conv.ToCourseLesson(apiconv.LessonContent{
 			Course:        page.Course,

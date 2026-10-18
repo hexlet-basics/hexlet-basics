@@ -39,15 +39,19 @@ func main() {
 	if len(os.Args) > 1 {
 		dir = os.Args[1]
 	}
+
 	if err := os.MkdirAll(dir, dirMode); err != nil { //nolint:gosec // G301: a developer script writing public sample covers into the local storage dir
 		log.Fatal(err)
 	}
+
 	for key, c := range covers {
 		data := gradient(c[0], c[1])
 		if err := os.WriteFile(filepath.Join(dir, key), data, fileMode); err != nil { //nolint:gosec // G306: public sample cover, served as a static file
 			log.Fatal(err)
 		}
+
 		sum := md5.Sum(data) //nolint:gosec // see import
+
 		attrs, err := json.Marshal(map[string]any{
 			"user.cache_control": "", "user.content_disposition": "", "user.content_encoding": "",
 			"user.content_language": "", "user.content_type": "image/png", "user.metadata": nil,
@@ -56,6 +60,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		if err := os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, fileMode); err != nil { //nolint:gosec // G306: attrs of a public sample cover
 			log.Fatal(err)
 		}
@@ -71,9 +76,11 @@ func gradient(from, to color.RGBA) []byte {
 			img.SetRGBA(x, y, color.RGBA{mix(from.R, to.R), mix(from.G, to.G), mix(from.B, to.B), 255})
 		}
 	}
+
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, img); err != nil {
 		log.Fatal(err)
 	}
+
 	return buf.Bytes()
 }

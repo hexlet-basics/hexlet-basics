@@ -44,6 +44,7 @@ func (p *Progress) ReevaluateCompletion(
 	if err != nil {
 		return err
 	}
+
 	if len(lessons) == 0 {
 		// A Version with no Lessons completes nobody; the alternative reading —
 		// everybody has finished all zero of them — is the worse one.
@@ -56,6 +57,7 @@ func (p *Progress) ReevaluateCompletion(
 	if err != nil {
 		return err
 	}
+
 	if len(completed) == 0 {
 		return nil
 	}
@@ -86,6 +88,7 @@ func (p *Progress) ReevaluateCompletion(
 			return errs.Wrapf(err, "publish course finished")
 		}
 	}
+
 	return nil
 }
 
@@ -117,6 +120,7 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		UserID  int `json:"user_id"`
 		Lessons int `json:"lessons"`
 	}
+
 	var finishedPerLearner []finishedPerLearnerRow
 	if err := db.LessonProgress.Query().
 		Where(
@@ -175,5 +179,6 @@ func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int
 	for _, row := range rows {
 		counts[row.UserID] = row.Count
 	}
+
 	return counts, nil
 }

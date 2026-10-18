@@ -87,6 +87,7 @@ const emptySurveyAnswers = "[]"
 // amoCRM note would have read by symbol), and the admin list shows them as is.
 func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead, error) {
 	var created *ent.Lead
+
 	err := r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		u, err := db.User.Get(ctx, submission.UserID)
 		if err != nil {
@@ -114,6 +115,7 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			// The contract's enum rejects anything else before it gets here.
 			return errs.With("contact_method", submission.ContactMethod).Errorf("unknown contact method")
 		}
+
 		created, err = create.Save(ctx)
 		if err != nil {
 			return errs.Wrapf(err, "create lead")
@@ -147,11 +149,13 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 		}); err != nil {
 			return errs.Wrapf(err, "publish lead created")
 		}
+
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return created, nil
 }
 
@@ -170,6 +174,7 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 	if ent.IsNotFound(err) {
 		return nil
 	}
+
 	if err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "load lead tag")
 	}
@@ -185,12 +190,15 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 	if err != nil {
 		return errs.With("tag", shouldBeLeadTag, "user_id", userID).Wrapf(err, "remove lead tag from user")
 	}
+
 	if removed == 0 {
 		return nil
 	}
+
 	if err := db.Tag.UpdateOneID(t.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "count lead taggings")
 	}
+
 	return nil
 }
 
@@ -221,15 +229,18 @@ func coursesData(ctx context.Context, db *ent.Client, userID int) (string, error
 		if e.Edges.Course != nil {
 			slug = e.Edges.Course.Slug
 		}
+
 		return courseData{
 			Slug:                 slug,
 			LessonsFinishedCount: len(e.Edges.LessonProgress),
 		}
 	})
+
 	encoded, err := json.Marshal(data)
 	if err != nil {
 		return "", errs.Wrapf(err, "encode courses data")
 	}
+
 	return string(encoded), nil
 }
 
@@ -239,9 +250,11 @@ func userName(u *ent.User) string {
 	if lo.FromPtr(u.FirstName) != "" || lo.FromPtr(u.LastName) != "" {
 		return lo.FromPtr(u.FirstName) + " " + lo.FromPtr(u.LastName)
 	}
+
 	if email := lo.FromPtr(u.Email); email != "" {
 		return email
 	}
+
 	return fmt.Sprintf("User #%d", u.ID)
 }
 
@@ -268,5 +281,6 @@ func (d *Directory) List(ctx context.Context, search string, page domain.Page) (
 			lead.TelegramContainsFold(term),
 		))
 	}
+
 	return domain.Paged(ctx, query, page)
 }

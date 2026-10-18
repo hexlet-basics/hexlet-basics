@@ -47,6 +47,7 @@ func (s *Server) AdminDeleteRole(ctx context.Context, params api.AdminDeleteRole
 	if err := s.db.StaffRole.AdminDelete(ctx, params.ID); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -70,11 +71,14 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		if errors.Is(err, permission.ErrUnknownPermission) {
 			return nil, invalidText("grants", strings.Join(permission.UnknownNames(err), ", "))
 		}
+
 		return nil, err
 	}
+
 	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
 		return nil, err
 	}
+
 	return s.roleDetail(ctx, roleID)
 }
 
@@ -85,6 +89,7 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 // Permission appears here exactly when some operation requires it.
 func (s *Server) AdminListPermissions(context.Context) (*api.PermissionCatalog, error) {
 	catalog := permissioncatalog.Catalog()
+
 	return &api.PermissionCatalog{Permissions: lo.Map(catalog, func(p permissioncatalog.Permission, _ int) api.Permission {
 		return api.Permission{Name: p.Name, Kind: api.PermissionKind(p.Kind), Capability: p.Capability}
 	})}, nil

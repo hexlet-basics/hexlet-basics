@@ -99,18 +99,21 @@ func URL(origin, key string) string {
 // the key, so callers never need to coordinate partial storage state.
 func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 	src := bufio.NewReader(input.Body)
+
 	header, err := src.Peek(sniffBytes)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return Attachment{}, errs.With("filename", input.Filename).Wrapf(err, "inspect asset")
 	}
 
 	contentType := http.DetectContentType(header)
+
 	extension, ok := extensionsByContentType[contentType]
 	if !ok {
 		return Attachment{}, errs.With("content_type", contentType).Wrapf(ErrUnsupportedMediaType, "reject asset")
 	}
 
 	key := ident.New() + extension
+
 	writer, err := s.bucket.NewWriter(ctx, key, &blob.WriterOptions{ContentType: contentType})
 	if err != nil {
 		return Attachment{}, errs.With("key", key).Wrapf(err, "open blob writer")
@@ -118,11 +121,14 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	limited := &io.LimitedReader{R: src, N: MaxUploadBytes + 1}
 	written, copyErr := io.Copy(writer, limited)
+
 	closeErr := writer.Close()
 	if copyErr != nil || closeErr != nil {
 		cause := errors.Join(copyErr, closeErr)
+
 		return Attachment{}, s.compensate(ctx, key, errs.With("key", key).Wrapf(cause, "write blob"))
 	}
+
 	if written > MaxUploadBytes {
 		return Attachment{}, s.compensate(ctx, key, ErrTooLarge)
 	}
@@ -154,8 +160,10 @@ func (s *Store) Open(ctx context.Context, key string) (*Reader, error) {
 		if gcerrors.Code(err) == gcerrors.NotFound {
 			return nil, errs.With("key", key).Wrapf(ErrNotFound, "open asset")
 		}
+
 		return nil, errs.With("key", key).Wrapf(err, "open asset")
 	}
+
 	return &Reader{
 		ReadSeekCloser: reader,
 		ContentType:    reader.ContentType(),
@@ -189,15 +197,18 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 				input.ResponseContentType = aws.String(delivery.ContentType)
 				input.ResponseContentDisposition = aws.String(delivery.ContentDisposition)
 			}
+
 			return nil
 		},
 	})
 	if gcerrors.Code(err) == gcerrors.Unimplemented {
 		return URL(s.publicURL, key), nil
 	}
+
 	if err != nil {
 		return "", errs.With("key", key).Wrapf(err, "sign download url")
 	}
+
 	return signed, nil
 }
 
@@ -215,5 +226,6 @@ func (s *Store) compensate(ctx context.Context, key string, cause error) error {
 	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {
 		return errors.Join(cause, errs.With("key", key).Wrapf(err, "delete partial blob"))
 	}
+
 	return cause
 }

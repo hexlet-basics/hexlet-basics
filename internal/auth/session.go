@@ -98,10 +98,12 @@ func New(db *ent.Client, opts ...Option) *Authenticator {
 	sm.Cookie.Secure = cfg.secure
 	sm.Cookie.HttpOnly = true
 	sm.Cookie.SameSite = http.SameSiteLaxMode
+
 	sm.Cookie.Persist = true
 	if cfg.onErr != nil {
 		sm.ErrorFunc = cfg.onErr
 	}
+
 	return &Authenticator{sessions: sm, db: db, store: st, clock: cfg.clock}
 }
 
@@ -122,7 +124,9 @@ func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
 	if err := m.sessions.RenewToken(ctx); err != nil {
 		return errs.Wrapf(err, "renew session token")
 	}
+
 	m.remember(ctx, u)
+
 	return nil
 }
 
@@ -134,11 +138,14 @@ func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) 
 	if err != nil {
 		return "", errs.Wrapf(err, "load session")
 	}
+
 	m.remember(ctx, u)
+
 	token, _, err := m.sessions.Commit(ctx)
 	if err != nil {
 		return "", errs.Wrapf(err, "commit session")
 	}
+
 	return token, nil
 }
 
@@ -147,6 +154,7 @@ func (m *Authenticator) End(ctx context.Context) error {
 	if err := m.sessions.Destroy(ctx); err != nil {
 		return errs.Wrapf(err, "destroy session")
 	}
+
 	return nil
 }
 
@@ -165,21 +173,26 @@ func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 	if ent.IsNotFound(err) {
 		return nil, m.endStale(ctx)
 	}
+
 	if err != nil {
 		return nil, errs.Wrapf(err, "load session user")
 	}
+
 	if m.sessions.GetInt64(ctx, epochKey) != passwordEpoch(u) {
 		return nil, m.endStale(ctx)
 	}
 
 	now := m.clock()
+
 	idle := now.Sub(time.Unix(m.sessions.GetInt64(ctx, lastSeenKey), 0))
 	if idle > IdleTimeout {
 		return nil, m.endStale(ctx)
 	}
+
 	if idle >= touchEvery {
 		m.sessions.Put(ctx, lastSeenKey, now.Unix())
 	}
+
 	return u, nil
 }
 
@@ -201,6 +214,7 @@ func (m *Authenticator) endStale(ctx context.Context) error {
 	if err := m.End(ctx); err != nil {
 		return err
 	}
+
 	return ErrUnauthenticated
 }
 
@@ -210,5 +224,6 @@ func passwordEpoch(u *ent.User) int64 {
 	if u.PasswordChangedAt == nil {
 		return 0
 	}
+
 	return u.PasswordChangedAt.UnixMicro()
 }

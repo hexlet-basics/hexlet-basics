@@ -65,6 +65,7 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 		rec *Record
 		err error
 	)
+
 	switch cmd.Ref.Type {
 	case Course:
 		rec, err = c.fetchCourse(ctx, cmd)
@@ -75,9 +76,11 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 	default:
 		return nil, errs.With("type", cmd.Ref.Type).Wrapf(ErrBadID, "fetch a record of unknown type")
 	}
+
 	if err != nil {
 		return nil, domain.FromStore(err)
 	}
+
 	return rec, nil
 }
 
@@ -92,13 +95,16 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 	if err != nil {
 		return nil, err
 	}
+
 	title := titleOf(cmd.Ref.Slug, page.Name, page.Header)
 
 	var d body
 	d.title(title)
+
 	if header := strings.TrimSpace(lo.FromPtr(page.Header)); header != title {
 		d.section("", header)
 	}
+
 	d.section("", lo.FromPtr(page.Description))
 	d.section(firstOf(lo.FromPtr(page.OutcomesHeader), "What you will learn"), lo.FromPtr(page.OutcomesDescription))
 	d.section(lo.FromPtr(page.UsedInHeader), lo.FromPtr(page.UsedInDescription))
@@ -108,6 +114,7 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 	if page.Edges.Course != nil {
 		courseSlug = lo.FromPtr(page.Edges.Course.Slug)
 	}
+
 	translations, err := c.db.CourseLessonTranslation.Query().
 		Where(courselessontranslation.CourseID(page.CourseID), courselessontranslation.LocaleEQ(cmd.Locale), newestBuild(cmd.Locale)).
 		WithLesson().
@@ -115,25 +122,33 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 	if err != nil {
 		return nil, err
 	}
+
 	translations = slices.DeleteFunc(translations, func(t *ent.CourseLessonTranslation) bool {
 		return t.Edges.Lesson == nil || t.Edges.Lesson.Slug == nil
 	})
 	position := func(t *ent.CourseLessonTranslation) int { return lo.FromPtr(t.Edges.Lesson.NaturalOrder) }
+
 	slices.SortFunc(translations, func(a, b *ent.CourseLessonTranslation) int {
 		if p := position(a) - position(b); p != 0 {
 			return p
 		}
+
 		return a.ID - b.ID
 	})
+
 	var list strings.Builder
+
 	for i, t := range translations {
 		slug := *t.Edges.Lesson.Slug
 		fmt.Fprintf(&list, "%d. %s (%s)", i+1, titleOf(slug, t.Name), LessonID(courseSlug, slug))
+
 		if description := strings.TrimSpace(lo.FromPtr(t.Description)); description != "" {
 			list.WriteString(": " + description)
 		}
+
 		list.WriteString("\n")
 	}
+
 	d.section("Lessons", list.String())
 
 	return &Record{
@@ -148,6 +163,7 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 	if err != nil {
 		return nil, err
 	}
+
 	lesson, err := c.db.CourseLesson.Query().
 		Where(courselesson.CourseID(parent.ID), courselesson.SlugEQ(cmd.Ref.Slug)).
 		Only(ctx)
@@ -163,6 +179,7 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 	if err != nil {
 		return nil, err
 	}
+
 	title := titleOf(cmd.Ref.Slug, t.Name)
 
 	var d body
@@ -180,6 +197,7 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 	if t.Edges.CourseVersion != nil {
 		rec.Build = lo.FromPtr(t.Edges.CourseVersion.State)
 	}
+
 	return rec, nil
 }
 
@@ -191,12 +209,14 @@ func (c *Catalogue) fetchPost(ctx context.Context, cmd FetchRecord) (*Record, er
 	if err != nil {
 		return nil, err
 	}
+
 	title := titleOf(cmd.Ref.Slug, post.Name)
 
 	var d body
 	d.title(title)
 	d.section("", lo.FromPtr(post.Description))
 	d.section("", readable(post.RichBody))
+
 	return &Record{
 		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: d.String(),
 		Path: pagePath(cmd.Locale, "/blog_posts/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, State: lo.FromPtr(post.State),
@@ -210,6 +230,7 @@ func firstOf(texts ...string) string {
 			return strings.TrimSpace(t)
 		}
 	}
+
 	return ""
 }
 
@@ -226,9 +247,11 @@ func (d *body) section(heading, text string) {
 	if text = strings.TrimSpace(text); text == "" {
 		return
 	}
+
 	if heading != "" {
 		d.b.WriteString("## " + heading + "\n\n")
 	}
+
 	d.b.WriteString(text + "\n\n")
 }
 
@@ -246,5 +269,6 @@ func readable(fragment string) string {
 	text = spaces.ReplaceAllString(text, " ")
 	text = strings.ReplaceAll(text, " \n", "\n")
 	text = strings.ReplaceAll(text, "\n ", "\n")
+
 	return strings.TrimSpace(blankLines.ReplaceAllString(text, "\n\n"))
 }

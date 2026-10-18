@@ -24,7 +24,9 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
+
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	lesson := view.Lesson
@@ -71,6 +73,7 @@ func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 		Slug:       firstLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	require.False(t, view.LandingPage.Null)
@@ -91,6 +94,7 @@ func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	require.False(t, view.LandingPage.Null)
@@ -108,6 +112,7 @@ func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	require.Len(t, view.Lessons, 3)
@@ -137,7 +142,9 @@ func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
+
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.True(t, view.LandingPage.Null)
 }
@@ -171,6 +178,7 @@ func TestGetCourseLessonReturnsProgress(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	require.False(t, view.Progress.Null)
@@ -188,6 +196,7 @@ func TestGetCourseLessonNamesTheLessonsOnEitherSide(t *testing.T) {
 	adjacent := func(slug string) api.AdjacentLessons {
 		res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{CourseSlug: jsCourseSlug, Slug: slug})
 		require.NoError(t, err)
+
 		return res.Adjacent
 	}
 
@@ -217,6 +226,7 @@ func TestGetCourseLessonKeepsTheNextLessonApartFromAdjacentLessons(t *testing.T)
 		Slug:       thirdLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.True(t, view.Adjacent.Next.Null)
@@ -234,6 +244,7 @@ func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
 		Slug:       thirdLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.Equal(t, thirdLessonSlug, view.Lesson.Slug)

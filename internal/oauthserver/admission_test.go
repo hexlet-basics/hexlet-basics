@@ -21,12 +21,15 @@ const mcpResource = testsupport.OAuthIssuer + "/mcp"
 // ID token says.
 func jwtClaims(t *testing.T, jwt string) map[string]any {
 	t.Helper()
+
 	parts := strings.Split(jwt, ".")
 	require.Len(t, parts, 3)
 	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
 	require.NoError(t, err)
+
 	var claims map[string]any
 	require.NoError(t, json.Unmarshal(payload, &claims))
+
 	return claims
 }
 
@@ -37,6 +40,7 @@ func refusal(t *testing.T, f *testsupport.Flow) url.Values {
 	to, err := f.Authorize.Location()
 	require.NoError(t, err)
 	require.Equal(t, "127.0.0.1:8976", to.Host, "the error goes to the client, not to the consent screen")
+
 	return to.Query()
 }
 
@@ -79,6 +83,7 @@ func TestAnUnknownScopeIsRefusedWithInvalidScopeNotDropped(t *testing.T) {
 		assert.Contains(t, q.Get("error_description"), "Supported scopes", scope)
 		assert.Equal(t, f.State, q.Get("state"))
 	}
+
 	count, err := o.DB.OAuthAuthRequest.Query().Count(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, count, "a refused request leaves nothing to approve")
@@ -126,6 +131,7 @@ func TestTheResourceBindsTheTokenAudienceToTheCanonicalMCPURL(t *testing.T) {
 			"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {tokens.RefreshToken},
 		})
 		require.Equal(t, http.StatusOK, res.StatusCode, name)
+
 		var refreshed testsupport.Tokens
 		decode(t, res, &refreshed)
 		verified, err = o.Server.VerifyAccessToken(t.Context(), refreshed.AccessToken)
@@ -160,6 +166,7 @@ func TestTheTokenRequestRefusesAnotherResource(t *testing.T) {
 
 	_, res := f.ExchangeWith(code, testsupport.PKCEVerifier(), url.Values{"resource": {"https://other.example/mcp"}})
 	require.Equal(t, http.StatusBadRequest, res.StatusCode)
+
 	var body struct{ Error string }
 	decode(t, res, &body)
 	assert.Equal(t, "invalid_target", body.Error)
@@ -191,6 +198,7 @@ func TestTheAuthorizationResponseCarriesTheIssuer(t *testing.T) {
 	f = o.Start(alice, oauthserver.ScopeCatalogRead)
 	res := f.Decide(false)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var decision struct {
 		RedirectURL string `json:"redirectUrl"`
 	}
@@ -221,6 +229,7 @@ func TestTheMetadataDeclaresTheIssuerParameterAtBothPaths(t *testing.T) {
 	for _, path := range []string{"/.well-known/oauth-authorization-server", "/.well-known/openid-configuration"} {
 		res := o.Do(http.MethodGet, path, nil)
 		require.Equal(t, http.StatusOK, res.StatusCode, path)
+
 		var doc map[string]any
 		decode(t, res, &doc)
 		assert.Equal(t, true, doc["authorization_response_iss_parameter_supported"], path)
@@ -242,8 +251,10 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 		if f.Authorize.StatusCode != http.StatusFound {
 			return false
 		}
+
 		to, err := f.Authorize.Location()
 		require.NoError(t, err)
+
 		return strings.HasPrefix(to.String(), testsupport.OAuthIssuer+"/connect")
 	}
 
@@ -279,8 +290,10 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 	} {
 		if redirect == "https://app.example/cb" {
 			assert.True(t, connects(redirect), "an exact https match is accepted")
+
 			continue
 		}
+
 		assert.False(t, connects(redirect), redirect)
 	}
 }

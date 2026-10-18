@@ -84,6 +84,7 @@ func mustParse(doc []byte) *Declarations {
 	if err != nil {
 		panic(fmt.Sprintf("permissions: read the contract: %v", err))
 	}
+
 	return d
 }
 
@@ -113,16 +114,20 @@ func Parse(doc []byte) (*Declarations, error) {
 		required:     map[string]string{},
 	}
 	kinds := map[string]Kind{}
+
 	for _, c := range spec.Capabilities {
 		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
 			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
 		}
+
 		if _, dup := kinds[c.Name]; dup {
 			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry is listed twice")
 		}
+
 		kinds[c.Name] = c.Kind
 		d.capabilities[c.Name] = c.Kind
 	}
+
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
@@ -136,7 +141,9 @@ func Parse(doc []byte) (*Declarations, error) {
 		_, capability := d.capabilities[name]
 		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind, Capability: capability})
 	}
+
 	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
+
 	return d, nil
 }
 
@@ -170,6 +177,7 @@ func permissionKind(p *permissionDecl) Kind {
 	if p == nil {
 		return ""
 	}
+
 	return p.Kind
 }
 
@@ -182,21 +190,26 @@ func permissionKind(p *permissionDecl) Kind {
 // audited before #843 gives it a Permission, and stays audited after.
 func isAdminWrite(method string, security []map[string][]string, hasPermission, hasAccess bool, kind Kind) bool {
 	admin := hasPermission || hasAccess
+
 	for _, requirement := range security {
 		if _, ok := requirement["AdminSession"]; ok {
 			admin = true
 		}
 	}
+
 	if !admin {
 		return false
 	}
+
 	if kind != "" {
 		return kind == Write
 	}
+
 	switch strings.ToUpper(method) {
 	case "GET", "HEAD", "OPTIONS":
 		return false
 	}
+
 	return true
 }
 
@@ -211,6 +224,7 @@ func operationName(operationID string) string {
 // whether it declares an Access instead.
 func For(operation string) (Requirement, bool) {
 	r, ok := declared.operations[operation]
+
 	return r, ok
 }
 
@@ -226,6 +240,7 @@ func AccessOf(operation string) Access {
 // is never closed by accident.
 func IsClassified(operation string) bool {
 	_, hasPermission := declared.operations[operation]
+
 	return hasPermission || declared.access[operation] != ""
 }
 
@@ -256,7 +271,9 @@ func (d *Declarations) AdminWrites() []string {
 	for name := range d.adminWrite {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
 }
 
@@ -266,6 +283,7 @@ func (d *Declarations) Standalone(operation string) bool { return d.standalone[o
 // PersonalDataEntity is the package-level function over these declarations.
 func (d *Declarations) PersonalDataEntity(operation string) (string, bool) {
 	entity, ok := d.personalData[operation]
+
 	return entity, ok
 }
 
@@ -289,7 +307,9 @@ func (d *Declarations) PersonalDataReads() []string {
 	for name := range d.personalData {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
 }
 
@@ -300,58 +320,77 @@ func (d *Declarations) read(where, method string, op operationDecl, kinds map[st
 		if op.Access != AnyStaff {
 			return errs.With("operation", where, "access", op.Access).Errorf("x-access is not any-staff")
 		}
+
 		if op.Permission != nil {
 			return errs.With("operation", where).Errorf("operation declares both x-permission and x-access")
 		}
+
 		if op.OperationID == "" {
 			return errs.With("operation", where).Errorf("x-access needs an operationId")
 		}
+
 		d.access[operationName(op.OperationID)] = op.Access
 	}
+
 	if op.UnitOfWork != "" {
 		if op.UnitOfWork != unitStandalone {
 			return errs.With("operation", where, "unit_of_work", op.UnitOfWork).Errorf("x-unit-of-work is not standalone")
 		}
+
 		if op.OperationID == "" {
 			return errs.With("operation", where).Errorf("x-unit-of-work needs an operationId")
 		}
+
 		d.standalone[operationName(op.OperationID)] = true
 	}
+
 	if op.Requires != "" {
 		if op.OperationID == "" {
 			return errs.With("operation", where).Errorf("x-requires-capability needs an operationId")
 		}
+
 		if _, ok := d.capabilities[op.Requires]; !ok {
 			return errs.With("operation", where, "capability", op.Requires).Errorf("x-requires-capability is not listed under x-capabilities")
 		}
+
 		d.required[operationName(op.OperationID)] = op.Requires
 	}
+
 	if op.PersonalData != "" {
 		if op.OperationID == "" {
 			return errs.With("operation", where).Errorf("x-personal-data needs an operationId")
 		}
+
 		if op.Permission == nil || op.Permission.Kind != Read {
 			return errs.With("operation", where).Errorf("x-personal-data belongs on an operation that declares a read permission")
 		}
+
 		d.personalData[operationName(op.OperationID)] = op.PersonalData
 	}
+
 	if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
 		d.adminWrite[operationName(op.OperationID)] = true
 	}
+
 	if op.Permission == nil {
 		return nil
 	}
+
 	if op.OperationID == "" || op.Permission.Name == "" {
 		return errs.With("operation", where).Errorf("x-permission needs an operationId and a name")
 	}
+
 	if op.Permission.Kind != Read && op.Permission.Kind != Write {
 		return errs.With("operation", where, "kind", op.Permission.Kind).Errorf("x-permission kind is neither read nor write")
 	}
+
 	if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
 		return errs.With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).Errorf("permission is declared both read and write")
 	}
+
 	kinds[op.Permission.Name] = op.Permission.Kind
 	d.operations[operationName(op.OperationID)] = Requirement{Permission: op.Permission.Name, Kind: op.Permission.Kind}
+
 	return nil
 }
 
@@ -366,6 +405,7 @@ func Catalog() []Permission {
 // these: a role must be given them explicitly, administrators' included.
 func IsCapability(name string) bool {
 	_, ok := declared.capabilities[name]
+
 	return ok
 }
 
@@ -388,9 +428,11 @@ func MCPCapabilities(operation string) []string {
 	if IsAdminWrite(operation) {
 		kind = "mcp.write"
 	}
+
 	if extra, ok := declared.required[operation]; ok {
 		return []string{kind, extra}
 	}
+
 	return []string{kind}
 }
 
@@ -401,6 +443,8 @@ func RequiredCapabilityOperations() []string {
 	for name := range declared.required {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
 }

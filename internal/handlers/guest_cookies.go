@@ -31,13 +31,17 @@ func (g *guestCookies) carry(next http.Handler) http.Handler {
 		cookie, err := r.Cookie(progress.GuestCookieName)
 		if err != nil {
 			next.ServeHTTP(w, r)
+
 			return
 		}
+
 		guest, err := g.codec.Decode(cookie.Value)
 		if err != nil {
 			next.ServeHTTP(w, r)
+
 			return
 		}
+
 		next.ServeHTTP(w, r.WithContext(
 			context.WithValue(r.Context(), guestProgressContextKey{}, guest),
 		))
@@ -47,6 +51,7 @@ func (g *guestCookies) carry(next http.Handler) http.Handler {
 // GuestProgress returns the visitor progress carried by the request cookie.
 func GuestProgress(ctx context.Context) (progress.GuestProgress, bool) {
 	guest, ok := ctx.Value(guestProgressContextKey{}).(progress.GuestProgress)
+
 	return guest, ok
 }
 
@@ -56,6 +61,7 @@ func (g *guestCookies) set(guest progress.GuestProgress) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return cookie.String(), nil
 }
 

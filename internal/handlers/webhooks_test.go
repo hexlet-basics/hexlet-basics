@@ -28,15 +28,18 @@ func newWebhookHandler(t *testing.T, secret string) (*handlers.GitHubWebhookHand
 	t.Helper()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
+
 	return handlers.NewGitHubWebhookHandler(services.Starter, secret, testsupport.NewTranslator(t)), db, services
 }
 
 func rawWebhookRequest(event, body, signature string) *http.Request {
 	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/api/webhooks/github", strings.NewReader(body))
 	req.Header.Set("X-Github-Event", event)
+
 	if signature != "" {
 		req.Header.Set("X-Hub-Signature-256", signature)
 	}
+
 	return req
 }
 
@@ -44,6 +47,7 @@ func rawWebhookRequest(event, body, signature string) *http.Request {
 // JSON payload, signed with webhookSecret exactly as GitHub would.
 func signedRequest(t *testing.T, event string, payload any) *http.Request {
 	t.Helper()
+
 	body, err := json.Marshal(payload)
 	require.NoError(t, err)
 
@@ -98,6 +102,7 @@ func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 
 func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
 	t.Parallel()
+
 	for _, signature := range []string{"", "not-a-signature", "md5=deadbeef"} {
 		t.Run(signature, func(t *testing.T) {
 			h, _, services := newWebhookHandler(t, webhookSecret)
@@ -113,6 +118,7 @@ func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
 
 func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
 	t.Parallel()
+
 	const (
 		secret    = "It's a Secret to Everybody"
 		body      = "Hello, World!"
@@ -164,6 +170,7 @@ func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
 
 func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
 	t.Parallel()
+
 	body := `{`
 	mac := hmac.New(sha256.New, []byte(webhookSecret))
 	mac.Write([]byte(body))
@@ -219,6 +226,7 @@ func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
 
 func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
 	t.Parallel()
+
 	for _, repo := range []string{"ruby", "exercises-"} {
 		t.Run(repo, func(t *testing.T) {
 			h, _, services := newWebhookHandler(t, webhookSecret)

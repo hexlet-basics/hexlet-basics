@@ -86,15 +86,18 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			setRequiredSecrets(t)
+
 			for k, v := range tt.env {
 				t.Setenv(k, v)
 			}
+
 			clearEnv(t, tt.unset...)
 
 			cfg, err := LoadServer()
 
 			require.Nil(t, cfg)
 			require.Error(t, err)
+
 			for _, name := range tt.want {
 				requireProblem(t, err, name)
 			}
@@ -113,6 +116,7 @@ func TestLoadWorkerReportsEverySettingProblemAtOnce(t *testing.T) {
 	cfg, err := LoadWorker()
 
 	require.Nil(t, cfg)
+
 	for _, name := range []string{"SITE_URL", "EMAIL_TOKEN_SECRET", "MAIL_POSTBOX_ACCESS_KEY_ID", "AUDIT_RETENTION_MONTHS"} {
 		requireProblem(t, err, name)
 	}

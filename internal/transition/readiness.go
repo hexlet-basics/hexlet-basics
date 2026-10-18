@@ -46,5 +46,6 @@ func ReadinessOf(column *string) Readiness {
 	if column == nil {
 		return ReadinessDraft
 	}
+
 	return Readiness(*column)
 }

@@ -243,6 +243,7 @@ func (c *Common) LogLevel() slog.Level {
 	if err := level.UnmarshalText([]byte(c.LogLevelName)); err != nil {
 		return slog.LevelInfo
 	}
+
 	return level
 }
 
@@ -259,9 +260,11 @@ func LoadServer() (*Server, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse server config from environment")
 	}
+
 	if err := check(cfg, cfg.AppEnv); err != nil {
 		return nil, err
 	}
+
 	return cfg, nil
 }
 
@@ -272,9 +275,11 @@ func LoadWorker() (*Worker, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse worker config from environment")
 	}
+
 	if err := check(cfg, cfg.AppEnv); err != nil {
 		return nil, err
 	}
+
 	return cfg, nil
 }
 
@@ -285,9 +290,11 @@ func (c *Server) crossChecks() []string {
 	if c.OAuth.Enabled {
 		problems = append(problems, violations(c.OAuth, "OAUTH_", c.AppEnv)...)
 	}
+
 	if c.MCP.Enabled {
 		problems = append(problems, violations(c.MCP, "MCP_", c.AppEnv)...)
 	}
+
 	if c.MCP.Enabled && !c.OAuth.Enabled {
 		problems = append(problems, "MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
 	}
@@ -295,9 +302,11 @@ func (c *Server) crossChecks() []string {
 	if c.OAuth.Enabled && c.OAuth.RefreshTokenTTL <= c.OAuth.AccessTokenTTL {
 		problems = append(problems, "OAUTH_REFRESH_TOKEN_TTL must be longer than OAUTH_ACCESS_TOKEN_TTL")
 	}
+
 	if c.AppEnv == Production && c.OAuth.Enabled && !strings.HasPrefix(c.OAuth.Issuer, "https://") {
 		problems = append(problems, "OAUTH_ISSUER must be an https origin in production")
 	}
+
 	return problems
 }
 
@@ -306,5 +315,6 @@ func (c *Worker) crossChecks() []string {
 	if c.AppEnv == Production && !c.Mail.PostboxEnabled() {
 		return []string{"MAIL_POSTBOX_ACCESS_KEY_ID is required in production"}
 	}
+
 	return nil
 }

@@ -37,6 +37,7 @@ func (s *Starter) Start(ctx context.Context, courseID int) (*ent.CourseVersion, 
 		if err == nil && !exists {
 			return 0, domain.ErrNotFound
 		}
+
 		return courseID, domain.FromStore(err)
 	})
 }
@@ -46,6 +47,7 @@ func (s *Starter) Start(ctx context.Context, courseID int) (*ent.CourseVersion, 
 func (s *Starter) StartBySlug(ctx context.Context, slug string) (*ent.CourseVersion, error) {
 	return s.start(ctx, func(c *ent.Client) (int, error) {
 		id, err := c.Course.Query().Where(course.Slug(slug)).OnlyID(ctx)
+
 		return id, domain.FromStore(err)
 	})
 }
@@ -54,6 +56,7 @@ func (s *Starter) StartBySlug(ctx context.Context, slug string) (*ent.CourseVers
 // transaction, so neither survives without the other.
 func (s *Starter) start(ctx context.Context, resolve func(*ent.Client) (int, error)) (*ent.CourseVersion, error) {
 	var version *ent.CourseVersion
+
 	err := s.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
 		courseID, err := resolve(txClient)
 		if err != nil {
@@ -73,5 +76,6 @@ func (s *Starter) start(ctx context.Context, resolve func(*ent.Client) (int, err
 	if err != nil {
 		return nil, err
 	}
+
 	return version, nil
 }

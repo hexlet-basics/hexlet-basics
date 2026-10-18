@@ -17,6 +17,7 @@ func TestIdentifierIsTheLabelInExportedForm(t *testing.T) {
 
 func TestRenderNamesEveryLabel(t *testing.T) {
 	t.Parallel()
+
 	src, err := render([]string{"user_blank", "user_removed"})
 
 	require.NoError(t, err)
@@ -26,6 +27,7 @@ func TestRenderNamesEveryLabel(t *testing.T) {
 
 func TestRenderRefusesTwoLabelsThatSpellOneVariable(t *testing.T) {
 	t.Parallel()
+
 	_, err := render([]string{"user_removed", "user__removed"})
 
 	oopsErr, ok := errors.AsType[oops.OopsError](err)

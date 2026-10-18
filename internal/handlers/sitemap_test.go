@@ -20,6 +20,7 @@ func getSitemap(t *testing.T, h *testsupport.Harness) *api.Sitemap {
 	sitemap, err := h.Client.GetSitemap(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
+
 	return sitemap
 }
 
@@ -28,6 +29,7 @@ func sitemapLandingSlugs(sitemap *api.Sitemap) []string {
 	for i, lp := range sitemap.LandingPages {
 		slugs[i] = lp.Slug
 	}
+
 	return slugs
 }
 
@@ -49,12 +51,15 @@ func TestGetSitemapListsLandingPagesWithLessons(t *testing.T) {
 
 	// ru first, then en.
 	seenEn := false
+
 	for _, page := range sitemap.LandingPages {
 		if page.Locale == api.LocaleEn {
 			seenEn = true
 		}
+
 		assert.False(t, seenEn && page.Locale == api.LocaleRu, "ru pages come before en pages")
 	}
+
 	assert.True(t, seenEn)
 }
 
@@ -144,6 +149,7 @@ func TestGetSitemapListsPublishedPostsNewestFirst(t *testing.T) {
 	for i, post := range sitemap.BlogPosts {
 		slugs[i] = post.Slug
 	}
+
 	assert.Equal(t, []string{"english-post", "learning-ruby", "hello-world", "oldest-post"}, slugs)
 }
 
@@ -158,6 +164,7 @@ func TestGetSitemapListsAllCategories(t *testing.T) {
 	for i, category := range sitemap.Categories {
 		slugs[i] = category.Slug.Value
 	}
+
 	assert.ElementsMatch(t, []string{
 		"layouting-ru", "layouting-en", "programming-en",
 		"frontend-en", "frontend-ru", "programming-ru",

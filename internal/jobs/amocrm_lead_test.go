@@ -35,6 +35,7 @@ func TestAmoCRMLeadWorkerReturnsRetryableFailures(t *testing.T) {
 	err := worker.Work(t.Context(), &river.Job[AmoCRMLeadArgs]{})
 
 	require.ErrorIs(t, err, cause)
+
 	var cancelErr *river.JobCancelError
 	assert.NotErrorAs(t, err, &cancelErr)
 }

@@ -136,9 +136,11 @@ func New(opts Options) (*Docker, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "new docker client")
 	}
+
 	if opts.Concurrency < 1 {
 		opts.Concurrency = 1
 	}
+
 	return &Docker{
 		docker: docker,
 		opts:   opts,
@@ -169,6 +171,7 @@ func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progr
 	if err != nil {
 		return progress.Outcome{}, err
 	}
+
 	return outcomeOf(status, output), nil
 }
 
@@ -211,6 +214,7 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 	if _, err := d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned}); err != nil {
 		return "", errs.With("source", source, "pinned", pinned).Wrapf(err, "pin image")
 	}
+
 	return pinned, nil
 }
 
@@ -221,11 +225,13 @@ func (d *Docker) imageRefs(submission progress.Submission) (string, string) {
 	repository := submission.Image
 	if named, err := reference.Parse(repository); err == nil {
 		_, tagged := named.(reference.Tagged)
+
 		_, digested := named.(reference.Digested)
 		if tagged || digested {
 			return repository, repository
 		}
 	}
+
 	return fmt.Sprintf("%s:lv%d", repository, submission.VersionID),
 		fmt.Sprintf("%s:%s", repository, d.opts.ImageTag)
 }
@@ -334,11 +340,14 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	// the read; the deferred Close above is then a second, harmless one.
 	stop := context.AfterFunc(ctx, func() { attached.Close() })
 	output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
+
 	stop()
+
 	if err != nil {
 		if ctx.Err() != nil {
 			return 0, "", d.gaveUp(ctx)
 		}
+
 		return 0, "", err
 	}
 
@@ -347,6 +356,7 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		if result.Error != nil && result.Error.Message != "" {
 			return 0, "", errs.With("reason", result.Error.Message).Errorf("container wait failed")
 		}
+
 		return int(result.StatusCode), output, nil
 	case err := <-wait.Error:
 		return 0, "", errs.Wrapf(err, "wait for container")
@@ -368,6 +378,7 @@ func (d *Docker) gaveUp(ctx context.Context) error {
 // timeout. `make` is the interface every exercise image already exposes.
 func (d *Docker) command(submission progress.Submission) []string {
 	seconds := strconv.Itoa(int(d.opts.Timeout.Seconds()))
+
 	return []string{"timeout", seconds, "make", "--silent", "-C", submission.TestDir, "test"}
 }
 
@@ -375,6 +386,7 @@ func (d *Docker) hostConfig() *container.HostConfig {
 	// Copied, because the field is a pointer and the options are shared by every
 	// run this runner performs.
 	pidsLimit := d.opts.PidsLimit
+
 	tmpfs := map[string]string{}
 	if d.opts.ReadonlyRootfs {
 		// Something has to be writable, or nothing compiles at all.
@@ -403,6 +415,7 @@ const submissionFileMode = 0o644
 // reference solution ships.
 func tarFile(destination, content string) (io.Reader, error) {
 	var buf bytes.Buffer
+
 	archive := tar.NewWriter(&buf)
 
 	if err := archive.WriteHeader(&tar.Header{
@@ -412,12 +425,15 @@ func tarFile(destination, content string) (io.Reader, error) {
 	}); err != nil {
 		return nil, errs.Wrapf(err, "write submission header")
 	}
+
 	if _, err := archive.Write([]byte(content)); err != nil {
 		return nil, errs.Wrapf(err, "write submission")
 	}
+
 	if err := archive.Close(); err != nil {
 		return nil, errs.Wrapf(err, "close submission archive")
 	}
+
 	return &buf, nil
 }
 

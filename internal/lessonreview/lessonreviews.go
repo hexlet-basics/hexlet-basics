@@ -87,6 +87,7 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 // the raw question feed.
 func reviewPrompt(info *ent.CourseLessonTranslation, questions []*ent.AiMessage) string {
 	contents := lo.Map(questions, func(q *ent.AiMessage, _ int) string { return lo.FromPtr(q.Content) })
+
 	return strings.Join([]string{
 		"Урок (теория и упражнение): " + lo.FromPtr(info.Theory) + "\n\n" + lo.FromPtr(info.Instructions),
 		"Вопросы пользователей: " + strings.Join(contents, "\n\n"),
@@ -122,5 +123,6 @@ func (r *Reviewer) upsertReview(ctx context.Context, info *ent.CourseLessonTrans
 			SetCourseLessonTranslationID(info.ID).
 			Save(ctx)
 	}
+
 	return oops.Wrapf(err, "save review for lesson %d", info.CourseLessonID)
 }

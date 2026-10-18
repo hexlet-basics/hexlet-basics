@@ -18,11 +18,14 @@ import (
 
 func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) bool {
 	t.Helper()
+
 	_, err := h.Client.CreateSession(t.Context(), &api.SessionInput{Email: email, Password: password})
 	if err == nil {
 		return true
 	}
+
 	requireProblem(t, err, http.StatusUnprocessableEntity)
+
 	return false
 }
 

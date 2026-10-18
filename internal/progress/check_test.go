@@ -63,6 +63,7 @@ func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 	assert.False(t, result.Outcome.Passed)
 	assert.False(t, result.LessonFinished)
 	assert.Nil(t, result.Guest)
+
 	row := r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).OnlyX(ctx)
 	assert.Equal(t, progress.StateStarted, *row.State)
 	assert.Empty(t, testsupport.PublishedEvents[events.LessonFinished](t, r.services))
@@ -74,17 +75,21 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 	blankUser := r.learner(t, fixture.UserBlank)
 
 	slugs := []string{firstLesson, secondLesson, thirdLesson}
+
 	results := make([]*progress.CheckResult, 0, len(slugs))
 	for _, slug := range slugs {
 		result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, slug))
 		require.NoError(t, err)
+
 		results = append(results, result)
 	}
 
 	assert.Equal(t, []bool{false, false, true}, []bool{results[0].CourseFinished, results[1].CourseFinished, results[2].CourseFinished})
+
 	for _, result := range results {
 		assert.True(t, result.LessonFinished)
 	}
+
 	state, err := r.progress.CourseState(ctx, blankUser, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)

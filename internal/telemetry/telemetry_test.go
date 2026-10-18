@@ -51,7 +51,9 @@ func TestNewOpenTelemetrySDKExportsConfiguredSpans(t *testing.T) {
 
 		request := &collectortrace.ExportTraceServiceRequest{}
 		assert.NoError(t, proto.Unmarshal(body, request))
+
 		requests <- request
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	t.Cleanup(collector.Close)
@@ -140,6 +142,7 @@ func writeOTelConfig(t *testing.T, contents string) string {
 
 	path := filepath.Join(t.TempDir(), "otel.yaml")
 	require.NoError(t, os.WriteFile(path, []byte(contents), 0o600))
+
 	return path
 }
 

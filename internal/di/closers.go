@@ -31,6 +31,7 @@ func (c *databaseCloser) Shutdown() error {
 	if err := c.client.Close(); err != nil {
 		return errs.Wrapf(err, "closing database")
 	}
+
 	return nil
 }
 
@@ -40,6 +41,7 @@ func (c *databaseCloser) HealthCheck(ctx context.Context) error {
 	if _, err := c.client.User.Query().Exist(ctx); err != nil {
 		return errs.Wrapf(err, "pinging database")
 	}
+
 	return nil
 }
 
@@ -49,6 +51,7 @@ func (c *bucketCloser) Shutdown() error {
 	if err := c.bucket.Close(); err != nil {
 		return errs.Wrapf(err, "closing blob bucket")
 	}
+
 	return nil
 }
 
@@ -62,6 +65,7 @@ func (c *sentryCloser) Shutdown(ctx context.Context) error {
 	if !c.client.FlushWithContext(ctx) {
 		return errSentryFlushTimeout
 	}
+
 	return nil
 }
 
@@ -72,6 +76,7 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return &sentryCloser{client: client}, nil
 	}),
 	do.Lazy[*databaseCloser](func(i do.Injector) (*databaseCloser, error) {
@@ -79,9 +84,11 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		if _, err := do.Invoke[*sentryCloser](i); err != nil {
 			return nil, err
 		}
+
 		return &databaseCloser{client: client}, nil
 	}),
 	do.Lazy[*bucketCloser](func(i do.Injector) (*bucketCloser, error) {
@@ -89,9 +96,11 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		if _, err := do.Invoke[*sentryCloser](i); err != nil {
 			return nil, err
 		}
+
 		return &bucketCloser{bucket: bucket}, nil
 	}),
 )
@@ -102,9 +111,11 @@ func registerClosers(injector do.Injector) error {
 	if _, err := do.Invoke[*databaseCloser](injector); err != nil {
 		return err
 	}
+
 	if _, err := do.Invoke[*bucketCloser](injector); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -115,5 +126,6 @@ func shutdown(ctx context.Context, injector do.Injector) error {
 	if report == nil || report.Succeed {
 		return nil
 	}
+
 	return report
 }

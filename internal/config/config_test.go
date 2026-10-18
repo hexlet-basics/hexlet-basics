@@ -31,6 +31,7 @@ func setRequiredSecrets(t *testing.T) {
 // would be "set but empty", which `required` accepts.
 func clearEnv(t *testing.T, names ...string) {
 	t.Helper()
+
 	for _, name := range names {
 		t.Setenv(name, "")
 		require.NoError(t, os.Unsetenv(name))
@@ -44,6 +45,7 @@ func TestLoadServerNamesEveryMissingRequiredSetting(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
+
 	for _, name := range []string{"DATABASE_URL", "PUBLIC_URL", "SITE_URL", "APP_HOST", "BLOB_BUCKET_URL", "GUEST_COOKIE_SECRET"} {
 		requireProblem(t, err, name)
 	}
@@ -191,11 +193,13 @@ func TestAuditRetentionDefaultsToTwoYears(t *testing.T) {
 func TestAuditRetentionCanBeShortenedButNotRemoved(t *testing.T) {
 	setRequiredSecrets(t)
 	t.Setenv("AUDIT_RETENTION_MONTHS", "6")
+
 	cfg, err := LoadWorker()
 	require.NoError(t, err)
 	require.Equal(t, 6, cfg.AuditRetentionMonths)
 
 	t.Setenv("AUDIT_RETENTION_MONTHS", "0")
+
 	_, err = LoadWorker()
 	requireProblem(t, err, "AUDIT_RETENTION_MONTHS")
 }
@@ -209,6 +213,7 @@ func TestLogLevelDefaultsToInfoAndFollowsTheEnvironment(t *testing.T) {
 	require.Equal(t, slog.LevelInfo, cfg.LogLevel())
 
 	t.Setenv("LOG_LEVEL", "debug")
+
 	cfg, err = LoadWorker()
 	require.NoError(t, err)
 	require.Equal(t, slog.LevelDebug, cfg.LogLevel())

@@ -87,6 +87,7 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 	}
 
 	result := &CheckResult{Outcome: outcome}
+
 	err = p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		occurredAt := p.now()
 
@@ -112,13 +113,16 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 				advanced := check.Learner.Guest.Record(lo.FromPtr(open.course.Slug), lo.FromPtr(open.lesson.Slug))
 				result.Guest = &advanced
 			}
+
 			return nil
 		}
+
 		return p.record(ctx, tx, db, check, open, outcome, result, occurredAt)
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return result, nil
 }
 
@@ -141,9 +145,11 @@ func (p *Progress) submittedVersion(ctx context.Context, crs *ent.Course, check 
 	if ent.IsNotFound(err) {
 		return nil, &ent.NotFoundError{}
 	}
+
 	if err != nil {
 		return nil, errs.With("version_id", check.VersionID).Wrapf(err, "load lesson version")
 	}
+
 	return version, nil
 }
 
@@ -166,6 +172,7 @@ func (p *Progress) submissionFor(
 
 	image := lo.FromPtr(built.DockerImage)
 	testDir := lo.FromPtr(version.PathToCode)
+
 	exerciseFile := lo.FromPtr(built.ExerciseFilename)
 	if image == "" || testDir == "" || exerciseFile == "" {
 		return Submission{}, &ent.NotFoundError{}
@@ -199,6 +206,7 @@ func (p *Progress) record(
 	if err != nil {
 		return err
 	}
+
 	if createdEnrollment {
 		if err := p.publishCourseStarted(ctx, tx, db, userID, open.course, check.Locale, occurredAt); err != nil {
 			return err
@@ -209,6 +217,7 @@ func (p *Progress) record(
 	if err != nil {
 		return err
 	}
+
 	if createdProgress {
 		// The learner reached this Lesson without pressing start — a deep link,
 		// or a page restored from history. Submitting is as deliberate an act as
@@ -231,12 +240,14 @@ func (p *Progress) record(
 		if _, err := taken.Update().SetState(StateFinished).Save(ctx); err != nil {
 			return errs.Wrapf(err, "finish lesson progress")
 		}
+
 		result.LessonFinished = true
 
 		count, err := lessonProgressCount(ctx, db, enrolled.ID)
 		if err != nil {
 			return err
 		}
+
 		if err := p.publisher.Publish(ctx, tx, events.LessonFinished{
 			OccurrenceCount: count,
 			LessonSlug:      lo.FromPtr(open.lesson.Slug),
@@ -279,6 +290,7 @@ func (p *Progress) finishCourse(
 	if lo.FromPtr(enrolled.State) == StateFinished {
 		return nil
 	}
+
 	if len(open.lessons) == 0 {
 		// A Version with no Lessons completes nobody; the alternative reading —
 		// everybody has finished all zero of them — is the worse one.
@@ -289,6 +301,7 @@ func (p *Progress) finishCourse(
 	if err != nil {
 		return err
 	}
+
 	if !lo.EveryBy(open.lessons, func(lesson currentLesson) bool { return finished[lesson.lessonID] }) {
 		return nil
 	}
@@ -296,6 +309,7 @@ func (p *Progress) finishCourse(
 	if _, err := enrolled.Update().SetState(StateFinished).Save(ctx); err != nil {
 		return errs.Wrapf(err, "finish enrollment")
 	}
+
 	result.CourseFinished = true
 
 	// Counted after the transition so the Course just finished is included —
@@ -309,6 +323,7 @@ func (p *Progress) finishCourse(
 	if err != nil {
 		return errs.Wrapf(err, "count finished enrollments")
 	}
+
 	if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 		OccurrenceCount: count,
 		Slug:            lo.FromPtr(open.course.Slug),
@@ -317,6 +332,7 @@ func (p *Progress) finishCourse(
 	}); err != nil {
 		return errs.Wrapf(err, "publish course finished")
 	}
+
 	return nil
 }
 
@@ -329,5 +345,6 @@ func lessonProgressCount(ctx context.Context, db *ent.Client, enrollmentID int) 
 	if err != nil {
 		return 0, errs.Wrapf(err, "count lesson progress")
 	}
+
 	return count, nil
 }

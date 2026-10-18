@@ -56,6 +56,7 @@ func (d *Directory) Lessons(ctx context.Context, locale, search string, page dom
 			courselessontranslation.HasLessonWith(courselesson.SlugContainsFold(term)),
 		))
 	}
+
 	return domain.Paged(ctx, query, page)
 }
 

@@ -25,6 +25,7 @@ func (s *Server) ListAssistantMessages(
 	case err != nil:
 		return nil, err
 	}
+
 	return &api.LessonAssistantChat{
 		Messages:      s.conv.ToLessonAssistantMessages(history.Messages),
 		QuotaExceeded: history.QuotaExceeded,
@@ -54,11 +55,13 @@ func (s *Server) CreateAssistantMessage(
 	case errors.Is(err, assistant.ErrQuotaExceeded):
 		// A declared outcome, not a failure: it never reaches the reporting path.
 		problem := s.errors.problem(ctx, http.StatusTooManyRequests, nil)
+
 		return &problem, nil
 	case errors.Is(err, domain.ErrNotFound):
 		return nil, errLessonNotFound
 	case err != nil:
 		return nil, err
 	}
+
 	return &api.CreateAssistantMessageOK{Data: answer}, nil
 }

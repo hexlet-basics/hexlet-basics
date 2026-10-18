@@ -48,6 +48,7 @@ func stateOf(t *testing.T, h *testsupport.Harness) string {
 	t.Helper()
 	row := h.DB.BlogPost.Query().Where(blogpost.IDEQ(statePostID)).OnlyX(t.Context())
 	require.NotNil(t, row.State)
+
 	return *row.State
 }
 
@@ -61,6 +62,7 @@ var legal = map[string][]string{
 
 func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testing.T) {
 	t.Parallel()
+
 	for _, call := range transitionCalls {
 		for _, from := range []string{"draft", "published", "archived"} {
 			t.Run(call.name+" from "+from, func(t *testing.T) {
@@ -73,12 +75,15 @@ func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testin
 				for _, f := range legal[call.name] {
 					allowed = allowed || f == from
 				}
+
 				if allowed {
 					require.NoError(t, err)
 					assert.Equal(t, call.to, string(post.State.Value))
 					assert.Equal(t, call.to, stateOf(t, h))
+
 					return
 				}
+
 				require.Error(t, err)
 				assert.Equal(t, http.StatusConflict, h.LastStatus())
 				assert.Equal(t, from, stateOf(t, h), "a refused move changes nothing")
@@ -90,6 +95,7 @@ func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testin
 
 func TestARefusedTransitionExplainsItselfInTheCallersLanguage(t *testing.T) {
 	t.Parallel()
+
 	for locale, want := range map[string]string{
 		"ru": "«опубликовано»",
 		"en": "published to published",
@@ -195,6 +201,7 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 
 func TestEachTransitionLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
 	t.Parallel()
+
 	for _, call := range transitionCalls {
 		from := legal[call.name][0]
 		t.Run(call.name, func(t *testing.T) {

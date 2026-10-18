@@ -30,12 +30,14 @@ type logSink struct {
 func (s *logSink) Write(p []byte) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	return s.buf.Write(p)
 }
 
 func (s *logSink) String() string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	return s.buf.String()
 }
 
@@ -53,12 +55,15 @@ func TestRuntimeAnnouncesItsAddressAndTheShutdown(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(signalCtx, func() {}) }()
+
 	require.Eventually(t, func() bool {
 		res, err := get(t.Context(), "http://"+addr)
 		if err != nil {
 			return false
 		}
+
 		_ = res.Body.Close()
+
 		return true
 	}, eventually, 20*time.Millisecond)
 	signal()
@@ -73,6 +78,7 @@ func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 	taken, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = taken.Close() })
+
 	addr := taken.Addr().String()
 	app := application{http: &http.Server{ReadHeaderTimeout: time.Second, Addr: addr}, httpAddr: addr}
 
@@ -88,12 +94,15 @@ func TestRuntimeReportsAServerThatStopsOnItsOwn(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(context.Background(), func() {}) }()
+
 	require.Eventually(t, func() bool {
 		res, err := get(t.Context(), "http://"+addr)
 		if err != nil {
 			return false
 		}
+
 		_ = res.Body.Close()
+
 		return true
 	}, eventually, 20*time.Millisecond)
 	require.NoError(t, server.Close())

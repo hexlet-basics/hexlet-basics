@@ -36,6 +36,7 @@ var (
 func work[A river.JobArgs](t *testing.T, worker river.Worker[A], args A) (*rivertest.WorkResult, error) {
 	t.Helper()
 	_, tx := testsupport.NewClientWithTx(t)
+
 	return rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker).
 		Work(t.Context(), t, tx, args, nil)
 }
@@ -43,6 +44,7 @@ func work[A river.JobArgs](t *testing.T, worker river.Worker[A], args A) (*river
 func lastError(t *testing.T, job *rivertype.JobRow) string {
 	t.Helper()
 	require.NotEmpty(t, job.Errors)
+
 	return job.Errors[len(job.Errors)-1].Error
 }
 
@@ -132,6 +134,7 @@ func TestReapExpiredSessionsJobRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
 	_, err := auth.New(db).Issue(t.Context(), db.User.GetX(t.Context(), fixture.ID(fixture.UserWithPassword)))
 	require.NoError(t, err)
+
 	sweep := func(now time.Time) {
 		t.Helper()
 		worker := rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{},

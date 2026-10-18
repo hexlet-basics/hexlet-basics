@@ -35,13 +35,16 @@ func newStore(t *testing.T) (*assetstore.Store, *ent.Client, *blob.Bucket) {
 	t.Helper()
 	db := testsupport.NewClient(t)
 	bucket := memblob.OpenBucket(nil)
+
 	t.Cleanup(func() { _ = bucket.Close() })
+
 	return assetstore.New(db, bucket, "https://assets.example.test/"), db, bucket
 }
 
 func TestPutAndOpen(t *testing.T) {
 	store, db, _ := newStore(t)
 	ctx := context.Background()
+
 	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
 
 	got, err := store.Put(ctx, assetstore.Upload{
@@ -64,7 +67,9 @@ func TestPutAndOpen(t *testing.T) {
 
 	reader, err := store.Open(ctx, record.StorageKey)
 	require.NoError(t, err)
+
 	defer func() { _ = reader.Close() }()
+
 	assert.Equal(t, "image/png", reader.ContentType)
 	assert.False(t, reader.ModTime.IsZero())
 	stored, err := io.ReadAll(reader)
@@ -74,6 +79,7 @@ func TestPutAndOpen(t *testing.T) {
 	offset, err := reader.Seek(int64(len(pngHeader)), io.SeekStart)
 	require.NoError(t, err)
 	assert.Equal(t, int64(len(pngHeader)), offset)
+
 	storedAfterSeek, err := io.ReadAll(reader)
 	require.NoError(t, err)
 	assert.Equal(t, data[len(pngHeader):], storedAfterSeek)
@@ -120,6 +126,7 @@ func TestPutCleansUpOversizedBlob(t *testing.T) {
 
 func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 	store, _, bucket := newStore(t)
+
 	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 1016)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
@@ -139,6 +146,7 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 			return nil, errAttachmentInsertFailed
 		})
 	})
+
 	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
@@ -168,12 +176,15 @@ func (r *failAfterFirstRead) Read(p []byte) (int, error) {
 	if r.read {
 		return 0, errSourceReadFailed
 	}
+
 	r.read = true
+
 	return copy(p, r.data), nil
 }
 
 func assertBucketEmpty(t *testing.T, bucket *blob.Bucket) {
 	t.Helper()
+
 	_, err := bucket.List(nil).Next(context.Background())
 	require.ErrorIs(t, err, io.EOF)
 }
@@ -198,6 +209,7 @@ func TestDownloadURLFallsBackToTheReadRoute(t *testing.T) {
 func TestDownloadURLPresignsAnS3ObjectWithTheDeliveryHeaders(t *testing.T) {
 	t.Setenv("AWS_ACCESS_KEY_ID", "test-key")
 	t.Setenv("AWS_SECRET_ACCESS_KEY", "test-secret")
+
 	ctx := context.Background()
 	bucket, err := blob.OpenBucket(ctx,
 		"s3://books?region=us-east-1&endpoint=http://127.0.0.1:1&use_path_style=true&disable_https=true")
@@ -250,6 +262,7 @@ func TestPutReportsAnUnreadableUpload(t *testing.T) {
 func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 	store, db, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
+
 	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{

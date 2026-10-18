@@ -27,6 +27,7 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (*ap
 	}
 
 	lessons := s.conv.ToLearnerLessons(apiconv.LearnerLessonSources(page.Infos, page.State))
+
 	view := &api.CourseView{
 		Course:      s.conv.ToCourse(page.Course),
 		LandingPage: api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page.Landing)),
@@ -40,9 +41,11 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (*ap
 	if page.MovedTo != nil {
 		view.MovedTo = api.NewNilString(*page.MovedTo)
 	}
+
 	if page.Enrollment != nil {
 		view.Enrollment = api.NewNilEnrollment(s.conv.ToEnrollment(page.Enrollment))
 	}
+
 	return view, nil
 }
 
@@ -52,6 +55,7 @@ func (s *Server) courseProgress(state *progress.CourseState, lessons []api.Learn
 	if len(state.Lessons) == 0 {
 		return api.NilCourseProgress{Null: true}
 	}
+
 	return api.NewNilCourseProgress(
 		s.conv.ToCourseProgress(apiconv.CourseProgressSource{State: state, Lessons: lessons}),
 	)

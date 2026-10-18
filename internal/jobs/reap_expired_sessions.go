@@ -37,7 +37,9 @@ func (w *reapExpiredSessionsWorker) Work(ctx context.Context, _ *river.Job[ReapE
 	if err != nil {
 		return err
 	}
+
 	w.logger.InfoContext(ctx, "reaped expired sessions", slog.Int("removed", removed))
+
 	return nil
 }
 

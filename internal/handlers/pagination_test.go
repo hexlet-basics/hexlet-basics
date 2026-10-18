@@ -26,6 +26,7 @@ type paginationContractHandler struct {
 func (h *paginationContractHandler) ListPublicReviews(_ context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	h.calls++
 	page := paging.New(params.Page, params.PerPage)
+
 	return &api.ReviewPage{
 		Items:   []api.Review{},
 		Total:   0,
@@ -39,6 +40,7 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	errorHandler := NewAPIErrorHandler(translator, slog.New(slog.DiscardHandler))
 	server, err := api.NewServer(
 		handler,
@@ -48,11 +50,13 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
+
 	return translator.Middleware(server)
 }
 
 func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 	t.Parallel()
+
 	tests := []string{
 		"/api/reviews?page=0",
 		"/api/reviews?page=-100",
@@ -80,11 +84,13 @@ func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	router := newPaginationRouter(t, &paginationContractHandler{})
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/reviews?page=0", nil)
 	req.Header.Set("Accept-Language", "ru")
+
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusBadRequest, rec.Code)
+
 	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.Equal(t, "Некорректный запрос", body.Title)
@@ -122,12 +128,14 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequestWithContext(t.Context(), tt.method, tt.path, nil)
 			req.Header.Set("Accept-Language", "es")
+
 			rec := httptest.NewRecorder()
 
 			router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
 			assert.JSONEq(t, fmt.Sprintf(`{"type":"about:blank","title":%q,"status":%d}`, tt.body, tt.status), rec.Body.String())
+
 			if tt.allowValue != "" {
 				assert.Contains(t, rec.Header().Get("Allow"), tt.allowValue)
 			}
@@ -137,6 +145,7 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 
 func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name        string
 		path        string

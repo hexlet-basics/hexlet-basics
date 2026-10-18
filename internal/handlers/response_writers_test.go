@@ -26,6 +26,7 @@ func (c *goneClient) Header() http.Header {
 	if c.header == nil {
 		c.header = http.Header{}
 	}
+
 	return c.header
 }
 func (c *goneClient) WriteHeader(status int)    { c.status = status }
@@ -69,8 +70,12 @@ func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
 // stops the copy feeding it.
 func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 	t.Parallel()
-	var written int
-	var writeErr error
+
+	var (
+		written  int
+		writeErr error
+	)
+
 	next := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		written, writeErr = w.Write([]byte("chunk"))
 	})
@@ -96,6 +101,7 @@ func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 // connection is cut rather than a JSON error glued to a short answer.
 func TestStreamResponsesCutsAnAnswerThatFailsMidway(t *testing.T) {
 	t.Parallel()
+
 	failMidway := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("partial"))
 		w.WriteHeader(http.StatusInternalServerError)

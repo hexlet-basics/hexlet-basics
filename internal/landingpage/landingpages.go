@@ -129,5 +129,6 @@ func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int
 			byCourse[page.CourseID] = page
 		}
 	}
+
 	return byCourse, nil
 }

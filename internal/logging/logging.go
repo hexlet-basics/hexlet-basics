@@ -40,6 +40,7 @@ func NewTo(w io.Writer, level slog.Level) *slog.Logger {
 	} else {
 		inner = slog.NewJSONHandler(w, &slog.HandlerOptions{Level: level, ReplaceAttr: redact})
 	}
+
 	return slog.New(traceHandler{inner})
 }
 
@@ -52,6 +53,7 @@ func redact(_ []string, attr slog.Attr) slog.Attr {
 			return slog.String(attr.Key, redacted)
 		}
 	}
+
 	return attr
 }
 
@@ -68,6 +70,7 @@ func (h traceHandler) Handle(ctx context.Context, record slog.Record) error {
 			slog.String("span_id", spanContext.SpanID().String()),
 		)
 	}
+
 	return h.Handler.Handle(ctx, record)
 }
 
@@ -85,6 +88,7 @@ func readable(f *os.File) bool {
 	if forced, _ := config.ColorOverride(); forced {
 		return true
 	}
+
 	return isTerminal(f)
 }
 
@@ -96,10 +100,12 @@ func colorEnabled(f *os.File) bool {
 	if enabled, set := config.ColorOverride(); set {
 		return enabled
 	}
+
 	return isTerminal(f)
 }
 
 func isTerminal(f *os.File) bool {
 	info, err := f.Stat()
+
 	return err == nil && info.Mode()&os.ModeCharDevice != 0
 }

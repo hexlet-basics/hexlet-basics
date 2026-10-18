@@ -41,6 +41,7 @@ func TestAdminListBlogPostsSearchKeepsTheNewestFirstOrder(t *testing.T) {
 
 	require.NoError(t, err)
 	require.Greater(t, len(page.Items), 1)
+
 	for i := 1; i < len(page.Items); i++ {
 		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
 	}
@@ -87,6 +88,7 @@ func TestAdminListLeadsSearchMatchesEveryContactField(t *testing.T) {
 	emails := func(q string) []string {
 		page, err := h.Client.AdminListLeads(ctx, api.AdminListLeadsParams{Q: api.NewOptString(q)})
 		require.NoError(t, err)
+
 		return lo.Map(page.Items, func(l api.Lead, _ int) string { return l.Email.Value })
 	}
 

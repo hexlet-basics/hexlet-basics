@@ -38,6 +38,7 @@ func TestASecretFieldIsRecordedByNameOnly(t *testing.T) {
 	for _, f := range changes[0].Fields {
 		byName[f.Name] = f
 	}
+
 	secret, ok := byName["password_digest"]
 	require.True(t, ok, "a changed secret is still a change")
 	assert.True(t, secret.Secret)

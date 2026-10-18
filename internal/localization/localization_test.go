@@ -14,6 +14,7 @@ import (
 
 func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -38,6 +39,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 			}))
 			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 			req.Header.Set("Accept-Language", tt.header)
+
 			rec := httptest.NewRecorder()
 
 			handler.ServeHTTP(rec, req)
@@ -50,6 +52,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 
 func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -58,6 +61,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 	}))
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 	req.Header.Set("Accept-Language", "es-MX")
+
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)
@@ -67,6 +71,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 
 func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -76,8 +81,10 @@ func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 
 func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	assert.Equal(t, "en", translator.Locale(ctx))
@@ -86,8 +93,10 @@ func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
 
 func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	// net/http knows no text for this status either, so the answer is the
@@ -101,6 +110,7 @@ func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
 
 func TestTranslatorKeepsNetHTTPTextForAStatusItHasNoCatalogEntryFor(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 

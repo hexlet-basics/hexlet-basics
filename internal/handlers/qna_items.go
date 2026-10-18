@@ -23,6 +23,7 @@ func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.Admin
 	if err != nil {
 		return nil, err
 	}
+
 	return s.conv.ToCategoryQnaItems(rows), nil
 }
 
@@ -31,7 +32,9 @@ func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToCategoryQnaItem(row)
+
 	return &item, nil
 }
 
@@ -40,7 +43,9 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToCategoryQnaItem(row)
+
 	return &item, nil
 }
 
@@ -48,6 +53,7 @@ func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.Admi
 	if err := s.categoryQna.Delete(ctx, int(params.CategoryId), int(params.ID)); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -58,6 +64,7 @@ func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.Ad
 	if err != nil {
 		return nil, err
 	}
+
 	return s.conv.ToLandingPageQnaItems(rows), nil
 }
 
@@ -66,7 +73,9 @@ func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToLandingPageQnaItem(row)
+
 	return &item, nil
 }
 
@@ -75,7 +84,9 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToLandingPageQnaItem(row)
+
 	return &item, nil
 }
 
@@ -83,5 +94,6 @@ func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.A
 	if err := s.landingPageQna.Delete(ctx, int(params.LandingPageId), int(params.ID)); err != nil {
 		return err
 	}
+
 	return nil
 }

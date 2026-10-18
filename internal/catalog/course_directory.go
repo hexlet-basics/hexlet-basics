@@ -43,10 +43,13 @@ func (d *CourseDirectory) Options(ctx context.Context) ([]Option, error) {
 		if row.Slug != nil {
 			name = *row.Slug
 		}
+
 		if row.Name != nil && *row.Name != "" {
 			name = *row.Name
 		}
+
 		options = append(options, Option{ID: row.ID, Name: name})
 	}
+
 	return options, nil
 }

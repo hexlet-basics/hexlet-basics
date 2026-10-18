@@ -42,6 +42,7 @@ func (f *fakeJobs) Start(context.Context) error { return f.startErr }
 
 func (f *fakeJobs) Stop(context.Context) error {
 	f.stopOnce.Do(func() { close(f.stopped) })
+
 	return nil
 }
 
@@ -58,12 +59,14 @@ func (r watermillRouter) Running() <-chan struct{} { return r.Router.Running() }
 // pub/sub.
 func newRouter(t *testing.T) watermillRouter {
 	t.Helper()
+
 	logger := watermill.NewSlogLogger(slog.New(slog.DiscardHandler))
 	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: time.Second}, logger)
 	require.NoError(t, err)
 	router.AddConsumerHandler("test_consumer", "test_topic", pubsub, func(*message.Message) error { return nil })
 	t.Cleanup(func() { _ = router.Close() })
+
 	return watermillRouter{router}
 }
 
@@ -81,6 +84,7 @@ func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 	router := newRouter(t)
 	app := application{jobs: jobQueue, events: router}
 	signalCtx, signal := context.WithCancel(context.Background())
+
 	var stopSignalsCalled bool
 
 	errCh := make(chan error, 1)
@@ -91,6 +95,7 @@ func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 	case <-time.After(eventually):
 		t.Fatal("the event router did not start")
 	}
+
 	signal()
 
 	select {
@@ -110,11 +115,13 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 	router := newRouter(t)
 	// A router that is already running cannot be run again, so Run fails.
 	go func() { _ = router.Run(t.Context()) }()
+
 	select {
 	case <-router.Running():
 	case <-time.After(eventually):
 		t.Fatal("the event router did not start")
 	}
+
 	app := application{jobs: jobQueue, events: router}
 
 	errCh := make(chan error, 1)
@@ -139,6 +146,7 @@ func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
 	err := app.run(context.Background(), func() {})
 
 	require.ErrorContains(t, err, "job queue cannot start")
+
 	select {
 	case <-router.Running():
 		t.Fatal("the event router started although the job queue failed")
@@ -150,8 +158,10 @@ func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
 // answering in-process.
 func readyz(t *testing.T, handler http.Handler) int {
 	t.Helper()
+
 	rec := httptest.NewRecorder()
 	handler.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/readyz", nil))
+
 	return rec.Code
 }
 
@@ -160,11 +170,14 @@ func TestReadyzIsUnavailableBeforeTheRuntimeStartsOKWhileItRunsAndUnavailableAft
 	handler := probes.Wrap(http.NotFoundHandler())
 	router := newRouter(t)
 	app := application{jobs: newJobs(), events: router, probes: probes}
+
 	require.Equal(t, http.StatusServiceUnavailable, readyz(t, handler), "before start")
+
 	signalCtx, signal := context.WithCancel(context.Background())
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(signalCtx, func() {}) }()
+
 	require.Eventually(t, func() bool { return readyz(t, handler) == http.StatusOK }, eventually, 10*time.Millisecond, "while running")
 	signal()
 	require.ErrorIs(t, <-errCh, errRuntimeSignal)
@@ -180,14 +193,24 @@ type healthServer struct {
 
 func (h *healthServer) ListenAndServe() error {
 	close(h.served)
+
 	for !h.shutdown.Load() {
 		time.Sleep(time.Millisecond)
 	}
+
 	return http.ErrServerClosed
 }
 
-func (h *healthServer) Shutdown(context.Context) error { h.shutdown.Store(true); return nil }
-func (h *healthServer) Close() error                   { h.shutdown.Store(true); return nil }
+func (h *healthServer) Shutdown(context.Context) error {
+	h.shutdown.Store(true)
+
+	return nil
+}
+func (h *healthServer) Close() error {
+	h.shutdown.Store(true)
+
+	return nil
+}
 
 func TestHealthListenerStartsAndStopsWithTheWorker(t *testing.T) {
 	listener := &healthServer{served: make(chan struct{})}
@@ -196,11 +219,13 @@ func TestHealthListenerStartsAndStopsWithTheWorker(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(signalCtx, func() {}) }()
+
 	select {
 	case <-listener.served:
 	case <-time.After(eventually):
 		t.Fatal("the health listener did not start")
 	}
+
 	signal()
 	require.ErrorIs(t, <-errCh, errRuntimeSignal)
 

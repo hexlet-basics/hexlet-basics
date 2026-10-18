@@ -12,6 +12,7 @@ import (
 
 func TestAKeyHasItsBudgetBackWhenTheWindowPasses(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
 	l := New(time.Minute, func() time.Time { return now })
 
@@ -30,6 +31,7 @@ func TestAKeyHasItsBudgetBackWhenTheWindowPasses(t *testing.T) {
 
 func TestARefusedAttemptSpendsNoBudgetOnTheOtherKeys(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
 	l := New(time.Hour, func() time.Time { return now })
 	ok, _ := l.Allow(Charge{"client", 1})
@@ -49,7 +51,9 @@ func TestARefusedAttemptSpendsNoBudgetOnTheOtherKeys(t *testing.T) {
 
 func TestTheLimiterStopsTrackingNewKeysAtItsCapUntilWindowsExpire(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
+
 	l := New(time.Hour, func() time.Time { return now })
 	for i := range maxTracked {
 		ok, _ := l.Allow(Charge{strconv.Itoa(i), 1})
@@ -70,6 +74,7 @@ func TestTheLimiterStopsTrackingNewKeysAtItsCapUntilWindowsExpire(t *testing.T) 
 // sleeping a moment less is not enough.
 func TestTheRealClockFreesTheBudgetAfterTheWaitItReported(t *testing.T) {
 	t.Parallel()
+
 	for name, early := range map[string]time.Duration{
 		"just before the wait": time.Nanosecond,
 		"exactly the wait":     0,
@@ -80,10 +85,12 @@ func TestTheRealClockFreesTheBudgetAfterTheWaitItReported(t *testing.T) {
 				l := New(time.Minute, time.Now)
 				first, _ := l.Allow(Charge{"a", 1})
 				refused, wait := l.Allow(Charge{"a", 1})
+
 				require.True(t, first)
 				require.False(t, refused)
 
 				time.Sleep(wait - early)
+
 				again, _ := l.Allow(Charge{"a", 1})
 
 				assert.Equal(t, early == 0, again)

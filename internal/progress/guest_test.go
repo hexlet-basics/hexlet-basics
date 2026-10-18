@@ -127,5 +127,6 @@ func hasCourse(g progress.GuestProgress, courseSlug string) bool {
 			return true
 		}
 	}
+
 	return false
 }

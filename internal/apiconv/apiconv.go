@@ -337,11 +337,13 @@ func LearnerLessonSources(infos []*ent.CourseLessonTranslation, state *progress.
 	for _, lesson := range state.Lessons {
 		standing[lesson.Slug] = lesson
 	}
+
 	return lo.Map(infos, func(info *ent.CourseLessonTranslation, _ int) LearnerLessonSource {
 		slug := ""
 		if info.Edges.Lesson != nil {
 			slug = lo.FromPtr(info.Edges.Lesson.Slug)
 		}
+
 		return LearnerLessonSource{Info: info, Standing: standing[slug]}
 	})
 }
@@ -360,11 +362,13 @@ type ModuleSource struct {
 // as in the flat list.
 func ModuleSources(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []ModuleSource {
 	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
+
 	return lo.Map(rows, func(row *ent.CourseModuleTranslation, _ int) ModuleSource {
 		return ModuleSource{
 			Row: row,
 			Lessons: lo.FilterMap(moduleLessonSlugs(row), func(slug string, _ int) (api.LearnerLesson, bool) {
 				lesson, ok := bySlug[slug]
+
 				return lesson, ok
 			}),
 		}
@@ -382,6 +386,7 @@ func dashboardNextLesson(c dashboard.Course) api.NilLessonRef {
 	if c.NextLesson == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	return NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
 }
 
@@ -392,11 +397,13 @@ func NextLessonRef(slug *string, lessons []api.LearnerLesson) api.NilLessonRef {
 	if slug == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	for _, lesson := range lessons {
 		if lesson.Slug == *slug {
 			return api.NewNilLessonRef(lessonRef(lesson))
 		}
 	}
+
 	return api.NilLessonRef{Null: true}
 }
 
@@ -406,6 +413,7 @@ func NamedLessonRef(slug *string, id int, name *string) api.NilLessonRef {
 	if slug == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	return api.NewNilLessonRef(api.LessonRef{ID: Int32FromInt(id), Slug: *slug, Name: NilStringFromPtr(name)})
 }
 
@@ -421,19 +429,23 @@ func AdjacentLessons(slug string, lessons []api.LearnerLesson) api.AdjacentLesso
 		Previous: api.NilLessonRef{Null: true},
 		Next:     api.NilLessonRef{Null: true},
 	}
+
 	index := lo.IndexOf(lo.Map(lessons, func(l api.LearnerLesson, _ int) string { return l.Slug }), slug)
 	if index < 0 {
 		return adjacent
 	}
+
 	ref := func(l api.LearnerLesson) api.NilLessonRef {
 		return api.NewNilLessonRef(lessonRef(l))
 	}
 	if index > 0 {
 		adjacent.Previous = ref(lessons[index-1]) //nolint:gosec // G602: index is in [0, len) here, IndexOf returned it and the index > 0 guard above bounds it below
 	}
+
 	if index < len(lessons)-1 {
 		adjacent.Next = ref(lessons[index+1])
 	}
+
 	return adjacent
 }
 
@@ -471,6 +483,7 @@ func currentBuild(c LessonContent) *ent.CourseVersion {
 	if c.Course == nil || c.Course.Edges.CurrentVersion == nil {
 		return &ent.CourseVersion{}
 	}
+
 	return c.Course.Edges.CurrentVersion
 }
 
@@ -486,6 +499,7 @@ func nilExtension(ext string) api.NilString {
 	if ext == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(ext)
 }
 
@@ -499,6 +513,7 @@ func nilExtension(ext string) api.NilString {
 func lessonTips(raw *string) []string {
 	tips := []string{}
 	decodeLessonYAML(raw, &tips)
+
 	return tips
 }
 
@@ -513,6 +528,7 @@ func lessonDefinitions(raw *string) []api.LessonDefinition {
 	for _, d := range decoded {
 		definitions = append(definitions, api.LessonDefinition{Name: d.Name, Description: d.Description})
 	}
+
 	return definitions
 }
 
@@ -520,6 +536,7 @@ func decodeLessonYAML(raw *string, into any) {
 	if raw == nil || *raw == "" {
 		return
 	}
+
 	_ = yaml.Unmarshal([]byte(*raw), into)
 }
 
@@ -530,6 +547,7 @@ func NilEnrollmentStateFromPtr(v *string) api.NilEnrollmentState {
 	if v == nil || *v == "" {
 		return api.NilEnrollmentState{Null: true}
 	}
+
 	return api.NewNilEnrollmentState(api.EnrollmentState(*v))
 }
 
@@ -550,9 +568,11 @@ func Int32FromInt(v int) int32 {
 	if v > math.MaxInt32 {
 		return math.MaxInt32
 	}
+
 	if v < math.MinInt32 {
 		return math.MinInt32
 	}
+
 	return int32(v)
 }
 
@@ -567,6 +587,7 @@ func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	if v == nil || *v == "" {
 		return api.EnrollmentStateStarted
 	}
+
 	return api.EnrollmentState(*v)
 }
 
@@ -577,10 +598,12 @@ func moduleLessonSlugs(source *ent.CourseModuleTranslation) []string {
 	if source == nil || source.Edges.Version == nil {
 		return []string{}
 	}
+
 	return lo.FilterMap(source.Edges.Version.Edges.LessonVersions, func(v *ent.CourseLessonVersion, _ int) (string, bool) {
 		if v.Edges.Lesson == nil || v.Edges.Lesson.Slug == nil {
 			return "", false
 		}
+
 		return *v.Edges.Lesson.Slug, true
 	})
 }
@@ -592,6 +615,7 @@ func lessonProgressLessonName(source *ent.LessonProgress) string {
 	if source == nil || source.Edges.Lesson == nil || len(source.Edges.Lesson.Edges.Infos) == 0 {
 		return ""
 	}
+
 	return StringFromPtr(source.Edges.Lesson.Edges.Infos[0].Name)
 }
 
@@ -602,6 +626,7 @@ func assistantMessageLessonName(source *ent.AiMessage) string {
 	if source == nil || source.Edges.Chat == nil || source.Edges.Chat.Edges.LessonProgress == nil {
 		return ""
 	}
+
 	return lessonProgressLessonName(source.Edges.Chat.Edges.LessonProgress)
 }
 
@@ -620,9 +645,12 @@ func nilOf[V any, N any, P nilSetter[V, N]](v *V) N {
 	var out N
 	if v == nil {
 		P(&out).SetToNull()
+
 		return out
 	}
+
 	P(&out).SetTo(*v)
+
 	return out
 }
 
@@ -632,6 +660,7 @@ func nilStringAs[V ~string](v *string) *V {
 	if v == nil {
 		return nil
 	}
+
 	return new(V(*v))
 }
 
@@ -646,6 +675,7 @@ func nilInt32From(v *int) *int32 {
 	if v == nil {
 		return nil
 	}
+
 	return new(Int32FromInt(*v))
 }
 
@@ -699,6 +729,7 @@ func NilStringFromEmpty(v string) api.NilString {
 	if v == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(v)
 }
 
@@ -768,6 +799,7 @@ func courseDuration(c *ent.Course) int32 {
 	if c == nil {
 		return 0
 	}
+
 	return Int32FromInt(c.LessonsCount * minutesPerLesson / minutesPerHour)
 }
 
@@ -791,7 +823,9 @@ func grantNames(grants []*ent.StaffRoleGrant) []string {
 	for _, g := range grants {
 		names = append(names, g.Permission)
 	}
+
 	slices.Sort(names)
+
 	return names
 }
 
@@ -811,6 +845,7 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 	if v == nil {
 		return api.NilCourseVersion{Null: true}
 	}
+
 	return api.NewNilCourseVersion(CourseVersionFromEnt(v))
 }
 
@@ -840,6 +875,7 @@ func hexletProgramLandingPage(c *ent.Course) api.NilString {
 	if c.HexletProgramLandingPage == nil || *c.HexletProgramLandingPage == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(*c.HexletProgramLandingPage)
 }
 
@@ -862,6 +898,7 @@ func ratingValue(c *ent.Course) float64 {
 	if c.ID%2 == 0 {
 		return placeholderRatingEven
 	}
+
 	return placeholderRatingOdd
 }
 

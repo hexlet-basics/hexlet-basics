@@ -27,6 +27,7 @@ import (
 func newAuthRouter(t *testing.T) http.Handler {
 	t.Helper()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+
 	return newAuthRouterWithDB(t, db, tx, transactor)
 }
 
@@ -72,6 +73,7 @@ func sessionCookie(resp *http.Response) *http.Cookie {
 			return c
 		}
 	}
+
 	return nil
 }
 
@@ -79,11 +81,14 @@ func do(t *testing.T, router http.Handler, method, path, body string, cookie *ht
 	t.Helper()
 	req := httptest.NewRequestWithContext(t.Context(), method, path, strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
+
 	if cookie != nil {
 		req.AddCookie(cookie)
 	}
+
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
+
 	return rec.Result()
 }
 
@@ -91,17 +96,22 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
-	const email = "auth-flow@example.com"
-	const password = "s3cret-pass"
+
+	const (
+		email    = "auth-flow@example.com"
+		password = "s3cret-pass"
+	)
 
 	// Register sets the cookie and echoes the created user.
 	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"`+email+`","password":"`+password+`"}`, nil)
 	if resp.StatusCode != http.StatusCreated {
 		var failure any
+
 		_ = json.NewDecoder(resp.Body).Decode(&failure)
 		t.Fatalf("register returned %d: %#v", resp.StatusCode, failure)
 	}
+
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	cookie := sessionCookie(resp)
 	require.NotNil(t, cookie, "register must start a session")
@@ -119,6 +129,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	// The cookie resolves the current user via /me.
 	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+
 	var me struct {
 		User *struct {
 			Email string `json:"email"`
@@ -131,6 +142,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	// Without the cookie, /me is anonymous, not an error.
 	resp = do(t, router, http.MethodGet, "/api/me", "", nil)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+
 	var anon struct {
 		User *struct{} `json:"user"`
 	}
@@ -155,6 +167,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"`+email+`","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+
 	var wrongPassword api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&wrongPassword))
 
@@ -162,6 +175,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"missing-auth-flow@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+
 	var missingUser api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&missingUser))
 	assert.Equal(t, wrongPassword, missingUser)
@@ -171,6 +185,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"blank-user@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+
 	var passwordlessUser api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&passwordlessUser))
 	assert.Equal(t, wrongPassword, passwordlessUser)
@@ -180,8 +195,11 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
-	const oldEmail = "jwt-old-email@example.com"
-	const newEmail = "jwt-new-email@example.com"
+
+	const (
+		oldEmail = "jwt-old-email@example.com"
+		newEmail = "jwt-new-email@example.com"
+	)
 
 	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"`+oldEmail+`","password":"s3cret-pass"}`, nil)
@@ -198,6 +216,7 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 
 	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+
 	var me struct {
 		User *struct {
 			Email string `json:"email"`
@@ -234,6 +253,7 @@ func TestAuthLogoutClearsCookie(t *testing.T) {
 	// attacker copied) opens nothing.
 	resp = do(t, router, http.MethodGet, "/api/me", "", signedInCookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
+
 	var me struct {
 		User *struct{} `json:"user"`
 	}
@@ -258,6 +278,7 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
+
 	const email = "admin-revocation@example.com"
 
 	resp := do(t, router, http.MethodPost, "/api/users",
@@ -290,11 +311,13 @@ func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 		strings.NewReader(`{"email":"missing@example.com","password":"wrong"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept-Language", "ru-RU")
+
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+
 	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.Equal(t,
@@ -326,6 +349,7 @@ func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
 	t.Parallel()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	router := newAuthRouterWithDB(t, db, tx, transactor)
+
 	const email = "profile-validation@example.com"
 
 	resp := do(t, router, http.MethodPost, "/api/users",
@@ -342,6 +366,7 @@ func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
 		resp = do(t, router, http.MethodPatch, "/api/account/profile", body, cookie)
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, body)
 	}
+
 	u := db.User.Query().Where(user.Email(email)).OnlyX(t.Context())
 	assert.Equal(t, "Ada", *u.FirstName)
 	assert.Nil(t, u.LastName)

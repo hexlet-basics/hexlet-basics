@@ -37,18 +37,22 @@ func (s *Server) Pending(ctx context.Context, requestID string) (Consent, error)
 	if !ok {
 		return Consent{}, ErrNotSignedIn
 	}
+
 	req, err := s.openRequest(ctx, requestID)
 	if err != nil {
 		return Consent{}, err
 	}
+
 	app, err := s.storage.db.OAuthClient.Query().Where(oauthclient.ClientID(req.ClientID)).Only(ctx)
 	if err != nil {
 		return Consent{}, errs.Wrapf(err, "load client of authorization request")
 	}
+
 	host := ""
 	if u, err := url.Parse(req.RedirectURI); err == nil {
 		host = u.Host
 	}
+
 	return Consent{ClientName: app.Name, RedirectHost: host, Scopes: req.Scopes, Account: account}, nil
 }
 
@@ -61,6 +65,7 @@ func (s *Server) Approve(ctx context.Context, requestID string) (string, error) 
 	if !ok {
 		return "", ErrNotSignedIn
 	}
+
 	now := s.storage.now()
 	// One conditional update decides it: a request is approved at most once, and
 	// never after it expired, whatever the two browser tabs do.
@@ -77,9 +82,11 @@ func (s *Server) Approve(ctx context.Context, requestID string) (string, error) 
 	if err != nil {
 		return "", errs.Wrapf(err, "approve authorization request")
 	}
+
 	if n == 0 {
 		return "", ErrRequestNotFound
 	}
+
 	return s.issuer + callbackPath + "?id=" + url.QueryEscape(requestID), nil
 }
 
@@ -90,25 +97,32 @@ func (s *Server) Deny(ctx context.Context, requestID string) (string, error) {
 	if _, ok := s.signedIn(ctx); !ok {
 		return "", ErrNotSignedIn
 	}
+
 	req, err := s.openRequest(ctx, requestID)
 	if err != nil {
 		return "", err
 	}
+
 	if err := s.storage.DeleteAuthRequest(ctx, requestID); err != nil {
 		return "", err
 	}
+
 	target, err := url.Parse(req.RedirectURI)
 	if err != nil {
 		return "", errs.Wrapf(err, "parse redirect uri of authorization request")
 	}
+
 	query := target.Query()
 	query.Set("error", "access_denied")
 	query.Set("error_description", "The user denied the request.")
 	query.Set("iss", s.issuer)
+
 	if req.State != "" {
 		query.Set("state", req.State)
 	}
+
 	target.RawQuery = query.Encode()
+
 	return target.String(), nil
 }
 
@@ -124,8 +138,10 @@ func (s *Server) openRequest(ctx context.Context, requestID string) (*ent.OAuthA
 	if ent.IsNotFound(err) {
 		return nil, ErrRequestNotFound
 	}
+
 	if err != nil {
 		return nil, errs.Wrapf(err, "load authorization request")
 	}
+
 	return req, nil
 }

@@ -14,12 +14,14 @@ import (
 
 func newSentryClient(t *testing.T) (*sentry.Client, *sentry.MockTransport) {
 	t.Helper()
+
 	transport := &sentry.MockTransport{}
 	client, err := telemetry.NewSentryClient(
 		&config.Config{SentryDSN: "https://public@example.com/1"},
 		telemetry.WithSentryTransport(transport),
 	)
 	require.NoError(t, err)
+
 	return client, transport
 }
 

@@ -21,9 +21,11 @@ func requireProblem(t *testing.T, err error, status int) {
 func problemWithStatus(t *testing.T, err error, status int) *api.ProblemDetailsStatusCode {
 	t.Helper()
 	require.Error(t, err)
+
 	var problem *api.ProblemDetailsStatusCode
 	require.ErrorAs(t, err, &problem)
 	require.Equal(t, status, problem.StatusCode)
 	require.Equal(t, int32(status), problem.Response.Status)
+
 	return problem
 }

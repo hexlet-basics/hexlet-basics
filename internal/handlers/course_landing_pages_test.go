@@ -52,16 +52,20 @@ func fullLandingInput(courseID int32) api.CourseLandingPageInput {
 
 func landingBySlug(t *testing.T, h *testsupport.Harness, slug string) api.CourseLandingPage {
 	t.Helper()
+
 	page, err := h.Client.AdminListCourseLandingPages(context.Background(), api.AdminListCourseLandingPagesParams{
 		PerPage: api.NewOptInt32(100),
 	})
 	require.NoError(t, err)
+
 	for _, it := range page.Items {
 		if it.Slug == slug {
 			return it
 		}
 	}
+
 	t.Fatalf("landing page with slug %q not found", slug)
+
 	return api.CourseLandingPage{}
 }
 

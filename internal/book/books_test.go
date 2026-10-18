@@ -23,6 +23,7 @@ var learnerID = fixture.ID(fixture.UserBlank)
 func newRecorder(t *testing.T) *book.Recorder {
 	t.Helper()
 	_, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+
 	return book.NewRecorder(transactor, testsupport.NewServices(t, tx, transactor).Events)
 }
 

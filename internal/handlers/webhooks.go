@@ -56,6 +56,7 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	if h.secret == "" {
 		http.Error(w, h.i18n.StatusText(ctx, http.StatusNotFound), http.StatusNotFound)
+
 		return
 	}
 
@@ -65,12 +66,15 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		if _, tooLarge := errors.AsType[*http.MaxBytesError](err); tooLarge {
 			status = http.StatusRequestEntityTooLarge
 		}
+
 		http.Error(w, h.i18n.Text(ctx, localization.ReadWebhookBodyFailed), status)
+
 		return
 	}
 
 	if err := github.ValidateSignature(r.Header.Get(github.SHA256SignatureHeader), body, []byte(h.secret)); err != nil {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookSignature), http.StatusUnauthorized)
+
 		return
 	}
 
@@ -78,34 +82,42 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	eventType := github.WebHookType(r)
 	if eventType != "workflow_run" {
 		w.WriteHeader(http.StatusNoContent)
+
 		return
 	}
 
 	parsed, err := github.ParseWebHook(eventType, body)
 	if err != nil {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookPayload), http.StatusBadRequest)
+
 		return
 	}
+
 	payload, ok := parsed.(*github.WorkflowRunEvent)
 	if !ok {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookPayload), http.StatusBadRequest)
+
 		return
 	}
 
 	slug, ok := h.buildTargetSlug(payload)
 	if !ok {
 		w.WriteHeader(http.StatusNoContent)
+
 		return
 	}
 
 	built, err := h.triggerBuild(ctx, slug)
 	if err != nil {
 		http.Error(w, h.i18n.Text(ctx, localization.TriggerBuildFailed), http.StatusInternalServerError)
+
 		return
 	}
+
 	if !built {
 		// No course matches this repo — nothing to build, but a valid delivery.
 		w.WriteHeader(http.StatusNoContent)
+
 		return
 	}
 
@@ -118,18 +130,23 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 // relied on (only CI-built content is served).
 func (h *GitHubWebhookHandler) buildTargetSlug(event *github.WorkflowRunEvent) (string, bool) {
 	run := event.GetWorkflowRun()
+
 	repo := event.GetRepo()
 	if event.GetAction() != "completed" || run.GetConclusion() != "success" {
 		return "", false
 	}
+
 	if run.GetHeadBranch() != repo.GetDefaultBranch() {
 		return "", false
 	}
+
 	name := repo.GetName()
+
 	slug, ok := strings.CutPrefix(name, coursePrefix)
 	if !ok || slug == "" {
 		return "", false
 	}
+
 	return slug, true
 }
 
@@ -141,5 +158,6 @@ func (h *GitHubWebhookHandler) triggerBuild(ctx context.Context, slug string) (b
 	if errors.Is(err, domain.ErrNotFound) {
 		return false, nil
 	}
+
 	return err == nil, err
 }

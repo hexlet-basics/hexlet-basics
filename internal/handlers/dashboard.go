@@ -25,6 +25,7 @@ func (s *Server) GetMyDashboard(ctx context.Context) (*api.MyDashboard, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return dashboard, nil
 }
 

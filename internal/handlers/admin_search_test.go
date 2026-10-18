@@ -84,6 +84,7 @@ func TestAdminListCourseLandingPagesSearchMatchesTheSlug(t *testing.T) {
 	page, err := h.Client.AdminListCourseLandingPages(context.Background(), api.AdminListCourseLandingPagesParams{Q: api.NewOptString("RUBY-")})
 
 	require.NoError(t, err)
+
 	slugs := lo.Map(page.Items, func(p api.CourseLandingPage, _ int) string { return p.Slug })
 	assert.ElementsMatch(t, []string{"ruby-ru", "ruby-en"}, slugs)
 }

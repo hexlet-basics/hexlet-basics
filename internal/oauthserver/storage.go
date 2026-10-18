@@ -55,6 +55,7 @@ func randomToken(n int) (string, error) {
 	if _, err := rand.Read(b); err != nil {
 		return "", errs.Wrapf(err, "read random bytes")
 	}
+
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
@@ -70,6 +71,7 @@ func validTokenID(id string) bool {
 	if id == "" || len(id) > 128 {
 		return false
 	}
+
 	for i := range len(id) {
 		c := id[i]
 		switch {
@@ -78,6 +80,7 @@ func validTokenID(id string) bool {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -86,6 +89,7 @@ func validTokenID(id string) bool {
 // 128-bit-plus random values, so a fast hash is sufficient.
 func digest(secret string) string {
 	sum := sha256.Sum256([]byte(secret))
+
 	return hex.EncodeToString(sum[:])
 }
 
@@ -101,14 +105,17 @@ func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, 
 	if req.CodeChallenge == "" || req.CodeChallengeMethod != oidc.CodeChallengeMethodS256 {
 		return nil, oidc.ErrInvalidRequest().WithDescription("PKCE is required: send code_challenge with code_challenge_method=S256")
 	}
+
 	if len(req.Prompt) == 1 && req.Prompt[0] == oidc.PromptNone {
 		// Nobody can sign in without a screen, so there is no silent grant.
 		return nil, oidc.ErrLoginRequired()
 	}
+
 	id, err := randomToken(idBytes)
 	if err != nil {
 		return nil, err
 	}
+
 	row, err := s.db.OAuthAuthRequest.Create().
 		SetID(id).
 		SetClientID(req.ClientID).
@@ -124,6 +131,7 @@ func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, 
 	if err != nil {
 		return nil, errs.Wrapf(err, "create authorization request")
 	}
+
 	return &authRequest{row: row, resource: s.resource}, nil
 }
 
@@ -135,6 +143,7 @@ func (s *storage) AuthRequestByID(ctx context.Context, id string) (op.AuthReques
 	if err != nil {
 		return nil, errs.Wrapf(err, "authorization request")
 	}
+
 	return &authRequest{row: row, resource: s.resource}, nil
 }
 
@@ -142,12 +151,14 @@ func (s *storage) AuthRequestByID(ctx context.Context, id string) (op.AuthReques
 // by the code's hash.
 func (s *storage) AuthRequestByCode(ctx context.Context, code string) (op.AuthRequest, error) {
 	hash := digest(code)
+
 	row, err := s.db.OAuthAuthRequest.Query().
 		Where(oauthauthrequest.CodeHash(hash), oauthauthrequest.ExpiresAtGT(s.now())).
 		Only(ctx)
 	if err != nil {
 		return nil, errs.Wrapf(err, "authorization code")
 	}
+
 	return &authRequest{row: row, resource: s.resource}, nil
 }
 
@@ -163,9 +174,11 @@ func (s *storage) SaveAuthCode(ctx context.Context, id, code string) error {
 	if err != nil {
 		return errs.Wrapf(err, "save authorization code")
 	}
+
 	if n == 0 {
 		return errNotAwaitingCode
 	}
+
 	return nil
 }
 
@@ -175,6 +188,7 @@ func (s *storage) DeleteAuthRequest(ctx context.Context, id string) error {
 	if _, err := s.db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ID(id)).Exec(ctx); err != nil {
 		return errs.Wrapf(err, "delete authorization request")
 	}
+
 	return nil
 }
 
@@ -198,6 +212,7 @@ func (a *authRequest) GetAuthTime() time.Time {
 	if a.row.AuthTime == nil {
 		return time.Time{}
 	}
+
 	return *a.row.AuthTime
 }
 func (a *authRequest) GetCodeChallenge() *oidc.CodeChallenge {
@@ -219,6 +234,7 @@ func (a *authRequest) GetSubject() string {
 	if a.row.UserID == nil {
 		return ""
 	}
+
 	return strconv.Itoa(*a.row.UserID)
 }
 
@@ -236,6 +252,7 @@ func userIDOf(req op.TokenRequest) (int, error) {
 	if err != nil {
 		return 0, errs.With("subject", req.GetSubject()).Wrapf(err, "token subject is not a user")
 	}
+
 	return id, nil
 }
 
@@ -246,6 +263,7 @@ func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (s
 	if !ok {
 		return "", time.Time{}, errs.With("request_type", fmt.Sprintf("%T", req)).Errorf("unsupported token request")
 	}
+
 	userID, err := userIDOf(req)
 	if err != nil {
 		return "", time.Time{}, err
@@ -256,7 +274,9 @@ func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (s
 	if err != nil {
 		return "", time.Time{}, err
 	}
+
 	id, expires, err := s.insertAccessToken(ctx, s.db, owner, userID, "", family)
+
 	return id, expires, err
 }
 
@@ -276,13 +296,17 @@ func (s *storage) CreateAccessAndRefreshTokens(
 	if !ok {
 		return "", "", time.Time{}, errs.With("request_type", fmt.Sprintf("%T", req)).Errorf("unsupported token request")
 	}
+
 	userID, err := userIDOf(req)
 	if err != nil {
 		return "", "", time.Time{}, err
 	}
 
-	var accessID, refresh string
-	var expires time.Time
+	var (
+		accessID, refresh string
+		expires           time.Time
+	)
+
 	err = s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		var family string
 		if current == "" {
@@ -294,6 +318,7 @@ func (s *storage) CreateAccessAndRefreshTokens(
 			// Spend the presented token, then end the access token it was paired
 			// with: only the new pair is alive afterwards.
 			hash := digest(current)
+
 			claimed, err := db.OAuthRefreshToken.Update().
 				Where(oauthrefreshtoken.TokenHash(hash), oauthrefreshtoken.UsedAtIsNil(), oauthrefreshtoken.ExpiresAtGT(s.now())).
 				SetUsedAt(s.now()).
@@ -301,13 +326,16 @@ func (s *storage) CreateAccessAndRefreshTokens(
 			if err != nil {
 				return errs.Wrapf(err, "spend refresh token")
 			}
+
 			if claimed == 0 {
 				return errRefreshNotSpendable
 			}
+
 			old, err := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.TokenHash(hash)).Only(ctx)
 			if err != nil {
 				return errs.Wrapf(err, "refresh token")
 			}
+
 			family = old.FamilyID
 			if _, err := db.OAuthAccessToken.Delete().
 				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx); err != nil {
@@ -319,18 +347,22 @@ func (s *storage) CreateAccessAndRefreshTokens(
 		if err != nil {
 			return err
 		}
+
 		refresh, err = randomToken(secretBytes)
 		if err != nil {
 			return err
 		}
+
 		accessID, expires, err = s.insertAccessToken(ctx, db, owner, userID, refreshID, family)
 		if err != nil {
 			return err
 		}
+
 		authTime := owner.GetAuthTime()
 		if authTime.IsZero() {
 			authTime = s.now()
 		}
+
 		return db.OAuthRefreshToken.Create().
 			SetID(refreshID).
 			SetTokenHash(digest(refresh)).
@@ -348,9 +380,11 @@ func (s *storage) CreateAccessAndRefreshTokens(
 		// is dealt with in a transaction of its own.
 		return "", "", time.Time{}, s.refuseUnspendable(ctx, current)
 	}
+
 	if err != nil {
 		return "", "", time.Time{}, err
 	}
+
 	return accessID, refresh, expires, nil
 }
 
@@ -364,9 +398,11 @@ func (s *storage) TokenRequestByRefreshToken(ctx context.Context, refresh string
 	if err != nil {
 		return nil, errs.Wrapf(err, "refresh token")
 	}
+
 	if row.UsedAt != nil {
 		return nil, s.refuseReuse(ctx, row)
 	}
+
 	return &refreshRequest{row: row, scopes: row.Scopes, resource: s.resource}, nil
 }
 
@@ -382,9 +418,11 @@ func (s *storage) GetRefreshTokenInfo(ctx context.Context, _ string, token strin
 	if ent.IsNotFound(err) {
 		return "", "", op.ErrInvalidRefreshToken
 	}
+
 	if err != nil {
 		return "", "", errs.Wrapf(err, "refresh token info")
 	}
+
 	return strconv.Itoa(row.UserID), row.ID, nil
 }
 
@@ -399,6 +437,7 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 		// end, and RFC 7009 answers 200 for a token that is not there.
 		return nil
 	}
+
 	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		access, err := db.OAuthAccessToken.Get(ctx, id)
 		switch {
@@ -406,6 +445,7 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 			if access.ClientID != clientID {
 				return errWrongClient
 			}
+
 			return db.OAuthAccessToken.DeleteOne(access).Exec(ctx)
 		case !ent.IsNotFound(err):
 			return err
@@ -415,12 +455,15 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 		if ent.IsNotFound(err) {
 			return nil
 		}
+
 		if err != nil {
 			return err
 		}
+
 		if refresh.ClientID != clientID {
 			return errWrongClient
 		}
+
 		return deleteFamily(ctx, db, refresh.FamilyID)
 	})
 	switch {
@@ -439,13 +482,16 @@ func (s *storage) TerminateSession(ctx context.Context, userID, clientID string)
 	if err != nil {
 		return errs.With("subject", userID).Wrapf(err, "session subject is not a user")
 	}
+
 	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		if _, err := db.OAuthAccessToken.Delete().
 			Where(oauthaccesstoken.UserID(id), oauthaccesstoken.ClientID(clientID)).Exec(ctx); err != nil {
 			return err
 		}
+
 		_, err := db.OAuthRefreshToken.Delete().
 			Where(oauthrefreshtoken.UserID(id), oauthrefreshtoken.ClientID(clientID)).Exec(ctx)
+
 		return err
 	})
 }
@@ -454,9 +500,11 @@ func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
 	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
 		return errs.Wrapf(err, "delete family access tokens")
 	}
+
 	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
 		return errs.Wrapf(err, "delete family refresh tokens")
 	}
+
 	return nil
 }
 
@@ -497,6 +545,7 @@ func (s *storage) GetClientByClientID(ctx context.Context, clientID string) (op.
 	if err != nil {
 		return nil, errs.With("client_id", clientID).Wrapf(err, "load client")
 	}
+
 	return &client{row: row, loginBase: s.issuer + consentPagePath}, nil
 }
 
@@ -519,12 +568,14 @@ func (k publicKey) Key() any                         { return k.key }
 // encryption secret) shows up as a new id in the key set.
 func keyID(key any) string {
 	var pub ed25519.PublicKey
+
 	switch k := key.(type) {
 	case ed25519.PrivateKey:
 		pub = k.Public().(ed25519.PublicKey)
 	case ed25519.PublicKey:
 		pub = k
 	}
+
 	return digest(string(pub))[:16]
 }
 
@@ -541,6 +592,7 @@ func (s *storage) Health(context.Context) error { return nil }
 // disclosed: no profile or email claim is offered.
 func (s *storage) SetUserinfoFromScopes(_ context.Context, info *oidc.UserInfo, userID, _ string, _ []string) error {
 	info.Subject = userID
+
 	return nil
 }
 
@@ -552,7 +604,9 @@ func (s *storage) SetUserinfoFromToken(ctx context.Context, info *oidc.UserInfo,
 	if _, err := s.liveAccessToken(ctx, tokenID, subject); err != nil {
 		return err
 	}
+
 	info.Subject = subject
+
 	return nil
 }
 
@@ -581,7 +635,9 @@ func (s *storage) insertAccessToken(
 	if err != nil {
 		return "", time.Time{}, err
 	}
+
 	expires := s.now().Add(s.accessLifetime)
+
 	create := db.OAuthAccessToken.Create().
 		SetID(id).
 		SetClientID(owner.GetClientID()).
@@ -592,9 +648,11 @@ func (s *storage) insertAccessToken(
 	if refreshID != "" {
 		create.SetRefreshTokenID(refreshID)
 	}
+
 	if err := create.Exec(ctx); err != nil {
 		return "", time.Time{}, errs.Wrapf(err, "create access token")
 	}
+
 	return id, expires, nil
 }
 
@@ -611,6 +669,7 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 	case err != nil:
 		return errs.Wrapf(err, "refresh token")
 	}
+
 	return s.refuseReuse(ctx, row)
 }
 
@@ -622,6 +681,7 @@ func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) e
 	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
 		return oidc.ErrServerError().WithParent(err)
 	}
+
 	return oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again")
 }
 
@@ -640,20 +700,26 @@ func (s *storage) revokeFamily(ctx context.Context, familyID string) error {
 // token is retained instead of deleted. It returns how many rows it removed.
 func PurgeExpired(ctx context.Context, db *ent.Client, now time.Time) (int, error) {
 	total := 0
+
 	n, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
 		return total, errs.Wrapf(err, "purge access tokens")
 	}
+
 	total += n
+
 	n, err = db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
 		return total, errs.Wrapf(err, "purge refresh tokens")
 	}
+
 	total += n
+
 	n, err = db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
 		return total, errs.Wrapf(err, "purge authorization requests")
 	}
+
 	return total + n, nil
 }
 

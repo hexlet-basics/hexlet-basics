@@ -25,7 +25,9 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
+
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.False(t, view.Enrollment.Null)
@@ -54,6 +56,7 @@ func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 	progress := view.Progress.Value
 
@@ -74,7 +77,9 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
+
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	assert.True(t, view.Enrollment.Null, "no enrollment for a visitor with no session")
@@ -103,12 +108,14 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 
 	names := make([]string, 0, len(view.Modules))
 	for _, m := range view.Modules {
 		names = append(names, m.Name.Value)
 	}
+
 	assert.Equal(t, []string{"Основы", "Арифметика", "Строки"}, names,
 		"ru translations only, ordered by the module version's order")
 
@@ -127,12 +134,14 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "go-ru"})
 	require.NoError(t, err)
+
 	view := res
 
 	questions := make([]string, 0, len(view.QnaItems))
 	for _, item := range view.QnaItems {
 		questions = append(questions, item.Question)
 	}
+
 	assert.Equal(t, []string{"Сколько длится курс Go?", "Есть ли сертификат?"}, questions)
 
 	res, err = h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
@@ -149,6 +158,7 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 
 	require.True(t, view.Enrollment.Null, "a guest has no enrollment")
@@ -171,6 +181,7 @@ func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 	progress := view.Progress.Value
 
@@ -189,6 +200,7 @@ func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 
 	require.False(t, view.Progress.Null)
@@ -206,6 +218,7 @@ func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 
 	require.False(t, view.Progress.Null)
@@ -231,10 +244,12 @@ func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 	assert.Equal(t, jsCourseSlug, view.Course.Slug)
 	assert.Equal(t, jsLandingSlug, view.LandingPage.Value.Slug)
@@ -260,6 +275,7 @@ func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
@@ -288,6 +304,7 @@ func TestGetCourseIsNotFoundForAnArchivedPageWithNowhereToGo(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 	h.DB.CourseLandingPage.Update().
 		Where(courselandingpage.SlugEQ(jsLandingSlug)).
@@ -305,6 +322,7 @@ func progressCookie(lessonSlugs ...string) progress.GuestProgress {
 	for _, slug := range lessonSlugs {
 		guest = guest.Record(jsCourseSlug, slug)
 	}
+
 	return guest
 }
 
@@ -315,5 +333,6 @@ func moduleLessonSlugs(m api.CourseModule) []string {
 	for _, lesson := range m.Lessons {
 		slugs = append(slugs, lesson.Slug)
 	}
+
 	return slugs
 }

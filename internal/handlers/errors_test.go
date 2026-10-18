@@ -54,10 +54,12 @@ func (h *failingCoursesHandler) NewError(ctx context.Context, err error) *api.Pr
 
 func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
 	var logs bytes.Buffer
+
 	logger := logging.NewTo(&logs, slog.LevelInfo)
 	transport := &sentry.MockTransport{}
 	client, err := sentry.NewClient(sentry.ClientOptions{
@@ -67,8 +69,10 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	require.NoError(t, err)
 
 	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSampler(sdktrace.AlwaysSample()))
+
 	ctx, span := tracerProvider.Tracer("test").Start(t.Context(), "request")
 	defer span.End()
+
 	ctx = sentry.SetHubOnContext(ctx, sentry.NewHub(client, sentry.NewScope()))
 
 	handler := handlers.NewAPIErrorHandler(translator, logger)
@@ -97,10 +101,13 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 }
 
 func TestAPIErrorHandlerLogsOopsAttributesOfUnexpectedErrors(t *testing.T) {
+	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
 	var logs bytes.Buffer
+
 	handler := handlers.NewAPIErrorHandler(translator, logging.NewTo(&logs, slog.LevelInfo))
 	request := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/courses/3", nil)
 	cause := oops.In("courses").With("course_id", 3).Wrapf(errBoom, "load course")
@@ -112,8 +119,10 @@ func TestAPIErrorHandlerLogsOopsAttributesOfUnexpectedErrors(t *testing.T) {
 
 func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	transport := &sentry.MockTransport{}
 	client, err := telemetry.NewSentryClient(
 		&config.Config{SentryDSN: "https://public@example.com/1"},
@@ -133,10 +142,12 @@ func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
 
 func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
 	var logs bytes.Buffer
+
 	logger := slog.New(slog.NewJSONHandler(&logs, nil))
 	transport := &sentry.MockTransport{}
 	client, err := sentry.NewClient(sentry.ClientOptions{
@@ -169,10 +180,12 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 // failure, so it must not land in the error log or Sentry.
 func TestAPIErrorHandlerDoesNotReportClientCancellation(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
 	var logs bytes.Buffer
+
 	logger := slog.New(slog.NewJSONHandler(&logs, nil))
 	transport := &sentry.MockTransport{}
 	client, err := sentry.NewClient(sentry.ClientOptions{
@@ -193,14 +206,17 @@ func TestAPIErrorHandlerDoesNotReportClientCancellation(t *testing.T) {
 
 func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	transport := &sentry.MockTransport{}
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{
 		Dsn:       "https://public@example.com/1",
 		Transport: transport,
 	})
 	require.NoError(t, err)
+
 	errorHandler := handlers.NewAPIErrorHandler(
 		translator,
 		slog.New(slog.NewJSONHandler(&bytes.Buffer{}, nil)),
@@ -215,6 +231,7 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 		Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
 			recorder := httptest.NewRecorder()
 			telemetry.NewSentryHTTPHandler(sentryClient, server).ServeHTTP(recorder, request)
+
 			return recorder.Result(), nil
 		}),
 	}))
@@ -230,6 +247,7 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 		Title:  "Internal Server Error",
 		Status: http.StatusInternalServerError,
 	}, problem.Response)
+
 	events := transport.Events()
 	require.Len(t, events, 1)
 	assert.Equal(t, http.MethodGet, events[0].Request.Method)

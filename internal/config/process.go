@@ -19,9 +19,11 @@ func LoadDotenv() error {
 	if appEnv := os.Getenv("APP_ENV"); appEnv != "" && appEnv != string(Development) {
 		return nil
 	}
+
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		return oops.Wrapf(err, "load .env")
 	}
+
 	return nil
 }
 
@@ -32,8 +34,10 @@ func ColorOverride() (bool, bool) {
 	if os.Getenv("NO_COLOR") != "" {
 		return false, true
 	}
+
 	if os.Getenv("FORCE_COLOR") != "" {
 		return true, true
 	}
+
 	return false, false
 }

@@ -67,6 +67,7 @@ func TestAGarbledSessionCookieIsNoSession(t *testing.T) {
 
 	me := do(t, router, http.MethodGet, "/api/me", "", garbled)
 	require.Equal(t, http.StatusOK, me.StatusCode)
+
 	var current struct {
 		User *struct{} `json:"user"`
 	}

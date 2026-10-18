@@ -33,19 +33,24 @@ var alice = fixture.ID(fixture.UserAdminLearner)
 
 func body(t *testing.T, res *http.Response) string {
 	t.Helper()
+
 	defer func() { _ = res.Body.Close() }()
+
 	b, err := io.ReadAll(res.Body)
 	require.NoError(t, err)
+
 	return string(b)
 }
 
 func initialize(t *testing.T, o *testsupport.OAuth, mutate func(*http.Request)) *http.Response {
 	t.Helper()
+
 	return o.Do(http.MethodPost, "/mcp", nil, func(r *http.Request) {
 		r.Body = io.NopCloser(strings.NewReader(
 			`{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"t","version":"0"}}}`))
 		r.Header.Set("Content-Type", "application/json")
 		r.Header.Set("Accept", "application/json, text/event-stream")
+
 		if mutate != nil {
 			mutate(r)
 		}
@@ -80,6 +85,7 @@ func TestResourceMetadataIsServedAtBothWellKnownLocations(t *testing.T) {
 	} {
 		res := o.Do(http.MethodGet, path, nil)
 		defer func() { _ = res.Body.Close() }()
+
 		require.Equal(t, http.StatusOK, res.StatusCode, path)
 
 		var doc map[string]any
@@ -111,13 +117,16 @@ func TestBearerTokenIsNotAcceptedOnAnyAPIOperation(t *testing.T) {
 	// An operation that identifies the caller when it can: the cookie session
 	// resolves the user, the bearer token does not, so a visitor comes back.
 	session := testsupport.SessionFor(t, o.DB, alice)
+
 	withCookie := o.Do(http.MethodGet, "/api/me", nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 	defer func() { _ = withCookie.Body.Close() }()
+
 	require.Equal(t, http.StatusOK, withCookie.StatusCode)
 	assert.Contains(t, body(t, withCookie), strconv.Itoa(alice))
 
 	withBearer := o.Do(http.MethodGet, "/api/me", nil, bearer)
 	defer func() { _ = withBearer.Body.Close() }()
+
 	require.Equal(t, http.StatusOK, withBearer.StatusCode)
 	assert.NotContains(t, body(t, withBearer), strconv.Itoa(alice))
 
@@ -136,12 +145,15 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	var tool *mcp.Tool
+
 	for _, candidate := range tools.Tools {
 		if candidate.Name == "listCourses" {
 			tool = candidate
 		}
 	}
+
 	require.NotNil(t, tool, "the catalogue tool is offered beside the admin ones")
 	assert.True(t, tool.Annotations.ReadOnlyHint)
 
@@ -164,6 +176,7 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 	// The advertised schema, which comes from the contract, accepts the content.
 	raw, err := json.Marshal(tool.OutputSchema)
 	require.NoError(t, err)
+
 	var schema jsonschema.Schema
 	require.NoError(t, json.Unmarshal(raw, &schema))
 	resolved, err := schema.Resolve(nil)
@@ -176,10 +189,12 @@ func TestToolAnswersInTheLocaleOfTheRequest(t *testing.T) {
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
 
 	locales := map[string]bool{}
+
 	for _, language := range []string{"en", "ru"} {
 		session := o.MCPClient(tokens.AccessToken, func(r *http.Request) { r.Header.Set("Accept-Language", language) })
 		result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "listCourses"})
 		require.NoError(t, err)
+
 		for _, c := range result.StructuredContent.(map[string]any)["courses"].([]any) {
 			locales[language+":"+c.(map[string]any)["locale"].(string)] = true
 		}
@@ -220,12 +235,15 @@ func (emptyCatalogue) ListCourses(context.Context) ([]api.CourseCatalogItem, err
 
 func status(t *testing.T, v verifier) int {
 	t.Helper()
+
 	server, err := mcpserver.New(mcpserver.Deps{Verifier: v, Catalogue: emptyCatalogue{}, Issuer: testsupport.OAuthIssuer})
 	require.NoError(t, err)
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/mcp", strings.NewReader("{}"))
 	req.Header.Set("Authorization", "Bearer anything")
+
 	rec := httptest.NewRecorder()
 	server.Handler().ServeHTTP(rec, req)
+
 	return rec.Code
 }
 
@@ -255,6 +273,7 @@ func TestVerifierFailureOfOursIsAServerErrorWithoutDetail(t *testing.T) {
 	require.NoError(t, err)
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/mcp", strings.NewReader("{}"))
 	req.Header.Set("Authorization", "Bearer anything")
+
 	rec := httptest.NewRecorder()
 
 	server.Handler().ServeHTTP(rec, req)

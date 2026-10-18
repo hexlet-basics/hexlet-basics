@@ -46,6 +46,7 @@ func relatedSlugs(t *testing.T, db *ent.Client, postID int) []string {
 		Order(ent.Asc(blogpostrelatedcourseitem.FieldOrder), ent.Asc(blogpostrelatedcourseitem.FieldID)).
 		WithCourse().
 		AllX(t.Context())
+
 	return lo.Map(items, func(i *ent.BlogPostRelatedCourseItem, _ int) string {
 		return lo.FromPtr(i.Edges.Course.Slug)
 	})

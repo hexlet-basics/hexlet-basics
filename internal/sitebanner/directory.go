@@ -43,5 +43,6 @@ func (d *Directory) Active(ctx context.Context, locale string, now time.Time) (*
 			banner.ByID(sql.OrderDesc()),
 		).
 		First(ctx)
+
 	return row, domain.FromStore(err)
 }

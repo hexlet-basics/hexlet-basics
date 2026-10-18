@@ -38,9 +38,11 @@ func (w *purgeOAuthTokensWorker) Work(ctx context.Context, _ *river.Job[PurgeOAu
 	if err != nil {
 		return errs.Wrapf(err, "purge oauth tokens")
 	}
+
 	if n > 0 {
 		w.logger.InfoContext(ctx, "purged expired oauth rows", slog.Int("rows", n))
 	}
+
 	return nil
 }
 

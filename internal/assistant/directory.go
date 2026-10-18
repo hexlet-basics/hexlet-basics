@@ -44,5 +44,6 @@ func (d *Directory) Messages(ctx context.Context, locale, search string, page do
 	if term := strings.TrimSpace(search); term != "" {
 		query = query.Where(aimessage.ContentContainsFold(term))
 	}
+
 	return domain.Paged(ctx, query, page)
 }

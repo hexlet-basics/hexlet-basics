@@ -56,14 +56,18 @@ const requestIDHeader = "X-Request-ID"
 // same behaviour with a different audit.Source in the context.
 func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {
 	logger := errorHandler.logger
+
 	return func(req middleware.Request, next middleware.Next) (middleware.Response, error) {
 		if !permissioncatalog.IsAdminWrite(req.OperationName) {
 			return next(req)
 		}
+
 		base := req.Context
 
-		var resp middleware.Response
-		var err error
+		var (
+			resp middleware.Response
+			err  error
+		)
 		if permissioncatalog.Standalone(req.OperationName) {
 			resp, err = runStandalone(txStore, i18n, req, next)
 		} else {
@@ -80,23 +84,28 @@ func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator,
 		if recordErr := RecordOutcome(ctx, txStore, i18n, req.OperationName, audit.OutcomeFailed); recordErr != nil {
 			logger.ErrorContext(ctx, "recording a failed admin call", "operation", req.OperationName, "err", recordErr)
 		}
+
 		return resp, err
 	}
 }
 
 func runInTransaction(txStore store.Transactor, i18n *localization.Translator, req middleware.Request, next middleware.Next) (middleware.Response, error) {
 	var resp middleware.Response
+
 	err := txStore.WithinTx(req.Context, func(tx *sql.Tx, client *ent.Client) error {
 		ctx, recorder := audit.WithRecorder(store.WithAmbientTx(req.Context, tx, client))
 		req.SetContext(ctx)
 
 		var handlerErr error
+
 		resp, handlerErr = next(req)
 		if handlerErr != nil {
 			return handlerErr
 		}
+
 		return audit.Write(ctx, client, auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded), recorder)
 	})
+
 	return resp, err
 }
 
@@ -108,10 +117,12 @@ func runStandalone(txStore store.Transactor, i18n *localization.Translator, req 
 	if err != nil {
 		return resp, err
 	}
+
 	entry := auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded)
 	err = txStore.WithinTx(ctx, func(_ *sql.Tx, client *ent.Client) error {
 		return audit.Write(ctx, client, entry, recorder)
 	})
+
 	return resp, err
 }
 
@@ -122,6 +133,7 @@ func runStandalone(txStore store.Transactor, i18n *localization.Translator, req 
 // allowed to read.
 func RecordOutcome(ctx context.Context, txStore store.Transactor, i18n *localization.Translator, operation string, outcome audit.Outcome) error {
 	entry := auditEntry(ctx, operation, i18n, outcome)
+
 	return txStore.WithinTx(ctx, func(_ *sql.Tx, client *ent.Client) error {
 		return audit.Write(ctx, client, entry, nil)
 	})
@@ -133,6 +145,7 @@ func RecordOutcome(ctx context.Context, txStore store.Transactor, i18n *localiza
 // http.Request, leaves address and user agent empty.
 func auditEntry(ctx context.Context, operation string, i18n *localization.Translator, outcome audit.Outcome) audit.Entry {
 	info, _ := ctx.Value(requestInfoKey{}).(requestInfo)
+
 	entry := audit.Entry{
 		Source:    audit.SourceFrom(ctx),
 		Operation: operation,
@@ -145,7 +158,9 @@ func auditEntry(ctx context.Context, operation string, i18n *localization.Transl
 		id := user.ID
 		entry.Actor = &id
 	}
+
 	entry.Address, _ = ClientIP(ctx)
+
 	return entry
 }
 
@@ -156,8 +171,10 @@ func requestID(ctx context.Context, info requestInfo) string {
 	if info.requestID != "" {
 		return info.requestID
 	}
+
 	if sc := trace.SpanContextFromContext(ctx); sc.HasTraceID() {
 		return sc.TraceID().String()
 	}
+
 	return rand.Text()
 }

@@ -36,6 +36,7 @@ func callTool(t *testing.T, session *mcp.ClientSession, name string, args map[st
 	t.Helper()
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: name, Arguments: args})
 	require.NoError(t, err)
+
 	return result
 }
 
@@ -45,6 +46,7 @@ func structured(t *testing.T, result *mcp.CallToolResult) map[string]any {
 	require.False(t, result.IsError, "%+v", result.Content)
 	content, ok := result.StructuredContent.(map[string]any)
 	require.True(t, ok, "%T", result.StructuredContent)
+
 	return content
 }
 
@@ -54,6 +56,7 @@ func textOf(t *testing.T, result *mcp.CallToolResult) string {
 	require.Len(t, result.Content, 1)
 	text, ok := result.Content[0].(*mcp.TextContent)
 	require.True(t, ok)
+
 	return text.Text
 }
 
@@ -62,28 +65,36 @@ func outputSchemas(t *testing.T, session *mcp.ClientSession) map[string]*jsonsch
 	t.Helper()
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	schemas := map[string]*jsonschema.Resolved{}
+
 	for _, tool := range tools.Tools {
 		raw, err := json.Marshal(tool.OutputSchema)
 		require.NoError(t, err)
+
 		var schema jsonschema.Schema
 		require.NoError(t, json.Unmarshal(raw, &schema))
 		resolved, err := schema.Resolve(nil)
 		require.NoError(t, err)
+
 		schemas[tool.Name] = resolved
 	}
+
 	return schemas
 }
 
 // courseCount is how many courses the catalogue has in the connection's locale.
 func courseCount(t *testing.T, session *mcp.ClientSession) int {
 	t.Helper()
+
 	return int(structured(t, callTool(t, session, "listCourses", map[string]any{"perPage": 1}))["total"].(float64))
 }
 
 func connect(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()
+
 	tokens := o.Connect(userID, scopes...)
+
 	return o.MCPClient(tokens.AccessToken, russian)
 }
 
@@ -124,13 +135,16 @@ func TestEveryCatalogueToolIsReadOnlyAndNamedAfterItsOperation(t *testing.T) {
 	require.NoError(t, err)
 
 	var names []string
+
 	for _, tool := range tools.Tools {
 		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) || tool.Name == "findTools" {
 			continue // the admin tools are tested in admin_test.go, the lookup in discovery_test.go
 		}
+
 		names = append(names, tool.Name)
 		assert.True(t, tool.Annotations.ReadOnlyHint, tool.Name)
 	}
+
 	assert.ElementsMatch(t, []string{
 		"listCourses", "listPublicCourseCategories", "getPublicCourseCategory",
 		"getCourse", "getCourseLesson", "listBlogPosts", "getBlogPost",
@@ -145,6 +159,7 @@ func TestCourseToolReturnsTheCourseWithItsLessonsAsTheHTTPOperationDoes(t *testi
 
 	res := o.Do(http.MethodGet, "/api/languages/"+jsLanding, nil, russian)
 	defer func() { _ = res.Body.Close() }()
+
 	var visitor map[string]any
 	require.NoError(t, json.NewDecoder(res.Body).Decode(&visitor))
 	assert.Equal(t, visitor, content, "a tool and the operation cannot answer differently")
@@ -159,6 +174,7 @@ func TestLessonToolReturnsTheContentAndTestsTheHTTPOperationGivesAVisitor(t *tes
 
 	res := o.Do(http.MethodGet, "/api/languages/"+jsCourse+"/lessons/"+firstLesson, nil, russian)
 	defer func() { _ = res.Body.Close() }()
+
 	var visitor map[string]any
 	require.NoError(t, json.NewDecoder(res.Body).Decode(&visitor))
 	assert.Equal(t, visitor, content, "the same fields, the same values, for the same visitor")
@@ -186,6 +202,7 @@ func TestAnsweringAsAVisitorNeverCarriesWhatOnlyASignedInLearnerSees(t *testing.
 	lesson := structured(t, callTool(t, session, "getCourseLesson", map[string]any{"courseSlug": jsCourse, "slug": firstLesson}))
 	lessonProgress, _ := lesson["progress"].(map[string]any)
 	assert.EqualValues(t, 0, lessonProgress["completion"])
+
 	raw, err := json.Marshal(lesson)
 	require.NoError(t, err)
 	assert.NotContains(t, string(raw), `"finished":true`, "no lesson reads as finished for a visitor")
@@ -197,10 +214,12 @@ func TestOnlyPublishedPostsOfTheLocaleAreReadable(t *testing.T) {
 
 	posts := structured(t, callTool(t, session, "listBlogPosts", nil))
 	listed := posts["items"].([]any)
+
 	slugs := make([]string, 0, len(listed))
 	for _, p := range listed {
 		slugs = append(slugs, p.(map[string]any)["slug"].(string))
 	}
+
 	assert.ElementsMatch(t, []string{"hello-world", "learning-ruby", "oldest-post"}, slugs, "no draft, archived or English post")
 
 	for _, slug := range []string{"second-post", "archived-notes", "english-post"} {
@@ -251,10 +270,12 @@ func TestEveryCatalogueToolRefusesAConnectionWithoutTheCatalogReadScope(t *testi
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	for _, tool := range tools.Tools {
 		if strings.HasPrefix(tool.Name, "admin") || isLearnerTool(tool.Name) || tool.Name == "findTools" {
 			continue
 		}
+
 		result := callTool(t, session, tool.Name, map[string]any{"slug": "x", "courseSlug": "x"})
 
 		assert.True(t, result.IsError, tool.Name)
@@ -298,6 +319,7 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
 
 	var slugs []string
+
 	total := courseCount(t, session)
 	for page := 1; page <= (total+1)/2; page++ {
 		content := structured(t, callTool(t, session, "listCourses", map[string]any{"page": page, "perPage": 2}))
@@ -305,12 +327,15 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 			slugs = append(slugs, c.(map[string]any)["slug"].(string))
 		}
 	}
+
 	all := structured(t, callTool(t, session, "listCourses", nil))["courses"].([]any)
 	require.Len(t, all, total)
+
 	want := make([]string, 0, len(all))
 	for _, c := range all {
 		want = append(want, c.(map[string]any)["slug"].(string))
 	}
+
 	assert.Equal(t, want, slugs)
 
 	past := structured(t, callTool(t, session, "listCourses", map[string]any{"page": 99}))
@@ -323,6 +348,7 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 
 func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T) {
 	const limit = 3000
+
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
 	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
 	schemas := outputSchemas(t, session)
@@ -340,6 +366,7 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 	assert.Equal(t, true, hint["truncated"])
 	assert.EqualValues(t, limit, hint["limitBytes"])
 	assert.Contains(t, textOf(t, result), "truncation")
+
 	kept := len(content["courses"].([]any))
 	total := courseCount(t, session)
 	assert.Less(t, kept, total)
@@ -348,6 +375,7 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 
 	// Following the hint reads the rest, and the pages together hold every course.
 	var slugs []string
+
 	perPage := int(hint["suggestedPerPage"].(float64))
 	for page := 1; len(slugs) < total && page < 20; page++ {
 		next := structured(t, callTool(t, session, "listCourses", map[string]any{"page": page, "perPage": perPage}))
@@ -355,6 +383,7 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 			slugs = append(slugs, c.(map[string]any)["slug"].(string))
 		}
 	}
+
 	assert.Len(t, slugs, total)
 }
 
@@ -373,6 +402,7 @@ func TestResponseUnderTheLimitCarriesNoHint(t *testing.T) {
 // never a half-cut or invalid result.
 func TestARecordThatCannotBeShortenedToTheLimitIsRefusedByName(t *testing.T) {
 	const limit = 2000
+
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
 	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
 

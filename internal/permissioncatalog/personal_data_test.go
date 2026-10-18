@@ -13,6 +13,7 @@ import (
 // operations only, and names the ent type the operation reads.
 func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
 	t.Parallel()
+
 	entity, ok := permissioncatalog.PersonalDataEntity("AdminListUsers")
 	require.True(t, ok)
 	assert.Equal(t, "User", entity)
@@ -20,10 +21,12 @@ func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
 	for _, operation := range []string{"AdminListLeads", "AdminListMessages", "AdminListLessonProgress", "AdminGetUser", "AdminSearchUsers", "AdminListManagementUsers", "AdminGetManagementUser"} {
 		assert.Contains(t, permissioncatalog.PersonalDataReads(), operation)
 	}
+
 	for _, operation := range []string{"AdminListCourses", "AdminGetCourse", "AdminListBlogPosts", "AdminListBanners", "AdminListCourseLessons", "AdminCreateBlogPost"} {
 		_, ok := permissioncatalog.PersonalDataEntity(operation)
 		assert.False(t, ok, "%s reads content, not personal data", operation)
 	}
+
 	for _, operation := range permissioncatalog.PersonalDataReads() {
 		requirement, ok := permissioncatalog.For(operation)
 		require.True(t, ok)
@@ -33,6 +36,7 @@ func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
 
 func TestPersonalDataOnAWriteOrUnclassifiedOperationIsRejected(t *testing.T) {
 	t.Parallel()
+
 	for name, doc := range map[string]string{
 		"on a write": `
 paths:

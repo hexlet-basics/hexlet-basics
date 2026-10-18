@@ -55,12 +55,15 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 				if err != nil {
 					return nil, errs.With("type", m.Type(), "field", name).Wrapf(err, "audit: read old value")
 				}
+
 				old[name] = v
 			}
 		}
 
 		var deleted []FieldChange
+
 		missing := false
+
 		if m.Op().Is(ent.OpDeleteOne) {
 			if key := entityKey(m); key != nil {
 				row, err := loader.AuditRow(ctx, m.Type(), key)
@@ -88,9 +91,11 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 		} else {
 			change.Fields = fieldChanges(m, old, secret)
 		}
+
 		if !missing {
 			rec.add(change)
 		}
+
 		return value, nil
 	})
 }
@@ -120,6 +125,7 @@ func entityKey(m ent.Mutation) any {
 			return id
 		}
 	}
+
 	return nil
 }
 
@@ -131,6 +137,7 @@ func entityID(m ent.Mutation) string {
 	case string:
 		return key
 	}
+
 	return ""
 }
 
@@ -144,20 +151,26 @@ func deletedFields(row map[string]any, secret []string) []FieldChange {
 			names = append(names, name)
 		}
 	}
+
 	slices.Sort(names)
 
 	var out []FieldChange
+
 	for _, name := range names {
 		value := toJSON(row[name])
 		if value == nil {
 			continue
 		}
+
 		if slices.Contains(secret, name) {
 			out = append(out, FieldChange{Name: name, Secret: true})
+
 			continue
 		}
+
 		out = append(out, FieldChange{Name: name, Old: value})
 	}
+
 	return out
 }
 
@@ -165,14 +178,17 @@ func deletedFields(row map[string]any, secret []string) []FieldChange {
 // and for a bulk update, where there is no single row to read.
 func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldChange {
 	var out []FieldChange
+
 	for _, name := range slices.Concat(m.Fields(), m.ClearedFields()) {
 		if slices.Contains(ownedFields, name) {
 			continue
 		}
+
 		var newValue any
 		if v, ok := m.Field(name); ok {
 			newValue = v
 		}
+
 		oldValue := old[name]
 
 		if slices.Contains(secret, name) {
@@ -180,19 +196,25 @@ func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldCh
 			if old != nil && sameJSON(oldValue, newValue) {
 				continue
 			}
+
 			out = append(out, FieldChange{Name: name, Secret: true})
+
 			continue
 		}
+
 		if old != nil && sameJSON(oldValue, newValue) {
 			continue
 		}
+
 		fc := FieldChange{Name: name}
 		if old != nil {
 			fc.Old = toJSON(oldValue)
 		}
+
 		fc.New = toJSON(newValue)
 		out = append(out, fc)
 	}
+
 	return out
 }
 
@@ -201,13 +223,16 @@ func toJSON(v any) json.RawMessage {
 	if v == nil {
 		return nil
 	}
+
 	raw, err := json.Marshal(v)
 	if err != nil {
 		return json.RawMessage(strconv.Quote(fmt.Sprint(v)))
 	}
+
 	if bytes.Equal(raw, []byte("null")) {
 		return nil
 	}
+
 	return raw
 }
 

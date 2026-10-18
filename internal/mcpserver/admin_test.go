@@ -47,20 +47,24 @@ func call(t *testing.T, session *mcp.ClientSession, name string, args map[string
 	t.Helper()
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: name, Arguments: args})
 	require.NoError(t, err)
+
 	return result
 }
 
 // admin connects an assistant for the user with the admin Scope.
 func admin(t *testing.T, o *testsupport.OAuth, userID int) (*mcp.ClientSession, oauthserver.Token) {
 	t.Helper()
+
 	tokens := o.Connect(userID, oauthserver.ScopeAdmin)
 	token, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
+
 	return o.MCPClient(tokens.AccessToken), token
 }
 
 func firstBannerID(t *testing.T, o *testsupport.OAuth) int {
 	t.Helper()
+
 	return o.DB.Banner.Query().Order(banner.ByID()).FirstIDX(t.Context())
 }
 
@@ -80,11 +84,13 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 	require.NoError(t, err)
 
 	var names []string
+
 	for _, tool := range tools.Tools {
 		if strings.HasPrefix(tool.Name, "admin") {
 			names = append(names, tool.Name)
 		}
 	}
+
 	slices.Sort(names)
 	// The tools are exactly the allowlist: an excluded operation is in the
 	// contract and is not a tool.
@@ -109,11 +115,14 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	for _, tool := range tools.Tools {
 		byName[tool.Name] = tool
 	}
+
 	schemaOf := func(v any) map[string]any {
 		raw, err := json.Marshal(v)
 		require.NoError(t, err)
+
 		var m map[string]any
 		require.NoError(t, json.Unmarshal(raw, &m))
+
 		return m
 	}
 
@@ -154,12 +163,15 @@ func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 	// The advertised output schema accepts what came back.
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	for _, tool := range tools.Tools {
 		if tool.Name != "adminListBanners" {
 			continue
 		}
+
 		raw, err := json.Marshal(tool.OutputSchema)
 		require.NoError(t, err)
+
 		var schema jsonschema.Schema
 		require.NoError(t, json.Unmarshal(raw, &schema))
 		resolved, err := schema.Resolve(nil)
@@ -243,6 +255,7 @@ func TestReadIsRefusedWithoutMCPRead(t *testing.T) {
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 
 	assertRefused(t, result)
+
 	records := o.Records("AdminListBanners")
 	require.Len(t, records, 1)
 	assert.Equal(t, "forbidden", records[0].Outcome)
@@ -283,6 +296,7 @@ func TestTokenWithoutTheAdminScopeIsRefused(t *testing.T) {
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 
 	assertRefused(t, result)
+
 	records := o.Records("AdminListBanners")
 	require.Len(t, records, 1)
 	assert.Equal(t, "forbidden", records[0].Outcome)
@@ -324,6 +338,7 @@ func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 		assert.True(t, result.IsError, name)
 		assert.Contains(t, textOf(t, result), "locale", name)
 	}
+
 	assert.Empty(t, o.Records("AdminListBanners"), "an invalid call never reaches the checkpoint")
 
 	assertRefused(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}))
@@ -359,6 +374,7 @@ func TestValidationFailureIsAToolErrorAndIsRecordedAsFailed(t *testing.T) {
 
 	require.True(t, result.IsError)
 	assert.Contains(t, textOf(t, result), "HTTP 400")
+
 	records := o.Records("AdminUpdateBanner")
 	// The generated server refuses an empty body while decoding, before the
 	// handler and before the audit middleware, like over HTTP.
@@ -376,6 +392,7 @@ func TestMissingBannerIsTheSameNotFoundHTTPAnswers(t *testing.T) {
 
 	require.True(t, result.IsError)
 	assert.Contains(t, textOf(t, result), "HTTP 404")
+
 	records := o.Records("AdminUpdateBanner")
 	require.Len(t, records, 1)
 	assert.Equal(t, "failed", records[0].Outcome)
@@ -394,6 +411,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	overHTTP := func(input map[string]any) (int, string) {
 		raw, err := json.Marshal(input)
 		require.NoError(t, err)
+
 		res := o.Do(http.MethodPut, path, nil, func(r *http.Request) {
 			r.Body = io.NopCloser(bytes.NewReader(raw))
 			r.ContentLength = int64(len(raw))
@@ -402,6 +420,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 			r.AddCookie(cookie.Cookie)
 		})
 		defer func() { _ = res.Body.Close() }()
+
 		return res.StatusCode, body(t, res)
 	}
 	overMCP := func(input map[string]any) *mcp.CallToolResult {
@@ -411,16 +430,21 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	// 1. Refused: banners.update is not held. The same status and the same
 	// problem document, and a forbidden record from each channel.
 	status, httpBody := overHTTP(bannerInput("refused"))
+
 	o.Grant(editor, "mcp.write")
+
 	refused := overMCP(bannerInput("refused"))
+
 	assert.Equal(t, http.StatusForbidden, status)
 	require.True(t, refused.IsError)
 	assert.Equal(t, "HTTP 403: "+httpBody, textOf(t, refused))
 
 	// 2. Invalid input: the same 400 and problem document.
 	o.Grant(editor, "banners.update")
+
 	status, httpBody = overHTTP(bannerInput(""))
 	invalid := overMCP(bannerInput(""))
+
 	assert.Equal(t, http.StatusBadRequest, status)
 	require.True(t, invalid.IsError)
 	assert.Equal(t, "HTTP 400: "+httpBody, textOf(t, invalid))
@@ -428,23 +452,29 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	// 3. Allowed: the same banner comes back and the same record is written.
 	status, httpBody = overHTTP(bannerInput("same"))
 	require.Equal(t, http.StatusOK, status, httpBody)
+
 	viaMCP := overMCP(bannerInput("same"))
 	require.False(t, viaMCP.IsError, "%+v", viaMCP.Content)
+
 	var viaHTTP map[string]any
 	require.NoError(t, json.Unmarshal([]byte(httpBody), &viaHTTP))
+
 	mcpBanner := viaMCP.StructuredContent.(map[string]any)
 	for _, k := range []string{"id", "body", "state", "background", "locale", "url"} {
 		assert.Equal(t, viaHTTP[k], mcpBanner[k], k)
 	}
 
 	records := o.Records("AdminUpdateBanner")
+
 	byOutcome := map[string]map[string]*string{}
 	for _, r := range records {
 		if byOutcome[r.Outcome] == nil {
 			byOutcome[r.Outcome] = map[string]*string{}
 		}
+
 		byOutcome[r.Outcome][r.Channel] = r.Locale
 	}
+
 	for _, outcome := range []string{"forbidden", "succeeded"} {
 		assert.Contains(t, byOutcome[outcome], "web", outcome)
 		assert.Contains(t, byOutcome[outcome], "mcp", outcome)
@@ -479,6 +509,7 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 		result := call(t, session, tool.Name, sampleArguments(t, tool))
 		assertRefused(t, result)
 	}
+
 	assert.Positive(t, checked)
 	assert.Zero(t, o.DB.AuditRecord.Query().Where(auditrecord.Outcome("succeeded")).CountX(t.Context()))
 	assert.Equal(t, 5, o.DB.Banner.Query().CountX(t.Context()))
@@ -489,14 +520,18 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 // refuses before the request is read.
 func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 	t.Helper()
+
 	raw, err := json.Marshal(tool.InputSchema)
 	require.NoError(t, err)
+
 	var schema struct {
 		Required   []string                  `json:"required"`
 		Properties map[string]map[string]any `json:"properties"`
 	}
 	require.NoError(t, json.Unmarshal(raw, &schema))
+
 	args := map[string]any{}
+
 	for _, name := range schema.Required {
 		switch property := schema.Properties[name]; {
 		case name == "locale":
@@ -511,6 +546,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 			args[name] = map[string]any{}
 		}
 	}
+
 	return args
 }
 
@@ -525,6 +561,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
+
 	bannerID := fixture.ID(fixture.BannerRuPublished)
 	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
@@ -533,6 +570,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 		r.Header.Set("Accept-Language", "en")
 	})
 	defer func() { _ = read.Body.Close() }()
+
 	assert.Equal(t, http.StatusUnauthorized, read.StatusCode)
 
 	// What the in-process request carries, sent from outside.
@@ -543,6 +581,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 		r.Body = io.NopCloser(strings.NewReader(`{}`))
 	})
 	defer func() { _ = write.Body.Close() }()
+
 	assert.Equal(t, http.StatusUnauthorized, write.StatusCode)
 	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), bannerID).Body)
 }

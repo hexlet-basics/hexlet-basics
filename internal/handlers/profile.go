@@ -11,6 +11,7 @@ import (
 func (s *Server) GetProfile(ctx context.Context) (*api.User, error) {
 	u := MustAuthenticatedUser(ctx)
 	profile := s.conv.ToUser(u)
+
 	return &profile, nil
 }
 
@@ -27,16 +28,20 @@ func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (*api
 	} else {
 		update.ClearFirstName()
 	}
+
 	if value, ok := req.LastName.Get(); ok {
 		update.SetLastName(string(value))
 	} else {
 		update.ClearLastName()
 	}
+
 	u, err := update.Save(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	profile := s.conv.ToUser(u)
+
 	return &profile, nil
 }
 
@@ -50,8 +55,10 @@ func (s *Server) DeleteAccount(ctx context.Context) error {
 	if err := s.remover.Remove(ctx, u.ID); err != nil {
 		return err
 	}
+
 	if err := s.sessions.End(ctx); err != nil {
 		return err
 	}
+
 	return nil
 }

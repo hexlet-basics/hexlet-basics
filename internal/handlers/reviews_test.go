@@ -18,16 +18,20 @@ import (
 // reviewByBody resolves a fixture review by its body (a stable business key).
 func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review {
 	t.Helper()
+
 	page, err := h.Client.AdminListReviews(context.Background(), api.AdminListReviewsParams{
 		PerPage: api.NewOptInt32(100),
 	})
 	require.NoError(t, err)
+
 	for _, it := range page.Items {
 		if it.Body.Value == body {
 			return it
 		}
 	}
+
 	t.Fatalf("review with body %q not found", body)
+
 	return api.Review{}
 }
 
@@ -43,6 +47,7 @@ func TestAdminListReviews(t *testing.T) {
 
 	assert.Equal(t, int32(totalReviews), page.Total)
 	assert.Len(t, page.Items, totalReviews)
+
 	for i := 1; i < len(page.Items); i++ {
 		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
 	}

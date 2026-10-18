@@ -43,6 +43,7 @@ func NewPolicy(db *ent.Client) *Policy {
 // locale, and ErrForbidden otherwise.
 func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation string) error {
 	required, declares := permissioncatalog.For(operation)
+
 	admin := lo.FromPtr(u.Admin)
 	if admin && (!declares || !permissioncatalog.IsCapability(required.Permission)) {
 		return nil
@@ -77,13 +78,16 @@ func (p *Policy) HasCapability(ctx context.Context, u *ent.User, capability stri
 	if !permissioncatalog.IsCapability(capability) {
 		return errs.With("capability", capability).Errorf("not a capability permission")
 	}
+
 	staff, isStaff, err := p.staffMember(ctx, u)
 	if err != nil {
 		return err
 	}
+
 	if !isStaff {
 		return ErrForbidden
 	}
+
 	return p.requireGrant(ctx, staff, capability)
 }
 
@@ -98,9 +102,11 @@ func (p *Policy) requireGrant(ctx context.Context, staff *ent.StaffMember, permi
 	if err != nil {
 		return err
 	}
+
 	if !held {
 		return ErrForbidden
 	}
+
 	return nil
 }
 
@@ -110,10 +116,12 @@ func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember
 	if staff := u.Edges.StaffMember; staff != nil {
 		return staff, true, nil
 	}
+
 	staff, err := u.QueryStaffMember().Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil, false, nil
 	}
+
 	return staff, err == nil, err
 }
 

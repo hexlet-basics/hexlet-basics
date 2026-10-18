@@ -70,10 +70,12 @@ func (r *Reader) Get(ctx context.Context, id int) (Post, error) {
 	if err != nil {
 		return Post{}, err
 	}
+
 	posts, err := r.Assemble(ctx, []*ent.BlogPost{row})
 	if err != nil {
 		return Post{}, err
 	}
+
 	return posts[0], nil
 }
 
@@ -89,11 +91,14 @@ func (r *Reader) List(ctx context.Context, search string, page domain.Page) ([]P
 			blogpost.DescriptionContainsFold(term),
 		))
 	}
+
 	rows, total, err := domain.Paged(ctx, query, page)
 	if err != nil {
 		return nil, 0, err
 	}
+
 	posts, err := r.Assemble(ctx, rows)
+
 	return posts, total, err
 }
 
@@ -105,16 +110,19 @@ func (r *Reader) Assemble(ctx context.Context, rows []*ent.BlogPost) ([]Post, er
 	if len(rows) == 0 {
 		return []Post{}, nil
 	}
+
 	ids := lo.Map(rows, func(p *ent.BlogPost, _ int) int { return p.ID })
 
 	covers, err := r.coverKeys(ctx, ids)
 	if err != nil {
 		return nil, err
 	}
+
 	likes, err := r.likeCounts(ctx, ids)
 	if err != nil {
 		return nil, err
 	}
+
 	related, err := r.relatedCourseIDs(ctx, ids)
 	if err != nil {
 		return nil, err
@@ -140,6 +148,7 @@ func (r *Reader) Assemble(ctx context.Context, rows []*ent.BlogPost) ([]Post, er
 			posts[i].CoverURL = assetstore.URL(r.publicURL, key)
 		}
 	}
+
 	return posts, nil
 }
 
@@ -157,7 +166,9 @@ func (r *Reader) coverKeys(ctx context.Context, ids []int) (map[int]string, erro
 	if err != nil {
 		return nil, err
 	}
+
 	withBlob := lo.Filter(rows, func(a *ent.ActiveStorageAttachment, _ int) bool { return a.Edges.Blob != nil })
+
 	return lo.SliceToMap(withBlob, func(a *ent.ActiveStorageAttachment) (int, string) {
 		return a.RecordID, a.Edges.Blob.Key
 	}), nil
@@ -178,13 +189,16 @@ func (r *Reader) relatedCourseIDs(ctx context.Context, ids []int) (map[int][]int
 	if err != nil {
 		return nil, err
 	}
+
 	out := make(map[int][]int, len(ids))
 	for _, id := range ids {
 		out[id] = []int{}
 	}
+
 	for _, row := range rows {
 		out[row.BlogPostID] = append(out[row.BlogPostID], row.CourseID)
 	}
+
 	return out, nil
 }
 
@@ -194,7 +208,9 @@ func (r *Reader) likeCounts(ctx context.Context, ids []int) (map[int]int, error)
 		BlogPostID int `json:"blog_post_id"`
 		Count      int `json:"count"`
 	}
+
 	var rows []row
+
 	err := r.db.BlogPostLike.Query().
 		Where(blogpostlike.BlogPostIDIn(ids...)).
 		GroupBy(blogpostlike.FieldBlogPostID).
@@ -203,6 +219,7 @@ func (r *Reader) likeCounts(ctx context.Context, ids []int) (map[int]int, error)
 	if err != nil {
 		return nil, err
 	}
+
 	return lo.SliceToMap(rows, func(r row) (int, int) { return r.BlogPostID, r.Count }), nil
 }
 
@@ -211,6 +228,7 @@ func (r *Reader) likeCounts(ctx context.Context, ids []int) (map[int]int, error)
 // wrong). An empty body stays 0.
 func readingTime(richBodyHTML string) int {
 	words := len(strings.Fields(htmltext.PlainText(richBodyHTML)))
+
 	return (words + wordsPerMinute - 1) / wordsPerMinute
 }
 
@@ -232,6 +250,7 @@ func (l *Liker) Like(ctx context.Context, postID, userID int) error {
 	if _, err := l.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).OnlyID(ctx); err != nil {
 		return err
 	}
+
 	err := l.db.BlogPostLike.Create().
 		SetBlogPostID(postID).
 		SetUserID(userID).
@@ -242,5 +261,6 @@ func (l *Liker) Like(ctx context.Context, postID, userID int) error {
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return oops.Wrapf(err, "like post %d by user %d", postID, userID)
 	}
+
 	return nil
 }

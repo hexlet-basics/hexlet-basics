@@ -72,11 +72,14 @@ func TestDeleteAccount(t *testing.T) {
 
 	// The session cookie comes back expired, as on sign-out.
 	expired := map[string]bool{}
+
 	for _, raw := range h.ResponseCookies() {
 		cookie, err := http.ParseSetCookie(raw)
 		require.NoError(t, err)
+
 		expired[cookie.Name] = cookie.MaxAge < 0 || cookie.Value == ""
 	}
+
 	assert.Equal(t, map[string]bool{auth.CookieName: true}, expired)
 
 	// The row stays, removed and erased; what is not identifying is kept.

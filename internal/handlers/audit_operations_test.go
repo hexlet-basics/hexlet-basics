@@ -101,8 +101,10 @@ func TestAStandaloneOperationRunsItsHandlerWithoutATransactionOpen(t *testing.T)
 		testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 
 	var openDuringHandler int32 = -1
+
 	probe := func(middleware.Request) (middleware.Response, error) {
 		openDuringHandler = tracked.open.Load()
+
 		return middleware.Response{}, nil
 	}
 
@@ -177,5 +179,6 @@ type trackedTransactor struct {
 func (t *trackedTransactor) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) error) error {
 	t.open.Add(1)
 	defer t.open.Add(-1)
+
 	return t.inner.WithinTx(ctx, fn)
 }

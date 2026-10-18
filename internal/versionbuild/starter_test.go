@@ -23,6 +23,7 @@ func TestStarterCreatesTheVersionAndItsJobTogether(t *testing.T) {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	riverClient, err := jobs.NewInsertOnlyClient(nil, nil, nil, nil)
 	require.NoError(t, err)
+
 	starter := versionbuild.NewStarter(transactor, jobs.NewEnqueuer(transactor, riverClient))
 
 	version, err := starter.Start(ctx, fixture.ID(fixture.CourseRuby))

@@ -31,6 +31,7 @@ func (s *Server) AdminListCourseOptions(ctx context.Context) ([]api.CourseOption
 	for _, row := range rows {
 		options = append(options, api.CourseOption{ID: apiconv.Int32FromInt(row.ID), Name: row.Name})
 	}
+
 	return options, nil
 }
 
@@ -88,11 +89,13 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil, errCourseNotFound
 	}
+
 	if err != nil {
 		return nil, err
 	}
 
 	body := apiconv.CourseVersionFromEnt(version)
+
 	return &body, nil
 }
 
@@ -103,8 +106,10 @@ func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCo
 	if errors.Is(err, domain.ErrNotFound) {
 		return errCourseNotFound
 	}
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

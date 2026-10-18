@@ -38,6 +38,7 @@ func (c *Category) List(ctx context.Context, categoryID int) ([]*ent.CategoryQna
 		Where(categoryqnaitem.CourseCategoryID(categoryID)).
 		Order(ent.Asc(categoryqnaitem.FieldID)).
 		All(ctx)
+
 	return rows, domain.FromStore(err)
 }
 
@@ -48,6 +49,7 @@ func (c *Category) Create(ctx context.Context, categoryID int, fields Fields) (*
 		SetQuestion(fields.Question).
 		SetAnswer(fields.Answer).
 		Save(ctx)
+
 	return row, domain.FromStore(err)
 }
 
@@ -58,7 +60,9 @@ func (c *Category) Update(ctx context.Context, categoryID, id int, fields Fields
 	if err != nil {
 		return nil, err
 	}
+
 	updated, err := row.Update().SetQuestion(fields.Question).SetAnswer(fields.Answer).Save(ctx)
+
 	return updated, domain.FromStore(err)
 }
 
@@ -68,6 +72,7 @@ func (c *Category) Delete(ctx context.Context, categoryID, id int) error {
 	if err != nil {
 		return err
 	}
+
 	return domain.FromStore(c.db.CategoryQnaItem.DeleteOne(row).Exec(ctx))
 }
 
@@ -75,6 +80,7 @@ func (c *Category) find(ctx context.Context, categoryID, id int) (*ent.CategoryQ
 	row, err := c.db.CategoryQnaItem.Query().
 		Where(categoryqnaitem.ID(id), categoryqnaitem.CourseCategoryID(categoryID)).
 		Only(ctx)
+
 	return row, domain.FromStore(err)
 }
 
@@ -94,6 +100,7 @@ func (l *LandingPage) List(ctx context.Context, landingPageID int) ([]*ent.Landi
 		Where(landingpageqnaitem.CourseLandingPageID(landingPageID)).
 		Order(ent.Asc(landingpageqnaitem.FieldID)).
 		All(ctx)
+
 	return rows, domain.FromStore(err)
 }
 
@@ -104,6 +111,7 @@ func (l *LandingPage) Create(ctx context.Context, landingPageID int, fields Fiel
 		SetQuestion(fields.Question).
 		SetAnswer(fields.Answer).
 		Save(ctx)
+
 	return row, domain.FromStore(err)
 }
 
@@ -114,7 +122,9 @@ func (l *LandingPage) Update(ctx context.Context, landingPageID, id int, fields 
 	if err != nil {
 		return nil, err
 	}
+
 	updated, err := row.Update().SetQuestion(fields.Question).SetAnswer(fields.Answer).Save(ctx)
+
 	return updated, domain.FromStore(err)
 }
 
@@ -124,6 +134,7 @@ func (l *LandingPage) Delete(ctx context.Context, landingPageID, id int) error {
 	if err != nil {
 		return err
 	}
+
 	return domain.FromStore(l.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx))
 }
 
@@ -131,5 +142,6 @@ func (l *LandingPage) find(ctx context.Context, landingPageID, id int) (*ent.Lan
 	row, err := l.db.LandingPageQnaItem.Query().
 		Where(landingpageqnaitem.ID(id), landingpageqnaitem.CourseLandingPageID(landingPageID)).
 		Only(ctx)
+
 	return row, domain.FromStore(err)
 }

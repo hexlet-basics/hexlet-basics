@@ -60,6 +60,7 @@ func newLoaderWith(
 	fetcher courseloader.Fetcher,
 ) *courseloader.Loader {
 	t.Helper()
+
 	return newLoaderWithCompletion(t, db, txStore, fetcher,
 		events.NewPublisher(txStore, slog.New(slog.DiscardHandler)))
 }
@@ -74,13 +75,17 @@ func newLoaderWithCompletion(
 	publisher events.TxPublisher,
 ) *courseloader.Loader {
 	t.Helper()
+
 	bucket := memblob.OpenBucket(nil)
+
 	t.Cleanup(func() { _ = bucket.Close() })
+
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
 
 	// Promotion re-evaluates completion and never runs a submission, so the
 	// loader's progress module needs no exercise runner.
 	tracker := progress.New(db, txStore, publisher, progress.UnavailableRunner{})
+
 	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker,
 		courseloader.WithClock(func() time.Time { return testsupport.Today }))
 }
@@ -88,6 +93,7 @@ func newLoaderWithCompletion(
 // newLoader builds a loader that fetches the committed fixture course.
 func newLoader(t *testing.T, db *ent.Client, txStore store.Transactor) *courseloader.Loader {
 	t.Helper()
+
 	return newLoaderWith(t, db, txStore, repoFetcher(fixtureRepo(t)))
 }
 
@@ -120,6 +126,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	mods := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
 	require.Len(t, mods, 1)
 	assert.Equal(t, "basics", derefStr(mods[0].Slug))
+
 	mvs := db.CourseModuleVersion.Query().Where(coursemoduleversion.CourseVersionID(version.ID)).AllX(ctx)
 	require.Len(t, mvs, 1)
 	assert.Equal(t, 10, *mvs[0].Order)
@@ -260,6 +267,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 
 	require.Error(t, err)
 	require.ErrorContains(t, err, "unsupported asset media type")
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -289,6 +297,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 
 	require.Error(t, err)
 	require.ErrorContains(t, err, "open image")
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -346,16 +355,20 @@ func derefStr(s *string) string {
 	if s == nil {
 		return ""
 	}
+
 	return *s
 }
 
 func lessonInfoByLocale(t *testing.T, infos []*ent.CourseLessonTranslation, locale string) *ent.CourseLessonTranslation {
 	t.Helper()
+
 	for _, in := range infos {
 		if in.Locale != nil && *in.Locale == locale {
 			return in
 		}
 	}
+
 	t.Fatalf("no lesson info for locale %q", locale)
+
 	return nil
 }

@@ -26,14 +26,19 @@ func partitionNames(t *testing.T, tx *sql.Tx) []string {
 		JOIN pg_class c ON c.oid = i.inhrelid
 		WHERE i.inhparent = 'audit_records'::regclass ORDER BY c.relname`)
 	require.NoError(t, err)
+
 	defer func() { _ = rows.Close() }()
+
 	var names []string
+
 	for rows.Next() {
 		var name string
 		require.NoError(t, rows.Scan(&name))
 		names = append(names, name)
 	}
+
 	require.NoError(t, rows.Err())
+
 	return names
 }
 
@@ -47,14 +52,17 @@ func addRecordAt(t *testing.T, client *ent.Client, at time.Time) *ent.AuditRecor
 		Operation:  "AdminUpdateBlogPost",
 		Outcome:    audit.OutcomeSucceeded,
 	}, nil))
+
 	return client.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context())
 }
 
 func partitionOf(t *testing.T, tx *sql.Tx, id int) string {
 	t.Helper()
+
 	var name string
 	require.NoError(t, tx.QueryRowContext(t.Context(),
 		"SELECT tableoid::regclass::text FROM audit_records WHERE id = $1", id).Scan(&name))
+
 	return name
 }
 
@@ -69,6 +77,7 @@ func TestEnsureAheadCreatesThisAndTheNextMonthsOnce(t *testing.T) {
 	for _, want := range []string{"audit_records_p202410", "audit_records_p202411", "audit_records_p202412", "audit_records_p202501"} {
 		assert.Contains(t, names, want)
 	}
+
 	assert.NotContains(t, names, "audit_records_p202502")
 	assert.Contains(t, names, "audit_records_default", "the safety net is never dropped or replaced")
 }
@@ -104,6 +113,7 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 	partitions := audit.NewPartitions(store.NewTxDriver(tx))
 	// May to October 2024 exist, each with one record.
 	records := map[time.Month]*ent.AuditRecord{}
+
 	for month := time.May; month <= time.October; month++ {
 		require.NoError(t, partitions.EnsureAhead(t.Context(), time.Date(2024, month, 1, 0, 0, 0, 0, time.UTC)))
 		records[month] = addRecordAt(t, client, time.Date(2024, month, 15, 0, 0, 0, 0, time.UTC))
@@ -116,6 +126,7 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 	assert.ElementsMatch(t, []string{
 		"audit_records_p202405", "audit_records_p202406", "audit_records_p202407", "audit_records_p202408",
 	}, dropped)
+
 	for _, month := range []time.Month{time.May, time.June, time.July, time.August} {
 		_, err = client.AuditRecord.Get(t.Context(), records[month].ID)
 		assert.True(t, ent.IsNotFound(err), "the record of %s went with its partition", month)
@@ -126,6 +137,7 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 		_, err = client.AuditRecord.Get(t.Context(), records[month].ID)
 		require.NoError(t, err, "the record of %s is kept", month)
 	}
+
 	assert.Contains(t, partitionNames(t, tx), "audit_records_default")
 }
 

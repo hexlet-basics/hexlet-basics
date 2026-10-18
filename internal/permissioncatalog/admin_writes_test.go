@@ -27,6 +27,7 @@ func TestAnAdminWriteIsDecidedFromTheContractNotFromAList(t *testing.T) {
 
 func TestAnOperationOnlyAnAccessMarkerClassifiesIsJudgedByItsMethod(t *testing.T) {
 	t.Parallel()
+
 	d, err := permissioncatalog.Parse([]byte(`
 paths:
   /a:

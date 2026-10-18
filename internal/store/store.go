@@ -57,6 +57,7 @@ func NewDB(dsn string) (*sql.DB, error) {
 func NewClient(db *sql.DB) *ent.Client {
 	client := ent.NewClient(ent.Driver(routingDriver{Driver: entsql.OpenDB(dialect.Postgres, db)}))
 	client.Use(audit.Hook(client))
+
 	return client
 }
 
@@ -66,6 +67,7 @@ func NewClient(db *sql.DB) *ent.Client {
 func NewTxClient(tx *sql.Tx) *ent.Client {
 	client := ent.NewClient(ent.Driver(newTxDriver(tx)))
 	client.Use(audit.Hook(client))
+
 	return client
 }
 
@@ -83,6 +85,7 @@ func NewTxDriver(tx *sql.Tx) dialect.Driver { return newTxDriver(tx) }
 
 func newTxDriver(tx *sql.Tx) dialect.Driver {
 	driver := entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: tx})
+
 	return txBoundDriver{Driver: driver}
 }
 
@@ -98,6 +101,7 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 	if a, ok := ambientFrom(ctx); ok {
 		return fn(a.tx, a.client)
 	}
+
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return errs.Wrapf(err, "begin transaction")
@@ -111,11 +115,14 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 		if rollbackErr == nil || errors.Is(rollbackErr, sql.ErrTxDone) {
 			return err
 		}
+
 		return errors.Join(err, errs.Wrapf(rollbackErr, "rollback transaction"))
 	}
+
 	if err := tx.Commit(); err != nil {
 		return errs.Wrapf(err, "commit transaction")
 	}
+
 	return nil
 }
 

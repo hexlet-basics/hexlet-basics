@@ -32,6 +32,7 @@ func writeRepo(t *testing.T) string {
 	write(t, filepath.Join(lesson, "en", "data.yml"), "name: Hello\ndescription: First\ntips:\n  - one\ndefinitions:\n  - name: term\n    description: meaning\n")
 	write(t, filepath.Join(lesson, "en", "README.md"), "theory")
 	write(t, filepath.Join(lesson, "en", "EXERCISE.md"), "instructions")
+
 	return dir
 }
 
@@ -95,6 +96,7 @@ func TestParseSkipsFoldersThatAreNotLocales(t *testing.T) {
 
 func TestParseRejectsABrokenRepo(t *testing.T) {
 	lesson := func(dir string) string { return filepath.Join(dir, "modules", "10-basics", "10-hello") }
+
 	tests := []struct {
 		name    string
 		corrupt func(t *testing.T, dir string)

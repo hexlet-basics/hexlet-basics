@@ -50,8 +50,10 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		u, err := manager.User(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+
 			return
 		}
+
 		_, _ = w.Write([]byte(strconv.Itoa(u.ID)))
 	})
 	mux.HandleFunc("POST /signout", func(w http.ResponseWriter, r *http.Request) {
@@ -60,17 +62,21 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		}
 	})
 	a.handler = manager.Middleware(mux)
+
 	return a
 }
 
 func (a *app) do(method, path string, cookie *http.Cookie) *httptest.ResponseRecorder {
 	a.t.Helper()
+
 	req := httptest.NewRequestWithContext(a.t.Context(), method, path, nil)
 	if cookie != nil {
 		req.AddCookie(cookie)
 	}
+
 	rec := httptest.NewRecorder()
 	a.handler.ServeHTTP(rec, req)
+
 	return rec
 }
 
@@ -78,23 +84,29 @@ func (a *app) do(method, path string, cookie *http.Cookie) *httptest.ResponseRec
 // set.
 func (a *app) signIn(label fixture.Label, with ...*http.Cookie) *http.Cookie {
 	a.t.Helper()
+
 	var planted *http.Cookie
 	if len(with) > 0 {
 		planted = with[0]
 	}
+
 	rec := a.do(http.MethodPost, "/signin/"+label.String(), planted)
 	require.Equal(a.t, http.StatusOK, rec.Code)
+
 	return cookieNamed(rec.Result(), auth.CookieName)
 }
 
 func (a *app) me(cookie *http.Cookie) int {
 	a.t.Helper()
+
 	rec := a.do(http.MethodGet, "/me", cookie)
 	if rec.Code != http.StatusOK {
 		return 0
 	}
+
 	id, err := strconv.Atoi(rec.Body.String())
 	require.NoError(a.t, err)
+
 	return id
 }
 
@@ -106,6 +118,7 @@ func cookieNamed(resp *http.Response, name string) *http.Cookie {
 			return c
 		}
 	}
+
 	return nil
 }
 
@@ -237,17 +250,20 @@ func TestABusySessionIsWrittenBackAtMostOnceAnHour(t *testing.T) {
 	cookie := a.signIn(fixture.UserWithPassword)
 	stored := func() ([]byte, time.Time) {
 		row := a.db.Session.Query().OnlyX(t.Context())
+
 		return row.Data, row.Expiry
 	}
 	signedInData, signedInExpiry := stored()
 
 	clk.advance(30 * time.Minute)
 	require.NotZero(t, a.me(cookie))
+
 	data, _ := stored()
 	assert.Equal(t, signedInData, data, "within the hour nothing is written")
 
 	clk.advance(90 * time.Minute)
 	require.NotZero(t, a.me(cookie))
+
 	data, expiry := stored()
 	assert.NotEqual(t, signedInData, data, "after the hour the sighting is recorded")
 	assert.Equal(t, signedInExpiry, expiry, "the end of the session does not move")
@@ -261,11 +277,13 @@ func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	require.Equal(t, 2, a.rows())
 
 	clk.advance(auth.MaxLifetime - time.Hour)
+
 	removed, err := a.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, removed, "a session within its lifetime stays, used or not")
 
 	clk.advance(2 * time.Hour)
+
 	removed, err = a.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, 2, removed)

@@ -334,6 +334,7 @@ const submittedCode = "console.log('hello, world!')"
 // build, which is the only version a client can legitimately have loaded.
 func checkLesson(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) (*api.LessonCheckingResponseHeaders, error) {
 	t.Helper()
+
 	return h.Client.CheckLesson(t.Context(),
 		&api.CheckLessonInput{
 			Code:      submittedCode,
@@ -348,7 +349,9 @@ func submitSolution(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLess
 	t.Helper()
 	res, err := checkLesson(t, h, lesson)
 	require.NoError(t, err)
+
 	result := res
+
 	return result
 }
 
@@ -357,6 +360,7 @@ func currentLessonVersionID(t *testing.T, h *testsupport.Harness, lesson *ent.Co
 	ctx := t.Context()
 	crs := h.DB.Course.Query().Where(course.ID(*lesson.CourseID)).OnlyX(ctx)
 	require.NotNil(t, crs.CurrentVersionID)
+
 	return h.DB.CourseLessonVersion.Query().
 		Where(
 			courselessonversion.LessonID(lesson.ID),

@@ -30,6 +30,7 @@ func Locale(requestLocale string) string {
 	if requestLocale == "es" {
 		return "es"
 	}
+
 	return "ru"
 }
 
@@ -83,16 +84,20 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 	if !ok {
 		return oops.Errorf("unknown account email purpose %q", purpose)
 	}
+
 	u, err := s.db.User.Get(ctx, userID)
 	if ent.IsNotFound(err) {
 		return nil
 	}
+
 	if err != nil {
 		return oops.Wrapf(err, "load user for %s email", purpose)
 	}
+
 	if u.Email == nil {
 		return nil
 	}
+
 	token, err := s.tokens.Issue(purpose, u)
 	if err != nil {
 		return err
@@ -104,7 +109,9 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 	}
 
 	subject := s.i18n.TextIn(locale, text.subject)
+
 	var body bytes.Buffer
+
 	err = emailTemplate.Execute(&body, map[string]string{
 		"Locale":    locale,
 		"Subject":   subject,
@@ -117,6 +124,7 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 	if err != nil {
 		return oops.Wrapf(err, "render %s email", purpose)
 	}
+
 	return s.mail.Send(ctx, mailer.Message{To: *u.Email, Subject: subject, HTML: body.String()})
 }
 
@@ -127,9 +135,11 @@ func (s *Sender) link(purpose emailtoken.Purpose, token, locale string) (string,
 	if purpose == emailtoken.PasswordReset {
 		segments = []string{locale, "password", token, "edit"}
 	}
+
 	link, err := url.JoinPath(s.siteURL, segments...)
 	if err != nil {
 		return "", oops.Wrapf(err, "build %s link", purpose)
 	}
+
 	return link, nil
 }

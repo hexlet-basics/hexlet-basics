@@ -95,7 +95,9 @@ func (p *Progress) StartLesson(
 	if err != nil {
 		return nil, domain.FromStore(err)
 	}
+
 	state, err := p.CourseState(ctx, learner, courseID)
+
 	return state, domain.FromStore(err)
 }
 
@@ -115,12 +117,15 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 		if err != nil {
 			return nil, err
 		}
+
 		state, ok := states[courseID]
 		if !ok {
 			return nil, errs.With("course_id", courseID).Wrapf(&ent.NotFoundError{}, "load course")
 		}
+
 		return state, nil
 	}
+
 	return p.guestCourseState(ctx, learner, courseID)
 }
 
@@ -156,6 +161,7 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 	if err != nil {
 		return nil, errs.Wrapf(err, "load enrollments")
 	}
+
 	enrollmentState := lo.SliceToMap(enrollments, func(e *ent.Enrollment) (int, string) {
 		return e.CourseID, lo.FromPtr(e.State)
 	})
@@ -166,6 +172,7 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 		state.State = enrollmentState[crs.ID]
 		states[crs.ID] = state
 	}
+
 	return states, nil
 }
 
@@ -193,16 +200,19 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 		if err != nil {
 			return 0, err
 		}
+
 		return open.course.ID, nil
 	}
 
 	courseID := 0
 	err := p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		userID := learner.UserID
+
 		open, err := p.resolveLesson(ctx, db, lessonID)
 		if err != nil {
 			return err
 		}
+
 		courseID = open.course.ID
 
 		enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, open.course.ID)
@@ -214,6 +224,7 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 		if err != nil {
 			return err
 		}
+
 		if !createdProgress {
 			// Already started, or already finished: the learner pressed the
 			// button twice, or came back to a Lesson they passed. Nothing
@@ -228,8 +239,10 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 				return err
 			}
 		}
+
 		return p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, locale, occurredAt)
 	})
+
 	return courseID, err
 }
 
@@ -248,6 +261,7 @@ func (p *Progress) resolveLesson(ctx context.Context, db *ent.Client, lessonID i
 	if err != nil {
 		return nil, err
 	}
+
 	target := positionOf(lessons, lessonID)
 	if target == 0 {
 		return nil, &ent.NotFoundError{}
@@ -278,6 +292,7 @@ func (p *Progress) publishCourseStarted(
 	if err != nil {
 		return errs.Wrapf(err, "count started enrollments")
 	}
+
 	if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
 		OccurrenceCount: count,
 		Slug:            lo.FromPtr(crs.Slug),
@@ -286,6 +301,7 @@ func (p *Progress) publishCourseStarted(
 	}); err != nil {
 		return errs.Wrapf(err, "publish course started")
 	}
+
 	return nil
 }
 
@@ -326,8 +342,10 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 		if err != nil {
 			return nil, false, errs.Wrapf(err, "load concurrent lesson progress")
 		}
+
 		return existing, false, nil
 	}
+
 	if err != nil {
 		return nil, false, errs.Wrapf(err, "create lesson progress")
 	}
@@ -336,6 +354,7 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 	if err != nil {
 		return nil, false, errs.Wrapf(err, "load new lesson progress")
 	}
+
 	return row, true, nil
 }
 
@@ -349,6 +368,7 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 	if err != nil {
 		return nil, nil, errs.With("lesson_id", lessonID).Wrapf(err, "load lesson")
 	}
+
 	if lesson.CourseID == nil {
 		return nil, nil, &ent.NotFoundError{}
 	}
@@ -357,6 +377,7 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 	if err != nil {
 		return nil, nil, errs.With("course_id", *lesson.CourseID).Wrapf(err, "load course")
 	}
+
 	return lesson, crs, nil
 }
 
@@ -369,6 +390,7 @@ func positionOf(lessons []currentLesson, lessonID int) int {
 	if i < 0 {
 		return 0
 	}
+
 	return lessons[i].position
 }
 
@@ -385,6 +407,7 @@ func currentLessons(ctx context.Context, db *ent.Client, crs *ent.Course) ([]cur
 	if err != nil {
 		return nil, err
 	}
+
 	return byCourse[crs.ID], nil
 }
 
@@ -394,6 +417,7 @@ func lessonSlug(v *ent.CourseLessonVersion) string {
 	if v.Edges.Lesson == nil {
 		return ""
 	}
+
 	return lo.FromPtr(v.Edges.Lesson.Slug)
 }
 
@@ -401,14 +425,17 @@ func lessonSlug(v *ent.CourseLessonVersion) string {
 // two per Course. A Course with no current Version has no entry.
 func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.Course) (map[int][]currentLesson, error) {
 	courseOf := make(map[int]int, len(courses))
+
 	versionIDs := make([]int, 0, len(courses))
 	for _, crs := range courses {
 		if crs.CurrentVersionID == nil {
 			continue
 		}
+
 		courseOf[*crs.CurrentVersionID] = crs.ID
 		versionIDs = append(versionIDs, *crs.CurrentVersionID)
 	}
+
 	if len(versionIDs) == 0 {
 		return map[int][]currentLesson{}, nil
 	}
@@ -433,10 +460,12 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 	}
 
 	byCourse := make(map[int][]currentLesson, len(courses))
+
 	for _, v := range versions {
 		if v.NaturalOrder == nil {
 			continue
 		}
+
 		courseID := courseOf[v.CourseVersionID]
 		byCourse[courseID] = append(byCourse[courseID], currentLesson{
 			lessonID: v.LessonID,
@@ -444,9 +473,11 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 			position: *v.NaturalOrder,
 		})
 	}
+
 	for _, lessons := range byCourse {
 		slices.SortStableFunc(lessons, func(a, b currentLesson) int { return cmp.Compare(a.position, b.position) })
 	}
+
 	return byCourse, nil
 }
 
@@ -465,6 +496,7 @@ func (p *Progress) publishLessonStarted(
 	if err != nil {
 		return err
 	}
+
 	if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
 		OccurrenceCount: count,
 		LessonSlug:      lo.FromPtr(open.lesson.Slug),
@@ -474,6 +506,7 @@ func (p *Progress) publishLessonStarted(
 	}); err != nil {
 		return errs.Wrapf(err, "publish lesson started")
 	}
+
 	return nil
 }
 
@@ -515,8 +548,10 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 		if err != nil {
 			return nil, false, errs.Wrapf(err, "load concurrent enrollment")
 		}
+
 		return existing, false, nil
 	}
+
 	if err != nil {
 		return nil, false, errs.Wrapf(err, "enroll")
 	}
@@ -532,6 +567,7 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	if err := db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx); err != nil {
 		return nil, false, errs.With("course_id", courseID).Wrapf(err, "count new enrollment on course")
 	}
+
 	return row, true, nil
 }
 
@@ -566,6 +602,7 @@ func (p *Progress) guestCourseState(ctx context.Context, learner Learner, course
 	default:
 		state.State = StateStarted
 	}
+
 	return state, nil
 }
 
@@ -576,11 +613,13 @@ func (p *Progress) guestCourseState(ctx context.Context, learner Learner, course
 func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, int) {
 	state := &CourseState{Lessons: make([]LessonState, 0, len(lessons))}
 	finishedCount := 0
+
 	for _, l := range lessons {
 		finished := finishedIDs[l.lessonID]
 		if finished {
 			finishedCount++
 		}
+
 		state.Lessons = append(state.Lessons, LessonState{
 			Slug:     l.slug,
 			Position: l.position,
@@ -625,8 +664,10 @@ func finishedLessonsByCourse(ctx context.Context, db *ent.Client, userID int, co
 		if finished[row.CourseID] == nil {
 			finished[row.CourseID] = map[int]bool{}
 		}
+
 		finished[row.CourseID][row.LessonID] = true
 	}
+
 	return finished, nil
 }
 

@@ -43,6 +43,7 @@ func staffRecordOf(t *testing.T, h *testsupport.Harness, userID, roleID int) int
 	t.Helper()
 	made, err := h.ActAs(t, danaLabel).Client.AdminCreateStaffMember(t.Context(), staffInput(userID, roleID))
 	require.NoError(t, err)
+
 	return int(made.ID)
 }
 
@@ -70,8 +71,10 @@ func userInput(email string, admin bool) *api.UserInput {
 // problemOf is the Problem Details the caller got for a refused call.
 func problemOf(t *testing.T, err error) api.ProblemDetails {
 	t.Helper()
+
 	var problem *api.ProblemDetailsStatusCode
 	require.ErrorAs(t, err, &problem)
+
 	return problem.Response
 }
 

@@ -46,6 +46,7 @@ func TestYandexGolden(t *testing.T) {
 	if *update {
 		require.NoError(t, os.WriteFile(golden, got, 0o600))
 	}
+
 	want, err := os.ReadFile(golden)
 	require.NoError(t, err)
 	assert.Equal(t, string(want), string(got))

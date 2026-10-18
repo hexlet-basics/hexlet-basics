@@ -56,9 +56,11 @@ func (a authorizer) ValidateAuthRequest(
 	if err != nil {
 		return "", oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err)
 	}
+
 	if err := op.ValidateAuthReqRedirectURI(c, req.RedirectURI, req.ResponseType); err != nil {
 		return "", err
 	}
+
 	for _, scope := range req.Scopes {
 		switch {
 		case slices.Contains(standardScopes, scope):
@@ -68,9 +70,11 @@ func (a authorizer) ValidateAuthRequest(
 				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes), standardScopes...), ", "))
 		}
 	}
+
 	if resources, _ := ctx.Value(resourceKey{}).([]string); !a.s.acceptsResources(resources) {
 		return "", errInvalidTarget(a.s.resource)
 	}
+
 	return op.ValidateAuthRequestClient(ctx, req, c, verifier)
 }
 
@@ -97,9 +101,11 @@ func (s *Server) authorize(w http.ResponseWriter, r *http.Request) {
 		address, _ := s.clientAddress(ctx)
 		if derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address); derr != nil {
 			writeDocumentError(w, derr)
+
 			return
 		}
 	}
+
 	op.Authorize(s.issuerWriter(w), r.WithContext(ctx), authorizer{Provider: s.provider, s: s})
 }
 
@@ -114,8 +120,10 @@ func (s *Server) authorizeCallback(w http.ResponseWriter, r *http.Request) {
 func (s *Server) token(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost && r.ParseForm() == nil && !s.acceptsResources(r.PostForm["resource"]) {
 		op.RequestError(w, r, errInvalidTarget(s.resource), nil)
+
 		return
 	}
+
 	s.provider.ServeHTTP(w, r)
 }
 
@@ -142,6 +150,7 @@ func (w *issWriter) WriteHeader(code int) {
 			w.Header().Set("Location", u.String())
 		}
 	}
+
 	w.ResponseWriter.WriteHeader(code)
 }
 
@@ -152,10 +161,13 @@ func withIssParameter(doc any) (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	out := map[string]any{}
 	if err := json.Unmarshal(raw, &out); err != nil {
 		return nil, err
 	}
+
 	out["authorization_response_iss_parameter_supported"] = true
+
 	return out, nil
 }

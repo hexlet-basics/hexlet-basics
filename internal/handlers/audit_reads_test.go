@@ -77,10 +77,12 @@ func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
 	var reads readsOf
 	require.NoError(t, json.Unmarshal(row.Reads, &reads))
 	assert.Equal(t, 3, reads.Count)
+
 	want := make([]string, 0, len(page.Items))
 	for _, user := range page.Items {
 		want = append(want, strconv.Itoa(int(user.ID)))
 	}
+
 	assert.Equal(t, want, reads.IDs)
 }
 
@@ -113,8 +115,10 @@ func TestAReadRecordHoldsNoFieldValues(t *testing.T) {
 	for _, user := range page.Items {
 		assert.NotContains(t, string(row.Reads), user.Email)
 	}
+
 	var keys map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(row.Reads, &keys))
+
 	for key := range keys {
 		assert.Contains(t, []string{"count", "ids"}, key)
 	}
@@ -190,6 +194,7 @@ func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 // TypeSpec adds it here with no edit, and one the middleware does not reach fails.
 func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 	t.Parallel()
+
 	operations := permissioncatalog.PersonalDataReads()
 	require.NotEmpty(t, operations)
 
@@ -207,6 +212,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 			entity, _ := permissioncatalog.PersonalDataEntity(operation)
 			assert.Equal(t, entity, *rows[0].EntityType)
 			assert.Equal(t, string(audit.OutcomeSucceeded), rows[0].Outcome)
+
 			var reads readsOf
 			require.NoError(t, json.Unmarshal(rows[0].Reads, &reads))
 			assert.Equal(t, readsOf{Count: 2, IDs: []string{"7", "9"}}, reads)
@@ -255,6 +261,7 @@ func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 	for i := range items {
 		items[i] = map[string]int{"id": i + 1}
 	}
+
 	body, err := json.Marshal(map[string]any{"items": items})
 	require.NoError(t, err)
 
@@ -277,6 +284,7 @@ func (brokenPublisher) PublishStandalone(context.Context, events.Event) error {
 func personalDataMiddleware(t *testing.T, publisher events.StandalonePublisher) middleware.Middleware {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
+
 	return handlers.NewPersonalDataReadMiddleware(publisher, translator, testsupport.NewAPIErrorHandler(t, translator))
 }
 

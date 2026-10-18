@@ -41,6 +41,7 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 	out, err := withIssParameter(doc)
 	if err != nil {
 		http.Error(w, "metadata", http.StatusInternalServerError)
+
 		return
 	}
 	// RFC 7591: where a client registers itself. The library's discovery type has
@@ -50,6 +51,7 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 	// there (draft-ietf-oauth-client-id-metadata-document): MCP clients look for
 	// this flag before choosing between that and dynamic registration.
 	out["client_id_metadata_document_supported"] = true
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	writeJSON(w, out)

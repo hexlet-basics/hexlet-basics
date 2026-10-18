@@ -75,6 +75,7 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 		},
 		payload: newPayloadBuilder(ymCounter),
 	}
+
 	api, err := generated.NewClient(
 		client.baseURL,
 		bearerToken(token),
@@ -82,9 +83,12 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 	)
 	if err != nil {
 		client.initErr = errs.Wrapf(err, "initialize amoCRM client")
+
 		return client
 	}
+
 	client.api = api
+
 	return client
 }
 
@@ -94,13 +98,16 @@ func (c *Client) CreateLead(ctx context.Context, event events.LeadCreated) error
 	if c.baseURL == "" || c.token == "" {
 		return newRequestError(0, "amoCRM is not configured", nil, false)
 	}
+
 	if c.initErr != nil {
 		return newRequestError(0, "amoCRM client initialization failed", c.initErr, false)
 	}
+
 	body := []generated.UnsortedFormCreateItem{c.payload.build(event)}
 	if _, err := c.api.UnsortedLeadsCreateForms(ctx, body); err != nil {
 		return classifyRequestError(err)
 	}
+
 	return nil
 }
 
@@ -155,6 +162,7 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{id: fieldSourceForm, value: new(source)},
 		),
 	}
+
 	return generated.UnsortedFormCreateItem{
 		SourceUID:  fmt.Sprintf("%s-%d", source, event.LeadID),
 		SourceName: source,
@@ -180,11 +188,13 @@ func landingQuery(landingPage *string) func(key string) *string {
 	if parsed, err := url.Parse(lo.FromPtr(landingPage)); err == nil {
 		query = parsed.Query()
 	}
+
 	return func(key string) *string {
 		value := query.Get(key)
 		if value == "" {
 			return nil
 		}
+
 		return &value
 	}
 }
@@ -195,6 +205,7 @@ func ipv4(ip *string) *string {
 	if err != nil || !addr.Unmap().Is4() {
 		return nil
 	}
+
 	return new(addr.Unmap().String())
 }
 
@@ -210,6 +221,7 @@ func customFields(fields ...customField) []generated.CustomFieldValue {
 		if value == "" {
 			return generated.CustomFieldValue{}, false
 		}
+
 		field := generated.CustomFieldValue{
 			Values: []generated.CustomFieldValueItem{
 				{Value: generated.NewStringCustomFieldValueItemValue(value)},
@@ -218,9 +230,11 @@ func customFields(fields ...customField) []generated.CustomFieldValue {
 		if input.code != "" {
 			field.FieldCode = generated.NewOptString(input.code)
 		}
+
 		if input.id != 0 {
 			field.FieldID = generated.NewOptInt64(input.id)
 		}
+
 		return field, true
 	})
 }
@@ -252,11 +266,14 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, newRequestError(0, "send amoCRM lead", err, true)
 	}
+
 	if response.StatusCode < http.StatusMultipleChoices || isProblem(response) {
 		return response, nil
 	}
 	defer func() { _ = response.Body.Close() }()
+
 	body, _ := io.ReadAll(io.LimitReader(response.Body, maxErrorMessageBytes))
+
 	return nil, newRequestError(
 		response.StatusCode,
 		strings.ToValidUTF8(string(body), ""),
@@ -269,6 +286,7 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 // the generated decoder, which returns them as ProblemDetailsStatusCode.
 func isProblem(response *http.Response) bool {
 	mediaType, _, err := mime.ParseMediaType(response.Header.Get("Content-Type"))
+
 	return err == nil && mediaType == "application/problem+json"
 }
 
@@ -292,9 +310,11 @@ func (e *requestError) Error() string {
 	if e.statusCode != 0 {
 		return fmt.Sprintf("amoCRM returned %d: %s", e.statusCode, e.message)
 	}
+
 	if e.cause != nil {
 		return fmt.Sprintf("%s: %s", e.message, truncate(e.cause.Error(), maxErrorMessageBytes))
 	}
+
 	return e.message
 }
 
@@ -314,6 +334,7 @@ func classifyRequestError(err error) error {
 	if classified, ok := errors.AsType[*requestError](err); ok {
 		return classified
 	}
+
 	if problem, ok := errors.AsType[*generated.ProblemDetailsStatusCode](err); ok {
 		return newRequestError(
 			problem.StatusCode,
@@ -339,6 +360,7 @@ func joinProblem(title, detail generated.OptString) string {
 	if len(parts) == 0 {
 		return "request failed"
 	}
+
 	return strings.Join(parts, ": ")
 }
 
@@ -349,6 +371,7 @@ func truncate(value string, limit int) string {
 	if len(value) <= limit {
 		return value
 	}
+
 	return strings.ToValidUTF8(value[:limit], "")
 }
 
@@ -358,5 +381,6 @@ func optString(value *string) generated.OptString {
 	if value == nil {
 		return generated.OptString{}
 	}
+
 	return generated.NewOptString(*value)
 }

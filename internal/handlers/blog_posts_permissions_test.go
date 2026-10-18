@@ -37,43 +37,52 @@ var blogPostOperations = map[string]struct {
 }{
 	"AdminListBlogPosts": {"blog_posts.read", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminListBlogPosts(context.Background(), api.AdminListBlogPostsParams{})
+
 		return err
 	}},
 	"AdminGetBlogPost": {"blog_posts.read", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	"AdminCreateBlogPost": {"blog_posts.create", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminCreateBlogPost(context.Background(), permissionsPostInput("permissions-create"))
+
 		return err
 	}},
 	"AdminUpdateBlogPost": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	"AdminSetBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminSetBlogPostRelatedCourses(context.Background(),
 			&api.BlogPostRelatedCoursesInput{CourseIds: []int32{}},
 			api.AdminSetBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	"AdminSuggestBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
 		err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	// the second post is a draft and the first is published, so each transition is legal for an
 	// administrator.
 	"AdminPublishBlogPost": {"blog_posts.publish", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminPublishBlogPost(context.Background(), api.AdminPublishBlogPostParams{ID: fixture.ID32(fixture.BlogPostSecondPost)})
+
 		return err
 	}},
 	"AdminUnpublishBlogPost": {"blog_posts.unpublish", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminUnpublishBlogPost(context.Background(), api.AdminUnpublishBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	"AdminArchiveBlogPost": {"blog_posts.archive", func(h *testsupport.Harness) error {
 		_, err := h.Client.AdminArchiveBlogPost(context.Background(), api.AdminArchiveBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+
 		return err
 	}},
 	"AdminDeleteBlogPost": {"blog_posts.delete", func(h *testsupport.Harness) error {
@@ -83,10 +92,12 @@ var blogPostOperations = map[string]struct {
 
 func TestARoleWithoutTheGrantIsRefusedEachBlogPostOperation(t *testing.T) {
 	t.Parallel()
+
 	for name, op := range blogPostOperations {
 		if op.permission == "blog_posts.read" {
 			continue // the editor holds it, see the next test
 		}
+
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel)
 
@@ -99,6 +110,7 @@ func TestARoleWithoutTheGrantIsRefusedEachBlogPostOperation(t *testing.T) {
 
 func TestARoleWithTheGrantMayUseTheOperation(t *testing.T) {
 	t.Parallel()
+
 	for name, op := range blogPostOperations {
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel)
@@ -126,6 +138,7 @@ func TestAGrantDoesNotOpenAnotherPermissionsOperations(t *testing.T) {
 
 func TestAnAdministratorMayUseEveryBlogPostOperation(t *testing.T) {
 	t.Parallel()
+
 	for name, op := range blogPostOperations {
 		t.Run(name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)

@@ -20,13 +20,16 @@ import (
 // fixtureUser is the fixture user with the label.
 func fixtureUser(t *testing.T, h *testsupport.Harness, label fixture.Label) *ent.User {
 	t.Helper()
+
 	return h.DB.User.GetX(t.Context(), fixture.ID(label))
 }
 
 func issueEmailToken(t *testing.T, purpose emailtoken.Purpose, u *ent.User, opts ...emailtoken.Option) string {
 	t.Helper()
+
 	token, err := testsupport.EmailTokens(opts...).Issue(purpose, u)
 	require.NoError(t, err)
+
 	return token
 }
 

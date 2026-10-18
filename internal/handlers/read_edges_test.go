@@ -55,6 +55,7 @@ func TestGetCourseWithoutABuiltVersion(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.Empty(t, view.Lessons)
@@ -100,6 +101,7 @@ func TestGetCourseLessonWithoutASourcePathHasNoSourceLink(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.Empty(t, view.Lesson.SourceCodeUrl.Value)
@@ -111,6 +113,7 @@ func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 	started := h.DB.Enrollment.Query().
 		Where(enrollment.UserID(h.UserID)).
@@ -124,6 +127,7 @@ func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: lo.FromPtr(landing.Slug)})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.True(t, view.Enrollment.Null)

@@ -22,6 +22,7 @@ import (
 // per lesson for the request locale, from the current version's translation.
 func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (*api.CourseLessonListItemPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonTranslation, int, error) {
 			return s.lessonDirectory.Lessons(ctx, locale, params.Q.Value, page)
@@ -37,6 +38,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 // request locale.
 func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (*api.LessonProgressPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.LessonProgress, int, error) {
 			return s.lessonDirectory.Progress(ctx, locale, page)
@@ -52,6 +54,7 @@ func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminLi
 // that have a summary, newest first.
 func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (*api.CourseLessonReviewPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonReview, int, error) {
 			return s.lessonDirectory.Reviews(ctx, locale, page)
@@ -70,8 +73,10 @@ func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminRe
 	if errors.Is(err, domain.ErrNotFound) {
 		return errLessonNotFound
 	}
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

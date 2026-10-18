@@ -29,12 +29,15 @@ func EnsureAnotherAdmin(ctx context.Context, db *ent.Client, userID int) error {
 	if err != nil || !isAdmin {
 		return err
 	}
+
 	others, err := db.User.Query().Where(user.IDNEQ(userID), user.Admin(true), NotRemoved()).Exist(ctx)
 	if err != nil {
 		return err
 	}
+
 	if !others {
 		return ErrLastAdmin
 	}
+
 	return nil
 }

@@ -30,6 +30,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return logging.New(cfg.LogLevel()), nil
 	}),
 	do.Lazy[*sentry.Client](func(i do.Injector) (*sentry.Client, error) {
@@ -37,6 +38,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return telemetry.NewSentryClient(cfg.SentryDSN, cfg.AppEnv, cfg.ReleaseVersion)
 	}),
 	do.Lazy[*otelconf.SDK](func(i do.Injector) (*otelconf.SDK, error) {
@@ -44,6 +46,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return telemetry.NewOpenTelemetrySDK(context.Background(), logger)
 	}),
 	do.Lazy[*localization.Translator](func(do.Injector) (*localization.Translator, error) {
@@ -54,6 +57,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return store.NewDB(cfg.DatabaseURL)
 	}),
 	do.Lazy[*ent.Client](func(i do.Injector) (*ent.Client, error) {
@@ -61,6 +65,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return store.NewClient(db), nil
 	}),
 	do.Lazy[*store.Store](func(i do.Injector) (*store.Store, error) {
@@ -68,6 +73,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return store.New(db), nil
 	}),
 	// blob.Bucket has Close, not a do shutdown method; bucketCloser releases it
@@ -77,6 +83,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return store.NewBucket(context.Background(), cfg.BlobBucketURL)
 	}),
 	// Asset storage owns MIME policy, blob writes, attachment persistence,
@@ -86,14 +93,17 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		bucket, err := do.Invoke[*blob.Bucket](i)
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return assetstore.New(db, bucket, cfg.PublicURL), nil
 	}),
 	// Both processes replace a post's related courses: the admin set in the
@@ -103,6 +113,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return relatedcourse.NewReplacer(txStore), nil
 	}),
 	// Both processes raise facts: the HTTP process for what learners do, the
@@ -112,10 +123,12 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return events.NewPublisher(txStore, logger), nil
 	}),
 )

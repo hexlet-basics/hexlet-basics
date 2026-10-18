@@ -26,6 +26,7 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 
 	res, err := h.Client.CreateLead(t.Context(), input)
 	require.NoError(t, err)
+
 	created := res
 
 	stored := h.DB.Lead.Query().Where(lead.ID(int(created.ID))).OnlyX(t.Context())
@@ -38,6 +39,7 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 // else a number — never an empty string.
 func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 	t.Parallel()
+
 	cases := []struct {
 		name string
 		user fixture.Label

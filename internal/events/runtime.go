@@ -37,10 +37,12 @@ func NewRuntime(
 	handlers ...cqrs.EventHandler,
 ) (*Runtime, error) {
 	watermillLogger := watermill.NewSlogLogger(logger)
+
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: routerCloseTimeout}, watermillLogger)
 	if err != nil {
 		return nil, errs.Wrapf(err, "create Watermill router")
 	}
+
 	poisonPublisher, err := wmsql.NewPublisher(
 		wmsql.BeginnerFromStdSQL(db),
 		wmsql.PublisherConfig{SchemaAdapter: wmsql.DefaultPostgreSQLSchema{}},
@@ -49,10 +51,12 @@ func NewRuntime(
 	if err != nil {
 		return nil, errs.Wrapf(err, "create poison queue publisher")
 	}
+
 	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher, sentryClient)
 	if err != nil {
 		return nil, err
 	}
+
 	router.AddMiddleware(delivery...)
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
@@ -67,6 +71,7 @@ func NewRuntime(
 		observerSubscriber,
 		func(msg *message.Message) error {
 			observeMessage(logger, msg)
+
 			return nil
 		},
 	)
@@ -86,6 +91,7 @@ func NewRuntime(
 		if err != nil {
 			return nil, errs.Wrapf(err, "create Watermill event processor")
 		}
+
 		if err := processor.AddHandlers(handlers...); err != nil {
 			return nil, errs.Wrapf(err, "register domain event handlers")
 		}
@@ -115,6 +121,7 @@ func deliveryMiddleware(
 	if err != nil {
 		return nil, errs.Wrapf(err, "create poison queue middleware")
 	}
+
 	return []message.HandlerMiddleware{
 		poisonQueue,
 		reportPoisoned(sentryClient),
@@ -147,6 +154,7 @@ func reportPoisoned(sentryClient *sentry.Client) message.HandlerMiddleware {
 				})
 				sentryClient.CaptureException(err, &sentry.EventHint{Context: msg.Context(), OriginalException: err}, scope)
 			}
+
 			return produced, err
 		}
 	}
@@ -182,6 +190,7 @@ func (r *Runtime) Run(ctx context.Context) error {
 	if err := r.router.Run(ctx); err != nil {
 		return errs.Wrapf(err, "run Watermill router")
 	}
+
 	return nil
 }
 

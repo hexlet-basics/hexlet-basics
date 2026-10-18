@@ -61,6 +61,7 @@ func FieldOf(err error) (string, bool) {
 	if !ok {
 		return "", false
 	}
+
 	return fieldErr.Field, true
 }
 
@@ -86,6 +87,7 @@ func FromStore(err error, uniques ...Unique) error {
 				}
 			}
 		}
+
 		return errors.Join(ErrConflict, err)
 	default:
 		return err

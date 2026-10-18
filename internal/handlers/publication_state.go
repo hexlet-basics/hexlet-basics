@@ -16,5 +16,6 @@ func moveState[T any](ctx context.Context, id int, move func(context.Context, in
 	if err := move(ctx, id); err != nil {
 		return nil, err
 	}
+
 	return read(ctx, id)
 }

@@ -21,11 +21,14 @@ func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := context.Background()
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
+
 	dashboard := res
+
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.Len(t, dashboard.Started, 1)
@@ -44,14 +47,17 @@ func TestDashboardNamesTheNextLessonAsTheCoursePageDoes(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedToday)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
+
 	next := res.Started[0].Progress.NextLesson.Value
 
 	page, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
+
 	lesson, ok := lo.Find(page.Lessons, func(l api.LearnerLesson) bool { return l.Slug == next.Slug })
 	require.True(t, ok)
 
@@ -71,6 +77,7 @@ func TestDashboardGivesAnUntranslatedNextLessonNoLink(t *testing.T) {
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
+
 	course := res.Started[0]
 
 	assert.True(t, course.Progress.NextLesson.Null, "the second lesson has no ru translation")
@@ -94,10 +101,12 @@ func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerFinishedJavascript)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := context.Background()
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
+
 	dashboard := res
 
 	assert.Empty(t, dashboard.Started)
@@ -110,10 +119,12 @@ func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerJavascriptAndGo)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := context.Background()
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
+
 	dashboard := res
 
 	require.Len(t, dashboard.Started, 1)
@@ -129,11 +140,13 @@ func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerHiddenCards)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := context.Background()
 	cardless := h.DB.Course.GetX(ctx, fixture.ID(fixture.CourseSingleLesson))
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
+
 	dashboard := res
 
 	require.Len(t, dashboard.Started, 1, "only the course with a card")
@@ -148,11 +161,13 @@ func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) 
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerHiddenCards)
 	testsupport.SpeakTo(h, "ru")
+
 	draft := fixture.ID(fixture.CourseWithDraftCard)
 	foreign := fixture.ID(fixture.CourseWithEnglishCard)
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
+
 	dashboard := res
 
 	require.Len(t, dashboard.Started, 1, "only JavaScript has a public card")
@@ -166,10 +181,12 @@ func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerUnlistedCard)
 	testsupport.SpeakTo(h, "ru")
+
 	hidden := fixture.ID(fixture.CourseWithUnlistedCard)
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
+
 	dashboard := res
 
 	assert.True(t, lo.ContainsBy(dashboard.Started, func(c api.DashboardCourse) bool {

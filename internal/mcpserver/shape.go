@@ -39,10 +39,13 @@ func firstSentence(text string, limit int) string {
 	if end := strings.Index(text, ". "); end >= 0 {
 		text = text[:end+1]
 	}
+
 	if utf8.RuneCountInString(text) <= limit {
 		return text
 	}
+
 	cut := []rune(text)[:limit-1]
+
 	return strings.TrimSpace(string(cut)) + "…"
 }
 
@@ -68,10 +71,12 @@ func trimInput(node any) any {
 				}
 			case k == "properties":
 				properties, _ := v.(map[string]any)
+
 				trimmed := make(map[string]any, len(properties))
 				for name, property := range properties {
 					trimmed[name] = trimInput(property)
 				}
+
 				out[k] = trimmed
 			case k == "enum" || k == "required" || k == "const" || k == "default":
 				out[k] = v
@@ -79,12 +84,14 @@ func trimInput(node any) any {
 				out[k] = trimInput(v)
 			}
 		}
+
 		return out
 	case []any:
 		out := make([]any, len(n))
 		for i, v := range n {
 			out[i] = trimInput(v)
 		}
+
 		return out
 	default:
 		return node
@@ -105,39 +112,49 @@ func outputShape(schema map[string]any) map[string]any {
 	if shape["type"] == nil {
 		shape["type"] = "object"
 	}
+
 	delete(shape, "anyOf")
 	delete(shape, "oneOf")
 	delete(shape, "allOf")
+
 	return shape
 }
 
 func shapeOf(node any, depth int) map[string]any {
 	n, _ := node.(map[string]any)
+
 	out := map[string]any{}
 	if t, ok := n["type"]; ok {
 		out["type"] = t
 	}
+
 	if depth >= maxOutputDepth {
 		return out
 	}
+
 	if properties, ok := n["properties"].(map[string]any); ok {
 		shaped := make(map[string]any, len(properties))
 		for name, property := range properties {
 			shaped[name] = shapeOf(property, depth+1)
 		}
+
 		out["properties"] = shaped
 	}
+
 	if items, ok := n["items"]; ok {
 		out["items"] = shapeOf(items, depth+1)
 	}
+
 	for _, combined := range []string{"anyOf", "oneOf", "allOf"} {
 		if parts, ok := n[combined].([]any); ok {
 			shaped := make([]any, len(parts))
 			for i, part := range parts {
 				shaped[i] = shapeOf(part, depth+1)
 			}
+
 			out[combined] = shaped
 		}
 	}
+
 	return out
 }

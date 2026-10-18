@@ -18,10 +18,13 @@ import (
 // from the final chunk, which the API only sends when the request asks for it.
 func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
 	t.Parallel()
+
 	var request map[string]any
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.NoError(t, json.NewDecoder(r.Body).Decode(&request))
 		w.Header().Set("Content-Type", "text/event-stream")
+
 		for _, chunk := range []string{
 			`{"id":"c","object":"chat.completion.chunk","created":1,"model":"m","choices":[{"index":0,"delta":{"role":"assistant","content":"Hel"}}]}`,
 			`{"id":"c","object":"chat.completion.chunk","created":1,"model":"m","choices":[{"index":0,"delta":{"content":"lo"},"finish_reason":"stop"}]}`,
@@ -29,17 +32,20 @@ func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
 		} {
 			_, _ = fmt.Fprintf(w, "data: %s\n\n", chunk)
 		}
+
 		_, _ = fmt.Fprint(w, "data: [DONE]\n\n")
 	}))
 	t.Cleanup(server.Close)
 	llm := assistant.NewOpenAI("token", "m", option.WithBaseURL(server.URL))
 
 	var deltas []string
+
 	usage, err := llm.Stream(t.Context(), []assistant.Turn{
 		{Role: assistant.RoleSystem, Content: "Be brief."},
 		{Role: assistant.RoleUser, Content: "Hi"},
 	}, func(delta string) error {
 		deltas = append(deltas, delta)
+
 		return nil
 	})
 
@@ -55,7 +61,9 @@ func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
 // an empty answer.
 func TestOpenAICompleteJSONSendsTheSchemaAndReportsRefusals(t *testing.T) {
 	t.Parallel()
+
 	var request map[string]any
+
 	message := `{"role":"assistant","content":"{\"course_ids\":[1]}"}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.NoError(t, json.NewDecoder(r.Body).Decode(&request))

@@ -50,6 +50,7 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 		"upload needs only being staff":       {editorID, "ru", "AdminUploadAttachment", true},
 	} {
 		u := db.User.GetX(t.Context(), c.user)
+
 		err := policy.Allow(t.Context(), u, c.locale, c.operation)
 		if c.allowed {
 			assert.NoError(t, err, name)
@@ -76,6 +77,7 @@ func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 func TestEveryAdminOperationIsClassified(t *testing.T) {
 	raw, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
+
 	var spec struct {
 		Paths map[string]map[string]struct {
 			OperationID string                `yaml:"operationId"`
@@ -85,16 +87,19 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 	require.NoError(t, yaml.Unmarshal(raw, &spec))
 
 	var unclassified []string
+
 	for path, methods := range spec.Paths {
 		if !strings.HasPrefix(path, "/api/admin/") {
 			continue
 		}
+
 		for _, op := range methods {
 			if op.OperationID != "" && !permission.IsClassified(permission.OperationName(op.OperationID)) {
 				unclassified = append(unclassified, op.OperationID)
 			}
 		}
 	}
+
 	assert.Empty(t, unclassified,
 		"declare x-permission or x-access on these in api-spec/admin.tsp")
 }
@@ -122,11 +127,13 @@ func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
 	require.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), permission.ErrForbidden)
 
 	testsupport.Grant(t, db, transactor, staff.RoleID, "blog_posts.update")
+
 	for _, operation := range []string{
 		"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses",
 	} {
 		require.NoError(t, policy.Allow(t.Context(), editor, "ru", operation), operation)
 	}
+
 	require.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminDeleteBlogPost"), permission.ErrForbidden)
 
 	testsupport.Grant(t, db, transactor, staff.RoleID, "blog_posts.delete")
@@ -186,6 +193,7 @@ func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) 
 
 	for permission, operations := range former {
 		testsupport.Grant(t, db, transactor, staff.RoleID, permission)
+
 		for _, operation := range operations {
 			require.NoError(t, policy.Allow(t.Context(), editor, "ru", operation), operation)
 		}

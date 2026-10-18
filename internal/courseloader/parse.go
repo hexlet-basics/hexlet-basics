@@ -116,6 +116,7 @@ func Parse(dir, courseSlug string) (*Course, error) {
 		return nil, oops.Wrapf(err, "open course repo %s", dir)
 	}
 	defer func() { _ = root.Close() }()
+
 	repo := repository{fsys: root.FS(), dir: dir}
 
 	spec, err := parseSpec(repo)
@@ -154,17 +155,20 @@ func parseSpec(repo repository) (*Spec, error) {
 	if err != nil {
 		return nil, oops.Wrapf(err, "read %s", repo.abs("spec.yml"))
 	}
+
 	var doc struct {
 		Course Spec `yaml:"language"`
 	}
 	if err := decodeYAML(raw, &doc); err != nil {
 		return nil, oops.Wrapf(err, "parse %s", repo.abs("spec.yml"))
 	}
+
 	s := doc.Course
 	// Mirror legacy's fetch("...") — a missing key is a hard error, not a blank
 	// build. Every missing key is reported, in file order, so one run shows the
 	// whole fix.
 	var missing []error
+
 	for _, key := range []struct{ name, value string }{
 		{"name", s.Name},
 		{"progress", s.Progress},
@@ -178,9 +182,11 @@ func parseSpec(repo repository) (*Spec, error) {
 			missing = append(missing, oops.Errorf("spec.yml: language.%s is required", key.name))
 		}
 	}
+
 	if err := errors.Join(missing...); err != nil {
 		return nil, err
 	}
+
 	return &s, nil
 }
 
@@ -196,12 +202,14 @@ func parseModules(repo repository, modulesDir string, spec *Spec, courseSlug str
 		if err != nil {
 			return nil, oops.Wrapf(err, "module dir %q", name)
 		}
+
 		moduleDir := path.Join(modulesDir, name)
 
 		infos, err := parseModuleInfos(repo, moduleDir)
 		if err != nil {
 			return nil, err
 		}
+
 		if len(infos) == 0 {
 			return nil, oops.Errorf("module %q has no description.<locale>.yml", slug)
 		}
@@ -217,6 +225,7 @@ func parseModules(repo repository, modulesDir string, spec *Spec, courseSlug str
 	// Sort by the numeric prefix so build/display order follows intent, not the
 	// filesystem's lexical directory order.
 	slices.SortStableFunc(modules, func(a, b Module) int { return cmp.Compare(a.Order, b.Order) })
+
 	return modules, nil
 }
 
@@ -233,10 +242,12 @@ func parseModuleInfos(repo repository, moduleDir string) ([]ModuleInfo, error) {
 		if locale == "" {
 			continue
 		}
+
 		raw, err := fs.ReadFile(repo.fsys, file)
 		if err != nil {
 			return nil, oops.Wrapf(err, "read %s", repo.abs(file))
 		}
+
 		var data struct {
 			Name        string `yaml:"name"`
 			Description string `yaml:"description"`
@@ -244,8 +255,10 @@ func parseModuleInfos(repo repository, moduleDir string) ([]ModuleInfo, error) {
 		if err := decodeYAML(raw, &data); err != nil {
 			return nil, oops.Wrapf(err, "parse %s", repo.abs(file))
 		}
+
 		infos = append(infos, ModuleInfo{Locale: locale, Name: data.Name, Description: data.Description})
 	}
+
 	return infos, nil
 }
 
@@ -261,12 +274,14 @@ func parseLessons(repo repository, moduleDir, moduleDirName string, spec *Spec, 
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson dir %q", name)
 		}
+
 		lessonDir := path.Join(moduleDir, name)
 
 		testCode, err := readFile(repo, path.Join(lessonDir, spec.ExerciseTestFilename))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson %q test file", slug)
 		}
+
 		originalCode, err := readFile(repo, path.Join(lessonDir, spec.ExerciseFilename))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson %q exercise file", slug)
@@ -276,6 +291,7 @@ func parseLessons(repo repository, moduleDir, moduleDirName string, spec *Spec, 
 		if err != nil {
 			return nil, err
 		}
+
 		if len(infos) == 0 {
 			return nil, oops.Errorf("lesson %q has no <locale>/data.yml", slug)
 		}
@@ -294,6 +310,7 @@ func parseLessons(repo repository, moduleDir, moduleDirName string, spec *Spec, 
 	}
 
 	slices.SortStableFunc(lessons, func(a, b Lesson) int { return cmp.Compare(a.Order, b.Order) })
+
 	return lessons, nil
 }
 
@@ -304,6 +321,7 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 	}
 
 	infos := make([]LessonInfo, 0)
+
 	for _, name := range dirs {
 		localeDir := path.Join(lessonDir, name)
 		// A locale dir is exactly one that carries a data.yml — this is how the
@@ -317,6 +335,7 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 		if err != nil {
 			return nil, oops.Wrapf(err, "read %s", repo.abs(dataPath))
 		}
+
 		var data struct {
 			Name        string       `yaml:"name"`
 			Description string       `yaml:"description"`
@@ -331,6 +350,7 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson locale %q theory", name)
 		}
+
 		instructions, err := readFile(repo, path.Join(localeDir, "EXERCISE.md"))
 		if err != nil {
 			return nil, oops.Wrapf(err, "lesson locale %q instructions", name)
@@ -349,6 +369,7 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 	}
 
 	slices.SortFunc(infos, func(a, b LessonInfo) int { return strings.Compare(a.Locale, b.Locale) })
+
 	return infos, nil
 }
 
@@ -358,6 +379,7 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 // for prev/next navigation, so it must span modules, not reset per module.
 func assignNaturalOrder(modules []Module) {
 	n := 0
+
 	for mi := range modules {
 		for li := range modules[mi].Lessons {
 			n++
@@ -381,6 +403,7 @@ func prepareCode(code string) string {
 	if result == code {
 		return ""
 	}
+
 	return strings.ReplaceAll(result, "BEGIN", "BEGIN (write your solution here)")
 }
 
@@ -392,10 +415,12 @@ func splitOrderSlug(name string) (int, string, error) {
 	if !found {
 		return 0, "", oops.Errorf("%q is not <order>-<slug>", name)
 	}
+
 	order, err := strconv.Atoi(prefix)
 	if err != nil {
 		return 0, "", oops.Errorf("%q has non-numeric order prefix %q", name, prefix)
 	}
+
 	return order, slug, nil
 }
 
@@ -406,6 +431,7 @@ func localeFromDescriptionFile(base string) string {
 	if len(parts) != 3 || parts[0] != "description" || parts[2] != "yml" {
 		return ""
 	}
+
 	return parts[1]
 }
 
@@ -416,12 +442,14 @@ func subdirs(repo repository, dir string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	names := make([]string, 0, len(entries))
 	for _, e := range entries {
 		if e.IsDir() {
 			names = append(names, e.Name())
 		}
 	}
+
 	return names, nil
 }
 
@@ -430,6 +458,7 @@ func readFile(repo repository, name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(raw), nil
 }
 
@@ -438,5 +467,6 @@ func readFile(repo repository, name string) (string, error) {
 func decodeYAML(raw []byte, target any) error {
 	decoder := yaml.NewDecoder(bytes.NewReader(raw))
 	decoder.KnownFields(true)
+
 	return decoder.Decode(target)
 }

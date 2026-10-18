@@ -26,6 +26,7 @@ func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error)
 	case err != nil:
 		return nil, err
 	}
+
 	return &api.ActiveBanner{Banner: api.NewNilBanner(s.conv.ToBanner(row))}, nil
 }
 
@@ -56,6 +57,7 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 	if err := s.db.Banner.AdminDelete(ctx, params.ID); err != nil {
 		return err
 	}
+
 	return nil
 }
 

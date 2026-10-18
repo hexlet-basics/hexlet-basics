@@ -60,9 +60,11 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 	if err != nil {
 		return errs.Wrapf(err, "create Watermill event bus")
 	}
+
 	if err := bus.Publish(ctx, event); err != nil {
 		return errs.With("event", event.eventName()).Wrapf(err, "publish event")
 	}
+
 	return nil
 }
 
@@ -80,7 +82,9 @@ func busConfig(logger watermill.LoggerAdapter) cqrs.EventBusConfig {
 			if params.EventName == "" {
 				return errs.Errorf("domain event has no stable name")
 			}
+
 			params.Message.Metadata.Set("schema_version", schemaVersion)
+
 			return nil
 		},
 	}

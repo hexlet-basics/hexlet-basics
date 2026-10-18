@@ -70,6 +70,7 @@ func TestRunErrorsWhenTheCourseImageCannotBePulled(t *testing.T) {
 
 func TestNewRunsOneSubmissionAtATimeUnlessToldOtherwise(t *testing.T) {
 	t.Parallel()
+
 	runner, err := New(Options{})
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = runner.Close() })

@@ -28,6 +28,7 @@ import (
 // in the past without a back door.
 func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation string, mutate func(*audit.Entry)) int {
 	t.Helper()
+
 	entry := audit.Entry{
 		OccurredAt: at,
 		Source:     audit.Source{Channel: audit.ChannelWeb},
@@ -37,13 +38,16 @@ func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation st
 	if mutate != nil {
 		mutate(&entry)
 	}
+
 	require.NoError(t, audit.Write(t.Context(), h.DB, entry, nil))
+
 	return newestRecord(t, h)
 }
 
 // newestRecord is the id of the Audit Record written last in the test's transaction.
 func newestRecord(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
+
 	return h.DB.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context()).ID
 }
 
@@ -52,10 +56,12 @@ func newestRecord(t *testing.T, h *testsupport.Harness) int {
 // is: with the grant on the role when withGrant is true, without it otherwise.
 func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
 	t.Helper()
+
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 	if withGrant {
 		h.Grant(t, int(roleEditorID), "audit.read")
 	}
+
 	return h
 }
 
@@ -64,7 +70,9 @@ func listTrail(h *testsupport.Harness, params api.AdminListAuditRecordsParams) (
 	if err != nil {
 		return nil, err
 	}
+
 	page := res
+
 	return page, nil
 }
 
@@ -126,6 +134,7 @@ func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
 	for _, item := range page.Items {
 		ids = append(ids, item.ID)
 	}
+
 	require.Len(t, ids, 2)
 	assert.Equal(t, int64(newest), ids[0])
 	assert.Equal(t, int64(middle), ids[1])
@@ -153,10 +162,12 @@ func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
 	only := func(params api.AdminListAuditRecordsParams) []int64 {
 		page, err := listTrail(h, params)
 		require.NoError(t, err)
+
 		ids := make([]int64, 0, len(page.Items))
 		for _, item := range page.Items {
 			ids = append(ids, item.ID)
 		}
+
 		return ids
 	}
 
@@ -313,9 +324,12 @@ func TestARefusedReadOfTheTrailIsNotRecordedAsARead(t *testing.T) {
 
 func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
 	t.Helper()
+
 	res, err := h.Client.AdminGetMyCapabilities(context.Background())
 	require.NoError(t, err)
+
 	held := res
+
 	return held.Held
 }
 

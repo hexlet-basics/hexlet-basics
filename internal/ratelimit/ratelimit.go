@@ -53,6 +53,7 @@ func New(window time.Duration, now func() time.Time) *Limiter {
 // (the longest, if several are).
 func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
 	var wait time.Duration
+
 	now := l.now()
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -62,29 +63,36 @@ func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
 		w := l.windows[c.Key]
 		if w != nil && now.Sub(w.start) >= l.window {
 			delete(l.windows, c.Key)
+
 			w = nil
 		}
+
 		current[i] = w
 		switch {
 		case w != nil && w.count >= c.Limit:
 			wait = max(wait, w.start.Add(l.window).Sub(now))
 		case w == nil && len(l.windows) >= maxTracked:
 			l.pruneLocked(now)
+
 			if len(l.windows) >= maxTracked {
 				wait = max(wait, l.window)
 			}
 		}
 	}
+
 	if wait > 0 {
 		return false, wait
 	}
+
 	for i, c := range charges {
 		if current[i] == nil {
 			current[i] = &keyWindow{start: now}
 			l.windows[c.Key] = current[i]
 		}
+
 		current[i].count++
 	}
+
 	return true, 0
 }
 

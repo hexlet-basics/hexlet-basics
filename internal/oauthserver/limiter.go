@@ -31,9 +31,11 @@ func newLimiter(limit int, window time.Duration, now func() time.Time) *limiter 
 	if limit <= 0 {
 		limit = DefaultRegistrationLimit
 	}
+
 	if window <= 0 {
 		window = DefaultRegistrationWindow
 	}
+
 	return &limiter{limit: limit, counter: ratelimit.New(window, now)}
 }
 
@@ -56,11 +58,13 @@ func addressKey(address string) string {
 	if err != nil {
 		return "unknown"
 	}
+
 	ip = ip.Unmap()
 	if ip.Is6() {
 		if p, err := ip.Prefix(customerPrefixBits); err == nil {
 			return p.String()
 		}
 	}
+
 	return ip.String()
 }

@@ -52,6 +52,7 @@ func newRig(t *testing.T) *rig {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
+
 	return &rig{
 		db:       db,
 		tx:       tx,
@@ -63,6 +64,7 @@ func newRig(t *testing.T) *rig {
 
 func (r *rig) course(t *testing.T, slug string) *ent.Course {
 	t.Helper()
+
 	return r.db.Course.Query().Where(course.SlugEQ(slug)).OnlyX(t.Context())
 }
 
@@ -70,6 +72,7 @@ func (r *rig) course(t *testing.T, slug string) *ent.Course {
 // lesson of the same name, so the slug alone does not say which.
 func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 	t.Helper()
+
 	return r.db.CourseLesson.Query().
 		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixture.ID(fixture.CourseJavascript))).
 		OnlyX(t.Context())
@@ -80,6 +83,7 @@ func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 // begun.
 func (r *rig) learner(t *testing.T, label fixture.Label) progress.Learner {
 	t.Helper()
+
 	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID}
 }
 
@@ -89,10 +93,12 @@ func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
 		Where(lessonprogress.UserID(learner.UserID), lessonprogress.StateEQ(progress.StateFinished)).
 		WithLesson().
 		AllX(t.Context())
+
 	slugs := make([]string, 0, len(rows))
 	for _, row := range rows {
 		slugs = append(slugs, *row.Edges.Lesson.Slug)
 	}
+
 	return slugs
 }
 
@@ -103,6 +109,7 @@ func guestWith(lessonSlugs ...string) progress.Learner {
 	for _, slug := range lessonSlugs {
 		guest = guest.Record(jsSlug, slug)
 	}
+
 	return progress.Learner{Guest: guest}
 }
 
@@ -111,6 +118,7 @@ func lessonSlugs(state *progress.CourseState) []string {
 	for _, lesson := range state.Lessons {
 		slugs = append(slugs, lesson.Slug)
 	}
+
 	return slugs
 }
 
@@ -230,6 +238,7 @@ func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
 			assert.Equal(t, c.state, state.State)
 			assert.Equal(t, c.completed, state.Completion)
 			assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(state))
+
 			if c.next == "" {
 				assert.Nil(t, state.NextLessonSlug)
 			} else {
@@ -280,10 +289,12 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	require.NotNil(t, js)
 	assert.Equal(t, progress.StateStarted, js.State)
 	assert.Equal(t, 33, js.Completion)
+
 	finished := make([]bool, 0, len(js.Lessons))
 	for _, lesson := range js.Lessons {
 		finished = append(finished, lesson.Finished)
 	}
+
 	assert.Equal(t, []bool{true, false, false}, finished)
 	assert.Empty(t, states[ruby.ID].State, "a course the learner never joined has no state")
 }
@@ -323,6 +334,7 @@ func (r *rig) check(t *testing.T, learner progress.Learner, lessonSlug string) p
 	version := r.db.CourseLessonVersion.Query().
 		Where(courselessonversion.LessonID(lesson.ID), courselessonversion.CourseVersionID(current)).
 		OnlyX(ctx)
+
 	return progress.Check{Learner: learner, LessonID: lesson.ID, VersionID: version.ID, Code: "x", Locale: locale}
 }
 

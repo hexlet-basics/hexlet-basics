@@ -64,6 +64,7 @@ func NewRouter(
 	// auth middleware — but it must stay a build TRIGGER only. GitHub still
 	// delivers to the legacy `/webhooks/github`; the ingress maps it here.
 	transport.HandleFunc("POST /api/webhooks/github", gh.Handle)
+
 	if oauth != nil {
 		for _, pattern := range oauthserver.Patterns() {
 			transport.Handle(pattern, WithClientIP(oauth))
@@ -78,7 +79,9 @@ func NewRouter(
 			transport.Handle(pattern, mcp)
 		}
 	}
+
 	transport.Handle("/", generated)
+
 	return transport
 }
 
@@ -96,6 +99,7 @@ func StreamResponses(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		controller := http.NewResponseController(w)
 		_ = controller.SetWriteDeadline(time.Time{})
+
 		w.Header().Set("X-Accel-Buffering", "no")
 		next.ServeHTTP(&flushingWriter{ResponseWriter: w, controller: controller}, r)
 	})
@@ -122,18 +126,22 @@ func (w *flushingWriter) WriteHeader(status int) {
 	if w.started {
 		panic(http.ErrAbortHandler)
 	}
+
 	w.ResponseWriter.WriteHeader(status)
 }
 
 func (w *flushingWriter) Write(p []byte) (int, error) {
 	w.started = true
+
 	n, err := w.ResponseWriter.Write(p)
 	if err != nil {
 		return n, err
 	}
+
 	if err := w.controller.Flush(); err != nil && !errors.Is(err, http.ErrNotSupported) {
 		return n, err
 	}
+
 	return n, nil
 }
 

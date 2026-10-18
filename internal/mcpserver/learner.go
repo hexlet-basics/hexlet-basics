@@ -100,6 +100,7 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 		spec.class = ClassPersonal
 		s.addTool(server, spec, t.run)
 	}
+
 	return nil
 }
 
@@ -108,10 +109,12 @@ func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&struct{}{}); err != nil {
 		return result{}, err
 	}
+
 	dashboard, err := s.deps.MyDashboard(ctx, c.userID)
 	if err != nil {
 		return result{}, err
 	}
+
 	return result{
 		text: fmt.Sprintf("%d courses in progress, %d finished",
 			len(dashboard.Started), len(dashboard.Finished)),
@@ -133,6 +136,7 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
 	if err != nil {
 		return result{}, err
@@ -142,6 +146,7 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 	for _, l := range course.Lessons {
 		lessons = append(lessons, map[string]any{"slug": l.Slug, "position": l.Position, "state": l.State})
 	}
+
 	return result{
 		text: fmt.Sprintf("%s: %s, %d%% complete", course.CourseSlug, course.State, course.Completion),
 		data: map[string]any{
@@ -159,17 +164,21 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	if args.LessonSlug == "" {
 		return result{}, userError{errLessonSlugRequired}
 	}
+
 	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
 	if err != nil {
 		return result{}, err
 	}
+
 	for _, l := range course.Lessons {
 		if l.Slug != args.LessonSlug {
 			continue
 		}
+
 		return result{
 			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, l.Slug, l.State),
 			data: map[string]any{
@@ -181,6 +190,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 			},
 		}, nil
 	}
+
 	return result{}, errNotFound("lesson " + strconv.Quote(args.LessonSlug))
 }
 
@@ -190,13 +200,16 @@ func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*p
 	if slug == "" {
 		return nil, userError{errCourseSlugRequired}
 	}
+
 	course, err := s.deps.MyCourseProgress(ctx, userID, slug)
 	if ent.IsNotFound(err) {
 		return nil, errNotFound("course " + strconv.Quote(slug))
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return course, nil
 }
 

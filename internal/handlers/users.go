@@ -40,6 +40,7 @@ func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUse
 	if err != nil {
 		return nil, err
 	}
+
 	return s.conv.ToUserCruds(rows), nil
 }
 
@@ -54,7 +55,9 @@ func (s *Server) userCrud(ctx context.Context, id int) (*api.UserCrud, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToUserCrud(row)
+
 	return &item, nil
 }
 
@@ -63,11 +66,14 @@ func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.
 	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), false, !req.Admin.Null && req.Admin.Value); err != nil {
 		return nil, err
 	}
+
 	row, err := s.userEditor.Create(ctx, userFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToUserCrud(row)
+
 	return &item, nil
 }
 
@@ -86,15 +92,19 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*a
 	if err != nil {
 		return nil, err
 	}
+
 	admin := !req.Admin.Null && req.Admin.Value
 	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), isAdministrator(current), admin); err != nil {
 		return nil, err
 	}
+
 	row, err := s.userEditor.Update(ctx, id, userFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToUserCrud(row)
+
 	return &item, nil
 }
 
@@ -105,9 +115,11 @@ func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUser
 	if err := s.selfProtection.OwnAccountDeletion(actorOfRequest(ctx), int(params.ID)); err != nil {
 		return err
 	}
+
 	if err := s.userEditor.Delete(ctx, int(params.ID)); err != nil {
 		return err
 	}
+
 	return nil
 }
 

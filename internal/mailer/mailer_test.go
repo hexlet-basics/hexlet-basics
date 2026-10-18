@@ -30,13 +30,16 @@ type postboxSent struct {
 // test reads what the provider would have received.
 func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxSent) {
 	t.Helper()
+
 	var (
 		mu   sync.Mutex
 		sent []postboxSent
 	)
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		assert.NoError(t, err)
+
 		var request struct {
 			FromEmailAddress string `json:"FromEmailAddress"`
 			Destination      struct {
@@ -57,6 +60,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 		}
 		assert.NoError(t, json.Unmarshal(body, &request))
 		mu.Lock()
+
 		sent = append(sent, postboxSent{
 			From:    request.FromEmailAddress,
 			To:      request.Destination.ToAddresses,
@@ -78,9 +82,11 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 		PostboxAccessKeyID:     "key",
 		PostboxSecretAccessKey: "secret",
 	}
+
 	return cfg, func() []postboxSent {
 		mu.Lock()
 		defer mu.Unlock()
+
 		return append([]postboxSent(nil), sent...)
 	}
 }
@@ -116,6 +122,7 @@ func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
 
 func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
 	t.Parallel()
+
 	logger := slog.New(slog.DiscardHandler)
 
 	assert.IsType(t, &Postbox{}, New(config.MailConfig{PostboxAccessKeyID: "key"}, logger))
@@ -124,6 +131,7 @@ func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
 
 func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 	t.Parallel()
+
 	var out bytes.Buffer
 
 	err := NewLog(slog.New(slog.NewTextHandler(&out, nil))).Send(t.Context(), Message{
@@ -137,6 +145,7 @@ func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 
 func TestRecorderKeepsMessagesInOrderAndHandsOutACopy(t *testing.T) {
 	t.Parallel()
+
 	recorder := &Recorder{}
 	require.NoError(t, recorder.Send(t.Context(), Message{To: "a@example.com"}))
 	require.NoError(t, recorder.Send(t.Context(), Message{To: "b@example.com"}))

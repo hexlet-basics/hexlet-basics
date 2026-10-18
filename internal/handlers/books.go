@@ -26,15 +26,19 @@ var bookDelivery = assetstore.Delivery{
 // button. A visitor has no request, so the page renders for them too.
 func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 	view := &api.BookView{}
+
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
 		return view, nil
 	}
+
 	requested, err := s.books.Requested(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	view.Requested = requested
+
 	return view, nil
 }
 
@@ -46,6 +50,7 @@ func (s *Server) CreateBookRequest(ctx context.Context) error {
 	if err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx)); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -56,16 +61,20 @@ func (s *Server) CreateBookRequest(ctx context.Context) error {
 // requested the book is sent back to the book page.
 func (s *Server) DownloadBook(ctx context.Context) (*api.DownloadBookFound, error) {
 	u := MustAuthenticatedUser(ctx)
+
 	marked, err := s.books.MarkDownloaded(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	if !marked {
 		return &api.DownloadBookFound{Location: s.settings.SiteURL + bookPath}, nil
 	}
+
 	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery)
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.DownloadBookFound{Location: location}, nil
 }

@@ -18,16 +18,20 @@ import (
 // course-category suite uses for slugs.
 func bannerByBody(t *testing.T, h *testsupport.Harness, body string) api.Banner {
 	t.Helper()
+
 	page, err := h.Client.AdminListBanners(context.Background(), api.AdminListBannersParams{
 		PerPage: api.NewOptInt32(100),
 	})
 	require.NoError(t, err)
+
 	for _, it := range page.Items {
 		if it.Body == body {
 			return it
 		}
 	}
+
 	t.Fatalf("banner with body %q not found", body)
+
 	return api.Banner{}
 }
 

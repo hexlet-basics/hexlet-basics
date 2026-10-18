@@ -35,6 +35,7 @@ func (d *Directory) List(ctx context.Context, search string, page domain.Page) (
 	if term := strings.TrimSpace(search); term != "" {
 		query = query.Where(matches(term))
 	}
+
 	return domain.Paged(ctx, query, page)
 }
 
@@ -56,16 +57,19 @@ func (d *Directory) Search(ctx context.Context, term string) ([]*ent.User, error
 	if term == "" {
 		return nil, nil
 	}
+
 	rows, err := d.db.User.Query().
 		Where(matches(term)).
 		Order(ent.Desc(user.FieldID)).
 		Limit(searchLimit).
 		All(ctx)
+
 	return rows, domain.FromStore(err)
 }
 
 // Get returns one user. A missing id is domain.ErrNotFound.
 func (d *Directory) Get(ctx context.Context, id int) (*ent.User, error) {
 	u, err := d.db.User.Get(ctx, id)
+
 	return u, domain.FromStore(err)
 }

@@ -57,16 +57,21 @@ func (s *Server) resolve(a pageArgs) (int, int, string, error) {
 	if a.Page < 0 || a.PerPage < 0 {
 		return 0, 0, "", userError{errPageArguments}
 	}
+
 	page := max(a.Page, 1)
 	perPage := a.PerPage
+
 	var note string
+
 	if perPage == 0 {
 		perPage = s.limits.MaxPageSize
 	}
+
 	if perPage > s.limits.MaxPageSize {
 		note = fmt.Sprintf(" (perPage %d is above the limit, clamped to %d)", perPage, s.limits.MaxPageSize)
 		perPage = s.limits.MaxPageSize
 	}
+
 	return page, perPage, note, nil
 }
 
@@ -76,6 +81,7 @@ func slicePage[T any](items []T, page, perPage int) []T {
 	if start >= len(items) {
 		return []T{}
 	}
+
 	return items[start:min(start+perPage, len(items))]
 }
 
@@ -134,13 +140,16 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		spec.name = t.name
 		spec.scope = oauthserver.ScopeCatalogRead
 		spec.class = ClassCatalogue
+
 		output, err := s.outputSchema(t.name)
 		if err != nil {
 			return errs.With("tool", t.name).Wrapf(err, "build output schema")
 		}
+
 		spec.output = output
 		s.addTool(server, spec, t.run)
 	}
+
 	return nil
 }
 
@@ -152,11 +161,14 @@ func (s *Server) outputSchema(operationID string) (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	key := map[string]string{listCoursesTool: "courses", listCategoriesTool: "categories"}[operationID]
 	if key == "" {
 		return schema, nil
 	}
+
 	integer := map[string]any{"type": "integer"}
+
 	return map[string]any{
 		"type": "object",
 		"properties": map[string]any{
@@ -175,19 +187,24 @@ func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	page, perPage, note, err := s.resolve(args)
 	if err != nil {
 		return result{}, err
 	}
+
 	all, err := s.deps.Catalogue.ListCourses(ctx)
 	if err != nil {
 		return result{}, errs.Wrapf(err, "list courses")
 	}
+
 	items := slicePage(all, page, perPage)
+
 	slugs := make([]string, len(items))
 	for i, course := range items {
 		slugs[i] = course.Slug
 	}
+
 	return result{
 		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("courses", slugs), page, len(all), note),
 		data: map[string]any{"courses": items, "total": len(all), "page": page, "perPage": perPage},
@@ -200,19 +217,24 @@ func (s *Server) listCategories(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	page, perPage, note, err := s.resolve(args)
 	if err != nil {
 		return result{}, err
 	}
+
 	all, err := s.deps.Catalogue.ListPublicCourseCategories(ctx)
 	if err != nil {
 		return result{}, errs.Wrapf(err, "list course categories")
 	}
+
 	items := slicePage(all, page, perPage)
+
 	slugs := make([]string, len(items))
 	for i, category := range items {
 		slugs[i] = category.Slug.Value
 	}
+
 	return result{
 		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("categories", slugs), page, len(all), note),
 		data: map[string]any{"categories": items, "total": len(all), "page": page, "perPage": perPage},
@@ -229,10 +251,12 @@ func (s *Server) getCategory(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	view, err := s.deps.Catalogue.GetPublicCourseCategory(ctx, api.GetPublicCourseCategoryParams{Slug: args.Slug})
 	if err != nil {
 		return result{}, notFoundOf(err, "category")
 	}
+
 	return result{
 		text: fmt.Sprintf("Category %s with %d courses", args.Slug, len(view.LandingPages)),
 		data: view,
@@ -244,10 +268,12 @@ func (s *Server) getCourse(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	view, err := s.deps.Catalogue.GetCourse(ctx, api.GetCourseParams{Slug: args.Slug})
 	if err != nil {
 		return result{}, notFoundOf(err, "course")
 	}
+
 	return result{
 		text: fmt.Sprintf("Course %s with %d lessons", args.Slug, len(view.Lessons)),
 		data: view,
@@ -264,10 +290,12 @@ func (s *Server) getCourseLesson(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	view, err := s.deps.Catalogue.GetCourseLesson(ctx, api.GetCourseLessonParams{CourseSlug: args.CourseSlug, Slug: args.Slug})
 	if err != nil {
 		return result{}, notFoundOf(err, "lesson")
 	}
+
 	return result{
 		text: fmt.Sprintf("Lesson %s of course %s", args.Slug, args.CourseSlug),
 		data: view,
@@ -279,6 +307,7 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	page, perPage, note, err := s.resolve(args)
 	if err != nil {
 		return result{}, err
@@ -286,14 +315,17 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	// The handler pages in SQL; the clamped page size goes to it, not the
 	// agent's.
 	params := api.ListBlogPostsParams{Page: api.NewOptInt32(apiconv.Int32FromInt(page)), PerPage: api.NewOptInt32(apiconv.Int32FromInt(perPage))}
+
 	posts, err := s.deps.Catalogue.ListBlogPosts(ctx, params)
 	if err != nil {
 		return result{}, errs.Wrapf(err, "list blog posts")
 	}
+
 	slugs := make([]string, len(posts.Items))
 	for i, post := range posts.Items {
 		slugs[i] = post.Slug.Value
 	}
+
 	return result{
 		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("posts", slugs), posts.Page, posts.Total, note),
 		data: posts,
@@ -306,10 +338,12 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
+
 	view, err := s.deps.Catalogue.GetBlogPost(ctx, api.GetBlogPostParams{Slug: args.Slug})
 	if err != nil {
 		return result{}, notFoundOf(err, "blog post")
 	}
+
 	return result{
 		text: "Blog post " + args.Slug,
 		data: view,
@@ -322,5 +356,6 @@ func notFoundOf(err error, what string) error {
 	if errors.Is(domain.FromStore(err), domain.ErrNotFound) {
 		return errNotFound(what)
 	}
+
 	return err
 }

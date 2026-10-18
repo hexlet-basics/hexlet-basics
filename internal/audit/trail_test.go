@@ -79,6 +79,7 @@ func (r *recorder) ExecContext(ctx context.Context, query string, args ...any) (
 
 func (r *recorder) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
 	r.queries = append(r.queries, recorded{query: query, args: args})
+
 	return r.tx.QueryContext(ctx, query, args...)
 }
 
@@ -87,14 +88,19 @@ func planOf(t *testing.T, tx *sql.Tx, q recorded) string {
 	t.Helper()
 	rows, err := tx.QueryContext(t.Context(), "EXPLAIN "+q.query, q.args...)
 	require.NoError(t, err)
+
 	defer func() { _ = rows.Close() }()
+
 	var plan strings.Builder
+
 	for rows.Next() {
 		var line string
 		require.NoError(t, rows.Scan(&line))
 		plan.WriteString(line + "\n")
 	}
+
 	require.NoError(t, rows.Err())
+
 	return plan.String()
 }
 
@@ -142,6 +148,7 @@ func TestAFilteredQueryReadsOnlyThePartitionsOfItsWindow(t *testing.T) {
 			plan := planOf(t, tx, rec.queries[0])
 
 			assert.Contains(t, plan, "audit_records_p202409", plan)
+
 			for _, other := range []string{"p202407", "p202408", "p202410", "audit_records_default"} {
 				assert.NotContains(t, plan, other, plan)
 			}
@@ -155,6 +162,7 @@ func TestWithoutABoundEveryPartitionIsRead(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
 	rec := &recorder{tx: tx}
 	unbounded := ent.NewClient(ent.Driver(entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: rec})))
+
 	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), time.Date(2024, 10, 17, 0, 0, 0, 0, time.UTC)))
 
 	_, err := unbounded.AuditRecord.Query().Limit(20).All(t.Context())

@@ -46,6 +46,7 @@ func (w *reapStuckVersionBuildsWorker) Work(ctx context.Context, _ *river.Job[Re
 			slog.Int("course_id", version.CourseID),
 		)
 	}
+
 	return err
 }
 

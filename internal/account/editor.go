@@ -42,6 +42,7 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 		SetNillableLastName(fields.LastName).
 		SetNillableAdmin(fields.Admin).
 		Save(ctx)
+
 	return u, domain.FromStore(err, userUniques...)
 }
 
@@ -60,11 +61,13 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	} else {
 		update.SetFirstName(*fields.FirstName)
 	}
+
 	if fields.LastName == nil {
 		update.ClearLastName()
 	} else {
 		update.SetLastName(*fields.LastName)
 	}
+
 	if fields.Admin == nil {
 		update.ClearAdmin()
 	} else {
@@ -72,6 +75,7 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	}
 
 	u, err := update.Save(ctx)
+
 	return u, domain.FromStore(err, userUniques...)
 }
 
@@ -81,5 +85,6 @@ func (e *Editor) Delete(ctx context.Context, id int) error {
 	if err := EnsureAnotherAdmin(ctx, e.db, id); err != nil {
 		return domain.FromStore(err)
 	}
+
 	return domain.FromStore(e.db.User.DeleteOneID(id).Exec(ctx))
 }

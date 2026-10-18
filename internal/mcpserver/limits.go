@@ -119,15 +119,19 @@ func (l Limits) withDefaults() Limits {
 	fill(&l.Client.Catalogue, d.Client.Catalogue)
 	fill(&l.Client.Personal, d.Client.Personal)
 	fill(&l.Client.Write, d.Client.Write)
+
 	if l.ToolTimeout <= 0 {
 		l.ToolTimeout = d.ToolTimeout
 	}
+
 	if l.RateWindow <= 0 {
 		l.RateWindow = d.RateWindow
 	}
+
 	if l.Now == nil {
 		l.Now = d.Now
 	}
+
 	return l
 }
 
@@ -171,7 +175,9 @@ func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (int
 	if denied != nil {
 		return 0, "", denied
 	}
+
 	clientID, denied := s.spend(req, userID, class)
+
 	return userID, clientID, denied
 }
 
@@ -184,6 +190,7 @@ func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (strin
 	if client, ok := req.GetExtra().TokenInfo.Extra["client_id"].(string); ok {
 		clientID = client
 	}
+
 	if ok, wait := s.meter.allow(class, userID, clientID); !ok {
 		seconds := int(wait.Round(time.Second) / time.Second)
 		seconds = max(seconds, 1)
@@ -191,7 +198,9 @@ func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (strin
 			"rate limit exceeded for %s tools: retry in %d seconds (not before %s)",
 			class, seconds, s.limits.Now().Add(wait).UTC().Format(time.RFC3339)))
 		refusal.Meta = mcp.Meta{"retryAfterSeconds": seconds, "rateLimitClass": class.String()}
+
 		return "", refusal
 	}
+
 	return clientID, nil
 }

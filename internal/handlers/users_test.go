@@ -22,16 +22,20 @@ const typeaheadCap = 20
 // reading its id back rather than hard-coding it.
 func userByEmail(t *testing.T, h *testsupport.Harness, email string) api.UserCrud {
 	t.Helper()
+
 	page, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{
 		PerPage: api.NewOptInt32(100),
 	})
 	require.NoError(t, err)
+
 	for _, it := range page.Items {
 		if it.Email.Value == email {
 			return it
 		}
 	}
+
 	t.Fatalf("user with email %q not found", email)
+
 	return api.UserCrud{}
 }
 
@@ -215,6 +219,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	// The fixtures have three administrators: user_admin_learner (the caller), user_second_admin
 	// and the staff member user_admin_staff; the caller is left the only one.
 	leaveOnlyAlice(t, h)
+
 	input := &api.UserInput{
 		Email:     "admin-learner@example.com",
 		FirstName: api.NilString{Null: true},

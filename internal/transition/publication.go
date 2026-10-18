@@ -44,5 +44,6 @@ func CurrentOf(column *string) PublicationState {
 	if column == nil {
 		return Draft
 	}
+
 	return PublicationState(*column)
 }

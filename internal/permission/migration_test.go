@@ -125,13 +125,16 @@ func createRole(t *testing.T, h *testsupport.Harness, name string) int {
 	t.Helper()
 	role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{Name: name, Description: api.NilString{Null: true}})
 	require.NoError(t, err)
+
 	return int(role.ID)
 }
 
 func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened) {
 	t.Helper()
+
 	migration, err := os.ReadFile("../../migrations/" + file)
 	require.NoError(t, err)
+
 	text := string(migration)
 	start := strings.Index(text, "INSERT INTO")
 	require.NotEqual(t, -1, start, "the migration inserts the roles")
@@ -162,6 +165,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 			role, resource, mask&1 != 0, mask&2 != 0, mask&4 != 0, mask&8 != 0)
 		require.NoError(t, err)
 	}
+
 	_, err = tx.ExecContext(t.Context(), data)
 	require.NoError(t, err)
 
@@ -174,6 +178,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	for mask := range 1 << len(byBit) {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
+
 		for i, operations := range byBit {
 			for _, operation := range operations {
 				err := policy.Allow(t.Context(), editor, "ru", operation)
@@ -202,17 +207,21 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
 	const holdsCourses, holdsLessons = 1, 2
+
 	for mask := range 4 {
 		// A bystander grant must survive untouched.
 		grants := []string{"courses.read"}
 		if mask&holdsCourses != 0 {
 			grants = append(grants, "courses.update")
 		}
+
 		if mask&holdsLessons != 0 {
 			grants = append(grants, "course_lessons.update")
 		}
+
 		h.Grant(t, createRole(t, h, fmt.Sprintf("combo-%d", mask)), grants...)
 	}
+
 	_, err = tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)
 
@@ -258,7 +267,9 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
+
 	grants := map[int]string{holdsUpdate: "blog_posts.update", holdsPublish: "blog_posts.publish", holdsRead: "blog_posts.read"}
+
 	roles := make([]int, 8)
 	for mask := range roles {
 		role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -266,14 +277,17 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 			Description: api.NilString{Null: true},
 		})
 		require.NoError(t, err)
+
 		roles[mask] = int(role.ID)
 
 		held := []string{}
+
 		for bit, permission := range grants {
 			if mask&bit != 0 {
 				held = append(held, permission)
 			}
 		}
+
 		_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 			api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 		require.NoError(t, err)
@@ -331,11 +345,13 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 			staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 			const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
+
 			grants := map[int]string{
 				holdsUpdate:  resource.permissions + ".update",
 				holdsPublish: resource.permissions + ".publish",
 				holdsRead:    resource.permissions + ".read",
 			}
+
 			roles := make([]int, 8)
 			for mask := range roles {
 				role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -343,14 +359,17 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 					Description: api.NilString{Null: true},
 				})
 				require.NoError(t, err)
+
 				roles[mask] = int(role.ID)
 
 				held := []string{}
+
 				for bit, permission := range grants {
 					if mask&bit != 0 {
 						held = append(held, permission)
 					}
 				}
+
 				_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 					api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 				require.NoError(t, err)
@@ -402,11 +421,13 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsCompleted, holdsRead = 1, 2, 4
+
 	grants := map[int]string{
 		holdsUpdate:    "courses.update",
 		holdsCompleted: "courses.mark_completed",
 		holdsRead:      "courses.read",
 	}
+
 	roles := make([]int, 8)
 	for mask := range roles {
 		role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -414,14 +435,17 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 			Description: api.NilString{Null: true},
 		})
 		require.NoError(t, err)
+
 		roles[mask] = int(role.ID)
 
 		held := []string{}
+
 		for bit, permission := range grants {
 			if mask&bit != 0 {
 				held = append(held, permission)
 			}
 		}
+
 		_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 			api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 		require.NoError(t, err)

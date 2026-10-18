@@ -43,12 +43,15 @@ var truncationSchema = map[string]any{"type": "object"}
 func withTruncation(schema map[string]any) map[string]any {
 	out := make(map[string]any, len(schema)+1)
 	maps.Copy(out, schema)
+
 	properties := map[string]any{}
 	if existing, ok := schema["properties"].(map[string]any); ok {
 		maps.Copy(properties, existing)
 	}
+
 	properties[truncationKey] = truncationSchema
 	out["properties"] = properties
+
 	return out
 }
 
@@ -80,6 +83,7 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 		if err != nil {
 			return limit + 1
 		}
+
 		return len(raw) + textLen
 	}
 	if size() <= limit {
@@ -87,6 +91,7 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 	}
 
 	var cuts []cut
+
 	for range 200 {
 		current := size()
 		if current+hintReserve <= limit {
@@ -95,28 +100,35 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 		// Aim at the limit in one step; the loop corrects any misjudgement from
 		// elements of unequal size.
 		ratio := float64(limit-hintReserve) / float64(current)
+
 		target := largest(data)
 		if target == nil {
 			return false
 		}
+
 		cuts = shorten(cuts, target, ratio)
 	}
+
 	if size()+hintReserve > limit {
 		return false
 	}
 
 	hint := map[string]any{"truncated": true, "limitBytes": limit}
+
 	listed := cuts
 	if len(listed) > maxListedCuts {
 		listed = listed[:maxListedCuts]
 	}
+
 	described := make([]any, len(listed))
 	for i, c := range listed {
 		described[i] = map[string]any{"path": c.path, "kept": c.kept, "total": c.total, "unit": c.unit}
 	}
+
 	hint["cuts"] = described
 	hint["hint"] = "The response was cut to stay within " + strconv.Itoa(limit) + " bytes. " + continuation(cuts, list, hint)
 	data[truncationKey] = hint
+
 	return true
 }
 
@@ -128,6 +140,7 @@ func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 			if c.path != list.key || c.unit != "items" {
 				continue
 			}
+
 			perPage := max(c.kept, 1)
 			// The first record of the cut page, as an offset into the whole list,
 			// and the page of the smaller size that contains it.
@@ -135,15 +148,18 @@ func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 			page := offset/perPage + 1
 			hint["suggestedPerPage"] = perPage
 			hint["suggestedPage"] = page
+
 			return fmt.Sprintf("Only %d of %d records of this page fit. Call again with perPage=%d and page=%d, then page=%d and on, to read the rest; the first call may repeat a few records already received.",
 				c.kept, c.total, perPage, page, page+1)
 		}
 	}
+
 	for _, c := range cuts {
 		if c.unit == "bytes" {
 			return "A text longer than a response may be was shortened at " + c.path + "; the full text is on the website."
 		}
 	}
+
 	return "A list inside the record was shortened; the full record is on the website."
 }
 
@@ -159,8 +175,11 @@ type node struct {
 // arrays that still have more than one element and the strings long enough to be
 // worth shortening.
 func largest(data map[string]any) *node {
-	var best *node
-	var walk func(path string, v any, set func(any))
+	var (
+		best *node
+		walk func(path string, v any, set func(any))
+	)
+
 	consider := func(n node) {
 		if best == nil || n.size > best.size {
 			best = &n
@@ -173,10 +192,12 @@ func largest(data map[string]any) *node {
 				if path == "" && k == truncationKey {
 					continue
 				}
+
 				childPath := k
 				if path != "" {
 					childPath = path + "." + k
 				}
+
 				walk(childPath, child, func(nv any) { x[k] = nv })
 			}
 		case []any:
@@ -187,6 +208,7 @@ func largest(data map[string]any) *node {
 					consider(node{path: path, size: len(raw), value: x, set: set})
 				}
 			}
+
 			for i, child := range x {
 				walk(fmt.Sprintf("%s[%d]", path, i), child, func(nv any) { x[i] = nv })
 			}
@@ -197,6 +219,7 @@ func largest(data map[string]any) *node {
 		}
 	}
 	walk("", data, nil)
+
 	return best
 }
 
@@ -205,10 +228,12 @@ func largest(data map[string]any) *node {
 // same place, so the hint reports the first size, not the last).
 func shorten(cuts []cut, n *node, ratio float64) []cut {
 	ratio = min(max(ratio, minKeepRatio), maxKeepRatio)
+
 	switch x := n.value.(type) {
 	case []any:
 		keep := min(max(int(float64(len(x))*ratio), 1), len(x)-1)
 		n.set(x[:keep])
+
 		return record(cuts, cut{path: n.path, kept: keep, total: len(x), unit: "items"})
 	case string:
 		keep := min(max(int(float64(len(x))*ratio), minKeptBytes), len(x)-1)
@@ -216,9 +241,12 @@ func shorten(cuts []cut, n *node, ratio float64) []cut {
 		for keep > 0 && !utf8.RuneStart(x[keep]) {
 			keep--
 		}
+
 		n.set(strings.Clone(x[:keep]) + " [cut]")
+
 		return record(cuts, cut{path: n.path, kept: keep, total: len(x), unit: "bytes"})
 	}
+
 	return cuts
 }
 
@@ -227,8 +255,10 @@ func record(cuts []cut, c cut) []cut {
 	for i := range cuts {
 		if cuts[i].path == c.path && cuts[i].unit == c.unit {
 			cuts[i].kept = c.kept
+
 			return cuts
 		}
 	}
+
 	return append(cuts, c)
 }

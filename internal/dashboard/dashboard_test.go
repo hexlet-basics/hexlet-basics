@@ -21,7 +21,9 @@ import (
 // logged on the server, naming the course and the learner.
 func TestCoursesLogsTheCourseWithoutACard(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
+
 	var logs bytes.Buffer
+
 	logger := slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelWarn}))
 	board := dashboard.New(db, landingpage.NewCatalog(db), progress.New(db, transactor, nil, nil), logger)
 	userID := fixture.ID(fixture.UserLearnerHiddenCards)

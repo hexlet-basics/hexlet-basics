@@ -35,9 +35,12 @@ type registrationError struct {
 
 func decodeJSON[T any](t *testing.T, res *http.Response) T {
 	t.Helper()
+
 	defer func() { _ = res.Body.Close() }()
+
 	var v T
 	require.NoError(t, json.NewDecoder(res.Body).Decode(&v))
+
 	return v
 }
 
@@ -50,6 +53,7 @@ func request(edit func(map[string]any)) map[string]any {
 	if edit != nil {
 		edit(m)
 	}
+
 	return m
 }
 
@@ -57,6 +61,7 @@ func clientCount(t *testing.T, o *testsupport.OAuth) int {
 	t.Helper()
 	n, err := o.DB.OAuthClient.Query().Count(t.Context())
 	require.NoError(t, err)
+
 	return n
 }
 
@@ -146,6 +151,7 @@ func TestRegistrationRefusals(t *testing.T) {
 	set := func(key string, value any) func(map[string]any) {
 		return func(m map[string]any) { m[key] = value }
 	}
+
 	manyRedirects := make([]string, 0, 50)
 	for i := range 50 {
 		manyRedirects = append(manyRedirects, fmt.Sprintf("https://app.example.com/cb%d", i))
@@ -202,9 +208,11 @@ func TestRegistrationRefusals(t *testing.T) {
 	}
 	o := testsupport.NewOAuth(t)
 	before := clientCount(t, o)
+
 	i := 0
 	for name, tc := range cases {
 		i++
+
 		t.Run(name, func(t *testing.T) {
 			// A different address per case: this test is about validation, not
 			// about the rate limit.
@@ -214,6 +222,7 @@ func TestRegistrationRefusals(t *testing.T) {
 			assert.Equal(t, tc.code, decodeJSON[registrationError](t, res).Error)
 		})
 	}
+
 	assert.Equal(t, before, clientCount(t, o), "no refused registration may leave a client behind")
 }
 
@@ -260,6 +269,7 @@ func TestARefusedRegistrationNeverRevealsAnExistingClient(t *testing.T) {
 
 func TestRegistrationIsRateLimitedPerAddress(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+
 	attacker := testsupport.FromAddress("203.0.113.50")
 	for i := range 10 {
 		res := o.Register(request(nil), attacker)
@@ -283,6 +293,7 @@ func TestRegistrationIsRateLimitedPerAddress(t *testing.T) {
 
 func TestRefusedAttemptsSpendTheRateLimitToo(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+
 	attacker := testsupport.FromAddress("203.0.113.60")
 	for range 10 {
 		res := o.Register(`{`, attacker)

@@ -92,15 +92,18 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("slug", slug).Wrapf(err, "load landing page")
 	}
+
 	crs := landing.Edges.Course
 
 	target, moved, err := p.archivedTarget(ctx, landing, locale)
 	if err != nil {
 		return nil, err
 	}
+
 	var movedTo *string
 	if moved {
 		movedTo = &target
@@ -112,6 +115,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	if err != nil {
 		return nil, err
 	}
+
 	infos, err := p.lessonInfos(ctx, crs, locale, state)
 	if err != nil {
 		return nil, err
@@ -146,6 +150,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	if !learner.SignedIn() {
 		return page, nil
 	}
+
 	enrolled, err := p.db.Enrollment.Query().
 		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(crs.ID)).
 		Only(ctx)
@@ -155,7 +160,9 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	case err != nil:
 		return nil, errs.Wrapf(err, "load enrollment")
 	}
+
 	page.Enrollment = enrolled
+
 	return page, nil
 }
 
@@ -185,9 +192,11 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("lesson_slug", lessonSlug, "course_slug", courseSlug).Wrapf(err, "load lesson")
 	}
+
 	if translation.Edges.Lesson == nil || translation.Edges.Version == nil {
 		return nil, domain.ErrNotFound
 	}
@@ -199,6 +208,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("course_slug", courseSlug).Wrapf(err, "load course")
 	}
@@ -207,6 +217,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if err != nil {
 		return nil, err
 	}
+
 	infos, err := p.lessonInfos(ctx, crs, locale, state)
 	if err != nil {
 		return nil, err
@@ -219,6 +230,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	}
 
 	version := translation.Edges.Version
+
 	return &LessonPage{
 		Course:      crs,
 		Lesson:      translation.Edges.Lesson,
@@ -242,26 +254,32 @@ func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage,
 	}
 
 	var target *ent.CourseLandingPage
+
 	if page.LandingPageToRedirectID != nil {
 		named, err := p.db.CourseLandingPage.Get(ctx, *page.LandingPageToRedirectID)
 		if ent.IsNotFound(err) {
 			return "", false, domain.ErrNotFound
 		}
+
 		if err != nil {
 			return "", false, errs.Wrapf(err, "load redirect target")
 		}
+
 		target = named
 	} else {
 		mains, err := p.catalog.MainPages(ctx, locale, page.CourseID)
 		if err != nil {
 			return "", false, err
 		}
+
 		main, ok := mains[page.CourseID]
 		if !ok || main.ID == page.ID {
 			return "", false, domain.ErrNotFound
 		}
+
 		target = main
 	}
+
 	return lo.FromPtr(target.Slug), true, nil
 }
 
@@ -298,6 +316,7 @@ func (p *Pages) lessonInfos(
 	if crs.CurrentVersionID == nil {
 		return nil, nil
 	}
+
 	infos, err := p.db.CourseLessonTranslation.Query().
 		Where(
 			courselessontranslation.LocaleEQ(locale),
@@ -314,17 +333,22 @@ func (p *Pages) lessonInfos(
 	for _, lesson := range state.Lessons {
 		position[lesson.Slug] = lesson.Position
 	}
+
 	unplaced := len(position) + 1
 	rank := func(info *ent.CourseLessonTranslation) int {
 		if info.Edges.Lesson == nil {
 			return unplaced
 		}
+
 		if pos, ok := position[lo.FromPtr(info.Edges.Lesson.Slug)]; ok {
 			return pos
 		}
+
 		return unplaced
 	}
+
 	slices.SortStableFunc(infos, func(a, b *ent.CourseLessonTranslation) int { return rank(a) - rank(b) })
+
 	return infos, nil
 }
 
@@ -339,9 +363,11 @@ func lessonSourceURL(base string, pathToCode *string, locale string) string {
 	if pathToCode == nil || *pathToCode == "" {
 		return ""
 	}
+
 	link, err := url.JoinPath(base, *pathToCode, locale, "README.md")
 	if err != nil {
 		return ""
 	}
+
 	return strings.Replace(link, path.Join("/", "modules"), "/blob/main/modules", 1)
 }

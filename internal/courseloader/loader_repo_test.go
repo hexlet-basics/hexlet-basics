@@ -34,6 +34,7 @@ func miniRepo(t *testing.T, data, theory string) string {
   exercise_test_filename: test.js
 `)
 	put("modules/10-basics/description.en.yml", "name: Basics\ndescription: Start\n")
+
 	lesson := "modules/10-basics/10-hello/"
 	put(lesson+"exercise.js", "x\n")
 	put(lesson+"test.js", "x\n")
@@ -45,6 +46,7 @@ func miniRepo(t *testing.T, data, theory string) string {
 	picture, err := os.ReadFile(filepath.Join(fixtureRepo(t), "modules", "10-basics", "10-hello-world", "en", "assets", "dart.png"))
 	require.NoError(t, err)
 	put(lesson+"en/assets/a.png", string(picture))
+
 	return dir
 }
 
@@ -92,6 +94,7 @@ func TestLoaderFailsTheBuildWhenATheoryImageIsMissing(t *testing.T) {
 
 	require.Error(t, err)
 	require.ErrorContains(t, err, "open image")
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 	assert.Contains(t, derefStr(version.Result), "missing.png")
@@ -107,6 +110,7 @@ func TestLoaderFailsAVersionWhoseRepoCannotBeParsed(t *testing.T) {
 	err := newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 
 	require.Error(t, err)
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 	assert.Contains(t, derefStr(version.Result), "spec.yml")

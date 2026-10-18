@@ -87,6 +87,7 @@ func TestLoadRejectsBadMCPLimitsOnlyWhenMCPIsOn(t *testing.T) {
 			requireProblem(t, err, env)
 
 			t.Setenv("MCP_ENABLED", "false")
+
 			_, err = LoadServer()
 			require.NoError(t, err, "an inert endpoint is not validated")
 		})

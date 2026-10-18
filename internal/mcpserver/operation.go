@@ -67,6 +67,7 @@ var contract = sync.OnceValues(func() (*contractDoc, error) {
 	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
 		return nil, errs.Wrapf(err, "parse OpenAPI")
 	}
+
 	return &doc, nil
 })
 
@@ -79,15 +80,18 @@ func readOperation(operationID string) (*operation, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	for path, methods := range doc.Paths {
 		for method, raw := range methods {
 			node, _ := raw.(map[string]any)
 			if node["operationId"] != operationID {
 				continue
 			}
+
 			return buildOperation(doc, operationID, strings.ToUpper(method), path, node)
 		}
 	}
+
 	return nil, errs.With("operation", operationID).Errorf("operation is not in the contract")
 }
 
@@ -101,20 +105,26 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 			if !found || doc.Components.Parameters[name] == nil {
 				return nil, errs.With("operation", id, "ref", ref).Errorf("unresolvable parameter reference")
 			}
+
 			p, _ = doc.Components.Parameters[name].(map[string]any)
 		}
+
 		param := parameter{Name: asString(p["name"]), In: asString(p["in"]), Description: asString(p["description"])}
+
 		param.Required, _ = p["required"].(bool)
 		if param.In != "path" && param.In != "query" {
 			return nil, errs.With("operation", id, "parameter", param.Name, "in", param.In).Errorf("parameter location a tool cannot carry")
 		}
+
 		schema, err := inline(p["schema"], doc.Components.Schemas, nil)
 		if err != nil {
 			return nil, errs.With("operation", id, "parameter", param.Name).Wrapf(err, "parameter")
 		}
+
 		param.Schema, _ = schema.(map[string]any)
 		op.Params = append(op.Params, param)
 	}
+
 	for _, name := range pathParams(path) {
 		if !slices.ContainsFunc(op.Params, func(p parameter) bool { return p.In == "path" && p.Name == name }) {
 			return nil, errs.With("operation", id, "parameter", name).Errorf("path parameter is not declared")
@@ -126,6 +136,7 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		if err != nil {
 			return nil, errs.With("operation", id).Wrapf(err, "request body")
 		}
+
 		if isMultipart {
 			op.Multipart = &file
 		} else {
@@ -133,30 +144,39 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 			if err != nil {
 				return nil, errs.With("operation", id).Wrapf(err, "request body")
 			}
+
 			if !found {
 				return nil, errs.With("operation", id).Errorf("request body is not JSON")
 			}
+
 			op.Body = schema
 		}
+
 		op.BodyRequired, _ = body["required"].(bool)
 	}
 
 	responses, _ := node["responses"].(map[string]any)
+
 	codes := make([]string, 0, len(responses))
 	for code := range responses {
 		if strings.HasPrefix(code, "2") {
 			codes = append(codes, code)
 		}
 	}
+
 	sort.Strings(codes)
+
 	for _, code := range codes {
 		response, _ := responses[code].(map[string]any)
+
 		schema, found, err := jsonSchemaOf(response["content"], doc)
 		if err != nil {
 			return nil, errs.With("operation", id, "response", code).Wrapf(err, "response")
 		}
+
 		if found {
 			op.Response = schema
+
 			break
 		}
 	}
@@ -168,6 +188,7 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 			}
 		}
 	}
+
 	return op, nil
 }
 
@@ -175,15 +196,19 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 // found is false when there is none.
 func jsonSchemaOf(content any, doc *contractDoc) (map[string]any, bool, error) {
 	entries, _ := content.(map[string]any)
+
 	entry, ok := entries["application/json"].(map[string]any)
 	if !ok || entry["schema"] == nil {
 		return nil, false, nil
 	}
+
 	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
 	if err != nil {
 		return nil, false, err
 	}
+
 	schema, _ := resolved.(map[string]any)
+
 	return schema, schema != nil, nil
 }
 
@@ -197,51 +222,63 @@ var errMultipartParts = errors.New("a multipart form must have exactly one part"
 // refuses an operation it would build a wrong request for.
 func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error) {
 	entries, _ := content.(map[string]any)
+
 	entry, ok := entries["multipart/form-data"].(map[string]any)
 	if !ok {
 		return multipartFile{}, false, nil
 	}
+
 	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
 	if err != nil {
 		return multipartFile{}, false, err
 	}
+
 	schema, _ := resolved.(map[string]any)
+
 	properties, _ := schema["properties"].(map[string]any)
 	if len(properties) != 1 {
 		return multipartFile{}, false, errMultipartParts
 	}
+
 	for name, raw := range properties {
 		part, _ := raw.(map[string]any)
 		if part["type"] != "string" || part["format"] != "binary" {
 			return multipartFile{}, false, errs.With("part", name).Errorf("multipart part is not a binary file")
 		}
+
 		return multipartFile{Field: name}, true, nil
 	}
+
 	return multipartFile{}, false, nil
 }
 
 func asList(v any) []any {
 	l, _ := v.([]any)
+
 	return l
 }
 
 func asString(v any) string {
 	s, _ := v.(string)
+
 	return s
 }
 
 // pathParams are the names a path template carries, in order.
 func pathParams(path string) []string {
 	var names []string
+
 	for rest := path; ; {
 		start := strings.Index(rest, "{")
 		if start < 0 {
 			return names
 		}
+
 		end := strings.Index(rest[start:], "}")
 		if end < 0 {
 			return names
 		}
+
 		names = append(names, rest[start+1:start+end])
 		rest = rest[start+end+1:]
 	}

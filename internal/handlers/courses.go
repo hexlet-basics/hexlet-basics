@@ -192,6 +192,7 @@ type Deps struct {
 func NewServer(deps Deps) *Server {
 	secure := deps.Settings.SecureCookies
 	guests := newGuestCookies(deps.Settings.GuestCookieSecret, secure)
+
 	return &Server{
 		db:                deps.DB,
 		conv:              &apiconv.ConverterImpl{},

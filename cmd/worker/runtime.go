@@ -73,6 +73,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		select {
 		case <-signalCtx.Done():
 			stopSignals()
+
 			return errRuntimeSignal
 		case <-groupCtx.Done():
 			return nil
@@ -84,13 +85,17 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		if err == nil {
 			state.markJobsStarted()
 		}
+
 		close(jobsStartSettled)
+
 		if err != nil {
 			return errs.Wrapf(err, "start job queue")
 		}
+
 		close(riverReady)
 
 		<-a.jobs.Stopped()
+
 		return errJobQueueStopped
 	})
 
@@ -110,18 +115,22 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			select {
 			case <-a.events.Running():
 				state.markEventsStarted()
+
 				if a.probes != nil {
 					a.probes.Started()
 				}
 			case <-groupCtx.Done():
 			}
 		}()
+
 		if a.logger != nil {
 			a.logger.InfoContext(groupCtx, "async worker started")
 		}
+
 		if err := a.events.Run(processCtx); err != nil {
 			return errs.Wrapf(err, "run domain event router")
 		}
+
 		return errEventRouterStopped
 	})
 
@@ -133,6 +142,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			// A closed listener is the shutdown's doing; wait for the group to
 			// finish rather than ending it early.
 			<-groupCtx.Done()
+
 			return nil
 		})
 	}
@@ -140,10 +150,13 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	// The group keeps only its first error, and on a signal that is the
 	// sentinel, so the shutdown's own failure is kept apart and joined in.
 	var shutdownErr error
+
 	group.Go(func() error {
 		<-groupCtx.Done()
 		<-jobsStartSettled
+
 		shutdownErr = a.shutdown(processCtx, state, cancelProcess)
+
 		return shutdownErr
 	})
 
@@ -151,6 +164,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	if shutdownErr == nil || errors.Is(waitErr, shutdownErr) {
 		return waitErr
 	}
+
 	return errors.Join(waitErr, shutdownErr)
 }
 
@@ -163,16 +177,20 @@ func failure(err error) error {
 		Unwrap() []error
 	}](err); ok {
 		var rest []error
+
 		for _, e := range joined.Unwrap() {
 			if !errors.Is(e, errRuntimeSignal) {
 				rest = append(rest, e)
 			}
 		}
+
 		return errors.Join(rest...)
 	}
+
 	if errors.Is(err, errRuntimeSignal) {
 		return nil
 	}
+
 	return err
 }
 
@@ -187,17 +205,20 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 	if a.probes != nil {
 		a.probes.Drain()
 	}
+
 	if a.logger != nil {
 		a.logger.InfoContext(ctx, "shutting down async worker")
 	}
 
 	var shutdownErrors []error
+
 	if state.eventsWereStarted() {
 		if err := a.events.Close(); err != nil {
 			stopErr := errs.Wrapf(err, "stop domain event router")
 			shutdownErrors = append(shutdownErrors, stopErr)
 		}
 	}
+
 	if state.jobsWereStarted() {
 		if err := a.jobs.Stop(ctx); err != nil {
 			stopErr := errs.Wrapf(err, "stop job queue")
@@ -214,6 +235,7 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 	}
 
 	cancelProcess()
+
 	return errors.Join(shutdownErrors...)
 }
 

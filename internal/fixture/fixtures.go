@@ -64,15 +64,18 @@ func scan(dir string) (labels, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "list fixture files")
 	}
+
 	sort.Strings(files)
 
 	found := labels{}
+
 	next := firstID
 	for _, file := range files {
 		if err := scanFile(file, found, &next); err != nil {
 			return nil, err
 		}
 	}
+
 	return found, nil
 }
 
@@ -86,20 +89,25 @@ func scanFile(path string, found labels, next *int) error {
 
 	scanner := bufio.NewScanner(f)
 	scanner.Buffer(make([]byte, 0, scannerStartBytes), scannerMaxLineBytes)
+
 	for scanner.Scan() {
 		m := definition.FindStringSubmatch(scanner.Text())
 		if m == nil {
 			continue
 		}
+
 		if _, dup := found[m[1]]; dup {
 			return errs.With("label", m[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
 		}
+
 		found[m[1]] = *next
 		*next++
 	}
+
 	if err := scanner.Err(); err != nil {
 		return errs.With("file", filepath.Base(path)).Wrapf(err, "read fixture file")
 	}
+
 	return nil
 }
 
@@ -108,6 +116,7 @@ func (l labels) id(label string) (int, error) {
 	if !ok {
 		return 0, errs.With("label", label).Errorf("fixture label is not defined by any row")
 	}
+
 	return id, nil
 }
 
@@ -141,11 +150,14 @@ func LabelNames(dir string) ([]string, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "number fixture rows")
 	}
+
 	names := make([]string, 0, len(found))
 	for name := range found {
 		names = append(names, name)
 	}
+
 	sort.Strings(names)
+
 	return names, nil
 }
 
@@ -158,13 +170,16 @@ func ID(label Label) int {
 			repoLabels, errRepo = scan(dir)
 		}
 	})
+
 	if errRepo != nil {
 		panic(fmt.Sprintf("fixtures: %v", errRepo))
 	}
+
 	id, err := repoLabels.id(label.name)
 	if err != nil {
 		panic(fmt.Sprintf("fixtures: %v", err))
 	}
+
 	return id
 }
 
@@ -180,16 +195,19 @@ func Dir() (string, error) {
 	if err != nil {
 		return "", errs.Wrapf(err, "get working directory")
 	}
+
 	for {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
 			return filepath.Join(dir, "fixtures"), nil
 		} else if !errors.Is(err, os.ErrNotExist) {
 			return "", errs.Wrapf(err, "inspect repository root")
 		}
+
 		parent := filepath.Dir(dir)
 		if parent == dir {
 			return "", errNoRepositoryRoot
 		}
+
 		dir = parent
 	}
 }
@@ -208,6 +226,7 @@ func PasswordDigest() (string, error) {
 		hash, err := bcrypt.GenerateFromPassword([]byte(Password), bcrypt.MinCost)
 		digest, errDigest = string(hash), err
 	})
+
 	return digest, errDigest
 }
 
@@ -235,13 +254,16 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	if allowAnyDatabase {
 		options = append(options, testfixtures.DangerousSkipTestDatabaseCheck())
 	}
+
 	loader, err := testfixtures.New(options...)
 	if err != nil {
 		return errs.Wrapf(err, "create fixture loader")
 	}
+
 	if err := loader.Load(); err != nil {
 		return errs.Wrapf(err, "load fixtures")
 	}
+
 	return nil
 }
 

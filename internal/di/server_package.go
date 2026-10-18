@@ -127,6 +127,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return config.Common{}, err
 		}
+
 		return cfg.Common, nil
 	}),
 	do.Lazy[*handlers.APIErrorHandler](func(i do.Injector) (*handlers.APIErrorHandler, error) {
@@ -134,10 +135,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return handlers.NewAPIErrorHandler(translator, logger), nil
 	}),
 	// Sessions live in the database; a store failure answers in the API's own
@@ -147,14 +150,17 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return auth.New(
 			db,
 			auth.WithSecure(cfg.SecureCookies()),
@@ -168,10 +174,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return account.NewRegistrar(db, publisher), nil
 	}),
 	do.Lazy[*leadcapture.Recorder](func(i do.Injector) (*leadcapture.Recorder, error) {
@@ -179,10 +187,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return leadcapture.NewRecorder(db, publisher), nil
 	}),
 	do.Lazy[*book.Recorder](func(i do.Injector) (*book.Recorder, error) {
@@ -190,10 +200,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return book.NewRecorder(db, publisher), nil
 	}),
 	do.Lazy[*blog.Remover](func(i do.Injector) (*blog.Remover, error) {
@@ -201,6 +213,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return blog.NewRemover(db), nil
 	}),
 	do.Lazy[*sitebanner.Editor](func(i do.Injector) (*sitebanner.Editor, error) {
@@ -208,6 +221,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return sitebanner.NewEditor(db), nil
 	}),
 	do.Lazy[*coursereview.Editor](func(i do.Injector) (*coursereview.Editor, error) {
@@ -215,6 +229,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return coursereview.NewEditor(db), nil
 	}),
 	do.Lazy[*landingpage.Editor](func(i do.Injector) (*landingpage.Editor, error) {
@@ -222,6 +237,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return landingpage.NewEditor(db), nil
 	}),
 	do.Lazy[*catalog.Readiness](func(i do.Injector) (*catalog.Readiness, error) {
@@ -229,6 +245,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return catalog.NewReadiness(db), nil
 	}),
 	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
@@ -236,6 +253,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return selfprotection.NewGuard(db), nil
 	}),
 	do.Lazy[*permission.Permissions](func(i do.Injector) (*permission.Permissions, error) {
@@ -243,10 +261,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		tx, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return permission.NewPermissions(db, tx), nil
 	}),
 	do.Lazy[*curriculum.Directory](func(i do.Injector) (*curriculum.Directory, error) {
@@ -254,6 +274,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return curriculum.NewDirectory(db), nil
 	}),
 	do.Lazy[*sitebanner.Directory](func(i do.Injector) (*sitebanner.Directory, error) {
@@ -261,6 +282,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return sitebanner.NewDirectory(db), nil
 	}),
 	do.Lazy[*catalog.CategoryDirectory](func(i do.Injector) (*catalog.CategoryDirectory, error) {
@@ -268,6 +290,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return catalog.NewCategoryDirectory(db), nil
 	}),
 	do.Lazy[*assistant.Directory](func(i do.Injector) (*assistant.Directory, error) {
@@ -275,6 +298,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return assistant.NewDirectory(db), nil
 	}),
 	do.Lazy[*leadcapture.Directory](func(i do.Injector) (*leadcapture.Directory, error) {
@@ -282,6 +306,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return leadcapture.NewDirectory(db), nil
 	}),
 	do.Lazy[*catalog.CourseDirectory](func(i do.Injector) (*catalog.CourseDirectory, error) {
@@ -289,6 +314,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return catalog.NewCourseDirectory(db), nil
 	}),
 	do.Lazy[*coursereview.Directory](func(i do.Injector) (*coursereview.Directory, error) {
@@ -296,6 +322,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return coursereview.NewDirectory(db), nil
 	}),
 	do.Lazy[*blog.Editor](func(i do.Injector) (*blog.Editor, error) {
@@ -303,6 +330,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return blog.NewEditor(db), nil
 	}),
 	do.Lazy[*qnaitem.Category](func(i do.Injector) (*qnaitem.Category, error) {
@@ -310,6 +338,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return qnaitem.NewCategory(db), nil
 	}),
 	do.Lazy[*qnaitem.LandingPage](func(i do.Injector) (*qnaitem.LandingPage, error) {
@@ -317,6 +346,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return qnaitem.NewLandingPage(db), nil
 	}),
 	do.Lazy[*lessonreview.Scheduler](func(i do.Injector) (*lessonreview.Scheduler, error) {
@@ -324,10 +354,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return lessonreview.NewScheduler(db, enqueuer), nil
 	}),
 	do.Lazy[*relatedcourse.Scheduler](func(i do.Injector) (*relatedcourse.Scheduler, error) {
@@ -335,10 +367,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return relatedcourse.NewScheduler(db, enqueuer), nil
 	}),
 	do.Lazy[*search.Catalogue](func(i do.Injector) (*search.Catalogue, error) {
@@ -346,6 +380,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return search.NewCatalogue(db), nil
 	}),
 	do.Lazy[*sitemap.Sitemap](func(i do.Injector) (*sitemap.Sitemap, error) {
@@ -353,6 +388,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return sitemap.New(db), nil
 	}),
 	do.Lazy[*dashboard.Dashboard](func(i do.Injector) (*dashboard.Dashboard, error) {
@@ -360,14 +396,17 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		tracker, err := do.Invoke[*progress.Progress](i)
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return dashboard.New(db, landingpage.NewCatalog(db), tracker, logger), nil
 	}),
 	do.Lazy[*account.Editor](func(i do.Injector) (*account.Editor, error) {
@@ -375,6 +414,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return account.NewEditor(db), nil
 	}),
 	do.Lazy[*account.Directory](func(i do.Injector) (*account.Directory, error) {
@@ -382,6 +422,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return account.NewDirectory(db), nil
 	}),
 	do.Lazy[*account.Remover](func(i do.Injector) (*account.Remover, error) {
@@ -389,6 +430,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return account.NewRemover(db), nil
 	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
@@ -396,14 +438,17 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		otelSDK, err := do.Invoke[*otelconf.SDK](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return jobs.NewInsertOnlyClient(
 			db,
 			logger,
@@ -416,10 +461,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return jobs.NewEnqueuer(db, riverClient), nil
 	}),
 	do.Lazy[*versionbuild.Starter](func(i do.Injector) (*versionbuild.Starter, error) {
@@ -427,10 +474,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return versionbuild.NewStarter(db, enqueuer), nil
 	}),
 	// The Yandex feed builds its URLs on the canonical host, not the request's.
@@ -439,10 +488,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return feed.NewYandex(db, cfg.AppHost), nil
 	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
@@ -453,13 +504,16 @@ var serverPackage = do.Package(
 		// nil means the OAuth server is off: the consent operations answer as if
 		// the request did not exist.
 		var consents *oauthserver.Server
+
 		if services.Config.OAuth.Enabled {
 			oauthServer, err := do.Invoke[*oauthserver.Server](i)
 			if err != nil {
 				return nil, err
 			}
+
 			consents = oauthServer
 		}
+
 		return handlers.NewServer(handlers.Deps{
 			OAuth:             consents,
 			DB:                services.DB,
@@ -515,23 +569,29 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		tracker, err := do.Invoke[*progress.Progress](i)
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
 		}
+
 		llm := assistant.NewOpenAI(cfg.OpenAIAccessToken.Reveal(), cfg.OpenAIModel)
+
 		return assistant.NewChat(db, txStore, tracker, llm, translator), nil
 	}),
 	// The progress module owns what a learner has finished. It writes and publishes
@@ -541,18 +601,22 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
 		}
+
 		runner, err := do.Invoke[*exerciserunner.Docker](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return progress.New(db, txStore, publisher, runner), nil
 	}),
 	// The exercise runner is the only Docker consumer in the app (ADR-0013).
@@ -564,6 +628,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return exerciserunner.New(exerciserunner.OptionsFrom(cfg.ExerciseRunner))
 	}),
 	do.Lazy[*api.Server](func(i do.Injector) (*api.Server, error) {
@@ -571,18 +636,22 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
 		if err != nil {
 			return nil, err
 		}
+
 		otelSDK, err := do.Invoke[*otelconf.SDK](i)
 		if err != nil {
 			return nil, err
 		}
+
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
 		}
+
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -596,6 +665,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return api.NewServer(
 			handler,
 			handler.Security(),
@@ -618,10 +688,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return handlers.NewAttachmentHandler(assets, errorHandler), nil
 	}),
 	do.Lazy[*handlers.GitHubWebhookHandler](func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
@@ -629,14 +701,17 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return handlers.NewGitHubWebhookHandler(starter, cfg.GitHubWebhookSecret.Reveal(), translator), nil
 	}),
 	// Both the raw router and the middleware-wrapped application handler have
@@ -647,41 +722,50 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		attachmentHandler, err := do.Invoke[*handlers.AttachmentHandler](i)
 		if err != nil {
 			return nil, err
 		}
+
 		webhookHandler, err := do.Invoke[*handlers.GitHubWebhookHandler](i)
 		if err != nil {
 			return nil, err
 		}
+
 		handler, err := do.Invoke[*handlers.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
 		// The OAuth server is mounted only behind its flag (ADR-0022).
 		var oauthHandler http.Handler
+
 		if cfg.OAuth.Enabled {
 			oauthServer, err := do.Invoke[*oauthserver.Server](i)
 			if err != nil {
 				return nil, err
 			}
+
 			oauthHandler = oauthServer.Handler()
 		}
 		// The MCP endpoint is mounted only behind its flag (ADR-0021). A nil
 		// *mcpserver.Server must not become a non-nil http.Handler.
 		var mcpHandler http.Handler
+
 		if cfg.MCP.Enabled {
 			mcpEndpoint, err := do.Invoke[*mcpserver.Server](i)
 			if err != nil {
 				return nil, err
 			}
+
 			mcpHandler = mcpEndpoint.Handler()
 		}
+
 		return handlers.NewRouter(
 			handler.Security().Pipeline(apiServer),
 			attachmentHandler,
@@ -700,10 +784,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -713,6 +799,7 @@ var serverPackage = do.Package(
 		if !cfg.OAuth.Enabled {
 			return nil, nil //nolint:nilnil // a do provider answers (T, error); nil is the documented "feature off" value its consumers check
 		}
+
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
 				Issuer:               cfg.OAuth.Issuer,
@@ -736,25 +823,31 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		if !cfg.MCP.Enabled {
 			return nil, nil //nolint:nilnil // as the OAuth server above: nil is "feature off"
 		}
+
 		oauthServer, err := do.Invoke[*oauthserver.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		handler, err := do.Invoke[*handlers.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		apiServer, err := do.Invoke[*api.Server](i)
 		if err != nil {
 			return nil, err
 		}
+
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return mcpserver.New(mcpserver.Deps{
 			Verifier:  oauthServer,
 			Catalogue: handler,
@@ -789,6 +882,7 @@ var serverPackage = do.Package(
 		if _, err := do.Invoke[*databaseCloser](i); err != nil {
 			return nil, err
 		}
+
 		return health.New(func(ctx context.Context) error {
 			return errors.Join(slices.Collect(maps.Values(i.HealthCheckWithContext(ctx)))...)
 		}), nil
@@ -798,10 +892,12 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		router, err := do.InvokeNamed[http.Handler](i, routerServiceName)
 		if err != nil {
 			return nil, err
 		}
+
 		sentryClient, err := do.Invoke[*sentry.Client](i)
 		if err != nil {
 			return nil, err
@@ -810,6 +906,7 @@ var serverPackage = do.Package(
 		// `/api` (ADR-0015), through the ingress in production and the Vite
 		// proxy in development.
 		localized := translator.Middleware(router)
+
 		probes, err := do.Invoke[*health.Probes](i)
 		if err != nil {
 			return nil, err
@@ -826,6 +923,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		handler, err := do.InvokeNamed[http.Handler](i, httpHandlerServiceName)
 		if err != nil {
 			return nil, err

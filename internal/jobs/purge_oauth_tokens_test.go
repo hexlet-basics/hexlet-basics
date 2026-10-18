@@ -34,6 +34,7 @@ func TestPurgeOAuthTokensJobDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 		require.Equal(t, http.StatusOK, res.StatusCode)
 		require.NoError(t, res.Body.Close())
 	}
+
 	o.Advance(-90 * 24 * time.Hour)
 	connectAndRotate(alice)
 	o.Advance(90 * 24 * time.Hour)

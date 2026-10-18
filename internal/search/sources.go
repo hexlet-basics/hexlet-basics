@@ -61,9 +61,11 @@ func (m match) headline(text string) sql.Querier {
 // not be.
 func withArgs(text string, args ...any) func(*sql.Builder) {
 	parts := strings.Split(text, "?")
+
 	return func(b *sql.Builder) {
 		for i, part := range parts {
 			b.WriteString(part)
+
 			if i < len(args) {
 				b.Arg(args[i])
 			}
@@ -100,6 +102,7 @@ func htmlText(fragment string) string {
 	if !strings.ContainsAny(fragment, "<&") {
 		return fragment
 	}
+
 	return html.UnescapeString(htmltext.PlainText(fragment))
 }
 
@@ -124,6 +127,7 @@ func (l landingPages) scope(m match) []predicate.CourseLandingPage {
 	if m.unrestricted {
 		visible = courselandingpage.LocaleEQ(m.locale)
 	}
+
 	return []predicate.CourseLandingPage{
 		visible,
 		courselandingpage.SlugNotNil(),
@@ -147,12 +151,14 @@ func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, err
 	if err != nil {
 		return nil, err
 	}
+
 	out := make([]candidate, 0, len(rows))
 	for _, row := range rows {
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		slug := *row.Slug
 		out = append(out, candidate{rank: rank, typ: Course, id: row.ID, hit: Hit{
 			Type:  Course,
@@ -165,6 +171,7 @@ func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, err
 			Readiness: readinessOf(row.Edges.Course),
 		}})
 	}
+
 	return out, nil
 }
 
@@ -181,6 +188,7 @@ func (l landingPages) snippets(ctx context.Context, m match, ids []int) (map[int
 	if err != nil {
 		return nil, err
 	}
+
 	return snippetsOf(rows, func(row *ent.CourseLandingPage) int { return row.ID })
 }
 
@@ -213,6 +221,7 @@ func (l lessons) scope(m match) []predicate.CourseLessonTranslation {
 			course.HasLandingPagesWith(landingpage.Listed(m.locale)),
 		)))
 	}
+
 	return append(where, func(s *sql.Selector) { s.Where(m.matches(l.vector(m, s))) })
 }
 
@@ -244,6 +253,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if len(rows) == 0 {
 		return nil, nil
 	}
@@ -255,6 +265,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		lessonIDs = append(lessonIDs, row.CourseLessonID)
 		courseIDs = append(courseIDs, row.CourseID)
 	}
+
 	lessonRows, err := l.db.CourseLesson.Query().
 		Where(courselesson.IDIn(lessonIDs...)).
 		Select(courselesson.FieldID, courselesson.FieldSlug, courselesson.FieldState).
@@ -262,6 +273,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	courseRows, err := l.db.Course.Query().
 		Where(course.IDIn(courseIDs...)).
 		Select(course.FieldID, course.FieldSlug, course.FieldReadiness).
@@ -269,14 +281,18 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	lessonSlugs, lessonStates := map[int]string{}, map[int]string{}
+
 	for _, row := range lessonRows {
 		if row.Slug != nil {
 			lessonSlugs[row.ID] = *row.Slug
 			lessonStates[row.ID] = lo.FromPtr(row.State)
 		}
 	}
+
 	courseSlugs, courseReadiness := map[int]string{}, map[int]string{}
+
 	for _, row := range courseRows {
 		if row.Slug != nil {
 			courseSlugs[row.ID] = *row.Slug
@@ -290,10 +306,12 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		if lessonSlug == "" || courseSlug == "" {
 			continue
 		}
+
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		out = append(out, candidate{rank: rank, typ: Lesson, id: row.ID, hit: Hit{
 			Type:  Lesson,
 			ID:    LessonID(courseSlug, lessonSlug),
@@ -302,6 +320,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 			State: lessonStates[row.CourseLessonID], Readiness: courseReadiness[row.CourseID],
 		}})
 	}
+
 	return out, nil
 }
 
@@ -311,6 +330,7 @@ func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]stri
 			courselessontranslation.IDIn(ids...),
 			predicate.CourseLessonTranslation(withColumn("snippet", func(s *sql.Selector) sql.Querier {
 				body := "coalesce(" + s.C(courselessontranslation.FieldTheory) + ", '') || ' ' || coalesce(" + s.C(courselessontranslation.FieldInstructions) + ", '')"
+
 				return m.headline(summaryAndBody(s.C(courselessontranslation.FieldDescription), body))
 			})),
 		).
@@ -319,6 +339,7 @@ func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]stri
 	if err != nil {
 		return nil, err
 	}
+
 	return snippetsOf(rows, func(row *ent.CourseLessonTranslation) int { return row.ID })
 }
 
@@ -338,6 +359,7 @@ func (p posts) scope(m match) []predicate.BlogPost {
 	if m.unrestricted {
 		visible = blogpost.LocaleEQ(m.locale)
 	}
+
 	return []predicate.BlogPost{
 		visible,
 		blogpost.SlugNotNil(),
@@ -359,12 +381,14 @@ func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	out := make([]candidate, 0, len(rows))
 	for _, row := range rows {
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		slug := *row.Slug
 		out = append(out, candidate{rank: rank, typ: Post, id: row.ID, hit: Hit{
 			Type:  Post,
@@ -374,6 +398,7 @@ func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
 			State: lo.FromPtr(row.State),
 		}})
 	}
+
 	return out, nil
 }
 
@@ -390,6 +415,7 @@ func (p posts) snippets(ctx context.Context, m match, ids []int) (map[int]string
 	if err != nil {
 		return nil, err
 	}
+
 	return snippetsOf(rows, func(row *ent.BlogPost) int { return row.ID })
 }
 
@@ -404,8 +430,10 @@ func snippetsOf[R interface {
 		if err != nil {
 			return nil, errs.Wrapf(err, "read snippet")
 		}
+
 		out[id(row)] = textOf(value)
 	}
+
 	return out, nil
 }
 
@@ -414,5 +442,6 @@ func readinessOf(c *ent.Course) string {
 	if c == nil {
 		return ""
 	}
+
 	return lo.FromPtr(c.Readiness)
 }

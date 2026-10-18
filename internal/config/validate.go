@@ -40,13 +40,16 @@ func newValidator() *validator.Validate {
 		if err != nil || u.Host == "" || (u.Scheme != "https" && u.Scheme != "http") {
 			return false
 		}
+
 		return u.Path == "" && u.RawQuery == "" && u.Fragment == "" && u.User == nil
 	})
 	// notdevsecret: in production a secret must not be a public development value.
 	mustRegister(v, "notdevsecret", func(ctx context.Context, fl validator.FieldLevel) bool {
 		env, _ := ctx.Value(appEnvKey{}).(AppEnv)
+
 		return env != Production || !strings.HasPrefix(fl.Field().String(), developmentSecretPrefix)
 	})
+
 	return v
 }
 
@@ -70,10 +73,12 @@ type crossChecker interface {
 // side effects for that reason and only read the parsed root.
 func check(root crossChecker, appEnv AppEnv) error {
 	problems := violations(root, "", appEnv)
+
 	problems = append(problems, root.crossChecks()...)
 	if len(problems) == 0 {
 		return nil
 	}
+
 	return errs.With("problems", problems).Errorf("invalid configuration")
 }
 
@@ -84,7 +89,9 @@ func Problems(err error) []string {
 	if !ok {
 		return nil
 	}
+
 	problems, _ := oopsErr.Context()["problems"].([]string)
+
 	return problems
 }
 
@@ -95,14 +102,17 @@ func violations(value any, prefix string, appEnv AppEnv) []string {
 	if err == nil {
 		return nil
 	}
+
 	invalid, ok := errors.AsType[validator.ValidationErrors](err)
 	if !ok {
 		return []string{"config cannot be validated: " + err.Error()}
 	}
+
 	problems := make([]string, 0, len(invalid))
 	for _, fe := range invalid {
 		problems = append(problems, prefix+envName(reflect.TypeOf(value), fe.StructNamespace())+" "+describe(fe))
 	}
+
 	return problems
 }
 
@@ -129,21 +139,27 @@ func describe(fe validator.FieldError) string {
 // so a message names what the operator sets, not a Go field.
 func envName(root reflect.Type, namespace string) string {
 	segments := strings.Split(namespace, ".")[1:] // the first is the root type
+
 	t := root
 	for t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
+
 	prefix := ""
+
 	for i, seg := range segments {
 		field, ok := t.FieldByName(seg)
 		if !ok {
 			return namespace
 		}
+
 		if name, _, _ := strings.Cut(field.Tag.Get("env"), ","); name != "" && i == len(segments)-1 {
 			return prefix + name
 		}
+
 		prefix += field.Tag.Get("envPrefix")
 		t = field.Type
 	}
+
 	return namespace
 }

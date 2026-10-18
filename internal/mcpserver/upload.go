@@ -44,6 +44,7 @@ func requestBodyLimit(hasUpload bool) int64 {
 	if !hasUpload {
 		return sdkDefault
 	}
+
 	return int64(maxUploadBase64) + 1<<20
 }
 
@@ -71,20 +72,26 @@ const bytesPerMiB = 1 << 20
 // as it does over HTTP.
 func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, string) {
 	var in uploadBody
+
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.DisallowUnknownFields()
+
 	if err := decoder.Decode(&in); err != nil {
 		return nil, "", "the body argument must be an object with fileName, contentBase64 and optionally contentType"
 	}
+
 	if in.FileName == "" {
 		return nil, "", "body.fileName is required"
 	}
+
 	if in.ContentBase64 == "" {
 		return nil, "", "body.contentBase64 is required"
 	}
+
 	if len(in.ContentBase64) > maxUploadBase64 {
 		return nil, "", fmt.Sprintf("the file is too large: at most %d bytes (%d MiB) are accepted, as on the website", assetstore.MaxUploadBytes, assetstore.MaxUploadBytes/bytesPerMiB)
 	}
+
 	content, err := base64.StdEncoding.DecodeString(in.ContentBase64)
 	if err != nil {
 		return nil, "", "body.contentBase64 is not valid base64 (standard alphabet, padded)"
@@ -92,11 +99,15 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 
 	header := textproto.MIMEHeader{}
 	header.Set("Content-Disposition", mime.FormatMediaType("form-data", map[string]string{"name": file.Field, "filename": in.FileName}))
+
 	if in.ContentType != "" {
 		header.Set("Content-Type", in.ContentType)
 	}
+
 	var buf bytes.Buffer
+
 	writer := multipart.NewWriter(&buf)
+
 	part, err := writer.CreatePart(header)
 	if err != nil {
 		return nil, "", "the file does not make a request"
@@ -104,5 +115,6 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 	// Writes to a bytes.Buffer cannot fail.
 	_, _ = part.Write(content)
 	_ = writer.Close()
+
 	return buf.Bytes(), writer.FormDataContentType(), ""
 }

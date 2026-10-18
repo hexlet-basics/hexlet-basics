@@ -25,6 +25,7 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 
 	res := o.Do(http.MethodGet, "/oauth/keys", nil)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var set struct {
 		Keys []struct {
 			Kid string `json:"kid"`
@@ -40,6 +41,7 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 	// The ID token names that key and algorithm.
 	header, err := base64.RawURLEncoding.DecodeString(strings.Split(tokens.IDToken, ".")[0])
 	require.NoError(t, err)
+
 	var parsed struct {
 		Alg string `json:"alg"`
 		Kid string `json:"kid"`
@@ -50,6 +52,7 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 
 	payload, err := base64.RawURLEncoding.DecodeString(strings.Split(tokens.IDToken, ".")[1])
 	require.NoError(t, err)
+
 	var claims struct {
 		Sub string `json:"sub"`
 		Iss string `json:"iss"`
@@ -68,6 +71,7 @@ func TestUserinfoAnswersWithTheSubjectOfALiveToken(t *testing.T) {
 
 	res := o.Do(http.MethodGet, "/oauth/userinfo", nil, bearer)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var info struct {
 		Sub string `json:"sub"`
 	}
@@ -77,6 +81,7 @@ func TestUserinfoAnswersWithTheSubjectOfALiveToken(t *testing.T) {
 	// Once the token is revoked the endpoint refuses it.
 	_, err := o.DB.OAuthAccessToken.Delete().Exec(t.Context())
 	require.NoError(t, err)
+
 	res = o.Do(http.MethodGet, "/oauth/userinfo", nil, bearer)
 	assert.NotEqual(t, http.StatusOK, res.StatusCode)
 }
@@ -92,6 +97,7 @@ func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.ErrorIs(t, err, oauthserver.ErrInvalidToken)
+
 	res = o.Do(http.MethodPost, "/oauth/token", url.Values{
 		"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {tokens.RefreshToken},
 	})
@@ -110,6 +116,7 @@ func TestAClientCannotRevokeAnotherClientsToken(t *testing.T) {
 		res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{"client_id": {other.ClientID}, "token": {token}})
 		assert.Equal(t, http.StatusUnauthorized, res.StatusCode)
 	}
+
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err, "the token survived")
 }
@@ -129,6 +136,7 @@ func TestEndingTheSessionRevokesTheClientsGrants(t *testing.T) {
 func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	o.SeedClient(oauthserver.ScopeCatalogRead)
+
 	base := func() url.Values {
 		return url.Values{
 			"client_id": {testsupport.OAuthClientID}, "redirect_uri": {testsupport.OAuthRedirectURI},
@@ -154,10 +162,12 @@ func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	// The implicit flow is not offered.
 	q = base()
 	q.Set("response_type", "id_token token")
+
 	res = o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
 	if loc, err := res.Location(); err == nil {
 		assert.NotContains(t, loc.Path, "/connect")
 	}
+
 	count, err := o.DB.OAuthAuthRequest.Query().Count(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, count)
@@ -167,6 +177,7 @@ func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
 	res := flow.Decide(true)
+
 	var decision struct {
 		RedirectURL string `json:"redirectUrl"`
 	}
@@ -181,6 +192,7 @@ func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 
 	// Opening the same callback again cannot mint a second code.
 	second := o.Do(http.MethodGet, callback.RequestURI(), nil)
+
 	to, err = second.Location()
 	if err == nil {
 		assert.Empty(t, to.Query().Get("code"))
@@ -214,10 +226,12 @@ func TestTheConsentScreenNamesTheAccount(t *testing.T) {
 	accountName := func() string {
 		res := o.Do(http.MethodGet, "/api/oauth/consents/"+flow.RequestID, nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 		require.Equal(t, http.StatusOK, res.StatusCode)
+
 		var consent struct {
 			AccountName string `json:"accountName"`
 		}
 		decode(t, res, &consent)
+
 		return consent.AccountName
 	}
 

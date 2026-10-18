@@ -44,6 +44,7 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 	assert.Equal(t, newUserEmail, *saved.Email)
 
 	var payloadJSON, metadataJSON []byte
+
 	err = tx.QueryRowContext(t.Context(), `
 		SELECT payload, metadata
 		FROM watermill_domain_events

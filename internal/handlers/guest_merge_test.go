@@ -33,7 +33,9 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 		Password: "correct horse battery staple",
 	})
 	require.NoError(t, err)
+
 	created := res
+
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	finished := finishedLessonSlugs(t, h, int(created.Response.ID), jsCourseSlug)
@@ -54,6 +56,7 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 
 	res, err := h.Client.CreateSession(ctx, signInAsActingUser(t, h))
 	require.NoError(t, err)
+
 	session := res
 	finished := finishedLessonSlugs(t, h, int(session.Response.ID), jsCourseSlug)
 	assert.ElementsMatch(t, []string{firstLessonSlug, thirdLessonSlug}, finished,
@@ -126,7 +129,9 @@ func finishedLessonSlugs(t *testing.T, h *testsupport.Harness, userID int, cours
 		lesson := h.DB.CourseLesson.GetX(ctx, row.LessonID)
 		slugs = append(slugs, *lesson.Slug)
 	}
+
 	assertEnrollmentExists(t, h, userID, crs.ID)
+
 	return slugs
 }
 
@@ -143,6 +148,7 @@ func assertEnrollmentExists(t *testing.T, h *testsupport.Harness, userID, course
 // harness session.
 func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput {
 	t.Helper()
+
 	return &api.SessionInput{
 		Email:    lo.FromPtr(h.DB.User.GetX(t.Context(), actingUserID(t, h)).Email),
 		Password: fixture.Password,
@@ -161,6 +167,7 @@ func startsSession(setCookie []string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 

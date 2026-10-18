@@ -137,6 +137,7 @@ func New(deps Deps) (*Server, error) {
 	if deps.Logger == nil {
 		deps.Logger = slog.Default()
 	}
+
 	limits := deps.Limits.withDefaults()
 	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
 
@@ -146,12 +147,15 @@ func New(deps Deps) (*Server, error) {
 		SetCacheable: markPrivate,
 	})
 	mcpServer.AddReceivingMiddleware(s.filterToolList)
+
 	if err := s.addCatalogueTools(mcpServer); err != nil {
 		return nil, err
 	}
+
 	if err := s.addLearnerTools(mcpServer); err != nil {
 		return nil, err
 	}
+
 	if deps.API != nil {
 		if err := s.addAdminTools(mcpServer); err != nil {
 			return nil, err
@@ -192,6 +196,7 @@ func New(deps Deps) (*Server, error) {
 	mux.Handle(metadataPath, resourceMetadata)
 	mux.Handle(metadataPathForResource, resourceMetadata)
 	s.handler = mux
+
 	return s, nil
 }
 
@@ -214,12 +219,16 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 		if errors.Is(err, oauthserver.ErrInvalidToken) {
 			return nil, auth.ErrInvalidToken
 		}
+
 		s.deps.Logger.ErrorContext(ctx, "verify MCP access token", slog.Any("err", err))
+
 		return nil, errVerificationUnavailable
 	}
+
 	if !slices.Contains(token.Audience, s.resource) || token.UserID <= 0 {
 		return nil, auth.ErrInvalidToken
 	}
+
 	return &auth.TokenInfo{
 		Scopes: token.Scopes,
 		UserID: strconv.Itoa(token.UserID),
@@ -240,13 +249,16 @@ func requireScope(req *mcp.CallToolRequest, scope string) (int, *mcp.CallToolRes
 	if info == nil {
 		return 0, toolError("this connection is not signed in")
 	}
+
 	userID, err := strconv.Atoi(info.UserID)
 	if err != nil || userID <= 0 {
 		return 0, toolError("this connection is not signed in as a user")
 	}
+
 	if !slices.Contains(info.Scopes, scope) {
 		return 0, toolError(fmt.Sprintf("this connection was not granted the %s Scope", scope))
 	}
+
 	return userID, nil
 }
 

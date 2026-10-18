@@ -25,14 +25,17 @@ var (
 
 func TestObserverLogsIdentityWithoutPII(t *testing.T) {
 	var output bytes.Buffer
+
 	logger := slog.New(slog.NewJSONHandler(&output, nil))
 	msg := message.NewMessage("event-42", []byte(`{"email":"private@example.com","first_name":"Private"}`))
 	msg.Metadata.Set("name", "user_signed_up")
 	msg.Metadata.Set("schema_version", "1")
+
 	email := "private@example.com"
 	firstName := "Private"
 
 	observeMessage(logger, msg)
+
 	logged := output.String()
 	assert.Contains(t, logged, `"event_id":"event-42"`)
 	assert.Contains(t, logged, `"event_name":"user_signed_up"`)
@@ -68,23 +71,29 @@ func TestLegacyEventNames(t *testing.T) {
 // ended up on the poison topic.
 func deliver(t *testing.T, handler message.HandlerFunc) (<-chan *message.Message, error) {
 	t.Helper()
+
 	return deliverReporting(t, nil, handler)
 }
 
 // deliverReporting is deliver with a Sentry client for the poisoned messages.
 func deliverReporting(t *testing.T, sentryClient *sentry.Client, handler message.HandlerFunc) (<-chan *message.Message, error) {
 	t.Helper()
+
 	logger := watermill.NopLogger{}
 	poison := gochannel.NewGoChannel(gochannel.Config{}, logger)
+
 	t.Cleanup(func() { _ = poison.Close() })
 	poisoned, err := poison.Subscribe(t.Context(), PoisonTopic)
 	require.NoError(t, err)
 	chain, err := deliveryMiddleware(logger, poison, sentryClient)
 	require.NoError(t, err)
+
 	for _, c := range slices.Backward(chain) {
 		handler = c(handler)
 	}
+
 	_, err = handler(message.NewMessage("event-1", nil))
+
 	return poisoned, err
 }
 
@@ -95,6 +104,7 @@ func TestDeliveryRetriesAHandlerThatPanics(t *testing.T) {
 		if attempts == 1 {
 			panic("boom")
 		}
+
 		return nil, nil
 	})
 
@@ -109,6 +119,7 @@ func TestDeliveryMovesAnAlwaysFailingMessageToThePoisonQueue(t *testing.T) {
 	})
 
 	require.NoError(t, err, "the message is acked so the consumer group moves on")
+
 	select {
 	case msg := <-poisoned:
 		assert.Equal(t, "event-1", msg.UUID)
@@ -132,6 +143,7 @@ func TestPoisonedMessageIsReportedToSentry(t *testing.T) {
 		if attempts == 1 {
 			return nil, errFlaky
 		}
+
 		return nil, nil
 	})
 	require.NoError(t, err)

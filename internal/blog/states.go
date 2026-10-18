@@ -40,8 +40,10 @@ func (e *Editor) move(ctx context.Context, id int, move transition.Transition[tr
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	if err := move.Check(transition.CurrentOf(post.State)); err != nil {
 		return err
 	}
+
 	return domain.FromStore(e.db.BlogPost.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))
 }

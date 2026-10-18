@@ -41,6 +41,7 @@ func (d *CategoryDirectory) Index(ctx context.Context, locale string) ([]*ent.Co
 		Where(coursecategory.LocaleEQ(locale)).
 		Order(coursecategory.ByID()).
 		All(ctx)
+
 	return rows, domain.FromStore(err)
 }
 

@@ -57,20 +57,24 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil
 		}
+
 		if err != nil {
 			return err
 		}
+
 		if err := r.publisher.Publish(ctx, tx, events.BookRequested{
 			Locale:     locale,
 			OccurredAt: r.now().UTC(),
 		}); err != nil {
 			return err
 		}
+
 		return nil
 	})
 	if err != nil {
 		return errs.With("user_id", userID).Wrapf(err, "record book request")
 	}
+
 	return nil
 }
 
@@ -78,14 +82,17 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 // page picks the request or the download button by it.
 func (r *Recorder) Requested(ctx context.Context, userID int) (bool, error) {
 	var requested bool
+
 	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		exists, err := db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
 		requested = exists
+
 		return err
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "check book request")
 	}
+
 	return requested, nil
 }
 
@@ -93,16 +100,19 @@ func (r *Recorder) Requested(ctx context.Context, userID int) (bool, error) {
 // legacy did, and reports whether there was a request to move.
 func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (bool, error) {
 	var marked bool
+
 	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		count, err := db.BookRequest.Update().
 			Where(bookrequest.UserID(userID)).
 			SetState(StateDownloaded).
 			Save(ctx)
 		marked = count > 0
+
 		return err
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "mark book downloaded")
 	}
+
 	return marked, nil
 }

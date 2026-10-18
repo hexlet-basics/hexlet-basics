@@ -90,6 +90,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 		_, res = o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)
 		assert.Equal(t, http.StatusOK, res.StatusCode, name)
 	}
+
 	assert.True(t, o.Accepts(otherClient.AccessToken), "another client of the same user")
 	_, res = o.Refresh(other.ClientID, otherClient.RefreshToken)
 	assert.Equal(t, http.StatusOK, res.StatusCode)
@@ -98,16 +99,20 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 func TestTheFamilySurvivesSeveralRotations(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+
 	spent := make([]string, 0, 5)
 	for range 5 {
 		spent = append(spent, tokens.RefreshToken)
 		next, res := o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)
 		require.Equal(t, http.StatusOK, res.StatusCode)
+
 		tokens = next
 	}
+
 	families, err := o.DB.OAuthRefreshToken.Query().Select(oauthrefreshtoken.FieldFamilyID).Strings(t.Context())
 	require.NoError(t, err)
 	require.Len(t, families, 6, "five spent tokens stay on file beside the live one")
+
 	for _, f := range families {
 		assert.Equal(t, families[0], f, "one authorization, one family")
 	}
@@ -228,14 +233,20 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	const attempts = 8
-	var wg sync.WaitGroup
-	var mu sync.Mutex
+
+	var (
+		wg sync.WaitGroup
+		mu sync.Mutex
+	)
+
 	succeeded := 0
+
 	for range attempts {
 		wg.Go(func() {
 			res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 				"grant_type": {"refresh_token"}, "client_id": {racer.ClientID}, "refresh_token": {tokens.RefreshToken},
 			})
+
 			_ = res.Body.Close()
 			if res.StatusCode == http.StatusOK {
 				mu.Lock()
@@ -244,10 +255,12 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 			}
 		})
 	}
+
 	wg.Wait()
 
 	ctx := t.Context()
 	assert.LessOrEqual(t, succeeded, 1, "one token buys at most one child")
+
 	live := o.DB.OAuthRefreshToken.Query().Where(oauthrefreshtoken.ClientID(racer.ClientID), oauthrefreshtoken.UsedAtIsNil()).CountX(ctx)
 	assert.Zero(t, live, "a losing exchange revoked the family, winner's child included")
 	assert.Zero(t, o.DB.OAuthAccessToken.Query().Where(oauthaccesstoken.ClientID(racer.ClientID)).CountX(ctx))

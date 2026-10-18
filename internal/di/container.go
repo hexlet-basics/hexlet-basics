@@ -66,15 +66,20 @@ func (d WorkerDependencies) Shutdown(ctx context.Context) error {
 // released before the error returns.
 func BuildServer() (ServerDependencies, error) {
 	injector := newServerContainer()
+
 	deps, err := do.InvokeStruct[ServerDependencies](injector)
 	if err == nil {
 		err = registerClosers(injector)
 	}
+
 	if err != nil {
 		_ = injector.Shutdown()
+
 		return ServerDependencies{}, err
 	}
+
 	deps.injector = injector
+
 	return deps, nil
 }
 
@@ -84,15 +89,20 @@ func BuildServer() (ServerDependencies, error) {
 // returns.
 func BuildWorker() (WorkerDependencies, error) {
 	injector := newWorkerContainer()
+
 	deps, err := do.InvokeStruct[WorkerDependencies](injector)
 	if err == nil {
 		err = registerClosers(injector)
 	}
+
 	if err != nil {
 		_ = injector.Shutdown()
+
 		return WorkerDependencies{}, err
 	}
+
 	deps.injector = injector
+
 	return deps, nil
 }
 

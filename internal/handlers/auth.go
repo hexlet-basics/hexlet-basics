@@ -21,9 +21,11 @@ func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api
 	if errors.Is(err, account.ErrInvalidCredentials) {
 		return nil, invalid("password", localization.WrongCredentials)
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return s.signIn(ctx, u)
 }
 
@@ -40,6 +42,7 @@ func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, err
 	}); err != nil {
 		return nil, err
 	}
+
 	return s.startSession(ctx, u)
 }
 
@@ -51,10 +54,12 @@ func (s *Server) startSession(ctx context.Context, u *ent.User) (*api.UserHeader
 	if err := s.sessions.Begin(ctx, u); err != nil {
 		return nil, err
 	}
+
 	cookies, err := s.mergeGuestProgress(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.UserHeaders{SetCookie: cookies, Response: s.conv.ToUser(u)}, nil
 }
 
@@ -75,6 +80,7 @@ func (s *Server) mergeGuestProgress(ctx context.Context, userID int) ([]string, 
 	if err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx)); err != nil {
 		return nil, err
 	}
+
 	return []string{s.guests.cleared()}, nil
 }
 
@@ -95,11 +101,14 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (*api.Use
 		if errors.Is(err, account.ErrPasswordProcessing) {
 			return nil, invalid("password", localization.PasswordProcessingFailed)
 		}
+
 		if field, ok := domain.FieldOf(err); ok && field == "email" {
 			return nil, invalid("email", localization.EmailTaken)
 		}
+
 		return nil, err
 	}
+
 	return s.startSession(ctx, u)
 }
 
@@ -108,6 +117,7 @@ func (s *Server) DeleteSession(ctx context.Context) error {
 	if err := s.sessions.End(ctx); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -119,11 +129,13 @@ func (s *Server) GetCurrentUser(ctx context.Context, _ api.GetCurrentUserParams)
 	if !ok {
 		return anonymousCurrentUser(), nil
 	}
+
 	return &api.CurrentUser{User: api.NewNilUser(s.conv.ToUser(u))}, nil
 }
 
 func anonymousCurrentUser() *api.CurrentUser {
 	var user api.NilUser
 	user.SetToNull()
+
 	return &api.CurrentUser{User: user}
 }

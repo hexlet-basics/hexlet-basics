@@ -211,7 +211,9 @@ func courseViewOf(t *testing.T, h *testsupport.Harness) *api.CourseView {
 	t.Helper()
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
+
 	view := res
+
 	return view
 }
 
@@ -220,6 +222,7 @@ func courseViewOf(t *testing.T, h *testsupport.Harness) *api.CourseView {
 // hello-world too), so the slug alone does not say which.
 func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.CourseLesson {
 	t.Helper()
+
 	return h.DB.CourseLesson.Query().
 		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixture.ID(fixture.CourseJavascript))).
 		OnlyX(t.Context())
@@ -228,13 +231,16 @@ func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.Course
 // lessonLabeled is the fixture lesson with the label.
 func lessonLabeled(t *testing.T, h *testsupport.Harness, label fixture.Label) *ent.CourseLesson {
 	t.Helper()
+
 	return h.DB.CourseLesson.GetX(t.Context(), fixture.ID(label))
 }
 
 func actingUserID(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
+
 	u, ok := testsupport.HarnessUser(h)
 	require.True(t, ok)
+
 	return u
 }
 
@@ -242,11 +248,13 @@ func publishedLessonStarted(t *testing.T, h *testsupport.Harness) events.LessonS
 	t.Helper()
 	found := publishedOf[events.LessonStarted](t, h)
 	require.Len(t, found, 1)
+
 	return found[0]
 }
 
 func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
 	t.Helper()
+
 	return testsupport.PublishedEvents[T](t, h.Services)
 }
 

@@ -36,6 +36,7 @@ func New(check func(context.Context) error) *Probes {
 func NewAwaitingStart(check func(context.Context) error) *Probes {
 	p := New(check)
 	p.awaiting.Store(true)
+
 	return p
 }
 
@@ -56,19 +57,25 @@ func (p *Probes) Wrap(next http.Handler) http.Handler {
 	})
 	mux.HandleFunc("GET /readyz", p.ready)
 	mux.Handle("/", next)
+
 	return mux
 }
 
 func (p *Probes) ready(w http.ResponseWriter, r *http.Request) {
 	if p.draining.Load() || p.awaiting.Load() {
 		http.Error(w, "shutting down", http.StatusServiceUnavailable)
+
 		return
 	}
+
 	ctx, cancel := context.WithTimeout(r.Context(), readyTimeout)
 	defer cancel()
+
 	if err := p.check(ctx); err != nil {
 		http.Error(w, "not ready", http.StatusServiceUnavailable)
+
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 }

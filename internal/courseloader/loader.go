@@ -73,6 +73,7 @@ func NewLoader(
 	for _, opt := range opts {
 		opt(loader)
 	}
+
 	return loader
 }
 
@@ -108,6 +109,7 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	if err != nil {
 		return err
 	}
+
 	if !claimed {
 		return nil
 	}
@@ -116,9 +118,11 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	if err != nil {
 		return oops.Wrapf(err, "load course %d for version %d", version.CourseID, versionID)
 	}
+
 	if course.Slug == nil || *course.Slug == "" {
 		return l.fail(ctx, version, oops.Errorf("course %d has no slug", course.ID))
 	}
+
 	slug := *course.Slug
 
 	dir, cleanup, err := l.fetcher.Fetch(ctx, slug)
@@ -146,6 +150,7 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	if err := l.build(ctx, version, course, parsed); err != nil {
 		return l.fail(ctx, version, err)
 	}
+
 	return nil
 }
 
@@ -163,6 +168,7 @@ func (l *Loader) claim(ctx context.Context, versionID int) (bool, error) {
 	if err != nil {
 		return false, oops.Wrapf(err, "claim course version %d", versionID)
 	}
+
 	return updated == 1, nil
 }
 
@@ -175,6 +181,7 @@ func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause err
 		SetState(stateFailed).
 		SetResult("Error: " + cause.Error()).
 		Save(ctx)
+
 	return cause
 }
 
@@ -203,6 +210,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	}
 
 	totalLessons := 0
+
 	for _, m := range parsed.Modules {
 		moduleID, err := upsertModule(ctx, tx, courseID, m.Slug)
 		if err != nil {
@@ -230,6 +238,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		})
 		if err := saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
 			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
+
 			return err
 		}); err != nil {
 			return oops.Wrapf(err, "create module infos %q", m.Slug)
@@ -266,12 +275,16 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 				if err != nil {
 					return err
 				}
+
 				lessonInfos = append(lessonInfos, create)
 			}
+
 			totalLessons++
 		}
+
 		if err := saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
 			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
+
 			return err
 		}); err != nil {
 			return oops.Wrapf(err, "create lesson infos of module %q", m.Slug)
@@ -287,6 +300,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		Save(ctx); err != nil {
 		return oops.Wrapf(err, "mark version built")
 	}
+
 	if _, err := tx.Course.UpdateOneID(courseID).
 		SetCurrentVersionID(versionID).
 		SetLessonsCount(totalLessons).
@@ -305,6 +319,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	if err := l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale); err != nil {
 		return oops.Wrapf(err, "re-evaluate completion after promotion")
 	}
+
 	return nil
 }
 
@@ -317,6 +332,7 @@ func saveInChunks[T any](rows []T, save func([]T) error) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -342,20 +358,25 @@ func lessonInfoCreate(tx *ent.Client, courseID, versionID, lessonID, lessonVersi
 	if info.Description != "" {
 		create.SetDescription(info.Description)
 	}
+
 	if len(info.Tips) > 0 {
 		s, err := marshalYAML(info.Tips)
 		if err != nil {
 			return nil, oops.Wrapf(err, "serialize tips")
 		}
+
 		create.SetTips(s)
 	}
+
 	if len(info.Definitions) > 0 {
 		s, err := marshalYAML(info.Definitions)
 		if err != nil {
 			return nil, oops.Wrapf(err, "serialize definitions")
 		}
+
 		create.SetDefinitions(s)
 	}
+
 	return create, nil
 }
 
@@ -372,6 +393,7 @@ func upsertModule(ctx context.Context, tx *ent.Client, courseID int, slug string
 	if err != nil {
 		return 0, oops.Wrapf(err, "upsert module %q", slug)
 	}
+
 	return id, nil
 }
 
@@ -393,6 +415,7 @@ func upsertLesson(ctx context.Context, tx *ent.Client, courseID, moduleID int, s
 	if err != nil {
 		return 0, oops.Wrapf(err, "upsert lesson %q", slug)
 	}
+
 	return id, nil
 }
 
@@ -411,10 +434,12 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 				if err != nil {
 					return oops.Wrapf(err, "lesson info %s", infos[ii].Locale)
 				}
+
 				infos[ii].Theory = theory
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -425,12 +450,14 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (string, error) {
 	source := []byte(theory)
 	document := goldmark.DefaultParser().Parse(text.NewReader(source))
+
 	var replacements []markdownImageReplacement
 
 	err := ast.Walk(document, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering {
 			return ast.WalkContinue, nil
 		}
+
 		image, ok := node.(*ast.Image)
 		if !ok || image.Reference != nil || len(image.Destination) == 0 {
 			return ast.WalkContinue, nil
@@ -450,11 +477,13 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 		if !ok {
 			return ast.WalkStop, oops.Errorf("locate Markdown image destination %q", ref)
 		}
+
 		replacements = append(replacements, markdownImageReplacement{
 			start: start,
 			end:   start + len(image.Destination),
 			url:   url,
 		})
+
 		return ast.WalkSkipChildren, nil
 	})
 	if err != nil {
@@ -464,13 +493,16 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 	slices.SortFunc(replacements, func(a, b markdownImageReplacement) int { return cmp.Compare(a.start, b.start) })
 
 	var result bytes.Buffer
+
 	cursor := 0
 	for _, replacement := range replacements {
 		result.Write(source[cursor:replacement.start])
 		result.WriteString(replacement.url)
 		cursor = replacement.end
 	}
+
 	result.Write(source[cursor:])
+
 	return result.String(), nil
 }
 
@@ -487,11 +519,13 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 	if len(part) == 0 || len(part) > len(source) {
 		return 0, false
 	}
+
 	for i := 0; i+len(part) <= len(source); i++ {
 		if &source[i] == &part[0] {
 			return i, true
 		}
 	}
+
 	return 0, false
 }
 
@@ -500,6 +534,7 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 // "http" (http_flow.png) is a local file.
 func isRemoteRef(ref string) bool {
 	u, err := url.Parse(ref)
+
 	return err == nil && (u.Scheme != "" || u.Host != "")
 }
 
@@ -514,10 +549,12 @@ func isRemoteRef(ref string) bool {
 // that climbs out of it fails the build.
 func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
 	lessonDir := filepath.Dir(localeDir)
+
 	file, err := os.OpenInRoot(lessonDir, filepath.Join(filepath.Base(localeDir), ref))
 	if err != nil {
 		return "", oops.Wrapf(err, "open image %q", ref)
 	}
+
 	defer func() { _ = file.Close() }()
 
 	attachment, err := l.assets.Put(ctx, assetstore.Upload{
@@ -539,5 +576,6 @@ func marshalYAML(v any) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(out), nil
 }

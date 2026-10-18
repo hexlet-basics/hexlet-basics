@@ -47,6 +47,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 	// per locale, concatenated in page order, keeps that order with typed
 	// predicates, and lets each query tie the lessons check to its own locale.
 	var pages []*ent.CourseLandingPage
+
 	for _, locale := range Locales {
 		rows, err := s.db.CourseLandingPage.Query().
 			Where(
@@ -68,6 +69,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		pages = append(pages, rows...)
 	}
 

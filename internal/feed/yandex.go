@@ -103,6 +103,7 @@ func NewYandex(db *ent.Client, appHost string, opts ...Option) *Yandex {
 	for _, opt := range opts {
 		opt(y)
 	}
+
 	return y
 }
 
@@ -113,6 +114,7 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	items, err := y.offers(ctx)
 	if err != nil {
 		return nil, err
@@ -137,10 +139,13 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 	buf.WriteString(xmlDeclaration)
 	enc := xml.NewEncoder(&buf)
 	enc.Indent("", "  ")
+
 	if err := enc.Encode(doc); err != nil {
 		return nil, errs.Wrapf(err, "encode yandex feed")
 	}
+
 	buf.WriteString("\n")
+
 	return buf.Bytes(), nil
 }
 
@@ -155,6 +160,7 @@ func (y *Yandex) categories(ctx context.Context) ([]set, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "load feed categories")
 	}
+
 	return lo.Map(rows, func(c *ent.CourseCategory, _ int) set {
 		return set{
 			ID:   c.ID,
@@ -190,17 +196,21 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 	}
 
 	var result []offer
+
 	for _, page := range pages {
 		crs := page.Edges.Course
 		if crs.CurrentVersionID == nil {
 			continue
 		}
+
 		plan := modules[*crs.CurrentVersionID]
 		if len(plan) < minModules {
 			continue
 		}
+
 		result = append(result, y.offer(page, crs, plan))
 	}
+
 	return result, nil
 }
 
@@ -214,6 +224,7 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (map[int][]*ent.CourseModuleTranslation, error) {
 	versionIDs := lo.Uniq(lo.FilterMap(pages, func(p *ent.CourseLandingPage, _ int) (int, bool) {
 		id := p.Edges.Course.CurrentVersionID
+
 		return lo.FromPtr(id), id != nil
 	}))
 	if len(versionIDs) == 0 {
@@ -224,6 +235,7 @@ func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (m
 	if err != nil {
 		return nil, errs.Wrapf(err, "load feed modules")
 	}
+
 	return lo.GroupBy(rows, func(m *ent.CourseModuleTranslation) int { return m.CourseVersionID }), nil
 }
 
@@ -276,6 +288,7 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 			})
 		}
 	}
+
 	return o
 }
 

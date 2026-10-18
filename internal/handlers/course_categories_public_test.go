@@ -19,7 +19,9 @@ func getCategoryView(t *testing.T, h *testsupport.Harness, slug string) *api.Cou
 	t.Helper()
 	res, err := h.Client.GetPublicCourseCategory(t.Context(), api.GetPublicCourseCategoryParams{Slug: slug})
 	require.NoError(t, err)
+
 	view := res
+
 	return view
 }
 
@@ -28,6 +30,7 @@ func categoryLandingSlugs(view *api.CourseCategoryView) []string {
 	for i, lp := range view.LandingPages {
 		slugs[i] = lp.Slug
 	}
+
 	return slugs
 }
 
@@ -46,6 +49,7 @@ func TestListPublicCourseCategoriesShowsTheRequestLocale(t *testing.T) {
 		slugs[i] = c.Slug.Value
 		assert.Equal(t, "ru", c.Locale.Value)
 	}
+
 	assert.ElementsMatch(t, []string{"layouting-ru", "programming-ru", "frontend-ru"}, slugs)
 }
 
@@ -72,6 +76,7 @@ func TestGetPublicCourseCategoryLeavesOutHiddenPagesAndUnfinishedCourses(t *test
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := t.Context()
 
 	require.NoError(t, h.DB.CourseLandingPage.Update().
@@ -103,12 +108,14 @@ func TestGetPublicCourseCategoryCarriesItsQuestions(t *testing.T) {
 	for i, q := range view.QnaItems {
 		questions[i] = q.Question
 	}
+
 	assert.Equal(t, []string{"Что такое вёрстка?", "Нужен ли опыт?"}, questions)
 	assert.Empty(t, view.LandingPages)
 }
 
 func TestGetPublicCourseCategoryIsNotFoundOutsideTheLocale(t *testing.T) {
 	t.Parallel()
+
 	cases := map[string]struct{ locale, slug string }{
 		"another locale": {"en", "programming-ru"},
 		"missing":        {"ru", "no-such-category"},

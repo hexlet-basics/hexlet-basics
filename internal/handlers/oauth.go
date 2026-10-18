@@ -19,10 +19,12 @@ func OAuthSignedIn(ctx context.Context) (oauthserver.Account, bool) {
 	if !ok {
 		return oauthserver.Account{}, false
 	}
+
 	name := strings.TrimSpace(ptrValue(u.FirstName) + " " + ptrValue(u.LastName))
 	if name == "" {
 		name = ptrValue(u.Email)
 	}
+
 	return oauthserver.Account{ID: u.ID, Name: name}, true
 }
 
@@ -30,6 +32,7 @@ func ptrValue(s *string) string {
 	if s == nil {
 		return ""
 	}
+
 	return *s
 }
 
@@ -39,13 +42,16 @@ func (s *Server) GetOAuthConsent(ctx context.Context, params api.GetOAuthConsent
 	if s.oauth == nil {
 		return nil, errOAuthRequestNotFound
 	}
+
 	consent, err := s.oauth.Pending(ctx, params.RequestId)
 	if errors.Is(err, oauthserver.ErrRequestNotFound) {
 		return nil, errOAuthRequestNotFound
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.OAuthConsent{
 		ClientName:   consent.ClientName,
 		RedirectHost: consent.RedirectHost,
@@ -80,13 +86,16 @@ func (s *Server) decideOAuthConsent(
 	if s.oauth == nil {
 		return nil, errOAuthRequestNotFound
 	}
+
 	redirect, err := decide(ctx, requestID)
 	if errors.Is(err, oauthserver.ErrRequestNotFound) {
 		return nil, errOAuthRequestNotFound
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.OAuthDecision{RedirectUrl: redirect}, nil
 }
 
@@ -97,10 +106,12 @@ func (s *Server) ListConnectedApps(ctx context.Context) (*api.ConnectedApps, err
 	if s.oauth == nil {
 		return &api.ConnectedApps{Items: []api.ConnectedApp{}}, nil
 	}
+
 	apps, err := s.oauth.ConnectedApps(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	items := make([]api.ConnectedApp, 0, len(apps))
 	for _, a := range apps {
 		item := api.ConnectedApp{
@@ -112,8 +123,10 @@ func (s *Server) ListConnectedApps(ctx context.Context) (*api.ConnectedApps, err
 		if a.ClientHost != "" {
 			item.ClientHost = api.NewOptString(a.ClientHost)
 		}
+
 		items = append(items, item)
 	}
+
 	return &api.ConnectedApps{Items: items}, nil
 }
 
@@ -124,12 +137,15 @@ func (s *Server) RevokeConnectedApp(ctx context.Context, params api.RevokeConnec
 	if s.oauth == nil {
 		return errConnectedAppNotFound
 	}
+
 	err := s.oauth.Disconnect(ctx, int(params.ID))
 	if errors.Is(err, oauthserver.ErrAppNotConnected) {
 		return errConnectedAppNotFound
 	}
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

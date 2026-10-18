@@ -31,6 +31,7 @@ type openAPIPath struct {
 
 func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	t.Parallel()
+
 	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
 
@@ -97,6 +98,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 // contract, as a Permission and whether it reads or writes, not in a Go table.
 func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
 	t.Parallel()
+
 	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
 
@@ -104,6 +106,7 @@ func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
 		Name string `yaml:"name"`
 		Kind string `yaml:"kind"`
 	}
+
 	var spec struct {
 		Paths map[string]map[string]struct {
 			OperationID string    `yaml:"operationId"`
@@ -113,10 +116,12 @@ func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
 	require.NoError(t, yaml.Unmarshal(specData, &spec))
 
 	got := map[string]declared{}
+
 	for path, methods := range spec.Paths {
 		if !strings.HasPrefix(path, "/api/admin/blog_posts") {
 			continue
 		}
+
 		for _, op := range methods {
 			require.NotNil(t, op.Permission, "%s declares no x-permission", op.OperationID)
 			got[op.OperationID] = *op.Permission

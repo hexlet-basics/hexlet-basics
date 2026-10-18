@@ -28,6 +28,7 @@ var (
 func openPool(t *testing.T) (*store.Store, *ent.Client) {
 	t.Helper()
 	db := testdb.Clone(t)
+
 	return store.New(db), store.NewClient(db)
 }
 
@@ -44,13 +45,16 @@ func probe(ctx context.Context, client *ent.Client, operation string) error {
 
 func countOf(ctx context.Context, t *testing.T, client *ent.Client, operation string) int {
 	t.Helper()
+
 	n, err := client.AuditRecord.Query().Where(auditrecord.Operation(operation)).Count(ctx)
 	require.NoError(t, err)
+
 	return n
 }
 
 func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 	txStore, client := openPool(t)
+
 	const operation = "AmbientJoinProbe"
 
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
@@ -63,6 +67,7 @@ func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 		assert.Equal(t, 1, countOf(ctx, t, client, operation))
 		// ... while another connection does not, because nothing committed.
 		assert.Zero(t, countOf(t.Context(), t, client, operation))
+
 		return errBoom
 	})
 
@@ -72,6 +77,7 @@ func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 
 func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T) {
 	txStore, client := openPool(t)
+
 	const operation = "AmbientNestedProbe"
 
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
@@ -82,6 +88,7 @@ func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T)
 		require.NoError(t, txStore.WithinTx(ctx, func(_ *sql.Tx, inner *ent.Client) error {
 			return probe(ctx, inner, operation)
 		}))
+
 		return errBoom
 	})
 

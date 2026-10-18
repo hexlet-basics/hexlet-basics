@@ -21,18 +21,23 @@ func (s *Server) AdminGetMyCapabilities(ctx context.Context) (*api.MyCapabilitie
 	policy := permission.NewPolicy(s.db)
 
 	held := []string{}
+
 	for _, entry := range permissioncatalog.Catalog() {
 		if !entry.Capability {
 			continue
 		}
+
 		err := policy.HasCapability(ctx, u, entry.Name)
 		if errors.Is(err, permission.ErrForbidden) {
 			continue
 		}
+
 		if err != nil {
 			return nil, err
 		}
+
 		held = append(held, entry.Name)
 	}
+
 	return &api.MyCapabilities{Held: held}, nil
 }

@@ -44,6 +44,7 @@ func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher, opts .
 	for _, opt := range opts {
 		opt(registrar)
 	}
+
 	return registrar
 }
 
@@ -65,6 +66,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 	}
 
 	var u *ent.User
+
 	err = r.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
 		u, err = txClient.User.Create().
 			SetEmail(NormalizeEmail(input.Email)).
@@ -85,10 +87,12 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 		}); err != nil {
 			return errs.Wrapf(err, "publish user signed up")
 		}
+
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return u, nil
 }

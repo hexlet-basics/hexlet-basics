@@ -32,6 +32,7 @@ func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
 		require.NotNil(t, txClient)
 		_, execErr := tx.ExecContext(t.Context(), "write")
+
 		return execErr
 	})
 
@@ -121,6 +122,7 @@ func TestWithinTxClientNeitherOwnsTheTransactionNorClosesThePool(t *testing.T) {
 		require.NoError(t, txClient.Close())
 
 		_, execErr := tx.ExecContext(t.Context(), "write")
+
 		return execErr
 	})
 
@@ -144,8 +146,11 @@ type transactionState struct {
 
 func openTransactionDB(t *testing.T, state *transactionState) *sql.DB {
 	t.Helper()
+
 	db := sql.OpenDB(transactionConnector{state: state})
+
 	t.Cleanup(func() { _ = db.Close() })
+
 	return db
 }
 
@@ -184,10 +189,13 @@ func (c *transactionConn) Begin() (driver.Tx, error) {
 func (c *transactionConn) BeginTx(context.Context, driver.TxOptions) (driver.Tx, error) {
 	c.state.mu.Lock()
 	defer c.state.mu.Unlock()
+
 	if c.state.beginErr != nil {
 		return nil, c.state.beginErr
 	}
+
 	c.state.begins++
+
 	return transactionTx{state: c.state}, nil
 }
 
@@ -198,7 +206,9 @@ func (c *transactionConn) ExecContext(
 ) (driver.Result, error) {
 	c.state.mu.Lock()
 	defer c.state.mu.Unlock()
+
 	c.state.execs++
+
 	return driver.RowsAffected(1), nil
 }
 
@@ -209,13 +219,17 @@ type transactionTx struct {
 func (tx transactionTx) Commit() error {
 	tx.state.mu.Lock()
 	defer tx.state.mu.Unlock()
+
 	tx.state.commits++
+
 	return tx.state.commitErr
 }
 
 func (tx transactionTx) Rollback() error {
 	tx.state.mu.Lock()
 	defer tx.state.mu.Unlock()
+
 	tx.state.rollbacks++
+
 	return tx.state.rollbackErr
 }

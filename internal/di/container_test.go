@@ -48,6 +48,7 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	configureTestEnvironment(t)
 
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -62,6 +63,7 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 	configureWorkerEnvironment(t)
 
 	injector := newWorkerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
@@ -87,6 +89,7 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 	require.NoError(t, err)
 
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 	do.OverrideValue(injector, client)
 	do.OverrideNamedValue[http.Handler](injector, routerServiceName, http.HandlerFunc(

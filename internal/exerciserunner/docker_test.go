@@ -69,6 +69,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			assert.Equal(t, tc.result, outcome.Result)
 			assert.Equal(t, tc.passed, outcome.Passed)
 			assert.Equal(t, tc.status, outcome.Status)
+
 			if tc.output == "" {
 				assert.Empty(t, outcome.Output)
 			} else {
@@ -113,12 +114,15 @@ func dockerRunner(t *testing.T) *Docker {
 	if err != nil {
 		t.Fatalf("no docker client: %v", err)
 	}
+
 	t.Cleanup(func() { _ = runner.Close() })
 
 	if _, err := runner.docker.Ping(context.Background(), client.PingOptions{}); err != nil {
 		t.Fatalf("no docker daemon: %v", err)
 	}
+
 	pullImage(t, runner)
+
 	return runner
 }
 
@@ -129,10 +133,12 @@ func pullImage(t *testing.T, runner *Docker) {
 	if _, err := runner.docker.ImageInspect(ctx, runnerImage); err == nil {
 		return
 	}
+
 	pulled, err := runner.docker.ImagePull(ctx, runnerImage, client.ImagePullOptions{})
 	if err != nil {
 		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
+
 	defer func() { _ = pulled.Close() }()
 	// The pull returns before it finishes; starting a container against a
 	// half-present image is the classic way to get a confusing failure.
@@ -155,10 +161,12 @@ func runScript(t *testing.T, runner *Docker, script string) (progress.Outcome, e
 		ExerciseFile: "/submission/solution.txt",
 		Code:         "the learner's code\n",
 	}
+
 	status, output, err := runner.run(t.Context(), submission, []string{"sh", "-c", script})
 	if err != nil {
 		return progress.Outcome{}, err
 	}
+
 	return outcomeOf(status, output), nil
 }
 
@@ -172,6 +180,7 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 	runner.opts.GraceTimeout = 3 * time.Second
 
 	done := make(chan error, 1)
+
 	go func() {
 		_, err := runScript(t, runner, "sleep 60")
 		done <- err
@@ -196,6 +205,7 @@ func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
 	runner.opts.ImageTag = "3"
 	submission := progress.Submission{Image: "alpine", VersionID: 20260812}
 	pinned, _ := runner.imageRefs(submission)
+
 	t.Cleanup(func() {
 		_, _ = runner.docker.ImageRemove(context.Background(), pinned, client.ImageRemoveOptions{})
 	})

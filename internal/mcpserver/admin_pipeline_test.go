@@ -40,6 +40,7 @@ func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 		"locale": "en", "id": firstBannerID(t, o), "body": bannerInput("Both middlewares"),
 	})
 	require.False(t, write.IsError, "%+v", write.Content)
+
 	written := o.Records("AdminUpdateBanner")
 	require.Len(t, written, 1)
 	assert.Equal(t, audit.OutcomeSucceeded, audit.Outcome(written[0].Outcome))

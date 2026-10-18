@@ -37,6 +37,7 @@ func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.Ad
 	if err := s.db.CourseLandingPage.AdminDelete(ctx, params.ID); err != nil {
 		return err
 	}
+
 	return nil
 }
 

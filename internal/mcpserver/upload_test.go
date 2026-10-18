@@ -36,6 +36,7 @@ func upload(fileName string, content []byte) map[string]any {
 
 func attachments(t *testing.T, o *testsupport.OAuth) int {
 	t.Helper()
+
 	return o.DB.Attachment.Query().CountX(t.Context())
 }
 
@@ -71,15 +72,19 @@ func TestUploadToolOfferedWithTheContractsPartAndLimits(t *testing.T) {
 	session, _ := admin(t, o, bob)
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	for _, tool := range tools.Tools {
 		if tool.Name != "adminUploadAttachment" {
 			continue
 		}
+
 		assert.False(t, tool.Annotations.ReadOnlyHint)
 		assert.Contains(t, schemaJSON(t, tool.InputSchema), "contentBase64")
 		assert.Contains(t, schemaJSON(t, tool.OutputSchema), "byteSize")
+
 		return
 	}
+
 	t.Fatal("adminUploadAttachment is not offered")
 }
 
@@ -89,16 +94,19 @@ func TestUploadIsRefusedAndRecordedAsForbiddenWithoutWhatTheWebsiteNeeds(t *test
 			t.Helper()
 			o.Grant(editor, "mcp.read")
 			session, _ := admin(t, o, bob)
+
 			return session
 		},
 		"no admin scope": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 			t.Helper()
 			o.Grant(editor, "mcp.write")
+
 			return connect(t, o, bob, oauthserver.ScopeCatalogRead)
 		},
 		"not staff": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 			t.Helper()
 			session, _ := admin(t, o, alice)
+
 			return session
 		},
 	}
@@ -175,7 +183,9 @@ func TestUploadSpendsTheWriteBudget(t *testing.T) {
 
 func schemaJSON(t *testing.T, schema any) string {
 	t.Helper()
+
 	raw, err := json.Marshal(schema)
 	require.NoError(t, err)
+
 	return string(raw)
 }

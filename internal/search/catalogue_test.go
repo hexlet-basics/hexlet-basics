@@ -26,6 +26,7 @@ import (
 func newCatalogue(t *testing.T) (*search.Catalogue, *ent.Client) {
 	t.Helper()
 	db := testsupport.NewClient(t)
+
 	return search.NewCatalogue(db), db
 }
 
@@ -35,6 +36,7 @@ func ask(t *testing.T, c *search.Catalogue, locale, text string, types ...search
 		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50},
 	})
 	require.NoError(t, err)
+
 	return hits, total
 }
 
@@ -43,6 +45,7 @@ func ids(hits []search.Hit) []string {
 	for i, hit := range hits {
 		out[i] = hit.ID
 	}
+
 	return out
 }
 
@@ -53,6 +56,7 @@ func TestACourseIsFoundByWhatItsLandingPageSays(t *testing.T) {
 
 	assert.Contains(t, ids(hits), "course:javascript-ru")
 	assert.Equal(t, len(hits), total)
+
 	for _, hit := range hits {
 		assert.Equal(t, search.Course, hit.Type)
 		assert.Equal(t, "/ru/languages/"+strings.TrimPrefix(hit.ID, "course:"), hit.Path, "the Russian page carries the locale prefix")
@@ -76,6 +80,7 @@ func TestALessonIsFoundByItsTheoryAndNamesItsCourseAndSlug(t *testing.T) {
 	hits, _ := ask(t, c, "ru", "первая программа", search.Lesson)
 
 	require.Contains(t, ids(hits), "lesson:ruby/hello-world-ruby")
+
 	for _, hit := range hits {
 		if hit.ID == "lesson:ruby/hello-world-ruby" {
 			assert.Equal(t, "/ru/languages/ruby/lessons/hello-world-ruby", hit.Path)
@@ -146,7 +151,9 @@ func TestWhatAVisitorCannotReadIsNotFoundUntilItIsPublic(t *testing.T) {
 // with it.
 func TestALessonIsFoundOnlyWhileItsCourseIsOnTheCourseList(t *testing.T) {
 	c, db := newCatalogue(t)
+
 	const lesson = "lesson:ruby/hello-world-ruby"
+
 	found, _ := ask(t, c, "ru", "первая программа", search.Lesson)
 	require.Contains(t, ids(found), lesson)
 
@@ -189,9 +196,11 @@ func TestTheTypeFilterNarrowsTheAnswerAndItsTotal(t *testing.T) {
 	lessons, lessonTotal := ask(t, c, "ru", "Привет", search.Lesson)
 
 	require.NotEmpty(t, lessons)
+
 	for _, hit := range lessons {
 		assert.Equal(t, search.Lesson, hit.Type)
 	}
+
 	assert.Equal(t, len(lessons), lessonTotal)
 	assert.GreaterOrEqual(t, allTotal, lessonTotal)
 	assert.GreaterOrEqual(t, len(all), len(lessons))
@@ -203,12 +212,14 @@ func TestPagesOfAnAnswerAreTheAnswerInOrderWithoutGapsOrRepeats(t *testing.T) {
 	require.Greater(t, total, 3, "the fixtures have several lessons that greet")
 
 	var paged []search.Hit
+
 	for offset := 0; offset < total; offset += 3 {
 		hits, pagedTotal, err := c.Search(t.Context(), search.Query{
 			Text: "Привет", Locale: "ru", Page: domain.Page{Offset: offset, Limit: 3},
 		})
 		require.NoError(t, err)
 		assert.Equal(t, total, pagedTotal)
+
 		paged = append(paged, hits...)
 	}
 
@@ -275,6 +286,7 @@ func TestAnEditorsSearchAndFetchReadNoLearnerWrittenText(t *testing.T) {
 	c := search.NewCatalogue(client)
 
 	assert.Empty(t, askAsEditor(t, c, "ru", "Отличный"))
+
 	for _, id := range []string{"course:ruby-ru", "lesson:ruby/hello-world-ruby", "post:learning-ruby"} {
 		ref, err := search.ParseID(id)
 		require.NoError(t, err)
@@ -284,6 +296,7 @@ func TestAnEditorsSearchAndFetchReadNoLearnerWrittenText(t *testing.T) {
 	}
 
 	assert.NotEmpty(t, *queries)
+
 	for _, q := range *queries {
 		for _, table := range []string{`"reviews"`, `"ai_messages"`, `"ai_chats"`, `"leads"`, `"users"`, `"book_requests"`, `"language_lesson_reviews"`} {
 			assert.NotContains(t, q.query, table)
@@ -307,6 +320,7 @@ type recorder struct {
 func (r recorder) Query(ctx context.Context, query string, args, v any) error {
 	list, _ := args.([]any)
 	*r.queries = append(*r.queries, capturedQuery{query: query, args: list})
+
 	return r.Driver.Query(ctx, query, args, v)
 }
 
@@ -316,6 +330,7 @@ func recording(t *testing.T) (*ent.Client, *[]capturedQuery, *sql.Tx) {
 	t.Helper()
 	_, tx := testsupport.NewClientWithTx(t)
 	captured := &[]capturedQuery{}
+
 	return ent.NewClient(ent.Driver(recorder{Driver: store.NewTxDriver(tx), queries: captured})), captured, tx
 }
 
@@ -355,10 +370,12 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 				"index_language_lesson_version_infos_on_search_" + suffix: false,
 				"index_blog_posts_on_search_" + suffix:                    false,
 			}
+
 			for _, q := range *queries {
 				if !strings.Contains(q.query, "@@") {
 					continue
 				}
+
 				plan := explain(t, tx, q)
 				for index := range indexes {
 					if strings.Contains(plan, index) {
@@ -366,6 +383,7 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 					}
 				}
 			}
+
 			for index, used := range indexes {
 				assert.True(t, used, "no statement of the search used %s", index)
 			}
@@ -381,17 +399,21 @@ func askAsEditor(t *testing.T, c *search.Catalogue, locale, text string, types .
 	})
 	require.NoError(t, err)
 	assert.Equal(t, len(hits), total)
+
 	return hits
 }
 
 func hitOf(t *testing.T, hits []search.Hit, id string) search.Hit {
 	t.Helper()
+
 	for _, hit := range hits {
 		if hit.ID == id {
 			return hit
 		}
 	}
+
 	require.Failf(t, "no such hit", "%s is not among %v", id, ids(hits))
+
 	return search.Hit{}
 }
 
@@ -448,11 +470,13 @@ func TestAnEditorsSearchFindsALessonOnceThoughEveryBuildTranslatesIt(t *testing.
 	hits := askAsEditor(t, c, "en", "Hello", search.Lesson)
 
 	var found []string
+
 	for _, hit := range hits {
 		if hit.ID == "lesson:javascript/hello-world" {
 			found = append(found, hit.Title)
 		}
 	}
+
 	assert.Len(t, found, 1)
 
 	seen := map[string]bool{}
@@ -473,10 +497,12 @@ func TestAnEditorFetchesWhatIsNotPublic(t *testing.T) {
 	c, _ := newCatalogue(t)
 	fetch := func(id, locale string) *search.Record {
 		t.Helper()
+
 		ref, err := search.ParseID(id)
 		require.NoError(t, err)
 		rec, err := c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
 		require.NoError(t, err, id)
+
 		return rec
 	}
 

@@ -84,6 +84,7 @@ func NewReplacer(txStore store.Transactor) *Replacer {
 // ids it offered.
 func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) error {
 	courseIDs = lo.Uniq(courseIDs)
+
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		// First, so a missing post is ent not-found before anything is written
 		// (the insert would otherwise fail its FK and read as a conflict). Left
@@ -161,6 +162,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	if err != nil {
 		return err
 	}
+
 	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema)
 	if err != nil {
 		return oops.Wrapf(err, "suggest related courses for post %d", blogPostID)
@@ -170,13 +172,20 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	if err != nil {
 		return oops.Wrapf(err, "parse related courses for post %d", blogPostID)
 	}
+
 	s.logger.InfoContext(ctx, "related courses suggested", "blog_post_id", blogPostID, "course_ids", courseIDs)
+
 	if len(courseIDs) == 0 {
 		return nil
 	}
 
 	offered := lo.SliceToMap(candidates, func(c candidate) (int, struct{}) { return c.ID, struct{}{} })
-	known := lo.Filter(courseIDs, func(id int, _ int) bool { _, ok := offered[id]; return ok })
+	known := lo.Filter(courseIDs, func(id int, _ int) bool {
+		_, ok := offered[id]
+
+		return ok
+	})
+
 	return s.replacer.Replace(ctx, blogPostID, known)
 }
 
@@ -196,6 +205,7 @@ func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]ca
 	if err != nil {
 		return nil, err
 	}
+
 	return lo.Map(pages, func(p *ent.CourseLandingPage, _ int) candidate {
 		return candidate{ID: p.CourseID, Name: p.Header}
 	}), nil
@@ -210,6 +220,7 @@ func suggestPrompt(richBody string, candidates []candidate) (string, error) {
 	}
 	// Whitespace collapses first so markup indentation does not eat the budget.
 	text := lo.Ellipsis(strings.Join(strings.Fields(htmltext.PlainText(richBody)), " "), maxTextLength)
+
 	return "Текст статьи: " + text + "\n\n" + "Список курсов: " + string(courses), nil
 }
 
@@ -219,5 +230,6 @@ func parseCourseIDs(answer string) ([]int, error) {
 	if err := json.Unmarshal([]byte(answer), &parsed); err != nil {
 		return nil, oops.Wrapf(err, "decode course id list %q", answer)
 	}
+
 	return parsed.CourseIDs, nil
 }

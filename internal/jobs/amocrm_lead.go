@@ -52,10 +52,12 @@ func (w *amoCRMLeadWorker) Work(ctx context.Context, job *river.Job[AmoCRMLeadAr
 	if err == nil {
 		return nil
 	}
+
 	var classified retryableError
 	if errors.As(err, &classified) && !classified.Retryable() {
 		return river.JobCancel(err)
 	}
+
 	return err
 }
 

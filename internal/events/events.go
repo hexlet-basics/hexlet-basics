@@ -193,5 +193,6 @@ func nameOf(value any) string {
 	if event, ok := value.(Event); ok {
 		return event.eventName()
 	}
+
 	return ""
 }

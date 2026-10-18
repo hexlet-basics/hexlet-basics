@@ -31,6 +31,7 @@ func rejected(t *testing.T, result *mcp.CallToolResult) int {
 	seconds, ok := result.Meta["retryAfterSeconds"].(float64)
 	require.True(t, ok, "the wait is machine readable too: %v", result.Meta)
 	assert.Positive(t, seconds)
+
 	return int(seconds)
 }
 
@@ -131,7 +132,9 @@ type slowCatalogue struct {
 
 func (c slowCatalogue) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
 	<-ctx.Done()
+
 	c.cancelled <- ctx.Err()
+
 	return nil, ctx.Err()
 }
 
@@ -146,8 +149,10 @@ func TestTimeoutCancelsTheHandlersContext(t *testing.T) {
 		Limits:    mcpserver.Limits{ToolTimeout: 50 * time.Millisecond},
 	})
 	require.NoError(t, err)
+
 	ts := httptest.NewServer(server.Handler())
 	t.Cleanup(ts.Close)
+
 	client := mcp.NewClient(&mcp.Implementation{Name: "t", Version: "0"}, nil)
 	session, err := client.Connect(t.Context(), &mcp.StreamableClientTransport{
 		Endpoint:             ts.URL + "/mcp",
@@ -170,5 +175,6 @@ type bearerTransport struct{}
 func (bearerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
 	r.Header.Set("Authorization", "Bearer anything")
+
 	return http.DefaultTransport.RoundTrip(r)
 }

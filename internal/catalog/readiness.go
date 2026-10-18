@@ -56,8 +56,10 @@ func (r *Readiness) move(ctx context.Context, id int, move transition.Transition
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	if err := move.Check(transition.ReadinessOf(row.Readiness)); err != nil {
 		return err
 	}
+
 	return domain.FromStore(r.db.Course.UpdateOneID(id).SetReadiness(string(move.To)).Exec(ctx))
 }

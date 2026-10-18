@@ -16,6 +16,7 @@ func (s *Server) ListPublicCourseCategories(ctx context.Context) ([]api.CourseCa
 	if err != nil {
 		return nil, err
 	}
+
 	return s.conv.ToCourseCategories(rows), nil
 }
 
@@ -26,6 +27,7 @@ func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPubl
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.CourseCategoryView{
 		Category:     s.conv.ToCourseCategory(view.Category),
 		LandingPages: s.conv.ToCatalogItems(view.LandingPages),

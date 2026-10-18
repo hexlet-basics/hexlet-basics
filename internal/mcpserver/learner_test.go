@@ -23,6 +23,7 @@ var carol = fixture.ID(fixture.UserWithPassword)
 
 func learnerSession(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()
+
 	if len(scopes) == 0 {
 		scopes = []string{oauthserver.ScopeProgressRead}
 	}
@@ -36,11 +37,14 @@ func isLearnerTool(name string) bool { return strings.HasPrefix(name, "getMy") }
 
 func lessonStates(t *testing.T, course map[string]any) map[string]string {
 	t.Helper()
+
 	states := map[string]string{}
+
 	for _, l := range course["lessons"].([]any) {
 		lesson := l.(map[string]any)
 		states[lesson["slug"].(string)] = lesson["state"].(string)
 	}
+
 	return states
 }
 
@@ -50,12 +54,15 @@ func TestLearnerToolsAreReadOnlyAndTakeNoParameterNamingAUser(t *testing.T) {
 	require.NoError(t, err)
 
 	names := map[string][]string{}
+
 	for _, tool := range tools.Tools {
 		if !isLearnerTool(tool.Name) {
 			continue
 		}
+
 		assert.True(t, tool.Annotations.ReadOnlyHint, tool.Name)
 		props, _ := tool.InputSchema.(map[string]any)["properties"].(map[string]any)
+
 		names[tool.Name] = nil
 		for name := range props {
 			names[tool.Name] = append(names[tool.Name], name)
@@ -138,6 +145,7 @@ func TestLearnerToolsRefuseAnArgumentThatNamesAUser(t *testing.T) {
 		assert.True(t, result.IsError, "%v", args)
 		assert.Nil(t, result.StructuredContent)
 	}
+
 	assert.True(t, callTool(t, s, "getMyDashboard", map[string]any{"userId": bob}).IsError)
 	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": "variables", "userId": bob}).IsError)
 }
@@ -152,6 +160,7 @@ func TestLearnerToolsReportWhatIsMissing(t *testing.T) {
 	} {
 		assert.True(t, callTool(t, s, name, args).IsError, name)
 	}
+
 	assert.True(t, callTool(t, s, "getMyCourseProgress", nil).IsError, "an empty course slug is refused")
 	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse}).IsError)
 	assert.True(t, callTool(t, s, "getMyCourseProgress", map[string]any{"courseSlug": 7}).IsError, "a malformed argument")
@@ -196,21 +205,27 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 
 	tools, err := s.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	var learnerTools int
+
 	for _, tool := range tools.Tools {
 		if !isLearnerTool(tool.Name) {
 			continue
 		}
+
 		learnerTools++
+
 		var names []string
 		keys(tool.InputSchema, &names)
 		keys(tool.OutputSchema, &names)
+
 		for _, name := range names {
 			for _, bad := range forbidden {
 				assert.NotContains(t, strings.ToLower(name), bad, "%s schema property %s", tool.Name, name)
 			}
 		}
 	}
+
 	require.Equal(t, 3, learnerTools)
 
 	for name, args := range map[string]map[string]any{
@@ -219,13 +234,16 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 		"getMyLessonProgress": {"courseSlug": jsCourse, "lessonSlug": "hello-world"},
 	} {
 		result := callTool(t, s, name, args)
+
 		var names []string
 		keys(result.StructuredContent, &names)
+
 		for _, n := range names {
 			for _, bad := range forbidden {
 				assert.NotContains(t, strings.ToLower(n), bad, "%s result field %s", name, n)
 			}
 		}
+
 		raw, err := json.Marshal(result)
 		require.NoError(t, err)
 		assert.NotContains(t, string(raw), "alice@example.com", name)

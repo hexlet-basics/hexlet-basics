@@ -75,8 +75,10 @@ func (s *Server) CheckLesson(
 		if err != nil {
 			return nil, err
 		}
+
 		response.SetCookie = []string{cookie}
 	}
+
 	return response, nil
 }
 
@@ -88,7 +90,9 @@ func currentLearner(ctx context.Context) progress.Learner {
 	if u, ok := AuthenticatedUser(ctx); ok {
 		return progress.Learner{UserID: u.ID}
 	}
+
 	guest, _ := GuestProgress(ctx)
+
 	return progress.Learner{Guest: guest}
 }
 

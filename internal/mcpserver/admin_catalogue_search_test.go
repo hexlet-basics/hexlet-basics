@@ -24,21 +24,26 @@ func searchItems(t *testing.T, result *mcp.CallToolResult) []map[string]any {
 	t.Helper()
 	require.False(t, result.IsError, "%+v", result.Content)
 	listed := result.StructuredContent.(map[string]any)["items"].([]any)
+
 	items := make([]map[string]any, 0, len(listed))
 	for _, item := range listed {
 		items = append(items, item.(map[string]any))
 	}
+
 	return items
 }
 
 func itemByID(t *testing.T, items []map[string]any, id string) map[string]any {
 	t.Helper()
+
 	for _, item := range items {
 		if item["id"] == id {
 			return item
 		}
 	}
+
 	require.Failf(t, "not found", "%s is not among the results", id)
+
 	return nil
 }
 
@@ -79,6 +84,7 @@ func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 			meta := record["metadata"].(map[string]any)
 			assert.Equal(t, tc.kind, meta["type"])
 			assert.Equal(t, tc.readiness, meta["readiness"], "the record says how ready its course is")
+
 			if tc.state != "" {
 				assert.Equal(t, tc.state, hit["state"])
 				assert.Equal(t, tc.state, meta["state"], "the record says how published it is")
@@ -101,6 +107,7 @@ func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 	for _, item := range searchItems(t, russian) {
 		assert.NotEqual(t, "post:second-post", item["id"])
 	}
+
 	itemByID(t, searchItems(t, english), "post:second-post")
 	require.True(t, fetched.IsError)
 	assert.Contains(t, textOf(t, fetched), "HTTP 404")
@@ -140,12 +147,14 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	assert.Contains(t, shown, "listCourses", "the catalogue tools keep working")
 	assert.NotContains(t, shown, "search")
 	assert.NotContains(t, shown, "fetch")
+
 	for _, name := range tools {
 		assert.NotContains(t, shown, name, "the admin Scope is missing")
 	}
 
 	// A staff member whose role does not hold mcp.read.
 	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
 		assert.NotContains(t, shown, name, "the role holds no mcp.read")
@@ -158,10 +167,12 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	}
 
 	o.Grant(editor, "mcp.read")
+
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
 		assert.Contains(t, shown, name)
 	}
+
 	assert.NotContains(t, shown, "search")
 	assert.NotContains(t, shown, "fetch")
 }
@@ -176,12 +187,14 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 	t.Run("a token without the admin Scope", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
 		o.Grant(editor, "mcp.read")
+
 		session := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
 		for tool, args := range arguments {
 			result := call(t, session, tool, args)
 
 			assertRefused(t, result)
 			assert.NotContains(t, textOf(t, result), "Node.js", "nothing of the record is told")
+
 			records := o.Records(operations[tool])
 			require.Len(t, records, 1, tool)
 			assert.Equal(t, "forbidden", records[0].Outcome)
@@ -191,6 +204,7 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a staff member whose role holds no mcp.read", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
+
 		session, _ := admin(t, o, bob)
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
@@ -202,6 +216,7 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("an administrator who is not staff", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
+
 		session, _ := admin(t, o, alice)
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
@@ -234,6 +249,7 @@ func TestEveryToolThatNeedsTheAdminScopeIsNamedAdmin(t *testing.T) {
 			assert.False(t, strings.HasPrefix(name, "admin"), "%s is named admin and needs the %q Scope", name, scope)
 		}
 	}
+
 	assert.NotEqual(t, oauthserver.ScopeAdmin, scopes["findTools"], "findTools is not an admin tool")
 	require.Contains(t, scopes, "findTools")
 	assert.NotContains(t, scopes, "search")

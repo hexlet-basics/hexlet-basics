@@ -47,13 +47,17 @@ func TestTheSearchOfEachLargeTableIsServedByATrigramIndex(t *testing.T) {
 
 			rows, err := tx.QueryContext(t.Context(), "EXPLAIN "+query, args...)
 			require.NoError(t, err)
+
 			defer func() { _ = rows.Close() }()
+
 			var plan []string
+
 			for rows.Next() {
 				var line string
 				require.NoError(t, rows.Scan(&line))
 				plan = append(plan, line)
 			}
+
 			require.NoError(t, rows.Err())
 
 			// users.email also has the unique btree, which the planner may scan

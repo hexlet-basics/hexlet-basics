@@ -35,14 +35,18 @@ func TestAdminListCourseLessons(t *testing.T) {
 	assert.Equal(t, int32(len(page.Items)), page.Total)
 
 	javascript := []string{"variables", "hello-world", "strings"}
+
 	var items []api.CourseLessonListItem
+
 	for _, item := range page.Items {
 		assert.NotEqual(t, "Old Hello", item.Name.Value, "old-version infos must be excluded")
 		assert.NotEqual(t, "Привет, мир!", item.Name.Value, "ru infos must be excluded")
+
 		if slices.Contains(javascript, item.Slug) {
 			items = append(items, item)
 		}
 	}
+
 	require.Len(t, items, 3, "old-version and ru infos must be excluded")
 
 	// Ordered by the Info id DESC (not the lesson id this row reports as `id`).
@@ -86,6 +90,7 @@ func TestAdminListLessonProgress(t *testing.T) {
 	for i := 1; i < len(page.Items); i++ {
 		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
 	}
+
 	byID := lo.KeyBy(page.Items, func(item api.LessonProgress) int32 { return item.ID })
 
 	first := byID[fixture.ID32(fixture.LessonProgressStaffEditorJavascriptVariables)] // started, no messages, lesson "variables"

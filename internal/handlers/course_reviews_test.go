@@ -18,10 +18,12 @@ import (
 func enqueuedLessonInfoIDs(t *testing.T, h *testsupport.Harness) []int {
 	t.Helper()
 	enqueued := testsupport.EnqueuedJobs[jobs.ReviewLessonArgs](t, h.Services)
+
 	ids := make([]int, 0, len(enqueued))
 	for _, args := range enqueued {
 		ids = append(ids, args.LessonInfoID)
 	}
+
 	return ids
 }
 

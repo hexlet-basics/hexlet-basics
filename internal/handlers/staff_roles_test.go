@@ -39,6 +39,7 @@ func TestAdminListRoles(t *testing.T) {
 	require.Len(t, page.Items, totalRoles)
 	names := lo.Map(page.Items, func(role api.StaffRole, _ int) string { return role.Name })
 	assert.True(t, sort.StringsAreSorted(names), "roles are listed by name: %v", names)
+
 	counts := lo.SliceToMap(page.Items, func(role api.StaffRole) (string, int32) { return role.Name, role.PermissionsCount })
 	// editor owns three grants, moderator none.
 	assert.Equal(t, int32(3), counts["editor"])

@@ -76,6 +76,7 @@ func cancelUnfixable(err error) error {
 		errors.Is(err, domain.ErrInvalid) {
 		return river.JobCancel(err)
 	}
+
 	return err
 }
 
@@ -143,11 +144,14 @@ func workerConfig(
 	modules []Module,
 ) *river.Config {
 	workers := river.NewWorkers()
+
 	var periodic []*river.PeriodicJob
+
 	for _, m := range modules {
 		m.register(workers)
 		periodic = append(periodic, m.periodic...)
 	}
+
 	return &river.Config{
 		ErrorHandler:                errorHandler,
 		DiscardedJobRetentionPeriod: DiscardedRetention,

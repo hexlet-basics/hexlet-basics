@@ -46,6 +46,7 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	for _, cookie := range h.cookies {
 		r.AddCookie(cookie)
 	}
+
 	h.next.ServeHTTP(w, r)
 }
 
@@ -57,7 +58,9 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	t.Helper()
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	bucket := memblob.OpenBucket(nil)
+
 	t.Cleanup(func() { _ = bucket.Close() })
+
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
@@ -87,6 +90,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
+
 	att := handlers.NewAttachmentHandler(assets, errorHandler)
 	gh := handlers.NewGitHubWebhookHandler(services.Starter, "", translator)
 	router := translator.Middleware(handlers.NewRouter(handler.Security().Pipeline(apiServer), att, gh, nil, nil))
@@ -97,6 +101,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	if admin {
 		label = fixture.UserAdminLearner
 	}
+
 	u, err := db.User.Get(t.Context(), fixture.ID(label))
 	require.NoError(t, err)
 	token, err := manager.Issue(t.Context(), u)
@@ -108,6 +113,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Helper()
 	router, cookies := newAttachmentRouterStack(t, true)
+
 	return authenticatedHandler{next: router, cookies: cookies}
 }
 
@@ -116,13 +122,17 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 // from content rather than trusting this header.
 func uploadRequest(t *testing.T, filename, contentType string, data []byte) *http.Request {
 	t.Helper()
+
 	var body bytes.Buffer
+
 	mw := multipart.NewWriter(&body)
 	h := textproto.MIMEHeader{}
 	h.Set("Content-Disposition", `form-data; name="file"; filename="`+filename+`"`)
+
 	if contentType != "" {
 		h.Set("Content-Type", contentType)
 	}
+
 	part, err := mw.CreatePart(h)
 	require.NoError(t, err)
 	_, err = part.Write(data)
@@ -131,6 +141,7 @@ func uploadRequest(t *testing.T, filename, contentType string, data []byte) *htt
 
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/admin/attachments", &body)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
+
 	return req
 }
 
@@ -146,6 +157,7 @@ func uploadAttachmentURL(t *testing.T, router http.Handler) string {
 	}
 	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &response))
 	require.NotEmpty(t, response.URL)
+
 	return response.URL
 }
 
@@ -264,6 +276,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	t.Run("range", func(t *testing.T) {
 		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
+
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, req)
@@ -278,6 +291,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	t.Run("invalid range", func(t *testing.T) {
 		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1000-2000")
+
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, req)
@@ -302,6 +316,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	t.Run("not modified", func(t *testing.T) {
 		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("If-Modified-Since", lastModified)
+
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, req)
@@ -315,6 +330,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
 		req.Header.Set("If-Range", lastModified)
+
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, req)
@@ -327,6 +343,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
 		req.Header.Set("If-Range", "Mon, 02 Jan 2006 15:04:05 GMT")
+
 		rec := httptest.NewRecorder()
 
 		router.ServeHTTP(rec, req)
@@ -341,11 +358,13 @@ func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
 	router := newAttachmentRouter(t)
 	req := uploadRequest(t, "notes.png", "image/png", []byte("hello"))
 	req.Header.Set("Accept-Language", "es")
+
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+
 	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.Equal(t, []string{"Tipo de archivo no compatible"}, body.Errors.Value["file"])
@@ -359,6 +378,7 @@ func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
 	router.ServeHTTP(rec, uploadRequest(t, "notes.png", "image/png", []byte("hello")))
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+
 	var body struct {
 		Errors map[string][]string `json:"errors"`
 	}
@@ -371,6 +391,7 @@ func TestUploadAttachmentRequiresFilePart(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	var body bytes.Buffer
+
 	mw := multipart.NewWriter(&body)
 	require.NoError(t, mw.WriteField("other", "x"))
 	require.NoError(t, mw.Close())
@@ -427,6 +448,7 @@ func TestUploadAttachmentRejectsFileOverAssetLimit(t *testing.T) {
 	router.ServeHTTP(rec, uploadRequest(t, "large.png", "image/png", data))
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+
 	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.NotEmpty(t, body.Errors.Value["file"])

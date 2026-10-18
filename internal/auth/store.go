@@ -33,9 +33,11 @@ func (s *store) FindCtx(ctx context.Context, token string) ([]byte, bool, error)
 	if ent.IsNotFound(err) {
 		return nil, false, nil
 	}
+
 	if err != nil {
 		return nil, false, err
 	}
+
 	return row.Data, true, nil
 }
 
@@ -56,6 +58,7 @@ func (s *store) CommitCtx(ctx context.Context, token string, data []byte, expiry
 // scs requires: signing out twice is not a failure.
 func (s *store) DeleteCtx(ctx context.Context, token string) error {
 	_, err := s.db.Session.Delete().Where(session.ID(token)).Exec(ctx)
+
 	return err
 }
 

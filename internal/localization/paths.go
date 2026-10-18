@@ -11,5 +11,6 @@ func PathPrefix(locale string) string {
 	if locale == "" || locale == language.English.String() {
 		return ""
 	}
+
 	return "/" + locale
 }

@@ -51,8 +51,10 @@ func (e *Editor) move(ctx context.Context, id int, move transition.Transition[tr
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	if err := move.Check(transition.PublicationState(row.State)); err != nil {
 		return err
 	}
+
 	return domain.FromStore(e.db.Banner.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))
 }

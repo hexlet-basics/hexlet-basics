@@ -43,15 +43,18 @@ const publishTimeout = 2 * time.Second
 // set, so the same record carries the channel and Connected App.
 func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {
 	logger := errorHandler.logger
+
 	return func(req middleware.Request, next middleware.Next) (middleware.Response, error) {
 		entity, personal := permissioncatalog.PersonalDataEntity(req.OperationName)
 		if !personal {
 			return next(req)
 		}
+
 		resp, err := next(req)
 		if err != nil {
 			return resp, err
 		}
+
 		read, ok := touched(resp.Type)
 		if !ok {
 			return resp, nil
@@ -59,7 +62,9 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 
 		ctx, cancel := context.WithTimeout(context.WithoutCancel(req.Context), publishTimeout)
 		defer cancel()
+
 		entry := auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded)
+
 		fact := events.StaffReadPersonalData{
 			ActorUserID:    entry.Actor,
 			Channel:        string(entry.Source.Channel),
@@ -78,6 +83,7 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 		if publishErr := publisher.PublishStandalone(ctx, fact); publishErr != nil {
 			logger.ErrorContext(ctx, "publishing a read of personal data", "operation", req.OperationName, "err", publishErr)
 		}
+
 		return resp, nil
 	}
 }
@@ -92,12 +98,16 @@ func touched(response any) (audit.Reads, bool) {
 	if err != nil {
 		return audit.Reads{}, false
 	}
+
 	var value any
+
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
+
 	if err := decoder.Decode(&value); err != nil {
 		return audit.Reads{}, false
 	}
+
 	switch v := value.(type) {
 	case []any:
 		return readsOf(v), true
@@ -105,10 +115,12 @@ func touched(response any) (audit.Reads, bool) {
 		if items, ok := v["items"].([]any); ok {
 			return readsOf(items), true
 		}
+
 		if id, ok := idOf(v); ok {
 			return audit.Reads{Count: 1, IDs: []string{id}}, true
 		}
 	}
+
 	return audit.Reads{}, false
 }
 
@@ -118,12 +130,14 @@ func readsOf(rows []any) audit.Reads {
 		if len(reads.IDs) == audit.MaxReadIDs {
 			break
 		}
+
 		if object, ok := row.(map[string]any); ok {
 			if id, ok := idOf(object); ok {
 				reads.IDs = append(reads.IDs, id)
 			}
 		}
 	}
+
 	return reads
 }
 
@@ -134,5 +148,6 @@ func idOf(object map[string]any) (string, bool) {
 	case string:
 		return id, id != ""
 	}
+
 	return "", false
 }

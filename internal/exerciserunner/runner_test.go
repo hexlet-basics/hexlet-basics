@@ -22,6 +22,7 @@ import (
 // in-container timeout, everything else is an ordinary failure.
 func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
 	t.Parallel()
+
 	passed := outcomeOf(0, "1 test, 0 failures")
 	assert.True(t, passed.Passed)
 	assert.Equal(t, progress.ResultPassed, passed.Result)
@@ -42,6 +43,7 @@ func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
 // same line, and the classification already says everything.
 func TestOutcomeOfDropsTheOutputOfATimedOutRun(t *testing.T) {
 	t.Parallel()
+
 	timedOut := outcomeOf(timeoutExitStatus, strings.Repeat("looping\n", 1000))
 
 	assert.False(t, timedOut.Passed)
@@ -89,6 +91,7 @@ func TestReadOutputScrubsInvalidUTF8(t *testing.T) {
 // timeout, which is the interface every exercise image already exposes.
 func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 	t.Parallel()
+
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	command := runner.command(progress.Submission{TestDir: "/exercises-go/modules/10-basics/20-vars"})
@@ -102,6 +105,7 @@ func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 // it lands exactly on the file the reference solution ships.
 func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 	t.Parallel()
+
 	archive, err := tarFile("/exercises-go/modules/10-basics/20-vars/index.go", "package main\n")
 	require.NoError(t, err)
 
@@ -122,6 +126,7 @@ func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 // in most of these languages.
 func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 	t.Parallel()
+
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	host := runner.hostConfig()
@@ -142,6 +147,7 @@ func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 // stay writable or nothing compiles at all.
 func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
 	t.Parallel()
+
 	cfg := testConfig()
 	cfg.ReadonlyRootfs = true
 	runner := &Docker{opts: OptionsFrom(cfg)}
@@ -159,6 +165,7 @@ func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
 // payload — so the demultiplexing under test is the real one.
 func multiplexed(t *testing.T, stdout, stderr string) io.Reader {
 	t.Helper()
+
 	var buf bytes.Buffer
 
 	for _, frame := range []struct {
@@ -168,12 +175,14 @@ func multiplexed(t *testing.T, stdout, stderr string) io.Reader {
 		if frame.payload == "" {
 			continue
 		}
+
 		header := make([]byte, 8)
 		header[0] = byte(frame.stream)
 		binary.BigEndian.PutUint32(header[4:], uint32(len(frame.payload)))
 		buf.Write(header)
 		buf.WriteString(frame.payload)
 	}
+
 	return &buf
 }
 
@@ -187,6 +196,7 @@ func testConfig() config.ExerciseRunnerConfig {
 	if err := env.ParseWithOptions(&cfg, env.Options{Environment: map[string]string{}}); err != nil {
 		panic(err)
 	}
+
 	return cfg
 }
 
@@ -195,6 +205,7 @@ func testConfig() config.ExerciseRunnerConfig {
 // version must keep being graded by the build it was promoted as.
 func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 	t.Parallel()
+
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, source := runner.imageRefs(progress.Submission{
@@ -211,6 +222,7 @@ func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 // own pin, and nothing is pulled or re-tagged behind it.
 func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 	t.Parallel()
+
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, source := runner.imageRefs(progress.Submission{
@@ -225,6 +237,7 @@ func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 // A registry host carries a port, which is not a tag.
 func TestImageRefsPinAnImageOnAPortedRegistry(t *testing.T) {
 	t.Parallel()
+
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, _ := runner.imageRefs(progress.Submission{

@@ -14,6 +14,7 @@ import (
 // without the capability it was meant to need.
 func TestRequiredCapabilityMustNameAListedCapability(t *testing.T) {
 	t.Parallel()
+
 	for name, doc := range map[string]string{
 		"an unlisted capability": `
 paths:

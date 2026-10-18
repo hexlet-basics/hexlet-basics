@@ -70,6 +70,7 @@ func SourceFrom(ctx context.Context) Source {
 	if s, ok := ctx.Value(sourceKey{}).(Source); ok && s.Channel != "" {
 		return s
 	}
+
 	return Source{Channel: ChannelWeb}
 }
 
@@ -140,11 +141,13 @@ type recorderKey struct{}
 // Recorder that holds them.
 func WithRecorder(ctx context.Context) (context.Context, *Recorder) {
 	r := &Recorder{}
+
 	return context.WithValue(ctx, recorderKey{}, r), r
 }
 
 func recorderFrom(ctx context.Context) *Recorder {
 	r, _ := ctx.Value(recorderKey{}).(*Recorder)
+
 	return r
 }
 
@@ -152,12 +155,14 @@ func recorderFrom(ctx context.Context) *Recorder {
 func (r *Recorder) Changes() []Change {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	return append([]Change(nil), r.changes...)
 }
 
 func (r *Recorder) add(c Change) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	r.changes = append(r.changes, c)
 }
 
@@ -171,6 +176,7 @@ func primary(changes []Change) (string, string) {
 			return c.Entity, c.ID
 		}
 	}
+
 	return "", ""
 }
 
@@ -183,10 +189,12 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	if rec != nil {
 		changes = rec.Changes()
 	}
+
 	occurredAt := e.OccurredAt
 	if occurredAt.IsZero() {
 		occurredAt = time.Now()
 	}
+
 	create := client.AuditRecord.Create().
 		SetOccurredAt(occurredAt).
 		SetChannel(string(e.Source.Channel)).
@@ -198,41 +206,53 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	if e.RequestID != "" {
 		create.SetRequestID(e.RequestID)
 	}
+
 	if e.Address != "" {
 		create.SetAddress(e.Address)
 	}
+
 	if e.UserAgent != "" {
 		create.SetUserAgent(e.UserAgent)
 	}
+
 	if e.Locale != "" {
 		create.SetLocale(e.Locale)
 	}
+
 	entity, id := e.EntityType, e.EntityID
 	if entity == "" {
 		entity, id = primary(changes)
 	}
+
 	if entity != "" {
 		create.SetEntityType(entity)
 	}
+
 	if id != "" {
 		create.SetEntityID(id)
 	}
+
 	if e.Reads != nil {
 		raw, err := json.Marshal(e.Reads)
 		if err != nil {
 			return errs.Wrapf(err, "encode audit reads")
 		}
+
 		create.SetReads(raw)
 	}
+
 	if len(changes) > 0 {
 		raw, err := json.Marshal(changes)
 		if err != nil {
 			return errs.Wrapf(err, "encode audit changes")
 		}
+
 		create.SetChanges(raw)
 	}
+
 	if err := create.Exec(ctx); err != nil {
 		return errs.With("operation", e.Operation).Wrapf(err, "write audit record")
 	}
+
 	return nil
 }

@@ -34,6 +34,7 @@ func TestAnUnmatchedRouteAnswersWithProblemDetails(t *testing.T) {
 			assert.Equal(t, "application/problem+json", response.Header.Get("Content-Type"))
 			body, err := io.ReadAll(response.Body)
 			require.NoError(t, err)
+
 			var problem struct {
 				Status int    `json:"status"`
 				Title  string `json:"title"`

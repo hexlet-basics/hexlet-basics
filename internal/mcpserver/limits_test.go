@@ -29,6 +29,7 @@ func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) 
 			ok, _ := m.allow(class, 1, "app")
 			require.True(t, ok, class)
 		}
+
 		ok, wait := m.allow(class, 1, "app")
 		assert.False(t, ok, "%s: the user's own limit applies", class)
 		assert.Equal(t, time.Minute, wait, class)
@@ -67,6 +68,7 @@ func TestDefaultLimitsAreStricterForPersonalReadsAndWrites(t *testing.T) {
 	assert.Equal(t, 50, d.MaxPageSize)
 	assert.Equal(t, 100*1024, d.MaxResponseBytes)
 	assert.Equal(t, 30*time.Second, d.ToolTimeout)
+
 	for _, r := range []Rates{d.User, d.Client} {
 		assert.Greater(t, r.Catalogue, r.Personal)
 		assert.Greater(t, r.Personal, r.Write)
@@ -99,6 +101,7 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 			assert.Equal(t, 7, userID)
 			assert.Equal(t, "app", client)
 		}
+
 		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
 		require.NotNil(t, denied, class)
 		assert.True(t, denied.IsError)
@@ -137,8 +140,10 @@ func TestClassNamesAreStableAndUnknownClassIsNamedNotHidden(t *testing.T) {
 // sizeOf is the size fit measures: the JSON of the data and the text.
 func sizeOf(t *testing.T, data map[string]any, textLen int) int {
 	t.Helper()
+
 	raw, err := json.Marshal(data)
 	require.NoError(t, err)
+
 	return len(raw) + textLen
 }
 
@@ -147,6 +152,7 @@ func records(n int) []any {
 	for i := range out {
 		out[i] = map[string]any{"slug": strings.Repeat("x", 100), "i": i}
 	}
+
 	return out
 }
 
@@ -169,6 +175,7 @@ func TestFitCutsTheLargestListAndSaysHowToContinueFromTheNextPage(t *testing.T) 
 	assert.Len(t, data["small"], 2, "the small list was not touched")
 	kept := len(data["items"].([]any))
 	assert.Less(t, kept, 100)
+
 	hint := data[truncationKey].(map[string]any)
 	assert.Equal(t, true, hint["truncated"])
 	assert.Equal(t, kept, hint["suggestedPerPage"])
@@ -184,6 +191,7 @@ func TestFitShortensALongTextOnARuneBoundary(t *testing.T) {
 	ok := fit(data, 0, 3000, nil)
 
 	require.True(t, ok)
+
 	theory := data["lesson"].(map[string]any)["theory"].(string)
 	assert.True(t, utf8.ValidString(theory), "a cut must not split a character")
 	assert.True(t, strings.HasSuffix(theory, "[cut]"))

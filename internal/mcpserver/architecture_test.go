@@ -25,6 +25,7 @@ import (
 func TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer(t *testing.T) {
 	out, err := exec.CommandContext(t.Context(), "go", "list", "-f", `{{join .Imports "\n"}}`, "hexletbasics/internal/mcpserver").CombinedOutput()
 	require.NoError(t, err, string(out))
+
 	for imported := range strings.FieldsSeq(string(out)) {
 		for _, forbidden := range []string{"hexletbasics/internal/handlers", "hexletbasics/internal/store", "database/sql"} {
 			assert.False(t, imported == forbidden || strings.HasPrefix(imported, forbidden+"/"),
@@ -37,6 +38,7 @@ func TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer(t *test
 	for _, name := range []string{"admin.go", "operation.go", "principal.go"} {
 		parsed, err := parser.ParseFile(token.NewFileSet(), name, nil, parser.ImportsOnly)
 		require.NoError(t, err)
+
 		for _, spec := range parsed.Imports {
 			assert.NotContains(t, spec.Path.Value, "hexletbasics/ent", "%s must not reach the database", name)
 		}
@@ -44,11 +46,14 @@ func TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer(t *test
 
 	files, err := filepath.Glob("*.go")
 	require.NoError(t, err)
+
 	checked := 0
+
 	for _, name := range files {
 		if strings.HasSuffix(name, "_test.go") {
 			continue
 		}
+
 		checked++
 		src, err := os.ReadFile(name)
 		require.NoError(t, err)
@@ -61,8 +66,10 @@ func TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer(t *test
 						"%s names api.%s", name, sel.Sel.Name)
 				}
 			}
+
 			return true
 		})
 	}
+
 	assert.Positive(t, checked)
 }

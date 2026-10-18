@@ -29,9 +29,11 @@ func Paged[E any, Q pagedQuery[E, Q]](ctx context.Context, query Q, page Page) (
 	if err != nil {
 		return nil, 0, FromStore(err)
 	}
+
 	rows, err := query.Offset(page.Offset).Limit(page.Limit).All(ctx)
 	if err != nil {
 		return nil, 0, FromStore(err)
 	}
+
 	return rows, total, nil
 }

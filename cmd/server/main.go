@@ -30,9 +30,11 @@ func main() {
 		slog.Error("loading .env", "err", err)
 		os.Exit(1)
 	}
+
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	err := run(signalCtx, stop)
 	stop()
+
 	if err != nil {
 		// The one place a run failure is logged; run returns it unlogged.
 		slog.Error("process failed", "err", err)
