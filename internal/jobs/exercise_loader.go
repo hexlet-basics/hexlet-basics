@@ -21,6 +21,13 @@ type ExerciseLoaderArgs struct {
 // Kind is river's stable job discriminator; do not rename once jobs are enqueued.
 func (ExerciseLoaderArgs) Kind() string { return "exercise_loader" }
 
+// exerciseLoaderMaxAttempts is the one named exception to idempotent retries:
+// a build is not safe to re-run by the queue. It fetches, parses, uploads and
+// then promotes a version, and the version row records the failure and is
+// re-triggered by an admin or the next webhook, so a blind retry would only
+// repeat a build the row already marks failed.
+const exerciseLoaderMaxAttempts = 1
+
 // InsertOpts caps the job at a single attempt and deduplicates jobs for the same
 // version. The loader's SQL claim remains the correctness boundary, while River
 // uniqueness avoids spending worker capacity on normal duplicate triggers.
@@ -28,7 +35,7 @@ func (ExerciseLoaderArgs) Kind() string { return "exercise_loader" }
 // by the next webhook), matching legacy's no-retry behavior.
 func (ExerciseLoaderArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		MaxAttempts: 1,
+		MaxAttempts: exerciseLoaderMaxAttempts,
 		Queue:       QueueBuilds,
 		UniqueOpts: river.UniqueOpts{
 			ByArgs: true,
@@ -66,5 +73,5 @@ func (*exerciseLoaderWorker) Timeout(*river.Job[ExerciseLoaderArgs]) time.Durati
 // the version; returning the error here surfaces it in river's job history (the
 // job is discarded after its single attempt).
 func (w *exerciseLoaderWorker) Work(ctx context.Context, job *river.Job[ExerciseLoaderArgs]) error {
-	return w.loader.Run(ctx, job.Args.VersionID)
+	return cancelUnfixable(w.loader.Run(ctx, job.Args.VersionID))
 }

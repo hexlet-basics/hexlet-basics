@@ -9,7 +9,9 @@ package jobs
 
 import (
 	"database/sql"
+	"errors"
 	"log/slog"
+	"time"
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
@@ -17,6 +19,8 @@ import (
 	"github.com/riverqueue/rivercontrib/otelriver"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
+
+	"hexletbasics/internal/domain"
 )
 
 // Queues isolate classes of work so a burst in one cannot starve another: a
@@ -32,6 +36,14 @@ const (
 	QueueLLM = "llm"
 )
 
+// DiscardedRetention is how long River keeps a job that used every attempt
+// (state `discarded`). Those rows are the dead-letter store: an operator reads
+// the failure there and replays the job with River's own retry, so they must
+// outlive a long weekend plus the time to fix the cause. River's default is
+// also a week-scale value, but a default can change under us; this one is
+// ours. Completed and cancelled rows keep River's defaults.
+const DiscardedRetention = 30 * 24 * time.Hour
+
 // queues is the worker's concurrency budget per queue. Builds are heavy (git,
 // parsing, uploads) so few run at once; LLM concurrency stays under provider
 // rate limits; River's default queue keeps the remaining light jobs.
@@ -42,6 +54,21 @@ func queues() map[string]river.QueueConfig {
 		QueueBuilds:        {MaxWorkers: 2},
 		QueueLLM:           {MaxWorkers: 3},
 	}
+}
+
+// cancelUnfixable turns a domain error that retrying cannot fix (a row that is
+// gone, a change the data refuses, input the operation rejects) into
+// river.JobCancel, so the job stops at once instead of spending every attempt
+// on the same answer. Anything else, such as an infrastructure failure, is
+// returned as is and keeps River's retry schedule. Workers call it
+// on the error they return from Work.
+func cancelUnfixable(err error) error {
+	if errors.Is(err, domain.ErrNotFound) ||
+		errors.Is(err, domain.ErrConflict) ||
+		errors.Is(err, domain.ErrInvalid) {
+		return river.JobCancel(err)
+	}
+	return err
 }
 
 // Module is one job kind's registration in the worker process: its worker and,
@@ -93,21 +120,36 @@ func NewWorkerClient(
 	meterProvider metric.MeterProvider,
 	modules ...Module,
 ) (*river.Client[*sql.Tx], error) {
+	return river.NewClient(
+		riverdatabasesql.New(db),
+		workerConfig(logger, errorHandler, tracerProvider, meterProvider, modules),
+	)
+}
+
+// workerConfig is the worker client's River configuration.
+func workerConfig(
+	logger *slog.Logger,
+	errorHandler *ErrorHandler,
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
+	modules []Module,
+) *river.Config {
 	workers := river.NewWorkers()
 	var periodic []*river.PeriodicJob
 	for _, m := range modules {
 		m.register(workers)
 		periodic = append(periodic, m.periodic...)
 	}
-	return river.NewClient(riverdatabasesql.New(db), &river.Config{
-		ErrorHandler:        errorHandler,
-		FetchOnlyKnownKinds: true,
-		Logger:              logger,
-		PeriodicJobs:        periodic,
-		Plugins:             openTelemetryPlugins(tracerProvider, meterProvider),
-		Queues:              queues(),
-		Workers:             workers,
-	})
+	return &river.Config{
+		ErrorHandler:                errorHandler,
+		DiscardedJobRetentionPeriod: DiscardedRetention,
+		FetchOnlyKnownKinds:         true,
+		Logger:                      logger,
+		PeriodicJobs:                periodic,
+		Plugins:                     openTelemetryPlugins(tracerProvider, meterProvider),
+		Queues:                      queues(),
+		Workers:                     workers,
+	}
 }
 
 // openTelemetryPlugins keeps River's observability policy consistent between

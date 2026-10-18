@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"log/slog"
 	"strconv"
 
 	"github.com/getsentry/sentry-go"
@@ -11,13 +12,18 @@ import (
 
 // ErrorHandler reports worker errors and panics without changing River's retry
 // decisions. Returning nil delegates cancellation and scheduling to River.
+//
+// Only the final attempt of a job goes to Sentry: an earlier one will be
+// retried, so it is routine and would page for every try of a flaky call. Every
+// attempt, final or not, is logged, so the history stays readable in the logs.
 type ErrorHandler struct {
 	sentryClient *sentry.Client
+	logger       *slog.Logger
 }
 
 // NewErrorHandler builds River's native error-handler adapter.
-func NewErrorHandler(sentryClient *sentry.Client) *ErrorHandler {
-	return &ErrorHandler{sentryClient: sentryClient}
+func NewErrorHandler(sentryClient *sentry.Client, logger *slog.Logger) *ErrorHandler {
+	return &ErrorHandler{sentryClient: sentryClient, logger: logger}
 }
 
 // HandleError captures a failed job attempt.
@@ -42,6 +48,19 @@ func (h *ErrorHandler) HandlePanic(
 }
 
 func (h *ErrorHandler) capture(ctx context.Context, job *rivertype.JobRow, err error, panicTrace string) {
+	final := job.Attempt >= job.MaxAttempts
+	h.logger.ErrorContext(ctx, "job attempt failed",
+		slog.Any("err", err),
+		slog.Int64("job_id", job.ID),
+		slog.String("job_kind", job.Kind),
+		slog.String("job_queue", job.Queue),
+		slog.Int("job_attempt", job.Attempt),
+		slog.Int("job_max_attempts", job.MaxAttempts),
+		slog.Bool("final_attempt", final),
+	)
+	if !final {
+		return
+	}
 	scope := sentry.NewScope()
 	scope.SetTags(map[string]string{
 		"job.id":           strconv.FormatInt(job.ID, 10),
