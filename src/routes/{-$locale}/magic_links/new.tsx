@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import type { ReactElement } from "react";
 import { z } from "zod";
 import { createMagicLinkMutation } from "@/client/@tanstack/react-query.gen";
-import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
+import { EmailRequestCard } from "@/components/EmailRequestCard";
+import { useInvalidLinkNotice } from "@/hooks/useInvalidLinkNotice";
 
 // Magic Link request form, ported from legacy magic_links/new. The API answers
 // the same whether or not the email is registered, so the page does too: every

@@ -28,6 +28,25 @@ export default defineConfig({
   },
   overrides: [
     {
+      // A route module exports its `Route`, a router object and not a component, next to the
+      // component it renders. oxlint 1.88 flags that component and ignores allowExportNames
+      // for it; the router's own fast-refresh handling covers route files. Re-check on upgrade.
+      files: ["src/routes/**"],
+      rules: {
+        "react/only-export-components": "off",
+      },
+    },
+    {
+      // The legal pages and the locale catalogs are text, and the tests list one case after another:
+      // their length is their content, not a function to split.
+      files: ["src/components/pages/**", "src/locales/**", "src/test/**"],
+      rules: {
+        "eslint/max-lines": "off",
+        "eslint/max-lines-per-function": "off",
+        "eslint/max-statements": "off",
+      },
+    },
+    {
       // The legal pages are the text itself, one component per language, so the
       // prose has to sit in the JSX as written and its quotes are not escaped.
       files: ["src/components/pages/**"],
@@ -106,19 +125,18 @@ export default defineConfig({
   ],
   rules: {
     "eslint/capitalized-comments": ["error", "always", { ignoreConsecutiveComments: true }],
-    // Taste threshold.
-    "eslint/complexity": "off",
+    "eslint/complexity": ["error", { max: 25 }],
     "eslint/func-style": ["error", "declaration", { allowArrowFunctions: true }],
     "eslint/id-length": [
       "error",
       { checkGeneric: false, exceptions: ["$", "t", "_"], min: 2, properties: "never" },
     ],
-    // Taste threshold.
-    "eslint/max-lines": "off",
-    // Taste threshold, page components are long declarative JSX.
-    "eslint/max-lines-per-function": "off",
-    // Taste threshold.
-    "eslint/max-statements": "off",
+    "eslint/max-lines": ["error", { max: 500, skipBlankLines: true, skipComments: true }],
+    "eslint/max-lines-per-function": [
+      "error",
+      { max: 200, skipBlankLines: true, skipComments: true },
+    ],
+    "eslint/max-statements": ["error", { max: 30 }],
     "eslint/no-bitwise": ["error", { allow: ["|"] }],
     "eslint/no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
     "eslint/no-magic-numbers": [
@@ -132,13 +150,13 @@ export default defineConfig({
         ignoreTypeIndexes: true,
       },
     ],
-    // Conditional rendering with a ternary is idiomatic React.
+    // Contradicts unicorn/prefer-ternary, which asks for a ternary where an if/else assigns one value.
     "eslint/no-ternary": "off",
-    // Taste rule, undefined is the idiomatic absent value next to optional props.
+    // Contradicts unicorn/no-typeof-undefined: a comparison with `undefined` is how an absent value is tested.
     "eslint/no-undefined": "off",
     "eslint/no-use-before-define": ["error", { functions: false }],
-    // The repo marks deliberate fire-and-forget promises with void (no-floating-promises).
-    "eslint/no-void": "off",
+    // The repo marks deliberate fire-and-forget promises with `void` as a statement (no-floating-promises).
+    "eslint/no-void": ["error", { allowAsStatement: true }],
     "eslint/one-var": ["error", "never"],
     "eslint/prefer-arrow-callback": ["error", { allowNamedFunctions: true }],
     "eslint/sort-imports": ["error", { ignoreDeclarationSort: true }],
@@ -179,19 +197,17 @@ export default defineConfig({
         ],
       },
     ],
-    // Restriction rule banning modern syntax the whole app is built on.
+    // Contradicts promise/prefer-await-to-then, which asks for async/await over promise chains.
     "oxc/no-async-await": "off",
-    // Restriction rule banning modern syntax the whole app is built on.
+    // Bans `?.`, the operator that typescript/strict-boolean-expressions code reads nullable values through.
     "oxc/no-optional-chaining": "off",
-    // Restriction rule banning modern syntax the whole app is built on.
+    // Contradicts eslint/prefer-object-spread, which asks for spread where Object.assign copies.
     "oxc/no-rest-spread-properties": "off",
-    // Micro-optimisation, no memoised children depend on identity.
+    // The four react-perf rules flag a new identity per render, which costs only where a
+    // memoised child compares props; nothing here uses React.memo.
     "react-perf/jsx-no-jsx-as-prop": "off",
-    // Micro-optimisation, no memoised children depend on identity.
     "react-perf/jsx-no-new-array-as-prop": "off",
-    // Micro-optimisation, no memoised children depend on identity.
     "react-perf/jsx-no-new-function-as-prop": "off",
-    // Micro-optimisation, no memoised children depend on identity.
     "react-perf/jsx-no-new-object-as-prop": "off",
     "react/function-component-definition": [
       "error",
@@ -223,9 +239,8 @@ export default defineConfig({
       "error",
       { propNamePattern: "{render*,edit,extra,cell}" },
     ],
+    "react/only-export-components": "error",
     // Rules switched off, each with its reason.
-    // Pending: the rule flags every route component that is not exported next to Route.
-    "react/only-export-components": "off",
     // The automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
     "typescript/explicit-function-return-type": [

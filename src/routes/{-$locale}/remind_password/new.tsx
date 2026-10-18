@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import type { ReactElement } from "react";
 import { z } from "zod";
 import { createPasswordReminderMutation } from "@/client/@tanstack/react-query.gen";
-import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
+import { EmailRequestCard } from "@/components/EmailRequestCard";
+import { useInvalidLinkNotice } from "@/hooks/useInvalidLinkNotice";
 
 // Password Reset request form, ported from legacy remind_passwords/new. Unlike
 // legacy, an unknown email is no longer reported: the API answers the same for

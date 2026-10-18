@@ -1,7 +1,5 @@
 import { Alert, Card, Stack } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { useEffect } from "react";
 import type { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { zEmailInput } from "@/client/zod.gen";
@@ -55,14 +53,4 @@ export function EmailRequestCard({
       )}
     </Card>
   );
-}
-
-// The refused-link notice is a flash, so it is shown once on arrival like the
-// other flashes; the id keeps StrictMode's double effect from stacking two.
-export function useInvalidLinkNotice(invalid: boolean | undefined, message: string): void {
-  useEffect(() => {
-    if (invalid) {
-      notifications.show({ color: "red", id: "invalid-link", message });
-    }
-  }, [invalid, message]);
 }

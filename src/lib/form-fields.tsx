@@ -22,10 +22,10 @@ import type { DateTimePickerProps } from "@mantine/dates";
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import type { ReactElement, SyntheticEvent } from "react";
+import { useFieldContext, useFormContext } from "@/lib/form-context";
+import type { ReactElement } from "react";
 
 // `L LT` (localized date + time) needs the localizedFormat plugin.
 dayjs.extend(localizedFormat);
@@ -40,15 +40,6 @@ const isoToPicker = (iso: string | null): string | null =>
   iso ? dayjs(iso).format(MANTINE_DATETIME) : null;
 const pickerToIso = (value: string | null): string | null =>
   value ? dayjs(value).toISOString() : null;
-
-// Mantine input wrappers over headless TanStack Form (ADR-0008). `useAppForm`
-// binds the field components below so forms read like plain Mantine markup while
-// TanStack Form owns state and Zod owns validation. Validators are the Zod
-// schemas generated from OpenAPI (`src/client/zod.gen.ts`), passed straight to
-// `validators.onSubmit` — zod v4 implements Standard Schema, which TanStack Form
-// consumes natively and maps issues back to fields by path.
-export const { fieldContext, formContext, useFieldContext, useFormContext } =
-  createFormHookContexts();
 
 // The text of one validation error: a string as it is, an issue by its message.
 function messageOf(entry: unknown): string {
@@ -73,7 +64,7 @@ function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
     .join(", ");
 }
 
-function TextField(props: TextInputProps): ReactElement {
+export function TextField(props: TextInputProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <TextInput
@@ -90,7 +81,7 @@ function TextField(props: TextInputProps): ReactElement {
   );
 }
 
-function TextareaField(props: TextareaProps): ReactElement {
+export function TextareaField(props: TextareaProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <Textarea
@@ -109,7 +100,7 @@ function TextareaField(props: TextareaProps): ReactElement {
 
 // Enum/choice fields. The field value stays a plain string; callers pass Mantine's
 // `data` (option list). `null` (cleared) maps to "" so the value stays controlled.
-function SelectField(props: SelectProps): ReactElement {
+export function SelectField(props: SelectProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <Select
@@ -127,7 +118,7 @@ function SelectField(props: SelectProps): ReactElement {
 // Date/time fields. The field value is the API's RFC3339 string (or null); the
 // Mantine picker-format conversion is hidden here, and `valueFormat="L LT"` shows
 // a locale-aware date instead of a hard-coded display pattern.
-function DateTimeField(props: DateTimePickerProps): ReactElement {
+export function DateTimeField(props: DateTimePickerProps): ReactElement {
   const field = useFieldContext<string | null>();
   return (
     <DateTimePicker
@@ -147,7 +138,7 @@ function DateTimeField(props: DateTimePickerProps): ReactElement {
 // Numeric fields (ids, counters). The generated inputs type these as
 // `number | null`, and Mantine reports a cleared input as ""  — map that back
 // to null so a blank field submits the contract's null, not zero.
-function NumberField(props: NumberInputProps): ReactElement {
+export function NumberField(props: NumberInputProps): ReactElement {
   const field = useFieldContext<number | null>();
   return (
     <NumberInput
@@ -164,7 +155,7 @@ function NumberField(props: NumberInputProps): ReactElement {
 
 // Boolean flags. Nullable contract booleans render as unchecked; toggling
 // always submits a real boolean (legacy forms never sent null for checkboxes).
-function CheckboxField(props: CheckboxProps): ReactElement {
+export function CheckboxField(props: CheckboxProps): ReactElement {
   const field = useFieldContext<boolean | null>();
   return (
     <Checkbox
@@ -181,7 +172,7 @@ function CheckboxField(props: CheckboxProps): ReactElement {
 
 // String-array fields (e.g. a staff member's allowed locales). The value IS the
 // contract's string[]; callers pass Mantine's `data` option list.
-function MultiSelectField(props: MultiSelectProps): ReactElement {
+export function MultiSelectField(props: MultiSelectProps): ReactElement {
   const field = useFieldContext<string[]>();
   return (
     <MultiSelect
@@ -200,7 +191,7 @@ function MultiSelectField(props: MultiSelectProps): ReactElement {
 // HTML: tiptap parses it on mount and hands back `getHTML()` on every change,
 // so the form round-trips exactly what the API stores. `immediatelyRender:
 // false` keeps the editor SSR-safe under TanStack Start.
-function RichTextField({ label }: { label: string }): ReactElement {
+export function RichTextField({ label }: { label: string }): ReactElement {
   const field = useFieldContext<string>();
   const editor = useEditor({
     content: field.state.value ?? "",
@@ -246,19 +237,10 @@ function RichTextField({ label }: { label: string }): ReactElement {
   );
 }
 
-// The `onSubmit` of a native `<form>` driven by a TanStack form: stops the browser's
-// own submission and lets the form validate and submit.
-export const submitForm =
-  (form: { handleSubmit: () => Promise<void> }) =>
-  (event: SyntheticEvent): void => {
-    event.preventDefault();
-    void form.handleSubmit();
-  };
-
 // The submit button of a form: busy for as long as the submission runs. The forms
 // await their mutation in `onSubmit`, so the button needs no pending flag handed
 // down from it. Rendered inside `<form.AppForm>`, which supplies the context.
-function SubmitButton({ children, ...props }: ButtonProps): ReactElement {
+export function SubmitButton({ children, ...props }: ButtonProps): ReactElement {
   const form = useFormContext();
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
@@ -270,19 +252,3 @@ function SubmitButton({ children, ...props }: ButtonProps): ReactElement {
     </form.Subscribe>
   );
 }
-
-export const { useAppForm } = createFormHook({
-  fieldComponents: {
-    CheckboxField,
-    DateTimeField,
-    MultiSelectField,
-    NumberField,
-    RichTextField,
-    SelectField,
-    TextField,
-    TextareaField,
-  },
-  fieldContext,
-  formComponents: { SubmitButton },
-  formContext,
-});

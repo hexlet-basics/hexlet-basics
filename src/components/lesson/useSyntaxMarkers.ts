@@ -60,7 +60,9 @@ export function useSyntaxMarkers(
     void check();
     const subscription = model.onDidChangeContent(() => {
       clearTimeout(timer);
-      timer = setTimeout(() => void check(), settleMs);
+      timer = setTimeout(() => {
+        void check();
+      }, settleMs);
     });
 
     return () => {

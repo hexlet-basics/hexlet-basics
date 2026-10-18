@@ -212,28 +212,7 @@ function Show(): ReactElement {
           </Grid>
         )}
 
-        {landingPage?.outcomesHeader && (
-          <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
-            {landingPage.outcomesImage && (
-              <Paper shadow="lg" radius="xl" bg="transparent">
-                <Image
-                  src={landingPage.outcomesImage}
-                  width="100%"
-                  height="auto"
-                  loading="lazy"
-                  alt={t(($) => $.courses.show.learning_preview)}
-                  radius="xl"
-                />
-              </Paper>
-            )}
-            <Box>
-              <Title order={2} size="h1" mb="md">
-                {landingPage.outcomesHeader}
-              </Title>
-              <MarkdownViewer>{landingPage.outcomesDescription ?? ""}</MarkdownViewer>
-            </Box>
-          </SimpleGrid>
-        )}
+        <OutcomesSection landingPage={landingPage} />
 
         <Card withBorder my={{ base: "lg", sm: "xxl" }} p="xl">
           <Group justify="space-between">
@@ -265,33 +244,7 @@ function Show(): ReactElement {
           <LearningProgram view={view} />
         </Box>
 
-        <Box my={{ base: "lg", sm: "xxl" }}>
-          <Title order={2} fz="h1" mb="xl">
-            {t(($) => $.courses.show.about_learning)}
-          </Title>
-          <SimpleGrid cols={{ base: 1, lg: i18n.language === "ru" ? 2 : 1 }}>
-            <Box>
-              <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
-              <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
-              <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
-              <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
-              <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
-              <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
-            </Box>
-            {i18n.language === "ru" && (
-              <Box
-                component="video"
-                h="100%"
-                w="100%"
-                src={learningVideo}
-                autoPlay
-                loop
-                muted
-                playsInline
-              />
-            )}
-          </SimpleGrid>
-        </Box>
+        <AboutLearning />
 
         {/* The demo pitch is for visitors: a signed-in learner already has the
           hero button, and is not being invited to try anything. */}
@@ -311,6 +264,78 @@ function Show(): ReactElement {
         <QnaBlock items={view.qnaItems} />
       </Container>
     </>
+  );
+}
+
+// What the learner takes away from the course: a header and description, with the
+// preview image beside them when the landing page has one.
+function OutcomesSection({
+  landingPage,
+}: {
+  landingPage: CourseView["landingPage"];
+}): ReactElement | null {
+  const { t } = useTranslation();
+
+  if (!landingPage?.outcomesHeader) {
+    return null;
+  }
+
+  return (
+    <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
+      {landingPage.outcomesImage && (
+        <Paper shadow="lg" radius="xl" bg="transparent">
+          <Image
+            src={landingPage.outcomesImage}
+            width="100%"
+            height="auto"
+            loading="lazy"
+            alt={t(($) => $.courses.show.learning_preview)}
+            radius="xl"
+          />
+        </Paper>
+      )}
+      <Box>
+        <Title order={2} size="h1" mb="md">
+          {landingPage.outcomesHeader}
+        </Title>
+        <MarkdownViewer>{landingPage.outcomesDescription ?? ""}</MarkdownViewer>
+      </Box>
+    </SimpleGrid>
+  );
+}
+
+// Why the course is built the way it is; the Russian site also shows the video.
+function AboutLearning(): ReactElement {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <Box my={{ base: "lg", sm: "xxl" }}>
+      <Title order={2} fz="h1" mb="xl">
+        {t(($) => $.courses.show.about_learning)}
+      </Title>
+      <SimpleGrid cols={{ base: 1, lg: i18n.language === "ru" ? 2 : 1 }}>
+        <Box>
+          <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
+          <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
+          <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
+          <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
+          <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
+          <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
+        </Box>
+        {i18n.language === "ru" && (
+          <Box
+            component="video"
+            h="100%"
+            w="100%"
+            src={learningVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        )}
+      </SimpleGrid>
+    </Box>
   );
 }
 

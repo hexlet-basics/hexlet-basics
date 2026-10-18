@@ -365,9 +365,12 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   pedantic, perf, style, restriction) across all plugins, type-aware rules
   included. A rule is switched off only in that file, with a one-line reason
   beside it, and only when it directly contradicts oxfmt or another enabled rule
-  (not because its fix is large). Prefer an option over an off switch. No
-  baseline, no blanket ignore: fix a finding, or show the contradiction. Rules
-  still pending a fix carry a "Pending" reason and are being worked down.
+  (not because its fix is large). Prefer an option over an off switch: the size
+  rules (`max-lines`, `max-lines-per-function`, `max-statements`, `complexity`)
+  run with a threshold, and `no-void` allows `void` as a statement. Two
+  exceptions are not contradictions and say so beside them: the `react-perf`
+  rules (nothing here uses `React.memo`) and `oxc/no-optional-chaining`. No
+  baseline, no blanket ignore: fix a finding, or show the contradiction.
 - `any` is banned (oxlint `typescript/no-explicit-any` plus the type-aware `no-unsafe-*` rules): use `unknown` and narrow, or a precise type.
 - Call the API through the **generated client / Query hooks**, not hand-written
   `fetch`. If an endpoint is missing, add it in TypeSpec and regenerate.
