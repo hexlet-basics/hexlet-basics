@@ -88,7 +88,8 @@ func WithMCPLimits(limits mcpserver.Limits) OAuthOption {
 // OnPool builds the stack over a connection pool of its own instead of the
 // test's rolled-back transaction, so that every write commits and separate
 // requests run in separate transactions. Only a test about concurrent
-// transactions wants it, and it must delete what it committed.
+// transactions wants it; the pool is a clone dropped when the test ends, so
+// there is nothing to delete.
 func OnPool() OAuthOption {
 	return func(o *oauthOptions) { o.onPool = true }
 }

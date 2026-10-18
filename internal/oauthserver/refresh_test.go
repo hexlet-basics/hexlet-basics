@@ -1,7 +1,6 @@
 package oauthserver_test
 
 import (
-	"context"
 	"net/http"
 	"net/url"
 	"sync"
@@ -12,7 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/oauthaccesstoken"
-	"hexletbasics/ent/oauthclient"
 	"hexletbasics/ent/oauthrefreshtoken"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/oauthserver"
@@ -214,8 +212,7 @@ func TestPurgeDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 // children.
 //
 // The client registers itself and the person connects through the real flow;
-// the pool commits all of it, so the client is deleted at the end (its tokens
-// cascade away with it) and nothing of this test is left for the others.
+// the pool commits all of it into a database of the test's own, dropped with it.
 func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.OnPool())
 	res := o.Register(request(func(m map[string]any) {
@@ -224,9 +221,6 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	}))
 	require.Equal(t, http.StatusCreated, res.StatusCode)
 	racer := decodeJSON[registered](t, res)
-	t.Cleanup(func() {
-		_, _ = o.DB.OAuthClient.Delete().Where(oauthclient.ClientID(racer.ClientID)).Exec(context.Background())
-	})
 	flow := o.StartWith(alice, testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: racer.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
 	})
