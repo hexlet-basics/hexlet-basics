@@ -25,8 +25,12 @@ import (
 // processes. Process-specific packages build on this graph and provide the
 // config.Common it reads.
 var commonPackage = do.Package(
-	do.Lazy[*slog.Logger](func(do.Injector) (*slog.Logger, error) {
-		return logging.New(slog.LevelInfo), nil
+	do.Lazy[*slog.Logger](func(i do.Injector) (*slog.Logger, error) {
+		cfg, err := do.Invoke[config.Common](i)
+		if err != nil {
+			return nil, err
+		}
+		return logging.New(cfg.LogLevel()), nil
 	}),
 	do.Lazy[*sentry.Client](func(i do.Injector) (*sentry.Client, error) {
 		cfg, err := do.Invoke[config.Common](i)

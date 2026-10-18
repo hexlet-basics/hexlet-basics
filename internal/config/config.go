@@ -2,6 +2,7 @@
 package config
 
 import (
+	"log/slog"
 	"strings"
 	"time"
 
@@ -55,7 +56,11 @@ type Common struct {
 	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-5.5"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
-	SentryDSN      string `env:"SENTRY_DSN"`
+	SentryDSN string `env:"SENTRY_DSN"`
+	// LogLevelName is the threshold of the application log (ADR-0025). Only the
+	// four names are accepted: slog.Level would also parse "INFO+2" and numbers,
+	// which no operator needs.
+	LogLevelName   string `env:"LOG_LEVEL" envDefault:"info" validate:"oneof=debug info warn error"`
 	ReleaseVersion string `env:"HEXLET_BASICS_RELEASE_VERSION"`
 }
 
@@ -228,6 +233,16 @@ type MailConfig struct {
 
 // PostboxEnabled reports whether real delivery is configured.
 func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
+
+// LogLevel is the slog threshold LOG_LEVEL names; validation has already
+// restricted it to the four known names.
+func (c *Common) LogLevel() slog.Level {
+	var level slog.Level
+	if err := level.UnmarshalText([]byte(c.LogLevelName)); err != nil {
+		return slog.LevelInfo
+	}
+	return level
+}
 
 // SecureCookies reports whether the site is served over https, which is when
 // cookies are marked Secure.

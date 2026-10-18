@@ -99,7 +99,7 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 		if userID, err := strconv.Atoi(info.UserID); err == nil && userID > 0 {
 			names, err := s.deps.Capabilities.HeldCapabilities(ctx, userID)
 			if err != nil {
-				s.deps.Logger.ErrorContext(ctx, "read capabilities for the MCP tool list", slog.Any("error", err))
+				s.deps.Logger.ErrorContext(ctx, "read capabilities for the MCP tool list", slog.Any("err", err))
 			} else {
 				held = map[string]bool{}
 				for _, name := range names {
