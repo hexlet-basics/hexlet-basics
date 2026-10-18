@@ -10,7 +10,7 @@ describe("apiError", () => {
     const error = apiErrorOf({ errors: { email: ["taken"] } }, response);
 
     expect(error).toBeInstanceOf(ApiError);
-    expect(error).toMatchObject({ status: 422, body: { errors: { email: ["taken"] } } });
+    expect(error).toMatchObject({ body: { errors: { email: ["taken"] } }, status: 422 });
   }, 60_000);
 
   it("leaves a failure with no response, a network error, as it was", () => {

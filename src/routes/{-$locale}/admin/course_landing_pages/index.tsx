@@ -24,9 +24,9 @@ function CourseLandingPagesList() {
 
   const list = useCrudList({
     list: adminListCourseLandingPagesOptions,
-    searchable: true,
     listKey: adminListCourseLandingPagesQueryKey,
     remove: adminDeleteCourseLandingPageMutation,
+    searchable: true,
   });
 
   const columns: CrudColumnDef<CourseLandingPage>[] = [
@@ -44,24 +44,24 @@ function CourseLandingPagesList() {
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.course_landing_page.state),
       cell: ({ row }) => {
         const { state } = row.original;
         return state
           ? t(($) => $.models.attributes.course_landing_page["state/values"][state])
           : "";
       },
+      header: t(($) => $.models.attributes.course_landing_page.state),
     },
     {
-      id: "main",
-      header: t(($) => $.models.attributes.course_landing_page.main),
       cell: ({ row }) => (row.original.main ? "✓" : ""),
+      header: t(($) => $.models.attributes.course_landing_page.main),
+      id: "main",
     },
     list.actionsColumn({
+      describe: (row) => row.name,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/course_landing_pages/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.name,
     }),
   ];
 

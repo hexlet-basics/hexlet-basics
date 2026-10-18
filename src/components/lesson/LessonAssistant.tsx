@@ -164,27 +164,27 @@ function AssistantChat({
   const { lesson } = view;
   const historyKey = listAssistantMessagesQueryKey({ path: { lessonId: lesson.id } });
   const [code] = useLocalStorage({
-    key: lessonCodeKey(lesson.course.slug, lesson.slug),
     defaultValue: lesson.preparedCode ?? "",
     getInitialValueInEffect: false,
+    key: lessonCodeKey(lesson.course.slug, lesson.slug),
   });
   const [input, setInput] = useState("");
 
   const { messages, sendMessage, status, error } = useChat({
     id: `lesson-${lesson.id}`,
     messages: chat.messages.map(toUIMessage),
-    transport: assistantTransport(lesson.id),
-    // Re-read the history's quota flag after every exchange: the answer that
-    // used up today's last question is what switches the panel off.
-    onFinish: () => {
-      void queryClient.invalidateQueries({ queryKey: historyKey });
-    },
     onError: (failure) => {
       if (isQuotaExceeded(failure)) {
         return;
       }
       notifications.show({ message: t(($) => $.common.errors.network) });
     },
+    // Re-read the history's quota flag after every exchange: the answer that
+    // used up today's last question is what switches the panel off.
+    onFinish: () => {
+      void queryClient.invalidateQueries({ queryKey: historyKey });
+    },
+    transport: assistantTransport(lesson.id),
   });
 
   const busy = status === "submitted" || status === "streaming";
@@ -200,7 +200,7 @@ function AssistantChat({
 
     // The editor state travels with each question, read at the moment it is
     // asked rather than when the chat was created.
-    void sendMessage({ text }, { body: { userCode: code, output } });
+    void sendMessage({ text }, { body: { output, userCode: code } });
     setInput("");
   };
 
@@ -278,14 +278,6 @@ function stringOrNull(value: unknown): string | null {
 
 function assistantTransport(lessonId: number) {
   return new TextStreamChatTransport<UIMessage>({
-    prepareSendMessagesRequest: ({ messages, body }) => {
-      const input: AssistantMessageInput = {
-        message: textOf(messages.at(-1)),
-        userCode: stringOrNull(body?.userCode),
-        output: stringOrNull(body?.output),
-      };
-      return { body: input };
-    },
     fetch: async (_url, init) => {
       // The AI SDK serializes the prepared body to a JSON string.
       if (typeof init?.body !== "string") {
@@ -293,9 +285,9 @@ function assistantTransport(lessonId: number) {
       }
       try {
         const { data, response } = await createAssistantMessage({
-          path: { lessonId },
           body: JSON.parse(init.body) as AssistantMessageInput,
           parseAs: "stream",
+          path: { lessonId },
           signal: init?.signal ?? undefined,
           throwOnError: true,
         });
@@ -309,6 +301,14 @@ function assistantTransport(lessonId: number) {
         throw error;
       }
     },
+    prepareSendMessagesRequest: ({ messages, body }) => {
+      const input: AssistantMessageInput = {
+        message: textOf(messages.at(-1)),
+        output: stringOrNull(body?.output),
+        userCode: stringOrNull(body?.userCode),
+      };
+      return { body: input };
+    },
   });
 }
 
@@ -319,8 +319,8 @@ function isQuotaExceeded(error: unknown): boolean {
 function toUIMessage(message: LessonAssistantMessage): UIMessage {
   return {
     id: String(message.id),
+    parts: [{ text: message.content, type: "text" }],
     role: message.role === "user" ? "user" : "assistant",
-    parts: [{ type: "text", text: message.content }],
   };
 }
 

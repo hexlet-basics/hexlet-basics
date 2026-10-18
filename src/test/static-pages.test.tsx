@@ -17,7 +17,7 @@ const MIN_BODY_LENGTH = 500;
 // read: the body, the head, and which page answers.
 
 function renderPage(initialPath: string, locale?: "ru" | "es") {
-  return renderRoute(pageRoute, { path: "/{-$locale}/pages/$id", initialPath, locale });
+  return renderRoute(pageRoute, { initialPath, locale, path: "/{-$locale}/pages/$id" });
 }
 
 describe("static pages", () => {
@@ -25,15 +25,15 @@ describe("static pages", () => {
     expect.hasAssertions();
     const { router } = await renderPage("/pages/about");
 
-    await expect.element(page.getByRole("heading", { name: "About", level: 1 })).toBeVisible();
+    await expect.element(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
     await expect.element(page.getByRole("heading", { name: "What is Code Basics?" })).toBeVisible();
 
     const match = router.state.matches.at(-1);
     expect(match?.meta).toContainEqual({ title: "CodeBasics | About" });
-    expect(match?.meta).toContainEqual({ name: "twitter:card", content: "summary" });
+    expect(match?.meta).toContainEqual({ content: "summary", name: "twitter:card" });
     expect(match?.links).toContainEqual({
-      rel: "canonical",
       href: `${globalThis.location.origin}/pages/about`,
+      rel: "canonical",
     });
   }, 60_000);
 
@@ -53,7 +53,7 @@ describe("static pages", () => {
     expect.hasAssertions();
     await renderPage("/es/pages/about", "es");
 
-    await expect.element(page.getByRole("heading", { name: "About", level: 1 })).toBeVisible();
+    await expect.element(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
     await expect
       .element(page.getByRole("heading", { name: "Что такое Code Basics" }))
       .toBeVisible();
@@ -77,9 +77,9 @@ describe("static pages", () => {
   it("the teachers' case asks a visitor to sign up and is its own canonical", async () => {
     expect.hasAssertions();
     const { router } = await renderRoute(forTeachersRoute, {
-      path: "/{-$locale}/cases/for_teachers",
       initialPath: "/ru/cases/for_teachers",
       locale: "ru",
+      path: "/{-$locale}/cases/for_teachers",
     });
 
     await expect
@@ -98,17 +98,17 @@ describe("static pages", () => {
       title: "CodeBasics | Обучение программированию школьников и студентов",
     });
     expect(match?.links).toContainEqual({
-      rel: "canonical",
       href: `${globalThis.location.origin}/ru/cases/for_teachers`,
+      rel: "canonical",
     });
   }, 60_000);
 
   it("the cases list links to the teachers' case", async () => {
     expect.hasAssertions();
     await renderRoute(casesRoute, {
-      path: "/{-$locale}/cases/",
       initialPath: "/ru/cases/",
       locale: "ru",
+      path: "/{-$locale}/cases/",
     });
 
     await expect
@@ -118,7 +118,7 @@ describe("static pages", () => {
 
   it("the cases answer only in ru", async () => {
     expect.hasAssertions();
-    await renderRoute(casesRoute, { path: "/{-$locale}/cases/", initialPath: "/cases/" });
+    await renderRoute(casesRoute, { initialPath: "/cases/", path: "/{-$locale}/cases/" });
 
     await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
   }, 60_000);
@@ -132,8 +132,8 @@ describe("static pages", () => {
     );
 
     await renderRoute(postRoute, {
-      path: "/{-$locale}/blog_posts/$slug",
       initialPath: "/blog_posts/hello-world",
+      path: "/{-$locale}/blog_posts/$slug",
     });
 
     await expect.element(page.getByRole("heading", { name: "Server Error" })).toBeVisible();

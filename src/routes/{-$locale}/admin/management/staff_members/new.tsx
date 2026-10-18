@@ -24,12 +24,12 @@ function NewStaffMember() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateStaffMemberMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListStaffMembersQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateStaffMemberMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

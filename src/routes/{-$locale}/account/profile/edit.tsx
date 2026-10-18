@@ -15,7 +15,7 @@ import type { ProfileInput } from "@/client/types.gen";
 import { zProfileInput } from "@/client/zod.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
 
 // The signed-in user's profile, ported from legacy account/profiles#edit
@@ -26,16 +26,19 @@ export const Route = createFileRoute("/{-$locale}/account/profile/edit")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+
   loader: ({ context }) => context.queryClient.query(getProfileOptions()),
+
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {
       meta: [
         { title: t(($) => $.account.profiles.edit.title) },
-        { name: "description", content: t(($) => $.account.profiles.edit.meta.description) },
+        { content: t(($) => $.account.profiles.edit.meta.description), name: "description" },
       ],
     };
   },
+
   component: Edit,
 });
 
@@ -44,12 +47,12 @@ function Edit() {
   const profile = Route.useLoaderData();
 
   const update = useResourceMutation({
-    mutation: updateProfileMutation(),
+    errorMessage: t(($) => $.flash.account.profiles.update.error),
     fieldErrors: true,
     // The header shows the user's name from the current-user query.
     invalidate: [getProfileQueryKey(), getCurrentUserQueryKey()],
+    mutation: updateProfileMutation(),
     successMessage: t(($) => $.flash.account.profiles.update.success),
-    errorMessage: t(($) => $.flash.account.profiles.update.error),
   });
 
   const form = useAppForm({
@@ -71,7 +74,7 @@ function Edit() {
         </Title>
 
         <Center w="100%">
-          <Card shadow="sm" withBorder p="xl" w={{ base: "100%", xs: "70%", sm: "50%" }}>
+          <Card shadow="sm" withBorder p="xl" w={{ base: "100%", sm: "50%", xs: "70%" }}>
             <Stack component="form" onSubmit={submitForm(form)}>
               <form.AppField name="firstName">
                 {(field) => (
@@ -116,6 +119,11 @@ function DeleteAccount() {
 
   const mutation = useMutation({
     ...deleteAccountMutation(),
+    onError: () =>
+      notifications.show({
+        color: "red",
+        message: t(($) => $.flash.account.profiles.destroy.error),
+      }),
     onSuccess: () => {
       queryClient.setQueryData(getCurrentUserQueryKey(), { user: null });
       queryClient.removeQueries({ queryKey: getProfileQueryKey() });
@@ -125,22 +133,17 @@ function DeleteAccount() {
       });
       void navigate({ to: "/{-$locale}" });
     },
-    onError: () =>
-      notifications.show({
-        color: "red",
-        message: t(($) => $.flash.account.profiles.destroy.error),
-      }),
   });
 
   const confirm = () =>
     modals.openConfirmModal({
       centered: true,
-      title: t(($) => $.common.confirm),
       labels: {
-        confirm: t(($) => $.common.boolean.yes),
         cancel: t(($) => $.common.boolean.no),
+        confirm: t(($) => $.common.boolean.yes),
       },
       onConfirm: () => mutation.mutate({}),
+      title: t(($) => $.common.confirm),
     });
 
   return (

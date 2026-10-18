@@ -11,33 +11,33 @@ import { renderRoute } from "@/test/renderRoute";
 // the confirmation, and what the API sees is the post it was asked about.
 
 const author: User = {
-  id: 1,
-  firstName: "Alice",
-  lastName: null,
-  name: "Alice",
-  email: "alice@example.com",
   admin: true,
-  canAccessAdmin: true,
   assistantMessagesCount: null,
+  canAccessAdmin: true,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "alice@example.com",
+  firstName: "Alice",
+  id: 1,
+  lastName: null,
+  name: "Alice",
   type: "user",
 };
 
 const post: BlogPost = {
-  id: 10,
-  creator: author,
-  name: "Hello world",
-  slug: "hello-world",
-  description: "The very first post",
-  state: "published",
-  locale: "ru",
-  richBodyHtml: "<p>Hello world</p>",
-  readingTime: 0,
-  likesCount: 0,
-  relatedCourseIds: [],
   coverUrl: null,
   createdAt: "2026-01-01T00:00:00Z",
+  creator: author,
+  description: "The very first post",
+  id: 10,
+  likesCount: 0,
+  locale: "ru",
+  name: "Hello world",
+  readingTime: 0,
+  relatedCourseIds: [],
+  richBodyHtml: "<p>Hello world</p>",
+  slug: "hello-world",
+  state: "published",
 };
 
 const courses: CourseOption[] = [];
@@ -56,8 +56,8 @@ describe("suggest related courses", () => {
     );
 
     await renderRoute(editRoute, {
-      path: "/{-$locale}/admin/blog_posts/$id",
       initialPath: "/admin/blog_posts/10",
+      path: "/{-$locale}/admin/blog_posts/$id",
       user: author,
     });
 

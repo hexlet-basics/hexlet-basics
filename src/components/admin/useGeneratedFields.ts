@@ -28,12 +28,12 @@ function labelFor(i18n: I18n, key: string): string {
 }
 
 const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {
-  text: undefined,
-  select: "select",
-  datetime: "datetime",
   boolean: "checkbox",
-  number: "number",
+  datetime: "datetime",
   multiselect: "multiselect",
+  number: "number",
+  select: "select",
+  text: undefined,
 };
 
 // Turns the generated descriptors of a resource into the field list CrudForm
@@ -52,8 +52,8 @@ export function useGeneratedFields<T>(
     .filter((descriptor) => !hidden.has(descriptor.name))
     .map((descriptor): CrudFieldSpec<T> => {
       const spec: CrudFieldSpec<T> = {
-        name: descriptor.name as keyof T & string,
         label: label(descriptor.labelKey),
+        name: descriptor.name as keyof T & string,
       };
       const type = widgets[descriptor.kind];
       if (type) {
@@ -64,8 +64,8 @@ export function useGeneratedFields<T>(
       }
       if (descriptor.enumValues) {
         spec.options = descriptor.enumValues.map((option) => ({
-          value: option.value,
           label: label(option.labelKey),
+          value: option.value,
         }));
       }
       return Object.assign(spec, overrides.set?.[spec.name]);

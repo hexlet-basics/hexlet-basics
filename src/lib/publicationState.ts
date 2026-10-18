@@ -9,9 +9,9 @@ export type PublicationState = "draft" | "published" | "archived";
 export type StateTransition = "publish" | "unpublish" | "archive";
 
 const transitionSources: Record<StateTransition, PublicationState[]> = {
+  archive: ["draft", "published"],
   publish: ["draft", "archived"],
   unpublish: ["published"],
-  archive: ["draft", "published"],
 };
 
 export function transitionsFrom(state: PublicationState): StateTransition[] {

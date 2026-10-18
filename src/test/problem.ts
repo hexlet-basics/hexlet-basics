@@ -7,10 +7,10 @@ import { HttpResponse } from "msw";
 export const validationProblem = (errors: Record<string, string[]>) =>
   HttpResponse.json(
     {
-      type: "about:blank",
-      title: "Unprocessable Entity",
-      status: 422,
       errors,
+      status: 422,
+      title: "Unprocessable Entity",
+      type: "about:blank",
     },
-    { status: 422, headers: { "Content-Type": "application/problem+json" } },
+    { headers: { "Content-Type": "application/problem+json" }, status: 422 },
   );

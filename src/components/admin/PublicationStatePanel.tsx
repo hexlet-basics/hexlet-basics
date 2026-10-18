@@ -30,9 +30,9 @@ export function PublicationStatePanel({
 }) {
   const { t } = useTranslation();
   const actions: Record<StateTransition, { label: string; color: string }> = {
-    publish: { label: t(($) => $.admin.publicationState.publish), color: "green" },
-    unpublish: { label: t(($) => $.admin.publicationState.unpublish), color: "gray" },
-    archive: { label: t(($) => $.admin.publicationState.archive), color: "red" },
+    archive: { color: "red", label: t(($) => $.admin.publicationState.archive) },
+    publish: { color: "green", label: t(($) => $.admin.publicationState.publish) },
+    unpublish: { color: "gray", label: t(($) => $.admin.publicationState.unpublish) },
   };
 
   return (

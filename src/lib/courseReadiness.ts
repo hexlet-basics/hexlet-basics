@@ -11,9 +11,9 @@ import type { CourseReadiness } from "@/client/types.gen";
 export type ReadinessTransition = "markDraft" | "markInDevelopment" | "markCompleted";
 
 export const readinessTarget: Record<ReadinessTransition, CourseReadiness> = {
+  markCompleted: "completed",
   markDraft: "draft",
   markInDevelopment: "in_development",
-  markCompleted: "completed",
 };
 
 // A Course with no readiness (nullable in the legacy schema) counts as a draft,

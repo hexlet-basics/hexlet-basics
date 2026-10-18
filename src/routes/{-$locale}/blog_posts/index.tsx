@@ -13,20 +13,20 @@ import { seoHead } from "@/lib/seo-head";
 // out, so page one is all a visitor could reach. The loader prefetches it so the
 // posts are in the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/blog_posts/")({
-  loader: ({ context }) =>
-    context.queryClient.query({ ...listBlogPostsOptions(), staleTime: "static" }),
+  component: Index,
   // Legacy meta: the header as title, the blog description, the canonical link
   // and the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.blog_posts.index.meta.description),
       i18n,
       title: i18n.t(($) => $.blog_posts.index.header),
-      description: i18n.t(($) => $.blog_posts.index.meta.description),
-      canonicalPath: match.pathname,
     });
   },
-  component: Index,
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listBlogPostsOptions(), staleTime: "static" }),
 });
 
 function Index() {

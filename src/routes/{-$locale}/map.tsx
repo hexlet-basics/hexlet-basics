@@ -23,14 +23,14 @@ export const Route = createFileRoute("/{-$locale}/map")({
       throw notFound();
     }
   },
-  loader: ({ context }) =>
-    context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
+  component: SitemapPage,
   // Legacy set the title alone: no description, canonical or social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
-    return seoHead({ i18n, title: i18n.t(($) => $.home.sitemap.title), social: false });
+    return seoHead({ i18n, social: false, title: i18n.t(($) => $.home.sitemap.title) });
   },
-  component: SitemapPage,
+  loader: ({ context }) =>
+    context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
 });
 
 function SitemapPage() {

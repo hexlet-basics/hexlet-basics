@@ -30,9 +30,9 @@ const LOCALE_COOKIE_MAX_AGE = SECONDS_PER_YEAR;
 export const rememberLocale = createIsomorphicFn()
   .server((locale: Locale): void => {
     setCookie(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: LOCALE_COOKIE_MAX_AGE,
       httpOnly: true,
+      maxAge: LOCALE_COOKIE_MAX_AGE,
+      path: "/",
       sameSite: "lax",
     });
   })

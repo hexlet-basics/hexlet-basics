@@ -9,20 +9,20 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // get no field.
 
 export const emptyCourse: CourseInput = {
-  slug: "",
-  learnAs: null,
-  hexletProgramLandingPage: "",
-  repositoryUrl: null,
   coverAttachmentId: null,
+  hexletProgramLandingPage: "",
+  learnAs: null,
+  repositoryUrl: null,
+  slug: "",
 };
 
 export function courseToForm(course: Course): CourseInput {
   return {
-    slug: course.slug,
-    learnAs: course.learnAs,
-    hexletProgramLandingPage: course.hexletProgramLandingPage ?? "",
-    repositoryUrl: null,
     coverAttachmentId: null,
+    hexletProgramLandingPage: course.hexletProgramLandingPage ?? "",
+    learnAs: course.learnAs,
+    repositoryUrl: null,
+    slug: course.slug,
   };
 }
 

@@ -42,9 +42,9 @@ function LeadsList() {
       header: t(($) => $.models.attributes.lead.telegram),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

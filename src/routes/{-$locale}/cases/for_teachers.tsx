@@ -33,22 +33,22 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
       throw notFound();
     }
   },
+  component: ForTeachers,
   // Legacy meta: title, the description cut as Rails `truncate(160)` cut it,
   // and the social tags. Legacy pointed the canonical at the book page by
   // mistake; it is the page's own URL here.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
-      i18n,
-      title: i18n.t(($) => $.cases.for_teachers.title),
+      canonicalPath: match.pathname,
       description: truncate(
         i18n.t(($) => $.cases.for_teachers.meta.description),
         META_DESCRIPTION_LENGTH,
       ),
-      canonicalPath: match.pathname,
+      i18n,
+      title: i18n.t(($) => $.cases.for_teachers.title),
     });
   },
-  component: ForTeachers,
 });
 
 // Rails String#truncate: at most `length` characters, the "..." omission
@@ -131,10 +131,10 @@ function ForTeachers() {
             muted
             playsInline
             style={{
-              width: "100%",
-              height: "60%",
               borderRadius: "var(--mantine-radius-md)",
+              height: "60%",
               objectFit: "cover",
+              width: "100%",
             }}
           />
         </Box>

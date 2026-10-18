@@ -21,6 +21,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+  component: Success,
   loader: async ({ context, params }) => {
     try {
       const view = await context.queryClient.query(
@@ -28,27 +29,26 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
       );
       if (view.movedTo) {
         throw redirect({
-          to: "/{-$locale}/languages/$slug/success",
           params: { ...params, slug: view.movedTo },
           statusCode: 301,
+          to: "/{-$locale}/languages/$slug/success",
         });
       }
       if (view.enrollment?.state !== "finished") {
         throw redirect({
-          to: "/{-$locale}/languages/$slug",
           params,
           search: { unfinished: true },
+          to: "/{-$locale}/languages/$slug",
         });
       }
     } catch (error) {
       // Legacy sent an unknown course to the catalog.
       if (isApiError(error, HTTP_NOT_FOUND)) {
-        throw redirect({ to: "/{-$locale}/languages", params: { locale: params.locale } });
+        throw redirect({ params: { locale: params.locale }, to: "/{-$locale}/languages" });
       }
       throw error;
     }
   },
-  component: Success,
 });
 
 function Success() {
@@ -56,7 +56,7 @@ function Success() {
   const { slug } = Route.useParams();
   const { data } = useQuery(getCourseOptions({ path: { slug } }));
 
-  const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+  const external = { rel: "noopener noreferrer", target: "_blank" } as const;
   const careerLink = (
     <Anchor href={t(($) => $.links.hexlet_courses_for_beginners_after_course)} {...external} />
   );

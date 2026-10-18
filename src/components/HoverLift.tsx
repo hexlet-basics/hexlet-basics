@@ -22,15 +22,15 @@ export function HoverLift({
       {...props}
       bdrs={16}
       whileHover={{
-        y: -lift,
-        scale: hoverScale,
         boxShadow: "0 18px 45px rgba(0,0,0,0.14)",
+        scale: hoverScale,
+        y: -lift,
         ...(whileHover as object),
       }}
       transition={{
-        type: "spring",
-        stiffness: 500,
         damping: 35,
+        stiffness: 500,
+        type: "spring",
         ...transition,
       }}
     />

@@ -9,28 +9,28 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 function openLink(token: string) {
   return renderRoute(consumeRoute, {
-    path: "/{-$locale}/magic_links/$token",
     initialPath: `/ru/magic_links/${token}`,
+    path: "/{-$locale}/magic_links/$token",
   });
 }
 
 function openRequestForm(initialPath = "/magic_links/new") {
-  return renderRoute(requestRoute, { path: "/{-$locale}/magic_links/new", initialPath });
+  return renderRoute(requestRoute, { initialPath, path: "/{-$locale}/magic_links/new" });
 }
 
 describe("magic link", () => {

@@ -17,20 +17,20 @@ describe("create course category", () => {
       http.post("*/admin/course_categories", async ({ request }) => {
         received = (await request.json()) as CourseCategoryInput;
         return HttpResponse.json({
-          id: 1,
-          name: "Frontend",
-          header: "Frontend courses",
-          slug: "frontend",
-          description: null,
-          locale: "en",
           createdAt: "2026-01-01T00:00:00Z",
+          description: null,
+          header: "Frontend courses",
+          id: 1,
+          locale: "en",
+          name: "Frontend",
+          slug: "frontend",
         });
       }),
     );
 
     const { router } = await renderRoute(Route, {
-      path: "/{-$locale}/admin/course_categories/new",
       initialPath: "/admin/course_categories/new",
+      path: "/{-$locale}/admin/course_categories/new",
       user: admin,
     });
 
@@ -41,8 +41,8 @@ describe("create course category", () => {
 
     await expect.element(page.getByText("Record created")).toBeVisible();
     expect(received).toMatchObject({
-      name: "Frontend",
       header: "Frontend courses",
+      name: "Frontend",
       slug: "frontend",
     });
     await expect.poll(() => router.state.location.pathname).toBe("/admin/course_categories");

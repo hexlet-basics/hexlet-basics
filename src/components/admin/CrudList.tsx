@@ -58,13 +58,13 @@ export function CrudList<T extends RowData>({
   const pages = pageCount(total, pagination.pageSize);
 
   const table = useTable({
-    features,
-    data,
     columns,
-    state: { pagination },
+    data,
+    features,
     manualPagination: true,
-    pageCount: pages,
     onPaginationChange,
+    pageCount: pages,
+    state: { pagination },
   });
 
   // Three states of the body, as early returns instead of a nested ternary.

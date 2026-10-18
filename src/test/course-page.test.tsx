@@ -31,50 +31,50 @@ const FINISHED_LESSONS = 3;
 // marks in the lesson list, the one button — and the requests pressing it made.
 
 const course: Course = {
-  id: 1,
-  slug: "javascript",
-  name: "javascript",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: 99,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 1234,
-  lessonsCount: 3,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: 99,
+  enrollmentsCount: 1234,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 3,
+  name: "javascript",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: null,
+  repositoryUrl: null,
+  slug: "javascript",
 };
 
 const landingPage: CourseLandingPage = {
-  id: 10,
   courseId: 1,
   courseSlug: "javascript",
   createdAt: "2026-01-01T00:00:00Z",
-  slug: "javascript-ru",
-  name: "JavaScript",
-  main: true,
-  listed: true,
-  state: "published",
-  order: null,
-  footer: true,
-  footerName: null,
-  landingPageToRedirectId: null,
-  metaTitle: "JavaScript course",
-  metaDescription: "Learn JavaScript",
-  header: "JavaScript course",
   description: "Learn JavaScript in the browser",
-  usedInHeader: "Where JavaScript is used",
-  usedInDescription: "Browsers, servers and everything in between",
-  outcomesHeader: null,
-  outcomesDescription: null,
-  outcomesImage: null,
   duration: 10,
   enrollmentsCount: 0,
+  footer: true,
+  footerName: null,
+  header: "JavaScript course",
+  id: 10,
+  landingPageToRedirectId: null,
+  listed: true,
+  main: true,
+  metaDescription: "Learn JavaScript",
+  metaTitle: "JavaScript course",
+  name: "JavaScript",
+  order: null,
+  outcomesDescription: null,
+  outcomesHeader: null,
+  outcomesImage: null,
+  slug: "javascript-ru",
+  state: "published",
+  usedInDescription: "Browsers, servers and everything in between",
+  usedInHeader: "Where JavaScript is used",
 };
 
 // One standing, as the server sends it: the course's own progress, and which of
@@ -84,33 +84,33 @@ interface Standing {
   finished: string[];
 }
 
-const lessonRef = (id: number, slug: string, name: string): LessonRef => ({ id, slug, name });
+const lessonRef = (id: number, slug: string, name: string): LessonRef => ({ id, name, slug });
 
 // The course's lessons in course order, each marked or not.
 const lessonRows = (finished: string[]): LearnerLesson[] => [
   {
+    description: null,
+    finished: finished.includes("hello-world"),
     id: 1001,
     name: "Hello, World!",
-    description: null,
-    slug: "hello-world",
     position: 1,
-    finished: finished.includes("hello-world"),
+    slug: "hello-world",
   },
   {
+    description: null,
+    finished: finished.includes("variables"),
     id: 1002,
     name: "Variables",
-    description: null,
-    slug: "variables",
     position: 2,
-    finished: finished.includes("variables"),
+    slug: "variables",
   },
   {
+    description: null,
+    finished: finished.includes("strings"),
     id: 1003,
     name: "Strings",
-    description: null,
-    slug: "strings",
     position: 3,
-    finished: finished.includes("strings"),
+    slug: "strings",
   },
 ];
 
@@ -119,28 +119,28 @@ const lessonRows = (finished: string[]): LearnerLesson[] => [
 
 // Has finished the first lesson: the second is next.
 const midCourse: Standing = {
+  finished: ["hello-world"],
   progress: {
-    state: "started",
     completion: 33,
     nextLesson: lessonRef(VARIABLES_ID, "variables", "Variables"),
+    state: "started",
   },
-  finished: ["hello-world"],
 };
 
 // Has finished everything: there is no Next Lesson.
 const finished: Standing = {
-  progress: { state: "finished", completion: 100, nextLesson: null },
   finished: ["hello-world", "variables", "strings"],
+  progress: { completion: 100, nextLesson: null, state: "finished" },
 };
 
 // Has never been here: nothing finished, the first lesson is next.
 const firstVisit: Standing = {
+  finished: [],
   progress: {
-    state: null,
     completion: 0,
     nextLesson: lessonRef(HELLO_WORLD_ID, "hello-world", "Hello, World!"),
+    state: null,
   },
-  finished: [],
 };
 
 // `enrolled` is a learner who has started the course: only they have a completion
@@ -148,27 +148,27 @@ const firstVisit: Standing = {
 function courseView(standing: Standing, enrolled = false): CourseView {
   return {
     course,
+    enrollment: enrolled ? { courseId: course.id, id: 1, state: "started", userId: 7 } : null,
     landingPage,
-    movedTo: null,
     lessons: lessonRows(standing.finished),
     modules: [],
-    qnaItems: [],
-    enrollment: enrolled ? { id: 1, userId: 7, courseId: course.id, state: "started" } : null,
+    movedTo: null,
     progress: standing.progress,
+    qnaItems: [],
   };
 }
 
 const learner: AuthUser = {
-  id: 7,
-  firstName: "Ada",
-  lastName: null,
-  name: "Ada",
-  email: "ada@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "ada@example.com",
+  firstName: "Ada",
+  id: 7,
+  lastName: null,
+  name: "Ada",
   type: "user",
 };
 
@@ -191,13 +191,13 @@ async function renderCourse(
   );
 
   const rendered = await renderRoute(courseRoute, {
-    path: "/{-$locale}/languages/$slug",
     initialPath,
+    path: "/{-$locale}/languages/$slug",
     user,
     // The lesson player beside it, for a test that follows the button into the
     // lesson; it divides a real height, so it gets one.
     ...(withPlayer && {
-      also: [{ route: lessonRoute, path: "/{-$locale}/languages/$slug/lessons/$lessonSlug" }],
+      also: [{ path: "/{-$locale}/languages/$slug/lessons/$lessonSlug", route: lessonRoute }],
       wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
     }),
   });
@@ -220,34 +220,34 @@ function lessonNames() {
 // the marks are what the pass the start followed has changed.
 function variablesView(standing: Standing): CourseLessonView {
   return {
-    lesson: {
-      course,
-      id: 1002,
-      name: "Variables",
-      slug: "variables",
-      locale: "en",
-      naturalOrder: 2,
-      versionId: 99,
-      version: 99,
-      description: null,
-      instructions: "Assign a variable.",
-      theory: "A variable is a name bound to a value.",
-      definitions: [],
-      tips: [],
-      preparedCode: "",
-      originalCode: "",
-      testCode: "",
-      exerciseExtension: null,
-      testExtension: null,
-      sourceCodeUrl: null,
-      createdAt: "2026-01-01T00:00:00Z",
+    adjacent: {
+      next: lessonRef(STRINGS_ID, "strings", "Strings"),
+      previous: lessonRef(HELLO_WORLD_ID, "hello-world", "Hello, World!"),
     },
     landingPage,
-    lessons: lessonRows(standing.finished),
-    adjacent: {
-      previous: lessonRef(HELLO_WORLD_ID, "hello-world", "Hello, World!"),
-      next: lessonRef(STRINGS_ID, "strings", "Strings"),
+    lesson: {
+      course,
+      createdAt: "2026-01-01T00:00:00Z",
+      definitions: [],
+      description: null,
+      exerciseExtension: null,
+      id: 1002,
+      instructions: "Assign a variable.",
+      locale: "en",
+      name: "Variables",
+      naturalOrder: 2,
+      originalCode: "",
+      preparedCode: "",
+      slug: "variables",
+      sourceCodeUrl: null,
+      testCode: "",
+      testExtension: null,
+      theory: "A variable is a name bound to a value.",
+      tips: [],
+      version: 99,
+      versionId: 99,
     },
+    lessons: lessonRows(standing.finished),
     progress: standing.progress,
   };
 }
@@ -312,19 +312,19 @@ describe("course page", () => {
       ...courseView(midCourse),
       modules: [
         {
-          id: 1,
-          name: "Basics",
           description: "The first program and variables.",
+          id: 1,
           lessons: lessonRows(midCourse.finished).slice(0, 2),
+          name: "Basics",
         },
         {
-          id: 3,
-          name: "Text",
           description: "Working with strings.",
+          id: 3,
           lessons: lessonRows(midCourse.finished).slice(2),
+          name: "Text",
         },
       ],
-      qnaItems: [{ id: 8001, question: "Is it free?", answer: "Yes, **entirely**." }],
+      qnaItems: [{ answer: "Yes, **entirely**.", id: 8001, question: "Is it free?" }],
     };
     worker.use(http.get("*/languages/javascript", () => HttpResponse.json(view)));
 
@@ -372,8 +372,8 @@ describe("course page", () => {
     expect(`${url.origin}${url.pathname}`).toBe("https://ru.hexlet.io/programs/js");
     expect(Object.fromEntries(url.searchParams)).toStrictEqual({
       ref: "1",
-      utm_source: "code-basics",
       utm_medium: "referral",
+      utm_source: "code-basics",
     });
   }, 60_000);
 
@@ -480,7 +480,7 @@ describe("course page", () => {
   it("enters the lesson as it stands after the start, not as a hover cached it", async () => {
     expect.hasAssertions();
     // The player lays out by the viewport, so it gets the desktop one it expects.
-    const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+    const startingViewport = { height: window.innerHeight, width: window.innerWidth };
     await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
     onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
     worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));

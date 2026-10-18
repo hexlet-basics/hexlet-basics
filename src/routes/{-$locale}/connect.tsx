@@ -24,10 +24,13 @@ const connectSearchSchema = z.object({
 
 export const Route = createFileRoute("/{-$locale}/connect")({
   validateSearch: connectSearchSchema,
+
   loaderDeps: ({ search }) => ({ id: search.id }),
+
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+
   // An unknown, expired or already decided request is a normal outcome (a stale
   // tab), not a crash: the page says so instead of showing the error screen.
   loader: ({ context, deps }) =>
@@ -39,17 +42,19 @@ export const Route = createFileRoute("/{-$locale}/connect")({
           }),
         )
       : null,
+
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {
       meta: [
         { title: t(($) => $.connect.title) },
-        { name: "description", content: t(($) => $.connect.meta.description) },
+        { content: t(($) => $.connect.meta.description), name: "description" },
         // A page with a one-time request id in its URL has nothing to index.
-        { name: "robots", content: "noindex" },
+        { content: "noindex", name: "robots" },
       ],
     };
   },
+
   component: Connect,
 });
 
@@ -59,11 +64,11 @@ export const Route = createFileRoute("/{-$locale}/connect")({
 function useScopeLabel() {
   const { t } = useTranslation();
   const labels: Record<string, string> = {
-    openid: t(($) => $.connect.scopes.openid),
-    offline_access: t(($) => $.connect.scopes.offline_access),
-    "catalog:read": t(($) => $.connect.scopes.catalog_read),
-    "progress:read": t(($) => $.connect.scopes.progress_read),
     admin: t(($) => $.connect.scopes.admin),
+    "catalog:read": t(($) => $.connect.scopes.catalog_read),
+    offline_access: t(($) => $.connect.scopes.offline_access),
+    openid: t(($) => $.connect.scopes.openid),
+    "progress:read": t(($) => $.connect.scopes.progress_read),
   };
   return (scope: string) => labels[scope] ?? scope;
 }
@@ -92,8 +97,8 @@ function Connect() {
   const scopeLabel = useScopeLabel();
 
   const onError = () => notifications.show({ color: "red", message: t(($) => $.connect.error) });
-  const approve = useMutation({ ...approveOAuthConsentMutation(), onSuccess: leave, onError });
-  const deny = useMutation({ ...denyOAuthConsentMutation(), onSuccess: leave, onError });
+  const approve = useMutation({ ...approveOAuthConsentMutation(), onError, onSuccess: leave });
+  const deny = useMutation({ ...denyOAuthConsentMutation(), onError, onSuccess: leave });
   const deciding = approve.isPending || deny.isPending || approve.isSuccess || deny.isSuccess;
 
   return (
@@ -103,7 +108,7 @@ function Connect() {
           {t(($) => $.connect.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
           {id && consent ? (
             <Stack>
               <Text>{t(($) => $.connect.intro, { client: consent.clientName })}</Text>

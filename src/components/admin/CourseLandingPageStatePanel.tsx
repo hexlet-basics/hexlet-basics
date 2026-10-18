@@ -16,12 +16,12 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }) {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [
       adminListCourseLandingPagesQueryKey(),
       adminGetCourseLandingPageQueryKey({ path: { id: page.id } }),
     ],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({
     mutation: adminPublishCourseLandingPageMutation(),
@@ -43,7 +43,7 @@ export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage 
       title={t(($) => $.models.attributes.course_landing_page.state)}
       state={state}
       stateLabel={t(($) => $.models.attributes.course_landing_page["state/values"][state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

@@ -32,8 +32,8 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
     returnObjects: true,
   });
   const contactMethodData = Object.entries(contactMethods).map(([value, label]) => ({
-    value,
     label,
+    value,
   }));
 
   const communityLink = (
@@ -51,17 +51,16 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
   const defaultValues: LeadInput = {
     contactMethod: "telegram",
     contactValue: "",
-    ymClientId: null,
     firstVisit: null,
+    ymClientId: null,
   };
 
   const form = useAppForm({
     defaultValues,
-    validators: { onSubmit: zLeadInput },
     onSubmit: async ({ value }) => {
       try {
         await mutation.mutateAsync({
-          body: { ...value, ymClientId: metrikaClientId(), firstVisit: readFirstVisit() },
+          body: { ...value, firstVisit: readFirstVisit(), ymClientId: metrikaClientId() },
         });
       } catch {
         notifications.show({ color: "red", message: t(($) => $.flash.leads.create.error) });
@@ -73,8 +72,9 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
       });
       await (redirectHref
         ? navigate({ href: redirectHref })
-        : navigate({ to: "/{-$locale}", params: { locale } }));
+        : navigate({ params: { locale }, to: "/{-$locale}" }));
     },
+    validators: { onSubmit: zLeadInput },
   });
 
   return (

@@ -8,16 +8,16 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // refinement); allowedLocales is the site's locale set.
 
 export const emptyStaffMember: StaffMemberInput = {
-  userId: 0,
-  roleId: 0,
   allowedLocales: [],
+  roleId: 0,
+  userId: 0,
 };
 
 export function staffMemberToForm(member: StaffMember): StaffMemberInput {
   return {
-    userId: member.userId,
-    roleId: member.roleId,
     allowedLocales: member.allowedLocales,
+    roleId: member.roleId,
+    userId: member.userId,
   };
 }
 
@@ -28,12 +28,12 @@ export function useStaffMemberFields(): CrudFieldSpec<StaffMemberInput>[] {
     // The contract only says "array of strings": the site's locale set is not in it.
     set: {
       allowedLocales: {
-        required: false,
         options: [
-          { value: "en", label: "en" },
-          { value: "ru", label: "ru" },
-          { value: "es", label: "es" },
+          { label: "en", value: "en" },
+          { label: "ru", value: "ru" },
+          { label: "es", value: "es" },
         ],
+        required: false,
       },
     },
   });

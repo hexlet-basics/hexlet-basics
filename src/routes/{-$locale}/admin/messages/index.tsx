@@ -35,13 +35,13 @@ function MessagesList() {
       header: t(($) => $.models.attributes.assistant_message.role),
     },
     {
-      id: "content",
-      header: t(($) => $.models.attributes.assistant_message.content),
       cell: ({ row }) => (
         <Text size="sm" lineClamp={2} maw={480}>
           {row.original.content}
         </Text>
       ),
+      header: t(($) => $.models.attributes.assistant_message.content),
+      id: "content",
     },
     {
       accessorKey: "courseSlug",
@@ -52,9 +52,9 @@ function MessagesList() {
       header: t(($) => $.models.attributes.assistant_message.lesson),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

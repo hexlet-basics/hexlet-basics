@@ -164,18 +164,18 @@ function toProblem(kind: SyntaxProblem["kind"], node: Node): SyntaxProblem {
   // An ERROR node can swallow the rest of the file, which as one red block hides
   // the code under it: mark the line it starts on.
   if (end.row !== start.row) {
-    end = { row: start.row, column: Number.MAX_SAFE_INTEGER };
+    end = { column: Number.MAX_SAFE_INTEGER, row: start.row };
   }
 
   // A missing token has no width, and monaco draws nothing for an empty range.
   const endColumn = end.column === start.column ? end.column + 1 : end.column;
 
   return {
-    kind,
-    token: node.type,
-    startLineNumber: start.row + 1,
-    startColumn: start.column + 1,
-    endLineNumber: end.row + 1,
     endColumn: endColumn + 1,
+    endLineNumber: end.row + 1,
+    kind,
+    startColumn: start.column + 1,
+    startLineNumber: start.row + 1,
+    token: node.type,
   };
 }

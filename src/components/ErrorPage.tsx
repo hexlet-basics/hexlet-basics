@@ -15,26 +15,26 @@ function errorText(t: TFunction, code: number): { header: string; description: s
   switch (code as ErrorCode) {
     case HTTP_FORBIDDEN: {
       return {
-        header: t(($) => $.errors.show.codes["403"].header),
         description: t(($) => $.errors.show.codes["403"].description),
+        header: t(($) => $.errors.show.codes["403"].header),
       };
     }
     case HTTP_NOT_FOUND: {
       return {
-        header: t(($) => $.errors.show.codes["404"].header),
         description: t(($) => $.errors.show.codes["404"].description),
+        header: t(($) => $.errors.show.codes["404"].header),
       };
     }
     case HTTP_SERVER_ERROR: {
       return {
-        header: t(($) => $.errors.show.codes["500"].header),
         description: t(($) => $.errors.show.codes["500"].description),
+        header: t(($) => $.errors.show.codes["500"].header),
       };
     }
     default: {
       return {
-        header: t(($) => $.errors.show.codes.other.header),
         description: t(($) => $.errors.show.codes.other.header),
+        header: t(($) => $.errors.show.codes.other.header),
       };
     }
   }

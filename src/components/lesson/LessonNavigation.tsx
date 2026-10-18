@@ -18,7 +18,7 @@ export default function LessonNavigation({ view }: { view: CourseLessonView }) {
           <NavLink
             key={item.slug}
             to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-            params={{ slug: courseSlug, lessonSlug: item.slug }}
+            params={{ lessonSlug: item.slug, slug: courseSlug }}
             label={item.name}
             active={current}
             aria-current={current ? "page" : undefined}

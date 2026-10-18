@@ -18,26 +18,26 @@ describe("create review", () => {
       http.post("*/admin/reviews", async ({ request }) => {
         received = (await request.json()) as ReviewInput;
         return HttpResponse.json({
-          id: 1,
-          user: null,
-          course: null,
-          userId: 0,
-          courseId: 42,
           body: "Great course",
+          course: null,
+          courseId: 42,
+          createdAt: "2026-01-01T00:00:00Z",
           firstName: "Eva",
-          lastName: null,
           fullName: "Eva",
-          state: "draft",
+          id: 1,
+          lastName: null,
           locale: "en",
           pinned: false,
-          createdAt: "2026-01-01T00:00:00Z",
+          state: "draft",
+          user: null,
+          userId: 0,
         });
       }),
     );
 
     const { router } = await renderRoute(Route, {
-      path: "/{-$locale}/admin/reviews/new",
       initialPath: "/admin/reviews/new",
+      path: "/{-$locale}/admin/reviews/new",
       user: admin,
     });
 
@@ -48,10 +48,10 @@ describe("create review", () => {
 
     await expect.element(page.getByText("Record created")).toBeVisible();
     expect(received).toMatchObject({
-      courseId: 42,
-      userId: null,
       body: "Great course",
+      courseId: 42,
       firstName: "Eva",
+      userId: null,
     });
     // A new review is a draft: the state has its own operations.
     expect(received).not.toHaveProperty("state");

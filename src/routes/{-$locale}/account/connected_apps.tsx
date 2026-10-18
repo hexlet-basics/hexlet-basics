@@ -21,19 +21,19 @@ export const Route = createFileRoute("/{-$locale}/account/connected_apps")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
-  loader: ({ context }) =>
-    context.queryClient.query({ ...listConnectedAppsOptions(), staleTime: 0 }),
+  component: ConnectedApps,
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {
       meta: [
         { title: t(($) => $.account.connected_apps.title) },
-        { name: "description", content: t(($) => $.account.connected_apps.meta.description) },
-        { name: "robots", content: "noindex" },
+        { content: t(($) => $.account.connected_apps.meta.description), name: "description" },
+        { content: "noindex", name: "robots" },
       ],
     };
   },
-  component: ConnectedApps,
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listConnectedAppsOptions(), staleTime: 0 }),
 });
 
 // What each scope means to a person; same wording as the consent screen. A scope
@@ -41,11 +41,11 @@ export const Route = createFileRoute("/{-$locale}/account/connected_apps")({
 function useScopeLabel() {
   const { t } = useTranslation();
   const labels: Record<string, string> = {
-    openid: t(($) => $.connect.scopes.openid),
-    offline_access: t(($) => $.connect.scopes.offline_access),
-    "catalog:read": t(($) => $.connect.scopes.catalog_read),
-    "progress:read": t(($) => $.connect.scopes.progress_read),
     admin: t(($) => $.connect.scopes.admin),
+    "catalog:read": t(($) => $.connect.scopes.catalog_read),
+    offline_access: t(($) => $.connect.scopes.offline_access),
+    openid: t(($) => $.connect.scopes.openid),
+    "progress:read": t(($) => $.connect.scopes.progress_read),
   };
   return (scope: string) => labels[scope] ?? scope;
 }
@@ -57,10 +57,10 @@ function ConnectedApps() {
   const items = data?.items ?? [];
 
   const revoke = useResourceMutation({
-    mutation: revokeConnectedAppMutation(),
-    invalidate: [listConnectedAppsQueryKey()],
-    successMessage: t(($) => $.account.connected_apps.revoked),
     errorMessage: t(($) => $.account.connected_apps.error),
+    invalidate: [listConnectedAppsQueryKey()],
+    mutation: revokeConnectedAppMutation(),
+    successMessage: t(($) => $.account.connected_apps.revoked),
   });
 
   // Disconnecting is immediate and cannot be undone by the user (the app has to
@@ -69,14 +69,14 @@ function ConnectedApps() {
   const confirm = (app: ConnectedApp) =>
     modals.openConfirmModal({
       centered: true,
-      title: t(($) => $.account.connected_apps.confirm_title, { client: app.name }),
       children: <Text size="sm">{t(($) => $.account.connected_apps.confirm_text)}</Text>,
-      labels: {
-        confirm: t(($) => $.account.connected_apps.confirm_label),
-        cancel: t(($) => $.common.boolean.no),
-      },
       confirmProps: { color: "red" },
+      labels: {
+        cancel: t(($) => $.common.boolean.no),
+        confirm: t(($) => $.account.connected_apps.confirm_label),
+      },
       onConfirm: () => revoke.mutate({ path: { id: app.id } }),
+      title: t(($) => $.account.connected_apps.confirm_title, { client: app.name }),
     });
 
   return (
@@ -86,7 +86,7 @@ function ConnectedApps() {
           {t(($) => $.account.connected_apps.title)}
         </Title>
 
-        <Stack w={{ base: "100%", sm: "80%", md: "70%" }}>
+        <Stack w={{ base: "100%", md: "70%", sm: "80%" }}>
           <Text c="dimmed">{t(($) => $.account.connected_apps.intro)}</Text>
 
           {items.length === 0 ? (

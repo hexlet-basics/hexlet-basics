@@ -48,16 +48,17 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context, location }) => {
     await context.i18n.changeLanguage(localeOf(location.pathname));
     return {
-      user: await resolveCurrentUser(context.queryClient),
       // A string, so it travels with the dehydrated router and the browser's
       // first render reads the same cookies the server rendered with.
       cookieHeader: getRequestCookies(),
+      user: await resolveCurrentUser(context.queryClient),
     };
   },
+  component: RootComponent,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       { title: SITE_NAME },
     ],
   }),
@@ -69,7 +70,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       <NotFoundPage />
     </ApplicationLayout>
   ),
-  component: RootComponent,
 });
 
 function RootComponent() {

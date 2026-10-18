@@ -17,8 +17,8 @@ const signUpSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/{-$locale}/users/new")({
-  validateSearch: signUpSearchSchema,
   component: New,
+  validateSearch: signUpSearchSchema,
 });
 
 function New() {
@@ -32,7 +32,7 @@ function New() {
           {t(($) => $.users.new.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
           <SignUpFormBlock redirect={redirect} />
         </Card>
       </Stack>

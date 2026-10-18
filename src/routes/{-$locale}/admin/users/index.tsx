@@ -37,13 +37,13 @@ function UsersList() {
   const columns: CrudColumnDef<UserCrud>[] = [
     ...useGeneratedColumns<UserCrud>(userColumns, ["email", "firstName", "lastName"]),
     {
-      id: "admin",
-      header: t(($) => $.models.attributes.user.admin),
       cell: ({ row }) => (row.original.admin ? "✓" : ""),
+      header: t(($) => $.models.attributes.user.admin),
+      id: "admin",
     },
     list.actionsColumn({
-      edit: (row) => <EditLink to="/{-$locale}/admin/users/$id" params={{ id: String(row.id) }} />,
       describe: (row) => row.email ?? "",
+      edit: (row) => <EditLink to="/{-$locale}/admin/users/$id" params={{ id: String(row.id) }} />,
     }),
   ];
 

@@ -16,25 +16,25 @@ import { renderRoute } from "@/test/renderRoute";
 
 const course = (readiness: CourseReadiness | null): Course =>
   ({
-    id: 7,
-    slug: "ruby",
-    learnAs: "first_language",
-    readiness,
-    hexletProgramLandingPage: null,
-    repositoryUrl: null,
-    currentVersion: null,
-    lessonsCount: 3,
     createdAt: "2026-01-01T00:00:00Z",
+    currentVersion: null,
+    hexletProgramLandingPage: null,
+    id: 7,
+    learnAs: "first_language",
+    lessonsCount: 3,
+    readiness,
+    repositoryUrl: null,
+    slug: "ruby",
   }) as unknown as Course;
 
 const edit = () =>
   renderRoute(courseEditRoute, {
-    path: "/{-$locale}/admin/courses/$id",
     initialPath: "/admin/courses/7",
+    path: "/{-$locale}/admin/courses/$id",
     user: admin,
   });
 
-const button = (name: string) => page.getByRole("button", { name, exact: true });
+const button = (name: string) => page.getByRole("button", { exact: true, name });
 
 describe("the course admin screens", () => {
   it.each<[CourseReadiness, string[], string[]]>([
@@ -122,7 +122,7 @@ describe("the course admin screens", () => {
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
       http.post("*/admin/courses/7/mark_in_development", () =>
-        HttpResponse.json({ type: "about:blank", title: "Conflict", status: 409 }, { status: 409 }),
+        HttpResponse.json({ status: 409, title: "Conflict", type: "about:blank" }, { status: 409 }),
       ),
     );
 
@@ -137,13 +137,13 @@ describe("the course admin screens", () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/courses", () =>
-        HttpResponse.json({ items: [course("in_development")], total: 1, page: 1, perPage: 25 }),
+        HttpResponse.json({ items: [course("in_development")], page: 1, perPage: 25, total: 1 }),
       ),
     );
 
     await renderRoute(courseListRoute, {
-      path: "/{-$locale}/admin/courses/",
       initialPath: "/admin/courses",
+      path: "/{-$locale}/admin/courses/",
       user: admin,
     });
 

@@ -21,15 +21,15 @@ const ALL_ROWS = 30;
 // resource contributes columns only.
 
 const banner = (id: number, body: string): Banner => ({
-  id,
-  state: "published",
-  locale: "en",
   background: "dark",
   body,
-  url: null,
-  startsAt: null,
-  finishesAt: null,
   createdAt: "2026-01-01T00:00:00Z",
+  finishesAt: null,
+  id,
+  locale: "en",
+  startsAt: null,
+  state: "published",
+  url: null,
 });
 
 function Banners({
@@ -49,10 +49,10 @@ function Banners({
   const columns: CrudColumnDef<Banner>[] = [
     { accessorKey: "body", header: "Body" },
     list.actionsColumn({
+      describe: (row) => row.body,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.body,
     }),
   ];
 
@@ -65,9 +65,9 @@ function searchedBanners(query: URLSearchParams) {
   const found = query.get("q") === "sale";
   return {
     items: [banner(1, found ? "Spring sale" : "Anything")],
-    total: found ? 1 : ALL_ROWS,
     page: Number(query.get("page")),
     perPage: 25,
+    total: found ? 1 : ALL_ROWS,
   };
 }
 
@@ -82,9 +82,9 @@ describe("crud list engine", () => {
         const pageNumber = Number(query.get("page"));
         return HttpResponse.json({
           items: [banner(pageNumber, `Banner on page ${pageNumber}`)],
-          total: 30,
           page: pageNumber,
           perPage: 25,
+          total: 30,
         });
       }),
     );
@@ -109,7 +109,7 @@ describe("crud list engine", () => {
     worker.use(
       http.get("*/admin/banners", () => {
         listed += 1;
-        return HttpResponse.json({ items: rows, total: rows.length, page: 1, perPage: 25 });
+        return HttpResponse.json({ items: rows, page: 1, perPage: 25, total: rows.length });
       }),
       http.delete("*/admin/banners/1", () => {
         rows = rows.filter((row) => row.id !== 1);
@@ -135,7 +135,7 @@ describe("crud list engine", () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/banners", () =>
-        HttpResponse.json({ items: [banner(1, "Spring sale")], total: 1, page: 1, perPage: 25 }),
+        HttpResponse.json({ items: [banner(1, "Spring sale")], page: 1, perPage: 25, total: 1 }),
       ),
     );
 
@@ -173,7 +173,7 @@ describe("crud list engine", () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/banners", () =>
-        HttpResponse.json({ items: [banner(1, "Spring sale")], total: 1, page: 1, perPage: 25 }),
+        HttpResponse.json({ items: [banner(1, "Spring sale")], page: 1, perPage: 25, total: 1 }),
       ),
     );
 

@@ -15,9 +15,9 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export function BannerStatePanel({ banner }: { banner: Banner }) {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [adminListBannersQueryKey(), adminGetBannerQueryKey({ path: { id: banner.id } })],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({ mutation: adminPublishBannerMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishBannerMutation(), ...options });
@@ -29,7 +29,7 @@ export function BannerStatePanel({ banner }: { banner: Banner }) {
       title={t(($) => $.models.attributes.banner.state)}
       state={banner.state}
       stateLabel={t(($) => $.models.attributes.banner["state/values"][banner.state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

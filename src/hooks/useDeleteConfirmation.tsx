@@ -10,14 +10,14 @@ export function useDeleteConfirmation() {
 
   return ({ description, onConfirm }: { description?: ReactNode; onConfirm: () => void }) => {
     modals.openConfirmModal({
-      title: t(($) => $.admin.crud.confirmDeleteTitle),
       children: <Text>{description}</Text>,
-      labels: {
-        confirm: t(($) => $.admin.crud.delete),
-        cancel: t(($) => $.admin.crud.cancel),
-      },
       confirmProps: { color: "red" },
+      labels: {
+        cancel: t(($) => $.admin.crud.cancel),
+        confirm: t(($) => $.admin.crud.delete),
+      },
       onConfirm,
+      title: t(($) => $.admin.crud.confirmDeleteTitle),
     });
   };
 }

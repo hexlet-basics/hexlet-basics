@@ -24,12 +24,12 @@ function NewBlogPost() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateBlogPostMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListBlogPostsQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateBlogPostMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

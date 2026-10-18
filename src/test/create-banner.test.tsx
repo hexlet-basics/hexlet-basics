@@ -18,22 +18,22 @@ describe("create banner", () => {
       http.post("*/admin/banners", async ({ request }) => {
         received = (await request.json()) as BannerInput;
         return HttpResponse.json({
+          background: "cta_gradient",
+          body: "Promo",
+          createdAt: "2026-01-01T00:00:00Z",
+          finishesAt: null,
           id: 1,
           locale: "en",
-          body: "Promo",
-          url: null,
-          background: "cta_gradient",
-          state: "draft",
           startsAt: null,
-          finishesAt: null,
-          createdAt: "2026-01-01T00:00:00Z",
+          state: "draft",
+          url: null,
         });
       }),
     );
 
     const { router } = await renderRoute(Route, {
-      path: "/{-$locale}/admin/banners/new",
       initialPath: "/admin/banners/new",
+      path: "/{-$locale}/admin/banners/new",
       user: admin,
     });
 
@@ -42,11 +42,11 @@ describe("create banner", () => {
 
     await expect.element(page.getByText("Record created")).toBeVisible();
     expect(received).toMatchObject({
-      body: "Promo",
       background: "cta_gradient",
+      body: "Promo",
+      finishesAt: null,
       locale: "en",
       startsAt: null,
-      finishesAt: null,
     });
     // A new banner is a draft: the state has its own operations.
     expect(received).not.toHaveProperty("state");

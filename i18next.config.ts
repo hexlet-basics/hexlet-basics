@@ -16,16 +16,15 @@ const ignore = [
 ];
 
 export default defineConfig({
-  locales: ["ru", "es", "en"],
   extract: {
+    defaultNS: "translation",
     ignore,
     input: ["src/**/*.tsx", "src/**/*.ts"],
+    mergeNamespaces: true,
     output: "src/locales/{{language}}/translation.ts",
     outputFormat: "ts",
-    mergeNamespaces: true,
-    removeUnusedKeys: false,
-    defaultNS: "translation",
     primaryLanguage: "ru",
+    removeUnusedKeys: false,
   },
   lint: {
     ignore: [
@@ -36,10 +35,11 @@ export default defineConfig({
       "src/components/pages/**",
     ],
   },
+  locales: ["ru", "es", "en"],
   types: {
+    enableSelector: true,
     input: ["src/locales/ru/translation.ts"],
     output: "src/types/i18next.d.ts",
     resourcesFile: "src/types/resources.d.ts",
-    enableSelector: true,
   },
 });

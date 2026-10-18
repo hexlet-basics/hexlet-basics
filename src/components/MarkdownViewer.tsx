@@ -106,13 +106,13 @@ function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraPr
 // theory `##` never competes with the lesson title.
 const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
-    overflowWrap: "break-word",
-    lineHeight: theme.lineHeights.lg,
     h2: theme.headings.sizes.h5,
     h3: theme.headings.sizes.h6,
     h4: theme.headings.sizes.h6,
     h5: theme.headings.sizes.h6,
     h6: theme.headings.sizes.h6,
+    lineHeight: theme.lineHeights.lg,
+    overflowWrap: "break-word",
   },
 });
 
@@ -133,16 +133,16 @@ export default function MarkdownViewer({
   components = noComponents,
 }: MarkdownViewerProps) {
   const preparedComponents = {
+    code: MarkdownInlineCode,
     pre: MarkdownCodeBlock,
     // A wide table scrolls inside its own container instead of stretching the
     // pane it sits in.
     table: MarkdownTable,
-    code: MarkdownInlineCode,
     ...components,
   };
 
   const rehypePlugins: PluggableList = [
-    [rehypeExternalLinks, { target: "_blank", rel: ["noopener", "noreferrer"] }],
+    [rehypeExternalLinks, { rel: ["noopener", "noreferrer"], target: "_blank" }],
   ];
 
   if (allowHtml) {

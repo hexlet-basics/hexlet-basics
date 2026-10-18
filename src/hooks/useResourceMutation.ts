@@ -35,18 +35,18 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
 
   return useMutation({
     ...mutation,
+    onError: (error) => {
+      if (fieldErrors && isValidationError(error)) {
+        return;
+      }
+      notifications.show({ color: "red", message: errorMessage });
+    },
     onSuccess: async (data, variables) => {
       await Promise.all(
         (invalidate ?? []).map((queryKey) => queryClient.invalidateQueries({ queryKey })),
       );
       notifications.show({ color: "green", message: successMessage });
       onDone?.(data, variables);
-    },
-    onError: (error) => {
-      if (fieldErrors && isValidationError(error)) {
-        return;
-      }
-      notifications.show({ color: "red", message: errorMessage });
     },
   });
 }

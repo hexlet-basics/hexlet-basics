@@ -110,22 +110,22 @@ function EditorPane({
   }, [instance, isTouchScreen]);
 
   const options: editor.IStandaloneEditorConstructionOptions = {
-    tabSize: settings.tabSize,
-    insertSpaces: settings.insertSpaces,
-    fontSize: 14,
-    scrollBeyondLastLine: false,
-    minimap: { enabled: false },
-    hover: { delay: 500 },
-    renderWhitespace: "trailing",
-    formatOnPaste: true,
-    fixedOverflowWidgets: true,
-    // Forced on rather than left to monaco's "auto" detection, which misses NVDA
-    // on Windows and leaves the exercise unreadable to it.
-    accessibilitySupport: "on",
     // And read the whole exercise to a screen reader, not monaco's default first
     // ten lines.
     accessibilityPageSize: 500,
+    // Forced on rather than left to monaco's "auto" detection, which misses NVDA
+    // on Windows and leaves the exercise unreadable to it.
+    accessibilitySupport: "on",
     ariaLabel: t(($) => $.courses.lessons.show.editor_aria_label),
+    fixedOverflowWidgets: true,
+    fontSize: 14,
+    formatOnPaste: true,
+    hover: { delay: 500 },
+    insertSpaces: settings.insertSpaces,
+    minimap: { enabled: false },
+    renderWhitespace: "trailing",
+    scrollBeyondLastLine: false,
+    tabSize: settings.tabSize,
   };
 
   return (

@@ -15,9 +15,9 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export function BlogPostStatePanel({ post }: { post: BlogPost }) {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [adminListBlogPostsQueryKey(), adminGetBlogPostQueryKey({ path: { id: post.id } })],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({ mutation: adminPublishBlogPostMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishBlogPostMutation(), ...options });
@@ -30,7 +30,7 @@ export function BlogPostStatePanel({ post }: { post: BlogPost }) {
       title={t(($) => $.models.attributes.blog_post.state)}
       state={state}
       stateLabel={t(($) => $.models.attributes.blog_post["state/values"][state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

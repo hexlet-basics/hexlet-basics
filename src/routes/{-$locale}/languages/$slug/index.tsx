@@ -58,6 +58,7 @@ import { orNull } from "@/lib/lenient";
 // survives a server-side redirect.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
+
   loader: async ({ context, params }) => {
     // The banner is prefetched so it is in the server-rendered HTML; fetched on
     // the client only, it would pop in after hydration. It is decoration, so
@@ -76,9 +77,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       // redirect, which keeps old links and search results pointing somewhere.
       if (view.movedTo) {
         throw redirect({
-          to: "/{-$locale}/languages/$slug",
           params: { ...params, slug: view.movedTo },
           statusCode: 301,
+          to: "/{-$locale}/languages/$slug",
         });
       }
       return view;
@@ -89,6 +90,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy languages#show meta: the landing page's meta title and description,
   // the canonical link, the social block with the course cover, and Open Graph
   // typed as a website in the page's locale.
@@ -103,14 +105,15 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
     const { i18n } = match.context;
     const { course, landingPage } = loaderData;
     return seoHead({
-      i18n,
-      title: landingPage?.metaTitle ?? course.name ?? course.slug,
-      description: landingPage?.metaDescription ?? "",
       canonicalPath: match.pathname,
+      description: landingPage?.metaDescription ?? "",
+      i18n,
       image: course.coverListVariant,
-      openGraph: { type: "website", locale: i18n.language },
+      openGraph: { locale: i18n.language, type: "website" },
+      title: landingPage?.metaTitle ?? course.name ?? course.slug,
     });
   },
+
   component: Show,
 });
 
@@ -328,7 +331,7 @@ function LearningProgram({ view }: { view: CourseView }) {
       <NavLink
         key={item.slug}
         to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-        params={{ slug: view.course.slug, lessonSlug: item.slug }}
+        params={{ lessonSlug: item.slug, slug: view.course.slug }}
         label={item.name}
         leftSection={<LessonMark finished={item.finished} />}
       />

@@ -16,37 +16,37 @@ import { renderRoute } from "@/test/renderRoute";
 // previous visitor, runs one flow, and opens the page again.
 
 const ada: User = {
-  id: 7,
-  firstName: "Ada",
-  lastName: null,
-  name: "Ada",
-  email: "ada@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "ada@example.com",
+  firstName: "Ada",
+  id: 7,
+  lastName: null,
+  name: "Ada",
   type: "user",
 };
 
 const course: Course = {
-  id: 1,
-  slug: "javascript",
-  name: "javascript",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: 99,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 1234,
-  lessonsCount: 2,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: 99,
+  enrollmentsCount: 1234,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 2,
+  name: "javascript",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: null,
+  repositoryUrl: null,
+  slug: "javascript",
 };
 
 // The same course as seen by whoever is asking: Ada has finished a third of it,
@@ -54,43 +54,43 @@ const course: Course = {
 function courseFor(visitor: "ada" | "guest"): CourseView {
   const lessons = [
     {
+      description: null,
+      finished: visitor === "ada",
       id: 1001,
       name: "Hello, World!",
-      description: null,
-      slug: "hello-world",
       position: 1,
-      finished: visitor === "ada",
+      slug: "hello-world",
     },
     {
+      description: null,
+      finished: false,
       id: 1002,
       name: "Variables",
-      description: null,
-      slug: "variables",
       position: 2,
-      finished: false,
+      slug: "variables",
     },
   ];
   return {
     course,
+    enrollment:
+      visitor === "ada" ? { courseId: course.id, id: 1, state: "started", userId: ada.id } : null,
     landingPage: null,
-    movedTo: null,
     lessons,
     modules: [],
-    qnaItems: [],
-    enrollment:
-      visitor === "ada" ? { id: 1, userId: ada.id, courseId: course.id, state: "started" } : null,
+    movedTo: null,
     progress:
       visitor === "ada"
         ? {
-            state: "started",
             completion: 33,
-            nextLesson: { id: 1002, slug: "variables", name: "Variables" },
+            nextLesson: { id: 1002, name: "Variables", slug: "variables" },
+            state: "started",
           }
         : {
-            state: null,
             completion: 0,
-            nextLesson: { id: 1001, slug: "hello-world", name: "Hello, World!" },
+            nextLesson: { id: 1001, name: "Hello, World!", slug: "hello-world" },
+            state: null,
           },
+    qnaItems: [],
   };
 }
 
@@ -113,10 +113,10 @@ async function courseOpenedAs(
   also: { route: never; path: string }[] = [],
 ) {
   const rendered = await renderRoute(courseRoute, {
-    path: "/{-$locale}/languages/$slug",
-    initialPath: "/languages/javascript",
-    user: visitor === "ada" ? ada : null,
     also,
+    initialPath: "/languages/javascript",
+    path: "/{-$locale}/languages/$slug",
+    user: visitor === "ada" ? ada : null,
   });
   const onScreen =
     visitor === "ada"
@@ -137,7 +137,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { route: signInRoute as never, path: "/{-$locale}/session/new" },
+      { path: "/{-$locale}/session/new", route: signInRoute as never },
     ]);
 
     await router.navigate({ href: "/session/new" });
@@ -160,7 +160,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { route: consumeRoute as never, path: "/{-$locale}/magic_links/$token" },
+      { path: "/{-$locale}/magic_links/$token", route: consumeRoute as never },
     ]);
 
     await router.navigate({ href: "/magic_links/good" });
@@ -181,7 +181,7 @@ describe("identity change", () => {
       }),
     );
     const { router } = await courseOpenedAs("guest", [
-      { route: resetRoute as never, path: "/{-$locale}/password/$token/edit" },
+      { path: "/{-$locale}/password/$token/edit", route: resetRoute as never },
     ]);
 
     await router.navigate({ href: "/password/good/edit" });
@@ -231,7 +231,7 @@ describe("identity change", () => {
       }),
     );
     await courseOpenedAs("ada", [
-      { route: lessonRoute as never, path: "/{-$locale}/languages/$slug/lessons/$lessonSlug" },
+      { path: "/{-$locale}/languages/$slug/lessons/$lessonSlug", route: lessonRoute as never },
     ]);
 
     await page.getByRole("link", { name: "Variables" }).hover();

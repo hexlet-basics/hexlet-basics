@@ -13,8 +13,8 @@ import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailReques
 // submission ends on one "check your inbox" confirmation. `invalid` is set by
 // the $token route when it refuses a followed link.
 export const Route = createFileRoute("/{-$locale}/magic_links/new")({
-  validateSearch: z.object({ invalid: z.boolean().optional() }),
   component: New,
+  validateSearch: z.object({ invalid: z.boolean().optional() }),
 });
 
 function New() {
@@ -31,8 +31,8 @@ function New() {
   useEffect(() => {
     if (invalid) {
       notifications.show({
-        id: "invalid-link",
         color: "red",
+        id: "invalid-link",
         message: t(($) => $.flash.magic_links.show.error),
       });
     }
@@ -40,10 +40,10 @@ function New() {
 
   const form = useAppForm({
     defaultValues: { email: "" },
-    validators: { onSubmit: zEmailInput },
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync({ body: value });
     },
+    validators: { onSubmit: zEmailInput },
   });
 
   return (
@@ -53,11 +53,33 @@ function New() {
           {t(($) => $.magic_links.new.title)}
         </Title>
 
-        <EmailRequestCard
-          mutation={mutation}
-          success={t(($) => $.flash.magic_links.create.success)}
-          submit={t(($) => $.magic_links.new.submit)}
-        />
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
+          {mutation.isSuccess ? (
+            <Alert color="green">{t(($) => $.flash.magic_links.create.success)}</Alert>
+          ) : (
+            <Stack
+              component="form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void form.handleSubmit();
+              }}
+            >
+              <form.AppField name="email">
+                {(field) => (
+                  <field.TextField
+                    label={t(($) => $.models.attributes.user.email)}
+                    required
+                    {...emailInputProps}
+                  />
+                )}
+              </form.AppField>
+
+              <Button type="submit" fullWidth loading={mutation.isPending}>
+                {t(($) => $.magic_links.new.submit)}
+              </Button>
+            </Stack>
+          )}
+        </Card>
 
         <Text mt="xs">
           <Anchor component={Link} to="/session/new" fw="bold">

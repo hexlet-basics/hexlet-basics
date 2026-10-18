@@ -9,30 +9,30 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 function openLink(token: string) {
   return renderRoute(editRoute, {
-    path: "/{-$locale}/password/$token/edit",
     initialPath: `/ru/password/${token}/edit`,
+    path: "/{-$locale}/password/$token/edit",
     // The /ru prefix is what the redirect must keep, and the layout renders the
     // page in the language of that prefix.
   });
 }
 
 function openRequestForm(initialPath = "/remind_password/new") {
-  return renderRoute(requestRoute, { path: "/{-$locale}/remind_password/new", initialPath });
+  return renderRoute(requestRoute, { initialPath, path: "/{-$locale}/remind_password/new" });
 }
 
 function acceptLink(token: string) {

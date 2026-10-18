@@ -5,138 +5,138 @@ import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
 export const reviewFields: FieldDescriptor[] = [
   {
-    name: "pinned",
     kind: "boolean",
-    nullable: true,
     labelKey: "models.attributes.review.pinned",
+    name: "pinned",
+    nullable: true,
     required: false,
   },
   {
-    name: "courseId",
     kind: "number",
-    nullable: true,
     labelKey: "models.attributes.review.course_id",
+    name: "courseId",
+    nullable: true,
     required: false,
   },
   {
-    name: "userId",
     kind: "number",
-    nullable: true,
     labelKey: "models.attributes.review.user_id",
+    name: "userId",
+    nullable: true,
     required: false,
   },
   {
-    name: "body",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.review.body",
+    name: "body",
+    nullable: true,
     required: false,
   },
   {
-    name: "firstName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.review.first_name",
+    name: "firstName",
+    nullable: true,
     required: false,
   },
   {
-    name: "lastName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.review.last_name",
+    name: "lastName",
+    nullable: true,
     required: false,
   },
 ];
 
 export const reviewColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.review.id",
+    name: "id",
+    nullable: false,
   },
   {
-    name: "userId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.review.user_id",
+    name: "userId",
+    nullable: false,
   },
   {
-    name: "courseId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.review.course_id",
-  },
-  {
-    name: "body",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.review.body",
-  },
-  {
-    name: "firstName",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.review.first_name",
-  },
-  {
-    name: "lastName",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.review.last_name",
-  },
-  {
-    name: "fullName",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.review.full_name",
-  },
-  {
-    name: "state",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.review.state",
-    enumValues: [
-      {
-        value: "draft",
-        labelKey: "models.attributes.review.state/values.draft",
-      },
-      {
-        value: "published",
-        labelKey: "models.attributes.review.state/values.published",
-      },
-      {
-        value: "archived",
-        labelKey: "models.attributes.review.state/values.archived",
-      },
-    ],
-  },
-  {
-    name: "locale",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.review.locale",
-    enumValues: [
-      {
-        value: "ru",
-        labelKey: "models.attributes.review.locale/values.ru",
-      },
-      {
-        value: "en",
-        labelKey: "models.attributes.review.locale/values.en",
-      },
-    ],
-  },
-  {
-    name: "pinned",
-    kind: "boolean",
-    nullable: true,
-    labelKey: "models.attributes.review.pinned",
-  },
-  {
-    name: "createdAt",
-    kind: "datetime",
+    name: "courseId",
     nullable: false,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.review.body",
+    name: "body",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.review.first_name",
+    name: "firstName",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.review.last_name",
+    name: "lastName",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.review.full_name",
+    name: "fullName",
+    nullable: true,
+  },
+  {
+    enumValues: [
+      {
+        labelKey: "models.attributes.review.state/values.draft",
+        value: "draft",
+      },
+      {
+        labelKey: "models.attributes.review.state/values.published",
+        value: "published",
+      },
+      {
+        labelKey: "models.attributes.review.state/values.archived",
+        value: "archived",
+      },
+    ],
+    kind: "select",
+    labelKey: "models.attributes.review.state",
+    name: "state",
+    nullable: true,
+  },
+  {
+    enumValues: [
+      {
+        labelKey: "models.attributes.review.locale/values.ru",
+        value: "ru",
+      },
+      {
+        labelKey: "models.attributes.review.locale/values.en",
+        value: "en",
+      },
+    ],
+    kind: "select",
+    labelKey: "models.attributes.review.locale",
+    name: "locale",
+    nullable: true,
+  },
+  {
+    kind: "boolean",
+    labelKey: "models.attributes.review.pinned",
+    name: "pinned",
+    nullable: true,
+  },
+  {
+    kind: "datetime",
     labelKey: "models.attributes.review.created_at",
+    name: "createdAt",
+    nullable: false,
   },
 ];

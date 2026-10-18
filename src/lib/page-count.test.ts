@@ -3,12 +3,12 @@ import { pageCount } from "@/lib/page-count";
 
 describe("pageCount", () => {
   it.each([
-    { total: 0, perPage: 25, expected: 1 },
-    { total: 1, perPage: 25, expected: 1 },
-    { total: 25, perPage: 25, expected: 1 },
-    { total: 26, perPage: 25, expected: 2 },
-    { total: 30, perPage: 25, expected: 2 },
-    { total: 100, perPage: 25, expected: 4 },
+    { expected: 1, perPage: 25, total: 0 },
+    { expected: 1, perPage: 25, total: 1 },
+    { expected: 1, perPage: 25, total: 25 },
+    { expected: 2, perPage: 25, total: 26 },
+    { expected: 2, perPage: 25, total: 30 },
+    { expected: 4, perPage: 25, total: 100 },
   ])(
     "$total rows at $perPage a page make $expected pages",
     ({ total, perPage, expected }) => {

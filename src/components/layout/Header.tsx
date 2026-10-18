@@ -61,7 +61,7 @@ import { localize } from "@/lib/locale-path";
 // The top-bar controls, as Mantine's header examples do them: a subtle button
 // whose hover is a background tint, not an underline, and which keeps a focus
 // ring. `gray` keeps the label in the body text colour in both schemes.
-const navButtonProps = { variant: "subtle", color: "gray", c: "inherit", fw: 500 } as const;
+const navButtonProps = { c: "inherit", color: "gray", fw: 500, variant: "subtle" } as const;
 
 function NavButton(props: ButtonProps) {
   return <Button {...navButtonProps} {...props} />;
@@ -337,40 +337,40 @@ function SolutionsMenu() {
 
   const items = [
     {
-      icon: IconTarget,
-      title: t(($) => $.layouts.shared.nav.courses_with_employment),
       description: t(($) => $.layouts.shared.nav.courses_with_employment_description),
       href: t(($) => $.links.hexlet_courses_for_beginners),
+      icon: IconTarget,
+      title: t(($) => $.layouts.shared.nav.courses_with_employment),
     },
     {
-      icon: IconRocket,
-      title: t(($) => $.layouts.shared.nav.career),
       description: t(($) => $.layouts.shared.nav.career_description),
       href: t(($) => $.links.hexlet_career),
+      icon: IconRocket,
+      title: t(($) => $.layouts.shared.nav.career),
     },
     {
-      icon: IconGitBranch,
-      title: t(($) => $.layouts.shared.nav.upskilling),
       description: t(($) => $.layouts.shared.nav.upskilling_description),
       href: t(($) => $.links.hexlet_courses_for_programmers),
+      icon: IconGitBranch,
+      title: t(($) => $.layouts.shared.nav.upskilling),
     },
     {
-      icon: IconHeartHandshake,
-      title: t(($) => $.layouts.shared.nav.business),
       description: t(($) => $.layouts.shared.nav.business_description),
       href: t(($) => $.links.hexlet_b2b),
+      icon: IconHeartHandshake,
+      title: t(($) => $.layouts.shared.nav.business),
     },
     {
+      description: t(($) => $.layouts.shared.nav.for_teachers_description),
       icon: IconBlocks,
       title: t(($) => $.layouts.shared.nav.for_teachers),
-      description: t(($) => $.layouts.shared.nav.for_teachers_description),
       to: "/{-$locale}/cases/for_teachers" as const,
     },
     {
-      icon: IconSchool,
-      title: t(($) => $.layouts.shared.nav.hexly),
       description: t(($) => $.layouts.shared.nav.hexly_description),
       href: t(($) => $.links.hexly),
+      icon: IconSchool,
+      title: t(($) => $.layouts.shared.nav.hexly),
     },
   ];
 

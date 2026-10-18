@@ -20,13 +20,13 @@ export function recordFirstVisit(): void {
 
   const params = new URLSearchParams(globalThis.location.search);
   const visit: FirstVisit = {
-    utmSource: params.get("utm_source"),
-    utmMedium: params.get("utm_medium"),
-    utmCampaign: params.get("utm_campaign"),
-    utmContent: params.get("utm_content"),
-    utmTerm: params.get("utm_term"),
     landingPage: globalThis.location.href,
     referrer: document.referrer || null,
+    utmCampaign: params.get("utm_campaign"),
+    utmContent: params.get("utm_content"),
+    utmMedium: params.get("utm_medium"),
+    utmSource: params.get("utm_source"),
+    utmTerm: params.get("utm_term"),
   };
   Cookies.set(COOKIE_NAME, JSON.stringify(visit), {
     expires: COOKIE_TTL_DAYS,

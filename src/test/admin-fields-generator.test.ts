@@ -43,7 +43,7 @@ components:
         richBody: { type: string }
 `) as OpenApi;
 
-const widget = { name: "widget", model: "widget", input: "WidgetInput", item: "Widget" };
+const widget = { input: "WidgetInput", item: "Widget", model: "widget", name: "widget" };
 
 describe("admin field generator", () => {
   it("describes each input property by kind, required and nullable", () => {
@@ -82,8 +82,8 @@ describe("admin field generator", () => {
     const { fields } = describeResource(spec, widget);
 
     expect(fields.find((field) => field.name === "state")?.enumValues).toStrictEqual([
-      { value: "draft", labelKey: "models.attributes.widget.state/values.draft" },
-      { value: "published", labelKey: "models.attributes.widget.state/values.published" },
+      { labelKey: "models.attributes.widget.state/values.draft", value: "draft" },
+      { labelKey: "models.attributes.widget.state/values.published", value: "published" },
     ]);
   }, 60_000);
 

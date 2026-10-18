@@ -10,6 +10,11 @@ export default defineConfig({
   // `compiler`: React Compiler via oxc (`oxc-transform-react`), not the Babel
   // Plugin — it memoizes components, so the code carries no manual useMemo.
   plugins: [tanstackStart(), viteReact({ compiler: true })],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("src", import.meta.url)),
+    },
+  },
   // The browser reaches the Go API on the site's own origin under `/api`
   // (ADR-0015); in development Vite stands in for the production ingress.
   server: {
@@ -22,40 +27,35 @@ export default defineConfig({
       "/oauth": process.env.API_URL ?? "http://localhost:3001",
       "^/\\.well-known/(oauth-authorization-server|openid-configuration)$":
         process.env.API_URL ?? "http://localhost:3001",
-      // The MCP endpoint (ADR-0021) and its protected resource metadata.
-      "^/mcp$": process.env.API_URL ?? "http://localhost:3001",
       "^/\\.well-known/oauth-protected-resource(/mcp)?$":
         process.env.API_URL ?? "http://localhost:3001",
-    },
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("src", import.meta.url)),
+      // The MCP endpoint (ADR-0021) and its protected resource metadata.
+      "^/mcp$": process.env.API_URL ?? "http://localhost:3001",
     },
   },
   test: {
+    browser: {
+      enabled: true,
+      headless: true,
+      instances: [{ browser: "chromium" }],
+      provider: playwright(),
+    },
+    coverage: {
+      // Generated code, the test harness itself, and the SSR entry points that a
+      // test cannot mount under a synthetic root (the Playwright suite covers them).
+      exclude: ["src/client/**", "src/routeTree.gen.ts", "src/test/**", "src/**/*.test.*"],
+      include: ["src/**/*.{ts,tsx}"],
+      provider: "v8",
+      // The floor the suite holds; raise it when coverage rises, never lower it.
+      thresholds: { branches: 70, functions: 85, lines: 90, statements: 90 },
+    },
     // The default include also matches e2e/tests/*.spec.ts, the Playwright suite.
     // Vitest would load those in the browser, where Vite fails to bundle
     // @playwright/test and mounts its error overlay over every other test.
     include: ["src/**/*.test.{ts,tsx}"],
+    setupFiles: ["./src/test/setup.tsx"],
     // Long enough for the tests that wait on the editor; see `editorLoad` in
     // Src/test/lesson-player.test.tsx for why that wait is what it is.
     testTimeout: 60_000,
-    setupFiles: ["./src/test/setup.tsx"],
-    coverage: {
-      provider: "v8",
-      include: ["src/**/*.{ts,tsx}"],
-      // Generated code, the test harness itself, and the SSR entry points that a
-      // Test cannot mount under a synthetic root (the Playwright suite covers them).
-      exclude: ["src/client/**", "src/routeTree.gen.ts", "src/test/**", "src/**/*.test.*"],
-      // The floor the suite holds; raise it when coverage rises, never lower it.
-      thresholds: { lines: 90, statements: 90, functions: 85, branches: 70 },
-    },
-    browser: {
-      enabled: true,
-      provider: playwright(),
-      instances: [{ browser: "chromium" }],
-      headless: true,
-    },
   },
 });

@@ -8,40 +8,40 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 const created: Lead = {
-  id: 7,
-  userId: 1,
-  fullName: null,
-  email: null,
-  phone: null,
-  whatsapp: null,
-  telegram: "@dora",
-  surveyAnswersData: "[]",
   coursesData: "[]",
   createdAt: "2026-09-26T00:00:00Z",
+  email: null,
+  fullName: null,
+  id: 7,
+  phone: null,
+  surveyAnswersData: "[]",
+  telegram: "@dora",
+  userId: 1,
+  whatsapp: null,
 };
 
 const firstVisit: FirstVisit = {
-  utmSource: "vk",
-  utmMedium: "cpc",
-  utmCampaign: "autumn",
-  utmContent: null,
-  utmTerm: null,
   landingPage: "https://code-basics.com/ru?utm_source=vk",
   referrer: "https://vk.com/",
+  utmCampaign: "autumn",
+  utmContent: null,
+  utmMedium: "cpc",
+  utmSource: "vk",
+  utmTerm: null,
 };
 
 function acceptLeads(received: LeadInput[]) {
@@ -59,7 +59,7 @@ function openForm(initialPath = "/ru/leads/new") {
     Cookies.remove("first_visit", { path: "/" });
     delete globalThis.ymClientId;
   });
-  return renderRoute(newLeadRoute, { path: "/{-$locale}/leads/new", initialPath, user });
+  return renderRoute(newLeadRoute, { initialPath, path: "/{-$locale}/leads/new", user });
 }
 
 async function submitTelegram(handle: string) {
@@ -82,8 +82,8 @@ describe("lead form", () => {
     expect(received[0]).toStrictEqual({
       contactMethod: "telegram",
       contactValue: "@dora",
-      ymClientId: "1700000000123456789",
       firstVisit,
+      ymClientId: "1700000000123456789",
     });
     await expect.element(page.getByText(/Заявка отправлена!/u)).toBeVisible();
     await expect.poll(() => router.state.location.pathname).toBe("/ru");
@@ -99,7 +99,7 @@ describe("lead form", () => {
     await submitTelegram("@dora");
 
     await expect.poll(() => received).toHaveLength(1);
-    expect(received[0]).toMatchObject({ ymClientId: null, firstVisit: null });
+    expect(received[0]).toMatchObject({ firstVisit: null, ymClientId: null });
     await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/python");
   }, 60_000);
 
@@ -119,8 +119,8 @@ describe("lead form", () => {
   it("a visitor is sent to sign in first", async () => {
     expect.hasAssertions();
     const { router } = await renderRoute(newLeadRoute, {
-      path: "/{-$locale}/leads/new",
       initialPath: "/ru/leads/new",
+      path: "/{-$locale}/leads/new",
     });
 
     await expect.poll(() => router.state.location.pathname).toBe("/session/new");

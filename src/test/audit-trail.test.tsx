@@ -18,22 +18,22 @@ const THIRTY_DAYS_MS = 2_592_000_000;
 
 function record(overrides: Partial<AuditRecord>): AuditRecord {
   return {
-    id: 1,
-    occurredAt: "2026-10-01T10:00:00Z",
     actorUserId: 7,
+    address: "203.0.113.5",
+    changes: [],
     channel: "web",
     connectedAppId: null,
-    tokenId: null,
-    requestId: "req-1",
-    address: "203.0.113.5",
-    userAgent: "Browser/1.0",
-    operation: "AdminUpdateBanner",
-    entityType: "Banner",
     entityId: "3",
+    entityType: "Banner",
+    id: 1,
     locale: "en",
+    occurredAt: "2026-10-01T10:00:00Z",
+    operation: "AdminUpdateBanner",
     outcome: "succeeded",
-    changes: [],
     reads: null,
+    requestId: "req-1",
+    tokenId: null,
+    userAgent: "Browser/1.0",
     ...overrides,
   };
 }
@@ -42,35 +42,35 @@ const changed = record({
   changes: [
     {
       entity: "Banner",
-      id: "3",
-      op: "update",
       fields: [
-        { name: "body", old: "Old text", new: "New text" },
+        { name: "body", new: "New text", old: "Old text" },
         { name: "token", secret: true },
       ],
+      id: "3",
+      op: "update",
     },
   ],
 });
 
 const read = record({
-  id: 2,
   channel: "mcp",
   connectedAppId: 11,
-  tokenId: "tok-12",
-  operation: "AdminListUsers",
-  entityType: "User",
   entityId: null,
+  entityType: "User",
+  id: 2,
+  operation: "AdminListUsers",
   reads: { count: 2, ids: ["41", "42"] },
+  tokenId: "tok-12",
 });
 
 const refused = record({ id: 3, operation: "AdminDeleteUser", outcome: "forbidden" });
 
-const trail: AuditRecordPage = { items: [changed, read, refused], total: 3, page: 1, perPage: 25 };
+const trail: AuditRecordPage = { items: [changed, read, refused], page: 1, perPage: 25, total: 3 };
 
 function open() {
   return renderRoute(Route, {
-    path: "/{-$locale}/admin/audit/",
     initialPath: "/admin/audit",
+    path: "/{-$locale}/admin/audit/",
     user: admin,
   });
 }
@@ -83,17 +83,17 @@ describe("audit trail", () => {
     await open();
 
     await expect
-      .element(page.getByRole("heading", { name: "Audit trail", level: 2 }))
+      .element(page.getByRole("heading", { level: 2, name: "Audit trail" }))
       .toBeVisible();
     await expect.element(page.getByRole("cell", { name: "AdminUpdateBanner" })).toBeVisible();
     await expect.element(page.getByRole("cell", { name: "AdminListUsers" })).toBeVisible();
-    await expect.element(page.getByRole("cell", { name: "MCP", exact: true })).toBeVisible();
+    await expect.element(page.getByRole("cell", { exact: true, name: "MCP" })).toBeVisible();
     await expect
-      .element(page.getByRole("cell", { name: "Website", exact: true }).first())
+      .element(page.getByRole("cell", { exact: true, name: "Website" }).first())
       .toBeVisible();
-    await expect.element(page.getByRole("cell", { name: "Refused", exact: true })).toBeVisible();
+    await expect.element(page.getByRole("cell", { exact: true, name: "Refused" })).toBeVisible();
     await expect
-      .element(page.getByRole("cell", { name: "Done", exact: true }).first())
+      .element(page.getByRole("cell", { exact: true, name: "Done" }).first())
       .toBeVisible();
   }, 60_000);
 
@@ -152,8 +152,8 @@ describe("audit trail", () => {
     expect(filters).toMatchObject({
       actorUserId: "7",
       channel: "mcp",
-      entityType: "Banner",
       entityId: "3",
+      entityType: "Banner",
     });
     const from = new Date(String(fromParam));
     const to = new Date(String(toParam));
@@ -180,7 +180,7 @@ describe("audit trail", () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/audit_records", () =>
-        HttpResponse.json({ title: "Forbidden", status: 403 }, { status: 403 }),
+        HttpResponse.json({ status: 403, title: "Forbidden" }, { status: 403 }),
       ),
     );
 
@@ -210,7 +210,7 @@ describe("audit trail", () => {
 
     await open();
 
-    await expect.element(page.getByRole("link", { name: "Users", exact: true })).toBeVisible();
+    await expect.element(page.getByRole("link", { exact: true, name: "Users" })).toBeVisible();
     await expect.element(page.getByRole("link", { name: "Audit trail" })).not.toBeInTheDocument();
   }, 60_000);
 });

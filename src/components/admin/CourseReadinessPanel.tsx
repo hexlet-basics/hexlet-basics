@@ -19,9 +19,9 @@ import type { ReadinessTransition } from "@/lib/courseReadiness";
 export function CourseReadinessPanel({ course }: { course: Course }) {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.readiness.changeError),
     invalidate: [adminListCoursesQueryKey(), adminGetCourseQueryKey({ path: { id: course.id } })],
     successMessage: t(($) => $.admin.readiness.changed),
-    errorMessage: t(($) => $.admin.readiness.changeError),
   };
   const markDraft = useResourceMutation({ mutation: adminMarkCourseDraftMutation(), ...options });
   const markInDevelopment = useResourceMutation({
@@ -37,23 +37,23 @@ export function CourseReadinessPanel({ course }: { course: Course }) {
     ReadinessTransition,
     { label: string; color: string; isPending: boolean; run: () => void }
   > = {
+    markCompleted: {
+      color: "green",
+      isPending: markCompleted.isPending,
+      label: t(($) => $.admin.readiness.markCompleted),
+      run: () => markCompleted.mutate({ path: { id: course.id } }),
+    },
     markDraft: {
-      label: t(($) => $.admin.readiness.markDraft),
       color: "gray",
       isPending: markDraft.isPending,
+      label: t(($) => $.admin.readiness.markDraft),
       run: () => markDraft.mutate({ path: { id: course.id } }),
     },
     markInDevelopment: {
-      label: t(($) => $.admin.readiness.markInDevelopment),
       color: "yellow",
       isPending: markInDevelopment.isPending,
+      label: t(($) => $.admin.readiness.markInDevelopment),
       run: () => markInDevelopment.mutate({ path: { id: course.id } }),
-    },
-    markCompleted: {
-      label: t(($) => $.admin.readiness.markCompleted),
-      color: "green",
-      isPending: markCompleted.isPending,
-      run: () => markCompleted.mutate({ path: { id: course.id } }),
     },
   };
 

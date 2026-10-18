@@ -177,11 +177,11 @@ function MultiSelectField(props: MultiSelectProps) {
 function RichTextField({ label }: { label: string }) {
   const field = useFieldContext<string>();
   const editor = useEditor({
-    extensions: [StarterKit, Link],
     content: field.state.value ?? "",
+    extensions: [StarterKit, Link],
     immediatelyRender: false,
-    onUpdate: ({ editor: current }) => field.handleChange(current.getHTML()),
     onBlur: field.handleBlur,
+    onUpdate: ({ editor: current }) => field.handleChange(current.getHTML()),
   });
 
   return (
@@ -244,16 +244,16 @@ function SubmitButton({ children, ...props }: ButtonProps) {
 
 export const { useAppForm } = createFormHook({
   fieldComponents: {
+    CheckboxField,
+    DateTimeField,
+    MultiSelectField,
+    NumberField,
+    RichTextField,
+    SelectField,
     TextField,
     TextareaField,
-    SelectField,
-    DateTimeField,
-    NumberField,
-    CheckboxField,
-    MultiSelectField,
-    RichTextField,
   },
-  formComponents: { SubmitButton },
   fieldContext,
+  formComponents: {},
   formContext,
 });

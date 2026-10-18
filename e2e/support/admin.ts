@@ -21,7 +21,7 @@ export class Admin {
   }
 
   async openUsers(): Promise<void> {
-    await this.#browser.page.getByRole("link", { name: "Users", exact: true }).click();
+    await this.#browser.page.getByRole("link", { exact: true, name: "Users" }).click();
   }
 
   async expectUserListed(email: string): Promise<void> {

@@ -13,16 +13,16 @@ const DESCRIPTION_LENGTH = 160;
 // the page exists for ru only.
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
@@ -31,7 +31,7 @@ function serveBook(view: () => BookView) {
 }
 
 function openBook(visitor: User | null, initialPath = "/ru/book") {
-  return renderRoute(bookRoute, { path: "/{-$locale}/book", initialPath, user: visitor });
+  return renderRoute(bookRoute, { initialPath, path: "/{-$locale}/book", user: visitor });
 }
 
 describe("book", () => {
@@ -52,10 +52,10 @@ describe("book", () => {
     expect(match?.meta).toContainEqual({
       title: "CodeBasics | Книга: Профессия программист. С нуля до трудоустройства",
     });
-    expect(match?.meta).toContainEqual({ name: "twitter:site", content: "@hexlethq" });
+    expect(match?.meta).toContainEqual({ content: "@hexlethq", name: "twitter:site" });
     expect(match?.links).toContainEqual({
-      rel: "canonical",
       href: `${globalThis.location.origin}/ru/book`,
+      rel: "canonical",
     });
     const description = match?.meta?.find((tag) => tag?.name === "description")?.content;
     expect(description).toHaveLength(DESCRIPTION_LENGTH);

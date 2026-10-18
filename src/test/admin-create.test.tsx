@@ -28,48 +28,48 @@ interface Case {
 
 const cases: Case[] = [
   {
-    name: "a course",
-    route: courseRoute,
-    resource: "courses",
     fields: [["Slug *", "ruby"]],
+    name: "a course",
+    resource: "courses",
+    route: courseRoute,
     sent: { slug: "ruby" },
   },
   {
-    name: "a role",
-    route: roleRoute,
-    resource: "management/roles",
     fields: [["Name *", "Editor"]],
+    name: "a role",
+    resource: "management/roles",
+    route: roleRoute,
     sent: { name: "Editor" },
   },
   {
-    name: "a staff member",
-    route: staffMemberRoute,
-    resource: "management/staff_members",
     fields: [
       ["User *", "7"],
       ["Role *", "3"],
     ],
-    sent: { userId: 7, roleId: 3 },
+    name: "a staff member",
+    resource: "management/staff_members",
+    route: staffMemberRoute,
+    sent: { roleId: 3, userId: 7 },
   },
   {
-    name: "a blog post",
-    route: blogPostRoute,
-    resource: "blog_posts",
     fields: [
       ["Name *", "Hello"],
       ["Slug *", "hello"],
     ],
+    name: "a blog post",
+    resource: "blog_posts",
+    route: blogPostRoute,
     sent: { name: "Hello", slug: "hello" },
   },
   {
-    name: "a course landing page",
-    route: courseLandingPageRoute,
-    resource: "course_landing_pages",
     fields: [
       ["Course *", "5"],
       ["Name *", "Ruby"],
       ["Slug *", "ruby-landing"],
     ],
+    name: "a course landing page",
+    resource: "course_landing_pages",
+    route: courseLandingPageRoute,
     sent: { courseId: 5, name: "Ruby", slug: "ruby-landing" },
   },
 ];
@@ -98,8 +98,8 @@ describe("admin create", () => {
       );
 
       const { router } = await renderRoute(scenario.route, {
-        path: `/{-$locale}/admin/${scenario.resource}/new`,
         initialPath: `/admin/${scenario.resource}/new`,
+        path: `/{-$locale}/admin/${scenario.resource}/new`,
         user: admin,
       });
 
@@ -122,8 +122,8 @@ describe("admin create", () => {
   it("a visitor who is not an admin is sent away from the admin pages", async () => {
     expect.hasAssertions();
     const { router } = await renderRoute(courseRoute, {
-      path: "/{-$locale}/admin/courses/new",
       initialPath: "/admin/courses/new",
+      path: "/{-$locale}/admin/courses/new",
       user: { ...admin, admin: false, canAccessAdmin: false },
     });
 

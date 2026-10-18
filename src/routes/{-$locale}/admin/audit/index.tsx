@@ -47,10 +47,10 @@ const PER_PAGE = 25;
 const NO_FILTERS = {
   actorUserId: "",
   channel: "",
-  operation: "",
-  entityType: "",
   entityId: "",
+  entityType: "",
   from: "",
+  operation: "",
   to: "",
 };
 type Filters = typeof NO_FILTERS;
@@ -67,8 +67,8 @@ const endOfDay = (day: string) => {
   return next.toISOString();
 };
 
-const CHANNEL_COLOR = { web: "blue", mcp: "grape" } as const;
-const OUTCOME_COLOR = { succeeded: "green", forbidden: "orange", failed: "red" } as const;
+const CHANNEL_COLOR = { mcp: "grape", web: "blue" } as const;
+const OUTCOME_COLOR = { failed: "red", forbidden: "orange", succeeded: "green" } as const;
 
 function AuditTrail() {
   const { t } = useTranslation();
@@ -102,13 +102,13 @@ function AuditTrail() {
     setPagination((current) => ({ ...current, pageIndex: 0 }));
   };
   const field = (name: keyof Filters) => ({
-    value: draft[name],
     // The value is read before the updater runs: React clears `currentTarget`
     // once the handler returns, and the updater runs later.
     onChange: (event: { currentTarget: { value: string } }) => {
       const { value } = event.currentTarget;
       setDraft((current) => ({ ...current, [name]: value }));
     },
+    value: draft[name],
   });
   const reset = () => {
     form.reset(NO_FILTERS);
@@ -117,51 +117,51 @@ function AuditTrail() {
 
   const columns: CrudColumnDef<AuditRecord>[] = [
     {
-      id: "occurredAt",
-      header: t(($) => $.admin.audit.columns.occurredAt),
       cell: ({ row }) => new Date(row.original.occurredAt).toLocaleString(),
+      header: t(($) => $.admin.audit.columns.occurredAt),
+      id: "occurredAt",
     },
     {
-      id: "channel",
-      header: t(($) => $.admin.audit.columns.channel),
       cell: ({ row }) => (
         <Badge color={CHANNEL_COLOR[row.original.channel]} variant="light">
           {t(($) => $.admin.audit.channel[row.original.channel])}
         </Badge>
       ),
+      header: t(($) => $.admin.audit.columns.channel),
+      id: "channel",
     },
     {
-      id: "outcome",
-      header: t(($) => $.admin.audit.columns.outcome),
       cell: ({ row }) => (
         <Badge color={OUTCOME_COLOR[row.original.outcome]}>
           {t(($) => $.admin.audit.outcome[row.original.outcome])}
         </Badge>
       ),
+      header: t(($) => $.admin.audit.columns.outcome),
+      id: "outcome",
     },
     {
       accessorKey: "operation",
       header: t(($) => $.admin.audit.columns.operation),
     },
     {
-      id: "entity",
-      header: t(($) => $.admin.audit.columns.entity),
       cell: ({ row }) =>
         [row.original.entityType, row.original.entityId].filter(Boolean).join(" #"),
+      header: t(($) => $.admin.audit.columns.entity),
+      id: "entity",
     },
     {
-      id: "actor",
-      header: t(($) => $.admin.audit.columns.actor),
       cell: ({ row }) => row.original.actorUserId ?? "—",
+      header: t(($) => $.admin.audit.columns.actor),
+      id: "actor",
     },
     {
-      id: "details",
-      header: "",
       cell: ({ row }) => (
         <Button variant="subtle" size="compact-sm" onClick={() => setSelected(row.original)}>
           {t(($) => $.admin.audit.details.open)}
         </Button>
       ),
+      header: "",
+      id: "details",
     },
   ];
 
@@ -175,39 +175,27 @@ function AuditTrail() {
       <form onSubmit={submitForm(form)}>
         <Stack gap="xs">
           <Group align="flex-end" gap="sm">
-            <form.AppField name="from">
-              {(field) => (
-                <field.TextField label={t(($) => $.admin.audit.filters.from)} type="date" />
-              )}
-            </form.AppField>
-            <form.AppField name="to">
-              {(field) => (
-                <field.TextField label={t(($) => $.admin.audit.filters.to)} type="date" />
-              )}
-            </form.AppField>
-            <form.AppField name="actorUserId">
-              {(field) => (
-                <field.TextField
-                  label={t(($) => $.admin.audit.filters.actorUserId)}
-                  type="number"
-                  min={1}
-                />
-              )}
-            </form.AppField>
-            <form.Field name="channel">
-              {(field) => (
-                <NativeSelect
-                  label={t(($) => $.admin.audit.filters.channel)}
-                  data={[
-                    { value: "", label: t(($) => $.admin.audit.filters.anyChannel) },
-                    { value: "web", label: t(($) => $.admin.audit.channel.web) },
-                    { value: "mcp", label: t(($) => $.admin.audit.channel.mcp) },
-                  ]}
-                  value={field.state.value}
-                  onChange={(event) => field.handleChange(event.currentTarget.value)}
-                />
-              )}
-            </form.Field>
+            <TextInput
+              label={t(($) => $.admin.audit.filters.from)}
+              type="date"
+              {...field("from")}
+            />
+            <TextInput label={t(($) => $.admin.audit.filters.to)} type="date" {...field("to")} />
+            <TextInput
+              label={t(($) => $.admin.audit.filters.actorUserId)}
+              type="number"
+              min={1}
+              {...field("actorUserId")}
+            />
+            <NativeSelect
+              label={t(($) => $.admin.audit.filters.channel)}
+              data={[
+                { label: t(($) => $.admin.audit.filters.anyChannel), value: "" },
+                { label: t(($) => $.admin.audit.channel.web), value: "web" },
+                { label: t(($) => $.admin.audit.channel.mcp), value: "mcp" },
+              ]}
+              {...field("channel")}
+            />
           </Group>
           <Group align="flex-end" gap="sm">
             <form.AppField name="operation">

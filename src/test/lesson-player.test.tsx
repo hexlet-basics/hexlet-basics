@@ -39,90 +39,90 @@ const LONG_LINE_LENGTH = 200;
 // and the requests the page did (and did not) make.
 
 const course: Course = {
-  id: 1,
-  slug: "javascript",
-  // The course's own name, which is NOT what the page is titled with.
-  name: "javascript",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: 99,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 0,
-  lessonsCount: 3,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: 99,
+  enrollmentsCount: 0,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 3,
+  // The course's own name, which is NOT what the page is titled with.
+  name: "javascript",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: null,
+  repositoryUrl: null,
+  slug: "javascript",
 };
 
 const landingPage: CourseLandingPage = {
-  id: 10,
   courseId: 1,
   courseSlug: "javascript",
   createdAt: "2026-01-01T00:00:00Z",
-  slug: "javascript-ru",
-  // The marketing name a learner recognises — the one the page is titled with.
-  name: "JavaScript",
-  main: true,
-  listed: true,
-  state: "published",
-  order: null,
-  footer: true,
-  footerName: null,
-  landingPageToRedirectId: null,
-  metaTitle: "JavaScript course",
-  metaDescription: "Learn JavaScript",
-  header: "JavaScript course",
   description: "Learn JavaScript in the browser",
-  usedInHeader: null,
-  usedInDescription: null,
-  outcomesHeader: null,
-  outcomesDescription: null,
-  outcomesImage: null,
   duration: 10,
   enrollmentsCount: 0,
+  footer: true,
+  footerName: null,
+  header: "JavaScript course",
+  id: 10,
+  landingPageToRedirectId: null,
+  listed: true,
+  main: true,
+  metaDescription: "Learn JavaScript",
+  metaTitle: "JavaScript course",
+  // The marketing name a learner recognises — the one the page is titled with.
+  name: "JavaScript",
+  order: null,
+  outcomesDescription: null,
+  outcomesHeader: null,
+  outcomesImage: null,
+  slug: "javascript-ru",
+  state: "published",
+  usedInDescription: null,
+  usedInHeader: null,
 };
 
 const lesson: CourseLesson = {
   course,
-  id: 1002,
-  name: "Variables",
-  slug: "variables",
-  locale: "en",
-  naturalOrder: 2,
-  versionId: 99,
-  version: 99,
-  description: "Storing values",
-  instructions: "Assign the string `hello` to `greeting`.",
-  theory: "A variable is a name bound to a value.\n\n```js\nlet greeting = 'hello';\n```",
-  definitions: [],
-  tips: ["Names are case sensitive"],
-  preparedCode: "let greeting = '';\n",
-  originalCode: "let greeting = 'hello'; // the author's answer\n",
-  testCode: "assert.equal(greeting, 'hello');\n",
-  exerciseExtension: "js",
-  testExtension: "js",
-  sourceCodeUrl: "https://github.com/hexlet-basics/exercises-javascript",
   createdAt: "2026-01-01T00:00:00Z",
+  definitions: [],
+  description: "Storing values",
+  exerciseExtension: "js",
+  id: 1002,
+  instructions: "Assign the string `hello` to `greeting`.",
+  locale: "en",
+  name: "Variables",
+  naturalOrder: 2,
+  originalCode: "let greeting = 'hello'; // the author's answer\n",
+  preparedCode: "let greeting = '';\n",
+  slug: "variables",
+  sourceCodeUrl: "https://github.com/hexlet-basics/exercises-javascript",
+  testCode: "assert.equal(greeting, 'hello');\n",
+  testExtension: "js",
+  theory: "A variable is a name bound to a value.\n\n```js\nlet greeting = 'hello';\n```",
+  tips: ["Names are case sensitive"],
+  version: 99,
+  versionId: 99,
 };
 
 // The course's lessons in course order, each marked or not.
 function lessonRows(finished: string[] = []): LearnerLesson[] {
   return [
-    { slug: "hello-world", name: "Hello, World!" },
-    { slug: "variables", name: "Variables" },
-    { slug: "strings", name: "Strings" },
+    { name: "Hello, World!", slug: "hello-world" },
+    { name: "Variables", slug: "variables" },
+    { name: "Strings", slug: "strings" },
   ].map(({ slug, name }, index) => ({
+    description: null,
+    finished: finished.includes(slug),
     id: FIRST_LESSON_ID + index,
     name,
-    description: null,
-    slug,
     position: index + 1,
-    finished: finished.includes(slug),
+    slug,
   }));
 }
 
@@ -131,7 +131,7 @@ const lessonRef = (slug: string): LessonRef => {
   if (!row) {
     throw new Error(`no lesson row ${slug}`);
   }
-  return { id: row.id, slug, name: row.name };
+  return { id: row.id, name: row.name, slug };
 };
 
 // The lessons on either side of one, in course order: the server's answer.
@@ -141,19 +141,19 @@ function adjacentTo(slug: string): AdjacentLessons {
   const previous = slugs[index - 1];
   const next = slugs[index + 1];
   return {
-    previous: previous ? lessonRef(previous) : null,
     next: next ? lessonRef(next) : null,
+    previous: previous ? lessonRef(previous) : null,
   };
 }
 
 // A learner who has finished the first lesson: the second is next.
 function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView {
   return {
-    lesson,
-    landingPage,
-    lessons: lessonRows(["hello-world"]),
     adjacent: adjacentTo((overrides.lesson ?? lesson).slug),
-    progress: { state: "started", completion: 33, nextLesson: lessonRef("variables") },
+    landingPage,
+    lesson,
+    lessons: lessonRows(["hello-world"]),
+    progress: { completion: 33, nextLesson: lessonRef("variables"), state: "started" },
     ...overrides,
   };
 }
@@ -161,16 +161,16 @@ function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView
 // A signed-in learner, for the tests that need one. Everything else here is a
 // guest, which is the harder case and the one legacy under-tested.
 const learner: AuthUser = {
-  id: 7,
-  firstName: "Ada",
-  lastName: null,
-  name: "Ada",
-  email: "ada@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "ada@example.com",
+  firstName: "Ada",
+  id: 7,
+  lastName: null,
+  name: "Ada",
   type: "user",
 };
 
@@ -178,8 +178,8 @@ const learner: AuthUser = {
 // do for a visitor. The lesson layout gives the panes the viewport to divide.
 function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
   return renderRoute(lessonRoute, {
-    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     user,
   });
 }
@@ -187,9 +187,9 @@ function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
 // The layout switches on the viewport, not on the container, so each test sets
 // the viewport it means: a desktop unless it says otherwise, and the viewport
 // the suite was started with once the file is done.
-const desktop = { width: 1200, height: 800 };
-const phone = { width: 375, height: 667 };
-const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+const desktop = { height: 800, width: 1200 };
+const phone = { height: 667, width: 375 };
+const startingViewport = { height: window.innerHeight, width: window.innerWidth };
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
 function editorText() {
@@ -199,12 +199,12 @@ function editorText() {
 // A completed run, as the server reports one.
 function checkResult(overrides: Partial<LessonCheckingResponse> = {}): LessonCheckingResponse {
   return {
+    courseHasBeenFinished: false,
+    lessonHasBeenFinished: true,
+    output: "1 example, 0 failures",
     passed: true,
     result: "passed",
     status: 0,
-    output: "1 example, 0 failures",
-    lessonHasBeenFinished: true,
-    courseHasBeenFinished: false,
     ...overrides,
   };
 }
@@ -212,13 +212,13 @@ function checkResult(overrides: Partial<LessonCheckingResponse> = {}): LessonChe
 // A markup course: the exercise is a page, and the learner watches it take shape.
 function htmlLessonView(): CourseLessonView {
   return lessonView({
-    landingPage: { ...landingPage, courseSlug: "html", slug: "html-ru", name: "HTML" },
+    landingPage: { ...landingPage, courseSlug: "html", name: "HTML", slug: "html-ru" },
     lesson: {
       ...lesson,
-      course: { ...course, slug: "html", name: "html" },
+      course: { ...course, name: "html", slug: "html" },
       name: "Headings",
-      slug: "headings",
       preparedCode: "<h1>Hello</h1>\n",
+      slug: "headings",
     },
   });
 }
@@ -228,7 +228,7 @@ function lastLessonView(): CourseLessonView {
   return lessonView({
     lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings" },
     lessons: lessonRows(["hello-world", "variables"]),
-    progress: { state: "started", completion: 66, nextLesson: lessonRef("strings") },
+    progress: { completion: 66, nextLesson: lessonRef("strings"), state: "started" },
   });
 }
 
@@ -260,14 +260,14 @@ function paneWidths() {
 
 function assistantMessage(overrides: Partial<LessonAssistantMessage>): LessonAssistantMessage {
   return {
+    content: "",
+    courseLessonName: "Variables",
+    courseLessonSlug: "variables",
+    courseSlug: "javascript",
+    createdAt: "2026-01-01T00:00:00Z",
     id: 1,
     role: "assistant",
     userId: null,
-    content: "",
-    courseSlug: "javascript",
-    courseLessonSlug: "variables",
-    courseLessonName: "Variables",
-    createdAt: "2026-01-01T00:00:00Z",
     ...overrides,
   };
 }
@@ -297,21 +297,21 @@ function courseView(state: EnrollmentState): CourseView {
   const progress = lastLessonView().progress ?? null;
   return {
     course,
+    enrollment: progress && { courseId: course.id, id: 5, state, userId: learner.id },
     landingPage,
-    movedTo: null,
     lessons: [],
     modules: [],
-    qnaItems: [],
-    enrollment: progress && { id: 5, userId: learner.id, courseId: course.id, state },
+    movedTo: null,
     progress,
+    qnaItems: [],
   };
 }
 
 function assistantChat(overrides: Partial<LessonAssistantChat> = {}): LessonAssistantChat {
   return {
     messages: [
-      assistantMessage({ id: 1, role: "user", userId: 7, content: "What is a variable?" }),
-      assistantMessage({ id: 2, role: "assistant", content: "A name bound to a value." }),
+      assistantMessage({ content: "What is a variable?", id: 1, role: "user", userId: 7 }),
+      assistantMessage({ content: "A name bound to a value.", id: 2, role: "assistant" }),
     ],
     quotaExceeded: false,
     ...overrides,
@@ -412,7 +412,7 @@ describe("lesson player", () => {
     await atDesktop();
     const visitor = lessonView({
       lessons: lessonRows(),
-      progress: { state: null, completion: 0, nextLesson: lessonRef("hello-world") },
+      progress: { completion: 0, nextLesson: lessonRef("hello-world"), state: null },
     });
     worker.use(
       http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(visitor)),
@@ -475,7 +475,7 @@ describe("lesson player", () => {
     await atDesktop();
     worker.use(
       http.get("*/languages/javascript/lessons/nope", () =>
-        HttpResponse.json({ title: "Not Found", status: 404 }, { status: 404 }),
+        HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
       ),
     );
 
@@ -518,8 +518,8 @@ describe("lesson player", () => {
         ...lesson,
         id: 1003,
         name: "Strings",
-        slug: "strings",
         preparedCode: "// strings\n",
+        slug: "strings",
       },
     });
     worker.use(
@@ -588,11 +588,11 @@ describe("lesson player", () => {
         ),
       )
       .toBeVisible();
-    await page.getByRole("button", { name: "No", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "No" }).click();
     expect(editorText()).toContain("let greeting = 'mess';");
 
     await page.getByRole("button", { name: "Reset" }).click();
-    await page.getByRole("button", { name: "Yes", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Yes" }).click();
 
     await expect.poll(editorText).toContain("let greeting = '';");
   }, 60_000);
@@ -633,11 +633,11 @@ describe("lesson player", () => {
       http.post("*/lessons/1002/check", () =>
         HttpResponse.json(
           checkResult({
+            lessonHasBeenFinished: false,
+            output: "expected 'hello', got ''",
             passed: false,
             result: "failed",
             status: 1,
-            output: "expected 'hello', got ''",
-            lessonHasBeenFinished: false,
           }),
         ),
       ),
@@ -660,11 +660,11 @@ describe("lesson player", () => {
       http.post("*/lessons/1002/check", () =>
         HttpResponse.json(
           checkResult({
+            lessonHasBeenFinished: false,
+            output: "",
             passed: false,
             result: "failed-infinity",
             status: 124,
-            output: "",
-            lessonHasBeenFinished: false,
           }),
         ),
       ),
@@ -776,11 +776,11 @@ describe("lesson player", () => {
       http.post("*/lessons/1002/check", () =>
         HttpResponse.json(
           checkResult({
+            lessonHasBeenFinished: false,
+            output: "\u001B[31mexpected hello\u001B[39m",
             passed: false,
             result: "failed",
             status: 1,
-            output: "\u001B[31mexpected hello\u001B[39m",
-            lessonHasBeenFinished: false,
           }),
         ),
       ),
@@ -885,7 +885,7 @@ describe("lesson player", () => {
     await atDesktop();
     const finished = lessonView({
       lessons: lessonRows(["hello-world", "variables"]),
-      progress: { state: "started", completion: 66, nextLesson: lessonRef("strings") },
+      progress: { completion: 66, nextLesson: lessonRef("strings"), state: "started" },
     });
     worker.use(
       http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
@@ -927,8 +927,8 @@ describe("lesson player", () => {
     );
 
     await renderRoute(lessonRoute, {
-      path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
       initialPath: "/languages/html/lessons/headings",
+      path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
       wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
     });
 
@@ -1008,8 +1008,8 @@ describe("lesson player", () => {
         ...lesson,
         id: 1003,
         name: "Strings",
-        slug: "strings",
         preparedCode: "// strings\n",
+        slug: "strings",
       },
     });
     const requests: string[] = [];
@@ -1072,10 +1072,10 @@ describe("lesson player", () => {
     );
 
     const { router, queryClient } = await renderRoute(lessonRoute, {
-      path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+      also: [{ path: "/{-$locale}/languages/$slug/success", route: successRoute }],
       initialPath: "/languages/javascript/lessons/strings",
+      path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
       user: learner,
-      also: [{ route: successRoute, path: "/{-$locale}/languages/$slug/success" }],
       wrap: (element) => (
         <div style={{ height: `${desktop.height}px`, width: `${desktop.width}px` }}>{element}</div>
       ),
@@ -1121,7 +1121,7 @@ describe("lesson player", () => {
     // The completion page needs a session, so a guest is asked to sign up first.
     await expect.element(page.getByRole("link", { name: "Finish" })).not.toBeInTheDocument();
     await expect
-      .element(page.getByRole("link", { name: "Next →", exact: true }))
+      .element(page.getByRole("link", { exact: true, name: "Next →" }))
       .toHaveAttribute("href", expect.stringContaining("/users/new"));
   }, 60_000);
 
@@ -1152,7 +1152,7 @@ describe("lesson player", () => {
     // Both lead to sign-up and carry the way back to this lesson. The merge that
     // credits what was passed is the server's, and is covered by its tests.
     for (const name of ["Next →", "register"]) {
-      const href = page.getByRole("link", { name, exact: true }).element().getAttribute("href");
+      const href = page.getByRole("link", { exact: true, name }).element().getAttribute("href");
       const url = new URL(String(href), location.origin);
       expect(url.pathname).toBe("/users/new");
       expect(url.searchParams.get("redirect")).toBe("/languages/javascript/lessons/variables");
@@ -1176,7 +1176,7 @@ describe("lesson player", () => {
 
     // The way on is open, as it is for a learner revisiting a finished lesson…
     await expect
-      .element(page.getByRole("link", { name: "Next →", exact: true }))
+      .element(page.getByRole("link", { exact: true, name: "Next →" }))
       .toHaveAttribute("href", expect.stringContaining("/users/new"));
     // …but the prompt is about a pass just achieved, and there has been none.
     await expect
@@ -1351,7 +1351,7 @@ describe("lesson player", () => {
 
     // The question goes out with the editor's buffer; nothing has been run yet.
     expect(asked).toStrictEqual([
-      { message: "How do I declare one?", userCode: "let greeting = '';\n", output: "" },
+      { message: "How do I declare one?", output: "", userCode: "let greeting = '';\n" },
     ]);
   }, 60_000);
 
@@ -1383,8 +1383,8 @@ describe("lesson player", () => {
       http.get("*/api/ai/lessons/1002/messages", () => HttpResponse.json(assistantChat())),
       http.post("*/api/ai/lessons/1002/messages", () =>
         HttpResponse.json(
-          { type: "about:blank", title: "Too Many Requests", status: 429 },
-          { status: 429, headers: { "Content-Type": "application/problem+json" } },
+          { status: 429, title: "Too Many Requests", type: "about:blank" },
+          { headers: { "Content-Type": "application/problem+json" }, status: 429 },
         ),
       ),
     );

@@ -28,7 +28,7 @@ export default function CourseCatalog() {
     return (
       <Container my="xl">
         <Skeleton h={40} w="40%" mb="xl" />
-        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
+        <SimpleGrid cols={{ base: 2, md: 4, xs: 3 }}>
           {Array.from({ length: 8 }, (_, index) => (
             <Skeleton key={index} h={220} />
           ))}
@@ -52,7 +52,7 @@ export default function CourseCatalog() {
       </Title>
 
       <Box mb={48}>
-        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
+        <SimpleGrid cols={{ base: 2, md: 4, xs: 3 }}>
           {data.map((item) => (
             <CourseBlock key={item.id} lazy item={item} />
           ))}

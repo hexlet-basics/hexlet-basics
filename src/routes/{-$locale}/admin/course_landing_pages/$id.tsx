@@ -42,15 +42,15 @@ function EditCourseLandingPage() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateCourseLandingPageMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [
       adminListCourseLandingPagesQueryKey(),
       adminGetCourseLandingPageQueryKey({ path: { id: pageId } }),
     ],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateCourseLandingPageMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   // Nested FAQ (legacy `admin/course_landing_pages/:id/qna_items`).
@@ -58,22 +58,22 @@ function EditCourseLandingPage() {
   const qna = useQuery(adminListLandingPageQnaItemsOptions(qnaPath));
   const qnaInvalidate = [adminListLandingPageQnaItemsQueryKey(qnaPath)];
   const createQna = useResourceMutation({
-    mutation: adminCreateLandingPageQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: qnaInvalidate,
+    mutation: adminCreateLandingPageQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.created),
   });
   const updateQna = useResourceMutation({
-    mutation: adminUpdateLandingPageQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: qnaInvalidate,
+    mutation: adminUpdateLandingPageQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.updated),
   });
   const deleteQna = useResourceMutation({
-    mutation: adminDeleteLandingPageQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
+    invalidate: qnaInvalidate,
+    mutation: adminDeleteLandingPageQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.deleted),
   });
 
   return (
@@ -88,7 +88,7 @@ function EditCourseLandingPage() {
             fields={fields}
             schema={zCourseLandingPageInput}
             defaultValues={courseLandingPageToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: pageId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: pageId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />
@@ -97,9 +97,9 @@ function EditCourseLandingPage() {
             items={qna.data ?? []}
             onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
             onUpdate={(itemId, input) =>
-              updateQna.mutate({ path: { landingPageId: pageId, id: itemId }, body: input })
+              updateQna.mutate({ body: input, path: { id: itemId, landingPageId: pageId } })
             }
-            onDelete={(itemId) => deleteQna.mutate({ path: { landingPageId: pageId, id: itemId } })}
+            onDelete={(itemId) => deleteQna.mutate({ path: { id: itemId, landingPageId: pageId } })}
             isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
           />
         </>

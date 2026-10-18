@@ -7,54 +7,54 @@ import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 // imported lazily, one module per language, so a page that shows no code pays
 // for no grammar.
 const languageModules: Record<string, () => Promise<{ default: LanguageRegistration[] }>> = {
+  css: () => import("@shikijs/langs/css"),
   // Web
   html: () => import("@shikijs/langs/html"),
-  css: () => import("@shikijs/langs/css"),
   scss: () => import("@shikijs/langs/scss"),
 
   // JavaScript / TypeScript
   javascript: () => import("@shikijs/langs/js"),
   js: () => import("@shikijs/langs/js"),
-  typescript: () => import("@shikijs/langs/ts"),
-  ts: () => import("@shikijs/langs/ts"),
   jsx: () => import("@shikijs/langs/jsx"),
+  ts: () => import("@shikijs/langs/ts"),
   tsx: () => import("@shikijs/langs/tsx"),
+  typescript: () => import("@shikijs/langs/ts"),
 
-  // Server-side
-  php: () => import("@shikijs/langs/php"),
-  ruby: () => import("@shikijs/langs/ruby"),
-  python: () => import("@shikijs/langs/python"),
+  cs: () => import("@shikijs/langs/csharp"),
+  csharp: () => import("@shikijs/langs/csharp"),
   go: () => import("@shikijs/langs/go"),
   java: () => import("@shikijs/langs/java"),
   kotlin: () => import("@shikijs/langs/kotlin"),
-  cs: () => import("@shikijs/langs/csharp"),
-  csharp: () => import("@shikijs/langs/csharp"),
+  // Server-side
+  php: () => import("@shikijs/langs/php"),
+  python: () => import("@shikijs/langs/python"),
+  ruby: () => import("@shikijs/langs/ruby"),
 
   // Systems / shell
   bash: () => import("@shikijs/langs/bash"),
-  shell: () => import("@shikijs/langs/shell"),
-  sh: () => import("@shikijs/langs/sh"),
   json: () => import("@shikijs/langs/json"),
+  sh: () => import("@shikijs/langs/sh"),
+  shell: () => import("@shikijs/langs/shell"),
 
+  clojure: () => import("@shikijs/langs/clojure"),
+  elixir: () => import("@shikijs/langs/elixir"),
   // Functional
   haskell: () => import("@shikijs/langs/haskell"),
-  elixir: () => import("@shikijs/langs/elixir"),
-  clojure: () => import("@shikijs/langs/clojure"),
 
-  // The rest
-  perl: () => import("@shikijs/langs/perl"),
+  "1c": () => import("@shikijs/langs/1c"),
   c: () => import("@shikijs/langs/c"),
   cpp: () => import("@shikijs/langs/cpp"),
-  scheme: () => import("@shikijs/langs/scheme"),
-  racket: () => import("@shikijs/langs/racket"),
-  prolog: () => import("@shikijs/langs/prolog"),
-  "1c": () => import("@shikijs/langs/1c"),
-  md: () => import("@shikijs/langs/markdown"),
-  markdown: () => import("@shikijs/langs/markdown"),
   diff: () => import("@shikijs/langs/diff"),
-  swift: () => import("@shikijs/langs/swift"),
-  rust: () => import("@shikijs/langs/rust"),
   lua: () => import("@shikijs/langs/lua"),
+  markdown: () => import("@shikijs/langs/markdown"),
+  md: () => import("@shikijs/langs/markdown"),
+  // The rest
+  perl: () => import("@shikijs/langs/perl"),
+  prolog: () => import("@shikijs/langs/prolog"),
+  racket: () => import("@shikijs/langs/racket"),
+  rust: () => import("@shikijs/langs/rust"),
+  scheme: () => import("@shikijs/langs/scheme"),
+  swift: () => import("@shikijs/langs/swift"),
 };
 
 // The languages actually loaded into the highlighter. Anything else renders as
@@ -104,9 +104,9 @@ export function classifyLanguage(requested: string): {
 
 function loadShiki() {
   return createHighlighterCore({
-    themes: [() => import("@shikijs/themes/github-light")],
-    langs: Object.values(languageModules),
     engine: createOnigurumaEngine(() => import("shiki/wasm")),
+    langs: Object.values(languageModules),
+    themes: [() => import("@shikijs/themes/github-light")],
   });
 }
 

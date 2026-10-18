@@ -13,8 +13,8 @@ import { renderRoute } from "@/test/renderRoute";
 async function renderSignUp(redirect: string) {
   worker.use(http.post("*/users", () => HttpResponse.json({}, { status: 201 })));
   const rendered = await renderRoute(signUpRoute, {
-    path: "/{-$locale}/users/new",
     initialPath: `/users/new?redirect=${encodeURIComponent(redirect)}`,
+    path: "/{-$locale}/users/new",
   });
   return rendered;
 }
@@ -62,8 +62,8 @@ describe("sign up", () => {
       http.post("*/users", () => validationProblem({ email: ["has already been taken"] })),
     );
     const { router } = await renderRoute(signUpRoute, {
-      path: "/{-$locale}/users/new",
       initialPath: "/users/new",
+      path: "/{-$locale}/users/new",
     });
 
     await signUp();

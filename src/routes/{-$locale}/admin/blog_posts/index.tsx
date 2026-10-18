@@ -26,17 +26,17 @@ function BlogPostsList() {
 
   const list = useCrudList({
     list: adminListBlogPostsOptions,
-    searchable: true,
     listKey: adminListBlogPostsQueryKey,
     remove: adminDeleteBlogPostMutation,
+    searchable: true,
   });
 
   // Legacy row action: enqueue the AI pick of the post's related courses.
   const suggestMutation = useResourceMutation({
-    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
-    invalidate: [adminListBlogPostsQueryKey()],
-    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminListBlogPostsQueryKey()],
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
   });
 
   const columns: CrudColumnDef<BlogPost>[] = [
@@ -50,11 +50,11 @@ function BlogPostsList() {
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.blog_post.state),
       cell: ({ row }) => {
         const { state } = row.original;
         return state ? t(($) => $.models.attributes.blog_post["state/values"][state]) : "";
       },
+      header: t(($) => $.models.attributes.blog_post.state),
     },
     {
       accessorKey: "locale",
@@ -65,6 +65,7 @@ function BlogPostsList() {
       header: t(($) => $.admin.blogPosts.likes),
     },
     list.actionsColumn({
+      describe: (row) => row.name ?? "",
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/blog_posts/$id" params={{ id: String(row.id) }} />
       ),
@@ -79,7 +80,6 @@ function BlogPostsList() {
           {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
         </Button>
       ),
-      describe: (row) => row.name ?? "",
     }),
   ];
 

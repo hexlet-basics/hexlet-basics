@@ -19,25 +19,25 @@ import { renderRoute } from "@/test/renderRoute";
 // what an admin sees and what the API is sent.
 
 const role: StaffRoleDetail = {
-  id: 5,
-  name: "Editor",
   description: null,
   grants: ["blog_posts.read"],
+  id: 5,
+  name: "Editor",
 };
 
 const catalog = {
   permissions: [
-    { name: "audit.read", kind: "read", capability: true },
-    { name: "banners.read", kind: "read", capability: false },
-    { name: "blog_posts.create", kind: "write", capability: false },
-    { name: "blog_posts.read", kind: "read", capability: false },
+    { capability: true, kind: "read", name: "audit.read" },
+    { capability: false, kind: "read", name: "banners.read" },
+    { capability: false, kind: "write", name: "blog_posts.create" },
+    { capability: false, kind: "read", name: "blog_posts.read" },
   ],
 };
 
 function openCategory() {
   return renderRoute(categoryRoute, {
-    path: "/{-$locale}/admin/course_categories/$id",
     initialPath: "/admin/course_categories/7",
+    path: "/{-$locale}/admin/course_categories/$id",
     user: admin,
   });
 }
@@ -57,8 +57,8 @@ describe("admin edit", () => {
     );
 
     await renderRoute(roleRoute, {
-      path: "/{-$locale}/admin/management/roles/$id",
       initialPath: "/admin/management/roles/5",
+      path: "/{-$locale}/admin/management/roles/$id",
       user: admin,
     });
 
@@ -88,16 +88,16 @@ describe("admin edit", () => {
   }, 60_000);
 
   const category: CourseCategory = {
-    id: 7,
-    slug: "programming",
-    name: "Programming",
-    header: "Programming",
-    description: null,
-    locale: "en",
     createdAt: "2026-01-01T00:00:00Z",
+    description: null,
+    header: "Programming",
+    id: 7,
+    locale: "en",
+    name: "Programming",
+    slug: "programming",
   };
 
-  const faq: QnaItem[] = [{ id: 1, question: "Is it free?", answer: "Yes." }];
+  const faq: QnaItem[] = [{ answer: "Yes.", id: 1, question: "Is it free?" }];
 
   it("an admin adds a question to a category's FAQ", async () => {
     expect.hasAssertions();
@@ -107,7 +107,7 @@ describe("admin edit", () => {
       http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
       http.post("*/admin/course_categories/7/qna_items", async ({ request }) => {
         created = await request.json();
-        return HttpResponse.json({ id: 2, question: "Why?", answer: "Because." });
+        return HttpResponse.json({ answer: "Because.", id: 2, question: "Why?" });
       }),
     );
 
@@ -125,7 +125,7 @@ describe("admin edit", () => {
 
     const confirmation = page.getByText("Record created");
     await expect.element(confirmation).toBeVisible();
-    expect(created).toStrictEqual({ question: "Why?", answer: "Because." });
+    expect(created).toStrictEqual({ answer: "Because.", question: "Why?" });
   }, 60_000);
 
   it("an admin edits a question and is told it was saved", async () => {
@@ -136,7 +136,7 @@ describe("admin edit", () => {
       http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
       http.put("*/admin/course_categories/7/qna_items/1", async ({ request }) => {
         updated = await request.json();
-        return HttpResponse.json({ id: 1, question: "Is it free?", answer: "Always." });
+        return HttpResponse.json({ answer: "Always.", id: 1, question: "Is it free?" });
       }),
     );
 
@@ -149,7 +149,7 @@ describe("admin edit", () => {
 
     const confirmation = page.getByText("Record updated");
     await expect.element(confirmation).toBeVisible();
-    expect(updated).toStrictEqual({ question: "Is it free?", answer: "Always." });
+    expect(updated).toStrictEqual({ answer: "Always.", question: "Is it free?" });
   }, 60_000);
 
   it("an admin deletes a question after confirming", async () => {

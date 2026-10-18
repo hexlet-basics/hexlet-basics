@@ -18,11 +18,11 @@ const sameSitePath = lenient(
 // `from` is where the visitor came from: the page links back to it and the form
 // returns there once sent.
 export const Route = createFileRoute("/{-$locale}/leads/new")({
-  validateSearch: z.object({ from: sameSitePath }),
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
   component: New,
+  validateSearch: z.object({ from: sameSitePath }),
 });
 
 function New() {

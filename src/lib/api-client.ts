@@ -59,12 +59,12 @@ client.interceptors.request.use(async (request) => {
   // streamed one cannot be handed to a new Request without `duplex`.
   const body = request.body ? await request.arrayBuffer() : undefined;
   return new Request(target, {
-    method: request.method,
-    headers,
     body,
-    signal: request.signal,
-    redirect: request.redirect,
     credentials: request.credentials,
+    headers,
+    method: request.method,
+    redirect: request.redirect,
+    signal: request.signal,
   });
 });
 

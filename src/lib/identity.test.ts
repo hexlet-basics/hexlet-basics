@@ -10,13 +10,13 @@ const user = { id: 7, name: "Ada" } as User;
 function routerOver(queryClient: QueryClient) {
   const seen: { cacheSizeAtInvalidate?: number } = {};
   return {
-    seen,
     router: {
       invalidate: () => {
         seen.cacheSizeAtInvalidate = queryClient.getQueryCache().getAll().length;
         return Promise.resolve();
       },
     },
+    seen,
   };
 }
 

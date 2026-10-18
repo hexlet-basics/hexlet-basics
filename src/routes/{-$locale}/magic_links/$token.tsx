@@ -14,7 +14,6 @@ import { HTTP_NOT_FOUND } from "@/lib/http-status";
 // cookie, and a server-side fetch would keep that cookie in the Node process
 // instead of handing it to the visitor.
 export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
-  ssr: false,
   loader: async ({ context, params }) => {
     try {
       const { data: user } = await consumeMagicLink({
@@ -33,13 +32,14 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
     } catch (error) {
       if (isApiError(error, HTTP_NOT_FOUND)) {
         throw redirect({
-          to: "/{-$locale}/magic_links/new",
           params: { locale: params.locale },
           search: { invalid: true },
+          to: "/{-$locale}/magic_links/new",
         });
       }
       throw error;
     }
-    throw redirect({ to: "/{-$locale}", params: { locale: params.locale } });
+    throw redirect({ params: { locale: params.locale }, to: "/{-$locale}" });
   },
+  ssr: false,
 });

@@ -31,24 +31,28 @@ export const Route = createFileRoute("/{-$locale}/reviews/")({
   validateSearch: z.object({
     page: lenient(pageNumber),
   }),
+
   loaderDeps: ({ search }) => ({ page: search.page }),
+
   loader: ({ context, deps }) =>
     context.queryClient.query({
       ...listPublicReviewsOptions({ query: { page: deps.page } }),
       staleTime: "static",
     }),
+
   // Legacy meta: the header as title and og:title (legacy asked for a `.title`
   // key that never existed), the reviews description, the canonical link and
   // the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.reviews.index.meta.description),
       i18n,
       title: i18n.t(($) => $.reviews.index.header),
-      description: i18n.t(($) => $.reviews.index.meta.description),
-      canonicalPath: match.pathname,
     });
   },
+
   component: Index,
 });
 

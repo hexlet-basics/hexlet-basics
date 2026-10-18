@@ -15,32 +15,32 @@ import { renderRoute } from "@/test/renderRoute";
 
 function post(state: BlogPostState): BlogPost {
   return {
-    id: 7,
-    creator: { id: 1, firstName: "Alice", lastName: null, name: "Alice" },
-    name: "Hello",
-    slug: "hello",
-    description: null,
-    state,
-    locale: "en",
-    richBodyHtml: "<p>x</p>",
-    readingTime: 0,
-    likesCount: 0,
-    relatedCourseIds: [],
     coverUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
+    creator: { firstName: "Alice", id: 1, lastName: null, name: "Alice" },
+    description: null,
+    id: 7,
+    likesCount: 0,
+    locale: "en",
+    name: "Hello",
+    readingTime: 0,
+    relatedCourseIds: [],
+    richBodyHtml: "<p>x</p>",
+    slug: "hello",
+    state,
   };
 }
 
 function openPost() {
   return renderRoute(editRoute, {
-    path: "/{-$locale}/admin/blog_posts/$id",
     initialPath: "/admin/blog_posts/7",
+    path: "/{-$locale}/admin/blog_posts/$id",
     user: admin,
   });
 }
 
 const noCourses = http.get("*/admin/courses", () =>
-  HttpResponse.json({ items: [], total: 0, page: 1, perPage: 100 }),
+  HttpResponse.json({ items: [], page: 1, perPage: 100, total: 0 }),
 );
 
 describe("admin blog post state", () => {
@@ -61,11 +61,11 @@ describe("admin blog post state", () => {
 
       await Promise.all([
         ...offered.map(async (name) => {
-          await expect.element(page.getByRole("button", { name, exact: true })).toBeVisible();
+          await expect.element(page.getByRole("button", { exact: true, name })).toBeVisible();
         }),
         ...hidden.map(async (name) => {
           await expect
-            .element(page.getByRole("button", { name, exact: true }))
+            .element(page.getByRole("button", { exact: true, name }))
             .not.toBeInTheDocument();
         }),
       ]);
@@ -101,15 +101,15 @@ describe("admin blog post state", () => {
     );
 
     await openPost();
-    await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Publish" }).click();
 
     await expect.element(page.getByText("State changed")).toBeVisible();
     expect(published).toBe(true);
     await expect
-      .element(page.getByRole("button", { name: "Unpublish", exact: true }))
+      .element(page.getByRole("button", { exact: true, name: "Unpublish" }))
       .toBeVisible();
     await expect
-      .element(page.getByRole("button", { name: "Publish", exact: true }))
+      .element(page.getByRole("button", { exact: true, name: "Publish" }))
       .not.toBeInTheDocument();
   }, 60_000);
 
@@ -133,11 +133,11 @@ describe("admin blog post state", () => {
     );
 
     await openPost();
-    await page.getByRole("button", { name: "Unpublish", exact: true }).click();
-    await expect.element(page.getByRole("button", { name: "Publish", exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "Archive", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Unpublish" }).click();
+    await expect.element(page.getByRole("button", { exact: true, name: "Publish" })).toBeVisible();
+    await page.getByRole("button", { exact: true, name: "Archive" }).click();
     await expect
-      .element(page.getByRole("button", { name: "Unpublish", exact: true }))
+      .element(page.getByRole("button", { exact: true, name: "Unpublish" }))
       .not.toBeInTheDocument();
 
     expect(called).toStrictEqual(["unpublish", "archive"]);
@@ -149,28 +149,28 @@ describe("admin blog post state", () => {
       noCourses,
       http.get("*/admin/blog_posts/7", () => HttpResponse.json(post("draft"))),
       http.post("*/admin/blog_posts/7/publish", () =>
-        HttpResponse.json({ type: "about:blank", title: "Conflict", status: 409 }, { status: 409 }),
+        HttpResponse.json({ status: 409, title: "Conflict", type: "about:blank" }, { status: 409 }),
       ),
     );
 
     await openPost();
-    await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Publish" }).click();
 
     await expect.element(page.getByText("Could not change the state")).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Publish", exact: true })).toBeVisible();
+    await expect.element(page.getByRole("button", { exact: true, name: "Publish" })).toBeVisible();
   }, 60_000);
 
   it("the list shows each post's state", async () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/blog_posts", () =>
-        HttpResponse.json({ items: [post("archived")], total: 1, page: 1, perPage: 25 }),
+        HttpResponse.json({ items: [post("archived")], page: 1, perPage: 25, total: 1 }),
       ),
     );
 
     await renderRoute(listRoute, {
-      path: "/{-$locale}/admin/blog_posts/",
       initialPath: "/admin/blog_posts",
+      path: "/{-$locale}/admin/blog_posts/",
       user: admin,
     });
 

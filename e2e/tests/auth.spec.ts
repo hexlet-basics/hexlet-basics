@@ -5,7 +5,7 @@ test("a visitor signs up, signs out and signs in again", async ({ site }) => {
   const email = uniqueEmail();
   const secret = "s3cret-pass-e2e";
 
-  await site.session.signUp({ firstName: "Ada", email, password: secret });
+  await site.session.signUp({ email, firstName: "Ada", password: secret });
 
   // Signing up also signs in: the header shows the new account.
   await site.session.expectSignedInAs("Ada");

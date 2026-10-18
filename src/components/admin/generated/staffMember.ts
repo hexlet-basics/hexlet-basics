@@ -5,45 +5,45 @@ import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
 export const staffMemberFields: FieldDescriptor[] = [
   {
-    name: "userId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_member.user_id",
+    name: "userId",
+    nullable: false,
     required: true,
   },
   {
-    name: "roleId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_member.role_id",
+    name: "roleId",
+    nullable: false,
     required: true,
   },
   {
-    name: "allowedLocales",
     kind: "multiselect",
-    nullable: false,
     labelKey: "models.attributes.staff_member.allowed_locales",
+    name: "allowedLocales",
+    nullable: false,
     required: true,
   },
 ];
 
 export const staffMemberColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_member.id",
+    name: "id",
+    nullable: false,
   },
   {
-    name: "userId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_member.user_id",
+    name: "userId",
+    nullable: false,
   },
   {
-    name: "roleId",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_member.role_id",
+    name: "roleId",
+    nullable: false,
   },
 ];

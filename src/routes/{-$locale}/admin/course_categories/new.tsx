@@ -27,12 +27,12 @@ function NewCourseCategory() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateCourseCategoryMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCourseCategoriesQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateCourseCategoryMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

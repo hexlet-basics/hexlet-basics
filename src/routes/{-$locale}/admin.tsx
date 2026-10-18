@@ -24,81 +24,81 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 // office grouped its menu.
 const NAV = [
   {
-    to: "/{-$locale}/admin/courses",
+    key: "courses",
     // Path fragment used to mark the entry active regardless of locale prefix.
     match: "/admin/courses",
-    key: "courses",
+    to: "/{-$locale}/admin/courses",
   },
   {
-    to: "/{-$locale}/admin/course_categories",
-    match: "/admin/course_categories",
     key: "courseCategories",
+    match: "/admin/course_categories",
+    to: "/{-$locale}/admin/course_categories",
   },
   {
-    to: "/{-$locale}/admin/course_landing_pages",
-    match: "/admin/course_landing_pages",
     key: "landingPages",
+    match: "/admin/course_landing_pages",
+    to: "/{-$locale}/admin/course_landing_pages",
   },
   {
-    to: "/{-$locale}/admin/course_lesson_reviews",
-    match: "/admin/course_lesson_reviews",
     key: "lessonReviews",
+    match: "/admin/course_lesson_reviews",
+    to: "/{-$locale}/admin/course_lesson_reviews",
   },
   {
-    to: "/{-$locale}/admin/lesson_progress",
-    match: "/admin/lesson_progress",
     key: "lessonProgress",
+    match: "/admin/lesson_progress",
+    to: "/{-$locale}/admin/lesson_progress",
   },
   {
-    to: "/{-$locale}/admin/blog_posts",
-    match: "/admin/blog_posts",
     key: "blogPosts",
+    match: "/admin/blog_posts",
+    to: "/{-$locale}/admin/blog_posts",
   },
   {
-    to: "/{-$locale}/admin/banners",
-    match: "/admin/banners",
     key: "banners",
+    match: "/admin/banners",
+    to: "/{-$locale}/admin/banners",
   },
   {
-    to: "/{-$locale}/admin/reviews",
-    match: "/admin/reviews",
     key: "reviews",
+    match: "/admin/reviews",
+    to: "/{-$locale}/admin/reviews",
   },
   {
-    to: "/{-$locale}/admin/messages",
-    match: "/admin/messages",
     key: "messages",
+    match: "/admin/messages",
+    to: "/{-$locale}/admin/messages",
   },
   {
-    to: "/{-$locale}/admin/leads",
-    match: "/admin/leads",
     key: "leads",
+    match: "/admin/leads",
+    to: "/{-$locale}/admin/leads",
   },
   {
-    to: "/{-$locale}/admin/users",
-    match: "/admin/users",
     key: "users",
+    match: "/admin/users",
+    to: "/{-$locale}/admin/users",
   },
   {
-    to: "/{-$locale}/admin/management/roles",
-    match: "/admin/management/roles",
     key: "roles",
+    match: "/admin/management/roles",
+    to: "/{-$locale}/admin/management/roles",
   },
   {
-    to: "/{-$locale}/admin/management/staff_members",
-    match: "/admin/management/staff_members",
     key: "staffMembers",
+    match: "/admin/management/staff_members",
+    to: "/{-$locale}/admin/management/staff_members",
   },
   {
-    to: "/{-$locale}/admin/management/users",
-    match: "/admin/management/users",
     key: "managementUsers",
+    match: "/admin/management/users",
+    to: "/{-$locale}/admin/management/users",
   },
   {
-    to: "/{-$locale}/admin/audit",
-    match: "/admin/audit",
-    key: "audit",
     capability: "audit.read",
+    key: "audit",
+    match: "/admin/audit",
+    to: "/{-$locale}/admin/audit",
   },
 ] as const;
 
@@ -123,9 +123,9 @@ function AdminLayout() {
     <AppShell
       header={{ height: 56 }}
       navbar={{
-        width: 260,
         breakpoint: "sm",
         collapsed: { mobile: !opened },
+        width: 260,
       }}
       padding="md"
     >

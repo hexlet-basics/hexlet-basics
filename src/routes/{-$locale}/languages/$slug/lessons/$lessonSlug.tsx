@@ -17,11 +17,13 @@ import { seoHead } from "@/lib/seo-head";
 // progress begins only through the start command (ADR-0012).
 export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lessonSlug")({
   staticData: { chrome: "bare" },
+
   loader: ({ context, params }) =>
     // The payload carries the visitor's progress: default staleness, not static.
     context.queryClient.query(
       getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
     ),
+
   // Legacy lessons#show meta, composed from the payload: a title naming the
   // lesson and the course's landing copy, a description drawn from the theory,
   // the canonical link, and Open Graph as an article with the course cover.
@@ -36,23 +38,25 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
     // The copy is a YAML block scalar ending in a newline, which legacy squished.
     const title = squish(
       i18n.t(($) => $.courses.lessons.show.title, {
-        lesson_name: lesson.name ?? "",
         language_name: landingPage?.name ?? "",
+        lesson_name: lesson.name ?? "",
       }),
     );
     return seoHead({
-      i18n,
-      title,
-      description: lessonDescription(loaderData),
       canonicalPath: match.pathname,
+      description: lessonDescription(loaderData),
+      i18n,
       image: lesson.course.coverListVariant,
+      openGraph: { locale: i18n.language, type: "article" },
       social: false,
-      openGraph: { type: "article", locale: i18n.language },
+      title,
     });
   },
+
   // A slug that resolves to nothing rejects in the loader, above the page, so
   // the apology for it lives here rather than in a branch the page cannot reach.
   errorComponent: LessonMissing,
+
   component: LessonRoute,
 });
 

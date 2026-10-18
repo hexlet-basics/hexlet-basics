@@ -11,20 +11,20 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // by the form.
 
 export const emptyBlogPost: BlogPostInput = {
-  name: "",
-  slug: "",
-  description: "",
-  richBody: "",
   coverAttachmentId: null,
+  description: "",
+  name: "",
+  richBody: "",
+  slug: "",
 };
 
 export function blogPostToForm(post: BlogPost): BlogPostInput {
   return {
-    name: post.name ?? "",
-    slug: post.slug ?? "",
-    description: post.description ?? "",
-    richBody: post.richBodyHtml,
     coverAttachmentId: null,
+    description: post.description ?? "",
+    name: post.name ?? "",
+    richBody: post.richBodyHtml,
+    slug: post.slug ?? "",
   };
 }
 
@@ -36,10 +36,10 @@ export function useBlogPostFields(): CrudFieldSpec<BlogPostInput>[] {
     // The schema allows null for these, the form insists.
     order: ["name", "slug", "description", "richBody"],
     set: {
-      name: { required: true },
-      slug: { required: true },
       description: { type: "textarea" },
-      richBody: { type: "richtext", required: false },
+      name: { required: true },
+      richBody: { required: false, type: "richtext" },
+      slug: { required: true },
     },
   });
 }

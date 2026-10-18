@@ -10,11 +10,11 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 export const emptyBanner: BannerInput = {
   background: "cta_gradient",
-  locale: "en",
   body: "",
-  url: "",
-  startsAt: null,
   finishesAt: null,
+  locale: "en",
+  startsAt: null,
+  url: "",
 };
 
 // Seed the form from an existing row: pick only the writable fields (drops
@@ -23,11 +23,11 @@ export const emptyBanner: BannerInput = {
 export function bannerToForm(banner: Banner): BannerInput {
   return {
     background: banner.background,
-    locale: banner.locale,
     body: banner.body,
-    url: banner.url ?? "",
-    startsAt: banner.startsAt,
     finishesAt: banner.finishesAt,
+    locale: banner.locale,
+    startsAt: banner.startsAt,
+    url: banner.url ?? "",
   };
 }
 

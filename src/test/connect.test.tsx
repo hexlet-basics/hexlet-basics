@@ -13,31 +13,31 @@ import { renderRoute } from "@/test/renderRoute";
 // browser on to are not under test here.
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 const consent: OAuthConsent = {
+  accountName: "Dora",
   clientName: "Claude Code",
   redirectHost: "127.0.0.1:8976",
   scopes: ["catalog:read", "progress:read", "offline_access"],
-  accountName: "Dora",
 };
 
 function openConsent(visitor: User | null = user) {
   worker.use(http.get("*/api/oauth/consents/req-1", () => HttpResponse.json(consent)));
   return renderRoute(connectRoute, {
-    path: "/{-$locale}/connect",
     initialPath: "/connect?id=req-1",
+    path: "/{-$locale}/connect",
     user: visitor,
   });
 }
@@ -79,8 +79,8 @@ describe("connect", () => {
       ),
     );
     await renderRoute(connectRoute, {
-      path: "/{-$locale}/connect",
       initialPath: "/connect?id=req-1",
+      path: "/{-$locale}/connect",
       user,
     });
 
@@ -129,8 +129,8 @@ describe("connect", () => {
       ),
     );
     await renderRoute(connectRoute, {
-      path: "/{-$locale}/connect",
       initialPath: "/connect?id=stale",
+      path: "/{-$locale}/connect",
       user,
     });
 
@@ -142,8 +142,8 @@ describe("connect", () => {
     expect.hasAssertions();
     worker.use(http.post("*/session", () => HttpResponse.json(user)));
     const { router } = await renderRoute(signInRoute, {
-      path: "/{-$locale}/session/new",
       initialPath: `/session/new?redirect=${encodeURIComponent("/connect?id=req-1")}`,
+      path: "/{-$locale}/session/new",
     });
 
     await page.getByLabelText("Email", { exact: false }).fill("dora@example.com");
@@ -157,8 +157,8 @@ describe("connect", () => {
     expect.hasAssertions();
     worker.use(http.post("*/session", () => HttpResponse.json(user)));
     const { router } = await renderRoute(signInRoute, {
-      path: "/{-$locale}/session/new",
       initialPath: `/session/new?redirect=${encodeURIComponent("https://evil.example/")}`,
+      path: "/{-$locale}/session/new",
     });
 
     await page.getByLabelText("Email", { exact: false }).fill("dora@example.com");

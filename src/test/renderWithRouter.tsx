@@ -30,13 +30,13 @@ export async function renderWithRouter(
 ) {
   const rootRoute = createRootRoute();
   const route = createRoute({
+    component: () => ui,
     getParentRoute: () => rootRoute,
     path,
-    component: () => ui,
   });
   const router = createRouter({
-    routeTree: rootRoute.addChildren([route]),
     history: createMemoryHistory({ initialEntries: [initialPath] }),
+    routeTree: rootRoute.addChildren([route]),
   });
 
   // Router.navigate is generic over the route tree, which a Mock cannot carry,
@@ -45,5 +45,5 @@ export async function renderWithRouter(
   router.navigate = navigate;
 
   const screen = await renderWithProviders(<RouterProvider router={router} />);
-  return { screen, navigate };
+  return { navigate, screen };
 }

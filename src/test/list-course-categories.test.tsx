@@ -21,22 +21,22 @@ describe("list course categories", () => {
         HttpResponse.json({
           items: [
             {
-              id: 1,
-              name: "Frontend",
-              header: "Frontend courses",
-              slug: "frontend",
-              description: null,
-              locale: "en",
               createdAt: "2026-01-01T00:00:00Z",
+              description: null,
+              header: "Frontend courses",
+              id: 1,
+              locale: "en",
+              name: "Frontend",
+              slug: "frontend",
             },
             {
-              id: 2,
-              name: "Backend",
-              header: "Backend courses",
-              slug: "backend",
-              description: null,
-              locale: "ru",
               createdAt: "2026-01-02T00:00:00Z",
+              description: null,
+              header: "Backend courses",
+              id: 2,
+              locale: "ru",
+              name: "Backend",
+              slug: "backend",
             },
           ],
           // More than one page of 25, so the pager renders — that is what proves
@@ -47,15 +47,15 @@ describe("list course categories", () => {
     );
 
     await renderRoute(Route, {
-      path: "/{-$locale}/admin/course_categories/",
       initialPath: "/admin/course_categories",
+      path: "/{-$locale}/admin/course_categories/",
       user: admin,
     });
 
     // Cell role with `exact`, because getByText matches case-insensitively and
     // each row carries the same word in both its name and its slug.
-    await expect.element(page.getByRole("cell", { name: "Frontend", exact: true })).toBeVisible();
-    await expect.element(page.getByRole("cell", { name: "backend", exact: true })).toBeVisible();
+    await expect.element(page.getByRole("cell", { exact: true, name: "Frontend" })).toBeVisible();
+    await expect.element(page.getByRole("cell", { exact: true, name: "backend" })).toBeVisible();
     await expect.element(page.getByRole("button", { name: "2" })).toBeVisible();
   }, 60_000);
 });

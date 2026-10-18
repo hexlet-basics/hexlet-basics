@@ -18,18 +18,18 @@ describe("create user", () => {
       http.post("*/admin/api/users", async ({ request }) => {
         received = (await request.json()) as UserInput;
         return HttpResponse.json({
-          id: 1,
+          admin: true,
           email: "dora@example.com",
           firstName: "Dora",
+          id: 1,
           lastName: null,
-          admin: true,
         });
       }),
     );
 
     const { router } = await renderRoute(Route, {
-      path: "/{-$locale}/admin/users/new",
       initialPath: "/admin/users/new",
+      path: "/{-$locale}/admin/users/new",
       user: admin,
     });
 
@@ -40,9 +40,9 @@ describe("create user", () => {
 
     await expect.element(page.getByText("Record created")).toBeVisible();
     expect(received).toMatchObject({
+      admin: true,
       email: "dora@example.com",
       firstName: "Dora",
-      admin: true,
     });
     await expect.poll(() => router.state.location.pathname).toBe("/admin/users");
   }, 60_000);
@@ -58,8 +58,8 @@ describe("create user", () => {
     );
 
     const { router } = await renderRoute(Route, {
-      path: "/{-$locale}/admin/users/new",
       initialPath: "/admin/users/new",
+      path: "/{-$locale}/admin/users/new",
       user: admin,
     });
 

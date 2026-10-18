@@ -31,8 +31,8 @@ export function useTheoryPercent(): [number, (percent: number) => void] {
     // `path` is explicit: the library defaults to the current page, which would
     // keep one split per lesson URL after all.
     setCookie(COOKIE_NAME, String(Math.round(percent * DECIMAL_STEP) / DECIMAL_STEP), {
-      path: "/",
       maxAge: COOKIE_TTL_SECONDS,
+      path: "/",
       sameSite: "lax",
     });
   };

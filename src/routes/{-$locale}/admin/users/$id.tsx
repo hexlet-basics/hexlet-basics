@@ -32,12 +32,12 @@ function EditUser() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateUserMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListUsersQueryKey(), adminGetUserQueryKey({ path: { id: userId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateUserMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -51,7 +51,7 @@ function EditUser() {
           fields={fields}
           schema={zUserInput}
           defaultValues={userToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: userId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: userId } })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
         />

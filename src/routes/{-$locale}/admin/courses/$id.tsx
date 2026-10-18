@@ -33,12 +33,12 @@ function EditCourse() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateCourseMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCoursesQueryKey(), adminGetCourseQueryKey({ path: { id: courseId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateCourseMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +53,7 @@ function EditCourse() {
             fields={fields}
             schema={zCourseInput}
             defaultValues={courseToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: courseId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: courseId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

@@ -44,16 +44,16 @@ export function seoHead({
       : siteUrl(canonicalPath.replace(/(?<last>.)\/+$/u, "$<last>"));
   const meta = [
     { title: `${SITE_NAME} | ${title}` },
-    ...(description === undefined ? [] : [{ name: "description", content: description }]),
+    ...(description === undefined ? [] : [{ content: description, name: "description" }]),
     ...(social
       ? [
-          { property: "og:title", content: title },
+          { content: title, property: "og:title" },
           ...(description === undefined
             ? []
-            : [{ property: "og:description", content: description }]),
-          ...(image ? [{ property: "og:image", content: image }] : []),
-          { name: "twitter:card", content: "summary" },
-          { name: "twitter:site", content: i18n.t(($) => $.links.hexlet_twitter_handle) },
+            : [{ content: description, property: "og:description" }]),
+          ...(image ? [{ content: image, property: "og:image" }] : []),
+          { content: "summary", name: "twitter:card" },
+          { content: i18n.t(($) => $.links.hexlet_twitter_handle), name: "twitter:site" },
         ]
       : []),
     ...(openGraph
@@ -61,19 +61,19 @@ export function seoHead({
           ...(social
             ? []
             : [
-                { property: "og:title", content: title },
-                ...(image ? [{ property: "og:image", content: image }] : []),
+                { content: title, property: "og:title" },
+                ...(image ? [{ content: image, property: "og:image" }] : []),
               ]),
-          { property: "og:type", content: openGraph.type },
-          { property: "og:locale", content: openGraph.locale },
+          { content: openGraph.type, property: "og:type" },
+          { content: openGraph.locale, property: "og:locale" },
           // Og:url is the canonical, so the two cannot drift apart.
-          ...(canonical ? [{ property: "og:url", content: canonical }] : []),
+          ...(canonical ? [{ content: canonical, property: "og:url" }] : []),
         ]
       : []),
   ];
   const links = [
-    ...(canonical ? [{ rel: "canonical", href: canonical }] : []),
-    ...(openGraph && image ? [{ rel: "image_src", href: image }] : []),
+    ...(canonical ? [{ href: canonical, rel: "canonical" }] : []),
+    ...(openGraph && image ? [{ href: image, rel: "image_src" }] : []),
   ];
-  return { meta, links };
+  return { links, meta };
 }

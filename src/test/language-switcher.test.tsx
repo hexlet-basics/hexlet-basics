@@ -16,11 +16,11 @@ const SETTLE_MS = 200;
 // the browser can prefetch or open it without side effects.
 
 // The header shows its menus from the desktop width up.
-const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+const startingViewport = { height: window.innerHeight, width: window.innerWidth };
 function openPage(initialPath: string, locale: "ru") {
   // The header's courses menu.
   worker.use(http.get("*/languages", () => HttpResponse.json([])));
-  return renderRoute(pageRoute, { path: "/{-$locale}/pages/$id", initialPath, locale });
+  return renderRoute(pageRoute, { initialPath, locale, path: "/{-$locale}/pages/$id" });
 }
 
 // The test page must stay: the link would otherwise navigate it away.

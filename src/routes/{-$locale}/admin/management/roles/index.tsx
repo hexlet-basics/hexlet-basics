@@ -42,10 +42,10 @@ function RolesList() {
       header: t(($) => $.models.attributes.staff_role.permissions_count),
     },
     list.actionsColumn({
+      describe: (row) => row.name,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/management/roles/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.name,
     }),
   ];
 

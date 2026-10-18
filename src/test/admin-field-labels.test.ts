@@ -13,7 +13,7 @@ const modules = import.meta.glob<Record<string, unknown>>("@/components/admin/ge
   eager: true,
 });
 
-const catalogs = { ru, en, es };
+const catalogs = { en, es, ru };
 
 function lookup(catalog: unknown, key: string): unknown {
   let node = (catalog as { translation: unknown }).translation;

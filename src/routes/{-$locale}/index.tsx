@@ -15,11 +15,12 @@ export const Route = createFileRoute("/{-$locale}/")({
     if (params.locale === undefined) {
       const target = detectRootLocale();
       if (target) {
-        throw redirect({ to: "/{-$locale}", params: { locale: target } });
+        throw redirect({ params: { locale: target }, to: "/{-$locale}" });
       }
       rememberLocale("en");
     }
   },
+  component: HomePage,
   // The page shows the banner, the course grid and the latest three posts; all are
   // prefetched so they are in the server-rendered HTML.
   loader: async ({ context }) => {
@@ -35,5 +36,4 @@ export const Route = createFileRoute("/{-$locale}/")({
       }),
     ]);
   },
-  component: HomePage,
 });

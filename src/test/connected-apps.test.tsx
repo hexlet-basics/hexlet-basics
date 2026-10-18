@@ -10,40 +10,40 @@ import { renderRoute } from "@/test/renderRoute";
 // the HTTP boundary: the list, the confirm step, the revoke and its refresh.
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 const claude: ConnectedApp = {
+  connectedAt: "2026-10-01T12:00:00Z",
   id: 7,
   name: "Claude Code",
   scopes: ["catalog:read", "progress:read", "offline_access"],
-  connectedAt: "2026-10-01T12:00:00Z",
 };
 
 const documentApp: ConnectedApp = {
+  clientHost: "helper.example.com",
+  connectedAt: "2026-10-05T12:00:00Z",
   id: 8,
   name: "Editor Helper",
   scopes: ["catalog:read", "something:new"],
-  connectedAt: "2026-10-05T12:00:00Z",
-  clientHost: "helper.example.com",
 };
 
 function openPage(apps: ConnectedApp[], visitor: User | null = user) {
   let current = apps;
   worker.use(http.get("*/api/oauth/connected_apps", () => HttpResponse.json({ items: current })));
   const result = renderRoute(connectedAppsRoute, {
-    path: "/{-$locale}/account/connected_apps",
     initialPath: "/account/connected_apps",
+    path: "/{-$locale}/account/connected_apps",
     user: visitor,
   });
   return { result, setApps: (next: ConnectedApp[]) => (current = next) };

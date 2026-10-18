@@ -11,24 +11,24 @@ import { renderRoute } from "@/test/renderRoute";
 const OVER_LIMIT = 41;
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 function openProfile(visitor: User | null = user) {
   worker.use(http.get("*/api/account/profile/edit", () => HttpResponse.json(user)));
   return renderRoute(editRoute, {
-    path: "/{-$locale}/account/profile/edit",
     initialPath: "/account/profile/edit",
+    path: "/{-$locale}/account/profile/edit",
     user: visitor,
   });
 }

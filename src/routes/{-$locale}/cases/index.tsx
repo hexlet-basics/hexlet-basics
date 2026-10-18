@@ -13,17 +13,17 @@ export const Route = createFileRoute("/{-$locale}/cases/")({
       throw notFound();
     }
   },
+  component: Index,
   // Legacy meta: title and description only.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
-      i18n,
-      title: i18n.t(($) => $.cases.index.title),
       description: i18n.t(($) => $.cases.index.meta.description),
+      i18n,
       social: false,
+      title: i18n.t(($) => $.cases.index.title),
     });
   },
-  component: Index,
 });
 
 function Index() {
@@ -31,7 +31,7 @@ function Index() {
 
   return (
     <Container py="md" mih="100%">
-      <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} py="md">
+      <SimpleGrid cols={{ base: 1, lg: 3, md: 2 }} py="md">
         <Card bg="gray.0" p="xl" radius="xl" shadow="sm" h="100%">
           <Stack h="100%">
             <Title order={4} mb="xs" fw="bold">

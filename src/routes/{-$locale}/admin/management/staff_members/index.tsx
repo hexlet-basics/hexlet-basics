@@ -30,28 +30,28 @@ function StaffMembersList() {
 
   const columns: CrudColumnDef<StaffMember>[] = [
     {
-      id: "user",
-      header: t(($) => $.models.attributes.staff_member.user_id),
       cell: ({ row }) => row.original.user.email ?? String(row.original.userId),
+      header: t(($) => $.models.attributes.staff_member.user_id),
+      id: "user",
     },
     {
-      id: "role",
-      header: t(($) => $.models.attributes.staff_member.role_id),
       cell: ({ row }) => row.original.role.name,
+      header: t(($) => $.models.attributes.staff_member.role_id),
+      id: "role",
     },
     {
-      id: "allowedLocales",
-      header: t(($) => $.models.attributes.staff_member.allowed_locales),
       cell: ({ row }) => row.original.allowedLocales.join(", "),
+      header: t(($) => $.models.attributes.staff_member.allowed_locales),
+      id: "allowedLocales",
     },
     list.actionsColumn({
+      describe: (row) => row.user.email ?? "",
       edit: (row) => (
         <EditLink
           to="/{-$locale}/admin/management/staff_members/$id"
           params={{ id: String(row.id) }}
         />
       ),
-      describe: (row) => row.user.email ?? "",
     }),
   ];
 

@@ -51,13 +51,13 @@ function PermissionsForm({
   const [grants, setGrants] = useState(initialGrants);
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateRolePermissionsMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     invalidate: [
       adminGetRolePermissionsQueryKey({ path: { roleId } }),
       adminGetRoleQueryKey({ path: { id: roleId } }),
     ],
+    mutation: adminUpdateRolePermissionsMutation(),
     successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
   });
 
   const byResource = new Map<string, Permission[]>();
@@ -111,7 +111,7 @@ function PermissionsForm({
       <Group justify="flex-end" mt="md">
         <Button
           loading={mutation.isPending}
-          onClick={() => mutation.mutate({ path: { roleId }, body: { grants } })}
+          onClick={() => mutation.mutate({ body: { grants: [...grants] }, path: { roleId } })}
         >
           {t(($) => $.admin.crud.save)}
         </Button>

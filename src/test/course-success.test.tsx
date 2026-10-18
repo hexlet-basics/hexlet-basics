@@ -20,92 +20,92 @@ const FULL_COMPLETION = 100;
 // read faked at the HTTP boundary: who sees it, and where everyone else goes.
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
 const course: Course = {
-  id: 1,
-  slug: "javascript",
-  name: "javascript",
-  learnAs: null,
-  readiness: "completed",
   categoryId: null,
-  currentVersionId: 99,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 1,
-  lessonsCount: 1,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: 99,
+  enrollmentsCount: 1,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 1,
+  name: "javascript",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: "completed",
+  repositoryUrl: null,
+  slug: "javascript",
 };
 
 const landingPage: CourseLandingPage = {
-  id: 10,
   courseId: 1,
   courseSlug: "javascript",
   createdAt: "2026-01-01T00:00:00Z",
-  slug: "javascript",
-  name: "JavaScript",
-  main: true,
-  listed: true,
-  state: "published",
-  order: null,
-  footer: true,
-  footerName: null,
-  landingPageToRedirectId: null,
-  metaTitle: "JavaScript course",
-  metaDescription: "Learn JavaScript",
-  header: "JavaScript",
   description: "Learn JavaScript in the browser",
-  usedInHeader: null,
-  usedInDescription: null,
-  outcomesHeader: null,
-  outcomesDescription: null,
-  outcomesImage: null,
   duration: 10,
   enrollmentsCount: 1,
+  footer: true,
+  footerName: null,
+  header: "JavaScript",
+  id: 10,
+  landingPageToRedirectId: null,
+  listed: true,
+  main: true,
+  metaDescription: "Learn JavaScript",
+  metaTitle: "JavaScript course",
+  name: "JavaScript",
+  order: null,
+  outcomesDescription: null,
+  outcomesHeader: null,
+  outcomesImage: null,
+  slug: "javascript",
+  state: "published",
+  usedInDescription: null,
+  usedInHeader: null,
 };
 
 // The course read for a learner whose Enrollment is in `state`, or who has none.
 function courseView(state: EnrollmentState | null): CourseView {
   const progress: CourseProgress = {
-    state,
     completion: state === "finished" ? FULL_COMPLETION : 0,
     nextLesson:
-      state === "finished" ? null : { id: 1001, slug: "hello-world", name: "Hello, World!" },
+      state === "finished" ? null : { id: 1001, name: "Hello, World!", slug: "hello-world" },
+    state,
   };
   return {
     course,
+    enrollment: state ? { courseId: course.id, id: 5, state, userId: user.id } : null,
     landingPage,
-    movedTo: null,
     lessons: [
       {
+        description: null,
+        finished: state === "finished",
         id: 1001,
         name: "Hello, World!",
-        description: null,
-        slug: "hello-world",
         position: 1,
-        finished: state === "finished",
+        slug: "hello-world",
       },
     ],
     modules: [],
-    qnaItems: [],
-    enrollment: state ? { id: 5, userId: user.id, courseId: course.id, state } : null,
+    movedTo: null,
     progress,
+    qnaItems: [],
   };
 }
 
@@ -115,8 +115,8 @@ function serveCourse(view: CourseView) {
 
 function openSuccess(visitor: User | null) {
   return renderRoute(successRoute, {
-    path: "/{-$locale}/languages/$slug/success",
     initialPath: "/ru/languages/javascript/success",
+    path: "/{-$locale}/languages/$slug/success",
     user: visitor,
   });
 }
@@ -180,8 +180,8 @@ describe("course success", () => {
     expect.hasAssertions();
     serveCourse(courseView("started"));
     await renderRoute(courseRoute, {
-      path: "/{-$locale}/languages/$slug",
       initialPath: "/ru/languages/javascript?unfinished=true",
+      path: "/{-$locale}/languages/$slug",
     });
 
     await expect

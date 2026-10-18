@@ -33,12 +33,12 @@ function EditReview() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateReviewMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListReviewsQueryKey(), adminGetReviewQueryKey({ path: { id: reviewId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateReviewMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +53,7 @@ function EditReview() {
             fields={fields}
             schema={zReviewInput}
             defaultValues={reviewToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: reviewId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: reviewId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

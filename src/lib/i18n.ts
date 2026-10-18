@@ -36,13 +36,13 @@ export function createI18n(): I18n {
   const instance = createInstance();
 
   void instance.use(initReactI18next).init({
-    lng: DEFAULT_LOCALE,
-    fallbackLng: DEFAULT_LOCALE,
     defaultNS: "translation",
-    ns: ["translation"],
-    resources: { en, es, ru },
+    fallbackLng: DEFAULT_LOCALE,
     interpolation: { escapeValue: false },
+    lng: DEFAULT_LOCALE,
+    ns: ["translation"],
     react: { useSuspense: false },
+    resources: { en, es, ru },
   });
 
   return instance;

@@ -137,12 +137,12 @@ export default {
         course_landing_page: {
           _destroy: "Destroy",
           answer: "Answer",
+          course_id: "Course",
           description: "Description",
           footer: "Show in Footer",
           footer_name: "Footer Name",
           header: "Header",
           landing_page_to_redirect_id: "Redirect to Page",
-          course_id: "Course",
           listed: "Show in Lists",
           main: "Main",
           meta_description: "Meta Description",
@@ -176,8 +176,8 @@ export default {
         },
         review: {
           body: "Review",
-          first_name: "First name",
           course_id: "Course",
+          first_name: "First name",
           last_name: "Last name",
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
@@ -213,8 +213,8 @@ export default {
         messages: {
           record_invalid: "Validation failed: {{errors}}",
           restrict_dependent_destroy: {
-            has_one: "Cannot delete record because a dependent {{record}} exists",
             has_many: "Cannot delete record because dependent {{record}} exist",
+            has_one: "Cannot delete record because a dependent {{record}} exists",
           },
         },
         models: {
@@ -229,23 +229,6 @@ export default {
       },
     },
     admin: {
-      resources: {
-        audit: "Audit trail",
-        banners: "Banners",
-        blogPosts: "Blog Posts",
-        courseCategories: "Course Categories",
-        courses: "Courses",
-        landingPages: "Landing Pages",
-        leads: "Leads",
-        lessonProgress: "Lesson Progress",
-        lessonReviews: "Lesson Reviews",
-        managementUsers: "Management: Users",
-        messages: "Assistant Messages",
-        reviews: "Reviews",
-        roles: "Roles",
-        staffMembers: "Staff Members",
-        users: "Users",
-      },
       audit: {
         channel: {
           mcp: "MCP",
@@ -300,74 +283,6 @@ export default {
           succeeded: "Done",
         },
       },
-      crud: {
-        cancel: "Cancel",
-        confirmDeleteTitle: "Delete record?",
-        create: "Create",
-        created: "Record created",
-        delete: "Delete",
-        deleteError: "Failed to delete the record",
-        deleted: "Record deleted",
-        edit: "Edit",
-        empty: "No records",
-        new: "New",
-        save: "Save",
-        saveError: "Failed to save the record",
-        search: "Search…",
-        updated: "Record updated",
-      },
-      blogPosts: {
-        likes: "Likes",
-        relatedCourses: "Related courses",
-        suggestQueued: "Course suggestion started — reload the page shortly",
-        suggestRelatedCourses: "Suggest courses",
-      },
-      courses: {
-        edit: {
-          header: "Edit Language",
-          id: "ID",
-          load_new_version: "Load new version",
-          result: "Result",
-          versions: "Versions",
-        },
-        index: {
-          add_new_course: "Add new language",
-          header: "Languages",
-        },
-        new: {
-          header: "New Language",
-        },
-        createVersion: "Build version",
-        currentVersion: "Current version",
-        lessonsCount: "Lessons",
-        review: "AI review",
-        reviewQueued: "Review jobs enqueued",
-        versionQueued: "Version build started",
-      },
-      permissions: {
-        capability: "Explicit grant only",
-        kindRead: "Read",
-        kindWrite: "Write",
-        title: "Permissions",
-      },
-      publicationState: {
-        archive: "Archive",
-        changeError: "Could not change the state",
-        changed: "State changed",
-        publish: "Publish",
-        unpublish: "Unpublish",
-      },
-      qna: {
-        add: "Add question",
-        title: "FAQ",
-      },
-      readiness: {
-        changeError: "Could not change the readiness",
-        changed: "Readiness changed",
-        markCompleted: "Mark as completed",
-        markDraft: "Mark as draft",
-        markInDevelopment: "Mark as in development",
-      },
       banners: {
         edit: {
           header: "Edit Banner",
@@ -383,6 +298,12 @@ export default {
           header: "New Banner",
         },
       },
+      blogPosts: {
+        likes: "Likes",
+        relatedCourses: "Related courses",
+        suggestQueued: "Course suggestion started — reload the page shortly",
+        suggestRelatedCourses: "Suggest courses",
+      },
       blog_posts: {
         edit: {
           header: "Edit Blog Post",
@@ -393,11 +314,6 @@ export default {
         },
         new: {
           header: "New Blog Post",
-        },
-      },
-      home: {
-        index: {
-          dashboard: "Dashboard",
         },
       },
       course_categories: {
@@ -429,11 +345,6 @@ export default {
           header: "Новый лендинг",
         },
       },
-      lesson_progress: {
-        index: {
-          header: "Прохождение уроков",
-        },
-      },
       course_lesson_reviews: {
         index: {
           data: "Data",
@@ -445,12 +356,60 @@ export default {
           header: "Уроки",
         },
       },
+      courses: {
+        createVersion: "Build version",
+        currentVersion: "Current version",
+        edit: {
+          header: "Edit Language",
+          id: "ID",
+          load_new_version: "Load new version",
+          result: "Result",
+          versions: "Versions",
+        },
+        index: {
+          add_new_course: "Add new language",
+          header: "Languages",
+        },
+        lessonsCount: "Lessons",
+        new: {
+          header: "New Language",
+        },
+        review: "AI review",
+        reviewQueued: "Review jobs enqueued",
+        versionQueued: "Version build started",
+      },
+      crud: {
+        cancel: "Cancel",
+        confirmDeleteTitle: "Delete record?",
+        create: "Create",
+        created: "Record created",
+        delete: "Delete",
+        deleteError: "Failed to delete the record",
+        deleted: "Record deleted",
+        edit: "Edit",
+        empty: "No records",
+        new: "New",
+        save: "Save",
+        saveError: "Failed to save the record",
+        search: "Search…",
+        updated: "Record updated",
+      },
+      home: {
+        index: {
+          dashboard: "Dashboard",
+        },
+      },
       leads: {
         index: {
           answers: "Answers",
           courses: "Courses {{group}}",
           data: "Data",
           header: "Лиды",
+        },
+      },
+      lesson_progress: {
+        index: {
+          header: "Прохождение уроков",
         },
       },
       management: {
@@ -514,6 +473,47 @@ export default {
         index: {
           header: "Разговоры с AI",
         },
+      },
+      permissions: {
+        capability: "Explicit grant only",
+        kindRead: "Read",
+        kindWrite: "Write",
+        title: "Permissions",
+      },
+      publicationState: {
+        archive: "Archive",
+        changeError: "Could not change the state",
+        changed: "State changed",
+        publish: "Publish",
+        unpublish: "Unpublish",
+      },
+      qna: {
+        add: "Add question",
+        title: "FAQ",
+      },
+      readiness: {
+        changeError: "Could not change the readiness",
+        changed: "Readiness changed",
+        markCompleted: "Mark as completed",
+        markDraft: "Mark as draft",
+        markInDevelopment: "Mark as in development",
+      },
+      resources: {
+        audit: "Audit trail",
+        banners: "Banners",
+        blogPosts: "Blog Posts",
+        courseCategories: "Course Categories",
+        courses: "Courses",
+        landingPages: "Landing Pages",
+        leads: "Leads",
+        lessonProgress: "Lesson Progress",
+        lessonReviews: "Lesson Reviews",
+        managementUsers: "Management: Users",
+        messages: "Assistant Messages",
+        reviews: "Reviews",
+        roles: "Roles",
+        staffMembers: "Staff Members",
+        users: "Users",
       },
       reviews: {
         edit: {
@@ -631,29 +631,29 @@ export default {
         how_to_learn_programming: "Как пользователи изучают программирование в CodeBasics?",
         how_to_learn_programming_cards: [
           {
-            title:
-              "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
+            img: "integration-icon",
             subtitle:
               "Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс",
-            img: "integration-icon",
+            title:
+              "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
           },
           {
+            img: "practice-icon",
+            subtitle: "Можно проходить несколько курсов одновременно",
             title:
               "Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go",
-            subtitle: "Можно проходить несколько курсов одновременно",
-            img: "practice-icon",
           },
           {
+            img: "interactive-format-icon",
+            subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
             title:
               "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
-            subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
-            img: "interactive-format-icon",
           },
           {
+            img: "discussion-icon",
+            subtitle: "",
             title:
               "Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта",
-            subtitle: "",
-            img: "discussion-icon",
           },
         ],
         integrate_into_education: "Зачем интегрировать CodeBasics в обучение?",
@@ -724,6 +724,7 @@ export default {
       community_url: "https://t.me/hexletcommunity\n",
       confirm:
         "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
+      course_icon: "{{language}} icon",
       current_state: "Current state",
       discuss: "AI Assistant",
       editor: "Editor",
@@ -742,7 +743,6 @@ export default {
         one: "{{count}} hour",
       },
       instructions: "Instructions",
-      course_icon: "{{language}} icon",
       languages: {
         en: "English",
         ru: "Russian",
@@ -804,12 +804,12 @@ export default {
       testForExercise: "Tests",
       testInstructions: "Your exercise will be checked with these tests:",
       time: {
-        minutes_zero: "{{count}} минут",
-        minutes_one: "{{count}} минута",
-        minutes_two: "{{count}} минуты",
         minutes_few: "{{count}} минуты",
         minutes_many: "{{count}} минут",
+        minutes_one: "{{count}} минута",
         minutes_other: "{{count}} минут",
+        minutes_two: "{{count}} минуты",
+        minutes_zero: "{{count}} минут",
       },
       tos: "Table Of Content",
       unexpected_error: "Something went wrong. Please try again.",
@@ -851,6 +851,195 @@ export default {
       },
       scopes_title: "The application asks to:",
       title: "Connect an application",
+    },
+    course_categories: {
+      index: {
+        header: "Course categories",
+        link: "Go to",
+        meta: {
+          description:
+            "Browse free programming courses on Code-basics.com.\nFind categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.\nStart coding today with interactive and easy-to-follow lessons.\n",
+        },
+      },
+      show: {
+        header: "Courses in the {{name}} category",
+        meta: {
+          description:
+            "Choose a suitable free course in the {{name}} category and learn for free right in your browser with hands-on practice and help from an AI assistant",
+        },
+      },
+    },
+    courses: {
+      lessons: {
+        show: {
+          assistant: "Assistant",
+          breadcrumb: "breadcrumb",
+          chat: {
+            community: "Ask the community",
+            disabled_html:
+              "You have reached today's message limit, so the chat is paused until tomorrow. Our <a>Telegram community</a> is around the clock, come join :)",
+            guest:
+              "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
+            guest_benefit_errors:
+              "Sees your code and the check output, so it can help work out why an exercise fails",
+            guest_benefit_free: "Free: 7 messages a day",
+            guest_benefit_hint: "Suggests where to start and explains theory in plain words",
+            guest_example_answer:
+              "The output shows your function returns the string without the exclamation mark. Compare it with the task 🙂",
+            guest_example_question: "Why doesn't the test pass?",
+            guest_sign_up: "Sign up",
+            hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
+            not_available: "Our AI assistant will be here soon — we're setting things up right now",
+            question: "Your question",
+          },
+          common_questions: [
+            {
+              answer:
+                "If you've reached a deadlock it's time to ask your question in the «Discussions». [How ask a question correctly](https://help.hexlet.io/en/articles/111495):\n\n* Be sure to attach the test output, without it it's almost impossible to figure out what went wrong, even if you show your code. It's complicated for developers to execute code in their heads, but having a mistake before their eyes most probably will be helpful.\n",
+              question: "The exercise doesn't pass checking. What to do? 😶",
+            },
+            {
+              answer:
+                "Tests are designed so that they test the solution in different ways and against different data. Often the solution works with one kind of input data but doesn't work with others. Check the «Tests» tab to figure this out, you can find hints at the error output.\n",
+              question: "In my environment the code works, but not here 🤨",
+            },
+            {
+              answer:
+                "It's fine. 🙆 One task in programming can be solved in many different ways. If your code passed all tests, it complies with the task conditions.\n\nIn some rare cases, the solution may be adjusted to the tests, but this can be seen immediately.\n",
+              question: "My code is different from the teacher's one 🤔",
+            },
+            {
+              answer:
+                "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n",
+              question: "I've read the lessons but nothing is clear 🙄",
+            },
+            {
+              answer:
+                "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n",
+              question: "Прочитал урок — ничего не понятно 🙄",
+            },
+          ],
+          confirm:
+            "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
+          controls: {
+            body: "Reset Progress\n",
+            header: "Help",
+            run: "Run",
+          },
+          definitions: "Definitions",
+          discuss: "AI Assistant",
+          editor: "Editor",
+          editor_aria_label: "Code editor",
+          empty_solution: "Write your solution in the editor before running the check",
+          finish: "Finish",
+          finished: "Finished",
+          if_stuck_html:
+            "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
+          instructions: "Instructions",
+          issues: "Found a bug? Have something to add? Pull requests are welcome!",
+          lesson: "Lesson",
+          lesson_not_found: "Lesson not found. Please, try another lesson.",
+          navigation: "Navigation",
+          next: "Next →",
+          only_for_signed_in_users: "Exercise available only for signed users.",
+          output: "Output",
+          output_empty: "Press Run to see the tests output",
+          output_empty_hint:
+            "The result of checking your solution will show up here: we run your code in an isolated environment and run the tests against it.",
+          output_running: "Running the tests…",
+          output_step_read:
+            "Read the output: if a test fails, it shows what was expected and what you got.",
+          output_step_run: "Press Run — the check takes a few seconds.",
+          output_step_write: "Write your solution in the Editor tab.",
+          please_sign_in:
+            "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
+          prev: "← Previous",
+          preview: {
+            title: "Preview",
+          },
+          profession_description: "Коммерческий опыт и Трудоустройство",
+          separator: " ",
+          show_full_version: "Реактор кода доступен в основной версии →",
+          sign_in: "Sign In",
+          sign_up_for_tracking_progress_html:
+            "Be sure to <a>register</a> to ensure you don't lose the results you've achieved",
+          solution: "Solution",
+          source_code: "Lesson source on GitHub",
+          syntax_error: "Syntax error",
+          syntax_missing: "Missing {{token}}",
+          tests: "Tests",
+          tips: "Tips",
+          title: "{{lesson_name}} | {{language_name}}\n",
+          to_home_title: "Home",
+        },
+      },
+      show: {
+        about_developer_community:
+          "We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster",
+        about_learning: "How the training is organised",
+        ai_explanation:
+          "AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7",
+        ai_without_limits: "AI assistance without limits",
+        blog_posts: "Blog Posts",
+        breadcrumbs: "Breadcrumbs",
+        browser_practice: "Practice in the browser",
+        community_image_preview: "Developer community",
+        completed_html:
+          'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
+        continue: "Continue Learning",
+        "convenient format": "Convenient format",
+        course_graduates: "Join 74,761 students who have successfully completed courses",
+        cover_image: "Course cover",
+        demo_description: "Try a demo lesson without signing up. Practice included",
+        demo_start: "Start",
+        free_course: "Free course for beginners",
+        hexlet_program_link: "Profession and employment",
+        join: "Join",
+        learning_conveniently:
+          "Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details",
+        learning_preview: "Learning preview",
+        learning_program: "Learning program",
+        lessons: "{{lessons_count}} with practice in the browser",
+        more_than_support: "More than Support",
+        no_registration: "Registration is not required",
+        progress: {
+          completion: "Completed {{completion}}%",
+        },
+        ready: "Are you ready?",
+        real_life_challenges:
+          "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",
+        registration: "Sign Up",
+        registration_description: "Let's get started",
+        restart: "Start over",
+        reviews: "Reviews",
+        see_all_courses_in_category: "See all courses in {{name}}",
+        sign_up: "Sign Up",
+        similar_courses: "Similar courses",
+        sort_questions: "Sorting out the questions",
+        start: "Start Learning",
+        start_demo_lesson: "Demo lesson",
+        to_home_title: "Home",
+        try: "Try It",
+        try_without_registration: "Try it without registering",
+        updated_at: "updated {{date}}",
+        without_registration:
+          "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress",
+      },
+      success: {
+        add_review:
+          "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a>тут</a>",
+        changing_career_html: "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
+        choose_your_path: "🔍 Выберите свой путь:\n",
+        description:
+          "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
+        getting_new_skill_html:
+          "<a>Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
+        header: "Congratulations, you completed the course!",
+        home: "Home",
+        leave_request:
+          "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
+        struggle_choosing: "💬 Не уверены, что выбрать?",
+      },
     },
     enums: {
       course: {
@@ -999,13 +1188,6 @@ export default {
           success: "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается",
         },
       },
-      google_auth: {
-        one_tap: {
-          error:
-            "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!",
-          success: "You have signed in successfully. You can start learning now.",
-        },
-      },
       courses: {
         lessons: {
           show: {
@@ -1013,15 +1195,22 @@ export default {
           },
         },
         show: {
-          empty_course_current_version:
-            "Language is under development, please check back later or try any other available language",
           course_in_development_html:
             'Language {{language}} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nWe have prepared guidelines for writing <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">at the link</a>\n',
+          empty_course_current_version:
+            "Language is under development, please check back later or try any other available language",
           warning: "The Language has lessons only in russian. Switch locale if you can read it :)",
         },
         success: {
           error: "В этом курсе есть уроки, которые вы не завершили",
           warning: "This course still has unfinished lessons. Complete them to finish the course!",
+        },
+      },
+      google_auth: {
+        one_tap: {
+          error:
+            "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!",
+          success: "You have signed in successfully. You can start learning now.",
         },
       },
       leads: {
@@ -1107,6 +1296,9 @@ export default {
       },
     },
     home: {
+      courses: {
+        courses: "Courses",
+      },
       index: {
         all_blog_posts: "All Blog Posts",
         all_reviews: "All Reviews",
@@ -1143,9 +1335,6 @@ export default {
         subheader: "For those who start from scratch. From the creators of ",
         title: "Free Online Programming Courses: HTML, CSS, JavaScript\n",
       },
-      courses: {
-        courses: "Courses",
-      },
       reviews: {
         course_html: "Course {{link}}",
         reviews: "Reviews",
@@ -1164,201 +1353,12 @@ export default {
       },
     },
     js: {
-      hour_zero: "",
-      hour_one: "",
-      hour_two: "",
       hour_few: "",
       hour_many: "",
+      hour_one: "",
       hour_other: "",
-    },
-    course_categories: {
-      index: {
-        header: "Course categories",
-        link: "Go to",
-        meta: {
-          description:
-            "Browse free programming courses on Code-basics.com.\nFind categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.\nStart coding today with interactive and easy-to-follow lessons.\n",
-        },
-      },
-      show: {
-        header: "Courses in the {{name}} category",
-        meta: {
-          description:
-            "Choose a suitable free course in the {{name}} category and learn for free right in your browser with hands-on practice and help from an AI assistant",
-        },
-      },
-    },
-    courses: {
-      lessons: {
-        show: {
-          assistant: "Assistant",
-          breadcrumb: "breadcrumb",
-          chat: {
-            community: "Ask the community",
-            disabled_html:
-              "You have reached today's message limit, so the chat is paused until tomorrow. Our <a>Telegram community</a> is around the clock, come join :)",
-            guest:
-              "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
-            guest_benefit_errors:
-              "Sees your code and the check output, so it can help work out why an exercise fails",
-            guest_benefit_free: "Free: 7 messages a day",
-            guest_benefit_hint: "Suggests where to start and explains theory in plain words",
-            guest_example_answer:
-              "The output shows your function returns the string without the exclamation mark. Compare it with the task 🙂",
-            guest_example_question: "Why doesn't the test pass?",
-            guest_sign_up: "Sign up",
-            hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
-            not_available: "Our AI assistant will be here soon — we're setting things up right now",
-            question: "Your question",
-          },
-          common_questions: [
-            {
-              question: "The exercise doesn't pass checking. What to do? 😶",
-              answer:
-                "If you've reached a deadlock it's time to ask your question in the «Discussions». [How ask a question correctly](https://help.hexlet.io/en/articles/111495):\n\n* Be sure to attach the test output, without it it's almost impossible to figure out what went wrong, even if you show your code. It's complicated for developers to execute code in their heads, but having a mistake before their eyes most probably will be helpful.\n",
-            },
-            {
-              question: "In my environment the code works, but not here 🤨",
-              answer:
-                "Tests are designed so that they test the solution in different ways and against different data. Often the solution works with one kind of input data but doesn't work with others. Check the «Tests» tab to figure this out, you can find hints at the error output.\n",
-            },
-            {
-              question: "My code is different from the teacher's one 🤔",
-              answer:
-                "It's fine. 🙆 One task in programming can be solved in many different ways. If your code passed all tests, it complies with the task conditions.\n\nIn some rare cases, the solution may be adjusted to the tests, but this can be seen immediately.\n",
-            },
-            {
-              question: "I've read the lessons but nothing is clear 🙄",
-              answer:
-                "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n",
-            },
-            {
-              question: "Прочитал урок — ничего не понятно 🙄",
-              answer:
-                "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n",
-            },
-          ],
-          confirm:
-            "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
-          controls: {
-            body: "Reset Progress\n",
-            header: "Help",
-            run: "Run",
-          },
-          definitions: "Definitions",
-          discuss: "AI Assistant",
-          editor: "Editor",
-          editor_aria_label: "Code editor",
-          empty_solution: "Write your solution in the editor before running the check",
-          finish: "Finish",
-          finished: "Finished",
-          if_stuck_html:
-            "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
-          instructions: "Instructions",
-          issues: "Found a bug? Have something to add? Pull requests are welcome!",
-          lesson: "Lesson",
-          lesson_not_found: "Lesson not found. Please, try another lesson.",
-          navigation: "Navigation",
-          next: "Next →",
-          only_for_signed_in_users: "Exercise available only for signed users.",
-          output: "Output",
-          output_empty: "Press Run to see the tests output",
-          output_empty_hint:
-            "The result of checking your solution will show up here: we run your code in an isolated environment and run the tests against it.",
-          output_step_read:
-            "Read the output: if a test fails, it shows what was expected and what you got.",
-          output_step_run: "Press Run — the check takes a few seconds.",
-          output_step_write: "Write your solution in the Editor tab.",
-          output_running: "Running the tests…",
-          please_sign_in:
-            "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
-          prev: "← Previous",
-          preview: {
-            title: "Preview",
-          },
-          profession_description: "Коммерческий опыт и Трудоустройство",
-          separator: " ",
-          show_full_version: "Реактор кода доступен в основной версии →",
-          sign_in: "Sign In",
-          sign_up_for_tracking_progress_html:
-            "Be sure to <a>register</a> to ensure you don't lose the results you've achieved",
-          solution: "Solution",
-          source_code: "Lesson source on GitHub",
-          syntax_error: "Syntax error",
-          syntax_missing: "Missing {{token}}",
-          tests: "Tests",
-          tips: "Tips",
-          title: "{{lesson_name}} | {{language_name}}\n",
-          to_home_title: "Home",
-        },
-      },
-      show: {
-        about_developer_community:
-          "We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster",
-        about_learning: "How the training is organised",
-        ai_explanation:
-          "AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7",
-        ai_without_limits: "AI assistance without limits",
-        blog_posts: "Blog Posts",
-        breadcrumbs: "Breadcrumbs",
-        browser_practice: "Practice in the browser",
-        community_image_preview: "Developer community",
-        completed_html:
-          'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
-        continue: "Continue Learning",
-        "convenient format": "Convenient format",
-        course_graduates: "Join 74,761 students who have successfully completed courses",
-        cover_image: "Course cover",
-        demo_description: "Try a demo lesson without signing up. Practice included",
-        demo_start: "Start",
-        free_course: "Free course for beginners",
-        hexlet_program_link: "Profession and employment",
-        join: "Join",
-        learning_conveniently:
-          "Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details",
-        learning_preview: "Learning preview",
-        learning_program: "Learning program",
-        lessons: "{{lessons_count}} with practice in the browser",
-        more_than_support: "More than Support",
-        no_registration: "Registration is not required",
-        progress: {
-          completion: "Completed {{completion}}%",
-        },
-        ready: "Are you ready?",
-        real_life_challenges:
-          "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",
-        registration: "Sign Up",
-        registration_description: "Let's get started",
-        restart: "Start over",
-        reviews: "Reviews",
-        see_all_courses_in_category: "See all courses in {{name}}",
-        sign_up: "Sign Up",
-        similar_courses: "Similar courses",
-        sort_questions: "Sorting out the questions",
-        start: "Start Learning",
-        start_demo_lesson: "Demo lesson",
-        to_home_title: "Home",
-        try: "Try It",
-        try_without_registration: "Try it without registering",
-        updated_at: "updated {{date}}",
-        without_registration:
-          "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress",
-      },
-      success: {
-        add_review:
-          "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a>тут</a>",
-        changing_career_html: "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
-        choose_your_path: "🔍 Выберите свой путь:\n",
-        description:
-          "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
-        getting_new_skill_html:
-          "<a>Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
-        header: "Congratulations, you completed the course!",
-        home: "Home",
-        leave_request:
-          "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
-        struggle_choosing: "💬 Не уверены, что выбрать?",
-      },
+      hour_two: "",
+      hour_zero: "",
     },
     layouts: {
       admin: {
@@ -1366,15 +1366,15 @@ export default {
           authentication: "Authentication",
           banners: "Banners",
           blog_posts: "Blog Posts",
-          dashboard: "Dashboard",
-          jobs: "Job queue",
           course_categories: "Categories",
           course_landing_pages: "Landing Pages",
-          lesson_progress: "Прохождение уроков",
           course_lesson_reviews: "Ревью уроков",
           course_lessons: "Уроки",
           courses: "Courses",
+          dashboard: "Dashboard",
+          jobs: "Job queue",
           leads: "Лиды",
+          lesson_progress: "Прохождение уроков",
           menu: "Menu",
           messages: "Conversations with AI",
           reviews: "Reviews",
@@ -1399,6 +1399,9 @@ export default {
             "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n",
           go: "Заполнить&nbsp;→",
         },
+        course_menu: {
+          in_development: "In development",
+        },
         footer: {
           about: "About Platform",
           all_courses: "All Courses",
@@ -1408,19 +1411,19 @@ export default {
           codebasics: "Code Basics (by Hexlet)",
           community: "Сообщество",
           cookie_policy: "Cookie Policy",
+          course_categories: "Categories",
           courses: "Courses",
           english_links: "English links",
           free_call: "Calls within Russia are toll free",
           hexlet: "Hexlet",
+          "hexlet-cv": "Хекслет.Карьера",
+          "hexlet-sicp": "Хекслет.SICP",
           hexlet_address: 'TOO "Hexlet", The Republic of Kazakhstan, Almaty, Auezova St., 14A',
           hexlet_blog: "Blog",
           hexlet_number: "BIN 230340043714",
           hexlet_title_html:
             '© <a href="{{link}}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet</a>, {{year}}',
-          "hexlet-cv": "Хекслет.Карьера",
-          "hexlet-sicp": "Хекслет.SICP",
           information: "Information",
-          course_categories: "Categories",
           matrix: "Matrix",
           privacy: "Privacy",
           recommended_books: "Recommended Books",
@@ -1431,9 +1434,6 @@ export default {
           source_code: "Source code",
           tos: "Terms of Service",
           useful: "Useful",
-        },
-        course_menu: {
-          in_development: "In development",
         },
         nav: {
           about: "About",
@@ -1562,27 +1562,6 @@ export default {
           lesson: "Lesson",
           role: "Role",
         },
-        lesson_progress: {
-          course: "Course",
-          lesson: "Lesson",
-          messages_count: "Messages",
-          state: "State",
-          user_id: "User",
-        },
-        lesson_review: {
-          course: "Course",
-          lesson: "Lesson",
-          locale: "Locale",
-          summary: "Summary",
-        },
-        staff_member: {
-          allowed_locales: "Allowed locales",
-          role_id: "Role",
-          user_id: "User",
-        },
-        staff_role: {
-          permissions_count: "Permissions",
-        },
         banner: {
           background: "Background",
           "background/values": {
@@ -1660,12 +1639,12 @@ export default {
         course_landing_page: {
           _destroy: "Destroy",
           answer: "Answer",
+          course_id: "Course",
           description: "Description",
           footer: "Show in Footer",
           footer_name: "Footer Name",
           header: "Header",
           landing_page_to_redirect_id: "Redirect to Page",
-          course_id: "Course",
           listed: "Show in Lists",
           main: "Main",
           meta_description: "Meta Description",
@@ -1693,6 +1672,19 @@ export default {
           telegram: "Telegram",
           whatsapp: "WhatsApp",
         },
+        lesson_progress: {
+          course: "Course",
+          lesson: "Lesson",
+          messages_count: "Messages",
+          state: "State",
+          user_id: "User",
+        },
+        lesson_review: {
+          course: "Course",
+          lesson: "Lesson",
+          locale: "Locale",
+          summary: "Summary",
+        },
         qna_item: {
           answer: "Answer",
           question: "Question",
@@ -1702,8 +1694,8 @@ export default {
         },
         review: {
           body: "Review",
-          first_name: "First name",
           course_id: "Course",
+          first_name: "First name",
           last_name: "Last name",
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
@@ -1714,6 +1706,14 @@ export default {
             published: "Published",
           },
           user_id: "User",
+        },
+        staff_member: {
+          allowed_locales: "Allowed locales",
+          role_id: "Role",
+          user_id: "User",
+        },
+        staff_role: {
+          permissions_count: "Permissions",
         },
         survey: {
           run_always: "Запускать всегда",
@@ -1782,11 +1782,6 @@ export default {
             header: "New Blog Post",
           },
         },
-        home: {
-          index: {
-            dashboard: "Dashboard",
-          },
-        },
         course_categories: {
           edit: {
             header: "Редактирование {{id}}",
@@ -1812,11 +1807,6 @@ export default {
           },
           new: {
             header: "Новый лендинг",
-          },
-        },
-        lesson_progress: {
-          index: {
-            header: "Прохождение уроков",
           },
         },
         course_lesson_reviews: {
@@ -1845,12 +1835,22 @@ export default {
             header: "New Language",
           },
         },
+        home: {
+          index: {
+            dashboard: "Dashboard",
+          },
+        },
         leads: {
           index: {
             answers: "Answers",
             courses: "Courses",
             data: "Data",
             header: "Лиды",
+          },
+        },
+        lesson_progress: {
+          index: {
+            header: "Прохождение уроков",
           },
         },
         management: {
@@ -1947,29 +1947,29 @@ export default {
           how_to_learn_programming: "Как пользователи изучают программирование в CodeBasics?",
           how_to_learn_programming_cards: [
             {
-              title:
-                "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
+              img: "integration-icon",
               subtitle:
                 "Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс",
-              img: "integration-icon",
+              title:
+                "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
             },
             {
+              img: "practice-icon",
+              subtitle: "Можно проходить несколько курсов одновременно",
               title:
                 "Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go",
-              subtitle: "Можно проходить несколько курсов одновременно",
-              img: "practice-icon",
             },
             {
+              img: "interactive-format-icon",
+              subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
               title:
                 "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
-              subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
-              img: "interactive-format-icon",
             },
             {
+              img: "discussion-icon",
+              subtitle: "",
               title:
                 "Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта",
-              subtitle: "",
-              img: "discussion-icon",
             },
           ],
           integrate_into_education: "Зачем интегрировать CodeBasics в обучение?",
@@ -1990,34 +1990,6 @@ export default {
         index: {
           for_teachers: "Для учителей и преподавателей",
           link: "Перейти",
-        },
-      },
-      home: {
-        index: {
-          blog_posts: "Posts",
-          consultation: "Нужна помощь? Оставьте заявку, мы поможем",
-          hero: {
-            ai_count: "AI Assistant",
-            ai_count_description: "Hints and code analysis",
-            community_count: "Community",
-            community_count_description: "Over 8,000 people",
-            courses_count: "Text Courses",
-            courses_count_description: "theory, exercises, teacher's solutions",
-            fastest_way_to_start_coding:
-              "With practice in the trainer and an assistant powered by ChatGPT",
-            free_programming_courses: "Free Programming Courses from Scratch",
-            source_code: "Source Code →",
-            try: "Courses →",
-          },
-          join: "Sign up and start learning. For free. Forever",
-          reviews: "Reviews",
-          sign_up: "Sign Up",
-        },
-        courses: {
-          courses: "Courses",
-        },
-        sitemap: {
-          home: "Home",
         },
       },
       course_categories: {
@@ -2059,29 +2031,29 @@ export default {
             },
             common_questions: [
               {
-                question: "The exercise doesn't pass checking. What to do? 😶",
                 answer:
                   "If you've reached a deadlock it's time to ask your question in the «Discussions». [How ask a question correctly](https://help.hexlet.io/en/articles/111495):\n\n* Be sure to attach the test output, without it it's almost impossible to figure out what went wrong, even if you show your code. It's complicated for developers to execute code in their heads, but having a mistake before their eyes most probably will be helpful.\n",
+                question: "The exercise doesn't pass checking. What to do? 😶",
               },
               {
-                question: "In my environment the code works, but not here 🤨",
                 answer:
                   "Tests are designed so that they test the solution in different ways and against different data. Often the solution works with one kind of input data but doesn't work with others. Check the «Tests» tab to figure this out, you can find hints at the error output.\n",
+                question: "In my environment the code works, but not here 🤨",
               },
               {
-                question: "My code is different from the teacher's one 🤔",
                 answer:
                   "It's fine. 🙆 One task in programming can be solved in many different ways. If your code passed all tests, it complies with the task conditions.\n\nIn some rare cases, the solution may be adjusted to the tests, but this can be seen immediately.\n",
+                question: "My code is different from the teacher's one 🤔",
               },
               {
-                question: "I've read the lessons but nothing is clear 🙄",
                 answer:
                   "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n",
+                question: "I've read the lessons but nothing is clear 🙄",
               },
               {
-                question: "Прочитал урок — ничего не понятно 🙄",
                 answer:
                   "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n",
+                question: "Прочитал урок — ничего не понятно 🙄",
               },
             ],
             controls: {
@@ -2150,6 +2122,34 @@ export default {
           leave_request:
             "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
           struggle_choosing: "💬 Не уверены, что выбрать?",
+        },
+      },
+      home: {
+        courses: {
+          courses: "Courses",
+        },
+        index: {
+          blog_posts: "Posts",
+          consultation: "Нужна помощь? Оставьте заявку, мы поможем",
+          hero: {
+            ai_count: "AI Assistant",
+            ai_count_description: "Hints and code analysis",
+            community_count: "Community",
+            community_count_description: "Over 8,000 people",
+            courses_count: "Text Courses",
+            courses_count_description: "theory, exercises, teacher's solutions",
+            fastest_way_to_start_coding:
+              "With practice in the trainer and an assistant powered by ChatGPT",
+            free_programming_courses: "Free Programming Courses from Scratch",
+            source_code: "Source Code →",
+            try: "Courses →",
+          },
+          join: "Sign up and start learning. For free. Forever",
+          reviews: "Reviews",
+          sign_up: "Sign Up",
+        },
+        sitemap: {
+          home: "Home",
         },
       },
       leads: {

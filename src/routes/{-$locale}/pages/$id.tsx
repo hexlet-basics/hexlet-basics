@@ -20,19 +20,19 @@ import { seoHead } from "@/lib/seo-head";
 // ported from legacy pages/show. Their bodies are hardcoded markup with no data
 // (ADR-0015), written in ru and en only.
 const PAGES = {
-  ru: {
-    about: AboutRu,
-    authors: AuthorsRu,
-    cookie_policy: CookiePolicyRu,
-    privacy: PrivacyRu,
-    tos: TosRu,
-  },
   en: {
     about: AboutEn,
     authors: AuthorsEn,
     cookie_policy: CookiePolicyEn,
     privacy: PrivacyEn,
     tos: TosEn,
+  },
+  ru: {
+    about: AboutRu,
+    authors: AuthorsRu,
+    cookie_policy: CookiePolicyRu,
+    privacy: PrivacyRu,
+    tos: TosRu,
   },
 } satisfies Record<string, Record<string, ComponentType>>;
 
@@ -54,6 +54,7 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
       throw notFound();
     }
   },
+  component: Show,
   // Legacy meta: the page title and description, the social tags and, but for
   // the legal pages, the canonical link. es has no page strings of its own in
   // legacy, which fell back to en, and the es catalog carries those en strings.
@@ -65,13 +66,12 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
     const { i18n } = match.context;
     const { title, description } = pageMeta(i18n.t, id);
     return seoHead({
+      canonicalPath: WITHOUT_CANONICAL.has(id) ? undefined : match.pathname,
+      description,
       i18n,
       title,
-      description,
-      canonicalPath: WITHOUT_CANONICAL.has(id) ? undefined : match.pathname,
     });
   },
-  component: Show,
 });
 
 // Typed selectors cannot take a runtime key, so each page names its own strings.
@@ -79,32 +79,32 @@ function pageMeta(t: TFunction, id: PageId): { title: string; description: strin
   switch (id) {
     case "about": {
       return {
-        title: t(($) => $.pages.parts.about.title),
         description: t(($) => $.pages.parts.about.meta.description),
+        title: t(($) => $.pages.parts.about.title),
       };
     }
     case "authors": {
       return {
-        title: t(($) => $.pages.parts.authors.title),
         description: t(($) => $.pages.parts.authors.meta.description),
+        title: t(($) => $.pages.parts.authors.title),
       };
     }
     case "cookie_policy": {
       return {
-        title: t(($) => $.pages.parts.cookie_policy.title),
         description: t(($) => $.pages.parts.cookie_policy.meta.description),
+        title: t(($) => $.pages.parts.cookie_policy.title),
       };
     }
     case "privacy": {
       return {
-        title: t(($) => $.pages.parts.privacy.title),
         description: t(($) => $.pages.parts.privacy.meta.description),
+        title: t(($) => $.pages.parts.privacy.title),
       };
     }
     case "tos": {
       return {
-        title: t(($) => $.pages.parts.tos.title),
         description: t(($) => $.pages.parts.tos.meta.description),
+        title: t(($) => $.pages.parts.tos.title),
       };
     }
     default: {
@@ -117,13 +117,13 @@ function pageMeta(t: TFunction, id: PageId): { title: string; description: strin
 // below h1 brought down to the small sizes.
 const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
-    overflowWrap: "break-word",
-    lineHeight: theme.lineHeights.lg,
     h2: theme.headings.sizes.h5,
     h3: theme.headings.sizes.h6,
     h4: theme.headings.sizes.h6,
     h5: theme.headings.sizes.h6,
     h6: theme.headings.sizes.h6,
+    lineHeight: theme.lineHeights.lg,
+    overflowWrap: "break-word",
   },
 });
 
@@ -161,8 +161,8 @@ function Show() {
               minDepthToOffset={2}
               scrollSpyOptions={{ selector: "#page-content :is(h2, h3)" }}
               getControlProps={({ data }) => ({
-                onClick: () => data.getNode().scrollIntoView({ behavior: "smooth" }),
                 children: data.value,
+                onClick: () => data.getNode().scrollIntoView({ behavior: "smooth" }),
               })}
             />
           </Box>

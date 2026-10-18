@@ -16,9 +16,9 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export function ReviewStatePanel({ review }: { review: Review }) {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [adminListReviewsQueryKey(), adminGetReviewQueryKey({ path: { id: review.id } })],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({ mutation: adminPublishReviewMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishReviewMutation(), ...options });
@@ -31,7 +31,7 @@ export function ReviewStatePanel({ review }: { review: Review }) {
       title={t(($) => $.models.attributes.review.state)}
       state={state}
       stateLabel={t(($) => $.models.attributes.review["state/values"][state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

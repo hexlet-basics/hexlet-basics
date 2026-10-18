@@ -35,17 +35,17 @@ function CoursesList() {
   });
 
   const versionMutation = useResourceMutation({
-    mutation: adminCreateCourseVersionMutation(),
-    invalidate: [adminListCoursesQueryKey()],
-    successMessage: t(($) => $.admin.courses.versionQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminListCoursesQueryKey()],
+    mutation: adminCreateCourseVersionMutation(),
+    successMessage: t(($) => $.admin.courses.versionQueued),
   });
 
   const reviewMutation = useResourceMutation({
-    mutation: adminReviewCourseMutation(),
-    invalidate: [adminListCoursesQueryKey()],
-    successMessage: t(($) => $.admin.courses.reviewQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminListCoursesQueryKey()],
+    mutation: adminReviewCourseMutation(),
+    successMessage: t(($) => $.admin.courses.reviewQueued),
   });
 
   const columns: CrudColumnDef<Course>[] = [
@@ -54,25 +54,26 @@ function CoursesList() {
       header: t(($) => $.models.attributes.course.slug),
     },
     {
-      id: "readiness",
-      header: t(($) => $.models.attributes.course.readiness),
       cell: ({ row }) =>
         t(($) => $.models.attributes.course["readiness/values"][row.original.readiness ?? "draft"]),
+      header: t(($) => $.models.attributes.course.readiness),
+      id: "readiness",
     },
     {
       accessorKey: "learnAs",
       header: t(($) => $.models.attributes.course.learn_as),
     },
     {
-      id: "currentVersion",
-      header: t(($) => $.admin.courses.currentVersion),
       cell: ({ row }) => row.original.currentVersion?.state ?? "",
+      header: t(($) => $.admin.courses.currentVersion),
+      id: "currentVersion",
     },
     {
       accessorKey: "lessonsCount",
       header: t(($) => $.admin.courses.lessonsCount),
     },
     list.actionsColumn({
+      describe: (row) => row.slug,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/courses/$id" params={{ id: String(row.id) }} />
       ),
@@ -97,7 +98,6 @@ function CoursesList() {
           </Button>
         </>
       ),
-      describe: (row) => row.slug,
     }),
   ];
 

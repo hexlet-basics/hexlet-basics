@@ -69,7 +69,7 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
     } else if (only && others.length === 0) {
       current = only;
     } else {
-      return { shape: current, nullable: nullable || current.nullable === true };
+      return { nullable: nullable || current.nullable === true, shape: current };
     }
     nullable ||= current.nullable === true;
   }
@@ -102,8 +102,8 @@ function labelKeys(config: ResourceConfig, field: string) {
   const scope = config.labelScopes?.[field] ?? config.model;
   const base = `models.attributes.${scope}.${snakeCase(field)}`;
   return {
-    labelKey: base,
     enumKey: (value: string) => `${base}/values.${value}`,
+    labelKey: base,
   };
 }
 
@@ -115,10 +115,10 @@ function describeProperty(spec: OpenApi, config: ResourceConfig, [name, schema]:
   }
   const { labelKey, enumKey } = labelKeys(config, name);
   const enumValues: EnumValueDescriptor[] | undefined = shape.enum?.map((value) => ({
-    value,
     labelKey: enumKey(value),
+    value,
   }));
-  return { name, kind, nullable, labelKey, ...(enumValues && { enumValues }) };
+  return { kind, labelKey, name, nullable, ...(enumValues && { enumValues }) };
 }
 
 export function describeResource(spec: OpenApi, config: ResourceConfig): ResourceDescriptors {
@@ -145,7 +145,7 @@ export function describeResource(spec: OpenApi, config: ResourceConfig): Resourc
     return described && described.kind !== "multiselect" ? [described] : [];
   });
 
-  return { model: config.model, fields, columns };
+  return { columns, fields, model: config.model };
 }
 
 const header = (name: string) =>
@@ -154,11 +154,16 @@ const header = (name: string) =>
   `// src/components/admin/resources/${name}.ts.\n`;
 
 // The module of one resource: two typed constant arrays. Plain JSON literals, so
-// The output depends on nothing but the descriptors (oxfmt then lays it out).
+// the output depends on nothing but the descriptors (oxfmt then lays it out).
+// Every key a descriptor can carry, in order. JSON.stringify given a key list as
+// its replacer writes each object's keys in that order, so the generated modules
+// satisfy the sort-keys rule that applies to the code they are committed as.
+const DESCRIPTOR_KEYS = ["enumValues", "kind", "labelKey", "name", "nullable", "required", "value"];
+
 export function renderModule(name: string, data: ResourceDescriptors): string {
   return (
     `${header(name)}import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";\n\n` +
-    `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, null, 2)};\n\n` +
-    `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, null, 2)};\n`
+    `export const ${name}Fields: FieldDescriptor[] = ${JSON.stringify(data.fields, DESCRIPTOR_KEYS, 2)};\n\n` +
+    `export const ${name}Columns: ColumnDescriptor[] = ${JSON.stringify(data.columns, DESCRIPTOR_KEYS, 2)};\n`
   );
 }

@@ -75,8 +75,8 @@ export default function LessonTheory({ view }: { view: CourseLessonView }) {
         mb="xs"
         defaultValue={questions[0]?.question}
         styles={{
-          control: { paddingBlock: "var(--mantine-spacing-xs)" },
           content: { paddingBlock: "var(--mantine-spacing-xs)" },
+          control: { paddingBlock: "var(--mantine-spacing-xs)" },
         }}
       >
         {questions.map((entry) => (

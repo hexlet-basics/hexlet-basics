@@ -36,10 +36,10 @@ function CourseCategoriesList() {
   const columns: CrudColumnDef<CourseCategory>[] = [
     ...useGeneratedColumns<CourseCategory>(courseCategoryColumns, ["name", "slug", "locale"]),
     list.actionsColumn({
+      describe: (row) => row.name ?? String(row.id),
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/course_categories/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.name ?? String(row.id),
     }),
   ];
 

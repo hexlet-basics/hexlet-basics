@@ -35,9 +35,9 @@ export function useEnterLesson(courseSlug: string) {
             queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
           });
           void navigate({
-            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
             // Keeps the URL locale of whichever page the learner came from.
-            params: (prev) => ({ ...prev, slug: courseSlug, lessonSlug: lesson.slug }),
+            params: (prev) => ({ ...prev, lessonSlug: lesson.slug, slug: courseSlug }),
+            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
           });
         },
       },

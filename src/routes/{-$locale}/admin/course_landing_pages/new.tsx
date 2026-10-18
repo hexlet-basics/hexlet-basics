@@ -27,12 +27,12 @@ function NewCourseLandingPage() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateCourseLandingPageMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCourseLandingPagesQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateCourseLandingPageMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

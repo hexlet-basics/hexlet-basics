@@ -108,8 +108,58 @@ function QnaItemForm({
         )}
       </Group>
       <Group justify="flex-end">
-        <Button type="submit" size="xs" variant={item ? "light" : "filled"} loading={isPending}>
-          {item ? t(($) => $.admin.crud.save) : t(($) => $.admin.crud.create)}
+        <Button
+          size="xs"
+          variant="light"
+          loading={isPending}
+          disabled={question.trim() === "" || answer.trim() === ""}
+          onClick={() => onSave({ answer, question })}
+        >
+          {t(($) => $.admin.crud.save)}
+        </Button>
+      </Group>
+    </Stack>
+  );
+}
+
+function NewQnaItemForm({
+  onCreate,
+  isPending,
+}: {
+  onCreate: (input: QnaItemInput) => void;
+  isPending?: boolean;
+}) {
+  const { t } = useTranslation();
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  return (
+    <Stack gap="xs">
+      <Title order={6}>{t(($) => $.admin.qna.add)}</Title>
+      <TextInput
+        label={t(($) => $.models.attributes.qna_item.question)}
+        value={question}
+        onChange={(event) => setQuestion(event.currentTarget.value)}
+      />
+      <Textarea
+        label={t(($) => $.models.attributes.qna_item.answer)}
+        autosize
+        minRows={2}
+        value={answer}
+        onChange={(event) => setAnswer(event.currentTarget.value)}
+      />
+      <Group justify="flex-end">
+        <Button
+          size="xs"
+          loading={isPending}
+          disabled={question.trim() === "" || answer.trim() === ""}
+          onClick={() => {
+            onCreate({ answer, question });
+            setQuestion("");
+            setAnswer("");
+          }}
+        >
+          {t(($) => $.admin.crud.create)}
         </Button>
       </Group>
     </Stack>

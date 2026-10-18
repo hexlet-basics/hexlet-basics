@@ -27,9 +27,9 @@ function BannersList() {
 
   const list = useCrudList({
     list: adminListBannersOptions,
-    searchable: true,
     listKey: adminListBannersQueryKey,
     remove: adminDeleteBannerMutation,
+    searchable: true,
   });
 
   // The state shows as its label: it moves only through the transition buttons
@@ -48,10 +48,10 @@ function BannersList() {
       (column) => labelState(column),
     ),
     list.actionsColumn({
+      describe: (row) => row.body,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.body,
     }),
   ];
 

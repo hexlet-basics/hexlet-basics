@@ -49,9 +49,9 @@ function LessonProgressList() {
       header: t(($) => $.models.attributes.lesson_progress.messages_count),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

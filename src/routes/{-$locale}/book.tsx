@@ -40,22 +40,22 @@ export const Route = createFileRoute("/{-$locale}/book")({
       throw notFound();
     }
   },
-  loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
+  component: Show,
   // Legacy meta: the header as title, the description cut to 160 characters as
   // Rails' truncate did, the canonical link and the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
-      i18n,
-      title: i18n.t(($) => $.books.show.header).trim(),
+      canonicalPath: match.pathname,
       description: truncate(
         i18n.t(($) => $.books.show.description),
         { length: 160 },
       ),
-      canonicalPath: match.pathname,
+      i18n,
+      title: i18n.t(($) => $.books.show.header).trim(),
     });
   },
-  component: Show,
+  loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
 });
 
 function Show() {
@@ -65,28 +65,28 @@ function Show() {
 
   const features = [
     {
-      key: "direction",
-      title: t(($) => $.books.show.features.direction),
       explanation: t(($) => $.books.show.features.direction_explanation),
       icon: IconCompass,
+      key: "direction",
+      title: t(($) => $.books.show.features.direction),
     },
     {
-      key: "plan",
-      title: t(($) => $.books.show.features.plan),
       explanation: t(($) => $.books.show.features.plan_explanation),
       icon: IconList,
+      key: "plan",
+      title: t(($) => $.books.show.features.plan),
     },
     {
-      key: "resume",
-      title: t(($) => $.books.show.features.resume),
       explanation: t(($) => $.books.show.features.resume_explanation),
       icon: IconFileText,
+      key: "resume",
+      title: t(($) => $.books.show.features.resume),
     },
     {
-      key: "interview",
-      title: t(($) => $.books.show.features.interview),
       explanation: t(($) => $.books.show.features.interview_explanation),
       icon: IconUsers,
+      key: "interview",
+      title: t(($) => $.books.show.features.interview),
     },
   ] as const;
 
@@ -180,6 +180,7 @@ function RequestButton() {
   const queryClient = useQueryClient();
   const request = useMutation({
     ...createBookRequestMutation(),
+    onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
     onSuccess: async () => {
       notifications.show({
         color: "green",
@@ -187,7 +188,6 @@ function RequestButton() {
       });
       await queryClient.invalidateQueries({ queryKey: getBookQueryKey() });
     },
-    onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
   return (

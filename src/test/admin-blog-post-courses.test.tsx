@@ -10,19 +10,19 @@ import { renderRoute } from "@/test/renderRoute";
 const COURSE_ID = 150;
 
 const post: BlogPost = {
-  id: 3,
-  creator: { id: 1, name: "Ada" } as BlogPost["creator"],
-  name: "Hello",
-  slug: "hello",
-  description: null,
-  state: "draft",
-  locale: "en",
-  richBodyHtml: "<p>Hi</p>",
-  readingTime: 1,
-  likesCount: 0,
-  relatedCourseIds: [],
   coverUrl: null,
   createdAt: "2026-01-01T00:00:00Z",
+  creator: { id: 1, name: "Ada" } as BlogPost["creator"],
+  description: null,
+  id: 3,
+  likesCount: 0,
+  locale: "en",
+  name: "Hello",
+  readingTime: 1,
+  relatedCourseIds: [],
+  richBodyHtml: "<p>Hi</p>",
+  slug: "hello",
+  state: "draft",
 };
 
 // The picker of a post's related courses lists every course the catalog has, not
@@ -45,8 +45,8 @@ describe("admin blog post courses", () => {
     );
 
     await renderRoute(Route, {
-      path: "/{-$locale}/admin/blog_posts/$id",
       initialPath: "/admin/blog_posts/3",
+      path: "/{-$locale}/admin/blog_posts/$id",
       user: admin,
     });
 

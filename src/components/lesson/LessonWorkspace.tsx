@@ -62,13 +62,13 @@ export default function LessonWorkspace({
 
   // A reload, a second tab or a return tomorrow finds the work still there.
   const [code, setCode] = useLocalStorage({
-    key: lessonCodeKey(courseSlug, lesson.slug),
     defaultValue: starterCode,
     // Read straight away rather than in an effect: the value is only ever
     // rendered inside the editor, which is client-only, so there is no
     // server-rendered markup for it to disagree with — and reading it late would
     // let monaco paint the starter code over work the learner already has.
     getInitialValueInEffect: false,
+    key: lessonCodeKey(courseSlug, lesson.slug),
   });
 
   // Bumped to tell the editor its buffer has been replaced; see LessonEditor.
@@ -82,6 +82,9 @@ export default function LessonWorkspace({
 
   const check = useMutation({
     ...checkLessonMutation(),
+    // A network failure must never read as a wrong answer, so it says what it
+    // was and leaves the page where it stood.
+    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
     onSuccess: async (outcome) => {
       setResult(outcome);
       // The server has just recorded progress; the marks in the lesson list and
@@ -99,9 +102,6 @@ export default function LessonWorkspace({
         });
       }
     },
-    // A network failure must never read as a wrong answer, so it says what it
-    // was and leaves the page where it stood.
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 
   const run = () => {
@@ -121,8 +121,8 @@ export default function LessonWorkspace({
     setTab("output");
     setResult(null);
     check.mutate({
-      path: { id: lesson.id },
       body: { code, versionId: lesson.versionId ?? 0 },
+      path: { id: lesson.id },
     });
   };
 

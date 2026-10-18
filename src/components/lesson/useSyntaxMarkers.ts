@@ -44,15 +44,15 @@ export function useSyntaxMarkers(
         model,
         owner,
         problems.map((problem) => ({
-          severity: monaco.MarkerSeverity.Error,
+          endColumn: Math.min(problem.endColumn, model.getLineMaxColumn(problem.endLineNumber)),
+          endLineNumber: problem.endLineNumber,
           message:
             problem.kind === "missing"
               ? t(($) => $.courses.lessons.show.syntax_missing, { token: problem.token })
               : t(($) => $.courses.lessons.show.syntax_error),
-          startLineNumber: problem.startLineNumber,
+          severity: monaco.MarkerSeverity.Error,
           startColumn: problem.startColumn,
-          endLineNumber: problem.endLineNumber,
-          endColumn: Math.min(problem.endColumn, model.getLineMaxColumn(problem.endLineNumber)),
+          startLineNumber: problem.startLineNumber,
         })),
       );
     };

@@ -14,8 +14,8 @@ import { pageCount } from "@/lib/page-count";
 // Page one is the bare URL, as legacy canonicalised the list.
 const linkTo = (target: number) => ({
   component: Link,
-  to: ".",
   search: target === 1 ? {} : { page: target },
+  to: ".",
 });
 
 export default function Pager({
@@ -34,9 +34,9 @@ export default function Pager({
 
   const controlPage = {
     first: 1,
-    previous: page > 1 ? page - 1 : undefined,
-    next: page < last ? page + 1 : undefined,
     last,
+    next: page < last ? page + 1 : undefined,
+    previous: page > 1 ? page - 1 : undefined,
   };
 
   return (

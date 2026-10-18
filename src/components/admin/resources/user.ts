@@ -8,18 +8,18 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // (edit only) — the contract reuses UserCrud/UserInput for the two surfaces.
 
 export const emptyUser: UserInput = {
+  admin: false,
   email: "",
   firstName: "",
   lastName: "",
-  admin: false,
 };
 
 export function userToForm(user: UserCrud): UserInput {
   return {
+    admin: user.admin ?? false,
     email: user.email ?? "",
     firstName: user.firstName ?? "",
     lastName: user.lastName ?? "",
-    admin: user.admin ?? false,
   };
 }
 

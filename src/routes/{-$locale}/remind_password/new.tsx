@@ -13,8 +13,8 @@ import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailReques
 // any email, so every submission ends on one confirmation. `invalid` is set by
 // the password/$token/edit route when it refuses a followed link.
 export const Route = createFileRoute("/{-$locale}/remind_password/new")({
-  validateSearch: z.object({ invalid: z.boolean().optional() }),
   component: New,
+  validateSearch: z.object({ invalid: z.boolean().optional() }),
 });
 
 function New() {
@@ -31,8 +31,8 @@ function New() {
   useEffect(() => {
     if (invalid) {
       notifications.show({
-        id: "invalid-link",
         color: "red",
+        id: "invalid-link",
         message: t(($) => $.flash.passwords.edit.error),
       });
     }
@@ -40,10 +40,10 @@ function New() {
 
   const form = useAppForm({
     defaultValues: { email: "" },
-    validators: { onSubmit: zEmailInput },
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync({ body: value });
     },
+    validators: { onSubmit: zEmailInput },
   });
 
   return (
@@ -53,11 +53,33 @@ function New() {
           {t(($) => $.remind_passwords.new.title)}
         </Title>
 
-        <EmailRequestCard
-          mutation={mutation}
-          success={t(($) => $.flash.remind_passwords.create.success)}
-          submit={t(($) => $.helpers.submit.remind_password_form.create)}
-        />
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
+          {mutation.isSuccess ? (
+            <Alert color="green">{t(($) => $.flash.remind_passwords.create.success)}</Alert>
+          ) : (
+            <Stack
+              component="form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void form.handleSubmit();
+              }}
+            >
+              <form.AppField name="email">
+                {(field) => (
+                  <field.TextField
+                    label={t(($) => $.models.attributes.user.email)}
+                    required
+                    {...emailInputProps}
+                  />
+                )}
+              </form.AppField>
+
+              <Button type="submit" fullWidth loading={mutation.isPending}>
+                {t(($) => $.helpers.submit.remind_password_form.create)}
+              </Button>
+            </Stack>
+          )}
+        </Card>
 
         <Text mt="xs">
           {t(($) => $.remind_passwords.new.trying_to_login)}{" "}

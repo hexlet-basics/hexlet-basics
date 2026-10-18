@@ -42,18 +42,18 @@ function LessonReviewsList() {
       header: t(($) => $.models.attributes.lesson_review.locale),
     },
     {
-      id: "summary",
-      header: t(($) => $.models.attributes.lesson_review.summary),
       cell: ({ row }) => (
         <Text size="sm" lineClamp={3} maw={560}>
           {row.original.summary}
         </Text>
       ),
+      header: t(($) => $.models.attributes.lesson_review.summary),
+      id: "summary",
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

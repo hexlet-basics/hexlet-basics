@@ -55,6 +55,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy meta: the post's name and description, its canonical URL, the cover
   // as og:image, and a schema.org Article carrying the like count.
   head: ({ loaderData, match }) => {
@@ -66,7 +67,6 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       "@context": "https://schema.org",
       "@type": "Article",
       author: post.creator.name,
-      name: post.name,
       datePublished: post.createdAt,
       headline: post.description,
       image: post.coverUrl,
@@ -77,24 +77,30 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
           userInteractionCount: post.likesCount,
         },
       ],
+      name: post.name,
     };
     return {
       ...seoHead({
         i18n: match.context.i18n,
+
         title: post.name ?? "",
+
         description: post.description ?? "",
+
         image: post.coverUrl,
+
         canonicalPath: match.pathname,
       }),
       scripts: [
         {
-          type: "application/ld+json",
           // `<` escaped so a post name cannot close the script element.
           children: JSON.stringify(article).replaceAll("<", String.raw`\u003c`),
+          type: "application/ld+json",
         },
       ],
     };
   },
+
   component: Show,
 });
 
@@ -164,7 +170,9 @@ function PostChain({
 }) {
   const next = useInfiniteQuery({
     queryKey: ["blogPostChain", first.id],
+
     initialPageParam: first.id,
+
     queryFn: async ({ pageParam, signal }) => {
       const { data } = await getNextBlogPost({
         path: { id: pageParam },
@@ -173,9 +181,12 @@ function PostChain({
       });
       return data;
     },
+
     getNextPageParam: (last) => last.id,
+
     // Pages load only when the reader nears the end, never on mount.
     enabled: false,
+
     retry: false,
   });
 
@@ -213,6 +224,7 @@ function PostChain({
   useEffect(() => {
     const { pathname } = router.buildLocation({
       to: "/{-$locale}/blog_posts/$slug",
+
       params: { locale, slug },
     });
     if (globalThis.location.pathname !== pathname) {
@@ -374,6 +386,7 @@ function LikeButton({ post }: { post: BlogPost }) {
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const like = useMutation({
     ...likeBlogPostMutation(),
+
     onSuccess: (liked) => {
       notifications.show({
         color: "green",
@@ -384,6 +397,7 @@ function LikeButton({ post }: { post: BlogPost }) {
       });
       setLikesCount(liked.likesCount);
     },
+
     onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 

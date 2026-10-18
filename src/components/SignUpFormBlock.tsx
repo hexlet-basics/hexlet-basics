@@ -35,14 +35,6 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
 
   const mutation = useMutation({
     ...createUserMutation(),
-    onSuccess: async (user) => {
-      await onIdentityChanged(queryClient, router, user);
-      notifications.show({
-        color: "green",
-        message: t(($) => $.flash.users.create.success),
-      });
-      await (redirect ? navigate({ href: redirect }) : navigate({ to: "/{-$locale}" }));
-    },
     // A 422 is shown at the fields (submitWithServerErrors), not as a toast.
     onError: (error) => {
       if (isValidationError(error)) {
@@ -53,10 +45,18 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
         message: t(($) => $.flash.users.create.error),
       });
     },
+    onSuccess: async (user) => {
+      await onIdentityChanged(queryClient, router, user);
+      notifications.show({
+        color: "green",
+        message: t(($) => $.flash.users.create.success),
+      });
+      await (redirect ? navigate({ href: redirect }) : navigate({ to: "/{-$locale}" }));
+    },
   });
 
   const form = useAppForm({
-    defaultValues: { firstName: "", email: "", password: "" },
+    defaultValues: { email: "", firstName: "", password: "" },
     validators: {
       onSubmit: signUpFormSchema,
       onSubmitAsync: submitWithServerErrors((value: z.infer<typeof signUpFormSchema>) =>

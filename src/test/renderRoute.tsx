@@ -73,8 +73,8 @@ export async function renderRoute(
 ) {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { ...queryDefaults.queries, retry: false },
       mutations: { retry: false },
+      queries: { ...queryDefaults.queries, retry: false },
     },
   });
 
@@ -114,14 +114,14 @@ export async function renderRoute(
   await i18n.changeLanguage(locale ?? localeOf(initialPath));
 
   const router = createRouter({
-    routeTree: rootRoute.addChildren([...top, layout] as never[]),
-    context: { queryClient, i18n, user } as never,
-    history: createMemoryHistory({ initialEntries: [initialPath] }),
-    // Links preload on hover, as in getRouter.
-    defaultPreload: "intent",
+    context: { i18n, queryClient, user } as never,
+    defaultErrorComponent: ServerErrorPage,
     // The application's error pages, as getRouter sets them.
     defaultNotFoundComponent: NotFoundPage,
-    defaultErrorComponent: ServerErrorPage,
+    // Links preload on hover, as in getRouter.
+    defaultPreload: "intent",
+    history: createMemoryHistory({ initialEntries: [initialPath] }),
+    routeTree: rootRoute.addChildren([...top, layout] as never[]),
   });
 
   const screen = await renderWithProviders(
@@ -130,5 +130,5 @@ export async function renderRoute(
     i18n,
   );
 
-  return { screen, router, queryClient };
+  return { queryClient, router, screen };
 }

@@ -41,9 +41,9 @@ export default function LessonControls({
   // once the buffer is overwritten — so it asks first.
   const confirmReset = () =>
     modals.openConfirmModal({
-      title: t(($) => $.common.confirm),
-      labels: { confirm: t(($) => $.common.boolean.yes), cancel: t(($) => $.common.boolean.no) },
+      labels: { cancel: t(($) => $.common.boolean.no), confirm: t(($) => $.common.boolean.yes) },
       onConfirm: onReset,
+      title: t(($) => $.common.confirm),
     });
 
   return (
@@ -69,8 +69,8 @@ export default function LessonControls({
             enabled={Boolean(prevLesson)}
             label={t(($) => $.courses.lessons.show.prev)}
             linkOptions={{
+              params: { lessonSlug: prevLesson?.slug ?? "", slug: courseSlug },
               to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-              params: { slug: courseSlug, lessonSlug: prevLesson?.slug ?? "" },
             }}
           />
 
@@ -125,7 +125,7 @@ function ForwardButton({
         label={t(($) => $.courses.lessons.show.finish)}
         linkOptions={
           view.landingPage
-            ? { to: "/{-$locale}/languages/$slug/success", params: { slug: view.landingPage.slug } }
+            ? { params: { slug: view.landingPage.slug }, to: "/{-$locale}/languages/$slug/success" }
             : { to: "/{-$locale}/languages" }
         }
       />
@@ -155,7 +155,7 @@ function GuestSignUp({ passed }: { passed: boolean }) {
     <StepLink
       enabled={passed}
       label={t(($) => $.courses.lessons.show.next)}
-      linkOptions={{ to: "/{-$locale}/users/new", search: { redirect } }}
+      linkOptions={{ search: { redirect }, to: "/{-$locale}/users/new" }}
     />
   );
 }

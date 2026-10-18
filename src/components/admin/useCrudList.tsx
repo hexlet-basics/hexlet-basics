@@ -118,10 +118,10 @@ export function useCrudList<
   );
 
   const deleteMutation = useResourceMutation({
-    mutation: remove?.() ?? noMutation,
-    invalidate: [listKey()],
-    successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
+    invalidate: [listKey()],
+    mutation: remove?.() ?? noMutation,
+    successMessage: t(($) => $.admin.crud.deleted),
   });
 
   // The size is 0 until the first response says what the server used; the table
@@ -147,8 +147,6 @@ export function useCrudList<
     extra,
     describe,
   }: ActionsColumnOptions<TItem>): CrudColumnDef<TItem> => ({
-    id: "actions",
-    header: "",
     cell: ({ row }) => (
       <Group gap="xs" justify="flex-end" wrap="nowrap">
         {edit(row.original)}
@@ -172,28 +170,30 @@ export function useCrudList<
         )}
       </Group>
     ),
+    header: "",
+    id: "actions",
   });
 
   return {
-    query,
+    actionsColumn,
     props: {
-      data: rows,
-      total: query.data?.total ?? 0,
-      pagination,
-      onPaginationChange,
+      data: (query.data?.items ?? []) as TItem[],
       isLoading: query.isLoading,
+      onPaginationChange,
+      pagination,
       // A new term starts from the first page: the old page may not exist in the
       // narrowed list.
       search: searchable
         ? {
-            value: text,
             onChange: (value: string) => {
               setText(value);
               applyTerm(value.trim());
             },
+            value: search,
           }
         : undefined,
+      total: query.data?.total ?? 0,
     },
-    actionsColumn,
+    query,
   };
 }

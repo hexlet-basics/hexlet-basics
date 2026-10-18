@@ -32,15 +32,15 @@ function EditStaffMember() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateStaffMemberMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [
       adminListStaffMembersQueryKey(),
       adminGetStaffMemberQueryKey({ path: { id: memberId } }),
     ],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateStaffMemberMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -54,7 +54,7 @@ function EditStaffMember() {
           fields={fields}
           schema={zStaffMemberInput}
           defaultValues={staffMemberToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: memberId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: memberId } })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
         />

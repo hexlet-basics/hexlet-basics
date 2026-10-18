@@ -26,6 +26,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
       return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy meta: title and description built around the category header, the
   // canonical link and the social tags.
   head: ({ loaderData, match }) => {
@@ -35,13 +36,14 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     const { i18n } = match.context;
     const name = loaderData.category.header ?? "";
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.course_categories.show.meta.description, { name }),
       i18n,
       // The ru copy ends in a newline, which legacy's title tag trimmed away.
       title: i18n.t(($) => $.course_categories.show.header, { name }).trim(),
-      description: i18n.t(($) => $.course_categories.show.meta.description, { name }),
-      canonicalPath: match.pathname,
     });
   },
+
   component: Show,
 });
 
@@ -74,7 +76,7 @@ function Show() {
         </Grid>
       )}
 
-      <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }} mb="xl">
+      <SimpleGrid cols={{ base: 2, sm: 4, xs: 3 }} mb="xl">
         {landingPages.map((item) => (
           <CourseBlock key={item.id} item={item} />
         ))}

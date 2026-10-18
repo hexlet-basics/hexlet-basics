@@ -19,73 +19,73 @@ import { renderRoute } from "@/test/renderRoute";
 // promoted courses, and what a like answers.
 
 const author: User = {
-  id: 1,
-  firstName: "Alice",
-  lastName: null,
-  name: "Alice",
-  email: "alice@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: null,
+  canAccessAdmin: false,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "alice@example.com",
+  firstName: "Alice",
+  id: 1,
+  lastName: null,
+  name: "Alice",
   type: "user",
 };
 
 function blogPost(overrides: Partial<BlogPost>): BlogPost {
   return {
-    id: 10,
-    creator: author,
-    name: "Hello world",
-    slug: "hello-world",
-    description: "The very first post",
-    state: "published",
-    locale: "en",
-    richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
-    readingTime: 0,
-    likesCount: 2,
-    relatedCourseIds: [1],
     coverUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
+    creator: author,
+    description: "The very first post",
+    id: 10,
+    likesCount: 2,
+    locale: "en",
+    name: "Hello world",
+    readingTime: 0,
+    relatedCourseIds: [1],
+    richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
+    slug: "hello-world",
+    state: "published",
     ...overrides,
   };
 }
 
 const course: Course = {
-  id: 1,
-  slug: "ruby",
-  name: "ruby",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: null,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 0,
-  lessonsCount: 3,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: null,
+  enrollmentsCount: 0,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 3,
+  name: "ruby",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: null,
+  repositoryUrl: null,
+  slug: "ruby",
 };
 
 const rubyLanding: CourseCatalogItem = {
-  id: 100,
-  slug: "ruby-en",
-  header: "Ruby course",
-  name: "Ruby",
-  locale: "en",
-  enrollmentsCount: 42,
-  duration: 3,
-  coverUrl: null,
   course,
+  coverUrl: null,
+  duration: 3,
+  enrollmentsCount: 42,
+  header: "Ruby course",
+  id: 100,
+  locale: "en",
+  name: "Ruby",
+  slug: "ruby-en",
 };
 
 const post = blogPost({});
-const newer = blogPost({ id: 11, name: "Learning Ruby", slug: "learning-ruby", likesCount: 0 });
-const older = blogPost({ id: 9, name: "Oldest post", slug: "oldest-post", likesCount: 0 });
+const newer = blogPost({ id: 11, likesCount: 0, name: "Learning Ruby", slug: "learning-ruby" });
+const older = blogPost({ id: 9, likesCount: 0, name: "Oldest post", slug: "oldest-post" });
 
 function postView(): BlogPostView {
   return { post, recommendedPosts: [newer, older], relatedLandingPages: [rubyLanding] };
@@ -93,8 +93,8 @@ function postView(): BlogPostView {
 
 function renderPost(user: User | null = null) {
   return renderRoute(postRoute, {
-    path: "/{-$locale}/blog_posts/$slug",
     initialPath: "/blog_posts/hello-world",
+    path: "/{-$locale}/blog_posts/$slug",
     user,
   });
 }
@@ -102,15 +102,15 @@ function renderPost(user: User | null = null) {
 describe("blog", () => {
   it("the blog lists the posts the API returns", async () => {
     expect.hasAssertions();
-    const list: BlogPostPage = { items: [newer, post], total: 2, page: 1, perPage: 20 };
+    const list: BlogPostPage = { items: [newer, post], page: 1, perPage: 20, total: 2 };
     worker.use(http.get("*/api/blog_posts", () => HttpResponse.json(list)));
 
     const { router } = await renderRoute(indexRoute, {
-      path: "/{-$locale}/blog_posts/",
       initialPath: "/blog_posts/",
+      path: "/{-$locale}/blog_posts/",
     });
 
-    await expect.element(page.getByRole("heading", { name: "Blog", level: 1 })).toBeVisible();
+    await expect.element(page.getByRole("heading", { level: 1, name: "Blog" })).toBeVisible();
     await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
     await expect
       .element(page.getByRole("link", { name: /Hello world/u }))
@@ -119,10 +119,10 @@ describe("blog", () => {
     // The route's head: legacy title behind the site name, and its Twitter card.
     const meta = router.state.matches.at(-1)?.meta;
     expect(meta).toContainEqual({ title: "CodeBasics | Blog" });
-    expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
+    expect(meta).toContainEqual({ content: "@hexlet_io", name: "twitter:site" });
     expect(router.state.matches.at(-1)?.links).toContainEqual({
-      rel: "canonical",
       href: `${globalThis.location.origin}/blog_posts`,
+      rel: "canonical",
     });
   }, 60_000);
 
@@ -133,7 +133,7 @@ describe("blog", () => {
     const { router } = await renderPost();
 
     await expect
-      .element(page.getByRole("heading", { name: "Hello world", level: 1 }))
+      .element(page.getByRole("heading", { level: 1, name: "Hello world" }))
       .toBeVisible();
     await expect.element(page.getByText("world", { exact: true })).toBeVisible();
     await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
@@ -144,8 +144,8 @@ describe("blog", () => {
     const match = router.state.matches.at(-1);
     expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
     expect(match?.links).toContainEqual({
-      rel: "canonical",
       href: `${globalThis.location.origin}/blog_posts/hello-world`,
+      rel: "canonical",
     });
     expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
   }, 60_000);

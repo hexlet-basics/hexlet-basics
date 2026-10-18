@@ -19,8 +19,8 @@ import { queryDefaults } from "@/lib/query-client";
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
-      queries: { ...queryDefaults.queries, retry: false },
       mutations: { retry: false },
+      queries: { ...queryDefaults.queries, retry: false },
     },
   });
 }

@@ -37,12 +37,12 @@ function EditBlogPost() {
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateBlogPostMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListBlogPostsQueryKey(), adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateBlogPostMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -57,7 +57,7 @@ function EditBlogPost() {
             fields={fields}
             schema={zBlogPostInput}
             defaultValues={blogPostToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: postId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: postId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />
@@ -85,22 +85,22 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
   // the courses past its end from the picker.
   const courses = useQuery(adminListCourseOptionsOptions());
   const options = (courses.data ?? []).map((course) => ({
-    value: String(course.id),
     label: course.name,
+    value: String(course.id),
   }));
 
   const mutation = useResourceMutation({
-    mutation: adminSetBlogPostRelatedCoursesMutation(),
-    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
+    mutation: adminSetBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   const suggestMutation = useResourceMutation({
-    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
-    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
   });
 
   return (
@@ -128,8 +128,8 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
           loading={mutation.isPending}
           onClick={() =>
             mutation.mutate({
-              path: { id: postId },
               body: { courseIds: selected.map(Number) },
+              path: { id: postId },
             })
           }
         >

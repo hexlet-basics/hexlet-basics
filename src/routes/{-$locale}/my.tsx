@@ -27,10 +27,13 @@ export const Route = createFileRoute("/{-$locale}/my")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+
   loader: ({ context }) => context.queryClient.query(getMyDashboardOptions()),
+
   head: ({ match }) => ({
     meta: [{ title: match.context.i18n.t(($) => $.layouts.shared.nav.my) }],
   }),
+
   component: My,
 });
 
@@ -119,7 +122,7 @@ function My() {
         <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
       )}
 
-      <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
+      <SimpleGrid cols={{ base: 2, sm: 4, xs: 3 }}>
         {finished.map((course) => (
           <CourseBlock key={course.enrollment.id} item={course.card} />
         ))}
