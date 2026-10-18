@@ -12,6 +12,7 @@ import { Route as reviewListRoute } from "@/routes/{-$locale}/admin/reviews/inde
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { Locator } from "vitest/browser";
 
 // The Publication State of a banner, a review and a landing page is changed by
 // action buttons, one per operation, never by the form (the same pattern as the
@@ -32,7 +33,7 @@ const banner = (state: PublicationState): Banner => ({
 });
 
 // The embedded account and course are only read for their name and slug.
-const review = (state: PublicationState) =>
+const review = (state: PublicationState): Review =>
   ({
     body: "Great course",
     course: { slug: "ruby" },
@@ -146,7 +147,7 @@ const subjects: Subject[] = [
 // The edit screens of the landing page also load its FAQ and nothing else.
 const noQna = http.get("*/admin/course_landing_pages/7/qna_items", () => HttpResponse.json([]));
 
-const button = (name: string) => page.getByRole("button", { exact: true, name });
+const button = (name: string): Locator => page.getByRole("button", { exact: true, name });
 
 describe.each(subjects)("the $name admin screens", (subject) => {
   it.each<[PublicationState, string[], string[]]>([

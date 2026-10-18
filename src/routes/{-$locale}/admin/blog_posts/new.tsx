@@ -9,17 +9,18 @@ import { zBlogPostInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyBlogPost, useBlogPostFields } from "@/components/admin/resources/blogPost";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/new")({
   component: NewBlogPost,
 });
 
-function NewBlogPost() {
+function NewBlogPost(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBlogPostFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/blog_posts" });
   };
 

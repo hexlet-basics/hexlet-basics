@@ -17,6 +17,7 @@ import { Trans, useTranslation } from "react-i18next";
 import type { LessonCheckingResponse } from "@/client/types.gen";
 import { TextLink } from "@/components/RouterLink";
 import { ansiLanguage } from "@/lib/shiki";
+import type { ReactElement } from "react";
 
 // What the run said. A solution that never terminated is its own outcome, not an
 // ordinary failure: it is a loop to find, not a wrong answer to rethink, and the
@@ -35,7 +36,7 @@ import { ansiLanguage } from "@/lib/shiki";
 // The result copy carries markup (`<a>` in the failed message), so it goes through
 // Trans; the help article it links to is the one legacy linked.
 // The line a guest reads after passing: signing up keeps what they have done.
-function GuestPrompt() {
+function GuestPrompt(): ReactElement {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
 
@@ -60,7 +61,7 @@ function GuestPrompt() {
 // Before the first run the pane would otherwise be blank, and a beginner has no
 // way to know what "output" is or what to do next. So it says what will appear
 // here, and walks through the loop: write, run, read.
-function EmptyOutput() {
+function EmptyOutput(): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -97,7 +98,7 @@ export default function LessonOutput({
 }: {
   result: LessonCheckingResponse | null;
   running?: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const user = useRouteContext({ from: "__root__", select: (context) => context.user });
 

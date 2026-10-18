@@ -15,11 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { listCoursesOptions } from "@/client/@tanstack/react-query.gen";
 import CourseBlock from "@/components/CourseBlock";
+import type { ReactElement } from "react";
 
 // Course catalog, rendered at both `/` and `/languages` (legacy URL kept for
 // compat). Data is prefetched in each route's SSR loader, so `useQuery` resolves
 // from the dehydrated cache on first paint — no loading flash.
-export default function CourseCatalog() {
+export default function CourseCatalog(): ReactElement {
   const { t, i18n } = useTranslation();
   const isRuLocale = i18n.language === "ru";
   const { data, isPending, isError } = useQuery(listCoursesOptions());

@@ -13,13 +13,14 @@ import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/")({
   validateSearch: zAdminListReviewsQuery,
   component: ReviewsList,
 });
 
-function ReviewsList() {
+function ReviewsList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

@@ -2,7 +2,7 @@ import { Box, Container, Grid, TableOfContents, Text, Title, Typography } from "
 import type { TypographyProps } from "@mantine/core";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import type { TFunction } from "i18next";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import AboutEn from "@/components/pages/AboutEn";
 import AboutRu from "@/components/pages/AboutRu";
@@ -127,7 +127,7 @@ const typographyStyles: TypographyProps["styles"] = (theme) => ({
   },
 });
 
-function Show() {
+function Show(): ReactElement | null {
   const { t, i18n } = useTranslation();
   const { id } = Route.useParams();
   if (!isPageId(id)) {

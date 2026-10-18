@@ -228,12 +228,15 @@ export default defineConfig({
     "react/only-export-components": "off",
     // The automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
-    // Return types are inferred and tsc checks callers.
-    "typescript/explicit-function-return-type": "off",
+    "typescript/explicit-function-return-type": [
+      "error",
+      { allowExpressions: true, allowedNames: ["getRouter"] },
+    ],
     // Taste rule, TypeScript members are public by default.
     "typescript/explicit-member-accessibility": "off",
-    // Return types are inferred and tsc checks callers.
-    "typescript/explicit-module-boundary-types": "off",
+    // The one function left without a return type is getRouter: the router's Register
+    // type is read from it, so naming the type there would make it refer to itself.
+    "typescript/explicit-module-boundary-types": ["error", { allowedNames: ["getRouter"] }],
     // Forbids onClick={() => doIt()} shorthand used throughout.
     "typescript/no-confusing-void-expression": "off",
     "typescript/no-deprecated": "error",

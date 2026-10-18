@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClientOnly } from "@tanstack/react-router";
 import { IconBook } from "@tabler/icons-react";
 import { Suspense, lazy, useState } from "react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import {
   checkLessonMutation,
@@ -53,7 +53,7 @@ export default function LessonWorkspace({
   // The outcome of the last check, held by the page for the assistant too.
   result: LessonCheckingResponse | null;
   setResult: Dispatch<SetStateAction<LessonCheckingResponse | null>>;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
@@ -75,7 +75,7 @@ export default function LessonWorkspace({
   const [resetCount, setResetCount] = useState(0);
   const [tab, setTab] = useState<string | null>("editor");
 
-  const reset = () => {
+  const reset = (): void => {
     setCode(starterCode);
     setResetCount((count) => count + 1);
   };
@@ -104,7 +104,7 @@ export default function LessonWorkspace({
     },
   });
 
-  const run = () => {
+  const run = (): void => {
     if (check.isPending) {
       return;
     }

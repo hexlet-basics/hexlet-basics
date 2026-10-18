@@ -24,6 +24,12 @@ interface SeoHead {
   openGraph?: { type: "website" | "article"; locale: string };
 }
 
+// What a route's `head` returns for the tags below: its meta entries and links.
+interface SeoHeadTags {
+  links: { href: string; rel: string }[];
+  meta: { content?: string; name?: string; property?: string; title?: string }[];
+}
+
 // The head legacy's meta-tags gem rendered from a controller's `seo_tags`:
 // `CodeBasics | <title>`, the description, the og/twitter pair and the
 // canonical link.
@@ -35,7 +41,7 @@ export function seoHead({
   image,
   social = true,
   openGraph,
-}: SeoHead) {
+}: SeoHead): SeoHeadTags {
   // `/reviews/` and `/reviews` are one page, so the canonical drops a trailing
   // slash, as legacy's `*_url` helpers never emitted one.
   const canonical =

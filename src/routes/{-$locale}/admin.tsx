@@ -5,6 +5,7 @@ import { Link, Outlet, createFileRoute, useLocation } from "@tanstack/react-rout
 import { useTranslation } from "react-i18next";
 import { adminGetMyCapabilitiesOptions } from "@/client/@tanstack/react-query.gen";
 import { requireAdmin } from "@/lib/auth";
+import type { ReactElement } from "react";
 
 // Admin back-office layout. The guard runs in beforeLoad so a non-admin never
 // even loads a child route's data (SSR-safe: `user` is resolved in the root).
@@ -106,7 +107,7 @@ const NAV = [
 const capabilityOf = (entry: (typeof NAV)[number]): string | undefined =>
   "capability" in entry ? entry.capability : undefined;
 
-function AdminLayout() {
+function AdminLayout(): ReactElement {
   const { t } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
   const { pathname } = useLocation();

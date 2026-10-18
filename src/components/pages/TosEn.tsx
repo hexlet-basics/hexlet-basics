@@ -1,7 +1,8 @@
 import { useId } from "react";
 import { Link } from "@tanstack/react-router";
+import type { ReactElement } from "react";
 
-export default function TosEn() {
+export default function TosEn(): ReactElement {
   const baseId = useId();
   return (
     <>

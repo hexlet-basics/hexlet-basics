@@ -39,6 +39,7 @@ import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
 import { orNull } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
@@ -117,7 +118,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   component: Show,
 });
 
-function Show() {
+function Show(): ReactElement {
   const { slug } = Route.useParams();
   const { t, i18n } = useTranslation();
   const { unfinished } = Route.useSearch();
@@ -320,13 +321,13 @@ function Show() {
 // whether it is finished, so nothing is joined here. A lesson no module in this
 // locale claims is listed after the panels rather than dropped, and a course
 // with no modules is the flat list alone.
-function LearningProgram({ view }: { view: CourseView }) {
+function LearningProgram({ view }: { view: CourseView }): ReactElement {
   const claimed = new Set(
     view.modules.flatMap((module) => module.lessons.map((item) => item.slug)),
   );
   const unclaimed = view.lessons.filter((item) => !claimed.has(item.slug));
 
-  const lessonLinks = (lessons: CourseView["lessons"]) =>
+  const lessonLinks = (lessons: CourseView["lessons"]): ReactElement[] =>
     lessons.map((item) => (
       <NavLink
         key={item.slug}
@@ -373,7 +374,7 @@ function LearningProgram({ view }: { view: CourseView }) {
 // It is a button rather than a link because pressing it issues the start command
 // before navigating. A link would enter the lesson without starting it, and
 // would be preloaded on hover besides.
-function CourseAction({ view }: { view: CourseView }) {
+function CourseAction({ view }: { view: CourseView }): ReactElement | null {
   const { t } = useTranslation();
   const { course, progress } = view;
   const { enter, isPending } = useEnterLesson(course.slug);
@@ -425,7 +426,7 @@ function CourseAction({ view }: { view: CourseView }) {
 // hero's: it goes through the same start command as the hero button, into the
 // learner's Next Lesson (the first one for a visitor), so none of them is a
 // way in that skips the start.
-function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
+function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps): ReactElement | null {
   const { enter, isPending } = useEnterLesson(view.course.slug);
   const lesson = view.progress?.nextLesson ?? view.lessons[0];
   if (!lesson) {

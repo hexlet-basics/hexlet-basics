@@ -22,12 +22,13 @@ import {
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/$id")({
   component: EditCourseCategory,
 });
 
-function EditCourseCategory() {
+function EditCourseCategory(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();
@@ -36,7 +37,7 @@ function EditCourseCategory() {
 
   const { data, isLoading } = useQuery(adminGetCourseCategoryOptions({ path: { id: categoryId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_categories" });
   };
 

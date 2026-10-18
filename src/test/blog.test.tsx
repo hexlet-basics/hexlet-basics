@@ -13,6 +13,7 @@ import { Route as postRoute } from "@/routes/{-$locale}/blog_posts/$slug";
 import { Route as indexRoute } from "@/routes/{-$locale}/blog_posts/index";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The public blog, driven through its real routes with the API faked at the
 // HTTP boundary. Asserted is what a reader sees: the posts, the body, the
@@ -91,7 +92,7 @@ function postView(): BlogPostView {
   return { post, recommendedPosts: [newer, older], relatedLandingPages: [rubyLanding] };
 }
 
-function renderPost(user: User | null = null) {
+function renderPost(user: User | null = null): Promise<RenderedRoute> {
   return renderRoute(postRoute, {
     initialPath: "/blog_posts/hello-world",
     path: "/{-$locale}/blog_posts/$slug",

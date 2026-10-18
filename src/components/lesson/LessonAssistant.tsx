@@ -19,7 +19,7 @@ import type { UIMessage } from "ai";
 import { IconCheck, IconLock } from "@tabler/icons-react";
 import { useLocation } from "@tanstack/react-router";
 import { useState } from "react";
-import type { SubmitEvent } from "react";
+import type { ReactElement, SubmitEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   listAssistantMessagesOptions,
@@ -50,7 +50,7 @@ export default function LessonAssistant({
   view: CourseLessonView;
   output: string;
   signedIn: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const lessonId = view.lesson.id;
   const history = useQuery({
@@ -88,7 +88,7 @@ export default function LessonAssistant({
 // What a visitor sees instead of the chat: who Tota is, what she does for a
 // learner, a sample exchange in the real chat's bubbles, and the way in. The
 // sign-up and sign-in links carry the way back to this lesson.
-function GuestAssistant() {
+function GuestAssistant(): ReactElement {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
   const benefits = [
@@ -158,7 +158,7 @@ function AssistantChat({
   view: CourseLessonView;
   output: string;
   chat: LessonAssistantChat;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
@@ -191,7 +191,7 @@ function AssistantChat({
   const quotaExceeded = chat.quotaExceeded || isQuotaExceeded(error);
   const communityUrl = t(($) => $.common.community_url).trim();
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const text = input.trim();
     if (!text || busy) {
@@ -276,7 +276,7 @@ function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
-function assistantTransport(lessonId: number) {
+function assistantTransport(lessonId: number): TextStreamChatTransport<UIMessage> {
   return new TextStreamChatTransport<UIMessage>({
     fetch: async (_url, init) => {
       // The AI SDK serializes the prepared body to a JSON string.

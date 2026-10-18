@@ -19,6 +19,7 @@ import interactiveFormatIcon from "@/assets/for-school-teachers-page/interactive
 import practiceIcon from "@/assets/for-school-teachers-page/practice-icon.svg";
 import { ButtonLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The longest meta description search engines show, and what marks a cut.
 const META_DESCRIPTION_LENGTH = 160;
@@ -65,7 +66,7 @@ const CARD_ICONS: Record<string, string> = {
   "practice-icon": practiceIcon,
 };
 
-function ForTeachers() {
+function ForTeachers(): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
 

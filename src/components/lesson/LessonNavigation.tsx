@@ -2,11 +2,12 @@ import { Box } from "@mantine/core";
 import type { CourseLessonView } from "@/client/types.gen";
 import LessonMark from "@/components/lesson/LessonMark";
 import { NavLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 // The course's lessons, in course order, with the current one marked and a check
 // on the finished ones. Legacy's flat list: lessons may be taken in any order
 // (ADR-0016), so every entry is a plain link.
-export default function LessonNavigation({ view }: { view: CourseLessonView }) {
+export default function LessonNavigation({ view }: { view: CourseLessonView }): ReactElement {
   const courseSlug = view.lesson.course.slug;
 
   return (

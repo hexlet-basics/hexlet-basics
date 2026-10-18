@@ -11,12 +11,13 @@ import type { Course } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { transitionsFromReadiness } from "@/lib/courseReadiness";
 import type { ReadinessTransition } from "@/lib/courseReadiness";
+import type { ReactElement } from "react";
 
 // A Course's Readiness and the buttons that change it. A state is not an update:
 // the course form does not carry it, each button calls its own operation (its own
 // Permission on the server). Every value but the current one is offered; the
 // server stays the judge and refuses the rest with a 409.
-export function CourseReadinessPanel({ course }: { course: Course }) {
+export function CourseReadinessPanel({ course }: { course: Course }): ReactElement {
   const { t } = useTranslation();
   const options = {
     errorMessage: t(($) => $.admin.readiness.changeError),

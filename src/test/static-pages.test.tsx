@@ -9,6 +9,7 @@ import { Route as pageRoute } from "@/routes/{-$locale}/pages/$id";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { renderWithProviders } from "@/test/renderWithProviders";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const MIN_BODY_LENGTH = 500;
 
@@ -16,7 +17,7 @@ const MIN_BODY_LENGTH = 500;
 // ru-only cases and the error pages. Asserted is what a visitor and a crawler
 // read: the body, the head, and which page answers.
 
-function renderPage(initialPath: string, locale?: "ru" | "es") {
+function renderPage(initialPath: string, locale?: "ru" | "es"): Promise<RenderedRoute> {
   return renderRoute(pageRoute, { initialPath, locale, path: "/{-$locale}/pages/$id" });
 }
 

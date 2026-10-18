@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createPasswordReminderMutation } from "@/client/@tanstack/react-query.gen";
-import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
+import { zEmailInput } from "@/client/zod.gen";
+import { emailInputProps } from "@/lib/authFieldProps";
+import { useAppForm } from "@/lib/form";
+import type { ReactElement } from "react";
 
 // Password Reset request form, ported from legacy remind_passwords/new. Unlike
 // legacy, an unknown email is no longer reported: the API answers the same for
@@ -17,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/remind_password/new")({
   validateSearch: z.object({ invalid: z.boolean().optional() }),
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const { invalid } = Route.useSearch();
 

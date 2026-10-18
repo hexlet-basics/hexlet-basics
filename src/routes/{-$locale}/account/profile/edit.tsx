@@ -17,6 +17,7 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
 import { submitForm, useAppForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
+import type { ReactElement } from "react";
 
 // The signed-in user's profile, ported from legacy account/profiles#edit
 // without the passkey section (ADR-0015). The name rules (40 characters, no
@@ -42,7 +43,7 @@ export const Route = createFileRoute("/{-$locale}/account/profile/edit")({
   component: Edit,
 });
 
-function Edit() {
+function Edit(): ReactElement {
   const { t } = useTranslation();
   const profile = Route.useLoaderData();
 
@@ -112,7 +113,7 @@ function Edit() {
 // Account deletion behind the same yes/no confirmation legacy's useConfirmation
 // showed. The API signs the user out, so the current-user cache is set to the
 // guest before leaving: the root guard would otherwise keep the removed user.
-function DeleteAccount() {
+function DeleteAccount(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -135,7 +136,7 @@ function DeleteAccount() {
     },
   });
 
-  const confirm = () =>
+  const confirm = (): string =>
     modals.openConfirmModal({
       centered: true,
       labels: {

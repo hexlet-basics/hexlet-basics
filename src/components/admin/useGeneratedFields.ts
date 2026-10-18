@@ -44,7 +44,7 @@ export function useGeneratedFields<T>(
   overrides: FieldOverrides<T> = {},
 ): CrudFieldSpec<T>[] {
   const { i18n } = useTranslation();
-  const label = (key: string) => labelFor(i18n, key);
+  const label = (key: string): string => labelFor(i18n, key);
   const hidden = new Set<string>(overrides.hide);
   const order = overrides.order ?? [];
 
@@ -71,7 +71,7 @@ export function useGeneratedFields<T>(
       return Object.assign(spec, overrides.set?.[spec.name]);
     });
 
-  const rank = (name: string) => {
+  const rank = (name: string): number => {
     const index = order.indexOf(name as keyof T & string);
     return index === -1 ? order.length : index;
   };

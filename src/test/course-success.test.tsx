@@ -13,6 +13,7 @@ import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index"
 import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/success";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const FULL_COMPLETION = 100;
 
@@ -109,11 +110,11 @@ function courseView(state: EnrollmentState | null): CourseView {
   };
 }
 
-function serveCourse(view: CourseView) {
+function serveCourse(view: CourseView): void {
   worker.use(http.get("*/api/languages/javascript", () => HttpResponse.json(view)));
 }
 
-function openSuccess(visitor: User | null) {
+function openSuccess(visitor: User | null): Promise<RenderedRoute> {
   return renderRoute(successRoute, {
     initialPath: "/ru/languages/javascript/success",
     path: "/{-$locale}/languages/$slug/success",

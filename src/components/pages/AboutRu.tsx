@@ -1,4 +1,6 @@
-export default function AboutRu() {
+import type { ReactElement } from "react";
+
+export default function AboutRu(): ReactElement {
   return (
     <>
       <h2>Что такое Code Basics</h2>

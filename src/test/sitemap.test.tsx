@@ -5,6 +5,7 @@ import type { Sitemap } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/map";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The HTML sitemap, driven through its real route with the API faked at the
 // HTTP boundary. Asserted is what a visitor sees: a section per site, ru then
@@ -43,7 +44,7 @@ const sitemap: Sitemap = {
   ],
 };
 
-function renderMap(initialPath: string) {
+function renderMap(initialPath: string): Promise<RenderedRoute> {
   worker.use(http.get("*/api/map", () => HttpResponse.json(sitemap)));
   return renderRoute(Route, { initialPath, path: "/{-$locale}/map" });
 }

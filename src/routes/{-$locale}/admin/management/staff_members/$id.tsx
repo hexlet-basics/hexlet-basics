@@ -13,12 +13,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { staffMemberToForm, useStaffMemberFields } from "@/components/admin/resources/staffMember";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/staff_members/$id")({
   component: EditStaffMember,
 });
 
-function EditStaffMember() {
+function EditStaffMember(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffMemberFields();
@@ -27,7 +28,7 @@ function EditStaffMember() {
 
   const { data, isLoading } = useQuery(adminGetStaffMemberOptions({ path: { id: memberId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/staff_members" });
   };
 

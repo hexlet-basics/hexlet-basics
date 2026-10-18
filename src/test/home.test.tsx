@@ -61,7 +61,7 @@ const blogPost: BlogPost = {
   state: "published",
 };
 
-function serveHome() {
+function serveHome(): void {
   worker.use(
     http.get("*/languages", () => HttpResponse.json(courses)),
     http.get("*/api/blog_posts", () =>

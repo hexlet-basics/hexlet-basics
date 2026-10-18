@@ -9,10 +9,11 @@ import {
 import type { BlogPost } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A blog post's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the post's three operations.
-export function BlogPostStatePanel({ post }: { post: BlogPost }) {
+export function BlogPostStatePanel({ post }: { post: BlogPost }): ReactElement {
   const { t } = useTranslation();
   const options = {
     errorMessage: t(($) => $.admin.publicationState.changeError),

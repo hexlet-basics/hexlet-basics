@@ -5,6 +5,7 @@ import type { ConnectedApp, User } from "@/client/types.gen";
 import { Route as connectedAppsRoute } from "@/routes/{-$locale}/account/connected_apps";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The Connected Apps page, driven through its real route with the API faked at
 // the HTTP boundary: the list, the confirm step, the revoke and its refresh.
@@ -38,7 +39,10 @@ const documentApp: ConnectedApp = {
   scopes: ["catalog:read", "something:new"],
 };
 
-function openPage(apps: ConnectedApp[], visitor: User | null = user) {
+function openPage(
+  apps: ConnectedApp[],
+  visitor: User | null = user,
+): { result: Promise<RenderedRoute>; setApps: (next: ConnectedApp[]) => ConnectedApp[] } {
   let current = apps;
   worker.use(http.get("*/api/oauth/connected_apps", () => HttpResponse.json({ items: current })));
   const result = renderRoute(connectedAppsRoute, {

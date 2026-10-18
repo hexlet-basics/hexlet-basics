@@ -15,13 +15,14 @@ import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
   validateSearch: zAdminListBlogPostsQuery,
   component: BlogPostsList,
 });
 
-function BlogPostsList() {
+function BlogPostsList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

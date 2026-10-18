@@ -1,6 +1,6 @@
 import { Center, Breadcrumbs as MantineBreadcrumbs, Text } from "@mantine/core";
 import { IconHome } from "@tabler/icons-react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { AnchorLink } from "@/components/RouterLink";
 
 // Breadcrumb trail, ported from legacy's XBreadcrumb. The home crumb is always
@@ -16,7 +16,7 @@ export default function Breadcrumbs({
 }: {
   homeLabel: string;
   children: ReactNode;
-}) {
+}): ReactElement {
   // The separator has no colour of its own and inherits the body's black, so it
   // is dimmed to match the crumbs.
   return (
@@ -37,7 +37,7 @@ export default function Breadcrumbs({
 }
 
 // The trailing crumb: the page you are on, so not a link.
-export function CurrentCrumb({ children }: { children: ReactNode }) {
+export function CurrentCrumb({ children }: { children: ReactNode }): ReactElement {
   return (
     <Text c="dimmed" size="sm">
       {children}

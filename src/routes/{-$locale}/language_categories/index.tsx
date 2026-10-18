@@ -7,6 +7,7 @@ import { listPublicCourseCategoriesOptions } from "@/client/@tanstack/react-quer
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import { CardLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The course categories, at their legacy URL, ported from legacy
 // language_categories/index. The loader prefetches the list so the cards are in
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/")({
     context.queryClient.query({ ...listPublicCourseCategoriesOptions(), staleTime: "static" }),
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t } = useTranslation();
   const { data } = useQuery(listPublicCourseCategoriesOptions());
   const header = t(($) => $.course_categories.index.header);

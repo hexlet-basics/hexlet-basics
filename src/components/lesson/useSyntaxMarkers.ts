@@ -17,7 +17,7 @@ export function useSyntaxMarkers(
   instance: editor.IStandaloneCodeEditor | undefined,
   monaco: typeof Monaco | undefined,
   language: string,
-) {
+): void {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function useSyntaxMarkers(
     let latest = 0;
     let disposed = false;
 
-    const check = async () => {
+    const check = async (): Promise<void> => {
       latest += 1;
       const version = latest;
       const problems = await findSyntaxProblems(language, model.getValue());

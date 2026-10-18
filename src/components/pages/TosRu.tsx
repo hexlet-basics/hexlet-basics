@@ -1,4 +1,6 @@
-export default function TosRu() {
+import type { ReactElement } from "react";
+
+export default function TosRu(): ReactElement {
   return (
     <>
       <p>

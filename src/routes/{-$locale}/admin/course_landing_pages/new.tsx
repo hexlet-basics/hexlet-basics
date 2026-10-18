@@ -12,17 +12,18 @@ import {
   useCourseLandingPageFields,
 } from "@/components/admin/resources/courseLandingPage";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/new")({
   component: NewCourseLandingPage,
 });
 
-function NewCourseLandingPage() {
+function NewCourseLandingPage(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseLandingPageFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_landing_pages" });
   };
 

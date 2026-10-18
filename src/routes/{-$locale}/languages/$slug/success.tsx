@@ -7,6 +7,7 @@ import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 import { isApiError } from "@/lib/api-error";
 import { HTTP_NOT_FOUND } from "@/lib/http-status";
+import type { ReactElement } from "react";
 
 // The course completion page, ported from legacy languages#success: where the
 // lesson player sends a learner who finished the Course.
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
   },
 });
 
-function Success() {
+function Success(): ReactElement {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getCourseOptions({ path: { slug } }));

@@ -4,6 +4,7 @@ import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
 import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The lesson player, at its legacy URL (ADR-0002) under the optional locale
 // prefix.
@@ -60,7 +61,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
   component: LessonRoute,
 });
 
-function LessonRoute() {
+function LessonRoute(): ReactElement {
   const { slug, lessonSlug } = Route.useParams();
   const { user } = Route.useRouteContext();
   return <LessonPage courseSlug={slug} lessonSlug={lessonSlug} signedIn={Boolean(user)} />;

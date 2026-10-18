@@ -3,6 +3,7 @@ import { Center, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { getTestLanguage } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
+import type { ReactElement } from "react";
 
 // The lesson tests, readable at any time by anyone — deliberately, as in legacy:
 // a learner who opens this tab is reading the specification of the exercise,
@@ -16,7 +17,7 @@ export default function LessonTests({
   // The test file's own extension: the tests need not be in the course's language.
   testExtension: string | null;
   testCode: string;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const language = getTestLanguage(courseSlug, testExtension);
 

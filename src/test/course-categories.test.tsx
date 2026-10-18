@@ -65,7 +65,7 @@ const view: CourseCategoryView = {
   qnaItems: [{ answer: "No, **none**.", id: 1, question: "Is experience required?" }],
 };
 
-function serveCategory() {
+function serveCategory(): void {
   worker.use(http.get("*/api/language_categories/programming", () => HttpResponse.json(view)));
 }
 

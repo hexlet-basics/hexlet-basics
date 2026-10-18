@@ -2,11 +2,12 @@ import { Box, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { QnaItem } from "@/client/types.gen";
 import MarkdownViewer from "@/components/MarkdownViewer";
+import type { ReactElement } from "react";
 
 // The "Sorting out the questions" block legacy closed its category and course
 // pages with: each question in bold over its markdown answer, two columns from
 // the xs breakpoint. Nothing is rendered for a page with no questions.
-export default function QnaBlock({ items }: { items: QnaItem[] }) {
+export default function QnaBlock({ items }: { items: QnaItem[] }): ReactElement | null {
   const { t } = useTranslation();
   if (items.length === 0) {
     return null;

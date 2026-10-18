@@ -11,6 +11,7 @@ import { submitForm, useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/{-$locale}/session/new")({
   validateSearch: signInSearchSchema,
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();

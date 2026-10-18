@@ -7,6 +7,8 @@ import { Route as courseListRoute } from "@/routes/{-$locale}/admin/courses/inde
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { Locator } from "vitest/browser";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // A Course's Readiness is changed by action buttons, one per operation, never by
 // the form (the same pattern as the Publication State panels, see
@@ -27,14 +29,14 @@ const course = (readiness: CourseReadiness | null): Course =>
     slug: "ruby",
   }) as unknown as Course;
 
-const edit = () =>
+const edit = (): Promise<RenderedRoute> =>
   renderRoute(courseEditRoute, {
     initialPath: "/admin/courses/7",
     path: "/{-$locale}/admin/courses/$id",
     user: admin,
   });
 
-const button = (name: string) => page.getByRole("button", { exact: true, name });
+const button = (name: string): Locator => page.getByRole("button", { exact: true, name });
 
 describe("the course admin screens", () => {
   it.each<[CourseReadiness, string[], string[]]>([

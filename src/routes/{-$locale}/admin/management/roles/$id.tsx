@@ -14,12 +14,13 @@ import { CrudForm } from "@/components/admin/CrudForm";
 import { staffRoleToForm, useStaffRoleFields } from "@/components/admin/resources/staffRole";
 import { RolePermissions } from "@/components/admin/RolePermissions";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/$id")({
   component: EditRole,
 });
 
-function EditRole() {
+function EditRole(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffRoleFields();
@@ -28,7 +29,7 @@ function EditRole() {
 
   const { data, isLoading } = useQuery(adminGetRoleOptions({ path: { id: roleId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/roles" });
   };
 

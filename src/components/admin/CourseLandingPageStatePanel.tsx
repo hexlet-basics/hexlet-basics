@@ -9,11 +9,12 @@ import {
 import type { CourseLandingPage } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A landing page's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the page's three operations. A page
 // with no state counts as a draft, as on the server.
-export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }) {
+export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }): ReactElement {
   const { t } = useTranslation();
   const options = {
     errorMessage: t(($) => $.admin.publicationState.changeError),

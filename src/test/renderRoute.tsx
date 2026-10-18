@@ -6,7 +6,8 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import type { AnyRoute } from "@tanstack/react-router";
+import type { AnyRoute, AnyRouter } from "@tanstack/react-router";
+import type { RenderResult } from "vitest-browser-react";
 import type { ReactNode } from "react";
 import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import { Route as localeLayoutRoute } from "@/routes/{-$locale}";
@@ -20,15 +21,23 @@ import { renderWithProviders } from "./renderWithProviders";
 
 // The application's file routes carry their parents from the generated tree, so
 // each is rebuilt here from its own options under the parent the test gives it.
-const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
+const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string): AnyRoute =>
   createRoute({
     ...(fileRoute.options as object),
     getParentRoute: () => parent,
     path: pattern,
   } as never) as AnyRoute;
 
-const under = (pattern: string, prefix: string) =>
+const under = (pattern: string, prefix: string): boolean =>
   pattern === prefix || pattern.startsWith(`${prefix}/`);
+
+// What a test gets back from mounting a route: the client its loaders filled, the
+// router it can read the location and matches from, and the rendered page.
+export interface RenderedRoute {
+  queryClient: QueryClient;
+  router: AnyRouter;
+  screen: RenderResult;
+}
 
 // Mounts a real file route — its loader, its component, its staticData — at a
 // real URL, under a synthetic root.
@@ -70,7 +79,7 @@ export async function renderRoute(
     // path pattern, for a test that follows the page into another one.
     also?: { route: AnyRoute; path: string }[];
   },
-) {
+): Promise<RenderedRoute> {
   const queryClient = new QueryClient({
     defaultOptions: {
       mutations: { retry: false },
@@ -92,7 +101,7 @@ export async function renderRoute(
   const top: AnyRoute[] = [];
   const inLocale: AnyRoute[] = [adminLayout];
   const inAdmin: AnyRoute[] = [];
-  const mount = (fileRoute: AnyRoute, pattern: string) => {
+  const mount = (fileRoute: AnyRoute, pattern: string): void => {
     if (under(pattern, ADMIN)) {
       inAdmin.push(make(fileRoute, adminLayout, pattern.slice(ADMIN.length) || "/"));
     } else if (under(pattern, LOCALE)) {

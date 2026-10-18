@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createMagicLinkMutation } from "@/client/@tanstack/react-query.gen";
-import { EmailRequestCard, useInvalidLinkNotice } from "@/components/EmailRequestCard";
+import { zEmailInput } from "@/client/zod.gen";
+import { emailInputProps } from "@/lib/authFieldProps";
+import { useAppForm } from "@/lib/form";
+import type { ReactElement } from "react";
 
 // Magic Link request form, ported from legacy magic_links/new. The API answers
 // the same whether or not the email is registered, so the page does too: every
@@ -17,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/magic_links/new")({
   validateSearch: z.object({ invalid: z.boolean().optional() }),
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const { invalid } = Route.useSearch();
 

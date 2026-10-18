@@ -2,7 +2,7 @@ import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
 import { Table, Typography } from "@mantine/core";
 import type { TypographyProps } from "@mantine/core";
 import type { Directives } from "mdast-util-directive";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import Markdown from "react-markdown";
 import type { ExtraProps } from "react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
@@ -68,7 +68,7 @@ function createDirectivePlugin(components: DirectiveComponents) {
 // language gets no `language-*` class — keying off that class alone would treat
 // such a block as inline code and collapse its newlines (legacy issue #592).
 // The `pre` hast node carries both the language and the original text.
-function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProps) {
+function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProps): ReactElement {
   const codeNode = node?.children.find(
     (child): child is HastElement => child.type === "element" && child.tagName === "code",
   );
@@ -94,7 +94,7 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
 
 // Only inline code (single backticks) reaches the `code` handler; fenced blocks
 // are intercepted by `pre` above.
-function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps) {
+function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps): ReactElement {
   const code = (node?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))
     .join("");
@@ -119,7 +119,7 @@ const typographyStyles: TypographyProps["styles"] = (theme) => ({
 // A stable default, so an omitted `components` prop is the same object on every render.
 const noComponents: DirectiveComponents = {};
 
-function MarkdownTable(props: ComponentPropsWithoutRef<"table">) {
+function MarkdownTable(props: ComponentPropsWithoutRef<"table">): ReactElement {
   return (
     <Table.ScrollContainer minWidth={800}>
       <table>{props.children}</table>
@@ -131,7 +131,7 @@ export default function MarkdownViewer({
   children,
   allowHtml = false,
   components = noComponents,
-}: MarkdownViewerProps) {
+}: MarkdownViewerProps): ReactElement {
   const preparedComponents = {
     code: MarkdownInlineCode,
     pre: MarkdownCodeBlock,

@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import type { ReactElement } from "react";
 
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
 // mining student questions; the per-lesson summaries live under lesson reviews.
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/admin/messages/")({
   component: MessagesList,
 });
 
-function MessagesList() {
+function MessagesList(): ReactElement {
   const { t } = useTranslation();
 
   const formatDateTime = useDateTime();

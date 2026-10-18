@@ -1,6 +1,11 @@
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import type { QueryKey, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
+import type {
+  QueryKey,
+  UseMutationOptions,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState } from "react";
@@ -8,7 +13,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
-import type { CrudColumnDef } from "./CrudList";
+import type { CrudColumnDef, CrudListProps } from "./CrudList";
 
 // How long the search box waits after a keystroke before it asks the API.
 const SEARCH_DEBOUNCE_MS = 300;
@@ -66,6 +71,16 @@ interface ActionsColumnOptions<TItem> {
   describe: (row: TItem) => ReactNode;
 }
 
+// What the engine hands the route: the shared last column, the props of the list
+// itself, and the list's query state.
+export interface CrudListEngine<TPage extends Page, TListError> {
+  actionsColumn: (
+    options: ActionsColumnOptions<TPage["items"][number]>,
+  ) => CrudColumnDef<TPage["items"][number]>;
+  props: Omit<CrudListProps<TPage["items"][number]>, "columns">;
+  query: UseQueryResult<TPage, TListError>;
+}
+
 // Stands in for the delete mutation of a resource that has none; no button ever
 // runs it.
 const noMutation = {};
@@ -90,7 +105,14 @@ export function useCrudList<
   listKey,
   remove,
   searchable = false,
-}: CrudListOptions<TPage, TListError, TListKey, TDeleteData, TDeleteError, TDeleteVars>) {
+}: CrudListOptions<
+  TPage,
+  TListError,
+  TListKey,
+  TDeleteData,
+  TDeleteError,
+  TDeleteVars
+>): CrudListEngine<TPage, TListError> {
   type TItem = TPage["items"][number];
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
@@ -177,7 +199,7 @@ export function useCrudList<
   return {
     actionsColumn,
     props: {
-      data: (query.data?.items ?? []) as TItem[],
+      data: query.data?.items ?? [],
       isLoading: query.isLoading,
       onPaginationChange,
       pagination,
@@ -185,9 +207,9 @@ export function useCrudList<
       // narrowed list.
       search: searchable
         ? {
-            onChange: (value: string) => {
-              setText(value);
-              applyTerm(value.trim());
+            onChange: (value: string): void => {
+              setSearch(value);
+              setPageIndex(0);
             },
             value: search,
           }

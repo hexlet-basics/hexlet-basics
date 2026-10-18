@@ -9,6 +9,7 @@ import { Route as resetRoute } from "@/routes/{-$locale}/password/$token/edit";
 import { Route as signInRoute } from "@/routes/{-$locale}/session/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // What a page cached for one visitor shows the next. The course page carries the
 // visitor's progress, so a copy read as a guest must not outlive the sign-in (or
@@ -95,7 +96,7 @@ function courseFor(visitor: "ada" | "guest"): CourseView {
 }
 
 // The API as a server that remembers who is signed in.
-function serverWith(signedIn: boolean) {
+function serverWith(signedIn: boolean): { signedIn: boolean } {
   const state = { signedIn };
   worker.use(
     http.get("*/languages/javascript", () =>
@@ -111,7 +112,7 @@ function serverWith(signedIn: boolean) {
 async function courseOpenedAs(
   visitor: "ada" | "guest",
   also: { route: never; path: string }[] = [],
-) {
+): Promise<RenderedRoute> {
   const rendered = await renderRoute(courseRoute, {
     also,
     initialPath: "/languages/javascript",

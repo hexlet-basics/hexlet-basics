@@ -6,6 +6,7 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { DESKTOP_VIEWPORT } from "@/test/viewport";
 import { sleep } from "@/test/wait";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // Long enough for a request a click would have sent to show up.
 const SETTLE_MS = 200;
@@ -17,17 +18,17 @@ const SETTLE_MS = 200;
 
 // The header shows its menus from the desktop width up.
 const startingViewport = { height: window.innerHeight, width: window.innerWidth };
-function openPage(initialPath: string, locale: "ru") {
+function openPage(initialPath: string, locale: "ru"): Promise<RenderedRoute> {
   // The header's courses menu.
   worker.use(http.get("*/languages", () => HttpResponse.json([])));
   return renderRoute(pageRoute, { initialPath, locale, path: "/{-$locale}/pages/$id" });
 }
 
 // The test page must stay: the link would otherwise navigate it away.
-const stay = (event: Event) => event.preventDefault();
+const stay = (event: Event): void => event.preventDefault();
 
 // The switcher is read at a desktop viewport, put back when the test is done.
-async function atDesktop() {
+async function atDesktop(): Promise<void> {
   onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
   await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
 }

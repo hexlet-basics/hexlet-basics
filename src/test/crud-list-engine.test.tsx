@@ -13,6 +13,7 @@ import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { worker } from "@/test/msw";
 import { renderWithRouter } from "@/test/renderWithRouter";
+import type { ReactElement } from "react";
 
 const ALL_ROWS = 30;
 
@@ -38,7 +39,7 @@ function Banners({
 }: {
   deletable?: boolean;
   searchable?: boolean;
-}) {
+}): ReactElement {
   const list = useCrudList({
     list: adminListBannersOptions,
     listKey: adminListBannersQueryKey,
@@ -61,7 +62,12 @@ function Banners({
 
 // The page of banners the API answers a list request with: one match for the
 // "sale" search, thirty rows otherwise.
-function searchedBanners(query: URLSearchParams) {
+function searchedBanners(query: URLSearchParams): {
+  items: Banner[];
+  page: number;
+  perPage: number;
+  total: number;
+} {
   const found = query.get("q") === "sale";
   return {
     items: [banner(1, found ? "Spring sale" : "Anything")],

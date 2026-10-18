@@ -7,6 +7,7 @@ import { Route as consumeRoute } from "@/routes/{-$locale}/magic_links/$token";
 import { Route as requestRoute } from "@/routes/{-$locale}/magic_links/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const user: User = {
   admin: false,
@@ -22,14 +23,14 @@ const user: User = {
   type: "user",
 };
 
-function openLink(token: string) {
+function openLink(token: string): Promise<RenderedRoute> {
   return renderRoute(consumeRoute, {
     initialPath: `/ru/magic_links/${token}`,
     path: "/{-$locale}/magic_links/$token",
   });
 }
 
-function openRequestForm(initialPath = "/magic_links/new") {
+function openRequestForm(initialPath = "/magic_links/new"): Promise<RenderedRoute> {
   return renderRoute(requestRoute, { initialPath, path: "/{-$locale}/magic_links/new" });
 }
 

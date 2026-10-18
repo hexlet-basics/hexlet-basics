@@ -6,11 +6,12 @@ import { Route as signUpRoute } from "@/routes/{-$locale}/users/new";
 import { worker } from "@/test/msw";
 import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The sign-up page, driven through its real route with the API faked at the
 // HTTP boundary: where a new account lands, and what it is shown there.
 
-async function renderSignUp(redirect: string) {
+async function renderSignUp(redirect: string): Promise<RenderedRoute> {
   worker.use(http.post("*/users", () => HttpResponse.json({}, { status: 201 })));
   const rendered = await renderRoute(signUpRoute, {
     initialPath: `/users/new?redirect=${encodeURIComponent(redirect)}`,
@@ -19,7 +20,7 @@ async function renderSignUp(redirect: string) {
   return rendered;
 }
 
-async function signUp() {
+async function signUp(): Promise<void> {
   await page.getByLabelText("Email", { exact: false }).fill("ada@example.com");
   await page.getByLabelText("Password", { exact: false }).fill("correct-horse-battery");
   await page.getByRole("button", { name: "Create an Account" }).click();

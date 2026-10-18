@@ -11,6 +11,7 @@ import {
 import type { ConnectedApp } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { requireAuth } from "@/lib/auth";
+import type { ReactElement } from "react";
 
 // The apps the signed-in user has connected through the OAuth server (ADR-0022,
 // #848), each with what it may do, and a way to disconnect one. The list is
@@ -50,7 +51,7 @@ function useScopeLabel() {
   return (scope: string) => labels[scope] ?? scope;
 }
 
-function ConnectedApps() {
+function ConnectedApps(): ReactElement {
   const { t, i18n } = useTranslation();
   // The loader filled the cache; the query keeps it current after a revoke.
   const { data } = useQuery({ ...listConnectedAppsOptions(), staleTime: 0 });
@@ -66,7 +67,7 @@ function ConnectedApps() {
   // Disconnecting is immediate and cannot be undone by the user (the app has to
   // be connected again), so it sits behind the same yes/no confirmation as
   // deleting an account.
-  const confirm = (app: ConnectedApp) =>
+  const confirm = (app: ConnectedApp): string =>
     modals.openConfirmModal({
       centered: true,
       children: <Text size="sm">{t(($) => $.account.connected_apps.confirm_text)}</Text>,
@@ -133,7 +134,7 @@ function ConnectedApps() {
 }
 
 // What an app may do, one line a scope.
-function ScopeList({ scopes }: { scopes: string[] }) {
+function ScopeList({ scopes }: { scopes: string[] }): ReactElement {
   const scopeLabel = useScopeLabel();
 
   return (

@@ -17,6 +17,7 @@ import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lesson
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { DESKTOP_VIEWPORT } from "@/test/viewport";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // A lesson page is headed with the course it belongs to.
 const COURSE = "JavaScript";
@@ -180,9 +181,9 @@ async function renderCourse(
   user: AuthUser | null = null,
   initialPath = "/languages/javascript",
   { withPlayer = false } = {},
-) {
+): Promise<RenderedRoute & { starts: { id: string; pathname: string }[] }> {
   const starts: { id: string; pathname: string }[] = [];
-  let pathname = () => initialPath;
+  let pathname = (): string => initialPath;
   worker.use(
     http.post("*/lessons/:id/start", ({ params }) => {
       starts.push({ id: String(params.id), pathname: pathname() });
@@ -208,7 +209,7 @@ async function renderCourse(
 
 // The lesson entries in the list, in the order a visitor reads them. The marks
 // are labelled icons, so they are asserted by accessible name, not here.
-function lessonNames() {
+function lessonNames(): string[] {
   return page
     .getByRole("link")
     .elements()

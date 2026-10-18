@@ -23,6 +23,9 @@ import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/succe
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { sleep } from "@/test/wait";
+import type { Locator } from "vitest/browser";
+import type { DefaultBodyType } from "msw";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // A lesson page is headed with the course it belongs to.
 const COURSE = "JavaScript";
@@ -176,7 +179,7 @@ const learner: AuthUser = {
 
 // The real route at a real URL, so the loader and the route's chrome run as they
 // do for a visitor. The lesson layout gives the panes the viewport to divide.
-function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
+function renderPlayer(lessonSlug: string, user: AuthUser | null = null): Promise<RenderedRoute> {
   return renderRoute(lessonRoute, {
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
@@ -192,7 +195,7 @@ const phone = { height: 667, width: 375 };
 const startingViewport = { height: window.innerHeight, width: window.innerWidth };
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
-function editorText() {
+function editorText(): string {
   return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00A0", " ");
 }
 
@@ -233,7 +236,10 @@ function lastLessonView(): CourseLessonView {
 }
 
 // The player at a phone's viewport, in a container of the same size.
-async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
+async function renderOnPhone(
+  lessonSlug: string,
+  user: AuthUser | null = null,
+): Promise<RenderedRoute> {
   await page.viewport(phone.width, phone.height);
   return renderPlayer(lessonSlug, user);
 }
@@ -241,7 +247,7 @@ async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
 // The two panes — theory and navigation, then the workspace — as locators, and
 // how wide each is drawn: on a phone one fills the screen and the other is
 // folded to nothing.
-function panes() {
+function panes(): { theory: Locator; workspace: Locator } {
   const [theory, workspace] = Array.from(
     document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
     (el) => page.elementLocator(el),
@@ -252,7 +258,7 @@ function panes() {
   return { theory, workspace };
 }
 
-function paneWidths() {
+function paneWidths(): number[] {
   return Array.from(document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"), (el) =>
     Math.round(el.getBoundingClientRect().width),
   );
@@ -273,7 +279,7 @@ function assistantMessage(overrides: Partial<LessonAssistantMessage>): LessonAss
 }
 
 // The answer as the server sends it: plain text, a chunk at a time.
-function streamedAnswer(chunks: string[]) {
+function streamedAnswer(chunks: string[]): HttpResponse<DefaultBodyType> {
   const encoder = new TextEncoder();
   const body = new ReadableStream({
     start(controller) {
@@ -287,7 +293,7 @@ function streamedAnswer(chunks: string[]) {
 }
 
 // What the learner sees underlined: monaco paints a marker as a squiggle.
-function squiggles() {
+function squiggles(): number {
   return document.querySelectorAll(".squiggly-error").length;
 }
 
@@ -319,7 +325,7 @@ function assistantChat(overrides: Partial<LessonAssistantChat> = {}): LessonAssi
 }
 
 // What each control under the editor says, by its label or else its text.
-function controlLabels(bar: HTMLElement | null) {
+function controlLabels(bar: HTMLElement | null): string[] {
   return [...(bar?.children ?? [])].map(
     (el) => el.getAttribute("aria-label") ?? el.textContent?.trim(),
   );
@@ -328,7 +334,7 @@ function controlLabels(bar: HTMLElement | null) {
 // Lays the page out at a desktop viewport for one test. Everything the player
 // keeps between visits lives in localStorage, and a test that seeds it must not
 // leak into the next one, so both are put back when the test is done.
-async function atDesktop() {
+async function atDesktop(): Promise<void> {
   onTestFinished(async () => {
     localStorage.clear();
     await page.viewport(startingViewport.width, startingViewport.height);

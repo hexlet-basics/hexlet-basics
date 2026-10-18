@@ -11,12 +11,13 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import type { Permission } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // The Permissions a role holds, edited on its page. The list is the catalog the
 // contract's operations declare (ADR-0020), grouped by the resource each name
 // starts with, so a new Permission appears here with no change to this screen.
 // One save replaces the role's whole set, so submitting the screen is idempotent.
-export function RolePermissions({ roleId }: { roleId: number }) {
+export function RolePermissions({ roleId }: { roleId: number }): ReactElement | null {
   const { data } = useQuery(adminGetRolePermissionsOptions({ path: { roleId } }));
   const { data: catalog } = useQuery(adminListPermissionsOptions());
 
@@ -36,7 +37,8 @@ export function RolePermissions({ roleId }: { roleId: number }) {
 }
 
 // ResourceOf is the part of a Permission name before the dot.
-const resourceOf = (permission: Permission) => permission.name.split(".")[0] ?? permission.name;
+const resourceOf = (permission: Permission): string =>
+  permission.name.split(".")[0] ?? permission.name;
 
 function PermissionsForm({
   roleId,
@@ -46,7 +48,7 @@ function PermissionsForm({
   roleId: number;
   catalog: Permission[];
   initialGrants: string[];
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const [grants, setGrants] = useState(initialGrants);
 
@@ -69,7 +71,7 @@ function PermissionsForm({
   }
   const groups = [...byResource];
 
-  const toggleGrant = (name: string) => {
+  const toggleGrant = (name: string): void => {
     setGrants((current) => {
       const next = new Set(current);
       if (!next.delete(name)) {

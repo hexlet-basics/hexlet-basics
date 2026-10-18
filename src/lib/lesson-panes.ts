@@ -27,7 +27,7 @@ export function useTheoryPercent(): [number, (percent: number) => void] {
   const [cookies, setCookie] = useCookies([COOKIE_NAME]);
   const parsed = THEORY_PERCENT.safeParse(cookies[COOKIE_NAME]);
 
-  const save = (percent: number) => {
+  const save = (percent: number): void => {
     // `path` is explicit: the library defaults to the current page, which would
     // keep one split per lesson URL after all.
     setCookie(COOKIE_NAME, String(Math.round(percent * DECIMAL_STEP) / DECIMAL_STEP), {

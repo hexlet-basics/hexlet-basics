@@ -7,6 +7,7 @@ import { listBlogPostsOptions } from "@/client/@tanstack/react-query.gen";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The blog, at its legacy URL, ported from legacy blog_posts/index. The list is
 // the first page only: legacy paginated server-side but its pager was commented
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/")({
     context.queryClient.query({ ...listBlogPostsOptions(), staleTime: "static" }),
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t } = useTranslation();
   const { data } = useQuery(listBlogPostsOptions());
   const header = t(($) => $.blog_posts.index.header);

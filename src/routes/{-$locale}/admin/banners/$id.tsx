@@ -14,12 +14,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { bannerToForm, useBannerFields } from "@/components/admin/resources/banner";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/$id")({
   component: EditBanner,
 });
 
-function EditBanner() {
+function EditBanner(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBannerFields();
@@ -28,7 +29,7 @@ function EditBanner() {
 
   const { data, isLoading } = useQuery(adminGetBannerOptions({ path: { id: bannerId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/banners" });
   };
 

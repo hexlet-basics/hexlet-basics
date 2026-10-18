@@ -15,11 +15,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
-import type { SyntheticEvent } from "react";
+import type { ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
-import type { AuditRecord } from "@/client/types.gen";
+import type { AuditChange, AuditRecord } from "@/client/types.gen";
 import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { isApiError } from "@/lib/api-error";
@@ -57,11 +57,11 @@ type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
 // the morning of the 5th wherever they are.
-const startOfDay = (day: string) => new Date(`${day}T00:00:00`).toISOString();
+const startOfDay = (day: string): string => new Date(`${day}T00:00:00`).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
 // window at the next local midnight.
-const endOfDay = (day: string) => {
+const endOfDay = (day: string): string => {
   const next = new Date(`${day}T00:00:00`);
   next.setDate(next.getDate() + 1);
   return next.toISOString();
@@ -70,7 +70,7 @@ const endOfDay = (day: string) => {
 const CHANNEL_COLOR = { mcp: "grape", web: "blue" } as const;
 const OUTCOME_COLOR = { failed: "red", forbidden: "orange", succeeded: "green" } as const;
 
-function AuditTrail() {
+function AuditTrail(): ReactElement {
   const { t } = useTranslation();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -91,17 +91,19 @@ function AuditTrail() {
     adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
   );
 
-  const apply = (event: SyntheticEvent) => {
+  const apply = (event: SyntheticEvent): void => {
     event.preventDefault();
     setApplied(draft);
     setPagination((current) => ({ ...current, pageIndex: 0 }));
   };
-  const reset = () => {
+  const reset = (): void => {
     setDraft(NO_FILTERS);
     setApplied(NO_FILTERS);
     setPagination((current) => ({ ...current, pageIndex: 0 }));
   };
-  const field = (name: keyof Filters) => ({
+  const field = (
+    name: keyof Filters,
+  ): { onChange: (event: { currentTarget: { value: string } }) => void; value: string } => ({
     // The value is read before the updater runs: React clears `currentTarget`
     // once the handler returns, and the updater runs later.
     onChange: (event: { currentTarget: { value: string } }) => {
@@ -263,7 +265,7 @@ function AuditTrail() {
 // One record in full: where it came from, what it changed (old and new value of
 // each field; a secret field names itself and nothing else) and what it read
 // (a count and ids, never values).
-function RecordDetails({ record }: { record: AuditRecord }) {
+function RecordDetails({ record }: { record: AuditRecord }): ReactElement {
   const { t } = useTranslation();
   const meta: [string, string | number | null][] = [
     [t(($) => $.admin.audit.details.requestId), record.requestId],
@@ -322,7 +324,7 @@ function RecordDetails({ record }: { record: AuditRecord }) {
 
 // A record may change the same entity twice, so a key is the entity, its id and
 // how many times it has come up so far.
-function keyedChanges(changes: AuditRecord["changes"]) {
+function keyedChanges(changes: AuditRecord["changes"]): { change: AuditChange; key: string }[] {
   const seen = new Map<string, number>();
   return changes.map((change) => {
     const base = `${change.entity}-${change.id ?? ""}`;
@@ -334,7 +336,7 @@ function keyedChanges(changes: AuditRecord["changes"]) {
 
 // One change of a record: the entity and what happened to it, then the old and
 // new value of each field, a secret one naming itself and nothing else.
-function ChangeDetails({ change }: { change: AuditRecord["changes"][number] }) {
+function ChangeDetails({ change }: { change: AuditRecord["changes"][number] }): ReactElement {
   const { t } = useTranslation();
 
   return (

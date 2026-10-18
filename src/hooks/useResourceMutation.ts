@@ -1,6 +1,6 @@
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { QueryKey, UseMutationOptions } from "@tanstack/react-query";
+import type { QueryKey, UseMutationOptions, UseMutationResult } from "@tanstack/react-query";
 import { isValidationError } from "@/lib/server-validation";
 
 // The three things every admin CRUD mutation repeats — invalidate the affected
@@ -30,7 +30,12 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
   successMessage,
   errorMessage,
   onDone,
-}: ResourceMutationOptions<TData, TError, TVars, TCtx>) {
+}: ResourceMutationOptions<TData, TError, TVars, TCtx>): UseMutationResult<
+  TData,
+  TError,
+  TVars,
+  TCtx
+> {
   const queryClient = useQueryClient();
 
   return useMutation({

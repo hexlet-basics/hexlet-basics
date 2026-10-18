@@ -7,6 +7,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";
+import type { ReactElement } from "react";
 
 // Monaco, loaded in the browser and only after the theory is on screen. It
 // cannot server-render, and it is by far the heaviest thing on the page, so it
@@ -40,7 +41,7 @@ interface LessonEditorProps {
 }
 
 // Where the learner writes their solution.
-export default function LessonEditor(props: LessonEditorProps) {
+export default function LessonEditor(props: LessonEditorProps): ReactElement {
   return (
     <ClientOnly>
       <EditorPane {...props} />
@@ -56,7 +57,7 @@ function EditorPane({
   starterCode,
   resetCount,
   onRun,
-}: LessonEditorProps) {
+}: LessonEditorProps): ReactElement {
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false });
   // Legacy asks the server whether the browser is a mobile one; the payload here
@@ -78,7 +79,7 @@ function EditorPane({
   // a stale run.
   const run = useCallbackRef(onRun);
 
-  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco) => {
+  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco): void => {
     mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
     setInstance(mounted);
     setMonacoApi(monaco);

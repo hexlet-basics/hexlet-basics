@@ -26,6 +26,7 @@ import type { DownloadBookData } from "@/client/types.gen";
 import { ButtonLink } from "@/components/RouterLink";
 import bookToc from "@/lib/book";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The download is a browser navigation, not a client call: the API answers it
 // with a redirect into the bucket, which an XHR would follow cross-origin. The
@@ -58,7 +59,7 @@ export const Route = createFileRoute("/{-$locale}/book")({
   loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
 });
 
-function Show() {
+function Show(): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
   const { data } = useQuery(getBookOptions());
@@ -90,7 +91,7 @@ function Show() {
     },
   ] as const;
 
-  function renderAction() {
+  function renderAction(): ReactElement {
     if (data?.requested) {
       return (
         <Button
@@ -175,7 +176,7 @@ function Show() {
 
 // Legacy posted the request and redirected back to the page with a flash, for
 // a repeat request too. Refetching the page state swaps in the download button.
-function RequestButton() {
+function RequestButton(): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const request = useMutation({
@@ -212,7 +213,7 @@ function Feature({
   title: string;
   explanation: string;
   icon: typeof IconCompass;
-}) {
+}): ReactElement {
   return (
     <Stack gap={4}>
       <Group gap={8} wrap="nowrap">

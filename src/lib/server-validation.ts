@@ -23,7 +23,9 @@ export const isValidationError = (error: unknown): boolean => validationErrors(e
 // to put server errors on fields: they render through the same field `error`
 // as the Zod ones and clear themselves on the next validation, with no state
 // to reset by hand. Any other failure is left to the mutation's onError.
-export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promise<unknown>) {
+export function submitWithServerErrors<TValue>(
+  submit: (value: TValue) => Promise<unknown>,
+): ({ value }: { value: TValue }) => Promise<{ fields: Record<string, string> } | undefined> {
   return async ({ value }: { value: TValue }) => {
     try {
       await submit(value);
@@ -36,7 +38,9 @@ export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promis
 
 // The form's `{ fields }` shape for a set of field messages, or nothing to say
 // when the submission raised none.
-function fieldsOf(errors: Record<string, string[]> | undefined) {
+function fieldsOf(
+  errors: Record<string, string[]> | undefined,
+): { fields: Record<string, string> } | undefined {
   return errors
     ? {
         fields: Object.fromEntries(

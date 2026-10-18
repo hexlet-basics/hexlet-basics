@@ -4,6 +4,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { TextLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The cases list, ported from legacy cases/index. Legacy served it for ru only
 // (`require_russian_locale`, whose RoutingError is a 404).
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/{-$locale}/cases/")({
   },
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t } = useTranslation();
 
   return (

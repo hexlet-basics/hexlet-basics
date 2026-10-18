@@ -6,6 +6,7 @@ import type { ProfileInput, User } from "@/client/types.gen";
 import { Route as editRoute } from "@/routes/{-$locale}/account/profile/edit";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // One character past the 40 a first name may have.
 const OVER_LIMIT = 41;
@@ -24,7 +25,7 @@ const user: User = {
   type: "user",
 };
 
-function openProfile(visitor: User | null = user) {
+function openProfile(visitor: User | null = user): Promise<RenderedRoute> {
   worker.use(http.get("*/api/account/profile/edit", () => HttpResponse.json(user)));
   return renderRoute(editRoute, {
     initialPath: "/account/profile/edit",

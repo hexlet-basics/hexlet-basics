@@ -26,7 +26,7 @@ import {
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
 import { getNextBlogPost } from "@/client/sdk.gen";
@@ -107,7 +107,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
 // The transparent pixel legacy fell back to for a post without a cover.
 const NO_COVER = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
-function Show() {
+function Show(): ReactElement | null {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   // The chain rewrites the address bar as the reader moves on, and the router
@@ -167,7 +167,7 @@ function PostChain({
   onChainSlugs: (slugs: string[]) => void;
   recommendedPosts: BlogPost[];
   relatedLandingPages: CourseCatalogItem[];
-}) {
+}): ReactElement {
   const next = useInfiniteQuery({
     queryKey: ["blogPostChain", first.id],
 
@@ -264,7 +264,7 @@ function ChainPost({
   index: number;
   onCrossLine: (index: number) => void;
   children: ReactNode;
-}) {
+}): ReactElement {
   const { ref, entry } = useIntersection({ rootMargin: "-25% 0px -75% 0px" });
   const onLine = entry?.isIntersecting ?? false;
 
@@ -289,7 +289,7 @@ function PostBody({
   post: BlogPost;
   recommendedPosts: BlogPost[];
   relatedLandingPages: CourseCatalogItem[];
-}) {
+}): ReactElement {
   const { t, i18n } = useTranslation();
 
   return (
@@ -380,7 +380,7 @@ function PostBody({
 // like, "already counted" for a repeat one. The API answers both with the post,
 // so a count that did not move is the repeat. A visitor is sent to sign in, as
 // the legacy auth guard did.
-function LikeButton({ post }: { post: BlogPost }) {
+function LikeButton({ post }: { post: BlogPost }): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
   const [likesCount, setLikesCount] = useState(post.likesCount);

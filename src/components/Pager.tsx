@@ -1,6 +1,7 @@
 import { Center, Pagination } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import { pageCount } from "@/lib/page-count";
+import type { ReactElement } from "react";
 
 // The public pager, ported from legacy XPaging: Mantine Pagination whose pages
 // and arrows are real links to `?page=N` on the current page, so every page is
@@ -12,7 +13,9 @@ import { pageCount } from "@/lib/page-count";
 // createLink. The link is relative to the current location and changes only
 // the search, so nothing untyped (no path params) is threaded through.
 // Page one is the bare URL, as legacy canonicalised the list.
-const linkTo = (target: number) => ({
+const linkTo = (
+  target: number,
+): { component: typeof Link; search: { page?: number }; to: string } => ({
   component: Link,
   search: target === 1 ? {} : { page: target },
   to: ".",
@@ -26,7 +29,7 @@ export default function Pager({
   total: number;
   page: number;
   perPage: number;
-}) {
+}): ReactElement | null {
   const last = pageCount(total, perPage);
   if (last <= 1) {
     return null;

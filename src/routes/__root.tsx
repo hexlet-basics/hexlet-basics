@@ -13,7 +13,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import type { i18n as I18n } from "i18next";
 import { useEffect } from "react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { Cookies, CookiesProvider } from "react-cookie";
 import { I18nextProvider } from "react-i18next";
 import { NotFoundPage } from "@/components/ErrorPage";
@@ -72,7 +72,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   ),
 });
 
-function RootComponent() {
+function RootComponent(): ReactElement {
   // The `{-$locale}` layout has already run changeLanguage in beforeLoad, so
   // i18n.language is the resolved locale by the time the document renders.
   const { i18n, cookieHeader } = Route.useRouteContext();
@@ -94,7 +94,7 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children, lang }: { children: ReactNode; lang: string }) {
+function RootDocument({ children, lang }: { children: ReactNode; lang: string }): ReactElement {
   return (
     <html lang={lang} {...mantineHtmlProps}>
       <head>

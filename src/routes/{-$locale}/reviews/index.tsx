@@ -21,6 +21,7 @@ import Pager from "@/components/Pager";
 import { seoHead } from "@/lib/seo-head";
 import { longDate } from "@/lib/time-ago";
 import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 const pageNumber = z.number().int().min(1);
 
@@ -56,7 +57,7 @@ export const Route = createFileRoute("/{-$locale}/reviews/")({
   component: Index,
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t, i18n } = useTranslation();
   const { page } = Route.useSearch();
   const { data } = useQuery(listPublicReviewsOptions({ query: { page } }));

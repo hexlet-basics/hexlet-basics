@@ -11,9 +11,16 @@ import { submitForm, useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isApiError } from "@/lib/api-error";
 import { HTTP_NOT_FOUND } from "@/lib/http-status";
+import type { ReactElement } from "react";
 
 // Where a refused link lands, from the loader and from a failed submission.
-const refusedLink = (locale: string | undefined) => ({
+const refusedLink = (
+  locale: string | undefined,
+): {
+  params: { locale: string | undefined };
+  search: { invalid: boolean };
+  to: "/{-$locale}/remind_password/new";
+} => ({
   params: { locale },
   search: { invalid: true },
   to: "/{-$locale}/remind_password/new" as const,
@@ -39,7 +46,7 @@ export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
   },
 });
 
-function Edit() {
+function Edit(): ReactElement {
   const { t } = useTranslation();
   const { locale, token } = Route.useParams();
   const navigate = useNavigate();

@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import type { ReactElement } from "react";
 
 // AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")
   component: LessonReviewsList,
 });
 
-function LessonReviewsList() {
+function LessonReviewsList(): ReactElement {
   const { t } = useTranslation();
 
   const formatDateTime = useDateTime();

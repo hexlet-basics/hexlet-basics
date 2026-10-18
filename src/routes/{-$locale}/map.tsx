@@ -7,6 +7,7 @@ import type { Sitemap } from "@/client/types.gen";
 import { TextLink } from "@/components/RouterLink";
 import type { Locale } from "@/lib/i18n";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The HTML sitemap at its legacy URL, ported from legacy home/sitemap. Legacy
 // served it on the ru site only (`/ru/map`); `/map` and `/es/map` are 404. It
@@ -15,7 +16,8 @@ import { seoHead } from "@/lib/seo-head";
 const SECTION_LOCALES: Locale[] = ["ru", "en"];
 
 // A link's `{-$locale}` param: en is the unprefixed default.
-const localeParam = (locale: Locale) => (locale === "en" ? undefined : locale);
+const localeParam = (locale: Locale): "es" | "ru" | undefined =>
+  locale === "en" ? undefined : locale;
 
 export const Route = createFileRoute("/{-$locale}/map")({
   beforeLoad: ({ params }) => {
@@ -33,7 +35,7 @@ export const Route = createFileRoute("/{-$locale}/map")({
     context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
 });
 
-function SitemapPage() {
+function SitemapPage(): ReactElement {
   const { t } = useTranslation();
   const { data } = useQuery(getSitemapOptions());
 
@@ -62,7 +64,7 @@ function SitemapSection({
   landingPages,
   blogPosts,
   categories,
-}: Sitemap & { locale: Locale }) {
+}: Sitemap & { locale: Locale }): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -90,7 +92,7 @@ function CoursesItem({
 }: {
   locale: Locale;
   landingPages: Sitemap["landingPages"];
-}) {
+}): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -120,7 +122,13 @@ function CoursesItem({
   );
 }
 
-function BlogItem({ locale, blogPosts }: { locale: Locale; blogPosts: Sitemap["blogPosts"] }) {
+function BlogItem({
+  locale,
+  blogPosts,
+}: {
+  locale: Locale;
+  blogPosts: Sitemap["blogPosts"];
+}): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -153,7 +161,7 @@ function CategoriesItem({
 }: {
   locale: Locale;
   categories: Sitemap["categories"];
-}) {
+}): ReactElement {
   const { t } = useTranslation();
 
   return (

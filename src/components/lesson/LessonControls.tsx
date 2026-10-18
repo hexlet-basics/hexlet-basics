@@ -3,7 +3,7 @@ import { modals } from "@mantine/modals";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
 import { useLocation, useRouteContext } from "@tanstack/react-router";
 import type { RegisteredRouter, ValidateLinkOptions } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { CourseLessonView, LessonRef } from "@/client/types.gen";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
@@ -27,7 +27,7 @@ export default function LessonControls({
   onReset: () => void;
   onRun: () => void;
   running: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const user = useRouteContext({ from: "__root__", select: (context) => context.user });
   const courseSlug = view.lesson.course.slug;
@@ -39,7 +39,7 @@ export default function LessonControls({
 
   // Resetting throws away whatever the learner has written, and there is no undo
   // once the buffer is overwritten — so it asks first.
-  const confirmReset = () =>
+  const confirmReset = (): string =>
     modals.openConfirmModal({
       labels: { cancel: t(($) => $.common.boolean.no), confirm: t(($) => $.common.boolean.yes) },
       onConfirm: onReset,
@@ -109,7 +109,7 @@ function ForwardButton({
   view: CourseLessonView;
   nextLesson: LessonRef | undefined;
   passed: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const courseSlug = view.lesson.course.slug;
   // Next starts the following lesson and only then goes there.
@@ -147,7 +147,7 @@ function ForwardButton({
 
 // Where Next sits for a guest, as in legacy: a link to sign up, carrying the
 // way back to this lesson, and unavailable until the lesson is passed.
-function GuestSignUp({ passed }: { passed: boolean }) {
+function GuestSignUp({ passed }: { passed: boolean }): ReactElement {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
 

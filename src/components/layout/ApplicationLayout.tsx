@@ -1,6 +1,6 @@
 import { ActionIcon, Affix, AppShell, Tooltip } from "@mantine/core";
 import { IconSend } from "@tabler/icons-react";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -10,7 +10,7 @@ import Header from "./Header";
 // button mirrors the legacy Affix. Mounted once in the `{-$locale}` layout
 // route so it covers the catalog, course, and auth pages without per-page
 // duplication.
-export default function ApplicationLayout({ children }: PropsWithChildren) {
+export default function ApplicationLayout({ children }: PropsWithChildren): ReactElement {
   const { t } = useTranslation();
 
   return (

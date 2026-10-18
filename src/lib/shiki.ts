@@ -1,6 +1,6 @@
 import { createShikiAdapter } from "@mantine/code-highlight";
 import { createHighlighterCore } from "shiki/core";
-import type { LanguageRegistration } from "shiki/core";
+import type { HighlighterCore, LanguageRegistration } from "shiki/core";
 import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 
 // Syntax highlighting for lesson theory, ported from legacy. Grammars are
@@ -102,7 +102,7 @@ export function classifyLanguage(requested: string): {
   return { language: plainTextLanguage, unknown: !isGluedContentTag };
 }
 
-function loadShiki() {
+function loadShiki(): Promise<HighlighterCore> {
   return createHighlighterCore({
     engine: createOnigurumaEngine(() => import("shiki/wasm")),
     langs: Object.values(languageModules),

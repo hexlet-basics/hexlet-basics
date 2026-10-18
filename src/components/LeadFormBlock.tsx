@@ -9,6 +9,7 @@ import { zLeadInput } from "@/client/zod.gen";
 import { readFirstVisit } from "@/lib/first-visit";
 import { useAppForm, submitForm } from "@/lib/form";
 import { metrikaClientId } from "@/lib/metrika";
+import type { ReactElement } from "react";
 
 interface Props {
   autoFocus?: boolean;
@@ -22,7 +23,7 @@ interface Props {
 // catalog pages). It leaves gating (signed in, ru only) to the embedding page,
 // as legacy did. The Metrika client id and the first-visit attribution are
 // read at submit time, not render time: both live only in the browser.
-export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props) {
+export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { locale } = useParams({ strict: false });

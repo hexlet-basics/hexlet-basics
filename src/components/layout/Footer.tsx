@@ -12,7 +12,7 @@ import {
 import { IconBrandGithub, IconBrandYoutube, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import {
   listCoursesOptions,
@@ -38,7 +38,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-export default function Footer() {
+export default function Footer(): ReactElement {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
   const { data: categories } = useQuery(listPublicCourseCategoriesOptions());
@@ -178,7 +178,7 @@ export default function Footer() {
 }
 
 // A link to one of the static pages (`/pages/:id`).
-function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
+function PageLink({ id, children }: PropsWithChildren<{ id: string }>): ReactElement {
   return (
     <Anchor
       variant="nav"
@@ -191,7 +191,7 @@ function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
 }
 
 // The project's repository, its Telegram channel and its Youtube channel.
-function SocialLinks() {
+function SocialLinks(): ReactElement {
   const { t } = useTranslation();
 
   return (

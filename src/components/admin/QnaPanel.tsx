@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import type { QnaItem, QnaItemInput } from "@/client/types.gen";
 import { zQnaItemInput } from "@/client/zod.gen";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
-import { submitForm, useAppForm } from "@/lib/form";
+import type { ReactElement } from "react";
 
 interface QnaPanelProps {
   items: QnaItem[];
@@ -27,7 +27,13 @@ interface QnaPanelProps {
 // The nested FAQ editor shown on a category's / landing page's edit screen
 // (legacy nested `qna_items` resources). Presentational: the route owns the
 // parent-scoped queries and mutations, so the panel works for both parents.
-export function QnaPanel({ items, onCreate, onUpdate, onDelete, isPending }: QnaPanelProps) {
+export function QnaPanel({
+  items,
+  onCreate,
+  onUpdate,
+  onDelete,
+  isPending,
+}: QnaPanelProps): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -64,7 +70,7 @@ function QnaItemForm({
   onSave: (input: QnaItemInput) => void;
   onDelete?: () => void;
   isPending?: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
   const form = useAppForm({
@@ -128,7 +134,7 @@ function NewQnaItemForm({
 }: {
   onCreate: (input: QnaItemInput) => void;
   isPending?: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");

@@ -19,6 +19,7 @@ import { getMyDashboardOptions } from "@/client/@tanstack/react-query.gen";
 import type { DashboardCourse } from "@/client/types.gen";
 import CourseBlock from "@/components/CourseBlock";
 import { requireAuth } from "@/lib/auth";
+import type { ReactElement } from "react";
 
 // The signed-in learner's dashboard, ported from legacy web/my#show: the
 // courses in progress with where to resume, and the finished ones. Anonymous
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/{-$locale}/my")({
   component: My,
 });
 
-function StartedCourse({ course }: { course: DashboardCourse }) {
+function StartedCourse({ course }: { course: DashboardCourse }): ReactElement {
   const { card: landingPage, progress } = course;
   const title = landingPage.header ?? landingPage.name ?? landingPage.course.slug;
 
@@ -79,7 +80,7 @@ function StartedCourse({ course }: { course: DashboardCourse }) {
   );
 }
 
-function My() {
+function My(): ReactElement {
   const { t, i18n } = useTranslation();
   const { started, finished } = Route.useLoaderData();
 

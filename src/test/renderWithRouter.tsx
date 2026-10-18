@@ -8,6 +8,8 @@ import {
 import type { ReactNode } from "react";
 import { vi } from "vitest";
 import { renderWithProviders } from "./renderWithProviders";
+import type { RenderResult } from "vitest-browser-react";
+import type { Mock } from "vitest";
 
 interface RenderWithRouterOptions {
   // Memory-history entry the router starts on. Default carries a `locale` param
@@ -22,12 +24,8 @@ interface RenderWithRouterOptions {
 // NOT performed — `router.navigate` is a spy the test asserts against.
 export async function renderWithRouter(
   ui: ReactNode,
-  {
-    initialPath = "/admin",
-    path = "/admin",
-    navigate: navigation = "spy",
-  }: RenderWithRouterOptions = {},
-) {
+  { initialPath = "/admin", path = "/admin" }: RenderWithRouterOptions = {},
+): Promise<{ navigate: Mock<(...args: unknown[]) => Promise<void>>; screen: RenderResult }> {
   const rootRoute = createRootRoute();
   const route = createRoute({
     component: () => ui,

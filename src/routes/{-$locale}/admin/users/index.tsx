@@ -15,6 +15,7 @@ import { userColumns } from "@/components/admin/generated/user";
 import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 // Users admin (legacy `/admin/api/users` — the `api/` segment was a Rails
 // namespacing artifact and is dropped from the UI path). The search box is the
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/{-$locale}/admin/users/")({
   component: UsersList,
 });
 
-function UsersList() {
+function UsersList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

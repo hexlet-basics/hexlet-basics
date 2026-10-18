@@ -6,6 +6,7 @@ import type { FirstVisit, Lead, LeadInput, User } from "@/client/types.gen";
 import { Route as newLeadRoute } from "@/routes/{-$locale}/leads/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const user: User = {
   admin: false,
@@ -44,7 +45,7 @@ const firstVisit: FirstVisit = {
   utmTerm: null,
 };
 
-function acceptLeads(received: LeadInput[]) {
+function acceptLeads(received: LeadInput[]): void {
   worker.use(
     http.post("*/leads", async ({ request }) => {
       received.push((await request.json()) as LeadInput);
@@ -53,7 +54,7 @@ function acceptLeads(received: LeadInput[]) {
   );
 }
 
-function openForm(initialPath = "/ru/leads/new") {
+function openForm(initialPath = "/ru/leads/new"): Promise<RenderedRoute> {
   // What a test seeds for the form, the cookie and the Metrika id, must not leak into the next one.
   onTestFinished(() => {
     Cookies.remove("first_visit", { path: "/" });
@@ -62,7 +63,7 @@ function openForm(initialPath = "/ru/leads/new") {
   return renderRoute(newLeadRoute, { initialPath, path: "/{-$locale}/leads/new", user });
 }
 
-async function submitTelegram(handle: string) {
+async function submitTelegram(handle: string): Promise<void> {
   await page.getByRole("textbox", { name: "Телефон / Имя пользователя" }).fill(handle);
   await page.getByRole("button", { name: "Отправить" }).click();
 }

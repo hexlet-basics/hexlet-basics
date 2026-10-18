@@ -23,6 +23,7 @@ import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import { useTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
+import type { ReactElement } from "react";
 
 const FULL_PERCENT = 100;
 
@@ -50,7 +51,7 @@ export default function LessonPage({
   courseSlug: string;
   lessonSlug: string;
   signedIn: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const { data, isPending, isError } = useQuery(
     getCourseLessonOptions({ path: { courseSlug, slug: lessonSlug } }),
@@ -200,7 +201,7 @@ function PaneBurger({
   opened: boolean;
   onToggle: () => void;
   label: string;
-}) {
+}): ReactElement {
   return (
     <Burger
       opened={opened}
@@ -218,7 +219,7 @@ function PaneBurger({
 // A lesson slug that resolves to nothing — a mistyped URL, or a lesson dropped
 // from the course. The route renders this too, because its loader rejects before
 // the page above ever runs.
-export function LessonMissing() {
+export function LessonMissing(): ReactElement {
   const { t } = useTranslation();
 
   return (

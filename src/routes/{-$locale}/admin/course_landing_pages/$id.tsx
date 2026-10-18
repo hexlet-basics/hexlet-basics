@@ -23,12 +23,13 @@ import {
   useCourseLandingPageFields,
 } from "@/components/admin/resources/courseLandingPage";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/$id")({
   component: EditCourseLandingPage,
 });
 
-function EditCourseLandingPage() {
+function EditCourseLandingPage(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseLandingPageFields();
@@ -37,7 +38,7 @@ function EditCourseLandingPage() {
 
   const { data, isLoading } = useQuery(adminGetCourseLandingPageOptions({ path: { id: pageId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_landing_pages" });
   };
 

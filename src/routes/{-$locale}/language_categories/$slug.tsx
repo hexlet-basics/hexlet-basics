@@ -9,6 +9,7 @@ import QnaBlock from "@/components/QnaBlock";
 import { AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
+import type { ReactElement } from "react";
 
 // A course category, at its legacy URL, ported from legacy
 // language_categories/show: the category's courses, a consultation form for
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
   component: Show,
 });
 
-function Show() {
+function Show(): ReactElement | null {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getPublicCourseCategoryOptions({ path: { slug } }));

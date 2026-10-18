@@ -2,7 +2,7 @@ import { EmptyState, Group, Pagination, Skeleton, Stack, Table, TextInput } from
 import { IconDatabaseOff } from "@tabler/icons-react";
 import { flexRender, rowPaginationFeature, tableFeatures, useTable } from "@tanstack/react-table";
 import type { ColumnDef, OnChangeFn, PaginationState, RowData } from "@tanstack/react-table";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { pageCount } from "@/lib/page-count";
 
@@ -53,7 +53,7 @@ export function CrudList<T extends RowData>({
   onPaginationChange,
   isLoading,
   search,
-}: CrudListProps<T>) {
+}: CrudListProps<T>): ReactElement {
   const { t } = useTranslation();
   const pages = pageCount(total, pagination.pageSize);
 

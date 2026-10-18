@@ -5,10 +5,17 @@ import type { BlogPost } from "@/client/types.gen";
 import { CardLink } from "@/components/RouterLink";
 import { timeAgo } from "@/lib/time-ago";
 import { HoverLift } from "./HoverLift";
+import type { ReactElement } from "react";
 
 // Blog post card, ported from legacy BlogPostBlock. Reading time is the legacy
 // hardcoded five minutes: the serializer's readingTime was never shown.
-export default function BlogPostBlock({ post, lazy }: { post: BlogPost; lazy?: boolean }) {
+export default function BlogPostBlock({
+  post,
+  lazy,
+}: {
+  post: BlogPost;
+  lazy?: boolean;
+}): ReactElement {
   const { t, i18n } = useTranslation();
 
   return (

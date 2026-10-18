@@ -7,6 +7,7 @@ import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const THIRTY_DAYS_MS = 2_592_000_000;
 
@@ -67,7 +68,7 @@ const refused = record({ id: 3, operation: "AdminDeleteUser", outcome: "forbidde
 
 const trail: AuditRecordPage = { items: [changed, read, refused], page: 1, perPage: 25, total: 3 };
 
-function open() {
+function open(): Promise<RenderedRoute> {
   return renderRoute(Route, {
     initialPath: "/admin/audit",
     path: "/{-$locale}/admin/audit/",

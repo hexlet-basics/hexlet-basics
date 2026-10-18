@@ -11,6 +11,7 @@ import type {
 import { Route as myRoute } from "@/routes/{-$locale}/my";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const FULL_COMPLETION = 100;
 const STARTED_COMPLETION = 40;
@@ -79,7 +80,7 @@ function dashboardCourse(
   };
 }
 
-function openMy(dashboard: MyDashboard, visitor: User | null = user) {
+function openMy(dashboard: MyDashboard, visitor: User | null = user): Promise<RenderedRoute> {
   worker.use(http.get("*/api/my", () => HttpResponse.json(dashboard)));
   return renderRoute(myRoute, { initialPath: "/my", path: "/{-$locale}/my", user: visitor });
 }

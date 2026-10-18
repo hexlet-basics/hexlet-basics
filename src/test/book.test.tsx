@@ -5,6 +5,7 @@ import type { BookView, User } from "@/client/types.gen";
 import { Route as bookRoute } from "@/routes/{-$locale}/book";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const DESCRIPTION_LENGTH = 160;
 
@@ -26,11 +27,11 @@ const user: User = {
   type: "user",
 };
 
-function serveBook(view: () => BookView) {
+function serveBook(view: () => BookView): void {
   worker.use(http.get("*/api/book", () => HttpResponse.json(view())));
 }
 
-function openBook(visitor: User | null, initialPath = "/ru/book") {
+function openBook(visitor: User | null, initialPath = "/ru/book"): Promise<RenderedRoute> {
   return renderRoute(bookRoute, { initialPath, path: "/{-$locale}/book", user: visitor });
 }
 

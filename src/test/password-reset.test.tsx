@@ -7,6 +7,7 @@ import { Route as editRoute } from "@/routes/{-$locale}/password/$token/edit";
 import { Route as requestRoute } from "@/routes/{-$locale}/remind_password/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 const user: User = {
   admin: false,
@@ -22,7 +23,7 @@ const user: User = {
   type: "user",
 };
 
-function openLink(token: string) {
+function openLink(token: string): Promise<RenderedRoute> {
   return renderRoute(editRoute, {
     initialPath: `/ru/password/${token}/edit`,
     path: "/{-$locale}/password/$token/edit",
@@ -31,11 +32,11 @@ function openLink(token: string) {
   });
 }
 
-function openRequestForm(initialPath = "/remind_password/new") {
+function openRequestForm(initialPath = "/remind_password/new"): Promise<RenderedRoute> {
   return renderRoute(requestRoute, { initialPath, path: "/{-$locale}/remind_password/new" });
 }
 
-function acceptLink(token: string) {
+function acceptLink(token: string): void {
   worker.use(http.get(`*/password/${token}/edit`, () => new HttpResponse(null, { status: 204 })));
 }
 

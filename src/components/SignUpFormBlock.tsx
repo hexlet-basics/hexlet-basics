@@ -15,6 +15,7 @@ import { TextLink } from "@/components/RouterLink";
 import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
+import type { ReactElement } from "react";
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
 // registration page and the home page. Submits through the generated
@@ -27,7 +28,7 @@ const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 // `redirect` is where to go once the account exists: the lesson player sends a
 // guest to sign up with the lesson they were on, so signing up does not lose
 // their place. The caller has already made it safe (a path on this site).
-export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
+export default function SignUpFormBlock({ redirect }: { redirect?: string }): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();

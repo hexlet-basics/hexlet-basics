@@ -1,4 +1,6 @@
-export default function AboutEn() {
+import type { ReactElement } from "react";
+
+export default function AboutEn(): ReactElement {
   return (
     <>
       <h2>What is Code Basics?</h2>

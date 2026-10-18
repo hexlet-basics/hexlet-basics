@@ -7,7 +7,10 @@ import { onIdentityChanged } from "@/lib/identity";
 const user = { id: 7, name: "Ada" } as User;
 
 // A router that only records what the cache held when it was asked to reload.
-function routerOver(queryClient: QueryClient) {
+function routerOver(queryClient: QueryClient): {
+  router: { invalidate: () => Promise<void> };
+  seen: { cacheSizeAtInvalidate?: number };
+} {
   const seen: { cacheSizeAtInvalidate?: number } = {};
   return {
     router: {

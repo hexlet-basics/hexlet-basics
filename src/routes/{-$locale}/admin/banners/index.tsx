@@ -15,6 +15,7 @@ import { bannerColumns } from "@/components/admin/generated/banner";
 import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 // Banners admin list, rendered through the CRUD engine.
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/")({
   component: BannersList,
 });
 
-function BannersList() {
+function BannersList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

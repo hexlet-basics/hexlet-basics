@@ -15,6 +15,7 @@ import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // Courses admin (legacy `/admin/courses`; the domain concept is Course).
 // No delete, parity with legacy. Each row carries the two lifecycle actions:
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/")({
   component: CoursesList,
 });
 
-function CoursesList() {
+function CoursesList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

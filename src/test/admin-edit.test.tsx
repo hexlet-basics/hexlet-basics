@@ -12,6 +12,7 @@ import { Route as roleRoute } from "@/routes/{-$locale}/admin/management/roles/$
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The admin edit pages that carry a nested editor under the record's own form,
 // through their real routes under the real admin guard: the role's permissions
@@ -34,7 +35,7 @@ const catalog = {
   ],
 };
 
-function openCategory() {
+function openCategory(): Promise<RenderedRoute> {
   return renderRoute(categoryRoute, {
     initialPath: "/admin/course_categories/7",
     path: "/{-$locale}/admin/course_categories/$id",

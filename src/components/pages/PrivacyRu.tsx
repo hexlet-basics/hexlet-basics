@@ -1,4 +1,6 @@
-export default function PrivacyRu() {
+import type { ReactElement } from "react";
+
+export default function PrivacyRu(): ReactElement {
   return (
     <>
       <p>

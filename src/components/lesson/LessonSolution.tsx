@@ -7,6 +7,7 @@ import waitingClock from "@/assets/waiting_clock.webp";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
 import { MS_PER_SECOND, SECONDS_PER_MINUTE } from "@/lib/duration";
+import type { ReactElement } from "react";
 
 // How long a learner who has not passed waits before the reference solution can
 // be opened. Long enough that reading it is a last resort, short enough that
@@ -33,7 +34,7 @@ export default function LessonSolution({
   referenceSolution: string;
   learnerCode: string;
   unlocked: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const { language } = getEditorSettings(courseSlug, extension);
   const codeLanguage = toSupportedLanguage(language);
@@ -63,7 +64,7 @@ export default function LessonSolution({
 // only the clock. Held by LessonSolution, the tick re-rendered the highlighted
 // code too, which replaced its DOM and dropped the learner's text selection
 // (issue #742).
-function SolutionWait({ onReveal }: { onReveal: () => void }) {
+function SolutionWait({ onReveal }: { onReveal: () => void }): ReactElement {
   const { t } = useTranslation();
   // Set by the first tick, which runs when the component mounts.
   const expiresAt = useRef(0);

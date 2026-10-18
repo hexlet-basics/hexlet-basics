@@ -5,6 +5,7 @@ import { z } from "zod";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // Registration page, ported from legacy users/new. The form itself is the
 // shared SignUpFormBlock.
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/{-$locale}/users/new")({
   validateSearch: signUpSearchSchema,
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const { redirect } = Route.useSearch();
 

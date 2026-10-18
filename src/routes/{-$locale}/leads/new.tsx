@@ -6,6 +6,7 @@ import { z } from "zod";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // Only a same-site path is followed back: `from` comes from the URL, and an
 // absolute address would turn the form into an open redirect.
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/{-$locale}/leads/new")({
   validateSearch: z.object({ from: sameSitePath }),
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const { from } = Route.useSearch();
 

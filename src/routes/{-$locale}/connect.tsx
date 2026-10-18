@@ -11,6 +11,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { requireAuth } from "@/lib/auth";
 import { lenient, orNull } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // The OAuth consent screen (ADR-0022): an assistant (an MCP client) was sent
 // here by the authorization endpoint with the id of its request. A guest signs
@@ -88,15 +89,17 @@ function isLocalHost(host: string): boolean {
 // The next place is outside the router: the authorization endpoint's callback
 // on this origin, or the client's own redirect URI. Leaving takes a full
 // navigation.
-const leave = ({ redirectUrl }: { redirectUrl: string }) => globalThis.location.assign(redirectUrl);
+const leave = ({ redirectUrl }: { redirectUrl: string }): void =>
+  globalThis.location.assign(redirectUrl);
 
-function Connect() {
+function Connect(): ReactElement {
   const { t } = useTranslation();
   const { id } = Route.useSearch();
   const consent = Route.useLoaderData();
   const scopeLabel = useScopeLabel();
 
-  const onError = () => notifications.show({ color: "red", message: t(($) => $.connect.error) });
+  const onError = (): string =>
+    notifications.show({ color: "red", message: t(($) => $.connect.error) });
   const approve = useMutation({ ...approveOAuthConsentMutation(), onError, onSuccess: leave });
   const deny = useMutation({ ...denyOAuthConsentMutation(), onError, onSuccess: leave });
   const deciding = approve.isPending || deny.isPending || approve.isSuccess || deny.isSuccess;

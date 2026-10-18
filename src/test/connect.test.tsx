@@ -6,6 +6,7 @@ import { Route as connectRoute } from "@/routes/{-$locale}/connect";
 import { Route as signInRoute } from "@/routes/{-$locale}/session/new";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The OAuth consent screen and the sign-in that leads back to it, driven through
 // their real routes with the API faked at the HTTP boundary. The consent
@@ -33,7 +34,7 @@ const consent: OAuthConsent = {
   scopes: ["catalog:read", "progress:read", "offline_access"],
 };
 
-function openConsent(visitor: User | null = user) {
+function openConsent(visitor: User | null = user): Promise<RenderedRoute> {
   worker.use(http.get("*/api/oauth/consents/req-1", () => HttpResponse.json(consent)));
   return renderRoute(connectRoute, {
     initialPath: "/connect?id=req-1",

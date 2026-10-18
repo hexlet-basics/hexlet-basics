@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
+import type { ReactElement } from "react";
 
 // Management users (legacy `/admin/management/users`) — list + edit only,
 // no create/delete (parity with legacy: accounts are self-registered).
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
   component: ManagementUsersList,
 });
 
-function ManagementUsersList() {
+function ManagementUsersList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({

@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { IconBook2, IconBrandGithub, IconRobot, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   getCurrentUserOptions,
@@ -55,7 +55,7 @@ function Tile({
   icon: ReactNode;
   title: string;
   children: ReactNode;
-}) {
+}): ReactElement {
   return (
     <Card p="xl" radius="md" bg={`var(--mantine-color-${color}-light)`}>
       {icon}
@@ -71,7 +71,7 @@ function Tile({
 // course grid, the review showcase, the latest blog posts, the FAQ, and then
 // the registration form for a guest. Legacy's consultation block for a signed-in
 // ru learner is gone, here and on the other pages that had it.
-export default function HomePage() {
+export default function HomePage(): ReactElement {
   const { t } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
   const { data: blog } = useQuery(listBlogPostsOptions({ query: { perPage: 3 } }));

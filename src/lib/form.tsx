@@ -26,6 +26,7 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import dayjs from "dayjs";
 import type { SyntheticEvent } from "react";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import type { ReactElement } from "react";
 
 // `L LT` (localized date + time) needs the localizedFormat plugin.
 dayjs.extend(localizedFormat);
@@ -61,7 +62,7 @@ function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
     .join(", ");
 }
 
-function TextField(props: TextInputProps) {
+function TextField(props: TextInputProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <TextInput
@@ -76,7 +77,7 @@ function TextField(props: TextInputProps) {
   );
 }
 
-function TextareaField(props: TextareaProps) {
+function TextareaField(props: TextareaProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <Textarea
@@ -93,7 +94,7 @@ function TextareaField(props: TextareaProps) {
 
 // Enum/choice fields. The field value stays a plain string; callers pass Mantine's
 // `data` (option list). `null` (cleared) maps to "" so the value stays controlled.
-function SelectField(props: SelectProps) {
+function SelectField(props: SelectProps): ReactElement {
   const field = useFieldContext<string>();
   return (
     <Select
@@ -109,7 +110,7 @@ function SelectField(props: SelectProps) {
 // Date/time fields. The field value is the API's RFC3339 string (or null); the
 // Mantine picker-format conversion is hidden here, and `valueFormat="L LT"` shows
 // a locale-aware date instead of a hard-coded display pattern.
-function DateTimeField(props: DateTimePickerProps) {
+function DateTimeField(props: DateTimePickerProps): ReactElement {
   const field = useFieldContext<string | null>();
   return (
     <DateTimePicker
@@ -127,7 +128,7 @@ function DateTimeField(props: DateTimePickerProps) {
 // Numeric fields (ids, counters). The generated inputs type these as
 // `number | null`, and Mantine reports a cleared input as ""  — map that back
 // to null so a blank field submits the contract's null, not zero.
-function NumberField(props: NumberInputProps) {
+function NumberField(props: NumberInputProps): ReactElement {
   const field = useFieldContext<number | null>();
   return (
     <NumberInput
@@ -142,7 +143,7 @@ function NumberField(props: NumberInputProps) {
 
 // Boolean flags. Nullable contract booleans render as unchecked; toggling
 // always submits a real boolean (legacy forms never sent null for checkboxes).
-function CheckboxField(props: CheckboxProps) {
+function CheckboxField(props: CheckboxProps): ReactElement {
   const field = useFieldContext<boolean | null>();
   return (
     <Checkbox
@@ -157,7 +158,7 @@ function CheckboxField(props: CheckboxProps) {
 
 // String-array fields (e.g. a staff member's allowed locales). The value IS the
 // contract's string[]; callers pass Mantine's `data` option list.
-function MultiSelectField(props: MultiSelectProps) {
+function MultiSelectField(props: MultiSelectProps): ReactElement {
   const field = useFieldContext<string[]>();
   return (
     <MultiSelect
@@ -174,7 +175,7 @@ function MultiSelectField(props: MultiSelectProps) {
 // HTML: tiptap parses it on mount and hands back `getHTML()` on every change,
 // so the form round-trips exactly what the API stores. `immediatelyRender:
 // false` keeps the editor SSR-safe under TanStack Start.
-function RichTextField({ label }: { label: string }) {
+function RichTextField({ label }: { label: string }): ReactElement {
   const field = useFieldContext<string>();
   const editor = useEditor({
     content: field.state.value ?? "",

@@ -7,6 +7,7 @@ import { Route as editRoute } from "@/routes/{-$locale}/admin/blog_posts/$id";
 import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The Publication State of a blog post is changed by action buttons, one per
 // operation, never by the form. Through the real routes under the real admin
@@ -31,7 +32,7 @@ function post(state: BlogPostState): BlogPost {
   };
 }
 
-function openPost() {
+function openPost(): Promise<RenderedRoute> {
   return renderRoute(editRoute, {
     initialPath: "/admin/blog_posts/7",
     path: "/{-$locale}/admin/blog_posts/$id",

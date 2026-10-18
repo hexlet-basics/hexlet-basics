@@ -9,10 +9,11 @@ import {
 import type { Banner } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A banner's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the banner's three operations.
-export function BannerStatePanel({ banner }: { banner: Banner }) {
+export function BannerStatePanel({ banner }: { banner: Banner }): ReactElement {
   const { t } = useTranslation();
   const options = {
     errorMessage: t(($) => $.admin.publicationState.changeError),

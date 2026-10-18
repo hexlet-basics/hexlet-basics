@@ -1,6 +1,6 @@
 import { Anchor, Box } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getActiveBannerOptions } from "@/client/@tanstack/react-query.gen";
@@ -27,7 +27,7 @@ const inlineComponents = {
 // locale above the page, or nothing when none is live. It is the pages that
 // carry one (the home page and the course page) that render it, as legacy's
 // `showBanner` did.
-export function Banner() {
+export function Banner(): ReactElement | null {
   const { data } = useQuery(getActiveBannerOptions());
   const banner = data?.banner;
   if (!banner) {

@@ -18,12 +18,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { blogPostToForm, useBlogPostFields } from "@/components/admin/resources/blogPost";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/$id")({
   component: EditBlogPost,
 });
 
-function EditBlogPost() {
+function EditBlogPost(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBlogPostFields();
@@ -32,7 +33,7 @@ function EditBlogPost() {
 
   const { data, isLoading } = useQuery(adminGetBlogPostOptions({ path: { id: postId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/blog_posts" });
   };
 
@@ -77,7 +78,13 @@ function EditBlogPost() {
 // (`related_courses` member action). Selection order is the display order the
 // backend persists. The pick runs in a background job, so its result shows up
 // on a later load of the post — the same manual reload legacy needed.
-function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: number[] }) {
+function RelatedCoursesPanel({
+  postId,
+  initial,
+}: {
+  postId: number;
+  initial: number[];
+}): ReactElement {
   const { t } = useTranslation();
   const [selected, setSelected] = useState(initial.map(String));
 

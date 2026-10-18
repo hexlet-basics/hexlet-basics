@@ -1,6 +1,7 @@
 import { Box, Center, rem } from "@mantine/core";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
+import type { ReactElement } from "react";
 
 // The empty lesson mark takes the width of the icon it stands in for.
 const ICON_SIZE = 16;
@@ -11,7 +12,7 @@ const ICON_SIZE = 16;
 //
 // Shared by the player's lesson list and the course page, so the two screens
 // mark the same lesson the same way from the same payload.
-export default function LessonMark({ finished }: { finished: boolean }) {
+export default function LessonMark({ finished }: { finished: boolean }): ReactElement {
   const { t } = useTranslation();
 
   if (finished) {

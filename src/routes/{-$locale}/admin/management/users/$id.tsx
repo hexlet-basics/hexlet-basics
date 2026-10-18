@@ -13,12 +13,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { useUserFields, userToForm } from "@/components/admin/resources/user";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/users/$id")({
   component: EditManagementUser,
 });
 
-function EditManagementUser() {
+function EditManagementUser(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useUserFields();
@@ -27,7 +28,7 @@ function EditManagementUser() {
 
   const { data, isLoading } = useQuery(adminGetManagementUserOptions({ path: { id: userId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/users" });
   };
 
