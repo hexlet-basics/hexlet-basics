@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/account"
 	"hexletbasics/internal/accountemail"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
@@ -99,7 +99,7 @@ func (s *Server) UpdatePassword(
 // stores it, as legacy's did.
 func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtoken.Purpose, email string) error {
 	u, err := account.ActiveUserByEmail(ctx, s.db, email)
-	if ent.IsNotFound(err) {
+	if errors.Is(err, domain.ErrNotFound) {
 		return nil
 	}
 	if err != nil {

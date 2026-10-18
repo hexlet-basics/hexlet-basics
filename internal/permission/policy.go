@@ -2,7 +2,6 @@ package permission
 
 import (
 	"context"
-	"errors"
 	"slices"
 	"strings"
 
@@ -11,11 +10,12 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/permissioncatalog"
 )
 
 // ErrForbidden means the user may not perform the operation.
-var ErrForbidden = errors.New("staff permission is required")
+var ErrForbidden = domain.ErrForbidden
 
 // Policy decides which admin operations a user may perform. An administrator
 // may do every operation. A staff member may do what their role is granted, in

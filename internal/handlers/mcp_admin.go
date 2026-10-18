@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"slices"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
@@ -50,11 +50,11 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 // seen on the next call, because nothing is cached.
 func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, p mcpserver.Principal) (context.Context, error) {
 	u, err := account.ActiveUserByID(ctx, s.db, p.UserID)
-	if ent.IsNotFound(err) {
+	if errors.Is(err, domain.ErrNotFound) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {
-		return ctx, withHTTPStatus(http.StatusInternalServerError, fmt.Errorf("load authenticated user: %w", err))
+		return ctx, fmt.Errorf("load authenticated user: %w", err)
 	}
 	ctx = context.WithValue(ctx, authenticatedUserContextKey{}, u)
 
@@ -64,7 +64,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 	locale := s.i18n.Locale(ctx)
 	if locale != p.Locale || !slices.Contains(p.Scopes, oauthserver.ScopeAdmin) {
 		s.recordRefusal(ctx, operation)
-		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
+		return ctx, errAdminRequired
 	}
 	err = s.policy.Allow(ctx, u, locale, operation)
 	for _, capability := range permissioncatalog.MCPCapabilities(operation) {
@@ -75,7 +75,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 	}
 	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
-		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
+		return ctx, errAdminRequired
 	}
 	return ctx, err
 }
@@ -90,7 +90,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 // gone or has no Staff Role holds nothing.
 func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, error) {
 	u, err := account.ActiveUserByID(ctx, s.db, userID)
-	if ent.IsNotFound(err) {
+	if errors.Is(err, domain.ErrNotFound) {
 		return nil, nil
 	}
 	if err != nil {
