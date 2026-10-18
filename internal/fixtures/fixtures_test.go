@@ -18,6 +18,7 @@ func write(t *testing.T, dir, name, body string) {
 // Ids follow the order rows are written in, across files in name order, so a
 // test of "oldest first" can set the order by writing the rows in it.
 func TestScanNumbersRowsInTheOrderTheyAreWritten(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	write(t, dir, "a_things.yml", "- id: {{ id \"thing_first\" }}\n  name: x\n- id: {{ id \"thing_second\" }}\n")
 	write(t, dir, "b_others.yml", "- id: {{ id \"other_one\" }}\n  thing_id: {{ id \"thing_first\" }}\n")
@@ -29,6 +30,7 @@ func TestScanNumbersRowsInTheOrderTheyAreWritten(t *testing.T) {
 }
 
 func TestScanRefusesALabelDefinedTwice(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	write(t, dir, "a.yml", "- id: {{ id \"same\" }}\n- id: {{ id \"same\" }}\n")
 
@@ -38,17 +40,20 @@ func TestScanRefusesALabelDefinedTwice(t *testing.T) {
 }
 
 func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
+	t.Parallel()
 	_, err := labels{"known": firstID}.id("unknown")
 
 	assert.ErrorContains(t, err, `"unknown" is not defined`)
 }
 
 func TestIDResolvesALabelOfTheRepositoryFixtures(t *testing.T) {
+	t.Parallel()
 	assert.NotEqual(t, ID(UserAdminLearner), ID(UserBlank))
 	assert.Panics(t, func() { ID(LabelOf("no_such_label")) })
 }
 
 func TestPasswordIsTheCleartextOfTheFixtureDigest(t *testing.T) {
+	t.Parallel()
 	digest, err := PasswordDigest()
 	require.NoError(t, err)
 	assert.NoError(t, bcrypt.CompareHashAndPassword([]byte(digest), []byte(Password)))

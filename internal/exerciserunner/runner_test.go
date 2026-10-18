@@ -21,6 +21,7 @@ import (
 // it is the one thing that must not drift from legacy: 0 passes, 124 is the
 // in-container timeout, everything else is an ordinary failure.
 func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
+	t.Parallel()
 	passed := outcomeOf(0, "1 test, 0 failures")
 	assert.True(t, passed.Passed)
 	assert.Equal(t, progress.ResultPassed, passed.Result)
@@ -40,6 +41,7 @@ func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
 // A timed-out run returns no output: a spinning loop prints megabytes of the
 // same line, and the classification already says everything.
 func TestOutcomeOfDropsTheOutputOfATimedOutRun(t *testing.T) {
+	t.Parallel()
 	timedOut := outcomeOf(timeoutExitStatus, strings.Repeat("looping\n", 1000))
 
 	assert.False(t, timedOut.Passed)
@@ -52,6 +54,7 @@ func TestOutcomeOfDropsTheOutputOfATimedOutRun(t *testing.T) {
 // reader that stopped early would block the container on a full pipe instead of
 // letting it finish and report its status.
 func TestReadOutputCapsWithoutStalling(t *testing.T) {
+	t.Parallel()
 	stream := multiplexed(t, strings.Repeat("a", 5000), "")
 
 	output, err := readOutput(stream, 100)
@@ -62,6 +65,7 @@ func TestReadOutputCapsWithoutStalling(t *testing.T) {
 // stdout and stderr are merged: a learner reads one console, and the test
 // harnesses write their failures to whichever they please.
 func TestReadOutputMergesBothStreams(t *testing.T) {
+	t.Parallel()
 	stream := multiplexed(t, "on stdout\n", "on stderr\n")
 
 	output, err := readOutput(stream, 1024)
@@ -73,6 +77,7 @@ func TestReadOutputMergesBothStreams(t *testing.T) {
 // Output is whatever the learner's program printed, so a stray byte must not be
 // able to break the response encoding.
 func TestReadOutputScrubsInvalidUTF8(t *testing.T) {
+	t.Parallel()
 	stream := multiplexed(t, "ok \xff\xfe done", "")
 
 	output, err := readOutput(stream, 1024)
@@ -83,6 +88,7 @@ func TestReadOutputScrubsInvalidUTF8(t *testing.T) {
 // The command is the legacy one, unchanged: the lesson's Makefile under a
 // timeout, which is the interface every exercise image already exposes.
 func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
+	t.Parallel()
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	command := runner.command(progress.Submission{TestDir: "/exercises-go/modules/10-basics/20-vars"})
@@ -95,6 +101,7 @@ func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 // The submission is delivered as a tar rooted at the container filesystem, so
 // it lands exactly on the file the reference solution ships.
 func TestTarFileTargetsTheExerciseFile(t *testing.T) {
+	t.Parallel()
 	archive, err := tarFile("/exercises-go/modules/10-basics/20-vars/index.go", "package main\n")
 	require.NoError(t, err)
 
@@ -114,6 +121,7 @@ func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 // pids limit does nothing against a fork bomb, which is a one-line submission
 // in most of these languages.
 func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
+	t.Parallel()
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	host := runner.hostConfig()
@@ -133,6 +141,7 @@ func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 // beside their sources — but when a deployment turns it on, something has to
 // stay writable or nothing compiles at all.
 func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
+	t.Parallel()
 	cfg := testConfig()
 	cfg.ReadonlyRootfs = true
 	runner := &Docker{opts: OptionsFrom(cfg)}
@@ -185,6 +194,7 @@ func testConfig() config.ExerciseRunnerConfig {
 // moves the registry tag, and a learner working through an already-promoted
 // version must keep being graded by the build it was promoted as.
 func TestImageRefsPinToTheCourseVersion(t *testing.T) {
+	t.Parallel()
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, source := runner.imageRefs(progress.Submission{
@@ -200,6 +210,7 @@ func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 // A course version that already named a tag has said what it wants; that is its
 // own pin, and nothing is pulled or re-tagged behind it.
 func TestImageRefsRespectAnExplicitTag(t *testing.T) {
+	t.Parallel()
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, source := runner.imageRefs(progress.Submission{
@@ -213,6 +224,7 @@ func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 
 // A registry host carries a port, which is not a tag.
 func TestImageRefsPinAnImageOnAPortedRegistry(t *testing.T) {
+	t.Parallel()
 	runner := &Docker{opts: OptionsFrom(testConfig())}
 
 	pinned, _ := runner.imageRefs(progress.Submission{

@@ -15,12 +15,14 @@ import (
 // half-loaded value becomes is the contract the admin screens rely on.
 
 func TestEnrollmentStateOfARowWithoutOneIsStarted(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, api.EnrollmentStateStarted, EnrollmentStateFromPtr(nil))
 	assert.Equal(t, api.EnrollmentStateStarted, EnrollmentStateFromPtr(lo.ToPtr("")))
 	assert.Equal(t, api.EnrollmentState("finished"), EnrollmentStateFromPtr(lo.ToPtr("finished")))
 }
 
 func TestNullableColumnsBecomeNullOrTheirValue(t *testing.T) {
+	t.Parallel()
 	assert.True(t, NilReadinessFromPtr(nil).Null)
 	readiness := NilReadinessFromPtr(lo.ToPtr("completed"))
 	assert.False(t, readiness.Null)
@@ -33,6 +35,7 @@ func TestNullableColumnsBecomeNullOrTheirValue(t *testing.T) {
 }
 
 func TestModuleLessonSlugsKeepOrderAndSkipLessonsWithoutAUrl(t *testing.T) {
+	t.Parallel()
 	version := func(slug *string) *ent.CourseLessonVersion {
 		return &ent.CourseLessonVersion{Edges: ent.CourseLessonVersionEdges{
 			Lesson: &ent.CourseLesson{Slug: slug},
@@ -53,6 +56,7 @@ func TestModuleLessonSlugsKeepOrderAndSkipLessonsWithoutAUrl(t *testing.T) {
 }
 
 func TestModuleLessonSlugsOfAModuleWithoutAVersionAreEmptyNotNull(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, []string{}, moduleLessonSlugs(nil))
 	assert.Equal(t, []string{}, moduleLessonSlugs(&ent.CourseModuleTranslation{}))
 }
@@ -68,16 +72,19 @@ func lessonProgressNamed(names ...string) *ent.LessonProgress {
 }
 
 func TestLessonProgressNameIsTheFirstLoadedInfo(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, "Hello, World!", lessonProgressLessonName(lessonProgressNamed("Hello, World!", "Привет, мир")))
 }
 
 func TestLessonProgressNameIsEmptyWhenNothingNamesTheLesson(t *testing.T) {
+	t.Parallel()
 	assert.Empty(t, lessonProgressLessonName(nil))
 	assert.Empty(t, lessonProgressLessonName(&ent.LessonProgress{}), "lesson not loaded")
 	assert.Empty(t, lessonProgressLessonName(lessonProgressNamed()), "lesson with no info in the locale")
 }
 
 func TestAssistantMessageNamesTheLessonOfItsChat(t *testing.T) {
+	t.Parallel()
 	message := &ent.AiMessage{Edges: ent.AiMessageEdges{
 		Chat: &ent.AiChat{Edges: ent.AiChatEdges{LessonProgress: lessonProgressNamed("Variables")}},
 	}}
@@ -86,6 +93,7 @@ func TestAssistantMessageNamesTheLessonOfItsChat(t *testing.T) {
 }
 
 func TestAssistantMessageWithoutALoadedChatHasNoLessonName(t *testing.T) {
+	t.Parallel()
 	assert.Empty(t, assistantMessageLessonName(nil))
 	assert.Empty(t, assistantMessageLessonName(&ent.AiMessage{}), "chat not loaded")
 	assert.Empty(t, assistantMessageLessonName(&ent.AiMessage{Edges: ent.AiMessageEdges{Chat: &ent.AiChat{}}}),
@@ -93,6 +101,7 @@ func TestAssistantMessageWithoutALoadedChatHasNoLessonName(t *testing.T) {
 }
 
 func TestCourseDurationIsWholeHoursOfFifteenMinuteLessons(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, int32(0), courseDuration(nil), "a course missing from the query reads as no duration")
 	assert.Equal(t, int32(0), courseDuration(&ent.Course{LessonsCount: 3}))
 	assert.Equal(t, int32(2), courseDuration(&ent.Course{LessonsCount: 9}))
@@ -100,6 +109,7 @@ func TestCourseDurationIsWholeHoursOfFifteenMinuteLessons(t *testing.T) {
 
 // The lessons on either side of one are decided from the list's order alone.
 func TestAdjacentLessonsAreTheNeighboursInTheGivenOrder(t *testing.T) {
+	t.Parallel()
 	lessons := []api.LearnerLesson{
 		{Slug: "a", Name: api.NewNilString("A")},
 		{Slug: "b", Name: api.NewNilString("B")},
@@ -122,6 +132,7 @@ func TestAdjacentLessonsAreTheNeighboursInTheGivenOrder(t *testing.T) {
 // A lesson that is not in the list, or the only one in it, has no neighbours:
 // both ends are null rather than a guess.
 func TestAdjacentLessonsOfALoneOrUnlistedLessonAreNull(t *testing.T) {
+	t.Parallel()
 	lone := AdjacentLessons("a", []api.LearnerLesson{{Slug: "a"}})
 	assert.True(t, lone.Previous.Null)
 	assert.True(t, lone.Next.Null)
@@ -135,6 +146,7 @@ func TestAdjacentLessonsOfALoneOrUnlistedLessonAreNull(t *testing.T) {
 // lesson the list does not have (no translation in the locale: no page there),
 // there is nothing to point at.
 func TestNextLessonRefIsNamedFromTheList(t *testing.T) {
+	t.Parallel()
 	lessons := []api.LearnerLesson{{ID: 7, Slug: "a", Name: api.NewNilString("A")}}
 
 	assert.True(t, NextLessonRef(nil, lessons).Null, "a finished course has none")
