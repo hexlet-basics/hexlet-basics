@@ -2,6 +2,7 @@ package mcpserver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -44,7 +45,7 @@ type Learner interface {
 func (s *Server) addLearnerTools(server *mcp.Server) error {
 	dashboardSchema, err := responseSchema("getMyDashboard")
 	if err != nil {
-		return fmt.Errorf("build %s output schema: %w", myDashboardTool, err)
+		return errs.With("tool", myDashboardTool).Wrapf(err, "build output schema")
 	}
 
 	courseSlug := slugArg("The course's own slug, as in getCourseLesson (course.slug of getCourse's result).")
@@ -169,7 +170,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 		return result{}, err
 	}
 	if args.LessonSlug == "" {
-		return result{}, userError{fmt.Errorf("invalid arguments: lessonSlug is required")}
+		return result{}, userError{errors.New("invalid arguments: lessonSlug is required")}
 	}
 	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
 	if err != nil {
@@ -197,7 +198,7 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 // course is an answer the agent can act on, not a failure of ours.
 func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*progress.LearnerCourse, error) {
 	if slug == "" {
-		return nil, userError{fmt.Errorf("invalid arguments: courseSlug is required")}
+		return nil, userError{errors.New("invalid arguments: courseSlug is required")}
 	}
 	course, err := s.deps.Learner.MyCourseProgress(ctx, userID, slug)
 	if ent.IsNotFound(err) {

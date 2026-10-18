@@ -21,18 +21,22 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
 	jose "github.com/go-jose/go-jose/v4"
 	"github.com/rs/cors"
+	"github.com/samber/oops"
 	"github.com/zitadel/oidc/v3/pkg/op"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/store"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With, wrapped once at the function that knows the operation.
+var errs = oops.In("oauthserver")
 
 const (
 	// Endpoint paths. Every authorization-server endpoint sits under /oauth/ with
@@ -150,7 +154,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 	}
 	issuer, err := url.Parse(deps.Config.Issuer)
 	if err != nil {
-		return nil, fmt.Errorf("oauthserver: parse issuer: %w", err)
+		return nil, errs.Wrapf(err, "parse issuer")
 	}
 
 	key := sha256.Sum256([]byte(deps.Config.EncryptionKey))
@@ -205,7 +209,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		},
 	}, st, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
 	if err != nil {
-		return nil, fmt.Errorf("oauthserver: build provider: %w", err)
+		return nil, errs.Wrapf(err, "build provider")
 	}
 
 	clientAddress := deps.ClientAddress

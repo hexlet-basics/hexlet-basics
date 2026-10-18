@@ -53,7 +53,7 @@ var errUnsupported = errors.New("oauthserver: not supported")
 func randomToken(n int) (string, error) {
 	b := make([]byte, n)
 	if _, err := rand.Read(b); err != nil {
-		return "", fmt.Errorf("read random bytes: %w", err)
+		return "", errs.Wrapf(err, "read random bytes")
 	}
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
@@ -122,7 +122,7 @@ func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, 
 		SetExpiresAt(s.now().Add(authRequestLifetime)).
 		Save(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("create authorization request: %w", err)
+		return nil, errs.Wrapf(err, "create authorization request")
 	}
 	return &authRequest{row: row, resource: s.resource}, nil
 }
@@ -133,7 +133,7 @@ func (s *storage) AuthRequestByID(ctx context.Context, id string) (op.AuthReques
 		Where(oauthauthrequest.ID(id), oauthauthrequest.ExpiresAtGT(s.now())).
 		Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("authorization request: %w", err)
+		return nil, errs.Wrapf(err, "authorization request")
 	}
 	return &authRequest{row: row, resource: s.resource}, nil
 }
@@ -146,7 +146,7 @@ func (s *storage) AuthRequestByCode(ctx context.Context, code string) (op.AuthRe
 		Where(oauthauthrequest.CodeHash(hash), oauthauthrequest.ExpiresAtGT(s.now())).
 		Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("authorization code: %w", err)
+		return nil, errs.Wrapf(err, "authorization code")
 	}
 	return &authRequest{row: row, resource: s.resource}, nil
 }
@@ -161,7 +161,7 @@ func (s *storage) SaveAuthCode(ctx context.Context, id, code string) error {
 		SetCodeHash(digest(code)).
 		Save(ctx)
 	if err != nil {
-		return fmt.Errorf("save authorization code: %w", err)
+		return errs.Wrapf(err, "save authorization code")
 	}
 	if n == 0 {
 		return errors.New("authorization request is not awaiting a code")
@@ -173,7 +173,7 @@ func (s *storage) SaveAuthCode(ctx context.Context, id, code string) error {
 // dead, which is what makes a code single-use.
 func (s *storage) DeleteAuthRequest(ctx context.Context, id string) error {
 	if _, err := s.db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ID(id)).Exec(ctx); err != nil {
-		return fmt.Errorf("delete authorization request: %w", err)
+		return errs.Wrapf(err, "delete authorization request")
 	}
 	return nil
 }
@@ -234,7 +234,7 @@ type tokenOwner interface {
 func userIDOf(req op.TokenRequest) (int, error) {
 	id, err := strconv.Atoi(req.GetSubject())
 	if err != nil {
-		return 0, fmt.Errorf("token subject %q is not a user: %w", req.GetSubject(), err)
+		return 0, errs.With("subject", req.GetSubject()).Wrapf(err, "token subject is not a user")
 	}
 	return id, nil
 }
@@ -244,7 +244,7 @@ func userIDOf(req op.TokenRequest) (int, error) {
 func (s *storage) CreateAccessToken(ctx context.Context, req op.TokenRequest) (string, time.Time, error) {
 	owner, ok := req.(tokenOwner)
 	if !ok {
-		return "", time.Time{}, fmt.Errorf("unsupported token request %T", req)
+		return "", time.Time{}, errs.With("request_type", fmt.Sprintf("%T", req)).Errorf("unsupported token request")
 	}
 	userID, err := userIDOf(req)
 	if err != nil {
@@ -279,7 +279,7 @@ func (s *storage) insertAccessToken(
 		create.SetRefreshTokenID(refreshID)
 	}
 	if err := create.Exec(ctx); err != nil {
-		return "", time.Time{}, fmt.Errorf("create access token: %w", err)
+		return "", time.Time{}, errs.Wrapf(err, "create access token")
 	}
 	return id, expires, nil
 }
@@ -298,7 +298,7 @@ func (s *storage) CreateAccessAndRefreshTokens(
 ) (string, string, time.Time, error) {
 	owner, ok := req.(tokenOwner)
 	if !ok {
-		return "", "", time.Time{}, fmt.Errorf("unsupported token request %T", req)
+		return "", "", time.Time{}, errs.With("request_type", fmt.Sprintf("%T", req)).Errorf("unsupported token request")
 	}
 	userID, err := userIDOf(req)
 	if err != nil {
@@ -323,19 +323,19 @@ func (s *storage) CreateAccessAndRefreshTokens(
 				SetUsedAt(s.now()).
 				Save(ctx)
 			if err != nil {
-				return fmt.Errorf("spend refresh token: %w", err)
+				return errs.Wrapf(err, "spend refresh token")
 			}
 			if claimed == 0 {
 				return errRefreshNotSpendable
 			}
 			old, err := db.OAuthRefreshToken.Query().Where(oauthrefreshtoken.TokenHash(hash)).Only(ctx)
 			if err != nil {
-				return fmt.Errorf("refresh token: %w", err)
+				return errs.Wrapf(err, "refresh token")
 			}
 			family = old.FamilyID
 			if _, err := db.OAuthAccessToken.Delete().
 				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx); err != nil {
-				return fmt.Errorf("delete paired access token: %w", err)
+				return errs.Wrapf(err, "delete paired access token")
 			}
 		}
 
@@ -393,7 +393,7 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 	case ent.IsNotFound(err):
 		return oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired")
 	case err != nil:
-		return fmt.Errorf("refresh token: %w", err)
+		return errs.Wrapf(err, "refresh token")
 	}
 	return s.refuseReuse(ctx, row)
 }
@@ -419,10 +419,10 @@ func (s *storage) revokeFamily(ctx context.Context, familyID string) error {
 
 func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
 	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
-		return fmt.Errorf("delete family access tokens: %w", err)
+		return errs.Wrapf(err, "delete family access tokens")
 	}
 	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
-		return fmt.Errorf("delete family refresh tokens: %w", err)
+		return errs.Wrapf(err, "delete family refresh tokens")
 	}
 	return nil
 }
@@ -435,7 +435,7 @@ func (s *storage) TokenRequestByRefreshToken(ctx context.Context, refresh string
 		Where(oauthrefreshtoken.TokenHash(digest(refresh)), oauthrefreshtoken.ExpiresAtGT(s.now())).
 		Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("refresh token: %w", err)
+		return nil, errs.Wrapf(err, "refresh token")
 	}
 	if row.UsedAt != nil {
 		return nil, s.refuseReuse(ctx, row)
@@ -469,7 +469,7 @@ func (s *storage) GetRefreshTokenInfo(ctx context.Context, _ string, token strin
 		return "", "", op.ErrInvalidRefreshToken
 	}
 	if err != nil {
-		return "", "", fmt.Errorf("refresh token info: %w", err)
+		return "", "", errs.Wrapf(err, "refresh token info")
 	}
 	return strconv.Itoa(row.UserID), row.ID, nil
 }
@@ -525,7 +525,7 @@ var errWrongClient = errors.New("token belongs to another client")
 func (s *storage) TerminateSession(ctx context.Context, userID, clientID string) error {
 	id, err := strconv.Atoi(userID)
 	if err != nil {
-		return fmt.Errorf("session subject %q is not a user: %w", userID, err)
+		return errs.With("subject", userID).Wrapf(err, "session subject is not a user")
 	}
 	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		if _, err := db.OAuthAccessToken.Delete().
@@ -584,7 +584,7 @@ func (s *storage) KeySet(context.Context) ([]op.Key, error) {
 func (s *storage) GetClientByClientID(ctx context.Context, clientID string) (op.Client, error) {
 	row, err := s.db.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("client %q: %w", clientID, err)
+		return nil, errs.With("client_id", clientID).Wrapf(err, "load client")
 	}
 	return &client{row: row, loginBase: s.issuer + consentPagePath}, nil
 }
@@ -642,17 +642,17 @@ func PurgeExpired(ctx context.Context, db *ent.Client, now time.Time) (int, erro
 	total := 0
 	n, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
-		return total, fmt.Errorf("purge access tokens: %w", err)
+		return total, errs.Wrapf(err, "purge access tokens")
 	}
 	total += n
 	n, err = db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
-		return total, fmt.Errorf("purge refresh tokens: %w", err)
+		return total, errs.Wrapf(err, "purge refresh tokens")
 	}
 	total += n
 	n, err = db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ExpiresAtLTE(now)).Exec(ctx)
 	if err != nil {
-		return total, fmt.Errorf("purge authorization requests: %w", err)
+		return total, errs.Wrapf(err, "purge authorization requests")
 	}
 	return total + n, nil
 }

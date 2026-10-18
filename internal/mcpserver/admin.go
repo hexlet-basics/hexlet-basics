@@ -163,11 +163,11 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 	for _, id := range adminOperations {
 		op, err := readOperation(id)
 		if err != nil {
-			return fmt.Errorf("admin tool %s: %w", id, err)
+			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
 		tool, err := adminTool(op)
 		if err != nil {
-			return fmt.Errorf("admin tool %s: %w", id, err)
+			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
 		s.note(tool, adminNeeds(op))
 		server.AddTool(tool, s.adminHandler(op))
@@ -213,7 +213,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	required := []string{localeArgument}
 	for _, p := range op.Params {
 		if p.Name == localeArgument || p.Name == bodyArgument {
-			return nil, fmt.Errorf("parameter %q collides with a reserved argument", p.Name)
+			return nil, errs.With("parameter", p.Name).Errorf("parameter collides with a reserved argument")
 		}
 		schema := map[string]any{}
 		for k, v := range p.Schema {
@@ -560,7 +560,7 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 	}
 	var decoded any
 	if err := json.Unmarshal(body, &decoded); err != nil {
-		return nil, fmt.Errorf("decode %s response: %w", op.ID, err)
+		return nil, errs.With("operation", op.ID).Wrapf(err, "decode response")
 	}
 	if _, isObject := decoded.(map[string]any); !isObject {
 		decoded = map[string]any{"result": decoded}

@@ -2,7 +2,6 @@ package mcpserver
 
 import (
 	"errors"
-	"fmt"
 	"slices"
 	"sort"
 	"strings"
@@ -66,7 +65,7 @@ type contractDoc struct {
 var contract = sync.OnceValues(func() (*contractDoc, error) {
 	var doc contractDoc
 	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
-		return nil, fmt.Errorf("parse OpenAPI: %w", err)
+		return nil, errs.Wrapf(err, "parse OpenAPI")
 	}
 	return &doc, nil
 })
@@ -89,7 +88,7 @@ func readOperation(operationID string) (*operation, error) {
 			return buildOperation(doc, operationID, strings.ToUpper(method), path, node)
 		}
 	}
-	return nil, fmt.Errorf("operation %s is not in the contract", operationID)
+	return nil, errs.With("operation", operationID).Errorf("operation is not in the contract")
 }
 
 func buildOperation(doc *contractDoc, id, method, path string, node map[string]any) (*operation, error) {
@@ -100,42 +99,42 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		if ref, ok := p["$ref"].(string); ok {
 			name, found := strings.CutPrefix(ref, "#/components/parameters/")
 			if !found || doc.Components.Parameters[name] == nil {
-				return nil, fmt.Errorf("operation %s: unresolvable parameter reference %q", id, ref)
+				return nil, errs.With("operation", id, "ref", ref).Errorf("unresolvable parameter reference")
 			}
 			p, _ = doc.Components.Parameters[name].(map[string]any)
 		}
 		param := parameter{Name: asString(p["name"]), In: asString(p["in"]), Description: asString(p["description"])}
 		param.Required, _ = p["required"].(bool)
 		if param.In != "path" && param.In != "query" {
-			return nil, fmt.Errorf("operation %s: parameter %s is in %q, which a tool cannot carry", id, param.Name, param.In)
+			return nil, errs.With("operation", id, "parameter", param.Name, "in", param.In).Errorf("parameter location a tool cannot carry")
 		}
 		schema, err := inline(p["schema"], doc.Components.Schemas, nil)
 		if err != nil {
-			return nil, fmt.Errorf("operation %s: parameter %s: %w", id, param.Name, err)
+			return nil, errs.With("operation", id, "parameter", param.Name).Wrapf(err, "parameter")
 		}
 		param.Schema, _ = schema.(map[string]any)
 		op.Params = append(op.Params, param)
 	}
 	for _, name := range pathParams(path) {
 		if !slices.ContainsFunc(op.Params, func(p parameter) bool { return p.In == "path" && p.Name == name }) {
-			return nil, fmt.Errorf("operation %s: path parameter %s is not declared", id, name)
+			return nil, errs.With("operation", id, "parameter", name).Errorf("path parameter is not declared")
 		}
 	}
 
 	if body, ok := node["requestBody"].(map[string]any); ok {
 		file, err := multipartFileOf(body["content"], doc)
 		if err != nil {
-			return nil, fmt.Errorf("operation %s: request body: %w", id, err)
+			return nil, errs.With("operation", id).Wrapf(err, "request body")
 		}
 		if file != nil {
 			op.Multipart = file
 		} else {
 			schema, err := jsonSchemaOf(body["content"], doc)
 			if err != nil {
-				return nil, fmt.Errorf("operation %s: request body: %w", id, err)
+				return nil, errs.With("operation", id).Wrapf(err, "request body")
 			}
 			if schema == nil {
-				return nil, fmt.Errorf("operation %s: request body is not JSON", id)
+				return nil, errs.With("operation", id).Errorf("request body is not JSON")
 			}
 			op.Body = schema
 		}
@@ -154,7 +153,7 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		response, _ := responses[code].(map[string]any)
 		schema, err := jsonSchemaOf(response["content"], doc)
 		if err != nil {
-			return nil, fmt.Errorf("operation %s: response %s: %w", id, code, err)
+			return nil, errs.With("operation", id, "response", code).Wrapf(err, "response")
 		}
 		if schema != nil {
 			op.Response = schema
@@ -210,7 +209,7 @@ func multipartFileOf(content any, doc *contractDoc) (*multipartFile, error) {
 	for name, raw := range properties {
 		part, _ := raw.(map[string]any)
 		if part["type"] != "string" || part["format"] != "binary" {
-			return nil, fmt.Errorf("multipart part %s is not a binary file", name)
+			return nil, errs.With("part", name).Errorf("multipart part is not a binary file")
 		}
 		return &multipartFile{Field: name}, nil
 	}
