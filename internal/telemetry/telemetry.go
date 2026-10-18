@@ -7,28 +7,74 @@ package telemetry
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/samber/oops"
 	"go.opentelemetry.io/contrib/otelconf"
 	"go.opentelemetry.io/otel"
 
 	"hexletbasics/internal/config"
 )
 
+// SentryOption adjusts the client options NewSentryClient builds; tests use it
+// to swap the transport.
+type SentryOption func(*sentry.ClientOptions)
+
+// WithSentryTransport replaces the network transport.
+func WithSentryTransport(transport sentry.Transport) SentryOption {
+	return func(o *sentry.ClientOptions) { o.Transport = transport }
+}
+
 // NewSentryClient builds a process-wide client. sentry-go treats an empty DSN
 // as disabled; an explicitly malformed DSN is returned as a startup error.
-func NewSentryClient(dsn string, environment config.AppEnv, release string) (*sentry.Client, error) {
-	client, err := sentry.NewClient(sentry.ClientOptions{
+//
+// BeforeSend copies oops attributes into every event (ADR-0018), so the HTTP
+// and River paths, which both report through this client, carry them.
+func NewSentryClient(dsn string, environment config.AppEnv, release string, opts ...SentryOption) (*sentry.Client, error) {
+	options := sentry.ClientOptions{
 		Dsn:         dsn,
 		Environment: string(environment),
 		Release:     release,
-	})
+		BeforeSend:  attachOopsAttributes,
+	}
+	for _, opt := range opts {
+		opt(&options)
+	}
+	client, err := sentry.NewClient(options)
 	if err != nil {
 		return nil, fmt.Errorf("initialize Sentry: %w", err)
 	}
 	return client, nil
+}
+
+// attachOopsAttributes exposes what sentry-go cannot see: it reads the stack of
+// an oops error by reflection but not its attributes. The event gets the
+// package as the oops.domain tag and every With(...) pair, from each wrapped
+// layer, in the "oops" context.
+func attachOopsAttributes(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+	if hint == nil || hint.OriginalException == nil {
+		return event
+	}
+	oopsErr, ok := errors.AsType[oops.OopsError](hint.OriginalException)
+	if !ok {
+		return event
+	}
+	if domain := oopsErr.Domain(); domain != "" {
+		if event.Tags == nil {
+			event.Tags = map[string]string{}
+		}
+		event.Tags["oops.domain"] = domain
+	}
+	if attrs := oopsErr.Context(); len(attrs) > 0 {
+		if event.Contexts == nil {
+			event.Contexts = map[string]sentry.Context{}
+		}
+		event.Contexts["oops"] = sentry.Context(attrs)
+	}
+	return event
 }
 
 // NewOpenTelemetrySDK builds the declaratively configured OpenTelemetry SDK and

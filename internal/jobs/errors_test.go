@@ -6,11 +6,32 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river/rivertype"
+	"github.com/samber/oops"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/internal/config"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/telemetry"
 )
+
+func TestErrorHandlerSendsOopsAttributesOfJobErrors(t *testing.T) {
+	transport := &sentry.MockTransport{}
+	client, err := telemetry.NewSentryClient(
+		&config.Config{SentryDSN: "https://public@example.com/1"},
+		telemetry.WithSentryTransport(transport),
+	)
+	require.NoError(t, err)
+	handler := jobs.NewErrorHandler(client)
+	job := &rivertype.JobRow{ID: 1, Kind: "exercise_loader", Queue: "default", Attempt: 1, MaxAttempts: 3}
+
+	handler.HandleError(t.Context(), job, oops.In("courseloader").With("course_id", 7).Wrapf(errors.New("clone failed"), "load course"))
+
+	events := transport.Events()
+	require.Len(t, events, 1)
+	assert.Equal(t, "courseloader", events[0].Tags["oops.domain"])
+	assert.Equal(t, 7, events[0].Contexts["oops"]["course_id"])
+}
 
 func TestErrorHandlerCapturesJobErrors(t *testing.T) {
 	transport := &sentry.MockTransport{}

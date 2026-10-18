@@ -28,17 +28,34 @@ was not used.
   operation wraps. Helpers inside a package return the error as is, and when
   there is nothing to add the function returns `err`. Every `Wrap` adds another
   stack trace ([samber/oops#81](https://github.com/samber/oops/issues/81)).
+- Log or return, never both. A function that returns an error does not also log
+  it: the one place that handles it (the HTTP error handler, the River error
+  handler) logs and reports it once, with the attributes the error carries.
+- Messages are lowercase and static, with no trailing punctuation, so they
+  compose when wrapped (`load lesson: ...`).
+- Look into an error chain with `errors.AsType[T](err)` (Go 1.26), not
+  `errors.As` with a declared target variable.
 - Domain errors (`ErrNotFound`, `ErrLastAdmin`) stay plain `errors.New` values
   checked with `errors.Is`, and `errorStatus` in `handlers/errors.go` keeps
   mapping them.
 - `forbidigo` rejects `fmt.Errorf` in production code and allows it in tests, the
   way `.Create()` is rejected in tests: the rule survives people and agents who
-  do not remember it.
+  do not remember it. The rule is active now with an exclusion list in
+  `.golangci.yml` holding every package not yet migrated; migrating a package
+  removes its entry, and the list never grows. `internal/books` is the migrated
+  template (`var errs = oops.In("books")`, static messages, `.With`, one wrap at
+  the exported function).
 - `oops.Recover` guards the one goroutine that does real work without a safety
   net, the assistant stream. HTTP (`sentryhttp` with `Repanic`), Watermill
   (`middleware.Recoverer`) and River (its job executor) already recover.
 
 **What reaches the tools**
+
+`telemetry.NewSentryClient` installs that `BeforeSend` (the `oops.domain` tag and
+an `oops` context holding the attributes). It reads the error from
+`EventHint.OriginalException`, which `Hub.CaptureException` sets and
+`Client.CaptureException` does not, so a caller using the client directly (the
+River handler) passes it in the hint.
 
 `slog` receives every attribute through `OopsError.LogValue`. `sentry-go` finds
 `OopsError.StackFrames()` by reflection, so the stack reaches Sentry, but the

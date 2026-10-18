@@ -62,5 +62,5 @@ func (h *ErrorHandler) capture(ctx context.Context, job *rivertype.JobRow, err e
 		riverContext["panic_trace"] = panicTrace
 	}
 	scope.SetContext("river", riverContext)
-	h.sentryClient.CaptureException(err, &sentry.EventHint{Context: ctx}, scope)
+	h.sentryClient.CaptureException(err, &sentry.EventHint{Context: ctx, OriginalException: err}, scope)
 }

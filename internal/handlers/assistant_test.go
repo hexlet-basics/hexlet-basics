@@ -247,6 +247,51 @@ func TestAskAssistantReportsAModelFailureBeforeStreaming(t *testing.T) {
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 }
 
+// The answer is produced on a goroutine of its own, outside the request's
+// panic recovery, so a panic in the model client would take the process down.
+// It comes back as an ordinary failure instead.
+func TestAskAssistantSurvivesAPanicBeforeStreaming(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	lesson := lessonBySlug(t, h, firstLessonSlug)
+	h.Assistant.StreamFunc = func(context.Context, []assistant.Turn, func(string) error) (assistant.Usage, error) {
+		panic("model client blew up")
+	}
+
+	_, err := h.Client.CreateAssistantMessage(ctx,
+		&api.AssistantMessageInput{Message: "Help?"},
+		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
+	)
+
+	require.Error(t, err)
+	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
+}
+
+// A panic after the answer began ends the answer like any other failure
+// mid-answer: the question is spent and nothing is stored for the answer.
+func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
+		if err := onDelta("Declare it "); err != nil {
+			return assistant.Usage{}, err
+		}
+		panic("model client blew up")
+	}
+
+	res, err := h.Client.CreateAssistantMessage(ctx,
+		&api.AssistantMessageInput{Message: "How do I declare a variable?"},
+		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
+	)
+	require.NoError(t, err)
+	_, _ = io.ReadAll(res.(*api.CreateAssistantMessageOK))
+
+	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chatFor(t, h, lesson).ID)).AllX(ctx)
+	require.Len(t, stored, 1, "the question is spent, the broken answer is not stored")
+	assert.Equal(t, "user", stored[0].Role)
+}
+
 // Once the answer has begun the question is spent, even if the answer never
 // completes: otherwise cutting the connection just before the end would be a
 // way round the quota. The broken answer itself is not stored.

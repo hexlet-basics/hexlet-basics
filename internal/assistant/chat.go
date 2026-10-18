@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/samber/lo"
 	"github.com/samber/oops"
 
@@ -196,8 +197,6 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 	answer, writer := io.Pipe()
 	started := make(chan error, 1)
 	go func() {
-		var text strings.Builder
-		chatID := 0
 		// Ask waits for exactly one signal: the first token (the question is
 		// then stored) or the failure that came instead of it.
 		signalled := false
@@ -207,32 +206,53 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 				started <- err
 			}
 		}
-		begin := func() error {
-			id, err := c.saveQuestion(storeCtx, q, lessonProgressID)
-			chatID = id
-			signal(err)
-			return err
-		}
-		usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
-			if !signalled {
-				if err := begin(); err != nil {
-					return err
-				}
+		// This goroutine is outside every recovery the request has (HTTP,
+		// River and Watermill each guard their own), so a panic in the model
+		// client would take the process down. Recover turns it into an error
+		// that fails the answer like any other (ADR-0018).
+		panicErr := oops.In("assistant").Recover(func() {
+			var text strings.Builder
+			chatID := 0
+			begin := func() error {
+				id, err := c.saveQuestion(storeCtx, q, lessonProgressID)
+				chatID = id
+				signal(err)
+				return err
 			}
-			text.WriteString(delta)
-			_, err := writer.Write([]byte(delta))
-			return err
+			usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
+				if !signalled {
+					if err := begin(); err != nil {
+						return err
+					}
+				}
+				text.WriteString(delta)
+				_, err := writer.Write([]byte(delta))
+				return err
+			})
+			if err == nil && !signalled {
+				// An empty answer is still an answer.
+				err = begin()
+			}
+			if err != nil {
+				signal(err)
+				writer.CloseWithError(err)
+				return
+			}
+			writer.CloseWithError(c.saveAnswer(storeCtx, chatID, text.String(), usage))
 		})
-		if err == nil && !signalled {
-			// An empty answer is still an answer.
-			err = begin()
-		}
-		if err != nil {
-			signal(err)
-			writer.CloseWithError(err)
+		if panicErr == nil {
 			return
 		}
-		writer.CloseWithError(c.saveAnswer(storeCtx, chatID, text.String(), usage))
+		// Before the first token Ask returns the error and the HTTP layer
+		// reports it; after it the response is already streaming and nothing
+		// else would, so the panic is sent to Sentry here.
+		if signalled {
+			if hub := sentry.GetHubFromContext(ctx); hub != nil {
+				hub.CaptureException(panicErr)
+			}
+		}
+		signal(panicErr)
+		writer.CloseWithError(panicErr)
 	}()
 
 	if err := <-started; err != nil {

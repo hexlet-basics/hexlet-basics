@@ -7,14 +7,19 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
+
+	"github.com/samber/oops"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/bookrequest"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With, wrapped once at the exported function that knows the operation.
+var errs = oops.In("books")
 
 // Request states, legacy BookRequest's typed_enum values.
 const (
@@ -42,7 +47,7 @@ func NewRecorder(txStore store.Transactor, publisher events.TxPublisher) *Record
 // for a repeat, which is how a repeat is told apart from a first request, and
 // it does not abort the transaction.
 func (r *Recorder) Request(ctx context.Context, userID int, locale string) error {
-	return r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+	err := r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		_, err := db.BookRequest.Create().
 			SetUserID(userID).
 			SetState(StateRequested).
@@ -53,16 +58,20 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 			return nil
 		}
 		if err != nil {
-			return fmt.Errorf("create book request for user %d: %w", userID, err)
+			return err
 		}
 		if err := r.publisher.Publish(ctx, tx, events.BookRequested{
 			Locale:     locale,
 			OccurredAt: r.now().UTC(),
 		}); err != nil {
-			return fmt.Errorf("publish book requested: %w", err)
+			return err
 		}
 		return nil
 	})
+	if err != nil {
+		return errs.With("user_id", userID).Wrapf(err, "record book request")
+	}
+	return nil
 }
 
 // Requested reports whether the user has requested the book, in any state: the
@@ -73,7 +82,7 @@ func (r *Recorder) Requested(ctx context.Context, userID int) (requested bool, e
 		return err
 	})
 	if err != nil {
-		return false, fmt.Errorf("check book request of user %d: %w", userID, err)
+		return false, errs.With("user_id", userID).Wrapf(err, "check book request")
 	}
 	return requested, nil
 }
@@ -90,7 +99,7 @@ func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (marked bool,
 		return err
 	})
 	if err != nil {
-		return false, fmt.Errorf("mark book downloaded for user %d: %w", userID, err)
+		return false, errs.With("user_id", userID).Wrapf(err, "mark book downloaded")
 	}
 	return marked, nil
 }
