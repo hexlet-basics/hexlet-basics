@@ -87,3 +87,9 @@ type AdminOrder struct {
 	Field string
 	Desc  bool
 }
+
+// fieldName is the ent field "Name" as an AdminCRUD search or order names it.
+const fieldName = "Name"
+
+// varcharArray is the PostgreSQL column type of a string list.
+const varcharArray = "varchar[]"

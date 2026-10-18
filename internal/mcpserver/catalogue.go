@@ -39,10 +39,10 @@ type pageArgs struct {
 // default and the tool clamps a larger value (and says so in its text).
 func (s *Server) pageProperties() map[string]any {
 	return map[string]any{
-		"page": map[string]any{"type": "integer", "minimum": 1, "description": "Page number, starting at 1. Default 1."},
-		"perPage": map[string]any{
-			"type": "integer", "minimum": 1,
-			"description": fmt.Sprintf("Records per page. A value above %d is clamped to %d. Default %d.", s.limits.MaxPageSize, s.limits.MaxPageSize, s.limits.MaxPageSize),
+		argPage: map[string]any{keyType: typeInteger, keyMinimum: 1, keyDescription: "Page number, starting at 1. Default 1."},
+		argPerPage: map[string]any{
+			keyType: typeInteger, keyMinimum: 1,
+			keyDescription: fmt.Sprintf("Records per page. A value above %d is clamped to %d. Default %d.", s.limits.MaxPageSize, s.limits.MaxPageSize, s.limits.MaxPageSize),
 		},
 	}
 }
@@ -114,7 +114,7 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		{getCategoryTool, toolSpec{
 			title:       "Get a course category",
 			description: "A course category by slug, with the courses it groups and its questions and answers.",
-			input:       object(map[string]any{"slug": slugArg("The category's slug, as listPublicCourseCategories returns it.")}, "slug"),
+			input:       object(map[string]any{argSlug: slugArg("The category's slug, as listPublicCourseCategories returns it.")}, argSlug),
 			name:        "",
 			output:      nil,
 			scope:       "",
@@ -124,7 +124,7 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 			title: "Get a course",
 			description: "A course page: the course, its landing copy, lessons in order and modules. " +
 				"The slug is the landing page's, as listCourses returns it (javascript-ru).",
-			input:  object(map[string]any{"slug": slugArg("The landing page slug, as listCourses returns it.")}, "slug"),
+			input:  object(map[string]any{argSlug: slugArg("The landing page slug, as listCourses returns it.")}, argSlug),
 			name:   "",
 			output: nil,
 			scope:  "",
@@ -135,9 +135,9 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 			description: "A lesson: instructions, theory, starter code, reference solution and tests. " +
 				"courseSlug is the course's own (course.slug of getCourse), not a landing page slug.",
 			input: object(map[string]any{
-				"courseSlug": slugArg("The course's own slug (course.slug in getCourse)."),
-				"slug":       slugArg("The lesson's slug, from the lessons of getCourse."),
-			}, "courseSlug", "slug"),
+				argCourseSlug: slugArg("The course's own slug (course.slug in getCourse)."),
+				argSlug:       slugArg("The lesson's slug, from the lessons of getCourse."),
+			}, argCourseSlug, argSlug),
 			name:   "",
 			output: nil,
 			scope:  "",
@@ -155,7 +155,7 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		{getBlogPostTool, toolSpec{
 			title:       "Get a blog post",
 			description: "A published blog post by slug, with posts to read next and the courses it promotes.",
-			input:       object(map[string]any{"slug": slugArg("The post's slug, as listBlogPosts returns it.")}, "slug"),
+			input:       object(map[string]any{argSlug: slugArg("The post's slug, as listBlogPosts returns it.")}, argSlug),
 			name:        "",
 			output:      nil,
 			scope:       "",
@@ -190,23 +190,23 @@ func (s *Server) outputSchema(operationID string) (map[string]any, error) {
 		return nil, err
 	}
 
-	key := map[string]string{listCoursesTool: "courses", listCategoriesTool: "categories"}[operationID]
+	key := map[string]string{listCoursesTool: keyCourses, listCategoriesTool: keyCategories}[operationID]
 	if key == "" {
 		return schema, nil
 	}
 
-	integer := map[string]any{"type": "integer"}
+	integer := map[string]any{keyType: typeInteger}
 
 	return map[string]any{
-		"type": "object",
-		"properties": map[string]any{
-			key:       schema,
-			"total":   integer,
-			"page":    integer,
-			"perPage": integer,
+		keyType: typeObject,
+		keyProperties: map[string]any{
+			key:        schema,
+			keyTotal:   integer,
+			argPage:    integer,
+			argPerPage: integer,
 		},
-		"required":             []string{key, "total", "page", "perPage"},
-		"additionalProperties": false,
+		keyRequired:             []string{key, keyTotal, argPage, argPerPage},
+		keyAdditionalProperties: false,
 	}, nil
 }
 
@@ -236,9 +236,9 @@ func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 	}
 
 	return result{
-		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("courses", slugs), page, len(all), note),
-		data: map[string]any{"courses": items, "total": len(all), "page": page, "perPage": perPage},
-		list: &listInfo{key: "courses", page: page, perPage: perPage},
+		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize(keyCourses, slugs), page, len(all), note),
+		data: map[string]any{keyCourses: items, keyTotal: len(all), argPage: page, argPerPage: perPage},
+		list: &listInfo{key: keyCourses, page: page, perPage: perPage},
 	}, nil
 }
 
@@ -268,9 +268,9 @@ func (s *Server) listCategories(ctx context.Context, c call) (result, error) {
 	}
 
 	return result{
-		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("categories", slugs), page, len(all), note),
-		data: map[string]any{"categories": items, "total": len(all), "page": page, "perPage": perPage},
-		list: &listInfo{key: "categories", page: page, perPage: perPage},
+		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize(keyCategories, slugs), page, len(all), note),
+		data: map[string]any{keyCategories: items, keyTotal: len(all), argPage: page, argPerPage: perPage},
+		list: &listInfo{key: keyCategories, page: page, perPage: perPage},
 	}, nil
 }
 
@@ -372,7 +372,7 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	return result{
 		text: fmt.Sprintf("%s (page %d, %d in total)%s", summarize("posts", slugs), posts.Page, posts.Total, note),
 		data: posts,
-		list: &listInfo{key: "items", page: int(posts.Page), perPage: int(posts.PerPage)},
+		list: &listInfo{key: keyItems, page: int(posts.Page), perPage: int(posts.PerPage)},
 	}, nil
 }
 

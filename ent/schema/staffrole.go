@@ -27,7 +27,7 @@ func (StaffRole) Annotations() []schema.Annotation {
 		// the single view is the StaffRoleDetail with its grants.
 		AdminCRUD{
 			Detail: "StaffRoleDetail",
-			Order:  []AdminOrder{{Field: "Name"}},
+			Order:  []AdminOrder{{Field: fieldName}},
 			Eager:  []string{"WithGrants()"},
 		},
 	}

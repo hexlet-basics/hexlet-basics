@@ -134,18 +134,18 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 // reference as `allOf` with `nullable`) cannot take null by editing it, since
 // every branch would still refuse it, so null becomes an alternative to it.
 func allowNull(schema map[string]any) map[string]any {
-	for _, combined := range []string{"allOf", "anyOf", "oneOf"} {
+	for _, combined := range []string{"allOf", keyAnyOf, "oneOf"} {
 		if _, ok := schema[combined]; ok {
-			return map[string]any{"anyOf": []any{schema, map[string]any{"type": "null"}}}
+			return map[string]any{keyAnyOf: []any{schema, map[string]any{keyType: typeNull}}}
 		}
 	}
 
-	if typ, ok := schema["type"].(string); ok {
-		schema["type"] = []any{typ, "null"}
+	if typ, ok := schema[keyType].(string); ok {
+		schema[keyType] = []any{typ, typeNull}
 	}
 
-	if values, ok := schema["enum"].([]any); ok {
-		schema["enum"] = append(values, nil)
+	if values, ok := schema[keyEnum].([]any); ok {
+		schema[keyEnum] = append(values, nil)
 	}
 
 	return schema

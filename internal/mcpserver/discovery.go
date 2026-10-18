@@ -175,8 +175,8 @@ type findToolsArgs struct {
 
 // Detail levels of findTools.
 const (
-	detailName        = "name"
-	detailDescription = "description"
+	detailName        = keyName
+	detailDescription = keyDescription
 	detailSchema      = "schema"
 
 	defaultFindLimit = 20
@@ -187,24 +187,24 @@ const (
 // carries is the caller's to ask for.
 func findToolsOutput() map[string]any {
 	return withTruncation(map[string]any{
-		"type": "object",
-		"properties": map[string]any{
-			"total": map[string]any{"type": "integer"},
-			"tools": map[string]any{
-				"type": "array",
-				"items": map[string]any{
-					"type":     "object",
-					"required": []string{"name"},
-					"properties": map[string]any{
-						"name":        map[string]any{"type": "string"},
-						"description": map[string]any{"type": "string"},
-						"needs":       map[string]any{"type": "object"},
-						"inputSchema": map[string]any{"type": "object"},
+		keyType: typeObject,
+		keyProperties: map[string]any{
+			keyTotal: map[string]any{keyType: typeInteger},
+			keyTools: map[string]any{
+				keyType: "array",
+				keyItems: map[string]any{
+					keyType:     typeObject,
+					keyRequired: []string{keyName},
+					keyProperties: map[string]any{
+						keyName:        map[string]any{keyType: typeString},
+						keyDescription: map[string]any{keyType: typeString},
+						"needs":        map[string]any{keyType: typeObject},
+						"inputSchema":  map[string]any{keyType: typeObject},
 					},
 				},
 			},
 		},
-		"required": []string{"total", "tools"},
+		keyRequired: []string{keyTotal, keyTools},
 	})
 }
 
@@ -213,12 +213,12 @@ func findToolsOutput() map[string]any {
 // one (a test pins that no tool executes another by name).
 func (s *Server) addFindTools(server *mcp.Server) {
 	input := object(map[string]any{
-		"query": map[string]any{"type": "string", "description": "Words to look for in tool names and descriptions, all of which must match. Omit to list every tool you may call."},
+		"query": map[string]any{keyType: typeString, keyDescription: "Words to look for in tool names and descriptions, all of which must match. Omit to list every tool you may call."},
 		"detail": map[string]any{
-			"type": "string", "enum": []string{detailName, detailDescription, detailSchema},
-			"description": "name: names only. description: name, short description and what it needs (default). schema: also the full input schema.",
+			keyType: typeString, keyEnum: []string{detailName, detailDescription, detailSchema},
+			keyDescription: "name: names only. description: name, short description and what it needs (default). schema: also the full input schema.",
 		},
-		"limit": map[string]any{"type": "integer", "minimum": 1, "description": fmt.Sprintf("Most tools to return. Default %d, at most %d.", defaultFindLimit, maxFindLimit)},
+		"limit": map[string]any{keyType: typeInteger, keyMinimum: 1, keyDescription: fmt.Sprintf("Most tools to return. Default %d, at most %d.", defaultFindLimit, maxFindLimit)},
 	})
 	tool := &mcp.Tool{
 		Name:         findToolsName,
@@ -292,9 +292,9 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 	rows := []map[string]any{}
 
 	for _, listed := range matched[:min(len(matched), limit)] {
-		row := map[string]any{"name": listed.tool.Name}
+		row := map[string]any{keyName: listed.tool.Name}
 		if args.Detail != detailName {
-			row["description"] = listed.tool.Description
+			row[keyDescription] = listed.tool.Description
 			row["needs"] = listed.needs.describe()
 		}
 
@@ -309,7 +309,7 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 
 	return s.finish(findToolsName, result{
 		text: text,
-		data: map[string]any{"total": len(matched), "tools": rows},
+		data: map[string]any{keyTotal: len(matched), keyTools: rows},
 		list: nil,
 	})
 }

@@ -24,7 +24,7 @@ func (Course) Annotations() []schema.Annotation {
 		// deferred until the Attachments uploader), so they map to nothing.
 		AdminInput{Type: "CourseInput", Explicit: true},
 		// The API model embeds the current version.
-		AdminCRUD{Eager: []string{"WithCurrentVersion()"}, Search: []string{"Name", "Slug"}},
+		AdminCRUD{Eager: []string{"WithCurrentVersion()"}, Search: []string{fieldName, "Slug"}},
 	}
 }
 

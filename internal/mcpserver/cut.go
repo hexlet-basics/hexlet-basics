@@ -36,7 +36,7 @@ const (
 // tenth of the tool list, so what the hint contains is told once, in the
 // server's instructions, and every schema points there (#878).
 func truncationSchema() map[string]any {
-	return map[string]any{"type": "object"}
+	return map[string]any{keyType: typeObject}
 }
 
 // withTruncation adds the optional `truncation` property to an output schema.
@@ -47,12 +47,12 @@ func withTruncation(schema map[string]any) map[string]any {
 	maps.Copy(out, schema)
 
 	properties := map[string]any{}
-	if existing, ok := schema["properties"].(map[string]any); ok {
+	if existing, ok := schema[keyProperties].(map[string]any); ok {
 		maps.Copy(properties, existing)
 	}
 
 	properties[truncationKey] = truncationSchema()
-	out["properties"] = properties
+	out[keyProperties] = properties
 
 	return out
 }
@@ -124,7 +124,7 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 
 	described := make([]any, len(listed))
 	for i, c := range listed {
-		described[i] = map[string]any{"path": c.path, "kept": c.kept, "total": c.total, "unit": c.unit}
+		described[i] = map[string]any{locationPath: c.path, "kept": c.kept, keyTotal: c.total, "unit": c.unit}
 	}
 
 	hint["cuts"] = described
@@ -139,7 +139,7 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 	if list != nil {
 		for _, piece := range cuts {
-			if piece.path != list.key || piece.unit != "items" {
+			if piece.path != list.key || piece.unit != keyItems {
 				continue
 			}
 
@@ -237,7 +237,7 @@ func shorten(cuts []cut, n *node, ratio float64) []cut {
 		keep := min(max(int(float64(len(typed))*ratio), 1), len(typed)-1)
 		n.set(typed[:keep])
 
-		return record(cuts, cut{path: n.path, kept: keep, total: len(typed), unit: "items"})
+		return record(cuts, cut{path: n.path, kept: keep, total: len(typed), unit: keyItems})
 	case string:
 		keep := min(max(int(float64(len(typed))*ratio), minKeptBytes), len(typed)-1)
 		// Never split a rune: the string must stay valid UTF-8 to stay valid JSON.

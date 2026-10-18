@@ -53,14 +53,14 @@ func requestBodyLimit(hasUpload bool) int64 {
 // uploadSchema describes the `body` argument of a multipart tool for the agent.
 func uploadSchema(file *multipartFile) map[string]any {
 	return map[string]any{
-		"type":                 "object",
-		"description":          fmt.Sprintf("The file for the %q part, as base64 text. At most %d bytes once decoded; the content type is sniffed from the bytes and only raster images are accepted, as on the website.", file.Field, assetstore.MaxUploadBytes),
-		"additionalProperties": false,
-		"required":             []string{"fileName", "contentBase64"},
-		"properties": map[string]any{
-			"fileName":      map[string]any{"type": "string", "minLength": 1, "description": "The file's name, with its extension."},
-			"contentType":   map[string]any{"type": "string", "description": "Optional MIME type of the file. Advisory: the stored type is derived from the bytes."},
-			"contentBase64": map[string]any{"type": "string", "minLength": 1, "maxLength": maxUploadBase64(), "description": "The file's bytes, standard base64."},
+		keyType:                 typeObject,
+		keyDescription:          fmt.Sprintf("The file for the %q part, as base64 text. At most %d bytes once decoded; the content type is sniffed from the bytes and only raster images are accepted, as on the website.", file.Field, assetstore.MaxUploadBytes),
+		keyAdditionalProperties: false,
+		keyRequired:             []string{"fileName", "contentBase64"},
+		keyProperties: map[string]any{
+			"fileName":      map[string]any{keyType: typeString, keyMinLength: 1, keyDescription: "The file's name, with its extension."},
+			"contentType":   map[string]any{keyType: typeString, keyDescription: "Optional MIME type of the file. Advisory: the stored type is derived from the bytes."},
+			"contentBase64": map[string]any{keyType: typeString, keyMinLength: 1, "maxLength": maxUploadBase64(), keyDescription: "The file's bytes, standard base64."},
 		},
 	}
 }
@@ -101,7 +101,7 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 	}
 
 	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", mime.FormatMediaType("form-data", map[string]string{"name": file.Field, "filename": in.FileName}))
+	header.Set("Content-Disposition", mime.FormatMediaType("form-data", map[string]string{keyName: file.Field, "filename": in.FileName}))
 
 	if in.ContentType != "" {
 		header.Set("Content-Type", in.ContentType)

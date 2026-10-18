@@ -40,9 +40,9 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 
 	courseSlug := slugArg("The course's own slug, as in getCourseLesson (course.slug of getCourse's result).")
 	lessonState := map[string]any{
-		"type":        "string",
-		"enum":        []string{progress.StateFinished, progress.StateStarted, progress.StateNotStarted},
-		"description": "finished: the exercise was passed; started: begun, not passed yet; not_started: no record.",
+		keyType:        typeString,
+		keyEnum:        []string{progress.StateFinished, progress.StateStarted, progress.StateNotStarted},
+		keyDescription: "finished: the exercise was passed; started: begun, not passed yet; not_started: no record.",
 	}
 
 	specs := []struct {
@@ -64,18 +64,18 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 			title: "My progress in a course",
 			description: "Where the signed-in learner stands in one course: Enrollment state, Completion, " +
 				"Next Lesson and the Lesson Progress of every lesson.",
-			input: object(map[string]any{"courseSlug": courseSlug}, "courseSlug"),
+			input: object(map[string]any{argCourseSlug: courseSlug}, argCourseSlug),
 			output: object(map[string]any{
-				"courseSlug": map[string]any{"type": "string"},
-				"state":      lessonState,
-				"completion": map[string]any{"type": "integer", "minimum": 0, "maximum": maxCompletion},
-				"nextLesson": map[string]any{"type": []string{"string", "null"}, "description": "Slug of the Next Lesson; null when every lesson is finished."},
-				"lessons": map[string]any{"type": "array", "items": object(map[string]any{
-					"slug":     map[string]any{"type": "string"},
-					"position": map[string]any{"type": "integer"},
-					"state":    lessonState,
-				}, "slug", "position", "state")},
-			}, "courseSlug", "state", "completion", "nextLesson", "lessons"),
+				argCourseSlug: map[string]any{keyType: typeString},
+				keyState:      lessonState,
+				"completion":  map[string]any{keyType: typeInteger, keyMinimum: 0, "maximum": maxCompletion},
+				"nextLesson":  map[string]any{keyType: []string{typeString, typeNull}, keyDescription: "Slug of the Next Lesson; null when every lesson is finished."},
+				"lessons": map[string]any{keyType: "array", keyItems: object(map[string]any{
+					argSlug:     map[string]any{keyType: typeString},
+					keyPosition: map[string]any{keyType: typeInteger},
+					keyState:    lessonState,
+				}, argSlug, keyPosition, keyState)},
+			}, argCourseSlug, keyState, "completion", "nextLesson", "lessons"),
 			scope: "",
 			class: 0,
 		}, s.myCourseProgress},
@@ -85,16 +85,16 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 			description: "The signed-in learner's progress in one lesson: finished, started or not started, " +
 				"and passedCheck once a check passed.",
 			input: object(map[string]any{
-				"courseSlug": courseSlug,
-				"lessonSlug": slugArg("The lesson's slug within the course."),
-			}, "courseSlug", "lessonSlug"),
+				argCourseSlug: courseSlug,
+				argLessonSlug: slugArg("The lesson's slug within the course."),
+			}, argCourseSlug, argLessonSlug),
 			output: object(map[string]any{
-				"courseSlug":  map[string]any{"type": "string"},
-				"lessonSlug":  map[string]any{"type": "string"},
-				"position":    map[string]any{"type": "integer"},
-				"state":       lessonState,
-				"passedCheck": map[string]any{"type": "boolean"},
-			}, "courseSlug", "lessonSlug", "position", "state", "passedCheck"),
+				argCourseSlug: map[string]any{keyType: typeString},
+				argLessonSlug: map[string]any{keyType: typeString},
+				keyPosition:   map[string]any{keyType: typeInteger},
+				keyState:      lessonState,
+				"passedCheck": map[string]any{keyType: "boolean"},
+			}, argCourseSlug, argLessonSlug, keyPosition, keyState, "passedCheck"),
 			scope: "",
 			class: 0,
 		}, s.myLessonProgress},
@@ -154,17 +154,17 @@ func (s *Server) myCourseProgress(ctx context.Context, request call) (result, er
 
 	lessons := make([]map[string]any, 0, len(course.Lessons))
 	for _, l := range course.Lessons {
-		lessons = append(lessons, map[string]any{"slug": l.Slug, "position": l.Position, "state": l.State})
+		lessons = append(lessons, map[string]any{argSlug: l.Slug, keyPosition: l.Position, keyState: l.State})
 	}
 
 	return result{
 		text: fmt.Sprintf("%s: %s, %d%% complete", course.CourseSlug, course.State, course.Completion),
 		data: map[string]any{
-			"courseSlug": course.CourseSlug,
-			"state":      course.State,
-			"completion": course.Completion,
-			"nextLesson": course.NextLessonSlug,
-			"lessons":    lessons,
+			argCourseSlug: course.CourseSlug,
+			keyState:      course.State,
+			"completion":  course.Completion,
+			"nextLesson":  course.NextLessonSlug,
+			"lessons":     lessons,
 		},
 		list: nil,
 	}, nil
@@ -195,10 +195,10 @@ func (s *Server) myLessonProgress(ctx context.Context, request call) (result, er
 		return result{
 			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, learnerLesson.Slug, learnerLesson.State),
 			data: map[string]any{
-				"courseSlug":  course.CourseSlug,
-				"lessonSlug":  learnerLesson.Slug,
-				"position":    learnerLesson.Position,
-				"state":       learnerLesson.State,
+				argCourseSlug: course.CourseSlug,
+				argLessonSlug: learnerLesson.Slug,
+				keyPosition:   learnerLesson.Position,
+				keyState:      learnerLesson.State,
 				"passedCheck": learnerLesson.State == progress.StateFinished,
 			},
 			list: nil,

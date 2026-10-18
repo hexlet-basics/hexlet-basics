@@ -34,12 +34,12 @@ func (OAuthClient) Fields() []ent.Field {
 		field.String("name").NotEmpty(),
 		// Exact-match redirect URIs.
 		field.Other("redirect_uris", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 		// The custom scopes this client may request. Scopes outside the list are
 		// dropped by the library before the consent screen, so a client can never
 		// be shown, or granted, more than it was registered for.
 		field.Other("scopes", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 		// Set only for a client that was created from a Client ID Metadata
 		// Document (its client_id is the document's https URL): the instant the
 		// cached copy of the document stops being trusted and is fetched again
@@ -74,7 +74,7 @@ func (OAuthAuthRequest) Fields() []ent.Field {
 		field.String("redirect_uri").NotEmpty().Immutable(),
 		field.String("state").Default("").Immutable(),
 		field.Other("scopes", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 		field.String("code_challenge").NotEmpty().Immutable(),
 		field.String("code_challenge_method").NotEmpty().Immutable(),
 		field.String("nonce").Default("").Immutable(),
@@ -117,7 +117,7 @@ func (OAuthAccessToken) Fields() []ent.Field {
 		field.String("client_id").NotEmpty().Immutable(),
 		field.Int("user_id").Immutable(),
 		field.Other("scopes", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 		field.String("refresh_token_id").Optional().Nillable(),
 		// The authorization this token descends from; revoking the family
 		// deletes every access token carrying it.
@@ -149,7 +149,7 @@ func (OAuthRefreshToken) Fields() []ent.Field {
 		field.String("client_id").NotEmpty().Immutable(),
 		field.Int("user_id").Immutable(),
 		field.Other("scopes", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 		field.Time("auth_time"),
 		field.String("access_token_id").Optional().Nillable(),
 		// The authorization the token descends from. Every rotation keeps it, so

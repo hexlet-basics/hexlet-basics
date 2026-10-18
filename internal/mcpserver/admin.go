@@ -234,9 +234,9 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 
 	properties := map[string]any{
 		localeArgument: map[string]any{
-			"type":        "string",
-			"enum":        adminLocales(),
-			"description": "The locale this call is made in: the one your Staff Role must allow. Required, never inferred.",
+			keyType:        typeString,
+			keyEnum:        adminLocales(),
+			keyDescription: "The locale this call is made in: the one your Staff Role must allow. Required, never inferred.",
 		},
 	}
 
@@ -250,7 +250,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 		maps.Copy(schema, arg.Schema)
 
 		if arg.Description != "" {
-			schema["description"] = arg.Description
+			schema[keyDescription] = arg.Description
 		}
 
 		properties[arg.Name] = schema
@@ -274,10 +274,10 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	}
 
 	input := map[string]any{
-		"type":                 "object",
-		"properties":           properties,
-		"required":             required,
-		"additionalProperties": false,
+		keyType:                 typeObject,
+		keyProperties:           properties,
+		keyRequired:             required,
+		keyAdditionalProperties: false,
 	}
 
 	trimmed, ok := trimInput(input).(map[string]any)
@@ -349,15 +349,15 @@ func camelWords(name string) string {
 // wrapObject is the schema of structured content, which MCP requires to be an
 // object: an object schema stands as it is, anything else sits under `result`.
 func wrapObject(schema map[string]any) map[string]any {
-	if schema["type"] == "object" {
+	if schema[keyType] == typeObject {
 		return schema
 	}
 
 	return map[string]any{
-		"type":                 "object",
-		"properties":           map[string]any{"result": schema},
-		"required":             []string{"result"},
-		"additionalProperties": false,
+		keyType:                 typeObject,
+		keyProperties:           map[string]any{keyResult: schema},
+		keyRequired:             []string{keyResult},
+		keyAdditionalProperties: false,
 	}
 }
 
@@ -519,7 +519,7 @@ func routeArguments(op *operation, args map[string]json.RawMessage, known map[st
 		}
 
 		switch arg.In {
-		case "path":
+		case locationPath:
 			path = strings.ReplaceAll(path, "{"+arg.Name+"}", url.PathEscape(values[0]))
 		default:
 			for _, v := range values {
@@ -699,7 +699,7 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 	}
 
 	if _, isObject := decoded.(map[string]any); !isObject {
-		decoded = map[string]any{"result": decoded}
+		decoded = map[string]any{keyResult: decoded}
 	}
 
 	return s.finish(op.ID, result{

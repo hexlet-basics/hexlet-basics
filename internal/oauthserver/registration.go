@@ -69,7 +69,7 @@ type registrationError struct {
 func (e *registrationError) Error() string { return e.Code + ": " + e.Description }
 
 func metadataError(format string, args ...any) *registrationError {
-	return &registrationError{http.StatusBadRequest, "invalid_client_metadata", fmt.Sprintf(format, args...)}
+	return &registrationError{http.StatusBadRequest, errInvalidClientMetadata, fmt.Sprintf(format, args...)}
 }
 
 func redirectError(format string, args ...any) *registrationError {
@@ -173,7 +173,7 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 	mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
 	if err != nil || mt != "application/json" {
 		return registration{}, &registrationError{
-			http.StatusUnsupportedMediaType, "invalid_client_metadata", "the request must be application/json",
+			http.StatusUnsupportedMediaType, errInvalidClientMetadata, "the request must be application/json",
 		}
 	}
 
@@ -181,7 +181,7 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 	if err != nil {
 		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 			return registration{}, &registrationError{
-				http.StatusRequestEntityTooLarge, "invalid_client_metadata", "the request is larger than it may be",
+				http.StatusRequestEntityTooLarge, errInvalidClientMetadata, "the request is larger than it may be",
 			}
 		}
 
@@ -470,3 +470,7 @@ func ignoredRegistrationFields() []string {
 		"software_id", "software_version", "application_type",
 	}
 }
+
+// errInvalidClientMetadata is the RFC 7591 error code of a registration that
+// cannot be read or accepted.
+const errInvalidClientMetadata = "invalid_client_metadata"

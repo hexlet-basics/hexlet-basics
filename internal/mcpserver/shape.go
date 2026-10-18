@@ -80,11 +80,11 @@ func trimEntry(out map[string]any, key string, value any) {
 	switch {
 	case decorative(key, value):
 		return
-	case key == "description":
+	case key == keyDescription:
 		if text, ok := value.(string); ok {
 			out[key] = firstSentence(text, maxDescription)
 		}
-	case key == "properties":
+	case key == keyProperties:
 		properties, _ := value.(map[string]any)
 
 		trimmed := make(map[string]any, len(properties))
@@ -93,7 +93,7 @@ func trimEntry(out map[string]any, key string, value any) {
 		}
 
 		out[key] = trimmed
-	case key == "enum" || key == "required" || key == "const" || key == "default":
+	case key == keyEnum || key == keyRequired || key == "const" || key == "default":
 		out[key] = value
 	default:
 		out[key] = trimInput(value)
@@ -125,11 +125,11 @@ func decorative(key string, value any) bool {
 // would have given.
 func outputShape(schema map[string]any) map[string]any {
 	shape := shapeOf(schema, 0)
-	if shape["type"] == nil {
-		shape["type"] = "object"
+	if shape[keyType] == nil {
+		shape[keyType] = typeObject
 	}
 
-	delete(shape, "anyOf")
+	delete(shape, keyAnyOf)
 	delete(shape, "oneOf")
 	delete(shape, "allOf")
 
@@ -140,28 +140,28 @@ func shapeOf(node any, depth int) map[string]any {
 	n, _ := node.(map[string]any)
 
 	out := map[string]any{}
-	if t, ok := n["type"]; ok {
-		out["type"] = t
+	if t, ok := n[keyType]; ok {
+		out[keyType] = t
 	}
 
 	if depth >= maxOutputDepth {
 		return out
 	}
 
-	if properties, ok := n["properties"].(map[string]any); ok {
+	if properties, ok := n[keyProperties].(map[string]any); ok {
 		shaped := make(map[string]any, len(properties))
 		for name, property := range properties {
 			shaped[name] = shapeOf(property, depth+1)
 		}
 
-		out["properties"] = shaped
+		out[keyProperties] = shaped
 	}
 
-	if items, ok := n["items"]; ok {
-		out["items"] = shapeOf(items, depth+1)
+	if items, ok := n[keyItems]; ok {
+		out[keyItems] = shapeOf(items, depth+1)
 	}
 
-	for _, combined := range []string{"anyOf", "oneOf", "allOf"} {
+	for _, combined := range []string{keyAnyOf, "oneOf", "allOf"} {
 		if parts, ok := n[combined].([]any); ok {
 			shaped := make([]any, len(parts))
 			for i, part := range parts {

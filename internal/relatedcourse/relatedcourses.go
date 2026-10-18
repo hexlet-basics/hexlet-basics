@@ -43,11 +43,11 @@ const suggestInstructions = `Ты — ассистент, который пом�
 // an object at the root, hence the wrapper around the id list.
 func suggestSchema() map[string]any {
 	return map[string]any{
-		"type": "object",
+		schemaType: "object",
 		"properties": map[string]any{
 			"course_ids": map[string]any{
-				"type":  "array",
-				"items": map[string]any{"type": "integer"},
+				schemaType: "array",
+				"items":    map[string]any{schemaType: "integer"},
 			},
 		},
 		"required":             []string{"course_ids"},
@@ -241,3 +241,6 @@ func parseCourseIDs(answer string) ([]int, error) {
 
 	return parsed.CourseIDs, nil
 }
+
+// schemaType is the JSON Schema keyword of a value's type.
+const schemaType = "type"

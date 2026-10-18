@@ -176,9 +176,9 @@ func (s *Server) finish(name string, res result) (*mcp.CallToolResult, error) {
 
 // object is the input schema of a tool: a closed object.
 func object(properties map[string]any, required ...string) map[string]any {
-	schema := map[string]any{"type": "object", "properties": properties, "additionalProperties": false}
+	schema := map[string]any{keyType: typeObject, keyProperties: properties, keyAdditionalProperties: false}
 	if len(required) > 0 {
-		schema["required"] = required
+		schema[keyRequired] = required
 	}
 
 	return schema
@@ -186,5 +186,5 @@ func object(properties map[string]any, required ...string) map[string]any {
 
 // slugArg is a string argument naming a record by its slug.
 func slugArg(description string) map[string]any {
-	return map[string]any{"type": "string", "minLength": 1, "description": description}
+	return map[string]any{keyType: typeString, keyMinLength: 1, keyDescription: description}
 }

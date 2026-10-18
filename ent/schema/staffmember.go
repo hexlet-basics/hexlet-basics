@@ -44,7 +44,7 @@ func (StaffMember) Fields() []ent.Field {
 		field.Int("role_id").
 			Annotations(AdminInputField{Rename: "RoleId"}),
 		field.Other("allowed_locales", pq.StringArray{}).
-			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
+			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 	}
 }
 

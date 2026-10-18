@@ -102,7 +102,7 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 		ID:           id,
 		Method:       method,
 		Path:         path,
-		Description:  asString(node["description"]),
+		Description:  asString(node[keyDescription]),
 		Params:       nil,
 		Body:         nil,
 		BodyRequired: false,
@@ -153,15 +153,15 @@ func buildParameters(doc *contractDoc, id, path string, node map[string]any) ([]
 		}
 
 		param := parameter{
-			Name:        asString(part["name"]),
+			Name:        asString(part[keyName]),
 			In:          asString(part["in"]),
-			Description: asString(part["description"]),
+			Description: asString(part[keyDescription]),
 			Required:    false,
 			Schema:      nil,
 		}
 
-		param.Required, _ = part["required"].(bool)
-		if param.In != "path" && param.In != "query" {
+		param.Required, _ = part[keyRequired].(bool)
+		if param.In != locationPath && param.In != "query" {
 			return nil, errs.With("operation", id, "parameter", param.Name, "in", param.In).Errorf("parameter location a tool cannot carry")
 		}
 
@@ -175,7 +175,7 @@ func buildParameters(doc *contractDoc, id, path string, node map[string]any) ([]
 	}
 
 	for _, name := range pathParams(path) {
-		if !slices.ContainsFunc(params, func(p parameter) bool { return p.In == "path" && p.Name == name }) {
+		if !slices.ContainsFunc(params, func(p parameter) bool { return p.In == locationPath && p.Name == name }) {
 			return nil, errs.With("operation", id, "parameter", name).Errorf("path parameter is not declared")
 		}
 	}
@@ -206,7 +206,7 @@ func buildBody(doc *contractDoc, id string, body map[string]any, op *operation) 
 		op.Body = schema
 	}
 
-	op.BodyRequired, _ = body["required"].(bool)
+	op.BodyRequired, _ = body[keyRequired].(bool)
 
 	return nil
 }
@@ -300,14 +300,14 @@ func multipartFileOf(content any, doc *contractDoc) (multipartFile, bool, error)
 
 	schema, _ := resolved.(map[string]any)
 
-	properties, _ := schema["properties"].(map[string]any)
+	properties, _ := schema[keyProperties].(map[string]any)
 	if len(properties) != 1 {
 		return multipartFile{}, false, errMultipartParts
 	}
 
 	for name, raw := range properties {
 		part, _ := raw.(map[string]any)
-		if part["type"] != "string" || part["format"] != "binary" {
+		if part[keyType] != typeString || part["format"] != "binary" {
 			return multipartFile{}, false, errs.With("part", name).Errorf("multipart part is not a binary file")
 		}
 

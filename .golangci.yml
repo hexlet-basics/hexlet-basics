@@ -12,7 +12,6 @@ linters:
     - paralleltest
     - tparallel
     - lll
-    - goconst
   settings:
     cyclop:
       # The default of 10 flags a function the size of a plain parse or a retry
@@ -223,6 +222,11 @@ linters:
       - path: ^internal/handlers/
         linters: [revive]
         text: 'exported method Server\.\w+ should have comment'
+      # A test spells its inputs and expectations out where they are read: a
+      # constant for "draft" or a status string would send the reader to another
+      # file for what the case says, and the repeat is the point of a table.
+      - path: _test\.go
+        linters: [goconst]
       # Raw SQL stays available to tests (reading the outbox).
       - path: _test\.go
         linters: [forbidigo]

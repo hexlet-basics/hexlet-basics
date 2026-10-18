@@ -115,7 +115,7 @@ func fixedParams() []param {
 		},
 		{
 			Name:    "Есть бесплатная часть",
-			Text:    "true",
+			Text:    yandexTrue,
 			XMLName: xml.Name{},
 			Order:   "",
 			Unit:    "",
@@ -124,7 +124,7 @@ func fixedParams() []param {
 		},
 		{
 			Name:    "Есть текстовые уроки",
-			Text:    "true",
+			Text:    yandexTrue,
 			XMLName: xml.Name{},
 			Order:   "",
 			Unit:    "",
@@ -133,7 +133,7 @@ func fixedParams() []param {
 		},
 		{
 			Name:    "Есть тренажеры",
-			Text:    "true",
+			Text:    yandexTrue,
 			XMLName: xml.Name{},
 			Order:   "",
 			Unit:    "",
@@ -142,7 +142,7 @@ func fixedParams() []param {
 		},
 		{
 			Name:    "Есть сообщество",
-			Text:    "true",
+			Text:    yandexTrue,
 			XMLName: xml.Name{},
 			Order:   "",
 			Unit:    "",
@@ -443,3 +443,6 @@ type param struct {
 	Text    string   `xml:",chardata"`
 	CDATA   string   `xml:",cdata"`
 }
+
+// yandexTrue is how the feed spells a yes in a parameter's text.
+const yandexTrue = "true"
