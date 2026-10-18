@@ -15,4102 +15,1202 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func encodeAdminArchiveBannerResponse(response AdminArchiveBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminArchiveBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminArchiveBlogPostResponse(response AdminArchiveBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
-
-func encodeAdminArchiveCourseLandingPageResponse(response AdminArchiveCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
 
-		return nil
+func encodeAdminArchiveBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminArchiveCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminArchiveReviewResponse(response AdminArchiveReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminArchiveReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
-
-func encodeAdminCreateBannerResponse(response AdminCreateBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
 
-		return nil
+func encodeAdminArchiveCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminCreateBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminCreateBlogPostResponse(response AdminCreateBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
-
-func encodeAdminCreateCategoryQnaItemResponse(response AdminCreateCategoryQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *QnaItem:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateCategoryQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+func encodeAdminArchiveReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		return nil
-
-	case *AdminCreateCategoryQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminCreateCourseResponse(response AdminCreateCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
 
-	case *AdminCreateCourseUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateCourseForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
-
-func encodeAdminCreateCourseCategoryResponse(response AdminCreateCourseCategoryRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseCategory:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+func encodeAdminCreateBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		return nil
-
-	case *AdminCreateCourseCategoryUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminCreateCourseCategoryForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminCreateCourseLandingPageResponse(response AdminCreateCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateCategoryQnaItemResponse(response *QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminCreateCourseVersionResponse(response AdminCreateCourseVersionRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseVersion:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateCourseVersionUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateCourseVersionResponse(response *CourseVersion, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateCourseVersionForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateLandingPageQnaItemResponse(response *QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminCreateLandingPageQnaItemResponse(response AdminCreateLandingPageQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *QnaItem:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateLandingPageQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	case *AdminCreateLandingPageQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminCreateUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminCreateReviewResponse(response AdminCreateReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminDeleteBannerResponse(response *AdminDeleteBannerNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-	case *AdminCreateReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	return nil
+}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+func encodeAdminDeleteBlogPostResponse(response *AdminDeleteBlogPostNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
+	return nil
+}
 
-	case *AdminCreateReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+func encodeAdminDeleteCategoryQnaItemResponse(response *AdminDeleteCategoryQnaItemNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminDeleteCourseCategoryResponse(response *AdminDeleteCourseCategoryNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeAdminCreateRoleResponse(response AdminCreateRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminDeleteCourseLandingPageResponse(response *AdminDeleteCourseLandingPageNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminDeleteLandingPageQnaItemResponse(response *AdminDeleteLandingPageQnaItemNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-	case *AdminCreateRoleUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	return nil
+}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+func encodeAdminDeleteReviewResponse(response *AdminDeleteReviewNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
+	return nil
+}
 
-	case *AdminCreateRoleForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+func encodeAdminDeleteRoleResponse(response *AdminDeleteRoleNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminDeleteStaffMemberResponse(response *AdminDeleteStaffMemberNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeAdminCreateStaffMemberResponse(response AdminCreateStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminDeleteUserResponse(response *AdminDeleteUserNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminFetchResponse(response *AdminRecord, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminCreateStaffMemberUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminCreateStaffMemberForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminCreateUserResponse(response AdminCreateUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminCreateUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminCreateUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteBannerResponse(response AdminDeleteBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteBannerNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminGetManagementUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetMyCapabilitiesResponse(response *MyCapabilities, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteBlogPostResponse(response AdminDeleteBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteBlogPostNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminGetRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetRolePermissionsResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminGetStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteCategoryQnaItemResponse(response AdminDeleteCategoryQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteCategoryQnaItemNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminGetUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCategoryQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListAuditRecordsResponse(response *AuditRecordPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCategoryQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListBannersResponse(response *BannerPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteCourseCategoryResponse(response AdminDeleteCourseCategoryRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteCourseCategoryNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListBlogPostsResponse(response *BlogPostPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCourseCategoryUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListCategoryQnaItemsResponse(response []QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCourseCategoryForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	e.ArrStart()
+	for _, elem := range response {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListCourseCategoriesResponse(response *CourseCategoryPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteCourseLandingPageResponse(response AdminDeleteCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteCourseLandingPageNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListCourseLandingPagesResponse(response *CourseLandingPagePage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListCourseLessonReviewsResponse(response *CourseLessonReviewPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListCourseLessonsResponse(response *CourseLessonListItemPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteLandingPageQnaItemResponse(response AdminDeleteLandingPageQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteLandingPageQnaItemNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListCourseOptionsResponse(response []CourseOption, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteLandingPageQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	e.ArrStart()
+	for _, elem := range response {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListCoursesResponse(response *CoursePage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteLandingPageQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListLandingPageQnaItemsResponse(response []QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	e.ArrStart()
+	for _, elem := range response {
+		elem.Encode(e)
 	}
-}
+	e.ArrEnd()
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-func encodeAdminDeleteReviewResponse(response AdminDeleteReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteReviewNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListLeadsResponse(response *LeadPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListLessonProgressResponse(response *LessonProgressPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListManagementUsersResponse(response *UserCrudPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteRoleResponse(response AdminDeleteRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteRoleNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListMessagesResponse(response *LessonAssistantMessagePage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteRoleUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListPermissionsResponse(response *PermissionCatalog, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteRoleForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListReviewsResponse(response *ReviewPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteStaffMemberResponse(response AdminDeleteStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteStaffMemberNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminListRolesResponse(response *StaffRolePage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteStaffMemberUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListStaffMembersResponse(response *StaffMemberPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteStaffMemberForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminListUsersResponse(response *UserCrudPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminDeleteUserResponse(response AdminDeleteUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminDeleteUserNoContent:
-		w.WriteHeader(204)
+	return nil
+}
 
-		return nil
+func encodeAdminMarkCourseCompletedResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminMarkCourseDraftResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminDeleteUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminMarkCourseInDevelopmentResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminFetchResponse(response AdminFetchRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminRecord:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminPublishBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminFetchUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminPublishBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminFetchForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminPublishCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminPublishReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminGetBannerResponse(response AdminGetBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+	return nil
+}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+func encodeAdminReviewCourseResponse(response *AdminReviewCourseNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
+	return nil
+}
 
-	case *AdminGetBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+func encodeAdminReviewCourseLessonResponse(response *AdminReviewCourseLessonNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminSearchResponse(response *AdminSearchResultPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminSearchUsersResponse(response []UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	e.ArrStart()
+	for _, elem := range response {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminGetBlogPostResponse(response AdminGetBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminSetBlogPostRelatedCoursesResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		return nil
+	return nil
+}
 
-	case *AdminGetBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+func encodeAdminSuggestBlogPostRelatedCoursesResponse(response *AdminSuggestBlogPostRelatedCoursesNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUnpublishBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUnpublishBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminGetCourseResponse(response AdminGetCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUnpublishCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUnpublishReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateBannerResponse(response *Banner, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminGetCourseCategoryResponse(response AdminGetCourseCategoryRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseCategory:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseCategoryUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateCategoryQnaItemResponse(response *QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseCategoryForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminGetCourseLandingPageResponse(response AdminGetCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateLandingPageQnaItemResponse(response *QnaItem, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
 
-func encodeAdminGetManagementUserResponse(response AdminGetManagementUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateManagementUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetManagementUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetManagementUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
-}
-
-func encodeAdminGetMyCapabilitiesResponse(response AdminGetMyCapabilitiesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *MyCapabilities:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateRolePermissionsResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetMyCapabilitiesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	case *AdminGetMyCapabilitiesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	return nil
+}
 
-		return nil
+func encodeAdminUpdateUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminGetReviewResponse(response AdminGetReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUploadAttachmentResponse(response *Attachment, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		return nil
+	return nil
+}
 
-	case *AdminGetReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+func encodeApproveOAuthConsentResponse(response *OAuthDecision, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
-		return nil
-
-	case *AdminGetReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminGetRoleResponse(response AdminGetRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetRoleUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetRoleForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminGetRolePermissionsResponse(response AdminGetRolePermissionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetRolePermissionsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetRolePermissionsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminGetStaffMemberResponse(response AdminGetStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetStaffMemberUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetStaffMemberForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminGetUserResponse(response AdminGetUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminGetUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListAuditRecordsResponse(response AdminListAuditRecordsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AuditRecordPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListAuditRecordsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListAuditRecordsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListBannersResponse(response AdminListBannersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BannerPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListBannersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListBannersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListBlogPostsResponse(response AdminListBlogPostsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPostPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListBlogPostsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListBlogPostsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCategoryQnaItemsResponse(response AdminListCategoryQnaItemsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminListCategoryQnaItemsOKApplicationJSON:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCategoryQnaItemsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCategoryQnaItemsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCourseCategoriesResponse(response AdminListCourseCategoriesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseCategoryPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseCategoriesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseCategoriesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCourseLandingPagesResponse(response AdminListCourseLandingPagesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPagePage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLandingPagesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLandingPagesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCourseLessonReviewsResponse(response AdminListCourseLessonReviewsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLessonReviewPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonReviewsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonReviewsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCourseLessonsResponse(response AdminListCourseLessonsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLessonListItemPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCourseOptionsResponse(response AdminListCourseOptionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminListCourseOptionsOKApplicationJSON:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseOptionsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseOptionsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListCoursesResponse(response AdminListCoursesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CoursePage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCoursesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCoursesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListLandingPageQnaItemsResponse(response AdminListLandingPageQnaItemsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminListLandingPageQnaItemsOKApplicationJSON:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLandingPageQnaItemsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLandingPageQnaItemsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListLeadsResponse(response AdminListLeadsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *LeadPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLeadsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLeadsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListLessonProgressResponse(response AdminListLessonProgressRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *LessonProgressPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLessonProgressUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListLessonProgressForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListManagementUsersResponse(response AdminListManagementUsersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrudPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListManagementUsersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListManagementUsersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListMessagesResponse(response AdminListMessagesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *LessonAssistantMessagePage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListMessagesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListMessagesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListPermissionsResponse(response AdminListPermissionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *PermissionCatalog:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListPermissionsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListPermissionsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListReviewsResponse(response AdminListReviewsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *ReviewPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListReviewsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListReviewsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListRolesResponse(response AdminListRolesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRolePage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListRolesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListRolesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListStaffMembersResponse(response AdminListStaffMembersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMemberPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListStaffMembersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListStaffMembersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminListUsersResponse(response AdminListUsersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrudPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListUsersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListUsersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminMarkCourseCompletedResponse(response AdminMarkCourseCompletedRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseCompletedUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseCompletedForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminMarkCourseDraftResponse(response AdminMarkCourseDraftRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseDraftUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseDraftForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminMarkCourseInDevelopmentResponse(response AdminMarkCourseInDevelopmentRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseInDevelopmentUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminMarkCourseInDevelopmentForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminPublishBannerResponse(response AdminPublishBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminPublishBlogPostResponse(response AdminPublishBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminPublishCourseLandingPageResponse(response AdminPublishCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminPublishReviewResponse(response AdminPublishReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminPublishReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminReviewCourseResponse(response AdminReviewCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminReviewCourseNoContent:
-		w.WriteHeader(204)
-
-		return nil
-
-	case *AdminReviewCourseUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminReviewCourseForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminReviewCourseLessonResponse(response AdminReviewCourseLessonRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminReviewCourseLessonNoContent:
-		w.WriteHeader(204)
-
-		return nil
-
-	case *AdminReviewCourseLessonUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminReviewCourseLessonForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminSearchResponse(response AdminSearchRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminSearchResultPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSearchUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSearchForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminSearchUsersResponse(response AdminSearchUsersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminSearchUsersOKApplicationJSON:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSearchUsersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSearchUsersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminSetBlogPostRelatedCoursesResponse(response AdminSetBlogPostRelatedCoursesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSetBlogPostRelatedCoursesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSetBlogPostRelatedCoursesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminSuggestBlogPostRelatedCoursesResponse(response AdminSuggestBlogPostRelatedCoursesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *AdminSuggestBlogPostRelatedCoursesNoContent:
-		w.WriteHeader(204)
-
-		return nil
-
-	case *AdminSuggestBlogPostRelatedCoursesUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminSuggestBlogPostRelatedCoursesForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUnpublishBannerResponse(response AdminUnpublishBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUnpublishBlogPostResponse(response AdminUnpublishBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUnpublishCourseLandingPageResponse(response AdminUnpublishCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUnpublishReviewResponse(response AdminUnpublishReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUnpublishReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateBannerResponse(response AdminUpdateBannerRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Banner:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateBannerUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateBannerForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateBlogPostResponse(response AdminUpdateBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateBlogPostUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateBlogPostForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateCategoryQnaItemResponse(response AdminUpdateCategoryQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *QnaItem:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCategoryQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCategoryQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateCourseResponse(response AdminUpdateCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateCourseCategoryResponse(response AdminUpdateCourseCategoryRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseCategory:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseCategoryUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseCategoryForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateCourseLandingPageResponse(response AdminUpdateCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseLandingPageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateCourseLandingPageForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateLandingPageQnaItemResponse(response AdminUpdateLandingPageQnaItemRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *QnaItem:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateLandingPageQnaItemUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateLandingPageQnaItemForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateManagementUserResponse(response AdminUpdateManagementUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateManagementUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateManagementUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateReviewResponse(response AdminUpdateReviewRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Review:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateReviewUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateReviewForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateRoleResponse(response AdminUpdateRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateRoleUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateRoleForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateRolePermissionsResponse(response AdminUpdateRolePermissionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateRolePermissionsUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateRolePermissionsForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateStaffMemberResponse(response AdminUpdateStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateStaffMemberUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateStaffMemberForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUpdateUserResponse(response AdminUpdateUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateUserUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUpdateUserForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeAdminUploadAttachmentResponse(response AdminUploadAttachmentRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Attachment:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUploadAttachmentUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminUploadAttachmentForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeApproveOAuthConsentResponse(response ApproveOAuthConsentRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *OAuthDecision:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeCheckLessonResponse(response CheckLessonRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *LessonCheckingResponseHeaders:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
-		// Encoding response headers.
+func encodeCheckLessonResponse(response *LessonCheckingResponseHeaders, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Set-Cookie" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Set-Cookie",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if response.SetCookie != nil {
-						return e.EncodeArray(func(e uri.Encoder) error {
-							for i, item := range response.SetCookie {
-								if err := func() error {
-									return e.EncodeValue(conv.StringToString(item))
-								}(); err != nil {
-									return errors.Wrapf(err, "[%d]", i)
-								}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if response.SetCookie != nil {
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
 							}
-							return nil
-						})
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode Set-Cookie header")
+						}
+						return nil
+					})
 				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
 			}
 		}
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
 }
 
-func encodeCheckPasswordResetTokenResponse(response CheckPasswordResetTokenRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CheckPasswordResetTokenNoContent:
-		w.WriteHeader(204)
+func encodeCheckPasswordResetTokenResponse(response *CheckPasswordResetTokenNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeConsumeMagicLinkResponse(response ConsumeMagicLinkRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserHeaders:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
-		// Encoding response headers.
+func encodeConsumeMagicLinkResponse(response *UserHeaders, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Set-Cookie" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Set-Cookie",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if response.SetCookie != nil {
-						return e.EncodeArray(func(e uri.Encoder) error {
-							for i, item := range response.SetCookie {
-								if err := func() error {
-									return e.EncodeValue(conv.StringToString(item))
-								}(); err != nil {
-									return errors.Wrapf(err, "[%d]", i)
-								}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if response.SetCookie != nil {
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
 							}
-							return nil
-						})
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode Set-Cookie header")
+						}
+						return nil
+					})
 				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
 			}
 		}
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
 }
 
 func encodeCreateAssistantMessageResponse(response CreateAssistantMessageRes, w http.ResponseWriter, span trace.Span) error {
@@ -4129,31 +1229,7 @@ func encodeCreateAssistantMessageResponse(response CreateAssistantMessageRes, w 
 
 		return nil
 
-	case *CreateAssistantMessageUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *CreateAssistantMessageTooManyRequests:
+	case *ProblemDetails:
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(429)
 
@@ -4170,371 +1246,167 @@ func encodeCreateAssistantMessageResponse(response CreateAssistantMessageRes, w 
 	}
 }
 
-func encodeCreateBookRequestResponse(response CreateBookRequestRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CreateBookRequestNoContent:
-		w.WriteHeader(204)
+func encodeCreateBookRequestResponse(response *CreateBookRequestNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeCreateLeadResponse(response CreateLeadRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Lead:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeCreateLeadResponse(response *Lead, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeCreateMagicLinkResponse(response CreateMagicLinkRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CreateMagicLinkNoContent:
-		w.WriteHeader(204)
+func encodeCreateMagicLinkResponse(response *CreateMagicLinkNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeCreatePasswordReminderResponse(response CreatePasswordReminderRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CreatePasswordReminderNoContent:
-		w.WriteHeader(204)
+func encodeCreatePasswordReminderResponse(response *CreatePasswordReminderNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeCreateSessionResponse(response CreateSessionRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserHeaders:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
-		// Encoding response headers.
+func encodeCreateSessionResponse(response *UserHeaders, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Set-Cookie" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Set-Cookie",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if response.SetCookie != nil {
-						return e.EncodeArray(func(e uri.Encoder) error {
-							for i, item := range response.SetCookie {
-								if err := func() error {
-									return e.EncodeValue(conv.StringToString(item))
-								}(); err != nil {
-									return errors.Wrapf(err, "[%d]", i)
-								}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if response.SetCookie != nil {
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
 							}
-							return nil
-						})
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode Set-Cookie header")
+						}
+						return nil
+					})
 				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
 			}
 		}
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
 }
 
-func encodeCreateUserResponse(response CreateUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserHeaders:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
-		// Encoding response headers.
+func encodeCreateUserResponse(response *UserHeaders, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Set-Cookie" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Set-Cookie",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if response.SetCookie != nil {
-						return e.EncodeArray(func(e uri.Encoder) error {
-							for i, item := range response.SetCookie {
-								if err := func() error {
-									return e.EncodeValue(conv.StringToString(item))
-								}(); err != nil {
-									return errors.Wrapf(err, "[%d]", i)
-								}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if response.SetCookie != nil {
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
 							}
-							return nil
-						})
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode Set-Cookie header")
+						}
+						return nil
+					})
 				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
 			}
 		}
-		w.WriteHeader(201)
-
-		e := new(jx.Encoder)
-		response.Response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(201)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
 }
 
-func encodeDeleteAccountResponse(response DeleteAccountRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *DeleteAccountNoContent:
-		w.WriteHeader(204)
+func encodeDeleteAccountResponse(response *DeleteAccountNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeDeleteSessionResponse(response DeleteSessionRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *DeleteSessionNoContent:
-		w.WriteHeader(204)
+func encodeDeleteSessionResponse(response *DeleteSessionNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeDenyOAuthConsentResponse(response DenyOAuthConsentRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *OAuthDecision:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeDenyOAuthConsentResponse(response *OAuthDecision, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeDownloadBookResponse(response DownloadBookRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *DownloadBookFound:
-		w.Header().Set("Access-Control-Expose-Headers", "Location")
-		// Encoding response headers.
+func encodeDownloadBookResponse(response *DownloadBookFound, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Access-Control-Expose-Headers", "Location")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Location" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Location" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Location",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					return e.EncodeValue(conv.StringToString(response.Location))
-				}); err != nil {
-					return errors.Wrap(err, "encode Location header")
-				}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Location",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				return e.EncodeValue(conv.StringToString(response.Location))
+			}); err != nil {
+				return errors.Wrap(err, "encode Location header")
 			}
 		}
-		w.WriteHeader(302)
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(302)
+
+	return nil
 }
 
 func encodeGetActiveBannerResponse(response *ActiveBanner, w http.ResponseWriter, span trace.Span) error {
@@ -4550,35 +1422,17 @@ func encodeGetActiveBannerResponse(response *ActiveBanner, w http.ResponseWriter
 	return nil
 }
 
-func encodeGetBlogPostResponse(response GetBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPostView:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetBlogPostResponse(response *BlogPostView, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeGetBookResponse(response *BookView, w http.ResponseWriter, span trace.Span) error {
@@ -4594,66 +1448,30 @@ func encodeGetBookResponse(response *BookView, w http.ResponseWriter, span trace
 	return nil
 }
 
-func encodeGetCourseResponse(response GetCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseView:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetCourseResponse(response *CourseView, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeGetCourseLessonResponse(response GetCourseLessonRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLessonView:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetCourseLessonResponse(response *CourseLessonView, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeGetCurrentUserResponse(response *CurrentUser, w http.ResponseWriter, span trace.Span) error {
@@ -4669,171 +1487,69 @@ func encodeGetCurrentUserResponse(response *CurrentUser, w http.ResponseWriter, 
 	return nil
 }
 
-func encodeGetMyDashboardResponse(response GetMyDashboardRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *MyDashboard:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetMyDashboardResponse(response *MyDashboard, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeGetNextBlogPostResponse(response GetNextBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetNextBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeGetOAuthConsentResponse(response GetOAuthConsentRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *OAuthConsent:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetOAuthConsentResponse(response *OAuthConsent, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeGetProfileResponse(response GetProfileRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *User:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetProfileResponse(response *User, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeGetPublicCourseCategoryResponse(response GetPublicCourseCategoryRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseCategoryView:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeGetPublicCourseCategoryResponse(response *CourseCategoryView, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeGetSitemapResponse(response *Sitemap, w http.ResponseWriter, span trace.Span) error {
@@ -4879,90 +1595,30 @@ func encodeGetYandexCoursesFeedXmlResponse(response GetYandexCoursesFeedXmlOK, w
 	return nil
 }
 
-func encodeLikeBlogPostResponse(response LikeBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeLikeBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeListAssistantMessagesResponse(response ListAssistantMessagesRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *LessonAssistantChat:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeListAssistantMessagesResponse(response *LessonAssistantChat, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeListBlogPostsResponse(response *BlogPostPage, w http.ResponseWriter, span trace.Span) error {
@@ -4978,35 +1634,17 @@ func encodeListBlogPostsResponse(response *BlogPostPage, w http.ResponseWriter, 
 	return nil
 }
 
-func encodeListConnectedAppsResponse(response ListConnectedAppsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *ConnectedApps:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeListConnectedAppsResponse(response *ConnectedApps, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeListCoursesResponse(response []CourseCatalogItem, w http.ResponseWriter, span trace.Span) error {
@@ -5056,40 +1694,10 @@ func encodeListPublicReviewsResponse(response *ReviewPage, w http.ResponseWriter
 	return nil
 }
 
-func encodeRevokeConnectedAppResponse(response RevokeConnectedAppRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *RevokeConnectedAppNoContent:
-		w.WriteHeader(204)
+func encodeRevokeConnectedAppResponse(response *RevokeConnectedAppNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
 func encodeSearchCatalogueResponse(response *SearchResultPage, w http.ResponseWriter, span trace.Span) error {
@@ -5105,143 +1713,65 @@ func encodeSearchCatalogueResponse(response *SearchResultPage, w http.ResponseWr
 	return nil
 }
 
-func encodeStartLessonResponse(response StartLessonRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StartLessonNoContent:
-		w.WriteHeader(204)
+func encodeStartLessonResponse(response *StartLessonNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
 
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
+	return nil
 }
 
-func encodeUpdatePasswordResponse(response UpdatePasswordRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserHeaders:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
-		// Encoding response headers.
+func encodeUpdatePasswordResponse(response *UserHeaders, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
 		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Set-Cookie" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Set-Cookie",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if response.SetCookie != nil {
-						return e.EncodeArray(func(e uri.Encoder) error {
-							for i, item := range response.SetCookie {
-								if err := func() error {
-									return e.EncodeValue(conv.StringToString(item))
-								}(); err != nil {
-									return errors.Wrapf(err, "[%d]", i)
-								}
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if response.SetCookie != nil {
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
 							}
-							return nil
-						})
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode Set-Cookie header")
+						}
+						return nil
+					})
 				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
 			}
 		}
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
 	}
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
 }
 
-func encodeUpdateProfileResponse(response UpdateProfileRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *User:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeUpdateProfileResponse(response *User, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ProblemDetails:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeErrorResponse(response *ProblemDetailsStatusCode, w http.ResponseWriter, span trace.Span) error {

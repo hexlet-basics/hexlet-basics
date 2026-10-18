@@ -34,27 +34,27 @@ func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicRev
 // SetInput skips nulls.
 
 // AdminListReviews returns a page of reviews, newest first.
-func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
+func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (*api.ReviewPage, error) {
 	return s.db.Review.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToReviews)
 }
 
-func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (api.AdminGetReviewRes, error) {
+func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (*api.Review, error) {
 	return s.db.Review.AdminGet(ctx, params.ID, s.conv.ToReview)
 }
 
-func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (api.AdminCreateReviewRes, error) {
+func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (*api.Review, error) {
 	return s.db.Review.AdminCreate(ctx, req, s.conv.ToReview)
 }
 
-func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (api.AdminUpdateReviewRes, error) {
+func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (*api.Review, error) {
 	return s.db.Review.AdminUpdate(ctx, params.ID, req, s.conv.ToReview)
 }
 
-func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) (api.AdminDeleteReviewRes, error) {
+func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) error {
 	if err := s.db.Review.AdminDelete(ctx, params.ID); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminDeleteReviewNoContent{}, nil
+	return nil
 }
 
 // A state is not an update (ADR-0020, state transitions addendum): the
@@ -64,17 +64,17 @@ func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteRe
 // draft (the column default).
 
 // AdminPublishReview makes a draft or archived review public.
-func (s *Server) AdminPublishReview(ctx context.Context, params api.AdminPublishReviewParams) (api.AdminPublishReviewRes, error) {
+func (s *Server) AdminPublishReview(ctx context.Context, params api.AdminPublishReviewParams) (*api.Review, error) {
 	return moveState(ctx, int(params.ID), s.reviewStates.Publish, s.getAdminReview)
 }
 
 // AdminUnpublishReview takes a published review back to draft.
-func (s *Server) AdminUnpublishReview(ctx context.Context, params api.AdminUnpublishReviewParams) (api.AdminUnpublishReviewRes, error) {
+func (s *Server) AdminUnpublishReview(ctx context.Context, params api.AdminUnpublishReviewParams) (*api.Review, error) {
 	return moveState(ctx, int(params.ID), s.reviewStates.Unpublish, s.getAdminReview)
 }
 
 // AdminArchiveReview archives a draft or published review.
-func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchiveReviewParams) (api.AdminArchiveReviewRes, error) {
+func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchiveReviewParams) (*api.Review, error) {
 	return moveState(ctx, int(params.ID), s.reviewStates.Archive, s.getAdminReview)
 }
 

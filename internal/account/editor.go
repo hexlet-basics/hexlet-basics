@@ -33,7 +33,8 @@ func NewEditor(db *ent.Client) *Editor {
 }
 
 // Create adds a user. Email uniqueness is the baseline unique index's job, not
-// a pre-check, so a duplicate is domain.ErrConflict and there is no race.
+// a pre-check, so there is no race; a duplicate is an invalid input naming the
+// email field (domain.ErrInvalid).
 func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, error) {
 	u, err := e.db.User.Create().
 		SetEmail(NormalizeEmail(fields.Email)).
@@ -41,7 +42,7 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 		SetNillableLastName(fields.LastName).
 		SetNillableAdmin(fields.Admin).
 		Save(ctx)
-	return u, domain.FromStore(err)
+	return u, domain.FromStore(err, userUniques...)
 }
 
 // Update replaces a user's editable fields. A missing id is domain.ErrNotFound;
@@ -71,7 +72,7 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	}
 
 	u, err := update.Save(ctx)
-	return u, domain.FromStore(err)
+	return u, domain.FromStore(err, userUniques...)
 }
 
 // Delete removes a user. A missing id is domain.ErrNotFound; the last

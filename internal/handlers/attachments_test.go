@@ -346,9 +346,9 @@ func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-	var body api.ValidationError
+	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
-	assert.Equal(t, []string{"Tipo de archivo no compatible"}, body.Errors["file"])
+	assert.Equal(t, []string{"Tipo de archivo no compatible"}, body.Errors.Value["file"])
 }
 
 func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
@@ -427,7 +427,7 @@ func TestUploadAttachmentRejectsFileOverAssetLimit(t *testing.T) {
 	router.ServeHTTP(rec, uploadRequest(t, "large.png", "image/png", data))
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-	var body api.ValidationError
+	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
-	assert.NotEmpty(t, body.Errors["file"])
+	assert.NotEmpty(t, body.Errors.Value["file"])
 }

@@ -5,7 +5,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"hexletbasics/ent"
@@ -73,7 +72,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.Us
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {
-			return fmt.Errorf("create user: %w", domain.FromStore(err, userUniques...))
+			return errs.Wrapf(domain.FromStore(err, userUniques...), "create user")
 		}
 
 		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
@@ -84,7 +83,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.Us
 			Locale:     input.Locale,
 			OccurredAt: r.now().UTC(),
 		}); err != nil {
-			return fmt.Errorf("publish user signed up: %w", err)
+			return errs.Wrapf(err, "publish user signed up")
 		}
 		return nil
 	})

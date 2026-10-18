@@ -67,16 +67,6 @@ func userInput(email string, admin bool) *api.UserInput {
 	}
 }
 
-// forbiddenDetail is the explanation the caller got with a declared 403,
-// which the generated client returns as a response rather than an error.
-func forbiddenDetail(t *testing.T, res api.AdminUpdateStaffMemberRes, err error) string {
-	t.Helper()
-	require.NoError(t, err)
-	forbidden, ok := res.(*api.AdminUpdateStaffMemberForbidden)
-	require.True(t, ok, "got %T", res)
-	return forbidden.Detail.Value
-}
-
 // problemOf is the Problem Details the caller got for a refused call.
 func problemOf(t *testing.T, err error) api.ProblemDetails {
 	t.Helper()
@@ -94,8 +84,8 @@ func TestStaffMemberCannotChangeTheirOwnStaffRecord(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
-	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
-	assert.Contains(t, forbiddenDetail(t, res, err), "your own staff record")
+	_, err = h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
+	assert.Contains(t, problemOf(t, err).Detail.Value, "your own staff record")
 
 	own := h.DB.StaffMember.GetX(t.Context(), int(editorRecordID))
 	assert.Equal(t, int(roleEditorID), own.RoleID, "the role is unchanged")
@@ -178,8 +168,8 @@ func TestTheRefusalIsExplainedInTheCallersLanguage(t *testing.T) {
 	delegate(t, h, "staff_members.update")
 	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
-	assert.Contains(t, forbiddenDetail(t, res, err), "собственную запись")
+	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(editorID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: editorRecordID})
+	assert.Contains(t, problemOf(t, err).Detail.Value, "собственную запись")
 }
 
 func TestUserCannotDeleteTheirOwnAccountThroughTheAdminOperations(t *testing.T) {
@@ -258,13 +248,7 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 		api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
-	res, err := h.Client.Client.AdminUpdateRolePermissions(t.Context(),
-		&api.RolePermissionsInput{Grants: []string{"users.update"}},
-		api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
-	require.NoError(t, err)
-	forbidden, ok := res.(*api.AdminUpdateRolePermissionsForbidden)
-	require.True(t, ok, "got %T", res)
-	assert.Contains(t, forbidden.Detail.Value, "your own staff role")
+	assert.Contains(t, problemOf(t, err).Detail.Value, "your own staff role")
 	held := h.DB.StaffRoleGrant.Query().CountX(t.Context())
 	assert.Equal(t, grantsBefore, held, "the refused saves added nothing")
 

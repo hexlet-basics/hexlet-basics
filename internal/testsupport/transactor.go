@@ -29,7 +29,7 @@ func (s *savepointTransactor) WithinTx(
 ) (err error) {
 	name := fmt.Sprintf("test_within_tx_%d", s.next.Add(1))
 	if _, err := s.tx.ExecContext(ctx, "SAVEPOINT "+name); err != nil {
-		return fmt.Errorf("begin transaction: %w", err)
+		return errs.Wrapf(err, "begin transaction")
 	}
 
 	finished := false
@@ -45,16 +45,16 @@ func (s *savepointTransactor) WithinTx(
 	if err := fn(s.tx, s.client); err != nil {
 		rollbackCtx := context.WithoutCancel(ctx)
 		if _, rollbackErr := s.tx.ExecContext(rollbackCtx, "ROLLBACK TO SAVEPOINT "+name); rollbackErr != nil {
-			return errors.Join(err, fmt.Errorf("rollback transaction: %w", rollbackErr))
+			return errors.Join(err, errs.Wrapf(rollbackErr, "rollback transaction"))
 		}
 		if _, releaseErr := s.tx.ExecContext(rollbackCtx, "RELEASE SAVEPOINT "+name); releaseErr != nil {
-			return errors.Join(err, fmt.Errorf("rollback transaction: %w", releaseErr))
+			return errors.Join(err, errs.Wrapf(releaseErr, "rollback transaction"))
 		}
 		finished = true
 		return err
 	}
 	if _, err := s.tx.ExecContext(ctx, "RELEASE SAVEPOINT "+name); err != nil {
-		return fmt.Errorf("commit transaction: %w", err)
+		return errs.Wrapf(err, "commit transaction")
 	}
 	finished = true
 	return nil

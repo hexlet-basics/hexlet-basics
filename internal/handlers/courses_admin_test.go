@@ -138,9 +138,7 @@ func TestAdminListCourseOptionsIsNotPaginated(t *testing.T) {
 	res, err := h.Client.AdminListCourseOptions(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	list, ok := res.(*api.AdminListCourseOptionsOKApplicationJSON)
-	require.True(t, ok)
-	options := *list
+	options := res
 	assert.Len(t, options, totalCourses)
 
 	var ruby *api.CourseOption

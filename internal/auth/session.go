@@ -9,7 +9,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -121,7 +120,7 @@ func (m *Authenticator) Middleware(next http.Handler) http.Handler {
 // remembers who u is and which password they signed in with.
 func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
 	if err := m.sessions.RenewToken(ctx); err != nil {
-		return fmt.Errorf("renew session token: %w", err)
+		return errs.Wrapf(err, "renew session token")
 	}
 	m.remember(ctx, u)
 	return nil
@@ -133,12 +132,12 @@ func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
 func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) {
 	ctx, err := m.sessions.Load(ctx, "")
 	if err != nil {
-		return "", fmt.Errorf("load session: %w", err)
+		return "", errs.Wrapf(err, "load session")
 	}
 	m.remember(ctx, u)
 	token, _, err := m.sessions.Commit(ctx)
 	if err != nil {
-		return "", fmt.Errorf("commit session: %w", err)
+		return "", errs.Wrapf(err, "commit session")
 	}
 	return token, nil
 }
@@ -153,7 +152,7 @@ func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
 // End signs the visitor out: the session row is deleted and the cookie expired.
 func (m *Authenticator) End(ctx context.Context) error {
 	if err := m.sessions.Destroy(ctx); err != nil {
-		return fmt.Errorf("destroy session: %w", err)
+		return errs.Wrapf(err, "destroy session")
 	}
 	return nil
 }
@@ -174,7 +173,7 @@ func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 		return nil, m.endStale(ctx)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load session user: %w", err)
+		return nil, errs.Wrapf(err, "load session user")
 	}
 	if m.sessions.GetInt64(ctx, epochKey) != passwordEpoch(u) {
 		return nil, m.endStale(ctx)

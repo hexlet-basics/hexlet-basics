@@ -2,7 +2,6 @@ package audit
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect"
@@ -53,7 +52,7 @@ func (p *Partitions) EnsureAhead(ctx context.Context, now time.Time) error {
 	for i := 0; i <= PartitionsAhead; i++ {
 		target := month.AddDate(0, i, 0)
 		if _, err := p.call(ctx, "audit_records_ensure_partition", target); err != nil {
-			return fmt.Errorf("ensure audit partition for %s: %w", target.Format("2006-01"), err)
+			return errs.With("month", target.Format("2006-01")).Wrapf(err, "ensure audit partition")
 		}
 	}
 	return nil
@@ -65,12 +64,12 @@ func (p *Partitions) EnsureAhead(ctx context.Context, now time.Time) error {
 // to a month more; partial months are never trimmed (that would be a DELETE).
 func (p *Partitions) DropExpired(ctx context.Context, now time.Time, retentionMonths int) ([]string, error) {
 	if retentionMonths < 1 {
-		return nil, fmt.Errorf("audit retention must be at least one month, got %d", retentionMonths)
+		return nil, errs.With("retention_months", retentionMonths).Errorf("audit retention must be at least one month")
 	}
 	cutoff := now.UTC().AddDate(0, -retentionMonths, 0)
 	dropped, err := p.call(ctx, "audit_records_drop_partitions_ended_before", cutoff)
 	if err != nil {
-		return nil, fmt.Errorf("drop audit partitions before %s: %w", cutoff.Format(time.DateOnly), err)
+		return nil, errs.With("cutoff", cutoff.Format(time.DateOnly)).Wrapf(err, "drop audit partitions")
 	}
 	return dropped, nil
 }

@@ -55,8 +55,7 @@ func TestGetCourseWithoutABuiltVersion(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	assert.Empty(t, view.Lessons)
 	assert.Empty(t, view.Modules)
@@ -68,28 +67,25 @@ func TestGetCourseLessonIsNotFoundWhereThereIsNothingToServe(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 
-	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+	_, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
 		CourseSlug: "no-such-course",
 		Slug:       firstLessonSlug,
 	})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
 	h.DB.Course.Update().Where(course.SlugEQ(jsCourseSlug)).ClearCurrentVersionID().ExecX(t.Context())
-	res, err = h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+	_, err = h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       firstLessonSlug,
 	})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 
-	res, err = h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+	_, err = h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       "no-such-lesson",
 	})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 // A lesson whose version records no path in the course repository has no
@@ -104,7 +100,7 @@ func TestGetCourseLessonWithoutASourcePathHasNoSourceLink(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	assert.Empty(t, view.Lesson.SourceCodeUrl.Value)
 }
@@ -128,8 +124,7 @@ func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: lo.FromPtr(landing.Slug)})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	assert.True(t, view.Enrollment.Null)
 }

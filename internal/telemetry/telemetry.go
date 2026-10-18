@@ -8,7 +8,6 @@ package telemetry
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/getsentry/sentry-go"
@@ -45,7 +44,7 @@ func NewSentryClient(dsn string, environment config.AppEnv, release string, opts
 	}
 	client, err := sentry.NewClient(options)
 	if err != nil {
-		return nil, fmt.Errorf("initialize Sentry: %w", err)
+		return nil, errs.Wrapf(err, "initialize Sentry")
 	}
 	return client, nil
 }
@@ -89,7 +88,7 @@ func NewOpenTelemetrySDK(
 	}))
 	sdk, err := otelconf.NewSDK(otelconf.WithContext(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("initialize OpenTelemetry SDK: %w", err)
+		return nil, errs.Wrapf(err, "initialize OpenTelemetry SDK")
 	}
 
 	otel.SetTracerProvider(sdk.TracerProvider())

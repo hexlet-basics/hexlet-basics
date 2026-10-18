@@ -7,7 +7,6 @@ package curriculum
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 
@@ -51,7 +50,7 @@ func Modules(ctx context.Context, db *ent.Client, locale string, versionIDs ...i
 		).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load modules of versions %v: %w", versionIDs, err)
+		return nil, errs.With("version_ids", versionIDs).Wrapf(err, "load modules of versions")
 	}
 	return rows, nil
 }

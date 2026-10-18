@@ -23,8 +23,7 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
-	version, ok := res.(*api.CourseVersion)
-	require.True(t, ok, "expected a CourseVersion body, got %T", res)
+	version := res
 	assert.Equal(t, "created", version.State.Value)
 
 	// The row exists in `created` state, owned by the ruby course.
@@ -43,11 +42,9 @@ func TestAdminCreateCourseVersionNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	res, err := h.Client.AdminCreateCourseVersion(ctx, api.AdminCreateCourseVersionParams{ID: 999999999})
-	require.NoError(t, err)
+	_, err := h.Client.AdminCreateCourseVersion(ctx, api.AdminCreateCourseVersionParams{ID: 999999999})
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	_, ok := res.(*api.NotFoundError)
-	assert.True(t, ok, "expected NotFoundError, got %T", res)
 
 	// A missing course enqueues nothing.
 	testsupport.RequireNotEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{})

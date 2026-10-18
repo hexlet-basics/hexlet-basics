@@ -25,8 +25,7 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.False(t, view.Enrollment.Null)
@@ -55,7 +54,7 @@ func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view := res.(*api.CourseView)
+	view := res
 	progress := view.Progress.Value
 
 	assert.Equal(t, int32(66), progress.Completion, "two of three, never clamped")
@@ -75,8 +74,7 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	assert.True(t, view.Enrollment.Null, "no enrollment for a visitor with no session")
@@ -105,8 +103,7 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	names := make([]string, 0, len(view.Modules))
 	for _, m := range view.Modules {
@@ -130,8 +127,7 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 
 	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "go-ru"})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	questions := make([]string, 0, len(view.QnaItems))
 	for _, item := range view.QnaItems {
@@ -141,7 +137,7 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 
 	res, err = h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	assert.Empty(t, res.(*api.CourseView).QnaItems, "a landing page with no questions has none")
+	assert.Empty(t, res.QnaItems, "a landing page with no questions has none")
 }
 
 // A guest carrying a cookie gets exactly the shape a signed-in learner gets,
@@ -153,7 +149,7 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view := res.(*api.CourseView)
+	view := res
 
 	require.True(t, view.Enrollment.Null, "a guest has no enrollment")
 	require.False(t, view.Progress.Null)
@@ -175,7 +171,7 @@ func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view := res.(*api.CourseView)
+	view := res
 	progress := view.Progress.Value
 
 	assert.Equal(t, int32(33), progress.Completion)
@@ -193,7 +189,7 @@ func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
-	view := res.(*api.CourseView)
+	view := res
 
 	require.False(t, view.Progress.Null)
 	assert.Equal(t, int32(0), view.Progress.Value.Completion)
@@ -210,7 +206,7 @@ func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	view := res.(*api.CourseView)
+	view := res
 
 	require.False(t, view.Progress.Null)
 	assert.Equal(t, int32(0), view.Progress.Value.Completion,
@@ -239,8 +235,7 @@ func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	assert.Equal(t, jsCourseSlug, view.Course.Slug)
 	assert.Equal(t, jsLandingSlug, view.LandingPage.Value.Slug)
 
@@ -254,7 +249,7 @@ func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
 
 	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "frontend-ru"})
 	require.NoError(t, err)
-	assert.Equal(t, "frontend-ru", res.(*api.CourseView).LandingPage.Value.Slug,
+	assert.Equal(t, "frontend-ru", res.LandingPage.Value.Slug,
 		"a secondary landing page keeps its own copy, not the course's main page")
 }
 
@@ -269,11 +264,11 @@ func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
 
 	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
-	assert.True(t, res.(*api.CourseView).MovedTo.Null, "a live page stays where it is")
+	assert.True(t, res.MovedTo.Null, "a live page stays where it is")
 
 	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "javascript-ru-archived"})
 	require.NoError(t, err)
-	assert.Equal(t, jsLandingSlug, res.(*api.CourseView).MovedTo.Value,
+	assert.Equal(t, jsLandingSlug, res.MovedTo.Value,
 		"with no page named, it moves to the course's main page")
 
 	named := h.DB.CourseLandingPage.Query().
@@ -284,7 +279,7 @@ func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
 
 	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "javascript-ru-archived"})
 	require.NoError(t, err)
-	assert.Equal(t, "nodejs-ru", res.(*api.CourseView).MovedTo.Value,
+	assert.Equal(t, "nodejs-ru", res.MovedTo.Value,
 		"the page it names wins over the main one")
 }
 

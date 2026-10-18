@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -36,7 +35,7 @@ type purgeOAuthTokensWorker struct {
 func (w *purgeOAuthTokensWorker) Work(ctx context.Context, _ *river.Job[PurgeOAuthTokensArgs]) error {
 	n, err := oauthserver.PurgeExpired(ctx, w.db, w.now())
 	if err != nil {
-		return fmt.Errorf("purge oauth tokens: %w", err)
+		return errs.Wrapf(err, "purge oauth tokens")
 	}
 	if n > 0 {
 		w.logger.InfoContext(ctx, "purged expired oauth rows", slog.Int("rows", n))

@@ -33,8 +33,7 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 		Password: "correct horse battery staple",
 	})
 	require.NoError(t, err)
-	created, ok := res.(*api.UserHeaders)
-	require.True(t, ok, "got %T", res)
+	created := res
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	finished := finishedLessonSlugs(t, h, int(created.Response.ID), jsCourseSlug)
@@ -55,7 +54,7 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 
 	res, err := h.Client.CreateSession(ctx, signInAsActingUser(t, h))
 	require.NoError(t, err)
-	session := res.(*api.UserHeaders)
+	session := res
 	finished := finishedLessonSlugs(t, h, int(session.Response.ID), jsCourseSlug)
 	assert.ElementsMatch(t, []string{firstLessonSlug, thirdLessonSlug}, finished,
 		"the account had only the first; the browser's third is added, the second is not implied")

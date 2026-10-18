@@ -25,8 +25,7 @@ func TestGetProfile(t *testing.T) {
 	res, err := h.Client.GetProfile(t.Context())
 	require.NoError(t, err)
 
-	profile, ok := res.(*api.User)
-	require.True(t, ok, "got %T", res)
+	profile := res
 	assert.Equal(t, api.NewNilString("Admin"), profile.FirstName)
 	assert.Equal(t, api.NewNilString("Learner"), profile.LastName)
 }
@@ -36,7 +35,7 @@ func TestGetProfileRequiresSignIn(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
 	_, err := h.Client.GetProfile(t.Context())
-	require.NoError(t, err)
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
 }
 
@@ -52,8 +51,7 @@ func TestUpdateProfile(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	profile, ok := res.(*api.User)
-	require.True(t, ok, "got %T", res)
+	profile := res
 	assert.Equal(t, api.NewNilString("Alicia"), profile.FirstName)
 
 	u := h.DB.User.GetX(t.Context(), h.UserID)
@@ -68,9 +66,8 @@ func TestDeleteAccount(t *testing.T) {
 	require.NotNil(t, u.Nickname, "the fixture user has a nickname and a phone to erase")
 	other := h.DB.UserAccount.GetX(t.Context(), fixture.ID(fixture.UserAccountStaffEditorGithub))
 
-	res, err := h.Client.DeleteAccount(t.Context())
+	err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
-	assert.IsType(t, &api.DeleteAccountNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	// The session cookie comes back expired, as on sign-out.
@@ -103,11 +100,11 @@ func TestDeleteAccount(t *testing.T) {
 func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	_, err := h.Client.DeleteAccount(t.Context())
+	err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
 
 	_, err = h.Client.GetProfile(t.Context())
-	require.NoError(t, err)
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
 
 	current, err := h.Client.GetCurrentUser(t.Context(), api.GetCurrentUserParams{})
@@ -120,7 +117,7 @@ func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	email := lo.FromPtr(h.DB.User.GetX(t.Context(), h.UserID).Email)
-	_, err := h.Client.DeleteAccount(t.Context())
+	err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
 
 	res, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
@@ -147,9 +144,8 @@ func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 	u := fixtureUser(t, h, fixture.UserRemoved)
 	token := issueEmailToken(t, emailtoken.MagicLink, u)
 
-	res, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	_, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 // A Password Reset issued to a removed user without a password is bound to an
@@ -160,11 +156,10 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	u := fixtureUser(t, h, fixture.UserRemovedWithoutPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
-	res, err := h.Client.UpdatePassword(t.Context(),
+	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
 		api.UpdatePasswordParams{Token: token})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 var secondAdminID = fixture.ID(fixture.UserSecondAdmin)
@@ -176,7 +171,7 @@ func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	// and the staff member user_admin_staff; the caller is left the only one.
 	leaveOnlyAlice(t, h)
 
-	_, err := h.Client.DeleteAccount(t.Context())
+	err := h.Client.DeleteAccount(t.Context())
 
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
@@ -197,8 +192,7 @@ func TestUpdateProfileClearsAFirstNameSentAsNull(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	profile, ok := res.(*api.User)
-	require.True(t, ok, "got %T", res)
+	profile := res
 	assert.True(t, profile.FirstName.Null)
 	u := h.DB.User.GetX(t.Context(), h.UserID)
 	assert.Nil(t, u.FirstName)

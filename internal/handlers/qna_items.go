@@ -18,16 +18,15 @@ func qnaFieldsOf(in *api.QnaItemInput) qnaitem.Fields {
 
 // --- Course category QnA items ---------------------------------------------
 
-func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) (api.AdminListCategoryQnaItemsRes, error) {
+func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) ([]api.QnaItem, error) {
 	rows, err := s.categoryQna.List(ctx, int(params.CategoryId))
 	if err != nil {
 		return nil, err
 	}
-	result := api.AdminListCategoryQnaItemsOKApplicationJSON(s.conv.ToCategoryQnaItems(rows))
-	return &result, nil
+	return s.conv.ToCategoryQnaItems(rows), nil
 }
 
-func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (api.AdminCreateCategoryQnaItemRes, error) {
+func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (*api.QnaItem, error) {
 	row, err := s.categoryQna.Create(ctx, int(params.CategoryId), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	return &item, nil
 }
 
-func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateCategoryQnaItemParams) (api.AdminUpdateCategoryQnaItemRes, error) {
+func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateCategoryQnaItemParams) (*api.QnaItem, error) {
 	row, err := s.categoryQna.Update(ctx, int(params.CategoryId), int(params.ID), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -45,25 +44,24 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	return &item, nil
 }
 
-func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) (api.AdminDeleteCategoryQnaItemRes, error) {
+func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) error {
 	if err := s.categoryQna.Delete(ctx, int(params.CategoryId), int(params.ID)); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminDeleteCategoryQnaItemNoContent{}, nil
+	return nil
 }
 
 // --- Course landing page QnA items -----------------------------------------
 
-func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) (api.AdminListLandingPageQnaItemsRes, error) {
+func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) ([]api.QnaItem, error) {
 	rows, err := s.landingPageQna.List(ctx, int(params.LandingPageId))
 	if err != nil {
 		return nil, err
 	}
-	result := api.AdminListLandingPageQnaItemsOKApplicationJSON(s.conv.ToLandingPageQnaItems(rows))
-	return &result, nil
+	return s.conv.ToLandingPageQnaItems(rows), nil
 }
 
-func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (api.AdminCreateLandingPageQnaItemRes, error) {
+func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (*api.QnaItem, error) {
 	row, err := s.landingPageQna.Create(ctx, int(params.LandingPageId), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -72,7 +70,7 @@ func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	return &item, nil
 }
 
-func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (api.AdminUpdateLandingPageQnaItemRes, error) {
+func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (*api.QnaItem, error) {
 	row, err := s.landingPageQna.Update(ctx, int(params.LandingPageId), int(params.ID), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -81,9 +79,9 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	return &item, nil
 }
 
-func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) (api.AdminDeleteLandingPageQnaItemRes, error) {
+func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) error {
 	if err := s.landingPageQna.Delete(ctx, int(params.LandingPageId), int(params.ID)); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminDeleteLandingPageQnaItemNoContent{}, nil
+	return nil
 }

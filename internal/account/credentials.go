@@ -3,7 +3,6 @@ package account
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -96,7 +95,7 @@ func (c *Credentials) SetPassword(ctx context.Context, u *ent.User, password str
 func hashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("%w: %w", ErrPasswordProcessing, err)
+		return "", errs.Wrapf(errors.Join(ErrPasswordProcessing, err), "hash password")
 	}
 	return string(hash), nil
 }

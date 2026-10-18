@@ -53,7 +53,7 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 			for _, name := range slices.Concat(m.Fields(), m.ClearedFields()) {
 				v, err := m.OldField(ctx, name)
 				if err != nil {
-					return nil, fmt.Errorf("audit: read old %s.%s: %w", m.Type(), name, err)
+					return nil, errs.With("type", m.Type(), "field", name).Wrapf(err, "audit: read old value")
 				}
 				old[name] = v
 			}
@@ -70,7 +70,7 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 					// missing row after the mutation, and no change happened.
 					missing = true
 				case err != nil:
-					return nil, fmt.Errorf("audit: read %s %v before delete: %w", m.Type(), key, err)
+					return nil, errs.With("type", m.Type(), "id", key).Wrapf(err, "audit: read before delete")
 				default:
 					deleted = deletedFields(row, secret)
 				}

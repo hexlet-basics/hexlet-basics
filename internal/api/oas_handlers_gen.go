@@ -168,7 +168,7 @@ func (s *Server) handleAdminArchiveBannerRequest(args [1]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response AdminArchiveBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -189,7 +189,7 @@ func (s *Server) handleAdminArchiveBannerRequest(args [1]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminArchiveBannerParams
-			Response = AdminArchiveBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -368,7 +368,7 @@ func (s *Server) handleAdminArchiveBlogPostRequest(args [1]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminArchiveBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -389,7 +389,7 @@ func (s *Server) handleAdminArchiveBlogPostRequest(args [1]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = AdminArchiveBlogPostParams
-			Response = AdminArchiveBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -568,7 +568,7 @@ func (s *Server) handleAdminArchiveCourseLandingPageRequest(args [1]string, args
 
 	var rawBody []byte
 
-	var response AdminArchiveCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -589,7 +589,7 @@ func (s *Server) handleAdminArchiveCourseLandingPageRequest(args [1]string, args
 		type (
 			Request  = struct{}
 			Params   = AdminArchiveCourseLandingPageParams
-			Response = AdminArchiveCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -768,7 +768,7 @@ func (s *Server) handleAdminArchiveReviewRequest(args [1]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response AdminArchiveReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -789,7 +789,7 @@ func (s *Server) handleAdminArchiveReviewRequest(args [1]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminArchiveReviewParams
-			Response = AdminArchiveReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -974,7 +974,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -990,7 +990,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = struct{}
-			Response = AdminCreateBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1172,7 +1172,7 @@ func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bo
 		}
 	}()
 
-	var response AdminCreateBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1188,7 +1188,7 @@ func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bo
 		type (
 			Request  = *BlogPostInput
 			Params   = struct{}
-			Response = AdminCreateBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1380,7 +1380,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response AdminCreateCategoryQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1401,7 +1401,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateCategoryQnaItemParams
-			Response = AdminCreateCategoryQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1583,7 +1583,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1599,7 +1599,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = struct{}
-			Response = AdminCreateCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1784,7 +1784,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		}
 	}()
 
-	var response AdminCreateCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1800,7 +1800,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = struct{}
-			Response = AdminCreateCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1982,7 +1982,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		}
 	}()
 
-	var response AdminCreateCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1998,7 +1998,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = struct{}
-			Response = AdminCreateCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2177,7 +2177,7 @@ func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscap
 
 	var rawBody []byte
 
-	var response AdminCreateCourseVersionRes
+	var response *CourseVersion
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2198,7 +2198,7 @@ func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscap
 		type (
 			Request  = struct{}
 			Params   = AdminCreateCourseVersionParams
-			Response = AdminCreateCourseVersionRes
+			Response = *CourseVersion
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2390,7 +2390,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		}
 	}()
 
-	var response AdminCreateLandingPageQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2411,7 +2411,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateLandingPageQnaItemParams
-			Response = AdminCreateLandingPageQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2593,7 +2593,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2609,7 +2609,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = struct{}
-			Response = AdminCreateReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2794,7 +2794,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminCreateRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2810,7 +2810,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = struct{}
-			Response = AdminCreateRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2992,7 +2992,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		}
 	}()
 
-	var response AdminCreateStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3008,7 +3008,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = struct{}
-			Response = AdminCreateStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3193,7 +3193,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminCreateUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3209,7 +3209,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = struct{}
-			Response = AdminCreateUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3388,7 +3388,7 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response AdminDeleteBannerRes
+	var response *AdminDeleteBannerNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3409,7 +3409,7 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteBannerParams
-			Response = AdminDeleteBannerRes
+			Response = *AdminDeleteBannerNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3420,12 +3420,12 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 			mreq,
 			unpackAdminDeleteBannerParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteBanner(ctx, params)
+				err = s.h.AdminDeleteBanner(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteBanner(ctx, params)
+		err = s.h.AdminDeleteBanner(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3586,7 +3586,7 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response AdminDeleteBlogPostRes
+	var response *AdminDeleteBlogPostNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3607,7 +3607,7 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteBlogPostParams
-			Response = AdminDeleteBlogPostRes
+			Response = *AdminDeleteBlogPostNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3618,12 +3618,12 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 			mreq,
 			unpackAdminDeleteBlogPostParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteBlogPost(ctx, params)
+				err = s.h.AdminDeleteBlogPost(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteBlogPost(ctx, params)
+		err = s.h.AdminDeleteBlogPost(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3784,7 +3784,7 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 
 	var rawBody []byte
 
-	var response AdminDeleteCategoryQnaItemRes
+	var response *AdminDeleteCategoryQnaItemNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3809,7 +3809,7 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCategoryQnaItemParams
-			Response = AdminDeleteCategoryQnaItemRes
+			Response = *AdminDeleteCategoryQnaItemNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3820,12 +3820,12 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 			mreq,
 			unpackAdminDeleteCategoryQnaItemParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
+				err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
+		err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3988,7 +3988,7 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response AdminDeleteCourseCategoryRes
+	var response *AdminDeleteCourseCategoryNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4009,7 +4009,7 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCourseCategoryParams
-			Response = AdminDeleteCourseCategoryRes
+			Response = *AdminDeleteCourseCategoryNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4020,12 +4020,12 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 			mreq,
 			unpackAdminDeleteCourseCategoryParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteCourseCategory(ctx, params)
+				err = s.h.AdminDeleteCourseCategory(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteCourseCategory(ctx, params)
+		err = s.h.AdminDeleteCourseCategory(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -4186,7 +4186,7 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 
 	var rawBody []byte
 
-	var response AdminDeleteCourseLandingPageRes
+	var response *AdminDeleteCourseLandingPageNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4207,7 +4207,7 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCourseLandingPageParams
-			Response = AdminDeleteCourseLandingPageRes
+			Response = *AdminDeleteCourseLandingPageNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4218,12 +4218,12 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 			mreq,
 			unpackAdminDeleteCourseLandingPageParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteCourseLandingPage(ctx, params)
+				err = s.h.AdminDeleteCourseLandingPage(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteCourseLandingPage(ctx, params)
+		err = s.h.AdminDeleteCourseLandingPage(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -4384,7 +4384,7 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 
 	var rawBody []byte
 
-	var response AdminDeleteLandingPageQnaItemRes
+	var response *AdminDeleteLandingPageQnaItemNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4409,7 +4409,7 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteLandingPageQnaItemParams
-			Response = AdminDeleteLandingPageQnaItemRes
+			Response = *AdminDeleteLandingPageQnaItemNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4420,12 +4420,12 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 			mreq,
 			unpackAdminDeleteLandingPageQnaItemParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
+				err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
+		err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -4586,7 +4586,7 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response AdminDeleteReviewRes
+	var response *AdminDeleteReviewNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4607,7 +4607,7 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteReviewParams
-			Response = AdminDeleteReviewRes
+			Response = *AdminDeleteReviewNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4618,12 +4618,12 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 			mreq,
 			unpackAdminDeleteReviewParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteReview(ctx, params)
+				err = s.h.AdminDeleteReview(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteReview(ctx, params)
+		err = s.h.AdminDeleteReview(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -4784,7 +4784,7 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response AdminDeleteRoleRes
+	var response *AdminDeleteRoleNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4805,7 +4805,7 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteRoleParams
-			Response = AdminDeleteRoleRes
+			Response = *AdminDeleteRoleNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4816,12 +4816,12 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 			mreq,
 			unpackAdminDeleteRoleParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteRole(ctx, params)
+				err = s.h.AdminDeleteRole(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteRole(ctx, params)
+		err = s.h.AdminDeleteRole(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -4982,7 +4982,7 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminDeleteStaffMemberRes
+	var response *AdminDeleteStaffMemberNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5003,7 +5003,7 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteStaffMemberParams
-			Response = AdminDeleteStaffMemberRes
+			Response = *AdminDeleteStaffMemberNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5014,12 +5014,12 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 			mreq,
 			unpackAdminDeleteStaffMemberParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteStaffMember(ctx, params)
+				err = s.h.AdminDeleteStaffMember(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteStaffMember(ctx, params)
+		err = s.h.AdminDeleteStaffMember(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -5180,7 +5180,7 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response AdminDeleteUserRes
+	var response *AdminDeleteUserNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5201,7 +5201,7 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteUserParams
-			Response = AdminDeleteUserRes
+			Response = *AdminDeleteUserNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5212,12 +5212,12 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 			mreq,
 			unpackAdminDeleteUserParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminDeleteUser(ctx, params)
+				err = s.h.AdminDeleteUser(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminDeleteUser(ctx, params)
+		err = s.h.AdminDeleteUser(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -5380,7 +5380,7 @@ func (s *Server) handleAdminFetchRequest(args [0]string, argsEscaped bool, w htt
 
 	var rawBody []byte
 
-	var response AdminFetchRes
+	var response *AdminRecord
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5401,7 +5401,7 @@ func (s *Server) handleAdminFetchRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = struct{}
 			Params   = AdminFetchParams
-			Response = AdminFetchRes
+			Response = *AdminRecord
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5581,7 +5581,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5602,7 +5602,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetBannerParams
-			Response = AdminGetBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5779,7 +5779,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminGetBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5800,7 +5800,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminGetBlogPostParams
-			Response = AdminGetBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5979,7 +5979,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6000,7 +6000,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseParams
-			Response = AdminGetCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6180,7 +6180,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminGetCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6201,7 +6201,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseCategoryParams
-			Response = AdminGetCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6381,7 +6381,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response AdminGetCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6402,7 +6402,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseLandingPageParams
-			Response = AdminGetCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6581,7 +6581,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminGetManagementUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6602,7 +6602,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetManagementUserParams
-			Response = AdminGetManagementUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6771,7 +6771,7 @@ func (s *Server) handleAdminGetMyCapabilitiesRequest(args [0]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminGetMyCapabilitiesRes
+	var response *MyCapabilities
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6787,7 +6787,7 @@ func (s *Server) handleAdminGetMyCapabilitiesRequest(args [0]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = AdminGetMyCapabilitiesRes
+			Response = *MyCapabilities
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6967,7 +6967,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6988,7 +6988,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetReviewParams
-			Response = AdminGetReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7168,7 +7168,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response AdminGetRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7189,7 +7189,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetRoleParams
-			Response = AdminGetRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7368,7 +7368,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response AdminGetRolePermissionsRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7389,7 +7389,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = AdminGetRolePermissionsParams
-			Response = AdminGetRolePermissionsRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7566,7 +7566,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response AdminGetStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7587,7 +7587,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AdminGetStaffMemberParams
-			Response = AdminGetStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7767,7 +7767,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response AdminGetUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7788,7 +7788,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetUserParams
-			Response = AdminGetUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7969,7 +7969,7 @@ func (s *Server) handleAdminListAuditRecordsRequest(args [0]string, argsEscaped 
 
 	var rawBody []byte
 
-	var response AdminListAuditRecordsRes
+	var response *AuditRecordPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8022,7 +8022,7 @@ func (s *Server) handleAdminListAuditRecordsRequest(args [0]string, argsEscaped 
 		type (
 			Request  = struct{}
 			Params   = AdminListAuditRecordsParams
-			Response = AdminListAuditRecordsRes
+			Response = *AuditRecordPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8201,7 +8201,7 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminListBannersRes
+	var response *BannerPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8230,7 +8230,7 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListBannersParams
-			Response = AdminListBannersRes
+			Response = *BannerPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8407,7 +8407,7 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response AdminListBlogPostsRes
+	var response *BlogPostPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8436,7 +8436,7 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminListBlogPostsParams
-			Response = AdminListBlogPostsRes
+			Response = *BlogPostPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8613,7 +8613,7 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response AdminListCategoryQnaItemsRes
+	var response []QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8634,7 +8634,7 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminListCategoryQnaItemsParams
-			Response = AdminListCategoryQnaItemsRes
+			Response = []QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8813,7 +8813,7 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 
 	var rawBody []byte
 
-	var response AdminListCourseCategoriesRes
+	var response *CourseCategoryPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8838,7 +8838,7 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseCategoriesParams
-			Response = AdminListCourseCategoriesRes
+			Response = *CourseCategoryPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9015,7 +9015,7 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 
 	var rawBody []byte
 
-	var response AdminListCourseLandingPagesRes
+	var response *CourseLandingPagePage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9044,7 +9044,7 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLandingPagesParams
-			Response = AdminListCourseLandingPagesRes
+			Response = *CourseLandingPagePage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9221,7 +9221,7 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 
 	var rawBody []byte
 
-	var response AdminListCourseLessonReviewsRes
+	var response *CourseLessonReviewPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9246,7 +9246,7 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLessonReviewsParams
-			Response = AdminListCourseLessonReviewsRes
+			Response = *CourseLessonReviewPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9423,7 +9423,7 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminListCourseLessonsRes
+	var response *CourseLessonListItemPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9452,7 +9452,7 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLessonsParams
-			Response = AdminListCourseLessonsRes
+			Response = *CourseLessonListItemPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9623,7 +9623,7 @@ func (s *Server) handleAdminListCourseOptionsRequest(args [0]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminListCourseOptionsRes
+	var response []CourseOption
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9639,7 +9639,7 @@ func (s *Server) handleAdminListCourseOptionsRequest(args [0]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = AdminListCourseOptionsRes
+			Response = []CourseOption
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9816,7 +9816,7 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminListCoursesRes
+	var response *CoursePage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9845,7 +9845,7 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListCoursesParams
-			Response = AdminListCoursesRes
+			Response = *CoursePage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10022,7 +10022,7 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 
 	var rawBody []byte
 
-	var response AdminListLandingPageQnaItemsRes
+	var response []QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10043,7 +10043,7 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminListLandingPageQnaItemsParams
-			Response = AdminListLandingPageQnaItemsRes
+			Response = []QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10220,7 +10220,7 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminListLeadsRes
+	var response *LeadPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10249,7 +10249,7 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListLeadsParams
-			Response = AdminListLeadsRes
+			Response = *LeadPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10426,7 +10426,7 @@ func (s *Server) handleAdminListLessonProgressRequest(args [0]string, argsEscape
 
 	var rawBody []byte
 
-	var response AdminListLessonProgressRes
+	var response *LessonProgressPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10451,7 +10451,7 @@ func (s *Server) handleAdminListLessonProgressRequest(args [0]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = AdminListLessonProgressParams
-			Response = AdminListLessonProgressRes
+			Response = *LessonProgressPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10628,7 +10628,7 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 
 	var rawBody []byte
 
-	var response AdminListManagementUsersRes
+	var response *UserCrudPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10657,7 +10657,7 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 		type (
 			Request  = struct{}
 			Params   = AdminListManagementUsersParams
-			Response = AdminListManagementUsersRes
+			Response = *UserCrudPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10834,7 +10834,7 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response AdminListMessagesRes
+	var response *LessonAssistantMessagePage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10863,7 +10863,7 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminListMessagesParams
-			Response = AdminListMessagesRes
+			Response = *LessonAssistantMessagePage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11032,7 +11032,7 @@ func (s *Server) handleAdminListPermissionsRequest(args [0]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminListPermissionsRes
+	var response *PermissionCatalog
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -11048,7 +11048,7 @@ func (s *Server) handleAdminListPermissionsRequest(args [0]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = AdminListPermissionsRes
+			Response = *PermissionCatalog
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11225,7 +11225,7 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminListReviewsRes
+	var response *ReviewPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -11254,7 +11254,7 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListReviewsParams
-			Response = AdminListReviewsRes
+			Response = *ReviewPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11431,7 +11431,7 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminListRolesRes
+	var response *StaffRolePage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -11456,7 +11456,7 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListRolesParams
-			Response = AdminListRolesRes
+			Response = *StaffRolePage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11633,7 +11633,7 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 
 	var rawBody []byte
 
-	var response AdminListStaffMembersRes
+	var response *StaffMemberPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -11658,7 +11658,7 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 		type (
 			Request  = struct{}
 			Params   = AdminListStaffMembersParams
-			Response = AdminListStaffMembersRes
+			Response = *StaffMemberPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11835,7 +11835,7 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminListUsersRes
+	var response *UserCrudPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -11864,7 +11864,7 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListUsersParams
-			Response = AdminListUsersRes
+			Response = *UserCrudPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -12043,7 +12043,7 @@ func (s *Server) handleAdminMarkCourseCompletedRequest(args [1]string, argsEscap
 
 	var rawBody []byte
 
-	var response AdminMarkCourseCompletedRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -12064,7 +12064,7 @@ func (s *Server) handleAdminMarkCourseCompletedRequest(args [1]string, argsEscap
 		type (
 			Request  = struct{}
 			Params   = AdminMarkCourseCompletedParams
-			Response = AdminMarkCourseCompletedRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -12245,7 +12245,7 @@ func (s *Server) handleAdminMarkCourseDraftRequest(args [1]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminMarkCourseDraftRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -12266,7 +12266,7 @@ func (s *Server) handleAdminMarkCourseDraftRequest(args [1]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = AdminMarkCourseDraftParams
-			Response = AdminMarkCourseDraftRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -12445,7 +12445,7 @@ func (s *Server) handleAdminMarkCourseInDevelopmentRequest(args [1]string, argsE
 
 	var rawBody []byte
 
-	var response AdminMarkCourseInDevelopmentRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -12466,7 +12466,7 @@ func (s *Server) handleAdminMarkCourseInDevelopmentRequest(args [1]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminMarkCourseInDevelopmentParams
-			Response = AdminMarkCourseInDevelopmentRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -12647,7 +12647,7 @@ func (s *Server) handleAdminPublishBannerRequest(args [1]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response AdminPublishBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -12668,7 +12668,7 @@ func (s *Server) handleAdminPublishBannerRequest(args [1]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminPublishBannerParams
-			Response = AdminPublishBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -12849,7 +12849,7 @@ func (s *Server) handleAdminPublishBlogPostRequest(args [1]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminPublishBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -12870,7 +12870,7 @@ func (s *Server) handleAdminPublishBlogPostRequest(args [1]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = AdminPublishBlogPostParams
-			Response = AdminPublishBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -13051,7 +13051,7 @@ func (s *Server) handleAdminPublishCourseLandingPageRequest(args [1]string, args
 
 	var rawBody []byte
 
-	var response AdminPublishCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13072,7 +13072,7 @@ func (s *Server) handleAdminPublishCourseLandingPageRequest(args [1]string, args
 		type (
 			Request  = struct{}
 			Params   = AdminPublishCourseLandingPageParams
-			Response = AdminPublishCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -13253,7 +13253,7 @@ func (s *Server) handleAdminPublishReviewRequest(args [1]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response AdminPublishReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13274,7 +13274,7 @@ func (s *Server) handleAdminPublishReviewRequest(args [1]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminPublishReviewParams
-			Response = AdminPublishReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -13453,7 +13453,7 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response AdminReviewCourseRes
+	var response *AdminReviewCourseNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13474,7 +13474,7 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminReviewCourseParams
-			Response = AdminReviewCourseRes
+			Response = *AdminReviewCourseNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -13485,12 +13485,12 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 			mreq,
 			unpackAdminReviewCourseParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminReviewCourse(ctx, params)
+				err = s.h.AdminReviewCourse(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminReviewCourse(ctx, params)
+		err = s.h.AdminReviewCourse(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -13653,7 +13653,7 @@ func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response AdminReviewCourseLessonRes
+	var response *AdminReviewCourseLessonNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13674,7 +13674,7 @@ func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = AdminReviewCourseLessonParams
-			Response = AdminReviewCourseLessonRes
+			Response = *AdminReviewCourseLessonNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -13685,12 +13685,12 @@ func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscape
 			mreq,
 			unpackAdminReviewCourseLessonParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminReviewCourseLesson(ctx, params)
+				err = s.h.AdminReviewCourseLesson(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminReviewCourseLesson(ctx, params)
+		err = s.h.AdminReviewCourseLesson(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -13857,7 +13857,7 @@ func (s *Server) handleAdminSearchRequest(args [0]string, argsEscaped bool, w ht
 
 	var rawBody []byte
 
-	var response AdminSearchRes
+	var response *AdminSearchResultPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13890,7 +13890,7 @@ func (s *Server) handleAdminSearchRequest(args [0]string, argsEscaped bool, w ht
 		type (
 			Request  = struct{}
 			Params   = AdminSearchParams
-			Response = AdminSearchRes
+			Response = *AdminSearchResultPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14069,7 +14069,7 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminSearchUsersRes
+	var response []UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -14090,7 +14090,7 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminSearchUsersParams
-			Response = AdminSearchUsersRes
+			Response = []UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14284,7 +14284,7 @@ func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, arg
 		}
 	}()
 
-	var response AdminSetBlogPostRelatedCoursesRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -14305,7 +14305,7 @@ func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, arg
 		type (
 			Request  = *BlogPostRelatedCoursesInput
 			Params   = AdminSetBlogPostRelatedCoursesParams
-			Response = AdminSetBlogPostRelatedCoursesRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14485,7 +14485,7 @@ func (s *Server) handleAdminSuggestBlogPostRelatedCoursesRequest(args [1]string,
 
 	var rawBody []byte
 
-	var response AdminSuggestBlogPostRelatedCoursesRes
+	var response *AdminSuggestBlogPostRelatedCoursesNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -14506,7 +14506,7 @@ func (s *Server) handleAdminSuggestBlogPostRelatedCoursesRequest(args [1]string,
 		type (
 			Request  = struct{}
 			Params   = AdminSuggestBlogPostRelatedCoursesParams
-			Response = AdminSuggestBlogPostRelatedCoursesRes
+			Response = *AdminSuggestBlogPostRelatedCoursesNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14517,12 +14517,12 @@ func (s *Server) handleAdminSuggestBlogPostRelatedCoursesRequest(args [1]string,
 			mreq,
 			unpackAdminSuggestBlogPostRelatedCoursesParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AdminSuggestBlogPostRelatedCourses(ctx, params)
+				err = s.h.AdminSuggestBlogPostRelatedCourses(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AdminSuggestBlogPostRelatedCourses(ctx, params)
+		err = s.h.AdminSuggestBlogPostRelatedCourses(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -14685,7 +14685,7 @@ func (s *Server) handleAdminUnpublishBannerRequest(args [1]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminUnpublishBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -14706,7 +14706,7 @@ func (s *Server) handleAdminUnpublishBannerRequest(args [1]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = AdminUnpublishBannerParams
-			Response = AdminUnpublishBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14885,7 +14885,7 @@ func (s *Server) handleAdminUnpublishBlogPostRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminUnpublishBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -14906,7 +14906,7 @@ func (s *Server) handleAdminUnpublishBlogPostRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminUnpublishBlogPostParams
-			Response = AdminUnpublishBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -15085,7 +15085,7 @@ func (s *Server) handleAdminUnpublishCourseLandingPageRequest(args [1]string, ar
 
 	var rawBody []byte
 
-	var response AdminUnpublishCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -15106,7 +15106,7 @@ func (s *Server) handleAdminUnpublishCourseLandingPageRequest(args [1]string, ar
 		type (
 			Request  = struct{}
 			Params   = AdminUnpublishCourseLandingPageParams
-			Response = AdminUnpublishCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -15285,7 +15285,7 @@ func (s *Server) handleAdminUnpublishReviewRequest(args [1]string, argsEscaped b
 
 	var rawBody []byte
 
-	var response AdminUnpublishReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -15306,7 +15306,7 @@ func (s *Server) handleAdminUnpublishReviewRequest(args [1]string, argsEscaped b
 		type (
 			Request  = struct{}
 			Params   = AdminUnpublishReviewParams
-			Response = AdminUnpublishReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -15500,7 +15500,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -15521,7 +15521,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = AdminUpdateBannerParams
-			Response = AdminUpdateBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -15713,7 +15713,7 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 		}
 	}()
 
-	var response AdminUpdateBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -15734,7 +15734,7 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = *BlogPostInput
 			Params   = AdminUpdateBlogPostParams
-			Response = AdminUpdateBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -15929,7 +15929,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		}
 	}()
 
-	var response AdminUpdateCategoryQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -15954,7 +15954,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateCategoryQnaItemParams
-			Response = AdminUpdateCategoryQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -16146,7 +16146,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -16167,7 +16167,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = AdminUpdateCourseParams
-			Response = AdminUpdateCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -16362,7 +16362,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response AdminUpdateCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -16383,7 +16383,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = AdminUpdateCourseCategoryParams
-			Response = AdminUpdateCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -16577,7 +16577,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		}
 	}()
 
-	var response AdminUpdateCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -16598,7 +16598,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = AdminUpdateCourseLandingPageParams
-			Response = AdminUpdateCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -16793,7 +16793,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		}
 	}()
 
-	var response AdminUpdateLandingPageQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -16818,7 +16818,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateLandingPageQnaItemParams
-			Response = AdminUpdateLandingPageQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -17010,7 +17010,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response AdminUpdateManagementUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -17031,7 +17031,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateManagementUserParams
-			Response = AdminUpdateManagementUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -17225,7 +17225,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -17246,7 +17246,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = AdminUpdateReviewParams
-			Response = AdminUpdateReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -17438,7 +17438,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminUpdateRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -17459,7 +17459,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = AdminUpdateRoleParams
-			Response = AdminUpdateRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -17653,7 +17653,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response AdminUpdateRolePermissionsRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -17674,7 +17674,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		type (
 			Request  = *RolePermissionsInput
 			Params   = AdminUpdateRolePermissionsParams
-			Response = AdminUpdateRolePermissionsRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -17866,7 +17866,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		}
 	}()
 
-	var response AdminUpdateStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -17887,7 +17887,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = AdminUpdateStaffMemberParams
-			Response = AdminUpdateStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18082,7 +18082,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminUpdateUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18103,7 +18103,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateUserParams
-			Response = AdminUpdateUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18287,7 +18287,7 @@ func (s *Server) handleAdminUploadAttachmentRequest(args [0]string, argsEscaped 
 		}
 	}()
 
-	var response AdminUploadAttachmentRes
+	var response *Attachment
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18303,7 +18303,7 @@ func (s *Server) handleAdminUploadAttachmentRequest(args [0]string, argsEscaped 
 		type (
 			Request  = *AttachmentUploadFormMultipart
 			Params   = struct{}
-			Response = AdminUploadAttachmentRes
+			Response = *Attachment
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18482,7 +18482,7 @@ func (s *Server) handleApproveOAuthConsentRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response ApproveOAuthConsentRes
+	var response *OAuthDecision
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18503,7 +18503,7 @@ func (s *Server) handleApproveOAuthConsentRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = ApproveOAuthConsentParams
-			Response = ApproveOAuthConsentRes
+			Response = *OAuthDecision
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18655,7 +18655,7 @@ func (s *Server) handleCheckLessonRequest(args [1]string, argsEscaped bool, w ht
 		}
 	}()
 
-	var response CheckLessonRes
+	var response *LessonCheckingResponseHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18676,7 +18676,7 @@ func (s *Server) handleCheckLessonRequest(args [1]string, argsEscaped bool, w ht
 		type (
 			Request  = *CheckLessonInput
 			Params   = CheckLessonParams
-			Response = CheckLessonRes
+			Response = *LessonCheckingResponseHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18809,7 +18809,7 @@ func (s *Server) handleCheckPasswordResetTokenRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response CheckPasswordResetTokenRes
+	var response *CheckPasswordResetTokenNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18830,7 +18830,7 @@ func (s *Server) handleCheckPasswordResetTokenRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = CheckPasswordResetTokenParams
-			Response = CheckPasswordResetTokenRes
+			Response = *CheckPasswordResetTokenNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -18841,12 +18841,12 @@ func (s *Server) handleCheckPasswordResetTokenRequest(args [1]string, argsEscape
 			mreq,
 			unpackCheckPasswordResetTokenParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CheckPasswordResetToken(ctx, params)
+				err = s.h.CheckPasswordResetToken(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.CheckPasswordResetToken(ctx, params)
+		err = s.h.CheckPasswordResetToken(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -18963,7 +18963,7 @@ func (s *Server) handleConsumeMagicLinkRequest(args [1]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response ConsumeMagicLinkRes
+	var response *UserHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -18984,7 +18984,7 @@ func (s *Server) handleConsumeMagicLinkRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = ConsumeMagicLinkParams
-			Response = ConsumeMagicLinkRes
+			Response = *UserHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -19372,7 +19372,7 @@ func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response CreateBookRequestRes
+	var response *CreateBookRequestNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -19388,7 +19388,7 @@ func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = CreateBookRequestRes
+			Response = *CreateBookRequestNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -19399,12 +19399,12 @@ func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreateBookRequest(ctx)
+				err = s.h.CreateBookRequest(ctx)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.CreateBookRequest(ctx)
+		err = s.h.CreateBookRequest(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -19572,7 +19572,7 @@ func (s *Server) handleCreateLeadRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response CreateLeadRes
+	var response *Lead
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -19588,7 +19588,7 @@ func (s *Server) handleCreateLeadRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *LeadInput
 			Params   = struct{}
-			Response = CreateLeadRes
+			Response = *Lead
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -19726,7 +19726,7 @@ func (s *Server) handleCreateMagicLinkRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response CreateMagicLinkRes
+	var response *CreateMagicLinkNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -19742,7 +19742,7 @@ func (s *Server) handleCreateMagicLinkRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *EmailInput
 			Params   = struct{}
-			Response = CreateMagicLinkRes
+			Response = *CreateMagicLinkNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -19753,12 +19753,12 @@ func (s *Server) handleCreateMagicLinkRequest(args [0]string, argsEscaped bool, 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreateMagicLink(ctx, request)
+				err = s.h.CreateMagicLink(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.CreateMagicLink(ctx, request)
+		err = s.h.CreateMagicLink(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -19880,7 +19880,7 @@ func (s *Server) handleCreatePasswordReminderRequest(args [0]string, argsEscaped
 		}
 	}()
 
-	var response CreatePasswordReminderRes
+	var response *CreatePasswordReminderNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -19896,7 +19896,7 @@ func (s *Server) handleCreatePasswordReminderRequest(args [0]string, argsEscaped
 		type (
 			Request  = *EmailInput
 			Params   = struct{}
-			Response = CreatePasswordReminderRes
+			Response = *CreatePasswordReminderNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -19907,12 +19907,12 @@ func (s *Server) handleCreatePasswordReminderRequest(args [0]string, argsEscaped
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreatePasswordReminder(ctx, request)
+				err = s.h.CreatePasswordReminder(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.CreatePasswordReminder(ctx, request)
+		err = s.h.CreatePasswordReminder(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -20034,7 +20034,7 @@ func (s *Server) handleCreateSessionRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response CreateSessionRes
+	var response *UserHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20050,7 +20050,7 @@ func (s *Server) handleCreateSessionRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = *SessionInput
 			Params   = struct{}
-			Response = CreateSessionRes
+			Response = *UserHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -20188,7 +20188,7 @@ func (s *Server) handleCreateUserRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response CreateUserRes
+	var response *UserHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20204,7 +20204,7 @@ func (s *Server) handleCreateUserRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *SignUpInput
 			Params   = struct{}
-			Response = CreateUserRes
+			Response = *UserHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -20373,7 +20373,7 @@ func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w 
 
 	var rawBody []byte
 
-	var response DeleteAccountRes
+	var response *DeleteAccountNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20389,7 +20389,7 @@ func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = DeleteAccountRes
+			Response = *DeleteAccountNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -20400,12 +20400,12 @@ func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.DeleteAccount(ctx)
+				err = s.h.DeleteAccount(ctx)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.DeleteAccount(ctx)
+		err = s.h.DeleteAccount(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -20558,7 +20558,7 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 
 	var rawBody []byte
 
-	var response DeleteSessionRes
+	var response *DeleteSessionNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20574,7 +20574,7 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = DeleteSessionRes
+			Response = *DeleteSessionNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -20585,12 +20585,12 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.DeleteSession(ctx)
+				err = s.h.DeleteSession(ctx)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.DeleteSession(ctx)
+		err = s.h.DeleteSession(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -20753,7 +20753,7 @@ func (s *Server) handleDenyOAuthConsentRequest(args [1]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response DenyOAuthConsentRes
+	var response *OAuthDecision
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20774,7 +20774,7 @@ func (s *Server) handleDenyOAuthConsentRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = DenyOAuthConsentParams
-			Response = DenyOAuthConsentRes
+			Response = *OAuthDecision
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -20945,7 +20945,7 @@ func (s *Server) handleDownloadBookRequest(args [0]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response DownloadBookRes
+	var response *DownloadBookFound
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -20961,7 +20961,7 @@ func (s *Server) handleDownloadBookRequest(args [0]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = DownloadBookRes
+			Response = *DownloadBookFound
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -21230,7 +21230,7 @@ func (s *Server) handleGetBlogPostRequest(args [1]string, argsEscaped bool, w ht
 
 	var rawBody []byte
 
-	var response GetBlogPostRes
+	var response *BlogPostView
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -21251,7 +21251,7 @@ func (s *Server) handleGetBlogPostRequest(args [1]string, argsEscaped bool, w ht
 		type (
 			Request  = struct{}
 			Params   = GetBlogPostParams
-			Response = GetBlogPostRes
+			Response = *BlogPostView
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -21521,7 +21521,7 @@ func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http
 
 	var rawBody []byte
 
-	var response GetCourseRes
+	var response *CourseView
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -21542,7 +21542,7 @@ func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http
 		type (
 			Request  = struct{}
 			Params   = GetCourseParams
-			Response = GetCourseRes
+			Response = *CourseView
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -21679,7 +21679,7 @@ func (s *Server) handleGetCourseLessonRequest(args [2]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response GetCourseLessonRes
+	var response *CourseLessonView
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -21704,7 +21704,7 @@ func (s *Server) handleGetCourseLessonRequest(args [2]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = GetCourseLessonParams
-			Response = GetCourseLessonRes
+			Response = *CourseLessonView
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -22027,7 +22027,7 @@ func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response GetMyDashboardRes
+	var response *MyDashboard
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -22043,7 +22043,7 @@ func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = GetMyDashboardRes
+			Response = *MyDashboard
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -22176,7 +22176,7 @@ func (s *Server) handleGetNextBlogPostRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response GetNextBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -22197,7 +22197,7 @@ func (s *Server) handleGetNextBlogPostRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = GetNextBlogPostParams
-			Response = GetNextBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -22377,7 +22377,7 @@ func (s *Server) handleGetOAuthConsentRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response GetOAuthConsentRes
+	var response *OAuthConsent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -22398,7 +22398,7 @@ func (s *Server) handleGetOAuthConsentRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = GetOAuthConsentParams
-			Response = GetOAuthConsentRes
+			Response = *OAuthConsent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -22567,7 +22567,7 @@ func (s *Server) handleGetProfileRequest(args [0]string, argsEscaped bool, w htt
 
 	var rawBody []byte
 
-	var response GetProfileRes
+	var response *User
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -22583,7 +22583,7 @@ func (s *Server) handleGetProfileRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = GetProfileRes
+			Response = *User
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -22716,7 +22716,7 @@ func (s *Server) handleGetPublicCourseCategoryRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response GetPublicCourseCategoryRes
+	var response *CourseCategoryView
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -22737,7 +22737,7 @@ func (s *Server) handleGetPublicCourseCategoryRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = GetPublicCourseCategoryParams
-			Response = GetPublicCourseCategoryRes
+			Response = *CourseCategoryView
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -23323,7 +23323,7 @@ func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response LikeBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -23344,7 +23344,7 @@ func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = LikeBlogPostParams
-			Response = LikeBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -23524,7 +23524,7 @@ func (s *Server) handleListAssistantMessagesRequest(args [1]string, argsEscaped 
 
 	var rawBody []byte
 
-	var response ListAssistantMessagesRes
+	var response *LessonAssistantChat
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -23545,7 +23545,7 @@ func (s *Server) handleListAssistantMessagesRequest(args [1]string, argsEscaped 
 		type (
 			Request  = struct{}
 			Params   = ListAssistantMessagesParams
-			Response = ListAssistantMessagesRes
+			Response = *LessonAssistantChat
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -23873,7 +23873,7 @@ func (s *Server) handleListConnectedAppsRequest(args [0]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response ListConnectedAppsRes
+	var response *ConnectedApps
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -23889,7 +23889,7 @@ func (s *Server) handleListConnectedAppsRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = ListConnectedAppsRes
+			Response = *ConnectedApps
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -24497,7 +24497,7 @@ func (s *Server) handleRevokeConnectedAppRequest(args [1]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response RevokeConnectedAppRes
+	var response *RevokeConnectedAppNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -24518,7 +24518,7 @@ func (s *Server) handleRevokeConnectedAppRequest(args [1]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = RevokeConnectedAppParams
-			Response = RevokeConnectedAppRes
+			Response = *RevokeConnectedAppNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -24529,12 +24529,12 @@ func (s *Server) handleRevokeConnectedAppRequest(args [1]string, argsEscaped boo
 			mreq,
 			unpackRevokeConnectedAppParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.RevokeConnectedApp(ctx, params)
+				err = s.h.RevokeConnectedApp(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.RevokeConnectedApp(ctx, params)
+		err = s.h.RevokeConnectedApp(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -24830,7 +24830,7 @@ func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w ht
 
 	var rawBody []byte
 
-	var response StartLessonRes
+	var response *StartLessonNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -24851,7 +24851,7 @@ func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w ht
 		type (
 			Request  = struct{}
 			Params   = StartLessonParams
-			Response = StartLessonRes
+			Response = *StartLessonNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -24862,12 +24862,12 @@ func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w ht
 			mreq,
 			unpackStartLessonParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.StartLesson(ctx, params)
+				err = s.h.StartLesson(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.StartLesson(ctx, params)
+		err = s.h.StartLesson(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -24999,7 +24999,7 @@ func (s *Server) handleUpdatePasswordRequest(args [1]string, argsEscaped bool, w
 		}
 	}()
 
-	var response UpdatePasswordRes
+	var response *UserHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -25020,7 +25020,7 @@ func (s *Server) handleUpdatePasswordRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = *ResetPasswordInput
 			Params   = UpdatePasswordParams
-			Response = UpdatePasswordRes
+			Response = *UserHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -25204,7 +25204,7 @@ func (s *Server) handleUpdateProfileRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response UpdateProfileRes
+	var response *User
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -25220,7 +25220,7 @@ func (s *Server) handleUpdateProfileRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = *ProfileInput
 			Params   = struct{}
-			Response = UpdateProfileRes
+			Response = *User
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

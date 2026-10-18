@@ -11,7 +11,7 @@ import (
 // AdminListMessages returns a page of in-lesson assistant messages, newest
 // first (legacy `admin/messages#index` over `ai_messages`). The admin surface
 // is read-only (index only).
-func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (api.AdminListMessagesRes, error) {
+func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (*api.LessonAssistantMessagePage, error) {
 	locale := s.i18n.Locale(ctx)
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.AiMessage, int, error) {

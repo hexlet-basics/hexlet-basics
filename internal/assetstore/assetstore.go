@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -98,19 +97,19 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 	src := bufio.NewReader(input.Body)
 	header, err := src.Peek(sniffBytes)
 	if err != nil && !errors.Is(err, io.EOF) {
-		return Attachment{}, fmt.Errorf("inspect asset %q: %w", input.Filename, err)
+		return Attachment{}, errs.With("filename", input.Filename).Wrapf(err, "inspect asset")
 	}
 
 	contentType := http.DetectContentType(header)
 	extension, ok := extensionsByContentType[contentType]
 	if !ok {
-		return Attachment{}, fmt.Errorf("%w: %s", ErrUnsupportedMediaType, contentType)
+		return Attachment{}, errs.With("content_type", contentType).Wrapf(ErrUnsupportedMediaType, "reject asset")
 	}
 
 	key := ident.New() + extension
 	writer, err := s.bucket.NewWriter(ctx, key, &blob.WriterOptions{ContentType: contentType})
 	if err != nil {
-		return Attachment{}, fmt.Errorf("open blob writer for %q: %w", key, err)
+		return Attachment{}, errs.With("key", key).Wrapf(err, "open blob writer")
 	}
 
 	limited := &io.LimitedReader{R: src, N: MaxUploadBytes + 1}
@@ -118,7 +117,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 	closeErr := writer.Close()
 	if copyErr != nil || closeErr != nil {
 		cause := errors.Join(copyErr, closeErr)
-		return Attachment{}, s.compensate(ctx, key, fmt.Errorf("write blob %q: %w", key, cause))
+		return Attachment{}, s.compensate(ctx, key, errs.With("key", key).Wrapf(cause, "write blob"))
 	}
 	if written > MaxUploadBytes {
 		return Attachment{}, s.compensate(ctx, key, ErrTooLarge)
@@ -131,7 +130,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 		SetByteSize(written).
 		Save(ctx)
 	if err != nil {
-		return Attachment{}, s.compensate(ctx, key, fmt.Errorf("record attachment %q: %w", key, err))
+		return Attachment{}, s.compensate(ctx, key, errs.With("key", key).Wrapf(err, "record attachment"))
 	}
 
 	return Attachment{
@@ -149,9 +148,9 @@ func (s *Store) Open(ctx context.Context, key string) (*Reader, error) {
 	reader, err := s.bucket.NewReader(ctx, key, nil)
 	if err != nil {
 		if gcerrors.Code(err) == gcerrors.NotFound {
-			return nil, fmt.Errorf("%w: %s", ErrNotFound, key)
+			return nil, errs.With("key", key).Wrapf(ErrNotFound, "open asset")
 		}
-		return nil, fmt.Errorf("open asset %q: %w", key, err)
+		return nil, errs.With("key", key).Wrapf(err, "open asset")
 	}
 	return &Reader{
 		ReadSeekCloser: reader,
@@ -193,7 +192,7 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 		return URL(s.publicURL, key), nil
 	}
 	if err != nil {
-		return "", fmt.Errorf("sign download url for %q: %w", key, err)
+		return "", errs.With("key", key).Wrapf(err, "sign download url")
 	}
 	return signed, nil
 }
@@ -206,7 +205,7 @@ func (s *Store) compensate(ctx context.Context, key string, cause error) error {
 	defer cancel()
 
 	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {
-		return errors.Join(cause, fmt.Errorf("delete partial blob %q: %w", key, err))
+		return errors.Join(cause, errs.With("key", key).Wrapf(err, "delete partial blob"))
 	}
 	return cause
 }

@@ -58,7 +58,7 @@ var blogPostOperations = map[string]struct {
 		return err
 	}},
 	"AdminSuggestBlogPostRelatedCourses": {"blog_posts.update", func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
+		err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 			api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 		return err
 	}},

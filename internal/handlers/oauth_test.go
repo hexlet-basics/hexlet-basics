@@ -22,18 +22,15 @@ func TestConsentOperationsAnswerNotFoundWhileTheOAuthServerIsOff(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.GetOAuthConsent(ctx, api.GetOAuthConsentParams{RequestId: "any"})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, got)
+	_, err := h.Client.GetOAuthConsent(ctx, api.GetOAuthConsentParams{RequestId: "any"})
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
-	approved, err := h.Client.ApproveOAuthConsent(ctx, api.ApproveOAuthConsentParams{RequestId: "any"})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, approved)
+	_, err = h.Client.ApproveOAuthConsent(ctx, api.ApproveOAuthConsentParams{RequestId: "any"})
+	requireProblem(t, err, http.StatusNotFound)
 
-	denied, err := h.Client.DenyOAuthConsent(ctx, api.DenyOAuthConsentParams{RequestId: "any"})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, denied)
+	_, err = h.Client.DenyOAuthConsent(ctx, api.DenyOAuthConsentParams{RequestId: "any"})
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 // OAUTH_ENABLED and MCP_ENABLED default to off, and the ingress sends their
@@ -71,12 +68,10 @@ func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
 
 	list, err := h.Client.ListConnectedApps(ctx)
 	require.NoError(t, err)
-	apps, ok := list.(*api.ConnectedApps)
-	require.True(t, ok, "got %T", list)
+	apps := list
 	assert.NotNil(t, apps.Items)
 	assert.Empty(t, apps.Items)
 
-	revoked, err := h.Client.RevokeConnectedApp(ctx, api.RevokeConnectedAppParams{ID: 1})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, revoked)
+	err = h.Client.RevokeConnectedApp(ctx, api.RevokeConnectedAppParams{ID: 1})
+	requireProblem(t, err, http.StatusNotFound)
 }

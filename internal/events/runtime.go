@@ -3,7 +3,6 @@ package events
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill/components/cqrs"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
+	"github.com/getsentry/sentry-go"
 )
 
 const (
@@ -33,12 +33,13 @@ type Runtime struct {
 func NewRuntime(
 	db *sql.DB,
 	logger *slog.Logger,
+	sentryClient *sentry.Client,
 	handlers ...cqrs.EventHandler,
 ) (*Runtime, error) {
 	watermillLogger := watermill.NewSlogLogger(logger)
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: 15 * time.Second}, watermillLogger)
 	if err != nil {
-		return nil, fmt.Errorf("create Watermill router: %w", err)
+		return nil, errs.Wrapf(err, "create Watermill router")
 	}
 	poisonPublisher, err := wmsql.NewPublisher(
 		wmsql.BeginnerFromStdSQL(db),
@@ -46,9 +47,9 @@ func NewRuntime(
 		watermillLogger,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("create poison queue publisher: %w", err)
+		return nil, errs.Wrapf(err, "create poison queue publisher")
 	}
-	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher)
+	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher, sentryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +57,7 @@ func NewRuntime(
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
 	if err != nil {
-		return nil, fmt.Errorf("create domain event observer subscriber: %w", err)
+		return nil, errs.Wrapf(err, "create domain event observer subscriber")
 	}
 	// The observer takes every event type, so it is a raw handler rather than a
 	// typed cqrs handler.
@@ -83,10 +84,10 @@ func NewRuntime(
 			Logger:            watermillLogger,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("create Watermill event processor: %w", err)
+			return nil, errs.Wrapf(err, "create Watermill event processor")
 		}
 		if err := processor.AddHandlers(handlers...); err != nil {
-			return nil, fmt.Errorf("register domain event handlers: %w", err)
+			return nil, errs.Wrapf(err, "register domain event handlers")
 		}
 	}
 
@@ -101,16 +102,22 @@ func NewRuntime(
 // retried like any other failure; with the order reversed a panic would skip
 // Retry. Messages in the poison table are replayed by hand once the cause is
 // fixed.
+//
+// reportPoisoned sits between PoisonQueue and Retry, so it sees only the error
+// that survived every retry: a message a retry saved is routine and never
+// reaches Sentry, a poisoned one is exactly one event.
 func deliveryMiddleware(
 	logger watermill.LoggerAdapter,
 	poison message.Publisher,
+	sentryClient *sentry.Client,
 ) ([]message.HandlerMiddleware, error) {
 	poisonQueue, err := middleware.PoisonQueue(poison, PoisonTopic)
 	if err != nil {
-		return nil, fmt.Errorf("create poison queue middleware: %w", err)
+		return nil, errs.Wrapf(err, "create poison queue middleware")
 	}
 	return []message.HandlerMiddleware{
 		poisonQueue,
+		reportPoisoned(sentryClient),
 		middleware.Retry{
 			MaxRetries:          3,
 			InitialInterval:     100 * time.Millisecond,
@@ -121,6 +128,28 @@ func deliveryMiddleware(
 		}.Middleware,
 		middleware.Recoverer,
 	}, nil
+}
+
+// reportPoisoned captures the error of a message whose retries are exhausted,
+// so growth of the poison table is noticed. It returns the error unchanged for
+// PoisonQueue to act on. A nil client reports nothing.
+func reportPoisoned(sentryClient *sentry.Client) message.HandlerMiddleware {
+	return func(next message.HandlerFunc) message.HandlerFunc {
+		return func(msg *message.Message) ([]*message.Message, error) {
+			produced, err := next(msg)
+			if err != nil && sentryClient != nil {
+				scope := sentry.NewScope()
+				scope.SetTags(map[string]string{
+					"message.id":      msg.UUID,
+					"message.name":    msg.Metadata.Get("name"),
+					"message.handler": message.HandlerNameFromCtx(msg.Context()),
+					"message.poison":  "true",
+				})
+				sentryClient.CaptureException(err, &sentry.EventHint{Context: msg.Context(), OriginalException: err}, scope)
+			}
+			return produced, err
+		}
+	}
 }
 
 func observeMessage(logger *slog.Logger, msg *message.Message) {
@@ -151,7 +180,7 @@ func newSubscriber(
 // supervisor to observe router termination directly.
 func (r *Runtime) Run(ctx context.Context) error {
 	if err := r.router.Run(ctx); err != nil {
-		return fmt.Errorf("run Watermill router: %w", err)
+		return errs.Wrapf(err, "run Watermill router")
 	}
 	return nil
 }

@@ -22,6 +22,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/logging"
 	"hexletbasics/internal/telemetry"
 )
 
@@ -50,7 +51,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	require.NoError(t, err)
 
 	var logs bytes.Buffer
-	logger := slog.New(slog.NewJSONHandler(&logs, nil))
+	logger := logging.NewTo(&logs, slog.LevelInfo)
 	transport := &sentry.MockTransport{}
 	client, err := sentry.NewClient(sentry.ClientOptions{
 		Dsn:       "https://public@example.com/1",
@@ -87,6 +88,20 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	assert.Equal(t, cause.Error(), events[0].Exception[0].Value)
 	assert.Equal(t, span.SpanContext().TraceID().String(), events[0].Tags["trace_id"])
 	assert.Equal(t, span.SpanContext().SpanID().String(), events[0].Tags["span_id"])
+}
+
+func TestAPIErrorHandlerLogsOopsAttributesOfUnexpectedErrors(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+
+	var logs bytes.Buffer
+	handler := handlers.NewAPIErrorHandler(translator, logging.NewTo(&logs, slog.LevelInfo))
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/courses/3", nil)
+	cause := oops.In("courses").With("course_id", 3).Wrapf(errors.New("boom"), "load course")
+	handler.Write(t.Context(), httptest.NewRecorder(), request, cause)
+
+	assert.Contains(t, logs.String(), `"course_id":3`)
+	assert.Contains(t, logs.String(), `"status":500`)
 }
 
 func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {

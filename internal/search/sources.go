@@ -185,7 +185,7 @@ func (l landingPages) snippets(ctx context.Context, m match, ids []int) (map[int
 	for _, row := range rows {
 		value, err := row.Value("snippet")
 		if err != nil {
-			return nil, fmt.Errorf("read snippet: %w", err)
+			return nil, errs.Wrapf(err, "read snippet")
 		}
 		out[row.ID] = textOf(value)
 	}
@@ -331,7 +331,7 @@ func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]stri
 	for _, row := range rows {
 		value, err := row.Value("snippet")
 		if err != nil {
-			return nil, fmt.Errorf("read snippet: %w", err)
+			return nil, errs.Wrapf(err, "read snippet")
 		}
 		out[row.ID] = textOf(value)
 	}
@@ -410,7 +410,7 @@ func (p posts) snippets(ctx context.Context, m match, ids []int) (map[int]string
 	for _, row := range rows {
 		value, err := row.Value("snippet")
 		if err != nil {
-			return nil, fmt.Errorf("read snippet: %w", err)
+			return nil, errs.Wrapf(err, "read snippet")
 		}
 		out[row.ID] = textOf(value)
 	}

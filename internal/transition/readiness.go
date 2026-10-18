@@ -6,6 +6,9 @@ package transition
 // state all the same, and changes only through its own operations.
 type Readiness string
 
+// Vocabulary names this set of states for an adapter that words a refused move.
+func (Readiness) Vocabulary() string { return "course_readiness" }
+
 const (
 	ReadinessDraft         Readiness = "draft"
 	ReadinessInDevelopment Readiness = "in_development"

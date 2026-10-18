@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"net/http"
 	"strings"
 	"testing"
 
@@ -22,17 +23,13 @@ func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
-	res, err := h.Client.UpdatePassword(t.Context(),
+	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: strings.Repeat("a", 100)}, api.UpdatePasswordParams{Token: token})
-	require.NoError(t, err)
-
-	refusal, ok := res.(*api.ValidationError)
-	require.True(t, ok, "got %T", res)
-	assert.Contains(t, refusal.Errors, "password")
+	problem := problemWithStatus(t, err, http.StatusUnprocessableEntity)
+	assert.Contains(t, problem.Response.Errors.Value, "password")
 	assert.True(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 
-	res, err = h.Client.UpdatePassword(t.Context(),
+	_, err = h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "a-password-that-fits"}, api.UpdatePasswordParams{Token: token})
 	require.NoError(t, err)
-	assert.IsType(t, &api.UserHeaders{}, res)
 }

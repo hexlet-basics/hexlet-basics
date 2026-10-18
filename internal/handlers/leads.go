@@ -16,7 +16,7 @@ import (
 // `leads#create`) and raises LeadCreated for amoCRM. The first-visit
 // attribution comes from the form and the IP from the request, since ahoy is
 // not ported (ADR-0015); the recorder owns the write and the event together.
-func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (api.CreateLeadRes, error) {
+func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (*api.Lead, error) {
 	u := MustAuthenticatedUser(ctx)
 
 	ip, hasIP := ClientIP(ctx)
@@ -55,7 +55,7 @@ func firstVisitOf(input api.OptNilFirstVisit) leadcapture.FirstVisit {
 
 // AdminListLeads returns a page of sales leads, newest first. The admin surface
 // is read-only (legacy `admin/leads#index`), so there is no get/update path.
-func (s *Server) AdminListLeads(ctx context.Context, params api.AdminListLeadsParams) (api.AdminListLeadsRes, error) {
+func (s *Server) AdminListLeads(ctx context.Context, params api.AdminListLeadsParams) (*api.LeadPage, error) {
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.Lead, int, error) {
 			return s.leadDirectory.List(ctx, params.Q.Value, page)

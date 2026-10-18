@@ -2,7 +2,7 @@ package account
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
@@ -11,7 +11,7 @@ import (
 
 // ErrLastAdmin refuses a change that would leave the system with no
 // administrator: nobody could then manage users, staff or roles.
-var ErrLastAdmin = fmt.Errorf("%w: the last administrator cannot be removed", domain.ErrConflict)
+var ErrLastAdmin = errors.Join(domain.ErrConflict, errors.New("the last administrator cannot be removed"))
 
 // EnsureAnotherAdmin is called before userID stops being an administrator
 // (demoted, deleted or removing their own account). It returns ErrLastAdmin when

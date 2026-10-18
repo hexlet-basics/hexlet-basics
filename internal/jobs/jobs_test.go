@@ -29,3 +29,18 @@ func TestJobKindsLandOnTheirQueues(t *testing.T) {
 		require.Equal(t, queue, res.Job.Queue, args.Kind())
 	}
 }
+
+// Every kind states how many tries it gets and why, instead of inheriting
+// River's 25 (weeks of retries).
+func TestJobKindsStateTheirAttempts(t *testing.T) {
+	for args, attempts := range map[river.JobArgs]int{
+		jobs.AccountEmailArgs{}:          5,
+		jobs.AmoCRMLeadArgs{}:            8,
+		jobs.ExerciseLoaderArgs{}:        1,
+		jobs.ReviewLessonArgs{}:          3,
+		jobs.SuggestRelatedCoursesArgs{}: 3,
+	} {
+		opts := args.(river.JobArgsWithInsertOpts).InsertOpts()
+		require.Equal(t, attempts, opts.MaxAttempts, args.Kind())
+	}
+}

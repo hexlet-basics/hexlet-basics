@@ -25,16 +25,12 @@ func TestSignUpRefusesATakenEmail(t *testing.T) {
 	taken := h.DB.User.Query().FirstX(t.Context())
 	before := h.DB.User.Query().CountX(t.Context())
 
-	res, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
+	_, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
 		Email:    *taken.Email,
 		Password: "correct horse battery staple",
 	})
-	require.NoError(t, err)
-
-	refusal, ok := res.(*api.ValidationError)
-	require.True(t, ok, "got %T", res)
-	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
-	assert.Contains(t, refusal.Errors, "email")
+	problem := problemWithStatus(t, err, http.StatusUnprocessableEntity)
+	assert.Contains(t, problem.Response.Errors.Value, "email")
 	assert.Equal(t, before, h.DB.User.Query().CountX(t.Context()))
 }
 
@@ -44,15 +40,12 @@ func TestSignUpRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
-	res, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
+	_, err := h.Client.CreateUser(t.Context(), &api.SignUpInput{
 		Email:    "long-password@example.com",
 		Password: strings.Repeat("a", 100),
 	})
-	require.NoError(t, err)
-
-	refusal, ok := res.(*api.ValidationError)
-	require.True(t, ok, "got %T", res)
-	assert.Contains(t, refusal.Errors, "password")
+	problem := problemWithStatus(t, err, http.StatusUnprocessableEntity)
+	assert.Contains(t, problem.Response.Errors.Value, "password")
 	assert.False(t, h.DB.User.Query().Where(user.Email("long-password@example.com")).ExistX(t.Context()))
 }
 

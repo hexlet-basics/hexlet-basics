@@ -21,7 +21,6 @@ package audit
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 	"time"
 
@@ -220,19 +219,19 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	if e.Reads != nil {
 		raw, err := json.Marshal(e.Reads)
 		if err != nil {
-			return fmt.Errorf("encode audit reads: %w", err)
+			return errs.Wrapf(err, "encode audit reads")
 		}
 		create.SetReads(raw)
 	}
 	if len(changes) > 0 {
 		raw, err := json.Marshal(changes)
 		if err != nil {
-			return fmt.Errorf("encode audit changes: %w", err)
+			return errs.Wrapf(err, "encode audit changes")
 		}
 		create.SetChanges(raw)
 	}
 	if err := create.Exec(ctx); err != nil {
-		return fmt.Errorf("write audit record for %s: %w", e.Operation, err)
+		return errs.With("operation", e.Operation).Wrapf(err, "write audit record")
 	}
 	return nil
 }

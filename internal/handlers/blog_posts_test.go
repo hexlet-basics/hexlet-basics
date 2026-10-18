@@ -297,7 +297,7 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+	err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	assert.Equal(t,
@@ -310,7 +310,7 @@ func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
+	err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})

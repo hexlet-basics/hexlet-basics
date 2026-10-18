@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/xml"
-	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
@@ -139,7 +138,7 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 	enc := xml.NewEncoder(&buf)
 	enc.Indent("", "  ")
 	if err := enc.Encode(doc); err != nil {
-		return nil, fmt.Errorf("encode yandex feed: %w", err)
+		return nil, errs.Wrapf(err, "encode yandex feed")
 	}
 	buf.WriteString("\n")
 	return buf.Bytes(), nil
@@ -154,7 +153,7 @@ func (y *Yandex) categories(ctx context.Context) ([]set, error) {
 		Order(coursecategory.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load feed categories: %w", err)
+		return nil, errs.Wrapf(err, "load feed categories")
 	}
 	return lo.Map(rows, func(c *ent.CourseCategory, _ int) set {
 		return set{
@@ -182,7 +181,7 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 		Order(courselandingpage.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load feed landing pages: %w", err)
+		return nil, errs.Wrapf(err, "load feed landing pages")
 	}
 
 	modules, err := y.modules(ctx, pages)
@@ -223,7 +222,7 @@ func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (m
 
 	rows, err := curriculum.Modules(ctx, y.db, feedLocale, versionIDs...)
 	if err != nil {
-		return nil, fmt.Errorf("load feed modules: %w", err)
+		return nil, errs.Wrapf(err, "load feed modules")
 	}
 	return lo.GroupBy(rows, func(m *ent.CourseModuleTranslation) int { return m.CourseVersionID }), nil
 }

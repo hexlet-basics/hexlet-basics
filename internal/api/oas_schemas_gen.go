@@ -59,595 +59,35 @@ func (s *AdjacentLessons) SetNext(val NilLessonRef) {
 	s.Next = val
 }
 
-type AdminArchiveBannerForbidden ProblemDetails
-
-func (*AdminArchiveBannerForbidden) adminArchiveBannerRes() {}
-
-type AdminArchiveBannerUnauthorized ProblemDetails
-
-func (*AdminArchiveBannerUnauthorized) adminArchiveBannerRes() {}
-
-type AdminArchiveBlogPostForbidden ProblemDetails
-
-func (*AdminArchiveBlogPostForbidden) adminArchiveBlogPostRes() {}
-
-type AdminArchiveBlogPostUnauthorized ProblemDetails
-
-func (*AdminArchiveBlogPostUnauthorized) adminArchiveBlogPostRes() {}
-
-type AdminArchiveCourseLandingPageForbidden ProblemDetails
-
-func (*AdminArchiveCourseLandingPageForbidden) adminArchiveCourseLandingPageRes() {}
-
-type AdminArchiveCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminArchiveCourseLandingPageUnauthorized) adminArchiveCourseLandingPageRes() {}
-
-type AdminArchiveReviewForbidden ProblemDetails
-
-func (*AdminArchiveReviewForbidden) adminArchiveReviewRes() {}
-
-type AdminArchiveReviewUnauthorized ProblemDetails
-
-func (*AdminArchiveReviewUnauthorized) adminArchiveReviewRes() {}
-
-type AdminCreateBannerForbidden ProblemDetails
-
-func (*AdminCreateBannerForbidden) adminCreateBannerRes() {}
-
-type AdminCreateBannerUnauthorized ProblemDetails
-
-func (*AdminCreateBannerUnauthorized) adminCreateBannerRes() {}
-
-type AdminCreateBlogPostForbidden ProblemDetails
-
-func (*AdminCreateBlogPostForbidden) adminCreateBlogPostRes() {}
-
-type AdminCreateBlogPostUnauthorized ProblemDetails
-
-func (*AdminCreateBlogPostUnauthorized) adminCreateBlogPostRes() {}
-
-type AdminCreateCategoryQnaItemForbidden ProblemDetails
-
-func (*AdminCreateCategoryQnaItemForbidden) adminCreateCategoryQnaItemRes() {}
-
-type AdminCreateCategoryQnaItemUnauthorized ProblemDetails
-
-func (*AdminCreateCategoryQnaItemUnauthorized) adminCreateCategoryQnaItemRes() {}
-
-type AdminCreateCourseCategoryForbidden ProblemDetails
-
-func (*AdminCreateCourseCategoryForbidden) adminCreateCourseCategoryRes() {}
-
-type AdminCreateCourseCategoryUnauthorized ProblemDetails
-
-func (*AdminCreateCourseCategoryUnauthorized) adminCreateCourseCategoryRes() {}
-
-type AdminCreateCourseForbidden ProblemDetails
-
-func (*AdminCreateCourseForbidden) adminCreateCourseRes() {}
-
-type AdminCreateCourseLandingPageForbidden ProblemDetails
-
-func (*AdminCreateCourseLandingPageForbidden) adminCreateCourseLandingPageRes() {}
-
-type AdminCreateCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminCreateCourseLandingPageUnauthorized) adminCreateCourseLandingPageRes() {}
-
-type AdminCreateCourseUnauthorized ProblemDetails
-
-func (*AdminCreateCourseUnauthorized) adminCreateCourseRes() {}
-
-type AdminCreateCourseVersionForbidden ProblemDetails
-
-func (*AdminCreateCourseVersionForbidden) adminCreateCourseVersionRes() {}
-
-type AdminCreateCourseVersionUnauthorized ProblemDetails
-
-func (*AdminCreateCourseVersionUnauthorized) adminCreateCourseVersionRes() {}
-
-type AdminCreateLandingPageQnaItemForbidden ProblemDetails
-
-func (*AdminCreateLandingPageQnaItemForbidden) adminCreateLandingPageQnaItemRes() {}
-
-type AdminCreateLandingPageQnaItemUnauthorized ProblemDetails
-
-func (*AdminCreateLandingPageQnaItemUnauthorized) adminCreateLandingPageQnaItemRes() {}
-
-type AdminCreateReviewForbidden ProblemDetails
-
-func (*AdminCreateReviewForbidden) adminCreateReviewRes() {}
-
-type AdminCreateReviewUnauthorized ProblemDetails
-
-func (*AdminCreateReviewUnauthorized) adminCreateReviewRes() {}
-
-type AdminCreateRoleForbidden ProblemDetails
-
-func (*AdminCreateRoleForbidden) adminCreateRoleRes() {}
-
-type AdminCreateRoleUnauthorized ProblemDetails
-
-func (*AdminCreateRoleUnauthorized) adminCreateRoleRes() {}
-
-type AdminCreateStaffMemberForbidden ProblemDetails
-
-func (*AdminCreateStaffMemberForbidden) adminCreateStaffMemberRes() {}
-
-type AdminCreateStaffMemberUnauthorized ProblemDetails
-
-func (*AdminCreateStaffMemberUnauthorized) adminCreateStaffMemberRes() {}
-
-type AdminCreateUserForbidden ProblemDetails
-
-func (*AdminCreateUserForbidden) adminCreateUserRes() {}
-
-type AdminCreateUserUnauthorized ProblemDetails
-
-func (*AdminCreateUserUnauthorized) adminCreateUserRes() {}
-
-type AdminDeleteBannerForbidden ProblemDetails
-
-func (*AdminDeleteBannerForbidden) adminDeleteBannerRes() {}
-
 // AdminDeleteBannerNoContent is response for AdminDeleteBanner operation.
 type AdminDeleteBannerNoContent struct{}
-
-func (*AdminDeleteBannerNoContent) adminDeleteBannerRes() {}
-
-type AdminDeleteBannerUnauthorized ProblemDetails
-
-func (*AdminDeleteBannerUnauthorized) adminDeleteBannerRes() {}
-
-type AdminDeleteBlogPostForbidden ProblemDetails
-
-func (*AdminDeleteBlogPostForbidden) adminDeleteBlogPostRes() {}
 
 // AdminDeleteBlogPostNoContent is response for AdminDeleteBlogPost operation.
 type AdminDeleteBlogPostNoContent struct{}
 
-func (*AdminDeleteBlogPostNoContent) adminDeleteBlogPostRes() {}
-
-type AdminDeleteBlogPostUnauthorized ProblemDetails
-
-func (*AdminDeleteBlogPostUnauthorized) adminDeleteBlogPostRes() {}
-
-type AdminDeleteCategoryQnaItemForbidden ProblemDetails
-
-func (*AdminDeleteCategoryQnaItemForbidden) adminDeleteCategoryQnaItemRes() {}
-
 // AdminDeleteCategoryQnaItemNoContent is response for AdminDeleteCategoryQnaItem operation.
 type AdminDeleteCategoryQnaItemNoContent struct{}
-
-func (*AdminDeleteCategoryQnaItemNoContent) adminDeleteCategoryQnaItemRes() {}
-
-type AdminDeleteCategoryQnaItemUnauthorized ProblemDetails
-
-func (*AdminDeleteCategoryQnaItemUnauthorized) adminDeleteCategoryQnaItemRes() {}
-
-type AdminDeleteCourseCategoryForbidden ProblemDetails
-
-func (*AdminDeleteCourseCategoryForbidden) adminDeleteCourseCategoryRes() {}
 
 // AdminDeleteCourseCategoryNoContent is response for AdminDeleteCourseCategory operation.
 type AdminDeleteCourseCategoryNoContent struct{}
 
-func (*AdminDeleteCourseCategoryNoContent) adminDeleteCourseCategoryRes() {}
-
-type AdminDeleteCourseCategoryUnauthorized ProblemDetails
-
-func (*AdminDeleteCourseCategoryUnauthorized) adminDeleteCourseCategoryRes() {}
-
-type AdminDeleteCourseLandingPageForbidden ProblemDetails
-
-func (*AdminDeleteCourseLandingPageForbidden) adminDeleteCourseLandingPageRes() {}
-
 // AdminDeleteCourseLandingPageNoContent is response for AdminDeleteCourseLandingPage operation.
 type AdminDeleteCourseLandingPageNoContent struct{}
-
-func (*AdminDeleteCourseLandingPageNoContent) adminDeleteCourseLandingPageRes() {}
-
-type AdminDeleteCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminDeleteCourseLandingPageUnauthorized) adminDeleteCourseLandingPageRes() {}
-
-type AdminDeleteLandingPageQnaItemForbidden ProblemDetails
-
-func (*AdminDeleteLandingPageQnaItemForbidden) adminDeleteLandingPageQnaItemRes() {}
 
 // AdminDeleteLandingPageQnaItemNoContent is response for AdminDeleteLandingPageQnaItem operation.
 type AdminDeleteLandingPageQnaItemNoContent struct{}
 
-func (*AdminDeleteLandingPageQnaItemNoContent) adminDeleteLandingPageQnaItemRes() {}
-
-type AdminDeleteLandingPageQnaItemUnauthorized ProblemDetails
-
-func (*AdminDeleteLandingPageQnaItemUnauthorized) adminDeleteLandingPageQnaItemRes() {}
-
-type AdminDeleteReviewForbidden ProblemDetails
-
-func (*AdminDeleteReviewForbidden) adminDeleteReviewRes() {}
-
 // AdminDeleteReviewNoContent is response for AdminDeleteReview operation.
 type AdminDeleteReviewNoContent struct{}
-
-func (*AdminDeleteReviewNoContent) adminDeleteReviewRes() {}
-
-type AdminDeleteReviewUnauthorized ProblemDetails
-
-func (*AdminDeleteReviewUnauthorized) adminDeleteReviewRes() {}
-
-type AdminDeleteRoleForbidden ProblemDetails
-
-func (*AdminDeleteRoleForbidden) adminDeleteRoleRes() {}
 
 // AdminDeleteRoleNoContent is response for AdminDeleteRole operation.
 type AdminDeleteRoleNoContent struct{}
 
-func (*AdminDeleteRoleNoContent) adminDeleteRoleRes() {}
-
-type AdminDeleteRoleUnauthorized ProblemDetails
-
-func (*AdminDeleteRoleUnauthorized) adminDeleteRoleRes() {}
-
-type AdminDeleteStaffMemberForbidden ProblemDetails
-
-func (*AdminDeleteStaffMemberForbidden) adminDeleteStaffMemberRes() {}
-
 // AdminDeleteStaffMemberNoContent is response for AdminDeleteStaffMember operation.
 type AdminDeleteStaffMemberNoContent struct{}
 
-func (*AdminDeleteStaffMemberNoContent) adminDeleteStaffMemberRes() {}
-
-type AdminDeleteStaffMemberUnauthorized ProblemDetails
-
-func (*AdminDeleteStaffMemberUnauthorized) adminDeleteStaffMemberRes() {}
-
-type AdminDeleteUserForbidden ProblemDetails
-
-func (*AdminDeleteUserForbidden) adminDeleteUserRes() {}
-
 // AdminDeleteUserNoContent is response for AdminDeleteUser operation.
 type AdminDeleteUserNoContent struct{}
-
-func (*AdminDeleteUserNoContent) adminDeleteUserRes() {}
-
-type AdminDeleteUserUnauthorized ProblemDetails
-
-func (*AdminDeleteUserUnauthorized) adminDeleteUserRes() {}
-
-type AdminFetchForbidden ProblemDetails
-
-func (*AdminFetchForbidden) adminFetchRes() {}
-
-type AdminFetchUnauthorized ProblemDetails
-
-func (*AdminFetchUnauthorized) adminFetchRes() {}
-
-type AdminGetBannerForbidden ProblemDetails
-
-func (*AdminGetBannerForbidden) adminGetBannerRes() {}
-
-type AdminGetBannerUnauthorized ProblemDetails
-
-func (*AdminGetBannerUnauthorized) adminGetBannerRes() {}
-
-type AdminGetBlogPostForbidden ProblemDetails
-
-func (*AdminGetBlogPostForbidden) adminGetBlogPostRes() {}
-
-type AdminGetBlogPostUnauthorized ProblemDetails
-
-func (*AdminGetBlogPostUnauthorized) adminGetBlogPostRes() {}
-
-type AdminGetCourseCategoryForbidden ProblemDetails
-
-func (*AdminGetCourseCategoryForbidden) adminGetCourseCategoryRes() {}
-
-type AdminGetCourseCategoryUnauthorized ProblemDetails
-
-func (*AdminGetCourseCategoryUnauthorized) adminGetCourseCategoryRes() {}
-
-type AdminGetCourseForbidden ProblemDetails
-
-func (*AdminGetCourseForbidden) adminGetCourseRes() {}
-
-type AdminGetCourseLandingPageForbidden ProblemDetails
-
-func (*AdminGetCourseLandingPageForbidden) adminGetCourseLandingPageRes() {}
-
-type AdminGetCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminGetCourseLandingPageUnauthorized) adminGetCourseLandingPageRes() {}
-
-type AdminGetCourseUnauthorized ProblemDetails
-
-func (*AdminGetCourseUnauthorized) adminGetCourseRes() {}
-
-type AdminGetManagementUserForbidden ProblemDetails
-
-func (*AdminGetManagementUserForbidden) adminGetManagementUserRes() {}
-
-type AdminGetManagementUserUnauthorized ProblemDetails
-
-func (*AdminGetManagementUserUnauthorized) adminGetManagementUserRes() {}
-
-type AdminGetMyCapabilitiesForbidden ProblemDetails
-
-func (*AdminGetMyCapabilitiesForbidden) adminGetMyCapabilitiesRes() {}
-
-type AdminGetMyCapabilitiesUnauthorized ProblemDetails
-
-func (*AdminGetMyCapabilitiesUnauthorized) adminGetMyCapabilitiesRes() {}
-
-type AdminGetReviewForbidden ProblemDetails
-
-func (*AdminGetReviewForbidden) adminGetReviewRes() {}
-
-type AdminGetReviewUnauthorized ProblemDetails
-
-func (*AdminGetReviewUnauthorized) adminGetReviewRes() {}
-
-type AdminGetRoleForbidden ProblemDetails
-
-func (*AdminGetRoleForbidden) adminGetRoleRes() {}
-
-type AdminGetRolePermissionsForbidden ProblemDetails
-
-func (*AdminGetRolePermissionsForbidden) adminGetRolePermissionsRes() {}
-
-type AdminGetRolePermissionsUnauthorized ProblemDetails
-
-func (*AdminGetRolePermissionsUnauthorized) adminGetRolePermissionsRes() {}
-
-type AdminGetRoleUnauthorized ProblemDetails
-
-func (*AdminGetRoleUnauthorized) adminGetRoleRes() {}
-
-type AdminGetStaffMemberForbidden ProblemDetails
-
-func (*AdminGetStaffMemberForbidden) adminGetStaffMemberRes() {}
-
-type AdminGetStaffMemberUnauthorized ProblemDetails
-
-func (*AdminGetStaffMemberUnauthorized) adminGetStaffMemberRes() {}
-
-type AdminGetUserForbidden ProblemDetails
-
-func (*AdminGetUserForbidden) adminGetUserRes() {}
-
-type AdminGetUserUnauthorized ProblemDetails
-
-func (*AdminGetUserUnauthorized) adminGetUserRes() {}
-
-type AdminListAuditRecordsForbidden ProblemDetails
-
-func (*AdminListAuditRecordsForbidden) adminListAuditRecordsRes() {}
-
-type AdminListAuditRecordsUnauthorized ProblemDetails
-
-func (*AdminListAuditRecordsUnauthorized) adminListAuditRecordsRes() {}
-
-type AdminListBannersForbidden ProblemDetails
-
-func (*AdminListBannersForbidden) adminListBannersRes() {}
-
-type AdminListBannersUnauthorized ProblemDetails
-
-func (*AdminListBannersUnauthorized) adminListBannersRes() {}
-
-type AdminListBlogPostsForbidden ProblemDetails
-
-func (*AdminListBlogPostsForbidden) adminListBlogPostsRes() {}
-
-type AdminListBlogPostsUnauthorized ProblemDetails
-
-func (*AdminListBlogPostsUnauthorized) adminListBlogPostsRes() {}
-
-type AdminListCategoryQnaItemsForbidden ProblemDetails
-
-func (*AdminListCategoryQnaItemsForbidden) adminListCategoryQnaItemsRes() {}
-
-type AdminListCategoryQnaItemsOKApplicationJSON []QnaItem
-
-func (*AdminListCategoryQnaItemsOKApplicationJSON) adminListCategoryQnaItemsRes() {}
-
-type AdminListCategoryQnaItemsUnauthorized ProblemDetails
-
-func (*AdminListCategoryQnaItemsUnauthorized) adminListCategoryQnaItemsRes() {}
-
-type AdminListCourseCategoriesForbidden ProblemDetails
-
-func (*AdminListCourseCategoriesForbidden) adminListCourseCategoriesRes() {}
-
-type AdminListCourseCategoriesUnauthorized ProblemDetails
-
-func (*AdminListCourseCategoriesUnauthorized) adminListCourseCategoriesRes() {}
-
-type AdminListCourseLandingPagesForbidden ProblemDetails
-
-func (*AdminListCourseLandingPagesForbidden) adminListCourseLandingPagesRes() {}
-
-type AdminListCourseLandingPagesUnauthorized ProblemDetails
-
-func (*AdminListCourseLandingPagesUnauthorized) adminListCourseLandingPagesRes() {}
-
-type AdminListCourseLessonReviewsForbidden ProblemDetails
-
-func (*AdminListCourseLessonReviewsForbidden) adminListCourseLessonReviewsRes() {}
-
-type AdminListCourseLessonReviewsUnauthorized ProblemDetails
-
-func (*AdminListCourseLessonReviewsUnauthorized) adminListCourseLessonReviewsRes() {}
-
-type AdminListCourseLessonsForbidden ProblemDetails
-
-func (*AdminListCourseLessonsForbidden) adminListCourseLessonsRes() {}
-
-type AdminListCourseLessonsUnauthorized ProblemDetails
-
-func (*AdminListCourseLessonsUnauthorized) adminListCourseLessonsRes() {}
-
-type AdminListCourseOptionsForbidden ProblemDetails
-
-func (*AdminListCourseOptionsForbidden) adminListCourseOptionsRes() {}
-
-type AdminListCourseOptionsOKApplicationJSON []CourseOption
-
-func (*AdminListCourseOptionsOKApplicationJSON) adminListCourseOptionsRes() {}
-
-type AdminListCourseOptionsUnauthorized ProblemDetails
-
-func (*AdminListCourseOptionsUnauthorized) adminListCourseOptionsRes() {}
-
-type AdminListCoursesForbidden ProblemDetails
-
-func (*AdminListCoursesForbidden) adminListCoursesRes() {}
-
-type AdminListCoursesUnauthorized ProblemDetails
-
-func (*AdminListCoursesUnauthorized) adminListCoursesRes() {}
-
-type AdminListLandingPageQnaItemsForbidden ProblemDetails
-
-func (*AdminListLandingPageQnaItemsForbidden) adminListLandingPageQnaItemsRes() {}
-
-type AdminListLandingPageQnaItemsOKApplicationJSON []QnaItem
-
-func (*AdminListLandingPageQnaItemsOKApplicationJSON) adminListLandingPageQnaItemsRes() {}
-
-type AdminListLandingPageQnaItemsUnauthorized ProblemDetails
-
-func (*AdminListLandingPageQnaItemsUnauthorized) adminListLandingPageQnaItemsRes() {}
-
-type AdminListLeadsForbidden ProblemDetails
-
-func (*AdminListLeadsForbidden) adminListLeadsRes() {}
-
-type AdminListLeadsUnauthorized ProblemDetails
-
-func (*AdminListLeadsUnauthorized) adminListLeadsRes() {}
-
-type AdminListLessonProgressForbidden ProblemDetails
-
-func (*AdminListLessonProgressForbidden) adminListLessonProgressRes() {}
-
-type AdminListLessonProgressUnauthorized ProblemDetails
-
-func (*AdminListLessonProgressUnauthorized) adminListLessonProgressRes() {}
-
-type AdminListManagementUsersForbidden ProblemDetails
-
-func (*AdminListManagementUsersForbidden) adminListManagementUsersRes() {}
-
-type AdminListManagementUsersUnauthorized ProblemDetails
-
-func (*AdminListManagementUsersUnauthorized) adminListManagementUsersRes() {}
-
-type AdminListMessagesForbidden ProblemDetails
-
-func (*AdminListMessagesForbidden) adminListMessagesRes() {}
-
-type AdminListMessagesUnauthorized ProblemDetails
-
-func (*AdminListMessagesUnauthorized) adminListMessagesRes() {}
-
-type AdminListPermissionsForbidden ProblemDetails
-
-func (*AdminListPermissionsForbidden) adminListPermissionsRes() {}
-
-type AdminListPermissionsUnauthorized ProblemDetails
-
-func (*AdminListPermissionsUnauthorized) adminListPermissionsRes() {}
-
-type AdminListReviewsForbidden ProblemDetails
-
-func (*AdminListReviewsForbidden) adminListReviewsRes() {}
-
-type AdminListReviewsUnauthorized ProblemDetails
-
-func (*AdminListReviewsUnauthorized) adminListReviewsRes() {}
-
-type AdminListRolesForbidden ProblemDetails
-
-func (*AdminListRolesForbidden) adminListRolesRes() {}
-
-type AdminListRolesUnauthorized ProblemDetails
-
-func (*AdminListRolesUnauthorized) adminListRolesRes() {}
-
-type AdminListStaffMembersForbidden ProblemDetails
-
-func (*AdminListStaffMembersForbidden) adminListStaffMembersRes() {}
-
-type AdminListStaffMembersUnauthorized ProblemDetails
-
-func (*AdminListStaffMembersUnauthorized) adminListStaffMembersRes() {}
-
-type AdminListUsersForbidden ProblemDetails
-
-func (*AdminListUsersForbidden) adminListUsersRes() {}
-
-type AdminListUsersUnauthorized ProblemDetails
-
-func (*AdminListUsersUnauthorized) adminListUsersRes() {}
-
-type AdminMarkCourseCompletedForbidden ProblemDetails
-
-func (*AdminMarkCourseCompletedForbidden) adminMarkCourseCompletedRes() {}
-
-type AdminMarkCourseCompletedUnauthorized ProblemDetails
-
-func (*AdminMarkCourseCompletedUnauthorized) adminMarkCourseCompletedRes() {}
-
-type AdminMarkCourseDraftForbidden ProblemDetails
-
-func (*AdminMarkCourseDraftForbidden) adminMarkCourseDraftRes() {}
-
-type AdminMarkCourseDraftUnauthorized ProblemDetails
-
-func (*AdminMarkCourseDraftUnauthorized) adminMarkCourseDraftRes() {}
-
-type AdminMarkCourseInDevelopmentForbidden ProblemDetails
-
-func (*AdminMarkCourseInDevelopmentForbidden) adminMarkCourseInDevelopmentRes() {}
-
-type AdminMarkCourseInDevelopmentUnauthorized ProblemDetails
-
-func (*AdminMarkCourseInDevelopmentUnauthorized) adminMarkCourseInDevelopmentRes() {}
-
-type AdminPublishBannerForbidden ProblemDetails
-
-func (*AdminPublishBannerForbidden) adminPublishBannerRes() {}
-
-type AdminPublishBannerUnauthorized ProblemDetails
-
-func (*AdminPublishBannerUnauthorized) adminPublishBannerRes() {}
-
-type AdminPublishBlogPostForbidden ProblemDetails
-
-func (*AdminPublishBlogPostForbidden) adminPublishBlogPostRes() {}
-
-type AdminPublishBlogPostUnauthorized ProblemDetails
-
-func (*AdminPublishBlogPostUnauthorized) adminPublishBlogPostRes() {}
-
-type AdminPublishCourseLandingPageForbidden ProblemDetails
-
-func (*AdminPublishCourseLandingPageForbidden) adminPublishCourseLandingPageRes() {}
-
-type AdminPublishCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminPublishCourseLandingPageUnauthorized) adminPublishCourseLandingPageRes() {}
-
-type AdminPublishReviewForbidden ProblemDetails
-
-func (*AdminPublishReviewForbidden) adminPublishReviewRes() {}
-
-type AdminPublishReviewUnauthorized ProblemDetails
-
-func (*AdminPublishReviewUnauthorized) adminPublishReviewRes() {}
 
 // One record as an editor reads it, whatever state it is in.
 // Ref: #/components/schemas/AdminRecord
@@ -710,8 +150,6 @@ func (s *AdminRecord) SetPath(val string) {
 func (s *AdminRecord) SetMetadata(val AdminRecordMetadata) {
 	s.Metadata = val
 }
-
-func (*AdminRecord) adminFetchRes() {}
 
 // What is known about how published a record is.
 // Ref: #/components/schemas/AdminRecordMetadata
@@ -812,35 +250,11 @@ func (s *AdminRecordMetadata) SetPosition(val OptInt32) {
 	s.Position = val
 }
 
-type AdminReviewCourseForbidden ProblemDetails
-
-func (*AdminReviewCourseForbidden) adminReviewCourseRes() {}
-
-type AdminReviewCourseLessonForbidden ProblemDetails
-
-func (*AdminReviewCourseLessonForbidden) adminReviewCourseLessonRes() {}
-
 // AdminReviewCourseLessonNoContent is response for AdminReviewCourseLesson operation.
 type AdminReviewCourseLessonNoContent struct{}
 
-func (*AdminReviewCourseLessonNoContent) adminReviewCourseLessonRes() {}
-
-type AdminReviewCourseLessonUnauthorized ProblemDetails
-
-func (*AdminReviewCourseLessonUnauthorized) adminReviewCourseLessonRes() {}
-
 // AdminReviewCourseNoContent is response for AdminReviewCourse operation.
 type AdminReviewCourseNoContent struct{}
-
-func (*AdminReviewCourseNoContent) adminReviewCourseRes() {}
-
-type AdminReviewCourseUnauthorized ProblemDetails
-
-func (*AdminReviewCourseUnauthorized) adminReviewCourseRes() {}
-
-type AdminSearchForbidden ProblemDetails
-
-func (*AdminSearchForbidden) adminSearchRes() {}
 
 // One record the admin catalogue search found: a `SearchResult` that also says how published the
 // record is, because the admin search finds drafts too.
@@ -984,24 +398,6 @@ func (s *AdminSearchResultPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*AdminSearchResultPage) adminSearchRes() {}
-
-type AdminSearchUnauthorized ProblemDetails
-
-func (*AdminSearchUnauthorized) adminSearchRes() {}
-
-type AdminSearchUsersForbidden ProblemDetails
-
-func (*AdminSearchUsersForbidden) adminSearchUsersRes() {}
-
-type AdminSearchUsersOKApplicationJSON []UserCrud
-
-func (*AdminSearchUsersOKApplicationJSON) adminSearchUsersRes() {}
-
-type AdminSearchUsersUnauthorized ProblemDetails
-
-func (*AdminSearchUsersUnauthorized) adminSearchUsersRes() {}
-
 type AdminSession struct {
 	APIKey string
 	Roles  []string
@@ -1027,170 +423,8 @@ func (s *AdminSession) SetRoles(val []string) {
 	s.Roles = val
 }
 
-type AdminSetBlogPostRelatedCoursesForbidden ProblemDetails
-
-func (*AdminSetBlogPostRelatedCoursesForbidden) adminSetBlogPostRelatedCoursesRes() {}
-
-type AdminSetBlogPostRelatedCoursesUnauthorized ProblemDetails
-
-func (*AdminSetBlogPostRelatedCoursesUnauthorized) adminSetBlogPostRelatedCoursesRes() {}
-
-type AdminSuggestBlogPostRelatedCoursesForbidden ProblemDetails
-
-func (*AdminSuggestBlogPostRelatedCoursesForbidden) adminSuggestBlogPostRelatedCoursesRes() {}
-
 // AdminSuggestBlogPostRelatedCoursesNoContent is response for AdminSuggestBlogPostRelatedCourses operation.
 type AdminSuggestBlogPostRelatedCoursesNoContent struct{}
-
-func (*AdminSuggestBlogPostRelatedCoursesNoContent) adminSuggestBlogPostRelatedCoursesRes() {}
-
-type AdminSuggestBlogPostRelatedCoursesUnauthorized ProblemDetails
-
-func (*AdminSuggestBlogPostRelatedCoursesUnauthorized) adminSuggestBlogPostRelatedCoursesRes() {}
-
-type AdminUnpublishBannerForbidden ProblemDetails
-
-func (*AdminUnpublishBannerForbidden) adminUnpublishBannerRes() {}
-
-type AdminUnpublishBannerUnauthorized ProblemDetails
-
-func (*AdminUnpublishBannerUnauthorized) adminUnpublishBannerRes() {}
-
-type AdminUnpublishBlogPostForbidden ProblemDetails
-
-func (*AdminUnpublishBlogPostForbidden) adminUnpublishBlogPostRes() {}
-
-type AdminUnpublishBlogPostUnauthorized ProblemDetails
-
-func (*AdminUnpublishBlogPostUnauthorized) adminUnpublishBlogPostRes() {}
-
-type AdminUnpublishCourseLandingPageForbidden ProblemDetails
-
-func (*AdminUnpublishCourseLandingPageForbidden) adminUnpublishCourseLandingPageRes() {}
-
-type AdminUnpublishCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminUnpublishCourseLandingPageUnauthorized) adminUnpublishCourseLandingPageRes() {}
-
-type AdminUnpublishReviewForbidden ProblemDetails
-
-func (*AdminUnpublishReviewForbidden) adminUnpublishReviewRes() {}
-
-type AdminUnpublishReviewUnauthorized ProblemDetails
-
-func (*AdminUnpublishReviewUnauthorized) adminUnpublishReviewRes() {}
-
-type AdminUpdateBannerForbidden ProblemDetails
-
-func (*AdminUpdateBannerForbidden) adminUpdateBannerRes() {}
-
-type AdminUpdateBannerUnauthorized ProblemDetails
-
-func (*AdminUpdateBannerUnauthorized) adminUpdateBannerRes() {}
-
-type AdminUpdateBlogPostForbidden ProblemDetails
-
-func (*AdminUpdateBlogPostForbidden) adminUpdateBlogPostRes() {}
-
-type AdminUpdateBlogPostUnauthorized ProblemDetails
-
-func (*AdminUpdateBlogPostUnauthorized) adminUpdateBlogPostRes() {}
-
-type AdminUpdateCategoryQnaItemForbidden ProblemDetails
-
-func (*AdminUpdateCategoryQnaItemForbidden) adminUpdateCategoryQnaItemRes() {}
-
-type AdminUpdateCategoryQnaItemUnauthorized ProblemDetails
-
-func (*AdminUpdateCategoryQnaItemUnauthorized) adminUpdateCategoryQnaItemRes() {}
-
-type AdminUpdateCourseCategoryForbidden ProblemDetails
-
-func (*AdminUpdateCourseCategoryForbidden) adminUpdateCourseCategoryRes() {}
-
-type AdminUpdateCourseCategoryUnauthorized ProblemDetails
-
-func (*AdminUpdateCourseCategoryUnauthorized) adminUpdateCourseCategoryRes() {}
-
-type AdminUpdateCourseForbidden ProblemDetails
-
-func (*AdminUpdateCourseForbidden) adminUpdateCourseRes() {}
-
-type AdminUpdateCourseLandingPageForbidden ProblemDetails
-
-func (*AdminUpdateCourseLandingPageForbidden) adminUpdateCourseLandingPageRes() {}
-
-type AdminUpdateCourseLandingPageUnauthorized ProblemDetails
-
-func (*AdminUpdateCourseLandingPageUnauthorized) adminUpdateCourseLandingPageRes() {}
-
-type AdminUpdateCourseUnauthorized ProblemDetails
-
-func (*AdminUpdateCourseUnauthorized) adminUpdateCourseRes() {}
-
-type AdminUpdateLandingPageQnaItemForbidden ProblemDetails
-
-func (*AdminUpdateLandingPageQnaItemForbidden) adminUpdateLandingPageQnaItemRes() {}
-
-type AdminUpdateLandingPageQnaItemUnauthorized ProblemDetails
-
-func (*AdminUpdateLandingPageQnaItemUnauthorized) adminUpdateLandingPageQnaItemRes() {}
-
-type AdminUpdateManagementUserForbidden ProblemDetails
-
-func (*AdminUpdateManagementUserForbidden) adminUpdateManagementUserRes() {}
-
-type AdminUpdateManagementUserUnauthorized ProblemDetails
-
-func (*AdminUpdateManagementUserUnauthorized) adminUpdateManagementUserRes() {}
-
-type AdminUpdateReviewForbidden ProblemDetails
-
-func (*AdminUpdateReviewForbidden) adminUpdateReviewRes() {}
-
-type AdminUpdateReviewUnauthorized ProblemDetails
-
-func (*AdminUpdateReviewUnauthorized) adminUpdateReviewRes() {}
-
-type AdminUpdateRoleForbidden ProblemDetails
-
-func (*AdminUpdateRoleForbidden) adminUpdateRoleRes() {}
-
-type AdminUpdateRolePermissionsForbidden ProblemDetails
-
-func (*AdminUpdateRolePermissionsForbidden) adminUpdateRolePermissionsRes() {}
-
-type AdminUpdateRolePermissionsUnauthorized ProblemDetails
-
-func (*AdminUpdateRolePermissionsUnauthorized) adminUpdateRolePermissionsRes() {}
-
-type AdminUpdateRoleUnauthorized ProblemDetails
-
-func (*AdminUpdateRoleUnauthorized) adminUpdateRoleRes() {}
-
-type AdminUpdateStaffMemberForbidden ProblemDetails
-
-func (*AdminUpdateStaffMemberForbidden) adminUpdateStaffMemberRes() {}
-
-type AdminUpdateStaffMemberUnauthorized ProblemDetails
-
-func (*AdminUpdateStaffMemberUnauthorized) adminUpdateStaffMemberRes() {}
-
-type AdminUpdateUserForbidden ProblemDetails
-
-func (*AdminUpdateUserForbidden) adminUpdateUserRes() {}
-
-type AdminUpdateUserUnauthorized ProblemDetails
-
-func (*AdminUpdateUserUnauthorized) adminUpdateUserRes() {}
-
-type AdminUploadAttachmentForbidden ProblemDetails
-
-func (*AdminUploadAttachmentForbidden) adminUploadAttachmentRes() {}
-
-type AdminUploadAttachmentUnauthorized ProblemDetails
-
-func (*AdminUploadAttachmentUnauthorized) adminUploadAttachmentRes() {}
 
 // A prompt to the in-lesson assistant, carrying the editor context.
 // Ref: #/components/schemas/AssistantMessageInput
@@ -1289,8 +523,6 @@ func (s *Attachment) SetContentType(val string) {
 func (s *Attachment) SetByteSize(val int64) {
 	s.ByteSize = val
 }
-
-func (*Attachment) adminUploadAttachmentRes() {}
 
 // Ref: #/components/schemas/AttachmentUploadForm
 type AttachmentUploadFormMultipart struct {
@@ -1764,8 +996,6 @@ func (s *AuditRecordPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*AuditRecordPage) adminListAuditRecordsRes() {}
-
 type AuditRecordQueryChannel string
 
 const (
@@ -1910,13 +1140,6 @@ func (s *Banner) SetFinishesAt(val NilDateTime) {
 func (s *Banner) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
-
-func (*Banner) adminArchiveBannerRes()   {}
-func (*Banner) adminCreateBannerRes()    {}
-func (*Banner) adminGetBannerRes()       {}
-func (*Banner) adminPublishBannerRes()   {}
-func (*Banner) adminUnpublishBannerRes() {}
-func (*Banner) adminUpdateBannerRes()    {}
 
 // Banner display background.
 // Ref: #/components/schemas/BannerBackground
@@ -2136,8 +1359,6 @@ func (s *BannerPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*BannerPage) adminListBannersRes() {}
-
 // Banner publication state.
 // Ref: #/components/schemas/BannerState
 type BannerState string
@@ -2339,16 +1560,6 @@ func (s *BlogPost) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*BlogPost) adminArchiveBlogPostRes()           {}
-func (*BlogPost) adminCreateBlogPostRes()            {}
-func (*BlogPost) adminGetBlogPostRes()               {}
-func (*BlogPost) adminPublishBlogPostRes()           {}
-func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
-func (*BlogPost) adminUnpublishBlogPostRes()         {}
-func (*BlogPost) adminUpdateBlogPostRes()            {}
-func (*BlogPost) getNextBlogPostRes()                {}
-func (*BlogPost) likeBlogPostRes()                   {}
-
 // The input of a post: never its Publication State. A new post is a draft and the state changes only
 // through the publish, unpublish and archive operations.
 // Ref: #/components/schemas/BlogPostInput
@@ -2465,8 +1676,6 @@ func (s *BlogPostPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*BlogPostPage) adminListBlogPostsRes() {}
-
 // The set of courses promoted on a blog post.
 // Ref: #/components/schemas/BlogPostRelatedCoursesInput
 type BlogPostRelatedCoursesInput struct {
@@ -2574,8 +1783,6 @@ func (s *BlogPostView) SetRelatedLandingPages(val []CourseCatalogItem) {
 	s.RelatedLandingPages = val
 }
 
-func (*BlogPostView) getBlogPostRes() {}
-
 // The free book page (ru marketing funnel, legacy `books#show`).
 // Ref: #/components/schemas/BookView
 type BookView struct {
@@ -2623,8 +1830,6 @@ func (s *CheckLessonInput) SetVersionId(val int32) {
 
 // CheckPasswordResetTokenNoContent is response for CheckPasswordResetToken operation.
 type CheckPasswordResetTokenNoContent struct{}
-
-func (*CheckPasswordResetTokenNoContent) checkPasswordResetTokenRes() {}
 
 // One application the signed-in user has connected.
 // Ref: #/components/schemas/ConnectedApp
@@ -2706,8 +1911,6 @@ func (s *ConnectedApps) GetItems() []ConnectedApp {
 func (s *ConnectedApps) SetItems(val []ConnectedApp) {
 	s.Items = val
 }
-
-func (*ConnectedApps) listConnectedAppsRes() {}
 
 // A course (legacy: `Language`). Superset read model: the public catalog embeds it, admin course
 // screens read the full shape.
@@ -2902,13 +2105,6 @@ func (s *Course) SetCoverThumbVariant(val NilString) {
 	s.CoverThumbVariant = val
 }
 
-func (*Course) adminCreateCourseRes()            {}
-func (*Course) adminGetCourseRes()               {}
-func (*Course) adminMarkCourseCompletedRes()     {}
-func (*Course) adminMarkCourseDraftRes()         {}
-func (*Course) adminMarkCourseInDevelopmentRes() {}
-func (*Course) adminUpdateCourseRes()            {}
-
 // A catalog entry as shown on the courses index (legacy: `LanguageLandingPageForLists`). Embeds the
 // full course plus derived fields.
 // Ref: #/components/schemas/CourseCatalogItem
@@ -3098,10 +2294,6 @@ func (s *CourseCategory) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*CourseCategory) adminCreateCourseCategoryRes() {}
-func (*CourseCategory) adminGetCourseCategoryRes()    {}
-func (*CourseCategory) adminUpdateCourseCategoryRes() {}
-
 // Writable fields for creating or updating a course category.
 // Ref: #/components/schemas/CourseCategoryInput
 type CourseCategoryInput struct {
@@ -3204,8 +2396,6 @@ func (s *CourseCategoryPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*CourseCategoryPage) adminListCourseCategoriesRes() {}
-
 // A category page with the courses it groups.
 // Ref: #/components/schemas/CourseCategoryView
 type CourseCategoryView struct {
@@ -3246,8 +2436,6 @@ func (s *CourseCategoryView) SetLandingPages(val []CourseCatalogItem) {
 func (s *CourseCategoryView) SetQnaItems(val []QnaItem) {
 	s.QnaItems = val
 }
-
-func (*CourseCategoryView) getPublicCourseCategoryRes() {}
 
 // The input of a course: never its Readiness. A new course is a draft and the Readiness changes only
 // through the mark-as operations.
@@ -3584,13 +2772,6 @@ func (s *CourseLandingPage) SetEnrollmentsCount(val int32) {
 	s.EnrollmentsCount = val
 }
 
-func (*CourseLandingPage) adminArchiveCourseLandingPageRes()   {}
-func (*CourseLandingPage) adminCreateCourseLandingPageRes()    {}
-func (*CourseLandingPage) adminGetCourseLandingPageRes()       {}
-func (*CourseLandingPage) adminPublishCourseLandingPageRes()   {}
-func (*CourseLandingPage) adminUnpublishCourseLandingPageRes() {}
-func (*CourseLandingPage) adminUpdateCourseLandingPageRes()    {}
-
 // The input of a landing page: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/CourseLandingPageInput
 type CourseLandingPageInput struct {
@@ -3847,8 +3028,6 @@ func (s *CourseLandingPagePage) SetPage(val int32) {
 func (s *CourseLandingPagePage) SetPerPage(val int32) {
 	s.PerPage = val
 }
-
-func (*CourseLandingPagePage) adminListCourseLandingPagesRes() {}
 
 // How a course is meant to be learned.
 // Ref: #/components/schemas/CourseLearnAs
@@ -4225,8 +3404,6 @@ func (s *CourseLessonListItemPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*CourseLessonListItemPage) adminListCourseLessonsRes() {}
-
 // An AI-generated lesson review record (legacy: `LanguageLessonReview`).
 // Ref: #/components/schemas/CourseLessonReview
 type CourseLessonReview struct {
@@ -4406,8 +3583,6 @@ func (s *CourseLessonReviewPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*CourseLessonReviewPage) adminListCourseLessonReviewsRes() {}
-
 // The lesson page: the lesson itself, and where the visitor stands in it.
 // Ref: #/components/schemas/CourseLessonView
 type CourseLessonView struct {
@@ -4484,8 +3659,6 @@ func (s *CourseLessonView) SetAdjacent(val AdjacentLessons) {
 func (s *CourseLessonView) SetProgress(val NilCourseProgress) {
 	s.Progress = val
 }
-
-func (*CourseLessonView) getCourseLessonRes() {}
 
 // A module of a course version in one locale (legacy: `Language::Module::Version::Info`, as
 // `Language::ModuleResource` served it).
@@ -4619,8 +3792,6 @@ func (s *CoursePage) SetPage(val int32) {
 func (s *CoursePage) SetPerPage(val int32) {
 	s.PerPage = val
 }
-
-func (*CoursePage) adminListCoursesRes() {}
 
 // Where a learner stands in one Course, computed against its current Version: which Lessons they have
 // finished, in whatever order they took them.
@@ -4777,8 +3948,6 @@ func (s *CourseVersion) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*CourseVersion) adminCreateCourseVersionRes() {}
-
 // Everything the public course landing needs in one payload.
 // Ref: #/components/schemas/CourseView
 type CourseView struct {
@@ -4886,8 +4055,6 @@ func (s *CourseView) SetProgress(val NilCourseProgress) {
 	s.Progress = val
 }
 
-func (*CourseView) getCourseRes() {}
-
 type CreateAssistantMessageOK struct {
 	Data io.Reader
 }
@@ -4904,28 +4071,14 @@ func (s CreateAssistantMessageOK) Read(p []byte) (n int, err error) {
 
 func (*CreateAssistantMessageOK) createAssistantMessageRes() {}
 
-type CreateAssistantMessageTooManyRequests ProblemDetails
-
-func (*CreateAssistantMessageTooManyRequests) createAssistantMessageRes() {}
-
-type CreateAssistantMessageUnauthorized ProblemDetails
-
-func (*CreateAssistantMessageUnauthorized) createAssistantMessageRes() {}
-
 // CreateBookRequestNoContent is response for CreateBookRequest operation.
 type CreateBookRequestNoContent struct{}
-
-func (*CreateBookRequestNoContent) createBookRequestRes() {}
 
 // CreateMagicLinkNoContent is response for CreateMagicLink operation.
 type CreateMagicLinkNoContent struct{}
 
-func (*CreateMagicLinkNoContent) createMagicLinkRes() {}
-
 // CreatePasswordReminderNoContent is response for CreatePasswordReminder operation.
 type CreatePasswordReminderNoContent struct{}
-
-func (*CreatePasswordReminderNoContent) createPasswordReminderRes() {}
 
 // The current user resolved from the session cookie (null when anonymous).
 // Ref: #/components/schemas/CurrentUser
@@ -4985,12 +4138,8 @@ func (s *DashboardCourse) SetCard(val CourseCatalogItem) {
 // DeleteAccountNoContent is response for DeleteAccount operation.
 type DeleteAccountNoContent struct{}
 
-func (*DeleteAccountNoContent) deleteAccountRes() {}
-
 // DeleteSessionNoContent is response for DeleteSession operation.
 type DeleteSessionNoContent struct{}
-
-func (*DeleteSessionNoContent) deleteSessionRes() {}
 
 // DownloadBookFound is response for DownloadBook operation.
 type DownloadBookFound struct {
@@ -5006,8 +4155,6 @@ func (s *DownloadBookFound) GetLocation() string {
 func (s *DownloadBookFound) SetLocation(val string) {
 	s.Location = val
 }
-
-func (*DownloadBookFound) downloadBookRes() {}
 
 // Ref: #/components/schemas/EmailInput
 type EmailInput struct {
@@ -5394,8 +4541,6 @@ func (s *Lead) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Lead) createLeadRes() {}
-
 // A lead captured from a marketing form (legacy: `LeadCrud`).
 // Ref: #/components/schemas/LeadInput
 type LeadInput struct {
@@ -5549,8 +4694,6 @@ func (s *LeadPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*LeadPage) adminListLeadsRes() {}
-
 // A Lesson as the course page and the player list it, with the visitor's standing in it. The checkmark
 // travels with the row, so no screen has to join two lists.
 // Ref: #/components/schemas/LearnerLesson
@@ -5655,8 +4798,6 @@ func (s *LessonAssistantChat) SetMessages(val []LessonAssistantMessage) {
 func (s *LessonAssistantChat) SetQuotaExceeded(val bool) {
 	s.QuotaExceeded = val
 }
-
-func (*LessonAssistantChat) listAssistantMessagesRes() {}
 
 // One message in the in-lesson AI chat (legacy: `AiMessage`).
 // Ref: #/components/schemas/LessonAssistantMessage
@@ -5804,8 +4945,6 @@ func (s *LessonAssistantMessagePage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*LessonAssistantMessagePage) adminListMessagesRes() {}
-
 // Result of running a submitted solution (legacy: `LessonCheckingResponse`).
 // Ref: #/components/schemas/LessonCheckingResponse
 type LessonCheckingResponse struct {
@@ -5902,8 +5041,6 @@ func (s *LessonCheckingResponseHeaders) SetSetCookie(val []string) {
 func (s *LessonCheckingResponseHeaders) SetResponse(val LessonCheckingResponse) {
 	s.Response = val
 }
-
-func (*LessonCheckingResponseHeaders) checkLessonRes() {}
 
 type LessonCheckingResponseResult string
 
@@ -6127,8 +5264,6 @@ func (s *LessonProgressPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*LessonProgressPage) adminListLessonProgressRes() {}
-
 // A lesson named for a link or a button: how to address it, to open it or start it, and what to call
 // it.
 // Ref: #/components/schemas/LessonRef
@@ -6236,8 +5371,6 @@ func (s *MyCapabilities) SetHeld(val []string) {
 	s.Held = val
 }
 
-func (*MyCapabilities) adminGetMyCapabilitiesRes() {}
-
 // The signed-in user's dashboard (legacy: `MyController#show`).
 // Ref: #/components/schemas/MyDashboard
 type MyDashboard struct {
@@ -6266,8 +5399,6 @@ func (s *MyDashboard) SetStarted(val []DashboardCourse) {
 func (s *MyDashboard) SetFinished(val []DashboardCourse) {
 	s.Finished = val
 }
-
-func (*MyDashboard) getMyDashboardRes() {}
 
 // NewNilAuditReads returns new NilAuditReads with value set to v.
 func NewNilAuditReads(v AuditReads) NilAuditReads {
@@ -7214,44 +6345,6 @@ func (o NilUser) Or(d User) User {
 	return d
 }
 
-// A resource was not found.
-// Ref: #/components/schemas/NotFoundError
-type NotFoundError struct {
-	Message string `json:"message"`
-}
-
-// GetMessage returns the value of Message.
-func (s *NotFoundError) GetMessage() string {
-	return s.Message
-}
-
-// SetMessage sets the value of Message.
-func (s *NotFoundError) SetMessage(val string) {
-	s.Message = val
-}
-
-func (*NotFoundError) adminCreateCourseVersionRes() {}
-func (*NotFoundError) adminFetchRes()               {}
-func (*NotFoundError) adminReviewCourseLessonRes()  {}
-func (*NotFoundError) adminReviewCourseRes()        {}
-func (*NotFoundError) approveOAuthConsentRes()      {}
-func (*NotFoundError) checkLessonRes()              {}
-func (*NotFoundError) checkPasswordResetTokenRes()  {}
-func (*NotFoundError) consumeMagicLinkRes()         {}
-func (*NotFoundError) createAssistantMessageRes()   {}
-func (*NotFoundError) denyOAuthConsentRes()         {}
-func (*NotFoundError) getBlogPostRes()              {}
-func (*NotFoundError) getCourseLessonRes()          {}
-func (*NotFoundError) getCourseRes()                {}
-func (*NotFoundError) getNextBlogPostRes()          {}
-func (*NotFoundError) getOAuthConsentRes()          {}
-func (*NotFoundError) getPublicCourseCategoryRes()  {}
-func (*NotFoundError) likeBlogPostRes()             {}
-func (*NotFoundError) listAssistantMessagesRes()    {}
-func (*NotFoundError) revokeConnectedAppRes()       {}
-func (*NotFoundError) startLessonRes()              {}
-func (*NotFoundError) updatePasswordRes()           {}
-
 // What the consent screen shows for one authorization request.
 // Ref: #/components/schemas/OAuthConsent
 type OAuthConsent struct {
@@ -7306,8 +6399,6 @@ func (s *OAuthConsent) SetAccountName(val string) {
 	s.AccountName = val
 }
 
-func (*OAuthConsent) getOAuthConsentRes() {}
-
 // Where the browser goes next after the user has decided.
 // Ref: #/components/schemas/OAuthDecision
 type OAuthDecision struct {
@@ -7325,9 +6416,6 @@ func (s *OAuthDecision) GetRedirectUrl() string {
 func (s *OAuthDecision) SetRedirectUrl(val string) {
 	s.RedirectUrl = val
 }
-
-func (*OAuthDecision) approveOAuthConsentRes() {}
-func (*OAuthDecision) denyOAuthConsentRes()    {}
 
 // NewOptAuditRecordQueryChannel returns new OptAuditRecordQueryChannel with value set to v.
 func NewOptAuditRecordQueryChannel(v AuditRecordQueryChannel) OptAuditRecordQueryChannel {
@@ -7581,6 +6669,52 @@ func (o OptNilFirstVisit) Or(d FirstVisit) FirstVisit {
 	return d
 }
 
+// NewOptProblemDetailsErrors returns new OptProblemDetailsErrors with value set to v.
+func NewOptProblemDetailsErrors(v ProblemDetailsErrors) OptProblemDetailsErrors {
+	return OptProblemDetailsErrors{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptProblemDetailsErrors is optional ProblemDetailsErrors.
+type OptProblemDetailsErrors struct {
+	Value ProblemDetailsErrors
+	Set   bool
+}
+
+// IsSet returns true if OptProblemDetailsErrors was set.
+func (o OptProblemDetailsErrors) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptProblemDetailsErrors) Reset() {
+	var v ProblemDetailsErrors
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptProblemDetailsErrors) SetTo(v ProblemDetailsErrors) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptProblemDetailsErrors) Get() (v ProblemDetailsErrors, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptProblemDetailsErrors) Or(d ProblemDetailsErrors) ProblemDetailsErrors {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchResultType returns new OptSearchResultType with value set to v.
 func NewOptSearchResultType(v SearchResultType) OptSearchResultType {
 	return OptSearchResultType{
@@ -7731,8 +6865,6 @@ func (s *PermissionCatalog) SetPermissions(val []Permission) {
 	s.Permissions = val
 }
 
-func (*PermissionCatalog) adminListPermissionsRes() {}
-
 // Whether an operation only reads or can change data (ADR-0020).
 // Ref: #/components/schemas/PermissionKind
 type PermissionKind string
@@ -7791,6 +6923,10 @@ type ProblemDetails struct {
 	Detail OptString `json:"detail"`
 	// Optional URI identifying this particular occurrence.
 	Instance OptString `json:"instance"`
+	// Field-level validation errors, keyed by field name (each value is the list of messages for that
+	// field). Present on a 422 only: a write that failed validation, including constraints the schema
+	// cannot express, like uniqueness (ADR-0028).
+	Errors OptProblemDetailsErrors `json:"errors"`
 }
 
 // GetType returns the value of Type.
@@ -7818,6 +6954,11 @@ func (s *ProblemDetails) GetInstance() OptString {
 	return s.Instance
 }
 
+// GetErrors returns the value of Errors.
+func (s *ProblemDetails) GetErrors() OptProblemDetailsErrors {
+	return s.Errors
+}
+
 // SetType sets the value of Type.
 func (s *ProblemDetails) SetType(val string) {
 	s.Type = val
@@ -7843,21 +6984,26 @@ func (s *ProblemDetails) SetInstance(val OptString) {
 	s.Instance = val
 }
 
-func (*ProblemDetails) approveOAuthConsentRes()   {}
-func (*ProblemDetails) createBookRequestRes()     {}
-func (*ProblemDetails) createLeadRes()            {}
-func (*ProblemDetails) deleteAccountRes()         {}
-func (*ProblemDetails) deleteSessionRes()         {}
-func (*ProblemDetails) denyOAuthConsentRes()      {}
-func (*ProblemDetails) downloadBookRes()          {}
-func (*ProblemDetails) getMyDashboardRes()        {}
-func (*ProblemDetails) getOAuthConsentRes()       {}
-func (*ProblemDetails) getProfileRes()            {}
-func (*ProblemDetails) likeBlogPostRes()          {}
-func (*ProblemDetails) listAssistantMessagesRes() {}
-func (*ProblemDetails) listConnectedAppsRes()     {}
-func (*ProblemDetails) revokeConnectedAppRes()    {}
-func (*ProblemDetails) updateProfileRes()         {}
+// SetErrors sets the value of Errors.
+func (s *ProblemDetails) SetErrors(val OptProblemDetailsErrors) {
+	s.Errors = val
+}
+
+func (*ProblemDetails) createAssistantMessageRes() {}
+
+// Field-level validation errors, keyed by field name (each value is the list of messages for that
+// field). Present on a 422 only: a write that failed validation, including constraints the schema
+// cannot express, like uniqueness (ADR-0028).
+type ProblemDetailsErrors map[string][]string
+
+func (s *ProblemDetailsErrors) init() ProblemDetailsErrors {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
 
 // ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.
 type ProblemDetailsStatusCode struct {
@@ -8001,11 +7147,6 @@ func (s *QnaItem) SetQuestion(val string) {
 func (s *QnaItem) SetAnswer(val string) {
 	s.Answer = val
 }
-
-func (*QnaItem) adminCreateCategoryQnaItemRes()    {}
-func (*QnaItem) adminCreateLandingPageQnaItemRes() {}
-func (*QnaItem) adminUpdateCategoryQnaItemRes()    {}
-func (*QnaItem) adminUpdateLandingPageQnaItemRes() {}
 
 // Ref: #/components/schemas/QnaItemInput
 type QnaItemInput struct {
@@ -8199,13 +7340,6 @@ func (s *Review) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Review) adminArchiveReviewRes()   {}
-func (*Review) adminCreateReviewRes()    {}
-func (*Review) adminGetReviewRes()       {}
-func (*Review) adminPublishReviewRes()   {}
-func (*Review) adminUnpublishReviewRes() {}
-func (*Review) adminUpdateReviewRes()    {}
-
 // The input of a review: never its Publication State (see BannerInput).
 // Ref: #/components/schemas/ReviewInput
 type ReviewInput struct {
@@ -8373,8 +7507,6 @@ func (s *ReviewPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*ReviewPage) adminListReviewsRes() {}
-
 // Review publication state.
 // Ref: #/components/schemas/ReviewState
 type ReviewState string
@@ -8427,8 +7559,6 @@ func (s *ReviewState) UnmarshalText(data []byte) error {
 
 // RevokeConnectedAppNoContent is response for RevokeConnectedApp operation.
 type RevokeConnectedAppNoContent struct{}
-
-func (*RevokeConnectedAppNoContent) revokeConnectedAppRes() {}
 
 // Ref: #/components/schemas/RoleInput
 type RoleInput struct {
@@ -8935,10 +8065,6 @@ func (s *StaffMember) SetAllowedLocales(val []string) {
 	s.AllowedLocales = val
 }
 
-func (*StaffMember) adminCreateStaffMemberRes() {}
-func (*StaffMember) adminGetStaffMemberRes()    {}
-func (*StaffMember) adminUpdateStaffMemberRes() {}
-
 // Ref: #/components/schemas/StaffMemberInput
 type StaffMemberInput struct {
 	UserId         int32    `json:"userId"`
@@ -9028,8 +8154,6 @@ func (s *StaffMemberPage) SetPage(val int32) {
 func (s *StaffMemberPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
-
-func (*StaffMemberPage) adminListStaffMembersRes() {}
 
 // A staff role (legacy: `StaffRole`).
 // Ref: #/components/schemas/StaffRole
@@ -9141,12 +8265,6 @@ func (s *StaffRoleDetail) SetGrants(val []string) {
 	s.Grants = val
 }
 
-func (*StaffRoleDetail) adminCreateRoleRes()            {}
-func (*StaffRoleDetail) adminGetRolePermissionsRes()    {}
-func (*StaffRoleDetail) adminGetRoleRes()               {}
-func (*StaffRoleDetail) adminUpdateRolePermissionsRes() {}
-func (*StaffRoleDetail) adminUpdateRoleRes()            {}
-
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/StaffRolePage
@@ -9200,12 +8318,8 @@ func (s *StaffRolePage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*StaffRolePage) adminListRolesRes() {}
-
 // StartLessonNoContent is response for StartLesson operation.
 type StartLessonNoContent struct{}
-
-func (*StartLessonNoContent) startLessonRes() {}
 
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User
@@ -9333,9 +8447,6 @@ func (s *User) SetType(val UserType) {
 	s.Type = val
 }
 
-func (*User) getProfileRes()    {}
-func (*User) updateProfileRes() {}
-
 // A user row as shown in admin lists/forms (legacy: `UserCrud`).
 // Ref: #/components/schemas/UserCrud
 type UserCrud struct {
@@ -9396,12 +8507,6 @@ func (s *UserCrud) SetAdmin(val NilBool) {
 	s.Admin = val
 }
 
-func (*UserCrud) adminCreateUserRes()           {}
-func (*UserCrud) adminGetManagementUserRes()    {}
-func (*UserCrud) adminGetUserRes()              {}
-func (*UserCrud) adminUpdateManagementUserRes() {}
-func (*UserCrud) adminUpdateUserRes()           {}
-
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/UserCrudPage
@@ -9455,9 +8560,6 @@ func (s *UserCrudPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-func (*UserCrudPage) adminListManagementUsersRes() {}
-func (*UserCrudPage) adminListUsersRes()           {}
-
 // UserHeaders wraps User with response headers.
 type UserHeaders struct {
 	SetCookie []string
@@ -9483,11 +8585,6 @@ func (s *UserHeaders) SetSetCookie(val []string) {
 func (s *UserHeaders) SetResponse(val User) {
 	s.Response = val
 }
-
-func (*UserHeaders) consumeMagicLinkRes() {}
-func (*UserHeaders) createSessionRes()    {}
-func (*UserHeaders) createUserRes()       {}
-func (*UserHeaders) updatePasswordRes()   {}
 
 // Ref: #/components/schemas/UserInput
 type UserInput struct {
@@ -9594,48 +8691,4 @@ func (s *UserType) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
-}
-
-// Field-level validation errors, keyed by field name (each value is the list of messages for that
-// field). Returned when a write fails validation — including constraints the schema cannot express,
-// like uniqueness.
-// Ref: #/components/schemas/ValidationError
-type ValidationError struct {
-	Errors ValidationErrorErrors `json:"errors"`
-}
-
-// GetErrors returns the value of Errors.
-func (s *ValidationError) GetErrors() ValidationErrorErrors {
-	return s.Errors
-}
-
-// SetErrors sets the value of Errors.
-func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
-	s.Errors = val
-}
-
-func (*ValidationError) adminCreateBlogPostRes()            {}
-func (*ValidationError) adminListAuditRecordsRes()          {}
-func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
-func (*ValidationError) adminUpdateBlogPostRes()            {}
-func (*ValidationError) adminUpdateRolePermissionsRes()     {}
-func (*ValidationError) adminUploadAttachmentRes()          {}
-func (*ValidationError) checkLessonRes()                    {}
-func (*ValidationError) createLeadRes()                     {}
-func (*ValidationError) createMagicLinkRes()                {}
-func (*ValidationError) createPasswordReminderRes()         {}
-func (*ValidationError) createSessionRes()                  {}
-func (*ValidationError) createUserRes()                     {}
-func (*ValidationError) updatePasswordRes()                 {}
-func (*ValidationError) updateProfileRes()                  {}
-
-type ValidationErrorErrors map[string][]string
-
-func (s *ValidationErrorErrors) init() ValidationErrorErrors {
-	m := *s
-	if m == nil {
-		m = map[string][]string{}
-		*s = m
-	}
-	return m
 }

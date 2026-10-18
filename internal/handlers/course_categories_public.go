@@ -21,7 +21,7 @@ func (s *Server) ListPublicCourseCategories(ctx context.Context) ([]api.CourseCa
 
 // GetPublicCourseCategory is the category page: the category, its landing
 // pages and its questions.
-func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPublicCourseCategoryParams) (api.GetPublicCourseCategoryRes, error) {
+func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPublicCourseCategoryParams) (*api.CourseCategoryView, error) {
 	view, err := s.categoryDirectory.View(ctx, s.i18n.Locale(ctx), params.Slug)
 	if err != nil {
 		return nil, err

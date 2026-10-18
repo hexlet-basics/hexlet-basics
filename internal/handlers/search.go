@@ -6,7 +6,6 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/localization"
 	"hexletbasics/internal/search"
 )
 
@@ -48,7 +47,7 @@ func (s *Server) SearchCatalogue(ctx context.Context, params api.SearchCatalogue
 // course not completed yet, a lesson of the newest build and an unpublished post
 // are found, each with its state. Who may call it is the contract's (any staff
 // member, in a locale their role allows), judged before this runs.
-func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) (api.AdminSearchRes, error) {
+func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) (*api.AdminSearchResultPage, error) {
 	var types []search.Type
 	if params.Type.IsSet() {
 		types = []search.Type{search.Type(params.Type.Value)}
@@ -82,15 +81,14 @@ func (s *Server) AdminSearch(ctx context.Context, params api.AdminSearchParams) 
 // AdminFetch reads the record an AdminSearch result names, in the request locale
 // and whatever state it is in. An id that is not one search returns, and one that
 // names nothing, are the same not found.
-func (s *Server) AdminFetch(ctx context.Context, params api.AdminFetchParams) (api.AdminFetchRes, error) {
-	notFound := &api.NotFoundError{Message: s.i18n.Text(ctx, localization.NotFound)}
+func (s *Server) AdminFetch(ctx context.Context, params api.AdminFetchParams) (*api.AdminRecord, error) {
 	ref, err := search.ParseID(params.ID)
 	if err != nil {
-		return notFound, nil
+		return nil, domain.ErrNotFound
 	}
 	rec, err := s.searcher.Fetch(ctx, search.FetchRecord{Ref: ref, Locale: s.i18n.Locale(ctx)})
 	if errors.Is(err, domain.ErrNotFound) {
-		return notFound, nil
+		return nil, err
 	}
 	if err != nil {
 		return nil, err

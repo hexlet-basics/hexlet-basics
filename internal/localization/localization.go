@@ -8,7 +8,6 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -49,7 +48,7 @@ func New() (*Translator, error) {
 		"locales/active.es.json",
 	} {
 		if _, err := bundle.LoadMessageFileFS(localeFiles, name); err != nil {
-			return nil, fmt.Errorf("load localization catalog %s: %w", name, err)
+			return nil, errs.With("catalog", name).Wrapf(err, "load localization catalog")
 		}
 	}
 

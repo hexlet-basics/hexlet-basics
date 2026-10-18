@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
-	"errors"
 
 	"github.com/ogen-go/ogen/middleware"
 	"go.opentelemetry.io/otel/trace"
@@ -39,9 +38,9 @@ const requestIDHeader = "X-Request-ID"
 // A call that did not succeed still leaves its record, outcome failed, written
 // in a short transaction of its own after the rollback and holding no changes:
 // the changes did not happen, and the error text or the row values could name
-// what the caller was never allowed to read. A handler that answers with a
-// validation error (a response, not an error) is recorded the same way, because
-// nothing was changed. Refusals are recorded by the security handler, which
+// what the caller was never allowed to read. Every failure, a validation error
+// included, is the handler's error return (ADR-0028), so one test finds them
+// all. Refusals are recorded by the security handler, which
 // rejects them first (Security.HandleAdminSession).
 //
 // An operation that declares `x-unit-of-work: standalone` calls a service
@@ -71,9 +70,7 @@ func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator,
 			resp, err = runInTransaction(txStore, i18n, req, next)
 		}
 
-		if errors.Is(err, errNotAChange) {
-			err = nil
-		} else if err == nil {
+		if err == nil {
 			return resp, nil
 		}
 		// Not a success: record it outside the transaction that was rolled back.
@@ -87,11 +84,6 @@ func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator,
 	}
 }
 
-// errNotAChange is how the transaction closure says "roll back, the handler
-// answered with a validation error": the response goes to the caller as it is,
-// and the call is recorded as failed.
-var errNotAChange = errors.New("handler refused the input")
-
 func runInTransaction(txStore store.Transactor, i18n *localization.Translator, req middleware.Request, next middleware.Next) (middleware.Response, error) {
 	var resp middleware.Response
 	err := txStore.WithinTx(req.Context, func(tx *sql.Tx, client *ent.Client) error {
@@ -102,9 +94,6 @@ func runInTransaction(txStore store.Transactor, i18n *localization.Translator, r
 		resp, handlerErr = next(req)
 		if handlerErr != nil {
 			return handlerErr
-		}
-		if refusedInput(resp) {
-			return errNotAChange
 		}
 		return audit.Write(ctx, client, auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded), recorder)
 	})
@@ -119,21 +108,11 @@ func runStandalone(txStore store.Transactor, i18n *localization.Translator, req 
 	if err != nil {
 		return resp, err
 	}
-	if refusedInput(resp) {
-		return resp, errNotAChange
-	}
 	entry := auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded)
 	err = txStore.WithinTx(ctx, func(_ *sql.Tx, client *ent.Client) error {
 		return audit.Write(ctx, client, entry, recorder)
 	})
 	return resp, err
-}
-
-// refusedInput reports a handler answer that is a validation failure: ogen
-// returns it as a response with a nil error, and nothing was changed.
-func refusedInput(resp middleware.Response) bool {
-	_, ok := resp.Type.(*api.ValidationError)
-	return ok
 }
 
 // RecordOutcome writes an Audit Record that holds no changes, for an attempt

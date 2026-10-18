@@ -17,7 +17,7 @@ import (
 // ErrorHandler as domain errors and become 404 and 409 there.
 
 // AdminListUsers returns a page of users, newest first.
-func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (api.AdminListUsersRes, error) {
+func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (*api.UserCrudPage, error) {
 	return s.userCrudPage(ctx, params.Page, params.PerPage, params.Q)
 }
 
@@ -35,17 +35,16 @@ func (s *Server) userCrudPage(ctx context.Context, pageParam, perPageParam api.O
 }
 
 // AdminSearchUsers is the admin typeahead; a blank term returns an empty list.
-func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) (api.AdminSearchUsersRes, error) {
+func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) ([]api.UserCrud, error) {
 	rows, err := s.userDirectory.Search(ctx, params.Q)
 	if err != nil {
 		return nil, err
 	}
-	items := api.AdminSearchUsersOKApplicationJSON(s.conv.ToUserCruds(rows))
-	return &items, nil
+	return s.conv.ToUserCruds(rows), nil
 }
 
 // AdminGetUser returns a single user by id.
-func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (api.AdminGetUserRes, error) {
+func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (*api.UserCrud, error) {
 	return s.userCrud(ctx, int(params.ID))
 }
 
@@ -60,9 +59,9 @@ func (s *Server) userCrud(ctx context.Context, id int) (*api.UserCrud, error) {
 }
 
 // AdminCreateUser creates a user.
-func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
+func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.UserCrud, error) {
 	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), false, !req.Admin.Null && req.Admin.Value); err != nil {
-		return nil, protection(err)
+		return nil, err
 	}
 	row, err := s.userEditor.Create(ctx, userFieldsOf(req))
 	if err != nil {
@@ -73,7 +72,7 @@ func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.A
 }
 
 // AdminUpdateUser updates a user. A null nullable field clears its column.
-func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (api.AdminUpdateUserRes, error) {
+func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (*api.UserCrud, error) {
 	return s.updateUser(ctx, int(params.ID), req)
 }
 
@@ -89,11 +88,11 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*a
 	}
 	admin := !req.Admin.Null && req.Admin.Value
 	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), isAdministrator(current), admin); err != nil {
-		return nil, protection(err)
+		return nil, err
 	}
 	row, err := s.userEditor.Update(ctx, id, userFieldsOf(req))
 	if err != nil {
-		return nil, lastAdminError(err)
+		return nil, err
 	}
 	item := s.conv.ToUserCrud(row)
 	return &item, nil
@@ -102,14 +101,14 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*a
 // AdminDeleteUser removes a user by id. The actor's own account is not deleted
 // through the admin operations, and the last administrator is refused with a
 // localized explanation (the editor returns ErrLastAdmin).
-func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
+func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) error {
 	if err := s.selfProtection.OwnAccountDeletion(actorOfRequest(ctx), int(params.ID)); err != nil {
-		return nil, protection(err)
+		return err
 	}
 	if err := s.userEditor.Delete(ctx, int(params.ID)); err != nil {
-		return nil, lastAdminError(err)
+		return err
 	}
-	return &api.AdminDeleteUserNoContent{}, nil
+	return nil
 }
 
 // userFieldsOf is the contract's UserInput as the editor's command.

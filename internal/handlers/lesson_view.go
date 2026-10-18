@@ -21,10 +21,10 @@ import (
 func (s *Server) GetCourseLesson(
 	ctx context.Context,
 	params api.GetCourseLessonParams,
-) (api.GetCourseLessonRes, error) {
+) (*api.CourseLessonView, error) {
 	page, err := s.coursePages.Lesson(ctx, currentLearner(ctx), s.i18n.Locale(ctx), params.CourseSlug, params.Slug)
 	if errors.Is(err, domain.ErrNotFound) {
-		return s.lessonNotFound(ctx), nil
+		return nil, errLessonNotFound
 	}
 	if err != nil {
 		return nil, err

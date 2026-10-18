@@ -57,7 +57,7 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 		generated.WithClient(statusClient{http: client.http}),
 	)
 	if err != nil {
-		client.initErr = fmt.Errorf("initialize amoCRM client: %w", err)
+		client.initErr = errs.Wrapf(err, "initialize amoCRM client")
 		return client
 	}
 	client.api = api

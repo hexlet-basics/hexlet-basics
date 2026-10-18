@@ -7,6 +7,9 @@ package transition
 // over that vocabulary instead of once per resource over each generated enum.
 type PublicationState string
 
+// Vocabulary names this set of states for an adapter that words a refused move.
+func (PublicationState) Vocabulary() string { return "publication_state" }
+
 const (
 	Draft     PublicationState = "draft"
 	Published PublicationState = "published"

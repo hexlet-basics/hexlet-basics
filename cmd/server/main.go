@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -43,8 +42,8 @@ func main() {
 func run(signalCtx context.Context, stopSignals func()) error {
 	dependencies, err := di.BuildServer()
 	if err != nil {
-		slog.Error("building server dependencies", "err", err)
-		return fmt.Errorf("building server dependencies: %w", err)
+		slog.ErrorContext(signalCtx, "building server dependencies", "err", err)
+		return errs.Wrapf(err, "building server dependencies")
 	}
 
 	app := application{
@@ -66,7 +65,7 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	}
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		dependencies.Logger.Error("runtime failed", "err", runtimeErr)
+		dependencies.Logger.ErrorContext(cleanupCtx, "runtime failed", "err", runtimeErr)
 		return runtimeErr
 	}
 	return nil

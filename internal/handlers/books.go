@@ -41,12 +41,12 @@ func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 // CreateBookRequest records the signed-in user's request (legacy
 // `books#create_request`). A repeat succeeds and changes nothing, as legacy
 // flashed the same success for it; only a first request raises BookRequested.
-func (s *Server) CreateBookRequest(ctx context.Context) (api.CreateBookRequestRes, error) {
+func (s *Server) CreateBookRequest(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
 	if err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx)); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.CreateBookRequestNoContent{}, nil
+	return nil
 }
 
 // DownloadBook sends the signed-in user to the PDF (legacy `books#download`).
@@ -54,7 +54,7 @@ func (s *Server) CreateBookRequest(ctx context.Context) (api.CreateBookRequestRe
 // 28 MB never pass through the API (ADR-0005). The request is marked
 // downloaded on every download, as legacy did, and a user who has not
 // requested the book is sent back to the book page.
-func (s *Server) DownloadBook(ctx context.Context) (api.DownloadBookRes, error) {
+func (s *Server) DownloadBook(ctx context.Context) (*api.DownloadBookFound, error) {
 	u := MustAuthenticatedUser(ctx)
 	marked, err := s.books.MarkDownloaded(ctx, u.ID)
 	if err != nil {

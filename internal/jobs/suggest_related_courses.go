@@ -49,5 +49,5 @@ func (*suggestRelatedCoursesWorker) Timeout(*river.Job[SuggestRelatedCoursesArgs
 }
 
 func (w *suggestRelatedCoursesWorker) Work(ctx context.Context, job *river.Job[SuggestRelatedCoursesArgs]) error {
-	return w.suggester.SuggestRelatedCourses(ctx, job.Args.BlogPostID)
+	return cancelUnfixable(w.suggester.SuggestRelatedCourses(ctx, job.Args.BlogPostID))
 }

@@ -15,6 +15,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
@@ -47,7 +48,7 @@ func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	breakWrites(h, ent.TypeAuditRecord)
-	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
+	err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 
@@ -58,7 +59,7 @@ func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 
-	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
+	err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 
@@ -133,21 +134,20 @@ func TestAnUploadIsRecordedWithItsAttachment(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 }
 
-// A validation answer is a response, not an error, and nothing was changed: it
-// is recorded as failed, not as a change that succeeded.
-func TestAValidationAnswerIsRecordedAsFailed(t *testing.T) {
+// A validation failure is the handler's error return like any other, and
+// nothing was changed: it is recorded as failed, not as a change that succeeded.
+func TestAValidationFailureIsRecordedAsFailed(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	audited := handlers.NewAuditMiddleware(h.Transactor, testsupport.NewTranslator(t),
 		testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 
-	resp, err := audited(middleware.Request{Context: t.Context(), OperationName: "AdminCreateBlogPost"},
+	_, err := audited(middleware.Request{Context: t.Context(), OperationName: "AdminCreateBlogPost"},
 		func(middleware.Request) (middleware.Response, error) {
-			return middleware.Response{Type: &api.ValidationError{}}, nil
+			return middleware.Response{}, domain.ErrInvalid
 		})
 
-	require.NoError(t, err, "the caller still gets the validation answer")
-	assert.IsType(t, &api.ValidationError{}, resp.Type)
+	require.ErrorIs(t, err, domain.ErrInvalid, "the caller still gets the validation failure")
 	rows := records(t, h, "AdminCreateBlogPost")
 	require.Len(t, rows, 1)
 	assert.Equal(t, "failed", rows[0].Outcome)

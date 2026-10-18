@@ -34,211 +34,211 @@ type Invoker interface {
 	// Archive a draft or published banner.
 	//
 	// POST /api/admin/banners/{id}/archive
-	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error)
+	AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (*Banner, error)
 	// AdminArchiveBlogPost invokes adminArchiveBlogPost operation.
 	//
 	// Archive a draft or published post.
 	//
 	// POST /api/admin/blog_posts/{id}/archive
-	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error)
+	AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (*BlogPost, error)
 	// AdminArchiveCourseLandingPage invokes adminArchiveCourseLandingPage operation.
 	//
 	// Archive a draft or published landing page.
 	//
 	// POST /api/admin/course_landing_pages/{id}/archive
-	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error)
+	AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminArchiveReview invokes adminArchiveReview operation.
 	//
 	// Archive a draft or published review.
 	//
 	// POST /api/admin/reviews/{id}/archive
-	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error)
+	AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (*Review, error)
 	// AdminCreateBanner invokes adminCreateBanner operation.
 	//
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
 	// handler; banners carry no uniqueness constraint, so there is no 409 path.
 	//
 	// POST /api/admin/banners
-	AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error)
+	AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error)
 	// AdminCreateBlogPost invokes adminCreateBlogPost operation.
 	//
 	// POST /api/admin/blog_posts
-	AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (AdminCreateBlogPostRes, error)
+	AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (*BlogPost, error)
 	// AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 	//
 	// POST /api/admin/course_categories/{categoryId}/qna_items
-	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
+	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
 	// POST /api/admin/courses
-	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
+	AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
 	// POST /api/admin/course_categories
-	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error)
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
 	// POST /api/admin/course_landing_pages
-	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
+	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error)
 	// AdminCreateCourseVersion invokes adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
 	//
 	// POST /api/admin/courses/{id}/versions
-	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
+	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (*CourseVersion, error)
 	// AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 	//
 	// POST /api/admin/course_landing_pages/{landingPageId}/qna_items
-	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
+	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
 	// POST /api/admin/reviews
-	AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error)
+	AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error)
 	// AdminCreateRole invokes adminCreateRole operation.
 	//
 	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /api/admin/management/roles
-	AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error)
+	AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error)
 	// AdminCreateStaffMember invokes adminCreateStaffMember operation.
 	//
 	// POST /api/admin/management/staff_members
-	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error)
+	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error)
 	// AdminCreateUser invokes adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /api/admin/api/users
-	AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error)
+	AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error)
 	// AdminDeleteBanner invokes adminDeleteBanner operation.
 	//
 	// Delete a banner.
 	//
 	// DELETE /api/admin/banners/{id}
-	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error)
+	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
 	// AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 	//
 	// DELETE /api/admin/blog_posts/{id}
-	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
+	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error
 	// AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 	//
 	// DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
-	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
+	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error
 	// AdminDeleteCourseCategory invokes adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
 	// DELETE /api/admin/course_categories/{id}
-	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
+	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error
 	// AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 	//
 	// DELETE /api/admin/course_landing_pages/{id}
-	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
+	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error
 	// AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 	//
 	// DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
+	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error
 	// AdminDeleteReview invokes adminDeleteReview operation.
 	//
 	// DELETE /api/admin/reviews/{id}
-	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error)
+	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error
 	// AdminDeleteRole invokes adminDeleteRole operation.
 	//
 	// DELETE /api/admin/management/roles/{id}
-	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error)
+	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error
 	// AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 	//
 	// DELETE /api/admin/management/staff_members/{id}
-	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error)
+	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error
 	// AdminDeleteUser invokes adminDeleteUser operation.
 	//
 	// DELETE /api/admin/api/users/{id}
-	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
 	// AdminFetch invokes adminFetch operation.
 	//
 	// Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
 	//
 	// GET /api/admin/search/record
-	AdminFetch(ctx context.Context, params AdminFetchParams) (AdminFetchRes, error)
+	AdminFetch(ctx context.Context, params AdminFetchParams) (*AdminRecord, error)
 	// AdminGetBanner invokes adminGetBanner operation.
 	//
 	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /api/admin/banners/{id}
-	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error)
 	// AdminGetBlogPost invokes adminGetBlogPost operation.
 	//
 	// GET /api/admin/blog_posts/{id}
-	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error)
 	// AdminGetCourse invokes adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /api/admin/courses/{id}
-	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /api/admin/course_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /api/admin/course_landing_pages/{id}
-	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
 	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /api/admin/management/users/{id}
-	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error)
 	// AdminGetMyCapabilities invokes adminGetMyCapabilities operation.
 	//
 	// The capabilities the caller holds; open to any staff member.
 	//
 	// GET /api/admin/capabilities
-	AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error)
+	AdminGetMyCapabilities(ctx context.Context) (*MyCapabilities, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /api/admin/reviews/{id}
-	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole invokes adminGetRole operation.
 	//
 	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 	// handler.
 	//
 	// GET /api/admin/management/roles/{id}
-	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error)
 	// AdminGetRolePermissions invokes adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
 	// GET /api/admin/management/role_permissions/{roleId}
-	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminGetStaffMember invokes adminGetStaffMember operation.
 	//
 	// GET /api/admin/management/staff_members/{id}
-	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error)
 	// AdminGetUser invokes adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 	// member.
 	//
 	// GET /api/admin/api/users/{id}
-	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error)
 	// AdminListAuditRecords invokes adminListAuditRecords operation.
 	//
 	// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
@@ -246,39 +246,39 @@ type Invoker interface {
 	// old values.
 	//
 	// GET /api/admin/audit_records
-	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (AdminListAuditRecordsRes, error)
+	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (*AuditRecordPage, error)
 	// AdminListBanners invokes adminListBanners operation.
 	//
 	// List banners (paginated).
 	//
 	// GET /api/admin/banners
-	AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error)
+	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
 	// AdminListBlogPosts invokes adminListBlogPosts operation.
 	//
 	// GET /api/admin/blog_posts
-	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
+	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error)
 	// AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 	//
 	// GET /api/admin/course_categories/{categoryId}/qna_items
-	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
+	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error)
 	// AdminListCourseCategories invokes adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
 	// GET /api/admin/course_categories
-	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
+	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error)
 	// AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 	//
 	// GET /api/admin/course_landing_pages
-	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
+	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error)
 	// AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 	//
 	// GET /api/admin/course_lesson_reviews
-	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
+	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error)
 	// AdminListCourseLessons invokes adminListCourseLessons operation.
 	//
 	// GET /api/admin/course_lessons
-	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
+	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error)
 	// AdminListCourseOptions invokes adminListCourseOptions operation.
 	//
 	// Every course as id and name, unpaginated and oldest first, for selects. It is the post form's course
@@ -286,59 +286,59 @@ type Invoker interface {
 	// without being allowed to edit courses.
 	//
 	// GET /api/admin/courses/options
-	AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error)
+	AdminListCourseOptions(ctx context.Context) ([]CourseOption, error)
 	// AdminListCourses invokes adminListCourses operation.
 	//
 	// GET /api/admin/courses
-	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
+	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error)
 	// AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 	//
 	// GET /api/admin/course_landing_pages/{landingPageId}/qna_items
-	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
+	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error)
 	// AdminListLeads invokes adminListLeads operation.
 	//
 	// GET /api/admin/leads
-	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
+	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error)
 	// AdminListLessonProgress invokes adminListLessonProgress operation.
 	//
 	// GET /api/admin/lesson_progress
-	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
+	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (*LessonProgressPage, error)
 	// AdminListManagementUsers invokes adminListManagementUsers operation.
 	//
 	// GET /api/admin/management/users
-	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error)
+	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error)
 	// AdminListMessages invokes adminListMessages operation.
 	//
 	// GET /api/admin/messages
-	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
+	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error)
 	// AdminListPermissions invokes adminListPermissions operation.
 	//
 	// The catalog of Permissions, generated from the operations' declarations.
 	//
 	// GET /api/admin/management/permissions
-	AdminListPermissions(ctx context.Context) (AdminListPermissionsRes, error)
+	AdminListPermissions(ctx context.Context) (*PermissionCatalog, error)
 	// AdminListReviews invokes adminListReviews operation.
 	//
 	// GET /api/admin/reviews
-	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error)
+	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error)
 	// AdminListRoles invokes adminListRoles operation.
 	//
 	// GET /api/admin/management/roles
-	AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error)
+	AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error)
 	// AdminListStaffMembers invokes adminListStaffMembers operation.
 	//
 	// GET /api/admin/management/staff_members
-	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error)
+	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error)
 	// AdminListUsers invokes adminListUsers operation.
 	//
 	// GET /api/admin/api/users
-	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error)
 	// AdminMarkCourseCompleted invokes adminMarkCourseCompleted operation.
 	//
 	// Mark a course as completed: it joins the public catalogue.
 	//
 	// POST /api/admin/courses/{id}/mark_completed
-	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (AdminMarkCourseCompletedRes, error)
+	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (*Course, error)
 	// AdminMarkCourseDraft invokes adminMarkCourseDraft operation.
 	//
 	// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
@@ -346,13 +346,13 @@ type Invoker interface {
 	// current value is a 409 with a localized `detail`.
 	//
 	// POST /api/admin/courses/{id}/mark_draft
-	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (AdminMarkCourseDraftRes, error)
+	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (*Course, error)
 	// AdminMarkCourseInDevelopment invokes adminMarkCourseInDevelopment operation.
 	//
 	// Mark a course as in development.
 	//
 	// POST /api/admin/courses/{id}/mark_in_development
-	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (AdminMarkCourseInDevelopmentRes, error)
+	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (*Course, error)
 	// AdminPublishBanner invokes adminPublishBanner operation.
 	//
 	// Publish a draft or archived banner. A state is not an update: each change of Publication State is
@@ -360,7 +360,7 @@ type Invoker interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/banners/{id}/publish
-	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error)
+	AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (*Banner, error)
 	// AdminPublishBlogPost invokes adminPublishBlogPost operation.
 	//
 	// Publish a draft or archived post. A state is not an update: each change of Publication State is its
@@ -368,7 +368,7 @@ type Invoker interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/blog_posts/{id}/publish
-	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error)
+	AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (*BlogPost, error)
 	// AdminPublishCourseLandingPage invokes adminPublishCourseLandingPage operation.
 	//
 	// Publish a draft or archived landing page. A state is not an update: each change of Publication State
@@ -376,7 +376,7 @@ type Invoker interface {
 	// 409 with a localized `detail`.
 	//
 	// POST /api/admin/course_landing_pages/{id}/publish
-	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error)
+	AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminPublishReview invokes adminPublishReview operation.
 	//
 	// Publish a draft or archived review. A state is not an update: each change of Publication State is
@@ -384,19 +384,19 @@ type Invoker interface {
 	// with a localized `detail`.
 	//
 	// POST /api/admin/reviews/{id}/publish
-	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error)
+	AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (*Review, error)
 	// AdminReviewCourse invokes adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
 	//
 	// POST /api/admin/courses/{id}/review
-	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
+	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) error
 	// AdminReviewCourseLesson invokes adminReviewCourseLesson operation.
 	//
 	// Enqueue AI review for a single lesson.
 	//
 	// POST /api/admin/course_lessons/{id}/review
-	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
+	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) error
 	// AdminSearch invokes adminSearch operation.
 	//
 	// Search every course, lesson and blog post by what they say, in the request locale, whatever state
@@ -406,134 +406,134 @@ type Invoker interface {
 	// public `searchCatalogue` keeps its filters.
 	//
 	// GET /api/admin/search
-	AdminSearch(ctx context.Context, params AdminSearchParams) (AdminSearchRes, error)
+	AdminSearch(ctx context.Context, params AdminSearchParams) (*AdminSearchResultPage, error)
 	// AdminSearchUsers invokes adminSearchUsers operation.
 	//
 	// Typeahead search by name/email.
 	//
 	// GET /api/admin/api/users/search
-	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
+	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error)
 	// AdminSetBlogPostRelatedCourses invokes adminSetBlogPostRelatedCourses operation.
 	//
 	// Set the related/promoted courses for a post by hand.
 	//
 	// POST /api/admin/blog_posts/{id}/related_courses
-	AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
+	AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (*BlogPost, error)
 	// AdminSuggestBlogPostRelatedCourses invokes adminSuggestBlogPostRelatedCourses operation.
 	//
 	// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
 	// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// POST /api/admin/blog_posts/{id}/suggest_related_courses
-	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
+	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) error
 	// AdminUnpublishBanner invokes adminUnpublishBanner operation.
 	//
 	// Take a published banner back to draft.
 	//
 	// POST /api/admin/banners/{id}/unpublish
-	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error)
+	AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (*Banner, error)
 	// AdminUnpublishBlogPost invokes adminUnpublishBlogPost operation.
 	//
 	// Take a published post back to draft.
 	//
 	// POST /api/admin/blog_posts/{id}/unpublish
-	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error)
+	AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (*BlogPost, error)
 	// AdminUnpublishCourseLandingPage invokes adminUnpublishCourseLandingPage operation.
 	//
 	// Take a published landing page back to draft.
 	//
 	// POST /api/admin/course_landing_pages/{id}/unpublish
-	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error)
+	AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUnpublishReview invokes adminUnpublishReview operation.
 	//
 	// Take a published review back to draft.
 	//
 	// POST /api/admin/reviews/{id}/unpublish
-	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error)
+	AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (*Review, error)
 	// AdminUpdateBanner invokes adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
 	//
 	// PUT /api/admin/banners/{id}
-	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
+	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error)
 	// AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 	//
 	// PUT /api/admin/blog_posts/{id}
-	AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
+	AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (*BlogPost, error)
 	// AdminUpdateCategoryQnaItem invokes adminUpdateCategoryQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
 	// PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
-	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
+	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
 	// PUT /api/admin/courses/{id}
-	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
+	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /api/admin/course_categories/{id}
-	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
+	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /api/admin/course_landing_pages/{id}
-	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
+	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
 	// PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
+	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
 	// PUT /api/admin/management/users/{id}
-	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
+	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error)
 	// AdminUpdateReview invokes adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /api/admin/reviews/{id}
-	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
+	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error)
 	// AdminUpdateRole invokes adminUpdateRole operation.
 	//
 	// PUT /api/admin/management/roles/{id}
-	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
+	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error)
 	// AdminUpdateRolePermissions invokes adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
 	// PUT /api/admin/management/role_permissions/{roleId}
-	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
+	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 	//
 	// PUT /api/admin/management/staff_members/{id}
-	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
+	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error)
 	// AdminUpdateUser invokes adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /api/admin/api/users/{id}
-	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error)
 	// AdminUploadAttachment invokes adminUploadAttachment operation.
 	//
 	// Upload a file; returns the attachment to reference from a form.
 	//
 	// POST /api/admin/attachments
-	AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
+	AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (*Attachment, error)
 	// ApproveOAuthConsent invokes approveOAuthConsent operation.
 	//
 	// Grant the request as the signed-in user.
 	//
 	// POST /api/oauth/consents/{requestId}/approve
-	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error)
+	ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (*OAuthDecision, error)
 	// CheckLesson invokes checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -543,19 +543,19 @@ type Invoker interface {
 	// cookie rather than in rows. Any lesson may be submitted, in any order.
 	//
 	// POST /api/lessons/{id}/check
-	CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error)
+	CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (*LessonCheckingResponseHeaders, error)
 	// CheckPasswordResetToken invokes checkPasswordResetToken operation.
 	//
 	// Validate a reset token before showing the form.
 	//
 	// GET /api/password/{token}/edit
-	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
+	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) error
 	// ConsumeMagicLink invokes consumeMagicLink operation.
 	//
 	// Consume a magic link token; starts the session.
 	//
 	// GET /api/magic_links/{token}
-	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
+	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (*UserHeaders, error)
 	// CreateAssistantMessage invokes createAssistantMessage operation.
 	//
 	// Ask the assistant and stream its answer back. Both turns are stored once the answer is complete,
@@ -571,55 +571,55 @@ type Invoker interface {
 	// Request the book for the signed-in user. A repeat request changes nothing.
 	//
 	// POST /api/book/create_request
-	CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error)
+	CreateBookRequest(ctx context.Context) error
 	// CreateLead invokes createLead operation.
 	//
 	// Submit a contact request.
 	//
 	// POST /api/leads
-	CreateLead(ctx context.Context, request *LeadInput) (CreateLeadRes, error)
+	CreateLead(ctx context.Context, request *LeadInput) (*Lead, error)
 	// CreateMagicLink invokes createMagicLink operation.
 	//
 	// Email a one-time sign-in link.
 	//
 	// POST /api/magic_links
-	CreateMagicLink(ctx context.Context, request *EmailInput) (CreateMagicLinkRes, error)
+	CreateMagicLink(ctx context.Context, request *EmailInput) error
 	// CreatePasswordReminder invokes createPasswordReminder operation.
 	//
 	// Email a password-reset link.
 	//
 	// POST /api/remind_password
-	CreatePasswordReminder(ctx context.Context, request *EmailInput) (CreatePasswordReminderRes, error)
+	CreatePasswordReminder(ctx context.Context, request *EmailInput) error
 	// CreateSession invokes createSession operation.
 	//
 	// Log in with email + password; starts the session.
 	//
 	// POST /api/session
-	CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error)
+	CreateSession(ctx context.Context, request *SessionInput) (*UserHeaders, error)
 	// CreateUser invokes createUser operation.
 	//
 	// Sign up; starts the session on success.
 	//
 	// POST /api/users
-	CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error)
+	CreateUser(ctx context.Context, request *SignUpInput) (*UserHeaders, error)
 	// DeleteAccount invokes deleteAccount operation.
 	//
 	// Delete the current user's account.
 	//
 	// DELETE /api/account/profile
-	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
+	DeleteAccount(ctx context.Context) error
 	// DeleteSession invokes deleteSession operation.
 	//
 	// Log out; ends the session.
 	//
 	// DELETE /api/session
-	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	DeleteSession(ctx context.Context) error
 	// DenyOAuthConsent invokes denyOAuthConsent operation.
 	//
 	// Refuse the request; the application is told `access_denied`.
 	//
 	// POST /api/oauth/consents/{requestId}/deny
-	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error)
+	DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (*OAuthDecision, error)
 	// DownloadBook invokes downloadBook operation.
 	//
 	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
@@ -627,7 +627,7 @@ type Invoker interface {
 	// cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 	//
 	// GET /api/book/download
-	DownloadBook(ctx context.Context) (DownloadBookRes, error)
+	DownloadBook(ctx context.Context) (*DownloadBookFound, error)
 	// GetActiveBanner invokes getActiveBanner operation.
 	//
 	// The newest published banner of the request locale whose window is open now: it started (or has no
@@ -640,7 +640,7 @@ type Invoker interface {
 	// A published post in the request locale, by slug, with its page data.
 	//
 	// GET /api/blog_posts/{slug}
-	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
+	GetBlogPost(ctx context.Context, params GetBlogPostParams) (*BlogPostView, error)
 	// GetBook invokes getBook operation.
 	//
 	// The book page's state for whoever is visiting; a visitor is answered too.
@@ -654,7 +654,7 @@ type Invoker interface {
 	// is a 404.
 	//
 	// GET /api/languages/{slug}
-	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
+	GetCourse(ctx context.Context, params GetCourseParams) (*CourseView, error)
 	// GetCourseLesson invokes getCourseLesson operation.
 	//
 	// Lesson player payload (theory, starter code, tests) by slug, plus the visitor's progress.
@@ -664,7 +664,7 @@ type Invoker interface {
 	// for everyone.
 	//
 	// GET /api/languages/{courseSlug}/lessons/{slug}
-	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error)
+	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (*CourseLessonView, error)
 	// GetCurrentUser invokes getCurrentUser operation.
 	//
 	// Resolve the current user from the session cookie (for SSR).
@@ -676,32 +676,32 @@ type Invoker interface {
 	// The signed-in user's course dashboard.
 	//
 	// GET /api/my
-	GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error)
+	GetMyDashboard(ctx context.Context) (*MyDashboard, error)
 	// GetNextBlogPost invokes getNextBlogPost operation.
 	//
 	// The next post to read after this one: the next older published post in the request locale.
 	//
 	// GET /api/blog_posts/{id}/next
-	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (*BlogPost, error)
 	// GetOAuthConsent invokes getOAuthConsent operation.
 	//
 	// The request the browser arrived at the consent screen with. 404 when it is unknown, expired or
 	// already decided.
 	//
 	// GET /api/oauth/consents/{requestId}
-	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error)
+	GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (*OAuthConsent, error)
 	// GetProfile invokes getProfile operation.
 	//
 	// The editable profile of the current user.
 	//
 	// GET /api/account/profile/edit
-	GetProfile(ctx context.Context) (GetProfileRes, error)
+	GetProfile(ctx context.Context) (*User, error)
 	// GetPublicCourseCategory invokes getPublicCourseCategory operation.
 	//
 	// A category and the courses it groups.
 	//
 	// GET /api/language_categories/{slug}
-	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
+	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (*CourseCategoryView, error)
 	// GetSitemap invokes getSitemap operation.
 	//
 	// Everything the sitemap page lists, across the ru and en locales.
@@ -727,14 +727,14 @@ type Invoker interface {
 	// Like a post once per signed-in user; a repeat like changes nothing.
 	//
 	// POST /api/blog_posts/{id}/likes
-	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error)
+	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (*BlogPost, error)
 	// ListAssistantMessages invokes listAssistantMessages operation.
 	//
 	// The assistant chat history for the current user in this lesson, and their remaining quota. A lesson
 	// they never asked about answers an empty chat.
 	//
 	// GET /api/ai/lessons/{lessonId}/messages
-	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error)
+	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (*LessonAssistantChat, error)
 	// ListBlogPosts invokes listBlogPosts operation.
 	//
 	// Paginated published blog posts.
@@ -747,7 +747,7 @@ type Invoker interface {
 	// days (no refresh) has lapsed and is not listed.
 	//
 	// GET /api/oauth/connected_apps
-	ListConnectedApps(ctx context.Context) (ListConnectedAppsRes, error)
+	ListConnectedApps(ctx context.Context) (*ConnectedApps, error)
 	// ListCourses invokes listCourses operation.
 	//
 	// List the published course catalog.
@@ -772,7 +772,7 @@ type Invoker interface {
 	// one of the caller's apps.
 	//
 	// DELETE /api/oauth/connected_apps/{id}
-	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error)
+	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) error
 	// SearchCatalogue invokes searchCatalogue operation.
 	//
 	// Search the public catalogue (courses, lessons and blog posts) by what they say, in the request
@@ -797,19 +797,19 @@ type Invoker interface {
 	// course and lesson reads' business, and the page they go to next reads it from there.
 	//
 	// POST /api/lessons/{id}/start
-	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
+	StartLesson(ctx context.Context, params StartLessonParams) error
 	// UpdatePassword invokes updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.
 	//
 	// PATCH /api/password/{token}
-	UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)
+	UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (*UserHeaders, error)
 	// UpdateProfile invokes updateProfile operation.
 	//
 	// Update the current user's profile.
 	//
 	// PATCH /api/account/profile
-	UpdateProfile(ctx context.Context, request *ProfileInput) (UpdateProfileRes, error)
+	UpdateProfile(ctx context.Context, request *ProfileInput) (*User, error)
 }
 
 // Client implements OAS client.
@@ -858,12 +858,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Archive a draft or published banner.
 //
 // POST /api/admin/banners/{id}/archive
-func (c *Client) AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (AdminArchiveBannerRes, error) {
+func (c *Client) AdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (*Banner, error) {
 	res, err := c.sendAdminArchiveBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (res AdminArchiveBannerRes, err error) {
+func (c *Client) sendAdminArchiveBanner(ctx context.Context, params AdminArchiveBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminArchiveBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -990,12 +990,12 @@ func (c *Client) sendAdminArchiveBanner(ctx context.Context, params AdminArchive
 // Archive a draft or published post.
 //
 // POST /api/admin/blog_posts/{id}/archive
-func (c *Client) AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (AdminArchiveBlogPostRes, error) {
+func (c *Client) AdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminArchiveBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (res AdminArchiveBlogPostRes, err error) {
+func (c *Client) sendAdminArchiveBlogPost(ctx context.Context, params AdminArchiveBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminArchiveBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1122,12 +1122,12 @@ func (c *Client) sendAdminArchiveBlogPost(ctx context.Context, params AdminArchi
 // Archive a draft or published landing page.
 //
 // POST /api/admin/course_landing_pages/{id}/archive
-func (c *Client) AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (AdminArchiveCourseLandingPageRes, error) {
+func (c *Client) AdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminArchiveCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (res AdminArchiveCourseLandingPageRes, err error) {
+func (c *Client) sendAdminArchiveCourseLandingPage(ctx context.Context, params AdminArchiveCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminArchiveCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1254,12 +1254,12 @@ func (c *Client) sendAdminArchiveCourseLandingPage(ctx context.Context, params A
 // Archive a draft or published review.
 //
 // POST /api/admin/reviews/{id}/archive
-func (c *Client) AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (AdminArchiveReviewRes, error) {
+func (c *Client) AdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (*Review, error) {
 	res, err := c.sendAdminArchiveReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (res AdminArchiveReviewRes, err error) {
+func (c *Client) sendAdminArchiveReview(ctx context.Context, params AdminArchiveReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminArchiveReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1387,12 +1387,12 @@ func (c *Client) sendAdminArchiveReview(ctx context.Context, params AdminArchive
 // handler; banners carry no uniqueness constraint, so there is no 409 path.
 //
 // POST /api/admin/banners
-func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error) {
+func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error) {
 	res, err := c.sendAdminCreateBanner(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res AdminCreateBannerRes, err error) {
+func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1501,12 +1501,12 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 // AdminCreateBlogPost invokes adminCreateBlogPost operation.
 //
 // POST /api/admin/blog_posts
-func (c *Client) AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (AdminCreateBlogPostRes, error) {
+func (c *Client) AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (*BlogPost, error) {
 	res, err := c.sendAdminCreateBlogPost(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (res AdminCreateBlogPostRes, err error) {
+func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1615,12 +1615,12 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 // AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 //
 // POST /api/admin/course_categories/{categoryId}/qna_items
-func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error) {
+func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminCreateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res AdminCreateCategoryQnaItemRes, err error) {
+func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1748,12 +1748,12 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminCreateCourse invokes adminCreateCourse operation.
 //
 // POST /api/admin/courses
-func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error) {
+func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error) {
 	res, err := c.sendAdminCreateCourse(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res AdminCreateCourseRes, err error) {
+func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1865,12 +1865,12 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 // 409 by the central ent-error handler.
 //
 // POST /api/admin/course_categories
-func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error) {
+func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error) {
 	res, err := c.sendAdminCreateCourseCategory(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res AdminCreateCourseCategoryRes, err error) {
+func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1979,12 +1979,12 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 // AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 //
 // POST /api/admin/course_landing_pages
-func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error) {
+func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error) {
 	res, err := c.sendAdminCreateCourseLandingPage(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res AdminCreateCourseLandingPageRes, err error) {
+func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2095,12 +2095,12 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 // Build a new version of the course exercises.
 //
 // POST /api/admin/courses/{id}/versions
-func (c *Client) AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error) {
+func (c *Client) AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (*CourseVersion, error) {
 	res, err := c.sendAdminCreateCourseVersion(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (res AdminCreateCourseVersionRes, err error) {
+func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (res *CourseVersion, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseVersion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2225,12 +2225,12 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 // AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 //
 // POST /api/admin/course_landing_pages/{landingPageId}/qna_items
-func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error) {
+func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminCreateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res AdminCreateLandingPageQnaItemRes, err error) {
+func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2358,12 +2358,12 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 // AdminCreateReview invokes adminCreateReview operation.
 //
 // POST /api/admin/reviews
-func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error) {
+func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error) {
 	res, err := c.sendAdminCreateReview(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res AdminCreateReviewRes, err error) {
+func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2475,12 +2475,12 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 // handler.
 //
 // POST /api/admin/management/roles
-func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error) {
+func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminCreateRole(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res AdminCreateRoleRes, err error) {
+func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateRole"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2589,12 +2589,12 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 // AdminCreateStaffMember invokes adminCreateStaffMember operation.
 //
 // POST /api/admin/management/staff_members
-func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error) {
+func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error) {
 	res, err := c.sendAdminCreateStaffMember(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res AdminCreateStaffMemberRes, err error) {
+func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2706,12 +2706,12 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 // handler.
 //
 // POST /api/admin/api/users
-func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error) {
+func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error) {
 	res, err := c.sendAdminCreateUser(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res AdminCreateUserRes, err error) {
+func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2822,12 +2822,12 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 // Delete a banner.
 //
 // DELETE /api/admin/banners/{id}
-func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error) {
-	res, err := c.sendAdminDeleteBanner(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error {
+	_, err := c.sendAdminDeleteBanner(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (res AdminDeleteBannerRes, err error) {
+func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (res *AdminDeleteBannerNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBanner"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2951,12 +2951,12 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 // AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 //
 // DELETE /api/admin/blog_posts/{id}
-func (c *Client) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error) {
-	res, err := c.sendAdminDeleteBlogPost(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error {
+	_, err := c.sendAdminDeleteBlogPost(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (res AdminDeleteBlogPostRes, err error) {
+func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (res *AdminDeleteBlogPostNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBlogPost"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3080,12 +3080,12 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 // AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 //
 // DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
-func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error) {
-	res, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error {
+	_, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (res AdminDeleteCategoryQnaItemRes, err error) {
+func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (res *AdminDeleteCategoryQnaItemNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3230,12 +3230,12 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 // Delete a course category.
 //
 // DELETE /api/admin/course_categories/{id}
-func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error) {
-	res, err := c.sendAdminDeleteCourseCategory(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error {
+	_, err := c.sendAdminDeleteCourseCategory(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (res AdminDeleteCourseCategoryRes, err error) {
+func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (res *AdminDeleteCourseCategoryNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3359,12 +3359,12 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 // AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 //
 // DELETE /api/admin/course_landing_pages/{id}
-func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error) {
-	res, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error {
+	_, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (res AdminDeleteCourseLandingPageRes, err error) {
+func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (res *AdminDeleteCourseLandingPageNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3488,12 +3488,12 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 // AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 //
 // DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error) {
-	res, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error {
+	_, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (res AdminDeleteLandingPageQnaItemRes, err error) {
+func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (res *AdminDeleteLandingPageQnaItemNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3636,12 +3636,12 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 // AdminDeleteReview invokes adminDeleteReview operation.
 //
 // DELETE /api/admin/reviews/{id}
-func (c *Client) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error) {
-	res, err := c.sendAdminDeleteReview(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error {
+	_, err := c.sendAdminDeleteReview(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (res AdminDeleteReviewRes, err error) {
+func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (res *AdminDeleteReviewNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteReview"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3765,12 +3765,12 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 // AdminDeleteRole invokes adminDeleteRole operation.
 //
 // DELETE /api/admin/management/roles/{id}
-func (c *Client) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error) {
-	res, err := c.sendAdminDeleteRole(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error {
+	_, err := c.sendAdminDeleteRole(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (res AdminDeleteRoleRes, err error) {
+func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (res *AdminDeleteRoleNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteRole"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -3894,12 +3894,12 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 // AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 //
 // DELETE /api/admin/management/staff_members/{id}
-func (c *Client) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error) {
-	res, err := c.sendAdminDeleteStaffMember(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error {
+	_, err := c.sendAdminDeleteStaffMember(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (res AdminDeleteStaffMemberRes, err error) {
+func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (res *AdminDeleteStaffMemberNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteStaffMember"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -4023,12 +4023,12 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 // AdminDeleteUser invokes adminDeleteUser operation.
 //
 // DELETE /api/admin/api/users/{id}
-func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error) {
-	res, err := c.sendAdminDeleteUser(ctx, params)
-	return res, err
+func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error {
+	_, err := c.sendAdminDeleteUser(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (res AdminDeleteUserRes, err error) {
+func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (res *AdminDeleteUserNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteUser"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -4154,12 +4154,12 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 // Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
 //
 // GET /api/admin/search/record
-func (c *Client) AdminFetch(ctx context.Context, params AdminFetchParams) (AdminFetchRes, error) {
+func (c *Client) AdminFetch(ctx context.Context, params AdminFetchParams) (*AdminRecord, error) {
 	res, err := c.sendAdminFetch(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminFetch(ctx context.Context, params AdminFetchParams) (res AdminFetchRes, err error) {
+func (c *Client) sendAdminFetch(ctx context.Context, params AdminFetchParams) (res *AdminRecord, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminFetch"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4286,12 +4286,12 @@ func (c *Client) sendAdminFetch(ctx context.Context, params AdminFetchParams) (r
 // union member.
 //
 // GET /api/admin/banners/{id}
-func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error) {
+func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error) {
 	res, err := c.sendAdminGetBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res AdminGetBannerRes, err error) {
+func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBanner"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4415,12 +4415,12 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 // AdminGetBlogPost invokes adminGetBlogPost operation.
 //
 // GET /api/admin/blog_posts/{id}
-func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error) {
+func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminGetBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res AdminGetBlogPostRes, err error) {
+func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4546,12 +4546,12 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /api/admin/courses/{id}
-func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error) {
+func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error) {
 	res, err := c.sendAdminGetCourse(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res AdminGetCourseRes, err error) {
+func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4678,12 +4678,12 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 // typed union member.
 //
 // GET /api/admin/course_categories/{id}
-func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error) {
+func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error) {
 	res, err := c.sendAdminGetCourseCategory(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res AdminGetCourseCategoryRes, err error) {
+func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4810,12 +4810,12 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 // typed union member.
 //
 // GET /api/admin/course_landing_pages/{id}
-func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error) {
+func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminGetCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res AdminGetCourseLandingPageRes, err error) {
+func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4941,12 +4941,12 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 // Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /api/admin/management/users/{id}
-func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error) {
+func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminGetManagementUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res AdminGetManagementUserRes, err error) {
+func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetManagementUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5072,12 +5072,12 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 // The capabilities the caller holds; open to any staff member.
 //
 // GET /api/admin/capabilities
-func (c *Client) AdminGetMyCapabilities(ctx context.Context) (AdminGetMyCapabilitiesRes, error) {
+func (c *Client) AdminGetMyCapabilities(ctx context.Context) (*MyCapabilities, error) {
 	res, err := c.sendAdminGetMyCapabilities(ctx)
 	return res, err
 }
 
-func (c *Client) sendAdminGetMyCapabilities(ctx context.Context) (res AdminGetMyCapabilitiesRes, err error) {
+func (c *Client) sendAdminGetMyCapabilities(ctx context.Context) (res *MyCapabilities, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetMyCapabilities"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5186,12 +5186,12 @@ func (c *Client) sendAdminGetMyCapabilities(ctx context.Context) (res AdminGetMy
 // union member.
 //
 // GET /api/admin/reviews/{id}
-func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error) {
+func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error) {
 	res, err := c.sendAdminGetReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res AdminGetReviewRes, err error) {
+func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetReview"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5318,12 +5318,12 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 // handler.
 //
 // GET /api/admin/management/roles/{id}
-func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error) {
+func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminGetRole(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res AdminGetRoleRes, err error) {
+func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRole"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5449,12 +5449,12 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 // The permission matrix for a role.
 //
 // GET /api/admin/management/role_permissions/{roleId}
-func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error) {
+func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminGetRolePermissions(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res AdminGetRolePermissionsRes, err error) {
+func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5578,12 +5578,12 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 // AdminGetStaffMember invokes adminGetStaffMember operation.
 //
 // GET /api/admin/management/staff_members/{id}
-func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error) {
+func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error) {
 	res, err := c.sendAdminGetStaffMember(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res AdminGetStaffMemberRes, err error) {
+func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetStaffMember"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5710,12 +5710,12 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 // member.
 //
 // GET /api/admin/api/users/{id}
-func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error) {
+func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminGetUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res AdminGetUserRes, err error) {
+func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5843,12 +5843,12 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 // old values.
 //
 // GET /api/admin/audit_records
-func (c *Client) AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (AdminListAuditRecordsRes, error) {
+func (c *Client) AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (*AuditRecordPage, error) {
 	res, err := c.sendAdminListAuditRecords(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (res AdminListAuditRecordsRes, err error) {
+func (c *Client) sendAdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (res *AuditRecordPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListAuditRecords"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6113,12 +6113,12 @@ func (c *Client) sendAdminListAuditRecords(ctx context.Context, params AdminList
 // List banners (paginated).
 //
 // GET /api/admin/banners
-func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error) {
+func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error) {
 	res, err := c.sendAdminListBanners(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBannersParams) (res AdminListBannersRes, err error) {
+func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBannersParams) (res *BannerPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBanners"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6279,12 +6279,12 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 // AdminListBlogPosts invokes adminListBlogPosts operation.
 //
 // GET /api/admin/blog_posts
-func (c *Client) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error) {
+func (c *Client) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error) {
 	res, err := c.sendAdminListBlogPosts(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (res AdminListBlogPostsRes, err error) {
+func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (res *BlogPostPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6445,12 +6445,12 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 // AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 //
 // GET /api/admin/course_categories/{categoryId}/qna_items
-func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error) {
+func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error) {
 	res, err := c.sendAdminListCategoryQnaItems(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (res AdminListCategoryQnaItemsRes, err error) {
+func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (res []QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6577,12 +6577,12 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 // List course categories (paginated).
 //
 // GET /api/admin/course_categories
-func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error) {
+func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error) {
 	res, err := c.sendAdminListCourseCategories(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (res AdminListCourseCategoriesRes, err error) {
+func (c *Client) sendAdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (res *CourseCategoryPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6726,12 +6726,12 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 // AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 //
 // GET /api/admin/course_landing_pages
-func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error) {
+func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error) {
 	res, err := c.sendAdminListCourseLandingPages(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (res AdminListCourseLandingPagesRes, err error) {
+func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (res *CourseLandingPagePage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6892,12 +6892,12 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 // AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 //
 // GET /api/admin/course_lesson_reviews
-func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error) {
+func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error) {
 	res, err := c.sendAdminListCourseLessonReviews(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (res AdminListCourseLessonReviewsRes, err error) {
+func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (res *CourseLessonReviewPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7041,12 +7041,12 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 // AdminListCourseLessons invokes adminListCourseLessons operation.
 //
 // GET /api/admin/course_lessons
-func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error) {
+func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error) {
 	res, err := c.sendAdminListCourseLessons(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (res AdminListCourseLessonsRes, err error) {
+func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (res *CourseLessonListItemPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7211,12 +7211,12 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 // without being allowed to edit courses.
 //
 // GET /api/admin/courses/options
-func (c *Client) AdminListCourseOptions(ctx context.Context) (AdminListCourseOptionsRes, error) {
+func (c *Client) AdminListCourseOptions(ctx context.Context) ([]CourseOption, error) {
 	res, err := c.sendAdminListCourseOptions(ctx)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseOptions(ctx context.Context) (res AdminListCourseOptionsRes, err error) {
+func (c *Client) sendAdminListCourseOptions(ctx context.Context) (res []CourseOption, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseOptions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7322,12 +7322,12 @@ func (c *Client) sendAdminListCourseOptions(ctx context.Context) (res AdminListC
 // AdminListCourses invokes adminListCourses operation.
 //
 // GET /api/admin/courses
-func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error) {
+func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error) {
 	res, err := c.sendAdminListCourses(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCoursesParams) (res AdminListCoursesRes, err error) {
+func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCoursesParams) (res *CoursePage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7488,12 +7488,12 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 // AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 //
 // GET /api/admin/course_landing_pages/{landingPageId}/qna_items
-func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error) {
+func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error) {
 	res, err := c.sendAdminListLandingPageQnaItems(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (res AdminListLandingPageQnaItemsRes, err error) {
+func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (res []QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7618,12 +7618,12 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 // AdminListLeads invokes adminListLeads operation.
 //
 // GET /api/admin/leads
-func (c *Client) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error) {
+func (c *Client) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error) {
 	res, err := c.sendAdminListLeads(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsParams) (res AdminListLeadsRes, err error) {
+func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsParams) (res *LeadPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLeads"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7784,12 +7784,12 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 // AdminListLessonProgress invokes adminListLessonProgress operation.
 //
 // GET /api/admin/lesson_progress
-func (c *Client) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error) {
+func (c *Client) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (*LessonProgressPage, error) {
 	res, err := c.sendAdminListLessonProgress(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (res AdminListLessonProgressRes, err error) {
+func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (res *LessonProgressPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLessonProgress"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7933,12 +7933,12 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 // AdminListManagementUsers invokes adminListManagementUsers operation.
 //
 // GET /api/admin/management/users
-func (c *Client) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error) {
+func (c *Client) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error) {
 	res, err := c.sendAdminListManagementUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (res AdminListManagementUsersRes, err error) {
+func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (res *UserCrudPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListManagementUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8099,12 +8099,12 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 // AdminListMessages invokes adminListMessages operation.
 //
 // GET /api/admin/messages
-func (c *Client) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error) {
+func (c *Client) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error) {
 	res, err := c.sendAdminListMessages(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMessagesParams) (res AdminListMessagesRes, err error) {
+func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMessagesParams) (res *LessonAssistantMessagePage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8267,12 +8267,12 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 // The catalog of Permissions, generated from the operations' declarations.
 //
 // GET /api/admin/management/permissions
-func (c *Client) AdminListPermissions(ctx context.Context) (AdminListPermissionsRes, error) {
+func (c *Client) AdminListPermissions(ctx context.Context) (*PermissionCatalog, error) {
 	res, err := c.sendAdminListPermissions(ctx)
 	return res, err
 }
 
-func (c *Client) sendAdminListPermissions(ctx context.Context) (res AdminListPermissionsRes, err error) {
+func (c *Client) sendAdminListPermissions(ctx context.Context) (res *PermissionCatalog, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListPermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8378,12 +8378,12 @@ func (c *Client) sendAdminListPermissions(ctx context.Context) (res AdminListPer
 // AdminListReviews invokes adminListReviews operation.
 //
 // GET /api/admin/reviews
-func (c *Client) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error) {
+func (c *Client) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error) {
 	res, err := c.sendAdminListReviews(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListReviewsParams) (res AdminListReviewsRes, err error) {
+func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListReviewsParams) (res *ReviewPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8544,12 +8544,12 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 // AdminListRoles invokes adminListRoles operation.
 //
 // GET /api/admin/management/roles
-func (c *Client) AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error) {
+func (c *Client) AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error) {
 	res, err := c.sendAdminListRoles(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesParams) (res AdminListRolesRes, err error) {
+func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesParams) (res *StaffRolePage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListRoles"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8693,12 +8693,12 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 // AdminListStaffMembers invokes adminListStaffMembers operation.
 //
 // GET /api/admin/management/staff_members
-func (c *Client) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error) {
+func (c *Client) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error) {
 	res, err := c.sendAdminListStaffMembers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (res AdminListStaffMembersRes, err error) {
+func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (res *StaffMemberPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListStaffMembers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -8842,12 +8842,12 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 // AdminListUsers invokes adminListUsers operation.
 //
 // GET /api/admin/api/users
-func (c *Client) AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error) {
+func (c *Client) AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error) {
 	res, err := c.sendAdminListUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersParams) (res AdminListUsersRes, err error) {
+func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersParams) (res *UserCrudPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -9010,12 +9010,12 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 // Mark a course as completed: it joins the public catalogue.
 //
 // POST /api/admin/courses/{id}/mark_completed
-func (c *Client) AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (AdminMarkCourseCompletedRes, error) {
+func (c *Client) AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (*Course, error) {
 	res, err := c.sendAdminMarkCourseCompleted(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (res AdminMarkCourseCompletedRes, err error) {
+func (c *Client) sendAdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminMarkCourseCompleted"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9144,12 +9144,12 @@ func (c *Client) sendAdminMarkCourseCompleted(ctx context.Context, params AdminM
 // current value is a 409 with a localized `detail`.
 //
 // POST /api/admin/courses/{id}/mark_draft
-func (c *Client) AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (AdminMarkCourseDraftRes, error) {
+func (c *Client) AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (*Course, error) {
 	res, err := c.sendAdminMarkCourseDraft(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (res AdminMarkCourseDraftRes, err error) {
+func (c *Client) sendAdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminMarkCourseDraft"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9276,12 +9276,12 @@ func (c *Client) sendAdminMarkCourseDraft(ctx context.Context, params AdminMarkC
 // Mark a course as in development.
 //
 // POST /api/admin/courses/{id}/mark_in_development
-func (c *Client) AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (AdminMarkCourseInDevelopmentRes, error) {
+func (c *Client) AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (*Course, error) {
 	res, err := c.sendAdminMarkCourseInDevelopment(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (res AdminMarkCourseInDevelopmentRes, err error) {
+func (c *Client) sendAdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminMarkCourseInDevelopment"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9410,12 +9410,12 @@ func (c *Client) sendAdminMarkCourseInDevelopment(ctx context.Context, params Ad
 // with a localized `detail`.
 //
 // POST /api/admin/banners/{id}/publish
-func (c *Client) AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (AdminPublishBannerRes, error) {
+func (c *Client) AdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (*Banner, error) {
 	res, err := c.sendAdminPublishBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (res AdminPublishBannerRes, err error) {
+func (c *Client) sendAdminPublishBanner(ctx context.Context, params AdminPublishBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminPublishBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9544,12 +9544,12 @@ func (c *Client) sendAdminPublishBanner(ctx context.Context, params AdminPublish
 // with a localized `detail`.
 //
 // POST /api/admin/blog_posts/{id}/publish
-func (c *Client) AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (AdminPublishBlogPostRes, error) {
+func (c *Client) AdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminPublishBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (res AdminPublishBlogPostRes, err error) {
+func (c *Client) sendAdminPublishBlogPost(ctx context.Context, params AdminPublishBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminPublishBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9678,12 +9678,12 @@ func (c *Client) sendAdminPublishBlogPost(ctx context.Context, params AdminPubli
 // 409 with a localized `detail`.
 //
 // POST /api/admin/course_landing_pages/{id}/publish
-func (c *Client) AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (AdminPublishCourseLandingPageRes, error) {
+func (c *Client) AdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminPublishCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (res AdminPublishCourseLandingPageRes, err error) {
+func (c *Client) sendAdminPublishCourseLandingPage(ctx context.Context, params AdminPublishCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminPublishCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9812,12 +9812,12 @@ func (c *Client) sendAdminPublishCourseLandingPage(ctx context.Context, params A
 // with a localized `detail`.
 //
 // POST /api/admin/reviews/{id}/publish
-func (c *Client) AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (AdminPublishReviewRes, error) {
+func (c *Client) AdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (*Review, error) {
 	res, err := c.sendAdminPublishReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (res AdminPublishReviewRes, err error) {
+func (c *Client) sendAdminPublishReview(ctx context.Context, params AdminPublishReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminPublishReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -9944,12 +9944,12 @@ func (c *Client) sendAdminPublishReview(ctx context.Context, params AdminPublish
 // Enqueue AI re-review of every current lesson version.
 //
 // POST /api/admin/courses/{id}/review
-func (c *Client) AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error) {
-	res, err := c.sendAdminReviewCourse(ctx, params)
-	return res, err
+func (c *Client) AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) error {
+	_, err := c.sendAdminReviewCourse(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (res AdminReviewCourseRes, err error) {
+func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (res *AdminReviewCourseNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -10076,12 +10076,12 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 // Enqueue AI review for a single lesson.
 //
 // POST /api/admin/course_lessons/{id}/review
-func (c *Client) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error) {
-	res, err := c.sendAdminReviewCourseLesson(ctx, params)
-	return res, err
+func (c *Client) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) error {
+	_, err := c.sendAdminReviewCourseLesson(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (res AdminReviewCourseLessonRes, err error) {
+func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (res *AdminReviewCourseLessonNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -10212,12 +10212,12 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 // public `searchCatalogue` keeps its filters.
 //
 // GET /api/admin/search
-func (c *Client) AdminSearch(ctx context.Context, params AdminSearchParams) (AdminSearchRes, error) {
+func (c *Client) AdminSearch(ctx context.Context, params AdminSearchParams) (*AdminSearchResultPage, error) {
 	res, err := c.sendAdminSearch(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminSearch(ctx context.Context, params AdminSearchParams) (res AdminSearchRes, err error) {
+func (c *Client) sendAdminSearch(ctx context.Context, params AdminSearchParams) (res *AdminSearchResultPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSearch"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -10394,12 +10394,12 @@ func (c *Client) sendAdminSearch(ctx context.Context, params AdminSearchParams) 
 // Typeahead search by name/email.
 //
 // GET /api/admin/api/users/search
-func (c *Client) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error) {
+func (c *Client) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error) {
 	res, err := c.sendAdminSearchUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (res AdminSearchUsersRes, err error) {
+func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (res []UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSearchUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -10525,12 +10525,12 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 // Set the related/promoted courses for a post by hand.
 //
 // POST /api/admin/blog_posts/{id}/related_courses
-func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error) {
+func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (*BlogPost, error) {
 	res, err := c.sendAdminSetBlogPostRelatedCourses(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (res AdminSetBlogPostRelatedCoursesRes, err error) {
+func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSetBlogPostRelatedCourses"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -10661,12 +10661,12 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 // replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
 //
 // POST /api/admin/blog_posts/{id}/suggest_related_courses
-func (c *Client) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error) {
-	res, err := c.sendAdminSuggestBlogPostRelatedCourses(ctx, params)
-	return res, err
+func (c *Client) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) error {
+	_, err := c.sendAdminSuggestBlogPostRelatedCourses(ctx, params)
+	return err
 }
 
-func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (res AdminSuggestBlogPostRelatedCoursesRes, err error) {
+func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (res *AdminSuggestBlogPostRelatedCoursesNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSuggestBlogPostRelatedCourses"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -10793,12 +10793,12 @@ func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, par
 // Take a published banner back to draft.
 //
 // POST /api/admin/banners/{id}/unpublish
-func (c *Client) AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (AdminUnpublishBannerRes, error) {
+func (c *Client) AdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (*Banner, error) {
 	res, err := c.sendAdminUnpublishBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (res AdminUnpublishBannerRes, err error) {
+func (c *Client) sendAdminUnpublishBanner(ctx context.Context, params AdminUnpublishBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUnpublishBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -10925,12 +10925,12 @@ func (c *Client) sendAdminUnpublishBanner(ctx context.Context, params AdminUnpub
 // Take a published post back to draft.
 //
 // POST /api/admin/blog_posts/{id}/unpublish
-func (c *Client) AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (AdminUnpublishBlogPostRes, error) {
+func (c *Client) AdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminUnpublishBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (res AdminUnpublishBlogPostRes, err error) {
+func (c *Client) sendAdminUnpublishBlogPost(ctx context.Context, params AdminUnpublishBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUnpublishBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -11057,12 +11057,12 @@ func (c *Client) sendAdminUnpublishBlogPost(ctx context.Context, params AdminUnp
 // Take a published landing page back to draft.
 //
 // POST /api/admin/course_landing_pages/{id}/unpublish
-func (c *Client) AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (AdminUnpublishCourseLandingPageRes, error) {
+func (c *Client) AdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminUnpublishCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (res AdminUnpublishCourseLandingPageRes, err error) {
+func (c *Client) sendAdminUnpublishCourseLandingPage(ctx context.Context, params AdminUnpublishCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUnpublishCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -11189,12 +11189,12 @@ func (c *Client) sendAdminUnpublishCourseLandingPage(ctx context.Context, params
 // Take a published review back to draft.
 //
 // POST /api/admin/reviews/{id}/unpublish
-func (c *Client) AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (AdminUnpublishReviewRes, error) {
+func (c *Client) AdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (*Review, error) {
 	res, err := c.sendAdminUnpublishReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (res AdminUnpublishReviewRes, err error) {
+func (c *Client) sendAdminUnpublishReview(ctx context.Context, params AdminUnpublishReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUnpublishReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -11321,12 +11321,12 @@ func (c *Client) sendAdminUnpublishReview(ctx context.Context, params AdminUnpub
 // Update a banner. A missing id surfaces as 404 via the central handler.
 //
 // PUT /api/admin/banners/{id}
-func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error) {
+func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error) {
 	res, err := c.sendAdminUpdateBanner(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res AdminUpdateBannerRes, err error) {
+func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBanner"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -11453,12 +11453,12 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 // AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 //
 // PUT /api/admin/blog_posts/{id}
-func (c *Client) AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error) {
+func (c *Client) AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminUpdateBlogPost(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (res AdminUpdateBlogPostRes, err error) {
+func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -11588,12 +11588,12 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 // ent-error handler.
 //
 // PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
-func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error) {
+func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminUpdateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res AdminUpdateCategoryQnaItemRes, err error) {
+func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -11739,12 +11739,12 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminUpdateCourse invokes adminUpdateCourse operation.
 //
 // PUT /api/admin/courses/{id}
-func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error) {
+func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error) {
 	res, err := c.sendAdminUpdateCourse(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res AdminUpdateCourseRes, err error) {
+func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -11874,12 +11874,12 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 // handler.
 //
 // PUT /api/admin/course_categories/{id}
-func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error) {
+func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error) {
 	res, err := c.sendAdminUpdateCourseCategory(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res AdminUpdateCourseCategoryRes, err error) {
+func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12008,12 +12008,12 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /api/admin/course_landing_pages/{id}
-func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error) {
+func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminUpdateCourseLandingPage(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res AdminUpdateCourseLandingPageRes, err error) {
+func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12143,12 +12143,12 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 // ent-error handler.
 //
 // PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
-func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error) {
+func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminUpdateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res AdminUpdateLandingPageQnaItemRes, err error) {
+func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12294,12 +12294,12 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 // AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 //
 // PUT /api/admin/management/users/{id}
-func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error) {
+func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminUpdateManagementUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res AdminUpdateManagementUserRes, err error) {
+func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateManagementUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12428,12 +12428,12 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 // Update a review. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /api/admin/reviews/{id}
-func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error) {
+func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error) {
 	res, err := c.sendAdminUpdateReview(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res AdminUpdateReviewRes, err error) {
+func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateReview"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12560,12 +12560,12 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 // AdminUpdateRole invokes adminUpdateRole operation.
 //
 // PUT /api/admin/management/roles/{id}
-func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error) {
+func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminUpdateRole(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res AdminUpdateRoleRes, err error) {
+func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRole"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12694,12 +12694,12 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 // Replace the permission matrix for a role.
 //
 // PUT /api/admin/management/role_permissions/{roleId}
-func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error) {
+func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminUpdateRolePermissions(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res AdminUpdateRolePermissionsRes, err error) {
+func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12826,12 +12826,12 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 // AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 //
 // PUT /api/admin/management/staff_members/{id}
-func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error) {
+func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error) {
 	res, err := c.sendAdminUpdateStaffMember(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res AdminUpdateStaffMemberRes, err error) {
+func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -12961,12 +12961,12 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 // handler.
 //
 // PUT /api/admin/api/users/{id}
-func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error) {
+func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminUpdateUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res AdminUpdateUserRes, err error) {
+func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -13095,12 +13095,12 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 // Upload a file; returns the attachment to reference from a form.
 //
 // POST /api/admin/attachments
-func (c *Client) AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error) {
+func (c *Client) AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (*Attachment, error) {
 	res, err := c.sendAdminUploadAttachment(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (res AdminUploadAttachmentRes, err error) {
+func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (res *Attachment, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUploadAttachment"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -13211,12 +13211,12 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 // Grant the request as the signed-in user.
 //
 // POST /api/oauth/consents/{requestId}/approve
-func (c *Client) ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (ApproveOAuthConsentRes, error) {
+func (c *Client) ApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (*OAuthDecision, error) {
 	res, err := c.sendApproveOAuthConsent(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (res ApproveOAuthConsentRes, err error) {
+func (c *Client) sendApproveOAuthConsent(ctx context.Context, params ApproveOAuthConsentParams) (res *OAuthDecision, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("approveOAuthConsent"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -13347,12 +13347,12 @@ func (c *Client) sendApproveOAuthConsent(ctx context.Context, params ApproveOAut
 // cookie rather than in rows. Any lesson may be submitted, in any order.
 //
 // POST /api/lessons/{id}/check
-func (c *Client) CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error) {
+func (c *Client) CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (*LessonCheckingResponseHeaders, error) {
 	res, err := c.sendCheckLesson(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (res CheckLessonRes, err error) {
+func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (res *LessonCheckingResponseHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -13449,12 +13449,12 @@ func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput,
 // Validate a reset token before showing the form.
 //
 // GET /api/password/{token}/edit
-func (c *Client) CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error) {
-	res, err := c.sendCheckPasswordResetToken(ctx, params)
-	return res, err
+func (c *Client) CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) error {
+	_, err := c.sendCheckPasswordResetToken(ctx, params)
+	return err
 }
 
-func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (res CheckPasswordResetTokenRes, err error) {
+func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (res *CheckPasswordResetTokenNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkPasswordResetToken"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -13548,12 +13548,12 @@ func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPa
 // Consume a magic link token; starts the session.
 //
 // GET /api/magic_links/{token}
-func (c *Client) ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error) {
+func (c *Client) ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (*UserHeaders, error) {
 	res, err := c.sendConsumeMagicLink(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (res ConsumeMagicLinkRes, err error) {
+func (c *Client) sendConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (res *UserHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("consumeMagicLink"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -13785,12 +13785,12 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 // Request the book for the signed-in user. A repeat request changes nothing.
 //
 // POST /api/book/create_request
-func (c *Client) CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error) {
-	res, err := c.sendCreateBookRequest(ctx)
-	return res, err
+func (c *Client) CreateBookRequest(ctx context.Context) error {
+	_, err := c.sendCreateBookRequest(ctx)
+	return err
 }
 
-func (c *Client) sendCreateBookRequest(ctx context.Context) (res CreateBookRequestRes, err error) {
+func (c *Client) sendCreateBookRequest(ctx context.Context) (res *CreateBookRequestNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createBookRequest"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -13898,12 +13898,12 @@ func (c *Client) sendCreateBookRequest(ctx context.Context) (res CreateBookReque
 // Submit a contact request.
 //
 // POST /api/leads
-func (c *Client) CreateLead(ctx context.Context, request *LeadInput) (CreateLeadRes, error) {
+func (c *Client) CreateLead(ctx context.Context, request *LeadInput) (*Lead, error) {
 	res, err := c.sendCreateLead(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res CreateLeadRes, err error) {
+func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res *Lead, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createLead"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14014,12 +14014,12 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 // Email a one-time sign-in link.
 //
 // POST /api/magic_links
-func (c *Client) CreateMagicLink(ctx context.Context, request *EmailInput) (CreateMagicLinkRes, error) {
-	res, err := c.sendCreateMagicLink(ctx, request)
-	return res, err
+func (c *Client) CreateMagicLink(ctx context.Context, request *EmailInput) error {
+	_, err := c.sendCreateMagicLink(ctx, request)
+	return err
 }
 
-func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (res CreateMagicLinkRes, err error) {
+func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (res *CreateMagicLinkNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createMagicLink"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14097,12 +14097,12 @@ func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (
 // Email a password-reset link.
 //
 // POST /api/remind_password
-func (c *Client) CreatePasswordReminder(ctx context.Context, request *EmailInput) (CreatePasswordReminderRes, error) {
-	res, err := c.sendCreatePasswordReminder(ctx, request)
-	return res, err
+func (c *Client) CreatePasswordReminder(ctx context.Context, request *EmailInput) error {
+	_, err := c.sendCreatePasswordReminder(ctx, request)
+	return err
 }
 
-func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailInput) (res CreatePasswordReminderRes, err error) {
+func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailInput) (res *CreatePasswordReminderNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createPasswordReminder"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14180,12 +14180,12 @@ func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailI
 // Log in with email + password; starts the session.
 //
 // POST /api/session
-func (c *Client) CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error) {
+func (c *Client) CreateSession(ctx context.Context, request *SessionInput) (*UserHeaders, error) {
 	res, err := c.sendCreateSession(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (res CreateSessionRes, err error) {
+func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (res *UserHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createSession"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14263,12 +14263,12 @@ func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (
 // Sign up; starts the session on success.
 //
 // POST /api/users
-func (c *Client) CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error) {
+func (c *Client) CreateUser(ctx context.Context, request *SignUpInput) (*UserHeaders, error) {
 	res, err := c.sendCreateUser(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res CreateUserRes, err error) {
+func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res *UserHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14346,12 +14346,12 @@ func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res 
 // Delete the current user's account.
 //
 // DELETE /api/account/profile
-func (c *Client) DeleteAccount(ctx context.Context) (DeleteAccountRes, error) {
-	res, err := c.sendDeleteAccount(ctx)
-	return res, err
+func (c *Client) DeleteAccount(ctx context.Context) error {
+	_, err := c.sendDeleteAccount(ctx)
+	return err
 }
 
-func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, err error) {
+func (c *Client) sendDeleteAccount(ctx context.Context) (res *DeleteAccountNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteAccount"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -14459,12 +14459,12 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 // Log out; ends the session.
 //
 // DELETE /api/session
-func (c *Client) DeleteSession(ctx context.Context) (DeleteSessionRes, error) {
-	res, err := c.sendDeleteSession(ctx)
-	return res, err
+func (c *Client) DeleteSession(ctx context.Context) error {
+	_, err := c.sendDeleteSession(ctx)
+	return err
 }
 
-func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, err error) {
+func (c *Client) sendDeleteSession(ctx context.Context) (res *DeleteSessionNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteSession"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -14572,12 +14572,12 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 // Refuse the request; the application is told `access_denied`.
 //
 // POST /api/oauth/consents/{requestId}/deny
-func (c *Client) DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (DenyOAuthConsentRes, error) {
+func (c *Client) DenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (*OAuthDecision, error) {
 	res, err := c.sendDenyOAuthConsent(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (res DenyOAuthConsentRes, err error) {
+func (c *Client) sendDenyOAuthConsent(ctx context.Context, params DenyOAuthConsentParams) (res *OAuthDecision, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("denyOAuthConsent"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -14706,12 +14706,12 @@ func (c *Client) sendDenyOAuthConsent(ctx context.Context, params DenyOAuthConse
 // cookie is required — a navigation is a GET, and a GET changes nothing unsafe.
 //
 // GET /api/book/download
-func (c *Client) DownloadBook(ctx context.Context) (DownloadBookRes, error) {
+func (c *Client) DownloadBook(ctx context.Context) (*DownloadBookFound, error) {
 	res, err := c.sendDownloadBook(ctx)
 	return res, err
 }
 
-func (c *Client) sendDownloadBook(ctx context.Context) (res DownloadBookRes, err error) {
+func (c *Client) sendDownloadBook(ctx context.Context) (res *DownloadBookFound, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("downloadBook"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -14900,12 +14900,12 @@ func (c *Client) sendGetActiveBanner(ctx context.Context) (res *ActiveBanner, er
 // A published post in the request locale, by slug, with its page data.
 //
 // GET /api/blog_posts/{slug}
-func (c *Client) GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error) {
+func (c *Client) GetBlogPost(ctx context.Context, params GetBlogPostParams) (*BlogPostView, error) {
 	res, err := c.sendGetBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) (res GetBlogPostRes, err error) {
+func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) (res *BlogPostView, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15080,12 +15080,12 @@ func (c *Client) sendGetBook(ctx context.Context) (res *BookView, err error) {
 // is a 404.
 //
 // GET /api/languages/{slug}
-func (c *Client) GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error) {
+func (c *Client) GetCourse(ctx context.Context, params GetCourseParams) (*CourseView, error) {
 	res, err := c.sendGetCourse(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res GetCourseRes, err error) {
+func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res *CourseView, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15182,12 +15182,12 @@ func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res
 // for everyone.
 //
 // GET /api/languages/{courseSlug}/lessons/{slug}
-func (c *Client) GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error) {
+func (c *Client) GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (*CourseLessonView, error) {
 	res, err := c.sendGetCourseLesson(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLessonParams) (res GetCourseLessonRes, err error) {
+func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLessonParams) (res *CourseLessonView, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15396,12 +15396,12 @@ func (c *Client) sendGetCurrentUser(ctx context.Context, params GetCurrentUserPa
 // The signed-in user's course dashboard.
 //
 // GET /api/my
-func (c *Client) GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error) {
+func (c *Client) GetMyDashboard(ctx context.Context) (*MyDashboard, error) {
 	res, err := c.sendGetMyDashboard(ctx)
 	return res, err
 }
 
-func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes, err error) {
+func (c *Client) sendGetMyDashboard(ctx context.Context) (res *MyDashboard, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMyDashboard"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15509,12 +15509,12 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 // The next post to read after this one: the next older published post in the request locale.
 //
 // GET /api/blog_posts/{id}/next
-func (c *Client) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error) {
+func (c *Client) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendGetNextBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (res GetNextBlogPostRes, err error) {
+func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getNextBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15609,12 +15609,12 @@ func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPost
 // already decided.
 //
 // GET /api/oauth/consents/{requestId}
-func (c *Client) GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (GetOAuthConsentRes, error) {
+func (c *Client) GetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (*OAuthConsent, error) {
 	res, err := c.sendGetOAuthConsent(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (res GetOAuthConsentRes, err error) {
+func (c *Client) sendGetOAuthConsent(ctx context.Context, params GetOAuthConsentParams) (res *OAuthConsent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getOAuthConsent"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15740,12 +15740,12 @@ func (c *Client) sendGetOAuthConsent(ctx context.Context, params GetOAuthConsent
 // The editable profile of the current user.
 //
 // GET /api/account/profile/edit
-func (c *Client) GetProfile(ctx context.Context) (GetProfileRes, error) {
+func (c *Client) GetProfile(ctx context.Context) (*User, error) {
 	res, err := c.sendGetProfile(ctx)
 	return res, err
 }
 
-func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err error) {
+func (c *Client) sendGetProfile(ctx context.Context) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getProfile"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -15853,12 +15853,12 @@ func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err err
 // A category and the courses it groups.
 //
 // GET /api/language_categories/{slug}
-func (c *Client) GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error) {
+func (c *Client) GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (*CourseCategoryView, error) {
 	res, err := c.sendGetPublicCourseCategory(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (res GetPublicCourseCategoryRes, err error) {
+func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (res *CourseCategoryView, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPublicCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -16193,12 +16193,12 @@ func (c *Client) sendGetYandexCoursesFeedXml(ctx context.Context) (res GetYandex
 // Like a post once per signed-in user; a repeat like changes nothing.
 //
 // POST /api/blog_posts/{id}/likes
-func (c *Client) LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error) {
+func (c *Client) LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendLikeBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams) (res LikeBlogPostRes, err error) {
+func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("likeBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -16326,12 +16326,12 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 // they never asked about answers an empty chat.
 //
 // GET /api/ai/lessons/{lessonId}/messages
-func (c *Client) ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error) {
+func (c *Client) ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (*LessonAssistantChat, error) {
 	res, err := c.sendListAssistantMessages(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (res ListAssistantMessagesRes, err error) {
+func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (res *LessonAssistantChat, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listAssistantMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -16577,12 +16577,12 @@ func (c *Client) sendListBlogPosts(ctx context.Context, params ListBlogPostsPara
 // days (no refresh) has lapsed and is not listed.
 //
 // GET /api/oauth/connected_apps
-func (c *Client) ListConnectedApps(ctx context.Context) (ListConnectedAppsRes, error) {
+func (c *Client) ListConnectedApps(ctx context.Context) (*ConnectedApps, error) {
 	res, err := c.sendListConnectedApps(ctx)
 	return res, err
 }
 
-func (c *Client) sendListConnectedApps(ctx context.Context) (res ListConnectedAppsRes, err error) {
+func (c *Client) sendListConnectedApps(ctx context.Context) (res *ConnectedApps, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listConnectedApps"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -16969,12 +16969,12 @@ func (c *Client) sendListPublicReviews(ctx context.Context, params ListPublicRev
 // one of the caller's apps.
 //
 // DELETE /api/oauth/connected_apps/{id}
-func (c *Client) RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error) {
-	res, err := c.sendRevokeConnectedApp(ctx, params)
-	return res, err
+func (c *Client) RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) error {
+	_, err := c.sendRevokeConnectedApp(ctx, params)
+	return err
 }
 
-func (c *Client) sendRevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (res RevokeConnectedAppRes, err error) {
+func (c *Client) sendRevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (res *RevokeConnectedAppNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("revokeConnectedApp"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -17262,12 +17262,12 @@ func (c *Client) sendSearchCatalogue(ctx context.Context, params SearchCatalogue
 // course and lesson reads' business, and the page they go to next reads it from there.
 //
 // POST /api/lessons/{id}/start
-func (c *Client) StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error) {
-	res, err := c.sendStartLesson(ctx, params)
-	return res, err
+func (c *Client) StartLesson(ctx context.Context, params StartLessonParams) error {
+	_, err := c.sendStartLesson(ctx, params)
+	return err
 }
 
-func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) (res StartLessonRes, err error) {
+func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) (res *StartLessonNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("startLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -17361,12 +17361,12 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 // Set a new password using a reset token; signs the user in.
 //
 // PATCH /api/password/{token}
-func (c *Client) UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error) {
+func (c *Client) UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (*UserHeaders, error) {
 	res, err := c.sendUpdatePassword(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (res UpdatePasswordRes, err error) {
+func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (res *UserHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updatePassword"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
@@ -17462,12 +17462,12 @@ func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordI
 // Update the current user's profile.
 //
 // PATCH /api/account/profile
-func (c *Client) UpdateProfile(ctx context.Context, request *ProfileInput) (UpdateProfileRes, error) {
+func (c *Client) UpdateProfile(ctx context.Context, request *ProfileInput) (*User, error) {
 	res, err := c.sendUpdateProfile(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (res UpdateProfileRes, err error) {
+func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updateProfile"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),

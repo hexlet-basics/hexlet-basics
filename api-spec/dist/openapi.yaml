@@ -73,21 +73,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -115,12 +100,6 @@ paths:
       responses:
         '204':
           description: A successful sign-out; the session cookie is expired by the server.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -147,12 +126,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -181,18 +154,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -225,18 +186,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -281,18 +230,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -332,18 +269,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -382,18 +307,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -430,18 +343,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -472,27 +373,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Attachment'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -539,27 +419,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuditRecordPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -593,18 +452,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BannerPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -636,18 +483,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -691,18 +526,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -737,18 +560,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -785,18 +596,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -832,18 +631,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -882,18 +669,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -929,18 +704,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -972,18 +735,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPostPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1011,27 +762,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1072,18 +802,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1117,27 +835,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1173,18 +870,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1220,18 +905,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1270,18 +943,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1317,27 +978,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1378,18 +1018,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1425,18 +1053,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1466,18 +1082,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MyCapabilities'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1507,18 +1111,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategoryPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1549,18 +1141,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1603,18 +1183,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1648,18 +1216,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1709,18 +1265,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1762,18 +1306,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1811,18 +1343,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1859,18 +1379,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1907,18 +1415,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1950,18 +1446,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPagePage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1989,18 +1473,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2044,18 +1516,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2092,18 +1552,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2139,18 +1587,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2186,18 +1622,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2236,18 +1660,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2283,18 +1695,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2331,18 +1731,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2376,18 +1764,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2437,18 +1813,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2490,18 +1854,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2532,18 +1884,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonReviewPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2575,18 +1915,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonListItemPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2618,24 +1946,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2667,18 +1977,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CoursePage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2706,18 +2004,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2759,18 +2045,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CourseOption'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2808,18 +2082,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2853,18 +2115,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2906,18 +2156,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2957,18 +2195,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3004,18 +2230,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3047,24 +2261,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3100,24 +2296,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseVersion'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3149,18 +2327,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeadPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3192,18 +2358,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonProgressPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3234,18 +2388,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PermissionCatalog'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3282,18 +2424,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3329,27 +2459,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3387,18 +2496,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRolePage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3430,18 +2527,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3486,18 +2571,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3532,18 +2605,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3580,18 +2641,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3623,18 +2672,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMemberPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3664,18 +2701,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3717,18 +2742,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3764,18 +2777,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3812,18 +2813,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3856,18 +2845,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3907,18 +2884,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3954,18 +2919,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4004,18 +2957,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonAssistantMessagePage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4048,18 +2989,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReviewPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4088,18 +3017,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4143,18 +3060,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4192,18 +3097,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4239,18 +3132,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4286,18 +3167,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4336,18 +3205,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4383,18 +3240,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4447,18 +3292,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminSearchResultPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4493,24 +3326,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminRecord'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4546,18 +3361,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonAssistantChat'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4603,18 +3406,6 @@ paths:
             text/plain:
               schema:
                 type: string
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         '429':
           description: The learner has used up today's assistant questions.
           content:
@@ -4711,18 +3502,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4757,12 +3536,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4792,12 +3565,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPostView'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4842,12 +3609,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -4879,12 +3640,6 @@ paths:
               required: true
               schema:
                 type: string
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5007,12 +3762,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategoryView'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5079,12 +3828,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonView'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5117,12 +3860,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseView'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5147,21 +3884,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Lead'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5219,21 +3941,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonCheckingResponse'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5278,12 +3985,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5304,15 +4005,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5359,12 +4051,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5442,12 +4128,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MyDashboard'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5474,12 +4154,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectedApps'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5508,18 +4182,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5551,18 +4213,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OAuthConsent'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5594,18 +4244,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OAuthDecision'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5637,18 +4275,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OAuthDecision'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5691,21 +4317,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5737,12 +4348,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5763,15 +4368,6 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5886,15 +4482,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5920,12 +4507,6 @@ paths:
       responses:
         '204':
           description: A successful sign-out; the session cookie is expired by the server.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -5959,15 +4540,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -8183,14 +6755,6 @@ components:
             $ref: '#/components/schemas/DashboardCourse'
           description: Finished courses, newest enrollment first.
       description: "The signed-in user's dashboard (legacy: `MyController#show`)."
-    NotFoundError:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-      description: A resource was not found.
     OAuthConsent:
       type: object
       required:
@@ -8283,6 +6847,17 @@ components:
         instance:
           type: string
           description: Optional URI identifying this particular occurrence.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Present on a 422 only: a write that failed
+            validation, including constraints the schema cannot express, like
+            uniqueness (ADR-0028).
       description: |-
         RFC 9457 problem details returned by the transport when request decoding,
         authorization, persistence, or an unexpected server failure prevents an
@@ -8963,21 +7538,6 @@ components:
         admin:
           type: boolean
           nullable: true
-    ValidationError:
-      type: object
-      required:
-        - errors
-      properties:
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-      description: |-
-        Field-level validation errors, keyed by field name (each value is the list
-        of messages for that field). Returned when a write fails validation —
-        including constraints the schema cannot express, like uniqueness.
   securitySchemes:
     UserSession:
       type: apiKey

@@ -34,7 +34,7 @@ func run() error {
 
 	db, err := sql.Open("pgx", *conn)
 	if err != nil {
-		return fmt.Errorf("open database: %w", err)
+		return errs.Wrapf(err, "open database")
 	}
 	defer func() { _ = db.Close() }()
 	return fixture.Load(db, *dir, *anyDatabase)

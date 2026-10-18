@@ -6,7 +6,6 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
 
@@ -15,7 +14,7 @@ import (
 //
 // A guest reaches it too, and nothing is stored for them: their state is the
 // signed cookie, and only a check moves it.
-func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) (api.StartLessonRes, error) {
+func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) error {
 	_, err := s.progress.StartLesson(
 		ctx,
 		currentLearner(ctx),
@@ -24,13 +23,13 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 	)
 	switch {
 	case errors.Is(err, domain.ErrNotFound):
-		return s.lessonNotFound(ctx), nil
+		return errLessonNotFound
 	case err != nil:
 		// Anything else is a server fault, reported by the central handler.
-		return nil, err
+		return err
 	}
 
-	return &api.StartLessonNoContent{}, nil
+	return nil
 }
 
 // CheckLesson runs a submitted solution and reports what it changed.
@@ -43,7 +42,7 @@ func (s *Server) CheckLesson(
 	ctx context.Context,
 	req *api.CheckLessonInput,
 	params api.CheckLessonParams,
-) (api.CheckLessonRes, error) {
+) (*api.LessonCheckingResponseHeaders, error) {
 	result, err := s.progress.CheckSolution(ctx, progress.Check{
 		Learner:   currentLearner(ctx),
 		LessonID:  int(params.ID),
@@ -55,7 +54,7 @@ func (s *Server) CheckLesson(
 	case errors.Is(err, domain.ErrNotFound):
 		// The lesson, or the version the code was written against, is not part
 		// of the course's current build.
-		return s.lessonNotFound(ctx), nil
+		return nil, errLessonNotFound
 	case err != nil:
 		return nil, err
 	}
@@ -78,14 +77,6 @@ func (s *Server) CheckLesson(
 		response.SetCookie = []string{cookie}
 	}
 	return response, nil
-}
-
-// lessonNotFound is the contract's typed 404 for both lesson operations. They
-// declare it, so it has to be returned as such: the central handler's problem
-// document carries a different content type, which a client generated from this
-// contract cannot decode as this operation's 404.
-func (s *Server) lessonNotFound(ctx context.Context) *api.NotFoundError {
-	return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.LessonNotFound)}
 }
 
 // currentLearner is whose progress a request is about: the signed-in user when
