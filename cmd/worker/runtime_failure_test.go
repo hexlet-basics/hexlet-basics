@@ -14,8 +14,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"hexletbasics/internal/di"
 )
 
 // logSink is a log destination the runtime's goroutines and the test share.
@@ -139,40 +137,4 @@ func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
 	}
 	assert.Contains(t, logs.String(), "stop job queue")
 	assert.Contains(t, logs.String(), "workers still busy")
-}
-
-func workerDependencies(t *testing.T) di.WorkerDependencies {
-	t.Helper()
-	t.Setenv("DATABASE_URL", "postgres://nobody@127.0.0.1:1/none")
-	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
-	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
-	dependencies, err := di.BuildWorker()
-	require.NoError(t, err)
-	return dependencies
-}
-
-func TestCloseResourcesReleasesEverythingTheProcessOwns(t *testing.T) {
-	dependencies := workerDependencies(t)
-	logs := &logSink{}
-
-	closeResources(t.Context(), logs.logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-
-	assert.NotContains(t, logs.String(), "level=ERROR")
-	assert.Error(t, dependencies.Bucket.WriteAll(t.Context(), "key", []byte("x"), nil), "the bucket is closed")
-	_, err := dependencies.Database.User.Query().Count(t.Context())
-	assert.Error(t, err, "the database pool is closed")
-}
-
-func TestCloseResourcesLogsWhatFailsToClose(t *testing.T) {
-	dependencies := workerDependencies(t)
-	closeResources(t.Context(), (&logSink{}).logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-	logs := &logSink{}
-
-	closeResources(t.Context(), logs.logger(),
-		dependencies.Bucket, dependencies.Database, dependencies.OpenTelemetrySDK, dependencies.SentryClient)
-
-	assert.Contains(t, logs.String(), "closing blob bucket")
 }

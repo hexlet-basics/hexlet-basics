@@ -186,10 +186,27 @@ depends = [
   "lint:packages",
   "lint:deps",
   "lint:triggers",
+  "lint:atlas-pin",
   "lint:typos",
   "lint:workflows",
   "lint:shell",
 ]
+
+["lint:atlas-pin"]
+description = "The Atlas Community version in mise.toml and in the Dockerfile agree (ADR-0014)"
+run = "scripts/lint_atlas_pin.sh"
+
+["lint:atlas-retention"]
+description = "The pinned Atlas Community binary is still downloadable (network: Ariga deletes releases after ~6 months, ADR-0014). Not part of lint: it fails with no change on our side, so the nightly workflow runs it"
+run = '''
+version=$(sed -n 's/^atlas-community[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' mise.toml)
+url="https://release.ariga.io/atlas/atlas-community-linux-amd64-v${version}"
+status=$(curl -sS -I -o /dev/null -w '%{http_code}' --retry 3 "$url")
+if [ "$status" != "200" ]; then
+  echo "atlas-community $version is gone from Ariga's release server (HTTP $status for $url): bump the pin in mise.toml and the Dockerfile together" >&2
+  exit 1
+fi
+'''
 
 ["lint:triggers"]
 description = "No database triggers of our own (river's are the only ones); the two audit migrations are the history of one that was dropped"

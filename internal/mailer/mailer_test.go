@@ -78,6 +78,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 }
 
 func TestPostboxDeliversTheMessageAsASimpleHTMLEmail(t *testing.T) {
+	t.Parallel()
 	cfg, delivered := fakePostbox(t, http.StatusOK)
 
 	err := New(cfg, slog.New(slog.DiscardHandler)).Send(t.Context(), Message{
@@ -96,6 +97,7 @@ func TestPostboxDeliversTheMessageAsASimpleHTMLEmail(t *testing.T) {
 }
 
 func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
+	t.Parallel()
 	cfg, _ := fakePostbox(t, http.StatusBadRequest)
 
 	err := NewPostbox(cfg).Send(t.Context(), Message{To: "learner@example.com", Subject: "Welcome"})
@@ -105,6 +107,7 @@ func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
 }
 
 func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
+	t.Parallel()
 	logger := slog.New(slog.DiscardHandler)
 
 	assert.IsType(t, &Postbox{}, New(config.MailConfig{PostboxAccessKeyID: "key"}, logger))
@@ -112,6 +115,7 @@ func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
 }
 
 func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
+	t.Parallel()
 	var out bytes.Buffer
 
 	err := NewLog(slog.New(slog.NewTextHandler(&out, nil))).Send(t.Context(), Message{
@@ -124,6 +128,7 @@ func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 }
 
 func TestRecorderKeepsMessagesInOrderAndHandsOutACopy(t *testing.T) {
+	t.Parallel()
 	recorder := &Recorder{}
 	require.NoError(t, recorder.Send(t.Context(), Message{To: "a@example.com"}))
 	require.NoError(t, recorder.Send(t.Context(), Message{To: "b@example.com"}))

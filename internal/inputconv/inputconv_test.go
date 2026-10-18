@@ -11,6 +11,7 @@ import (
 )
 
 func TestPtr(t *testing.T) {
+	t.Parallel()
 	t.Run("value", func(t *testing.T) {
 		got := inputconv.Ptr(api.NewNilString("hello"))
 
@@ -26,6 +27,7 @@ func TestPtr(t *testing.T) {
 }
 
 func TestStringPtr(t *testing.T) {
+	t.Parallel()
 	t.Run("enum value", func(t *testing.T) {
 		got := inputconv.StringPtr(api.NewNilCourseLearnAs(api.CourseLearnAsFirstLanguage))
 
@@ -41,6 +43,7 @@ func TestStringPtr(t *testing.T) {
 }
 
 func TestIntPtr(t *testing.T) {
+	t.Parallel()
 	t.Run("value", func(t *testing.T) {
 		got := inputconv.IntPtr(api.NewNilInt32(42))
 

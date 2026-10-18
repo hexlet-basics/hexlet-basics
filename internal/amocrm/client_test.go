@@ -20,6 +20,7 @@ import (
 )
 
 func TestCreateLeadSendsUnsortedForm(t *testing.T) {
+	t.Parallel()
 	var body []map[string]any
 	client := NewClient("https://example.amocrm.test", "secret", "counter")
 	client.http.Transport = roundTripFunc(func(r *http.Request) (*http.Response, error) {
@@ -66,6 +67,7 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 }
 
 func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
+	t.Parallel()
 	landing := "https://code-basics.com/ru/languages/python?from=vk&gclid=g-1&yclid=y-1&fbclid=f-1&ga_utm=ga-1"
 	referrer := "https://ya.ru/"
 	ip := "203.0.113.7"
@@ -92,6 +94,7 @@ func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
 }
 
 func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
+	t.Parallel()
 	landing := "https://code-basics.com/?yclid=y-1"
 	clientID := "1700000000123456789"
 
@@ -103,6 +106,7 @@ func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
 }
 
 func TestCreateLeadDropsAnIPv6Address(t *testing.T) {
+	t.Parallel()
 	ip := "2001:db8::1"
 
 	body := sendLead(t, events.LeadCreated{LeadID: 10, IP: &ip})
@@ -132,6 +136,7 @@ func sendLead(t *testing.T, event events.LeadCreated) map[string]any {
 }
 
 func TestCreateLeadReturnsRemoteError(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		status    int
@@ -172,6 +177,7 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 }
 
 func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		status    int
@@ -204,6 +210,7 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 }
 
 func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
+	t.Parallel()
 	requests := 0
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
@@ -225,6 +232,7 @@ func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 }
 
 func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
+	t.Parallel()
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
 		return nil, errors.New("connection reset")
@@ -239,6 +247,7 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 }
 
 func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
+	t.Parallel()
 	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
 
 	var classified interface{ Retryable() bool }
@@ -249,6 +258,7 @@ func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 // An account endpoint that redirects is configuration drift: the redirect is
 // reported, not followed, so one attempt stays one request to one host.
 func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
+	t.Parallel()
 	var landed int
 	elsewhere := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { landed++ }))
 	t.Cleanup(elsewhere.Close)
@@ -269,6 +279,7 @@ func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
 // A client that could not be built says so, permanently — a retry would build
 // the same client — and keeps the cause for the logs.
 func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
+	t.Parallel()
 	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
 
 	require.ErrorContains(t, err, "initialization failed")
@@ -279,6 +290,7 @@ func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 }
 
 func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
+	t.Parallel()
 	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
 
 	require.EqualError(t, err, "amoCRM is not configured")
@@ -286,6 +298,7 @@ func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
 }
 
 func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
+	t.Parallel()
 	reset := errors.New("connection reset")
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, reset })
@@ -298,6 +311,7 @@ func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
 // A refusal that says nothing still says something, and one that says too much
 // is cut: the message ends up in a job's error column.
 func TestCreateLeadWordsARefusalForTheLogs(t *testing.T) {
+	t.Parallel()
 	problem := func(body string) *Client {
 		client := NewClient("https://example.amocrm.test", "secret", "")
 		client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
@@ -376,6 +390,7 @@ func assertCustomFieldByID(t *testing.T, value any, id int, expected string) {
 // An error body is cut by bytes, but never through a rune: the text ends up in a
 // jsonb job error, where invalid UTF-8 is rejected.
 func TestTruncateKeepsRunesWhole(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, "привет", truncate("привет", 12))
 	assert.Equal(t, "при", truncate("привет", 7), "the cut falls inside the 4th rune, which is dropped")
 	assert.True(t, utf8.ValidString(truncate(strings.Repeat("я", 100), 11)))

@@ -13,6 +13,7 @@ import (
 type state string
 
 func TestATransitionAcceptsOnlyItsSourceStates(t *testing.T) {
+	t.Parallel()
 	publish := transitions.Transition[state]{To: "published", From: []state{"draft", "archived"}}
 
 	require.NoError(t, publish.Check("draft"))
@@ -27,6 +28,7 @@ func TestATransitionAcceptsOnlyItsSourceStates(t *testing.T) {
 }
 
 func TestAnUnknownStateIsRefused(t *testing.T) {
+	t.Parallel()
 	archive := transitions.Transition[state]{To: "archived", From: []state{"draft"}}
 
 	_, ok := transitions.IsIllegal(archive.Check("something"))
@@ -36,6 +38,7 @@ func TestAnUnknownStateIsRefused(t *testing.T) {
 }
 
 func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {
+	t.Parallel()
 	moves := map[string]transitions.Transition[transitions.PublicationState]{
 		"publish": transitions.Publish, "unpublish": transitions.Unpublish, "archive": transitions.Archive,
 	}
@@ -56,6 +59,7 @@ func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {
 }
 
 func TestARowWithoutAStateIsADraft(t *testing.T) {
+	t.Parallel()
 	assert.Equal(t, transitions.Draft, transitions.CurrentOf(nil))
 	published := "published"
 	assert.Equal(t, transitions.Published, transitions.CurrentOf(&published))
