@@ -11,6 +11,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
+	"github.com/getsentry/sentry-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -60,12 +61,18 @@ func TestLegacyEventNames(t *testing.T) {
 // ended up on the poison topic.
 func deliver(t *testing.T, handler message.HandlerFunc) (<-chan *message.Message, error) {
 	t.Helper()
+	return deliverReporting(t, nil, handler)
+}
+
+// deliverReporting is deliver with a Sentry client for the poisoned messages.
+func deliverReporting(t *testing.T, sentryClient *sentry.Client, handler message.HandlerFunc) (<-chan *message.Message, error) {
+	t.Helper()
 	logger := watermill.NopLogger{}
 	poison := gochannel.NewGoChannel(gochannel.Config{}, logger)
 	t.Cleanup(func() { _ = poison.Close() })
 	poisoned, err := poison.Subscribe(t.Context(), PoisonTopic)
 	require.NoError(t, err)
-	chain, err := deliveryMiddleware(logger, poison)
+	chain, err := deliveryMiddleware(logger, poison, sentryClient)
 	require.NoError(t, err)
 	for i := len(chain) - 1; i >= 0; i-- {
 		handler = chain[i](handler)
@@ -102,4 +109,34 @@ func TestDeliveryMovesAnAlwaysFailingMessageToThePoisonQueue(t *testing.T) {
 	case <-time.After(time.Second):
 		t.Fatal("message did not reach the poison queue")
 	}
+}
+
+// The poison table grows silently otherwise: a message that exhausted its
+// retries is one Sentry event, a message that a retry saved is none.
+func TestPoisonedMessageIsReportedToSentry(t *testing.T) {
+	transport := &sentry.MockTransport{}
+	client, err := sentry.NewClient(sentry.ClientOptions{Dsn: "https://public@example.com/1", Transport: transport})
+	require.NoError(t, err)
+	t.Cleanup(client.Close) // its batch processor goroutine would trip goleak
+
+	attempts := 0
+	_, err = deliverReporting(t, client, func(*message.Message) ([]*message.Message, error) {
+		attempts++
+		if attempts == 1 {
+			return nil, errors.New("flaky")
+		}
+		return nil, nil
+	})
+	require.NoError(t, err)
+	assert.Empty(t, transport.Events(), "a message a retry saved is not an incident")
+
+	_, err = deliverReporting(t, client, func(*message.Message) ([]*message.Message, error) {
+		return nil, errors.New("always fails")
+	})
+	require.NoError(t, err)
+
+	captured := transport.Events()
+	require.Len(t, captured, 1)
+	assert.Equal(t, "always fails", captured[0].Exception[0].Value)
+	assert.Equal(t, "event-1", captured[0].Tags["message.id"])
 }

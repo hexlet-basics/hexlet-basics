@@ -12,6 +12,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill/components/cqrs"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
+	"github.com/getsentry/sentry-go"
 )
 
 const (
@@ -33,6 +34,7 @@ type Runtime struct {
 func NewRuntime(
 	db *sql.DB,
 	logger *slog.Logger,
+	sentryClient *sentry.Client,
 	handlers ...cqrs.EventHandler,
 ) (*Runtime, error) {
 	watermillLogger := watermill.NewSlogLogger(logger)
@@ -48,7 +50,7 @@ func NewRuntime(
 	if err != nil {
 		return nil, fmt.Errorf("create poison queue publisher: %w", err)
 	}
-	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher)
+	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher, sentryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -101,9 +103,14 @@ func NewRuntime(
 // retried like any other failure; with the order reversed a panic would skip
 // Retry. Messages in the poison table are replayed by hand once the cause is
 // fixed.
+//
+// reportPoisoned sits between PoisonQueue and Retry, so it sees only the error
+// that survived every retry: a message a retry saved is routine and never
+// reaches Sentry, a poisoned one is exactly one event.
 func deliveryMiddleware(
 	logger watermill.LoggerAdapter,
 	poison message.Publisher,
+	sentryClient *sentry.Client,
 ) ([]message.HandlerMiddleware, error) {
 	poisonQueue, err := middleware.PoisonQueue(poison, PoisonTopic)
 	if err != nil {
@@ -111,6 +118,7 @@ func deliveryMiddleware(
 	}
 	return []message.HandlerMiddleware{
 		poisonQueue,
+		reportPoisoned(sentryClient),
 		middleware.Retry{
 			MaxRetries:          3,
 			InitialInterval:     100 * time.Millisecond,
@@ -121,6 +129,28 @@ func deliveryMiddleware(
 		}.Middleware,
 		middleware.Recoverer,
 	}, nil
+}
+
+// reportPoisoned captures the error of a message whose retries are exhausted,
+// so growth of the poison table is noticed. It returns the error unchanged for
+// PoisonQueue to act on. A nil client reports nothing.
+func reportPoisoned(sentryClient *sentry.Client) message.HandlerMiddleware {
+	return func(next message.HandlerFunc) message.HandlerFunc {
+		return func(msg *message.Message) ([]*message.Message, error) {
+			produced, err := next(msg)
+			if err != nil && sentryClient != nil {
+				scope := sentry.NewScope()
+				scope.SetTags(map[string]string{
+					"message.id":      msg.UUID,
+					"message.name":    msg.Metadata.Get("name"),
+					"message.handler": message.HandlerNameFromCtx(msg.Context()),
+					"message.poison":  "true",
+				})
+				sentryClient.CaptureException(err, &sentry.EventHint{Context: msg.Context(), OriginalException: err}, scope)
+			}
+			return produced, err
+		}
+	}
 }
 
 func observeMessage(logger *slog.Logger, msg *message.Message) {
