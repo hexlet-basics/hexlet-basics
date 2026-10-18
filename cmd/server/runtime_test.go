@@ -4,13 +4,38 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"hexletbasics/internal/health"
 )
+
+func TestRuntimeReportsNotReadyAfterTheSignal(t *testing.T) {
+	addr := freeAddr(t)
+	probes := health.New(func(context.Context) error { return nil })
+	handler := probes.Wrap(http.NotFoundHandler())
+	server := &http.Server{Addr: addr, Handler: handler}
+	app := application{http: server, httpAddr: addr, drain: probes.Drain}
+	signalCtx, signal := context.WithCancel(context.Background())
+	readyz := func() int {
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/readyz", nil))
+		return rec.Code
+	}
+	require.Equal(t, http.StatusOK, readyz())
+
+	errCh := make(chan error, 1)
+	go func() { errCh <- app.run(signalCtx, func() {}) }()
+	signal()
+	require.ErrorIs(t, <-errCh, errRuntimeSignal)
+
+	assert.Equal(t, http.StatusServiceUnavailable, readyz())
+}
 
 const eventually = 5 * time.Second
 

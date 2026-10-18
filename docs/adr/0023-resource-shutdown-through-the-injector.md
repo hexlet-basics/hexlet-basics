@@ -36,5 +36,30 @@ knows what it built and what depends on what, so teardown moves there.
 - Adding a resource means registering it and, if it has no shutdown method, a
   closer; no change to `cmd/*`.
 - Shutdown errors come back as one report naming every resource that failed.
-- Health and readiness endpoints, which depend on the same lifecycle, extend
-  this ADR when they land.
+
+## Health and readiness
+
+- `internal/health` serves `/healthz` and `/readyz` on a plain `http.ServeMux`
+  wrapped around the ogen handler (outside the Sentry and locale middleware).
+  They are not in the TypeSpec contract, not in the OpenAPI document and not
+  under `/api`.
+- `/healthz` is 200 whenever the process serves. It checks nothing: a database
+  outage must not make the kubelet restart a pod that cannot fix it.
+- `/readyz` runs `injector.HealthCheckWithContext` under a 2 s timeout and is
+  503 on any failure. Only the database is checked: `databaseCloser`
+  implements `HealthCheck(ctx)` (one cheap ent query). The bucket and other
+  services stay out, so a storage blip does not drain the whole fleet.
+- `/readyz` is also 503 from the moment the process stops. `application.shutdown`
+  calls `Probes.Drain()` before `http.Server.Shutdown`, so the pod leaves
+  rotation while in-flight requests finish; `/healthz` stays 200 during the
+  drain.
+- Tests drive the built handler with `httptest` and inject the database fault
+  with an ent interceptor, never DDL.
+
+## Ops note (chart change, handed off)
+
+`k8s/app-chart` still probes with `tcpSocket`. For the `api` and `api-check`
+deployments switch to `httpGet` on the API port: `startupProbe` and
+`livenessProbe` on `/healthz`, `readinessProbe` on `/readyz`, each with
+`timeoutSeconds: 3` (above the 2 s readiness check). The chart is not edited
+in this change.

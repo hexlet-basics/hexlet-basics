@@ -29,6 +29,9 @@ type application struct {
 	http     httpRuntime
 	httpAddr string
 	logger   *slog.Logger
+	// drain, when set, is called first on every stop, before the HTTP drain:
+	// /readyz starts answering 503 so the pod leaves rotation (ADR-0023).
+	drain func()
 	// shutdownTimeout overrides the package default; zero means the default.
 	shutdownTimeout time.Duration
 }
@@ -70,6 +73,9 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 }
 
 func (a *application) shutdown(parent context.Context, cancelProcess context.CancelFunc) error {
+	if a.drain != nil {
+		a.drain()
+	}
 	timeout := a.shutdownTimeout
 	if timeout == 0 {
 		timeout = shutdownTimeout

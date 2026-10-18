@@ -1,7 +1,9 @@
 package di
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"net/http"
 	"time"
@@ -27,6 +29,7 @@ import (
 	"hexletbasics/internal/exerciserunner"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/health"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leadcapture"
@@ -776,6 +779,20 @@ var serverPackage = do.Package(
 			},
 		})
 	}),
+	// Readiness is the database only (ADR-0023): the injector asks every built
+	// service that can check itself, and databaseCloser is the one that does.
+	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
+		if _, err := do.Invoke[*databaseCloser](i); err != nil {
+			return nil, err
+		}
+		return health.New(func(ctx context.Context) error {
+			var errs []error
+			for _, err := range i.HealthCheckWithContext(ctx) {
+				errs = append(errs, err)
+			}
+			return errors.Join(errs...)
+		}), nil
+	}),
 	do.LazyNamed[http.Handler](httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
@@ -793,7 +810,13 @@ var serverPackage = do.Package(
 		// `/api` (ADR-0015), through the ingress in production and the Vite
 		// proxy in development.
 		localized := translator.Middleware(router)
-		return telemetry.NewSentryHTTPHandler(sentryClient, localized), nil
+		probes, err := do.Invoke[*health.Probes](i)
+		if err != nil {
+			return nil, err
+		}
+		// The probes sit outside the contract, the locale middleware and
+		// Sentry: a kubelet poll is neither a page view nor an error source.
+		return probes.Wrap(telemetry.NewSentryHTTPHandler(sentryClient, localized)), nil
 	}),
 	// The process lifecycle coordinator starts and gracefully stops this
 	// server. Keeping the provider on the vendor type avoids coupling DI to
