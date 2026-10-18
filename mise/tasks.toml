@@ -297,15 +297,24 @@ run = "sh scripts/lint_locales.sh"
 
 ["lint:go"]
 description = "Locale catalogs, gofmt, go vet, golangci-lint (skips generated files)"
-depends = ["lint:locales"]
+depends = ["lint:locales", "lint:go:vet", "lint:go:golangci"]
+
+# vet and golangci-lint are separate tasks so mise runs them side by side: each
+# spends its time type-checking the same packages, and in series that was the
+# longest step of the CI lint job.
+["lint:go:vet"]
+description = "gofmt and go vet"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 unformatted=$(gofmt -l cmd internal ent/schema)
 if [ -n "$unformatted" ]; then echo "gofmt needed:"; echo "$unformatted"; exit 1; fi
 go vet ./...
-golangci-lint run
 '''
+
+["lint:go:golangci"]
+description = "golangci-lint (.golangci.yml; skips generated files)"
+run = "golangci-lint run"
 
 ["lint:web"]
 description = "oxlint, oxfmt check, and the TypeScript project build"

@@ -57,6 +57,19 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
           restore-keys: ${{ runner.os }}-go-
 
+      # golangci-lint keeps its own analysis cache, separate from go-build; with
+      # none, every run re-analyzed all packages with type information (~2 min).
+      # Its entries are keyed by file content, so a stale cache is safe: the
+      # sha suffix saves a fresh one each run and the restore-key seeds from the
+      # latest.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/golangci-lint
+          key: ${{ runner.os }}-golangci-${{ hashFiles('go.sum', '.golangci.yml') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-golangci-${{ hashFiles('go.sum', '.golangci.yml') }}-
+            ${{ runner.os }}-golangci-
+
       - run: pnpm install
 
       # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
