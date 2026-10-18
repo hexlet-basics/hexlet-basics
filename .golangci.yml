@@ -5,35 +5,74 @@ linters:
   # Policy (AGENTS.md, "Lint & Typecheck"): every linter is on; one is off only
   # with a reason written next to it here.
   disable:
-    # Replaced by another linter that stays on, or deprecated upstream.
-    - exhaustruct # deprecated upstream; and every ent/ogen builder or contract struct is built partially on purpose
-    - exhaustruct_v5 # same: requiring every field of a generated struct buries the fields that matter
+    - exhaustruct # deprecated upstream, replaced by exhaustruct_v5, which is on
     - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
     - wsl # deprecated upstream, replaced by wsl_v5, which is on
-    # Conflicts with a rule of ours or with the Go idiom.
-    - depguard # needs an import policy the repo has not written; the layering rules live in architecture tests
     - exhaustive # ticket #910, blocked by two known MCP bugs
     - nilerr # ticket #910, blocked by two known MCP bugs
-    - wrapcheck # ADR-0018: an error is wrapped once, at the package boundary; handlers return module errors raw for errorStatus
-    - noinlineerr # `if err := f(); err != nil` is the idiom that scopes err; the linter forbids it
-    - tagliatelle # json tags follow the wire formats we do not own (RFC 7591, events, ent annotations)
-    - gochecknoglobals # ADR-0018 per-package `errs` template, localization catalogues and generated labels are package-level by design
-    - ireturn # constructors of third-party seams (watermill, oidc, ent dialect) must return the library's interface
-    - interfacebloat # the goverter Converter interface is one method per mapping, generated
-    # Size and whitespace limits whose numbers would have to be absurd.
-    - varnamelen # short names (i, tx, ok, id, err) are the Go convention; 800 findings of it
-    - goconst # a literal repeated in a test, or a JSON Schema keyword in an MCP schema map, reads better inline than behind a constant; 259 findings, 189 in tests
-    - lll # wrapping string literals, struct tags and signatures to 120 columns hurts readability
-    - funlen # table-driven tests and parsers run past any sensible limit
-    - cyclop # as funlen
-    - gocognit # as funlen: permissioncatalog.Parse is 80 against a limit of 30
-    - nestif # as funlen
-    - testpackage # white-box tests of unexported rules are deliberate, 38 files
-    # Pending: enabled by later commits of the series that clear their findings.
-    - forcetypeassert
+    # Pending: enabled by the commits that follow, each with its findings fixed.
+    - exhaustruct_v5
+    - varnamelen
     - paralleltest
     - tparallel
+    - lll
+    - wrapcheck
+    - goconst
+    - noinlineerr
+    - gochecknoglobals
+    - tagliatelle
+    - forcetypeassert
+    - testpackage
+    - cyclop
+    - ireturn
+    - funlen
+    - gocognit
+    - nestif
+    - interfacebloat
   settings:
+    depguard:
+      rules:
+        # Imports that have a replacement already in use. Everything else is
+        # allowed (lax): the policy names what must not come in, not a list of
+        # every dependency.
+        banned:
+          list-mode: lax
+          files: ["$all"]
+          deny:
+            - pkg: math/rand$
+              desc: use math/rand/v2
+            - pkg: io/ioutil
+              desc: deprecated since Go 1.16; use io and os
+            - pkg: github.com/pkg/errors
+              desc: ADR-0018 builds errors with samber/oops
+            - pkg: golang.org/x/net/context
+              desc: use the standard context package
+            - pkg: ^log$
+              desc: ADR-0026 logs with log/slog
+        # ADR-0001: an operation's rules never see the generated contract types,
+        # and the handlers that translate them are not imported back. Only the
+        # adapters (handlers, apiconv, inputconv, paging, mcpserver, permission,
+        # di, the commands) and the tests may touch internal/api.
+        modules-do-not-know-the-contract:
+          list-mode: lax
+          files:
+            - "$all"
+            - "!**/internal/api/**"
+            - "!**/internal/handlers/**"
+            - "!**/internal/apiconv/**"
+            - "!**/internal/inputconv/**"
+            - "!**/internal/paging/**"
+            - "!**/internal/mcpserver/**"
+            - "!**/internal/permission/**"
+            - "!**/internal/di/**"
+            - "!**/internal/testsupport/**"
+            - "!**/cmd/**"
+            - "!$test"
+          deny:
+            - pkg: hexletbasics/internal/api
+              desc: ADR-0001, a module takes a plain command, never a generated api type
+            - pkg: hexletbasics/internal/handlers
+              desc: a module does not depend on the HTTP adapter
     sloglint:
       # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
       # static messages, one call style (key-value pairs).
