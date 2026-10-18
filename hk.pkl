@@ -24,8 +24,8 @@ hooks {
       // golangci-lint needs whole packages, so it runs once, not per file.
       ["golangci-lint"] {
         glob = List("**/*.go")
-        check = "golangci-lint run"
-        fix = "golangci-lint run --fix"
+        check = "scripts/heavy golangci-lint run"
+        fix = "scripts/heavy golangci-lint run --fix"
         exclusive = true
       }
       ["typos"] {

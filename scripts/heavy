@@ -1,0 +1,69 @@
+#!/bin/sh
+# heavy: run a command under an exclusive lock shared by every worktree of this
+# checkout, so go test, golangci-lint, tsc, builds and e2e from parallel agent
+# sessions queue instead of piling onto one machine (load average ~150, and
+# golangci-lint's own "parallel golangci-lint is running" lock).
+#
+#   scripts/heavy <command> [args...]
+#
+# HEAVY_LOCK_TIMEOUT  seconds to wait for the lock (default 1800), then exit 75.
+# HEAVY_LOCK_HELD     set in the child: a nested `heavy` runs without locking.
+# CI                  when set, no locking (runners are isolated).
+#
+# The lock file lives in the git common dir, which all worktrees share. flock(1)
+# is used when present, else BSD lockf(1) (macOS); with neither, it runs unlocked.
+set -eu
+
+if [ $# -eq 0 ]; then
+  echo "usage: heavy <command> [args...]" >&2
+  exit 2
+fi
+
+if [ -n "${CI:-}" ] || [ -n "${HEAVY_LOCK_HELD:-}" ]; then
+  exec "$@"
+fi
+
+timeout=${HEAVY_LOCK_TIMEOUT:-1800}
+common=$(git rev-parse --git-common-dir 2>/dev/null || true)
+if [ -n "$common" ]; then
+  common=$(CDPATH='' cd -- "$common" && pwd)
+else
+  common=${TMPDIR:-/tmp}
+fi
+lock=$common/heavy.lock
+owner=$common/heavy.owner
+
+# Runs inside the lock: record who holds it (exec keeps this pid), then become
+# the command with the re-entrancy marker set.
+# shellcheck disable=SC2016 # expanded by the inner sh, not here
+holder='echo "$$ $*" >"$HEAVY_OWNER_FILE" 2>/dev/null || true; HEAVY_LOCK_HELD=1; export HEAVY_LOCK_HELD; exec "$@"'
+HEAVY_OWNER_FILE=$owner
+export HEAVY_OWNER_FILE
+
+if command -v flock >/dev/null 2>&1; then
+  try() { flock -n -E 75 "$lock" sh -c "$holder" heavy "$@"; }
+  wait_for() { flock -w "$timeout" -E 75 "$lock" sh -c "$holder" heavy "$@"; }
+elif [ -x /usr/bin/lockf ]; then
+  try() { /usr/bin/lockf -t 0 "$lock" sh -c "$holder" heavy "$@"; }
+  wait_for() { /usr/bin/lockf -t "$timeout" "$lock" sh -c "$holder" heavy "$@"; }
+else
+  echo "heavy: neither flock nor lockf found, running unlocked" >&2
+  exec "$@"
+fi
+
+# A fast non-blocking attempt first, so the notice appears only when we wait.
+# Exit 75 means "lock busy"; any other status is the command's own.
+status=0
+try "$@" || status=$?
+if [ "$status" -ne 75 ]; then
+  exit "$status"
+fi
+
+held=$(cat "$owner" 2>/dev/null || true)
+echo "heavy: waiting for the heavy-task lock held by ${held:-an unknown task} (timeout ${timeout}s)..." >&2
+status=0
+wait_for "$@" || status=$?
+if [ "$status" -eq 75 ]; then
+  echo "heavy: gave up after ${timeout}s waiting for the heavy-task lock held by $(cat "$owner" 2>/dev/null || echo unknown); raise HEAVY_LOCK_TIMEOUT or find the stuck task" >&2
+fi
+exit "$status"

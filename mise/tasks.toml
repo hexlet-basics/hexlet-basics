@@ -160,7 +160,7 @@ run = [
 ["gen:check"]
 description = "Fail when committed generated code differs from what gen:all produces (CI gate; needs a clean tree)"
 run = [
-  { task = "gen:all" },
+  "scripts/heavy mise run gen:all",
   '''test -z "$(git status --porcelain)" || { echo 'generated code is out of date; run `mise run gen:all` and commit:'; git status --short; git diff | head -80; exit 1; }''',
 ]
 
@@ -308,11 +308,11 @@ terraform -chdir="$scratch" validate
 
 ["lint:size"]
 description = "Client bundle budgets (size-limit config in package.json); builds the web app first"
-run = ["pnpm build", "pnpm exec size-limit"]
+run = ["scripts/heavy pnpm build", "scripts/heavy pnpm exec size-limit"]
 
 ["lint:shell"]
 description = "shellcheck the scripts under scripts/ (the legacy and third-party skill scripts are not ours)"
-run = "shellcheck -x scripts/*.sh scripts/oneoff/*/*.sh"
+run = ["shellcheck -x scripts/heavy scripts/*.sh scripts/oneoff/*/*.sh", "sh scripts/heavy_test.sh"]
 
 ["lint:workflows"]
 description = "GitHub workflows: zizmor (security) and jactionlint (correctness)"
@@ -359,22 +359,22 @@ run = '''
 set -euo pipefail
 unformatted=$(gofmt -l cmd internal ent/schema)
 if [ -n "$unformatted" ]; then echo "gofmt needed:"; echo "$unformatted"; exit 1; fi
-go vet ./...
+scripts/heavy go vet ./...
 '''
 
 ["lint:go:golangci"]
 description = "golangci-lint (.golangci.yml; skips generated files)"
-run = "golangci-lint run"
+run = "scripts/heavy golangci-lint run"
 
 ["lint:web"]
 description = "oxlint, oxfmt check, and the TypeScript project build"
-run = ["pnpm lint", "pnpm format:check", "pnpm check"]
+run = ["pnpm lint", "pnpm format:check", "scripts/heavy pnpm check"]
 
 ["lint:fix"]
 description = "Auto-fix Go and frontend formatting and lint findings"
 run = [
   "gofmt -w cmd internal ent/schema",
-  "golangci-lint run --fix || true",
+  "scripts/heavy golangci-lint run --fix || true",
   "pnpm lint:fix",
   "pnpm format",
   "typos --write-changes",
@@ -385,22 +385,22 @@ run = [
 [test]
 description = "Run the Go suite; DB packages clone their database on the db daemon (needs `mise run db:up`). Shuffles only under CI: a fixed shuffle disables go's result cache. Pass packages/flags after `--`"
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
-run = 'eval "set -- $usage_go_test_args"; go test -race ${CI:+-shuffle=on} "$@"'
+run = 'eval "set -- $usage_go_test_args"; scripts/heavy go test -race ${CI:+-shuffle=on} "$@"'
 
 ["test:docker"]
 description = "Run the tests that need a real Docker daemon (build tag `docker`: the exercise runner's container lifecycle). Not part of `test`; CI runs it"
-run = "go test -tags=docker ./internal/exerciserunner"
+run = "scripts/heavy go test -tags=docker ./internal/exerciserunner"
 
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (needs `mise run db:up`)"
 run = [
-  "go test -race -tags=docker -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
+  "scripts/heavy go test -race -tags=docker -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
   "go tool go-test-coverage --config=.testcoverage.yml",
 ]
 
 ["test:web"]
 description = "Run the frontend suite (Vitest Browser Mode via Playwright; needs `pnpm exec playwright install chromium` once)"
-run = "pnpm test"
+run = "scripts/heavy pnpm test"
 
 ["test:e2e:db"]
 description = "Recreate the end-to-end database code_basics_e2e_test: atlas migrations + the committed fixtures (E2E_DB_HOST/E2E_DB_PORT, default the db daemon on :54330)"
@@ -411,24 +411,24 @@ description = "End-to-end suite: a real browser against the built Go API and SSR
 usage = 'arg "[playwright_args]" var=#true default="" help="flags for playwright test, e.g. --headed or a file name"'
 run = [
   { task = "test:e2e:db" },
-  "go build -o bin/server ./cmd/server",
-  "pnpm exec vite build --outDir e2e/.build",
-  'eval "set -- $usage_playwright_args"; pnpm exec playwright test -c e2e/playwright.config.ts "$@"',
+  "scripts/heavy go build -o bin/server ./cmd/server",
+  "scripts/heavy pnpm exec vite build --outDir e2e/.build",
+  'eval "set -- $usage_playwright_args"; scripts/heavy pnpm exec playwright test -c e2e/playwright.config.ts "$@"',
 ]
 
 # --- build -------------------------------------------------------------------------
 
 ["build:api"]
 description = "Compile the Go server to bin/server"
-run = "go build -o bin/server ./cmd/server"
+run = "scripts/heavy go build -o bin/server ./cmd/server"
 
 ["build:worker"]
 description = "Compile the async runtime to bin/worker"
-run = "go build -o bin/worker ./cmd/worker"
+run = "scripts/heavy go build -o bin/worker ./cmd/worker"
 
 ["build:web"]
 description = "Build the production frontend bundle"
-run = "pnpm build"
+run = "scripts/heavy pnpm build"
 
 [build]
 description = "Build the API, async worker, and frontend bundle"
