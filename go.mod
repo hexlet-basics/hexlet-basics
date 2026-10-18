@@ -26,6 +26,7 @@ require (
 	github.com/go-git/go-git/v5 v5.19.3
 	github.com/go-jose/go-jose/v4 v4.1.6
 	github.com/go-pkgz/rest v1.24.0
+	github.com/go-playground/validator/v10 v10.30.5
 	github.com/go-testfixtures/testfixtures/v3 v3.19.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-github/v89 v89.0.0
@@ -133,7 +134,6 @@ require (
 	github.com/go-openapi/inflect v1.0.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.30.5 // indirect
 	github.com/gobwas/glob v1.0.0 // indirect
 	github.com/goccy/go-json v0.11.2 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
