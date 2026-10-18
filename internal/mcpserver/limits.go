@@ -45,14 +45,19 @@ type Rates struct {
 	Catalogue, Personal, Write int
 }
 
+// of is the rate of a Class. A Class this switch does not know (a new one added
+// without a rate) gets the strictest rate, so a forgotten Class is limited
+// hard rather than left as open as a catalogue read.
 func (r Rates) of(c Class) int {
 	switch c {
+	case ClassCatalogue:
+		return r.Catalogue
 	case ClassPersonal:
 		return r.Personal
 	case ClassWrite:
 		return r.Write
 	default:
-		return r.Catalogue
+		return r.Write
 	}
 }
 
