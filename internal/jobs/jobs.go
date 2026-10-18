@@ -9,6 +9,7 @@ package jobs
 
 import (
 	"database/sql"
+	"errors"
 	"log/slog"
 
 	"github.com/riverqueue/river"
@@ -17,6 +18,8 @@ import (
 	"github.com/riverqueue/rivercontrib/otelriver"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
+
+	"hexletbasics/internal/domain"
 )
 
 // Queues isolate classes of work so a burst in one cannot starve another: a
@@ -42,6 +45,21 @@ func queues() map[string]river.QueueConfig {
 		QueueBuilds:        {MaxWorkers: 2},
 		QueueLLM:           {MaxWorkers: 3},
 	}
+}
+
+// cancelUnfixable turns a domain error that retrying cannot fix (a row that is
+// gone, a change the data refuses, input the operation rejects) into
+// river.JobCancel, so the job stops at once instead of spending every attempt
+// on the same answer. Anything else, such as an infrastructure failure, is
+// returned as is and keeps River's retry schedule. Workers call it
+// on the error they return from Work.
+func cancelUnfixable(err error) error {
+	if errors.Is(err, domain.ErrNotFound) ||
+		errors.Is(err, domain.ErrConflict) ||
+		errors.Is(err, domain.ErrInvalid) {
+		return river.JobCancel(err)
+	}
+	return err
 }
 
 // Module is one job kind's registration in the worker process: its worker and,

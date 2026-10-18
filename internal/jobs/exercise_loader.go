@@ -66,5 +66,5 @@ func (*exerciseLoaderWorker) Timeout(*river.Job[ExerciseLoaderArgs]) time.Durati
 // the version; returning the error here surfaces it in river's job history (the
 // job is discarded after its single attempt).
 func (w *exerciseLoaderWorker) Work(ctx context.Context, job *river.Job[ExerciseLoaderArgs]) error {
-	return w.loader.Run(ctx, job.Args.VersionID)
+	return cancelUnfixable(w.loader.Run(ctx, job.Args.VersionID))
 }

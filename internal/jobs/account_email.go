@@ -66,5 +66,5 @@ type accountEmailWorker struct {
 }
 
 func (w *accountEmailWorker) Work(ctx context.Context, job *river.Job[AccountEmailArgs]) error {
-	return w.sender.Send(ctx, job.Args.Purpose, job.Args.UserID, job.Args.Locale)
+	return cancelUnfixable(w.sender.Send(ctx, job.Args.Purpose, job.Args.UserID, job.Args.Locale))
 }

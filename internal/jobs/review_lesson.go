@@ -56,5 +56,5 @@ func (*reviewLessonWorker) Timeout(*river.Job[ReviewLessonArgs]) time.Duration {
 }
 
 func (w *reviewLessonWorker) Work(ctx context.Context, job *river.Job[ReviewLessonArgs]) error {
-	return w.reviewer.ReviewLesson(ctx, job.Args.LessonInfoID)
+	return cancelUnfixable(w.reviewer.ReviewLesson(ctx, job.Args.LessonInfoID))
 }

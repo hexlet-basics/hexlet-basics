@@ -3,6 +3,7 @@ package jobs_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"testing"
 	"time"
@@ -16,6 +17,8 @@ import (
 
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/domain"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
@@ -141,4 +144,36 @@ func TestReapExpiredSessionsJobRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 
 	sweep(time.Now().Add(auth.MaxLifetime + time.Hour))
 	assert.Zero(t, db.Session.Query().CountX(t.Context()))
+}
+
+type senderStub struct{ err error }
+
+func (s senderStub) Send(context.Context, emailtoken.Purpose, int, string) error { return s.err }
+
+// A row that is gone or a change the data refuses will be the same on the next
+// try, so the job is cancelled instead of burning its attempts.
+func TestJobsCancelWhenTheErrorIsOneRetryingCannotFix(t *testing.T) {
+	kinds := map[string]func(err error) (*rivertest.WorkResult, error){
+		"review lesson": func(err error) (*rivertest.WorkResult, error) {
+			return work(t, jobs.ReviewLessonWorker(reviewerStub{err: err}), jobs.ReviewLessonArgs{LessonInfoID: 1})
+		},
+		"suggest related courses": func(err error) (*rivertest.WorkResult, error) {
+			return work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: err}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
+		},
+		"account email": func(err error) (*rivertest.WorkResult, error) {
+			return work(t, jobs.AccountEmailWorker(senderStub{err: err}), jobs.AccountEmailArgs{UserID: 1})
+		},
+	}
+	for kind, run := range kinds {
+		for name, cause := range map[string]error{"not found": domain.ErrNotFound, "conflict": domain.ErrConflict} {
+			t.Run(kind+" "+name, func(t *testing.T) {
+				result, err := run(fmt.Errorf("work: %w", cause))
+
+				require.NoError(t, err, "River settles a cancellation itself")
+				assert.Equal(t, river.EventKindJobCancelled, result.EventKind)
+				assert.Equal(t, rivertype.JobStateCancelled, result.Job.State)
+				assert.Contains(t, lastError(t, result.Job), cause.Error())
+			})
+		}
+	}
 }
