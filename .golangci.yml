@@ -35,6 +35,11 @@ linters:
         # are the module of an operation with no rules of its own, so they pass.
         - pattern: '^ent\.\w+Client\.(Query|Create|CreateBulk|MapCreateBulk|Update|UpdateOne|UpdateOneID|Delete|DeleteOne|DeleteOneID|Get|GetX)$'
           msg: a handler does not build ent queries; put the rule in a use-case module, or generate the admin CRUD from the schema's AdminCRUD annotation
+        # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
+        # may use it; production packages not yet migrated are listed in the
+        # exclusions below, and each migration removes its entry.
+        - pattern: '^fmt\.Errorf$'
+          msg: build the error with samber/oops (errs.With(...).Wrapf), see ADR-0018
       analyze-types: true
   exclusions:
     paths:
@@ -56,6 +61,14 @@ linters:
       - path: _test\.go
         linters: [forbidigo]
         text: a handler does not build ent queries
+      # fmt.Errorf is allowed in tests.
+      - path: _test\.go
+        linters: [forbidigo]
+        text: samber/oops
+      # Packages not yet migrated to oops (ADR-0018). Shrink this list, never grow it.
+      - path: ^(cmd/(fixturelabels|fixtures|server|worker)|internal/(accounts|amocrm|apiconv|assetstore|audit|coursepages|curriculum|domain|eventhandlers|events|exerciserunner|feeds|fixtures|handlers|jobs|leads|localization|mcpserver|oauthserver|permissions|progress|search|sessions|staffroles|store|telemetry))/
+        linters: [forbidigo]
+        text: samber/oops
       # The handler and OAuth server tests read responses from
       # httptest.ResponseRecorder, whose body is an in-memory buffer: there is
       # nothing to close.

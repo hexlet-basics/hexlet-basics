@@ -12,12 +12,14 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/ogen-go/ogen/ogenerrors"
+	"github.com/samber/oops"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/telemetry"
@@ -84,6 +86,26 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	assert.Equal(t, cause.Error(), events[0].Exception[0].Value)
 	assert.Equal(t, span.SpanContext().TraceID().String(), events[0].Tags["trace_id"])
 	assert.Equal(t, span.SpanContext().SpanID().String(), events[0].Tags["span_id"])
+}
+
+func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+	transport := &sentry.MockTransport{}
+	client, err := telemetry.NewSentryClient(
+		&config.Config{SentryDSN: "https://public@example.com/1"},
+		telemetry.WithSentryTransport(transport),
+	)
+	require.NoError(t, err)
+
+	handler := handlers.NewAPIErrorHandler(translator, slog.New(slog.DiscardHandler))
+	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
+	_ = handler.NewError(ctx, oops.In("courses").With("course_id", 3).Wrapf(errors.New("boom"), "load course"))
+
+	events := transport.Events()
+	require.Len(t, events, 1)
+	assert.Equal(t, "courses", events[0].Tags["oops.domain"])
+	assert.Equal(t, 3, events[0].Contexts["oops"]["course_id"])
 }
 
 func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
