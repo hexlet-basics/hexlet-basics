@@ -2,10 +2,19 @@ package config
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+// requireProblem asserts err is a failure whose message or whose problems list
+// (the "problems" attribute of an invalid configuration) mentions want.
+func requireProblem(t *testing.T, err error, want string) {
+	t.Helper()
+	require.Error(t, err)
+	require.Contains(t, err.Error()+"\n"+strings.Join(Problems(err), "\n"), want)
+}
 
 // Every bad setting is reported in one error, each named by its variable, so a
 // deployment is fixed in one round instead of one restart per mistake.
@@ -87,7 +96,7 @@ func TestLoadServerReportsEverySettingProblemAtOnce(t *testing.T) {
 			require.Nil(t, cfg)
 			require.Error(t, err)
 			for _, name := range tt.want {
-				require.ErrorContains(t, err, name)
+				requireProblem(t, err, name)
 			}
 		})
 	}
@@ -105,7 +114,7 @@ func TestLoadWorkerReportsEverySettingProblemAtOnce(t *testing.T) {
 
 	require.Nil(t, cfg)
 	for _, name := range []string{"SITE_URL", "EMAIL_TOKEN_SECRET", "MAIL_POSTBOX_ACCESS_KEY_ID", "AUDIT_RETENTION_MONTHS"} {
-		require.ErrorContains(t, err, name)
+		requireProblem(t, err, name)
 	}
 }
 
@@ -118,7 +127,7 @@ func TestLoadErrorNeverContainsASecretValue(t *testing.T) {
 
 	_, err := LoadServer()
 
-	require.ErrorContains(t, err, "OAUTH_ENCRYPTION_KEY")
+	requireProblem(t, err, "OAUTH_ENCRYPTION_KEY")
 	require.NotContains(t, err.Error(), "short-but-secret")
 }
 

@@ -8,6 +8,8 @@ import (
 	"sync/atomic"
 
 	"golang.org/x/sync/errgroup"
+
+	"hexletbasics/internal/health"
 )
 
 var (
@@ -16,6 +18,8 @@ var (
 	errEventRouterStopped = errors.New("domain event router stopped unexpectedly")
 )
 
+// jobRuntime, eventRuntime and httpRuntime stay interfaces: the runtime tests
+// substitute hand-written fakes (stuckJobs, stuckServer, healthServer).
 type jobRuntime interface {
 	Start(ctx context.Context) error
 	Stop(ctx context.Context) error
@@ -27,13 +31,6 @@ type httpRuntime interface {
 	ListenAndServe() error
 	Shutdown(ctx context.Context) error
 	Close() error
-}
-
-// readiness is what the runtime tells /readyz: Started once the job queue and
-// the event router run, Drain when it begins to stop (ADR-0023).
-type readiness interface {
-	Started()
-	Drain()
 }
 
 type eventRuntime interface {
@@ -54,7 +51,7 @@ type application struct {
 	// starts with the runtime and is stopped last, so /readyz can report 503
 	// while the queue and router drain.
 	health httpRuntime
-	probes readiness
+	probes *health.Probes
 }
 
 func (a *application) run(signalCtx context.Context, stopSignals func()) error {
@@ -140,15 +137,47 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		})
 	}
 
+	// The group keeps only its first error, and on a signal that is the
+	// sentinel, so the shutdown's own failure is kept apart and joined in.
+	var shutdownErr error
 	group.Go(func() error {
 		<-groupCtx.Done()
 		<-jobsStartSettled
-		return a.shutdown(processCtx, state, cancelProcess)
+		shutdownErr = a.shutdown(processCtx, state, cancelProcess)
+		return shutdownErr
 	})
 
-	return group.Wait()
+	waitErr := group.Wait()
+	if shutdownErr == nil || errors.Is(waitErr, shutdownErr) {
+		return waitErr
+	}
+	return errors.Join(waitErr, shutdownErr)
 }
 
+// failure is what the process reports from run's result: the shutdown failures
+// and any runtime failure, without the sentinel that only says a signal asked
+// the process to stop (a normal exit).
+func failure(err error) error {
+	if joined, ok := errors.AsType[interface {
+		error
+		Unwrap() []error
+	}](err); ok {
+		var rest []error
+		for _, e := range joined.Unwrap() {
+			if !errors.Is(e, errRuntimeSignal) {
+				rest = append(rest, e)
+			}
+		}
+		return errors.Join(rest...)
+	}
+	if errors.Is(err, errRuntimeSignal) {
+		return nil
+	}
+	return err
+}
+
+// shutdown returns what failed while stopping and does not log it: the process
+// entry point logs the one error run returns (ADR-0018, log or return).
 func (a *application) shutdown(parent context.Context, state *runtimeState, cancelProcess context.CancelFunc) error {
 	// The drain gets its own deadline: the process context is already
 	// cancelled by the time shutdown runs.
@@ -167,14 +196,12 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 		if err := a.events.Close(); err != nil {
 			stopErr := errs.Wrapf(err, "stop domain event router")
 			shutdownErrors = append(shutdownErrors, stopErr)
-			a.logShutdownError(stopErr)
 		}
 	}
 	if state.jobsWereStarted() {
 		if err := a.jobs.Stop(ctx); err != nil {
 			stopErr := errs.Wrapf(err, "stop job queue")
 			shutdownErrors = append(shutdownErrors, stopErr)
-			a.logShutdownError(stopErr)
 		}
 	}
 
@@ -182,19 +209,12 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 		if err := a.health.Shutdown(ctx); err != nil {
 			stopErr := errs.Wrapf(err, "stop health listener")
 			shutdownErrors = append(shutdownErrors, stopErr)
-			a.logShutdownError(stopErr)
 			_ = a.health.Close()
 		}
 	}
 
 	cancelProcess()
 	return errors.Join(shutdownErrors...)
-}
-
-func (a *application) logShutdownError(err error) {
-	if a.logger != nil {
-		a.logger.Error("runtime shutdown failed", "err", err)
-	}
 }
 
 type runtimeState struct {

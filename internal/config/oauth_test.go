@@ -49,7 +49,7 @@ func TestLoadRejectsAnEnabledOAuthServerWithoutWhatItNeeds(t *testing.T) {
 			cfg, err := LoadServer()
 
 			require.Nil(t, cfg)
-			require.ErrorContains(t, err, tc.want)
+			requireProblem(t, err, tc.want)
 		})
 	}
 }
@@ -64,7 +64,7 @@ func TestLoadRejectsAnHTTPIssuerInProduction(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "OAUTH_ISSUER must be an https origin in production")
+	requireProblem(t, err, "OAUTH_ISSUER must be an https origin in production")
 }
 
 func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.T) {
@@ -80,7 +80,7 @@ func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.
 
 	t.Setenv("OAUTH_REGISTRATION_LIMIT", "0")
 	_, err = LoadServer()
-	require.ErrorContains(t, err, "OAUTH_REGISTRATION_LIMIT")
+	requireProblem(t, err, "OAUTH_REGISTRATION_LIMIT")
 }
 
 func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
@@ -111,7 +111,7 @@ func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
 			t.Setenv("OAUTH_ACCESS_TOKEN_TTL", env[0])
 			t.Setenv("OAUTH_REFRESH_TOKEN_TTL", env[1])
 			_, err := LoadServer()
-			require.ErrorContains(t, err, "OAUTH_ACCESS_TOKEN_TTL")
+			requireProblem(t, err, "OAUTH_ACCESS_TOKEN_TTL")
 		})
 	}
 

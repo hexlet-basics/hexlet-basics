@@ -8,7 +8,6 @@ package transition
 
 import (
 	"errors"
-	"fmt"
 	"slices"
 
 	"hexletbasics/internal/domain"
@@ -27,26 +26,49 @@ type Transition[S ~string] struct {
 	From []S
 }
 
+// State is the raw value of a state, as stored in its column.
+type State string
+
+// Vocabulary names a set of states an adapter words by name. Each state type
+// belongs to one, and the adapter's display names are keyed by it, so the two
+// cannot drift apart: States lists what a vocabulary holds.
+type Vocabulary string
+
+// The vocabularies. A new state type adds its name here and its states to
+// vocabularyStates.
+const (
+	PublicationStates Vocabulary = "publication_state"
+	CourseReadiness   Vocabulary = "course_readiness"
+)
+
+// vocabularyStates is every state of each vocabulary.
+var vocabularyStates = map[Vocabulary][]State{
+	PublicationStates: {State(Draft), State(Published), State(Archived)},
+	CourseReadiness:   {State(ReadinessDraft), State(ReadinessInDevelopment), State(ReadinessCompleted)},
+}
+
+// States lists the states of the vocabulary.
+func (v Vocabulary) States() []State { return slices.Clone(vocabularyStates[v]) }
+
+// Named is implemented by a state type that belongs to a vocabulary.
+type Named interface{ Vocabulary() Vocabulary }
+
 // IllegalError is the typed error of a refused move: the state the resource is in and
 // the one the operation would have set. It is a domain.ErrConflict, and the
-// HTTP adapter words it from the states' names in their vocabulary.
+// HTTP adapter words it from the states' names in their vocabulary. The message
+// is static; the states are its fields.
 type IllegalError struct {
-	From, To string
+	From, To State
 	// Vocabulary names the set of states From and To belong to, for a state that
-	// declares one (see Vocabulary), so an adapter picks the right display names.
-	Vocabulary string
+	// declares one (see Named), so an adapter picks the right display names.
+	Vocabulary Vocabulary
 }
 
 // Unwrap makes a refused move a conflict: the resource's state forbids it,
 // whoever asks.
 func (e *IllegalError) Unwrap() error { return domain.ErrConflict }
 
-// Vocabulary is how a state type names its set of states.
-type Vocabulary interface{ Vocabulary() string }
-
-func (e *IllegalError) Error() string {
-	return fmt.Sprintf("illegal state transition from %q to %q", e.From, e.To)
-}
+func (e *IllegalError) Error() string { return "illegal state transition" }
 
 // IsIllegal reports whether err is a refused move, and returns it.
 func IsIllegal(err error) (*IllegalError, bool) {
@@ -61,8 +83,8 @@ func (t Transition[S]) Check(current S) error {
 	if slices.Contains(t.From, current) {
 		return nil
 	}
-	illegal := &IllegalError{From: string(current), To: string(t.To)}
-	if named, ok := any(current).(Vocabulary); ok {
+	illegal := &IllegalError{From: State(current), To: State(t.To)}
+	if named, ok := any(current).(Named); ok {
 		illegal.Vocabulary = named.Vocabulary()
 	}
 	return illegal

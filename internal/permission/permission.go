@@ -5,7 +5,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/samber/lo"
 	"github.com/samber/oops"
@@ -36,7 +35,7 @@ var errs = oops.In("permission")
 
 // ErrUnknownPermission is a grant that names no Permission the contract
 // declares: a typo would otherwise be stored and silently open nothing. The
-// wrapped message lists the names.
+// message is static; UnknownNames reads the offending names back.
 var ErrUnknownPermission = errors.New("unknown permission")
 
 // Check judges the roles screen's submission before it is written: a missing
@@ -50,14 +49,20 @@ func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) er
 		return err
 	}
 	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissioncatalog.Known(name) }); len(unknown) > 0 {
-		// The names stay in the message on purpose: the roles screen shows
-		// err.Error() as the field's detail, so they are user-facing text and
-		// not log data. The HTTP error step (ADR-0018 follow-up) replaces this
-		// with a localized detail and the message becomes static.
-		names := strings.Join(unknown, ", ")
-		return errs.With("unknown", names).Wrapf(ErrUnknownPermission, "%s", names)
+		return errs.With("unknown", unknown).Wrapf(ErrUnknownPermission, "check grants")
 	}
 	return nil
+}
+
+// UnknownNames lists the grants an ErrUnknownPermission refused, for an adapter
+// that shows them to the person who typed them (the message stays static).
+func UnknownNames(err error) []string {
+	oopsErr, ok := oops.AsOops(err)
+	if !ok {
+		return nil
+	}
+	names, _ := oopsErr.Context()["unknown"].([]string)
+	return names
 }
 
 // Apply writes the roles screen's save: the role holds exactly grants

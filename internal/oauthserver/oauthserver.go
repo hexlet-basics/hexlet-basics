@@ -4,7 +4,7 @@
 // It is self-contained on purpose, so it can be lifted out of the application
 // later: it owns its tables and its configuration, and it must not import the
 // HTTP handlers package (a test enforces that). The application gives it one
-// thing, an Application: who is signed in, and how to name them on the consent
+// thing, a SignedIn function: who is signed in, and how to name them on the consent
 // screen. In return the application's handlers call Pending, Approve and Deny
 // to serve the consent screen, which is a contract operation like every other
 // thing our own frontend calls (ADR-0011); the protocol endpoints an RFC defines
@@ -76,14 +76,6 @@ type Account struct {
 	Name string
 }
 
-// Application is what the host application gives the package: who is signed in.
-// The consent operations are guarded by the session scheme in the contract, so
-// the package asks only to read it, never to check it again.
-type Application interface {
-	// SignedIn names the user whose session cookie accompanies ctx.
-	SignedIn(ctx context.Context) (Account, bool)
-}
-
 // Config is everything the package needs from configuration.
 type Config struct {
 	// Issuer is the bare canonical origin from configuration, never the Host header.
@@ -108,7 +100,11 @@ type Deps struct {
 	// token, a rotation).
 	DB         *ent.Client
 	Transactor store.Transactor
-	App        Application
+	// SignedIn names the user whose session cookie accompanies ctx. The consent
+	// operations are guarded by the session scheme in the contract, so the package
+	// only reads it, never checks it again. A function and not an interface: the
+	// package may not import the application that implements it (ADR-0025).
+	SignedIn func(ctx context.Context) (Account, bool)
 	// ClientAddress names the caller of a request, for the registration rate
 	// limit. The application supplies it from its client-IP middleware, so the
 	// address is never read from a header here; without it every caller shares
@@ -122,7 +118,7 @@ type Deps struct {
 type Server struct {
 	issuer   string
 	resource string
-	app      Application
+	signedIn func(ctx context.Context) (Account, bool)
 	limiter  *limiter
 	// documents resolves client ids that are metadata document URLs; its own
 	// limiter keeps fetches from spending the registration budget and the other
@@ -217,7 +213,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		clientAddress = func(context.Context) (string, bool) { return "", false }
 	}
 	s := &Server{
-		issuer: deps.Config.Issuer, resource: st.resource, app: deps.App, storage: st, provider: provider,
+		issuer: deps.Config.Issuer, resource: st.resource, signedIn: deps.SignedIn, storage: st, provider: provider,
 		limiter:       newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
 		clientAddress: clientAddress,
 	}

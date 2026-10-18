@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -32,6 +31,8 @@ func main() {
 	err := run(signalCtx, stop)
 	stop()
 	if err != nil {
+		// The one place a run failure is logged; run returns it unlogged.
+		slog.Error("process failed", "err", err)
 		os.Exit(1)
 	}
 }
@@ -42,9 +43,10 @@ func main() {
 func run(signalCtx context.Context, stopSignals func()) error {
 	dependencies, err := di.BuildWorker()
 	if err != nil {
-		slog.ErrorContext(signalCtx, "building worker dependencies", "err", err)
 		return errs.Wrapf(err, "building worker dependencies")
 	}
+	// main logs the error run returns; give it the configured handler.
+	slog.SetDefault(dependencies.Logger)
 
 	app := application{
 		jobs:   dependencies.RiverClient,
@@ -65,9 +67,5 @@ func run(signalCtx context.Context, stopSignals func()) error {
 		dependencies.Logger.ErrorContext(cleanupCtx, "releasing resources", "err", err)
 	}
 
-	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		dependencies.Logger.ErrorContext(cleanupCtx, "worker runtime failed", "err", runtimeErr)
-		return runtimeErr
-	}
-	return nil
+	return failure(runtimeErr)
 }

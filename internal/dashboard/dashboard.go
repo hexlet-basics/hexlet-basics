@@ -44,24 +44,18 @@ type Courses struct {
 	Finished []Course
 }
 
-// CourseProgress is where a learner stands in each of several courses; the one
-// thing the dashboard needs from the progress module.
-type CourseProgress interface {
-	CourseStates(ctx context.Context, userID int, courseIDs []int) (map[int]*progress.CourseState, error)
-}
-
 // Dashboard reads the learner's courses.
 type Dashboard struct {
 	db       *ent.Client
 	catalog  *landingpage.Catalog
-	progress CourseProgress
+	progress *progress.Progress
 	log      *slog.Logger
 }
 
 // New builds the production dashboard over the catalog and the progress module,
 // so the dashboard and the course page report the same progress. The logger
 // reports the courses left off for lack of a card.
-func New(db *ent.Client, catalog *landingpage.Catalog, tracker CourseProgress, logger *slog.Logger) *Dashboard {
+func New(db *ent.Client, catalog *landingpage.Catalog, tracker *progress.Progress, logger *slog.Logger) *Dashboard {
 	return &Dashboard{db: db, catalog: catalog, progress: tracker, log: logger}
 }
 

@@ -283,10 +283,10 @@ func LoadWorker() (*Worker, error) {
 func (c *Server) crossChecks() []string {
 	var problems []string
 	if c.OAuth.Enabled {
-		problems = append(problems, section(c.OAuth, "OAUTH_", c.AppEnv)...)
+		problems = append(problems, violations(c.OAuth, "OAUTH_", c.AppEnv)...)
 	}
 	if c.MCP.Enabled {
-		problems = append(problems, section(c.MCP, "MCP_", c.AppEnv)...)
+		problems = append(problems, violations(c.MCP, "MCP_", c.AppEnv)...)
 	}
 	if c.MCP.Enabled && !c.OAuth.Enabled {
 		problems = append(problems, "MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")

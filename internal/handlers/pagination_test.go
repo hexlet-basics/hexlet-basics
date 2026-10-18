@@ -3,10 +3,10 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,15 +39,13 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 
 	translator, err := localization.New()
 	require.NoError(t, err)
+	errorHandler := NewAPIErrorHandler(translator, slog.New(slog.DiscardHandler))
 	server, err := api.NewServer(
 		handler,
 		nil,
-		api.WithErrorHandler(NewAPIErrorHandler(
-			translator,
-			slog.New(slog.DiscardHandler),
-		).Write),
-		api.WithNotFound(NewNotFoundHandler(translator)),
-		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(translator)),
+		api.WithErrorHandler(errorHandler.Write),
+		api.WithNotFound(NewNotFoundHandler(errorHandler)),
+		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(errorHandler)),
 	)
 	require.NoError(t, err)
 	return translator.Middleware(server)
@@ -129,7 +127,7 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 			router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			assert.Equal(t, tt.body, strings.TrimSpace(rec.Body.String()))
+			assert.JSONEq(t, fmt.Sprintf(`{"type":"about:blank","title":%q,"status":%d}`, tt.body, tt.status), rec.Body.String())
 			if tt.allowValue != "" {
 				assert.Contains(t, rec.Header().Get("Allow"), tt.allowValue)
 			}
