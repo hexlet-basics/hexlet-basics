@@ -16,6 +16,12 @@ import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index"
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { DESKTOP_VIEWPORT } from "@/test/viewport";
+
+const HELLO_WORLD_ID = 1001;
+const VARIABLES_ID = 1002;
+const STRINGS_ID = 1003;
+const FINISHED_LESSONS = 3;
 
 // The Course page, driven through its real route with the API faked at the HTTP
 // boundary. What is asserted is what a visitor sees — the landing copy, the
@@ -113,7 +119,7 @@ const midCourse: Standing = {
   progress: {
     state: "started",
     completion: 33,
-    nextLesson: lessonRef(1002, "variables", "Variables"),
+    nextLesson: lessonRef(VARIABLES_ID, "variables", "Variables"),
   },
   finished: ["hello-world"],
 };
@@ -129,7 +135,7 @@ const firstVisit: Standing = {
   progress: {
     state: null,
     completion: 0,
-    nextLesson: lessonRef(1001, "hello-world", "Hello, World!"),
+    nextLesson: lessonRef(HELLO_WORLD_ID, "hello-world", "Hello, World!"),
   },
   finished: [],
 };
@@ -236,8 +242,8 @@ function variablesView(standing: Standing): CourseLessonView {
     landingPage,
     lessons: lessonRows(standing.finished),
     adjacent: {
-      previous: lessonRef(1001, "hello-world", "Hello, World!"),
-      next: lessonRef(1003, "strings", "Strings"),
+      previous: lessonRef(HELLO_WORLD_ID, "hello-world", "Hello, World!"),
+      next: lessonRef(STRINGS_ID, "strings", "Strings"),
     },
     progress: standing.progress,
   };
@@ -292,7 +298,7 @@ describe("course page", () => {
 
     await expect.element(page.getByText("Course finished!")).toBeVisible();
     await expect.element(page.getByText("Completed 100%")).toBeVisible();
-    expect(page.getByLabelText("Finished").elements()).toHaveLength(3);
+    expect(page.getByLabelText("Finished").elements()).toHaveLength(FINISHED_LESSONS);
     expect(page.getByRole("button", { name: "Continue Learning" }).elements()).toHaveLength(0);
     expect(page.getByRole("button", { name: "Try It" }).elements()).toHaveLength(0);
   }, 60_000);
@@ -472,7 +478,7 @@ describe("course page", () => {
     expect.hasAssertions();
     // The player lays out by the viewport, so it gets the desktop one it expects.
     const startingViewport = { width: window.innerWidth, height: window.innerHeight };
-    await page.viewport(1200, 800);
+    await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
     onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
     worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
     // The fresh read is held until the test lets it go, so what the learner is

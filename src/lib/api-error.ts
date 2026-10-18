@@ -1,4 +1,5 @@
 import { notFound } from "@tanstack/react-router";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
 
 // What the generated client throws for a non-2xx answer: the status and the
 // parsed body (JSON when the server sent it, text otherwise). Routes and forms
@@ -32,7 +33,7 @@ export function isApiError(error: unknown, status?: number): error is ApiError {
 // For a loader's catch: a 404 from the API is a missing page, so it becomes the
 // router's `notFound()`; anything else is rethrown as it was.
 export function rethrowMissingAsNotFound(error: unknown): never {
-  if (isApiError(error, 404)) {
+  if (isApiError(error, HTTP_NOT_FOUND)) {
     throw notFound();
   }
   throw error;

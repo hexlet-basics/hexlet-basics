@@ -10,6 +10,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { renderWithProviders } from "@/test/renderWithProviders";
 
+const MIN_BODY_LENGTH = 500;
+
 // The data-free pages (ADR-0015) through their real routes: a static page, the
 // ru-only cases and the error pages. Asserted is what a visitor and a crawler
 // read: the body, the head, and which page answers.
@@ -155,7 +157,7 @@ describe("static pages", () => {
 
       const title = page.getByRole("heading", { level: 1 });
       await expect.element(title).toBeVisible();
-      await expect.poll(() => document.body.textContent.length).toBeGreaterThan(500);
+      await expect.poll(() => document.body.textContent.length).toBeGreaterThan(MIN_BODY_LENGTH);
     },
     60_000,
   );

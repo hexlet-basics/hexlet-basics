@@ -2,6 +2,9 @@ import { Box, Center, rem } from "@mantine/core";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
+// The empty lesson mark takes the width of the icon it stands in for.
+const ICON_SIZE = 16;
+
 // The mark beside a lesson's name: a check when it is finished, and an empty slot
 // of the same width otherwise so the names line up. Lessons may be taken in any
 // order (ADR-0016), so nothing marks one as out of reach.
@@ -19,5 +22,5 @@ export default function LessonMark({ finished }: { finished: boolean }) {
     );
   }
 
-  return <Box w={rem(16)} aria-hidden="true" />;
+  return <Box w={rem(ICON_SIZE)} aria-hidden="true" />;
 }

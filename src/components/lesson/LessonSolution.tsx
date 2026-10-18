@@ -6,11 +6,13 @@ import { useTranslation } from "react-i18next";
 import waitingClock from "@/assets/waiting_clock.webp";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
+import { MS_PER_SECOND, SECONDS_PER_MINUTE } from "@/lib/duration";
 
 // How long a learner who has not passed waits before the reference solution can
 // be opened. Long enough that reading it is a last resort, short enough that
 // nobody is stuck on one lesson forever.
-const waitingTime = 20 * 60 * 1000;
+const WAITING_MINUTES = 20;
+const waitingTime = WAITING_MINUTES * SECONDS_PER_MINUTE * MS_PER_SECOND;
 
 // The author's answer, beside the learner's own so the two can be compared on
 // one screen.
@@ -65,11 +67,13 @@ function SolutionWait({ onReveal }: { onReveal: () => void }) {
   const { t } = useTranslation();
   const [expiresAt] = useState(() => Date.now() + waitingTime);
   const [remaining, setRemaining] = useState(waitingTime);
-  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), 1000, { autoInvoke: true });
+  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), MS_PER_SECOND, {
+    autoInvoke: true,
+  });
 
   if (remaining > 0) {
-    const seconds = Math.ceil(remaining / 1000);
-    const clock = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+    const seconds = Math.ceil(remaining / MS_PER_SECOND);
+    const clock = `${String(Math.floor(seconds / SECONDS_PER_MINUTE)).padStart(2, "0")}:${String(seconds % SECONDS_PER_MINUTE).padStart(2, "0")}`;
 
     return (
       <Stack align="center" p="xs">

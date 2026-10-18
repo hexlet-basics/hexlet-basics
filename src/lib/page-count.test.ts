@@ -3,15 +3,15 @@ import { pageCount } from "@/lib/page-count";
 
 describe("pageCount", () => {
   it.each([
-    [0, 25, 1],
-    [1, 25, 1],
-    [25, 25, 1],
-    [26, 25, 2],
-    [30, 25, 2],
-    [100, 25, 4],
+    { total: 0, perPage: 25, expected: 1 },
+    { total: 1, perPage: 25, expected: 1 },
+    { total: 25, perPage: 25, expected: 1 },
+    { total: 26, perPage: 25, expected: 2 },
+    { total: 30, perPage: 25, expected: 2 },
+    { total: 100, perPage: 25, expected: 4 },
   ])(
-    "%i rows at %i a page make %i pages",
-    (total, perPage, expected) => {
+    "$total rows at $perPage a page make $expected pages",
+    ({ total, perPage, expected }) => {
       expect.hasAssertions();
       expect(pageCount(total, perPage)).toBe(expected);
     },

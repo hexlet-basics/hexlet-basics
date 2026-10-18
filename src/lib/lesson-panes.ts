@@ -1,5 +1,6 @@
 import { useCookies } from "react-cookie";
 import { z } from "zod";
+import { SECONDS_PER_YEAR } from "@/lib/duration";
 
 // Where the learner left the divider between the theory and the workspace, as
 // the theory's share of the width in percent. It lives in a cookie rather than
@@ -9,12 +10,16 @@ import { z } from "zod";
 // every lesson — a cookie per lesson would pile up and ride along on every
 // request.
 const COOKIE_NAME = "lesson_panes";
-const COOKIE_TTL_SECONDS = 365 * 24 * 60 * 60;
+const COOKIE_TTL_SECONDS = SECONDS_PER_YEAR;
 
 // The split before the learner drags the divider, and the bounds either pane
 // may take (the theory pane's own `min`, mirrored for the workspace).
 const DEFAULT_THEORY_PERCENT = 40;
-const THEORY_PERCENT = z.coerce.number().min(25).max(75);
+// The divider position is stored to one decimal place.
+const DECIMAL_STEP = 10;
+const MIN_THEORY_PERCENT = 25;
+const MAX_THEORY_PERCENT = 75;
+const THEORY_PERCENT = z.coerce.number().min(MIN_THEORY_PERCENT).max(MAX_THEORY_PERCENT);
 
 // The stored theory width in percent — the default when there is none or it is
 // not a usable number — and a saver to call when a drag ends.
@@ -25,7 +30,7 @@ export function useTheoryPercent(): [number, (percent: number) => void] {
   const save = (percent: number) => {
     // `path` is explicit: the library defaults to the current page, which would
     // keep one split per lesson URL after all.
-    setCookie(COOKIE_NAME, String(Math.round(percent * 10) / 10), {
+    setCookie(COOKIE_NAME, String(Math.round(percent * DECIMAL_STEP) / DECIMAL_STEP), {
       path: "/",
       maxAge: COOKIE_TTL_SECONDS,
       sameSite: "lax",

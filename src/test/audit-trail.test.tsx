@@ -8,6 +8,8 @@ import { worker } from "@/test/msw";
 import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
+const THIRTY_DAYS_MS = 2_592_000_000;
+
 // The audit trail page through its real route and the admin layout, with the API
 // faked at the HTTP boundary. Asserted is what a staff member sees: the records
 // with channel and outcome, the details of a change and of a read, the filters
@@ -156,7 +158,7 @@ describe("audit trail", () => {
     const from = new Date(String(fromParam));
     const to = new Date(String(toParam));
     // The last day picked is included: the window ends at the next midnight.
-    expect(to.getTime() - from.getTime()).toBe(30 * 24 * 3600 * 1000);
+    expect(to.getTime() - from.getTime()).toBe(THIRTY_DAYS_MS);
     // The first request, before any filter, carried none.
     expect(queries[0]?.has("operation")).toBe(false);
   }, 60_000);

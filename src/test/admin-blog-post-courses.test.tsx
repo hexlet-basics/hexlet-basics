@@ -7,6 +7,8 @@ import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+const COURSE_ID = 150;
+
 const post: BlogPost = {
   id: 3,
   creator: { id: 1, name: "Ada" } as BlogPost["creator"],
@@ -55,6 +57,6 @@ describe("admin blog post courses", () => {
     await page.getByRole("button", { name: "Save" }).last().click();
 
     await expect.element(page.getByText("Record updated")).toBeVisible();
-    expect(saved).toStrictEqual({ courseIds: [150] });
+    expect(saved).toStrictEqual({ courseIds: [COURSE_ID] });
   }, 60_000);
 });

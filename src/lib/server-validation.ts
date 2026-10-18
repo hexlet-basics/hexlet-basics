@@ -1,12 +1,13 @@
 import { zProblemDetails } from "@/client/zod.gen";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_UNPROCESSABLE } from "@/lib/http-status";
 
 // The API answers a write that fails validation with 422 and a Problem Details
 // body whose `errors` extension holds the messages keyed by field, covering
 // rules the Zod schema cannot express (an email already taken). Parsing it with
 // the generated `zProblemDetails` keeps this in step with the contract.
 function validationErrors(error: unknown): Record<string, string[]> | undefined {
-  if (!isApiError(error, 422)) {
+  if (!isApiError(error, HTTP_UNPROCESSABLE)) {
     return undefined;
   }
   const parsed = zProblemDetails.safeParse(error.body);

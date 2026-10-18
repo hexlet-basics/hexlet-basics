@@ -20,6 +20,10 @@ import practiceIcon from "@/assets/for-school-teachers-page/practice-icon.svg";
 import { ButtonLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
+// The longest meta description search engines show, and what marks a cut.
+const META_DESCRIPTION_LENGTH = 160;
+const OMISSION = "...";
+
 // The case for school and university teachers, ported from legacy
 // cases/for_teachers. Legacy served it for ru only (`require_russian_locale`),
 // so its one video is the ru one.
@@ -39,7 +43,7 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
       title: i18n.t(($) => $.cases.for_teachers.title),
       description: truncate(
         i18n.t(($) => $.cases.for_teachers.meta.description),
-        160,
+        META_DESCRIPTION_LENGTH,
       ),
       canonicalPath: match.pathname,
     });
@@ -50,7 +54,7 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
 // Rails String#truncate: at most `length` characters, the "..." omission
 // included, cut at a character boundary.
 function truncate(text: string, length: number): string {
-  return text.length > length ? `${text.slice(0, length - 3)}...` : text;
+  return text.length > length ? `${text.slice(0, length - OMISSION.length)}${OMISSION}` : text;
 }
 
 // The card images, named by the `img` field of each card string.

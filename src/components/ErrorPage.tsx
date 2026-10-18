@@ -1,10 +1,11 @@
 import { Container, Stack, Text, Title } from "@mantine/core";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
+import { HTTP_FORBIDDEN, HTTP_NOT_FOUND, HTTP_SERVER_ERROR } from "@/lib/http-status";
 
 // The HTTP errors that have their own wording; any other code reads the
 // generic one.
-type ErrorCode = 403 | 404 | 500;
+type ErrorCode = typeof HTTP_FORBIDDEN | typeof HTTP_NOT_FOUND | typeof HTTP_SERVER_ERROR;
 
 // Typed selectors cannot take a runtime key, so each code names its strings.
 // The generic description falls back to the generic *header*, as legacy
@@ -12,19 +13,19 @@ type ErrorCode = 403 | 404 | 500;
 // was never shown.
 function errorText(t: TFunction, code: number): { header: string; description: string } {
   switch (code as ErrorCode) {
-    case 403: {
+    case HTTP_FORBIDDEN: {
       return {
         header: t(($) => $.errors.show.codes["403"].header),
         description: t(($) => $.errors.show.codes["403"].description),
       };
     }
-    case 404: {
+    case HTTP_NOT_FOUND: {
       return {
         header: t(($) => $.errors.show.codes["404"].header),
         description: t(($) => $.errors.show.codes["404"].description),
       };
     }
-    case 500: {
+    case HTTP_SERVER_ERROR: {
       return {
         header: t(($) => $.errors.show.codes["500"].header),
         description: t(($) => $.errors.show.codes["500"].description),

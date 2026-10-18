@@ -23,6 +23,12 @@ import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/succe
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+const FIRST_LESSON_ID = 1001;
+// How long a check takes to answer, in the tests that look at the player while it runs.
+const SLOW_CHECK_MS = 600;
+const QUICK_CHECK_MS = 300;
+const LONG_LINE_LENGTH = 200;
+
 // The lesson player, driven through its real route with the API faked at the
 // HTTP boundary — the seam the admin screens are tested at. What is asserted is
 // what a learner can see: the words on the page, the marks in the lesson list,
@@ -107,7 +113,7 @@ function lessonRows(finished: string[] = []): LearnerLesson[] {
     { slug: "variables", name: "Variables" },
     { slug: "strings", name: "Strings" },
   ].map(({ slug, name }, index) => ({
-    id: 1001 + index,
+    id: FIRST_LESSON_ID + index,
     name,
     description: null,
     slug,
@@ -739,7 +745,7 @@ describe("lesson player", () => {
       http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
       http.post("*/lessons/1002/check", async () => {
         await new Promise((resolve) => {
-          setTimeout(resolve, 600);
+          setTimeout(resolve, SLOW_CHECK_MS);
         });
         return HttpResponse.json(checkResult());
       }),
@@ -805,7 +811,7 @@ describe("lesson player", () => {
       http.post("*/lessons/1002/check", async () => {
         checks += 1;
         await new Promise((resolve) => {
-          setTimeout(resolve, 300);
+          setTimeout(resolve, QUICK_CHECK_MS);
         });
         return HttpResponse.json(checkResult());
       }),
@@ -1292,7 +1298,7 @@ describe("lesson player", () => {
     const wide = lessonView({
       lesson: {
         ...lesson,
-        theory: `A long line:\n\n\`\`\`js\nconst x = '${"a".repeat(200)}';\n\`\`\``,
+        theory: `A long line:\n\n\`\`\`js\nconst x = '${"a".repeat(LONG_LINE_LENGTH)}';\n\`\`\``,
       },
     });
     worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(wide)));

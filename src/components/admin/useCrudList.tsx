@@ -10,6 +10,9 @@ import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import type { CrudColumnDef } from "./CrudList";
 
+// How long the search box waits after a keystroke before it asks the API.
+const SEARCH_DEBOUNCE_MS = 300;
+
 // The envelope of every admin list response (`XxxPage`).
 interface Page {
   items: { id: number }[];
@@ -101,14 +104,8 @@ export function useCrudList<
   const setSearch = (patch: Partial<ListQuery>) =>
     navigate({ to: ".", search: (prev) => ({ ...prev, ...patch }) });
 
-  // What the box shows follows the keystrokes; the address (and so the query)
-  // follows it a beat later. A new term starts from the first page: the old page
-  // may not exist in the narrowed list.
-  const [text, setText] = useState(search.q ?? "");
-  const applyTerm = useDebouncedCallback(
-    (term: string) => setSearch({ q: term === "" ? undefined : term, page: undefined }),
-    300,
-  );
+  const [search, setSearch] = useState("");
+  const [term] = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS);
 
   const query = useQuery(
     list({

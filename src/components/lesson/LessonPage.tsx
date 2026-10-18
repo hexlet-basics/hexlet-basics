@@ -24,6 +24,8 @@ import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import { useTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
 
+const FULL_PERCENT = 100;
+
 // The lesson player's shell: theory, the assistant and navigation on the left,
 // the workspace on the right. Both panes stay mounted for the life of the page —
 // the editor in the right pane must never remount and lose a learner's buffer.
@@ -91,7 +93,7 @@ export default function LessonPage({
     : ["0%", "100%"];
   const deskSizes: [SplitterPaneSize, SplitterPaneSize] = [
     `${theoryPercent}%`,
-    `${100 - theoryPercent}%`,
+    `${FULL_PERCENT - theoryPercent}%`,
   ];
   const sizes = isDesktop ? deskSizes : phoneSizes;
   const [theorySize, workspaceSize] = sizes;

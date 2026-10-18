@@ -14,6 +14,8 @@ import { useCrudList } from "@/components/admin/useCrudList";
 import { worker } from "@/test/msw";
 import { renderWithRouter } from "@/test/renderWithRouter";
 
+const ALL_ROWS = 30;
+
 // The list engine on its own, mounted the way a resource's index route uses it:
 // the hook is handed the generated list options and delete mutation, and the
 // resource contributes columns only.
@@ -63,7 +65,7 @@ function searchedBanners(query: URLSearchParams) {
   const found = query.get("q") === "sale";
   return {
     items: [banner(1, found ? "Spring sale" : "Anything")],
-    total: found ? 1 : 30,
+    total: found ? 1 : ALL_ROWS,
     page: Number(query.get("page")),
     perPage: 25,
   };

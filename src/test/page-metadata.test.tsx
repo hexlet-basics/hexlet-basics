@@ -12,6 +12,9 @@ import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index"
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { DESKTOP_VIEWPORT } from "@/test/viewport";
+
+const THEORY_REPEATS = 10;
 
 // What a search engine and a shared link see for the Course page and a Lesson:
 // the head each route composes from its payload, read off the loaded match —
@@ -93,7 +96,7 @@ const lessons = [
 
 // Longer than the description's bound, with the line breaks and runs of spaces
 // raw markdown has, so both the cut and the squash are visible.
-const theory = `A variable is a name bound to a value.\n\n\`\`\`js\nlet   greeting = 'hello';\n\`\`\`\n\n${"Variables hold values that change. ".repeat(10)}`;
+const theory = `A variable is a name bound to a value.\n\n\`\`\`js\nlet   greeting = 'hello';\n\`\`\`\n\n${"Variables hold values that change. ".repeat(THEORY_REPEATS)}`;
 
 const lessonView: CourseLessonView = {
   lesson: {
@@ -143,7 +146,7 @@ const startingViewport = { width: window.innerWidth, height: window.innerHeight 
 describe("page metadata", () => {
   it("a lesson is titled, described and linked the way legacy did it", async () => {
     expect.hasAssertions();
-    await page.viewport(1200, 800);
+    await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
     try {
       worker.use(
         http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView)),

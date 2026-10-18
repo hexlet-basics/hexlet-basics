@@ -1,6 +1,7 @@
 import { isNotFound } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 import { ApiError, apiErrorOf, isApiError, rethrowMissingAsNotFound } from "@/lib/api-error";
+import { HTTP_NOT_FOUND, HTTP_SERVER_ERROR, HTTP_UNPROCESSABLE } from "@/lib/http-status";
 
 describe("apiError", () => {
   it("turns a non-2xx response into an error carrying its status and parsed body", () => {
@@ -21,11 +22,11 @@ describe("apiError", () => {
 
   it("recognises an ApiError, optionally by status", () => {
     expect.hasAssertions();
-    const error = new ApiError(404, {});
+    const error = new ApiError(HTTP_NOT_FOUND, {});
 
     expect(isApiError(error)).toBe(true);
-    expect(isApiError(error, 404)).toBe(true);
-    expect(isApiError(error, 422)).toBe(false);
+    expect(isApiError(error, HTTP_NOT_FOUND)).toBe(true);
+    expect(isApiError(error, HTTP_UNPROCESSABLE)).toBe(false);
     expect(isApiError(new Error("x"))).toBe(false);
   }, 60_000);
 
@@ -33,13 +34,13 @@ describe("apiError", () => {
     expect.hasAssertions();
     let thrown: unknown;
     try {
-      rethrowMissingAsNotFound(new ApiError(404, {}));
+      rethrowMissingAsNotFound(new ApiError(HTTP_NOT_FOUND, {}));
     } catch (error) {
       thrown = error;
     }
     expect(isNotFound(thrown)).toBe(true);
 
-    const boom = new ApiError(500, {});
+    const boom = new ApiError(HTTP_SERVER_ERROR, {});
     expect(() => rethrowMissingAsNotFound(boom)).toThrow(boom);
   }, 60_000);
 });

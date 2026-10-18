@@ -36,6 +36,7 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import { ButtonLink } from "@/components/RouterLink";
 import { isApiError } from "@/lib/api-error";
 import { lessonCodeKey } from "@/lib/lesson-code";
+import { HTTP_TOO_MANY_REQUESTS } from "@/lib/http-status";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
 // sign in, a learner gets their chat for this lesson and can ask about the code
@@ -312,7 +313,7 @@ function assistantTransport(lessonId: number) {
 }
 
 function isQuotaExceeded(error: unknown): boolean {
-  return APICallError.isInstance(error) && error.statusCode === 429;
+  return APICallError.isInstance(error) && error.statusCode === HTTP_TOO_MANY_REQUESTS;
 }
 
 function toUIMessage(message: LessonAssistantMessage): UIMessage {

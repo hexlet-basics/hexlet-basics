@@ -1,6 +1,8 @@
 import { expect } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
+const NOT_FOUND = 404;
+
 /**
  * The page and what every concept needs from it. The step files in this
  * directory drive it; a spec never sees it, because `Site` keeps it in a
@@ -45,7 +47,7 @@ export class Browser {
   /** Opens an address the site has no page for and sees the not-found page. */
   async expectNotFound(path: string): Promise<void> {
     const response = await this.page.goto(path);
-    expect(response?.status()).toBe(404);
+    expect(response?.status()).toBe(NOT_FOUND);
     await this.expectHeading("Page Not Found");
   }
 }

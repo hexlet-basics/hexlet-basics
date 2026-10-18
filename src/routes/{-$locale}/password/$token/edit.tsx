@@ -10,6 +10,7 @@ import { newPasswordInputProps } from "@/lib/authFieldProps";
 import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
 
 // Where a refused link lands, from the loader and from a failed submission.
 const refusedLink = (locale: string | undefined) => ({
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
     try {
       await checkPasswordResetToken({ path: { token: params.token }, throwOnError: true });
     } catch (error) {
-      if (isApiError(error, 404)) {
+      if (isApiError(error, HTTP_NOT_FOUND)) {
         throw redirect(refusedLink(params.locale));
       }
       throw error;
@@ -58,7 +59,7 @@ function Edit() {
     onError: (error) => {
       // The link can die between the check and the submission: it expired,
       // or it was already used from another tab.
-      if (isApiError(error, 404)) {
+      if (isApiError(error, HTTP_NOT_FOUND)) {
         void navigate(refusedLink(locale));
         return;
       }

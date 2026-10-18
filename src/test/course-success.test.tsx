@@ -14,6 +14,8 @@ import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/succe
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+const FULL_COMPLETION = 100;
+
 // The course completion page, driven through its real route with the course
 // read faked at the HTTP boundary: who sees it, and where everyone else goes.
 
@@ -82,7 +84,7 @@ const landingPage: CourseLandingPage = {
 function courseView(state: EnrollmentState | null): CourseView {
   const progress: CourseProgress = {
     state,
-    completion: state === "finished" ? 100 : 0,
+    completion: state === "finished" ? FULL_COMPLETION : 0,
     nextLesson:
       state === "finished" ? null : { id: 1001, slug: "hello-world", name: "Hello, World!" },
   };

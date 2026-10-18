@@ -31,6 +31,17 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        ignore: [0, 1, -1, 2, 60_000],
+        ignoreArrayIndexes: true,
+        ignoreDefaultValues: true,
+        ignoreEnums: true,
+        ignoreNumericLiteralTypes: true,
+        ignoreTypeIndexes: true,
+      },
+    ],
     "eslint/func-style": ["error", "declaration", { allowArrowFunctions: true }],
     "eslint/no-use-before-define": ["error", { functions: false }],
     "eslint/no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
@@ -55,8 +66,6 @@ export default defineConfig({
     "eslint/sort-keys": "off",
     // Bans conventional short names (t, i, e, _) with no safety gain.
     "eslint/id-length": "off",
-    // Taste rule, flags every literal including HTTP codes, sizes and Mantine props.
-    "eslint/no-magic-numbers": "off",
     // Mantine layouts nest deeply by design, splitting only adds indirection.
     "react/jsx-max-depth": "off",
     // Conditional rendering with a ternary is idiomatic React.

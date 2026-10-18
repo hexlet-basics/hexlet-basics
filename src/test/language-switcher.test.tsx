@@ -4,6 +4,10 @@ import { page } from "vitest/browser";
 import { Route as pageRoute } from "@/routes/{-$locale}/pages/$id";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { DESKTOP_VIEWPORT } from "@/test/viewport";
+
+// Long enough for a request a click would have sent to show up.
+const SETTLE_MS = 200;
 
 // The header's language menu: every entry is a plain link to the same page
 // under the other locale's prefix, query included. Following one asks the API
@@ -24,7 +28,7 @@ const stay = (event: Event) => event.preventDefault();
 // The switcher is read at a desktop viewport, put back when the test is done.
 async function atDesktop() {
   onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
-  await page.viewport(1200, 800);
+  await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
 }
 
 describe("language switcher", () => {
@@ -57,7 +61,7 @@ describe("language switcher", () => {
       await page.getByRole("button", { name: "Русский" }).first().click();
       await page.getByRole("menuitem", { name: "English" }).click();
       await new Promise((resolve) => {
-        setTimeout(resolve, 200);
+        setTimeout(resolve, SETTLE_MS);
       });
     } finally {
       document.removeEventListener("click", stay, true);

@@ -15,6 +15,10 @@ import type { PropsWithChildren } from "react";
 import type { CourseCatalogItem } from "@/client/types.gen";
 import { HoverLift } from "./HoverLift";
 
+// The cover image is shown at 4:3.
+const COVER_RATIO_WIDTH = 4;
+const COVER_RATIO_HEIGHT = 3;
+
 type Props = PropsWithChildren &
   CardProps & {
     item: CourseCatalogItem;
@@ -40,7 +44,7 @@ export default function CourseBlock({ item, lazy, ...props }: Props) {
         {...props}
       >
         <Card.Section>
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={COVER_RATIO_WIDTH / COVER_RATIO_HEIGHT}>
             <Image
               fit="cover"
               loading={lazy ? "lazy" : "eager"}

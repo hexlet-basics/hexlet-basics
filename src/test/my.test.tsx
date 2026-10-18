@@ -12,6 +12,9 @@ import { Route as myRoute } from "@/routes/{-$locale}/my";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+const FULL_COMPLETION = 100;
+const STARTED_COMPLETION = 40;
+
 const user: User = {
   id: 1,
   firstName: "Dora",
@@ -69,7 +72,7 @@ function dashboardCourse(
     enrollment: { id, userId: 1, courseId: card.id, state },
     progress: {
       state,
-      completion: state === "finished" ? 100 : 40,
+      completion: state === "finished" ? FULL_COMPLETION : STARTED_COMPLETION,
       nextLesson: state === "started" ? { id: 5, slug: "variables", name: "Variables" } : null,
     },
     card,

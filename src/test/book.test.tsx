@@ -6,6 +6,8 @@ import { Route as bookRoute } from "@/routes/{-$locale}/book";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+const DESCRIPTION_LENGTH = 160;
+
 // The free book page, driven through its real route with the API faked at the
 // HTTP boundary: which button a visitor gets, what a request does, and that
 // the page exists for ru only.
@@ -56,7 +58,7 @@ describe("book", () => {
       href: `${window.location.origin}/ru/book`,
     });
     const description = match?.meta?.find((tag) => tag?.name === "description")?.content;
-    expect(description).toHaveLength(160);
+    expect(description).toHaveLength(DESCRIPTION_LENGTH);
   }, 60_000);
 
   it("a user requests the book and then gets the download link", async () => {

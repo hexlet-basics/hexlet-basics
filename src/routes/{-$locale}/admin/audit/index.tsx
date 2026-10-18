@@ -24,6 +24,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
+import { HTTP_FORBIDDEN } from "@/lib/http-status";
 
 // The audit trail (ADR-0020): every change a staff member made and every read of
 // personal data, newest first. The API needs the capability Permission
@@ -164,7 +165,7 @@ function AuditTrail() {
     },
   ];
 
-  const forbidden = isApiError(error, 403);
+  const forbidden = isApiError(error, HTTP_FORBIDDEN);
   const problems = validationMessages(error);
 
   return (

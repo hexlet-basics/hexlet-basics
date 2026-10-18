@@ -6,6 +6,7 @@ import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
 
 // The course completion page, ported from legacy languages#success: where the
 // lesson player sends a learner who finished the Course.
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
       }
     } catch (error) {
       // Legacy sent an unknown course to the catalog.
-      if (isApiError(error, 404)) {
+      if (isApiError(error, HTTP_NOT_FOUND)) {
         throw redirect({ to: "/{-$locale}/languages", params: { locale: params.locale } });
       }
       throw error;

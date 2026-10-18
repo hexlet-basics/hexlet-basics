@@ -7,6 +7,9 @@ import { Route as editRoute } from "@/routes/{-$locale}/account/profile/edit";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
+// One character past the 40 a first name may have.
+const OVER_LIMIT = 41;
+
 const user: User = {
   id: 1,
   firstName: "Dora",
@@ -71,7 +74,7 @@ describe("profile", () => {
 
     await openProfile();
 
-    await page.getByLabelText("First name").fill("a".repeat(41));
+    await page.getByLabelText("First name").fill("a".repeat(OVER_LIMIT));
     await page.getByLabelText("Last name").fill("Dora@home");
     await page.getByRole("button", { name: "Save" }).click();
 
