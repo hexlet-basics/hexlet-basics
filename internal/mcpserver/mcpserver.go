@@ -54,14 +54,16 @@ func Patterns() []string {
 	return []string{Path, metadataPath, metadataPathForResource}
 }
 
-// Verifier is what the endpoint needs of the OAuth server: to accept a bearer
+// Verifier is what the endpoint needs of the OAuth server (the tests substitute
+// a hand-written verifier, ADR-0025): to accept a bearer
 // token, and to know the canonical URL its tokens must be bound to.
 type Verifier interface {
 	VerifyAccessToken(ctx context.Context, bearer string) (oauthserver.Token, error)
 	Resource() string
 }
 
-// Catalogue is the read side of the website's public catalogue, as the HTTP
+// Catalogue (the tests substitute emptyCatalogue, ADR-0025) is the read side of
+// the website's public catalogue, as the HTTP
 // operations implement it. Tools call it rather than the database, so a tool and
 // an HTTP read cannot answer differently.
 //

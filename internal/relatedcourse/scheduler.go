@@ -3,30 +3,22 @@ package relatedcourse
 import (
 	"context"
 
-	"github.com/riverqueue/river"
-
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/jobs"
 )
 
-// Enqueuer schedules background jobs (jobs.Enqueuer in production and in tests,
-// the latter over the test's transaction).
-type Enqueuer interface {
-	Enqueue(ctx context.Context, args ...river.JobArgs) error
-}
-
 // Scheduler asks for the AI pick of a post's related courses. The worker
 // replaces the set asynchronously, so a request answers nothing but whether the
 // job was scheduled.
 type Scheduler struct {
 	db   *ent.Client
-	jobs Enqueuer
+	jobs *jobs.Enqueuer
 }
 
 // NewScheduler builds the scheduler over an ent client and the job enqueuer.
-func NewScheduler(db *ent.Client, enqueuer Enqueuer) *Scheduler {
+func NewScheduler(db *ent.Client, enqueuer *jobs.Enqueuer) *Scheduler {
 	return &Scheduler{db: db, jobs: enqueuer}
 }
 

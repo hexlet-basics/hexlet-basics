@@ -93,14 +93,14 @@ func TestRuntimeReportsAnEventRouterThatCannotDrain(t *testing.T) {
 
 	select {
 	case err := <-errCh:
-		// The signal that started the shutdown is what the process reports; what
-		// failed while draining is logged.
+		// The signal that started the shutdown and what failed while draining
+		// are both returned; main logs them once.
 		require.ErrorIs(t, err, errRuntimeSignal)
+		require.ErrorContains(t, err, "stop domain event router")
 	case <-time.After(eventually):
 		t.Fatal("worker did not stop")
 	}
-	assert.Contains(t, logs.String(), "runtime shutdown failed")
-	assert.Contains(t, logs.String(), "stop domain event router")
+	assert.NotContains(t, logs.String(), "stop domain event router", "returned, not logged")
 }
 
 // stuckJobs is a job queue that starts, then cannot be stopped.
@@ -132,9 +132,10 @@ func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
 	select {
 	case err := <-errCh:
 		require.ErrorIs(t, err, errRuntimeSignal)
+		require.ErrorIs(t, err, stopErr)
+		require.ErrorContains(t, err, "stop job queue")
 	case <-time.After(eventually):
 		t.Fatal("worker did not stop")
 	}
-	assert.Contains(t, logs.String(), "stop job queue")
-	assert.Contains(t, logs.String(), "workers still busy")
+	assert.NotContains(t, logs.String(), "workers still busy", "returned, not logged")
 }

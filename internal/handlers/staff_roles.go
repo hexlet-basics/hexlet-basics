@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/samber/lo"
 
@@ -67,7 +68,7 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 
 	if err := s.permissions.Check(ctx, roleID, req.Grants); err != nil {
 		if errors.Is(err, permission.ErrUnknownPermission) {
-			return nil, invalidText("grants", err.Error())
+			return nil, invalidText("grants", strings.Join(permission.UnknownNames(err), ", "))
 		}
 		return nil, err
 	}

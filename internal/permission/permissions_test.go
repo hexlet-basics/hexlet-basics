@@ -29,7 +29,7 @@ func TestCheckRefusesAGrantTheContractDoesNotDeclare(t *testing.T) {
 	err := permission.NewPermissions(db, transactor).Check(t.Context(), role, []string{"banners.read", "banners.typo"})
 
 	require.ErrorIs(t, err, permission.ErrUnknownPermission)
-	require.ErrorContains(t, err, "banners.typo")
+	require.Equal(t, []string{"banners.typo"}, permission.UnknownNames(err))
 }
 
 func TestCheckOfAMissingRoleIsNotFound(t *testing.T) {

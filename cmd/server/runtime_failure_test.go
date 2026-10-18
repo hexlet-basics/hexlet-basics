@@ -119,8 +119,9 @@ func TestShutdownReportsBothFailuresWhenTheServerCannotBeStopped(t *testing.T) {
 
 	require.ErrorIs(t, err, drainErr)
 	require.ErrorIs(t, err, closeErr)
-	assert.Contains(t, logs.String(), "stop HTTP server")
-	assert.Contains(t, logs.String(), "force-close HTTP server")
+	require.ErrorContains(t, err, "stop HTTP server")
+	require.ErrorContains(t, err, "force-close HTTP server")
+	assert.NotContains(t, logs.String(), "runtime shutdown failed", "shutdown returns the failure and does not log it")
 }
 
 func TestShutdownReportsTheDrainFailureWhenForceCloseWorks(t *testing.T) {
@@ -131,6 +132,6 @@ func TestShutdownReportsTheDrainFailureWhenForceCloseWorks(t *testing.T) {
 	err := app.shutdown(t.Context(), func() {})
 
 	require.ErrorIs(t, err, drainErr)
-	assert.Contains(t, logs.String(), "stop HTTP server")
-	assert.NotContains(t, logs.String(), "force-close")
+	require.ErrorContains(t, err, "stop HTTP server")
+	assert.NotContains(t, err.Error(), "force-close")
 }

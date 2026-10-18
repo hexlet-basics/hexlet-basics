@@ -22,8 +22,8 @@ func TestATransitionAcceptsOnlyItsSourceStates(t *testing.T) {
 	err := publish.Check("published")
 	illegal, ok := transition.IsIllegal(err)
 	require.True(t, ok, "repeating the current state is refused")
-	assert.Equal(t, "published", illegal.From)
-	assert.Equal(t, "published", illegal.To)
+	assert.Equal(t, transition.State("published"), illegal.From)
+	assert.Equal(t, transition.State("published"), illegal.To)
 	assert.Error(t, err)
 }
 

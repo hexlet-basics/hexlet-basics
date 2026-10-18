@@ -149,8 +149,8 @@ What the first implementation settled, and where it stops short of the text abov
   (a bare origin; `https` required in production) and `OAUTH_ENCRYPTION_KEY`
   (at least 32 characters). The last two are required only when the flag is on,
   so the default configuration needs none of them.
-- **Seam.** The package is given `oauthserver.Application`, which names the
-  signed-in user. The consent screen's three operations are TypeSpec operations
+- **Seam.** The package is given `Deps.SignedIn`, a function that names the
+  signed-in user (ADR-0025). The consent screen's three operations are TypeSpec operations
   under `/api/oauth/consents/{requestId}` (read; `approve` and `deny` are
   also behind the cross-origin protection); the handlers call `Pending`, `Approve` and `Deny`. A test
   runs `go list -deps` and fails if the package depends on `internal/handlers`.
