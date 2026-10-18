@@ -8,10 +8,13 @@ linters:
     - exhaustruct # deprecated upstream, replaced by exhaustruct_v5, which is on
     - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
     - wsl # deprecated upstream, replaced by wsl_v5, which is on
-    # Pending: enabled by the commits that follow, each with its findings fixed.
+    # ADR-0019: t.Parallel() is not the default for a test with a database. Two
+    # transactions that update one fixture row block each other, and the
+    # subtests of a handler test share the transaction of their parent, so a
+    # blanket rule would make them race. A package adopts it after that is
+    # measured, and these two linters wait for that.
     - paralleltest
     - tparallel
-    - lll
   settings:
     cyclop:
       # The default of 10 flags a function the size of a plain parse or a retry
@@ -28,6 +31,10 @@ linters:
       # name (*_internal_test.go, the linter's default marker); every other test
       # file is an external package and sees what a caller sees.
       skip-regexp: '(export|internal)_test\.go'
+    lll:
+      # gofmt does not wrap, so a limit of 120 flags a call with a long message or
+      # a table row; 160 is where a line stops fitting a review diff.
+      line-length: 160
     varnamelen:
       # The names Go code reads by convention: an index, an id, the comma-ok
       # boolean, a transaction, a database client, an HTTP writer and request.

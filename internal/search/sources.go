@@ -53,7 +53,9 @@ func (m match) rank(document string) sql.Querier {
 // with <b>, which tidy strips along with the markup of a post, so the snippet is
 // plain text.
 func (m match) headline(text string) sql.Querier {
-	return sql.ExprFunc(withArgs(fmt.Sprintf("ts_headline('%s'::regconfig, %s, %s, 'MaxFragments=1, MinWords=12, MaxWords=35')", m.config, text, m.tsquery()), m.text))
+	headline := fmt.Sprintf("ts_headline('%s'::regconfig, %s, %s, 'MaxFragments=1, MinWords=12, MaxWords=35')", m.config, text, m.tsquery())
+
+	return sql.ExprFunc(withArgs(headline, m.text))
 }
 
 // withArgs writes text with each `?` as a bound argument. The builder numbers

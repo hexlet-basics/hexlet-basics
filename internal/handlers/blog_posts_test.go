@@ -89,7 +89,8 @@ func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	trustedHTML := `<script>alert("trusted")</script><iframe src="https://example.com/embed" onload="ready()"></iframe><p style="background-image:url(javascript:alert(1))">Body</p>`
+	trustedHTML := `<script>alert("trusted")</script><iframe src="https://example.com/embed" onload="ready()"></iframe>` +
+		`<p style="background-image:url(javascript:alert(1))">Body</p>`
 	err := h.DB.BlogPost.UpdateOneID(fixture.ID(fixture.BlogPostHelloWorld)).
 		SetRichBody(trustedHTML).
 		Exec(ctx)

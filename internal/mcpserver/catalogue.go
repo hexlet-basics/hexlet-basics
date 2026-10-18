@@ -42,7 +42,10 @@ func (s *Server) pageProperties() map[string]any {
 		argPage: map[string]any{keyType: typeInteger, keyMinimum: 1, keyDescription: "Page number, starting at 1. Default 1."},
 		argPerPage: map[string]any{
 			keyType: typeInteger, keyMinimum: 1,
-			keyDescription: fmt.Sprintf("Records per page. A value above %d is clamped to %d. Default %d.", s.limits.MaxPageSize, s.limits.MaxPageSize, s.limits.MaxPageSize),
+			keyDescription: fmt.Sprintf(
+				"Records per page. A value above %d is clamped to %d. Default %d.",
+				s.limits.MaxPageSize, s.limits.MaxPageSize, s.limits.MaxPageSize,
+			),
 		},
 	}
 }
@@ -103,13 +106,14 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 			class:       0,
 		}, s.listCourses},
 		{listCategoriesTool, toolSpec{
-			title:       "List course categories",
-			description: "Lists the course categories (programming languages and topics) of the request locale. The slug of an item is the one getPublicCourseCategory takes.",
-			input:       object(s.pageProperties()),
-			name:        "",
-			output:      nil,
-			scope:       "",
-			class:       0,
+			title: "List course categories",
+			description: "Lists the course categories (programming languages and topics) of the request locale. The slug of an item is the one " +
+				"getPublicCourseCategory takes.",
+			input:  object(s.pageProperties()),
+			name:   "",
+			output: nil,
+			scope:  "",
+			class:  0,
 		}, s.listCategories},
 		{getCategoryTool, toolSpec{
 			title:       "Get a course category",

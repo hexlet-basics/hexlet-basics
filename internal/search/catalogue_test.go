@@ -465,8 +465,12 @@ func TestAnEditorsSearchFindsWhatIsNotPublicAndSaysItsState(t *testing.T) {
 		locale, text, id, state, readiness string
 		types                              []search.Type
 	}{
-		"a draft landing page":     {locale: "ru", text: "Node.js", id: "course:nodejs-ru", state: "draft", readiness: "completed", types: []search.Type{search.Course}},
-		"an archived landing page": {locale: "ru", text: "архив", id: "course:javascript-ru-archived", state: "archived", readiness: "completed", types: []search.Type{search.Course}},
+		"a draft landing page": {
+			locale: "ru", text: "Node.js", id: "course:nodejs-ru", state: "draft", readiness: "completed", types: []search.Type{search.Course},
+		},
+		"an archived landing page": {
+			locale: "ru", text: "архив", id: "course:javascript-ru-archived", state: "archived", readiness: "completed", types: []search.Type{search.Course},
+		},
 		"an archived post": {
 			locale:    "ru",
 			text:      "Archived notes",

@@ -46,7 +46,9 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 
 	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
-	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+
+	want := jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}
+	assert.Equal(t, want, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
 		Purpose: "",
 		UserID:  0,
 		Locale:  "",

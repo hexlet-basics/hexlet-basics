@@ -159,7 +159,9 @@ func TestPublishingMakesAPostPublicAndUnpublishingHidesIt(t *testing.T) {
 	slug := *h.DB.BlogPost.GetX(t.Context(), statePostID()).Slug
 	locale := *h.DB.BlogPost.GetX(t.Context(), statePostID()).Locale
 	visible := func() bool {
-		return h.DB.BlogPost.Query().Where(blogpost.IDEQ(statePostID()), blogpost.State("published"), blogpost.Locale(locale), blogpost.Slug(slug)).ExistX(t.Context())
+		return h.DB.BlogPost.Query().
+			Where(blogpost.IDEQ(statePostID()), blogpost.State("published"), blogpost.Locale(locale), blogpost.Slug(slug)).
+			ExistX(t.Context())
 	}
 	require.False(t, visible())
 
@@ -185,7 +187,11 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel())
 		actAs(h, fixture.StaffRoleBlogUpdater)
 
-		_, err := h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+		_, err := h.Client.AdminUpdateBlogPost(
+			t.Context(),
+			permissionsPostInput("hello-world"),
+			api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)},
+		)
 		require.NoError(t, err)
 
 		_, err = h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID())})
@@ -199,7 +205,11 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 		_, err := h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID())})
 		require.NoError(t, err)
 
-		_, err = h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+		_, err = h.Client.AdminUpdateBlogPost(
+			t.Context(),
+			permissionsPostInput("hello-world"),
+			api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)},
+		)
 		require.Error(t, err)
 		assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	})

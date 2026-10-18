@@ -315,7 +315,8 @@ func TestLoaderUploadsTheoryImagesFromTheLessonAssetsDir(t *testing.T) {
 	readme := filepath.Join(lesson, "en", "README.md")
 	body, err := os.ReadFile(readme)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644)) //nolint:gosec // G703: path is under t.TempDir
+	//nolint:gosec // G703: path is under t.TempDir
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644))
 
 	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 
@@ -341,7 +342,8 @@ func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
 	readme := filepath.Join(lesson, "en", "README.md")
 	body, err := os.ReadFile(readme)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644)) //nolint:gosec // G703: path is under t.TempDir
+	//nolint:gosec // G703: path is under t.TempDir
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644))
 
 	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 

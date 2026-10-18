@@ -407,7 +407,9 @@ func (d *Declarations) readPermission(where, method string, op operationDecl, ki
 	}
 
 	if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
-		return errs.With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).Errorf("permission is declared both read and write")
+		return errs.
+			With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).
+			Errorf("permission is declared both read and write")
 	}
 
 	kinds[op.Permission.Name] = op.Permission.Kind

@@ -282,5 +282,16 @@ func readable(fragment string) string {
 }
 
 func blockEnd() *strings.Replacer {
-	return strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")
+	return strings.NewReplacer(
+		"</p>", "</p>\n\n",
+		"</h1>", "</h1>\n\n",
+		"</h2>", "</h2>\n\n",
+		"</h3>", "</h3>\n\n",
+		"</h4>", "</h4>\n\n",
+		"</li>", "</li>\n",
+		"</pre>", "</pre>\n\n",
+		"<br>", "\n",
+		"<br/>", "\n",
+		"<br />", "\n",
+	)
 }

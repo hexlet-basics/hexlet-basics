@@ -15,7 +15,8 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds editor and moderator plus an updater and a publisher role for each resource with a Publication State; editor owns three grants (banners.create, banners.read, blog_posts.read).
+// staff_member_roles.yml seeds editor and moderator plus an updater and a publisher role for each resource with a Publication State; editor owns
+// three grants (banners.create, banners.read, blog_posts.read).
 var ()
 
 // editorGrants are the editor's grants in the fixtures, in the order the API

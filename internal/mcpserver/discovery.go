@@ -34,21 +34,34 @@ const (
 // under 4 KB, where Claude Code cuts it. It names the domains and says when to
 // search for tools, and it tells once what the cut-result hint contains, so the
 // hint's description is not repeated on every tool.
-const instructionsText = `Hexlet Basics teaches programming through courses of short lessons. This server reads the public catalogue, a learner's own progress, and lets staff administer the site.
-
-Domains, by the start of the tool name:
-- catalogue: listCourses, getCourse, getCourseLesson, listPublicCourseCategories, getPublicCourseCategory, listBlogPosts, getBlogPost. Needs the catalog:read scope.
-- learner progress: getMyDashboard, getMyCourseProgress, getMyLessonProgress. Only the signed-in user's own data. Needs progress:read.
-- content administration (admin...): banners, blog posts, courses, course versions, landing pages, categories, reviews, lessons, QnA items, attachments, leads, messages. Needs the admin scope and the matching staff Permission.
-- finding content (adminSearch, adminFetch): full-text search of courses, lessons and posts in a locale, drafts, archived and unlisted pages included, and the read of one result by its id with its state. Needs the admin scope and mcp.read. There is no public search tool.
-- access management (admin...): users, staff members, staff roles and their Permissions. Needs the admin scope and the mcp.manage Permission.
-- audit (adminListAuditRecords): the trail of what staff and assistants did. Needs audit.read.
-
-There are about 90 tools and you only see the ones your sign-in allows. If your client does not load tools on demand, do not guess names: call findTools with a word such as "banner" or "publish" and it answers with names, short descriptions and what each needs. findTools only looks tools up; to use one, call it by its name.
-
-Admin tools take a required locale (en or ru), never assumed. Reading a record is a get tool and changing it is an update tool; publishing, unpublishing, archiving and marking a course's state are tools of their own, and an update never changes state. A refused call says why (HTTP 403 is a missing Permission or locale).
-
-Lists come in pages (page, perPage). A result larger than the size limit is shortened and carries a truncation object: cuts says what was cut (path, kept, total), and for a list suggestedPage and suggestedPerPage continue reading without a gap. Ask for a narrower page or a single record instead of the whole.`
+const instructionsText = "Hexlet Basics teaches programming through courses of short lessons. This server reads the public catalogue, a learner's own " +
+	"progress, and lets staff administer the site.\n" +
+	"\n" +
+	"Domains, by the start of the tool name:\n" +
+	"- catalogue: listCourses, getCourse, getCourseLesson, listPublicCourseCategories, getPublicCourseCategory, listBlogPosts, " +
+	"getBlogPost. Needs the catalog:read scope.\n" +
+	"- learner progress: getMyDashboard, getMyCourseProgress, getMyLessonProgress. Only the signed-in user's own data. Needs " +
+	"progress:read.\n" +
+	"- content administration (admin...): banners, blog posts, courses, course versions, landing pages, categories, reviews, lessons, " +
+	"QnA items, attachments, leads, messages. Needs the admin scope and the matching staff Permission.\n" +
+	"- finding content (adminSearch, adminFetch): full-text search of courses, lessons and posts in a locale, drafts, archived and " +
+	"unlisted pages included, and the read of one result by its id with its state. Needs the admin scope and mcp.read. There is no " +
+	"public search tool.\n" +
+	"- access management (admin...): users, staff members, staff roles and their Permissions. Needs the admin scope and the mcp.manage " +
+	"Permission.\n" +
+	"- audit (adminListAuditRecords): the trail of what staff and assistants did. Needs audit.read.\n" +
+	"\n" +
+	"There are about 90 tools and you only see the ones your sign-in allows. If your client does not load tools on demand, do not " +
+	"guess names: call findTools with a word such as \"banner\" or \"publish\" and it answers with names, short descriptions and what each " +
+	"needs. findTools only looks tools up; to use one, call it by its name.\n" +
+	"\n" +
+	"Admin tools take a required locale (en or ru), never assumed. Reading a record is a get tool and changing it is an update tool; " +
+	"publishing, unpublishing, archiving and marking a course's state are tools of their own, and an update never changes state. A " +
+	"refused call says why (HTTP 403 is a missing Permission or locale).\n" +
+	"\n" +
+	"Lists come in pages (page, perPage). A result larger than the size limit is shortened and carries a truncation object: cuts says " +
+	"what was cut (path, kept, total), and for a list suggestedPage and suggestedPerPage continue reading without a gap. Ask for a " +
+	"narrower page or a single record instead of the whole."
 
 // toolNeeds is what a call to a tool is judged on, for showing a caller only the
 // tools it may use. It is a convenience: the checkpoint judges every call again.
@@ -213,12 +226,16 @@ func findToolsOutput() map[string]any {
 // one (a test pins that no tool executes another by name).
 func (s *Server) addFindTools(server *mcp.Server) {
 	input := object(map[string]any{
-		"query": map[string]any{keyType: typeString, keyDescription: "Words to look for in tool names and descriptions, all of which must match. Omit to list every tool you may call."},
+		"query": map[string]any{keyType: typeString, keyDescription: "Words to look for in tool names and descriptions, all of which must match. Omit " +
+			"to list every tool you may call."},
 		"detail": map[string]any{
 			keyType: typeString, keyEnum: []string{detailName, detailDescription, detailSchema},
 			keyDescription: "name: names only. description: name, short description and what it needs (default). schema: also the full input schema.",
 		},
-		"limit": map[string]any{keyType: typeInteger, keyMinimum: 1, keyDescription: fmt.Sprintf("Most tools to return. Default %d, at most %d.", defaultFindLimit, maxFindLimit)},
+		"limit": map[string]any{
+			keyType: typeInteger, keyMinimum: 1,
+			keyDescription: fmt.Sprintf("Most tools to return. Default %d, at most %d.", defaultFindLimit, maxFindLimit),
+		},
 	})
 	tool := &mcp.Tool{
 		Name:         findToolsName,

@@ -151,7 +151,8 @@ func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 			hint["suggestedPerPage"] = perPage
 			hint["suggestedPage"] = page
 
-			return fmt.Sprintf("Only %d of %d records of this page fit. Call again with perPage=%d and page=%d, then page=%d and on, to read the rest; the first call may repeat a few records already received.",
+			return fmt.Sprintf("Only %d of %d records of this page fit. Call again with perPage=%d and page=%d, then page=%d and on, to read the rest; "+
+				"the first call may repeat a few records already received.",
 				piece.kept, piece.total, perPage, page, page+1)
 		}
 	}

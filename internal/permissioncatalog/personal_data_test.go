@@ -18,11 +18,26 @@ func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, "User", entity)
 
-	for _, operation := range []string{"AdminListLeads", "AdminListMessages", "AdminListLessonProgress", "AdminGetUser", "AdminSearchUsers", "AdminListManagementUsers", "AdminGetManagementUser"} {
+	for _, operation := range []string{
+		"AdminListLeads",
+		"AdminListMessages",
+		"AdminListLessonProgress",
+		"AdminGetUser",
+		"AdminSearchUsers",
+		"AdminListManagementUsers",
+		"AdminGetManagementUser",
+	} {
 		assert.Contains(t, permissioncatalog.PersonalDataReads(), operation)
 	}
 
-	for _, operation := range []string{"AdminListCourses", "AdminGetCourse", "AdminListBlogPosts", "AdminListBanners", "AdminListCourseLessons", "AdminCreateBlogPost"} {
+	for _, operation := range []string{
+		"AdminListCourses",
+		"AdminGetCourse",
+		"AdminListBlogPosts",
+		"AdminListBanners",
+		"AdminListCourseLessons",
+		"AdminCreateBlogPost",
+	} {
 		_, ok := permissioncatalog.PersonalDataEntity(operation)
 		assert.False(t, ok, "%s reads content, not personal data", operation)
 	}

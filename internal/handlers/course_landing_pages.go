@@ -44,7 +44,9 @@ func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.Cour
 	return result, nil
 }
 
-func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput, params api.AdminUpdateCourseLandingPageParams) (*api.CourseLandingPage, error) {
+func (s *Server) AdminUpdateCourseLandingPage(
+	ctx context.Context, req *api.CourseLandingPageInput, params api.AdminUpdateCourseLandingPageParams,
+) (*api.CourseLandingPage, error) {
 	result, err := s.db.CourseLandingPage.AdminUpdate(ctx, params.ID, req, s.conv.ToCourseLandingPage)
 	if err != nil {
 		return result, errs.Wrapf(err, "admin update course landing page")

@@ -57,7 +57,11 @@ func blogPostOperations() map[string]struct {
 			return err
 		}},
 		"AdminUpdateBlogPost": {"blog_posts.update", func(h *testsupport.Harness) error {
-			_, err := h.Client.AdminUpdateBlogPost(context.Background(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+			_, err := h.Client.AdminUpdateBlogPost(
+				context.Background(),
+				permissionsPostInput("hello-world"),
+				api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)},
+			)
 
 			return err
 		}},

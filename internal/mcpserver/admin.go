@@ -31,7 +31,9 @@ import (
 //
 // Each operation still passes the one checkpoint when it is called (see
 // callAdminTool); the list says what may be offered, not what may be done.
-var adminOperations = []string{ //nolint:gochecknoglobals // a test seam: AllowForTest swaps the list to exercise the pipeline with an operation the registry does not offer
+//
+//nolint:gochecknoglobals // a test seam: AllowForTest swaps the list to exercise the pipeline with an operation the registry does not offer
+var adminOperations = []string{
 	"adminArchiveBanner",
 	"adminArchiveBlogPost",
 	"adminArchiveCourseLandingPage",
@@ -130,7 +132,8 @@ var adminOperations = []string{ //nolint:gochecknoglobals // a test seam: AllowF
 // be forgotten: it is either offered to agents or excluded on the record.
 func excludedAdminOperations() map[string]string {
 	return map[string]string{
-		"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
+		"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' " +
+			"answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
 	}
 }
 
@@ -618,7 +621,8 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	// The locale the call is made in is the one the HTTP check reads: the
 	// request's Accept-Language, here set from the argument and from nothing else.
 	req.Header.Set("Accept-Language", locale)
-	req.AddCookie(&http.Cookie{Name: sessionCookie, Value: cookiePlaceholder}) //nolint:gosec // G124: an in-process request cookie, never sent as Set-Cookie; Secure/HttpOnly/SameSite are response attributes
+	//nolint:gosec // G124: an in-process request cookie, never sent as Set-Cookie; Secure/HttpOnly/SameSite are response attributes
+	req.AddCookie(&http.Cookie{Name: sessionCookie, Value: cookiePlaceholder})
 	// What an Audit Record keeps of the caller: the MCP client's user agent, and
 	// the address and request id the proxy and client sent with the /mcp request.
 	for _, h := range []string{"User-Agent", "X-Forwarded-For", "X-Real-IP", "X-Request-ID"} {

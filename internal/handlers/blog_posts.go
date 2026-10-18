@@ -116,7 +116,9 @@ func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 // hand-picked set (only the AI job below), so this is an addition, sharing the
 // job's replace step. An unknown course id fails the FK constraint, surfaced
 // as 409 centrally.
-func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams) (*api.BlogPost, error) {
+func (s *Server) AdminSetBlogPostRelatedCourses(
+	ctx context.Context, req *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams,
+) (*api.BlogPost, error) {
 	id := int(params.ID)
 
 	courseIDs := lo.Map(req.CourseIds, func(courseID int32, _ int) int { return int(courseID) })

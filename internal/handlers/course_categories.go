@@ -41,7 +41,9 @@ func (s *Server) AdminCreateCourseCategory(ctx context.Context, req *api.CourseC
 	return result, nil
 }
 
-func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseCategoryInput, params api.AdminUpdateCourseCategoryParams) (*api.CourseCategory, error) {
+func (s *Server) AdminUpdateCourseCategory(
+	ctx context.Context, req *api.CourseCategoryInput, params api.AdminUpdateCourseCategoryParams,
+) (*api.CourseCategory, error) {
 	result, err := s.db.CourseCategory.AdminUpdate(ctx, params.ID, req, s.conv.ToCourseCategory)
 	if err != nil {
 		return result, errs.Wrapf(err, "admin update course category")

@@ -69,7 +69,9 @@ func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.Ad
 	return s.conv.ToLandingPageQnaItems(rows), nil
 }
 
-func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminCreateLandingPageQnaItem(
+	ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams,
+) (*api.QnaItem, error) {
 	row, err := s.landingPageQna.Create(ctx, int(params.LandingPageId), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err
@@ -80,7 +82,9 @@ func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	return &item, nil
 }
 
-func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminUpdateLandingPageQnaItem(
+	ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams,
+) (*api.QnaItem, error) {
 	row, err := s.landingPageQna.Update(ctx, int(params.LandingPageId), int(params.ID), qnaFieldsOf(req))
 	if err != nil {
 		return nil, err

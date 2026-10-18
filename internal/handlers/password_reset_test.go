@@ -37,7 +37,9 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 
 	err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
 	require.NoError(t, err)
-	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+
+	want := jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}
+	assert.Equal(t, want, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
 		Purpose: "",
 		UserID:  0,
 		Locale:  "",

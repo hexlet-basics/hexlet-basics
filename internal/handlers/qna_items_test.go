@@ -89,7 +89,10 @@ func TestAdminDeleteCategoryQnaItem(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	err := h.Client.AdminDeleteCategoryQnaItem(ctx, api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID(), ID: fixture.ID32(fixture.CategoryQnaLayoutingRu2)})
+	err := h.Client.AdminDeleteCategoryQnaItem(
+		ctx,
+		api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID(), ID: fixture.ID32(fixture.CategoryQnaLayoutingRu2)},
+	)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

@@ -130,7 +130,8 @@ func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
 func TestSuggestRelatedCoursesFailsForAPostThatIsGone(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 
-	err := newSuggester(db, transactor, answeringModel(fmt.Sprintf(`{"course_ids": [%d]}`, fixture.ID(fixture.CourseRuby)))).SuggestRelatedCourses(t.Context(), 999999)
+	answer := fmt.Sprintf(`{"course_ids": [%d]}`, fixture.ID(fixture.CourseRuby))
+	err := newSuggester(db, transactor, answeringModel(answer)).SuggestRelatedCourses(t.Context(), 999999)
 
 	require.Error(t, err)
 	assert.Empty(t, relatedSlugs(t, db, 999999))

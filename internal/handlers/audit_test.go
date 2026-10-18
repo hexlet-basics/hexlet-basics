@@ -193,7 +193,11 @@ func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T)
 	// The update itself succeeds, then the handler reads the likes to answer and
 	// that read fails: the operation fails after its write.
 	breakReads(h, ent.TypeBlogPostLike)
-	_, err := h.Client.AdminUpdateBlogPost(context.Background(), blogInput("Never kept", "second-post"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostSecondPost)})
+	_, err := h.Client.AdminUpdateBlogPost(
+		context.Background(),
+		blogInput("Never kept", "second-post"),
+		api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostSecondPost)},
+	)
 	require.Error(t, err)
 	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
 

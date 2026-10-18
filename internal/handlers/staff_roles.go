@@ -86,7 +86,9 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 // AdminUpdateRolePermissions applies the submitted set; the permission
 // module writes them in one transaction. A missing role is a 404,
 // before any write, and an undeclared grant a 422.
-func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminUpdateRolePermissions(
+	ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams,
+) (*api.StaffRoleDetail, error) {
 	roleID := int(params.RoleId)
 
 	err := s.selfProtection.OwnRoleGrants(ctx, actorOfRequest(ctx), roleID)

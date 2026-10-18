@@ -40,7 +40,16 @@ func TestAdminReviewCourse(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{fixture.ID(fixture.LessonVersionInfoJavascriptStringsCurrentEn), fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentEn), fixture.ID(fixture.LessonVersionInfoJavascriptVariablesCurrentEn), fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentRu)}, ids)
+	assert.ElementsMatch(
+		t,
+		[]int{
+			fixture.ID(fixture.LessonVersionInfoJavascriptStringsCurrentEn),
+			fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentEn),
+			fixture.ID(fixture.LessonVersionInfoJavascriptVariablesCurrentEn),
+			fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentRu),
+		},
+		ids,
+	)
 }
 
 func TestAdminReviewCourseNotFound(t *testing.T) {
@@ -66,7 +75,15 @@ func TestAdminReviewCourseLesson(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	ids := enqueuedLessonInfoIDs(t, h)
-	assert.ElementsMatch(t, []int{fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentEn), fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldRetiredEn), fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentRu)}, ids)
+	assert.ElementsMatch(
+		t,
+		[]int{
+			fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentEn),
+			fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldRetiredEn),
+			fixture.ID(fixture.LessonVersionInfoJavascriptHelloWorldCurrentRu),
+		},
+		ids,
+	)
 }
 
 func TestAdminReviewCourseLessonNotFound(t *testing.T) {

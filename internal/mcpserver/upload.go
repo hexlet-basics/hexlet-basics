@@ -53,8 +53,9 @@ func requestBodyLimit(hasUpload bool) int64 {
 // uploadSchema describes the `body` argument of a multipart tool for the agent.
 func uploadSchema(file *multipartFile) map[string]any {
 	return map[string]any{
-		keyType:                 typeObject,
-		keyDescription:          fmt.Sprintf("The file for the %q part, as base64 text. At most %d bytes once decoded; the content type is sniffed from the bytes and only raster images are accepted, as on the website.", file.Field, assetstore.MaxUploadBytes),
+		keyType: typeObject,
+		keyDescription: fmt.Sprintf("The file for the %q part, as base64 text. At most %d bytes once decoded; the content type is sniffed "+
+			"from the bytes and only raster images are accepted, as on the website.", file.Field, assetstore.MaxUploadBytes),
 		keyAdditionalProperties: false,
 		keyRequired:             []string{"fileName", "contentBase64"},
 		keyProperties: map[string]any{
@@ -92,7 +93,10 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 	}
 
 	if len(in.ContentBase64) > maxUploadBase64() {
-		return nil, "", fmt.Sprintf("the file is too large: at most %d bytes (%d MiB) are accepted, as on the website", assetstore.MaxUploadBytes, assetstore.MaxUploadBytes/bytesPerMiB)
+		return nil, "", fmt.Sprintf(
+			"the file is too large: at most %d bytes (%d MiB) are accepted, as on the website",
+			assetstore.MaxUploadBytes, assetstore.MaxUploadBytes/bytesPerMiB,
+		)
 	}
 
 	content, err := base64.StdEncoding.DecodeString(in.ContentBase64)

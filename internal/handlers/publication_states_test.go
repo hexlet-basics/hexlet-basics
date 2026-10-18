@@ -423,7 +423,11 @@ func landingSubject() stateSubject {
 			in := fullLandingInput(int32(courseGoID()))
 			in.Slug = api.NewNilString("go-ru")
 			in.Name = api.NewNilString("Edited")
-			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixture.ID(fixture.LandingPageGoRu))})
+			_, err := h.Client.AdminUpdateCourseLandingPage(
+				context.Background(),
+				&in,
+				api.AdminUpdateCourseLandingPageParams{ID: int32(fixture.ID(fixture.LandingPageGoRu))},
+			)
 
 			return err
 		},

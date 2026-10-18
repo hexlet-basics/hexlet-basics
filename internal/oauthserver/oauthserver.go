@@ -234,7 +234,12 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		opt(server)
 	}
 
-	server.documents = newDocumentClients(server.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
+	server.documents = newDocumentClients(
+		server.metadataClient,
+		newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
+		deps.DB,
+		deps.Now,
+	)
 	server.handler = server.routes()
 
 	return server, nil
