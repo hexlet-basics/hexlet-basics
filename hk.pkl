@@ -82,6 +82,9 @@ hooks {
       ["lint-adr"] {
         check = "mise run lint:adr"
       }
+      ["lint-packages"] {
+        check = "mise run lint:packages"
+      }
     }
   }
 }

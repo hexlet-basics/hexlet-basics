@@ -66,8 +66,8 @@ var commonPackage = do.Package(
 		}
 		return store.New(db), nil
 	}),
-	// Blob buckets are closed explicitly by the process lifecycle coordinator
-	// because blob.Bucket has Close, not a do Shutdowner.
+	// blob.Bucket has Close, not a do shutdown method; bucketCloser releases it
+	// (closers.go).
 	do.Lazy[*blob.Bucket](func(i do.Injector) (*blob.Bucket, error) {
 		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {

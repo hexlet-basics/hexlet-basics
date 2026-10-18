@@ -190,7 +190,8 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   with the thresholds in `vite.config.ts`. Raise a floor when coverage rises;
   never lower it.
 - **Nightly, not per PR.** `.github/workflows/nightly.yml` runs both coverage
-  gates and `mise run lint:vulns` (govulncheck) once a night and on demand
+  gates, `mise run lint:vulns` (govulncheck) and `mise run lint:atlas-retention`
+  (the pinned Atlas binary is still downloadable) once a night and on demand
   (`workflow_dispatch`). A new advisory can fail `lint:vulns` with no change
   on our side, so it is deliberately not part of `lint`. Put a check there
   when its result does not depend on the diff under review.
