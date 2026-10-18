@@ -56,7 +56,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	group.Go(func() error {
 		if a.logger != nil {
-			a.logger.Info("backend listening", "addr", a.httpAddr)
+			a.logger.InfoContext(groupCtx, "backend listening", "addr", a.httpAddr)
 		}
 		if err := a.http.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return fmt.Errorf("serve HTTP: %w", err)
@@ -84,17 +84,17 @@ func (a *application) shutdown(parent context.Context, cancelProcess context.Can
 	defer cancel()
 
 	if a.logger != nil {
-		a.logger.Info("shutting down")
+		a.logger.InfoContext(ctx, "shutting down")
 	}
 	if err := a.http.Shutdown(ctx); err != nil {
 		stopErr := fmt.Errorf("stop HTTP server: %w", err)
 		if a.logger != nil {
-			a.logger.Error("runtime shutdown failed", "err", stopErr)
+			a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", stopErr)
 		}
 		if closeErr := a.http.Close(); closeErr != nil {
 			forceCloseErr := fmt.Errorf("force-close HTTP server: %w", closeErr)
 			if a.logger != nil {
-				a.logger.Error("runtime shutdown failed", "err", forceCloseErr)
+				a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", forceCloseErr)
 			}
 			cancelProcess()
 			return errors.Join(stopErr, forceCloseErr)

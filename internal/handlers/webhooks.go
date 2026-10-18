@@ -11,6 +11,7 @@ import (
 
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/versionbuild"
 )
 
 // maxWebhookBytes bounds a webhook body. GitHub deliveries are well under this;
@@ -31,7 +32,7 @@ const coursePrefix = "exercises-"
 // Building off CI-success (not a raw push) mirrors the legacy invariant that only
 // content which passed the repo's pipeline is ever served.
 type GitHubWebhookHandler struct {
-	starter VersionBuildStarter
+	starter *versionbuild.Starter
 	// secret is the shared HMAC secret GitHub signs deliveries with. An empty
 	// secret disables the endpoint (fail closed) — an unauthenticated build
 	// trigger must never be reachable.
@@ -40,7 +41,7 @@ type GitHubWebhookHandler struct {
 }
 
 // NewGitHubWebhookHandler wires the webhook to its dependencies.
-func NewGitHubWebhookHandler(starter VersionBuildStarter, secret string, translator *localization.Translator) *GitHubWebhookHandler {
+func NewGitHubWebhookHandler(starter *versionbuild.Starter, secret string, translator *localization.Translator) *GitHubWebhookHandler {
 	return &GitHubWebhookHandler{starter: starter, secret: secret, i18n: translator}
 }
 

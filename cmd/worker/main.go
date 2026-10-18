@@ -43,7 +43,7 @@ func main() {
 func run(signalCtx context.Context, stopSignals func()) error {
 	dependencies, err := di.BuildWorker()
 	if err != nil {
-		slog.Error("building worker dependencies", "err", err)
+		slog.ErrorContext(signalCtx, "building worker dependencies", "err", err)
 		return fmt.Errorf("building worker dependencies: %w", err)
 	}
 
@@ -67,7 +67,7 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	}
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		dependencies.Logger.Error("worker runtime failed", "err", runtimeErr)
+		dependencies.Logger.ErrorContext(cleanupCtx, "worker runtime failed", "err", runtimeErr)
 		return runtimeErr
 	}
 	return nil

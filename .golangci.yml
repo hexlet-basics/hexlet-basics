@@ -16,10 +16,19 @@ linters:
     - nolintlint
     - noctx
     - rowserrcheck
+    - sloglint
     - sqlclosecheck
     - usestdlibvars
     - usetesting
   settings:
+    sloglint:
+      # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
+      # static messages, one call style (key-value pairs).
+      context: scope
+      static-msg: true
+      key-naming-case: snake
+      forbidden-keys: [error]
+      no-mixed-args: true
     forbidigo:
       # With analyze-types the matched text is <package>.<Type>.<Method>, so a
       # pattern names the ent or database/sql type it guards and does not catch

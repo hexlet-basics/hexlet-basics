@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log/slog"
 	"os"
 	"testing"
 
@@ -197,4 +198,28 @@ func TestAuditRetentionCanBeShortenedButNotRemoved(t *testing.T) {
 	t.Setenv("AUDIT_RETENTION_MONTHS", "0")
 	_, err = LoadWorker()
 	require.ErrorContains(t, err, "AUDIT_RETENTION_MONTHS")
+}
+
+func TestLogLevelDefaultsToInfoAndFollowsTheEnvironment(t *testing.T) {
+	setRequiredSecrets(t)
+	clearEnv(t, "LOG_LEVEL")
+
+	cfg, err := LoadWorker()
+	require.NoError(t, err)
+	require.Equal(t, slog.LevelInfo, cfg.LogLevel())
+
+	t.Setenv("LOG_LEVEL", "debug")
+	cfg, err = LoadWorker()
+	require.NoError(t, err)
+	require.Equal(t, slog.LevelDebug, cfg.LogLevel())
+}
+
+func TestLoadRefusesAnUnknownLogLevel(t *testing.T) {
+	setRequiredSecrets(t)
+	t.Setenv("LOG_LEVEL", "verbose")
+
+	cfg, err := LoadServer()
+
+	require.Nil(t, cfg)
+	require.ErrorContains(t, err, "LOG_LEVEL")
 }

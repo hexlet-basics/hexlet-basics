@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -54,7 +53,7 @@ func (r watermillRouter) Running() <-chan struct{} { return r.Router.Running() }
 // pub/sub.
 func newRouter(t *testing.T) watermillRouter {
 	t.Helper()
-	logger := watermill.NewSlogLogger(slog.New(slog.NewTextHandler(io.Discard, nil)))
+	logger := watermill.NewSlogLogger(slog.New(slog.DiscardHandler))
 	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: time.Second}, logger)
 	require.NoError(t, err)

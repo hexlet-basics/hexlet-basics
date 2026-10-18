@@ -121,7 +121,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			}
 		}()
 		if a.logger != nil {
-			a.logger.Info("async worker started")
+			a.logger.InfoContext(groupCtx, "async worker started")
 		}
 		if err := a.events.Run(processCtx); err != nil {
 			return fmt.Errorf("run domain event router: %w", err)
@@ -160,7 +160,7 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 		a.probes.Drain()
 	}
 	if a.logger != nil {
-		a.logger.Info("shutting down async worker")
+		a.logger.InfoContext(ctx, "shutting down async worker")
 	}
 
 	var shutdownErrors []error
