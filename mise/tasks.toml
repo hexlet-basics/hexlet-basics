@@ -183,6 +183,7 @@ depends = [
   "lint:web",
   "lint:syntax",
   "lint:adr",
+  "lint:packages",
   "lint:deps",
   "lint:triggers",
   "lint:typos",
@@ -300,6 +301,10 @@ if [ -n "$dup" ]; then
   echo "error: duplicate ADR numbers in docs/adr: $(echo $dup); renumber the newer file (next free: $next)"; exit 1
 fi
 '''
+
+["lint:packages"]
+description = "internal/ package names are singular (events, jobs, handlers excepted) and match no ent package; scripts/package_names_exclusions.txt lists the unmigrated offenders"
+run = "sh scripts/lint_package_names_test.sh && sh scripts/lint_package_names.sh"
 
 ["lint:locales"]
 description = "Verify generated source messages and complete translations"
