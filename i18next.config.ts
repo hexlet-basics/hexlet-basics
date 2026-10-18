@@ -1,11 +1,11 @@
 import { defineConfig } from "i18next-cli";
 
-// i18next-cli config for the Go-rewrite frontend. Its primary job here is
-// regenerating the type definitions (`src/types/resources.d.ts` +
+// I18next-cli config for the Go-rewrite frontend. Its primary job here is
+// Regenerating the type definitions (`src/types/resources.d.ts` +
 // `src/types/i18next.d.ts`) from the Russian source of truth after editing the
-// locale files — run `pnpm exec i18next-cli types`. The `extract` block mirrors
-// the legacy setup so key extraction from source stays available, but the
-// hand-maintained locale files under `src/locales` are never overwritten by it
+// Locale files — run `pnpm exec i18next-cli types`. The `extract` block mirrors
+// The legacy setup so key extraction from source stays available, but the
+// Hand-maintained locale files under `src/locales` are never overwritten by it
 // (they are ignored as inputs).
 const ignore = [
   "src/locales/**",
@@ -16,30 +16,30 @@ const ignore = [
 ];
 
 export default defineConfig({
-  locales: ["ru", "es", "en"],
   extract: {
+    defaultNS: "translation",
     ignore,
     input: ["src/**/*.tsx", "src/**/*.ts"],
+    mergeNamespaces: true,
     output: "src/locales/{{language}}/translation.ts",
     outputFormat: "ts",
-    mergeNamespaces: true,
-    removeUnusedKeys: false,
-    defaultNS: "translation",
     primaryLanguage: "ru",
+    removeUnusedKeys: false,
   },
   lint: {
     ignore: [
       ...ignore,
       // Legal and about pages are written as one component per language
       // (PrivacyRu/PrivacyEn, TosRu/TosEn, ...), their text is the page, not a
-      // catalog entry. The hardcoded-string rule does not apply to them.
+      // Catalog entry. The hardcoded-string rule does not apply to them.
       "src/components/pages/**",
     ],
   },
+  locales: ["ru", "es", "en"],
   types: {
+    enableSelector: true,
     input: ["src/locales/ru/translation.ts"],
     output: "src/types/i18next.d.ts",
     resourcesFile: "src/types/resources.d.ts",
-    enableSelector: true,
   },
 });

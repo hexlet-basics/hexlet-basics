@@ -15,6 +15,7 @@ import { TextLink } from "@/components/RouterLink";
 import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
+import type { ReactElement } from "react";
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
 // registration page and the home page. Submits through the generated
@@ -27,7 +28,7 @@ const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 // `redirect` is where to go once the account exists: the lesson player sends a
 // guest to sign up with the lesson they were on, so signing up does not lose
 // their place. The caller has already made it safe (a path on this site).
-export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
+export default function SignUpFormBlock({ redirect }: { redirect?: string }): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -35,14 +36,6 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
 
   const mutation = useMutation({
     ...createUserMutation(),
-    onSuccess: async (user) => {
-      await onIdentityChanged(queryClient, router, user);
-      notifications.show({
-        color: "green",
-        message: t(($) => $.flash.users.create.success),
-      });
-      await (redirect ? navigate({ href: redirect }) : navigate({ to: "/{-$locale}" }));
-    },
     // A 422 is shown at the fields (submitWithServerErrors), not as a toast.
     onError: (error) => {
       if (isValidationError(error)) {
@@ -53,10 +46,18 @@ export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
         message: t(($) => $.flash.users.create.error),
       });
     },
+    onSuccess: async (user) => {
+      await onIdentityChanged(queryClient, router, user);
+      notifications.show({
+        color: "green",
+        message: t(($) => $.flash.users.create.success),
+      });
+      await (redirect ? navigate({ href: redirect }) : navigate({ to: "/{-$locale}" }));
+    },
   });
 
   const form = useAppForm({
-    defaultValues: { firstName: "", email: "", password: "" },
+    defaultValues: { email: "", firstName: "", password: "" },
     validators: {
       onSubmit: signUpFormSchema,
       onSubmitAsync: submitWithServerErrors((value: z.infer<typeof signUpFormSchema>) =>

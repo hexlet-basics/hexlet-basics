@@ -19,7 +19,7 @@ import type { UIMessage } from "ai";
 import { IconCheck, IconLock } from "@tabler/icons-react";
 import { useLocation } from "@tanstack/react-router";
 import { useState } from "react";
-import type { SubmitEvent } from "react";
+import type { ReactElement, SubmitEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   listAssistantMessagesOptions,
@@ -36,6 +36,8 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import { ButtonLink } from "@/components/RouterLink";
 import { isApiError } from "@/lib/api-error";
 import { lessonCodeKey } from "@/lib/lesson-code";
+import { HTTP_TOO_MANY_REQUESTS } from "@/lib/http-status";
+import { zAssistantMessageInput } from "@/client/zod.gen";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
 // sign in, a learner gets their chat for this lesson and can ask about the code
@@ -49,7 +51,7 @@ export default function LessonAssistant({
   view: CourseLessonView;
   output: string;
   signedIn: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const lessonId = view.lesson.id;
   const history = useQuery({
@@ -87,7 +89,7 @@ export default function LessonAssistant({
 // What a visitor sees instead of the chat: who Tota is, what she does for a
 // learner, a sample exchange in the real chat's bubbles, and the way in. The
 // sign-up and sign-in links carry the way back to this lesson.
-function GuestAssistant() {
+function GuestAssistant(): ReactElement {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
   const benefits = [
@@ -157,40 +159,40 @@ function AssistantChat({
   view: CourseLessonView;
   output: string;
   chat: LessonAssistantChat;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
   const historyKey = listAssistantMessagesQueryKey({ path: { lessonId: lesson.id } });
   const [code] = useLocalStorage({
-    key: lessonCodeKey(lesson.course.slug, lesson.slug),
     defaultValue: lesson.preparedCode ?? "",
     getInitialValueInEffect: false,
+    key: lessonCodeKey(lesson.course.slug, lesson.slug),
   });
   const [input, setInput] = useState("");
 
   const { messages, sendMessage, status, error } = useChat({
     id: `lesson-${lesson.id}`,
     messages: chat.messages.map(toUIMessage),
-    transport: assistantTransport(lesson.id),
-    // Re-read the history's quota flag after every exchange: the answer that
-    // used up today's last question is what switches the panel off.
-    onFinish: () => {
-      void queryClient.invalidateQueries({ queryKey: historyKey });
-    },
     onError: (failure) => {
       if (isQuotaExceeded(failure)) {
         return;
       }
       notifications.show({ message: t(($) => $.common.errors.network) });
     },
+    // Re-read the history's quota flag after every exchange: the answer that
+    // used up today's last question is what switches the panel off.
+    onFinish: () => {
+      void queryClient.invalidateQueries({ queryKey: historyKey });
+    },
+    transport: assistantTransport(lesson.id),
   });
 
   const busy = status === "submitted" || status === "streaming";
   const quotaExceeded = chat.quotaExceeded || isQuotaExceeded(error);
   const communityUrl = t(($) => $.common.community_url).trim();
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const text = input.trim();
     if (!text || busy) {
@@ -199,7 +201,7 @@ function AssistantChat({
 
     // The editor state travels with each question, read at the moment it is
     // asked rather than when the chat was created.
-    void sendMessage({ text }, { body: { userCode: code, output } });
+    void sendMessage({ text }, { body: { output, userCode: code } });
     setInput("");
   };
 
@@ -241,7 +243,9 @@ function AssistantChat({
             aria-label={t(($) => $.courses.lessons.show.chat.question)}
             placeholder={t(($) => $.courses.lessons.show.chat.question)}
             value={input}
-            onChange={(event) => setInput(event.currentTarget.value)}
+            onChange={(event) => {
+              setInput(event.currentTarget.value);
+            }}
             disabled={busy}
             rows={5}
           />
@@ -275,16 +279,8 @@ function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
-function assistantTransport(lessonId: number) {
+function assistantTransport(lessonId: number): TextStreamChatTransport<UIMessage> {
   return new TextStreamChatTransport<UIMessage>({
-    prepareSendMessagesRequest: ({ messages, body }) => {
-      const input: AssistantMessageInput = {
-        message: textOf(messages.at(-1)),
-        userCode: stringOrNull(body?.userCode),
-        output: stringOrNull(body?.output),
-      };
-      return { body: input };
-    },
     fetch: async (_url, init) => {
       // The AI SDK serializes the prepared body to a JSON string.
       if (typeof init?.body !== "string") {
@@ -292,9 +288,9 @@ function assistantTransport(lessonId: number) {
       }
       try {
         const { data, response } = await createAssistantMessage({
-          path: { lessonId },
-          body: JSON.parse(init.body) as AssistantMessageInput,
+          body: zAssistantMessageInput.parse(JSON.parse(init.body)),
           parseAs: "stream",
+          path: { lessonId },
           signal: init?.signal ?? undefined,
           throwOnError: true,
         });
@@ -308,18 +304,26 @@ function assistantTransport(lessonId: number) {
         throw error;
       }
     },
+    prepareSendMessagesRequest: ({ messages, body }) => {
+      const input: AssistantMessageInput = {
+        message: textOf(messages.at(-1)),
+        output: stringOrNull(body?.output),
+        userCode: stringOrNull(body?.userCode),
+      };
+      return { body: input };
+    },
   });
 }
 
 function isQuotaExceeded(error: unknown): boolean {
-  return APICallError.isInstance(error) && error.statusCode === 429;
+  return APICallError.isInstance(error) && error.statusCode === HTTP_TOO_MANY_REQUESTS;
 }
 
 function toUIMessage(message: LessonAssistantMessage): UIMessage {
   return {
     id: String(message.id),
+    parts: [{ text: message.content, type: "text" }],
     role: message.role === "user" ? "user" : "assistant",
-    parts: [{ type: "text", text: message.content }],
   };
 }
 

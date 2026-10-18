@@ -5,6 +5,7 @@ import type { CourseLessonView } from "@/client/types.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import { AnchorLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 // Everything a learner reads: where they are, the theory, what they are asked to
 // do, the tips, the questions everyone asks, and the way to fix what they just
@@ -13,7 +14,7 @@ import { AnchorLink } from "@/components/RouterLink";
 // Breadcrumbs run home → course → lesson. Legacy has a category above the
 // course, but the public category read is unimplemented and blocked on a missing
 // schema, so that level waits for the category work rather than being faked.
-export default function LessonTheory({ view }: { view: CourseLessonView }) {
+export default function LessonTheory({ view }: { view: CourseLessonView }): ReactElement {
   const { t } = useTranslation();
   const { lesson, landingPage } = view;
   const courseSlug = lesson.course.slug;
@@ -75,8 +76,8 @@ export default function LessonTheory({ view }: { view: CourseLessonView }) {
         mb="xs"
         defaultValue={questions[0]?.question}
         styles={{
-          control: { paddingBlock: "var(--mantine-spacing-xs)" },
           content: { paddingBlock: "var(--mantine-spacing-xs)" },
+          control: { paddingBlock: "var(--mantine-spacing-xs)" },
         }}
       >
         {questions.map((entry) => (

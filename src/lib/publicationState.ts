@@ -6,16 +6,15 @@
 // buttons the admin screens offer. The server stays the judge and refuses an
 // illegal move with a 409.
 export type PublicationState = "draft" | "published" | "archived";
-export type StateTransition = "publish" | "unpublish" | "archive";
+const STATE_TRANSITIONS = ["publish", "unpublish", "archive"] as const;
+export type StateTransition = (typeof STATE_TRANSITIONS)[number];
 
 const transitionSources: Record<StateTransition, PublicationState[]> = {
+  archive: ["draft", "published"],
   publish: ["draft", "archived"],
   unpublish: ["published"],
-  archive: ["draft", "published"],
 };
 
 export function transitionsFrom(state: PublicationState): StateTransition[] {
-  return (Object.keys(transitionSources) as StateTransition[]).filter((name) =>
-    transitionSources[name].includes(state),
-  );
+  return STATE_TRANSITIONS.filter((name) => transitionSources[name].includes(state));
 }

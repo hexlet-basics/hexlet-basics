@@ -3,78 +3,78 @@
 // src/components/admin/resources/courseCategory.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const courseCategoryFields: FieldDescriptor[] = [
+export const courseCategoryFields: FieldDescriptor<"name" | "header" | "slug" | "description">[] = [
   {
-    name: "name",
     kind: "text",
-    nullable: false,
     labelKey: "models.attributes.course_category.name",
+    name: "name",
+    nullable: false,
     required: true,
   },
   {
-    name: "header",
     kind: "text",
-    nullable: false,
     labelKey: "models.attributes.course_category.header",
-    required: true,
-  },
-  {
-    name: "slug",
-    kind: "text",
+    name: "header",
     nullable: false,
-    labelKey: "models.attributes.course_category.slug",
     required: true,
   },
   {
-    name: "description",
     kind: "text",
-    nullable: true,
+    labelKey: "models.attributes.course_category.slug",
+    name: "slug",
+    nullable: false,
+    required: true,
+  },
+  {
+    kind: "text",
     labelKey: "models.attributes.course_category.description",
+    name: "description",
+    nullable: true,
     required: false,
   },
 ];
 
 export const courseCategoryColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.course_category.id",
-  },
-  {
-    name: "slug",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.course_category.slug",
-  },
-  {
-    name: "name",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.course_category.name",
-  },
-  {
-    name: "header",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.course_category.header",
-  },
-  {
-    name: "description",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.course_category.description",
-  },
-  {
-    name: "locale",
-    kind: "text",
-    nullable: true,
-    labelKey: "models.attributes.course_category.locale",
-  },
-  {
-    name: "createdAt",
-    kind: "datetime",
+    name: "id",
     nullable: false,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.course_category.slug",
+    name: "slug",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.course_category.name",
+    name: "name",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.course_category.header",
+    name: "header",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.course_category.description",
+    name: "description",
+    nullable: true,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.course_category.locale",
+    name: "locale",
+    nullable: true,
+  },
+  {
+    kind: "datetime",
     labelKey: "models.attributes.course_category.created_at",
+    name: "createdAt",
+    nullable: false,
   },
 ];

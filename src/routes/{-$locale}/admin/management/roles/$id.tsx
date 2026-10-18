@@ -14,12 +14,13 @@ import { CrudForm } from "@/components/admin/CrudForm";
 import { staffRoleToForm, useStaffRoleFields } from "@/components/admin/resources/staffRole";
 import { RolePermissions } from "@/components/admin/RolePermissions";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/$id")({
   component: EditRole,
 });
 
-function EditRole() {
+function EditRole(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffRoleFields();
@@ -28,17 +29,17 @@ function EditRole() {
 
   const { data, isLoading } = useQuery(adminGetRoleOptions({ path: { id: roleId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/roles" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateRoleMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListRolesQueryKey(), adminGetRoleQueryKey({ path: { id: roleId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateRoleMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +54,7 @@ function EditRole() {
             fields={fields}
             schema={zRoleInput}
             defaultValues={staffRoleToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: roleId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: roleId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

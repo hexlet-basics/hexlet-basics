@@ -1,5 +1,5 @@
-import { http, HttpResponse } from "msw";
-import { afterAll, expect, test } from "vitest";
+import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type {
   Course,
@@ -12,6 +12,9 @@ import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index"
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { DESKTOP_VIEWPORT } from "@/test/viewport";
+
+const THEORY_REPEATS = 10;
 
 // What a search engine and a shared link see for the Course page and a Lesson:
 // the head each route composes from its payload, read off the loaded match —
@@ -21,205 +24,219 @@ import { renderRoute } from "@/test/renderRoute";
 const cover = "https://cdn.example.com/covers/javascript-list.png";
 
 const course: Course = {
-  id: 1,
-  slug: "javascript",
-  name: "javascript",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: 99,
+  coverListVariant: cover,
+  coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
   // The build's own name opens the lesson description, as legacy's did.
   currentVersion: {
+    createdAt: "2026-01-01T00:00:00Z",
     id: 99,
     name: "JavaScript",
     result: null,
     state: "built",
-    createdAt: "2026-01-01T00:00:00Z",
   },
-  createdAt: "2026-01-01T00:00:00Z",
+  currentVersionId: 99,
   enrollmentsCount: 0,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
   lessonsCount: 1,
+  name: "javascript",
   ratingCount: 0,
   ratingValue: 0,
+  readiness: null,
   repositoryUrl: null,
-  hexletProgramLandingPage: null,
-  coverListVariant: cover,
-  coverThumbVariant: null,
+  slug: "javascript",
 };
 
 const landingPage: CourseLandingPage = {
-  id: 10,
   courseId: 1,
   courseSlug: "javascript",
   createdAt: "2026-01-01T00:00:00Z",
-  slug: "javascript",
-  name: "JavaScript for beginners",
-  main: true,
-  listed: true,
-  state: "published",
-  order: null,
-  footer: true,
-  footerName: null,
-  landingPageToRedirectId: null,
-  metaTitle: "Free JavaScript course",
-  metaDescription: "Learn JavaScript from scratch in the browser",
-  header: "JavaScript course",
   description: "Learn JavaScript in the browser",
-  usedInHeader: null,
-  usedInDescription: null,
-  outcomesHeader: null,
-  outcomesDescription: null,
-  outcomesImage: null,
   duration: 10,
   enrollmentsCount: 0,
+  footer: true,
+  footerName: null,
+  header: "JavaScript course",
+  id: 10,
+  landingPageToRedirectId: null,
+  listed: true,
+  main: true,
+  metaDescription: "Learn JavaScript from scratch in the browser",
+  metaTitle: "Free JavaScript course",
+  name: "JavaScript for beginners",
+  order: null,
+  outcomesDescription: null,
+  outcomesHeader: null,
+  outcomesImage: null,
+  slug: "javascript",
+  state: "published",
+  usedInDescription: null,
+  usedInHeader: null,
 };
 
 const progress: CourseProgress = {
-  state: null,
   completion: 0,
-  nextLesson: { id: 1002, slug: "variables", name: "Variables" },
+  nextLesson: { id: 1002, name: "Variables", slug: "variables" },
+  state: null,
 };
 
 const lessons = [
   {
+    description: null,
+    finished: false,
     id: 1002,
     name: "Variables",
-    description: null,
-    slug: "variables",
     position: 1,
-    finished: false,
+    slug: "variables",
   },
 ];
 
 // Longer than the description's bound, with the line breaks and runs of spaces
 // raw markdown has, so both the cut and the squash are visible.
-const theory = `A variable is a name bound to a value.\n\n\`\`\`js\nlet   greeting = 'hello';\n\`\`\`\n\n${"Variables hold values that change. ".repeat(10)}`;
+const theory = `A variable is a name bound to a value.\n\n\`\`\`js\nlet   greeting = 'hello';\n\`\`\`\n\n${"Variables hold values that change. ".repeat(THEORY_REPEATS)}`;
 
 const lessonView: CourseLessonView = {
+  adjacent: { next: null, previous: null },
+  landingPage,
   lesson: {
     course,
-    id: 1002,
-    name: "Variables",
-    slug: "variables",
-    locale: "en",
-    naturalOrder: 1,
-    versionId: 99,
-    version: 99,
-    description: "Storing values",
-    instructions: "Assign the string `hello` to `greeting`.",
-    theory,
-    definitions: [],
-    tips: [],
-    preparedCode: "let greeting = '';\n",
-    originalCode: null,
-    testCode: null,
-    exerciseExtension: null,
-    testExtension: null,
-    sourceCodeUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
+    definitions: [],
+    description: "Storing values",
+    exerciseExtension: null,
+    id: 1002,
+    instructions: "Assign the string `hello` to `greeting`.",
+    locale: "en",
+    name: "Variables",
+    naturalOrder: 1,
+    originalCode: null,
+    preparedCode: "let greeting = '';\n",
+    slug: "variables",
+    sourceCodeUrl: null,
+    testCode: null,
+    testExtension: null,
+    theory,
+    tips: [],
+    version: 99,
+    versionId: 99,
   },
-  landingPage,
   lessons,
-  adjacent: { previous: null, next: null },
   progress,
 };
 
 const courseView: CourseView = {
   course,
+  enrollment: null,
   landingPage,
-  movedTo: null,
   lessons,
   modules: [],
-  qnaItems: [],
-  enrollment: null,
+  movedTo: null,
   progress,
+  qnaItems: [],
 };
 
 // The player lays out by the viewport, and below the sm breakpoint it mounts
 // the theory twice (its own pane and a workspace tab), so the lesson is read
-// at a desktop viewport, restored once the file is done.
-const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+// at a desktop viewport, restored when the test is done.
+const startingViewport = { height: window.innerHeight, width: window.innerWidth };
 
-afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
+describe("page metadata", () => {
+  it("a lesson is titled, described and linked the way legacy did it", async () => {
+    expect.hasAssertions();
+    await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
+    try {
+      worker.use(
+        http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView)),
+      );
 
-test("a lesson is titled, described and linked the way legacy did it", async () => {
-  await page.viewport(1200, 800);
-  worker.use(
-    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView)),
-  );
+      const { router } = await renderRoute(lessonRoute, {
+        initialPath: "/languages/javascript/lessons/variables",
+        path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+        wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+      });
 
-  const { router } = await renderRoute(lessonRoute, {
-    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-    initialPath: "/languages/javascript/lessons/variables",
-    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
-  });
+      await expect
+        .element(page.getByText("A variable is a name bound to a value.", { exact: true }))
+        .toBeVisible();
+      const match = router.state.matches.at(-1);
+      const meta = match?.meta;
+      const url = `${globalThis.location.origin}/languages/javascript/lessons/variables`;
 
-  await expect
-    .element(page.getByText("A variable is a name bound to a value.", { exact: true }))
-    .toBeVisible();
-  const match = router.state.matches.at(-1);
-  const meta = match?.meta ?? [];
-  const url = `${window.location.origin}/languages/javascript/lessons/variables`;
+      // The lesson and the course's landing name, behind the site name; version,
+      // lesson and raw theory, cut mid-word to 217 characters and an ellipsis,
+      // then whitespace squashed, which is why it ends up shorter than 220; and
+      // Open Graph as legacy emitted it for a lesson: an article, with no
+      // og:description and no Twitter card.
+      expect(meta).toStrictEqual(
+        expect.arrayContaining([
+          { title: "CodeBasics | Variables | JavaScript for beginners" },
+          {
+            content:
+              "[JavaScript] — Variables — A variable is a name bound to a value. ```js let greeting = 'hello'; ``` " +
+              "Variables hold values that change. Variables hold values that change. Variables hold values that change. Variable...",
+            name: "description",
+          },
+          { content: "article", property: "og:type" },
+          { content: "en", property: "og:locale" },
+          { content: "Variables | JavaScript for beginners", property: "og:title" },
+          { content: url, property: "og:url" },
+          { content: cover, property: "og:image" },
+        ]),
+      );
+      expect(meta).not.toStrictEqual(
+        expect.arrayContaining([expect.objectContaining({ property: "og:description" })]),
+      );
+      const twitterName: unknown = expect.stringMatching(/^twitter:/u);
+      expect(meta).not.toStrictEqual(
+        expect.arrayContaining([expect.objectContaining({ name: twitterName })]),
+      );
+      expect(match?.links).toStrictEqual(
+        expect.arrayContaining([
+          { href: url, rel: "canonical" },
+          { href: cover, rel: "image_src" },
+        ]),
+      );
+    } finally {
+      await page.viewport(startingViewport.width, startingViewport.height);
+    }
+  }, 60_000);
 
-  // The lesson and the course's landing name, behind the site name.
-  expect(meta).toContainEqual({ title: "CodeBasics | Variables | JavaScript for beginners" });
+  it("the course page carries its landing page's meta title, description and canonical", async () => {
+    expect.hasAssertions();
+    worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView)));
 
-  // Version, lesson, raw theory — cut mid-word to 217 characters and an
-  // ellipsis, then whitespace squashed, which is why it ends up shorter than 220.
-  expect(meta).toContainEqual({
-    name: "description",
-    content:
-      "[JavaScript] — Variables — A variable is a name bound to a value. ```js let greeting = 'hello'; ``` " +
-      "Variables hold values that change. Variables hold values that change. Variables hold values that change. Variable...",
-  });
+    const { router } = await renderRoute(courseRoute, {
+      initialPath: "/languages/javascript",
+      path: "/{-$locale}/languages/$slug",
+    });
 
-  // Open Graph as legacy emitted it for a lesson: an article, with no
-  // og:description and no Twitter card.
-  expect(meta).toContainEqual({ property: "og:type", content: "article" });
-  expect(meta).toContainEqual({ property: "og:locale", content: "en" });
-  expect(meta).toContainEqual({
-    property: "og:title",
-    content: "Variables | JavaScript for beginners",
-  });
-  expect(meta).toContainEqual({ property: "og:url", content: url });
-  expect(meta).toContainEqual({ property: "og:image", content: cover });
-  expect(meta.some((tag) => tag?.property === "og:description")).toBe(false);
-  expect(meta.some((tag) => tag?.name?.startsWith("twitter:"))).toBe(false);
+    await expect.element(page.getByRole("heading", { name: "JavaScript course" })).toBeVisible();
+    const match = router.state.matches.at(-1);
+    const meta = match?.meta;
+    const url = `${globalThis.location.origin}/languages/javascript`;
 
-  expect(match?.links).toContainEqual({ rel: "canonical", href: url });
-  expect(match?.links).toContainEqual({ rel: "image_src", href: cover });
-});
-
-test("the course page carries its landing page's meta title, description and canonical", async () => {
-  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView)));
-
-  const { router } = await renderRoute(courseRoute, {
-    path: "/{-$locale}/languages/$slug",
-    initialPath: "/languages/javascript",
-  });
-
-  await expect.element(page.getByRole("heading", { name: "JavaScript course" })).toBeVisible();
-  const match = router.state.matches.at(-1);
-  const meta = match?.meta ?? [];
-  const url = `${window.location.origin}/languages/javascript`;
-
-  expect(meta).toContainEqual({ title: "CodeBasics | Free JavaScript course" });
-  expect(meta).toContainEqual({
-    name: "description",
-    content: "Learn JavaScript from scratch in the browser",
-  });
-  expect(meta).toContainEqual({ property: "og:title", content: "Free JavaScript course" });
-  expect(meta).toContainEqual({
-    property: "og:description",
-    content: "Learn JavaScript from scratch in the browser",
-  });
-  expect(meta).toContainEqual({ property: "og:type", content: "website" });
-  expect(meta).toContainEqual({ property: "og:locale", content: "en" });
-  expect(meta).toContainEqual({ property: "og:url", content: url });
-  expect(meta).toContainEqual({ property: "og:image", content: cover });
-  expect(meta).toContainEqual({ name: "twitter:card", content: "summary" });
-  expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
-
-  expect(match?.links).toContainEqual({ rel: "canonical", href: url });
-  expect(match?.links).toContainEqual({ rel: "image_src", href: cover });
+    expect(meta).toStrictEqual(
+      expect.arrayContaining([
+        { title: "CodeBasics | Free JavaScript course" },
+        { content: "Learn JavaScript from scratch in the browser", name: "description" },
+        { content: "Free JavaScript course", property: "og:title" },
+        { content: "Learn JavaScript from scratch in the browser", property: "og:description" },
+        { content: "website", property: "og:type" },
+        { content: "en", property: "og:locale" },
+        { content: url, property: "og:url" },
+        { content: cover, property: "og:image" },
+        { content: "summary", name: "twitter:card" },
+        { content: "@hexlet_io", name: "twitter:site" },
+      ]),
+    );
+    expect(match?.links).toStrictEqual(
+      expect.arrayContaining([
+        { href: url, rel: "canonical" },
+        { href: cover, rel: "image_src" },
+      ]),
+    );
+  }, 60_000);
 });

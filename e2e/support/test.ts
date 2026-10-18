@@ -13,4 +13,4 @@ const withSite = base.extend<{ site: Site }>({
   },
 });
 
-export const test = withSite as unknown as TestType<{ site: Site }, object>;
+export const test: TestType<{ site: Site }, object> = withSite;

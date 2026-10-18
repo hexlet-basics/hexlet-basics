@@ -23,6 +23,15 @@ import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import { useTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
+import type { ReactElement } from "react";
+
+const FULL_PERCENT = 100;
+
+// The splitter reports a pane size as a number or as "50%"; Number alone would
+// turn the latter into NaN.
+function percentOf(size: number | string | undefined): number {
+  return Number(String(size).replace("%", ""));
+}
 
 // The lesson player's shell: theory, the assistant and navigation on the left,
 // the workspace on the right. Both panes stay mounted for the life of the page —
@@ -42,7 +51,7 @@ export default function LessonPage({
   courseSlug: string;
   lessonSlug: string;
   signedIn: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const { data, isPending, isError } = useQuery(
     getCourseLessonOptions({ path: { courseSlug, slug: lessonSlug } }),
@@ -82,7 +91,7 @@ export default function LessonPage({
     );
   }
 
-  if (isError || !data) {
+  if (isError || data === undefined) {
     return <LessonMissing />;
   }
 
@@ -91,7 +100,7 @@ export default function LessonPage({
     : ["0%", "100%"];
   const deskSizes: [SplitterPaneSize, SplitterPaneSize] = [
     `${theoryPercent}%`,
-    `${100 - theoryPercent}%`,
+    `${FULL_PERCENT - theoryPercent}%`,
   ];
   const sizes = isDesktop ? deskSizes : phoneSizes;
   const [theorySize, workspaceSize] = sizes;
@@ -114,12 +123,12 @@ export default function LessonPage({
         sizes={sizes}
         onSizeChange={(next) => {
           if (isDesktop) {
-            setTheoryPercent(Number.parseFloat(String(next[0])));
+            setTheoryPercent(percentOf(next[0]));
           }
         }}
         onResizeEnd={(_handle, next) => {
           if (isDesktop) {
-            saveTheoryPercent(Number.parseFloat(String(next[0])));
+            saveTheoryPercent(percentOf(next[0]));
           }
         }}
         withHandle={isDesktop}
@@ -134,7 +143,12 @@ export default function LessonPage({
           min={isDesktop ? "25%" : "0%"}
           inert={!isDesktop && !theoryOpened}
         >
-          <Tabs defaultValue="lesson" h="100%" display="flex" style={{ flexDirection: "column" }}>
+          <Tabs
+            defaultValue="lesson"
+            h="100%"
+            display="flex"
+            styles={{ root: { flexDirection: "column" } }}
+          >
             <Tabs.List grow>
               {burger}
               <Tabs.Tab value="lesson">{t(($) => $.courses.lessons.show.lesson)}</Tabs.Tab>
@@ -187,7 +201,7 @@ function PaneBurger({
   opened: boolean;
   onToggle: () => void;
   label: string;
-}) {
+}): ReactElement {
   return (
     <Burger
       opened={opened}
@@ -205,7 +219,7 @@ function PaneBurger({
 // A lesson slug that resolves to nothing — a mistyped URL, or a lesson dropped
 // from the course. The route renders this too, because its loader rejects before
 // the page above ever runs.
-export function LessonMissing() {
+export function LessonMissing(): ReactElement {
   const { t } = useTranslation();
 
   return (

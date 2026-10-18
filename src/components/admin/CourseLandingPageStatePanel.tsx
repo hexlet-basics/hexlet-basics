@@ -9,19 +9,20 @@ import {
 import type { CourseLandingPage } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A landing page's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the page's three operations. A page
 // with no state counts as a draft, as on the server.
-export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }) {
+export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }): ReactElement {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [
       adminListCourseLandingPagesQueryKey(),
       adminGetCourseLandingPageQueryKey({ path: { id: page.id } }),
     ],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({
     mutation: adminPublishCourseLandingPageMutation(),
@@ -43,7 +44,7 @@ export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage 
       title={t(($) => $.models.attributes.course_landing_page.state)}
       state={state}
       stateLabel={t(($) => $.models.attributes.course_landing_page["state/values"][state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

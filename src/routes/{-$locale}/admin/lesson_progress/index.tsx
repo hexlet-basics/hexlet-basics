@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import type { ReactElement } from "react";
 
 // Per-lesson progress (route keeps the legacy table name) — read-only.
 export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
   component: LessonProgressList,
 });
 
-function LessonProgressList() {
+function LessonProgressList(): ReactElement {
   const { t } = useTranslation();
 
   const formatDateTime = useDateTime();
@@ -49,9 +50,9 @@ function LessonProgressList() {
       header: t(($) => $.models.attributes.lesson_progress.messages_count),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

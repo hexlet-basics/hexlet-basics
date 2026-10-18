@@ -9,6 +9,7 @@ import { zLeadInput } from "@/client/zod.gen";
 import { readFirstVisit } from "@/lib/first-visit";
 import { useAppForm, submitForm } from "@/lib/form";
 import { metrikaClientId } from "@/lib/metrika";
+import type { ReactElement } from "react";
 
 interface Props {
   autoFocus?: boolean;
@@ -22,7 +23,7 @@ interface Props {
 // catalog pages). It leaves gating (signed in, ru only) to the embedding page,
 // as legacy did. The Metrika client id and the first-visit attribution are
 // read at submit time, not render time: both live only in the browser.
-export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props) {
+export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { locale } = useParams({ strict: false });
@@ -32,8 +33,8 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
     returnObjects: true,
   });
   const contactMethodData = Object.entries(contactMethods).map(([value, label]) => ({
-    value,
     label,
+    value,
   }));
 
   const communityLink = (
@@ -44,20 +45,23 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
     />
   );
 
+  const sentMessage = (
+    <Trans t={t} i18nKey={($) => $.flash.leads.create.success} components={{ a: communityLink }} />
+  );
+
   const defaultValues: LeadInput = {
     contactMethod: "telegram",
     contactValue: "",
-    ymClientId: null,
     firstVisit: null,
+    ymClientId: null,
   };
 
   const form = useAppForm({
     defaultValues,
-    validators: { onSubmit: zLeadInput },
     onSubmit: async ({ value }) => {
       try {
         await mutation.mutateAsync({
-          body: { ...value, ymClientId: metrikaClientId(), firstVisit: readFirstVisit() },
+          body: { ...value, firstVisit: readFirstVisit(), ymClientId: metrikaClientId() },
         });
       } catch {
         notifications.show({ color: "red", message: t(($) => $.flash.leads.create.error) });
@@ -65,18 +69,13 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
       }
       notifications.show({
         color: "green",
-        message: (
-          <Trans
-            t={t}
-            i18nKey={($) => $.flash.leads.create.success}
-            components={{ a: communityLink }}
-          />
-        ),
+        message: sentMessage,
       });
       await (redirectHref
         ? navigate({ href: redirectHref })
-        : navigate({ to: "/{-$locale}", params: { locale } }));
+        : navigate({ params: { locale }, to: "/{-$locale}" }));
     },
+    validators: { onSubmit: zLeadInput },
   });
 
   return (

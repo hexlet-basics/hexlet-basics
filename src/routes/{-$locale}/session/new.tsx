@@ -1,15 +1,17 @@
 import { Anchor, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createSessionMutation } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
 import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
@@ -22,15 +24,15 @@ import { safeRedirectPath } from "@/lib/safe-redirect";
 // id if the visit is forgotten). Only a path on this site is honoured, so the
 // page cannot be used to bounce a signed-in user off to another origin.
 const signInSearchSchema = z.object({
-  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
+  redirect: lenient(z.string().transform(safeRedirectPath)),
 });
 
 export const Route = createFileRoute("/{-$locale}/session/new")({
-  validateSearch: signInSearchSchema,
   component: New,
+  validateSearch: signInSearchSchema,
 });
 
-function New() {
+function New(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -39,6 +41,11 @@ function New() {
 
   const mutation = useMutation({
     ...createSessionMutation(),
+    onError: () =>
+      notifications.show({
+        color: "red",
+        message: t(($) => $.flash.sessions.create.error),
+      }),
     onSuccess: async (user) => {
       await onIdentityChanged(queryClient, router, user);
       notifications.show({
@@ -51,19 +58,14 @@ function New() {
         void navigate({ to: "/{-$locale}" });
       }
     },
-    onError: () =>
-      notifications.show({
-        color: "red",
-        message: t(($) => $.flash.sessions.create.error),
-      }),
   });
 
   const form = useAppForm({
     defaultValues: { email: "", password: "" },
-    validators: { onSubmit: zSessionInput },
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync({ body: value });
     },
+    validators: { onSubmit: zSessionInput },
   });
 
   return (
@@ -73,7 +75,7 @@ function New() {
           {t(($) => $.sessions.new.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
           <Stack component="form" onSubmit={submitForm(form)}>
             <form.AppField name="email">
               {(field) => (

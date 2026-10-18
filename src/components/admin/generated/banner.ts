@@ -3,166 +3,168 @@
 // src/components/admin/resources/banner.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const bannerFields: FieldDescriptor[] = [
+export const bannerFields: FieldDescriptor<
+  "background" | "locale" | "body" | "url" | "startsAt" | "finishesAt"
+>[] = [
   {
-    name: "background",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.background",
     enumValues: [
       {
-        value: "cta_gradient",
         labelKey: "models.attributes.banner.background/values.cta_gradient",
+        value: "cta_gradient",
       },
       {
-        value: "dark",
         labelKey: "models.attributes.banner.background/values.dark",
+        value: "dark",
       },
       {
-        value: "blue",
         labelKey: "models.attributes.banner.background/values.blue",
+        value: "blue",
       },
     ],
+    kind: "select",
+    labelKey: "models.attributes.banner.background",
+    name: "background",
+    nullable: false,
     required: true,
   },
   {
-    name: "locale",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.locale",
     enumValues: [
       {
-        value: "ru",
         labelKey: "models.attributes.banner.locale/values.ru",
+        value: "ru",
       },
       {
-        value: "en",
         labelKey: "models.attributes.banner.locale/values.en",
+        value: "en",
       },
     ],
-    required: true,
-  },
-  {
-    name: "body",
-    kind: "text",
+    kind: "select",
+    labelKey: "models.attributes.banner.locale",
+    name: "locale",
     nullable: false,
-    labelKey: "models.attributes.banner.body",
     required: true,
   },
   {
-    name: "url",
     kind: "text",
-    nullable: true,
+    labelKey: "models.attributes.banner.body",
+    name: "body",
+    nullable: false,
+    required: true,
+  },
+  {
+    kind: "text",
     labelKey: "models.attributes.banner.url",
+    name: "url",
+    nullable: true,
     required: false,
   },
   {
-    name: "startsAt",
     kind: "datetime",
-    nullable: true,
     labelKey: "models.attributes.banner.starts_at",
+    name: "startsAt",
+    nullable: true,
     required: false,
   },
   {
-    name: "finishesAt",
     kind: "datetime",
-    nullable: true,
     labelKey: "models.attributes.banner.finishes_at",
+    name: "finishesAt",
+    nullable: true,
     required: false,
   },
 ];
 
 export const bannerColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.banner.id",
+    name: "id",
+    nullable: false,
   },
   {
-    name: "locale",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.locale",
     enumValues: [
       {
-        value: "ru",
         labelKey: "models.attributes.banner.locale/values.ru",
+        value: "ru",
       },
       {
-        value: "en",
         labelKey: "models.attributes.banner.locale/values.en",
+        value: "en",
       },
     ],
+    kind: "select",
+    labelKey: "models.attributes.banner.locale",
+    name: "locale",
+    nullable: false,
   },
   {
-    name: "body",
     kind: "text",
-    nullable: false,
     labelKey: "models.attributes.banner.body",
+    name: "body",
+    nullable: false,
   },
   {
-    name: "url",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.banner.url",
+    name: "url",
+    nullable: true,
   },
   {
-    name: "background",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.background",
     enumValues: [
       {
-        value: "cta_gradient",
         labelKey: "models.attributes.banner.background/values.cta_gradient",
+        value: "cta_gradient",
       },
       {
-        value: "dark",
         labelKey: "models.attributes.banner.background/values.dark",
+        value: "dark",
       },
       {
-        value: "blue",
         labelKey: "models.attributes.banner.background/values.blue",
+        value: "blue",
       },
     ],
+    kind: "select",
+    labelKey: "models.attributes.banner.background",
+    name: "background",
+    nullable: false,
   },
   {
-    name: "state",
-    kind: "select",
-    nullable: false,
-    labelKey: "models.attributes.banner.state",
     enumValues: [
       {
-        value: "draft",
         labelKey: "models.attributes.banner.state/values.draft",
+        value: "draft",
       },
       {
-        value: "published",
         labelKey: "models.attributes.banner.state/values.published",
+        value: "published",
       },
       {
-        value: "archived",
         labelKey: "models.attributes.banner.state/values.archived",
+        value: "archived",
       },
     ],
-  },
-  {
-    name: "startsAt",
-    kind: "datetime",
-    nullable: true,
-    labelKey: "models.attributes.banner.starts_at",
-  },
-  {
-    name: "finishesAt",
-    kind: "datetime",
-    nullable: true,
-    labelKey: "models.attributes.banner.finishes_at",
-  },
-  {
-    name: "createdAt",
-    kind: "datetime",
+    kind: "select",
+    labelKey: "models.attributes.banner.state",
+    name: "state",
     nullable: false,
+  },
+  {
+    kind: "datetime",
+    labelKey: "models.attributes.banner.starts_at",
+    name: "startsAt",
+    nullable: true,
+  },
+  {
+    kind: "datetime",
+    labelKey: "models.attributes.banner.finishes_at",
+    name: "finishesAt",
+    nullable: true,
+  },
+  {
+    kind: "datetime",
     labelKey: "models.attributes.banner.created_at",
+    name: "createdAt",
+    nullable: false,
   },
 ];

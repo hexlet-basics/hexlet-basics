@@ -8,14 +8,14 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // wave — this form covers only the role identity.
 
 export const emptyStaffRole: RoleInput = {
-  name: "",
   description: "",
+  name: "",
 };
 
 export function staffRoleToForm(role: StaffRoleDetail): RoleInput {
   return {
-    name: role.name,
     description: role.description ?? "",
+    name: role.name,
   };
 }
 

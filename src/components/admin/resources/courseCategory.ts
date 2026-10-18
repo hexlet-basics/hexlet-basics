@@ -8,20 +8,20 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // engine's text fields coerce null); a fresh form leaves it null.
 
 export const emptyCourseCategory: CourseCategoryInput = {
-  name: "",
-  header: "",
-  slug: "",
   description: null,
+  header: "",
+  name: "",
+  slug: "",
 };
 
 // Seed the form from an existing row: the required columns are nullable on the
 // read model, so coalesce them to "" to keep the inputs controlled.
 export function courseCategoryToForm(category: CourseCategory): CourseCategoryInput {
   return {
-    name: category.name ?? "",
-    header: category.header ?? "",
-    slug: category.slug ?? "",
     description: category.description,
+    header: category.header ?? "",
+    name: category.name ?? "",
+    slug: category.slug ?? "",
   };
 }
 

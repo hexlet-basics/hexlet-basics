@@ -3,9 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { getSitemapOptions } from "@/client/@tanstack/react-query.gen";
+import type { Sitemap } from "@/client/types.gen";
 import { TextLink } from "@/components/RouterLink";
 import type { Locale } from "@/lib/i18n";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The HTML sitemap at its legacy URL, ported from legacy home/sitemap. Legacy
 // served it on the ru site only (`/ru/map`); `/map` and `/es/map` are 404. It
@@ -14,7 +16,8 @@ import { seoHead } from "@/lib/seo-head";
 const SECTION_LOCALES: Locale[] = ["ru", "en"];
 
 // A link's `{-$locale}` param: en is the unprefixed default.
-const localeParam = (locale: Locale) => (locale === "en" ? undefined : locale);
+const localeParam = (locale: Locale): "es" | "ru" | undefined =>
+  locale === "en" ? undefined : locale;
 
 export const Route = createFileRoute("/{-$locale}/map")({
   beforeLoad: ({ params }) => {
@@ -22,22 +25,19 @@ export const Route = createFileRoute("/{-$locale}/map")({
       throw notFound();
     }
   },
-  loader: ({ context }) =>
-    context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
+  component: SitemapPage,
   // Legacy set the title alone: no description, canonical or social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
-    return seoHead({ i18n, title: i18n.t(($) => $.home.sitemap.title), social: false });
+    return seoHead({ i18n, social: false, title: i18n.t(($) => $.home.sitemap.title) });
   },
-  component: SitemapPage,
+  loader: ({ context }) =>
+    context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
 });
 
-function SitemapPage() {
+function SitemapPage(): ReactElement {
   const { t } = useTranslation();
   const { data } = useQuery(getSitemapOptions());
-  const landingPages = data?.landingPages ?? [];
-  const blogPosts = data?.blogPosts ?? [];
-  const categories = data?.categories ?? [];
 
   return (
     <>
@@ -46,94 +46,146 @@ function SitemapPage() {
       </Container>
 
       {SECTION_LOCALES.map((locale) => (
-        <Container key={locale} mb="xl">
-          <Stack gap="xs">
-            <Text fw={500} size="lg">
-              <TextLink to="/{-$locale}" params={{ locale: localeParam(locale) }} span>
-                {t(($) => $.home.sitemap.home, { lng: locale })}
-              </TextLink>
-            </Text>
-
-            <Accordion multiple variant="separated">
-              <Accordion.Item value="courses">
-                <Accordion.Control>
-                  {t(($) => $.home.courses.courses, { lng: locale })}
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <Text fw={500} size="sm" mb="sm">
-                    <TextLink
-                      to="/{-$locale}/languages"
-                      params={{ locale: localeParam(locale) }}
-                      span
-                    >
-                      {t(($) => $.pages.courses.index.header, { lng: locale })}
-                    </TextLink>
-                  </Text>
-                  {landingPages
-                    .filter((landingPage) => landingPage.locale === locale)
-                    .map((landingPage) => (
-                      <Text key={landingPage.id} fw={500} size="sm" mt="sm">
-                        <TextLink
-                          to="/{-$locale}/languages/$slug"
-                          params={{ locale: localeParam(locale), slug: landingPage.slug }}
-                          span
-                        >
-                          {landingPage.header}
-                        </TextLink>
-                      </Text>
-                    ))}
-                </Accordion.Panel>
-              </Accordion.Item>
-
-              <Accordion.Item value="blog">
-                <Accordion.Control>
-                  {t(($) => $.blog_posts.index.header, { lng: locale })}
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <List listStyleType="none" spacing="xs" pl="md">
-                    {blogPosts
-                      .filter((post) => post.locale === locale)
-                      .map((post) => (
-                        <List.Item key={post.id}>
-                          <TextLink
-                            to="/{-$locale}/blog_posts/$slug"
-                            params={{ locale: localeParam(locale), slug: post.slug }}
-                            span
-                          >
-                            {post.name}
-                          </TextLink>
-                        </List.Item>
-                      ))}
-                  </List>
-                </Accordion.Panel>
-              </Accordion.Item>
-
-              <Accordion.Item value="categories">
-                <Accordion.Control>
-                  {t(($) => $.course_categories.index.header, { lng: locale })}
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <List listStyleType="none" spacing="xs" pl="md">
-                    {categories
-                      .filter((category) => category.locale === locale)
-                      .map((category) => (
-                        <List.Item key={category.id}>
-                          <TextLink
-                            to="/{-$locale}/language_categories/$slug"
-                            params={{ locale: localeParam(locale), slug: category.slug ?? "" }}
-                            span
-                          >
-                            {category.name}
-                          </TextLink>
-                        </List.Item>
-                      ))}
-                  </List>
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-          </Stack>
-        </Container>
+        <SitemapSection
+          key={locale}
+          locale={locale}
+          landingPages={data?.landingPages ?? []}
+          blogPosts={data?.blogPosts ?? []}
+          categories={data?.categories ?? []}
+        />
       ))}
     </>
+  );
+}
+
+// One site's block of the sitemap: its home and the three lists, in its language.
+function SitemapSection({
+  locale,
+  landingPages,
+  blogPosts,
+  categories,
+}: Sitemap & { locale: Locale }): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Container mb="xl">
+      <Stack gap="xs">
+        <Text fw={500} size="lg">
+          <TextLink to="/{-$locale}" params={{ locale: localeParam(locale) }} span>
+            {t(($) => $.home.sitemap.home, { lng: locale })}
+          </TextLink>
+        </Text>
+
+        <Accordion multiple variant="separated">
+          <CoursesItem locale={locale} landingPages={landingPages} />
+          <BlogItem locale={locale} blogPosts={blogPosts} />
+          <CategoriesItem locale={locale} categories={categories} />
+        </Accordion>
+      </Stack>
+    </Container>
+  );
+}
+
+function CoursesItem({
+  locale,
+  landingPages,
+}: {
+  locale: Locale;
+  landingPages: Sitemap["landingPages"];
+}): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Accordion.Item value="courses">
+      <Accordion.Control>{t(($) => $.home.courses.courses, { lng: locale })}</Accordion.Control>
+      <Accordion.Panel>
+        <Text fw={500} size="sm" mb="sm">
+          <TextLink to="/{-$locale}/languages" params={{ locale: localeParam(locale) }} span>
+            {t(($) => $.pages.courses.index.header, { lng: locale })}
+          </TextLink>
+        </Text>
+        {landingPages
+          .filter((landingPage) => landingPage.locale === locale)
+          .map((landingPage) => (
+            <Text key={landingPage.id} fw={500} size="sm" mt="sm">
+              <TextLink
+                to="/{-$locale}/languages/$slug"
+                params={{ locale: localeParam(locale), slug: landingPage.slug }}
+                span
+              >
+                {landingPage.header}
+              </TextLink>
+            </Text>
+          ))}
+      </Accordion.Panel>
+    </Accordion.Item>
+  );
+}
+
+function BlogItem({
+  locale,
+  blogPosts,
+}: {
+  locale: Locale;
+  blogPosts: Sitemap["blogPosts"];
+}): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Accordion.Item value="blog">
+      <Accordion.Control>{t(($) => $.blog_posts.index.header, { lng: locale })}</Accordion.Control>
+      <Accordion.Panel>
+        <List listStyleType="none" spacing="xs" pl="md">
+          {blogPosts
+            .filter((post) => post.locale === locale)
+            .map((post) => (
+              <List.Item key={post.id}>
+                <TextLink
+                  to="/{-$locale}/blog_posts/$slug"
+                  params={{ locale: localeParam(locale), slug: post.slug }}
+                  span
+                >
+                  {post.name}
+                </TextLink>
+              </List.Item>
+            ))}
+        </List>
+      </Accordion.Panel>
+    </Accordion.Item>
+  );
+}
+
+function CategoriesItem({
+  locale,
+  categories,
+}: {
+  locale: Locale;
+  categories: Sitemap["categories"];
+}): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Accordion.Item value="categories">
+      <Accordion.Control>
+        {t(($) => $.course_categories.index.header, { lng: locale })}
+      </Accordion.Control>
+      <Accordion.Panel>
+        <List listStyleType="none" spacing="xs" pl="md">
+          {categories
+            .filter((category) => category.locale === locale)
+            .map((category) => (
+              <List.Item key={category.id}>
+                <TextLink
+                  to="/{-$locale}/language_categories/$slug"
+                  params={{ locale: localeParam(locale), slug: category.slug ?? "" }}
+                  span
+                >
+                  {category.name}
+                </TextLink>
+              </List.Item>
+            ))}
+        </List>
+      </Accordion.Panel>
+    </Accordion.Item>
   );
 }

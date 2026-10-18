@@ -3,116 +3,116 @@
 // src/components/admin/resources/blogPost.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const blogPostFields: FieldDescriptor[] = [
+export const blogPostFields: FieldDescriptor<"name" | "slug" | "description" | "richBody">[] = [
   {
-    name: "name",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.name",
+    name: "name",
+    nullable: true,
     required: false,
   },
   {
-    name: "slug",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.slug",
-    required: false,
-  },
-  {
-    name: "description",
-    kind: "text",
+    name: "slug",
     nullable: true,
-    labelKey: "models.attributes.base.description",
     required: false,
   },
   {
-    name: "richBody",
     kind: "text",
-    nullable: false,
+    labelKey: "models.attributes.base.description",
+    name: "description",
+    nullable: true,
+    required: false,
+  },
+  {
+    kind: "text",
     labelKey: "models.attributes.blog_post.rich_body",
+    name: "richBody",
+    nullable: false,
     required: true,
   },
 ];
 
 export const blogPostColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.blog_post.id",
+    name: "id",
+    nullable: false,
   },
   {
-    name: "name",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.name",
+    name: "name",
+    nullable: true,
   },
   {
-    name: "slug",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.slug",
+    name: "slug",
+    nullable: true,
   },
   {
-    name: "description",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.description",
+    name: "description",
+    nullable: true,
   },
   {
-    name: "state",
-    kind: "select",
-    nullable: true,
-    labelKey: "models.attributes.blog_post.state",
     enumValues: [
       {
-        value: "draft",
         labelKey: "models.attributes.blog_post.state/values.draft",
+        value: "draft",
       },
       {
-        value: "published",
         labelKey: "models.attributes.blog_post.state/values.published",
+        value: "published",
       },
       {
-        value: "archived",
         labelKey: "models.attributes.blog_post.state/values.archived",
+        value: "archived",
       },
     ],
+    kind: "select",
+    labelKey: "models.attributes.blog_post.state",
+    name: "state",
+    nullable: true,
   },
   {
-    name: "locale",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.blog_post.locale",
-  },
-  {
-    name: "richBodyHtml",
-    kind: "text",
-    nullable: false,
-    labelKey: "models.attributes.blog_post.rich_body_html",
-  },
-  {
-    name: "readingTime",
-    kind: "number",
-    nullable: false,
-    labelKey: "models.attributes.blog_post.reading_time",
-  },
-  {
-    name: "likesCount",
-    kind: "number",
-    nullable: false,
-    labelKey: "models.attributes.blog_post.likes_count",
-  },
-  {
-    name: "coverUrl",
-    kind: "text",
+    name: "locale",
     nullable: true,
-    labelKey: "models.attributes.blog_post.cover_url",
   },
   {
-    name: "createdAt",
-    kind: "datetime",
+    kind: "text",
+    labelKey: "models.attributes.blog_post.rich_body_html",
+    name: "richBodyHtml",
     nullable: false,
+  },
+  {
+    kind: "number",
+    labelKey: "models.attributes.blog_post.reading_time",
+    name: "readingTime",
+    nullable: false,
+  },
+  {
+    kind: "number",
+    labelKey: "models.attributes.blog_post.likes_count",
+    name: "likesCount",
+    nullable: false,
+  },
+  {
+    kind: "text",
+    labelKey: "models.attributes.blog_post.cover_url",
+    name: "coverUrl",
+    nullable: true,
+  },
+  {
+    kind: "datetime",
     labelKey: "models.attributes.blog_post.created_at",
+    name: "createdAt",
+    nullable: false,
   },
 ];

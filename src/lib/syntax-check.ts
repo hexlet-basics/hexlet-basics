@@ -51,7 +51,7 @@ interface Runtime {
   Language: typeof Language;
 }
 
-let runtime: Promise<Runtime> | undefined;
+let runtime: Promise<Runtime> | null = null;
 const parsers = new Map<string, Promise<Parser>>();
 
 async function loadRuntime(): Promise<Runtime> {
@@ -60,33 +60,52 @@ async function loadRuntime(): Promise<Runtime> {
   return module;
 }
 
+async function loadParser(language: string): Promise<Parser> {
+  const loadGrammar = grammars[language];
+  if (!loadGrammar) {
+    throw new Error(`no grammar for ${language}`);
+  }
+
+  runtime ??= loadRuntime();
+  const [{ Parser: ParserClass, Language: LanguageClass }, grammar] = await Promise.all([
+    runtime,
+    loadGrammar(),
+  ]);
+  const created = new ParserClass();
+  // Fetched here and handed over as bytes: given a URL, the library first sniffs
+  // `process.versions.node`, which throws wherever a `process` stub lacks `versions`.
+  const response = await fetch(grammar.default);
+  if (!response.ok) {
+    throw new Error(`grammar ${language}: ${response.status}`);
+  }
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  created.setLanguage(await LanguageClass.load(bytes));
+  return created;
+}
+
+async function forgetWhenFailed(language: string, parser: Promise<Parser>): Promise<void> {
+  try {
+    await parser;
+  } catch {
+    parsers.delete(language);
+  }
+}
+
+// The parser for the language, or null when it could not be loaded.
+async function parserOrNull(language: string): Promise<Parser | null> {
+  try {
+    return await parserFor(language);
+  } catch {
+    return null;
+  }
+}
+
 function parserFor(language: string): Promise<Parser> {
   let parser = parsers.get(language);
   if (!parser) {
-    parser = (async () => {
-      const loadGrammar = grammars[language];
-      if (!loadGrammar) {
-        throw new Error(`no grammar for ${language}`);
-      }
-
-      runtime ??= loadRuntime();
-      const [{ Parser: ParserClass, Language: LanguageClass }, grammar] = await Promise.all([
-        runtime,
-        loadGrammar(),
-      ]);
-      const created = new ParserClass();
-      // Fetched here and handed over as bytes: given a URL, the library first sniffs
-      // `process.versions.node`, which throws wherever a `process` stub lacks `versions`.
-      const response = await fetch(grammar.default);
-      if (!response.ok) {
-        throw new Error(`grammar ${language}: ${response.status}`);
-      }
-      const bytes = new Uint8Array(await response.arrayBuffer());
-      created.setLanguage(await LanguageClass.load(bytes));
-      return created;
-    })();
+    parser = loadParser(language);
     // A failed load (offline, blocked asset) must not stick: the next edit retries.
-    parser.catch(() => parsers.delete(language));
+    void forgetWhenFailed(language, parser);
     parsers.set(language, parser);
   }
   return parser;
@@ -99,10 +118,8 @@ export async function findSyntaxProblems(language: string, code: string): Promis
     return [];
   }
 
-  let parser: Parser;
-  try {
-    parser = await parserFor(language);
-  } catch {
+  const parser = await parserOrNull(language);
+  if (!parser) {
     return [];
   }
 
@@ -133,9 +150,7 @@ function collect(node: Node, problems: SyntaxProblem[]): void {
     problems.push(toProblem("unexpected", node));
   } else {
     for (const child of node.children) {
-      if (child) {
-        collect(child, problems);
-      }
+      collect(child, problems);
     }
   }
 }
@@ -147,18 +162,18 @@ function toProblem(kind: SyntaxProblem["kind"], node: Node): SyntaxProblem {
   // An ERROR node can swallow the rest of the file, which as one red block hides
   // the code under it: mark the line it starts on.
   if (end.row !== start.row) {
-    end = { row: start.row, column: Number.MAX_SAFE_INTEGER };
+    end = { column: Number.MAX_SAFE_INTEGER, row: start.row };
   }
 
   // A missing token has no width, and monaco draws nothing for an empty range.
   const endColumn = end.column === start.column ? end.column + 1 : end.column;
 
   return {
-    kind,
-    token: node.type,
-    startLineNumber: start.row + 1,
-    startColumn: start.column + 1,
-    endLineNumber: end.row + 1,
     endColumn: endColumn + 1,
+    endLineNumber: end.row + 1,
+    kind,
+    startColumn: start.column + 1,
+    startLineNumber: start.row + 1,
+    token: node.type,
   };
 }

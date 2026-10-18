@@ -1,52 +1,61 @@
 import { QueryClient } from "@tanstack/react-query";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { User } from "@/client/types.gen";
 import { onIdentityChanged } from "@/lib/identity";
+import { admin } from "@/test/fixtures";
 
-const user = { id: 7, name: "Ada" } as User;
+const user: User = { ...admin, id: 7, name: "Ada" };
 
 // A router that only records what the cache held when it was asked to reload.
-function routerOver(queryClient: QueryClient) {
+function routerOver(queryClient: QueryClient): {
+  router: { invalidate: () => Promise<void> };
+  seen: { cacheSizeAtInvalidate?: number };
+} {
   const seen: { cacheSizeAtInvalidate?: number } = {};
   return {
-    seen,
     router: {
       invalidate: () => {
         seen.cacheSizeAtInvalidate = queryClient.getQueryCache().getAll().length;
         return Promise.resolve();
       },
     },
+    seen,
   };
 }
 
-test("drops everything read as the previous visitor before the pages are read again", async () => {
-  const queryClient = new QueryClient();
-  queryClient.setQueryData(["a course read as a guest"], { progress: 0 });
-  const { router, seen } = routerOver(queryClient);
+describe("identity", () => {
+  it("drops everything read as the previous visitor before the pages are read again", async () => {
+    expect.hasAssertions();
+    const queryClient = new QueryClient();
+    queryClient.setQueryData(["a course read as a guest"], { progress: 0 });
+    const { router, seen } = routerOver(queryClient);
 
-  await onIdentityChanged(queryClient, router);
+    await onIdentityChanged(queryClient, router);
 
-  expect(queryClient.getQueryData(["a course read as a guest"])).toBeUndefined();
-  expect(seen.cacheSizeAtInvalidate).toBe(0);
-});
+    expect(queryClient.getQueryData(["a course read as a guest"])).toBeUndefined();
+    expect(seen.cacheSizeAtInvalidate).toBe(0);
+  }, 60_000);
 
-test("keeps the user the flow already has, so the page does not fetch them again", async () => {
-  const queryClient = new QueryClient();
-  const { router, seen } = routerOver(queryClient);
+  it("keeps the user the flow already has, so the page does not fetch them again", async () => {
+    expect.hasAssertions();
+    const queryClient = new QueryClient();
+    const { router, seen } = routerOver(queryClient);
 
-  await onIdentityChanged(queryClient, router, user);
+    await onIdentityChanged(queryClient, router, user);
 
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
-  expect(seen.cacheSizeAtInvalidate).toBe(1);
-});
+    expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
+    expect(seen.cacheSizeAtInvalidate).toBe(1);
+  }, 60_000);
 
-test("can be told there is no router to reload, for a flow that is itself a navigation", async () => {
-  const queryClient = new QueryClient();
-  queryClient.setQueryData(["stale"], 1);
+  it("can be told there is no router to reload, for a flow that is itself a navigation", async () => {
+    expect.hasAssertions();
+    const queryClient = new QueryClient();
+    queryClient.setQueryData(["stale"], 1);
 
-  await onIdentityChanged(queryClient, null, user);
+    await onIdentityChanged(queryClient, null, user);
 
-  expect(queryClient.getQueryData(["stale"])).toBeUndefined();
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
+    expect(queryClient.getQueryData(["stale"])).toBeUndefined();
+    expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user });
+  }, 60_000);
 });

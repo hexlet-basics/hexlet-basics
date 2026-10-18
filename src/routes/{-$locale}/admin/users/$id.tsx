@@ -11,14 +11,15 @@ import {
 import { zUserInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
-import { userToForm, useUserFields } from "@/components/admin/resources/user";
+import { useUserFields, userToForm } from "@/components/admin/resources/user";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/users/$id")({
   component: EditUser,
 });
 
-function EditUser() {
+function EditUser(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useUserFields();
@@ -27,17 +28,17 @@ function EditUser() {
 
   const { data, isLoading } = useQuery(adminGetUserOptions({ path: { id: userId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/users" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateUserMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListUsersQueryKey(), adminGetUserQueryKey({ path: { id: userId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateUserMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -51,7 +52,7 @@ function EditUser() {
           fields={fields}
           schema={zUserInput}
           defaultValues={userToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: userId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: userId } })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
         />

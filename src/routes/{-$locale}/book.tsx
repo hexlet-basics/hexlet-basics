@@ -26,6 +26,7 @@ import type { DownloadBookData } from "@/client/types.gen";
 import { ButtonLink } from "@/components/RouterLink";
 import bookToc from "@/lib/book";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The download is a browser navigation, not a client call: the API answers it
 // with a redirect into the bucket, which an XHR would follow cross-origin. The
@@ -40,57 +41,57 @@ export const Route = createFileRoute("/{-$locale}/book")({
       throw notFound();
     }
   },
-  loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
+  component: Show,
   // Legacy meta: the header as title, the description cut to 160 characters as
   // Rails' truncate did, the canonical link and the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
-      i18n,
-      title: i18n.t(($) => $.books.show.header).trim(),
+      canonicalPath: match.pathname,
       description: truncate(
         i18n.t(($) => $.books.show.description),
         { length: 160 },
       ),
-      canonicalPath: match.pathname,
+      i18n,
+      title: i18n.t(($) => $.books.show.header).trim(),
     });
   },
-  component: Show,
+  loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
 });
 
-function Show() {
+function Show(): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
   const { data } = useQuery(getBookOptions());
 
   const features = [
     {
-      key: "direction",
-      title: t(($) => $.books.show.features.direction),
       explanation: t(($) => $.books.show.features.direction_explanation),
       icon: IconCompass,
+      key: "direction",
+      title: t(($) => $.books.show.features.direction),
     },
     {
-      key: "plan",
-      title: t(($) => $.books.show.features.plan),
       explanation: t(($) => $.books.show.features.plan_explanation),
       icon: IconList,
+      key: "plan",
+      title: t(($) => $.books.show.features.plan),
     },
     {
-      key: "resume",
-      title: t(($) => $.books.show.features.resume),
       explanation: t(($) => $.books.show.features.resume_explanation),
       icon: IconFileText,
+      key: "resume",
+      title: t(($) => $.books.show.features.resume),
     },
     {
-      key: "interview",
-      title: t(($) => $.books.show.features.interview),
       explanation: t(($) => $.books.show.features.interview_explanation),
       icon: IconUsers,
+      key: "interview",
+      title: t(($) => $.books.show.features.interview),
     },
   ] as const;
 
-  function renderAction() {
+  function renderAction(): ReactElement {
     if (data?.requested) {
       return (
         <Button
@@ -134,17 +135,9 @@ function Show() {
           {action}
 
           <Grid mt={40} gap="md">
-            {features.map(({ key, title, explanation, icon: Icon }) => (
-              <Grid.Col span={{ base: 12, md: 6 }} key={key}>
-                <Stack gap={4}>
-                  <Group gap={8} wrap="nowrap">
-                    <Icon size={20} />
-                    <Text fw={700} fz="lg">
-                      {title}
-                    </Text>
-                  </Group>
-                  <Text>{explanation}</Text>
-                </Stack>
+            {features.map((feature) => (
+              <Grid.Col span={{ base: 12, md: 6 }} key={feature.key}>
+                <Feature {...feature} />
               </Grid.Col>
             ))}
           </Grid>
@@ -183,11 +176,12 @@ function Show() {
 
 // Legacy posted the request and redirected back to the page with a flash, for
 // a repeat request too. Refetching the page state swaps in the download button.
-function RequestButton() {
+function RequestButton(): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const request = useMutation({
     ...createBookRequestMutation(),
+    onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
     onSuccess: async () => {
       notifications.show({
         color: "green",
@@ -195,7 +189,6 @@ function RequestButton() {
       });
       await queryClient.invalidateQueries({ queryKey: getBookQueryKey() });
     },
-    onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
   return (
@@ -204,9 +197,34 @@ function RequestButton() {
       variant="outline"
       size="lg"
       loading={request.isPending}
-      onClick={() => request.mutate({})}
+      onClick={() => {
+        request.mutate({});
+      }}
     >
       {t(($) => $.books.show.request)}
     </Button>
+  );
+}
+
+// One thing the book teaches: an icon and a title, then what it means.
+function Feature({
+  title,
+  explanation,
+  icon: Icon,
+}: {
+  title: string;
+  explanation: string;
+  icon: typeof IconCompass;
+}): ReactElement {
+  return (
+    <Stack gap={4}>
+      <Group gap={8} wrap="nowrap">
+        <Icon size={20} />
+        <Text fw={700} fz="lg">
+          {title}
+        </Text>
+      </Group>
+      <Text>{explanation}</Text>
+    </Stack>
   );
 }

@@ -12,10 +12,11 @@ const PREFIX_CASES = [
   ["es", "/es"],
 ] as const;
 
-describe("PREFIXED_LOCALES", () => {
+describe("the unprefixed default locale", () => {
   it("is every contract locale except the unprefixed default", () => {
+    expect.hasAssertions();
     expect([...PREFIXED_LOCALES].toSorted()).toStrictEqual(["es", "ru"]);
-  });
+  }, 60_000);
 });
 
 describe("localeOf", () => {
@@ -27,9 +28,14 @@ describe("localeOf", () => {
     ["/es/", "es"],
     ["/es/session/new", "es"],
     ["/ruby", "en"],
-  ])("maps %s to %s", (pathname, expected) => {
-    expect(localeOf(pathname)).toBe(expected);
-  });
+  ])(
+    "maps %s to %s",
+    (pathname, expected) => {
+      expect.hasAssertions();
+      expect(localeOf(pathname)).toBe(expected);
+    },
+    60_000,
+  );
 });
 
 describe("stripLocale", () => {
@@ -40,9 +46,14 @@ describe("stripLocale", () => {
     ["/es/languages/php", "/languages/php"],
     ["/languages/php", "/languages/php"],
     ["/ruby", "/ruby"],
-  ])("turns %s into %s", (pathname, expected) => {
-    expect(stripLocale(pathname)).toBe(expected);
-  });
+  ])(
+    "turns %s into %s",
+    (pathname, expected) => {
+      expect.hasAssertions();
+      expect(stripLocale(pathname)).toBe(expected);
+    },
+    60_000,
+  );
 });
 
 describe("localize", () => {
@@ -53,11 +64,21 @@ describe("localize", () => {
     ["/ru/languages/php", "es", "/es/languages/php"],
     ["/es/languages/php", "en", "/languages/php"],
     ["/languages/php", "ru", "/ru/languages/php"],
-  ] as const)("localizes %s to %s as %s", (pathname, locale, expected) => {
-    expect(localize(pathname, locale)).toBe(expected);
-  });
+  ] as const)(
+    "localizes %s to %s as %s",
+    (pathname, locale, expected) => {
+      expect.hasAssertions();
+      expect(localize(pathname, locale)).toBe(expected);
+    },
+    60_000,
+  );
 
-  it.each(PREFIX_CASES)("gives %s the prefix %j", (locale, prefix) => {
-    expect(localize("/x", locale)).toBe(`${prefix}/x`);
-  });
+  it.each(PREFIX_CASES)(
+    "gives %s the prefix %j",
+    (locale, prefix) => {
+      expect.hasAssertions();
+      expect(localize("/x", locale)).toBe(`${prefix}/x`);
+    },
+    60_000,
+  );
 });

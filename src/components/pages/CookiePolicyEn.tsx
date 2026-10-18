@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import type { ReactElement } from "react";
 
-export default function CookiePolicyEn() {
+export default function CookiePolicyEn(): ReactElement {
   return (
     <>
       <p>Last updated March 28, 2025</p>

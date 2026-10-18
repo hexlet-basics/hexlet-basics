@@ -3,66 +3,66 @@
 // src/components/admin/resources/user.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const userFields: FieldDescriptor[] = [
+export const userFields: FieldDescriptor<"email" | "firstName" | "lastName" | "admin">[] = [
   {
-    name: "email",
     kind: "text",
-    nullable: false,
     labelKey: "models.attributes.user.email",
+    name: "email",
+    nullable: false,
     required: true,
   },
   {
-    name: "firstName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.user.first_name",
+    name: "firstName",
+    nullable: true,
     required: false,
   },
   {
-    name: "lastName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.user.last_name",
+    name: "lastName",
+    nullable: true,
     required: false,
   },
   {
-    name: "admin",
     kind: "boolean",
-    nullable: true,
     labelKey: "models.attributes.user.admin",
+    name: "admin",
+    nullable: true,
     required: false,
   },
 ];
 
 export const userColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.user.id",
+    name: "id",
+    nullable: false,
   },
   {
-    name: "email",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.user.email",
+    name: "email",
+    nullable: true,
   },
   {
-    name: "firstName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.user.first_name",
+    name: "firstName",
+    nullable: true,
   },
   {
-    name: "lastName",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.user.last_name",
+    name: "lastName",
+    nullable: true,
   },
   {
-    name: "admin",
     kind: "boolean",
-    nullable: true,
     labelKey: "models.attributes.user.admin",
+    name: "admin",
+    nullable: true,
   },
 ];

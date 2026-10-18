@@ -18,7 +18,7 @@ const getRequestCookie = createIsomorphicFn()
 // when concurrent renders use different locales.
 const getRequestLocale = createIsomorphicFn()
   .server(() => localeOf(new URL(getRequest().url).pathname))
-  .client(() => localeOf(window.location.pathname));
+  .client(() => localeOf(globalThis.location.pathname));
 
 // The generated hey-api client is a singleton, and every contract path starts
 // with `/api` (ADR-0015). In the browser the API is the site's own origin — the
@@ -41,12 +41,13 @@ client.setConfig({ baseUrl: PLACEHOLDER_ORIGIN });
 // per-request — and safe on the singleton because the cookie is read inside the
 // request-scoped isomorphic fn (Start's async request context), not by mutating
 // shared client state.
+// oxlint-disable-next-line oxc/no-async-endpoint-handlers -- a fetch interceptor, not an Express handler
 client.interceptors.request.use(async (request) => {
   const { pathname, search } = new URL(request.url);
   // The dead branch is stripped per build target, so `process` never leaks
   // into the client bundle.
   const target = import.meta.env.SSR
-    ? `${(process.env.API_URL ?? "http://localhost:3001").replace(/\/$/, "")}${pathname}${search}`
+    ? `${(process.env.API_URL ?? "http://localhost:3001").replace(/\/$/u, "")}${pathname}${search}`
     : `${pathname}${search}`;
   const headers = new Headers(request.headers);
   const cookie = getRequestCookie();
@@ -58,12 +59,12 @@ client.interceptors.request.use(async (request) => {
   // streamed one cannot be handed to a new Request without `duplex`.
   const body = request.body ? await request.arrayBuffer() : undefined;
   return new Request(target, {
-    method: request.method,
-    headers,
     body,
-    signal: request.signal,
-    redirect: request.redirect,
     credentials: request.credentials,
+    headers,
+    method: request.method,
+    redirect: request.redirect,
+    signal: request.signal,
   });
 });
 

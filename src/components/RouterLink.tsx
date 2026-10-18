@@ -1,7 +1,7 @@
 import { ActionIcon, Anchor, Button, Card, NavLink as MantineNavLink, Text } from "@mantine/core";
 import type {
-  AnchorProps,
   ActionIconProps,
+  AnchorProps,
   ButtonProps,
   CardProps,
   NavLinkProps,
@@ -22,9 +22,11 @@ import type { PropsWithChildren } from "react";
 
 type ButtonLinkProps = Omit<ButtonProps, "href">;
 
-const ButtonLinkBase = forwardRef<HTMLAnchorElement, ButtonLinkProps>((props, ref) => (
-  <Button ref={ref} component="a" {...props} />
-));
+const ButtonLinkBase = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
+  function ButtonLinkBase(props, ref) {
+    return <Button ref={ref} component="a" {...props} />;
+  },
+);
 
 const ButtonLinkCreated = createLink(ButtonLinkBase);
 
@@ -34,9 +36,11 @@ export const ButtonLink: LinkComponent<typeof ButtonLinkBase> = (props) => (
 
 type ActionIconLinkProps = Omit<ActionIconProps, "href">;
 
-const ActionIconLinkBase = forwardRef<HTMLAnchorElement, ActionIconLinkProps>((props, ref) => (
-  <ActionIcon ref={ref} component="a" {...props} />
-));
+const ActionIconLinkBase = forwardRef<HTMLAnchorElement, ActionIconLinkProps>(
+  function ActionIconLinkBase(props, ref) {
+    return <ActionIcon ref={ref} component="a" {...props} />;
+  },
+);
 
 const ActionIconLinkCreated = createLink(ActionIconLinkBase);
 
@@ -46,9 +50,11 @@ export const ActionIconLink: LinkComponent<typeof ActionIconLinkBase> = (props) 
 
 type TextLinkProps = Omit<TextProps, "href">;
 
-const TextLinkBase = forwardRef<HTMLAnchorElement, TextLinkProps>((props, ref) => (
-  <Text ref={ref} component="a" {...props} />
-));
+const TextLinkBase = forwardRef<HTMLAnchorElement, TextLinkProps>(
+  function TextLinkBase(props, ref) {
+    return <Text ref={ref} component="a" {...props} />;
+  },
+);
 
 const TextLinkCreated = createLink(TextLinkBase);
 
@@ -61,9 +67,11 @@ export const TextLink: LinkComponent<typeof TextLinkBase> = (props) => (
 // shows the browser's default blue). Used where a link should look like one.
 type AnchorLinkProps = Omit<AnchorProps, "href">;
 
-const AnchorLinkBase = forwardRef<HTMLAnchorElement, AnchorLinkProps>((props, ref) => (
-  <Anchor ref={ref} {...props} />
-));
+const AnchorLinkBase = forwardRef<HTMLAnchorElement, AnchorLinkProps>(
+  function AnchorLinkBase(props, ref) {
+    return <Anchor ref={ref} {...props} />;
+  },
+);
 
 const AnchorLinkCreated = createLink(AnchorLinkBase);
 
@@ -73,9 +81,11 @@ export const AnchorLink: LinkComponent<typeof AnchorLinkBase> = (props) => (
 
 type NavLinkLinkProps = Omit<NavLinkProps, "href">;
 
-const NavLinkBase = forwardRef<HTMLAnchorElement, NavLinkLinkProps>((props, ref) => (
-  <MantineNavLink ref={ref} component="a" {...props} />
-));
+const NavLinkBase = forwardRef<HTMLAnchorElement, NavLinkLinkProps>(
+  function NavLinkBase(props, ref) {
+    return <MantineNavLink ref={ref} component="a" {...props} />;
+  },
+);
 
 const NavLinkCreated = createLink(NavLinkBase);
 
@@ -86,9 +96,11 @@ export const NavLink: LinkComponent<typeof NavLinkBase> = (props) => (
 
 type CardLinkProps = PropsWithChildren<Omit<CardProps, "href">>;
 
-const CardLinkBase = forwardRef<HTMLAnchorElement, CardLinkProps>((props, ref) => (
-  <Card ref={ref} component="a" {...props} />
-));
+const CardLinkBase = forwardRef<HTMLAnchorElement, CardLinkProps>(
+  function CardLinkBase(props, ref) {
+    return <Card ref={ref} component="a" {...props} />;
+  },
+);
 
 const CardLinkCreated = createLink(CardLinkBase);
 

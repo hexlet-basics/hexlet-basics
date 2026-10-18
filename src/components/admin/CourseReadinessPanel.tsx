@@ -11,17 +11,18 @@ import type { Course } from "@/client/types.gen";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import { transitionsFromReadiness } from "@/lib/courseReadiness";
 import type { ReadinessTransition } from "@/lib/courseReadiness";
+import type { ReactElement } from "react";
 
 // A Course's Readiness and the buttons that change it. A state is not an update:
 // the course form does not carry it, each button calls its own operation (its own
 // Permission on the server). Every value but the current one is offered; the
 // server stays the judge and refuses the rest with a 409.
-export function CourseReadinessPanel({ course }: { course: Course }) {
+export function CourseReadinessPanel({ course }: { course: Course }): ReactElement {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.readiness.changeError),
     invalidate: [adminListCoursesQueryKey(), adminGetCourseQueryKey({ path: { id: course.id } })],
     successMessage: t(($) => $.admin.readiness.changed),
-    errorMessage: t(($) => $.admin.readiness.changeError),
   };
   const markDraft = useResourceMutation({ mutation: adminMarkCourseDraftMutation(), ...options });
   const markInDevelopment = useResourceMutation({
@@ -37,23 +38,29 @@ export function CourseReadinessPanel({ course }: { course: Course }) {
     ReadinessTransition,
     { label: string; color: string; isPending: boolean; run: () => void }
   > = {
-    markDraft: {
-      label: t(($) => $.admin.readiness.markDraft),
-      color: "gray",
-      isPending: markDraft.isPending,
-      run: () => markDraft.mutate({ path: { id: course.id } }),
-    },
-    markInDevelopment: {
-      label: t(($) => $.admin.readiness.markInDevelopment),
-      color: "yellow",
-      isPending: markInDevelopment.isPending,
-      run: () => markInDevelopment.mutate({ path: { id: course.id } }),
-    },
     markCompleted: {
-      label: t(($) => $.admin.readiness.markCompleted),
       color: "green",
       isPending: markCompleted.isPending,
-      run: () => markCompleted.mutate({ path: { id: course.id } }),
+      label: t(($) => $.admin.readiness.markCompleted),
+      run: () => {
+        markCompleted.mutate({ path: { id: course.id } });
+      },
+    },
+    markDraft: {
+      color: "gray",
+      isPending: markDraft.isPending,
+      label: t(($) => $.admin.readiness.markDraft),
+      run: () => {
+        markDraft.mutate({ path: { id: course.id } });
+      },
+    },
+    markInDevelopment: {
+      color: "yellow",
+      isPending: markInDevelopment.isPending,
+      label: t(($) => $.admin.readiness.markInDevelopment),
+      run: () => {
+        markInDevelopment.mutate({ path: { id: course.id } });
+      },
     },
   };
 
@@ -67,17 +74,20 @@ export function CourseReadinessPanel({ course }: { course: Course }) {
           </Badge>
         </Group>
         <Group>
-          {transitionsFromReadiness(course.readiness).map((name) => (
-            <Button
-              key={name}
-              variant="light"
-              color={actions[name].color}
-              loading={actions[name].isPending}
-              onClick={actions[name].run}
-            >
-              {actions[name].label}
-            </Button>
-          ))}
+          {transitionsFromReadiness(course.readiness).map((name) => {
+            const handleRun = actions[name].run;
+            return (
+              <Button
+                key={name}
+                variant="light"
+                color={actions[name].color}
+                loading={actions[name].isPending}
+                onClick={handleRun}
+              >
+                {actions[name].label}
+              </Button>
+            );
+          })}
         </Group>
       </Group>
     </Card>

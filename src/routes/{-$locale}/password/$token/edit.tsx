@@ -7,15 +7,23 @@ import { updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
 import { checkPasswordResetToken } from "@/client/sdk.gen";
 import { zResetPasswordInput } from "@/client/zod.gen";
 import { newPasswordInputProps } from "@/lib/authFieldProps";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
+import type { ReactElement } from "react";
 
 // Where a refused link lands, from the loader and from a failed submission.
-const refusedLink = (locale: string | undefined) => ({
-  to: "/{-$locale}/remind_password/new" as const,
+const refusedLink = (
+  locale: string | undefined,
+): {
+  params: { locale: string | undefined };
+  search: { invalid: boolean };
+  to: "/{-$locale}/remind_password/new";
+} => ({
   params: { locale },
   search: { invalid: true },
+  to: "/{-$locale}/remind_password/new" as const,
 });
 
 // The emailed Password Reset link (legacy passwords#edit). The loader checks the
@@ -25,20 +33,20 @@ const refusedLink = (locale: string | undefined) => ({
 // directly rather than going through queryClient.query (ADR-0008). Submitting signs the visitor in and takes
 // them home.
 export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
+  component: Edit,
   loader: async ({ params }) => {
     try {
       await checkPasswordResetToken({ path: { token: params.token }, throwOnError: true });
     } catch (error) {
-      if (isApiError(error, 404)) {
+      if (isApiError(error, HTTP_NOT_FOUND)) {
         throw redirect(refusedLink(params.locale));
       }
       throw error;
     }
   },
-  component: Edit,
 });
 
-function Edit() {
+function Edit(): ReactElement {
   const { t } = useTranslation();
   const { locale, token } = Route.useParams();
   const navigate = useNavigate();
@@ -47,31 +55,31 @@ function Edit() {
 
   const mutation = useMutation({
     ...updatePasswordMutation(),
+    onError: (error) => {
+      // The link can die between the check and the submission: it expired,
+      // or it was already used from another tab.
+      if (isApiError(error, HTTP_NOT_FOUND)) {
+        void navigate(refusedLink(locale));
+        return;
+      }
+      notifications.show({ color: "red", message: t(($) => $.common.errors.network) });
+    },
     onSuccess: async (user) => {
       await onIdentityChanged(queryClient, router, user);
       notifications.show({
         color: "green",
         message: t(($) => $.flash.passwords.update.success),
       });
-      void navigate({ to: "/{-$locale}", params: { locale } });
-    },
-    onError: (error) => {
-      // The link can die between the check and the submission: it expired,
-      // or it was already used from another tab.
-      if (isApiError(error, 404)) {
-        void navigate(refusedLink(locale));
-        return;
-      }
-      notifications.show({ color: "red", message: t(($) => $.common.errors.network) });
+      void navigate({ params: { locale }, to: "/{-$locale}" });
     },
   });
 
   const form = useAppForm({
     defaultValues: { password: "" },
-    validators: { onSubmit: zResetPasswordInput },
     onSubmit: async ({ value }) => {
-      await mutation.mutateAsync({ path: { token }, body: value });
+      await mutation.mutateAsync({ body: value, path: { token } });
     },
+    validators: { onSubmit: zResetPasswordInput },
   });
 
   return (
@@ -81,7 +89,7 @@ function Edit() {
           {t(($) => $.passwords.edit.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
           <Stack component="form" onSubmit={submitForm(form)}>
             <form.AppField name="password">
               {(field) => (

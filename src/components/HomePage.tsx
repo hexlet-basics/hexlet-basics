@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { IconBook2, IconBrandGithub, IconRobot, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   getCurrentUserOptions,
@@ -37,9 +37,9 @@ const COURSES_ANCHOR = "courses";
 
 // Reviews of the showcase, in legacy's order, with the avatar each one carries.
 const SHOWCASE = [
-  { id: "avdoshkin", avatar: avdoshkinAvatar },
-  { id: "tyurin", avatar: tyurinAvatar },
-  { id: "kleyman", avatar: kleymanAvatar },
+  { avatar: avdoshkinAvatar, id: "avdoshkin" },
+  { avatar: tyurinAvatar, id: "tyurin" },
+  { avatar: kleymanAvatar, id: "kleyman" },
 ] as const;
 
 // A figure tile of the hero row. The tint is Mantine's `light` variant colour
@@ -55,7 +55,7 @@ function Tile({
   icon: ReactNode;
   title: string;
   children: ReactNode;
-}) {
+}): ReactElement {
   return (
     <Card p="xl" radius="md" bg={`var(--mantine-color-${color}-light)`}>
       {icon}
@@ -71,7 +71,7 @@ function Tile({
 // course grid, the review showcase, the latest blog posts, the FAQ, and then
 // the registration form for a guest. Legacy's consultation block for a signed-in
 // ru learner is gone, here and on the other pages that had it.
-export default function HomePage() {
+export default function HomePage(): ReactElement {
   const { t } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
   const { data: blog } = useQuery(listBlogPostsOptions({ query: { perPage: 3 } }));
@@ -100,7 +100,7 @@ export default function HomePage() {
           {t(($) => $.home.index.hero.source_code)}
         </Badge>
 
-        <Title mb="xs" lh={1} order={1} fz={{ base: 25, xs: 30, sm: 40, md: 50 }}>
+        <Title mb="xs" lh={1} order={1} fz={{ base: 25, md: 50, sm: 40, xs: 30 }}>
           {t(($) => $.home.index.hero.free_programming_courses)}
         </Title>
 
@@ -121,7 +121,7 @@ export default function HomePage() {
       </Container>
 
       <Container size="lg" my={{ base: "xl", sm: "xxl" }}>
-        <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} my="xl">
+        <SimpleGrid cols={{ base: 1, md: 3, xs: 2 }} my="xl">
           <Tile color="blue" icon={<IconBook2 />} title={t(($) => $.home.index.hero.courses_count)}>
             {t(($) => $.home.index.hero.courses_count_description)}
           </Tile>
@@ -143,7 +143,7 @@ export default function HomePage() {
           {t(($) => $.home.courses.courses)}
         </Title>
 
-        <SimpleGrid cols={{ base: 2, xs: 3, md: 4 }}>
+        <SimpleGrid cols={{ base: 2, md: 4, xs: 3 }}>
           {(courses ?? []).map((item) => (
             <CourseBlock key={item.id} lazy item={item} />
           ))}
@@ -156,7 +156,7 @@ export default function HomePage() {
           <Divider />
         </Box>
 
-        <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
+        <SimpleGrid cols={{ base: 1, md: 3, xs: 2 }}>
           {SHOWCASE.map(({ id, avatar }) => {
             const review = reviews[id];
             return (
@@ -185,7 +185,7 @@ export default function HomePage() {
             <Title order={2}>{t(($) => $.home.index.blog_posts)}</Title>
             <Divider />
           </Box>
-          <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
+          <SimpleGrid cols={{ base: 1, md: 3, xs: 2 }}>
             {posts.map((post) => (
               <BlogPostBlock key={post.id} post={post} lazy />
             ))}
@@ -217,7 +217,7 @@ export default function HomePage() {
           <Grid align="center" justify="space-between" gap={0}>
             <Grid.Col span={{ base: 12, md: 6 }} mb="lg">
               <Center>
-                <Text fz={{ base: 25, xs: 30, sm: 40, md: 50 }} fw="bold">
+                <Text fz={{ base: 25, md: 50, sm: 40, xs: 30 }} fw="bold">
                   {t(($) => $.home.index.join)}
                 </Text>
               </Center>

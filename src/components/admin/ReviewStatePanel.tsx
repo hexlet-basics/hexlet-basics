@@ -9,16 +9,17 @@ import {
 import type { Review } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A review's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the review's three operations. A review
 // with no state counts as a draft, as on the server.
-export function ReviewStatePanel({ review }: { review: Review }) {
+export function ReviewStatePanel({ review }: { review: Review }): ReactElement {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [adminListReviewsQueryKey(), adminGetReviewQueryKey({ path: { id: review.id } })],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({ mutation: adminPublishReviewMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishReviewMutation(), ...options });
@@ -31,7 +32,7 @@ export function ReviewStatePanel({ review }: { review: Review }) {
       title={t(($) => $.models.attributes.review.state)}
       state={state}
       stateLabel={t(($) => $.models.attributes.review["state/values"][state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

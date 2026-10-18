@@ -2,6 +2,7 @@ import { Box } from "@mantine/core";
 import type { BoxProps } from "@mantine/core";
 import { motion } from "motion/react";
 import type React from "react";
+import type { ReactElement } from "react";
 
 type HoverLiftProps = BoxProps &
   React.ComponentProps<typeof motion.div> & {
@@ -15,22 +16,22 @@ export function HoverLift({
   whileHover,
   transition,
   ...props
-}: HoverLiftProps) {
+}: HoverLiftProps): ReactElement {
   return (
     <Box
       component={motion.div}
       {...props}
       bdrs={16}
       whileHover={{
-        y: -lift,
-        scale: hoverScale,
         boxShadow: "0 18px 45px rgba(0,0,0,0.14)",
-        ...(whileHover as object),
+        scale: hoverScale,
+        y: -lift,
+        ...(typeof whileHover === "object" && !Array.isArray(whileHover) ? whileHover : {}),
       }}
       transition={{
-        type: "spring",
-        stiffness: 500,
         damping: 35,
+        stiffness: 500,
+        type: "spring",
         ...transition,
       }}
     />

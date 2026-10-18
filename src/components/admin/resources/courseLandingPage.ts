@@ -10,23 +10,23 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 export const emptyCourseLandingPage: CourseLandingPageInput = {
   courseId: 0,
-  slug: "",
-  name: "",
-  main: false,
-  listed: false,
+  description: "",
   footer: false,
   footerName: "",
-  order: "",
-  landingPageToRedirectId: null,
-  metaTitle: "",
-  metaDescription: "",
   header: "",
-  description: "",
-  usedInHeader: "",
-  usedInDescription: "",
-  outcomesHeader: "",
+  landingPageToRedirectId: null,
+  listed: false,
+  main: false,
+  metaDescription: "",
+  metaTitle: "",
+  name: "",
+  order: "",
   outcomesDescription: "",
+  outcomesHeader: "",
   outcomesImageAttachmentId: null,
+  slug: "",
+  usedInDescription: "",
+  usedInHeader: "",
 };
 
 // Seed the form from an existing row: pick only the writable fields and
@@ -34,23 +34,23 @@ export const emptyCourseLandingPage: CourseLandingPageInput = {
 export function courseLandingPageToForm(page: CourseLandingPage): CourseLandingPageInput {
   return {
     courseId: page.courseId,
-    slug: page.slug,
-    name: page.name,
-    main: page.main ?? false,
-    listed: page.listed ?? false,
+    description: page.description,
     footer: page.footer ?? false,
     footerName: page.footerName ?? "",
-    order: page.order ?? "",
-    landingPageToRedirectId: page.landingPageToRedirectId,
-    metaTitle: page.metaTitle,
-    metaDescription: page.metaDescription,
     header: page.header,
-    description: page.description,
-    usedInHeader: page.usedInHeader ?? "",
-    usedInDescription: page.usedInDescription ?? "",
-    outcomesHeader: page.outcomesHeader ?? "",
+    landingPageToRedirectId: page.landingPageToRedirectId,
+    listed: page.listed ?? false,
+    main: page.main ?? false,
+    metaDescription: page.metaDescription,
+    metaTitle: page.metaTitle,
+    name: page.name,
+    order: page.order ?? "",
     outcomesDescription: page.outcomesDescription ?? "",
+    outcomesHeader: page.outcomesHeader ?? "",
     outcomesImageAttachmentId: null,
+    slug: page.slug,
+    usedInDescription: page.usedInDescription ?? "",
+    usedInHeader: page.usedInHeader ?? "",
   };
 }
 
@@ -80,12 +80,12 @@ export function useCourseLandingPageFields(): CrudFieldSpec<CourseLandingPageInp
     ],
     // The schema allows null for these, the form insists.
     set: {
-      name: { required: true },
-      slug: { required: true },
       description: { type: "textarea" },
       metaDescription: { type: "textarea" },
-      usedInDescription: { type: "textarea" },
+      name: { required: true },
       outcomesDescription: { type: "textarea" },
+      slug: { required: true },
+      usedInDescription: { type: "textarea" },
     },
   });
 }

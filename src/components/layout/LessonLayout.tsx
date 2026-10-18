@@ -1,5 +1,5 @@
 import { AppShell } from "@mantine/core";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import Header from "./Header";
 
 // The lesson player's chrome: the site header and nothing else — no footer, no
@@ -10,7 +10,7 @@ import Header from "./Header";
 // The main area is a full-viewport box (Mantine sets `box-sizing: border-box`
 // globally, so the header offset AppShell adds as padding comes out of the same
 // 100dvh) — which is what gives the splitter a definite height to divide.
-export default function LessonLayout({ children }: PropsWithChildren) {
+export default function LessonLayout({ children }: PropsWithChildren): ReactElement {
   return (
     <AppShell header={{ height: 60 }}>
       <AppShell.Header>

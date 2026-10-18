@@ -3,10 +3,11 @@ import { useCallbackRef, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
 import type * as Monaco from "monaco-editor";
 import type { editor } from "monaco-editor";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";
+import type { ReactElement } from "react";
 
 // Monaco, loaded in the browser and only after the theory is on screen. It
 // cannot server-render, and it is by far the heaviest thing on the page, so it
@@ -40,7 +41,7 @@ interface LessonEditorProps {
 }
 
 // Where the learner writes their solution.
-export default function LessonEditor(props: LessonEditorProps) {
+export default function LessonEditor(props: LessonEditorProps): ReactElement {
   return (
     <ClientOnly>
       <EditorPane {...props} />
@@ -56,7 +57,7 @@ function EditorPane({
   starterCode,
   resetCount,
   onRun,
-}: LessonEditorProps) {
+}: LessonEditorProps): ReactElement {
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false });
   // Legacy asks the server whether the browser is a mobile one; the payload here
@@ -78,8 +79,10 @@ function EditorPane({
   // a stale run.
   const run = useCallbackRef(onRun);
 
-  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco) => {
-    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
+  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco): void => {
+    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      run();
+    });
     setInstance(mounted);
     setMonacoApi(monaco);
   };
@@ -110,22 +113,22 @@ function EditorPane({
   }, [instance, isTouchScreen]);
 
   const options: editor.IStandaloneEditorConstructionOptions = {
-    tabSize: settings.tabSize,
-    insertSpaces: settings.insertSpaces,
-    fontSize: 14,
-    scrollBeyondLastLine: false,
-    minimap: { enabled: false },
-    hover: { delay: 500 },
-    renderWhitespace: "trailing",
-    formatOnPaste: true,
-    fixedOverflowWidgets: true,
-    // Forced on rather than left to monaco's "auto" detection, which misses NVDA
-    // on Windows and leaves the exercise unreadable to it.
-    accessibilitySupport: "on",
     // And read the whole exercise to a screen reader, not monaco's default first
     // ten lines.
     accessibilityPageSize: 500,
+    // Forced on rather than left to monaco's "auto" detection, which misses NVDA
+    // on Windows and leaves the exercise unreadable to it.
+    accessibilitySupport: "on",
     ariaLabel: t(($) => $.courses.lessons.show.editor_aria_label),
+    fixedOverflowWidgets: true,
+    fontSize: 14,
+    formatOnPaste: true,
+    hover: { delay: 500 },
+    insertSpaces: settings.insertSpaces,
+    minimap: { enabled: false },
+    renderWhitespace: "trailing",
+    scrollBeyondLastLine: false,
+    tabSize: settings.tabSize,
   };
 
   return (
@@ -137,7 +140,9 @@ function EditorPane({
             language={settings.language}
             options={options}
             defaultValue={initialCode}
-            onChange={(value) => onChange(value ?? "")}
+            onChange={(value) => {
+              onChange(value ?? "");
+            }}
             onMount={bindEditor}
           />
         </Suspense>

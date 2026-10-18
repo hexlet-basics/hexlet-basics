@@ -19,6 +19,11 @@ import interactiveFormatIcon from "@/assets/for-school-teachers-page/interactive
 import practiceIcon from "@/assets/for-school-teachers-page/practice-icon.svg";
 import { ButtonLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
+
+// The longest meta description search engines show, and what marks a cut.
+const META_DESCRIPTION_LENGTH = 160;
+const OMISSION = "...";
 
 // The case for school and university teachers, ported from legacy
 // cases/for_teachers. Legacy served it for ru only (`require_russian_locale`),
@@ -29,28 +34,28 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
       throw notFound();
     }
   },
+  component: ForTeachers,
   // Legacy meta: title, the description cut as Rails `truncate(160)` cut it,
   // and the social tags. Legacy pointed the canonical at the book page by
   // mistake; it is the page's own URL here.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
-      i18n,
-      title: i18n.t(($) => $.cases.for_teachers.title),
+      canonicalPath: match.pathname,
       description: truncate(
         i18n.t(($) => $.cases.for_teachers.meta.description),
-        160,
+        META_DESCRIPTION_LENGTH,
       ),
-      canonicalPath: match.pathname,
+      i18n,
+      title: i18n.t(($) => $.cases.for_teachers.title),
     });
   },
-  component: ForTeachers,
 });
 
 // Rails String#truncate: at most `length` characters, the "..." omission
 // included, cut at a character boundary.
 function truncate(text: string, length: number): string {
-  return text.length > length ? `${text.slice(0, length - 3)}...` : text;
+  return text.length > length ? `${text.slice(0, length - OMISSION.length)}${OMISSION}` : text;
 }
 
 // The card images, named by the `img` field of each card string.
@@ -61,7 +66,7 @@ const CARD_ICONS: Record<string, string> = {
   "practice-icon": practiceIcon,
 };
 
-function ForTeachers() {
+function ForTeachers(): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
 
@@ -120,17 +125,18 @@ function ForTeachers() {
           </List>
         </Stack>
         <Box>
-          <Box
-            component="video"
+          <video
             src={learningVideo}
             autoPlay
             loop
             muted
             playsInline
-            w="100%"
-            h="60%"
-            bdrs="md"
-            style={{ objectFit: "cover" }}
+            style={{
+              borderRadius: "var(--mantine-radius-md)",
+              height: "60%",
+              objectFit: "cover",
+              width: "100%",
+            }}
           />
         </Box>
       </SimpleGrid>

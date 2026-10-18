@@ -1,12 +1,13 @@
 import { zProblemDetails } from "@/client/zod.gen";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_UNPROCESSABLE } from "@/lib/http-status";
 
 // The API answers a write that fails validation with 422 and a Problem Details
 // body whose `errors` extension holds the messages keyed by field, covering
 // rules the Zod schema cannot express (an email already taken). Parsing it with
 // the generated `zProblemDetails` keeps this in step with the contract.
 function validationErrors(error: unknown): Record<string, string[]> | undefined {
-  if (!isApiError(error, 422)) {
+  if (!isApiError(error, HTTP_UNPROCESSABLE)) {
     return undefined;
   }
   const parsed = zProblemDetails.safeParse(error.body);
@@ -22,23 +23,31 @@ export const isValidationError = (error: unknown): boolean => validationErrors(e
 // to put server errors on fields: they render through the same field `error`
 // as the Zod ones and clear themselves on the next validation, with no state
 // to reset by hand. Any other failure is left to the mutation's onError.
-export function submitWithServerErrors<TValue>(submit: (value: TValue) => Promise<unknown>) {
+export function submitWithServerErrors<TValue>(
+  submit: (value: TValue) => Promise<unknown>,
+): ({ value }: { value: TValue }) => Promise<{ fields: Record<string, string> } | undefined> {
   return async ({ value }: { value: TValue }) => {
     try {
       await submit(value);
     } catch (error) {
-      const errors = validationErrors(error);
-      if (!errors) {
-        return undefined;
-      }
-      return {
+      return fieldsOf(validationErrors(error));
+    }
+    return fieldsOf(undefined);
+  };
+}
+
+// The form's `{ fields }` shape for a set of field messages, or nothing to say
+// when the submission raised none.
+function fieldsOf(
+  errors: Record<string, string[]> | undefined,
+): { fields: Record<string, string> } | undefined {
+  return errors
+    ? {
         fields: Object.fromEntries(
           Object.entries(errors).map(([field, messages]) => [field, messages.join(", ")]),
         ),
-      };
-    }
-    return undefined;
-  };
+      }
+    : undefined;
 }
 
 // Every message of a 422, flattened, for a screen that has no form fields to put

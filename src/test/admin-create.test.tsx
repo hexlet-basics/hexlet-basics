@@ -1,6 +1,6 @@
 import type { AnyRoute } from "@tanstack/react-router";
-import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
+import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import { Route as blogPostRoute } from "@/routes/{-$locale}/admin/blog_posts/new";
 import { Route as courseLandingPageRoute } from "@/routes/{-$locale}/admin/course_landing_pages/new";
@@ -28,90 +28,105 @@ interface Case {
 
 const cases: Case[] = [
   {
-    name: "a course",
-    route: courseRoute,
-    resource: "courses",
     fields: [["Slug *", "ruby"]],
+    name: "a course",
+    resource: "courses",
+    route: courseRoute,
     sent: { slug: "ruby" },
   },
   {
-    name: "a role",
-    route: roleRoute,
-    resource: "management/roles",
     fields: [["Name *", "Editor"]],
+    name: "a role",
+    resource: "management/roles",
+    route: roleRoute,
     sent: { name: "Editor" },
   },
   {
-    name: "a staff member",
-    route: staffMemberRoute,
-    resource: "management/staff_members",
     fields: [
       ["User *", "7"],
       ["Role *", "3"],
     ],
-    sent: { userId: 7, roleId: 3 },
+    name: "a staff member",
+    resource: "management/staff_members",
+    route: staffMemberRoute,
+    sent: { roleId: 3, userId: 7 },
   },
   {
-    name: "a blog post",
-    route: blogPostRoute,
-    resource: "blog_posts",
     fields: [
       ["Name *", "Hello"],
       ["Slug *", "hello"],
     ],
+    name: "a blog post",
+    resource: "blog_posts",
+    route: blogPostRoute,
     sent: { name: "Hello", slug: "hello" },
   },
   {
-    name: "a course landing page",
-    route: courseLandingPageRoute,
-    resource: "course_landing_pages",
     fields: [
       ["Course *", "5"],
       ["Name *", "Ruby"],
       ["Slug *", "ruby-landing"],
     ],
+    name: "a course landing page",
+    resource: "course_landing_pages",
+    route: courseLandingPageRoute,
     sent: { courseId: 5, name: "Ruby", slug: "ruby-landing" },
   },
 ];
 
-test.each(cases)("an admin creates $name and is taken back to the list", async (c) => {
-  let received: unknown;
-  worker.use(
-    http.post(`*/admin/${c.resource}`, async ({ request }) => {
-      received = await request.json();
-      return HttpResponse.json({ id: 1 });
-    }),
+// Fills the fields one after the other: the fields of a form depend on each
+// other's state, so they cannot be filled at once.
+async function fillInOrder(fields: readonly (readonly [string, string])[]): Promise<void> {
+  const [first, ...rest] = fields;
+  if (first) {
+    await page.getByLabelText(first[0]).fill(first[1]);
+    await fillInOrder(rest);
+  }
+}
+
+describe("admin create", () => {
+  it.each(cases)(
+    "an admin creates $name and is taken back to the list",
+    async (scenario) => {
+      expect.hasAssertions();
+      let received: unknown = null;
+      worker.use(
+        http.post(`*/admin/${scenario.resource}`, async ({ request }) => {
+          received = await request.json();
+          return HttpResponse.json({ id: 1 });
+        }),
+      );
+
+      const { router } = await renderRoute(scenario.route, {
+        initialPath: `/admin/${scenario.resource}/new`,
+        path: `/{-$locale}/admin/${scenario.resource}/new`,
+        user: admin,
+      });
+
+      await fillInOrder(scenario.fields);
+      const create = page.getByRole("button", { name: "Create" });
+      await create.click();
+
+      const confirmation = page.getByText("Record created");
+      await expect.element(confirmation).toBeVisible();
+      expect(received).toMatchObject(scenario.sent);
+      // A new record is a draft: the state has its own operations.
+      expect(received).not.toHaveProperty("state");
+      // A new course is a draft too: its readiness has its own operations.
+      expect(received).not.toHaveProperty("readiness");
+      await expect.poll(() => router.state.location.pathname).toBe(`/admin/${scenario.resource}`);
+    },
+    60_000,
   );
 
-  const { router } = await renderRoute(c.route, {
-    path: `/{-$locale}/admin/${c.resource}/new`,
-    initialPath: `/admin/${c.resource}/new`,
-    user: admin,
-  });
+  it("a visitor who is not an admin is sent away from the admin pages", async () => {
+    expect.hasAssertions();
+    const { router } = await renderRoute(courseRoute, {
+      initialPath: "/admin/courses/new",
+      path: "/{-$locale}/admin/courses/new",
+      user: { ...admin, admin: false, canAccessAdmin: false },
+    });
 
-  for (const [label, value] of c.fields) {
-    const field = page.getByLabelText(label);
-    await field.fill(value);
-  }
-  const create = page.getByRole("button", { name: "Create" });
-  await create.click();
-
-  const confirmation = page.getByText("Record created");
-  await expect.element(confirmation).toBeVisible();
-  expect(received).toMatchObject(c.sent);
-  // A new record is a draft: the state has its own operations.
-  expect(received).not.toHaveProperty("state");
-  // A new course is a draft too: its readiness has its own operations.
-  expect(received).not.toHaveProperty("readiness");
-  await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
-});
-
-test("a visitor who is not an admin is sent away from the admin pages", async () => {
-  const { router } = await renderRoute(courseRoute, {
-    path: "/{-$locale}/admin/courses/new",
-    initialPath: "/admin/courses/new",
-    user: { ...admin, admin: false, canAccessAdmin: false },
-  });
-
-  await expect.poll(() => router.state.location.pathname).toBe("/");
+    await expect.poll(() => router.state.location.pathname).toBe("/");
+  }, 60_000);
 });

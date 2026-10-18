@@ -13,12 +13,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { staffMemberToForm, useStaffMemberFields } from "@/components/admin/resources/staffMember";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/staff_members/$id")({
   component: EditStaffMember,
 });
 
-function EditStaffMember() {
+function EditStaffMember(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffMemberFields();
@@ -27,20 +28,20 @@ function EditStaffMember() {
 
   const { data, isLoading } = useQuery(adminGetStaffMemberOptions({ path: { id: memberId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/staff_members" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateStaffMemberMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [
       adminListStaffMembersQueryKey(),
       adminGetStaffMemberQueryKey({ path: { id: memberId } }),
     ],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateStaffMemberMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -54,7 +55,7 @@ function EditStaffMember() {
           fields={fields}
           schema={zStaffMemberInput}
           defaultValues={staffMemberToForm(data)}
-          onSubmit={(values) => mutation.mutateAsync({ path: { id: memberId }, body: values })}
+          onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: memberId } })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
         />

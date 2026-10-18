@@ -26,7 +26,7 @@ import {
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getBlogPostOptions, likeBlogPostMutation } from "@/client/@tanstack/react-query.gen";
 import { getNextBlogPost } from "@/client/sdk.gen";
@@ -52,9 +52,10 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
     } catch (error) {
       // A draft, a post in another language and a missing slug are all the
       // same to a visitor: there is no such page.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy meta: the post's name and description, its canonical URL, the cover
   // as og:image, and a schema.org Article carrying the like count.
   head: ({ loaderData, match }) => {
@@ -66,7 +67,6 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       "@context": "https://schema.org",
       "@type": "Article",
       author: post.creator.name,
-      name: post.name,
       datePublished: post.createdAt,
       headline: post.description,
       image: post.coverUrl,
@@ -77,31 +77,37 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
           userInteractionCount: post.likesCount,
         },
       ],
+      name: post.name,
     };
     return {
       ...seoHead({
         i18n: match.context.i18n,
+
         title: post.name ?? "",
+
         description: post.description ?? "",
+
         image: post.coverUrl,
+
         canonicalPath: match.pathname,
       }),
       scripts: [
         {
-          type: "application/ld+json",
           // `<` escaped so a post name cannot close the script element.
           children: JSON.stringify(article).replaceAll("<", String.raw`\u003c`),
+          type: "application/ld+json",
         },
       ],
     };
   },
+
   component: Show,
 });
 
 // The transparent pixel legacy fell back to for a post without a cover.
 const NO_COVER = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
-function Show() {
+function Show(): ReactElement | null {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   // The chain rewrites the address bar as the reader moves on, and the router
@@ -161,10 +167,12 @@ function PostChain({
   onChainSlugs: (slugs: string[]) => void;
   recommendedPosts: BlogPost[];
   relatedLandingPages: CourseCatalogItem[];
-}) {
+}): ReactElement {
   const next = useInfiniteQuery({
     queryKey: ["blogPostChain", first.id],
+
     initialPageParam: first.id,
+
     queryFn: async ({ pageParam, signal }) => {
       const { data } = await getNextBlogPost({
         path: { id: pageParam },
@@ -173,9 +181,12 @@ function PostChain({
       });
       return data;
     },
+
     getNextPageParam: (last) => last.id,
+
     // Pages load only when the reader nears the end, never on mount.
     enabled: false,
+
     retry: false,
   });
 
@@ -213,10 +224,11 @@ function PostChain({
   useEffect(() => {
     const { pathname } = router.buildLocation({
       to: "/{-$locale}/blog_posts/$slug",
+
       params: { locale, slug },
     });
-    if (window.location.pathname !== pathname) {
-      window.history.replaceState(window.history.state, "", pathname);
+    if (globalThis.location.pathname !== pathname) {
+      globalThis.history.replaceState(globalThis.history.state, "", pathname);
     }
   }, [router, locale, slug]);
 
@@ -252,7 +264,7 @@ function ChainPost({
   index: number;
   onCrossLine: (index: number) => void;
   children: ReactNode;
-}) {
+}): ReactElement {
   const { ref, entry } = useIntersection({ rootMargin: "-25% 0px -75% 0px" });
   const onLine = entry?.isIntersecting ?? false;
 
@@ -277,7 +289,7 @@ function PostBody({
   post: BlogPost;
   recommendedPosts: BlogPost[];
   relatedLandingPages: CourseCatalogItem[];
-}) {
+}): ReactElement {
   const { t, i18n } = useTranslation();
 
   return (
@@ -296,8 +308,9 @@ function PostBody({
 
       <Typography>
         {/* Trusted editor HTML, stored and served as written (see blog_posts.go). */}
-        <Box
+        <div
           className="blog-post-content"
+          // oxlint-disable-next-line react/no-danger -- trusted editor HTML, see above
           dangerouslySetInnerHTML={{ __html: post.richBodyHtml }}
         />
       </Typography>
@@ -367,12 +380,13 @@ function PostBody({
 // like, "already counted" for a repeat one. The API answers both with the post,
 // so a count that did not move is the repeat. A visitor is sent to sign in, as
 // the legacy auth guard did.
-function LikeButton({ post }: { post: BlogPost }) {
+function LikeButton({ post }: { post: BlogPost }): ReactElement {
   const { t } = useTranslation();
   const { user } = Route.useRouteContext();
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const like = useMutation({
     ...likeBlogPostMutation(),
+
     onSuccess: (liked) => {
       notifications.show({
         color: "green",
@@ -383,6 +397,7 @@ function LikeButton({ post }: { post: BlogPost }) {
       });
       setLikesCount(liked.likesCount);
     },
+
     onError: () => notifications.show({ color: "red", message: t(($) => $.common.errors.network) }),
   });
 
@@ -394,7 +409,9 @@ function LikeButton({ post }: { post: BlogPost }) {
           me="xs"
           aria-label="like"
           loading={like.isPending}
-          onClick={() => like.mutate({ path: { id: post.id } })}
+          onClick={() => {
+            like.mutate({ path: { id: post.id } });
+          }}
         >
           <IconThumbUp size={18} />
         </ActionIcon>

@@ -6,6 +6,8 @@ import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 import { isApiError } from "@/lib/api-error";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
+import type { ReactElement } from "react";
 
 // The course completion page, ported from legacy languages#success: where the
 // lesson player sends a learner who finished the Course.
@@ -20,6 +22,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+  component: Success,
   loader: async ({ context, params }) => {
     try {
       const view = await context.queryClient.query(
@@ -27,35 +30,40 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
       );
       if (view.movedTo) {
         throw redirect({
-          to: "/{-$locale}/languages/$slug/success",
           params: { ...params, slug: view.movedTo },
           statusCode: 301,
+          to: "/{-$locale}/languages/$slug/success",
         });
       }
       if (view.enrollment?.state !== "finished") {
         throw redirect({
-          to: "/{-$locale}/languages/$slug",
           params,
           search: { unfinished: true },
+          to: "/{-$locale}/languages/$slug",
         });
       }
     } catch (error) {
       // Legacy sent an unknown course to the catalog.
-      if (isApiError(error, 404)) {
-        throw redirect({ to: "/{-$locale}/languages", params: { locale: params.locale } });
+      if (isApiError(error, HTTP_NOT_FOUND)) {
+        throw redirect({ params: { locale: params.locale }, to: "/{-$locale}/languages" });
       }
       throw error;
     }
   },
-  component: Success,
 });
 
-function Success() {
+function Success(): ReactElement {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getCourseOptions({ path: { slug } }));
 
-  const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+  const external = { rel: "noopener noreferrer", target: "_blank" } as const;
+  const careerLink = (
+    <Anchor href={t(($) => $.links.hexlet_courses_for_beginners_after_course)} {...external} />
+  );
+  const skillLink = (
+    <Anchor href={t(($) => $.links.hexlet_courses_for_programmers_after_course)} {...external} />
+  );
 
   return (
     <Container my="xl">
@@ -81,28 +89,14 @@ function Success() {
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.changing_career_html}
-                  components={{
-                    a: (
-                      <Anchor
-                        href={t(($) => $.links.hexlet_courses_for_beginners_after_course)}
-                        {...external}
-                      />
-                    ),
-                  }}
+                  components={{ a: careerLink }}
                 />
               </List.Item>
               <List.Item>
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.getting_new_skill_html}
-                  components={{
-                    a: (
-                      <Anchor
-                        href={t(($) => $.links.hexlet_courses_for_programmers_after_course)}
-                        {...external}
-                      />
-                    ),
-                  }}
+                  components={{ a: skillLink }}
                 />
               </List.Item>
             </List>

@@ -13,20 +13,21 @@ import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/")({
   validateSearch: zAdminListReviewsQuery,
   component: ReviewsList,
 });
 
-function ReviewsList() {
+function ReviewsList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({
     list: adminListReviewsOptions,
-    searchable: true,
     listKey: adminListReviewsQueryKey,
     remove: adminDeleteReviewMutation,
+    searchable: true,
   });
 
   const columns: CrudColumnDef<Review>[] = [
@@ -35,17 +36,17 @@ function ReviewsList() {
       header: t(($) => $.models.attributes.review.first_name),
     },
     {
-      id: "course",
-      header: t(($) => $.models.attributes.review.course_id),
       cell: ({ row }) => row.original.course.slug,
+      header: t(($) => $.models.attributes.review.course_id),
+      id: "course",
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.review.state),
       cell: ({ row }) => {
         const { state } = row.original;
         return state ? t(($) => $.models.attributes.review["state/values"][state]) : "";
       },
+      header: t(($) => $.models.attributes.review.state),
     },
     {
       accessorKey: "locale",
@@ -56,10 +57,10 @@ function ReviewsList() {
       header: t(($) => $.models.attributes.review.body),
     },
     list.actionsColumn({
+      describe: (row) => row.body ?? "",
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/reviews/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.body ?? "",
     }),
   ];
 

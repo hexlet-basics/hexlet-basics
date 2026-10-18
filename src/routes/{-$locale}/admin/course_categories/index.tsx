@@ -15,6 +15,7 @@ import { courseCategoryColumns } from "@/components/admin/generated/courseCatego
 import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 // Course categories admin list — the first resource wired through the CRUD engine
 // (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/{-$locale}/admin/course_categories/")({
   component: CourseCategoriesList,
 });
 
-function CourseCategoriesList() {
+function CourseCategoriesList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({
@@ -36,10 +37,10 @@ function CourseCategoriesList() {
   const columns: CrudColumnDef<CourseCategory>[] = [
     ...useGeneratedColumns<CourseCategory>(courseCategoryColumns, ["name", "slug", "locale"]),
     list.actionsColumn({
+      describe: (row) => row.name ?? String(row.id),
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/course_categories/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.name ?? String(row.id),
     }),
   ];
 

@@ -9,6 +9,7 @@ import QnaBlock from "@/components/QnaBlock";
 import { AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
+import type { ReactElement } from "react";
 
 // A course category, at its legacy URL, ported from legacy
 // language_categories/show: the category's courses, a consultation form for
@@ -23,9 +24,10 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     } catch (error) {
       // A missing slug and a category of another language are the same to a
       // visitor: there is no such page.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy meta: title and description built around the category header, the
   // canonical link and the social tags.
   head: ({ loaderData, match }) => {
@@ -35,17 +37,18 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     const { i18n } = match.context;
     const name = loaderData.category.header ?? "";
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.course_categories.show.meta.description, { name }),
       i18n,
       // The ru copy ends in a newline, which legacy's title tag trimmed away.
       title: i18n.t(($) => $.course_categories.show.header, { name }).trim(),
-      description: i18n.t(($) => $.course_categories.show.meta.description, { name }),
-      canonicalPath: match.pathname,
     });
   },
+
   component: Show,
 });
 
-function Show() {
+function Show(): ReactElement | null {
   const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getPublicCourseCategoryOptions({ path: { slug } }));
@@ -74,7 +77,7 @@ function Show() {
         </Grid>
       )}
 
-      <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }} mb="xl">
+      <SimpleGrid cols={{ base: 2, sm: 4, xs: 3 }} mb="xl">
         {landingPages.map((item) => (
           <CourseBlock key={item.id} item={item} />
         ))}

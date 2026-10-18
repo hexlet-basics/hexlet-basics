@@ -17,43 +17,43 @@ const dbName = process.env.E2E_DB_NAME ?? "code_basics_e2e_test";
 const dbPassword = process.env.E2E_DB_PASSWORD ?? "postgres";
 
 export default defineConfig({
-  testDir: "./tests",
-  outputDir: "./.results",
-  reporter: process.env.CI
-    ? [["github"], ["html", { open: "never", outputFolder: "./.report" }]]
-    : "list",
+  forbidOnly: Boolean(process.env.CI),
   // Every journey signs up its own user or uses a fixture user read-only, so
   // the files run in parallel. A failure is a failure: no retries to hide a flake.
   fullyParallel: true,
+  outputDir: "./.results",
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  reporter: process.env.CI
+    ? [["github"], ["html", { open: "never", outputFolder: "./.report" }]]
+    : "list",
   retries: 0,
-  forbidOnly: Boolean(process.env.CI),
+  testDir: "./tests",
   use: {
     baseURL: siteURL,
     // The fixtures hold English, Russian and Spanish; the English site is the default.
     locale: "en-US",
     trace: "retain-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: [
     {
       // The Go API, built by the test:e2e task.
       command: "bin/server",
       cwd: root,
-      url: `http://127.0.0.1:${apiPort}/api/languages`,
       env: {
+        ADDR: `:${apiPort}`,
         // "test" also keeps the server from reading a developer's .env.
         APP_ENV: "test",
         APP_HOST: "localhost",
-        ADDR: `:${apiPort}`,
-        DATABASE_URL: `postgres://postgres:${dbPassword}@${dbHost}:${dbPort}/${dbName}?sslmode=disable`,
-        GUEST_COOKIE_SECRET: "e2e-guest-cookie-secret",
-        EMAIL_TOKEN_SECRET: "e2e-email-token-secret",
-        SITE_URL: siteURL,
-        PUBLIC_URL: siteURL,
         BLOB_BUCKET_URL: `file://${root}e2e/.storage?create_dir=true`,
+        DATABASE_URL: `postgres://postgres:${dbPassword}@${dbHost}:${dbPort}/${dbName}?sslmode=disable`,
+        EMAIL_TOKEN_SECRET: "e2e-email-token-secret",
+        GUEST_COOKIE_SECRET: "e2e-guest-cookie-secret",
+        PUBLIC_URL: siteURL,
+        SITE_URL: siteURL,
       },
       reuseExistingServer: false,
       timeout: 60_000,
+      url: `http://127.0.0.1:${apiPort}/api/languages`,
     },
     {
       // The SSR frontend: the production build (e2e/.build, kept apart from
@@ -65,10 +65,10 @@ export default defineConfig({
       // would hang after the last test with the server still listening.
       command: `node node_modules/vite/bin/vite.js preview --outDir e2e/.build --port ${webPort} --strictPort`,
       cwd: root,
-      url: siteURL,
       env: { API_URL: `http://127.0.0.1:${apiPort}` },
       reuseExistingServer: false,
       timeout: 60_000,
+      url: siteURL,
     },
   ],
 });

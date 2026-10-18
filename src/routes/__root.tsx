@@ -10,10 +10,10 @@ import { Notifications } from "@mantine/notifications";
 import type { QueryClient } from "@tanstack/react-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
-import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import type { i18n as I18n } from "i18next";
 import { useEffect } from "react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { Cookies, CookiesProvider } from "react-cookie";
 import { I18nextProvider } from "react-i18next";
 import { NotFoundPage } from "@/components/ErrorPage";
@@ -48,16 +48,17 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context, location }) => {
     await context.i18n.changeLanguage(localeOf(location.pathname));
     return {
-      user: await resolveCurrentUser(context.queryClient),
       // A string, so it travels with the dehydrated router and the browser's
       // first render reads the same cookies the server rendered with.
       cookieHeader: getRequestCookies(),
+      user: await resolveCurrentUser(context.queryClient),
     };
   },
+  component: RootComponent,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       { title: SITE_NAME },
     ],
   }),
@@ -69,10 +70,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       <NotFoundPage />
     </ApplicationLayout>
   ),
-  component: RootComponent,
 });
 
-function RootComponent() {
+function RootComponent(): ReactElement {
   // The `{-$locale}` layout has already run changeLanguage in beforeLoad, so
   // i18n.language is the resolved locale by the time the document renders.
   const { i18n, cookieHeader } = Route.useRouteContext();
@@ -94,7 +94,7 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children, lang }: { children: ReactNode; lang: string }) {
+function RootDocument({ children, lang }: { children: ReactNode; lang: string }): ReactElement {
   return (
     <html lang={lang} {...mantineHtmlProps}>
       <head>

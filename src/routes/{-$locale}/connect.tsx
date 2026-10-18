@@ -10,6 +10,8 @@ import {
   getOAuthConsentOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { requireAuth } from "@/lib/auth";
+import { lenient, orNull } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // The OAuth consent screen (ADR-0022): an assistant (an MCP client) was sent
 // here by the authorization endpoint with the id of its request. A guest signs
@@ -18,37 +20,42 @@ import { requireAuth } from "@/lib/auth";
 // browser returns to and what is asked, and the decision is one of two contract
 // operations whose answer is the next place for the browser to go.
 const connectSearchSchema = z.object({
-  id: z.string().optional().catch(undefined),
+  id: lenient(z.string()),
 });
 
 export const Route = createFileRoute("/{-$locale}/connect")({
   validateSearch: connectSearchSchema,
+
   loaderDeps: ({ search }) => ({ id: search.id }),
+
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+
   // An unknown, expired or already decided request is a normal outcome (a stale
   // tab), not a crash: the page says so instead of showing the error screen.
   loader: ({ context, deps }) =>
     deps.id
-      ? context.queryClient
-          .query({
+      ? orNull(
+          context.queryClient.query({
             ...getOAuthConsentOptions({ path: { requestId: deps.id } }),
             staleTime: 0,
-          })
-          .catch(() => null)
+          }),
+        )
       : null,
+
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {
       meta: [
         { title: t(($) => $.connect.title) },
-        { name: "description", content: t(($) => $.connect.meta.description) },
+        { content: t(($) => $.connect.meta.description), name: "description" },
         // A page with a one-time request id in its URL has nothing to index.
-        { name: "robots", content: "noindex" },
+        { content: "noindex", name: "robots" },
       ],
     };
   },
+
   component: Connect,
 });
 
@@ -58,11 +65,11 @@ export const Route = createFileRoute("/{-$locale}/connect")({
 function useScopeLabel() {
   const { t } = useTranslation();
   const labels: Record<string, string> = {
-    openid: t(($) => $.connect.scopes.openid),
-    offline_access: t(($) => $.connect.scopes.offline_access),
-    "catalog:read": t(($) => $.connect.scopes.catalog_read),
-    "progress:read": t(($) => $.connect.scopes.progress_read),
     admin: t(($) => $.connect.scopes.admin),
+    "catalog:read": t(($) => $.connect.scopes.catalog_read),
+    offline_access: t(($) => $.connect.scopes.offline_access),
+    openid: t(($) => $.connect.scopes.openid),
+    "progress:read": t(($) => $.connect.scopes.progress_read),
   };
   return (scope: string) => labels[scope] ?? scope;
 }
@@ -73,26 +80,29 @@ function useScopeLabel() {
 // host arrives with its port, and an IPv6 literal is bracketed.
 function isLocalHost(host: string): boolean {
   const name = host
-    .replace(/:\d+$/, "")
-    .replaceAll(/^\[|\]$/g, "")
+    .replace(/:\d+$/u, "")
+    .replaceAll(/^\[|\]$/gu, "")
     .toLowerCase();
-  return name === "localhost" || name === "::1" || /^127(\.\d{1,3}){3}$/.test(name);
+  return name === "localhost" || name === "::1" || /^127(?:\.\d{1,3}){3}$/u.test(name);
 }
 
 // The next place is outside the router: the authorization endpoint's callback
 // on this origin, or the client's own redirect URI. Leaving takes a full
 // navigation.
-const leave = ({ redirectUrl }: { redirectUrl: string }) => window.location.assign(redirectUrl);
+const leave = ({ redirectUrl }: { redirectUrl: string }): void => {
+  globalThis.location.assign(redirectUrl);
+};
 
-function Connect() {
+function Connect(): ReactElement {
   const { t } = useTranslation();
   const { id } = Route.useSearch();
   const consent = Route.useLoaderData();
   const scopeLabel = useScopeLabel();
 
-  const onError = () => notifications.show({ color: "red", message: t(($) => $.connect.error) });
-  const approve = useMutation({ ...approveOAuthConsentMutation(), onSuccess: leave, onError });
-  const deny = useMutation({ ...denyOAuthConsentMutation(), onSuccess: leave, onError });
+  const onError = (): string =>
+    notifications.show({ color: "red", message: t(($) => $.connect.error) });
+  const approve = useMutation({ ...approveOAuthConsentMutation(), onError, onSuccess: leave });
+  const deny = useMutation({ ...denyOAuthConsentMutation(), onError, onSuccess: leave });
   const deciding = approve.isPending || deny.isPending || approve.isSuccess || deny.isSuccess;
 
   return (
@@ -102,7 +112,7 @@ function Connect() {
           {t(($) => $.connect.title)}
         </Title>
 
-        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
+        <Card withBorder p="xl" w={{ base: "100%", lg: "50%", md: "70%", sm: "80%" }}>
           {id && consent ? (
             <Stack>
               <Text>{t(($) => $.connect.intro, { client: consent.clientName })}</Text>
@@ -127,14 +137,18 @@ function Connect() {
                 <Button
                   variant="default"
                   disabled={deciding}
-                  onClick={() => deny.mutate({ path: { requestId: id } })}
+                  onClick={() => {
+                    deny.mutate({ path: { requestId: id } });
+                  }}
                 >
                   {t(($) => $.connect.deny)}
                 </Button>
                 <Button
                   loading={approve.isPending}
                   disabled={deciding}
-                  onClick={() => approve.mutate({ path: { requestId: id } })}
+                  onClick={() => {
+                    approve.mutate({ path: { requestId: id } });
+                  }}
                 >
                   {t(($) => $.connect.approve)}
                 </Button>

@@ -38,6 +38,8 @@ import QnaBlock from "@/components/QnaBlock";
 import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
+import { orNull } from "@/lib/lenient";
+import type { ReactElement } from "react";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
@@ -57,13 +59,14 @@ import { rethrowMissingAsNotFound } from "@/lib/api-error";
 // survives a server-side redirect.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
+
   loader: async ({ context, params }) => {
     // The banner is prefetched so it is in the server-rendered HTML; fetched on
     // the client only, it would pop in after hydration. It is decoration, so
     // failing to read it must not take the page down.
-    const banner = context.queryClient
-      .query({ ...getActiveBannerOptions(), staleTime: "static" })
-      .catch(() => null);
+    const banner = orNull(
+      context.queryClient.query({ ...getActiveBannerOptions(), staleTime: "static" }),
+    );
     try {
       const [view] = await Promise.all([
         // Carries the visitor's progress, so it takes the client's default
@@ -75,9 +78,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       // redirect, which keeps old links and search results pointing somewhere.
       if (view.movedTo) {
         throw redirect({
-          to: "/{-$locale}/languages/$slug",
           params: { ...params, slug: view.movedTo },
           statusCode: 301,
+          to: "/{-$locale}/languages/$slug",
         });
       }
       return view;
@@ -85,9 +88,10 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       // The slug is a landing page's, in this locale's site: an unknown one and
       // one of another locale are the same to a visitor, there is no such page.
       // Thrown here, not left to the error page, so the answer is a 404.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
+
   // Legacy languages#show meta: the landing page's meta title and description,
   // the canonical link, the social block with the course cover, and Open Graph
   // typed as a website in the page's locale.
@@ -102,18 +106,19 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
     const { i18n } = match.context;
     const { course, landingPage } = loaderData;
     return seoHead({
-      i18n,
-      title: landingPage?.metaTitle ?? course.name ?? course.slug,
-      description: landingPage?.metaDescription ?? "",
       canonicalPath: match.pathname,
+      description: landingPage?.metaDescription ?? "",
+      i18n,
       image: course.coverListVariant,
-      openGraph: { type: "website", locale: i18n.language },
+      openGraph: { locale: i18n.language, type: "website" },
+      title: landingPage?.metaTitle ?? course.name ?? course.slug,
     });
   },
+
   component: Show,
 });
 
-function Show() {
+function Show(): ReactElement {
   const { slug } = Route.useParams();
   const { t, i18n } = useTranslation();
   const { unfinished } = Route.useSearch();
@@ -316,18 +321,18 @@ function Show() {
 // whether it is finished, so nothing is joined here. A lesson no module in this
 // locale claims is listed after the panels rather than dropped, and a course
 // with no modules is the flat list alone.
-function LearningProgram({ view }: { view: CourseView }) {
+function LearningProgram({ view }: { view: CourseView }): ReactElement {
   const claimed = new Set(
     view.modules.flatMap((module) => module.lessons.map((item) => item.slug)),
   );
   const unclaimed = view.lessons.filter((item) => !claimed.has(item.slug));
 
-  const lessonLinks = (lessons: CourseView["lessons"]) =>
+  const lessonLinks = (lessons: CourseView["lessons"]): ReactElement[] =>
     lessons.map((item) => (
       <NavLink
         key={item.slug}
         to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-        params={{ slug: view.course.slug, lessonSlug: item.slug }}
+        params={{ lessonSlug: item.slug, slug: view.course.slug }}
         label={item.name}
         leftSection={<LessonMark finished={item.finished} />}
       />
@@ -369,7 +374,7 @@ function LearningProgram({ view }: { view: CourseView }) {
 // It is a button rather than a link because pressing it issues the start command
 // before navigating. A link would enter the lesson without starting it, and
 // would be preloaded on hover besides.
-function CourseAction({ view }: { view: CourseView }) {
+function CourseAction({ view }: { view: CourseView }): ReactElement | null {
   const { t } = useTranslation();
   const { course, progress } = view;
   const { enter, isPending } = useEnterLesson(course.slug);
@@ -409,7 +414,13 @@ function CourseAction({ view }: { view: CourseView }) {
   // Navigation waits on the command's success: the lesson is entered started or
   // not at all.
   return (
-    <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
+    <Button
+      size="lg"
+      loading={isPending}
+      onClick={() => {
+        enter(lesson);
+      }}
+    >
       {view.lessons.some((item) => item.finished)
         ? t(($) => $.courses.show.continue)
         : t(($) => $.courses.show.try)}
@@ -421,13 +432,21 @@ function CourseAction({ view }: { view: CourseView }) {
 // hero's: it goes through the same start command as the hero button, into the
 // learner's Next Lesson (the first one for a visitor), so none of them is a
 // way in that skips the start.
-function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
+function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps): ReactElement | null {
   const { enter, isPending } = useEnterLesson(view.course.slug);
   const lesson = view.progress?.nextLesson ?? view.lessons[0];
   if (!lesson) {
     return null;
   }
-  return <Button {...props} loading={isPending} onClick={() => enter(lesson)} />;
+  return (
+    <Button
+      {...props}
+      loading={isPending}
+      onClick={() => {
+        enter(lesson);
+      }}
+    />
+  );
 }
 
 // The Hexlet program the course leads on to, tagged as a referral from here as

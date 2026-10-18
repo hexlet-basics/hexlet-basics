@@ -1,96 +1,107 @@
-import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
+import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import { getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { ProfileInput, User } from "@/client/types.gen";
 import { Route as editRoute } from "@/routes/{-$locale}/account/profile/edit";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
+import { zProfileInput } from "@/client/zod.gen";
+
+// One character past the 40 a first name may have.
+const OVER_LIMIT = 41;
 
 const user: User = {
-  id: 1,
-  firstName: "Dora",
-  lastName: null,
-  name: "Dora",
-  email: "dora@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: 0,
+  canAccessAdmin: false,
   createdAt: "2026-09-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "dora@example.com",
+  firstName: "Dora",
+  id: 1,
+  lastName: null,
+  name: "Dora",
   type: "user",
 };
 
-function openProfile(visitor: User | null = user) {
+function openProfile(visitor: User | null = user): Promise<RenderedRoute> {
   worker.use(http.get("*/api/account/profile/edit", () => HttpResponse.json(user)));
   return renderRoute(editRoute, {
-    path: "/{-$locale}/account/profile/edit",
     initialPath: "/account/profile/edit",
+    path: "/{-$locale}/account/profile/edit",
     user: visitor,
   });
 }
 
-test("a guest is sent to sign in first", async () => {
-  const { router } = await openProfile(null);
+describe("profile", () => {
+  it("a guest is sent to sign in first", async () => {
+    expect.hasAssertions();
+    const { router } = await openProfile(null);
 
-  await expect.poll(() => router.state.location.pathname).toBe("/session/new");
-});
+    await expect.poll(() => router.state.location.pathname).toBe("/session/new");
+  }, 60_000);
 
-test("the profile saves the edited names", async () => {
-  const received: ProfileInput[] = [];
-  worker.use(
-    http.patch("*/api/account/profile", async ({ request }) => {
-      const body = (await request.json()) as ProfileInput;
-      received.push(body);
-      return HttpResponse.json({ ...user, ...body });
-    }),
-  );
+  it("the profile saves the edited names", async () => {
+    expect.hasAssertions();
+    const received: ProfileInput[] = [];
+    worker.use(
+      http.patch("*/api/account/profile", async ({ request }) => {
+        const body = zProfileInput.parse(await request.json());
+        received.push(body);
+        return HttpResponse.json({ ...user, ...body });
+      }),
+    );
 
-  await openProfile();
+    await openProfile();
 
-  await expect.element(page.getByLabelText("First name")).toHaveValue("Dora");
-  await page.getByLabelText("Last name").fill("Explorer");
-  await page.getByRole("button", { name: "Save" }).click();
+    await expect.element(page.getByLabelText("First name")).toHaveValue("Dora");
+    await page.getByLabelText("Last name").fill("Explorer");
+    await page.getByRole("button", { name: "Save" }).click();
 
-  await expect.element(page.getByText("Данные успешно обновлены")).toBeVisible();
-  expect(received).toStrictEqual([{ firstName: "Dora", lastName: "Explorer" }]);
-});
+    await expect.element(page.getByText("Данные успешно обновлены")).toBeVisible();
+    expect(received).toStrictEqual([{ firstName: "Dora", lastName: "Explorer" }]);
+  }, 60_000);
 
-test("a name the API would refuse is refused before it is sent", async () => {
-  let submitted = false;
-  worker.use(
-    http.patch("*/api/account/profile", () => {
-      submitted = true;
-      return HttpResponse.json(user);
-    }),
-  );
+  it("a name the API would refuse is refused before it is sent", async () => {
+    expect.hasAssertions();
+    let submitted = false;
+    worker.use(
+      http.patch("*/api/account/profile", () => {
+        submitted = true;
+        return HttpResponse.json(user);
+      }),
+    );
 
-  await openProfile();
+    await openProfile();
 
-  await page.getByLabelText("First name").fill("a".repeat(41));
-  await page.getByLabelText("Last name").fill("Dora@home");
-  await page.getByRole("button", { name: "Save" }).click();
+    await page.getByLabelText("First name").fill("a".repeat(OVER_LIMIT));
+    await page.getByLabelText("Last name").fill("Dora@home");
+    await page.getByRole("button", { name: "Save" }).click();
 
-  await expect.element(page.getByText(/40/)).toBeVisible();
-  expect(submitted).toBe(false);
-});
+    await expect.element(page.getByText(/40/u)).toBeVisible();
+    expect(submitted).toBe(false);
+  }, 60_000);
 
-test("deleting the account, once confirmed, signs out and goes home", async () => {
-  let deleted = false;
-  worker.use(
-    http.delete("*/api/account/profile", () => {
-      deleted = true;
-      return new HttpResponse(null, { status: 204 });
-    }),
-  );
+  it("deleting the account, once confirmed, signs out and goes home", async () => {
+    expect.hasAssertions();
+    let deleted = false;
+    worker.use(
+      http.delete("*/api/account/profile", () => {
+        deleted = true;
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
 
-  const { router, queryClient } = await openProfile();
+    const { router, queryClient } = await openProfile();
 
-  await page.getByRole("button", { name: "Delete account" }).click();
-  await page.getByRole("button", { name: "Yes" }).click();
+    await page.getByRole("button", { name: "Delete account" }).click();
+    await page.getByRole("button", { name: "Yes" }).click();
 
-  await expect.poll(() => router.state.location.pathname).toBe("/");
-  expect(deleted).toBe(true);
-  expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user: null });
-  await expect.element(page.getByText("Аккаунт успешно удален")).toBeVisible();
+    await expect.poll(() => router.state.location.pathname).toBe("/");
+    expect(deleted).toBe(true);
+    expect(queryClient.getQueryData(getCurrentUserQueryKey())).toStrictEqual({ user: null });
+    await expect.element(page.getByText("Аккаунт успешно удален")).toBeVisible();
+  }, 60_000);
 });

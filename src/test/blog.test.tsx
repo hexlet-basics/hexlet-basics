@@ -1,5 +1,5 @@
-import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
+import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type {
   BlogPost,
@@ -13,178 +13,188 @@ import { Route as postRoute } from "@/routes/{-$locale}/blog_posts/$slug";
 import { Route as indexRoute } from "@/routes/{-$locale}/blog_posts/index";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { RenderedRoute } from "@/test/renderRoute";
 
 // The public blog, driven through its real routes with the API faked at the
 // HTTP boundary. Asserted is what a reader sees: the posts, the body, the
 // promoted courses, and what a like answers.
 
 const author: User = {
-  id: 1,
-  firstName: "Alice",
-  lastName: null,
-  name: "Alice",
-  email: "alice@example.com",
   admin: false,
-  canAccessAdmin: false,
   assistantMessagesCount: null,
+  canAccessAdmin: false,
   createdAt: "2026-01-01T00:00:00Z",
   createdAtAsTimestamp: null,
+  email: "alice@example.com",
+  firstName: "Alice",
+  id: 1,
+  lastName: null,
+  name: "Alice",
   type: "user",
 };
 
 function blogPost(overrides: Partial<BlogPost>): BlogPost {
   return {
-    id: 10,
-    creator: author,
-    name: "Hello world",
-    slug: "hello-world",
-    description: "The very first post",
-    state: "published",
-    locale: "en",
-    richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
-    readingTime: 0,
-    likesCount: 2,
-    relatedCourseIds: [1],
     coverUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
+    creator: author,
+    description: "The very first post",
+    id: 10,
+    likesCount: 2,
+    locale: "en",
+    name: "Hello world",
+    readingTime: 0,
+    relatedCourseIds: [1],
+    richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
+    slug: "hello-world",
+    state: "published",
     ...overrides,
   };
 }
 
 const course: Course = {
-  id: 1,
-  slug: "ruby",
-  name: "ruby",
-  learnAs: null,
-  readiness: null,
   categoryId: null,
-  currentVersionId: null,
-  currentVersion: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  enrollmentsCount: 0,
-  lessonsCount: 3,
-  ratingCount: 0,
-  ratingValue: 0,
-  repositoryUrl: null,
-  hexletProgramLandingPage: null,
   coverListVariant: null,
   coverThumbVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+  currentVersion: null,
+  currentVersionId: null,
+  enrollmentsCount: 0,
+  hexletProgramLandingPage: null,
+  id: 1,
+  learnAs: null,
+  lessonsCount: 3,
+  name: "ruby",
+  ratingCount: 0,
+  ratingValue: 0,
+  readiness: null,
+  repositoryUrl: null,
+  slug: "ruby",
 };
 
 const rubyLanding: CourseCatalogItem = {
-  id: 100,
-  slug: "ruby-en",
-  header: "Ruby course",
-  name: "Ruby",
-  locale: "en",
-  enrollmentsCount: 42,
-  duration: 3,
-  coverUrl: null,
   course,
+  coverUrl: null,
+  duration: 3,
+  enrollmentsCount: 42,
+  header: "Ruby course",
+  id: 100,
+  locale: "en",
+  name: "Ruby",
+  slug: "ruby-en",
 };
 
 const post = blogPost({});
-const newer = blogPost({ id: 11, name: "Learning Ruby", slug: "learning-ruby", likesCount: 0 });
-const older = blogPost({ id: 9, name: "Oldest post", slug: "oldest-post", likesCount: 0 });
+const newer = blogPost({ id: 11, likesCount: 0, name: "Learning Ruby", slug: "learning-ruby" });
+const older = blogPost({ id: 9, likesCount: 0, name: "Oldest post", slug: "oldest-post" });
 
 function postView(): BlogPostView {
   return { post, recommendedPosts: [newer, older], relatedLandingPages: [rubyLanding] };
 }
 
-function renderPost(user: User | null = null) {
+function renderPost(user: User | null = null): Promise<RenderedRoute> {
   return renderRoute(postRoute, {
-    path: "/{-$locale}/blog_posts/$slug",
     initialPath: "/blog_posts/hello-world",
+    path: "/{-$locale}/blog_posts/$slug",
     user,
   });
 }
 
-test("the blog lists the posts the API returns", async () => {
-  const list: BlogPostPage = { items: [newer, post], total: 2, page: 1, perPage: 20 };
-  worker.use(http.get("*/api/blog_posts", () => HttpResponse.json(list)));
+describe("blog", () => {
+  it("the blog lists the posts the API returns", async () => {
+    expect.hasAssertions();
+    const list: BlogPostPage = { items: [newer, post], page: 1, perPage: 20, total: 2 };
+    worker.use(http.get("*/api/blog_posts", () => HttpResponse.json(list)));
 
-  const { router } = await renderRoute(indexRoute, {
-    path: "/{-$locale}/blog_posts/",
-    initialPath: "/blog_posts/",
-  });
+    const { router } = await renderRoute(indexRoute, {
+      initialPath: "/blog_posts/",
+      path: "/{-$locale}/blog_posts/",
+    });
 
-  await expect.element(page.getByRole("heading", { name: "Blog", level: 1 })).toBeVisible();
-  await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
-  await expect
-    .element(page.getByRole("link", { name: /Hello world/ }))
-    .toHaveAttribute("href", "/blog_posts/hello-world");
+    await expect.element(page.getByRole("heading", { level: 1, name: "Blog" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
+    await expect
+      .element(page.getByRole("link", { name: /Hello world/u }))
+      .toHaveAttribute("href", "/blog_posts/hello-world");
 
-  // The route's head: legacy title behind the site name, and its Twitter card.
-  const meta = router.state.matches.at(-1)?.meta;
-  expect(meta).toContainEqual({ title: "CodeBasics | Blog" });
-  expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
-  expect(router.state.matches.at(-1)?.links).toContainEqual({
-    rel: "canonical",
-    href: `${window.location.origin}/blog_posts`,
-  });
-});
+    // The route's head: legacy title behind the site name, and its Twitter card.
+    const meta = router.state.matches.at(-1)?.meta;
+    expect(meta).toContainEqual({ title: "CodeBasics | Blog" });
+    expect(meta).toContainEqual({ content: "@hexlet_io", name: "twitter:site" });
+    expect(router.state.matches.at(-1)?.links).toContainEqual({
+      href: `${globalThis.location.origin}/blog_posts`,
+      rel: "canonical",
+    });
+  }, 60_000);
 
-test("a post shows its stored body, its courses and two more posts", async () => {
-  worker.use(http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())));
+  it("a post shows its stored body, its courses and two more posts", async () => {
+    expect.hasAssertions();
+    worker.use(http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())));
 
-  const { router } = await renderPost();
+    const { router } = await renderPost();
 
-  await expect.element(page.getByRole("heading", { name: "Hello world", level: 1 })).toBeVisible();
-  await expect.element(page.getByText("world", { exact: true })).toBeVisible();
-  await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
-  await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
-  await expect.element(page.getByRole("heading", { name: "Oldest post" })).toBeVisible();
+    await expect
+      .element(page.getByRole("heading", { level: 1, name: "Hello world" }))
+      .toBeVisible();
+    await expect.element(page.getByText("world", { exact: true })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Oldest post" })).toBeVisible();
 
-  // The route's head: title, canonical URL and the schema.org Article.
-  const match = router.state.matches.at(-1);
-  expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
-  expect(match?.links).toContainEqual({
-    rel: "canonical",
-    href: `${window.location.origin}/blog_posts/hello-world`,
-  });
-  expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
-});
+    // The route's head: title, canonical URL and the schema.org Article.
+    const match = router.state.matches.at(-1);
+    expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
+    expect(match?.links).toContainEqual({
+      href: `${globalThis.location.origin}/blog_posts/hello-world`,
+      rel: "canonical",
+    });
+    expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
+  }, 60_000);
 
-test("a visitor's like leads to sign-in", async () => {
-  worker.use(http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())));
+  it("a visitor's like leads to sign-in", async () => {
+    expect.hasAssertions();
+    worker.use(http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())));
 
-  await renderPost();
+    await renderPost();
 
-  await expect
-    .element(page.getByRole("link", { name: "like" }).first())
-    .toHaveAttribute("href", "/session/new");
-});
+    await expect
+      .element(page.getByRole("link", { name: "like" }).first())
+      .toHaveAttribute("href", "/session/new");
+  }, 60_000);
 
-test("a repeat like is answered as already counted", async () => {
-  let likes = 0;
-  worker.use(
-    http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())),
-    http.post("*/api/blog_posts/10/likes", () => {
-      likes += 1;
-      // The first like counts; the second changes nothing.
-      return HttpResponse.json({ ...post, likesCount: 3 }, { status: 201 });
-    }),
-  );
+  it("a repeat like is answered as already counted", async () => {
+    expect.hasAssertions();
+    let likes = 0;
+    worker.use(
+      http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())),
+      http.post("*/api/blog_posts/10/likes", () => {
+        likes += 1;
+        // The first like counts; the second changes nothing.
+        return HttpResponse.json({ ...post, likesCount: 3 }, { status: 201 });
+      }),
+    );
 
-  await renderPost(author);
+    await renderPost(author);
 
-  const like = page.getByRole("button", { name: "like" }).first();
-  await like.click();
-  await expect.element(page.getByText("Спасибо за лайк!")).toBeVisible();
+    const like = page.getByRole("button", { name: "like" }).first();
+    await like.click();
+    await expect.element(page.getByText("Спасибо за лайк!")).toBeVisible();
 
-  await like.click();
-  await expect.element(page.getByText("Ваш лайк уже засчитан :)")).toBeVisible();
-  expect(likes).toBe(2);
-});
+    await like.click();
+    await expect.element(page.getByText("Ваш лайк уже засчитан :)")).toBeVisible();
+    expect(likes).toBe(2);
+  }, 60_000);
 
-test("a post that is not published here is not found", async () => {
-  worker.use(
-    http.get("*/api/blog_posts/hello-world", () =>
-      HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
-    ),
-  );
+  it("a post that is not published here is not found", async () => {
+    expect.hasAssertions();
+    worker.use(
+      http.get("*/api/blog_posts/hello-world", () =>
+        HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
+      ),
+    );
 
-  await renderPost();
+    await renderPost();
 
-  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+  }, 60_000);
 });

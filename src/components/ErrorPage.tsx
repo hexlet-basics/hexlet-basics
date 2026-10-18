@@ -1,39 +1,39 @@
 import { Container, Stack, Text, Title } from "@mantine/core";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
+import { HTTP_FORBIDDEN, HTTP_NOT_FOUND, HTTP_SERVER_ERROR } from "@/lib/http-status";
+import type { ReactElement } from "react";
 
-// The HTTP errors that have their own wording; any other code reads the
-// generic one.
-type ErrorCode = 403 | 404 | 500;
-
-// Typed selectors cannot take a runtime key, so each code names its strings.
+// Typed selectors cannot take a runtime key, so each code names its strings. The
+// HTTP errors that have their own wording are the cases; any other code reads
+// the generic one.
 // The generic description falls back to the generic *header*, as legacy
 // errors#show did (`default: codes.other.header`); `codes.other.description`
 // was never shown.
 function errorText(t: TFunction, code: number): { header: string; description: string } {
-  switch (code as ErrorCode) {
-    case 403: {
+  switch (code) {
+    case HTTP_FORBIDDEN: {
       return {
-        header: t(($) => $.errors.show.codes["403"].header),
         description: t(($) => $.errors.show.codes["403"].description),
+        header: t(($) => $.errors.show.codes["403"].header),
       };
     }
-    case 404: {
+    case HTTP_NOT_FOUND: {
       return {
-        header: t(($) => $.errors.show.codes["404"].header),
         description: t(($) => $.errors.show.codes["404"].description),
+        header: t(($) => $.errors.show.codes["404"].header),
       };
     }
-    case 500: {
+    case HTTP_SERVER_ERROR: {
       return {
-        header: t(($) => $.errors.show.codes["500"].header),
         description: t(($) => $.errors.show.codes["500"].description),
+        header: t(($) => $.errors.show.codes["500"].header),
       };
     }
     default: {
       return {
-        header: t(($) => $.errors.show.codes.other.header),
         description: t(($) => $.errors.show.codes.other.header),
+        header: t(($) => $.errors.show.codes.other.header),
       };
     }
   }
@@ -42,7 +42,7 @@ function errorText(t: TFunction, code: number): { header: string; description: s
 // The error page, ported from legacy errors/show: the code, a header and what
 // to do about it. The status line itself is the router's: a not-found match
 // answers 404 and a failed load 500.
-function ErrorPage({ code }: { code: number }) {
+function ErrorPage({ code }: { code: number }): ReactElement {
   const { t } = useTranslation();
   const { header, description } = errorText(t, code);
 
@@ -61,14 +61,14 @@ function ErrorPage({ code }: { code: number }) {
 // legacy's web pages redirected a visitor without access (the admin guards
 // still do), and its API's `head :forbidden` carried no page. The page is here
 // for the first surface that refuses rather than redirects.
-export function ForbiddenPage() {
+export function ForbiddenPage(): ReactElement {
   return <ErrorPage code={403} />;
 }
 
-export function NotFoundPage() {
+export function NotFoundPage(): ReactElement {
   return <ErrorPage code={404} />;
 }
 
-export function ServerErrorPage() {
+export function ServerErrorPage(): ReactElement {
   return <ErrorPage code={500} />;
 }

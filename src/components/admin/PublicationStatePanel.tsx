@@ -2,6 +2,7 @@ import { Badge, Button, Card, Group, Title } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { transitionsFrom } from "@/lib/publicationState";
 import type { PublicationState, StateTransition } from "@/lib/publicationState";
+import type { ReactElement } from "react";
 
 // What the panel needs of one transition's mutation: the generated mutation of
 // that operation, wired by the resource's own panel.
@@ -27,12 +28,12 @@ export function PublicationStatePanel({
   state: PublicationState;
   stateLabel: string;
   mutations: Record<StateTransition, StateMutation>;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const actions: Record<StateTransition, { label: string; color: string }> = {
-    publish: { label: t(($) => $.admin.publicationState.publish), color: "green" },
-    unpublish: { label: t(($) => $.admin.publicationState.unpublish), color: "gray" },
-    archive: { label: t(($) => $.admin.publicationState.archive), color: "red" },
+    archive: { color: "red", label: t(($) => $.admin.publicationState.archive) },
+    publish: { color: "green", label: t(($) => $.admin.publicationState.publish) },
+    unpublish: { color: "gray", label: t(($) => $.admin.publicationState.unpublish) },
   };
 
   return (
@@ -49,7 +50,9 @@ export function PublicationStatePanel({
               variant="light"
               color={actions[name].color}
               loading={mutations[name].isPending}
-              onClick={() => mutations[name].mutate({ path: { id } })}
+              onClick={() => {
+                mutations[name].mutate({ path: { id } });
+              }}
             >
               {actions[name].label}
             </Button>

@@ -13,13 +13,14 @@ import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
   validateSearch: zAdminListRolesQuery,
   component: RolesList,
 });
 
-function RolesList() {
+function RolesList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({
@@ -42,10 +43,10 @@ function RolesList() {
       header: t(($) => $.models.attributes.staff_role.permissions_count),
     },
     list.actionsColumn({
+      describe: (row) => row.name,
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/management/roles/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.name,
     }),
   ];
 

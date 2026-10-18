@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
+import type { ReactElement } from "react";
 
 // Management users (legacy `/admin/management/users`) — list + edit only,
 // no create/delete (parity with legacy: accounts are self-registered).
@@ -19,13 +20,13 @@ export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
   component: ManagementUsersList,
 });
 
-function ManagementUsersList() {
+function ManagementUsersList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({
     list: adminListManagementUsersOptions,
-    searchable: true,
     listKey: adminListManagementUsersQueryKey,
+    searchable: true,
   });
 
   const columns: CrudColumnDef<UserCrud>[] = [
@@ -42,15 +43,15 @@ function ManagementUsersList() {
       header: t(($) => $.models.attributes.user.last_name),
     },
     {
-      id: "admin",
-      header: t(($) => $.models.attributes.user.admin),
       cell: ({ row }) => (row.original.admin ? "✓" : ""),
+      header: t(($) => $.models.attributes.user.admin),
+      id: "admin",
     },
     list.actionsColumn({
+      describe: (row) => row.email ?? "",
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/management/users/$id" params={{ id: String(row.id) }} />
       ),
-      describe: (row) => row.email ?? "",
     }),
   ];
 

@@ -3,6 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { consumeMagicLink } from "@/client/sdk.gen";
 import { isApiError } from "@/lib/api-error";
 import { onIdentityChanged } from "@/lib/identity";
+import { HTTP_NOT_FOUND } from "@/lib/http-status";
 
 // The emailed Magic Link (legacy magic_links#show). Following it signs the
 // visitor in and takes them home; a refused link — expired, forged, outlived by
@@ -13,7 +14,6 @@ import { onIdentityChanged } from "@/lib/identity";
 // cookie, and a server-side fetch would keep that cookie in the Node process
 // instead of handing it to the visitor.
 export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
-  ssr: false,
   loader: async ({ context, params }) => {
     try {
       const { data: user } = await consumeMagicLink({
@@ -30,15 +30,16 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
         message: context.i18n.t(($) => $.flash.application.base.success),
       });
     } catch (error) {
-      if (isApiError(error, 404)) {
+      if (isApiError(error, HTTP_NOT_FOUND)) {
         throw redirect({
-          to: "/{-$locale}/magic_links/new",
           params: { locale: params.locale },
           search: { invalid: true },
+          to: "/{-$locale}/magic_links/new",
         });
       }
       throw error;
     }
-    throw redirect({ to: "/{-$locale}", params: { locale: params.locale } });
+    throw redirect({ params: { locale: params.locale }, to: "/{-$locale}" });
   },
+  ssr: false,
 });

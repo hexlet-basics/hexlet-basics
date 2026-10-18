@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { Banner, CourseLandingPage, Review } from "@/client/types.gen";
@@ -9,9 +9,10 @@ import { Route as landingEditRoute } from "@/routes/{-$locale}/admin/course_land
 import { Route as landingListRoute } from "@/routes/{-$locale}/admin/course_landing_pages/index";
 import { Route as reviewEditRoute } from "@/routes/{-$locale}/admin/reviews/$id";
 import { Route as reviewListRoute } from "@/routes/{-$locale}/admin/reviews/index";
-import { admin } from "@/test/fixtures";
+import { admin, eva, ruby } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import type { Locator } from "vitest/browser";
 
 // The Publication State of a banner, a review and a landing page is changed by
 // action buttons, one per operation, never by the form (the same pattern as the
@@ -20,60 +21,59 @@ import { renderRoute } from "@/test/renderRoute";
 // that operation and the record shown is the one it answered with.
 
 const banner = (state: PublicationState): Banner => ({
+  background: "cta_gradient",
+  body: "Promo",
+  createdAt: "2026-01-01T00:00:00Z",
+  finishesAt: null,
   id: 7,
   locale: "en",
-  body: "Promo",
-  url: null,
-  background: "cta_gradient",
-  state,
   startsAt: null,
-  finishesAt: null,
-  createdAt: "2026-01-01T00:00:00Z",
+  state,
+  url: null,
 });
 
 // The embedded account and course are only read for their name and slug.
-const review = (state: PublicationState) =>
-  ({
-    id: 7,
-    user: { id: 1, firstName: "Eva", lastName: null, name: "Eva" },
-    course: { slug: "ruby" },
-    userId: 1,
-    courseId: 2,
-    body: "Great course",
-    firstName: "Eva",
-    lastName: null,
-    fullName: "Eva",
-    state,
-    locale: "en",
-    pinned: false,
-    createdAt: "2026-01-01T00:00:00Z",
-  }) as unknown as Review;
+const review = (state: PublicationState): Review => ({
+  body: "Great course",
+  course: ruby,
+  courseId: 2,
+  createdAt: "2026-01-01T00:00:00Z",
+  firstName: "Eva",
+  fullName: "Eva",
+  id: 7,
+  lastName: null,
+  locale: "en",
+  pinned: false,
+  state,
+  user: eva,
+  userId: 1,
+});
 
 const landing = (state: PublicationState): CourseLandingPage => ({
-  id: 7,
   courseId: 2,
   courseSlug: "ruby",
   createdAt: "2026-01-01T00:00:00Z",
-  slug: "ruby-ru",
-  name: "Ruby",
-  main: false,
-  listed: true,
-  state,
-  order: null,
-  footer: false,
-  footerName: null,
-  landingPageToRedirectId: null,
-  metaTitle: "Ruby",
-  metaDescription: "Ruby course",
-  header: "Ruby",
   description: "About Ruby",
-  usedInHeader: null,
-  usedInDescription: null,
-  outcomesHeader: null,
-  outcomesDescription: null,
-  outcomesImage: null,
   duration: 10,
   enrollmentsCount: 0,
+  footer: false,
+  footerName: null,
+  header: "Ruby",
+  id: 7,
+  landingPageToRedirectId: null,
+  listed: true,
+  main: false,
+  metaDescription: "Ruby course",
+  metaTitle: "Ruby",
+  name: "Ruby",
+  order: null,
+  outcomesDescription: null,
+  outcomesHeader: null,
+  outcomesImage: null,
+  slug: "ruby-ru",
+  state,
+  usedInDescription: null,
+  usedInHeader: null,
 });
 
 interface Subject {
@@ -88,88 +88,96 @@ interface Subject {
 
 const subjects: Subject[] = [
   {
-    name: "banner",
-    resource: "banners",
-    record: banner,
     edit: () =>
       renderRoute(bannerEditRoute, {
-        path: "/{-$locale}/admin/banners/$id",
         initialPath: "/admin/banners/7",
+        path: "/{-$locale}/admin/banners/$id",
         user: admin,
       }),
     list: () =>
       renderRoute(bannerListRoute, {
-        path: "/{-$locale}/admin/banners/",
         initialPath: "/admin/banners",
+        path: "/{-$locale}/admin/banners/",
         user: admin,
       }),
+    name: "banner",
     nameLabel: "Text (Markdown) *",
+    record: banner,
+    resource: "banners",
   },
   {
-    name: "review",
-    resource: "reviews",
-    record: review,
     edit: () =>
       renderRoute(reviewEditRoute, {
-        path: "/{-$locale}/admin/reviews/$id",
         initialPath: "/admin/reviews/7",
+        path: "/{-$locale}/admin/reviews/$id",
         user: admin,
       }),
     list: () =>
       renderRoute(reviewListRoute, {
-        path: "/{-$locale}/admin/reviews/",
         initialPath: "/admin/reviews",
+        path: "/{-$locale}/admin/reviews/",
         user: admin,
       }),
+    name: "review",
     nameLabel: "Review *",
+    record: review,
+    resource: "reviews",
   },
   {
-    name: "course landing page",
-    resource: "course_landing_pages",
-    record: landing,
     edit: () =>
       renderRoute(landingEditRoute, {
-        path: "/{-$locale}/admin/course_landing_pages/$id",
         initialPath: "/admin/course_landing_pages/7",
+        path: "/{-$locale}/admin/course_landing_pages/$id",
         user: admin,
       }),
     list: () =>
       renderRoute(landingListRoute, {
-        path: "/{-$locale}/admin/course_landing_pages/",
         initialPath: "/admin/course_landing_pages",
+        path: "/{-$locale}/admin/course_landing_pages/",
         user: admin,
       }),
+    name: "course landing page",
     nameLabel: "Name *",
+    record: landing,
+    resource: "course_landing_pages",
   },
 ];
 
 // The edit screens of the landing page also load its FAQ and nothing else.
 const noQna = http.get("*/admin/course_landing_pages/7/qna_items", () => HttpResponse.json([]));
 
-const button = (name: string) => page.getByRole("button", { name, exact: true });
+const button = (name: string): Locator => page.getByRole("button", { exact: true, name });
 
 describe.each(subjects)("the $name admin screens", (subject) => {
   it.each<[PublicationState, string[], string[]]>([
     ["draft", ["Publish", "Archive"], ["Unpublish"]],
     ["published", ["Unpublish", "Archive"], ["Publish"]],
     ["archived", ["Publish"], ["Unpublish", "Archive"]],
-  ])("a %s record offers only the transitions legal for it", async (state, offered, hidden) => {
-    worker.use(
-      noQna,
-      http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record(state))),
-    );
+  ])(
+    "a %s record offers only the transitions legal for it",
+    async (state, offered, hidden) => {
+      expect.hasAssertions();
+      worker.use(
+        noQna,
+        http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record(state))),
+      );
 
-    await subject.edit();
+      await subject.edit();
 
-    for (const name of offered) {
-      await expect.element(button(name)).toBeVisible();
-    }
-    for (const name of hidden) {
-      await expect.element(button(name)).not.toBeInTheDocument();
-    }
-  });
+      await Promise.all([
+        ...offered.map(async (name) => {
+          await expect.element(button(name)).toBeVisible();
+        }),
+        ...hidden.map(async (name) => {
+          await expect.element(button(name)).not.toBeInTheDocument();
+        }),
+      ]);
+    },
+    60_000,
+  );
 
   it("the form has no state field", async () => {
+    expect.hasAssertions();
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
@@ -179,9 +187,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
 
     await expect.element(page.getByLabelText(subject.nameLabel)).toBeVisible();
     await expect.element(page.getByLabelText("State")).not.toBeInTheDocument();
-  });
+  }, 60_000);
 
   it("publishing calls the publish operation and shows the new state", async () => {
+    expect.hasAssertions();
     let state: PublicationState = "draft";
     let published = false;
     worker.use(
@@ -201,9 +210,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     expect(published).toBe(true);
     await expect.element(button("Unpublish")).toBeVisible();
     await expect.element(button("Publish")).not.toBeInTheDocument();
-  });
+  }, 60_000);
 
   it("archiving and unpublishing call their own operations", async () => {
+    expect.hasAssertions();
     const called: string[] = [];
     let state: PublicationState = "published";
     worker.use(
@@ -228,14 +238,15 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await expect.element(button("Unpublish")).not.toBeInTheDocument();
 
     expect(called).toStrictEqual(["unpublish", "archive"]);
-  });
+  }, 60_000);
 
   it("a refused transition tells the admin and keeps the state", async () => {
+    expect.hasAssertions();
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
       http.post(`*/admin/${subject.resource}/7/publish`, () =>
-        HttpResponse.json({ type: "about:blank", title: "Conflict", status: 409 }, { status: 409 }),
+        HttpResponse.json({ status: 409, title: "Conflict", type: "about:blank" }, { status: 409 }),
       ),
     );
 
@@ -244,16 +255,17 @@ describe.each(subjects)("the $name admin screens", (subject) => {
 
     await expect.element(page.getByText("Could not change the state")).toBeVisible();
     await expect.element(button("Publish")).toBeVisible();
-  });
+  }, 60_000);
 
   it("the list shows each record's state", async () => {
+    expect.hasAssertions();
     worker.use(
       http.get(`*/admin/${subject.resource}`, () =>
         HttpResponse.json({
           items: [subject.record("archived")],
-          total: 1,
           page: 1,
           perPage: 25,
+          total: 1,
         }),
       ),
     );
@@ -261,5 +273,5 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await subject.list();
 
     await expect.element(page.getByRole("cell", { name: "Archived" })).toBeVisible();
-  });
+  }, 60_000);
 });

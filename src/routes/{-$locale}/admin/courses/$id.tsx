@@ -14,12 +14,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { courseToForm, useCourseFields } from "@/components/admin/resources/course";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/courses/$id")({
   component: EditCourse,
 });
 
-function EditCourse() {
+function EditCourse(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseFields();
@@ -28,17 +29,17 @@ function EditCourse() {
 
   const { data, isLoading } = useQuery(adminGetCourseOptions({ path: { id: courseId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/courses" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateCourseMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCoursesQueryKey(), adminGetCourseQueryKey({ path: { id: courseId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateCourseMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +54,7 @@ function EditCourse() {
             fields={fields}
             schema={zCourseInput}
             defaultValues={courseToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: courseId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: courseId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

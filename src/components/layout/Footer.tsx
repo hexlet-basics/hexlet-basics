@@ -12,12 +12,16 @@ import {
 import { IconBrandGithub, IconBrandYoutube, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import {
   listCoursesOptions,
   listPublicCourseCategoriesOptions,
 } from "@/client/@tanstack/react-query.gen";
+
+// The legal address of the company that runs the Russian site.
+const COMPANY_ADDRESS =
+  "108813 г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3";
 
 // Split a list into `count` roughly-equal chunks (replaces legacy es-toolkit
 // `chunk`, which isn't a dependency of the Go stack).
@@ -26,15 +30,15 @@ function chunk<T>(items: T[], size: number): T[][] {
     return [items];
   }
   const result: T[][] = [];
-  for (let i = 0; i < items.length; i += size) {
-    result.push(items.slice(i, i + size));
+  for (let start = 0; start < items.length; start += size) {
+    result.push(items.slice(start, start + size));
   }
   return result;
 }
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-export default function Footer() {
+export default function Footer(): ReactElement {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
   const { data: categories } = useQuery(listPublicCourseCategoriesOptions());
@@ -69,7 +73,7 @@ export default function Footer() {
             </Stack>
 
             {landingGroups.map((group, index) => (
-              <Stack key={index} gap="sm">
+              <Stack key={group.map((lp) => lp.id).join("-")} gap="sm">
                 <Text fw="bold" fz="sm">
                   {t(($) => $.layouts.shared.footer.courses, {
                     group: String(index + 1),
@@ -127,40 +131,7 @@ export default function Footer() {
 
           <SimpleGrid cols={{ base: 2, sm: 4 }}>
             <Stack>
-              <Group align="top">
-                <Anchor
-                  variant="nav"
-                  href="https://github.com/hexlet-basics"
-                  underline="never"
-                  aria-label="Project Repository On GitHub"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <IconBrandGithub />
-                </Anchor>
-                <Tooltip label={t(($) => $.common.telegram_channel)}>
-                  <Anchor
-                    variant="nav"
-                    href="https://t.me/hexlet_ru"
-                    underline="never"
-                    aria-label={t(($) => $.common.telegram_channel)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <IconSend />
-                  </Anchor>
-                </Tooltip>
-                <Anchor
-                  variant="nav"
-                  href="https://www.youtube.com/@HexletOrg"
-                  underline="never"
-                  aria-label="Youtube Channel"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <IconBrandYoutube />
-                </Anchor>
-              </Group>
+              <SocialLinks />
               <Anchor variant="nav" href="mailto:support@hexlet.io">
                 support@hexlet.io
               </Anchor>
@@ -195,10 +166,7 @@ export default function Footer() {
                 >
                   ООО «Хекслет Рус»
                 </Anchor>
-                <Text fz="sm">
-                  108813 г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д.
-                  3А, стр. 1, помещ. 10/3
-                </Text>
+                <Text fz="sm">{COMPANY_ADDRESS}</Text>
                 <Text fz="sm">ОГРН 1217300010476</Text>
               </Stack>
             )}
@@ -210,7 +178,7 @@ export default function Footer() {
 }
 
 // A link to one of the static pages (`/pages/:id`).
-function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
+function PageLink({ id, children }: PropsWithChildren<{ id: string }>): ReactElement {
   return (
     <Anchor
       variant="nav"
@@ -219,5 +187,47 @@ function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
     >
       {children}
     </Anchor>
+  );
+}
+
+// The project's repository, its Telegram channel and its Youtube channel.
+function SocialLinks(): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Group align="top">
+      <Anchor
+        variant="nav"
+        href="https://github.com/hexlet-basics"
+        underline="never"
+        aria-label="Project Repository On GitHub"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <IconBrandGithub />
+      </Anchor>
+      <Tooltip label={t(($) => $.common.telegram_channel)}>
+        <Anchor
+          variant="nav"
+          href="https://t.me/hexlet_ru"
+          underline="never"
+          aria-label={t(($) => $.common.telegram_channel)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <IconSend />
+        </Anchor>
+      </Tooltip>
+      <Anchor
+        variant="nav"
+        href="https://www.youtube.com/@HexletOrg"
+        underline="never"
+        aria-label="Youtube Channel"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <IconBrandYoutube />
+      </Anchor>
+    </Group>
   );
 }

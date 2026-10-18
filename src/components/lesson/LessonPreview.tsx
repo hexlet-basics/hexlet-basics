@@ -1,5 +1,6 @@
 import { Box, Divider, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import type { ReactElement } from "react";
 
 // The learner's markup, rendered under the editor as they type it.
 //
@@ -13,7 +14,7 @@ import { useTranslation } from "react-i18next";
 //
 // The workspace imports this lazily, so a course without a preview never
 // fetches it.
-export default function LessonPreview({ code }: { code: string }) {
+export default function LessonPreview({ code }: { code: string }): ReactElement {
   const { t } = useTranslation();
 
   return (

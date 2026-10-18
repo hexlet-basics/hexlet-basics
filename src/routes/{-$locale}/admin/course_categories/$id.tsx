@@ -22,12 +22,13 @@ import {
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/$id")({
   component: EditCourseCategory,
 });
 
-function EditCourseCategory() {
+function EditCourseCategory(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();
@@ -36,20 +37,20 @@ function EditCourseCategory() {
 
   const { data, isLoading } = useQuery(adminGetCourseCategoryOptions({ path: { id: categoryId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_categories" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateCourseCategoryMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [
       adminListCourseCategoriesQueryKey(),
       adminGetCourseCategoryQueryKey({ path: { id: categoryId } }),
     ],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateCourseCategoryMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   // Nested FAQ (legacy `admin/course_categories/:id/qna_items`).
@@ -57,22 +58,22 @@ function EditCourseCategory() {
   const qna = useQuery(adminListCategoryQnaItemsOptions(qnaPath));
   const qnaInvalidate = [adminListCategoryQnaItemsQueryKey(qnaPath)];
   const createQna = useResourceMutation({
-    mutation: adminCreateCategoryQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: qnaInvalidate,
+    mutation: adminCreateCategoryQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.created),
   });
   const updateQna = useResourceMutation({
-    mutation: adminUpdateCategoryQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: qnaInvalidate,
+    mutation: adminUpdateCategoryQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.updated),
   });
   const deleteQna = useResourceMutation({
-    mutation: adminDeleteCategoryQnaItemMutation(),
-    invalidate: qnaInvalidate,
-    successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
+    invalidate: qnaInvalidate,
+    mutation: adminDeleteCategoryQnaItemMutation(),
+    successMessage: t(($) => $.admin.crud.deleted),
   });
 
   return (
@@ -89,17 +90,21 @@ function EditCourseCategory() {
             fields={fields}
             schema={zCourseCategoryInput}
             defaultValues={courseCategoryToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: categoryId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: categoryId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />
           <QnaPanel
             items={qna.data ?? []}
-            onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
-            onUpdate={(itemId, input) =>
-              updateQna.mutate({ path: { categoryId, id: itemId }, body: input })
-            }
-            onDelete={(itemId) => deleteQna.mutate({ path: { categoryId, id: itemId } })}
+            onCreate={(input) => {
+              createQna.mutate({ ...qnaPath, body: input });
+            }}
+            onUpdate={(itemId, input) => {
+              updateQna.mutate({ body: input, path: { categoryId, id: itemId } });
+            }}
+            onDelete={(itemId) => {
+              deleteQna.mutate({ path: { categoryId, id: itemId } });
+            }}
             isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
           />
         </>

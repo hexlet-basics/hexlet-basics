@@ -3,7 +3,7 @@ import { modals } from "@mantine/modals";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
 import { useLocation, useRouteContext } from "@tanstack/react-router";
 import type { RegisteredRouter, ValidateLinkOptions } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { CourseLessonView, LessonRef } from "@/client/types.gen";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
@@ -27,7 +27,7 @@ export default function LessonControls({
   onReset: () => void;
   onRun: () => void;
   running: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const user = useRouteContext({ from: "__root__", select: (context) => context.user });
   const courseSlug = view.lesson.course.slug;
@@ -39,11 +39,11 @@ export default function LessonControls({
 
   // Resetting throws away whatever the learner has written, and there is no undo
   // once the buffer is overwritten — so it asks first.
-  const confirmReset = () =>
+  const confirmReset = (): string =>
     modals.openConfirmModal({
-      title: t(($) => $.common.confirm),
-      labels: { confirm: t(($) => $.common.boolean.yes), cancel: t(($) => $.common.boolean.no) },
+      labels: { cancel: t(($) => $.common.boolean.no), confirm: t(($) => $.common.boolean.yes) },
       onConfirm: onReset,
+      title: t(($) => $.common.confirm),
     });
 
   return (
@@ -69,8 +69,8 @@ export default function LessonControls({
             enabled={Boolean(prevLesson)}
             label={t(($) => $.courses.lessons.show.prev)}
             linkOptions={{
+              params: { lessonSlug: prevLesson?.slug ?? "", slug: courseSlug },
               to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-              params: { slug: courseSlug, lessonSlug: prevLesson?.slug ?? "" },
             }}
           />
 
@@ -109,7 +109,7 @@ function ForwardButton({
   view: CourseLessonView;
   nextLesson: LessonRef | undefined;
   passed: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const courseSlug = view.lesson.course.slug;
   // Next starts the following lesson and only then goes there.
@@ -125,7 +125,7 @@ function ForwardButton({
         label={t(($) => $.courses.lessons.show.finish)}
         linkOptions={
           view.landingPage
-            ? { to: "/{-$locale}/languages/$slug/success", params: { slug: view.landingPage.slug } }
+            ? { params: { slug: view.landingPage.slug }, to: "/{-$locale}/languages/$slug/success" }
             : { to: "/{-$locale}/languages" }
         }
       />
@@ -138,7 +138,9 @@ function ForwardButton({
       color="green"
       disabled={!passed}
       loading={isPending}
-      onClick={() => enter(nextLesson)}
+      onClick={() => {
+        enter(nextLesson);
+      }}
     >
       {t(($) => $.courses.lessons.show.next)}
     </Button>
@@ -147,7 +149,7 @@ function ForwardButton({
 
 // Where Next sits for a guest, as in legacy: a link to sign up, carrying the
 // way back to this lesson, and unavailable until the lesson is passed.
-function GuestSignUp({ passed }: { passed: boolean }) {
+function GuestSignUp({ passed }: { passed: boolean }): ReactElement {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
 
@@ -155,7 +157,7 @@ function GuestSignUp({ passed }: { passed: boolean }) {
     <StepLink
       enabled={passed}
       label={t(($) => $.courses.lessons.show.next)}
-      linkOptions={{ to: "/{-$locale}/users/new", search: { redirect } }}
+      linkOptions={{ search: { redirect }, to: "/{-$locale}/users/new" }}
     />
   );
 }

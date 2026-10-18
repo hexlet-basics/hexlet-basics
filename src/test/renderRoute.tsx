@@ -1,12 +1,13 @@
 import { QueryClient } from "@tanstack/react-query";
 import {
+  RouterProvider,
   createMemoryHistory,
   createRootRouteWithContext,
   createRoute,
   createRouter,
-  RouterProvider,
 } from "@tanstack/react-router";
-import type { AnyRoute } from "@tanstack/react-router";
+import type { AnyRoute, AnyRouter } from "@tanstack/react-router";
+import type { RenderResult } from "vitest-browser-react";
 import type { ReactNode } from "react";
 import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import { Route as localeLayoutRoute } from "@/routes/{-$locale}";
@@ -20,15 +21,23 @@ import { renderWithProviders } from "./renderWithProviders";
 
 // The application's file routes carry their parents from the generated tree, so
 // each is rebuilt here from its own options under the parent the test gives it.
-const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string) =>
+const make = (fileRoute: AnyRoute, parent: AnyRoute, pattern: string): AnyRoute =>
   createRoute({
-    ...(fileRoute.options as object),
+    ...fileRoute.options,
     getParentRoute: () => parent,
     path: pattern,
-  } as never) as AnyRoute;
+  });
 
-const under = (pattern: string, prefix: string) =>
+const under = (pattern: string, prefix: string): boolean =>
   pattern === prefix || pattern.startsWith(`${prefix}/`);
+
+// What a test gets back from mounting a route: the client its loaders filled, the
+// router it can read the location and matches from, and the rendered page.
+export interface RenderedRoute {
+  queryClient: QueryClient;
+  router: AnyRouter;
+  screen: RenderResult;
+}
 
 // Mounts a real file route — its loader, its component, its staticData — at a
 // real URL, under a synthetic root.
@@ -70,15 +79,19 @@ export async function renderRoute(
     // path pattern, for a test that follows the page into another one.
     also?: { route: AnyRoute; path: string }[];
   },
-) {
+): Promise<RenderedRoute> {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { ...queryDefaults.queries, retry: false },
       mutations: { retry: false },
+      queries: { ...queryDefaults.queries, retry: false },
     },
   });
 
-  const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()();
+  const rootRoute = createRootRouteWithContext<{
+    i18n: ReturnType<typeof createI18n>;
+    queryClient: QueryClient;
+    user: AuthUser | null;
+  }>()();
   // The application's own layouts, outermost first: the `{-$locale}` layout (site
   // chrome, locale check) and, under it, the admin layout (its guard). A page is
   // mounted as a child of the deepest layout its path is under, so the chrome and
@@ -92,7 +105,7 @@ export async function renderRoute(
   const top: AnyRoute[] = [];
   const inLocale: AnyRoute[] = [adminLayout];
   const inAdmin: AnyRoute[] = [];
-  const mount = (fileRoute: AnyRoute, pattern: string) => {
+  const mount = (fileRoute: AnyRoute, pattern: string): void => {
     if (under(pattern, ADMIN)) {
       inAdmin.push(make(fileRoute, adminLayout, pattern.slice(ADMIN.length) || "/"));
     } else if (under(pattern, LOCALE)) {
@@ -105,8 +118,8 @@ export async function renderRoute(
   for (const extra of also) {
     mount(extra.route, extra.path);
   }
-  adminLayout.addChildren(inAdmin as never[]);
-  layout.addChildren(inLocale as never[]);
+  adminLayout.addChildren(inAdmin);
+  layout.addChildren(inLocale);
 
   // The locale layout switches the router's i18n to the URL's locale before a
   // route's head runs; the synthetic root has no such layout, so it is done here.
@@ -114,21 +127,21 @@ export async function renderRoute(
   await i18n.changeLanguage(locale ?? localeOf(initialPath));
 
   const router = createRouter({
-    routeTree: rootRoute.addChildren([...top, layout] as never[]),
-    context: { queryClient, i18n, user } as never,
-    history: createMemoryHistory({ initialEntries: [initialPath] }),
-    // Links preload on hover, as in getRouter.
-    defaultPreload: "intent",
+    context: { i18n, queryClient, user },
+    defaultErrorComponent: ServerErrorPage,
     // The application's error pages, as getRouter sets them.
     defaultNotFoundComponent: NotFoundPage,
-    defaultErrorComponent: ServerErrorPage,
+    // Links preload on hover, as in getRouter.
+    defaultPreload: "intent",
+    history: createMemoryHistory({ initialEntries: [initialPath] }),
+    routeTree: rootRoute.addChildren([...top, layout]),
   });
 
   const screen = await renderWithProviders(
-    wrap(<RouterProvider router={router as never} />),
+    wrap(<RouterProvider router={router} />),
     queryClient,
     i18n,
   );
 
-  return { screen, router, queryClient };
+  return { queryClient, router, screen };
 }

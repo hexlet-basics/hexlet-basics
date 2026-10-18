@@ -1,7 +1,7 @@
 import {
   ActionIcon,
-  Avatar,
   Anchor,
+  Avatar,
   Box,
   Burger,
   Button,
@@ -33,9 +33,9 @@ import {
   IconPlugConnected,
   IconRocket,
   IconSchool,
+  IconShieldCog,
   IconSun,
   IconTarget,
-  IconShieldCog,
   IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -50,6 +50,7 @@ import {
 import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
 import { onIdentityChanged } from "@/lib/identity";
 import { localize } from "@/lib/locale-path";
+import type { ReactElement } from "react";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
 // Query hooks — the current user from `GET /me` (getCurrentUserOptions) and the
@@ -61,15 +62,15 @@ import { localize } from "@/lib/locale-path";
 // The top-bar controls, as Mantine's header examples do them: a subtle button
 // whose hover is a background tint, not an underline, and which keeps a focus
 // ring. `gray` keeps the label in the body text colour in both schemes.
-const navButtonProps = { variant: "subtle", color: "gray", c: "inherit", fw: 500 } as const;
+const navButtonProps = { c: "inherit", color: "gray", fw: 500, variant: "subtle" } as const;
 
-function NavButton(props: ButtonProps) {
+function NavButton(props: ButtonProps): ReactElement {
   return <Button {...navButtonProps} {...props} />;
 }
 
 const NavButtonLink: typeof ButtonLink = (props) => <ButtonLink {...navButtonProps} {...props} />;
 
-export default function Header() {
+export default function Header(): ReactElement {
   const { i18n } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
   const { data } = useQuery(listCoursesOptions());
@@ -124,7 +125,7 @@ function useCurrentUser(): User | null {
   return data?.user ?? null;
 }
 
-function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
+function CourseMenu({ courses }: { courses: CourseCatalogItem[] }): ReactElement {
   const { t } = useTranslation();
 
   return (
@@ -186,7 +187,7 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
   );
 }
 
-function AuthLinks() {
+function AuthLinks(): ReactElement {
   const user = useCurrentUser();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -264,7 +265,12 @@ function AuthLinks() {
           </Menu.Item>
         )}
         <Menu.Divider />
-        <Menu.Item leftSection={<IconLogout2 size={16} />} onClick={() => logout({})}>
+        <Menu.Item
+          leftSection={<IconLogout2 size={16} />}
+          onClick={() => {
+            logout({});
+          }}
+        >
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
       </Menu.Dropdown>
@@ -283,13 +289,13 @@ const LOCALES = [
   { code: "es", label: "Español" },
 ] as const;
 
-function LocaleSwitcher() {
+function LocaleSwitcher(): ReactElement {
   const { i18n } = useTranslation();
   const { pathname, searchStr } = useLocation();
 
-  const hrefFor = (code: Locale) => localize(pathname, code) + searchStr;
+  const hrefFor = (code: Locale): string => localize(pathname, code) + searchStr;
 
-  const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
+  const current = LOCALES.find((locale) => locale.code === i18n.language) ?? LOCALES[0];
 
   return (
     <Menu shadow="md" width={160}>
@@ -311,15 +317,19 @@ function LocaleSwitcher() {
 // (Mantine's `mantine-light-hidden`/`mantine-dark-hidden`): the server cannot know the browser's scheme, so
 // choosing the icon in JS would differ between the server and the first client
 // render and fail hydration for every dark-theme visitor.
-export function ThemeSwitcher() {
+export function ThemeSwitcher(): ReactElement {
   const { t } = useTranslation();
   const { toggleColorScheme } = useMantineColorScheme();
   const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
     <ActionIcon aria-label={label} onClick={toggleColorScheme} size="sm" variant="transparent">
-      <IconSun stroke={1.2} size={14} className="mantine-light-hidden" />
-      <IconMoon stroke={1.2} size={14} className="mantine-dark-hidden" />
+      <Box component="span" lightHidden>
+        <IconSun stroke={1.2} size={14} />
+      </Box>
+      <Box component="span" darkHidden>
+        <IconMoon stroke={1.2} size={14} />
+      </Box>
     </ActionIcon>
   );
 }
@@ -328,45 +338,45 @@ export function ThemeSwitcher() {
 // the teachers' case is an external Hexlet URL, kept in the locale files' links;
 // that one is a local route.
 // Legacy opened each in a new tab.
-function SolutionsMenu() {
+function SolutionsMenu(): ReactElement {
   const { t } = useTranslation();
 
   const items = [
     {
-      icon: IconTarget,
-      title: t(($) => $.layouts.shared.nav.courses_with_employment),
       description: t(($) => $.layouts.shared.nav.courses_with_employment_description),
       href: t(($) => $.links.hexlet_courses_for_beginners),
+      icon: IconTarget,
+      title: t(($) => $.layouts.shared.nav.courses_with_employment),
     },
     {
-      icon: IconRocket,
-      title: t(($) => $.layouts.shared.nav.career),
       description: t(($) => $.layouts.shared.nav.career_description),
       href: t(($) => $.links.hexlet_career),
+      icon: IconRocket,
+      title: t(($) => $.layouts.shared.nav.career),
     },
     {
-      icon: IconGitBranch,
-      title: t(($) => $.layouts.shared.nav.upskilling),
       description: t(($) => $.layouts.shared.nav.upskilling_description),
       href: t(($) => $.links.hexlet_courses_for_programmers),
+      icon: IconGitBranch,
+      title: t(($) => $.layouts.shared.nav.upskilling),
     },
     {
-      icon: IconHeartHandshake,
-      title: t(($) => $.layouts.shared.nav.business),
       description: t(($) => $.layouts.shared.nav.business_description),
       href: t(($) => $.links.hexlet_b2b),
+      icon: IconHeartHandshake,
+      title: t(($) => $.layouts.shared.nav.business),
     },
     {
+      description: t(($) => $.layouts.shared.nav.for_teachers_description),
       icon: IconBlocks,
       title: t(($) => $.layouts.shared.nav.for_teachers),
-      description: t(($) => $.layouts.shared.nav.for_teachers_description),
       to: "/{-$locale}/cases/for_teachers" as const,
     },
     {
-      icon: IconSchool,
-      title: t(($) => $.layouts.shared.nav.hexly),
       description: t(($) => $.layouts.shared.nav.hexly_description),
       href: t(($) => $.links.hexly),
+      icon: IconSchool,
+      title: t(($) => $.layouts.shared.nav.hexly),
     },
   ];
 

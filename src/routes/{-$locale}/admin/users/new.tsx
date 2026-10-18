@@ -9,27 +9,28 @@ import { zUserInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyUser, useUserFields } from "@/components/admin/resources/user";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/users/new")({
   component: NewUser,
 });
 
-function NewUser() {
+function NewUser(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useUserFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/users" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateUserMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListUsersQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateUserMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

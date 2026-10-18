@@ -17,22 +17,22 @@ export function useSyntaxMarkers(
   instance: editor.IStandaloneCodeEditor | undefined,
   monaco: typeof Monaco | undefined,
   language: string,
-) {
+): void {
   const { t } = useTranslation();
 
   useEffect(() => {
     const model = instance?.getModel();
     if (!instance || !monaco || !model || !canCheckSyntax(language)) {
-      return;
+      return () => undefined;
     }
 
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: ReturnType<typeof setTimeout> | 0 = 0;
     // Parsing is async (the grammar loads on first use), so a slow answer for an
     // older buffer must not overwrite the markers of a newer one.
     let latest = 0;
     let disposed = false;
 
-    const check = async () => {
+    const check = async (): Promise<void> => {
       latest += 1;
       const version = latest;
       const problems = await findSyntaxProblems(language, model.getValue());
@@ -44,15 +44,15 @@ export function useSyntaxMarkers(
         model,
         owner,
         problems.map((problem) => ({
-          severity: monaco.MarkerSeverity.Error,
+          endColumn: Math.min(problem.endColumn, model.getLineMaxColumn(problem.endLineNumber)),
+          endLineNumber: problem.endLineNumber,
           message:
             problem.kind === "missing"
               ? t(($) => $.courses.lessons.show.syntax_missing, { token: problem.token })
               : t(($) => $.courses.lessons.show.syntax_error),
-          startLineNumber: problem.startLineNumber,
+          severity: monaco.MarkerSeverity.Error,
           startColumn: problem.startColumn,
-          endLineNumber: problem.endLineNumber,
-          endColumn: Math.min(problem.endColumn, model.getLineMaxColumn(problem.endLineNumber)),
+          startLineNumber: problem.startLineNumber,
         })),
       );
     };

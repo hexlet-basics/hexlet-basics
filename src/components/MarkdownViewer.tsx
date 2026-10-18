@@ -2,7 +2,7 @@ import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
 import { Table, Typography } from "@mantine/core";
 import type { TypographyProps } from "@mantine/core";
 import type { Directives } from "mdast-util-directive";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import Markdown from "react-markdown";
 import type { ExtraProps } from "react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
@@ -68,19 +68,19 @@ function createDirectivePlugin(components: DirectiveComponents) {
 // language gets no `language-*` class — keying off that class alone would treat
 // such a block as inline code and collapse its newlines (legacy issue #592).
 // The `pre` hast node carries both the language and the original text.
-function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProps) {
+function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProps): ReactElement {
   const codeNode = node?.children.find(
     (child): child is HastElement => child.type === "element" && child.tagName === "code",
   );
 
   const rawClassName = codeNode?.properties?.className;
   const className = Array.isArray(rawClassName) ? rawClassName.join(" ") : (rawClassName ?? "");
-  const requestedLanguage = /language-(\w+)/.exec(className)?.[1];
+  const requestedLanguage = /language-(?<language>\w+)/u.exec(className)?.groups?.language;
 
   const code = (codeNode?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))
     .join("")
-    .replace(/\n$/, "");
+    .replace(/\n$/u, "");
 
   // A language with no shiki grammar is never passed through: the highlighter
   // throws "Language `x` not found" on it (legacy issue #597). Unknown tags fall
@@ -94,7 +94,7 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
 
 // Only inline code (single backticks) reaches the `code` handler; fenced blocks
 // are intercepted by `pre` above.
-function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps) {
+function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps): ReactElement {
   const code = (node?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))
     .join("");
@@ -106,39 +106,43 @@ function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraPr
 // theory `##` never competes with the lesson title.
 const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
-    overflowWrap: "break-word",
-    lineHeight: theme.lineHeights.lg,
     h2: theme.headings.sizes.h5,
     h3: theme.headings.sizes.h6,
     h4: theme.headings.sizes.h6,
     h5: theme.headings.sizes.h6,
     h6: theme.headings.sizes.h6,
+    lineHeight: theme.lineHeights.lg,
+    overflowWrap: "break-word",
   },
 });
 
 // A stable default, so an omitted `components` prop is the same object on every render.
 const noComponents: DirectiveComponents = {};
 
+function MarkdownTable(props: ComponentPropsWithoutRef<"table">): ReactElement {
+  return (
+    <Table.ScrollContainer minWidth={800}>
+      <table>{props.children}</table>
+    </Table.ScrollContainer>
+  );
+}
+
 export default function MarkdownViewer({
   children,
   allowHtml = false,
   components = noComponents,
-}: MarkdownViewerProps) {
+}: MarkdownViewerProps): ReactElement {
   const preparedComponents = {
+    code: MarkdownInlineCode,
     pre: MarkdownCodeBlock,
     // A wide table scrolls inside its own container instead of stretching the
     // pane it sits in.
-    table: (props: ComponentPropsWithoutRef<"table">) => (
-      <Table.ScrollContainer minWidth={800}>
-        <table>{props.children}</table>
-      </Table.ScrollContainer>
-    ),
-    code: MarkdownInlineCode,
+    table: MarkdownTable,
     ...components,
   };
 
   const rehypePlugins: PluggableList = [
-    [rehypeExternalLinks, { target: "_blank", rel: ["noopener", "noreferrer"] }],
+    [rehypeExternalLinks, { rel: ["noopener", "noreferrer"], target: "_blank" }],
   ];
 
   if (allowHtml) {

@@ -8,24 +8,24 @@ import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 // input has no locale — the backend derives it, mirroring legacy.
 
 export const emptyReview: ReviewInput = {
-  pinned: false,
-  courseId: null,
-  userId: null,
   body: "",
+  courseId: null,
   firstName: "",
   lastName: "",
+  pinned: false,
+  userId: null,
 };
 
 // Seed the form from an existing row: pick only the writable fields and
 // coalesce nullable strings to "" so the inputs stay controlled.
 export function reviewToForm(review: Review): ReviewInput {
   return {
-    pinned: review.pinned ?? false,
-    courseId: review.courseId,
-    userId: review.userId,
     body: review.body ?? "",
+    courseId: review.courseId,
     firstName: review.firstName ?? "",
     lastName: review.lastName ?? "",
+    pinned: review.pinned ?? false,
+    userId: review.userId,
   };
 }
 
@@ -36,7 +36,7 @@ export function useReviewFields(): CrudFieldSpec<ReviewInput>[] {
     order: ["pinned", "courseId", "userId", "firstName", "lastName", "body"],
     // The schema allows null for these, the form insists.
     set: {
-      body: { type: "textarea", required: true },
+      body: { required: true, type: "textarea" },
     },
   });
 }

@@ -12,27 +12,28 @@ import {
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/new")({
   component: NewCourseCategory,
 });
 
-function NewCourseCategory() {
+function NewCourseCategory(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_categories" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateCourseCategoryMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCourseCategoriesQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateCourseCategoryMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

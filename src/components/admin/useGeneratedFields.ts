@@ -28,23 +28,23 @@ function labelFor(i18n: I18n, key: string): string {
 }
 
 const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {
-  text: undefined,
-  select: "select",
-  datetime: "datetime",
   boolean: "checkbox",
-  number: "number",
+  datetime: "datetime",
   multiselect: "multiselect",
+  number: "number",
+  select: "select",
+  text: undefined,
 };
 
 // Turns the generated descriptors of a resource into the field list CrudForm
 // renders: labels resolve through i18n here (the descriptors carry only keys),
 // then the resource's overrides apply. A hook, like every i18n-reading helper.
 export function useGeneratedFields<T>(
-  descriptors: FieldDescriptor[],
+  descriptors: FieldDescriptor<keyof T & string>[],
   overrides: FieldOverrides<T> = {},
 ): CrudFieldSpec<T>[] {
   const { i18n } = useTranslation();
-  const label = (key: string) => labelFor(i18n, key);
+  const label = (key: string): string => labelFor(i18n, key);
   const hidden = new Set<string>(overrides.hide);
   const order = overrides.order ?? [];
 
@@ -52,8 +52,8 @@ export function useGeneratedFields<T>(
     .filter((descriptor) => !hidden.has(descriptor.name))
     .map((descriptor): CrudFieldSpec<T> => {
       const spec: CrudFieldSpec<T> = {
-        name: descriptor.name as keyof T & string,
         label: label(descriptor.labelKey),
+        name: descriptor.name,
       };
       const type = widgets[descriptor.kind];
       if (type) {
@@ -64,19 +64,19 @@ export function useGeneratedFields<T>(
       }
       if (descriptor.enumValues) {
         spec.options = descriptor.enumValues.map((option) => ({
-          value: option.value,
           label: label(option.labelKey),
+          value: option.value,
         }));
       }
-      return { ...spec, ...overrides.set?.[spec.name] };
+      return Object.assign(spec, overrides.set?.[spec.name]);
     });
 
-  const rank = (name: string) => {
-    const index = order.indexOf(name as keyof T & string);
+  const rank = (name: string): number => {
+    const index = order.map(String).indexOf(name);
     return index === -1 ? order.length : index;
   };
   // Array.sort is stable, so unlisted fields keep the contract's order.
-  return specs.toSorted((a, b) => rank(a.name) - rank(b.name));
+  return specs.toSorted((left, right) => rank(left.name) - rank(right.name));
 }
 
 // The plain columns of a list: a header from the generated label and the field

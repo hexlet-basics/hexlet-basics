@@ -9,27 +9,28 @@ import { zCourseInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyCourse, useCourseFields } from "@/components/admin/resources/course";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/courses/new")({
   component: NewCourse,
 });
 
-function NewCourse() {
+function NewCourse(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/courses" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateCourseMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListCoursesQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateCourseMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

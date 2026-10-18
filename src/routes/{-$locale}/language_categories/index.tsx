@@ -7,28 +7,29 @@ import { listPublicCourseCategoriesOptions } from "@/client/@tanstack/react-quer
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import { CardLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import type { ReactElement } from "react";
 
 // The course categories, at their legacy URL, ported from legacy
 // language_categories/index. The loader prefetches the list so the cards are in
 // the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/language_categories/")({
-  loader: ({ context }) =>
-    context.queryClient.query({ ...listPublicCourseCategoriesOptions(), staleTime: "static" }),
+  component: Index,
   // Legacy meta: the header as title, the index description, the canonical link
   // and the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.course_categories.index.meta.description),
       i18n,
       title: i18n.t(($) => $.course_categories.index.header),
-      description: i18n.t(($) => $.course_categories.index.meta.description),
-      canonicalPath: match.pathname,
     });
   },
-  component: Index,
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listPublicCourseCategoriesOptions(), staleTime: "static" }),
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t } = useTranslation();
   const { data } = useQuery(listPublicCourseCategoriesOptions());
   const header = t(($) => $.course_categories.index.header);
@@ -43,7 +44,7 @@ function Index() {
         <Title order={1}>{header}</Title>
       </Stack>
 
-      <SimpleGrid py="md" cols={{ base: 1, md: 2, lg: 3 }}>
+      <SimpleGrid py="md" cols={{ base: 1, lg: 3, md: 2 }}>
         {categories.map((category) => (
           <CardLink
             key={category.id}

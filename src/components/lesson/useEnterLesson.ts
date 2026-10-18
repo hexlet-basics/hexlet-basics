@@ -13,7 +13,10 @@ import { getCourseLessonQueryKey, startLessonMutation } from "@/client/@tanstack
 // every lesson they pointed at (ADR-0012). That is also why callers render a
 // button rather than a link — a link would be preloaded, and could be opened
 // around the command.
-export function useEnterLesson(courseSlug: string) {
+export function useEnterLesson(courseSlug: string): {
+  enter: (lesson: { id: number; slug: string }) => void;
+  isPending: boolean;
+} {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -25,7 +28,7 @@ export function useEnterLesson(courseSlug: string) {
     onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 
-  const enter = (lesson: { id: number; slug: string }) =>
+  const enter = (lesson: { id: number; slug: string }): void => {
     start.mutate(
       { path: { id: lesson.id } },
       {
@@ -35,13 +38,14 @@ export function useEnterLesson(courseSlug: string) {
             queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
           });
           void navigate({
-            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
             // Keeps the URL locale of whichever page the learner came from.
-            params: (prev) => ({ ...prev, slug: courseSlug, lessonSlug: lesson.slug }),
+            params: (prev) => ({ ...prev, lessonSlug: lesson.slug, slug: courseSlug }),
+            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
           });
         },
       },
     );
+  };
 
   return { enter, isPending: start.isPending };
 }

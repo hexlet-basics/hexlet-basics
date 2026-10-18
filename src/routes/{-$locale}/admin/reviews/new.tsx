@@ -9,27 +9,28 @@ import { zReviewInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyReview, useReviewFields } from "@/components/admin/resources/review";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/new")({
   component: NewReview,
 });
 
-function NewReview() {
+function NewReview(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useReviewFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/reviews" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateReviewMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListReviewsQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateReviewMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

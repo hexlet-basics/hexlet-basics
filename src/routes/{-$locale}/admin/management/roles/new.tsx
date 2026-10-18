@@ -9,27 +9,28 @@ import { zRoleInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyStaffRole, useStaffRoleFields } from "@/components/admin/resources/staffRole";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/new")({
   component: NewRole,
 });
 
-function NewRole() {
+function NewRole(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffRoleFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/roles" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateRoleMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListRolesQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateRoleMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

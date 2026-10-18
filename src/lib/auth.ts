@@ -19,7 +19,7 @@ export async function resolveCurrentUser(queryClient: QueryClient): Promise<Auth
   return user;
 }
 
-// beforeLoad guard for authenticated routes. Redirects anonymous callers to the
+// BeforeLoad guard for authenticated routes. Redirects anonymous callers to the
 // login page, preserving the intended destination.
 export function requireAuth(user: AuthUser | null, redirectHref: string): void {
   if (!user) {
@@ -29,7 +29,7 @@ export function requireAuth(user: AuthUser | null, redirectHref: string): void {
   }
 }
 
-// beforeLoad guard for the admin area. Gates on `canAccessAdmin` (the serializer
+// BeforeLoad guard for the admin area. Gates on `canAccessAdmin` (the serializer
 // flag legacy used for the admin namespace), not the raw `admin` column, so the
 // same rule as the Rails app decides who sees the back office. Anonymous callers
 // go to login; signed-in users without access are bounced to the home page rather

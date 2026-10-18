@@ -9,15 +9,16 @@ import {
 import type { Banner } from "@/client/types.gen";
 import { PublicationStatePanel } from "@/components/admin/PublicationStatePanel";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 // A banner's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the banner's three operations.
-export function BannerStatePanel({ banner }: { banner: Banner }) {
+export function BannerStatePanel({ banner }: { banner: Banner }): ReactElement {
   const { t } = useTranslation();
   const options = {
+    errorMessage: t(($) => $.admin.publicationState.changeError),
     invalidate: [adminListBannersQueryKey(), adminGetBannerQueryKey({ path: { id: banner.id } })],
     successMessage: t(($) => $.admin.publicationState.changed),
-    errorMessage: t(($) => $.admin.publicationState.changeError),
   };
   const publish = useResourceMutation({ mutation: adminPublishBannerMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishBannerMutation(), ...options });
@@ -29,7 +30,7 @@ export function BannerStatePanel({ banner }: { banner: Banner }) {
       title={t(($) => $.models.attributes.banner.state)}
       state={banner.state}
       stateLabel={t(($) => $.models.attributes.banner["state/values"][banner.state])}
-      mutations={{ publish, unpublish, archive }}
+      mutations={{ archive, publish, unpublish }}
     />
   );
 }

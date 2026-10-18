@@ -14,12 +14,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { reviewToForm, useReviewFields } from "@/components/admin/resources/review";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/$id")({
   component: EditReview,
 });
 
-function EditReview() {
+function EditReview(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useReviewFields();
@@ -28,17 +29,17 @@ function EditReview() {
 
   const { data, isLoading } = useQuery(adminGetReviewOptions({ path: { id: reviewId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/reviews" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateReviewMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListReviewsQueryKey(), adminGetReviewQueryKey({ path: { id: reviewId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateReviewMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +54,7 @@ function EditReview() {
             fields={fields}
             schema={zReviewInput}
             defaultValues={reviewToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: reviewId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: reviewId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

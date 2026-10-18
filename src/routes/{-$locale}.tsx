@@ -1,9 +1,10 @@
-import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
+import { Outlet, createFileRoute, notFound, useMatches } from "@tanstack/react-router";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
 import { rememberLocale } from "@/lib/detect-locale";
 import { DEFAULT_LOCALE, isPrefixedLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import type { ReactElement } from "react";
 
 // A route can ask for chrome other than the site layout. Declared per route
 // rather than matched on the URL here, so the page that wants a bare shell says
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/{-$locale}")({
   component: LocaleLayout,
 });
 
-function LocaleLayout() {
+function LocaleLayout(): ReactElement {
   const bare = useMatches({
     // Optional access: a route that declares no staticData at all is every route
     // but one, and this runs for all of them.

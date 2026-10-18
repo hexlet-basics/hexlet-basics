@@ -2,6 +2,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, getRequestHeader, setCookie } from "@tanstack/react-start/server";
 import { isLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SECONDS_PER_YEAR } from "@/lib/duration";
 
 // First app-supported locale in Accept-Language (region stripped), mirroring
 // legacy `locale_from_header`.
@@ -21,7 +22,7 @@ function localeFromAcceptLanguage(header: string | undefined): Locale | undefine
 // The cookie the SSR server keeps the visitor's locale in (ADR-0002). Only the
 // root `/` reads it, and following a language link changes no other state.
 const LOCALE_COOKIE = "locale";
-const LOCALE_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
+const LOCALE_COOKIE_MAX_AGE = SECONDS_PER_YEAR;
 
 // Remember the locale of the page being served, so the root `/` sends the
 // visitor back to it. Runs server-side only (the client impl is a no-op, so the
@@ -29,9 +30,9 @@ const LOCALE_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 export const rememberLocale = createIsomorphicFn()
   .server((locale: Locale): void => {
     setCookie(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: LOCALE_COOKIE_MAX_AGE,
       httpOnly: true,
+      maxAge: LOCALE_COOKIE_MAX_AGE,
+      path: "/",
       sameSite: "lax",
     });
   })

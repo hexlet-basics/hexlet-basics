@@ -1,16 +1,19 @@
 import { CodeHighlight } from "@mantine/code-highlight";
 import { Alert, Button, Center, Image, Stack, Text, Title } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import waitingClock from "@/assets/waiting_clock.webp";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
+import { MS_PER_SECOND, SECONDS_PER_MINUTE } from "@/lib/duration";
+import type { ReactElement } from "react";
 
 // How long a learner who has not passed waits before the reference solution can
 // be opened. Long enough that reading it is a last resort, short enough that
 // nobody is stuck on one lesson forever.
-const waitingTime = 20 * 60 * 1000;
+const WAITING_MINUTES = 20;
+const waitingTime = WAITING_MINUTES * SECONDS_PER_MINUTE * MS_PER_SECOND;
 
 // The author's answer, beside the learner's own so the two can be compared on
 // one screen.
@@ -31,7 +34,7 @@ export default function LessonSolution({
   referenceSolution: string;
   learnerCode: string;
   unlocked: boolean;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const { language } = getEditorSettings(courseSlug, extension);
   const codeLanguage = toSupportedLanguage(language);
@@ -54,22 +57,38 @@ export default function LessonSolution({
     );
   }
 
-  return <SolutionWait onReveal={() => setRevealed(true)} />;
+  return (
+    <SolutionWait
+      onReveal={() => {
+        setRevealed(true);
+      }}
+    />
+  );
 }
 
 // The countdown lives in its own component so its once-a-second tick re-renders
 // only the clock. Held by LessonSolution, the tick re-rendered the highlighted
 // code too, which replaced its DOM and dropped the learner's text selection
 // (issue #742).
-function SolutionWait({ onReveal }: { onReveal: () => void }) {
+function SolutionWait({ onReveal }: { onReveal: () => void }): ReactElement {
   const { t } = useTranslation();
-  const [expiresAt] = useState(() => Date.now() + waitingTime);
+  // Set by the first tick, which runs when the component mounts.
+  const expiresAt = useRef(0);
   const [remaining, setRemaining] = useState(waitingTime);
-  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), 1000, { autoInvoke: true });
+  useInterval(
+    () => {
+      if (expiresAt.current === 0) {
+        expiresAt.current = Date.now() + waitingTime;
+      }
+      setRemaining(Math.max(0, expiresAt.current - Date.now()));
+    },
+    MS_PER_SECOND,
+    { autoInvoke: true },
+  );
 
   if (remaining > 0) {
-    const seconds = Math.ceil(remaining / 1000);
-    const clock = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+    const seconds = Math.ceil(remaining / MS_PER_SECOND);
+    const clock = `${String(Math.floor(seconds / SECONDS_PER_MINUTE)).padStart(2, "0")}:${String(seconds % SECONDS_PER_MINUTE).padStart(2, "0")}`;
 
     return (
       <Stack align="center" p="xs">
@@ -86,7 +105,13 @@ function SolutionWait({ onReveal }: { onReveal: () => void }) {
     <Stack p="xs">
       <Text>{t(($) => $.common.solutionNotice)}</Text>
       <Center>
-        <Button variant="light" px="xl" onClick={() => onReveal()}>
+        <Button
+          variant="light"
+          px="xl"
+          onClick={() => {
+            onReveal();
+          }}
+        >
           {t(($) => $.common.showSolution)}
         </Button>
       </Center>

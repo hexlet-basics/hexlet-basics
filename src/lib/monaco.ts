@@ -24,18 +24,18 @@ import tsWorker from "monaco-editor/language/typescript/ts.worker.js?worker";
 // The language services monaco asks for by name. Everything else — every course
 // whose language has no service of its own — gets the plain editor worker.
 const workers: Record<string, new () => Worker> = {
-  json: jsonWorker,
   css: cssWorker,
-  scss: cssWorker,
-  less: cssWorker,
-  html: htmlWorker,
   handlebars: htmlWorker,
-  razor: htmlWorker,
-  typescript: tsWorker,
+  html: htmlWorker,
   javascript: tsWorker,
+  json: jsonWorker,
+  less: cssWorker,
+  razor: htmlWorker,
+  scss: cssWorker,
+  typescript: tsWorker,
 };
 
-self.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_, label) {
     const Worker = workers[label] ?? editorWorker;
     return new Worker();

@@ -9,27 +9,28 @@ import { zBannerInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyBanner, useBannerFields } from "@/components/admin/resources/banner";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/new")({
   component: NewBanner,
 });
 
-function NewBanner() {
+function NewBanner(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBannerFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/banners" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateBannerMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListBannersQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateBannerMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

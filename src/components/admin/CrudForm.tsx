@@ -1,8 +1,9 @@
 import { Button, Card, Group, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { ZodType } from "zod";
-import { useAppForm, submitForm } from "@/lib/form";
+import { submitForm, useAppForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
+import type { ReactElement } from "react";
 
 // One editable field, described declaratively. `name` is checked against the
 // resource's input model, so a typo or a renamed contract field fails at compile
@@ -54,7 +55,7 @@ export function CrudForm<T extends Record<string, unknown>>({
   onSubmit,
   submitLabel,
   onCancel,
-}: CrudFormProps<T>) {
+}: CrudFormProps<T>): ReactElement {
   const { t } = useTranslation();
 
   const form = useAppForm({
@@ -105,6 +106,9 @@ export function CrudForm<T extends Record<string, unknown>>({
                 case "text":
                 case undefined: {
                   return <field.TextField label={spec.label} required={spec.required} />;
+                }
+                default: {
+                  throw new Error(`Unknown field type: ${String(spec.type satisfies never)}`);
                 }
               }
             }}

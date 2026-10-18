@@ -11,9 +11,13 @@ import {
 import type { CardProps } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 import type { CourseCatalogItem } from "@/client/types.gen";
 import { HoverLift } from "./HoverLift";
+
+// The cover image is shown at 4:3.
+const COVER_RATIO_WIDTH = 4;
+const COVER_RATIO_HEIGHT = 3;
 
 type Props = PropsWithChildren &
   CardProps & {
@@ -23,7 +27,7 @@ type Props = PropsWithChildren &
 
 // Reused from legacy CourseBlock; data source rewired from Inertia props to the
 // generated API type, and navigation from Inertia Link to TanStack Router Link.
-export default function CourseBlock({ item, lazy, ...props }: Props) {
+export default function CourseBlock({ item, lazy, ...props }: Props): ReactElement {
   return (
     <HoverLift h="100%">
       <Card
@@ -40,7 +44,7 @@ export default function CourseBlock({ item, lazy, ...props }: Props) {
         {...props}
       >
         <Card.Section>
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={COVER_RATIO_WIDTH / COVER_RATIO_HEIGHT}>
             <Image
               fit="cover"
               loading={lazy ? "lazy" : "eager"}

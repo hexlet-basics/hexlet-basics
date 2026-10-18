@@ -13,12 +13,13 @@ import {
   Title,
 } from "@mantine/core";
 import { IconBooks, IconMessage2 } from "@tabler/icons-react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { getMyDashboardOptions } from "@/client/@tanstack/react-query.gen";
 import type { DashboardCourse } from "@/client/types.gen";
 import CourseBlock from "@/components/CourseBlock";
 import { requireAuth } from "@/lib/auth";
+import type { ReactElement } from "react";
 
 // The signed-in learner's dashboard, ported from legacy web/my#show: the
 // courses in progress with where to resume, and the finished ones. Anonymous
@@ -27,14 +28,17 @@ export const Route = createFileRoute("/{-$locale}/my")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
+
   loader: ({ context }) => context.queryClient.query(getMyDashboardOptions()),
+
   head: ({ match }) => ({
     meta: [{ title: match.context.i18n.t(($) => $.layouts.shared.nav.my) }],
   }),
+
   component: My,
 });
 
-function StartedCourse({ course }: { course: DashboardCourse }) {
+function StartedCourse({ course }: { course: DashboardCourse }): ReactElement {
   const { card: landingPage, progress } = course;
   const title = landingPage.header ?? landingPage.name ?? landingPage.course.slug;
 
@@ -65,7 +69,7 @@ function StartedCourse({ course }: { course: DashboardCourse }) {
         <Stack w="100%" p="sm" gap="xs">
           <Title order={3}>{title}</Title>
 
-          {progress.nextLesson?.name && <Text>{progress.nextLesson.name} →</Text>}
+          {progress.nextLesson?.name && <Text>{`${progress.nextLesson.name} →`}</Text>}
 
           <Progress.Root mt="auto">
             <Progress.Section aria-label={`${progress.completion}%`} value={progress.completion} />
@@ -76,7 +80,7 @@ function StartedCourse({ course }: { course: DashboardCourse }) {
   );
 }
 
-function My() {
+function My(): ReactElement {
   const { t, i18n } = useTranslation();
   const { started, finished } = Route.useLoaderData();
 
@@ -119,7 +123,7 @@ function My() {
         <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
       )}
 
-      <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
+      <SimpleGrid cols={{ base: 2, sm: 4, xs: 3 }}>
         {finished.map((course) => (
           <CourseBlock key={course.enrollment.id} item={course.card} />
         ))}

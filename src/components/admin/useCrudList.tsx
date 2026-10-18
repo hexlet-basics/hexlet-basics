@@ -1,6 +1,11 @@
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import type { QueryKey, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
+import type {
+  QueryKey,
+  UseMutationOptions,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState } from "react";
@@ -8,7 +13,10 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
-import type { CrudColumnDef } from "./CrudList";
+import type { CrudColumnDef, CrudListProps } from "./CrudList";
+
+// How long the search box waits after a keystroke before it asks the API.
+const SEARCH_DEBOUNCE_MS = 300;
 
 // The envelope of every admin list response (`XxxPage`).
 interface Page {
@@ -63,6 +71,16 @@ interface ActionsColumnOptions<TItem> {
   describe: (row: TItem) => ReactNode;
 }
 
+// What the engine hands the route: the shared last column, the props of the list
+// itself, and the list's query state.
+export interface CrudListEngine<TPage extends Page, TListError> {
+  actionsColumn: (
+    options: ActionsColumnOptions<TPage["items"][number]>,
+  ) => CrudColumnDef<TPage["items"][number]>;
+  props: Omit<CrudListProps<TPage["items"][number]>, "columns">;
+  query: UseQueryResult<TPage, TListError>;
+}
+
 // Stands in for the delete mutation of a resource that has none; no button ever
 // runs it.
 const noMutation = {};
@@ -87,7 +105,14 @@ export function useCrudList<
   listKey,
   remove,
   searchable = false,
-}: CrudListOptions<TPage, TListError, TListKey, TDeleteData, TDeleteError, TDeleteVars>) {
+}: CrudListOptions<
+  TPage,
+  TListError,
+  TListKey,
+  TDeleteData,
+  TDeleteError,
+  TDeleteVars
+>): CrudListEngine<TPage, TListError> {
   type TItem = TPage["items"][number];
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
@@ -101,14 +126,8 @@ export function useCrudList<
   const setSearch = (patch: Partial<ListQuery>) =>
     navigate({ to: ".", search: (prev) => ({ ...prev, ...patch }) });
 
-  // What the box shows follows the keystrokes; the address (and so the query)
-  // follows it a beat later. A new term starts from the first page: the old page
-  // may not exist in the narrowed list.
-  const [text, setText] = useState(search.q ?? "");
-  const applyTerm = useDebouncedCallback(
-    (term: string) => setSearch({ q: term === "" ? undefined : term, page: undefined }),
-    300,
-  );
+  const [search, setSearch] = useState("");
+  const [term] = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS);
 
   const query = useQuery(
     list({
@@ -121,10 +140,10 @@ export function useCrudList<
   );
 
   const deleteMutation = useResourceMutation({
-    mutation: remove?.() ?? noMutation,
-    invalidate: [listKey()],
-    successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
+    invalidate: [listKey()],
+    mutation: remove?.() ?? noMutation,
+    successMessage: t(($) => $.admin.crud.deleted),
   });
 
   // The size is 0 until the first response says what the server used; the table
@@ -150,8 +169,6 @@ export function useCrudList<
     extra,
     describe,
   }: ActionsColumnOptions<TItem>): CrudColumnDef<TItem> => ({
-    id: "actions",
-    header: "",
     cell: ({ row }) => (
       <Group gap="xs" justify="flex-end" wrap="nowrap">
         {edit(row.original)}
@@ -162,12 +179,14 @@ export function useCrudList<
               color="red"
               variant="light"
               aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() =>
+              onClick={() => {
                 confirmDelete({
                   description: describe(row.original),
-                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
-                })
-              }
+                  onConfirm: () => {
+                    deleteMutation.mutate({ path: { id: row.original.id } });
+                  },
+                });
+              }}
             >
               ✕
             </ActionIcon>
@@ -175,26 +194,30 @@ export function useCrudList<
         )}
       </Group>
     ),
+    header: "",
+    id: "actions",
   });
 
   return {
-    query,
+    actionsColumn,
     props: {
-      data: rows,
-      total: query.data?.total ?? 0,
-      pagination,
-      onPaginationChange,
+      data: query.data?.items ?? [],
       isLoading: query.isLoading,
+      onPaginationChange,
+      pagination,
+      // A new term starts from the first page: the old page may not exist in the
+      // narrowed list.
       search: searchable
         ? {
-            value: text,
-            onChange: (value: string) => {
-              setText(value);
-              applyTerm(value.trim());
+            onChange: (value: string): void => {
+              setSearch(value);
+              setPageIndex(0);
             },
+            value: search,
           }
         : undefined,
+      total: query.data?.total ?? 0,
     },
-    actionsColumn,
+    query,
   };
 }

@@ -11,6 +11,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import type { ReactElement } from "react";
 
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
 // mining student questions; the per-lesson summaries live under lesson reviews.
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/admin/messages/")({
   component: MessagesList,
 });
 
-function MessagesList() {
+function MessagesList(): ReactElement {
   const { t } = useTranslation();
 
   const formatDateTime = useDateTime();
@@ -35,13 +36,13 @@ function MessagesList() {
       header: t(($) => $.models.attributes.assistant_message.role),
     },
     {
-      id: "content",
-      header: t(($) => $.models.attributes.assistant_message.content),
       cell: ({ row }) => (
         <Text size="sm" lineClamp={2} maw={480}>
           {row.original.content}
         </Text>
       ),
+      header: t(($) => $.models.attributes.assistant_message.content),
+      id: "content",
     },
     {
       accessorKey: "courseSlug",
@@ -52,9 +53,9 @@ function MessagesList() {
       header: t(($) => $.models.attributes.assistant_message.lesson),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

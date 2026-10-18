@@ -8,6 +8,7 @@ import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import type { ReactElement } from "react";
 
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/{-$locale}/admin/leads/")({
   component: LeadsList,
 });
 
-function LeadsList() {
+function LeadsList(): ReactElement {
   const { t } = useTranslation();
   const formatDateTime = useDateTime();
   const list = useCrudList({
@@ -42,9 +43,9 @@ function LeadsList() {
       header: t(($) => $.models.attributes.lead.telegram),
     },
     {
-      id: "createdAt",
-      header: t(($) => $.models.attributes.base.created_at),
       cell: ({ row }) => formatDateTime(row.original.createdAt),
+      header: t(($) => $.models.attributes.base.created_at),
+      id: "createdAt",
     },
   ];
 

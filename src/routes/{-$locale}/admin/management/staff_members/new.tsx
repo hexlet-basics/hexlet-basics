@@ -9,27 +9,28 @@ import { zStaffMemberInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { emptyStaffMember, useStaffMemberFields } from "@/components/admin/resources/staffMember";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/staff_members/new")({
   component: NewStaffMember,
 });
 
-function NewStaffMember() {
+function NewStaffMember(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffMemberFields();
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/staff_members" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminCreateStaffMemberMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListStaffMembersQueryKey()],
-    successMessage: t(($) => $.admin.crud.created),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminCreateStaffMemberMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.created),
   });
 
   return (

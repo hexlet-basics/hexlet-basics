@@ -18,12 +18,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { blogPostToForm, useBlogPostFields } from "@/components/admin/resources/blogPost";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/$id")({
   component: EditBlogPost,
 });
 
-function EditBlogPost() {
+function EditBlogPost(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBlogPostFields();
@@ -32,17 +33,17 @@ function EditBlogPost() {
 
   const { data, isLoading } = useQuery(adminGetBlogPostOptions({ path: { id: postId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/blog_posts" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateBlogPostMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListBlogPostsQueryKey(), adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateBlogPostMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -57,7 +58,7 @@ function EditBlogPost() {
             fields={fields}
             schema={zBlogPostInput}
             defaultValues={blogPostToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: postId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: postId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />
@@ -77,7 +78,13 @@ function EditBlogPost() {
 // (`related_courses` member action). Selection order is the display order the
 // backend persists. The pick runs in a background job, so its result shows up
 // on a later load of the post — the same manual reload legacy needed.
-function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: number[] }) {
+function RelatedCoursesPanel({
+  postId,
+  initial,
+}: {
+  postId: number;
+  initial: number[];
+}): ReactElement {
   const { t } = useTranslation();
   const [selected, setSelected] = useState(initial.map(String));
 
@@ -85,22 +92,22 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
   // the courses past its end from the picker.
   const courses = useQuery(adminListCourseOptionsOptions());
   const options = (courses.data ?? []).map((course) => ({
-    value: String(course.id),
     label: course.name,
+    value: String(course.id),
   }));
 
   const mutation = useResourceMutation({
-    mutation: adminSetBlogPostRelatedCoursesMutation(),
-    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
+    mutation: adminSetBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   const suggestMutation = useResourceMutation({
-    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
-    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
-    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
   });
 
   return (
@@ -120,18 +127,20 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
           variant="light"
           color="grape"
           loading={suggestMutation.isPending}
-          onClick={() => suggestMutation.mutate({ path: { id: postId } })}
+          onClick={() => {
+            suggestMutation.mutate({ path: { id: postId } });
+          }}
         >
           {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
         </Button>
         <Button
           loading={mutation.isPending}
-          onClick={() =>
+          onClick={() => {
             mutation.mutate({
-              path: { id: postId },
               body: { courseIds: selected.map(Number) },
-            })
-          }
+              path: { id: postId },
+            });
+          }}
         >
           {t(($) => $.admin.crud.save)}
         </Button>

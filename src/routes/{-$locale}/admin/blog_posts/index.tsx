@@ -15,28 +15,29 @@ import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
   validateSearch: zAdminListBlogPostsQuery,
   component: BlogPostsList,
 });
 
-function BlogPostsList() {
+function BlogPostsList(): ReactElement {
   const { t } = useTranslation();
 
   const list = useCrudList({
     list: adminListBlogPostsOptions,
-    searchable: true,
     listKey: adminListBlogPostsQueryKey,
     remove: adminDeleteBlogPostMutation,
+    searchable: true,
   });
 
   // Legacy row action: enqueue the AI pick of the post's related courses.
   const suggestMutation = useResourceMutation({
-    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
-    invalidate: [adminListBlogPostsQueryKey()],
-    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
     errorMessage: t(($) => $.admin.crud.saveError),
+    invalidate: [adminListBlogPostsQueryKey()],
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
   });
 
   const columns: CrudColumnDef<BlogPost>[] = [
@@ -50,11 +51,11 @@ function BlogPostsList() {
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.blog_post.state),
       cell: ({ row }) => {
         const { state } = row.original;
         return state ? t(($) => $.models.attributes.blog_post["state/values"][state]) : "";
       },
+      header: t(($) => $.models.attributes.blog_post.state),
     },
     {
       accessorKey: "locale",
@@ -65,6 +66,7 @@ function BlogPostsList() {
       header: t(($) => $.admin.blogPosts.likes),
     },
     list.actionsColumn({
+      describe: (row) => row.name ?? "",
       edit: (row) => (
         <EditLink to="/{-$locale}/admin/blog_posts/$id" params={{ id: String(row.id) }} />
       ),
@@ -74,12 +76,13 @@ function BlogPostsList() {
           variant="light"
           color="grape"
           loading={suggestMutation.isPending && suggestMutation.variables?.path.id === row.id}
-          onClick={() => suggestMutation.mutate({ path: { id: row.id } })}
+          onClick={() => {
+            suggestMutation.mutate({ path: { id: row.id } });
+          }}
         >
           {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
         </Button>
       ),
-      describe: (row) => row.name ?? "",
     }),
   ];
 

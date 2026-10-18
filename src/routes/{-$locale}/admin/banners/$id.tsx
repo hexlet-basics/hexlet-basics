@@ -14,12 +14,13 @@ import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { bannerToForm, useBannerFields } from "@/components/admin/resources/banner";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/$id")({
   component: EditBanner,
 });
 
-function EditBanner() {
+function EditBanner(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBannerFields();
@@ -28,17 +29,17 @@ function EditBanner() {
 
   const { data, isLoading } = useQuery(adminGetBannerOptions({ path: { id: bannerId } }));
 
-  const backToList = () => {
+  const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/banners" });
   };
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateBannerMutation(),
+    errorMessage: t(($) => $.admin.crud.saveError),
     fieldErrors: true,
     invalidate: [adminListBannersQueryKey(), adminGetBannerQueryKey({ path: { id: bannerId } })],
-    successMessage: t(($) => $.admin.crud.updated),
-    errorMessage: t(($) => $.admin.crud.saveError),
+    mutation: adminUpdateBannerMutation(),
     onDone: backToList,
+    successMessage: t(($) => $.admin.crud.updated),
   });
 
   return (
@@ -53,7 +54,7 @@ function EditBanner() {
             fields={fields}
             schema={zBannerInput}
             defaultValues={bannerToForm(data)}
-            onSubmit={(values) => mutation.mutateAsync({ path: { id: bannerId }, body: values })}
+            onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: bannerId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
           />

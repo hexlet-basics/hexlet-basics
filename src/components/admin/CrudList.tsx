@@ -2,7 +2,7 @@ import { EmptyState, Group, Pagination, Skeleton, Stack, Table, TextInput } from
 import { IconDatabaseOff } from "@tabler/icons-react";
 import { flexRender, rowPaginationFeature, tableFeatures, useTable } from "@tanstack/react-table";
 import type { ColumnDef, OnChangeFn, PaginationState, RowData } from "@tanstack/react-table";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { pageCount } from "@/lib/page-count";
 
@@ -14,7 +14,7 @@ import { pageCount } from "@/lib/page-count";
 // results, not just wasted work). The core row model is automatic in v9.
 const features = tableFeatures({ rowPaginationFeature });
 
-// v9 threads the feature set through every table type, so the column type is
+// V9 threads the feature set through every table type, so the column type is
 // exported pre-applied: a resource declares `CrudColumnDef<Course>[]` and stays
 // unaware of which features the shared engine registers.
 //
@@ -42,6 +42,9 @@ export interface CrudListProps<T extends RowData> {
   search?: { value: string; onChange: (value: string) => void };
 }
 
+// The placeholder rows shown while a page loads; they have no identity of their own.
+const SKELETON_ROWS = ["first", "second", "third", "fourth", "fifth"];
+
 export function CrudList<T extends RowData>({
   columns,
   data = [],
@@ -50,27 +53,27 @@ export function CrudList<T extends RowData>({
   onPaginationChange,
   isLoading,
   search,
-}: CrudListProps<T>) {
+}: CrudListProps<T>): ReactElement {
   const { t } = useTranslation();
   const pages = pageCount(total, pagination.pageSize);
 
   const table = useTable({
-    features,
-    data,
     columns,
-    state: { pagination },
+    data,
+    features,
     manualPagination: true,
-    pageCount: pages,
     onPaginationChange,
+    pageCount: pages,
+    state: { pagination },
   });
 
   // Three states of the body, as early returns instead of a nested ternary.
   function renderBody(): ReactNode {
     if (isLoading) {
-      return Array.from({ length: 5 }, (_, row) => (
+      return SKELETON_ROWS.map((row) => (
         <Table.Tr key={row}>
-          {columns.map((_column, column) => (
-            <Table.Td key={column}>
+          {table.getAllLeafColumns().map((column) => (
+            <Table.Td key={column.id}>
               <Skeleton h={16} />
             </Table.Td>
           ))}
@@ -111,7 +114,9 @@ export function CrudList<T extends RowData>({
         <TextInput
           placeholder={t(($) => $.admin.crud.search)}
           value={search.value}
-          onChange={(event) => search.onChange(event.currentTarget.value)}
+          onChange={(event) => {
+            search.onChange(event.currentTarget.value);
+          }}
           maw={360}
         />
       )}
@@ -137,7 +142,9 @@ export function CrudList<T extends RowData>({
           <Pagination
             total={pages}
             value={pagination.pageIndex + 1}
-            onChange={(page) => onPaginationChange({ ...pagination, pageIndex: page - 1 })}
+            onChange={(page) => {
+              onPaginationChange({ ...pagination, pageIndex: page - 1 });
+            }}
           />
         </Group>
       )}

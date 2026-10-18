@@ -15,15 +15,16 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
-import type { SyntheticEvent } from "react";
+import type { ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
-import type { AuditRecord } from "@/client/types.gen";
+import type { AuditChange, AuditRecord } from "@/client/types.gen";
 import { CrudList } from "@/components/admin/CrudList";
 import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
+import { HTTP_FORBIDDEN } from "@/lib/http-status";
 
 // The audit trail (ADR-0020): every change a staff member made and every read of
 // personal data, newest first. The API needs the capability Permission
@@ -37,7 +38,21 @@ export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   component: AuditTrail,
 });
 
-type AuditSearch = z.input<typeof zAdminListAuditRecordsQuery>;
+// What the filter bar holds before it is applied. Dates are the day pickers'
+// `YYYY-MM-DD` strings; the others are the raw text of the inputs.
+function isChannel(value: string): value is "mcp" | "web" {
+  return value === "web" || value === "mcp";
+}
+
+interface Filters {
+  actorUserId: string;
+  channel: string;
+  operation: string;
+  entityType: string;
+  entityId: string;
+  from: string;
+  to: string;
+}
 
 const PER_PAGE = 25;
 
@@ -46,48 +61,30 @@ const PER_PAGE = 25;
 const NO_FILTERS = {
   actorUserId: "",
   channel: "",
-  operation: "",
-  entityType: "",
   entityId: "",
+  entityType: "",
   from: "",
+  operation: "",
   to: "",
 };
 type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
 // the morning of the 5th wherever they are.
-const startOfDay = (day: string) => dayjs(day).toISOString();
+const startOfDay = (day: string): string => new Date(`${day}T00:00:00`).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
 // window at the next local midnight.
-const endOfDay = (day: string) => dayjs(day).add(1, "day").toISOString();
+const endOfDay = (day: string): string => {
+  const next = new Date(`${day}T00:00:00`);
+  next.setDate(next.getDate() + 1);
+  return next.toISOString();
+};
 
-const filtersOf = (search: AuditSearch): Filters => ({
-  actorUserId: search.actorUserId?.toString() ?? "",
-  channel: search.channel ?? "",
-  operation: search.operation ?? "",
-  entityType: search.entityType ?? "",
-  entityId: search.entityId ?? "",
-  from: search.from ? dayjs(search.from).format("YYYY-MM-DD") : "",
-  to: search.to ? dayjs(search.to).subtract(1, "day").format("YYYY-MM-DD") : "",
-});
+const CHANNEL_COLOR = { mcp: "grape", web: "blue" } as const;
+const OUTCOME_COLOR = { failed: "red", forbidden: "orange", succeeded: "green" } as const;
 
-// A blank input is no filter: it stays out of the address and the request.
-const searchOf = (filters: Filters): AuditSearch => ({
-  actorUserId: filters.actorUserId === "" ? undefined : Number(filters.actorUserId),
-  // "" (any channel) is no member of the enum, so it parses to nothing.
-  channel: zAdminListAuditRecordsQuery.shape.channel.safeParse(filters.channel).data,
-  operation: filters.operation || undefined,
-  entityType: filters.entityType || undefined,
-  entityId: filters.entityId || undefined,
-  from: filters.from === "" ? undefined : startOfDay(filters.from),
-  to: filters.to === "" ? undefined : endOfDay(filters.to),
-});
-
-const CHANNEL_COLOR = { web: "blue", mcp: "grape" } as const;
-const OUTCOME_COLOR = { succeeded: "green", forbidden: "orange", failed: "red" } as const;
-
-function AuditTrail() {
+function AuditTrail(): ReactElement {
   const { t } = useTranslation();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -105,16 +102,41 @@ function AuditTrail() {
   };
 
   const { data, isLoading, error } = useQuery(
-    adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
+    adminListAuditRecordsOptions({
+      query: {
+        page: pagination.pageIndex + 1,
+        perPage: pagination.pageSize,
+        ...(applied.actorUserId !== "" && { actorUserId: Number(applied.actorUserId) }),
+        ...(isChannel(applied.channel) && { channel: applied.channel }),
+        ...(applied.operation !== "" && { operation: applied.operation }),
+        ...(applied.entityType !== "" && { entityType: applied.entityType }),
+        ...(applied.entityId !== "" && { entityId: applied.entityId }),
+        ...(applied.from !== "" && { from: startOfDay(applied.from) }),
+        ...(applied.to !== "" && { to: endOfDay(applied.to) }),
+      },
+    }),
   );
 
-  // Applying starts from the first page: the old one may not exist in the narrowed trail.
-  const apply = (filters: Filters) =>
-    navigate({ search: { ...searchOf(filters), perPage: search.perPage } });
-
-  const form = useAppForm({
-    defaultValues: filtersOf(search),
-    onSubmit: ({ value }) => apply(value),
+  const apply = (event: SyntheticEvent): void => {
+    event.preventDefault();
+    setApplied(draft);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+  const reset = (): void => {
+    setDraft(NO_FILTERS);
+    setApplied(NO_FILTERS);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+  const field = (
+    name: keyof Filters,
+  ): { onChange: (event: { currentTarget: { value: string } }) => void; value: string } => ({
+    // The value is read before the updater runs: React clears `currentTarget`
+    // once the handler returns, and the updater runs later.
+    onChange: (event: { currentTarget: { value: string } }) => {
+      const { value } = event.currentTarget;
+      setDraft((current) => ({ ...current, [name]: value }));
+    },
+    value: draft[name],
   });
   const reset = () => {
     form.reset(NO_FILTERS);
@@ -123,55 +145,61 @@ function AuditTrail() {
 
   const columns: CrudColumnDef<AuditRecord>[] = [
     {
-      id: "occurredAt",
-      header: t(($) => $.admin.audit.columns.occurredAt),
       cell: ({ row }) => new Date(row.original.occurredAt).toLocaleString(),
+      header: t(($) => $.admin.audit.columns.occurredAt),
+      id: "occurredAt",
     },
     {
-      id: "channel",
-      header: t(($) => $.admin.audit.columns.channel),
       cell: ({ row }) => (
         <Badge color={CHANNEL_COLOR[row.original.channel]} variant="light">
           {t(($) => $.admin.audit.channel[row.original.channel])}
         </Badge>
       ),
+      header: t(($) => $.admin.audit.columns.channel),
+      id: "channel",
     },
     {
-      id: "outcome",
-      header: t(($) => $.admin.audit.columns.outcome),
       cell: ({ row }) => (
         <Badge color={OUTCOME_COLOR[row.original.outcome]}>
           {t(($) => $.admin.audit.outcome[row.original.outcome])}
         </Badge>
       ),
+      header: t(($) => $.admin.audit.columns.outcome),
+      id: "outcome",
     },
     {
       accessorKey: "operation",
       header: t(($) => $.admin.audit.columns.operation),
     },
     {
-      id: "entity",
-      header: t(($) => $.admin.audit.columns.entity),
       cell: ({ row }) =>
         [row.original.entityType, row.original.entityId].filter(Boolean).join(" #"),
+      header: t(($) => $.admin.audit.columns.entity),
+      id: "entity",
     },
     {
-      id: "actor",
-      header: t(($) => $.admin.audit.columns.actor),
       cell: ({ row }) => row.original.actorUserId ?? "—",
+      header: t(($) => $.admin.audit.columns.actor),
+      id: "actor",
     },
     {
-      id: "details",
-      header: "",
       cell: ({ row }) => (
-        <Button variant="subtle" size="compact-sm" onClick={() => setSelected(row.original)}>
+        <Button
+          variant="subtle"
+          size="compact-sm"
+          onClick={() => {
+            setSelected(row.original);
+          }}
+        >
           {t(($) => $.admin.audit.details.open)}
         </Button>
       ),
+      header: "",
+      id: "details",
     },
   ];
 
-  const forbidden = isApiError(error, 403);
+  const forbidden = isApiError(error, HTTP_FORBIDDEN);
   const problems = validationMessages(error);
 
   return (
@@ -181,39 +209,27 @@ function AuditTrail() {
       <form onSubmit={submitForm(form)}>
         <Stack gap="xs">
           <Group align="flex-end" gap="sm">
-            <form.AppField name="from">
-              {(field) => (
-                <field.TextField label={t(($) => $.admin.audit.filters.from)} type="date" />
-              )}
-            </form.AppField>
-            <form.AppField name="to">
-              {(field) => (
-                <field.TextField label={t(($) => $.admin.audit.filters.to)} type="date" />
-              )}
-            </form.AppField>
-            <form.AppField name="actorUserId">
-              {(field) => (
-                <field.TextField
-                  label={t(($) => $.admin.audit.filters.actorUserId)}
-                  type="number"
-                  min={1}
-                />
-              )}
-            </form.AppField>
-            <form.Field name="channel">
-              {(field) => (
-                <NativeSelect
-                  label={t(($) => $.admin.audit.filters.channel)}
-                  data={[
-                    { value: "", label: t(($) => $.admin.audit.filters.anyChannel) },
-                    { value: "web", label: t(($) => $.admin.audit.channel.web) },
-                    { value: "mcp", label: t(($) => $.admin.audit.channel.mcp) },
-                  ]}
-                  value={field.state.value}
-                  onChange={(event) => field.handleChange(event.currentTarget.value)}
-                />
-              )}
-            </form.Field>
+            <TextInput
+              label={t(($) => $.admin.audit.filters.from)}
+              type="date"
+              {...field("from")}
+            />
+            <TextInput label={t(($) => $.admin.audit.filters.to)} type="date" {...field("to")} />
+            <TextInput
+              label={t(($) => $.admin.audit.filters.actorUserId)}
+              type="number"
+              min={1}
+              {...field("actorUserId")}
+            />
+            <NativeSelect
+              label={t(($) => $.admin.audit.filters.channel)}
+              data={[
+                { label: t(($) => $.admin.audit.filters.anyChannel), value: "" },
+                { label: t(($) => $.admin.audit.channel.web), value: "web" },
+                { label: t(($) => $.admin.audit.channel.mcp), value: "mcp" },
+              ]}
+              {...field("channel")}
+            />
           </Group>
           <Group align="flex-end" gap="sm">
             <form.AppField name="operation">
@@ -268,7 +284,9 @@ function AuditTrail() {
 
       <Modal
         opened={selected !== null}
-        onClose={() => setSelected(null)}
+        onClose={() => {
+          setSelected(null);
+        }}
         title={selected?.operation}
         size="xl"
       >
@@ -281,7 +299,7 @@ function AuditTrail() {
 // One record in full: where it came from, what it changed (old and new value of
 // each field; a secret field names itself and nothing else) and what it read
 // (a count and ids, never values).
-function RecordDetails({ record }: { record: AuditRecord }) {
+function RecordDetails({ record }: { record: AuditRecord }): ReactElement {
   const { t } = useTranslation();
   const meta: [string, string | number | null][] = [
     [t(($) => $.admin.audit.details.requestId), record.requestId],
@@ -319,48 +337,8 @@ function RecordDetails({ record }: { record: AuditRecord }) {
       {record.changes.length > 0 && (
         <Stack gap="xs">
           <Title order={5}>{t(($) => $.admin.audit.details.changes)}</Title>
-          {record.changes.map((change, index) => (
-            // A record may change the same entity twice, so the position is part of the key.
-            <Stack key={`${change.entity}-${change.id ?? ""}-${index}`} gap={4}>
-              <Text fw={500}>
-                {change.entity}
-                {change.id ? ` #${change.id}` : ""} · {change.op}
-              </Text>
-              {change.fields && change.fields.length > 0 && (
-                <Table withTableBorder>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>{t(($) => $.admin.audit.details.field)}</Table.Th>
-                      <Table.Th>{t(($) => $.admin.audit.details.old)}</Table.Th>
-                      <Table.Th>{t(($) => $.admin.audit.details.new)}</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    {change.fields.map((fieldChange) => (
-                      <Table.Tr key={fieldChange.name}>
-                        <Table.Td>{fieldChange.name}</Table.Td>
-                        {fieldChange.secret ? (
-                          <Table.Td colSpan={2}>
-                            <Text size="sm" c="dimmed">
-                              {t(($) => $.admin.audit.details.secret)}
-                            </Text>
-                          </Table.Td>
-                        ) : (
-                          <>
-                            <Table.Td>
-                              <Code>{JSON.stringify(fieldChange.old ?? null)}</Code>
-                            </Table.Td>
-                            <Table.Td>
-                              <Code>{JSON.stringify(fieldChange.new ?? null)}</Code>
-                            </Table.Td>
-                          </>
-                        )}
-                      </Table.Tr>
-                    ))}
-                  </Table.Tbody>
-                </Table>
-              )}
-            </Stack>
+          {keyedChanges(record.changes).map(({ change, key }) => (
+            <ChangeDetails key={key} change={change} />
           ))}
         </Stack>
       )}
@@ -373,6 +351,64 @@ function RecordDetails({ record }: { record: AuditRecord }) {
             <Code block>{record.reads.ids.join(", ")}</Code>
           )}
         </Stack>
+      )}
+    </Stack>
+  );
+}
+
+// A record may change the same entity twice, so a key is the entity, its id and
+// how many times it has come up so far.
+function keyedChanges(changes: AuditRecord["changes"]): { change: AuditChange; key: string }[] {
+  const seen = new Map<string, number>();
+  return changes.map((change) => {
+    const base = `${change.entity}-${change.id ?? ""}`;
+    const count = (seen.get(base) ?? 0) + 1;
+    seen.set(base, count);
+    return { change, key: `${base}-${count}` };
+  });
+}
+
+// One change of a record: the entity and what happened to it, then the old and
+// new value of each field, a secret one naming itself and nothing else.
+function ChangeDetails({ change }: { change: AuditRecord["changes"][number] }): ReactElement {
+  const { t } = useTranslation();
+
+  return (
+    <Stack gap={4}>
+      <Text fw={500}>{`${change.entity}${change.id ? ` #${change.id}` : ""} · ${change.op}`}</Text>
+      {change.fields && change.fields.length > 0 && (
+        <Table withTableBorder>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>{t(($) => $.admin.audit.details.field)}</Table.Th>
+              <Table.Th>{t(($) => $.admin.audit.details.old)}</Table.Th>
+              <Table.Th>{t(($) => $.admin.audit.details.new)}</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {change.fields.map((fieldChange) => (
+              <Table.Tr key={fieldChange.name}>
+                <Table.Td>{fieldChange.name}</Table.Td>
+                {fieldChange.secret ? (
+                  <Table.Td colSpan={2}>
+                    <Text size="sm" c="dimmed">
+                      {t(($) => $.admin.audit.details.secret)}
+                    </Text>
+                  </Table.Td>
+                ) : (
+                  <>
+                    <Table.Td>
+                      <Code>{JSON.stringify(fieldChange.old ?? null)}</Code>
+                    </Table.Td>
+                    <Table.Td>
+                      <Code>{JSON.stringify(fieldChange.new ?? null)}</Code>
+                    </Table.Td>
+                  </>
+                )}
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
       )}
     </Stack>
   );

@@ -20,36 +20,44 @@ import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import Pager from "@/components/Pager";
 import { seoHead } from "@/lib/seo-head";
 import { longDate } from "@/lib/time-ago";
+import { lenient } from "@/lib/lenient";
+import type { ReactElement } from "react";
+
+const pageNumber = z.number().int().min(1);
 
 // Student reviews, at their legacy URL, ported from legacy reviews/index. The
 // loader prefetches the requested page so the reviews are in the
 // server-rendered HTML (ADR-0008); a malformed `page` falls back to page one.
 export const Route = createFileRoute("/{-$locale}/reviews/")({
   validateSearch: z.object({
-    page: z.number().int().min(1).optional().catch(undefined),
+    page: lenient(pageNumber),
   }),
+
   loaderDeps: ({ search }) => ({ page: search.page }),
+
   loader: ({ context, deps }) =>
     context.queryClient.query({
       ...listPublicReviewsOptions({ query: { page: deps.page } }),
       staleTime: "static",
     }),
+
   // Legacy meta: the header as title and og:title (legacy asked for a `.title`
   // key that never existed), the reviews description, the canonical link and
   // the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({
+      canonicalPath: match.pathname,
+      description: i18n.t(($) => $.reviews.index.meta.description),
       i18n,
       title: i18n.t(($) => $.reviews.index.header),
-      description: i18n.t(($) => $.reviews.index.meta.description),
-      canonicalPath: match.pathname,
     });
   },
+
   component: Index,
 });
 
-function Index() {
+function Index(): ReactElement {
   const { t, i18n } = useTranslation();
   const { page } = Route.useSearch();
   const { data } = useQuery(listPublicReviewsOptions({ query: { page } }));

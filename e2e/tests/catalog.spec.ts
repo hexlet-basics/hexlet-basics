@@ -1,5 +1,8 @@
 import { test } from "../support/test";
 
+// A lesson page is headed with the course it belongs to.
+const COURSE = "JavaScript";
+
 test("the catalog lists the fixture courses", async ({ site }) => {
   await site.catalog.open();
 
@@ -18,7 +21,7 @@ test("a course page shows its landing copy and syllabus, and a lesson opens from
   await site.catalog.openLesson("Привет, мир!");
 
   await site.expectPath("/ru/languages/javascript/lessons/hello-world");
-  await site.expectHeading("JavaScript: Привет, мир!", 1);
+  await site.expectHeading(`${COURSE}: Привет, мир!`, 1);
 });
 
 // The one test that follows a link the site itself renders: the API resolves a

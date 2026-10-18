@@ -3,40 +3,40 @@
 // src/components/admin/resources/staffRole.ts.
 import type { ColumnDescriptor, FieldDescriptor } from "../fieldDescriptors";
 
-export const staffRoleFields: FieldDescriptor[] = [
+export const staffRoleFields: FieldDescriptor<"name" | "description">[] = [
   {
-    name: "name",
     kind: "text",
-    nullable: false,
     labelKey: "models.attributes.base.name",
+    name: "name",
+    nullable: false,
     required: true,
   },
   {
-    name: "description",
     kind: "text",
-    nullable: true,
     labelKey: "models.attributes.base.description",
+    name: "description",
+    nullable: true,
     required: false,
   },
 ];
 
 export const staffRoleColumns: ColumnDescriptor[] = [
   {
-    name: "id",
     kind: "number",
-    nullable: false,
     labelKey: "models.attributes.staff_role.id",
-  },
-  {
-    name: "name",
-    kind: "text",
+    name: "id",
     nullable: false,
-    labelKey: "models.attributes.base.name",
   },
   {
-    name: "description",
     kind: "text",
-    nullable: true,
+    labelKey: "models.attributes.base.name",
+    name: "name",
+    nullable: false,
+  },
+  {
+    kind: "text",
     labelKey: "models.attributes.base.description",
+    name: "description",
+    nullable: true,
   },
 ];

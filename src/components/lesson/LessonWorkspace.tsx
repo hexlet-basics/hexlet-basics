@@ -4,8 +4,8 @@ import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClientOnly } from "@tanstack/react-router";
 import { IconBook } from "@tabler/icons-react";
-import { lazy, Suspense, useState } from "react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import { Suspense, lazy, useState } from "react";
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import {
   checkLessonMutation,
@@ -53,7 +53,7 @@ export default function LessonWorkspace({
   // The outcome of the last check, held by the page for the assistant too.
   result: LessonCheckingResponse | null;
   setResult: Dispatch<SetStateAction<LessonCheckingResponse | null>>;
-}) {
+}): ReactElement {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
@@ -62,26 +62,29 @@ export default function LessonWorkspace({
 
   // A reload, a second tab or a return tomorrow finds the work still there.
   const [code, setCode] = useLocalStorage({
-    key: lessonCodeKey(courseSlug, lesson.slug),
     defaultValue: starterCode,
     // Read straight away rather than in an effect: the value is only ever
     // rendered inside the editor, which is client-only, so there is no
     // server-rendered markup for it to disagree with — and reading it late would
     // let monaco paint the starter code over work the learner already has.
     getInitialValueInEffect: false,
+    key: lessonCodeKey(courseSlug, lesson.slug),
   });
 
   // Bumped to tell the editor its buffer has been replaced; see LessonEditor.
   const [resetCount, setResetCount] = useState(0);
   const [tab, setTab] = useState<string | null>("editor");
 
-  const reset = () => {
+  const reset = (): void => {
     setCode(starterCode);
     setResetCount((count) => count + 1);
   };
 
   const check = useMutation({
     ...checkLessonMutation(),
+    // A network failure must never read as a wrong answer, so it says what it
+    // was and leaves the page where it stood.
+    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
     onSuccess: async (outcome) => {
       setResult(outcome);
       // The server has just recorded progress; the marks in the lesson list and
@@ -99,12 +102,9 @@ export default function LessonWorkspace({
         });
       }
     },
-    // A network failure must never read as a wrong answer, so it says what it
-    // was and leaves the page where it stood.
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 
-  const run = () => {
+  const run = (): void => {
     if (check.isPending) {
       return;
     }
@@ -121,8 +121,8 @@ export default function LessonWorkspace({
     setTab("output");
     setResult(null);
     check.mutate({
-      path: { id: lesson.id },
       body: { code, versionId: lesson.versionId ?? 0 },
+      path: { id: lesson.id },
     });
   };
 
@@ -135,6 +135,19 @@ export default function LessonWorkspace({
   const finished = view.lessons.find((item) => item.slug === lesson.slug)?.finished;
   const solutionUnlocked = Boolean(finished) || Boolean(result?.passed);
 
+  // Client-only for the same reason the editor is: the buffer is read from
+  // storage on the first client render, so markup the server rendered from the
+  // starter code would disagree with it.
+  const preview = hasPreview(courseSlug) ? (
+    <ClientOnly>
+      <Suspense>
+        <Box flex="none">
+          <LessonPreview code={code} />
+        </Box>
+      </Suspense>
+    </ClientOnly>
+  ) : null;
+
   return (
     <Stack h="100%" gap={0}>
       <Tabs
@@ -145,7 +158,7 @@ export default function LessonWorkspace({
         display="flex"
         flex={1}
         mih={0}
-        style={{ flexDirection: "column" }}
+        styles={{ root: { flexDirection: "column" } }}
         keepMountedMode="display-none"
       >
         <Tabs.List grow>
@@ -190,18 +203,7 @@ export default function LessonWorkspace({
               />
             </Box>
 
-            {hasPreview(courseSlug) && (
-              // Client-only for the same reason the editor is: the buffer is read
-              // from storage on the first client render, so markup the server
-              // rendered from the starter code would disagree with it.
-              <ClientOnly>
-                <Suspense>
-                  <Box flex="none">
-                    <LessonPreview code={code} />
-                  </Box>
-                </Suspense>
-              </ClientOnly>
-            )}
+            {preview}
           </Stack>
         </Tabs.Panel>
 
@@ -209,9 +211,9 @@ export default function LessonWorkspace({
           {/* A plain scrolling box rather than a ScrollArea: the output has to fill
               the pane, and a ScrollArea's content wrapper is only as tall as its
               content. */}
-          <Box h="100%" style={{ overflow: "auto" }}>
+          <div style={{ height: "100%", overflow: "auto" }}>
             <LessonOutput result={result} running={check.isPending} />
-          </Box>
+          </div>
         </Tabs.Panel>
 
         <Tabs.Panel value="tests" h="100%" mih={0}>

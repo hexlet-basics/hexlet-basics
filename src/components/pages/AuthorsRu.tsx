@@ -1,4 +1,6 @@
-export default function AuthorsRu() {
+import type { ReactElement } from "react";
+
+export default function AuthorsRu(): ReactElement {
   return (
     <>
       <p>
