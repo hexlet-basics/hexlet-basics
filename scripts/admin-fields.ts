@@ -50,7 +50,7 @@ export interface ResourceDescriptors {
 
 function schemaNamed(spec: OpenApi, name: string): Schema {
   const schema = spec.components.schemas[name];
-  if (!schema) {
+  if (schema === undefined) {
     throw new Error(`schema ${name} is not in the OpenAPI document`);
   }
   return schema;
@@ -66,7 +66,7 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
     const [only, ...others] = current.allOf ?? [];
     if (current.$ref) {
       current = schemaNamed(spec, current.$ref.replace("#/components/schemas/", ""));
-    } else if (only && others.length === 0) {
+    } else if (only !== undefined && others.length === 0) {
       current = only;
     } else {
       return { nullable: nullable || current.nullable === true, shape: current };

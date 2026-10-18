@@ -91,7 +91,7 @@ export default function LessonPage({
     );
   }
 
-  if (isError || !data) {
+  if (isError || data === undefined) {
     return <LessonMissing />;
   }
 

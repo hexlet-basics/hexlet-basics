@@ -150,9 +150,7 @@ function collect(node: Node, problems: SyntaxProblem[]): void {
     problems.push(toProblem("unexpected", node));
   } else {
     for (const child of node.children) {
-      if (child) {
-        collect(child, problems);
-      }
+      collect(child, problems);
     }
   }
 }

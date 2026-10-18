@@ -51,7 +51,7 @@ export default function Pager({
         getItemProps={linkTo}
         getControlProps={(control) => {
           const target = controlPage[control];
-          return target ? linkTo(target) : {};
+          return target === undefined ? {} : linkTo(target);
         }}
         boundaries={1}
         siblings={1}

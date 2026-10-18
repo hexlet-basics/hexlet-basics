@@ -269,8 +269,10 @@ export default defineConfig({
     // would have to be async, then has no await to satisfy require-await, and an await
     // added for it is what return-await forbids.
     "typescript/promise-function-async": "off",
-    // Forbids idiomatic truthiness checks on optional strings and objects.
-    "typescript/strict-boolean-expressions": "off",
+    "typescript/strict-boolean-expressions": [
+      "error",
+      { allowNullableBoolean: true, allowNullableString: true },
+    ],
     // A union grown by the contract must fail the switch, not fall into default.
     "typescript/switch-exhaustiveness-check": "error",
     // CamelCase and PascalCase module names and TanStack $param routes are the repo convention.

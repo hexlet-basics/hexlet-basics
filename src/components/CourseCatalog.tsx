@@ -38,7 +38,7 @@ export default function CourseCatalog(): ReactElement {
     );
   }
 
-  if (isError || !data) {
+  if (isError || data === undefined) {
     return (
       <Center h="100vh">
         <Text c="red">Failed to load courses</Text>
