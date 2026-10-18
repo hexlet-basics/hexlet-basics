@@ -4,7 +4,7 @@ import "context"
 
 // A state is not an update (ADR-0020, state transitions addendum): publishing,
 // unpublishing and archiving are operations of their own, and the legal moves
-// are a transition.Transition each. A refused move is a *transition.Illegal, a
+// are a transition.Transition each. A refused move is a *transition.IllegalError, a
 // domain conflict, so every resource that follows the pattern answers the same
 // way: 409 with a localized `detail` (detailFor words it in the vocabulary of
 // the state it names).

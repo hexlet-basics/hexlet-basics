@@ -15,7 +15,7 @@ import (
 // default and the value moves only through these operations.
 //
 // Any change between two distinct values is legal, repeating the current one is
-// a *transition.Illegal. The readiness column is all a move changes. What it
+// a *transition.IllegalError. The readiness column is all a move changes. What it
 // controls is read from it by the queries, with nothing copied or cached: the
 // public catalogue, the course category pages, the sitemap and the lessons list
 // ask for completed courses (landingpages.Completed), so marking a course
@@ -49,7 +49,7 @@ func (r *Readiness) MarkCompleted(ctx context.Context, id int) error {
 // move checks the move against the table and writes the new readiness through
 // UpdateOne, so the audit hook records the old and the new value. A course with
 // no readiness (nullable in the legacy schema) counts as a draft. A missing id
-// is domain.ErrNotFound and an illegal move a *transition.Illegal, both before
+// is domain.ErrNotFound and an illegal move a *transition.IllegalError, both before
 // any write.
 func (r *Readiness) move(ctx context.Context, id int, move transition.Transition[transition.Readiness]) error {
 	row, err := r.db.Course.Get(ctx, id)

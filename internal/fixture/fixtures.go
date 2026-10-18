@@ -114,7 +114,7 @@ func (l labels) id(label string) (int, error) {
 var (
 	repoOnce   sync.Once
 	repoLabels labels
-	repoErr    error
+	errRepo    error
 )
 
 // Label names one fixture row. It is a struct, not a string type, on purpose:
@@ -154,12 +154,12 @@ func LabelNames(dir string) ([]string, error) {
 func ID(label Label) int {
 	repoOnce.Do(func() {
 		var dir string
-		if dir, repoErr = Dir(); repoErr == nil {
-			repoLabels, repoErr = scan(dir)
+		if dir, errRepo = Dir(); errRepo == nil {
+			repoLabels, errRepo = scan(dir)
 		}
 	})
-	if repoErr != nil {
-		panic(fmt.Sprintf("fixtures: %v", repoErr))
+	if errRepo != nil {
+		panic(fmt.Sprintf("fixtures: %v", errRepo))
 	}
 	id, err := repoLabels.id(label.name)
 	if err != nil {
@@ -197,7 +197,7 @@ func Dir() (string, error) {
 var (
 	digestOnce sync.Once
 	digest     string
-	digestErr  error
+	errDigest  error
 )
 
 // PasswordDigest is the bcrypt digest of Password at the lowest cost, computed
@@ -206,9 +206,9 @@ var (
 func PasswordDigest() (string, error) {
 	digestOnce.Do(func() {
 		hash, err := bcrypt.GenerateFromPassword([]byte(Password), bcrypt.MinCost)
-		digest, digestErr = string(hash), err
+		digest, errDigest = string(hash), err
 	})
-	return digest, digestErr
+	return digest, errDigest
 }
 
 // Load replaces the contents of the tables in dir with the fixture rows. It

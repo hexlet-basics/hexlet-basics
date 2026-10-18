@@ -8,6 +8,7 @@ linters:
     - contextcheck
     - copyloopvar
     - durationcheck
+    - errname
     - errorlint
     - exptostd
     - fatcontext
