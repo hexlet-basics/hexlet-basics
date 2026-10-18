@@ -5,20 +5,26 @@ import {
   adminCreateBlogPostMutation,
   adminListBlogPostsQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zBlogPostInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyBlogPost, useBlogPostFields } from "@/components/admin/resources/blogPost";
+import { BlogPostForm } from "@/components/admin/forms/BlogPostForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { BlogPostInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/new")({
   component: NewBlogPost,
 });
 
+const emptyBlogPost: BlogPostInput = {
+  coverAttachmentId: null,
+  description: "",
+  name: "",
+  richBody: "",
+  slug: "",
+};
+
 function NewBlogPost(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useBlogPostFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/blog_posts" });
@@ -36,9 +42,7 @@ function NewBlogPost(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zBlogPostInput}
+      <BlogPostForm
         defaultValues={emptyBlogPost}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

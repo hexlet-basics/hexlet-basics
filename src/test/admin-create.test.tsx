@@ -13,8 +13,8 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The admin "new record" pages through their real routes, under the real admin
 // guard: an admin fills the form, the API receives what was typed, and the page
-// goes back to the resource's list. The forms are one engine (CrudForm) fed by a
-// field spec per resource, so each case covers a resource's spec and its route.
+// goes back to the resource's list. Each resource has its own form component, so each
+// case covers a resource's form and its route.
 
 interface Case {
   name: string;

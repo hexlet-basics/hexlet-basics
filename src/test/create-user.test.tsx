@@ -48,8 +48,8 @@ describe("create user", () => {
     await expect.poll(() => router.state.location.pathname).toBe("/admin/users");
   }, 60_000);
 
-  // A 422 from the API lands on the field it names, through the same CrudForm
-  // every resource shares, and the form stays put for another try.
+  // A 422 from the API lands on the field it names, through the form's
+  // own field error, and the form stays put for another try.
   it("shows a refused field of a new user at that field", async () => {
     expect.hasAssertions();
     worker.use(

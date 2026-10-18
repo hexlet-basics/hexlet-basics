@@ -6,13 +6,9 @@ import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
-// Positive full-cycle use-case for the read half of the CRUD engine: the list
-// hook fetches a server-paginated page and CrudList renders its rows and pager.
-//
-// This exists because Table v9 only exposes an API when its feature is
-// registered — a CrudList missing `rowSortingFeature`/`rowPaginationFeature`
-// still type-checks and then renders nothing (or throws in a header). One list
-// covers all 14: every admin list is the same CrudList with other columns.
+// Positive full-cycle use-case for an admin list: the route fetches a
+// server-paginated page and the mantine-datatable table renders its rows and
+// pager.
 describe("list course categories", () => {
   it("renders a server-paginated list through the CRUD engine", async () => {
     expect.hasAssertions();

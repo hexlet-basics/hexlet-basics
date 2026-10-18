@@ -5,20 +5,26 @@ import {
   adminCreateCourseMutation,
   adminListCoursesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyCourse, useCourseFields } from "@/components/admin/resources/course";
+import { CourseForm } from "@/components/admin/forms/CourseForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { CourseInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/courses/new")({
   component: NewCourse,
 });
 
+const emptyCourse: CourseInput = {
+  coverAttachmentId: null,
+  hexletProgramLandingPage: "",
+  learnAs: null,
+  repositoryUrl: null,
+  slug: "",
+};
+
 function NewCourse(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/courses" });
@@ -36,9 +42,7 @@ function NewCourse(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zCourseInput}
+      <CourseForm
         defaultValues={emptyCourse}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

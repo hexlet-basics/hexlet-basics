@@ -5,20 +5,23 @@ import {
   adminCreateRoleMutation,
   adminListRolesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zRoleInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyStaffRole, useStaffRoleFields } from "@/components/admin/resources/staffRole";
+import { StaffRoleForm } from "@/components/admin/forms/StaffRoleForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { RoleInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/new")({
   component: NewRole,
 });
 
+const emptyStaffRole: RoleInput = {
+  description: "",
+  name: "",
+};
+
 function NewRole(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useStaffRoleFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/management/roles" });
@@ -36,9 +39,7 @@ function NewRole(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zRoleInput}
+      <StaffRoleForm
         defaultValues={emptyStaffRole}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

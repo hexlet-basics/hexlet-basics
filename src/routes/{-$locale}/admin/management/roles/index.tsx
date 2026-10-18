@@ -8,11 +8,12 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListRolesQuery } from "@/client/zod.gen";
 import type { StaffRole } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
-import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import { DataTable } from "mantine-datatable";
+import type { DataTableColumn } from "mantine-datatable";
+import { RowActions } from "@/components/admin/RowActions";
+import { useQuery } from "@tanstack/react-query";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
@@ -22,32 +23,43 @@ export const Route = createFileRoute("/{-$locale}/admin/management/roles/")({
 
 function RolesList(): ReactElement {
   const { t } = useTranslation();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isFetching } = useQuery(
+    adminListRolesOptions({ query: { page: search.page ?? 1, perPage: search.perPage } }),
+  );
 
-  const list = useCrudList({
-    list: adminListRolesOptions,
-    listKey: adminListRolesQueryKey,
-    remove: adminDeleteRoleMutation,
-  });
-
-  const columns: CrudColumnDef<StaffRole>[] = [
+  const columns: DataTableColumn<StaffRole>[] = [
     {
-      accessorKey: "name",
-      header: t(($) => $.models.attributes.base.name),
+      accessor: "name",
+      title: t(($) => $.models.attributes.base.name),
     },
     {
-      accessorKey: "description",
-      header: t(($) => $.models.attributes.base.description),
+      accessor: "description",
+      title: t(($) => $.models.attributes.base.description),
     },
     {
-      accessorKey: "permissionsCount",
-      header: t(($) => $.models.attributes.staff_role.permissions_count),
+      accessor: "permissionsCount",
+      title: t(($) => $.models.attributes.staff_role.permissions_count),
     },
-    list.actionsColumn({
-      describe: (row) => row.name,
-      edit: (row) => (
-        <EditLink to="/{-$locale}/admin/management/roles/$id" params={{ id: String(row.id) }} />
+    {
+      accessor: "actions",
+      render: (record) => (
+        <RowActions
+          describe={record.name}
+          id={record.id}
+          listKey={adminListRolesQueryKey()}
+          remove={adminDeleteRoleMutation()}
+        >
+          <EditLink
+            to="/{-$locale}/admin/management/roles/$id"
+            params={{ id: String(record.id) }}
+          />
+        </RowActions>
       ),
-    }),
+      textAlign: "right",
+      title: "",
+    },
   ];
 
   return (
@@ -59,7 +71,21 @@ function RolesList(): ReactElement {
         </ButtonLink>
       </Group>
 
-      <CrudList columns={columns} {...list.props} />
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={data?.perPage ?? search.perPage}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
+        columns={columns}
+      />
     </Stack>
   );
 }

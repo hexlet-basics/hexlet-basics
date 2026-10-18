@@ -8,22 +8,31 @@ import {
   adminListReviewsQueryKey,
   adminUpdateReviewMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zReviewInput } from "@/client/zod.gen";
 import { ReviewStatePanel } from "@/components/admin/ReviewStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { reviewToForm, useReviewFields } from "@/components/admin/resources/review";
+import { ReviewForm } from "@/components/admin/forms/ReviewForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { Review, ReviewInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/$id")({
   component: EditReview,
 });
 
+function reviewToForm(review: Review): ReviewInput {
+  return {
+    body: review.body ?? "",
+    courseId: review.courseId,
+    firstName: review.firstName ?? "",
+    lastName: review.lastName ?? "",
+    pinned: review.pinned ?? false,
+    userId: review.userId,
+  };
+}
+
 function EditReview(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useReviewFields();
   const { id } = Route.useParams();
   const reviewId = Number(id);
 
@@ -49,10 +58,8 @@ function EditReview(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <ReviewForm
             key={data.id}
-            fields={fields}
-            schema={zReviewInput}
             defaultValues={reviewToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: reviewId } })}
             submitLabel={t(($) => $.admin.crud.save)}

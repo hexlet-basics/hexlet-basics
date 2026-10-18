@@ -9,10 +9,10 @@ using OpenAPI;
 namespace HexletBasics;
 
 // ===========================================================================
-// ADMIN — the generated CRUD engine surface (FRONTEND_PLAN Wave 1/2).
+// ADMIN — the CRUD surface of the back office (FRONTEND_PLAN Wave 1/2).
 //
-// Every resource exposes a consistent list/get/create/update/delete subset so
-// one engine (<CrudList> + <CrudForm>) drives them all. Admin URLs use the
+// Every resource exposes a consistent list/get/create/update/delete subset, so
+// each admin screen is a plain Mantine table and form over it. Admin URLs use the
 // domain vocabulary; only the public routes keep their legacy paths (ADR-0002).
 //
 // Uniform response shape: writes return `T`; a failed one is ProblemDetails (a 422 carries `errors`). Index is

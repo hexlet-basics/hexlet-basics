@@ -12,22 +12,30 @@ import {
   adminSuggestBlogPostRelatedCoursesMutation,
   adminUpdateBlogPostMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zBlogPostInput } from "@/client/zod.gen";
 import { BlogPostStatePanel } from "@/components/admin/BlogPostStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { blogPostToForm, useBlogPostFields } from "@/components/admin/resources/blogPost";
+import { BlogPostForm } from "@/components/admin/forms/BlogPostForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { BlogPost, BlogPostInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/$id")({
   component: EditBlogPost,
 });
 
+function blogPostToForm(post: BlogPost): BlogPostInput {
+  return {
+    coverAttachmentId: null,
+    description: post.description ?? "",
+    name: post.name ?? "",
+    richBody: post.richBodyHtml,
+    slug: post.slug ?? "",
+  };
+}
+
 function EditBlogPost(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useBlogPostFields();
   const { id } = Route.useParams();
   const postId = Number(id);
 
@@ -53,10 +61,8 @@ function EditBlogPost(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <BlogPostForm
             key={data.id}
-            fields={fields}
-            schema={zBlogPostInput}
             defaultValues={blogPostToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: postId } })}
             submitLabel={t(($) => $.admin.crud.save)}

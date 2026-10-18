@@ -8,22 +8,27 @@ import {
   adminListRolesQueryKey,
   adminUpdateRoleMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zRoleInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { staffRoleToForm, useStaffRoleFields } from "@/components/admin/resources/staffRole";
+import { StaffRoleForm } from "@/components/admin/forms/StaffRoleForm";
 import { RolePermissions } from "@/components/admin/RolePermissions";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { RoleInput, StaffRoleDetail } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/$id")({
   component: EditRole,
 });
 
+function staffRoleToForm(role: StaffRoleDetail): RoleInput {
+  return {
+    description: role.description ?? "",
+    name: role.name,
+  };
+}
+
 function EditRole(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useStaffRoleFields();
   const { id } = Route.useParams();
   const roleId = Number(id);
 
@@ -49,10 +54,8 @@ function EditRole(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <StaffRoleForm
             key={data.id}
-            fields={fields}
-            schema={zRoleInput}
             defaultValues={staffRoleToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: roleId } })}
             submitLabel={t(($) => $.admin.crud.save)}

@@ -8,21 +8,27 @@ import {
   adminListStaffMembersQueryKey,
   adminUpdateStaffMemberMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zStaffMemberInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { staffMemberToForm, useStaffMemberFields } from "@/components/admin/resources/staffMember";
+import { StaffMemberForm } from "@/components/admin/forms/StaffMemberForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { StaffMember, StaffMemberInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/staff_members/$id")({
   component: EditStaffMember,
 });
 
+function staffMemberToForm(member: StaffMember): StaffMemberInput {
+  return {
+    allowedLocales: member.allowedLocales,
+    roleId: member.roleId,
+    userId: member.userId,
+  };
+}
+
 function EditStaffMember(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useStaffMemberFields();
   const { id } = Route.useParams();
   const memberId = Number(id);
 
@@ -50,10 +56,8 @@ function EditStaffMember(): ReactElement {
       {isLoading || !data ? (
         <FormSkeleton />
       ) : (
-        <CrudForm
+        <StaffMemberForm
           key={data.id}
-          fields={fields}
-          schema={zStaffMemberInput}
           defaultValues={staffMemberToForm(data)}
           onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: memberId } })}
           submitLabel={t(($) => $.admin.crud.save)}

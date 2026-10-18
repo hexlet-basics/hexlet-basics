@@ -5,20 +5,27 @@ import {
   adminCreateReviewMutation,
   adminListReviewsQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zReviewInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyReview, useReviewFields } from "@/components/admin/resources/review";
+import { ReviewForm } from "@/components/admin/forms/ReviewForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { ReviewInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/new")({
   component: NewReview,
 });
 
+const emptyReview: ReviewInput = {
+  body: "",
+  courseId: null,
+  firstName: "",
+  lastName: "",
+  pinned: false,
+  userId: null,
+};
+
 function NewReview(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useReviewFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/reviews" });
@@ -36,9 +43,7 @@ function NewReview(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zReviewInput}
+      <ReviewForm
         defaultValues={emptyReview}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

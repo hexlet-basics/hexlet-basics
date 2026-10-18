@@ -13,17 +13,16 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { OnChangeFn, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import type { ReactElement } from "react";
 import type { z } from "zod";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { DataTableColumn } from "mantine-datatable";
 import { adminListAuditRecordsOptions } from "@/client/@tanstack/react-query.gen";
 import type { AuditChange, AuditRecord } from "@/client/types.gen";
 import { zAdminListAuditRecordsQuery } from "@/client/zod.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { submitForm, useAppForm } from "@/lib/form";
 import { isApiError } from "@/lib/api-error";
 import { HTTP_FORBIDDEN } from "@/lib/http-status";
@@ -97,19 +96,8 @@ function AuditTrail(): ReactElement {
   const navigate = Route.useNavigate();
   const [selected, setSelected] = useState<AuditRecord | null>(null);
 
-  const pagination: PaginationState = {
-    pageIndex: (search.page ?? 1) - 1,
-    pageSize: search.perPage ?? PER_PAGE,
-  };
-  const onPaginationChange: OnChangeFn<PaginationState> = (updater): void => {
-    const next = typeof updater === "function" ? updater(pagination) : updater;
-    void navigate({
-      search: (prev) => ({ ...prev, page: next.pageIndex + 1, perPage: next.pageSize }),
-    });
-  };
-
-  const { data, isLoading, error } = useQuery(
-    adminListAuditRecordsOptions({ query: { ...search, perPage: pagination.pageSize } }),
+  const { data, isFetching, error } = useQuery(
+    adminListAuditRecordsOptions({ query: { ...search, perPage: search.perPage ?? PER_PAGE } }),
   );
 
   // Applying starts from the first page: the old one may not exist in the narrowed trail.
@@ -125,59 +113,58 @@ function AuditTrail(): ReactElement {
     void apply(NO_FILTERS);
   };
 
-  const columns: CrudColumnDef<AuditRecord>[] = [
+  const columns: DataTableColumn<AuditRecord>[] = [
     {
-      cell: ({ row }) => new Date(row.original.occurredAt).toLocaleString(),
-      header: t(($) => $.admin.audit.columns.occurredAt),
-      id: "occurredAt",
+      accessor: "occurredAt",
+      render: (record) => new Date(record.occurredAt).toLocaleString(),
+      title: t(($) => $.admin.audit.columns.occurredAt),
     },
     {
-      cell: ({ row }) => (
-        <Badge color={CHANNEL_COLOR[row.original.channel]} variant="light">
-          {t(($) => $.admin.audit.channel[row.original.channel])}
+      accessor: "channel",
+      render: (record) => (
+        <Badge color={CHANNEL_COLOR[record.channel]} variant="light">
+          {t(($) => $.admin.audit.channel[record.channel])}
         </Badge>
       ),
-      header: t(($) => $.admin.audit.columns.channel),
-      id: "channel",
+      title: t(($) => $.admin.audit.columns.channel),
     },
     {
-      cell: ({ row }) => (
-        <Badge color={OUTCOME_COLOR[row.original.outcome]}>
-          {t(($) => $.admin.audit.outcome[row.original.outcome])}
+      accessor: "outcome",
+      render: (record) => (
+        <Badge color={OUTCOME_COLOR[record.outcome]}>
+          {t(($) => $.admin.audit.outcome[record.outcome])}
         </Badge>
       ),
-      header: t(($) => $.admin.audit.columns.outcome),
-      id: "outcome",
+      title: t(($) => $.admin.audit.columns.outcome),
     },
     {
-      accessorKey: "operation",
-      header: t(($) => $.admin.audit.columns.operation),
+      accessor: "operation",
+      title: t(($) => $.admin.audit.columns.operation),
     },
     {
-      cell: ({ row }) =>
-        [row.original.entityType, row.original.entityId].filter(Boolean).join(" #"),
-      header: t(($) => $.admin.audit.columns.entity),
-      id: "entity",
+      accessor: "entity",
+      render: (record) => [record.entityType, record.entityId].filter(Boolean).join(" #"),
+      title: t(($) => $.admin.audit.columns.entity),
     },
     {
-      cell: ({ row }) => row.original.actorUserId ?? "—",
-      header: t(($) => $.admin.audit.columns.actor),
-      id: "actor",
+      accessor: "actor",
+      render: (record) => record.actorUserId ?? "—",
+      title: t(($) => $.admin.audit.columns.actor),
     },
     {
-      cell: ({ row }) => (
+      accessor: "details",
+      render: (record) => (
         <Button
           variant="subtle"
           size="compact-sm"
           onClick={() => {
-            setSelected(row.original);
+            setSelected(record);
           }}
         >
           {t(($) => $.admin.audit.details.open)}
         </Button>
       ),
-      header: "",
-      id: "details",
+      title: "",
     },
   ];
 
@@ -269,13 +256,20 @@ function AuditTrail(): ReactElement {
         </Alert>
       )}
 
-      <CrudList
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={search.perPage ?? PER_PAGE}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
         columns={columns}
-        data={data?.items ?? []}
-        total={data?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={onPaginationChange}
-        isLoading={isLoading}
       />
 
       <Modal

@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Title } from "@mantine/core";
+import { Button, Group, Stack, TextInput, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,12 +9,16 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListBlogPostsQuery } from "@/client/zod.gen";
 import type { BlogPost } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
-import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import { DataTable } from "mantine-datatable";
+import type { DataTableColumn } from "mantine-datatable";
+import { RowActions } from "@/components/admin/RowActions";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/duration";
+import { useState } from "react";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
@@ -24,13 +28,19 @@ export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
 
 function BlogPostsList(): ReactElement {
   const { t } = useTranslation();
-
-  const list = useCrudList({
-    list: adminListBlogPostsOptions,
-    listKey: adminListBlogPostsQueryKey,
-    remove: adminDeleteBlogPostMutation,
-    searchable: true,
-  });
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isFetching } = useQuery(
+    adminListBlogPostsOptions({
+      query: { page: search.page ?? 1, perPage: search.perPage, q: search.q },
+    }),
+  );
+  const [term, setTerm] = useState(search.q ?? "");
+  const applyTerm = useDebouncedCallback((text: string) => {
+    void navigate({
+      search: (prev) => ({ ...prev, page: undefined, q: text === "" ? undefined : text }),
+    });
+  }, SEARCH_DEBOUNCE_MS);
 
   // Legacy row action: enqueue the AI pick of the post's related courses.
   const suggestMutation = useResourceMutation({
@@ -40,50 +50,57 @@ function BlogPostsList(): ReactElement {
     successMessage: t(($) => $.admin.blogPosts.suggestQueued),
   });
 
-  const columns: CrudColumnDef<BlogPost>[] = [
+  const columns: DataTableColumn<BlogPost>[] = [
     {
-      accessorKey: "name",
-      header: t(($) => $.models.attributes.base.name),
+      accessor: "name",
+      title: t(($) => $.models.attributes.base.name),
     },
     {
-      accessorKey: "slug",
-      header: t(($) => $.models.attributes.base.slug),
+      accessor: "slug",
+      title: t(($) => $.models.attributes.base.slug),
     },
     {
-      accessorKey: "state",
-      cell: ({ row }) => {
-        const { state } = row.original;
+      accessor: "state",
+      render: (record) => {
+        const { state } = record;
         return state ? t(($) => $.models.attributes.blog_post["state/values"][state]) : "";
       },
-      header: t(($) => $.models.attributes.blog_post.state),
+      title: t(($) => $.models.attributes.blog_post.state),
     },
     {
-      accessorKey: "locale",
-      header: t(($) => $.models.attributes.course_category.locale),
+      accessor: "locale",
+      title: t(($) => $.models.attributes.course_category.locale),
     },
     {
-      accessorKey: "likesCount",
-      header: t(($) => $.admin.blogPosts.likes),
+      accessor: "likesCount",
+      title: t(($) => $.admin.blogPosts.likes),
     },
-    list.actionsColumn({
-      describe: (row) => row.name ?? "",
-      edit: (row) => (
-        <EditLink to="/{-$locale}/admin/blog_posts/$id" params={{ id: String(row.id) }} />
-      ),
-      extra: (row) => (
-        <Button
-          size="xs"
-          variant="light"
-          color="grape"
-          loading={suggestMutation.isPending && suggestMutation.variables?.path.id === row.id}
-          onClick={() => {
-            suggestMutation.mutate({ path: { id: row.id } });
-          }}
+    {
+      accessor: "actions",
+      render: (record) => (
+        <RowActions
+          describe={record.name ?? ""}
+          id={record.id}
+          listKey={adminListBlogPostsQueryKey()}
+          remove={adminDeleteBlogPostMutation()}
         >
-          {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
-        </Button>
+          <EditLink to="/{-$locale}/admin/blog_posts/$id" params={{ id: String(record.id) }} />
+          <Button
+            size="xs"
+            variant="light"
+            color="grape"
+            loading={suggestMutation.isPending && suggestMutation.variables?.path.id === record.id}
+            onClick={() => {
+              suggestMutation.mutate({ path: { id: record.id } });
+            }}
+          >
+            {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
+          </Button>
+        </RowActions>
       ),
-    }),
+      textAlign: "right",
+      title: "",
+    },
   ];
 
   return (
@@ -93,7 +110,31 @@ function BlogPostsList(): ReactElement {
         <ButtonLink to="/{-$locale}/admin/blog_posts/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
-      <CrudList columns={columns} {...list.props} />
+      <TextInput
+        maw={360}
+        placeholder={t(($) => $.admin.crud.search)}
+        value={term}
+        onChange={(event) => {
+          setTerm(event.currentTarget.value);
+          applyTerm(event.currentTarget.value.trim());
+        }}
+      />
+
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={data?.perPage ?? search.perPage}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
+        columns={columns}
+      />
     </Stack>
   );
 }

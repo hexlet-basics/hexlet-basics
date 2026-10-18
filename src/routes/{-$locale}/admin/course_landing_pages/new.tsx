@@ -5,23 +5,39 @@ import {
   adminCreateCourseLandingPageMutation,
   adminListCourseLandingPagesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseLandingPageInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import {
-  emptyCourseLandingPage,
-  useCourseLandingPageFields,
-} from "@/components/admin/resources/courseLandingPage";
+import { CourseLandingPageForm } from "@/components/admin/forms/CourseLandingPageForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { CourseLandingPageInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/new")({
   component: NewCourseLandingPage,
 });
 
+const emptyCourseLandingPage: CourseLandingPageInput = {
+  courseId: 0,
+  description: "",
+  footer: false,
+  footerName: "",
+  header: "",
+  landingPageToRedirectId: null,
+  listed: false,
+  main: false,
+  metaDescription: "",
+  metaTitle: "",
+  name: "",
+  order: "",
+  outcomesDescription: "",
+  outcomesHeader: "",
+  outcomesImageAttachmentId: null,
+  slug: "",
+  usedInDescription: "",
+  usedInHeader: "",
+};
+
 function NewCourseLandingPage(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseLandingPageFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_landing_pages" });
@@ -39,9 +55,7 @@ function NewCourseLandingPage(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zCourseLandingPageInput}
+      <CourseLandingPageForm
         defaultValues={emptyCourseLandingPage}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

@@ -1,5 +1,9 @@
-import { Group, Stack, Title } from "@mantine/core";
+import { Group, Stack, TextInput, Title } from "@mantine/core";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { DataTable } from "mantine-datatable";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteBannerMutation,
@@ -7,17 +11,12 @@ import {
   adminListBannersQueryKey,
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListBannersQuery } from "@/client/zod.gen";
-import type { Banner } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
-import { bannerColumns } from "@/components/admin/generated/banner";
-import { useGeneratedColumns } from "@/components/admin/useGeneratedFields";
-import { useCrudList } from "@/components/admin/useCrudList";
+import { RowActions } from "@/components/admin/RowActions";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/duration";
 import { ButtonLink } from "@/components/RouterLink";
 import type { ReactElement } from "react";
 
-// Banners admin list, rendered through the CRUD engine.
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
   component: BannersList,
   validateSearch: zAdminListBannersQuery,
@@ -25,36 +24,20 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/")({
 
 function BannersList(): ReactElement {
   const { t } = useTranslation();
-
-  const list = useCrudList({
-    list: adminListBannersOptions,
-    listKey: adminListBannersQueryKey,
-    remove: adminDeleteBannerMutation,
-    searchable: true,
-  });
-
-  // The state shows as its label: it moves only through the transition buttons
-  // of the edit page, so the list is where it is read.
-  const labelState = (column: CrudColumnDef<Banner>): CrudColumnDef<Banner> =>
-    "accessorKey" in column && column.accessorKey === "state"
-      ? {
-          ...column,
-          cell: ({ row }) =>
-            t(($) => $.models.attributes.banner["state/values"][row.original.state]),
-        }
-      : column;
-
-  const columns: CrudColumnDef<Banner>[] = [
-    ...useGeneratedColumns<Banner>(bannerColumns, ["state", "locale", "background", "body"]).map(
-      (column) => labelState(column),
-    ),
-    list.actionsColumn({
-      describe: (row) => row.body,
-      edit: (row) => (
-        <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(row.id) }} />
-      ),
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isFetching } = useQuery(
+    adminListBannersOptions({
+      query: { page: search.page ?? 1, perPage: search.perPage, q: search.q },
     }),
-  ];
+  );
+
+  const [term, setTerm] = useState(search.q ?? "");
+  const applyTerm = useDebouncedCallback((text: string) => {
+    void navigate({
+      search: (prev) => ({ ...prev, page: undefined, q: text === "" ? undefined : text }),
+    });
+  }, SEARCH_DEBOUNCE_MS);
 
   return (
     <Stack>
@@ -63,7 +46,56 @@ function BannersList(): ReactElement {
         <ButtonLink to="/{-$locale}/admin/banners/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
-      <CrudList columns={columns} {...list.props} />
+      <TextInput
+        maw={360}
+        placeholder={t(($) => $.admin.crud.search)}
+        value={term}
+        onChange={(event) => {
+          setTerm(event.currentTarget.value);
+          applyTerm(event.currentTarget.value.trim());
+        }}
+      />
+
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        idAccessor="id"
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={data?.perPage ?? search.perPage}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
+        columns={[
+          {
+            accessor: "state",
+            render: (banner) => t(($) => $.models.attributes.banner["state/values"][banner.state]),
+            title: t(($) => $.models.attributes.banner.state),
+          },
+          { accessor: "locale", title: t(($) => $.models.attributes.banner.locale) },
+          { accessor: "background", title: t(($) => $.models.attributes.banner.background) },
+          { accessor: "body", title: t(($) => $.models.attributes.banner.body) },
+          {
+            accessor: "actions",
+            render: (banner) => (
+              <RowActions
+                describe={banner.body}
+                listKey={adminListBannersQueryKey()}
+                remove={adminDeleteBannerMutation()}
+                id={banner.id}
+              >
+                <EditLink to="/{-$locale}/admin/banners/$id" params={{ id: String(banner.id) }} />
+              </RowActions>
+            ),
+            textAlign: "right",
+            title: "",
+          },
+        ]}
+      />
     </Stack>
   );
 }

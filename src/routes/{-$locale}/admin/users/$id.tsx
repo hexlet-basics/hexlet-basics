@@ -8,21 +8,28 @@ import {
   adminListUsersQueryKey,
   adminUpdateUserMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zUserInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { useUserFields, userToForm } from "@/components/admin/resources/user";
+import { UserForm } from "@/components/admin/forms/UserForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { UserCrud, UserInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/users/$id")({
   component: EditUser,
 });
 
+function userToForm(user: UserCrud): UserInput {
+  return {
+    admin: user.admin ?? false,
+    email: user.email ?? "",
+    firstName: user.firstName ?? "",
+    lastName: user.lastName ?? "",
+  };
+}
+
 function EditUser(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useUserFields();
   const { id } = Route.useParams();
   const userId = Number(id);
 
@@ -47,10 +54,8 @@ function EditUser(): ReactElement {
       {isLoading || !data ? (
         <FormSkeleton />
       ) : (
-        <CrudForm
+        <UserForm
           key={data.id}
-          fields={fields}
-          schema={zUserInput}
           defaultValues={userToForm(data)}
           onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: userId } })}
           submitLabel={t(($) => $.admin.crud.save)}

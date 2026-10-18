@@ -11,8 +11,6 @@ k8s/
 docs/
 fixtures/
 scripts/
-# src/test imports it, and the web image's `tsc -b` type-checks the tests.
-!scripts/admin-fields.ts
 node_modules/
 dist/
 bin/

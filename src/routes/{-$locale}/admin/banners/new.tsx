@@ -1,13 +1,12 @@
 import { Stack, Title } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import type { BannerInput } from "@/client/types.gen";
 import {
   adminCreateBannerMutation,
   adminListBannersQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zBannerInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyBanner, useBannerFields } from "@/components/admin/resources/banner";
+import { BannerForm } from "@/components/admin/forms/BannerForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import type { ReactElement } from "react";
 
@@ -15,10 +14,18 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/new")({
   component: NewBanner,
 });
 
+const emptyBanner: BannerInput = {
+  background: "cta_gradient",
+  body: "",
+  finishesAt: null,
+  locale: "en",
+  startsAt: null,
+  url: "",
+};
+
 function NewBanner(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useBannerFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/banners" });
@@ -36,9 +43,7 @@ function NewBanner(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zBannerInput}
+      <BannerForm
         defaultValues={emptyBanner}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

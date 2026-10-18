@@ -1,16 +1,13 @@
 import { Stack, Text, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import {
-  adminListCourseLessonReviewsOptions,
-  adminListCourseLessonReviewsQueryKey,
-} from "@/client/@tanstack/react-query.gen";
+import { adminListCourseLessonReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCourseLessonReviewsQuery } from "@/client/zod.gen";
 import type { CourseLessonReview } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
-import { useCrudList } from "@/components/admin/useCrudList";
 import { useDateTime } from "@/hooks/useDateTime";
+import { DataTable } from "mantine-datatable";
+import type { DataTableColumn } from "mantine-datatable";
+import { useQuery } from "@tanstack/react-query";
 import type { ReactElement } from "react";
 
 // AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
@@ -22,39 +19,42 @@ export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")
 
 function LessonReviewsList(): ReactElement {
   const { t } = useTranslation();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isFetching } = useQuery(
+    adminListCourseLessonReviewsOptions({
+      query: { page: search.page ?? 1, perPage: search.perPage },
+    }),
+  );
 
   const formatDateTime = useDateTime();
-  const list = useCrudList({
-    list: adminListCourseLessonReviewsOptions,
-    listKey: adminListCourseLessonReviewsQueryKey,
-  });
 
-  const columns: CrudColumnDef<CourseLessonReview>[] = [
+  const columns: DataTableColumn<CourseLessonReview>[] = [
     {
-      accessorKey: "courseSlug",
-      header: t(($) => $.models.attributes.lesson_review.course),
+      accessor: "courseSlug",
+      title: t(($) => $.models.attributes.lesson_review.course),
     },
     {
-      accessorKey: "slug",
-      header: t(($) => $.models.attributes.lesson_review.lesson),
+      accessor: "slug",
+      title: t(($) => $.models.attributes.lesson_review.lesson),
     },
     {
-      accessorKey: "locale",
-      header: t(($) => $.models.attributes.lesson_review.locale),
+      accessor: "locale",
+      title: t(($) => $.models.attributes.lesson_review.locale),
     },
     {
-      cell: ({ row }) => (
+      accessor: "summary",
+      render: (record) => (
         <Text size="sm" lineClamp={3} maw={560}>
-          {row.original.summary}
+          {record.summary}
         </Text>
       ),
-      header: t(($) => $.models.attributes.lesson_review.summary),
-      id: "summary",
+      title: t(($) => $.models.attributes.lesson_review.summary),
     },
     {
-      cell: ({ row }) => formatDateTime(row.original.createdAt),
-      header: t(($) => $.models.attributes.base.created_at),
-      id: "createdAt",
+      accessor: "createdAt",
+      render: (record) => formatDateTime(record.createdAt),
+      title: t(($) => $.models.attributes.base.created_at),
     },
   ];
 
@@ -62,7 +62,21 @@ function LessonReviewsList(): ReactElement {
     <Stack>
       <Title order={2}>{t(($) => $.admin.resources.lessonReviews)}</Title>
 
-      <CrudList columns={columns} {...list.props} />
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={data?.perPage ?? search.perPage}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
+        columns={columns}
+      />
     </Stack>
   );
 }

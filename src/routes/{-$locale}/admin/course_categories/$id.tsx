@@ -13,25 +13,29 @@ import {
   adminUpdateCategoryQnaItemMutation,
   adminUpdateCourseCategoryMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseCategoryInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
+import { CourseCategoryForm } from "@/components/admin/forms/CourseCategoryForm";
 import { QnaPanel } from "@/components/admin/QnaPanel";
-import {
-  courseCategoryToForm,
-  useCourseCategoryFields,
-} from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { CourseCategory, CourseCategoryInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/$id")({
   component: EditCourseCategory,
 });
 
+function courseCategoryToForm(category: CourseCategory): CourseCategoryInput {
+  return {
+    description: category.description,
+    header: category.header ?? "",
+    name: category.name ?? "",
+    slug: category.slug ?? "",
+  };
+}
+
 function EditCourseCategory(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseCategoryFields();
   const { id } = Route.useParams();
   const categoryId = Number(id);
 
@@ -83,12 +87,10 @@ function EditCourseCategory(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <CourseCategoryForm
             // Remount per row so the form re-seeds its default values from the
             // loaded category instead of keeping a stale initial snapshot.
             key={data.id}
-            fields={fields}
-            schema={zCourseCategoryInput}
             defaultValues={courseCategoryToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: categoryId } })}
             submitLabel={t(($) => $.admin.crud.save)}

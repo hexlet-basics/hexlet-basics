@@ -8,22 +8,30 @@ import {
   adminListCoursesQueryKey,
   adminUpdateCourseMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseInput } from "@/client/zod.gen";
 import { CourseReadinessPanel } from "@/components/admin/CourseReadinessPanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { courseToForm, useCourseFields } from "@/components/admin/resources/course";
+import { CourseForm } from "@/components/admin/forms/CourseForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { Course, CourseInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/courses/$id")({
   component: EditCourse,
 });
 
+function courseToForm(course: Course): CourseInput {
+  return {
+    coverAttachmentId: null,
+    hexletProgramLandingPage: course.hexletProgramLandingPage ?? "",
+    learnAs: course.learnAs,
+    repositoryUrl: null,
+    slug: course.slug,
+  };
+}
+
 function EditCourse(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseFields();
   const { id } = Route.useParams();
   const courseId = Number(id);
 
@@ -49,10 +57,8 @@ function EditCourse(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <CourseForm
             key={data.id}
-            fields={fields}
-            schema={zCourseInput}
             defaultValues={courseToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: courseId } })}
             submitLabel={t(($) => $.admin.crud.save)}

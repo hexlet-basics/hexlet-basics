@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Title } from "@mantine/core";
+import { Button, Group, Stack, TextInput, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,12 +9,16 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCoursesQuery } from "@/client/zod.gen";
 import type { Course } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
-import type { CrudColumnDef } from "@/components/admin/CrudList";
 import { EditLink } from "@/components/admin/EditLink";
-import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import { DataTable } from "mantine-datatable";
+import type { DataTableColumn } from "mantine-datatable";
+import { RowActions } from "@/components/admin/RowActions";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/duration";
+import { useState } from "react";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import type { ReactElement } from "react";
 
 // Courses admin (legacy `/admin/courses`; the domain concept is Course).
@@ -28,12 +32,19 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/")({
 
 function CoursesList(): ReactElement {
   const { t } = useTranslation();
-
-  const list = useCrudList({
-    list: adminListCoursesOptions,
-    listKey: adminListCoursesQueryKey,
-    searchable: true,
-  });
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isFetching } = useQuery(
+    adminListCoursesOptions({
+      query: { page: search.page ?? 1, perPage: search.perPage, q: search.q },
+    }),
+  );
+  const [term, setTerm] = useState(search.q ?? "");
+  const applyTerm = useDebouncedCallback((text: string) => {
+    void navigate({
+      search: (prev) => ({ ...prev, page: undefined, q: text === "" ? undefined : text }),
+    });
+  }, SEARCH_DEBOUNCE_MS);
 
   const versionMutation = useResourceMutation({
     errorMessage: t(($) => $.admin.crud.saveError),
@@ -49,43 +60,42 @@ function CoursesList(): ReactElement {
     successMessage: t(($) => $.admin.courses.reviewQueued),
   });
 
-  const columns: CrudColumnDef<Course>[] = [
+  const columns: DataTableColumn<Course>[] = [
     {
-      accessorKey: "slug",
-      header: t(($) => $.models.attributes.course.slug),
+      accessor: "slug",
+      title: t(($) => $.models.attributes.course.slug),
     },
     {
-      cell: ({ row }) =>
-        t(($) => $.models.attributes.course["readiness/values"][row.original.readiness ?? "draft"]),
-      header: t(($) => $.models.attributes.course.readiness),
-      id: "readiness",
+      accessor: "readiness",
+      render: (record) =>
+        t(($) => $.models.attributes.course["readiness/values"][record.readiness ?? "draft"]),
+      title: t(($) => $.models.attributes.course.readiness),
     },
     {
-      accessorKey: "learnAs",
-      header: t(($) => $.models.attributes.course.learn_as),
+      accessor: "learnAs",
+      title: t(($) => $.models.attributes.course.learn_as),
     },
     {
-      cell: ({ row }) => row.original.currentVersion?.state ?? "",
-      header: t(($) => $.admin.courses.currentVersion),
-      id: "currentVersion",
+      accessor: "currentVersion",
+      render: (record) => record.currentVersion?.state ?? "",
+      title: t(($) => $.admin.courses.currentVersion),
     },
     {
-      accessorKey: "lessonsCount",
-      header: t(($) => $.admin.courses.lessonsCount),
+      accessor: "lessonsCount",
+      title: t(($) => $.admin.courses.lessonsCount),
     },
-    list.actionsColumn({
-      describe: (row) => row.slug,
-      edit: (row) => (
-        <EditLink to="/{-$locale}/admin/courses/$id" params={{ id: String(row.id) }} />
-      ),
-      extra: (row) => (
-        <>
+    {
+      accessor: "actions",
+      render: (record) => (
+        <RowActions describe={record.slug} id={record.id}>
+          <EditLink to="/{-$locale}/admin/courses/$id" params={{ id: String(record.id) }} />
+
           <Button
             size="xs"
             variant="light"
-            loading={versionMutation.isPending && versionMutation.variables?.path.id === row.id}
+            loading={versionMutation.isPending && versionMutation.variables?.path.id === record.id}
             onClick={() => {
-              versionMutation.mutate({ path: { id: row.id } });
+              versionMutation.mutate({ path: { id: record.id } });
             }}
           >
             {t(($) => $.admin.courses.createVersion)}
@@ -94,16 +104,18 @@ function CoursesList(): ReactElement {
             size="xs"
             variant="light"
             color="grape"
-            loading={reviewMutation.isPending && reviewMutation.variables?.path.id === row.id}
+            loading={reviewMutation.isPending && reviewMutation.variables?.path.id === record.id}
             onClick={() => {
-              reviewMutation.mutate({ path: { id: row.id } });
+              reviewMutation.mutate({ path: { id: record.id } });
             }}
           >
             {t(($) => $.admin.courses.review)}
           </Button>
-        </>
+        </RowActions>
       ),
-    }),
+      textAlign: "right",
+      title: "",
+    },
   ];
 
   return (
@@ -113,7 +125,31 @@ function CoursesList(): ReactElement {
         <ButtonLink to="/{-$locale}/admin/courses/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
-      <CrudList columns={columns} {...list.props} />
+      <TextInput
+        maw={360}
+        placeholder={t(($) => $.admin.crud.search)}
+        value={term}
+        onChange={(event) => {
+          setTerm(event.currentTarget.value);
+          applyTerm(event.currentTarget.value.trim());
+        }}
+      />
+
+      <DataTable
+        withTableBorder
+        striped
+        highlightOnHover
+        fetching={isFetching}
+        records={data?.items}
+        totalRecords={data?.total}
+        recordsPerPage={data?.perPage ?? search.perPage}
+        page={search.page ?? 1}
+        onPageChange={(page) => {
+          void navigate({ search: (prev) => ({ ...prev, page }) });
+        }}
+        noRecordsText={t(($) => $.admin.crud.empty)}
+        columns={columns}
+      />
     </Stack>
   );
 }

@@ -5,23 +5,25 @@ import {
   adminCreateCourseCategoryMutation,
   adminListCourseCategoriesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseCategoryInput } from "@/client/zod.gen";
-import { CrudForm } from "@/components/admin/CrudForm";
-import {
-  emptyCourseCategory,
-  useCourseCategoryFields,
-} from "@/components/admin/resources/courseCategory";
+import { CourseCategoryForm } from "@/components/admin/forms/CourseCategoryForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { CourseCategoryInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/new")({
   component: NewCourseCategory,
 });
 
+const emptyCourseCategory: CourseCategoryInput = {
+  description: null,
+  header: "",
+  name: "",
+  slug: "",
+};
+
 function NewCourseCategory(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseCategoryFields();
 
   const backToList = (): void => {
     void navigate({ to: "/{-$locale}/admin/course_categories" });
@@ -39,9 +41,7 @@ function NewCourseCategory(): ReactElement {
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
-      <CrudForm
-        fields={fields}
-        schema={zCourseCategoryInput}
+      <CourseCategoryForm
         defaultValues={emptyCourseCategory}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}

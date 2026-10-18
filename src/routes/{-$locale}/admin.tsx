@@ -20,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 // role holds that capability Permission (ADR-0020): the administrator flag does
 // not imply it, so the menu asks the API what the caller holds. Each new CRUD
 // resource adds one line here; the screens themselves
-// are driven by the shared engine (CrudList/CrudForm). Ordered content-first,
+// are plain Mantine tables and forms. Ordered content-first,
 // then community/marketing, then management — mirrors how the legacy back
 // office grouped its menu.
 const NAV = [

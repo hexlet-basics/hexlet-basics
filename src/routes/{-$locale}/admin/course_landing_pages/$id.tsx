@@ -13,26 +13,44 @@ import {
   adminUpdateCourseLandingPageMutation,
   adminUpdateLandingPageQnaItemMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseLandingPageInput } from "@/client/zod.gen";
 import { CourseLandingPageStatePanel } from "@/components/admin/CourseLandingPageStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
+import { CourseLandingPageForm } from "@/components/admin/forms/CourseLandingPageForm";
 import { QnaPanel } from "@/components/admin/QnaPanel";
-import {
-  courseLandingPageToForm,
-  useCourseLandingPageFields,
-} from "@/components/admin/resources/courseLandingPage";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
+import type { CourseLandingPage, CourseLandingPageInput } from "@/client/types.gen";
 import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/$id")({
   component: EditCourseLandingPage,
 });
 
+function courseLandingPageToForm(page: CourseLandingPage): CourseLandingPageInput {
+  return {
+    courseId: page.courseId,
+    description: page.description,
+    footer: page.footer ?? false,
+    footerName: page.footerName ?? "",
+    header: page.header,
+    landingPageToRedirectId: page.landingPageToRedirectId,
+    listed: page.listed ?? false,
+    main: page.main ?? false,
+    metaDescription: page.metaDescription,
+    metaTitle: page.metaTitle,
+    name: page.name,
+    order: page.order ?? "",
+    outcomesDescription: page.outcomesDescription ?? "",
+    outcomesHeader: page.outcomesHeader ?? "",
+    outcomesImageAttachmentId: null,
+    slug: page.slug,
+    usedInDescription: page.usedInDescription ?? "",
+    usedInHeader: page.usedInHeader ?? "",
+  };
+}
+
 function EditCourseLandingPage(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseLandingPageFields();
   const { id } = Route.useParams();
   const pageId = Number(id);
 
@@ -84,10 +102,8 @@ function EditCourseLandingPage(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <CourseLandingPageForm
             key={data.id}
-            fields={fields}
-            schema={zCourseLandingPageInput}
             defaultValues={courseLandingPageToForm(data)}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: pageId } })}
             submitLabel={t(($) => $.admin.crud.save)}

@@ -8,11 +8,9 @@ import {
   adminListBannersQueryKey,
   adminUpdateBannerMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zBannerInput } from "@/client/zod.gen";
 import { BannerStatePanel } from "@/components/admin/BannerStatePanel";
 import FormSkeleton from "@/components/admin/FormSkeleton";
-import { CrudForm } from "@/components/admin/CrudForm";
-import { bannerToForm, useBannerFields } from "@/components/admin/resources/banner";
+import { BannerForm } from "@/components/admin/forms/BannerForm";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 import type { ReactElement } from "react";
 
@@ -23,7 +21,6 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/$id")({
 function EditBanner(): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useBannerFields();
   const { id } = Route.useParams();
   const bannerId = Number(id);
 
@@ -49,11 +46,16 @@ function EditBanner(): ReactElement {
         <FormSkeleton />
       ) : (
         <>
-          <CrudForm
+          <BannerForm
             key={data.id}
-            fields={fields}
-            schema={zBannerInput}
-            defaultValues={bannerToForm(data)}
+            defaultValues={{
+              background: data.background,
+              body: data.body,
+              finishesAt: data.finishesAt,
+              locale: data.locale,
+              startsAt: data.startsAt,
+              url: data.url ?? "",
+            }}
             onSubmit={(values) => mutation.mutateAsync({ body: values, path: { id: bannerId } })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
