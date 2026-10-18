@@ -177,3 +177,26 @@ func TestJobsCancelWhenTheErrorIsOneRetryingCannotFix(t *testing.T) {
 		}
 	}
 }
+
+// A job can run twice (a crash after the write, before River records it). The
+// sweep's second run finds nothing left to reap, so the version keeps the one
+// result the first run wrote.
+func TestReapStuckVersionBuildsJobRunTwiceLeavesOneResult(t *testing.T) {
+	db, tx := testsupport.NewClientWithTx(t)
+	loader := courseloader.NewLoader(db, nil, nil, nil, nil,
+		courseloader.WithClock(func() time.Time { return testsupport.Today }))
+	worker := rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{},
+		jobs.ReapStuckVersionBuildsWorker(loader, slog.New(slog.DiscardHandler)))
+	stuckID := fixture.ID(fixture.VersionLoadableStuck)
+
+	_, err := worker.Work(t.Context(), t, tx, jobs.ReapStuckVersionBuildsArgs{}, nil)
+	require.NoError(t, err)
+	first := *db.CourseVersion.GetX(t.Context(), stuckID).Result
+
+	_, err = worker.Work(t.Context(), t, tx, jobs.ReapStuckVersionBuildsArgs{}, nil)
+	require.NoError(t, err)
+
+	stuck := db.CourseVersion.GetX(t.Context(), stuckID)
+	assert.Equal(t, "failed", *stuck.State)
+	assert.Equal(t, first, *stuck.Result)
+}
