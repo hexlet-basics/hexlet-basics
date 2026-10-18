@@ -1,4 +1,4 @@
-// Package logging builds the application logger (ADR-0025, extending ADR-0007).
+// Package logging builds the application logger (ADR-0026, extending ADR-0007).
 package logging
 
 import (

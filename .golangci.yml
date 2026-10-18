@@ -22,7 +22,7 @@ linters:
     - usetesting
   settings:
     sloglint:
-      # ADR-0025: *Context variants when a ctx is in scope, snake_case keys,
+      # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
       # static messages, one call style (key-value pairs).
       context: scope
       static-msg: true

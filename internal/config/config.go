@@ -57,7 +57,7 @@ type Common struct {
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
 	SentryDSN string `env:"SENTRY_DSN"`
-	// LogLevelName is the threshold of the application log (ADR-0025). Only the
+	// LogLevelName is the threshold of the application log (ADR-0026). Only the
 	// four names are accepted: slog.Level would also parse "INFO+2" and numbers,
 	// which no operator needs.
 	LogLevelName   string `env:"LOG_LEVEL" envDefault:"info" validate:"oneof=debug info warn error"`
