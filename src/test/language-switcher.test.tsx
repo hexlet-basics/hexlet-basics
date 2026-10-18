@@ -25,7 +25,9 @@ function openPage(initialPath: string, locale: "ru"): Promise<RenderedRoute> {
 }
 
 // The test page must stay: the link would otherwise navigate it away.
-const stay = (event: Event): void => event.preventDefault();
+const stay = (event: Event): void => {
+  event.preventDefault();
+};
 
 // The switcher is read at a desktop viewport, put back when the test is done.
 async function atDesktop(): Promise<void> {

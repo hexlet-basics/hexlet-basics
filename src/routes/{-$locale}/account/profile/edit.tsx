@@ -143,7 +143,9 @@ function DeleteAccount(): ReactElement {
         cancel: t(($) => $.common.boolean.no),
         confirm: t(($) => $.common.boolean.yes),
       },
-      onConfirm: () => mutation.mutate({}),
+      onConfirm: () => {
+        mutation.mutate({});
+      },
       title: t(($) => $.common.confirm),
     });
 

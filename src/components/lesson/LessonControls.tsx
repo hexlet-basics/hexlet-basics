@@ -138,7 +138,9 @@ function ForwardButton({
       color="green"
       disabled={!passed}
       loading={isPending}
-      onClick={() => enter(nextLesson)}
+      onClick={() => {
+        enter(nextLesson);
+      }}
     >
       {t(($) => $.courses.lessons.show.next)}
     </Button>

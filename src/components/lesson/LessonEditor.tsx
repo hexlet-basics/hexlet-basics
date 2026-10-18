@@ -80,7 +80,9 @@ function EditorPane({
   const run = useCallbackRef(onRun);
 
   const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: typeof Monaco): void => {
-    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
+    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      run();
+    });
     setInstance(mounted);
     setMonacoApi(monaco);
   };
@@ -138,7 +140,9 @@ function EditorPane({
             language={settings.language}
             options={options}
             defaultValue={initialCode}
-            onChange={(value) => onChange(value ?? "")}
+            onChange={(value) => {
+              onChange(value ?? "");
+            }}
             onMount={bindEditor}
           />
         </Suspense>

@@ -96,11 +96,15 @@ function EditCourseCategory(): ReactElement {
           />
           <QnaPanel
             items={qna.data ?? []}
-            onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
-            onUpdate={(itemId, input) =>
-              updateQna.mutate({ body: input, path: { categoryId, id: itemId } })
-            }
-            onDelete={(itemId) => deleteQna.mutate({ path: { categoryId, id: itemId } })}
+            onCreate={(input) => {
+              createQna.mutate({ ...qnaPath, body: input });
+            }}
+            onUpdate={(itemId, input) => {
+              updateQna.mutate({ body: input, path: { categoryId, id: itemId } });
+            }}
+            onDelete={(itemId) => {
+              deleteQna.mutate({ path: { categoryId, id: itemId } });
+            }}
             isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
           />
         </>

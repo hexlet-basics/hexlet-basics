@@ -414,7 +414,13 @@ function CourseAction({ view }: { view: CourseView }): ReactElement | null {
   // Navigation waits on the command's success: the lesson is entered started or
   // not at all.
   return (
-    <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
+    <Button
+      size="lg"
+      loading={isPending}
+      onClick={() => {
+        enter(lesson);
+      }}
+    >
       {view.lessons.some((item) => item.finished)
         ? t(($) => $.courses.show.continue)
         : t(($) => $.courses.show.try)}
@@ -432,7 +438,15 @@ function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps): Re
   if (!lesson) {
     return null;
   }
-  return <Button {...props} loading={isPending} onClick={() => enter(lesson)} />;
+  return (
+    <Button
+      {...props}
+      loading={isPending}
+      onClick={() => {
+        enter(lesson);
+      }}
+    />
+  );
 }
 
 // The Hexlet program the course leads on to, tagged as a referral from here as

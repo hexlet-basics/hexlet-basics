@@ -127,18 +127,20 @@ function RelatedCoursesPanel({
           variant="light"
           color="grape"
           loading={suggestMutation.isPending}
-          onClick={() => suggestMutation.mutate({ path: { id: postId } })}
+          onClick={() => {
+            suggestMutation.mutate({ path: { id: postId } });
+          }}
         >
           {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
         </Button>
         <Button
           loading={mutation.isPending}
-          onClick={() =>
+          onClick={() => {
             mutation.mutate({
               body: { courseIds: selected.map(Number) },
               path: { id: postId },
-            })
-          }
+            });
+          }}
         >
           {t(($) => $.admin.crud.save)}
         </Button>

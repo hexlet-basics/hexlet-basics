@@ -162,7 +162,9 @@ function Show(): ReactElement | null {
               scrollSpyOptions={{ selector: "#page-content :is(h2, h3)" }}
               getControlProps={({ data }) => ({
                 children: data.value,
-                onClick: () => data.getNode().scrollIntoView({ behavior: "smooth" }),
+                onClick: () => {
+                  data.getNode().scrollIntoView({ behavior: "smooth" });
+                },
               })}
             />
           </Box>

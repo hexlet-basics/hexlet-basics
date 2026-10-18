@@ -409,7 +409,9 @@ function LikeButton({ post }: { post: BlogPost }): ReactElement {
           me="xs"
           aria-label="like"
           loading={like.isPending}
-          onClick={() => like.mutate({ path: { id: post.id } })}
+          onClick={() => {
+            like.mutate({ path: { id: post.id } });
+          }}
         >
           <IconThumbUp size={18} />
         </ActionIcon>

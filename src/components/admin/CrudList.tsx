@@ -114,7 +114,9 @@ export function CrudList<T extends RowData>({
         <TextInput
           placeholder={t(($) => $.admin.crud.search)}
           value={search.value}
-          onChange={(event) => search.onChange(event.currentTarget.value)}
+          onChange={(event) => {
+            search.onChange(event.currentTarget.value);
+          }}
           maw={360}
         />
       )}
@@ -140,7 +142,9 @@ export function CrudList<T extends RowData>({
           <Pagination
             total={pages}
             value={pagination.pageIndex + 1}
-            onChange={(page) => onPaginationChange({ ...pagination, pageIndex: page - 1 })}
+            onChange={(page) => {
+              onPaginationChange({ ...pagination, pageIndex: page - 1 });
+            }}
           />
         </Group>
       )}

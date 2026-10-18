@@ -84,7 +84,9 @@ function CoursesList(): ReactElement {
             size="xs"
             variant="light"
             loading={versionMutation.isPending && versionMutation.variables?.path.id === row.id}
-            onClick={() => versionMutation.mutate({ path: { id: row.id } })}
+            onClick={() => {
+              versionMutation.mutate({ path: { id: row.id } });
+            }}
           >
             {t(($) => $.admin.courses.createVersion)}
           </Button>
@@ -93,7 +95,9 @@ function CoursesList(): ReactElement {
             variant="light"
             color="grape"
             loading={reviewMutation.isPending && reviewMutation.variables?.path.id === row.id}
-            onClick={() => reviewMutation.mutate({ path: { id: row.id } })}
+            onClick={() => {
+              reviewMutation.mutate({ path: { id: row.id } });
+            }}
           >
             {t(($) => $.admin.courses.review)}
           </Button>

@@ -232,13 +232,9 @@ export default defineConfig({
       "error",
       { allowExpressions: true, allowedNames: ["getRouter"] },
     ],
-    // Taste rule, TypeScript members are public by default.
-    "typescript/explicit-member-accessibility": "off",
     // The one function left without a return type is getRouter: the router's Register
     // type is read from it, so naming the type there would make it refer to itself.
     "typescript/explicit-module-boundary-types": ["error", { allowedNames: ["getRouter"] }],
-    // Forbids onClick={() => doIt()} shorthand used throughout.
-    "typescript/no-confusing-void-expression": "off",
     "typescript/no-deprecated": "error",
     // `any` switches the checker off for everything it touches; use `unknown`
     // and narrow, or a precise type.
@@ -269,7 +265,9 @@ export default defineConfig({
     ],
     // Demands deep readonly on generated client and library types we cannot change.
     "typescript/prefer-readonly-parameter-types": "off",
-    // Contradicts require-await and return-await, returning a promise directly is fine.
+    // Contradicts require-await and return-await: a function that only returns a promise
+    // would have to be async, then has no await to satisfy require-await, and an await
+    // added for it is what return-await forbids.
     "typescript/promise-function-async": "off",
     // Forbids idiomatic truthiness checks on optional strings and objects.
     "typescript/strict-boolean-expressions": "off",

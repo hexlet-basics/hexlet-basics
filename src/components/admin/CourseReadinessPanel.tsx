@@ -42,19 +42,25 @@ export function CourseReadinessPanel({ course }: { course: Course }): ReactEleme
       color: "green",
       isPending: markCompleted.isPending,
       label: t(($) => $.admin.readiness.markCompleted),
-      run: () => markCompleted.mutate({ path: { id: course.id } }),
+      run: () => {
+        markCompleted.mutate({ path: { id: course.id } });
+      },
     },
     markDraft: {
       color: "gray",
       isPending: markDraft.isPending,
       label: t(($) => $.admin.readiness.markDraft),
-      run: () => markDraft.mutate({ path: { id: course.id } }),
+      run: () => {
+        markDraft.mutate({ path: { id: course.id } });
+      },
     },
     markInDevelopment: {
       color: "yellow",
       isPending: markInDevelopment.isPending,
       label: t(($) => $.admin.readiness.markInDevelopment),
-      run: () => markInDevelopment.mutate({ path: { id: course.id } }),
+      run: () => {
+        markInDevelopment.mutate({ path: { id: course.id } });
+      },
     },
   };
 

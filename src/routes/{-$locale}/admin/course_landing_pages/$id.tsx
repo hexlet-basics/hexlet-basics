@@ -96,11 +96,15 @@ function EditCourseLandingPage(): ReactElement {
           <CourseLandingPageStatePanel page={data} />
           <QnaPanel
             items={qna.data ?? []}
-            onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
-            onUpdate={(itemId, input) =>
-              updateQna.mutate({ body: input, path: { id: itemId, landingPageId: pageId } })
-            }
-            onDelete={(itemId) => deleteQna.mutate({ path: { id: itemId, landingPageId: pageId } })}
+            onCreate={(input) => {
+              createQna.mutate({ ...qnaPath, body: input });
+            }}
+            onUpdate={(itemId, input) => {
+              updateQna.mutate({ body: input, path: { id: itemId, landingPageId: pageId } });
+            }}
+            onDelete={(itemId) => {
+              deleteQna.mutate({ path: { id: itemId, landingPageId: pageId } });
+            }}
             isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
           />
         </>

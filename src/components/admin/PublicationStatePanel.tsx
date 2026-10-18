@@ -50,7 +50,9 @@ export function PublicationStatePanel({
               variant="light"
               color={actions[name].color}
               loading={mutations[name].isPending}
-              onClick={() => mutations[name].mutate({ path: { id } })}
+              onClick={() => {
+                mutations[name].mutate({ path: { id } });
+              }}
             >
               {actions[name].label}
             </Button>

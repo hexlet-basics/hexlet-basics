@@ -28,7 +28,7 @@ export function useEnterLesson(courseSlug: string): {
     onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
   });
 
-  const enter = (lesson: { id: number; slug: string }): void =>
+  const enter = (lesson: { id: number; slug: string }): void => {
     start.mutate(
       { path: { id: lesson.id } },
       {
@@ -45,6 +45,7 @@ export function useEnterLesson(courseSlug: string): {
         },
       },
     );
+  };
 
   return { enter, isPending: start.isPending };
 }

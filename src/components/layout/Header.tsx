@@ -265,7 +265,12 @@ function AuthLinks(): ReactElement {
           </Menu.Item>
         )}
         <Menu.Divider />
-        <Menu.Item leftSection={<IconLogout2 size={16} />} onClick={() => logout({})}>
+        <Menu.Item
+          leftSection={<IconLogout2 size={16} />}
+          onClick={() => {
+            logout({});
+          }}
+        >
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
       </Menu.Dropdown>

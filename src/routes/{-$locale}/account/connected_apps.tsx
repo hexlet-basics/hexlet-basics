@@ -76,7 +76,9 @@ function ConnectedApps(): ReactElement {
         cancel: t(($) => $.common.boolean.no),
         confirm: t(($) => $.account.connected_apps.confirm_label),
       },
-      onConfirm: () => revoke.mutate({ path: { id: app.id } }),
+      onConfirm: () => {
+        revoke.mutate({ path: { id: app.id } });
+      },
       title: t(($) => $.account.connected_apps.confirm_title, { client: app.name }),
     });
 

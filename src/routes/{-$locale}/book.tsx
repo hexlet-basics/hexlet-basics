@@ -197,7 +197,9 @@ function RequestButton(): ReactElement {
       variant="outline"
       size="lg"
       loading={request.isPending}
-      onClick={() => request.mutate({})}
+      onClick={() => {
+        request.mutate({});
+      }}
     >
       {t(($) => $.books.show.request)}
     </Button>

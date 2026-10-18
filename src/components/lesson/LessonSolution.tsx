@@ -57,7 +57,13 @@ export default function LessonSolution({
     );
   }
 
-  return <SolutionWait onReveal={() => setRevealed(true)} />;
+  return (
+    <SolutionWait
+      onReveal={() => {
+        setRevealed(true);
+      }}
+    />
+  );
 }
 
 // The countdown lives in its own component so its once-a-second tick re-renders
@@ -99,7 +105,13 @@ function SolutionWait({ onReveal }: { onReveal: () => void }): ReactElement {
     <Stack p="xs">
       <Text>{t(($) => $.common.solutionNotice)}</Text>
       <Center>
-        <Button variant="light" px="xl" onClick={() => onReveal()}>
+        <Button
+          variant="light"
+          px="xl"
+          onClick={() => {
+            onReveal();
+          }}
+        >
           {t(($) => $.common.showSolution)}
         </Button>
       </Center>

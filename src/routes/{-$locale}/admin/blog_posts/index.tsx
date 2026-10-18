@@ -76,7 +76,9 @@ function BlogPostsList(): ReactElement {
           variant="light"
           color="grape"
           loading={suggestMutation.isPending && suggestMutation.variables?.path.id === row.id}
-          onClick={() => suggestMutation.mutate({ path: { id: row.id } })}
+          onClick={() => {
+            suggestMutation.mutate({ path: { id: row.id } });
+          }}
         >
           {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
         </Button>

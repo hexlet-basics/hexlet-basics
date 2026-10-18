@@ -5,10 +5,10 @@ import { HTTP_NOT_FOUND } from "@/lib/http-status";
 // parsed body (JSON when the server sent it, text otherwise). Routes and forms
 // depend on this class, never on the HTTP library under the client.
 export class ApiError extends Error {
-  readonly status: number;
-  readonly body: unknown;
+  public readonly status: number;
+  public readonly body: unknown;
 
-  constructor(status: number, body: unknown) {
+  public constructor(status: number, body: unknown) {
     super(`API request failed with status ${status}`);
     this.name = "ApiError";
     this.status = status;

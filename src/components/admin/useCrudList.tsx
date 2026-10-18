@@ -179,12 +179,14 @@ export function useCrudList<
               color="red"
               variant="light"
               aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() =>
+              onClick={() => {
                 confirmDelete({
                   description: describe(row.original),
-                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
-                })
-              }
+                  onConfirm: () => {
+                    deleteMutation.mutate({ path: { id: row.original.id } });
+                  },
+                });
+              }}
             >
               ✕
             </ActionIcon>

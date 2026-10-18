@@ -70,7 +70,9 @@ function TextField(props: TextInputProps): ReactElement {
       // Nullable string columns arrive as null; render "" so the input stays
       // controlled (the value type is the generated Input, which allows null).
       value={field.state.value ?? ""}
-      onChange={(event) => field.handleChange(event.currentTarget.value)}
+      onChange={(event) => {
+        field.handleChange(event.currentTarget.value);
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -85,7 +87,9 @@ function TextareaField(props: TextareaProps): ReactElement {
       minRows={3}
       {...props}
       value={field.state.value ?? ""}
-      onChange={(event) => field.handleChange(event.currentTarget.value)}
+      onChange={(event) => {
+        field.handleChange(event.currentTarget.value);
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -100,7 +104,9 @@ function SelectField(props: SelectProps): ReactElement {
     <Select
       {...props}
       value={field.state.value}
-      onChange={(value) => field.handleChange(value ?? "")}
+      onChange={(value) => {
+        field.handleChange(value ?? "");
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -118,7 +124,9 @@ function DateTimeField(props: DateTimePickerProps): ReactElement {
       valueFormat="L LT"
       {...props}
       value={isoToPicker(field.state.value)}
-      onChange={(value) => field.handleChange(pickerToIso(value))}
+      onChange={(value) => {
+        field.handleChange(pickerToIso(value));
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -134,7 +142,9 @@ function NumberField(props: NumberInputProps): ReactElement {
     <NumberInput
       {...props}
       value={field.state.value ?? ""}
-      onChange={(value) => field.handleChange(typeof value === "number" ? value : null)}
+      onChange={(value) => {
+        field.handleChange(typeof value === "number" ? value : null);
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -149,7 +159,9 @@ function CheckboxField(props: CheckboxProps): ReactElement {
     <Checkbox
       {...props}
       checked={field.state.value ?? false}
-      onChange={(event) => field.handleChange(event.currentTarget.checked)}
+      onChange={(event) => {
+        field.handleChange(event.currentTarget.checked);
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -164,7 +176,9 @@ function MultiSelectField(props: MultiSelectProps): ReactElement {
     <MultiSelect
       {...props}
       value={field.state.value ?? []}
-      onChange={(value) => field.handleChange(value)}
+      onChange={(value) => {
+        field.handleChange(value);
+      }}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
     />
@@ -182,7 +196,9 @@ function RichTextField({ label }: { label: string }): ReactElement {
     extensions: [StarterKit, Link],
     immediatelyRender: false,
     onBlur: field.handleBlur,
-    onUpdate: ({ editor: current }) => field.handleChange(current.getHTML()),
+    onUpdate: ({ editor: current }) => {
+      field.handleChange(current.getHTML());
+    },
   });
 
   return (

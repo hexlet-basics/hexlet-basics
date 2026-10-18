@@ -89,8 +89,9 @@ function isLocalHost(host: string): boolean {
 // The next place is outside the router: the authorization endpoint's callback
 // on this origin, or the client's own redirect URI. Leaving takes a full
 // navigation.
-const leave = ({ redirectUrl }: { redirectUrl: string }): void =>
+const leave = ({ redirectUrl }: { redirectUrl: string }): void => {
   globalThis.location.assign(redirectUrl);
+};
 
 function Connect(): ReactElement {
   const { t } = useTranslation();
@@ -136,14 +137,18 @@ function Connect(): ReactElement {
                 <Button
                   variant="default"
                   disabled={deciding}
-                  onClick={() => deny.mutate({ path: { requestId: id } })}
+                  onClick={() => {
+                    deny.mutate({ path: { requestId: id } });
+                  }}
                 >
                   {t(($) => $.connect.deny)}
                 </Button>
                 <Button
                   loading={approve.isPending}
                   disabled={deciding}
-                  onClick={() => approve.mutate({ path: { requestId: id } })}
+                  onClick={() => {
+                    approve.mutate({ path: { requestId: id } });
+                  }}
                 >
                   {t(($) => $.connect.approve)}
                 </Button>

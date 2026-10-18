@@ -86,23 +86,22 @@ function PermissionsForm({
       <Title order={4} mb="md">
         {t(($) => $.admin.permissions.title)}
       </Title>
-      <Checkbox.Group value={grants} onChange={setGrants}>
-        <Stack gap="md">
-          {groups.map(([resource, permissions = []]) => (
-            <Stack key={resource} gap="xs">
-              <Text fw={600}>{resource}</Text>
-              {permissions.map((permission) => (
-                <Group key={permission.name} gap="sm">
-                  <Checkbox value={permission.name} label={permission.name} />
-                  {permission.capability && (
-                    <Badge variant="outline" color="red">
-                      {t(($) => $.admin.permissions.capability)}
-                    </Badge>
-                  )}
-                  <Badge variant="light" color={permission.kind === "read" ? "gray" : "orange"}>
-                    {permission.kind === "read"
-                      ? t(($) => $.admin.permissions.kindRead)
-                      : t(($) => $.admin.permissions.kindWrite)}
+      <Stack gap="md">
+        {groups.map(([resource, permissions]) => (
+          <Stack key={resource} gap="xs">
+            <Text fw={600}>{resource}</Text>
+            {permissions.map((permission) => (
+              <Group key={permission.name} gap="sm">
+                <Checkbox
+                  checked={grants.has(permission.name)}
+                  label={permission.name}
+                  onChange={() => {
+                    toggleGrant(permission.name);
+                  }}
+                />
+                {permission.capability && (
+                  <Badge variant="outline" color="red">
+                    {t(($) => $.admin.permissions.capability)}
                   </Badge>
                 </Group>
               ))}
@@ -113,7 +112,9 @@ function PermissionsForm({
       <Group justify="flex-end" mt="md">
         <Button
           loading={mutation.isPending}
-          onClick={() => mutation.mutate({ body: { grants: [...grants] }, path: { roleId } })}
+          onClick={() => {
+            mutation.mutate({ body: { grants: [...grants] }, path: { roleId } });
+          }}
         >
           {t(($) => $.admin.crud.save)}
         </Button>

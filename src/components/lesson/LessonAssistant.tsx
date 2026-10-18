@@ -242,7 +242,9 @@ function AssistantChat({
             aria-label={t(($) => $.courses.lessons.show.chat.question)}
             placeholder={t(($) => $.courses.lessons.show.chat.question)}
             value={input}
-            onChange={(event) => setInput(event.currentTarget.value)}
+            onChange={(event) => {
+              setInput(event.currentTarget.value);
+            }}
             disabled={busy}
             rows={5}
           />

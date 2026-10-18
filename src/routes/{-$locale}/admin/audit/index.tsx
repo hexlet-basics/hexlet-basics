@@ -158,7 +158,13 @@ function AuditTrail(): ReactElement {
     },
     {
       cell: ({ row }) => (
-        <Button variant="subtle" size="compact-sm" onClick={() => setSelected(row.original)}>
+        <Button
+          variant="subtle"
+          size="compact-sm"
+          onClick={() => {
+            setSelected(row.original);
+          }}
+        >
           {t(($) => $.admin.audit.details.open)}
         </Button>
       ),
@@ -252,7 +258,9 @@ function AuditTrail(): ReactElement {
 
       <Modal
         opened={selected !== null}
-        onClose={() => setSelected(null)}
+        onClose={() => {
+          setSelected(null);
+        }}
         title={selected?.operation}
         size="xl"
       >
