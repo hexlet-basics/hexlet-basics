@@ -18,6 +18,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { DESKTOP_VIEWPORT } from "@/test/viewport";
 
+// A lesson page is headed with the course it belongs to.
+const COURSE = "JavaScript";
+
 const HELLO_WORLD_ID = 1001;
 const VARIABLES_ID = 1002;
 const STRINGS_ID = 1003;
@@ -483,10 +486,7 @@ describe("course page", () => {
     worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
     // The fresh read is held until the test lets it go, so what the learner is
     // shown while it is in flight can be looked at.
-    let release!: () => void;
-    const held = new Promise<void>((resolve) => {
-      release = resolve;
-    });
+    const { promise: held, resolve: release } = Promise.withResolvers<null>();
     let reads = 0;
     worker.use(
       http.get("*/languages/javascript/lessons/variables", async () => {
@@ -512,13 +512,11 @@ describe("course page", () => {
 
     // While the lesson is read afresh the learner is still on the course page:
     // the cached copy, marks and all, is never put in front of them.
-    expect(page.getByRole("heading", { name: "JavaScript: Variables" }).elements()).toHaveLength(0);
+    expect(page.getByRole("heading", { name: `${COURSE}: Variables` }).elements()).toHaveLength(0);
     await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
 
-    release();
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    release(null);
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
     await page.getByRole("tab", { name: "Navigation" }).click();
     await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
   }, 60_000);

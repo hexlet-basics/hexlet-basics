@@ -49,12 +49,14 @@ describe("the course admin screens", () => {
 
       await edit();
 
-      for (const name of offered) {
-        await expect.element(button(name)).toBeVisible();
-      }
-      for (const name of hidden) {
-        await expect.element(button(name)).not.toBeInTheDocument();
-      }
+      await Promise.all([
+        ...offered.map(async (name) => {
+          await expect.element(button(name)).toBeVisible();
+        }),
+        ...hidden.map(async (name) => {
+          await expect.element(button(name)).not.toBeInTheDocument();
+        }),
+      ]);
     },
     60_000,
   );
@@ -71,7 +73,7 @@ describe("the course admin screens", () => {
 
   it("saving the form sends no readiness", async () => {
     expect.hasAssertions();
-    let sent: Record<string, unknown> | undefined;
+    let sent: Record<string, unknown> | null = null;
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
       http.put("*/admin/courses/7", async ({ request }) => {

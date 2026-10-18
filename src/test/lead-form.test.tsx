@@ -57,7 +57,7 @@ function openForm(initialPath = "/ru/leads/new") {
   // What a test seeds for the form, the cookie and the Metrika id, must not leak into the next one.
   onTestFinished(() => {
     Cookies.remove("first_visit", { path: "/" });
-    delete window.ymClientId;
+    delete globalThis.ymClientId;
   });
   return renderRoute(newLeadRoute, { path: "/{-$locale}/leads/new", initialPath, user });
 }
@@ -73,7 +73,7 @@ describe("lead form", () => {
     const received: LeadInput[] = [];
     acceptLeads(received);
     Cookies.set("first_visit", JSON.stringify(firstVisit), { path: "/" });
-    window.ymClientId = "1700000000123456789";
+    globalThis.ymClientId = "1700000000123456789";
 
     const { router } = await openForm();
     await submitTelegram("@dora");
@@ -85,7 +85,7 @@ describe("lead form", () => {
       ymClientId: "1700000000123456789",
       firstVisit,
     });
-    await expect.element(page.getByText(/Заявка отправлена!/)).toBeVisible();
+    await expect.element(page.getByText(/Заявка отправлена!/u)).toBeVisible();
     await expect.poll(() => router.state.location.pathname).toBe("/ru");
   }, 60_000);
 

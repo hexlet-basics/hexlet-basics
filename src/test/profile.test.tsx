@@ -78,7 +78,7 @@ describe("profile", () => {
     await page.getByLabelText("Last name").fill("Dora@home");
     await page.getByRole("button", { name: "Save" }).click();
 
-    await expect.element(page.getByText(/40/)).toBeVisible();
+    await expect.element(page.getByText(/40/u)).toBeVisible();
     expect(submitted).toBe(false);
   }, 60_000);
 

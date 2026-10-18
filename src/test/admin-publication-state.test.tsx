@@ -164,12 +164,14 @@ describe.each(subjects)("the $name admin screens", (subject) => {
 
       await subject.edit();
 
-      for (const name of offered) {
-        await expect.element(button(name)).toBeVisible();
-      }
-      for (const name of hidden) {
-        await expect.element(button(name)).not.toBeInTheDocument();
-      }
+      await Promise.all([
+        ...offered.map(async (name) => {
+          await expect.element(button(name)).toBeVisible();
+        }),
+        ...hidden.map(async (name) => {
+          await expect.element(button(name)).not.toBeInTheDocument();
+        }),
+      ]);
     },
     60_000,
   );

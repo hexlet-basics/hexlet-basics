@@ -75,12 +75,12 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
 
   const rawClassName = codeNode?.properties?.className;
   const className = Array.isArray(rawClassName) ? rawClassName.join(" ") : (rawClassName ?? "");
-  const requestedLanguage = /language-(\w+)/.exec(className)?.[1];
+  const requestedLanguage = /language-(?<language>\w+)/u.exec(className)?.groups?.language;
 
   const code = (codeNode?.children ?? [])
     .map((child) => (child.type === "text" ? child.value : ""))
     .join("")
-    .replace(/\n$/, "");
+    .replace(/\n$/u, "");
 
   // A language with no shiki grammar is never passed through: the highlighter
   // throws "Language `x` not found" on it (legacy issue #597). Unknown tags fall

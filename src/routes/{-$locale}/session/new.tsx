@@ -10,6 +10,7 @@ import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authField
 import { useAppForm, submitForm } from "@/lib/form";
 import { onIdentityChanged } from "@/lib/identity";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import { lenient } from "@/lib/lenient";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
 // the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
@@ -22,7 +23,7 @@ import { safeRedirectPath } from "@/lib/safe-redirect";
 // id if the visit is forgotten). Only a path on this site is honoured, so the
 // page cannot be used to bounce a signed-in user off to another origin.
 const signInSearchSchema = z.object({
-  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
+  redirect: lenient(z.string().transform(safeRedirectPath)),
 });
 
 export const Route = createFileRoute("/{-$locale}/session/new")({

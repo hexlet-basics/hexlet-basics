@@ -12,7 +12,7 @@ import { getRequest } from "@tanstack/react-start/server";
 // imports are stripped from the client bundle by the isomorphic split.
 const getSiteOrigin = createIsomorphicFn()
   .server(() => process.env.SITE_URL ?? new URL(getRequest().url).origin)
-  .client(() => window.location.origin);
+  .client(() => globalThis.location.origin);
 
 // The absolute URL of a path on this site, e.g. a route match's pathname.
 export function siteUrl(pathname: string): string {

@@ -34,7 +34,7 @@ describe("admin blog post courses", () => {
       id: index + 1,
       name: `Course ${index + 1}`,
     }));
-    let saved: unknown;
+    let saved: unknown = null;
     worker.use(
       http.get("*/admin/blog_posts/3", () => HttpResponse.json(post)),
       http.get("*/admin/courses/options", () => HttpResponse.json(options)),

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     } catch (error) {
       // A missing slug and a category of another language are the same to a
       // visitor: there is no such page.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: title and description built around the category header, the

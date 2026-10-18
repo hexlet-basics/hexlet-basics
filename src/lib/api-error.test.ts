@@ -32,7 +32,7 @@ describe("apiError", () => {
 
   it("rethrows a 404 as the router's notFound and any other failure untouched", () => {
     expect.hasAssertions();
-    let thrown: unknown;
+    let thrown: unknown = null;
     try {
       rethrowMissingAsNotFound(new ApiError(HTTP_NOT_FOUND, {}));
     } catch (error) {

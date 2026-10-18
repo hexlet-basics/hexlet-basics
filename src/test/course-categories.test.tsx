@@ -83,7 +83,7 @@ describe("course categories", () => {
       .element(page.getByRole("heading", { name: "Course categories", level: 1 }))
       .toBeVisible();
     // The footer lists the same categories, after the page's own card.
-    const category = page.getByRole("link", { name: /Programming/ }).first();
+    const category = page.getByRole("link", { name: /Programming/u }).first();
     await expect.element(category).toHaveAttribute("href", "/language_categories/programming");
 
     const meta = router.state.matches.at(-1)?.meta;
@@ -91,7 +91,7 @@ describe("course categories", () => {
     expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
     expect(router.state.matches.at(-1)?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/language_categories`,
+      href: `${globalThis.location.origin}/language_categories`,
     });
   }, 60_000);
 
@@ -122,7 +122,7 @@ describe("course categories", () => {
     });
     expect(match?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/language_categories/programming`,
+      href: `${globalThis.location.origin}/language_categories/programming`,
     });
   }, 60_000);
 

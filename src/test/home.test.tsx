@@ -81,9 +81,9 @@ describe("home", () => {
     await expect.element(heading).toBeVisible();
 
     const main = page.getByRole("main");
-    const javascript = main.getByRole("link", { name: /JavaScript/ }).first();
+    const javascript = main.getByRole("link", { name: /JavaScript/u }).first();
     await expect.element(javascript).toHaveAttribute("href", "/languages/javascript");
-    const python = main.getByRole("link", { name: /Python/ }).first();
+    const python = main.getByRole("link", { name: /Python/u }).first();
     await expect.element(python).toHaveAttribute("href", "/languages/python");
   }, 60_000);
 
@@ -93,9 +93,9 @@ describe("home", () => {
 
     await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-    const post = page.getByRole("link", { name: /Hello world/ });
+    const post = page.getByRole("link", { name: /Hello world/u });
     await expect.element(post.first()).toHaveAttribute("href", "/blog_posts/hello-world");
-    const email = page.getByRole("textbox", { name: /Email/ });
+    const email = page.getByRole("textbox", { name: /Email/u });
     await expect.element(email.first()).toBeVisible();
   }, 60_000);
 

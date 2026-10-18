@@ -76,7 +76,7 @@ function resolve(spec: OpenApi, schema: Schema): { shape: Schema; nullable: bool
 }
 
 export function snakeCase(name: string): string {
-  return name.replaceAll(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  return name.replaceAll(/[A-Z]/gu, (letter) => `_${letter.toLowerCase()}`);
 }
 
 function kindOf(shape: Schema): FieldKind | undefined {
@@ -107,11 +107,11 @@ function labelKeys(config: ResourceConfig, field: string) {
   };
 }
 
-function describeProperty(spec: OpenApi, config: ResourceConfig, name: string, schema: Schema) {
+function describeProperty(spec: OpenApi, config: ResourceConfig, [name, schema]: [string, Schema]) {
   const { shape, nullable } = resolve(spec, schema);
   const kind = kindOf(shape);
   if (!kind) {
-    return;
+    return null;
   }
   const { labelKey, enumKey } = labelKeys(config, name);
   const enumValues: EnumValueDescriptor[] | undefined = shape.enum?.map((value) => ({
@@ -131,17 +131,17 @@ export function describeResource(spec: OpenApi, config: ResourceConfig): Resourc
     ([name]) => !skipped.has(name),
   );
   const fields = inputProperties.map(([name, schema]) => {
-    const described = describeProperty(spec, config, name, schema);
+    const described = describeProperty(spec, config, [name, schema]);
     if (!described) {
       throw new Error(`${config.input}.${name}: no form field kind for this schema`);
     }
-    return { ...described, required: required.has(name) && !described.nullable };
+    return Object.assign(described, { required: required.has(name) && !described.nullable });
   });
 
   // Columns skip what a cell cannot show as-is (nested objects, lists of objects):
   // Those stay a hand-written cell in the route.
   const columns = Object.entries(item.properties ?? {}).flatMap(([name, schema]) => {
-    const described = describeProperty(spec, config, name, schema);
+    const described = describeProperty(spec, config, [name, schema]);
     return described && described.kind !== "multiselect" ? [described] : [];
   });
 

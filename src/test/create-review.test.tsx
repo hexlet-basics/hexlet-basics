@@ -13,7 +13,7 @@ import { renderRoute } from "@/test/renderRoute";
 describe("create review", () => {
   it("creates a review", async () => {
     expect.hasAssertions();
-    let received: ReviewInput | undefined;
+    let received: ReviewInput | null = null;
     worker.use(
       http.post("*/admin/reviews", async ({ request }) => {
         received = (await request.json()) as ReviewInput;

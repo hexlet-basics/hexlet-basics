@@ -107,6 +107,9 @@ function pageMeta(t: TFunction, id: PageId): { title: string; description: strin
         description: t(($) => $.pages.parts.tos.meta.description),
       };
     }
+    default: {
+      throw new Error(`No meta for the page ${String(id satisfies never)}`);
+    }
   }
 }
 

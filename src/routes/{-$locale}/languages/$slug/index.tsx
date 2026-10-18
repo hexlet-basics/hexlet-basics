@@ -38,6 +38,7 @@ import QnaBlock from "@/components/QnaBlock";
 import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 import { rethrowMissingAsNotFound } from "@/lib/api-error";
+import { orNull } from "@/lib/lenient";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
@@ -61,9 +62,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
     // The banner is prefetched so it is in the server-rendered HTML; fetched on
     // the client only, it would pop in after hydration. It is decoration, so
     // failing to read it must not take the page down.
-    const banner = context.queryClient
-      .query({ ...getActiveBannerOptions(), staleTime: "static" })
-      .catch(() => null);
+    const banner = orNull(
+      context.queryClient.query({ ...getActiveBannerOptions(), staleTime: "static" }),
+    );
     try {
       const [view] = await Promise.all([
         // Carries the visitor's progress, so it takes the client's default
@@ -85,7 +86,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
       // The slug is a landing page's, in this locale's site: an unknown one and
       // one of another locale are the same to a visitor, there is no such page.
       // Thrown here, not left to the error page, so the answer is a 404.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
   // Legacy languages#show meta: the landing page's meta title and description,

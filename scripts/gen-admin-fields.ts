@@ -1,5 +1,5 @@
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import path from "node:path";
 import { parse } from "yaml";
 import { describeResource, renderModule } from "./admin-fields.ts";
 import type { OpenApi, ResourceConfig } from "./admin-fields.ts";
@@ -56,9 +56,9 @@ const resources: ResourceConfig[] = [
   { name: "user", model: "user", input: "UserInput", item: "UserCrud" },
 ];
 
-const root = join(import.meta.dirname, "..");
-const specPath = join(root, "api-spec/dist/openapi.yaml");
-const outDir = join(root, "src/components/admin/generated");
+const root = path.join(import.meta.dirname, "..");
+const specPath = path.join(root, "api-spec/dist/openapi.yaml");
+const outDir = path.join(root, "src/components/admin/generated");
 
 const spec = parse(readFileSync(specPath, "utf-8")) as OpenApi;
 
@@ -66,12 +66,12 @@ const spec = parse(readFileSync(specPath, "utf-8")) as OpenApi;
 // Not leave its module behind.
 mkdirSync(outDir, { recursive: true });
 for (const file of readdirSync(outDir)) {
-  rmSync(join(outDir, file));
+  rmSync(path.join(outDir, file));
 }
 
 for (const config of resources) {
   writeFileSync(
-    join(outDir, `${config.name}.ts`),
+    path.join(outDir, `${config.name}.ts`),
     renderModule(config.name, describeResource(spec, config)),
   );
 }

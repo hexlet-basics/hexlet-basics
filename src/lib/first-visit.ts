@@ -18,21 +18,21 @@ export function recordFirstVisit(): void {
     return;
   }
 
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(globalThis.location.search);
   const visit: FirstVisit = {
     utmSource: params.get("utm_source"),
     utmMedium: params.get("utm_medium"),
     utmCampaign: params.get("utm_campaign"),
     utmContent: params.get("utm_content"),
     utmTerm: params.get("utm_term"),
-    landingPage: window.location.href,
+    landingPage: globalThis.location.href,
     referrer: document.referrer || null,
   };
   Cookies.set(COOKIE_NAME, JSON.stringify(visit), {
     expires: COOKIE_TTL_DAYS,
     path: "/",
     sameSite: "lax",
-    secure: window.location.protocol === "https:",
+    secure: globalThis.location.protocol === "https:",
   });
 }
 

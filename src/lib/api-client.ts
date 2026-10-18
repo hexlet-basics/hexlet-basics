@@ -18,7 +18,7 @@ const getRequestCookie = createIsomorphicFn()
 // when concurrent renders use different locales.
 const getRequestLocale = createIsomorphicFn()
   .server(() => localeOf(new URL(getRequest().url).pathname))
-  .client(() => localeOf(window.location.pathname));
+  .client(() => localeOf(globalThis.location.pathname));
 
 // The generated hey-api client is a singleton, and every contract path starts
 // with `/api` (ADR-0015). In the browser the API is the site's own origin — the
@@ -46,7 +46,7 @@ client.interceptors.request.use(async (request) => {
   // The dead branch is stripped per build target, so `process` never leaks
   // into the client bundle.
   const target = import.meta.env.SSR
-    ? `${(process.env.API_URL ?? "http://localhost:3001").replace(/\/$/, "")}${pathname}${search}`
+    ? `${(process.env.API_URL ?? "http://localhost:3001").replace(/\/$/u, "")}${pathname}${search}`
     : `${pathname}${search}`;
   const headers = new Headers(request.headers);
   const cookie = getRequestCookie();

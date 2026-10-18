@@ -12,7 +12,7 @@ import { renderRoute } from "@/test/renderRoute";
 describe("create course category", () => {
   it("creates a course category", async () => {
     expect.hasAssertions();
-    let received: CourseCategoryInput | undefined;
+    let received: CourseCategoryInput | null = null;
     worker.use(
       http.post("*/admin/course_categories", async ({ request }) => {
         received = (await request.json()) as CourseCategoryInput;

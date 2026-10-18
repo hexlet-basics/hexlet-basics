@@ -45,7 +45,7 @@ const courses: CourseOption[] = [];
 describe("suggest related courses", () => {
   it("enqueues the related-courses suggestion for the post", async () => {
     expect.hasAssertions();
-    let suggestedFor: string | undefined;
+    let suggestedFor: string | null = null;
     worker.use(
       http.get("*/admin/blog_posts/10", () => HttpResponse.json(post)),
       http.get("*/admin/courses/options", () => HttpResponse.json(courses)),

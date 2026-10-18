@@ -5,14 +5,13 @@ import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
+import { lenient } from "@/lib/lenient";
 
 // Only a same-site path is followed back: `from` comes from the URL, and an
 // absolute address would turn the form into an open redirect.
-const sameSitePath = z
-  .string()
-  .refine((path) => path.startsWith("/") && !path.startsWith("//"))
-  .optional()
-  .catch(undefined);
+const sameSitePath = lenient(
+  z.string().refine((path) => path.startsWith("/") && !path.startsWith("//")),
+);
 
 // The consultation request page, ported from legacy leads/new. Legacy required
 // a session for the page as well as for the submit, so the guard sits here too.

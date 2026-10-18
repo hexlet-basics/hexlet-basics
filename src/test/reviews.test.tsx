@@ -99,7 +99,7 @@ describe("reviews", () => {
     // The canonical is the list itself, whatever page the visitor is on.
     expect(router.state.matches.at(-1)?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/reviews`,
+      href: `${globalThis.location.origin}/reviews`,
     });
   }, 60_000);
 

@@ -45,13 +45,13 @@ function openCategory() {
 describe("admin edit", () => {
   it("a role's permissions are shown by resource and saved as the admin ticked them", async () => {
     expect.hasAssertions();
-    let received: RolePermissionsInput | undefined;
+    const received: RolePermissionsInput[] = [];
     worker.use(
       http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
       http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
       http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
       http.put("*/admin/management/role_permissions/5", async ({ request }) => {
-        received = (await request.json()) as RolePermissionsInput;
+        received.push((await request.json()) as RolePermissionsInput);
         return HttpResponse.json(role);
       }),
     );
@@ -84,7 +84,7 @@ describe("admin edit", () => {
 
     const confirmation = page.getByText("Record updated");
     await expect.element(confirmation).toBeVisible();
-    expect(received?.grants).toStrictEqual(["blog_posts.create"]);
+    expect(received[0]?.grants).toStrictEqual(["blog_posts.create"]);
   }, 60_000);
 
   const category: CourseCategory = {
@@ -101,7 +101,7 @@ describe("admin edit", () => {
 
   it("an admin adds a question to a category's FAQ", async () => {
     expect.hasAssertions();
-    let created: unknown;
+    let created: unknown = null;
     worker.use(
       http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
       http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
@@ -130,7 +130,7 @@ describe("admin edit", () => {
 
   it("an admin edits a question and is told it was saved", async () => {
     expect.hasAssertions();
-    let updated: unknown;
+    let updated: unknown = null;
     worker.use(
       http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
       http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),

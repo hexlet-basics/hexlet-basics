@@ -19,8 +19,7 @@ export const readinessTarget: Record<ReadinessTransition, CourseReadiness> = {
 // A Course with no readiness (nullable in the legacy schema) counts as a draft,
 // as it does on the server.
 export function transitionsFromReadiness(current: CourseReadiness | null): ReadinessTransition[] {
-  const from = current ?? "draft";
   return (Object.keys(readinessTarget) as ReadinessTransition[]).filter(
-    (name) => readinessTarget[name] !== from,
+    (name) => readinessTarget[name] !== (current ?? "draft"),
   );
 }

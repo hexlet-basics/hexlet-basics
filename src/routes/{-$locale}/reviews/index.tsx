@@ -20,13 +20,16 @@ import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import Pager from "@/components/Pager";
 import { seoHead } from "@/lib/seo-head";
 import { longDate } from "@/lib/time-ago";
+import { lenient } from "@/lib/lenient";
+
+const pageNumber = z.number().int().min(1);
 
 // Student reviews, at their legacy URL, ported from legacy reviews/index. The
 // loader prefetches the requested page so the reviews are in the
 // server-rendered HTML (ADR-0008); a malformed `page` falls back to page one.
 export const Route = createFileRoute("/{-$locale}/reviews/")({
   validateSearch: z.object({
-    page: z.number().int().min(1).optional().catch(undefined),
+    page: lenient(pageNumber),
   }),
   loaderDeps: ({ search }) => ({ page: search.page }),
   loader: ({ context, deps }) =>

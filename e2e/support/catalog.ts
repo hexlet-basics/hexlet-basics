@@ -32,5 +32,5 @@ export class Catalog {
 }
 
 function courseCard(title: string): RegExp {
-  return new RegExp(`^${title}`);
+  return new RegExp(`^${title}`, "u");
 }

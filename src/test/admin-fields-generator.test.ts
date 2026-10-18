@@ -115,7 +115,7 @@ describe("admin field generator", () => {
 
   it("fails loudly on a schema the contract does not define", () => {
     expect.hasAssertions();
-    expect(() => describeResource(spec, { ...widget, input: "NopeInput" })).toThrow(/NopeInput/);
+    expect(() => describeResource(spec, { ...widget, input: "NopeInput" })).toThrow(/NopeInput/u);
   }, 60_000);
 
   it("renders a module that names the generator and is stable across runs", () => {

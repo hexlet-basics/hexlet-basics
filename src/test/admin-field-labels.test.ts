@@ -31,10 +31,12 @@ describe("generated admin descriptors", () => {
     Object.entries(module)
       .filter(([exportName]) => exportName.endsWith("Fields"))
       .flatMap(([, descriptors]) =>
-        (descriptors as FieldDescriptor[]).flatMap((descriptor) => [
-          descriptor.labelKey,
-          ...(descriptor.enumValues ?? []).map((value) => value.labelKey),
-        ]),
+        (descriptors as FieldDescriptor[]).flatMap((descriptor) =>
+          [
+            descriptor.labelKey,
+            (descriptor.enumValues ?? []).map((value) => value.labelKey),
+          ].flat(),
+        ),
       ),
   );
 

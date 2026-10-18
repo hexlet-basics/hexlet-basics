@@ -13,7 +13,7 @@ import { renderRoute } from "@/test/renderRoute";
 describe("create banner", () => {
   it("creates a banner with the default enum selections", async () => {
     expect.hasAssertions();
-    let received: BannerInput | undefined;
+    let received: BannerInput | null = null;
     worker.use(
       http.post("*/admin/banners", async ({ request }) => {
         received = (await request.json()) as BannerInput;

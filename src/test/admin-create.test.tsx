@@ -74,12 +74,22 @@ const cases: Case[] = [
   },
 ];
 
+// Fills the fields one after the other: the fields of a form depend on each
+// other's state, so they cannot be filled at once.
+async function fillInOrder(fields: readonly (readonly [string, string])[]): Promise<void> {
+  const [first, ...rest] = fields;
+  if (first) {
+    await page.getByLabelText(first[0]).fill(first[1]);
+    await fillInOrder(rest);
+  }
+}
+
 describe("admin create", () => {
   it.each(cases)(
     "an admin creates $name and is taken back to the list",
     async (c) => {
       expect.hasAssertions();
-      let received: unknown;
+      let received: unknown = null;
       worker.use(
         http.post(`*/admin/${c.resource}`, async ({ request }) => {
           received = await request.json();
@@ -93,10 +103,7 @@ describe("admin create", () => {
         user: admin,
       });
 
-      for (const [label, value] of c.fields) {
-        const field = page.getByLabelText(label);
-        await field.fill(value);
-      }
+      await fillInOrder(c.fields);
       const create = page.getByRole("button", { name: "Create" });
       await create.click();
 

@@ -22,6 +22,10 @@ import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lesson
 import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/success";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { sleep } from "@/test/wait";
+
+// A lesson page is headed with the course it belongs to.
+const COURSE = "JavaScript";
 
 const FIRST_LESSON_ID = 1001;
 // How long a check takes to answer, in the tests that look at the player while it runs.
@@ -349,9 +353,7 @@ describe("lesson player", () => {
     await renderPlayer("variables");
 
     // The landing page's marketing name, not the course's own `name`.
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
     await expect.element(page.getByText("A variable is a name bound to a value.")).toBeVisible();
     await expect.element(page.getByRole("heading", { name: "Instructions" })).toBeVisible();
     await expect.element(page.getByText("Assign the string hello to greeting.")).toBeVisible();
@@ -419,9 +421,7 @@ describe("lesson player", () => {
     await renderPlayer("variables");
 
     // Readable in full — this is the page a search engine indexes.
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
     await expect.element(page.getByText("A variable is a name bound to a value.")).toBeVisible();
   }, 60_000);
 
@@ -438,9 +438,7 @@ describe("lesson player", () => {
     );
 
     await renderPlayer("variables");
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
     await page.getByRole("tab", { name: "Navigation" }).click();
     await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
 
@@ -460,9 +458,7 @@ describe("lesson player", () => {
     Cookies.set("lesson_panes", "70");
 
     await renderPlayer("variables");
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
 
     // The handle is what makes the divider draggable at all.
     expect(document.querySelectorAll(".mantine-Splitter-handle")).toHaveLength(1);
@@ -501,9 +497,7 @@ describe("lesson player", () => {
 
     // The theory does not wait for the editor: it renders from the payload, while
     // monaco arrives on its own lazy import afterwards.
-    await expect
-      .element(page.getByRole("heading", { name: "JavaScript: Variables" }))
-      .toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
 
     await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
     await expect.poll(editorText, editorLoad).toContain("let greeting = '';");
@@ -744,9 +738,7 @@ describe("lesson player", () => {
     worker.use(
       http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
       http.post("*/lessons/1002/check", async () => {
-        await new Promise((resolve) => {
-          setTimeout(resolve, SLOW_CHECK_MS);
-        });
+        await sleep(SLOW_CHECK_MS);
         return HttpResponse.json(checkResult());
       }),
     );
@@ -810,9 +802,7 @@ describe("lesson player", () => {
       http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
       http.post("*/lessons/1002/check", async () => {
         checks += 1;
-        await new Promise((resolve) => {
-          setTimeout(resolve, QUICK_CHECK_MS);
-        });
+        await sleep(QUICK_CHECK_MS);
         return HttpResponse.json(checkResult());
       }),
     );
@@ -871,7 +861,7 @@ describe("lesson player", () => {
     await page.getByRole("tab", { name: "Solution" }).click();
 
     // How long is left of the wait, so a stuck learner knows whether to keep at it.
-    await expect.element(page.getByText(/^\d\d:\d\d$/)).toBeVisible();
+    await expect.element(page.getByText(/^\d\d:\d\d$/u)).toBeVisible();
     await expect
       .element(page.getByText("let greeting = 'hello'; // the author's answer"))
       .not.toBeInTheDocument();
@@ -1049,7 +1039,7 @@ describe("lesson player", () => {
 
     await next.click();
 
-    await expect.element(page.getByRole("heading", { name: "JavaScript: Strings" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: `${COURSE}: Strings` })).toBeVisible();
     expect(router.state.location.pathname).toBe("/languages/javascript/lessons/strings");
     // Started exactly once, and before the page it leads to was read (ADR-0012).
     expect(requests).toStrictEqual(["start 1003", "read strings"]);
@@ -1214,7 +1204,7 @@ describe("lesson player", () => {
     await panes().workspace.getByRole("button", { name: "Navigation" }).click();
     await expect.poll(paneWidths).toEqual([phone.width, 0]);
     await expect
-      .element(panes().theory.getByRole("heading", { name: "JavaScript: Variables" }))
+      .element(panes().theory.getByRole("heading", { name: `${COURSE}: Variables` }))
       .toBeInViewport();
 
     // The theory pane has a burger of its own, which swaps back.
@@ -1248,7 +1238,7 @@ describe("lesson player", () => {
     // The theory without leaving the editor's side: the workspace's own tab.
     await panes().workspace.getByRole("tab", { name: "Lesson" }).click();
     await expect
-      .element(panes().workspace.getByRole("heading", { name: "JavaScript: Variables" }))
+      .element(panes().workspace.getByRole("heading", { name: `${COURSE}: Variables` }))
       .toBeInViewport();
     await panes().workspace.getByRole("tab", { name: "Editor" }).click();
     await expect.element(page.getByLabelText("Code editor")).toBeVisible();
@@ -1330,7 +1320,7 @@ describe("lesson player", () => {
     await renderPlayer("variables");
     await page.getByRole("tab", { name: "Assistant" }).click();
 
-    await expect.element(page.getByText(/please sign up or log in/)).toBeVisible();
+    await expect.element(page.getByText(/please sign up or log in/u)).toBeVisible();
     expect(listed).toBe(0);
   }, 60_000);
 
@@ -1357,7 +1347,7 @@ describe("lesson player", () => {
     await page.getByRole("button", { name: "Send" }).click();
 
     await expect.element(page.getByText("How do I declare one?")).toBeVisible();
-    await expect.element(page.getByText(/and assign it\./)).toBeVisible();
+    await expect.element(page.getByText(/and assign it\./u)).toBeVisible();
 
     // The question goes out with the editor's buffer; nothing has been run yet.
     expect(asked).toStrictEqual([
@@ -1378,7 +1368,7 @@ describe("lesson player", () => {
     await renderPlayer("variables", learner);
     await page.getByRole("tab", { name: "Assistant" }).click();
 
-    await expect.element(page.getByText(/reached today's message limit/)).toBeVisible();
+    await expect.element(page.getByText(/reached today's message limit/u)).toBeVisible();
     await expect
       .element(page.getByRole("link", { name: "Telegram community" }))
       .toHaveAttribute("href", "https://t.me/hexletcommunity");
@@ -1404,7 +1394,7 @@ describe("lesson player", () => {
     await page.getByRole("textbox", { name: "Your question" }).fill("One more?");
     await page.getByRole("button", { name: "Send" }).click();
 
-    await expect.element(page.getByText(/reached today's message limit/)).toBeVisible();
+    await expect.element(page.getByText(/reached today's message limit/u)).toBeVisible();
   }, 60_000);
 
   it("underlines a syntax error in a language monaco has no service of", async () => {

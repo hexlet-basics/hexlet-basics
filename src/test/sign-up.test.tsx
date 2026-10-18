@@ -45,15 +45,16 @@ describe("sign up", () => {
     expect(queryClient.getQueryData(lessonKey)).toBeUndefined();
   }, 60_000);
 
-  it("drops a redirect that would leave the site", async () => {
-    expect.hasAssertions();
-    for (const hostile of [String.raw`/\evil.com`, "//evil.com", "https://evil.com/languages"]) {
-      const { router, screen } = await renderSignUp(hostile);
+  it.each([String.raw`/\evil.com`, "//evil.com", "https://evil.com/languages"])(
+    "drops the redirect %s, which would leave the site",
+    async (hostile) => {
+      expect.hasAssertions();
+      const { router } = await renderSignUp(hostile);
       await signUp();
       await expect.poll(() => router.state.location.href).toBe("/");
-      await screen.unmount();
-    }
-  }, 60_000);
+    },
+    60_000,
+  );
 
   it("shows a refused email at its field instead of as a toast", async () => {
     expect.hasAssertions();

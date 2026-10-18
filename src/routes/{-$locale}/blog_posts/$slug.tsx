@@ -52,7 +52,7 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
     } catch (error) {
       // A draft, a post in another language and a missing slug are all the
       // same to a visitor: there is no such page.
-      rethrowMissingAsNotFound(error);
+      return rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: the post's name and description, its canonical URL, the cover
@@ -215,8 +215,8 @@ function PostChain({
       to: "/{-$locale}/blog_posts/$slug",
       params: { locale, slug },
     });
-    if (window.location.pathname !== pathname) {
-      window.history.replaceState(window.history.state, "", pathname);
+    if (globalThis.location.pathname !== pathname) {
+      globalThis.history.replaceState(globalThis.history.state, "", pathname);
     }
   }, [router, locale, slug]);
 

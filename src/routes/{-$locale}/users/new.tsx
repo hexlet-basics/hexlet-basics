@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import { lenient } from "@/lib/lenient";
 
 // Registration page, ported from legacy users/new. The form itself is the
 // shared SignUpFormBlock.
@@ -12,7 +13,7 @@ import { safeRedirectPath } from "@/lib/safe-redirect";
 // on this site is honoured — anything else is dropped rather than followed, so
 // the page cannot be used to bounce a new account off to another origin.
 const signUpSearchSchema = z.object({
-  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
+  redirect: lenient(z.string().transform(safeRedirectPath)),
 });
 
 export const Route = createFileRoute("/{-$locale}/users/new")({

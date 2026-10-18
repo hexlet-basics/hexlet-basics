@@ -67,7 +67,7 @@ describe("connected apps", () => {
     await expect.element(page.getByText("Read your progress in courses")).toBeVisible();
     await expect.element(page.getByText("Keep access until you revoke it")).toBeVisible();
     await expect.element(page.getByText("Editor Helper")).toBeVisible();
-    await expect.element(page.getByText(/helper\.example\.com/)).toBeVisible();
+    await expect.element(page.getByText(/helper\.example\.com/u)).toBeVisible();
     // A scope the page has no words for is shown as it is.
     await expect.element(page.getByText("something:new")).toBeVisible();
   }, 60_000);
@@ -93,7 +93,7 @@ describe("connected apps", () => {
     await result;
 
     await page.getByRole("button", { name: "Disconnect" }).first().click();
-    await expect.element(page.getByText(/Disconnect “Claude Code”\?/)).toBeVisible();
+    await expect.element(page.getByText(/Disconnect “Claude Code”\?/u)).toBeVisible();
     // Backing out revokes nothing.
     await page.getByRole("button", { name: "No" }).click();
     expect(revoked).toStrictEqual([]);

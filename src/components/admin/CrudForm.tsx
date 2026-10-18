@@ -106,6 +106,9 @@ export function CrudForm<T extends Record<string, unknown>>({
                 case undefined: {
                   return <field.TextField label={spec.label} required={spec.required} />;
                 }
+                default: {
+                  throw new Error(`Unknown field type: ${String(spec.type satisfies never)}`);
+                }
               }
             }}
           </form.AppField>

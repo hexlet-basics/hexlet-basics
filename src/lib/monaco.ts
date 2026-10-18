@@ -35,7 +35,7 @@ const workers: Record<string, new () => Worker> = {
   javascript: tsWorker,
 };
 
-self.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_, label) {
     const Worker = workers[label] ?? editorWorker;
     return new Worker();

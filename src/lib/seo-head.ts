@@ -39,7 +39,9 @@ export function seoHead({
   // `/reviews/` and `/reviews` are one page, so the canonical drops a trailing
   // slash, as legacy's `*_url` helpers never emitted one.
   const canonical =
-    canonicalPath === undefined ? undefined : siteUrl(canonicalPath.replace(/(.)\/+$/, "$1"));
+    canonicalPath === undefined
+      ? undefined
+      : siteUrl(canonicalPath.replace(/(?<last>.)\/+$/u, "$<last>"));
   const meta = [
     { title: `${SITE_NAME} | ${title}` },
     ...(description === undefined ? [] : [{ name: "description", content: description }]),

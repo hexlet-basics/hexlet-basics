@@ -13,7 +13,7 @@ import { renderRoute } from "@/test/renderRoute";
 describe("create user", () => {
   it("creates a user", async () => {
     expect.hasAssertions();
-    let received: UserInput | undefined;
+    let received: UserInput | null = null;
     worker.use(
       http.post("*/admin/api/users", async ({ request }) => {
         received = (await request.json()) as UserInput;

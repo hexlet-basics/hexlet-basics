@@ -26,6 +26,12 @@ import shikiAdapter from "@/lib/shiki";
 
 const FULL_PERCENT = 100;
 
+// The splitter reports a pane size as a number or as "50%"; Number alone would
+// turn the latter into NaN.
+function percentOf(size: number | string | undefined): number {
+  return Number(String(size).replace("%", ""));
+}
+
 // The lesson player's shell: theory, the assistant and navigation on the left,
 // the workspace on the right. Both panes stay mounted for the life of the page —
 // the editor in the right pane must never remount and lose a learner's buffer.
@@ -116,12 +122,12 @@ export default function LessonPage({
         sizes={sizes}
         onSizeChange={(next) => {
           if (isDesktop) {
-            setTheoryPercent(Number.parseFloat(String(next[0])));
+            setTheoryPercent(percentOf(next[0]));
           }
         }}
         onResizeEnd={(_handle, next) => {
           if (isDesktop) {
-            saveTheoryPercent(Number.parseFloat(String(next[0])));
+            saveTheoryPercent(percentOf(next[0]));
           }
         }}
         withHandle={isDesktop}

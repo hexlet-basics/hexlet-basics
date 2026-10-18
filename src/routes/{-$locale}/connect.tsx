@@ -10,6 +10,7 @@ import {
   getOAuthConsentOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { requireAuth } from "@/lib/auth";
+import { lenient, orNull } from "@/lib/lenient";
 
 // The OAuth consent screen (ADR-0022): an assistant (an MCP client) was sent
 // here by the authorization endpoint with the id of its request. A guest signs
@@ -18,7 +19,7 @@ import { requireAuth } from "@/lib/auth";
 // browser returns to and what is asked, and the decision is one of two contract
 // operations whose answer is the next place for the browser to go.
 const connectSearchSchema = z.object({
-  id: z.string().optional().catch(undefined),
+  id: lenient(z.string()),
 });
 
 export const Route = createFileRoute("/{-$locale}/connect")({
@@ -31,12 +32,12 @@ export const Route = createFileRoute("/{-$locale}/connect")({
   // tab), not a crash: the page says so instead of showing the error screen.
   loader: ({ context, deps }) =>
     deps.id
-      ? context.queryClient
-          .query({
+      ? orNull(
+          context.queryClient.query({
             ...getOAuthConsentOptions({ path: { requestId: deps.id } }),
             staleTime: 0,
-          })
-          .catch(() => null)
+          }),
+        )
       : null,
   head: ({ match }) => {
     const { t } = match.context.i18n;
@@ -73,16 +74,16 @@ function useScopeLabel() {
 // host arrives with its port, and an IPv6 literal is bracketed.
 function isLocalHost(host: string): boolean {
   const name = host
-    .replace(/:\d+$/, "")
-    .replaceAll(/^\[|\]$/g, "")
+    .replace(/:\d+$/u, "")
+    .replaceAll(/^\[|\]$/gu, "")
     .toLowerCase();
-  return name === "localhost" || name === "::1" || /^127(\.\d{1,3}){3}$/.test(name);
+  return name === "localhost" || name === "::1" || /^127(?:\.\d{1,3}){3}$/u.test(name);
 }
 
 // The next place is outside the router: the authorization endpoint's callback
 // on this origin, or the client's own redirect URI. Leaving takes a full
 // navigation.
-const leave = ({ redirectUrl }: { redirectUrl: string }) => window.location.assign(redirectUrl);
+const leave = ({ redirectUrl }: { redirectUrl: string }) => globalThis.location.assign(redirectUrl);
 
 function Connect() {
   const { t } = useTranslation();

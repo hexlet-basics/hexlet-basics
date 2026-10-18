@@ -23,10 +23,10 @@ export function useSyntaxMarkers(
   useEffect(() => {
     const model = instance?.getModel();
     if (!instance || !monaco || !model || !canCheckSyntax(language)) {
-      return;
+      return () => undefined;
     }
 
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: ReturnType<typeof setTimeout> | 0 = 0;
     // Parsing is async (the grammar loads on first use), so a slow answer for an
     // older buffer must not overwrite the markers of a newer one.
     let latest = 0;

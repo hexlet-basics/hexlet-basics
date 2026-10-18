@@ -31,6 +31,23 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "node/no-process-env": [
+      "error",
+      {
+        allowedVariables: [
+          "API_URL",
+          "SITE_URL",
+          "CI",
+          "E2E_API_PORT",
+          "E2E_WEB_PORT",
+          "E2E_DB_HOST",
+          "E2E_DB_PORT",
+          "E2E_DB_NAME",
+          "E2E_DB_PASSWORD",
+        ],
+      },
+    ],
+    "eslint/no-bitwise": ["error", { allow: ["|"] }],
     "eslint/no-magic-numbers": [
       "error",
       {
@@ -118,8 +135,6 @@ export default defineConfig({
     "eslint/max-lines": "off",
     // Taste threshold.
     "eslint/complexity": "off",
-    // Taste threshold.
-    "eslint/max-params": "off",
     // Micro-optimisation, no memoised children depend on identity.
     "react-perf/jsx-no-new-function-as-prop": "off",
     // Micro-optimisation, no memoised children depend on identity.
@@ -132,20 +147,10 @@ export default defineConfig({
     "typescript/strict-boolean-expressions": "off",
     // Forbids onClick={() => doIt()} shorthand used throughout.
     "typescript/no-confusing-void-expression": "off",
-    // The u flag changes escape semantics, existing patterns are ASCII.
-    "eslint/require-unicode-regexp": "off",
-    // Window is deliberate, it documents browser-only code behind SSR guards.
-    "unicorn/prefer-global-this": "off",
     // Side-effect imports (css, polyfills, setup) are the point.
     "import/no-unassigned-import": "off",
     // Mantine components take style and className by design.
     "react/forbid-component-props": "off",
-    // Env is read at the edge (playwright config, SSR site url).
-    "node/no-process-env": "off",
-    // Sequential awaits are intended where order matters.
-    "eslint/no-await-in-loop": "off",
-    // Tests assert that javascript: urls are neutralised.
-    "eslint/no-script-url": "off",
     // False positive on render callbacks such as columns and actionsColumn edit and extra, which are not component definitions.
     "react/no-unstable-nested-components": "off",
     // Contradicts itself on forwardRef wrappers and createLink components and has no safety value.
@@ -154,28 +159,8 @@ export default defineConfig({
     "react/display-name": "off",
     // Generated admin resources and e2e specs reach siblings with ../, the @/ alias covers src only.
     "import/no-relative-parent-imports": "off",
-    // A let assigned in a callback and read after it cannot be initialised with a sound placeholder.
-    "eslint/init-declarations": "off",
-    // False positive on zod .catch and TanStack Router loaders return chains.
-    "promise/prefer-await-to-then": "off",
-    // False positive on zod .catch, which is not a promise.
-    "unicorn/prefer-top-level-await": "off",
-    // Tests build deferred promises on purpose.
-    "promise/avoid-new": "off",
-    // Build scripts read and write files synchronously.
-    "node/no-sync": "off",
-    // Scripts and configs run in Node.
-    "import/no-nodejs-modules": "off",
-    // Node:path namespace import is the Node idiom in scripts.
-    "unicorn/import-style": "off",
-    // Spread in map is clearer, no hot path here.
-    "oxc/no-map-spread": "off",
-    // Taste rule, the groups are tiny.
-    "eslint/prefer-named-capture-group": "off",
     // Monaco and the i18n catalogs are namespace modules.
     "import/no-namespace": "off",
-    // Switch-exhaustiveness-check already proves every case, a default would hide a new one.
-    "eslint/default-case": "off",
     // StarterKit is the package default export and also a named one, both are the same value.
     "import/no-named-as-default": "off",
     // False positive, the matched function is a fetch interceptor not an Express handler.
@@ -188,14 +173,6 @@ export default defineConfig({
     "react/no-danger": "off",
     // Handlers come from records and hooks (actions[name].run), naming them handleX adds nothing.
     "react/jsx-handler-names": "off",
-    // False positive, a default parameter does not replace null, which the argument may be.
-    "unicorn/prefer-default-parameters": "off",
-    // Monaco key chords (KeyMod.CtrlCmd | KeyCode.Enter) are bit flags by API.
-    "eslint/no-bitwise": "off",
-    // Number.parseFloat accepts the "50%" strings the Splitter reports, Number would give NaN.
-    "unicorn/prefer-number-coercion": "off",
-    // Contradicts React effects that return a cleanup on one path, and loaders and switches that end without a value.
-    "typescript/consistent-return": "off",
     // A lazily initialised per-mount constant has no setter to destructure.
     "react/hook-use-state": "off",
     // The default allows JSX only in .jsx files; this repo writes it in .tsx.
@@ -230,6 +207,18 @@ export default defineConfig({
     ],
   },
   overrides: [
+    {
+      // These run in Node, not in the browser. A build script cannot use the async
+      // fs API without top-level await, which node/no-top-level-await bans, so it
+      // reads and writes synchronously.
+      files: ["scripts/**", "vite.config.ts", "e2e/playwright.config.ts"],
+      rules: {
+        // Node's own modules are what a Node script is made of.
+        "import/no-nodejs-modules": "off",
+        // The contradiction with node/no-top-level-await is described above.
+        "node/no-sync": "off",
+      },
+    },
     {
       // The vitest rules describe vitest specs; the Playwright e2e specs, scripts
       // and application modules are not vitest code, so the plugin is loaded for

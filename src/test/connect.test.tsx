@@ -57,18 +57,18 @@ describe("connect", () => {
     expect.hasAssertions();
     await openConsent();
 
-    await expect.element(page.getByText(/Claude Code/)).toBeVisible();
+    await expect.element(page.getByText(/Claude Code/u)).toBeVisible();
     await expect.element(page.getByText("Read the course catalog")).toBeVisible();
     await expect.element(page.getByText("Read your progress in courses")).toBeVisible();
-    await expect.element(page.getByText(/sent back to 127\.0\.0\.1:8976/)).toBeVisible();
-    await expect.element(page.getByText(/Dora/).first()).toBeVisible();
+    await expect.element(page.getByText(/sent back to 127\.0\.0\.1:8976/u)).toBeVisible();
+    await expect.element(page.getByText(/Dora/u).first()).toBeVisible();
   }, 60_000);
 
   it("a redirect that stays on this computer carries a visible warning", async () => {
     expect.hasAssertions();
     await openConsent();
 
-    await expect.element(page.getByText(/this computer only/)).toBeVisible();
+    await expect.element(page.getByText(/this computer only/u)).toBeVisible();
   }, 60_000);
 
   it("a redirect to another host carries no such warning", async () => {
@@ -84,8 +84,8 @@ describe("connect", () => {
       user,
     });
 
-    await expect.element(page.getByText(/sent back to app\.example\.com/)).toBeVisible();
-    await expect.element(page.getByText(/this computer only/)).not.toBeInTheDocument();
+    await expect.element(page.getByText(/sent back to app\.example\.com/u)).toBeVisible();
+    await expect.element(page.getByText(/this computer only/u)).not.toBeInTheDocument();
   }, 60_000);
 
   it("approving sends the decision for that request", async () => {
@@ -95,7 +95,7 @@ describe("connect", () => {
       http.post("*/api/oauth/consents/req-1/approve", () => {
         approved.push("req-1");
         // Staying on this origin keeps the test page where it is.
-        return HttpResponse.json({ redirectUrl: `${window.location.href}#decided` });
+        return HttpResponse.json({ redirectUrl: `${globalThis.location.href}#decided` });
       }),
     );
     await openConsent();
@@ -111,7 +111,7 @@ describe("connect", () => {
     worker.use(
       http.post("*/api/oauth/consents/req-1/deny", () => {
         denied.push("req-1");
-        return HttpResponse.json({ redirectUrl: `${window.location.href}#decided` });
+        return HttpResponse.json({ redirectUrl: `${globalThis.location.href}#decided` });
       }),
     );
     await openConsent();
@@ -134,7 +134,7 @@ describe("connect", () => {
       user,
     });
 
-    await expect.element(page.getByText(/already been handled/)).toBeVisible();
+    await expect.element(page.getByText(/already been handled/u)).toBeVisible();
     await expect.element(page.getByRole("button", { name: "Allow" })).not.toBeInTheDocument();
   }, 60_000);
 

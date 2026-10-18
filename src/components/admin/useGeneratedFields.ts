@@ -68,7 +68,7 @@ export function useGeneratedFields<T>(
           label: label(option.labelKey),
         }));
       }
-      return { ...spec, ...overrides.set?.[spec.name] };
+      return Object.assign(spec, overrides.set?.[spec.name]);
     });
 
   const rank = (name: string) => {

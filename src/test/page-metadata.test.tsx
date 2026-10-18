@@ -163,7 +163,7 @@ describe("page metadata", () => {
         .toBeVisible();
       const match = router.state.matches.at(-1);
       const meta = match?.meta;
-      const url = `${window.location.origin}/languages/javascript/lessons/variables`;
+      const url = `${globalThis.location.origin}/languages/javascript/lessons/variables`;
 
       // The lesson and the course's landing name, behind the site name; version,
       // lesson and raw theory, cut mid-word to 217 characters and an ellipsis,
@@ -216,7 +216,7 @@ describe("page metadata", () => {
     await expect.element(page.getByRole("heading", { name: "JavaScript course" })).toBeVisible();
     const match = router.state.matches.at(-1);
     const meta = match?.meta;
-    const url = `${window.location.origin}/languages/javascript`;
+    const url = `${globalThis.location.origin}/languages/javascript`;
 
     expect(meta).toStrictEqual(
       expect.arrayContaining([

@@ -16,7 +16,7 @@ export class Admin {
   async expectCourseList(): Promise<void> {
     await this.#browser.expectHeading("Courses");
     await expect(
-      this.#browser.page.getByRole("row", { name: /javascript/i }).first(),
+      this.#browser.page.getByRole("row", { name: /javascript/iu }).first(),
     ).toBeVisible();
   }
 

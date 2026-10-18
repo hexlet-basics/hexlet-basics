@@ -5,10 +5,10 @@ import { test } from "../support/test";
 // other languages to switch to.
 test("switching the language keeps the page and prefixes the route", async ({ site }) => {
   await site.catalog.open();
-  await site.expectHeading(/./, 1);
+  await site.expectHeading(/./u, 1);
 
   await site.locale.switch("English", "Русский", { path: "/ru/languages", lang: "ru" });
-  await site.expectHeading(/./, 1);
+  await site.expectHeading(/./u, 1);
 
   await site.locale.switch("Русский", "Español", { path: "/es/languages", lang: "es" });
 

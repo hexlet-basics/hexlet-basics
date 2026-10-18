@@ -113,7 +113,7 @@ describe("blog", () => {
     await expect.element(page.getByRole("heading", { name: "Blog", level: 1 })).toBeVisible();
     await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
     await expect
-      .element(page.getByRole("link", { name: /Hello world/ }))
+      .element(page.getByRole("link", { name: /Hello world/u }))
       .toHaveAttribute("href", "/blog_posts/hello-world");
 
     // The route's head: legacy title behind the site name, and its Twitter card.
@@ -122,7 +122,7 @@ describe("blog", () => {
     expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
     expect(router.state.matches.at(-1)?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/blog_posts`,
+      href: `${globalThis.location.origin}/blog_posts`,
     });
   }, 60_000);
 
@@ -145,7 +145,7 @@ describe("blog", () => {
     expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
     expect(match?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/blog_posts/hello-world`,
+      href: `${globalThis.location.origin}/blog_posts/hello-world`,
     });
     expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
   }, 60_000);

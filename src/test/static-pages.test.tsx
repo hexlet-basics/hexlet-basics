@@ -33,7 +33,7 @@ describe("static pages", () => {
     expect(match?.meta).toContainEqual({ name: "twitter:card", content: "summary" });
     expect(match?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/pages/about`,
+      href: `${globalThis.location.origin}/pages/about`,
     });
   }, 60_000);
 
@@ -99,7 +99,7 @@ describe("static pages", () => {
     });
     expect(match?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/ru/cases/for_teachers`,
+      href: `${globalThis.location.origin}/ru/cases/for_teachers`,
     });
   }, 60_000);
 
@@ -149,7 +149,9 @@ describe("static pages", () => {
     { locale: "ru" as const, prefix: "/ru" },
   ];
 
-  it.each(PAGE_IDS.flatMap((id) => LOCALES.map((l) => ({ id, ...l }))))(
+  it.each(
+    PAGE_IDS.flatMap((id) => LOCALES.map((l) => ({ id, locale: l.locale, prefix: l.prefix }))),
+  )(
     "the $id page renders its body in $prefix",
     async ({ id, locale, prefix }) => {
       expect.hasAssertions();

@@ -5,6 +5,7 @@ import { Route as pageRoute } from "@/routes/{-$locale}/pages/$id";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import { DESKTOP_VIEWPORT } from "@/test/viewport";
+import { sleep } from "@/test/wait";
 
 // Long enough for a request a click would have sent to show up.
 const SETTLE_MS = 200;
@@ -60,9 +61,7 @@ describe("language switcher", () => {
       await openPage("/ru/pages/about", "ru");
       await page.getByRole("button", { name: "Русский" }).first().click();
       await page.getByRole("menuitem", { name: "English" }).click();
-      await new Promise((resolve) => {
-        setTimeout(resolve, SETTLE_MS);
-      });
+      await sleep(SETTLE_MS);
     } finally {
       document.removeEventListener("click", stay, true);
     }

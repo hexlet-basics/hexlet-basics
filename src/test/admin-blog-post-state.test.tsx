@@ -59,14 +59,16 @@ describe("admin blog post state", () => {
 
       await openPost();
 
-      for (const name of offered) {
-        await expect.element(page.getByRole("button", { name, exact: true })).toBeVisible();
-      }
-      for (const name of hidden) {
-        await expect
-          .element(page.getByRole("button", { name, exact: true }))
-          .not.toBeInTheDocument();
-      }
+      await Promise.all([
+        ...offered.map(async (name) => {
+          await expect.element(page.getByRole("button", { name, exact: true })).toBeVisible();
+        }),
+        ...hidden.map(async (name) => {
+          await expect
+            .element(page.getByRole("button", { name, exact: true }))
+            .not.toBeInTheDocument();
+        }),
+      ]);
     },
     60_000,
   );

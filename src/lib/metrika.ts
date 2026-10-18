@@ -3,16 +3,16 @@
 // lead form picked it up. Null until the counter has answered, or wherever it
 // is not loaded.
 declare global {
-  interface Window {
-    ymClientId?: string;
-  }
+  // `var` is how a global is declared, so `globalThis.ymClientId` is typed too.
+  // eslint-disable-next-line no-var
+  var ymClientId: string | undefined;
 }
 
 export function metrikaClientId(): string | null {
-  if (typeof window === "undefined") {
+  if (!("window" in globalThis)) {
     return null;
   }
-  return typeof window.ymClientId === "string" && window.ymClientId !== ""
-    ? window.ymClientId
+  return typeof globalThis.ymClientId === "string" && globalThis.ymClientId !== ""
+    ? globalThis.ymClientId
     : null;
 }

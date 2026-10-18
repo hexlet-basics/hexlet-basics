@@ -55,7 +55,7 @@ describe("book", () => {
     expect(match?.meta).toContainEqual({ name: "twitter:site", content: "@hexlethq" });
     expect(match?.links).toContainEqual({
       rel: "canonical",
-      href: `${window.location.origin}/ru/book`,
+      href: `${globalThis.location.origin}/ru/book`,
     });
     const description = match?.meta?.find((tag) => tag?.name === "description")?.content;
     expect(description).toHaveLength(DESCRIPTION_LENGTH);
