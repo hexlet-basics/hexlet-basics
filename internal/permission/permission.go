@@ -1,5 +1,5 @@
-// Package staffroles holds the staff-role operations the admin handlers call.
-package staffroles
+// Package permission holds the staff-role operations the admin handlers call.
+package permission
 
 import (
 	"context"

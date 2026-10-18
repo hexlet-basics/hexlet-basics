@@ -7,7 +7,7 @@ import (
 	ent "hexletbasics/ent"
 	api "hexletbasics/internal/api"
 	assetstore "hexletbasics/internal/assetstore"
-	blogposts "hexletbasics/internal/blogposts"
+	blog "hexletbasics/internal/blog"
 	dashboard "hexletbasics/internal/dashboard"
 	"time"
 )
@@ -48,7 +48,7 @@ func (c *ConverterImpl) ToBanners(source []*ent.Banner) []api.Banner {
 	}
 	return apiBannerList
 }
-func (c *ConverterImpl) ToBlogPost(source blogposts.Post) api.BlogPost {
+func (c *ConverterImpl) ToBlogPost(source blog.Post) api.BlogPost {
 	var apiBlogPost api.BlogPost
 	apiBlogPost.ID = Int32FromInt(source.ID)
 	apiBlogPost.Creator = c.ToPublicUser(source.Creator)
@@ -70,7 +70,7 @@ func (c *ConverterImpl) ToBlogPost(source blogposts.Post) api.BlogPost {
 	apiBlogPost.CreatedAt = TimeIdentity(source.CreatedAt)
 	return apiBlogPost
 }
-func (c *ConverterImpl) ToBlogPosts(source []blogposts.Post) []api.BlogPost {
+func (c *ConverterImpl) ToBlogPosts(source []blog.Post) []api.BlogPost {
 	var apiBlogPostList []api.BlogPost
 	if source != nil {
 		apiBlogPostList = make([]api.BlogPost, len(source))

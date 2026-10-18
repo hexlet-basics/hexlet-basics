@@ -1,4 +1,4 @@
-package staffroles
+package permission
 
 import (
 	"context"

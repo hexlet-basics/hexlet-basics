@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/sessions"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -29,7 +29,7 @@ func signedIn(t *testing.T, router http.Handler, email string) *http.Cookie {
 // would admit the visitor was recognized.
 func TestAGarbledSessionCookieDoesNotOpenTheAdminArea(t *testing.T) {
 	router := newAuthRouter(t)
-	garbled := &http.Cookie{Name: sessions.CookieName, Value: "not-a-token"}
+	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"}
 
 	resp := do(t, router, http.MethodGet, "/api/admin/course_categories", "", garbled)
 

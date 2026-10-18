@@ -334,7 +334,7 @@ The business rules behind an operation live in a package named for the concept
 other adapter (MCP) call the same code. There is no umbrella `usecases` or
 `services` package. The rules below apply to every such module.
 
-- **Package:** one concept, plural, lowercase (`accounts`, `blogposts`). Plural
+- **Package:** one concept, plural, lowercase (`accounts`, `blog`). Plural
   because ent generates a singular package per entity (`ent/blogpost`), and a
   file that needs both must not alias one; a mass noun (`progress`, `dashboard`)
   stays as it is.

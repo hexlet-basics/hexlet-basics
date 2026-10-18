@@ -16,8 +16,9 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/banners"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursecategories"
@@ -35,15 +36,14 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/reviews"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
-	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
@@ -74,7 +74,7 @@ type handlerServices struct {
 	RelatedCoursesSet *relatedcourses.Replacer    `do:""`
 	Progress          *progress.Progress          `do:""`
 	Assets            *assetstore.Store           `do:""`
-	Sessions          *sessions.Manager           `do:""`
+	Sessions          *auth.Authenticator         `do:""`
 	Registrar         *accounts.Registrar         `do:""`
 	Remover           *accounts.Remover           `do:""`
 	UserEditor        *accounts.Editor            `do:""`
@@ -86,8 +86,8 @@ type handlerServices struct {
 	Errors            *handlers.APIErrorHandler   `do:""`
 	YandexFeed        *feeds.Yandex               `do:""`
 	Assistant         *assistant.Chat             `do:""`
-	PostRemover       *blogposts.Remover          `do:""`
-	Permissions       *staffroles.Permissions     `do:""`
+	PostRemover       *blog.Remover               `do:""`
+	Permissions       *permission.Permissions     `do:""`
 	SelfProtection    *selfprotection.Guard       `do:""`
 	BannerStates      *banners.Editor             `do:""`
 	ReviewStates      *reviews.Editor             `do:""`
@@ -100,7 +100,7 @@ type handlerServices struct {
 	RelatedSuggester  *relatedcourses.Scheduler   `do:""`
 	LandingPageQna    *qnaitems.LandingPage       `do:""`
 	CategoryQna       *qnaitems.Category          `do:""`
-	PostEditor        *blogposts.Editor           `do:""`
+	PostEditor        *blog.Editor                `do:""`
 	ReviewDirectory   *reviews.Directory          `do:""`
 	CourseDirectory   *courses.Directory          `do:""`
 	LeadDirectory     *leads.Directory            `do:""`
@@ -124,7 +124,7 @@ var serverPackage = do.Package(
 	}),
 	// Sessions live in the database; a store failure answers in the API's own
 	// error shape through the same handler everything else uses.
-	do.Lazy[*sessions.Manager](func(i do.Injector) (*sessions.Manager, error) {
+	do.Lazy[*auth.Authenticator](func(i do.Injector) (*auth.Authenticator, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -137,10 +137,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return sessions.New(
+		return auth.New(
 			db,
-			sessions.WithSecure(cfg.SecureCookies()),
-			sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+			auth.WithSecure(cfg.SecureCookies()),
+			auth.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 				errorHandler.Write(r.Context(), w, r, err)
 			}),
 		), nil
@@ -178,12 +178,12 @@ var serverPackage = do.Package(
 		}
 		return books.NewRecorder(db, publisher), nil
 	}),
-	do.Lazy[*blogposts.Remover](func(i do.Injector) (*blogposts.Remover, error) {
+	do.Lazy[*blog.Remover](func(i do.Injector) (*blog.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
-		return blogposts.NewRemover(db), nil
+		return blog.NewRemover(db), nil
 	}),
 	do.Lazy[*banners.Editor](func(i do.Injector) (*banners.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -220,7 +220,7 @@ var serverPackage = do.Package(
 		}
 		return selfprotection.NewGuard(db), nil
 	}),
-	do.Lazy[*staffroles.Permissions](func(i do.Injector) (*staffroles.Permissions, error) {
+	do.Lazy[*permission.Permissions](func(i do.Injector) (*permission.Permissions, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -229,7 +229,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return staffroles.NewPermissions(db, tx), nil
+		return permission.NewPermissions(db, tx), nil
 	}),
 	do.Lazy[*courselessons.Directory](func(i do.Injector) (*courselessons.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -280,12 +280,12 @@ var serverPackage = do.Package(
 		}
 		return reviews.NewDirectory(db), nil
 	}),
-	do.Lazy[*blogposts.Editor](func(i do.Injector) (*blogposts.Editor, error) {
+	do.Lazy[*blog.Editor](func(i do.Injector) (*blog.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return blogposts.NewEditor(db), nil
+		return blog.NewEditor(db), nil
 	}),
 	do.Lazy[*qnaitems.Category](func(i do.Injector) (*qnaitems.Category, error) {
 		db, err := do.Invoke[*ent.Client](i)

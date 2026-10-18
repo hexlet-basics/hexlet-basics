@@ -27,8 +27,9 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/banners"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursecategories"
@@ -43,15 +44,14 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/reviews"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
-	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
-	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -225,7 +225,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	errorHandler := NewAPIErrorHandler(t, translator)
 	// The real session manager over the test's transaction: a test's session rows
 	// are rolled back with everything else.
-	manager := sessions.New(db, sessions.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
+	manager := auth.New(db, auth.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 		errorHandler.Write(r.Context(), w, r, err)
 	}))
 	// The real progress module, over the test's transaction: the
@@ -284,7 +284,7 @@ func (h *Harness) ActAs(t *testing.T, userLabel fixtures.Label) *Harness {
 	t.Helper()
 	// Sessions live in the database, so a manager of its own over the same client
 	// issues one the harness's pipeline recognises.
-	security := newHarnessSecurity(t, h.DB, sessions.New(h.DB), userLabel)
+	security := newHarnessSecurity(t, h.DB, auth.New(h.DB), userLabel)
 	doer := *h.doer
 	doer.session = security.session
 	client, err := api.NewClient("http://test", security, api.WithClient(&doer))
@@ -325,7 +325,7 @@ func handlerDeps(
 	tracker *progress.Progress,
 	translator *localization.Translator,
 	errorHandler *handlers.APIErrorHandler,
-	manager *sessions.Manager,
+	manager *auth.Authenticator,
 ) handlers.Deps {
 	t.Helper()
 	// The real registrar: it hashes, writes the user and raises the sign-up fact
@@ -366,8 +366,8 @@ func handlerDeps(
 		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
-		PostRemover:       blogposts.NewRemover(transactor),
-		Permissions:       staffroles.NewPermissions(db, transactor),
+		PostRemover:       blog.NewRemover(transactor),
+		Permissions:       permission.NewPermissions(db, transactor),
 		SelfProtection:    selfprotection.NewGuard(db),
 		BannerStates:      banners.NewEditor(db),
 		ReviewStates:      reviews.NewEditor(db),
@@ -380,7 +380,7 @@ func handlerDeps(
 		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
 		LandingPageQna:    qnaitems.NewLandingPage(db),
 		CategoryQna:       qnaitems.NewCategory(db),
-		PostEditor:        blogposts.NewEditor(db),
+		PostEditor:        blog.NewEditor(db),
 		ReviewDirectory:   reviews.NewDirectory(db),
 		CourseDirectory:   courses.NewDirectory(db),
 		LeadDirectory:     leads.NewDirectory(db),
@@ -522,7 +522,7 @@ type harnessSecurity struct {
 // newHarnessSecurity signs the fixture user in through the real session manager
 // and keeps the cookie value that names the session, which is what a browser
 // would send on every request.
-func newHarnessSecurity(t *testing.T, db *ent.Client, manager *sessions.Manager, userLabel fixtures.Label) *harnessSecurity {
+func newHarnessSecurity(t *testing.T, db *ent.Client, manager *auth.Authenticator, userLabel fixtures.Label) *harnessSecurity {
 	t.Helper()
 
 	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))
@@ -575,7 +575,7 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	case d.anonymous:
 		r.Header.Del("Cookie")
 	case d.session != "":
-		r.AddCookie(&http.Cookie{Name: sessions.CookieName, Value: d.session})
+		r.AddCookie(&http.Cookie{Name: auth.CookieName, Value: d.session})
 	}
 	// Added after the anonymous branch cleared the header: a visitor carries
 	// progress without carrying a session, which is the whole point of it.

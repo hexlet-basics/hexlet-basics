@@ -9,10 +9,10 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/auth"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
-	"hexletbasics/internal/sessions"
-	"hexletbasics/internal/staffroles"
+	"hexletbasics/internal/permission"
 )
 
 var (
@@ -53,8 +53,8 @@ func MustAuthenticatedUser(ctx context.Context) *ent.User {
 // credential of its own.
 type Security struct {
 	db       *ent.Client
-	sessions *sessions.Manager
-	policy   *staffroles.Policy
+	sessions *auth.Authenticator
+	policy   *permission.Policy
 	i18n     *localization.Translator
 	errors   *APIErrorHandler
 	guests   *guestCookies
@@ -63,8 +63,8 @@ type Security struct {
 // newSecurity builds the security seam over the session manager.
 func newSecurity(
 	db *ent.Client,
-	manager *sessions.Manager,
-	policy *staffroles.Policy,
+	manager *auth.Authenticator,
+	policy *permission.Policy,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 	guests *guestCookies,
@@ -158,7 +158,7 @@ func (s *Security) HandleAdminSession(
 		return ctx, errUnauthenticated
 	}
 	err = s.policy.Allow(ctx, u, s.i18n.Locale(ctx), operation)
-	if errors.Is(err, staffroles.ErrForbidden) {
+	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
 		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
 	}
@@ -189,7 +189,7 @@ func (s *Security) recordRefusal(ctx context.Context, operation string) {
 // an operation that declares none.
 func (s *Security) attach(ctx context.Context) (context.Context, error) {
 	u, err := s.sessions.User(ctx)
-	if errors.Is(err, sessions.ErrUnauthenticated) {
+	if errors.Is(err, auth.ErrUnauthenticated) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {

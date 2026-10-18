@@ -6,7 +6,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
-	"hexletbasics/internal/blogposts"
+	"hexletbasics/internal/blog"
 	"hexletbasics/internal/coursecategories"
 	"hexletbasics/internal/courses"
 	"hexletbasics/internal/dashboard"
@@ -171,8 +171,8 @@ type ReadinessMarker interface {
 // PostEditor creates and changes blog posts, and moves their Publication State.
 type PostEditor interface {
 	StateMover
-	Create(ctx context.Context, creatorID int, locale string, fields blogposts.PostFields) (*ent.BlogPost, error)
-	Update(ctx context.Context, id int, fields blogposts.PostFields) (*ent.BlogPost, error)
+	Create(ctx context.Context, creatorID int, locale string, fields blog.PostFields) (*ent.BlogPost, error)
+	Update(ctx context.Context, id int, fields blog.PostFields) (*ent.BlogPost, error)
 }
 
 // LessonReviewScheduler asks for AI reviews of a course's or a lesson's

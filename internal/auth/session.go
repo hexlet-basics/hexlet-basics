@@ -4,7 +4,7 @@
 // It owns the cookie, the token's rotation and expiry, and the question "which
 // user does this request belong to". It does not decide who may do what; that is
 // read from the account on every request.
-package sessions
+package auth
 
 import (
 	"context"
@@ -47,9 +47,9 @@ const (
 // since the session began.
 var ErrUnauthenticated = errors.New("session: request is not authenticated")
 
-// Manager issues, reads and ends sessions. The zero value is not usable; build
+// Authenticator issues, reads and ends sessions. The zero value is not usable; build
 // one with New.
-type Manager struct {
+type Authenticator struct {
 	sessions *scs.SessionManager
 	db       *ent.Client
 	store    *store
@@ -62,7 +62,7 @@ type options struct {
 	onErr  func(http.ResponseWriter, *http.Request, error)
 }
 
-// Option adjusts a Manager.
+// Option adjusts a Authenticator.
 type Option func(*options)
 
 // WithSecure marks the session cookie Secure. It is on wherever the site is
@@ -80,8 +80,8 @@ func WithErrorFunc(fn func(http.ResponseWriter, *http.Request, error)) Option {
 	return func(o *options) { o.onErr = fn }
 }
 
-// New builds a Manager whose sessions live in db.
-func New(db *ent.Client, opts ...Option) *Manager {
+// New builds a Authenticator whose sessions live in db.
+func New(db *ent.Client, opts ...Option) *Authenticator {
 	cfg := options{clock: time.Now}
 	for _, opt := range opts {
 		opt(&cfg)
@@ -103,7 +103,7 @@ func New(db *ent.Client, opts ...Option) *Manager {
 	if cfg.onErr != nil {
 		sm.ErrorFunc = cfg.onErr
 	}
-	return &Manager{sessions: sm, db: db, store: st, clock: cfg.clock}
+	return &Authenticator{sessions: sm, db: db, store: st, clock: cfg.clock}
 }
 
 // Middleware loads the session a request's cookie names and writes it back, with
@@ -112,14 +112,14 @@ func New(db *ent.Client, opts ...Option) *Manager {
 //
 // Everything below it may call Begin, End and User; calling them on a request
 // that did not pass through it is a programming error.
-func (m *Manager) Middleware(next http.Handler) http.Handler {
+func (m *Authenticator) Middleware(next http.Handler) http.Handler {
 	return m.sessions.LoadAndSave(next)
 }
 
 // Begin signs u in on this request: the token is renewed so a token an attacker
 // planted before sign-in is worthless (session fixation), and the session
 // remembers who u is and which password they signed in with.
-func (m *Manager) Begin(ctx context.Context, u *ent.User) error {
+func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
 	if err := m.sessions.RenewToken(ctx); err != nil {
 		return fmt.Errorf("renew session token: %w", err)
 	}
@@ -130,7 +130,7 @@ func (m *Manager) Begin(ctx context.Context, u *ent.User) error {
 // Issue starts a session for u outside any request and returns the cookie value
 // that names it. It exists for the caller with no request to hang Begin on: a
 // test acting as a signed-in user. A request signs in through Begin.
-func (m *Manager) Issue(ctx context.Context, u *ent.User) (string, error) {
+func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) {
 	ctx, err := m.sessions.Load(ctx, "")
 	if err != nil {
 		return "", fmt.Errorf("load session: %w", err)
@@ -144,14 +144,14 @@ func (m *Manager) Issue(ctx context.Context, u *ent.User) (string, error) {
 }
 
 // remember records on the session who u is and which password they are using.
-func (m *Manager) remember(ctx context.Context, u *ent.User) {
+func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
 	m.sessions.Put(ctx, userIDKey, u.ID)
 	m.sessions.Put(ctx, epochKey, passwordEpoch(u))
 	m.sessions.Put(ctx, lastSeenKey, m.clock().Unix())
 }
 
 // End signs the visitor out: the session row is deleted and the cookie expired.
-func (m *Manager) End(ctx context.Context) error {
+func (m *Authenticator) End(ctx context.Context) error {
 	if err := m.sessions.Destroy(ctx); err != nil {
 		return fmt.Errorf("destroy session: %w", err)
 	}
@@ -163,7 +163,7 @@ func (m *Manager) End(ctx context.Context) error {
 // The row decides, not the session: a removed account is signed out at once, and
 // so is a session that began under a password that has since changed. Such a
 // session is destroyed on the spot rather than left to answer "no" again.
-func (m *Manager) User(ctx context.Context) (*ent.User, error) {
+func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 	id := m.sessions.GetInt(ctx, userIDKey)
 	if id == 0 {
 		return nil, ErrUnauthenticated
@@ -191,7 +191,7 @@ func (m *Manager) User(ctx context.Context) (*ent.User, error) {
 	return u, nil
 }
 
-func (m *Manager) endStale(ctx context.Context) error {
+func (m *Authenticator) endStale(ctx context.Context) error {
 	if err := m.End(ctx); err != nil {
 		return err
 	}
@@ -201,7 +201,7 @@ func (m *Manager) endStale(ctx context.Context) error {
 // DeleteExpired removes the sessions whose time has passed and reports how many
 // it removed. Nothing reads them once they have expired; this is only
 // housekeeping, run by a periodic job.
-func (m *Manager) DeleteExpired(ctx context.Context) (int, error) {
+func (m *Authenticator) DeleteExpired(ctx context.Context) (int, error) {
 	return m.store.deleteExpired(ctx)
 }
 

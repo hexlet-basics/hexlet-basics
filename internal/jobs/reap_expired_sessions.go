@@ -7,7 +7,7 @@ import (
 
 	"github.com/riverqueue/river"
 
-	"hexletbasics/internal/sessions"
+	"hexletbasics/internal/auth"
 )
 
 // reapExpiredSessionsInterval is how often sessions that ran out are removed.
@@ -25,7 +25,7 @@ func (ReapExpiredSessionsArgs) Kind() string { return "reap_expired_sessions" }
 
 type reapExpiredSessionsWorker struct {
 	river.WorkerDefaults[ReapExpiredSessionsArgs]
-	sessions *sessions.Manager
+	sessions *auth.Authenticator
 	logger   *slog.Logger
 }
 
@@ -41,13 +41,13 @@ func (w *reapExpiredSessionsWorker) Work(ctx context.Context, _ *river.Job[ReapE
 }
 
 // ReapExpiredSessions sweeps expired sessions, hourly.
-func ReapExpiredSessions(manager *sessions.Manager, logger *slog.Logger) Module {
+func ReapExpiredSessions(manager *auth.Authenticator, logger *slog.Logger) Module {
 	return module(ReapExpiredSessionsWorker(manager, logger), reapExpiredSessionsSchedule())
 }
 
 // ReapExpiredSessionsWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
-func ReapExpiredSessionsWorker(manager *sessions.Manager, logger *slog.Logger) river.Worker[ReapExpiredSessionsArgs] {
+func ReapExpiredSessionsWorker(manager *auth.Authenticator, logger *slog.Logger) river.Worker[ReapExpiredSessionsArgs] {
 	return &reapExpiredSessionsWorker{sessions: manager, logger: logger}
 }
 
