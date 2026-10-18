@@ -14,7 +14,9 @@ kept rule has a reason; a rule without one would have lost to practice.
   database is cloned by [pgtestdb](https://github.com/peterldowns/pgtestdb) on the
   development PostgreSQL 18 daemon (a service container in CI) from a template
   holding the Atlas migrations and `fixtures/`; a test gets a transaction
-  (`testsupport.NewClient*`, `NewHarness*`) that is rolled back. No database
+  (`testsupport.NewClient*`, `NewHarness*`) on a handle from
+  [pgcleaner](https://github.com/mokevnin/pgcleaner)'s `Transaction` strategy
+  (`testdb.DB(t)`), so it is rolled back. No database
   mocks. Code that needs commit semantics goes through the savepoint transactor
   in `testsupport`, or carries a `//nolint:forbidigo // why`. The savepoint
   adapter is the price of running production transaction code inside the

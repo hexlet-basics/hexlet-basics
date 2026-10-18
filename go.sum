@@ -28,6 +28,8 @@ github.com/BurntSushi/toml v1.6.0 h1:dRaEfpa2VI55EwlIW72hMRHdWouJeRF7TPYhI+AUQjk
 github.com/BurntSushi/toml v1.6.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/DATA-DOG/go-sqlmock v1.5.0 h1:Shsta01QNfFxHCfpW6YH2STWB0MudeXXEWMr20OEh60=
 github.com/DATA-DOG/go-sqlmock v1.5.0/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
+github.com/DATA-DOG/go-txdb v0.2.1 h1:ic/cKLheUcjOHvqduJ349umI9KqQWny4idfnDyPEJWk=
+github.com/DATA-DOG/go-txdb v0.2.1/go.mod h1:Flb/TrTNAFotdSRIwUnM7BoJgT9AEX1Ysf863nYr5yk=
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.61.0 h1:BeC1Bub7Ttk33TF8v3ZeQ2L8acvz4ZLqtQuLyJAZquc=
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.61.0/go.mod h1:UgG/Xn9+NXb1/ueSczIFxyuya3hs3srFDiZG2JrpJwY=
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.61.0 h1:KhpL26/GviYITHMCEGGqT/l50siFaBCBBKrjv6Z0G/k=
@@ -403,6 +405,8 @@ github.com/moby/moby/client v0.6.2 h1:ekSPlMccrZGcw6Scb8T9D39qE0mB+XupU/yS0zNw9N
 github.com/moby/moby/client v0.6.2/go.mod h1:DGcnO7qmPJrqobx/ggQgQ/AUk+2wgVdQv7uxB0/mEsc=
 github.com/modelcontextprotocol/go-sdk v1.8.0 h1:KIvahhYqwtbeniWVPs3TcXEA7b8jEtwfBpOTAI+Urx4=
 github.com/modelcontextprotocol/go-sdk v1.8.0/go.mod h1:dL7u98E/zjJTGzEq+j30jQ8K2k1mb6LeAH4inEcSGts=
+github.com/mokevnin/pgcleaner v0.1.0 h1:NYXGM9Uu7SVHShl24iQ1uH05xsqL+yEBPoWYFqaV4U4=
+github.com/mokevnin/pgcleaner v0.1.0/go.mod h1:u5lx+jegDP742k+/wcOw0m4I2H+EKy0Qb9EijGKVYfs=
 github.com/muesli/smartcrop v0.3.0 h1:JTlSkmxWg/oQ1TcLDoypuirdE8Y/jzNirQeLkxpA6Oc=
 github.com/muesli/smartcrop v0.3.0/go.mod h1:i2fCI/UorTfgEpPPLWiFBv4pye+YAG78RwcQLUkocpI=
 github.com/muhlemmer/gu v0.3.1 h1:7EAqmFrW7n3hETvuAdmFmn4hS8W+z3LgKtrnow+YzNM=

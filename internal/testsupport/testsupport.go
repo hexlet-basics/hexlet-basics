@@ -109,11 +109,9 @@ func NewClientWithTxAndTransactor(t *testing.T) (*ent.Client, *sql.Tx, store.Tra
 // is what ships.
 func NewClientWithTx(t *testing.T) (*ent.Client, *sql.Tx) {
 	t.Helper()
-	db, err := store.NewDB(testdb.DatabaseURL())
-	if err != nil {
-		t.Fatalf("open test database: %v", err)
-	}
-	t.Cleanup(func() { _ = db.Close() })
+	// The handle is already inside a rolled-back transaction (pgcleaner), so this
+	// BeginTx is a savepoint of it; the rollback below only releases it early.
+	db := testdb.DB(t)
 
 	tx, err := db.BeginTx(t.Context(), nil)
 	if err != nil {

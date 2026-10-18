@@ -21,6 +21,7 @@ import (
 	"ariga.io/atlas/sql/migrate"
 	atlaspostgres "ariga.io/atlas/sql/postgres"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/mokevnin/pgcleaner"
 	"github.com/peterldowns/pgtestdb"
 	"github.com/peterldowns/pgtestdb/migrators/common"
 
@@ -45,7 +46,11 @@ var (
 		conf pgtestdb.Config
 		m    migrator
 	}
-	urlMu sync.RWMutex
+	// cleaner hands each test the package's database inside a transaction that
+	// is rolled back when the test ends. Its setup is empty: the clone already
+	// holds the migrations and fixtures.
+	cleaner *pgcleaner.Cleaner
+	urlMu   sync.RWMutex
 )
 
 // Run clones the package's database before running its tests. TestMain must
@@ -82,9 +87,15 @@ func Run(m *testing.M) (code int) {
 
 	urlMu.Lock()
 	databaseURL = clone.URL()
+	cleaner = pgcleaner.New(databaseURL)
 	template.conf, template.m = conf, mig
 	urlMu.Unlock()
 
+	defer func() {
+		if err := cleaner.Close(); err != nil {
+			fmt.Fprintf(os.Stderr, "test database cleaner close failed: %v\n", err)
+		}
+	}()
 	return m.Run()
 }
 
@@ -130,6 +141,18 @@ func DatabaseURL() string {
 		panic("testdb: DatabaseURL called without testdb.Run in TestMain")
 	}
 	return databaseURL
+}
+
+// DB returns the package's database for one test. Everything the test and the
+// code under test write, savepoints of their own included, is rolled back when
+// the test ends (pgcleaner's Transaction strategy), so a test cleans nothing up.
+func DB(t testing.TB) *sql.DB {
+	t.Helper()
+	DatabaseURL() // panics when Run did not set the package up
+	urlMu.RLock()
+	c := cleaner
+	urlMu.RUnlock()
+	return c.DB(t)
 }
 
 // migrator builds the template: the Atlas migrations, then the committed
