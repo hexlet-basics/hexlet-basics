@@ -123,10 +123,10 @@ func newGuardedClient(allow func(netip.Addr) bool, timeout time.Duration) *http.
 		Control: func(_, address string, _ syscall.RawConn) error {
 			ap, err := netip.ParseAddrPort(address)
 			if err != nil {
-				return fmt.Errorf("refusing to connect to %q: %w", address, err)
+				return errs.With("address", address).Wrapf(err, "refusing to connect")
 			}
 			if !allow(ap.Addr()) {
-				return fmt.Errorf("refusing to connect to %s: not a public address", ap.Addr())
+				return errs.With("address", ap.Addr().String()).Errorf("refusing to connect: not a public address")
 			}
 			return nil
 		},
@@ -319,7 +319,7 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 		SetName(reg.name).SetRedirectUris(reg.redirectURIs).SetScopes(reg.scopes).SetMetadataExpiresAt(expires).
 		Save(ctx)
 	if err != nil {
-		return fmt.Errorf("update client from metadata document: %w", err)
+		return errs.Wrapf(err, "update client from metadata document")
 	}
 	if n > 0 {
 		return nil
@@ -334,7 +334,7 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 			Save(ctx)
 	}
 	if err != nil {
-		return fmt.Errorf("create client from metadata document: %w", err)
+		return errs.Wrapf(err, "create client from metadata document")
 	}
 	return nil
 }

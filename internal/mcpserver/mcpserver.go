@@ -24,10 +24,15 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/auth"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/modelcontextprotocol/go-sdk/oauthex"
+	"github.com/samber/oops"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/oauthserver"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With, wrapped once at the function that knows the operation.
+var errs = oops.In("mcpserver")
 
 const (
 	// Path is where the endpoint lives. It is also the path of the canonical

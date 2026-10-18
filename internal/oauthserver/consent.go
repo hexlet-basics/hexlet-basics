@@ -3,7 +3,6 @@ package oauthserver
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/url"
 
 	"hexletbasics/ent"
@@ -44,7 +43,7 @@ func (s *Server) Pending(ctx context.Context, requestID string) (Consent, error)
 	}
 	app, err := s.storage.db.OAuthClient.Query().Where(oauthclient.ClientID(req.ClientID)).Only(ctx)
 	if err != nil {
-		return Consent{}, fmt.Errorf("load client of authorization request: %w", err)
+		return Consent{}, errs.Wrapf(err, "load client of authorization request")
 	}
 	host := ""
 	if u, err := url.Parse(req.RedirectURI); err == nil {
@@ -76,7 +75,7 @@ func (s *Server) Approve(ctx context.Context, requestID string) (string, error) 
 		SetAuthTime(now).
 		Save(ctx)
 	if err != nil {
-		return "", fmt.Errorf("approve authorization request: %w", err)
+		return "", errs.Wrapf(err, "approve authorization request")
 	}
 	if n == 0 {
 		return "", ErrRequestNotFound
@@ -100,7 +99,7 @@ func (s *Server) Deny(ctx context.Context, requestID string) (string, error) {
 	}
 	target, err := url.Parse(req.RedirectURI)
 	if err != nil {
-		return "", fmt.Errorf("parse redirect uri of authorization request: %w", err)
+		return "", errs.Wrapf(err, "parse redirect uri of authorization request")
 	}
 	query := target.Query()
 	query.Set("error", "access_denied")
@@ -126,7 +125,7 @@ func (s *Server) openRequest(ctx context.Context, requestID string) (*ent.OAuthA
 		return nil, ErrRequestNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load authorization request: %w", err)
+		return nil, errs.Wrapf(err, "load authorization request")
 	}
 	return req, nil
 }
