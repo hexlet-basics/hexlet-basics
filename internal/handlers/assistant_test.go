@@ -196,7 +196,9 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
 	require.NoError(t, err)
-	assert.IsType(t, &api.CreateAssistantMessageTooManyRequests{}, res)
+	refused, ok := res.(*api.ProblemDetails)
+	require.True(t, ok, "got %T", res)
+	assert.Equal(t, int32(http.StatusTooManyRequests), refused.Status)
 	assert.Equal(t, http.StatusTooManyRequests, h.LastStatus())
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 
@@ -323,20 +325,18 @@ func TestAskAssistantRequiresASignedInLearner(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
-	res, err := h.Client.CreateAssistantMessage(t.Context(),
+	_, err := h.Client.CreateAssistantMessage(t.Context(),
 		&api.AssistantMessageInput{Message: "Help?"},
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
-	require.NoError(t, err)
-	assert.IsType(t, &api.CreateAssistantMessageUnauthorized{}, res)
+	requireProblem(t, err, http.StatusUnauthorized)
 }
 
 func listAssistantChat(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) *api.LessonAssistantChat {
 	t.Helper()
 	res, err := h.Client.ListAssistantMessages(t.Context(), api.ListAssistantMessagesParams{LessonId: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.LessonAssistantChat{}, res)
-	return res.(*api.LessonAssistantChat)
+	return res
 }
 
 func askAssistant(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson, question string) string {

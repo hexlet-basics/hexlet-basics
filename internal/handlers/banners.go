@@ -33,29 +33,29 @@ func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error)
 // the central ErrorHandler maps to 404. Banners carry no uniqueness constraint,
 // so there is no 409 path.
 
-func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (api.AdminListBannersRes, error) {
+func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (*api.BannerPage, error) {
 	return s.db.Banner.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToBanners)
 }
 
-func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (api.AdminGetBannerRes, error) {
+func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (*api.Banner, error) {
 	return s.db.Banner.AdminGet(ctx, params.ID, s.conv.ToBanner)
 }
 
 // AdminCreateBanner creates a banner as a draft: the state is not an input (it
 // moves only through the transition operations), so the column default applies.
-func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (api.AdminCreateBannerRes, error) {
+func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (*api.Banner, error) {
 	return s.db.Banner.AdminCreate(ctx, req, s.conv.ToBanner)
 }
 
-func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (api.AdminUpdateBannerRes, error) {
+func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (*api.Banner, error) {
 	return s.db.Banner.AdminUpdate(ctx, params.ID, req, s.conv.ToBanner)
 }
 
-func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) (api.AdminDeleteBannerRes, error) {
+func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) error {
 	if err := s.db.Banner.AdminDelete(ctx, params.ID); err != nil {
-		return nil, err
+		return err
 	}
-	return &api.AdminDeleteBannerNoContent{}, nil
+	return nil
 }
 
 // A state is not an update (ADR-0020, state transitions addendum): the
@@ -66,17 +66,17 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 // publishes it.
 
 // AdminPublishBanner makes a draft or archived banner eligible for the pages.
-func (s *Server) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (api.AdminPublishBannerRes, error) {
+func (s *Server) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (*api.Banner, error) {
 	return moveState(ctx, int(params.ID), s.bannerStates.Publish, s.getAdminBanner)
 }
 
 // AdminUnpublishBanner takes a published banner back to draft.
-func (s *Server) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (api.AdminUnpublishBannerRes, error) {
+func (s *Server) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (*api.Banner, error) {
 	return moveState(ctx, int(params.ID), s.bannerStates.Unpublish, s.getAdminBanner)
 }
 
 // AdminArchiveBanner archives a draft or published banner.
-func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (api.AdminArchiveBannerRes, error) {
+func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (*api.Banner, error) {
 	return moveState(ctx, int(params.ID), s.bannerStates.Archive, s.getAdminBanner)
 }
 

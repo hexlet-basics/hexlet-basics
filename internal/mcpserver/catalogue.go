@@ -8,6 +8,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/oauthserver"
 )
 
@@ -223,13 +224,9 @@ func (s *Server) getCategory(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
-	res, err := s.deps.Catalogue.GetPublicCourseCategory(ctx, api.GetPublicCourseCategoryParams{Slug: args.Slug})
+	view, err := s.deps.Catalogue.GetPublicCourseCategory(ctx, api.GetPublicCourseCategoryParams{Slug: args.Slug})
 	if err != nil {
-		return result{}, err
-	}
-	view, ok := res.(*api.CourseCategoryView)
-	if !ok {
-		return result{}, notFoundOf(res, "category")
+		return result{}, notFoundOf(err, "category")
 	}
 	return result{
 		text: fmt.Sprintf("Category %s with %d courses", args.Slug, len(view.LandingPages)),
@@ -242,13 +239,9 @@ func (s *Server) getCourse(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
-	res, err := s.deps.Catalogue.GetCourse(ctx, api.GetCourseParams{Slug: args.Slug})
+	view, err := s.deps.Catalogue.GetCourse(ctx, api.GetCourseParams{Slug: args.Slug})
 	if err != nil {
-		return result{}, err
-	}
-	view, ok := res.(*api.CourseView)
-	if !ok {
-		return result{}, notFoundOf(res, "course")
+		return result{}, notFoundOf(err, "course")
 	}
 	return result{
 		text: fmt.Sprintf("Course %s with %d lessons", args.Slug, len(view.Lessons)),
@@ -266,13 +259,9 @@ func (s *Server) getCourseLesson(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
-	res, err := s.deps.Catalogue.GetCourseLesson(ctx, api.GetCourseLessonParams{CourseSlug: args.CourseSlug, Slug: args.Slug})
+	view, err := s.deps.Catalogue.GetCourseLesson(ctx, api.GetCourseLessonParams{CourseSlug: args.CourseSlug, Slug: args.Slug})
 	if err != nil {
-		return result{}, err
-	}
-	view, ok := res.(*api.CourseLessonView)
-	if !ok {
-		return result{}, notFoundOf(res, "lesson")
+		return result{}, notFoundOf(err, "lesson")
 	}
 	return result{
 		text: fmt.Sprintf("Lesson %s of course %s", args.Slug, args.CourseSlug),
@@ -312,13 +301,9 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&args); err != nil {
 		return result{}, err
 	}
-	res, err := s.deps.Catalogue.GetBlogPost(ctx, api.GetBlogPostParams{Slug: args.Slug})
+	view, err := s.deps.Catalogue.GetBlogPost(ctx, api.GetBlogPostParams{Slug: args.Slug})
 	if err != nil {
-		return result{}, err
-	}
-	view, ok := res.(*api.BlogPostView)
-	if !ok {
-		return result{}, notFoundOf(res, "blog post")
+		return result{}, notFoundOf(err, "blog post")
 	}
 	return result{
 		text: fmt.Sprintf("Blog post %s", args.Slug),
@@ -326,11 +311,11 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 	}, nil
 }
 
-// notFoundOf is the answer for a handler result that is not the record: the
-// contract's not-found body, or something unexpected.
-func notFoundOf(res any, what string) error {
-	if _, ok := res.(*api.NotFoundError); ok {
+// notFoundOf is the answer for a failed read of one record: a missing one is
+// the tool's own not-found, anything else is the failure itself.
+func notFoundOf(err error, what string) error {
+	if errors.Is(domain.FromStore(err), domain.ErrNotFound) {
 		return errNotFound(what)
 	}
-	return errs.With("what", what, "result_type", fmt.Sprintf("%T", res)).Errorf("unexpected result")
+	return err
 }

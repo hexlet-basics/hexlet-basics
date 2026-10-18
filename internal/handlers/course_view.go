@@ -20,7 +20,7 @@ import (
 //
 // An anonymous request is not an error: it returns the same payload with no
 // enrollment, which is exactly what the page renders for a visitor today.
-func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api.GetCourseRes, error) {
+func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (*api.CourseView, error) {
 	page, err := s.coursePages.Course(ctx, currentLearner(ctx), s.i18n.Locale(ctx), params.Slug)
 	if err != nil {
 		return nil, err

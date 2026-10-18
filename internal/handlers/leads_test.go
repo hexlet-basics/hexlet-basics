@@ -89,8 +89,7 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	res, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
-	created, ok := res.(*api.Lead)
-	require.True(t, ok, "expected the created lead, got %T", res)
+	created := res
 
 	// The contact method names the column the value lands in; the others stay
 	// empty, as legacy's write_attribute left them.
@@ -155,8 +154,7 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 
 	res, err := h.Client.CreateLead(t.Context(), input)
 	require.NoError(t, err)
-	created, ok := res.(*api.Lead)
-	require.True(t, ok, "expected the created lead, got %T", res)
+	created := res
 
 	stored := h.DB.Lead.Query().Where(lead.ID(int(created.ID))).OnlyX(t.Context())
 	assert.Equal(t, "+79990000003", lo.FromPtr(stored.Phone))
@@ -174,10 +172,9 @@ func TestCreateLeadRequiresASignedInUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	totalLeads := h.DB.Lead.Query().CountX(t.Context())
 
-	res, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
-	require.NoError(t, err)
+	_, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.IsType(t, &api.ProblemDetails{}, res)
 	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
 	assert.Equal(t, totalLeads, h.DB.Lead.Query().CountX(t.Context()))
 }

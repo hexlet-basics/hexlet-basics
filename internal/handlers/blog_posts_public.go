@@ -34,7 +34,7 @@ func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsPara
 
 // GetBlogPost returns the post page: the post, two other posts to read next and
 // the courses it promotes. Keyed by slug; a miss is a 404.
-func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error) {
+func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (*api.BlogPostView, error) {
 	locale := s.i18n.Locale(ctx)
 	row, err := s.blogPublic.BySlug(ctx, locale, params.Slug)
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 // GetNextBlogPost is legacy `Api::BlogPostsController#next`: the next OLDER
 // published post in the request locale (id strictly below the given one). The
 // oldest post has no next one — 404, which ends the page's infinite scroll.
-func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPostParams) (api.GetNextBlogPostRes, error) {
+func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPostParams) (*api.BlogPost, error) {
 	row, err := s.blogPublic.NextOlder(ctx, s.i18n.Locale(ctx), int(params.ID))
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 // session, so the rule is one like per user and post, kept by the blog module:
 // a repeat like is ignored rather than failing, so the answer is the post,
 // unchanged. A missing post is not found.
-func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (api.LikeBlogPostRes, error) {
+func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (*api.BlogPost, error) {
 	liker := MustAuthenticatedUser(ctx)
 
 	if err := s.blogLikes.Like(ctx, int(params.ID), liker.ID); err != nil {

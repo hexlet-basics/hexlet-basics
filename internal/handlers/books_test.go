@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/bookrequest"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/book"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
@@ -37,10 +36,9 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.CreateBookRequest(t.Context())
+	err := h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.IsType(t, &api.CreateBookRequestNoContent{}, res)
 
 	stored := h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).OnlyX(t.Context())
 	assert.Equal(t, book.StateRequested, lo.FromPtr(stored.State))
@@ -57,9 +55,9 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	_, err := h.Client.CreateBookRequest(t.Context())
+	err := h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
-	_, err = h.Client.CreateBookRequest(t.Context())
+	err = h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
@@ -70,23 +68,21 @@ func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
 func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
-	res, err := h.Client.CreateBookRequest(t.Context())
-	require.NoError(t, err)
+	err := h.Client.CreateBookRequest(t.Context())
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.IsType(t, &api.ProblemDetails{}, res)
 	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
 }
 
 func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	_, err := h.Client.CreateBookRequest(t.Context())
+	err := h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
 
 	res, err := h.Client.DownloadBook(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusFound, h.LastStatus())
-	found, ok := res.(*api.DownloadBookFound)
-	require.True(t, ok, "expected a redirect, got %T", res)
+	found := res
 	// The harness bucket cannot presign, so the PDF is served by the storage
 	// read route; on S3 this is a presigned bucket URL.
 	assert.Equal(t, "http://localhost:3001/api/storage/book.pdf", found.Location)
@@ -101,8 +97,7 @@ func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {
 	res, err := h.Client.DownloadBook(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusFound, h.LastStatus())
-	found, ok := res.(*api.DownloadBookFound)
-	require.True(t, ok, "expected a redirect, got %T", res)
+	found := res
 	assert.Equal(t, "https://code-basics.com/ru/book", found.Location)
 
 	assert.False(t, h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).ExistX(t.Context()))
@@ -111,8 +106,7 @@ func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {
 func TestDownloadBookRequiresASignedInUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
-	res, err := h.Client.DownloadBook(t.Context())
-	require.NoError(t, err)
+	_, err := h.Client.DownloadBook(t.Context())
+	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.IsType(t, &api.ProblemDetails{}, res)
 }

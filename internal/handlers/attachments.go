@@ -20,16 +20,16 @@ import (
 func (s *Server) AdminUploadAttachment(
 	ctx context.Context,
 	req *api.AttachmentUploadFormMultipart,
-) (api.AdminUploadAttachmentRes, error) {
+) (*api.Attachment, error) {
 	att, err := s.assets.Put(ctx, assetstore.Upload{
 		Filename: req.File.Name,
 		Body:     req.File.File,
 	})
 	switch {
 	case errors.Is(err, assetstore.ErrUnsupportedMediaType):
-		return validationError("file", s.i18n.Text(ctx, localization.UnsupportedFileType)), nil
+		return nil, invalid("file", localization.UnsupportedFileType)
 	case errors.Is(err, assetstore.ErrTooLarge):
-		return validationError("file", s.i18n.Text(ctx, localization.FileTooLarge)), nil
+		return nil, invalid("file", localization.FileTooLarge)
 	case err != nil:
 		return nil, fmt.Errorf("store uploaded attachment: %w", err)
 	}

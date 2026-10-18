@@ -23,8 +23,7 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseLessonView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	lesson := view.Lesson
@@ -70,7 +69,7 @@ func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 		Slug:       firstLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	require.False(t, view.LandingPage.Null)
 	landing := view.LandingPage.Value
@@ -89,7 +88,7 @@ func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	require.False(t, view.LandingPage.Null)
 	assert.Equal(t, jsEnglishLandingSlug, view.LandingPage.Value.Slug)
@@ -105,7 +104,7 @@ func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	require.Len(t, view.Lessons, 3)
 	assert.Equal(t,
@@ -133,8 +132,7 @@ func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseLessonView)
-	require.True(t, ok, "got %T", res)
+	view := res
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.True(t, view.LandingPage.Null)
 }
@@ -166,7 +164,7 @@ func TestGetCourseLessonReturnsProgress(t *testing.T) {
 		Slug:       secondLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	require.False(t, view.Progress.Null)
 	assert.Equal(t, secondLessonSlug, view.Progress.Value.NextLesson.Value.Slug)
@@ -182,7 +180,7 @@ func TestGetCourseLessonNamesTheLessonsOnEitherSide(t *testing.T) {
 	adjacent := func(slug string) api.AdjacentLessons {
 		res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{CourseSlug: jsCourseSlug, Slug: slug})
 		require.NoError(t, err)
-		return res.(*api.CourseLessonView).Adjacent
+		return res.Adjacent
 	}
 
 	first := adjacent(firstLessonSlug)
@@ -210,7 +208,7 @@ func TestGetCourseLessonKeepsTheNextLessonApartFromAdjacentLessons(t *testing.T)
 		Slug:       thirdLessonSlug,
 	})
 	require.NoError(t, err)
-	view := res.(*api.CourseLessonView)
+	view := res
 
 	assert.True(t, view.Adjacent.Next.Null)
 	assert.Equal(t, secondLessonSlug, view.Progress.Value.NextLesson.Value.Slug)
@@ -226,8 +224,7 @@ func TestGetCourseLessonServesAVisitorAnyLesson(t *testing.T) {
 		Slug:       thirdLessonSlug,
 	})
 	require.NoError(t, err)
-	view, ok := res.(*api.CourseLessonView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	assert.Equal(t, thirdLessonSlug, view.Lesson.Slug)
 	require.False(t, view.Progress.Null)
@@ -240,22 +237,20 @@ func TestGetCourseLessonIsNotFoundOutsideTheCurrentBuild(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 
-	res, err := h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
+	_, err := h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       "no-such-lesson",
 	})
-	require.NoError(t, err)
-	require.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
 	// A lesson that exists but is not part of the current version: the fixtures
 	// carry one that only the retired version has.
-	res, err = h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
+	_, err = h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       "removed-in-a-later-build",
 	})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 }
 
 // A lesson with no translation for the request locale is not a lesson this
@@ -265,10 +260,9 @@ func TestGetCourseLessonIsNotFoundInAnUntranslatedLocale(t *testing.T) {
 
 	testsupport.SpeakTo(h, "es")
 
-	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+	_, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
 		Slug:       secondLessonSlug,
 	})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 }

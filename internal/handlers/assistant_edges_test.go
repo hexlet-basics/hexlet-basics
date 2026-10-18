@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
@@ -16,10 +15,9 @@ import (
 func TestListAssistantMessagesIsNotFoundForAnUnknownLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	res, err := h.Client.ListAssistantMessages(t.Context(), api.ListAssistantMessagesParams{LessonId: 999999})
+	_, err := h.Client.ListAssistantMessages(t.Context(), api.ListAssistantMessagesParams{LessonId: 999999})
 
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
 
@@ -31,13 +29,12 @@ func TestAskAssistantRefusesALessonNotWrittenInTheLocale(t *testing.T) {
 	testsupport.SpeakTo(h, "es")
 	messages := h.DB.AiMessage.Query().CountX(t.Context())
 
-	res, err := h.Client.CreateAssistantMessage(t.Context(),
+	_, err := h.Client.CreateAssistantMessage(t.Context(),
 		&api.AssistantMessageInput{Message: "¿Ayuda?"},
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
 
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(t.Context()), "nothing is stored")
 }
@@ -48,12 +45,11 @@ func TestAskAssistantRefusesACourseWithNothingBuilt(t *testing.T) {
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.DB.Course.Update().Where(course.SlugEQ(jsCourseSlug)).ClearCurrentVersionID().ExecX(t.Context())
 
-	res, err := h.Client.CreateAssistantMessage(t.Context(),
+	_, err := h.Client.CreateAssistantMessage(t.Context(),
 		&api.AssistantMessageInput{Message: "Help?"},
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
 
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }

@@ -109,13 +109,13 @@ interface Session {
   /** Log in with email + password; starts the session. */
   @post
   @operationId("createSession")
-  create(@body body: SessionInput): SessionResponse | ValidationError | ApiError;
+  create(@body body: SessionInput): SessionResponse | ApiError;
 
   /** Log out; ends the session. */
   @delete
   @useAuth(UserSession)
   @operationId("deleteSession")
-  delete(): SessionDeleted | UnauthorizedError | ApiError;
+  delete(): SessionDeleted | ApiError;
 }
 
 @route("/me")
@@ -134,7 +134,7 @@ interface My {
   /** The signed-in user's course dashboard. */
   @get
   @operationId("getMyDashboard")
-  get(): MyDashboard | UnauthorizedError | ApiError;
+  get(): MyDashboard | ApiError;
 }
 
 // ---- Registration & recovery ---------------------------------------------
@@ -145,7 +145,7 @@ interface Registration {
   /** Sign up; starts the session on success. */
   @post
   @operationId("createUser")
-  create(@body body: SignUpInput): UserCreated | ValidationError | ApiError;
+  create(@body body: SignUpInput): UserCreated | ApiError;
 }
 
 @route("/magic_links")
@@ -154,13 +154,13 @@ interface MagicLinks {
   /** Email a one-time sign-in link. */
   @post
   @operationId("createMagicLink")
-  create(@body body: EmailInput): NoContent | ValidationError | ApiError;
+  create(@body body: EmailInput): NoContent | ApiError;
 
   /** Consume a magic link token; starts the session. */
   @get
   @route("/{token}")
   @operationId("consumeMagicLink")
-  consume(@path token: string): SessionResponse | NotFoundError | ApiError;
+  consume(@path token: string): SessionResponse | ApiError;
 }
 
 @route("/remind_password")
@@ -169,7 +169,7 @@ interface RemindPassword {
   /** Email a password-reset link. */
   @post
   @operationId("createPasswordReminder")
-  create(@body body: EmailInput): NoContent | ValidationError | ApiError;
+  create(@body body: EmailInput): NoContent | ApiError;
 }
 
 @route("/password")
@@ -179,7 +179,7 @@ interface PasswordReset {
   @get
   @route("/{token}/edit")
   @operationId("checkPasswordResetToken")
-  check(@path token: string): NoContent | NotFoundError | ApiError;
+  check(@path token: string): NoContent | ApiError;
 
   /** Set a new password using a reset token; signs the user in. */
   @patch
@@ -188,7 +188,7 @@ interface PasswordReset {
   update(
     @path token: string,
     @body body: ResetPasswordInput,
-  ): SessionResponse | NotFoundError | ValidationError | ApiError;
+  ): SessionResponse | ApiError;
 }
 
 // ---- Account profile ------------------------------------------------------
@@ -201,17 +201,17 @@ interface AccountProfile {
   @get
   @route("/edit")
   @operationId("getProfile")
-  get(): User | UnauthorizedError | ApiError;
+  get(): User | ApiError;
 
   /** Update the current user's profile. */
   @patch
   @useAuth(UserSession)
   @operationId("updateProfile")
-  update(@body body: ProfileInput): User | ValidationError | UnauthorizedError | ApiError;
+  update(@body body: ProfileInput): User | ApiError;
 
   /** Delete the current user's account. */
   @delete
   @useAuth(UserSession)
   @operationId("deleteAccount")
-  delete(): SessionDeleted | UnauthorizedError | ApiError;
+  delete(): SessionDeleted | ApiError;
 }

@@ -70,8 +70,7 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
-	view, ok := res.(*api.BlogPostView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	assert.Equal(t, "hello-world", view.Post.Slug.Value)
 	assert.Equal(t, "<p>Hello <strong>world</strong> from the blog</p>", view.Post.RichBodyHtml)
@@ -100,8 +99,7 @@ func TestGetBlogPostWithoutPromotedCourses(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
-	view, ok := res.(*api.BlogPostView)
-	require.True(t, ok, "got %T", res)
+	view := res
 
 	assert.Equal(t, "hello-world", view.Post.Slug.Value)
 	assert.Empty(t, view.RelatedLandingPages)
@@ -124,7 +122,7 @@ func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
-	view := res.(*api.BlogPostView)
+	view := res
 
 	related := make([]string, len(view.RelatedLandingPages))
 	for i, lp := range view.RelatedLandingPages {
@@ -166,8 +164,7 @@ func TestGetNextBlogPostWalksToOlderPosts(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, h.LastStatus(), "the chain ends in a 404")
 			break
 		}
-		post, ok := res.(*api.BlogPost)
-		require.True(t, ok, "got %T", res)
+		post := res
 		walked = append(walked, post.Slug.Value)
 		id = post.ID
 	}
@@ -184,15 +181,13 @@ func TestLikeBlogPostCountsOncePerUser(t *testing.T) {
 
 	first, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
 	require.NoError(t, err)
-	liked, ok := first.(*api.BlogPost)
-	require.True(t, ok, "got %T", first)
+	liked := first
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.Equal(t, int32(1), liked.LikesCount)
 
 	second, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
 	require.NoError(t, err)
-	again, ok := second.(*api.BlogPost)
-	require.True(t, ok, "got %T", second)
+	again := second
 	assert.Equal(t, int32(1), again.LikesCount, "a repeat like changes nothing")
 
 	userID, _ := testsupport.HarnessUser(h)

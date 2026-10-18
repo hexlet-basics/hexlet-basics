@@ -70,11 +70,11 @@ type Verifier interface {
 type Catalogue interface {
 	ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error)
 	ListPublicCourseCategories(ctx context.Context) ([]api.CourseCategory, error)
-	GetPublicCourseCategory(ctx context.Context, params api.GetPublicCourseCategoryParams) (api.GetPublicCourseCategoryRes, error)
-	GetCourse(ctx context.Context, params api.GetCourseParams) (api.GetCourseRes, error)
-	GetCourseLesson(ctx context.Context, params api.GetCourseLessonParams) (api.GetCourseLessonRes, error)
+	GetPublicCourseCategory(ctx context.Context, params api.GetPublicCourseCategoryParams) (*api.CourseCategoryView, error)
+	GetCourse(ctx context.Context, params api.GetCourseParams) (*api.CourseView, error)
+	GetCourseLesson(ctx context.Context, params api.GetCourseLessonParams) (*api.CourseLessonView, error)
 	ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error)
-	GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error)
+	GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (*api.BlogPostView, error)
 }
 
 // Token info keys the verifier fills and the admin tools read into an Audit

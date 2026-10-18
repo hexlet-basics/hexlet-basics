@@ -766,13 +766,6 @@ export const zMyDashboard = z.object({
 });
 
 /**
- * A resource was not found.
- */
-export const zNotFoundError = z.object({
-  message: z.string()
-});
-
-/**
  * What the consent screen shows for one authorization request.
  */
 export const zOAuthConsent = z.object({
@@ -823,7 +816,8 @@ export const zProblemDetails = z.object({
   title: z.string(),
   status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   detail: z.string().optional(),
-  instance: z.string().optional()
+  instance: z.string().optional(),
+  errors: z.record(z.string(), z.array(z.string())).optional()
 });
 
 /**
@@ -1254,15 +1248,6 @@ export const zUserInput = z.object({
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
   admin: z.boolean().nullable()
-});
-
-/**
- * Field-level validation errors, keyed by field name (each value is the list
- * of messages for that field). Returned when a write fails validation —
- * including constraints the schema cannot express, like uniqueness.
- */
-export const zValidationError = z.object({
-  errors: z.record(z.string(), z.array(z.string()))
 });
 
 export const zAuditRecordQueryActorUserId = z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' });

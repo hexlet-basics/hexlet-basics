@@ -15,13 +15,13 @@ import (
 func (s *Server) ListAssistantMessages(
 	ctx context.Context,
 	params api.ListAssistantMessagesParams,
-) (api.ListAssistantMessagesRes, error) {
+) (*api.LessonAssistantChat, error) {
 	u := MustAuthenticatedUser(ctx)
 
 	history, err := s.assistant.History(ctx, u.ID, int(params.LessonId))
 	switch {
 	case errors.Is(err, domain.ErrNotFound):
-		return s.lessonNotFound(ctx), nil
+		return nil, errLessonNotFound
 	case err != nil:
 		return nil, err
 	}
@@ -53,10 +53,10 @@ func (s *Server) CreateAssistantMessage(
 	switch {
 	case errors.Is(err, assistant.ErrQuotaExceeded):
 		// A declared outcome, not a failure: it never reaches the reporting path.
-		problem := api.CreateAssistantMessageTooManyRequests(s.errors.problem(ctx, http.StatusTooManyRequests, nil))
+		problem := s.errors.problem(ctx, http.StatusTooManyRequests, nil)
 		return &problem, nil
 	case errors.Is(err, domain.ErrNotFound):
-		return s.lessonNotFound(ctx), nil
+		return nil, errLessonNotFound
 	case err != nil:
 		return nil, err
 	}

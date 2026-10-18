@@ -154,14 +154,14 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"`+email+`","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
-	var wrongPassword api.ValidationError
+	var wrongPassword api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&wrongPassword))
 
 	// Unknown users produce the same response and cannot be enumerated.
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"missing-auth-flow@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
-	var missingUser api.ValidationError
+	var missingUser api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&missingUser))
 	assert.Equal(t, wrongPassword, missingUser)
 
@@ -170,7 +170,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"blank-user@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
-	var passwordlessUser api.ValidationError
+	var passwordlessUser api.ProblemDetails
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&passwordlessUser))
 	assert.Equal(t, wrongPassword, passwordlessUser)
 }
@@ -289,11 +289,11 @@ func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-	var body api.ValidationError
+	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.Equal(t,
 		[]string{"Неверный адрес электронной почты или пароль"},
-		body.Errors["password"],
+		body.Errors.Value["password"],
 	)
 }
 
