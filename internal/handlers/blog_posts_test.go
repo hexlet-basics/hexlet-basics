@@ -61,7 +61,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	empty, ok := bySlug["second-post"]
 	require.True(t, ok, "post second-post not found")
 	assert.Equal(t, api.BlogPostStateDraft, empty.State.Value)
-	assert.Equal(t, "", empty.RichBodyHtml)
+	assert.Empty(t, empty.RichBodyHtml)
 	assert.Equal(t, int32(0), empty.ReadingTime)
 	assert.Equal(t, int32(0), empty.LikesCount)
 	assert.True(t, empty.CoverUrl.Null)

@@ -44,7 +44,7 @@ func (e *Editor) Archive(ctx context.Context, id int) error {
 // move checks the move against the table and writes the new state through
 // UpdateOne, so the audit hook records the old and the new state. A review with
 // no state (nullable in the legacy schema) counts as a draft. A missing id is
-// domain.ErrNotFound and an illegal move a *transition.Illegal, both before any
+// domain.ErrNotFound and an illegal move a *transition.IllegalError, both before any
 // write.
 func (e *Editor) move(ctx context.Context, id int, move transition.Transition[transition.PublicationState]) error {
 	row, err := e.db.Review.Get(ctx, id)

@@ -254,7 +254,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 	err := loader.Run(ctx, version.ID)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "unsupported asset media type")
+	require.ErrorContains(t, err, "unsupported asset media type")
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -283,7 +283,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 	err = loader.Run(ctx, version.ID)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "open image")
+	require.ErrorContains(t, err, "open image")
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -334,7 +334,7 @@ func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
 	err = newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "open image")
+	require.ErrorContains(t, err, "open image")
 }
 
 func derefStr(s *string) string {

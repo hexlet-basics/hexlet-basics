@@ -34,7 +34,7 @@ func (e *Editor) Archive(ctx context.Context, id int) error {
 // UpdateOne, so the audit hook records the old and the new state. A row with no
 // state (nullable in the legacy schema) counts as a draft, which is what the
 // public queries treat it as: not published. A missing id is domain.ErrNotFound
-// and an illegal move a *transition.Illegal, both before any write.
+// and an illegal move a *transition.IllegalError, both before any write.
 func (e *Editor) move(ctx context.Context, id int, move transition.Transition[transition.PublicationState]) error {
 	post, err := e.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx)
 	if err != nil {

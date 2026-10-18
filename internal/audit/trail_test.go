@@ -43,13 +43,13 @@ func TestTheWindowIsRefusedWhenReversedOrTooWide(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 
 	_, _, err := audit.Filter{From: new(now), To: new(now.Add(-time.Hour))}.Window(now)
-	assert.ErrorIs(t, err, audit.ErrWindowReversed)
+	require.ErrorIs(t, err, audit.ErrWindowReversed)
 
 	_, _, err = audit.Filter{From: new(now), To: new(now)}.Window(now)
-	assert.ErrorIs(t, err, audit.ErrWindowReversed, "an empty window reads nothing")
+	require.ErrorIs(t, err, audit.ErrWindowReversed, "an empty window reads nothing")
 
 	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow - time.Second)), To: new(now)}.Window(now)
-	assert.ErrorIs(t, err, audit.ErrWindowTooWide)
+	require.ErrorIs(t, err, audit.ErrWindowTooWide)
 
 	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow)), To: new(now)}.Window(now)
 	assert.NoError(t, err, "exactly the maximum is allowed")
@@ -58,7 +58,7 @@ func TestTheWindowIsRefusedWhenReversedOrTooWide(t *testing.T) {
 func TestAnEntityIdNeedsItsType(t *testing.T) {
 	_, err := audit.Filter{EntityID: new("5")}.Query(nil, time.Now())
 
-	assert.ErrorIs(t, err, audit.ErrEntityIDWithoutType)
+	require.ErrorIs(t, err, audit.ErrEntityIDWithoutType)
 }
 
 // recorder is the sql.Tx the ent client reads through, remembering every query

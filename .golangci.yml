@@ -8,6 +8,7 @@ linters:
     - contextcheck
     - copyloopvar
     - durationcheck
+    - errname
     - errorlint
     - exptostd
     - fatcontext
@@ -23,6 +24,7 @@ linters:
     - rowserrcheck
     - sloglint
     - sqlclosecheck
+    - testifylint
     - thelper
     - unconvert
     - usestdlibvars

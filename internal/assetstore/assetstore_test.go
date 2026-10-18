@@ -122,7 +122,7 @@ func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 	})
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "source read failed")
+	require.ErrorContains(t, err, "source read failed")
 	assertBucketEmpty(t, bucket)
 }
 
@@ -141,7 +141,7 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 	})
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "attachment insert failed")
+	require.ErrorContains(t, err, "attachment insert failed")
 	assertBucketEmpty(t, bucket)
 }
 
@@ -236,7 +236,7 @@ func TestPutReportsAnUnreadableUpload(t *testing.T) {
 	})
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "inspect asset")
+	require.ErrorContains(t, err, "inspect asset")
 	assertBucketEmpty(t, bucket)
 }
 
@@ -251,7 +251,7 @@ func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 		Body:     bytes.NewReader(data),
 	})
 	require.Error(t, err)
-	assert.ErrorContains(t, err, "open blob writer")
+	require.ErrorContains(t, err, "open blob writer")
 	assert.Zero(t, db.Attachment.Query().CountX(context.Background()))
 
 	_, err = store.Open(context.Background(), "x.png")

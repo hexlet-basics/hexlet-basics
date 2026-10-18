@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/permissioncatalog"
 )
@@ -30,7 +31,7 @@ paths:
       x-requires-capability: mcp.manage`,
 	} {
 		_, err := permissioncatalog.Parse([]byte(doc))
-		assert.Error(t, err, name)
+		require.Error(t, err, name)
 	}
 
 	_, err := permissioncatalog.Parse([]byte(`

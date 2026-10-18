@@ -182,7 +182,7 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 		require.Error(t, err)
 		// Whichever call the budget runs out on, the run ends rather than
 		// holding its concurrency slot until the process dies.
-		assert.ErrorIs(t, err, context.DeadlineExceeded)
+		require.ErrorIs(t, err, context.DeadlineExceeded)
 	case <-time.After(20 * time.Second):
 		t.Fatal("the read never gave up: a container that never exits wedges the runner")
 	}
@@ -205,7 +205,7 @@ func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
 	assert.Equal(t, pinned, resolved)
 
 	_, err = runner.docker.ImageInspect(t.Context(), pinned)
-	assert.NoError(t, err, "the pin exists on the daemon now")
+	require.NoError(t, err, "the pin exists on the daemon now")
 
 	// Again, from the pin this time: the image is already frozen, so nothing is
 	// pulled and the answer is the same.

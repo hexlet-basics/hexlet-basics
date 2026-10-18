@@ -27,10 +27,10 @@ type Transition[S ~string] struct {
 	From []S
 }
 
-// Illegal is the typed error of a refused move: the state the resource is in and
+// IllegalError is the typed error of a refused move: the state the resource is in and
 // the one the operation would have set. It is a domain.ErrConflict, and the
 // HTTP adapter words it from the states' names in their vocabulary.
-type Illegal struct {
+type IllegalError struct {
 	From, To string
 	// Vocabulary names the set of states From and To belong to, for a state that
 	// declares one (see Vocabulary), so an adapter picks the right display names.
@@ -39,18 +39,18 @@ type Illegal struct {
 
 // Unwrap makes a refused move a conflict: the resource's state forbids it,
 // whoever asks.
-func (e *Illegal) Unwrap() error { return domain.ErrConflict }
+func (e *IllegalError) Unwrap() error { return domain.ErrConflict }
 
 // Vocabulary is how a state type names its set of states.
 type Vocabulary interface{ Vocabulary() string }
 
-func (e *Illegal) Error() string {
+func (e *IllegalError) Error() string {
 	return fmt.Sprintf("illegal state transition from %q to %q", e.From, e.To)
 }
 
 // IsIllegal reports whether err is a refused move, and returns it.
-func IsIllegal(err error) (*Illegal, bool) {
-	if illegal, ok := errors.AsType[*Illegal](err); ok {
+func IsIllegal(err error) (*IllegalError, bool) {
+	if illegal, ok := errors.AsType[*IllegalError](err); ok {
 		return illegal, true
 	}
 	return nil, false
@@ -61,7 +61,7 @@ func (t Transition[S]) Check(current S) error {
 	if slices.Contains(t.From, current) {
 		return nil
 	}
-	illegal := &Illegal{From: string(current), To: string(t.To)}
+	illegal := &IllegalError{From: string(current), To: string(t.To)}
 	if named, ok := any(current).(Vocabulary); ok {
 		illegal.Vocabulary = named.Vocabulary()
 	}

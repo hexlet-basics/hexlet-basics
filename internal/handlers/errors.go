@@ -155,7 +155,7 @@ func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) ap
 // names and what is wrong with it, in the caller's language. An input the
 // domain marked invalid without a message of its own gets the status text.
 func (h *APIErrorHandler) fieldErrors(ctx context.Context, status int, err error) api.ProblemDetailsErrors {
-	if input, ok := errors.AsType[*invalidInput](err); ok {
+	if input, ok := errors.AsType[*invalidInputError](err); ok {
 		if input.text != "" {
 			return api.ProblemDetailsErrors{input.field: {input.text}}
 		}
@@ -167,9 +167,9 @@ func (h *APIErrorHandler) fieldErrors(ctx context.Context, status int, err error
 	return nil
 }
 
-// invalidInput is a 422 whose field and localized message the handler knows. It
+// invalidInputError is a 422 whose field and localized message the handler knows. It
 // is a domain.ErrInvalid, so the one errorStatus table answers it.
-type invalidInput struct {
+type invalidInputError struct {
 	field   string
 	message localization.Message
 	// text is the message when it is not a localized one: names of the caller's
@@ -177,30 +177,39 @@ type invalidInput struct {
 	text string
 }
 
-func (e *invalidInput) Error() string { return domain.ErrInvalid.Error() + ": field " + e.field }
+func (e *invalidInputError) Error() string { return domain.ErrInvalid.Error() + ": field " + e.field }
 
-func (e *invalidInput) Unwrap() error { return domain.ErrInvalid }
+func (e *invalidInputError) Unwrap() error { return domain.ErrInvalid }
 
 // invalid reports input the caller can fix: field names the request property
 // and message says what is wrong with it.
 func invalid(field string, message localization.Message) error {
-	return &invalidInput{field: field, message: message}
+	return &invalidInputError{field: field, message: message}
 }
 
 // invalidText is invalid for a message that echoes the caller's own input and
 // has no translation.
 func invalidText(field, text string) error {
-	return &invalidInput{field: field, text: text}
+	return &invalidInputError{field: field, text: text}
 }
+
+// notFoundError is a domain.ErrNotFound that says what was not found, so details can
+// give it an explanation of its own.
+type notFoundError string
+
+func (n notFoundError) Error() string { return string(n) + ": " + domain.ErrNotFound.Error() }
+
+// Is makes every notFoundError match domain.ErrNotFound.
+func (notFoundError) Is(target error) bool { return target == domain.ErrNotFound }
 
 // Not-founds that answer with their own explanation instead of the bare status
 // text. Each is a domain.ErrNotFound, listed in details.
 var (
-	errLessonNotFound       = fmt.Errorf("%w: lesson", domain.ErrNotFound)
-	errCourseNotFound       = fmt.Errorf("%w: course", domain.ErrNotFound)
-	errEmailLinkInvalid     = fmt.Errorf("%w: email link", domain.ErrNotFound)
-	errOAuthRequestNotFound = fmt.Errorf("%w: oauth request", domain.ErrNotFound)
-	errConnectedAppNotFound = fmt.Errorf("%w: connected app", domain.ErrNotFound)
+	errLessonNotFound       error = notFoundError("lesson")
+	errCourseNotFound       error = notFoundError("course")
+	errEmailLinkInvalid     error = notFoundError("email link")
+	errOAuthRequestNotFound error = notFoundError("oauth request")
+	errConnectedAppNotFound error = notFoundError("connected app")
 )
 
 // details is the table from an error to the localized explanation the client

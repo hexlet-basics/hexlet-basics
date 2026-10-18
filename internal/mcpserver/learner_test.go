@@ -78,7 +78,7 @@ func TestDashboardToolAnswersWithTheTokensUsersEnrollments(t *testing.T) {
 	assert.Len(t, aliceBoard["started"], 1)
 	assert.Empty(t, aliceBoard["finished"])
 	progress := aliceBoard["started"].([]any)[0].(map[string]any)["progress"].(map[string]any)
-	assert.Equal(t, float64(33), progress["completion"])
+	assert.InDelta(t, float64(33), progress["completion"], 0.001)
 	assert.Empty(t, bobBoard["started"])
 	assert.Len(t, bobBoard["finished"], 1)
 	assert.Empty(t, carolBoard["started"])
@@ -94,7 +94,7 @@ func TestCourseProgressToolTellsFinishedStartedAndNotStarted(t *testing.T) {
 	c := structured(t, callTool(t, learnerSession(t, o, carol), "getMyCourseProgress", args))
 
 	assert.Equal(t, "started", a["state"])
-	assert.Equal(t, float64(33), a["completion"])
+	assert.InDelta(t, float64(33), a["completion"], 0.001)
 	assert.Equal(t, "variables", a["nextLesson"])
 	assert.Equal(t, map[string]string{"hello-world": "finished", "variables": "not_started", "strings": "not_started"}, lessonStates(t, a))
 
@@ -104,7 +104,7 @@ func TestCourseProgressToolTellsFinishedStartedAndNotStarted(t *testing.T) {
 	assert.Equal(t, "hello-world", b["nextLesson"])
 
 	assert.Equal(t, "not_started", c["state"])
-	assert.Equal(t, float64(0), c["completion"])
+	assert.InDelta(t, float64(0), c["completion"], 0.001)
 }
 
 func TestLessonProgressToolNeverShowsAnotherUsersLesson(t *testing.T) {

@@ -282,7 +282,7 @@ func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	raw, err := json.Marshal(content)
 	require.NoError(t, err)
 	assert.LessOrEqual(t, len(raw)+len(textOf(t, result)), limit)
-	assert.NoError(t, schemas["adminListAuditRecords"].Validate(content))
+	require.NoError(t, schemas["adminListAuditRecords"].Validate(content))
 	hint, ok := content["truncation"].(map[string]any)
 	require.True(t, ok, "the cut is announced")
 	assert.Equal(t, true, hint["truncated"])
