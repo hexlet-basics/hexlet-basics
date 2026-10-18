@@ -35,9 +35,12 @@ was not used.
   compose when wrapped (`load lesson: ...`).
 - Look into an error chain with `errors.AsType[T](err)` (Go 1.26), not
   `errors.As` with a declared target variable.
-- Domain errors (`ErrNotFound`, `ErrLastAdmin`) stay plain `errors.New` values
-  checked with `errors.Is`, and `errorStatus` in `handlers/errors.go` keeps
-  mapping them.
+- Domain errors (`domain.ErrNotFound`, `ErrConflict`, `ErrInvalid`,
+  `ErrForbidden`, and the module's own such as `ErrLastAdmin`, which wrap one of
+  them) stay plain values checked with `errors.Is`. `domain.FromStore` is the
+  only translator of ent's errors, and `errorStatus` in `handlers/errors.go` is
+  the one table from a domain error to a status; handlers never read ent errors
+  (`forbidigo` rejects `ent.Is*` there).
 - `forbidigo` rejects `fmt.Errorf` in production code and allows it in tests, the
   way `.Create()` is rejected in tests: the rule survives people and agents who
   do not remember it. The rule is active now with an exclusion list in

@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
 )
@@ -94,7 +95,7 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.Crea
 		if errors.Is(err, accounts.ErrPasswordProcessing) {
 			return validationError("password", s.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 		}
-		if ent.IsConstraintError(err) {
+		if field, ok := domain.FieldOf(err); ok && field == "email" {
 			return validationError("email", s.i18n.Text(ctx, localization.EmailTaken)), nil
 		}
 		return nil, err

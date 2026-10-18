@@ -11,7 +11,6 @@ import (
 	"github.com/ogen-go/ogen/ogenerrors"
 	"go.opentelemetry.io/otel/trace"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
@@ -32,29 +31,6 @@ import (
 type APIErrorHandler struct {
 	translator *localization.Translator
 	logger     *slog.Logger
-}
-
-// statusError assigns an expected HTTP status without teaching the central
-// writer about an adapter's dependency-specific sentinel errors.
-type statusError struct {
-	status int
-	err    error
-}
-
-func (e *statusError) Error() string {
-	return e.err.Error()
-}
-
-func (e *statusError) Unwrap() error {
-	return e.err
-}
-
-func (e *statusError) HTTPStatus() int {
-	return e.status
-}
-
-func withHTTPStatus(status int, err error) error {
-	return &statusError{status: status, err: err}
 }
 
 // NewAPIErrorHandler builds the central error adapter.
@@ -107,23 +83,38 @@ func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *h
 // log and Sentry (report only looks at 5xx).
 const statusClientClosedRequest = 499
 
+// domainStatus is the one table from a domain error to an HTTP status. An
+// adapter-specific failure joins it by wrapping one of these (a refusal wraps
+// ErrForbidden, the asset store's missing key wraps ErrNotFound) instead of
+// carrying a status of its own, and ent's errors reach it already translated
+// by domain.FromStore.
+var domainStatus = []struct {
+	err    error
+	status int
+}{
+	{domain.ErrNotFound, http.StatusNotFound},
+	{domain.ErrConflict, http.StatusConflict},
+	{domain.ErrInvalid, http.StatusUnprocessableEntity},
+	{domain.ErrForbidden, http.StatusForbidden},
+}
+
 func errorStatus(err error) int {
-	var ogenErr ogenerrors.Error
-	var statusErr interface{ HTTPStatus() int }
-	switch {
-	case errors.As(err, &statusErr):
-		return statusErr.HTTPStatus()
-	case errors.As(err, &ogenErr):
-		return ogenErr.Code()
-	case errors.Is(err, context.Canceled):
-		return statusClientClosedRequest
-	case ent.IsNotFound(err), errors.Is(err, domain.ErrNotFound):
-		return http.StatusNotFound
-	case ent.IsConstraintError(err), errors.Is(err, domain.ErrConflict):
-		return http.StatusConflict
-	default:
-		return http.StatusInternalServerError
+	// The domain's classes come first: ogen wraps what a security handler
+	// returns in its own 401, and a refusal of a signed-in caller (ErrForbidden)
+	// must stay a 403.
+	translated := domain.FromStore(err)
+	for _, row := range domainStatus {
+		if errors.Is(translated, row.err) {
+			return row.status
+		}
 	}
+	if ogenErr, ok := errors.AsType[ogenerrors.Error](err); ok {
+		return ogenErr.Code()
+	}
+	if errors.Is(err, context.Canceled) {
+		return statusClientClosedRequest
+	}
+	return http.StatusInternalServerError
 }
 
 // problem builds the response body. A refusal (self-protection and the like)

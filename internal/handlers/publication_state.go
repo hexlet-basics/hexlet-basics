@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"context"
-	"net/http"
+	"fmt"
 
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/transitions"
 )
@@ -40,13 +41,12 @@ func refuseTransitionNamed(err error, names map[string]localization.Message) err
 		return err
 	}
 	return &refusal{
-		status:  http.StatusConflict,
 		message: localization.IllegalStateTransition,
 		data: map[string]any{
 			"From": stateName(names, illegal.From),
 			"To":   stateName(names, illegal.To),
 		},
-		cause: err,
+		cause: fmt.Errorf("%w: %w", domain.ErrConflict, err),
 	}
 }
 

@@ -27,16 +27,10 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/internal/curriculum"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/progress"
 )
-
-// ErrNotFound is the one outcome for a page that does not exist for this
-// visitor: an unknown slug, a page of another locale, a lesson nothing was built
-// for, a lesson without a translation in the locale, an archived page with
-// nowhere to go. It is an ent not-found error, so the central error handler
-// answers it with a 404 where a handler does not choose its own response.
-var ErrNotFound error = &ent.NotFoundError{}
 
 const stateArchived = "archived"
 
@@ -97,7 +91,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
 		Only(ctx)
 	if ent.IsNotFound(err) {
-		return nil, ErrNotFound
+		return nil, domain.ErrNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("load landing page %q: %w", slug, err)
@@ -175,7 +169,7 @@ func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage,
 	if page.LandingPageToRedirectID != nil {
 		named, err := p.db.CourseLandingPage.Get(ctx, *page.LandingPageToRedirectID)
 		if ent.IsNotFound(err) {
-			return nil, ErrNotFound
+			return nil, domain.ErrNotFound
 		}
 		if err != nil {
 			return nil, fmt.Errorf("load redirect target: %w", err)
@@ -188,7 +182,7 @@ func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage,
 		}
 		main, ok := mains[page.CourseID]
 		if !ok || main.ID == page.ID {
-			return nil, ErrNotFound
+			return nil, domain.ErrNotFound
 		}
 		target = main
 	}
@@ -269,7 +263,7 @@ type LessonPage struct {
 // The lesson is resolved against the CURRENT version in one query on its
 // translations: a lesson only a retired build contained is gone from the course,
 // and a lesson not translated into the locale is not one this visitor can read.
-// Both, like every other way of missing, are ErrNotFound.
+// Both, like every other way of missing, are domain.ErrNotFound.
 func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, courseSlug, lessonSlug string) (*LessonPage, error) {
 	translation, err := p.db.CourseLessonTranslation.Query().
 		Where(
@@ -283,13 +277,13 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		WithVersion().
 		Only(ctx)
 	if ent.IsNotFound(err) {
-		return nil, ErrNotFound
+		return nil, domain.ErrNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("load lesson %q of %q: %w", lessonSlug, courseSlug, err)
 	}
 	if translation.Edges.Lesson == nil || translation.Edges.Version == nil {
-		return nil, ErrNotFound
+		return nil, domain.ErrNotFound
 	}
 
 	crs, err := p.db.Course.Query().
@@ -297,7 +291,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		WithCurrentVersion().
 		Only(ctx)
 	if ent.IsNotFound(err) {
-		return nil, ErrNotFound
+		return nil, domain.ErrNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("load course %q: %w", courseSlug, err)

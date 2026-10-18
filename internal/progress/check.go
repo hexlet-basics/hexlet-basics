@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 )
 
@@ -68,17 +69,17 @@ type CheckResult struct {
 func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult, error) {
 	open, err := p.resolveLesson(ctx, p.db, check.LessonID)
 	if err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
 
 	version, err := p.submittedVersion(ctx, open.course, check)
 	if err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
 
 	submission, err := p.submissionFor(ctx, version, check)
 	if err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
 
 	outcome, err := p.runner.Run(ctx, submission)
