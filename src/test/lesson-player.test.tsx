@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+import { Cookies } from "react-cookie";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it, onTestFinished } from "vitest";
 import { page, userEvent } from "vitest/browser";
@@ -28,6 +28,8 @@ import type { DefaultBodyType } from "msw";
 import type { RenderedRoute } from "@/test/renderRoute";
 
 // A lesson page is headed with the course it belongs to.
+const cookies = new Cookies();
+
 const COURSE = "JavaScript";
 
 const FIRST_LESSON_ID = 1001;
@@ -461,7 +463,7 @@ describe("lesson player", () => {
     );
     // What a previous visit stored — a reload reads it back rather than resetting
     // to the default split.
-    Cookies.set("lesson_panes", "70");
+    cookies.set("lesson_panes", "70", { path: "/" });
 
     await renderPlayer("variables");
     await expect.element(page.getByRole("heading", { name: `${COURSE}: Variables` })).toBeVisible();
@@ -473,7 +475,7 @@ describe("lesson player", () => {
     expect(paneElements).toHaveLength(2);
     expect(paneElements[0]?.style.cssText).toContain("70%");
 
-    Cookies.remove("lesson_panes");
+    cookies.remove("lesson_panes", { path: "/" });
   }, 60_000);
 
   it("says so when the lesson is not there", async () => {

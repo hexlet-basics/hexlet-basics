@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+import { Cookies } from "react-cookie";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it, onTestFinished } from "vitest";
 import { page } from "vitest/browser";
@@ -8,6 +8,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 import type { RenderedRoute } from "@/test/renderRoute";
 import { zLeadInput } from "@/client/zod.gen";
+
+const cookies = new Cookies();
 
 const user: User = {
   admin: false,
@@ -58,7 +60,7 @@ function acceptLeads(received: LeadInput[]): void {
 function openForm(initialPath = "/ru/leads/new"): Promise<RenderedRoute> {
   // What a test seeds for the form, the cookie and the Metrika id, must not leak into the next one.
   onTestFinished(() => {
-    Cookies.remove("first_visit", { path: "/" });
+    cookies.remove("first_visit", { path: "/" });
     delete globalThis.ymClientId;
   });
   return renderRoute(newLeadRoute, { initialPath, path: "/{-$locale}/leads/new", user });
@@ -74,7 +76,7 @@ describe("lead form", () => {
     expect.hasAssertions();
     const received: LeadInput[] = [];
     acceptLeads(received);
-    Cookies.set("first_visit", JSON.stringify(firstVisit), { path: "/" });
+    cookies.set("first_visit", JSON.stringify(firstVisit), { path: "/" });
     globalThis.ymClientId = "1700000000123456789";
 
     const { router } = await openForm();

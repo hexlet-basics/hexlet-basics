@@ -1,6 +1,7 @@
-import Cookies from "js-cookie";
+import { Cookies } from "react-cookie";
 import type { FirstVisit } from "@/client/types.gen";
 import { zFirstVisit } from "@/client/zod.gen";
+import { SECONDS_PER_YEAR } from "@/lib/duration";
 
 // First-visit attribution (ADR-0015). Legacy asked ahoy's visit for the UTM
 // parameters, the landing page and the referrer when a lead came in; ahoy is
@@ -9,12 +10,15 @@ import { zFirstVisit } from "@/client/zod.gen";
 // what amoCRM should credit is where the visitor first came from.
 const COOKIE_NAME = "first_visit";
 // Ahoy's visitor cookie lived two years; the first visit is kept as long.
-const COOKIE_TTL_DAYS = 730;
+const COOKIE_TTL_SECONDS = 2 * SECONDS_PER_YEAR;
+
+// Reads document.cookie on every call, so one instance serves the whole page.
+const cookies = new Cookies();
 
 // Records the current page as the first visit unless one is already recorded.
 // Browser-only: it reads the address bar and document.referrer.
 export function recordFirstVisit(): void {
-  if (Cookies.get(COOKIE_NAME) !== undefined) {
+  if (cookies.get(COOKIE_NAME, { doNotParse: true }) !== undefined) {
     return;
   }
 
@@ -28,8 +32,8 @@ export function recordFirstVisit(): void {
     utmSource: params.get("utm_source"),
     utmTerm: params.get("utm_term"),
   };
-  Cookies.set(COOKIE_NAME, JSON.stringify(visit), {
-    expires: COOKIE_TTL_DAYS,
+  cookies.set(COOKIE_NAME, JSON.stringify(visit), {
+    maxAge: COOKIE_TTL_SECONDS,
     path: "/",
     sameSite: "lax",
     secure: globalThis.location.protocol === "https:",
@@ -39,7 +43,7 @@ export function recordFirstVisit(): void {
 // The recorded first visit, or null when there is none or it does not parse
 // (a cookie edited by hand or written by an older shape).
 export function readFirstVisit(): FirstVisit | null {
-  const raw = Cookies.get(COOKIE_NAME);
+  const raw = cookies.get<string | undefined>(COOKIE_NAME, { doNotParse: true });
   if (raw === undefined) {
     return null;
   }
