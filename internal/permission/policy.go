@@ -3,7 +3,6 @@ package permission
 import (
 	"context"
 	"errors"
-	"fmt"
 	"slices"
 	"strings"
 
@@ -76,7 +75,7 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 // A name that is not a capability is an error of the caller, not a refusal.
 func (p *Policy) HasCapability(ctx context.Context, u *ent.User, capability string) error {
 	if !permissions.IsCapability(capability) {
-		return fmt.Errorf("%q is not a capability Permission", capability)
+		return errs.With("capability", capability).Errorf("not a capability permission")
 	}
 	staff, err := p.staffMember(ctx, u)
 	if err != nil {

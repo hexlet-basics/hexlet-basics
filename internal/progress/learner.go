@@ -2,7 +2,6 @@ package progress
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/samber/lo"
 
@@ -46,7 +45,7 @@ type LearnerLesson struct {
 func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug string) (*LearnerCourse, error) {
 	crs, err := p.db.Course.Query().Where(course.SlugEQ(courseSlug)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load course %q: %w", courseSlug, err)
+		return nil, errs.With("course_slug", courseSlug).Wrapf(err, "load course")
 	}
 
 	states, err := p.CourseStates(ctx, userID, []int{crs.ID})
@@ -70,7 +69,7 @@ func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug str
 		Select(lessonprogress.FieldLessonID).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load started lessons: %w", err)
+		return nil, errs.Wrapf(err, "load started lessons")
 	}
 	slugByID := make(map[int]string, len(lessons))
 	for _, l := range lessons {
