@@ -28,6 +28,9 @@ Run two independent Go processes from the same codebase:
 
 Resource teardown (closing the database, bucket, Sentry and OpenTelemetry after
 the actors stop) is superseded by ADR-0023: it runs through `injector.Shutdown`.
+The rule that both processes parse one shared configuration is amended by
+ADR-0024: each process loads only its own settings. The worker also serves a
+health-only listener (ADR-0023), which ADR-0010 did not have.
 
 The DI package exposes separate `NewServer` and `NewWorker` graphs. The server
 graph has no River queues or worker registry and cannot execute jobs.

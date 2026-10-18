@@ -61,29 +61,67 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 ## Architecture: Handlers, DI, and Data
 
 - **Handlers** live in `internal/handlers/`. `Server` (in `courses.go`) embeds
-  `api.UnimplementedHandler` and implements contract methods; it holds an
-  `*ent.Client` and an `apiconv.Converter`. Handler methods run ent queries and
-  return generated `api.*` types.
+  `api.UnimplementedHandler` and implements contract methods. It holds the
+  concrete module types from `handlers.Deps` (ADR-0025), not interfaces. A
+  handler only translates the contract: the rules live in modules (see
+  "Use-case modules").
 - **ent → api conversion** is in `internal/apiconv/` (`apiconv.go` hand-written,
   `apiconv.gen.go` generated). Keep DB entities out of the API surface; convert
   through this layer. API models mirror the serializers, not `schema.rb`.
 - **Push ordering/filtering into SQL** via ent query builders (see the ordered
-  `LandingPage.Query()` in `courses.go`), not into Go post-processing.
-- **DI** is `samber/do` v2, wired in `internal/di/container.go`. Providers
-  resolve their own deps from the injector, so the plain constructors
-  (`store.NewClient`, `handlers.NewServer`, `api.NewServer`) stay
-  injector-agnostic and are usable directly in tests. `di.NewServer` builds the
-  HTTP/producer graph; `di.NewWorker` builds the Watermill/River consumer graph.
-  `cmd/server` and `cmd/worker` each own a local `errgroup` coordinator; `do`
-  only constructs dependencies. Add a new service to the appropriate process
-  graph instead of threading it through constructors.
+  `LandingPage.Query()` in the `landingpage` module), not into Go post-processing.
+- **DI** is `samber/do` v2, wired in `internal/di/`. Providers resolve their own
+  deps from the injector, so the plain constructors (`store.NewClient`,
+  `handlers.NewServer`, `api.NewServer`) stay injector-agnostic and are usable
+  directly in tests. `di.NewServer` builds the HTTP/producer graph;
+  `di.NewWorker` builds the Watermill/River consumer graph. `cmd/server` and
+  `cmd/worker` each own a local `errgroup` coordinator (ADR-0010); `do` only
+  constructs dependencies and, after the actors stop, tears them down
+  (`dependencies.Shutdown`, ADR-0023). Add a new service to the appropriate
+  process graph instead of threading it through constructors. A resource with no
+  `Shutdown(ctx) error` of its own gets a small closer service in
+  `internal/di/closers.go`.
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `mise run gen:ent` (`go generate ./ent`) after editing a schema.
-- Other `internal/` packages: `config/` (env config via `caarlos0/env`; `LoadServer`/`LoadWorker`
-  roots, `APP_ENV` policy, required deploy settings; constructors take values or a section, never
-  the root, and `os.Getenv` stays in `config`: `mise run lint:config`, ADR-0024),
-  `logging/` (`slog` + `tint`), `store/` (ent client construction),
-  `ids/`, `apiconv/`, `testsupport/`.
+- Other `internal/` packages: `config/` (env config), `logging/` (`slog`),
+  `store/` (ent client, `Transactor`, ambient transaction), `domain/` (domain
+  errors, `FromStore`, `Page`), `health/` (`/healthz`, `/readyz`), `jobs/`
+  (River), `events/` (Watermill), `ident/`, `apiconv/`, `fixture/`,
+  `testsupport/`.
+- **Configuration** (ADR-0024): `APP_ENV` (`development` default, `production`,
+  `test`) drives environment policy. `config.LoadServer()` and `LoadWorker()`
+  each parse and validate only their process's settings (`config.Common` plus
+  their own), with `go-playground/validator` tags next to the `env` tags; the
+  deploy-critical settings are required, with no code default. Secrets are
+  `config.Secret` (prints `[REDACTED]`; `Reveal()` reads it). A constructor
+  takes the section or the scalars it reads, never `*config.Server` /
+  `*config.Worker` outside `di`, and `os.Getenv` stays in `internal/config`
+  (`mise run lint:config`). `.env` is read only by `config.LoadDotenv()` in
+  `cmd/*/main`, and only under `APP_ENV` unset or `development`.
+- **Logging** (ADR-0026, extends ADR-0007): `slog`; JSON off a terminal, tint on
+  one; `LOG_LEVEL` (default `info`). Use the `*Context` variant when a `ctx` is
+  in scope, `snake_case` keys, `err` for an error, a static message with the
+  variable parts as attributes (`sloglint` enforces it). `trace_id` is the only
+  correlation key. Never log passwords, tokens, cookies or emails (identity is
+  `user_id`); the key-name `ReplaceAttr` is a net, not the standard.
+- **Lifecycle and health** (ADR-0023): the server drains HTTP; the worker stops
+  Watermill, then River; then the injector shuts the resources down. `/healthz`
+  is liveness only and checks nothing; `/readyz` checks the database alone and
+  turns 503 at SIGTERM, before the drain. Both are outside the contract and
+  `/api`; the worker serves them on `HEALTH_ADDR`. Chart probes are an ops
+  handoff (the chart still uses `tcpSocket`).
+- **Workers** (ADR-0027): every job and subscriber is idempotent by construction
+  (a named, commented exception otherwise: `ExerciseLoader`); `MaxAttempts` is a
+  named constant with a reason, never River's default; a domain error retrying
+  cannot fix returns `river.JobCancel`; Sentry gets a job error only on its
+  final attempt; `discarded` rows (retention `jobs.DiscardedRetention`) are the
+  dead-letter store, replayed with River's own retry; a poisoned Watermill
+  message goes to `domain_events_poison` and to Sentry.
+- **Transactions, a known gap** (ADR-0027, #924): the tx adapter belongs to
+  `store`, `jobs.Enqueuer` and `events.Publisher`, but business modules still
+  receive a `*sql.Tx` from `WithinTx` (to pass to `EnqueueTx`/`Publish`), and no
+  lint enforces the confinement. Do not add new modules that take a `*sql.Tx`
+  for anything else; removing the parameter is not done yet.
 
 ## Database & Migrations (atlas owns the schema)
 
@@ -127,7 +165,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   toolchain, atlas as the Apache-2.0
   `atlas-community` build (ADR-0014; its public CLI module is frozen at a
   2024-11 0.13.x snapshot and will not install — its go.mod has replace
-  directives), and golangci-lint (a tool directive would drag its whole
+  directives; `mise run lint:atlas-pin` keeps `mise.toml` and the `Dockerfile` on
+  one version, and the nightly `lint:atlas-retention` fails before the pinned
+  binary ages out; the ent/atlas exit plan, sqlc, is in ADR-0014), and golangci-lint (a tool directive would drag its whole
   analyzer tree into go.mod to rebuild what mise fetches as a binary).
   Git hooks are hk (`hk.pkl`, pinned in `mise.toml` with pkl), installed
   by `mise run setup` (and mise's postinstall hook) via `hk install --mise`.
@@ -155,9 +195,11 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 
 ## Lint & Typecheck
 
-- `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint` with
-  contextcheck/noctx/errorlint/bodyclose among others) + frontend (`oxlint`,
-  `oxfmt --check`, `tsc -b`) + ADR number uniqueness + `lint:deps` (`go mod tidy
+- `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint`: see below) +
+  frontend (`oxlint`, `oxfmt --check`, `tsc -b`) + ADR number uniqueness
+  (`lint:adr`) + `lint:packages` (internal package names are singular, ADR-0025)
+  + `lint:config` (ADR-0024) + `lint:atlas-pin` (Atlas version in `mise.toml`
+  and `Dockerfile` agree, ADR-0014) + `lint:triggers` + `lint:deps` (`go mod tidy
   -diff`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
   + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
@@ -167,6 +209,15 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
   shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
   Pushes need them clean.
+- **golangci-lint** (`.golangci.yml`) enables, beyond the standard set,
+  `gosec` (tests exempt from G115, G304, G306, G301, G101 only; a production
+  finding is fixed or carries a `//nolint:gosec // why`), `modernize`,
+  `testifylint`, `errname`, `sloglint`, `errorlint`, `contextcheck`, `noctx`,
+  `bodyclose`, `forbidigo` and the rest listed there. The rule is: a linter is
+  enabled in the change that clears its findings, with no baseline and no
+  exclusion list that hides debt. `forbidigo` bans raw SQL, `.Create()` in tests,
+  ent query builders and `ent.Is*` in handlers, and `fmt.Errorf` in production
+  code (no exclusions left). `nolintlint` requires a reason on every `nolint`.
 - `mise run lint:size` — the client bundle budgets (size-limit config in
   `package.json`): builds the web app, then fails if the entry chunk or the
   total client JavaScript grows past its gzip limit. CI runs it as the
@@ -177,14 +228,14 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 
 ## Test
 
-- `mise run test` — the Go suite (`go test ./...`, plus `-shuffle=on` when `CI` is set: a
+- `mise run test` — the Go suite (`go test -race ./...`, plus `-shuffle=on` when `CI` is set: a
   shuffle disables go's result cache, so locally unchanged packages show `(cached)`). In CI tests run in a random
   order and `go` prints the seed, so a test must not depend on another's side
   effects; replay an order with `mise run test -- -shuffle=<seed> ./pkg`.
 - `mise run test:docker` — the tests that need a real Docker daemon (build tag
   `docker`, `internal/exerciserunner`: the container lifecycle). `mise run test` leaves them
   out; CI runs them as a separate step. A test of that kind goes in a `//go:build docker` file.
-- `mise run test:cover` — the Go suite (docker-tagged tests included) over `cmd/` and `internal/` with
+- `mise run test:cover` — the Go suite (with `-race`, docker-tagged tests included) over `cmd/` and `internal/` with
   coverage, failing under the total in `.testcoverage.yml` (generated code and
   `testsupport` excluded). `pnpm test:coverage` does the same for the frontend
   with the thresholds in `vite.config.ts`. Raise a floor when coverage rises;
@@ -234,12 +285,12 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 - **A test never creates the data it arranges: it reads it from `fixtures/`.**
   Every row there is named for the case it exists for, with a label:
   `{{ id "user_removed" }}` in the YAML (primary keys and references alike), and
-  `fixtures.ID(fixtures.UserRemoved)` (`fixtures.ID32` for the contract's int32)
-  in a test: every label has a generated `fixtures.Label` variable (the
+  `fixture.ID(fixture.UserRemoved)` (`fixture.ID32` for the contract's int32)
+  in a test: every label has a generated `fixture.Label` variable (the
   `snake_case` label in `PascalCase`), and `ID` takes a `Label`, not a string, so
   a typo or a removed row fails the build. `NewHarnessAs(t,
-  fixtures.UserLearnerWithAGap)` signs a request in as that user. Add the row,
-  then run `mise run gen:fixtures`; `fixtures.LabelOf(name)` is only for a label
+  fixture.UserLearnerWithAGap)` signs a request in as that user. Add the row,
+  then run `mise run gen:fixtures`; `fixture.LabelOf(name)` is only for a label
   read at run time (a request path). Ids count up in the order rows are written
   (the application reads "oldest first" off the id, so write older rows first);
   a label no row defines panics in the YAML, and `LabelOf` of one panics in
@@ -255,7 +306,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   from, and assert on business facts (slug, order, label). A test that depends on
   today's date does not read the wall clock: the harness's clock is
   `testsupport.Today` (`assistant.WithClock`, `courseloader.WithClock`,
-  `accounts.WithClock`) and the fixtures are written relative to it.
+  `account.WithClock`) and the fixtures are written relative to it.
   The fixtures were exported once from the legacy Rails set and have been edited
   by hand since; `mise run fixtures:import` skips every file that exists, and
   `mise run db:fixtures` and the e2e database load them through `cmd/fixtures`,
@@ -266,9 +317,20 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   was queued or published is read back through the same transaction
   (`rivertest.RequireInsertedTx`, `testsupport.PublishedEvents`). Nothing runs a
   live River client or Watermill router against the shared database.
-- Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
+- Tests use `stretchr/testify` (`require` for preconditions, `assert` for the
+  checks after them; `testifylint` enforces the idioms); each handler test gets an
   explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
-  tests, and builds a `Server` through `testsupport`.
+  tests, and builds a `Server` through `testsupport`. Why these rules: ADR-0019.
+- **Parallel and leaks** (ADR-0019): a package with no database uses
+  `t.Parallel()`; `handlers` runs its tests in parallel, which is safe only
+  because no two tests touch the same fixture row (two transactions updating one
+  row block each other, so a test that needs a row to itself gets its own
+  fixture row). Adopt `t.Parallel()` in another DB-backed package only after
+  that is true and measured. `goleak.VerifyTestMain` guards the
+  goroutine-spawning packages (assistant, exercise runner, events), and
+  `testing/synctest` is for in-memory timing, never for a query's `NOW()`.
+  Table-driven subtests for pure functions with three or more cases, scenario
+  tests for handlers.
   The harness runs the real event publisher and job enqueuers over the test
   transaction, so a test asserts on what an operation left behind
   (`testsupport.PublishedEvents`, `testsupport.EnqueuedJobs`, DB rows), never on
@@ -322,13 +384,45 @@ Change the source, run the generator, commit the output. Never hand-edit or
 
 - `gofmt`-clean, passes `go vet` and `golangci-lint` (config governs `cmd`,
   `internal`, `ent/schema`; generated files are skipped).
+- Where our rules and established Go practice disagree, practice wins; a rule of
+  ours survives only with a reason recorded in an ADR (see "Where we deviate
+  from the vendor Go skills").
 - Match the surrounding package: doc comments on exported types/functions
-  explaining *why* (the existing files are heavily commented on rationale —
+  explaining *why* (the existing files are heavily commented on rationale:
   mirror that density on non-obvious logic, e.g. why an ordering has a specific
-  tie-breaker), constructors return concrete types, errors wrapped with context.
-- Return early on errors; don't swallow them. Keep DB access in handlers/ent and
-  API types at the boundary — convert via `apiconv`. The business rules behind an operation
-  live in a use-case module (next section), not in the handler.
+  tie-breaker), constructors return concrete types.
+- Return early on errors; don't swallow them. API types stay at the boundary:
+  convert via `apiconv`. The business rules behind an operation live in a
+  use-case module (below), not in the handler.
+
+### Errors (ADR-0018, ADR-0028)
+
+- Every error in production code is built with `samber/oops`; `fmt.Errorf` is
+  banned by `forbidigo` (allowed in tests). One `var errs = oops.In("<package>")`
+  per package; only `In`, `With`, `Wrapf` and `Errorf` (no `Code`, `Public`,
+  `Tags`, `Hint`).
+- A message is static, lowercase, without trailing punctuation; the variable data
+  goes in `.With("lesson_id", id)`, so errors group in Sentry and carry their data
+  (one `BeforeSend` in the Sentry client copies the `oops` attributes).
+- Wrap once, at the package boundary (the exported function that knows the
+  operation); helpers return the error as is.
+- Log or return, never both. The HTTP error handler and the River error handler
+  are the one place that logs and reports.
+- Look into a chain with `errors.AsType[T](err)`, not `errors.As` with a declared
+  target. `oops.Recover` guards a goroutine that has no safety net (the
+  assistant stream).
+- Domain errors are plain `errors.New` values named `ErrX` (`domain.ErrNotFound`,
+  `ErrConflict`, `ErrInvalid`, `ErrForbidden`, and a module's own, such as
+  `account.ErrLastAdmin`, which wraps one of them), checked with `errors.Is`.
+  `domain.FromStore` is the only translator of ent's errors (a module names the
+  field behind a unique index with `domain.UniqueOn`); a handler never reads an
+  ent error (`forbidigo` rejects `ent.Is*`).
+- HTTP: every non-2xx is RFC 9457 Problem Details, a 422 adds `errors:
+  {field: [messages]}`. A handler returns the success variant and reports a
+  failure through the `error` return; `errorStatus` is the one table from a
+  domain error to a status and `detailFor` the one table to a localized `detail`
+  (never `err.Error()`). A handler validates nothing: the contract, module rules
+  returning `ErrInvalid`, and database constraints do.
 
 ### Use-case modules
 
@@ -337,28 +431,26 @@ The business rules behind an operation live in a package named for the concept
 other adapter (MCP) call the same code. There is no umbrella `usecases` or
 `services` package. The rules below apply to every such module.
 
-- **Package:** one concept, plural, lowercase (`accounts`, `blog`). Plural
-  because ent generates a singular package per entity (`ent/blogpost`), and a
-  file that needs both must not alias one; a mass noun (`progress`, `dashboard`)
-  stays as it is.
-- **Constructor:** `New(...)` returns the concrete type.
-- **Interfaces:** the caller declares the small interface it needs (handlers
-  and the MCP adapter each declare their own; see `handlers/collaborators.go`);
-  the module exports none. The exception is a seam to the outside with a real
-  second adapter, such as the LLM, the exercise runner, the mailer, or the
-  course fetcher: the module that owns the boundary declares it, and `testsupport`
-  mocks it.
-- **Commands and results:** an operation takes a plain command named
-  `<Verb><Noun>` (`UpdateUser`) and never an `internal/api` type (ADR-0001);
+- **Package names** (ADR-0025): singular, named for the concept, and never equal
+  to an `ent/<x>` package, so no file needs an import alias (`blog`,
+  `permission`, `auth`, `catalog`, `curriculum`, `leadcapture`, `coursereview`,
+  `sitebanner`, `account`, `book`, ...). `events`, `jobs` and `handlers` stay
+  plural; a mass noun (`progress`, `dashboard`) stays as it is. `mise run
+  lint:packages` enforces it. Name types for their role (`Editor`, `Directory`,
+  `Registrar`), not `Service`, `Manager` or `Handler`.
+- **Constructor:** `New(...)` returns the concrete type, with the required
+  dependencies as positional arguments and functional options only for optional
+  settings.
+- **Interfaces:** a module exports none, and `handlers.Server` holds the concrete
+  types. An adapter declares an interface only for a test substitute or a second
+  real implementation: the LLM, the exercise runner, the mailer, the course
+  fetcher (`testsupport` mocks them with moq), and the MCP server's `Verifier` and
+  `Catalogue`. Where the dependency direction forbids naming the concrete type,
+  take functions (`mcpserver.Deps`). Never add an interface with one
+  implementation and no substitute.
+- **Commands and results:** an operation takes plain Go values or a command
+  struct named for the operation, and never an `internal/api` type (ADR-0001);
   adapters convert in both directions.
-- **Errors:** domain errors named `ErrX` (`domain.ErrNotFound`,
-  `domain.ErrConflict`, `accounts.ErrLastAdmin`, which is a conflict); the module
-  maps ent errors to them with `domain.FromStore`, which keeps the cause in the
-  chain, and each adapter maps them to its wire format (the HTTP one is
-  `errorStatus`).
-- **Separation:** writes and reads are separate modules or files (admin writes
-  apart from the public read model); within a module the command, the result
-  and the implementation each have their own file.
 - **Pages:** a module's list takes a `domain.Page` and answers rows and a total;
   `domain.Paged` runs the count and the window over one scoped, ordered query.
   The handler wraps them with `listFrom`.
@@ -371,7 +463,24 @@ other adapter (MCP) call the same code. There is no umbrella `usecases` or
   moves to a module.
 - **Enforced:** `forbidigo` rejects an ent query builder (`Query`, `Create`,
   `Update*`, `Delete*`, `Get`) in `internal/handlers`, so a rule cannot slip
-  back into a handler; the generated `Admin*` helpers pass.
+  back into a handler; the generated `Admin*` helpers pass. Keeping writes and
+  reads in separate modules is review guidance only.
+
+### Where we deviate from the vendor Go skills
+
+The vendor Go skills (samber's set) are installed unedited. Where they disagree
+with us, the rule below wins, for the reason in the linked ADR.
+
+- **No `is`/`has`/`can` prefix on unexported bool fields and variables.** It is
+  not standard Go, and ent and ogen output ignores it. Name a bool for what it
+  says (`enabled`, `closed`). Recorded in [ADR-0025](docs/adr/0025-singular-package-names-and-adapter-declared-interfaces.md).
+- **`ShutdownOnSignals` is not used.** The errgroup coordinators in `cmd/server`
+  and `cmd/worker` own the signals and stop the actors in a fixed order; the
+  injector shuts resources down after them. See [ADR-0023](docs/adr/0023-resource-shutdown-through-the-injector.md)
+  and [ADR-0010](docs/adr/0010-separate-http-and-async-processes.md).
+- **`events`, `jobs` and `handlers` stay plural**, against the singular-package
+  rule, because `event`, `job` and `handler` are the commonest local variable
+  names. See [ADR-0025](docs/adr/0025-singular-package-names-and-adapter-declared-interfaces.md).
 
 ## Conventional Commits & Releases
 
@@ -434,3 +543,6 @@ are committed on `main`, anything bigger is done in a worktree. See
   secrets file and `terraform/` still live under `legacy/k8s` and
   `legacy/terraform`. If you touch any of it, call out the change clearly in
   handoff notes. Never commit secrets.
+- Handed-off chart changes (the chart is not edited by the Go work): HTTP probes
+  on `/healthz` and `/readyz` for the API and the worker (`HEALTH_ADDR`), and
+  `APP_ENV=production` plus the required variables of ADR-0024 on both workloads.

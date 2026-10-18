@@ -44,6 +44,11 @@ handler really called.
   takes functions, not an interface: `handlers` imports `mcpserver`, so
   `mcpserver.Deps` carries `MyDashboard`, `MyCourseProgress` and
   `HeldCapabilities` as function fields.
+- Naming follows the vendor `naming` skill except one rule: it asks for an
+  `is`/`has`/`can` prefix on unexported bool fields and variables. We do not
+  adopt it: it is not standard Go, and ent and ogen output ignores it, so the
+  codebase would be half prefixed. A bool is named for what it says (`enabled`,
+  `closed`).
 
 **Consequences.** A handler test no longer has a type to substitute: it builds
 the real module through `testsupport`, as every test already did. Adding a

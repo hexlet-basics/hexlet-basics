@@ -5,7 +5,7 @@ status: accepted
 # Logging: JSON off a terminal, `trace_id` correlation, `LOG_LEVEL`, redaction
 
 Part of the backend clean-up (spec #905, ticket #920, decisions in #889).
-Extends [ADR-0007](0007-observability-sentry-otel.md), which keeps `slog` plus
+Extends [ADR-0007](0007-observability-sentry-plus-lean-otel.md), which keeps `slog` plus
 `tint` as the logger and decides sampling; it does not replace it.
 
 **Problem.** Log lines had no link to the trace of the request that wrote them
