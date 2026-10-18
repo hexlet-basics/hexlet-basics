@@ -89,7 +89,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken), nil
+		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken.Reveal()), nil
 	}),
 	do.Lazy[*courseloader.Loader](func(i do.Injector) (*courseloader.Loader, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -166,7 +166,7 @@ var workerPackage = do.Package(
 			return nil, err
 		}
 		return accountemail.NewSender(
-			db, emailtoken.New(cfg.EmailTokenSecret), mail, translator, cfg.SiteURL,
+			db, emailtoken.New(cfg.EmailTokenSecret.Reveal()), mail, translator, cfg.SiteURL,
 		), nil
 	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
@@ -174,7 +174,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken, cfg.YMCounter), nil
+		return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken.Reveal(), cfg.YMCounter), nil
 	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		db, err := do.Invoke[*sql.DB](i)
@@ -233,8 +233,8 @@ var workerPackage = do.Package(
 			jobs.MaintainAuditPartitions(audit.NewPartitions(store.NewDriver(db)), cfg.AuditRetentionMonths, logger),
 			jobs.PurgeOAuthTokens(entClient, logger),
 		}
-		if cfg.OpenAIAccessToken != "" {
-			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
+		if cfg.OpenAIAccessToken.Reveal() != "" {
+			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken.Reveal(), cfg.OpenAIModel)
 			modules = append(modules,
 				jobs.ReviewLesson(lessonreview.NewReviewer(entClient, llm)),
 				jobs.SuggestRelatedCourses(relatedcourse.NewSuggester(entClient, relatedCoursesSet, llm, logger)),

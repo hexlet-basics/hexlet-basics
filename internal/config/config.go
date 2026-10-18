@@ -2,17 +2,11 @@
 package config
 
 import (
-	"net/url"
 	"strings"
 	"time"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/samber/oops"
-)
-
-const (
-	developmentGuestCookieSecret = "dev-insecure-guest-cookie-secret-change-me"
-	developmentEmailTokenSecret  = "dev-insecure-email-token-secret-change-me"
 )
 
 // AppEnv is the environment a process runs in. It, and not a Sentry label,
@@ -33,31 +27,31 @@ const (
 type Common struct {
 	// AppEnv defaults to development so a developer's checkout runs with no
 	// setup; a deployment sets APP_ENV=production.
-	AppEnv      AppEnv `env:"APP_ENV" envDefault:"development"`
-	DatabaseURL string `env:"DATABASE_URL,required,notEmpty"`
+	AppEnv      AppEnv `env:"APP_ENV" envDefault:"development" validate:"oneof=development production test"`
+	DatabaseURL string `env:"DATABASE_URL" validate:"required"`
 	// BlobBucketURL selects the gocloud.dev/blob backend (ADR-0005): local disk
 	// (fileblob) in dev, s3blob in prod, chosen by URL scheme.
-	BlobBucketURL string `env:"BLOB_BUCKET_URL,required,notEmpty"`
+	BlobBucketURL string `env:"BLOB_BUCKET_URL" validate:"required"`
 	// SiteURL is the origin of the public site that emailed links open. Unlike
 	// AppHost (canonical URLs, always the production host) it points at the
 	// local frontend in development, so a developer can follow the link.
-	SiteURL string `env:"SITE_URL,required,notEmpty"`
+	SiteURL string `env:"SITE_URL" validate:"required"`
 	// PublicURL is the public origin the API is reached at, used to build
 	// absolute asset URLs it serves itself (the `/api/storage/{key}` blob read
 	// path). In production it is the site's own origin, since the ingress routes
 	// `/api/*` to Go (ADR-0015); in development it reaches Go directly.
-	PublicURL string `env:"PUBLIC_URL,required,notEmpty"`
+	PublicURL string `env:"PUBLIC_URL" validate:"required"`
 	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
 	// repo lives: the loader clones `<base>/exercises-<slug>.git`.
 	CourseRepoBaseURL string `env:"COURSE_REPO_BASE_URL" envDefault:"https://github.com/hexlet-basics"`
 	// EmailTokenSecret signs the Magic Link and Password Reset tokens: the server
 	// verifies them and the worker mints the emails that carry them. It is kept
 	// apart from GuestCookieSecret so rotating one never invalidates the other.
-	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
+	EmailTokenSecret Secret `env:"EMAIL_TOKEN_SECRET" validate:"required,notdevsecret"`
 	// OpenAI powers the AI features (lesson-review summaries, the in-lesson
 	// assistant). An empty token disables them. The model must be a reasoning
 	// model: the assistant's stream sets a reasoning effort.
-	OpenAIAccessToken string `env:"OPENAI_ACCESS_TOKEN"`
+	OpenAIAccessToken Secret `env:"OPENAI_ACCESS_TOKEN"`
 	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-5.5"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
@@ -72,25 +66,25 @@ type Server struct {
 	Addr string `env:"ADDR" envDefault:":3001"`
 	// AppHost is the canonical public site host the Yandex feed builds its
 	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed.
-	AppHost string `env:"APP_HOST,required,notEmpty"`
+	AppHost string `env:"APP_HOST" validate:"required"`
 	// BookBlobKey is the bucket key of the free book's PDF. It is uploaded once,
 	// out of band, at cutover rather than shipped in the image (~28 MB).
 	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
 	// GitHubWebhookSecret is the shared secret GitHub signs webhook deliveries
 	// with (HMAC-SHA256). An empty secret disables the webhook (fail closed).
-	GitHubWebhookSecret string `env:"GITHUB_WEBHOOK_SECRET"`
+	GitHubWebhookSecret Secret `env:"GITHUB_WEBHOOK_SECRET"`
 	// GuestCookieSecret signs the cookie that carries a visitor's lesson progress
 	// until they sign up. Sessions need no secret (ADR-0017). The committed
 	// .env.example supplies a development value; deployments provide their own.
-	GuestCookieSecret string `env:"GUEST_COOKIE_SECRET,required,notEmpty"`
+	GuestCookieSecret Secret `env:"GUEST_COOKIE_SECRET" validate:"required,notdevsecret"`
 	// ExerciseRunner bounds what a learner's submission may do to the host
 	// (ADR-0013). Every limit is settable so a course that needs more room is
 	// fixable without a release.
 	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
 	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0022).
-	OAuth OAuthConfig `envPrefix:"OAUTH_"`
+	OAuth OAuthConfig `envPrefix:"OAUTH_" validate:"-"`
 	// MCP switches on the MCP endpoint at `/mcp` (ADR-0021).
-	MCP MCPConfig `envPrefix:"MCP_"`
+	MCP MCPConfig `envPrefix:"MCP_" validate:"-"`
 }
 
 // Worker is the configuration of the asynchronous process: Common plus what
@@ -104,15 +98,15 @@ type Worker struct {
 	// GitHubToken authenticates clones (private repos / higher rate limits). The
 	// exercises repos are public, so it is optional; when set it is used as the
 	// HTTP basic-auth password (x-access-token).
-	GitHubToken string `env:"GITHUB_TOKEN"`
+	GitHubToken Secret `env:"GITHUB_TOKEN"`
 	// amoCRM receives lead_created events through a Watermill -> River handler.
 	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
-	AmoCRMAuthToken string `env:"AMOCRM_AUTH_TOKEN"`
+	AmoCRMAuthToken Secret `env:"AMOCRM_AUTH_TOKEN"`
 	YMCounter       string `env:"YM_COUNTER"`
 	// AuditRetentionMonths is how long Audit Records are kept (ADR-0020). The
 	// audit table is partitioned by month and retention drops whole partitions,
 	// so a record lives at least this many months and up to one month longer.
-	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24"`
+	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24" validate:"min=1"`
 	// Mail configures account email (ADR-0006).
 	Mail MailConfig `envPrefix:"MAIL_"`
 }
@@ -127,33 +121,29 @@ type MCPConfig struct {
 	// MaxPageSize caps the records one tool call returns: a larger page size is
 	// clamped to it, and the result says so. An agent that asks for everything
 	// would otherwise fill its own context with one call.
-	MaxPageSize int `env:"MAX_PAGE_SIZE" envDefault:"50"`
+	MaxPageSize int `env:"MAX_PAGE_SIZE" envDefault:"50" validate:"required,min=1"`
 	// MaxResponseBytes caps the structured content of one result. A result over
 	// it is cut at a record boundary and carries a pagination hint, never
 	// invalid JSON.
-	MaxResponseBytes int `env:"MAX_RESPONSE_BYTES" envDefault:"102400"`
+	MaxResponseBytes int `env:"MAX_RESPONSE_BYTES" envDefault:"102400" validate:"required,min=1024"`
 	// ToolTimeout is how long one tool call may run before its context is
 	// cancelled and the agent gets an error.
-	ToolTimeout time.Duration `env:"TOOL_TIMEOUT" envDefault:"30s"`
+	ToolTimeout time.Duration `env:"TOOL_TIMEOUT" envDefault:"30s" validate:"required,min=1s"`
 	// RateWindow is the period every rate limit below counts over.
-	RateWindow time.Duration `env:"RATE_WINDOW" envDefault:"1m"`
+	RateWindow time.Duration `env:"RATE_WINDOW" envDefault:"1m" validate:"required,min=1s"`
 	// The rate limits are calls per RateWindow, per class of tool, for one user
 	// and for one Connected App (an OAuth client, shared by all its users).
 	// Catalogue reads are public data; reads of personal data and writes are
 	// stricter, and writes the strictest. They are in memory, per replica.
-	RateUserCatalogue int `env:"RATE_USER_CATALOGUE" envDefault:"60"`
-	RateUserPersonal  int `env:"RATE_USER_PERSONAL" envDefault:"30"`
-	RateUserWrite     int `env:"RATE_USER_WRITE" envDefault:"10"`
+	RateUserCatalogue int `env:"RATE_USER_CATALOGUE" envDefault:"60" validate:"required,min=1"`
+	RateUserPersonal  int `env:"RATE_USER_PERSONAL" envDefault:"30" validate:"required,min=1"`
+	RateUserWrite     int `env:"RATE_USER_WRITE" envDefault:"10" validate:"required,min=1"`
 	// The Connected App limits are higher than the per-user ones, since an app
 	// speaks for many users; they stop one misbehaving app, not one user.
-	RateClientCatalogue int `env:"RATE_CLIENT_CATALOGUE" envDefault:"600"`
-	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL" envDefault:"300"`
-	RateClientWrite     int `env:"RATE_CLIENT_WRITE" envDefault:"100"`
+	RateClientCatalogue int `env:"RATE_CLIENT_CATALOGUE" envDefault:"600" validate:"required,min=1"`
+	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL" envDefault:"300" validate:"required,min=1"`
+	RateClientWrite     int `env:"RATE_CLIENT_WRITE" envDefault:"100" validate:"required,min=1"`
 }
-
-// MCPMinResponseBytes is the smallest accepted MaxResponseBytes: below it the
-// pagination hint itself would not fit in a cut result.
-const MCPMinResponseBytes = 1024
 
 // OAuthConfig configures the in-process OAuth authorization server. Everything
 // in it is inert while Enabled is false, which is the default: the code ships
@@ -165,27 +155,24 @@ type OAuthConfig struct {
 	// speaks as. It is never derived from the Host header: a forged header must
 	// not change what a token claims, and the value is baked into every
 	// registration and token, so it is expensive to change later.
-	Issuer string `env:"ISSUER"`
+	Issuer string `env:"ISSUER" validate:"required,origin"`
 	// EncryptionKey is the secret the access tokens are encrypted under and the
 	// ID-token signing key is derived from. The database stores only token ids,
 	// so this key is what stands between a database leak and a usable token:
 	// rotating it invalidates every access token. At least 32 characters.
-	EncryptionKey string `env:"ENCRYPTION_KEY"`
+	EncryptionKey Secret `env:"ENCRYPTION_KEY" validate:"required,min=32,notdevsecret"`
 	// RegistrationLimit is how many client registrations (Dynamic Client
 	// Registration is anonymous) one address may attempt per RegistrationWindow.
-	RegistrationLimit int `env:"REGISTRATION_LIMIT" envDefault:"10"`
+	RegistrationLimit int `env:"REGISTRATION_LIMIT" envDefault:"10" validate:"required,min=1"`
 	// RegistrationWindow is the period RegistrationLimit counts over.
-	RegistrationWindow time.Duration `env:"REGISTRATION_WINDOW" envDefault:"1h"`
+	RegistrationWindow time.Duration `env:"REGISTRATION_WINDOW" envDefault:"1h" validate:"required,min=1s"`
 	// AccessTokenTTL is how long an access token lives. Short, because a bearer
 	// token cannot be recalled once stolen except by revoking its row.
-	AccessTokenTTL time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"1h"`
+	AccessTokenTTL time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"1h" validate:"required,min=1m"`
 	// RefreshTokenTTL is how long a refresh token (and so a connection that is not
 	// used) lives. Each refresh issues a new token with a fresh full lifetime.
 	RefreshTokenTTL time.Duration `env:"REFRESH_TOKEN_TTL" envDefault:"720h"`
 }
-
-// OAuthMinKeyLength is the shortest accepted EncryptionKey.
-const OAuthMinKeyLength = 32
 
 // ExerciseRunnerConfig is the isolation budget one submission runs under. The
 // zero values are never used: Load fills them from the hardened defaults.
@@ -236,7 +223,7 @@ type MailConfig struct {
 	PostboxEndpoint        string `env:"POSTBOX_ENDPOINT" envDefault:"https://postbox.cloud.yandex.net"`
 	PostboxRegion          string `env:"POSTBOX_REGION" envDefault:"ru-central1"`
 	PostboxAccessKeyID     string `env:"POSTBOX_ACCESS_KEY_ID"`
-	PostboxSecretAccessKey string `env:"POSTBOX_SECRET_ACCESS_KEY"`
+	PostboxSecretAccessKey Secret `env:"POSTBOX_SECRET_ACCESS_KEY"`
 }
 
 // PostboxEnabled reports whether real delivery is configured.
@@ -249,25 +236,14 @@ func (c *Common) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "h
 // LoadServer reads the HTTP process's configuration from the environment and
 // validates it. The environment is the only source: a .env file is the
 // caller's business (LoadDotenv), so production and tests never read one.
+// Every violated rule is reported at once, named by variable.
 func LoadServer() (*Server, error) {
 	cfg := &Server{}
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse server config from environment")
 	}
-	if err := validateCommon(&cfg.Common); err != nil {
+	if err := check(cfg, cfg.AppEnv); err != nil {
 		return nil, err
-	}
-	if err := validateOAuth(cfg.OAuth); err != nil {
-		return nil, oops.Wrapf(err, "validate OAuth config")
-	}
-	if cfg.MCP.Enabled && !cfg.OAuth.Enabled {
-		return nil, oops.Errorf("MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
-	}
-	if err := validateMCP(cfg.MCP); err != nil {
-		return nil, oops.Wrapf(err, "validate MCP config")
-	}
-	if err := validateServerProduction(cfg); err != nil {
-		return nil, oops.Wrapf(err, "validate production config")
 	}
 	return cfg, nil
 }
@@ -279,110 +255,39 @@ func LoadWorker() (*Worker, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse worker config from environment")
 	}
-	if err := validateCommon(&cfg.Common); err != nil {
+	if err := check(cfg, cfg.AppEnv); err != nil {
 		return nil, err
-	}
-	if cfg.AuditRetentionMonths < 1 {
-		// Zero would drop the month in progress; the job would refuse it on
-		// every run, so the process refuses to start instead.
-		return nil, oops.Errorf("AUDIT_RETENTION_MONTHS must be at least 1, got %d", cfg.AuditRetentionMonths)
-	}
-	if cfg.AppEnv == Production && !cfg.Mail.PostboxEnabled() {
-		return nil, oops.Errorf("validate production config: MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
 	}
 	return cfg, nil
 }
 
-// validateCommon refuses an unknown APP_ENV and, in production, a secret that
-// is the public development value.
-func validateCommon(cfg *Common) error {
-	switch cfg.AppEnv {
-	case Development, Production, Test:
-	default:
-		return oops.Errorf("APP_ENV must be development, production or test, got %q", cfg.AppEnv)
+// crossChecks holds the rules that span settings, which a tag on one field
+// cannot say.
+func (c *Server) crossChecks() []string {
+	var problems []string
+	if c.OAuth.Enabled {
+		problems = append(problems, section(c.OAuth, "OAUTH_", c.AppEnv)...)
 	}
-	if cfg.AppEnv == Production && cfg.EmailTokenSecret == developmentEmailTokenSecret {
-		return oops.Errorf("validate production config: EMAIL_TOKEN_SECRET must differ from the public development value")
+	if c.MCP.Enabled {
+		problems = append(problems, section(c.MCP, "MCP_", c.AppEnv)...)
 	}
-	return nil
+	if c.MCP.Enabled && !c.OAuth.Enabled {
+		problems = append(problems, "MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
+	}
+	// A refresh token that does not outlive its access token could never refresh.
+	if c.OAuth.Enabled && c.OAuth.RefreshTokenTTL <= c.OAuth.AccessTokenTTL {
+		problems = append(problems, "OAUTH_REFRESH_TOKEN_TTL must be longer than OAUTH_ACCESS_TOKEN_TTL")
+	}
+	if c.AppEnv == Production && c.OAuth.Enabled && !strings.HasPrefix(c.OAuth.Issuer, "https://") {
+		problems = append(problems, "OAUTH_ISSUER must be an https origin in production")
+	}
+	return problems
 }
 
-// validateServerProduction keeps environment-specific safety policy separate
-// from env decoding. The development secret is committed for local convenience
-// and therefore must never be accepted as a cookie-signing key in production.
-func validateServerProduction(cfg *Server) error {
-	if cfg.AppEnv != Production {
-		return nil
-	}
-	if cfg.GuestCookieSecret == developmentGuestCookieSecret {
-		return oops.Errorf("GUEST_COOKIE_SECRET must differ from the public development value")
-	}
-	if cfg.OAuth.Enabled && !strings.HasPrefix(cfg.OAuth.Issuer, "https://") {
-		return oops.Errorf("OAUTH_ISSUER must be an https origin in production")
-	}
-	return nil
-}
-
-// validateMCP refuses a limit that would silently switch a protection off: zero
-// reads as "unlimited" to a person and as "always refused" to the code, and both
-// are wrong. It checks only when the endpoint is on, like validateOAuth.
-func validateMCP(cfg MCPConfig) error {
-	if !cfg.Enabled {
-		return nil
-	}
-	if cfg.MaxPageSize < 1 {
-		return oops.Errorf("MCP_MAX_PAGE_SIZE must be at least 1, got %d", cfg.MaxPageSize)
-	}
-	if cfg.MaxResponseBytes < MCPMinResponseBytes {
-		return oops.Errorf("MCP_MAX_RESPONSE_BYTES must be at least %d, got %d", MCPMinResponseBytes, cfg.MaxResponseBytes)
-	}
-	if cfg.ToolTimeout < time.Second {
-		return oops.Errorf("MCP_TOOL_TIMEOUT must be at least 1s, got %s", cfg.ToolTimeout)
-	}
-	if cfg.RateWindow < time.Second {
-		return oops.Errorf("MCP_RATE_WINDOW must be at least 1s, got %s", cfg.RateWindow)
-	}
-	for name, limit := range map[string]int{
-		"MCP_RATE_USER_CATALOGUE":   cfg.RateUserCatalogue,
-		"MCP_RATE_USER_PERSONAL":    cfg.RateUserPersonal,
-		"MCP_RATE_USER_WRITE":       cfg.RateUserWrite,
-		"MCP_RATE_CLIENT_CATALOGUE": cfg.RateClientCatalogue,
-		"MCP_RATE_CLIENT_PERSONAL":  cfg.RateClientPersonal,
-		"MCP_RATE_CLIENT_WRITE":     cfg.RateClientWrite,
-	} {
-		if limit < 1 {
-			return oops.Errorf("%s must be at least 1, got %d", name, limit)
-		}
-	}
-	return nil
-}
-
-// validateOAuth checks the settings the OAuth server cannot run without. It
-// applies only when the flag is on, so the default configuration needs none of
-// them.
-func validateOAuth(cfg OAuthConfig) error {
-	if !cfg.Enabled {
-		return nil
-	}
-	issuer, err := url.Parse(cfg.Issuer)
-	if err != nil || issuer.Host == "" || (issuer.Scheme != "https" && issuer.Scheme != "http") {
-		return oops.Errorf("OAUTH_ISSUER must be an origin such as https://code-basics.com")
-	}
-	if issuer.Path != "" || issuer.RawQuery != "" || issuer.Fragment != "" {
-		return oops.Errorf("OAUTH_ISSUER must be a bare origin without a path: discovery lives at the root")
-	}
-	if len(cfg.EncryptionKey) < OAuthMinKeyLength {
-		return oops.Errorf("OAUTH_ENCRYPTION_KEY must be at least %d characters", OAuthMinKeyLength)
-	}
-	// Zero would silently mean "no limit" to a reader; refuse it so the limit on
-	// the anonymous registration endpoint cannot be switched off by accident.
-	if cfg.RegistrationLimit < 1 || cfg.RegistrationWindow < time.Second {
-		return oops.Errorf("OAUTH_REGISTRATION_LIMIT must be at least 1 and OAUTH_REGISTRATION_WINDOW at least 1s")
-	}
-	// A shorter access lifetime would issue tokens that are born expired, and a
-	// refresh token that does not outlive its access token could never refresh.
-	if cfg.AccessTokenTTL < time.Minute || cfg.RefreshTokenTTL <= cfg.AccessTokenTTL {
-		return oops.Errorf("OAUTH_ACCESS_TOKEN_TTL must be at least 1m and OAUTH_REFRESH_TOKEN_TTL longer than it")
+// crossChecks: in production the worker must be able to deliver mail.
+func (c *Worker) crossChecks() []string {
+	if c.AppEnv == Production && !c.Mail.PostboxEnabled() {
+		return []string{"MAIL_POSTBOX_ACCESS_KEY_ID is required in production"}
 	}
 	return nil
 }

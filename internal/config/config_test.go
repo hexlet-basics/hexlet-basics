@@ -9,6 +9,11 @@ import (
 
 // setRequiredSecrets fills every required setting of both processes with a
 // non-development value, so each test changes only the one it is about.
+const (
+	developmentGuestCookieSecret = "dev-insecure-guest-cookie-secret-change-me"
+	developmentEmailTokenSecret  = "dev-insecure-email-token-secret-change-me"
+)
+
 func setRequiredSecrets(t *testing.T) {
 	t.Helper()
 	t.Setenv("DATABASE_URL", "postgres://app@db.example/app")
@@ -93,7 +98,7 @@ func TestLoadRejectsEmptyGuestCookieSecret(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, `environment variable "GUEST_COOKIE_SECRET" should not be empty`)
+	require.ErrorContains(t, err, "GUEST_COOKIE_SECRET is required")
 }
 
 func TestLoadRejectsDevelopmentGuestCookieSecretInProduction(t *testing.T) {
@@ -104,7 +109,7 @@ func TestLoadRejectsDevelopmentGuestCookieSecretInProduction(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "validate production config")
+	require.ErrorContains(t, err, "invalid configuration")
 	require.ErrorContains(t, err, "GUEST_COOKIE_SECRET must differ from the public development value")
 }
 
@@ -116,7 +121,7 @@ func TestLoadAcceptsExplicitProductionGuestCookieSecret(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.NoError(t, err)
-	require.Equal(t, "production-secret-from-secret-store", cfg.GuestCookieSecret)
+	require.Equal(t, "production-secret-from-secret-store", cfg.GuestCookieSecret.Reveal())
 }
 
 func TestLoadAcceptsDevelopmentGuestCookieSecretOutsideProduction(t *testing.T) {
@@ -127,7 +132,7 @@ func TestLoadAcceptsDevelopmentGuestCookieSecretOutsideProduction(t *testing.T) 
 	cfg, err := LoadServer()
 
 	require.NoError(t, err)
-	require.Equal(t, developmentGuestCookieSecret, cfg.GuestCookieSecret)
+	require.Equal(t, developmentGuestCookieSecret, cfg.GuestCookieSecret.Reveal())
 }
 
 func TestLoadRejectsEmptyEmailTokenSecret(t *testing.T) {
@@ -137,7 +142,7 @@ func TestLoadRejectsEmptyEmailTokenSecret(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, `environment variable "EMAIL_TOKEN_SECRET" should not be empty`)
+	require.ErrorContains(t, err, "EMAIL_TOKEN_SECRET is required")
 }
 
 func TestLoadRejectsDevelopmentEmailTokenSecretInProduction(t *testing.T) {

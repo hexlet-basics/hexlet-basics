@@ -55,7 +55,7 @@ func NewPostbox(cfg config.MailConfig) *Postbox {
 		Region:       cfg.PostboxRegion,
 		BaseEndpoint: aws.String(cfg.PostboxEndpoint),
 		Credentials: credentials.NewStaticCredentialsProvider(
-			cfg.PostboxAccessKeyID, cfg.PostboxSecretAccessKey, "",
+			cfg.PostboxAccessKeyID, cfg.PostboxSecretAccessKey.Reveal(), "",
 		),
 	})
 	return &Postbox{client: client, from: cfg.From}
