@@ -10,7 +10,7 @@ import (
 func TestLoadLeavesMCPOffByDefault(t *testing.T) {
 	setRequiredSecrets(t)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.NoError(t, err)
 	require.False(t, cfg.MCP.Enabled)
@@ -23,7 +23,7 @@ func TestLoadAcceptsMCPBesideOAuth(t *testing.T) {
 	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
 	t.Setenv("MCP_ENABLED", "true")
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.NoError(t, err)
 	require.True(t, cfg.MCP.Enabled)
@@ -33,7 +33,7 @@ func TestLoadRejectsMCPWithoutOAuth(t *testing.T) {
 	setRequiredSecrets(t)
 	t.Setenv("MCP_ENABLED", "true")
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
 	require.ErrorContains(t, err, "MCP_ENABLED requires OAUTH_ENABLED")
@@ -51,7 +51,7 @@ func enableMCP(t *testing.T) {
 func TestLoadGivesMCPLimitsTheirDefaults(t *testing.T) {
 	enableMCP(t)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.NoError(t, err)
 	require.Equal(t, 50, cfg.MCP.MaxPageSize)
@@ -81,13 +81,13 @@ func TestLoadRejectsBadMCPLimitsOnlyWhenMCPIsOn(t *testing.T) {
 			enableMCP(t)
 			t.Setenv(env, value)
 
-			cfg, err := Load()
+			cfg, err := LoadServer()
 
 			require.Nil(t, cfg)
 			require.ErrorContains(t, err, env)
 
 			t.Setenv("MCP_ENABLED", "false")
-			_, err = Load()
+			_, err = LoadServer()
 			require.NoError(t, err, "an inert endpoint is not validated")
 		})
 	}

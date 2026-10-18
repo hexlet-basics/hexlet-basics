@@ -19,11 +19,11 @@ import (
 
 // NewSentryClient builds a process-wide client. sentry-go treats an empty DSN
 // as disabled; an explicitly malformed DSN is returned as a startup error.
-func NewSentryClient(cfg *config.Config) (*sentry.Client, error) {
+func NewSentryClient(dsn string, environment config.AppEnv, release string) (*sentry.Client, error) {
 	client, err := sentry.NewClient(sentry.ClientOptions{
-		Dsn:         cfg.SentryDSN,
-		Environment: cfg.SentryEnvironment,
-		Release:     cfg.ReleaseVersion,
+		Dsn:         dsn,
+		Environment: string(environment),
+		Release:     release,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("initialize Sentry: %w", err)

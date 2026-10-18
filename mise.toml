@@ -75,6 +75,10 @@ API_URL = "http://localhost:{{ env.API_PORT }}"
 # Origin of the /api/storage URLs (blog covers); the default would point at :3001.
 PUBLIC_URL = "http://localhost:{{ env.API_PORT }}"
 SITE_URL = "http://localhost:{{ env.WEB_PORT }}"
+# Required settings with no code default (internal/config); a checkout seeded before they
+# became required has neither in its .env.
+APP_HOST = "localhost"
+BLOB_BUCKET_URL = "file://./storage?create_dir=true"
 # The postgres preset exports DATABASE_URL (and PG*) for its own `postgres` database, which
 # would beat .env; point the app at the development database instead.
 DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable"

@@ -22,20 +22,18 @@ import (
 )
 
 // commonPackage contains infrastructure shared by the HTTP and worker
-// processes. Process-specific packages build on this graph.
+// processes. Process-specific packages build on this graph and provide the
+// config.Common it reads.
 var commonPackage = do.Package(
-	do.Lazy[*config.Config](func(do.Injector) (*config.Config, error) {
-		return config.Load()
-	}),
 	do.Lazy[*slog.Logger](func(do.Injector) (*slog.Logger, error) {
 		return logging.New(slog.LevelInfo), nil
 	}),
 	do.Lazy[*sentry.Client](func(i do.Injector) (*sentry.Client, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {
 			return nil, err
 		}
-		return telemetry.NewSentryClient(cfg)
+		return telemetry.NewSentryClient(cfg.SentryDSN, cfg.AppEnv, cfg.ReleaseVersion)
 	}),
 	do.Lazy[*otelconf.SDK](func(i do.Injector) (*otelconf.SDK, error) {
 		logger, err := do.Invoke[*slog.Logger](i)
@@ -48,7 +46,7 @@ var commonPackage = do.Package(
 		return localization.New()
 	}),
 	do.Lazy[*sql.DB](func(i do.Injector) (*sql.DB, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {
 			return nil, err
 		}
@@ -71,7 +69,7 @@ var commonPackage = do.Package(
 	// Blob buckets are closed explicitly by the process lifecycle coordinator
 	// because blob.Bucket has Close, not a do Shutdowner.
 	do.Lazy[*blob.Bucket](func(i do.Injector) (*blob.Bucket, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {
 			return nil, err
 		}
@@ -88,7 +86,7 @@ var commonPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[config.Common](i)
 		if err != nil {
 			return nil, err
 		}

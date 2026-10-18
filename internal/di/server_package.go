@@ -68,7 +68,7 @@ const (
 // by type alone.
 type handlerServices struct {
 	DB                *ent.Client                 `do:""`
-	Config            *config.Config              `do:""`
+	Config            *config.Server              `do:""`
 	Starter           *versionbuilds.Starter      `do:""`
 	Jobs              *jobs.Enqueuer              `do:""`
 	RelatedCoursesSet *relatedcourses.Replacer    `do:""`
@@ -111,6 +111,19 @@ type handlerServices struct {
 }
 
 var serverPackage = do.Package(
+	// The process's own configuration root. Only this package (and the worker's)
+	// reads the whole of it: everything else is handed the section or the values
+	// it uses.
+	do.Lazy[*config.Server](func(do.Injector) (*config.Server, error) {
+		return config.LoadServer()
+	}),
+	do.Lazy[config.Common](func(i do.Injector) (config.Common, error) {
+		cfg, err := do.Invoke[*config.Server](i)
+		if err != nil {
+			return config.Common{}, err
+		}
+		return cfg.Common, nil
+	}),
 	do.Lazy[*handlers.APIErrorHandler](func(i do.Injector) (*handlers.APIErrorHandler, error) {
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
@@ -129,7 +142,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -421,7 +434,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -445,7 +458,7 @@ var serverPackage = do.Package(
 		return handlers.NewServer(handlers.Deps{
 			OAuth:             consents,
 			DB:                services.DB,
-			Config:            services.Config,
+			Settings:          handlerSettings(services.Config),
 			Starter:           services.Starter,
 			Jobs:              services.Jobs,
 			RelatedCoursesSet: services.RelatedCoursesSet,
@@ -505,7 +518,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -542,7 +555,7 @@ var serverPackage = do.Package(
 	// so a deployment with no daemon reachable fails on the first check rather
 	// than refusing to boot — which is what keeps every other surface serving.
 	do.Lazy[*exerciserunner.Docker](func(i do.Injector) (*exerciserunner.Docker, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -611,7 +624,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -641,7 +654,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -678,7 +691,7 @@ var serverPackage = do.Package(
 	// since an invalid issuer or a missing key would otherwise stop a
 	// deployment that does not use it.
 	do.Lazy[*oauthserver.Server](func(i do.Injector) (*oauthserver.Server, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -714,7 +727,7 @@ var serverPackage = do.Package(
 	// serves tools through the same handler code as the HTTP operations. Built
 	// only when its flag is on; config validation guarantees OAuth is on then.
 	do.Lazy[*mcpserver.Server](func(i do.Injector) (*mcpserver.Server, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -787,7 +800,7 @@ var serverPackage = do.Package(
 	// server. Keeping the provider on the vendor type avoids coupling DI to
 	// supervision.
 	do.Lazy[*http.Server](func(i do.Injector) (*http.Server, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Server](i)
 		if err != nil {
 			return nil, err
 		}
@@ -806,3 +819,17 @@ var serverPackage = do.Package(
 		}, nil
 	}),
 )
+
+// handlerSettings picks the values the handlers read out of the server
+// configuration, so handlers never see the whole of it.
+func handlerSettings(cfg *config.Server) handlers.Settings {
+	return handlers.Settings{
+		PublicURL:         cfg.PublicURL,
+		SiteURL:           cfg.SiteURL,
+		SecureCookies:     cfg.SecureCookies(),
+		GuestCookieSecret: cfg.GuestCookieSecret,
+		EmailTokenSecret:  cfg.EmailTokenSecret,
+		CourseRepoBaseURL: cfg.CourseRepoBaseURL,
+		BookBlobKey:       cfg.BookBlobKey,
+	}
+}

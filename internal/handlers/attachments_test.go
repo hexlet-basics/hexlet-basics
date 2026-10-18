@@ -20,7 +20,6 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
@@ -62,13 +61,13 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
-	cfg := &config.Config{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
+	settings := handlers.Settings{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
 	manager := sessions.New(db)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
 		DB:        db,
-		Config:    cfg,
+		Settings:  settings,
 		Starter:   services.Starter,
 		Jobs:      services.Jobs,
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),

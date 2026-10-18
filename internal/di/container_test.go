@@ -18,12 +18,22 @@ import (
 	"hexletbasics/internal/testsupport/testdb"
 )
 
-func configureTestEnvironment(t *testing.T) {
+// configureWorkerEnvironment is everything the worker is given: no cookie
+// secret and no public host, which only the server needs.
+func configureWorkerEnvironment(t *testing.T) {
 	t.Helper()
 	t.Setenv("DATABASE_URL", testdb.DatabaseURL())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
+	t.Setenv("PUBLIC_URL", "http://localhost:3001")
+	t.Setenv("SITE_URL", "http://localhost:5173")
 	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
+}
+
+func configureTestEnvironment(t *testing.T) {
+	t.Helper()
+	configureWorkerEnvironment(t)
+	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
+	t.Setenv("APP_HOST", "code-basics.com")
 }
 
 // TestServerContainerResolvesHTTPWithoutAsyncRuntime proves that the synchronous
@@ -44,7 +54,7 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 }
 
 func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
-	configureTestEnvironment(t)
+	configureWorkerEnvironment(t)
 
 	injector := newWorkerContainer()
 	t.Cleanup(func() { _ = injector.Shutdown() })

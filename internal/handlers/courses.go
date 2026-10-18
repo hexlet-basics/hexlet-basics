@@ -10,7 +10,6 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/blogposts"
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursepages"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
@@ -27,7 +26,7 @@ import (
 // as "not implemented" until their handler lands (contract-first, ADR-0001);
 // methods defined on Server override the embedded stubs.
 //
-// cfg supplies the public origins used to build absolute URLs in read models
+// settings supplies the public origins used to build absolute URLs in read models
 // (self-served asset URLs via PublicURL, emailed and redirect links via
 // SiteURL) — there is no *http.Request at the ogen handler boundary to derive
 // them from. Canonical page links are the frontend's: it knows the page's own
@@ -36,7 +35,7 @@ type Server struct {
 	api.UnimplementedHandler
 	db      *ent.Client
 	conv    apiconv.Converter
-	cfg     *config.Config
+	settings Settings
 	starter VersionBuildStarter
 	// jobs schedules the background work handlers trigger: lesson reviews, the
 	// related-courses pick, account emails.
@@ -124,7 +123,7 @@ type Server struct {
 // Plain fields, no DI tags, so the handlers package stays injector-agnostic.
 type Deps struct {
 	DB                *ent.Client
-	Config            *config.Config
+	Settings          Settings
 	Starter           VersionBuildStarter
 	Jobs              JobEnqueuer
 	RelatedCoursesSet RelatedCoursesReplacer
@@ -169,12 +168,12 @@ type Deps struct {
 
 // NewServer wires the handler to its dependencies.
 func NewServer(deps Deps) *Server {
-	secure := deps.Config.SecureCookies()
-	guests := newGuestCookies(deps.Config.GuestCookieSecret, secure)
+	secure := deps.Settings.SecureCookies
+	guests := newGuestCookies(deps.Settings.GuestCookieSecret, secure)
 	return &Server{
 		db:                deps.DB,
 		conv:              &apiconv.ConverterImpl{},
-		cfg:               deps.Config,
+		settings:          deps.Settings,
 		starter:           deps.Starter,
 		jobs:              deps.Jobs,
 		relatedCoursesSet: deps.RelatedCoursesSet,
@@ -188,7 +187,7 @@ func NewServer(deps Deps) *Server {
 		userEditor:        deps.UserEditor,
 		userDirectory:     deps.UserDirectory,
 		events:            deps.Events,
-		emailTokens:       emailtokens.New(deps.Config.EmailTokenSecret),
+		emailTokens:       emailtokens.New(deps.Settings.EmailTokenSecret),
 		guests:            guests,
 		i18n:              deps.I18n,
 		leads:             deps.Leads,
@@ -196,11 +195,11 @@ func NewServer(deps Deps) *Server {
 		errors:            deps.Errors,
 		yandexFeed:        deps.YandexFeed,
 		catalog:           landingpages.NewCatalog(deps.DB),
-		coursePages:       coursepages.New(deps.DB, landingpages.NewCatalog(deps.DB), deps.Progress, deps.Config.CourseRepoBaseURL),
+		coursePages:       coursepages.New(deps.DB, landingpages.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
 		blogPublic:        blogposts.NewPublic(deps.DB),
-		blogReader:        blogposts.NewReader(deps.DB, deps.Config.PublicURL),
+		blogReader:        blogposts.NewReader(deps.DB, deps.Settings.PublicURL),
 		blogLikes:         blogposts.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
 		selfProtection:    deps.SelfProtection,

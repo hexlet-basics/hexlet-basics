@@ -131,7 +131,7 @@ tracer_provider:
 }
 
 func TestNewSentryClientRejectsInvalidDSN(t *testing.T) {
-	_, err := telemetry.NewSentryClient(&config.Config{SentryDSN: "not a dsn"})
+	_, err := telemetry.NewSentryClient("not a dsn", config.Test, "")
 	require.Error(t, err)
 }
 

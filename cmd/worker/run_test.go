@@ -11,7 +11,8 @@ func workerEnv(t *testing.T) {
 	t.Helper()
 	t.Setenv("DATABASE_URL", "postgres://nobody@127.0.0.1:1/none")
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
-	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
+	t.Setenv("PUBLIC_URL", "http://localhost:3001")
+	t.Setenv("SITE_URL", "http://localhost:5173")
 	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
 }
 

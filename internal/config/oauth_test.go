@@ -13,7 +13,7 @@ const validOAuthKey = "test-oauth-key-test-oauth-key-test"
 func TestLoadLeavesOAuthOffAndUnconfiguredByDefault(t *testing.T) {
 	setRequiredSecrets(t)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.NoError(t, err)
 	require.False(t, cfg.OAuth.Enabled)
@@ -25,7 +25,7 @@ func TestLoadAcceptsAnEnabledOAuthServer(t *testing.T) {
 	t.Setenv("OAUTH_ISSUER", "https://code-basics.com")
 	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.NoError(t, err)
 	require.True(t, cfg.OAuth.Enabled)
@@ -46,7 +46,7 @@ func TestLoadRejectsAnEnabledOAuthServerWithoutWhatItNeeds(t *testing.T) {
 			t.Setenv("OAUTH_ISSUER", tc.issuer)
 			t.Setenv("OAUTH_ENCRYPTION_KEY", tc.key)
 
-			cfg, err := Load()
+			cfg, err := LoadServer()
 
 			require.Nil(t, cfg)
 			require.ErrorContains(t, err, tc.want)
@@ -56,12 +56,12 @@ func TestLoadRejectsAnEnabledOAuthServerWithoutWhatItNeeds(t *testing.T) {
 
 func TestLoadRejectsAnHTTPIssuerInProduction(t *testing.T) {
 	setRequiredSecrets(t)
-	t.Setenv("SENTRY_ENVIRONMENT", "production")
+	t.Setenv("APP_ENV", "production")
 	t.Setenv("OAUTH_ENABLED", "true")
 	t.Setenv("OAUTH_ISSUER", "http://code-basics.com")
 	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
 	require.ErrorContains(t, err, "OAUTH_ISSUER must be an https origin in production")
@@ -73,13 +73,13 @@ func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.
 	t.Setenv("OAUTH_ISSUER", "https://code-basics.com")
 	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 	require.NoError(t, err)
 	require.Equal(t, 10, cfg.OAuth.RegistrationLimit)
 	require.Equal(t, time.Hour, cfg.OAuth.RegistrationWindow)
 
 	t.Setenv("OAUTH_REGISTRATION_LIMIT", "0")
-	_, err = Load()
+	_, err = LoadServer()
 	require.ErrorContains(t, err, "OAUTH_REGISTRATION_LIMIT")
 }
 
@@ -89,14 +89,14 @@ func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
 	t.Setenv("OAUTH_ISSUER", "https://code-basics.com")
 	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
 
-	cfg, err := Load()
+	cfg, err := LoadServer()
 	require.NoError(t, err)
 	require.Equal(t, time.Hour, cfg.OAuth.AccessTokenTTL)
 	require.Equal(t, 30*24*time.Hour, cfg.OAuth.RefreshTokenTTL)
 
 	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "2h")
 	t.Setenv("OAUTH_REFRESH_TOKEN_TTL", "48h")
-	cfg, err = Load()
+	cfg, err = LoadServer()
 	require.NoError(t, err)
 	require.Equal(t, 2*time.Hour, cfg.OAuth.AccessTokenTTL)
 	require.Equal(t, 48*time.Hour, cfg.OAuth.RefreshTokenTTL)
@@ -110,12 +110,12 @@ func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Setenv("OAUTH_ACCESS_TOKEN_TTL", env[0])
 			t.Setenv("OAUTH_REFRESH_TOKEN_TTL", env[1])
-			_, err := Load()
+			_, err := LoadServer()
 			require.ErrorContains(t, err, "OAUTH_ACCESS_TOKEN_TTL")
 		})
 	}
 
 	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "soon")
-	_, err = Load()
+	_, err = LoadServer()
 	require.Error(t, err, "an unparsable duration is a config error")
 }
