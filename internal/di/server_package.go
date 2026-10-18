@@ -16,12 +16,12 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
-	"hexletbasics/internal/banners"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursecategories"
 	"hexletbasics/internal/courselessons"
+	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/courses"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/events"
@@ -30,7 +30,7 @@ import (
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/landingpages"
-	"hexletbasics/internal/leads"
+	"hexletbasics/internal/leadcapture"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
@@ -38,10 +38,10 @@ import (
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/reviews"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sessions"
+	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -80,7 +80,7 @@ type handlerServices struct {
 	UserEditor        *accounts.Editor            `do:""`
 	UserDirectory     *accounts.Directory         `do:""`
 	Events            *events.Publisher           `do:""`
-	Leads             *leads.Recorder             `do:""`
+	Leads             *leadcapture.Recorder       `do:""`
 	Books             *books.Recorder             `do:""`
 	I18n              *localization.Translator    `do:""`
 	Errors            *handlers.APIErrorHandler   `do:""`
@@ -89,8 +89,8 @@ type handlerServices struct {
 	PostRemover       *blogposts.Remover          `do:""`
 	Permissions       *staffroles.Permissions     `do:""`
 	SelfProtection    *selfprotection.Guard       `do:""`
-	BannerStates      *banners.Editor             `do:""`
-	ReviewStates      *reviews.Editor             `do:""`
+	BannerStates      *sitebanner.Editor          `do:""`
+	ReviewStates      *coursereview.Editor        `do:""`
 	LandingPageStates *landingpages.Editor        `do:""`
 	CourseReadiness   *courses.Readiness          `do:""`
 	Dashboard         *dashboard.Dashboard        `do:""`
@@ -101,12 +101,12 @@ type handlerServices struct {
 	LandingPageQna    *qnaitems.LandingPage       `do:""`
 	CategoryQna       *qnaitems.Category          `do:""`
 	PostEditor        *blogposts.Editor           `do:""`
-	ReviewDirectory   *reviews.Directory          `do:""`
+	ReviewDirectory   *coursereview.Directory     `do:""`
 	CourseDirectory   *courses.Directory          `do:""`
-	LeadDirectory     *leads.Directory            `do:""`
+	LeadDirectory     *leadcapture.Directory      `do:""`
 	MessageDirectory  *assistant.Directory        `do:""`
 	CategoryDirectory *coursecategories.Directory `do:""`
-	BannerDirectory   *banners.Directory          `do:""`
+	BannerDirectory   *sitebanner.Directory       `do:""`
 	LessonDirectory   *courselessons.Directory    `do:""`
 }
 
@@ -156,7 +156,7 @@ var serverPackage = do.Package(
 		}
 		return accounts.NewRegistrar(db, publisher), nil
 	}),
-	do.Lazy[*leads.Recorder](func(i do.Injector) (*leads.Recorder, error) {
+	do.Lazy[*leadcapture.Recorder](func(i do.Injector) (*leadcapture.Recorder, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -165,7 +165,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return leads.NewRecorder(db, publisher), nil
+		return leadcapture.NewRecorder(db, publisher), nil
 	}),
 	do.Lazy[*books.Recorder](func(i do.Injector) (*books.Recorder, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -185,19 +185,19 @@ var serverPackage = do.Package(
 		}
 		return blogposts.NewRemover(db), nil
 	}),
-	do.Lazy[*banners.Editor](func(i do.Injector) (*banners.Editor, error) {
+	do.Lazy[*sitebanner.Editor](func(i do.Injector) (*sitebanner.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return banners.NewEditor(db), nil
+		return sitebanner.NewEditor(db), nil
 	}),
-	do.Lazy[*reviews.Editor](func(i do.Injector) (*reviews.Editor, error) {
+	do.Lazy[*coursereview.Editor](func(i do.Injector) (*coursereview.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return reviews.NewEditor(db), nil
+		return coursereview.NewEditor(db), nil
 	}),
 	do.Lazy[*landingpages.Editor](func(i do.Injector) (*landingpages.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -238,12 +238,12 @@ var serverPackage = do.Package(
 		}
 		return courselessons.NewDirectory(db), nil
 	}),
-	do.Lazy[*banners.Directory](func(i do.Injector) (*banners.Directory, error) {
+	do.Lazy[*sitebanner.Directory](func(i do.Injector) (*sitebanner.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return banners.NewDirectory(db), nil
+		return sitebanner.NewDirectory(db), nil
 	}),
 	do.Lazy[*coursecategories.Directory](func(i do.Injector) (*coursecategories.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -259,12 +259,12 @@ var serverPackage = do.Package(
 		}
 		return assistant.NewDirectory(db), nil
 	}),
-	do.Lazy[*leads.Directory](func(i do.Injector) (*leads.Directory, error) {
+	do.Lazy[*leadcapture.Directory](func(i do.Injector) (*leadcapture.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return leads.NewDirectory(db), nil
+		return leadcapture.NewDirectory(db), nil
 	}),
 	do.Lazy[*courses.Directory](func(i do.Injector) (*courses.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -273,12 +273,12 @@ var serverPackage = do.Package(
 		}
 		return courses.NewDirectory(db), nil
 	}),
-	do.Lazy[*reviews.Directory](func(i do.Injector) (*reviews.Directory, error) {
+	do.Lazy[*coursereview.Directory](func(i do.Injector) (*coursereview.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return reviews.NewDirectory(db), nil
+		return coursereview.NewDirectory(db), nil
 	}),
 	do.Lazy[*blogposts.Editor](func(i do.Injector) (*blogposts.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)

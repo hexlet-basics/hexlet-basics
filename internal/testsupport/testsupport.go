@@ -27,12 +27,12 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
-	"hexletbasics/internal/banners"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursecategories"
 	"hexletbasics/internal/courselessons"
+	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/courses"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
@@ -40,16 +40,16 @@ import (
 	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/landingpages"
-	"hexletbasics/internal/leads"
+	"hexletbasics/internal/leadcapture"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
-	"hexletbasics/internal/reviews"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sessions"
+	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
@@ -338,7 +338,7 @@ func handlerDeps(
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
-	leadRecorder := leads.NewRecorder(transactor, services.Events)
+	leadRecorder := leadcapture.NewRecorder(transactor, services.Events)
 	// The real chat over the real progress module: only the model is mocked.
 	return handlers.Deps{
 		DB:      db,
@@ -369,8 +369,8 @@ func handlerDeps(
 		PostRemover:       blogposts.NewRemover(transactor),
 		Permissions:       staffroles.NewPermissions(db, transactor),
 		SelfProtection:    selfprotection.NewGuard(db),
-		BannerStates:      banners.NewEditor(db),
-		ReviewStates:      reviews.NewEditor(db),
+		BannerStates:      sitebanner.NewEditor(db),
+		ReviewStates:      coursereview.NewEditor(db),
 		LandingPageStates: landingpages.NewEditor(db),
 		CourseReadiness:   courses.NewReadiness(db),
 		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
@@ -381,12 +381,12 @@ func handlerDeps(
 		LandingPageQna:    qnaitems.NewLandingPage(db),
 		CategoryQna:       qnaitems.NewCategory(db),
 		PostEditor:        blogposts.NewEditor(db),
-		ReviewDirectory:   reviews.NewDirectory(db),
+		ReviewDirectory:   coursereview.NewDirectory(db),
 		CourseDirectory:   courses.NewDirectory(db),
-		LeadDirectory:     leads.NewDirectory(db),
+		LeadDirectory:     leadcapture.NewDirectory(db),
 		MessageDirectory:  assistant.NewDirectory(db),
 		CategoryDirectory: coursecategories.NewDirectory(db),
-		BannerDirectory:   banners.NewDirectory(db),
+		BannerDirectory:   sitebanner.NewDirectory(db),
 		LessonDirectory:   courselessons.NewDirectory(db),
 	}
 }

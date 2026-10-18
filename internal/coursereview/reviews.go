@@ -1,5 +1,5 @@
-// Package reviews holds the rules for which course reviews a visitor may read.
-package reviews
+// Package coursereview holds the rules for which course reviews a visitor may read.
+package coursereview
 
 import (
 	"context"

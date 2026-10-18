@@ -1,4 +1,4 @@
-package banners_test
+package sitebanner_test
 
 import (
 	"os"

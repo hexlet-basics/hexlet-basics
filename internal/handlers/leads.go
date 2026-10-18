@@ -9,7 +9,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
-	"hexletbasics/internal/leads"
+	"hexletbasics/internal/leadcapture"
 )
 
 // CreateLead stores a contact request from the site's lead form (legacy
@@ -20,7 +20,7 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (api.Create
 	u := MustAuthenticatedUser(ctx)
 
 	ip, hasIP := ClientIP(ctx)
-	created, err := s.leads.Create(ctx, leads.Submission{
+	created, err := s.leads.Create(ctx, leadcapture.Submission{
 		UserID:        u.ID,
 		ContactMethod: string(req.ContactMethod),
 		ContactValue:  req.ContactValue,
@@ -37,12 +37,12 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (api.Create
 
 // firstVisitOf maps the form's attribution. A browser that kept no cookie
 // sends none, and then there is no attribution at all — not empty strings.
-func firstVisitOf(input api.OptNilFirstVisit) leads.FirstVisit {
+func firstVisitOf(input api.OptNilFirstVisit) leadcapture.FirstVisit {
 	visit, ok := input.Get()
 	if !ok {
-		return leads.FirstVisit{}
+		return leadcapture.FirstVisit{}
 	}
-	return leads.FirstVisit{
+	return leadcapture.FirstVisit{
 		UTMSource:   inputconv.Ptr(visit.UtmSource),
 		UTMMedium:   inputconv.Ptr(visit.UtmMedium),
 		UTMCampaign: inputconv.Ptr(visit.UtmCampaign),
