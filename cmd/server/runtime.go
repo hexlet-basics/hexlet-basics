@@ -63,14 +63,46 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		return errHTTPServerStopped
 	})
 
+	// The group keeps only its first error, and on a signal that is the
+	// sentinel, so the shutdown's own failure is kept apart and joined in.
+	var shutdownErr error
 	group.Go(func() error {
 		<-groupCtx.Done()
-		return a.shutdown(processCtx, cancelProcess)
+		shutdownErr = a.shutdown(processCtx, cancelProcess)
+		return shutdownErr
 	})
 
-	return group.Wait()
+	waitErr := group.Wait()
+	if shutdownErr == nil || errors.Is(waitErr, shutdownErr) {
+		return waitErr
+	}
+	return errors.Join(waitErr, shutdownErr)
 }
 
+// failure is what the process reports from run's result: the shutdown failures
+// and any runtime failure, without the sentinel that only says a signal asked
+// the process to stop (a normal exit).
+func failure(err error) error {
+	if joined, ok := errors.AsType[interface {
+		error
+		Unwrap() []error
+	}](err); ok {
+		var rest []error
+		for _, e := range joined.Unwrap() {
+			if !errors.Is(e, errRuntimeSignal) {
+				rest = append(rest, e)
+			}
+		}
+		return errors.Join(rest...)
+	}
+	if errors.Is(err, errRuntimeSignal) {
+		return nil
+	}
+	return err
+}
+
+// shutdown returns what failed while stopping and does not log it: the process
+// entry point logs the one error run returns (ADR-0018, log or return).
 func (a *application) shutdown(parent context.Context, cancelProcess context.CancelFunc) error {
 	if a.drain != nil {
 		a.drain()
@@ -87,14 +119,8 @@ func (a *application) shutdown(parent context.Context, cancelProcess context.Can
 	}
 	if err := a.http.Shutdown(ctx); err != nil {
 		stopErr := errs.Wrapf(err, "stop HTTP server")
-		if a.logger != nil {
-			a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", stopErr)
-		}
 		if closeErr := a.http.Close(); closeErr != nil {
 			forceCloseErr := errs.Wrapf(closeErr, "force-close HTTP server")
-			if a.logger != nil {
-				a.logger.ErrorContext(ctx, "runtime shutdown failed", "err", forceCloseErr)
-			}
 			cancelProcess()
 			return errors.Join(stopErr, forceCloseErr)
 		}
