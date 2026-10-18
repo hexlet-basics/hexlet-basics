@@ -50,6 +50,7 @@ func setReadiness(h *testsupport.Harness, readiness string) {
 }
 
 func readinessOf(t *testing.T, h *testsupport.Harness) *string {
+	t.Helper()
 	return h.DB.Course.GetX(t.Context(), readinessCourseID).Readiness
 }
 

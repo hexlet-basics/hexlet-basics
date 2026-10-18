@@ -621,7 +621,7 @@ func nilStringAs[V ~string](v *string) *V {
 	if v == nil {
 		return nil
 	}
-	return lo.ToPtr(V(*v))
+	return new(V(*v))
 }
 
 // nilEnumOf is nilOf for a nullable ent string that the contract types as an
@@ -635,7 +635,7 @@ func nilInt32From(v *int) *int32 {
 	if v == nil {
 		return nil
 	}
-	return lo.ToPtr(int32(*v))
+	return new(int32(*v))
 }
 
 // NilStringFromPtr bridges a nullable ent column to ogen's NilString.

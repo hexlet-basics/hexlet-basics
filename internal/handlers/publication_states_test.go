@@ -53,6 +53,7 @@ var (
 			h.DB.Banner.UpdateOneID(fixture.ID(fixture.BannerEnPublished)).SetState(state).ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
 			state := h.DB.Banner.GetX(t.Context(), fixture.ID(fixture.BannerEnPublished)).State
 			return &state
 		},
@@ -85,6 +86,7 @@ var (
 		},
 		// The page shows the live banner of the request locale: the published, in-window one.
 		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
 			testsupport.SpeakTo(h, "en")
 			view, err := h.Client.GetActiveBanner(t.Context())
 			require.NoError(t, err)
@@ -104,6 +106,7 @@ var (
 			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).ClearState().ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
 			return h.DB.Review.GetX(t.Context(), fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).State
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
@@ -135,6 +138,7 @@ var (
 		},
 		// The public reviews page lists the published reviews of the request locale.
 		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
 			testsupport.SpeakTo(h, "ru")
 			page, err := h.Client.ListPublicReviews(t.Context(), api.ListPublicReviewsParams{})
 			require.NoError(t, err)
@@ -153,6 +157,7 @@ var (
 			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).ClearState().ExecX(context.Background())
 		},
 		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
 			return h.DB.CourseLandingPage.GetX(t.Context(), fixture.ID(fixture.LandingPageGoRu)).State
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
@@ -181,6 +186,7 @@ var (
 		// A published page is listed on the category page through the category items it
 		// already has; nothing is copied when it is published.
 		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
 			testsupport.SpeakTo(h, "ru")
 			return slices.Contains(categoryLandingSlugs(getCategoryView(t, h, "programming-ru")), "go-ru")
 		},

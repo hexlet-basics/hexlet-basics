@@ -70,7 +70,7 @@ func validTokenID(id string) bool {
 	if id == "" || len(id) > 128 {
 		return false
 	}
-	for i := 0; i < len(id); i++ {
+	for i := range len(id) {
 		c := id[i]
 		switch {
 		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9', c == '-', c == '_':

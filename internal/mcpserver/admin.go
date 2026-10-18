@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -216,9 +217,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 			return nil, errs.With("parameter", p.Name).Errorf("parameter collides with a reserved argument")
 		}
 		schema := map[string]any{}
-		for k, v := range p.Schema {
-			schema[k] = v
-		}
+		maps.Copy(schema, p.Schema)
 		if p.Description != "" {
 			schema["description"] = p.Description
 		}
@@ -420,7 +419,7 @@ func localeOf(args map[string]json.RawMessage) (string, string) {
 	}
 	var locale string
 	if err := json.Unmarshal(raw, &locale); err != nil || !slices.Contains(adminLocales, locale) {
-		return "", fmt.Sprintf("the locale argument must be one of %s", strings.Join(adminLocales, ", "))
+		return "", "the locale argument must be one of " + strings.Join(adminLocales, ", ")
 	}
 	return locale, ""
 }
@@ -485,7 +484,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	}
 	if len(names) > 0 {
 		sort.Strings(names)
-		return nil, fmt.Sprintf("unknown arguments: %s", strings.Join(names, ", "))
+		return nil, "unknown arguments: " + strings.Join(names, ", ")
 	}
 
 	target := path

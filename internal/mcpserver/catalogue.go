@@ -306,7 +306,7 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 		return result{}, notFoundOf(err, "blog post")
 	}
 	return result{
-		text: fmt.Sprintf("Blog post %s", args.Slug),
+		text: "Blog post " + args.Slug,
 		data: view,
 	}, nil
 }

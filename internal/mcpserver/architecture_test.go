@@ -25,7 +25,7 @@ import (
 func TestThePackageCannotReachAnOperationExceptThroughTheGeneratedServer(t *testing.T) {
 	out, err := exec.CommandContext(t.Context(), "go", "list", "-f", `{{join .Imports "\n"}}`, "hexletbasics/internal/mcpserver").CombinedOutput()
 	require.NoError(t, err, string(out))
-	for _, imported := range strings.Fields(string(out)) {
+	for imported := range strings.FieldsSeq(string(out)) {
 		for _, forbidden := range []string{"hexletbasics/internal/handlers", "hexletbasics/internal/store", "database/sql"} {
 			assert.False(t, imported == forbidden || strings.HasPrefix(imported, forbidden+"/"),
 				"internal/mcpserver must not import %s", imported)

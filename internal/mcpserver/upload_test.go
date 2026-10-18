@@ -86,15 +86,18 @@ func TestUploadToolOfferedWithTheContractsPartAndLimits(t *testing.T) {
 func TestUploadIsRefusedAndRecordedAsForbiddenWithoutWhatTheWebsiteNeeds(t *testing.T) {
 	cases := map[string]func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession{
 		"no mcp.write": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
+			t.Helper()
 			o.Grant(editor, "mcp.read")
 			session, _ := admin(t, o, bob)
 			return session
 		},
 		"no admin scope": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
+			t.Helper()
 			o.Grant(editor, "mcp.write")
 			return connect(t, o, bob, oauthserver.ScopeCatalogRead)
 		},
 		"not staff": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
+			t.Helper()
 			session, _ := admin(t, o, alice)
 			return session
 		},

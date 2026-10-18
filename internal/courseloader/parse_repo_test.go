@@ -100,38 +100,60 @@ func TestParseRejectsABrokenRepo(t *testing.T) {
 		corrupt func(t *testing.T, dir string)
 		want    string
 	}{
-		{"missing spec", func(t *testing.T, dir string) { require.NoError(t, os.Remove(filepath.Join(dir, "spec.yml"))) }, "spec.yml"},
+		{"missing spec", func(t *testing.T, dir string) {
+			t.Helper()
+			require.NoError(t, os.Remove(filepath.Join(dir, "spec.yml")))
+		}, "spec.yml"},
 		{"spec field missing", func(t *testing.T, dir string) {
+			t.Helper()
 			write(t, filepath.Join(dir, "spec.yml"), "language:\n  name: JavaScript\n")
 		}, "is required"},
-		{"no modules dir", func(t *testing.T, dir string) { require.NoError(t, os.RemoveAll(filepath.Join(dir, "modules"))) }, "read modules dir"},
+		{"no modules dir", func(t *testing.T, dir string) {
+			t.Helper()
+			require.NoError(t, os.RemoveAll(filepath.Join(dir, "modules")))
+		}, "read modules dir"},
 		{"module dir without order", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Mkdir(filepath.Join(dir, "modules", "basics"), 0o755))
 		}, "not <order>-<slug>"},
 		{"module dir with non-numeric order", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Mkdir(filepath.Join(dir, "modules", "x-basics"), 0o755))
 		}, "non-numeric order"},
 		{"module without description", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Remove(filepath.Join(dir, "modules", "10-basics", "description.en.yml")))
 		}, "has no description"},
 		{"module description with unreadable yaml", func(t *testing.T, dir string) {
+			t.Helper()
 			write(t, filepath.Join(dir, "modules", "10-basics", "description.en.yml"), ": : :")
 		}, "parse"},
 		{"lesson dir without order", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Mkdir(filepath.Join(dir, "modules", "10-basics", "hello"), 0o755))
 		}, "not <order>-<slug>"},
-		{"lesson without test file", func(t *testing.T, dir string) { require.NoError(t, os.Remove(filepath.Join(lesson(dir), "test.js"))) }, "test file"},
+		{"lesson without test file", func(t *testing.T, dir string) {
+			t.Helper()
+			require.NoError(t, os.Remove(filepath.Join(lesson(dir), "test.js")))
+		}, "test file"},
 		{"lesson without exercise file", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Remove(filepath.Join(lesson(dir), "exercise.js")))
 		}, "exercise file"},
-		{"lesson without locales", func(t *testing.T, dir string) { require.NoError(t, os.RemoveAll(filepath.Join(lesson(dir), "en"))) }, "has no <locale>/data.yml"},
+		{"lesson without locales", func(t *testing.T, dir string) {
+			t.Helper()
+			require.NoError(t, os.RemoveAll(filepath.Join(lesson(dir), "en")))
+		}, "has no <locale>/data.yml"},
 		{"locale without theory", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Remove(filepath.Join(lesson(dir), "en", "README.md")))
 		}, "theory"},
 		{"locale without instructions", func(t *testing.T, dir string) {
+			t.Helper()
 			require.NoError(t, os.Remove(filepath.Join(lesson(dir), "en", "EXERCISE.md")))
 		}, "instructions"},
 		{"locale data with unreadable yaml", func(t *testing.T, dir string) {
+			t.Helper()
 			write(t, filepath.Join(lesson(dir), "en", "data.yml"), ": : :")
 		}, "parse"},
 	}

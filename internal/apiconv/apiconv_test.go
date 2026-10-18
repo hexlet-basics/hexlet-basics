@@ -3,7 +3,6 @@ package apiconv
 import (
 	"testing"
 
-	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 
 	"hexletbasics/ent"
@@ -17,19 +16,19 @@ import (
 func TestEnrollmentStateOfARowWithoutOneIsStarted(t *testing.T) {
 	t.Parallel()
 	assert.Equal(t, api.EnrollmentStateStarted, EnrollmentStateFromPtr(nil))
-	assert.Equal(t, api.EnrollmentStateStarted, EnrollmentStateFromPtr(lo.ToPtr("")))
-	assert.Equal(t, api.EnrollmentState("finished"), EnrollmentStateFromPtr(lo.ToPtr("finished")))
+	assert.Equal(t, api.EnrollmentStateStarted, EnrollmentStateFromPtr(new("")))
+	assert.Equal(t, api.EnrollmentState("finished"), EnrollmentStateFromPtr(new("finished")))
 }
 
 func TestNullableColumnsBecomeNullOrTheirValue(t *testing.T) {
 	t.Parallel()
 	assert.True(t, NilReadinessFromPtr(nil).Null)
-	readiness := NilReadinessFromPtr(lo.ToPtr("completed"))
+	readiness := NilReadinessFromPtr(new("completed"))
 	assert.False(t, readiness.Null)
 	assert.Equal(t, api.CourseReadiness("completed"), readiness.Value)
 
 	assert.True(t, NilReviewStateFromPtr(nil).Null)
-	state := NilReviewStateFromPtr(lo.ToPtr("published"))
+	state := NilReviewStateFromPtr(new("published"))
 	assert.False(t, state.Null)
 	assert.Equal(t, api.ReviewState("published"), state.Value)
 }
@@ -44,10 +43,10 @@ func TestModuleLessonSlugsKeepOrderAndSkipLessonsWithoutAUrl(t *testing.T) {
 	module := &ent.CourseModuleTranslation{Edges: ent.CourseModuleTranslationEdges{
 		Version: &ent.CourseModuleVersion{Edges: ent.CourseModuleVersionEdges{
 			LessonVersions: []*ent.CourseLessonVersion{
-				version(lo.ToPtr("hello-world")),
+				version(new("hello-world")),
 				version(nil),
 				{}, // a version whose lesson was not loaded
-				version(lo.ToPtr("variables")),
+				version(new("variables")),
 			},
 		}},
 	}}
@@ -64,7 +63,7 @@ func TestModuleLessonSlugsOfAModuleWithoutAVersionAreEmptyNotNull(t *testing.T) 
 func lessonProgressNamed(names ...string) *ent.LessonProgress {
 	infos := make([]*ent.CourseLessonTranslation, len(names))
 	for i, name := range names {
-		infos[i] = &ent.CourseLessonTranslation{Name: lo.ToPtr(name)}
+		infos[i] = &ent.CourseLessonTranslation{Name: new(name)}
 	}
 	return &ent.LessonProgress{Edges: ent.LessonProgressEdges{
 		Lesson: &ent.CourseLesson{Edges: ent.CourseLessonEdges{Infos: infos}},
@@ -151,9 +150,9 @@ func TestNextLessonRefIsNamedFromTheList(t *testing.T) {
 
 	assert.True(t, NextLessonRef(nil, lessons).Null, "a finished course has none")
 
-	named := NextLessonRef(lo.ToPtr("a"), lessons).Value
+	named := NextLessonRef(new("a"), lessons).Value
 	assert.Equal(t, int32(7), named.ID)
 	assert.Equal(t, "A", named.Name.Value)
 
-	assert.True(t, NextLessonRef(lo.ToPtr("z"), lessons).Null)
+	assert.True(t, NextLessonRef(new("z"), lessons).Null)
 }

@@ -71,7 +71,7 @@ func attachOopsAttributes(event *sentry.Event, hint *sentry.EventHint) *sentry.E
 		if event.Contexts == nil {
 			event.Contexts = map[string]sentry.Context{}
 		}
-		event.Contexts["oops"] = sentry.Context(attrs)
+		event.Contexts["oops"] = attrs
 	}
 	return event
 }

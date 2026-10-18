@@ -78,11 +78,9 @@ func (t *Tokens) Issue(purpose Purpose, u *ent.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims{
 		Purpose:     purpose,
 		Fingerprint: fingerprint(purpose, u),
-		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(u.ID),
-			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(Lifetime)),
-		},
+		Subject:     strconv.Itoa(u.ID),
+		IssuedAt:    jwt.NewNumericDate(now),
+		ExpiresAt:   jwt.NewNumericDate(now.Add(Lifetime)),
 	})
 	signed, err := token.SignedString(t.secret)
 	if err != nil {

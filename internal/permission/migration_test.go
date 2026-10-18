@@ -152,7 +152,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	_, err = tx.ExecContext(t.Context(), `DELETE FROM "staff_member_role_permissions"`)
 	require.NoError(t, err)
 
-	for mask := 0; mask < 1<<len(byBit); mask++ {
+	for mask := range 1 << len(byBit) {
 		role := createRole(t, h, fmt.Sprintf("combo-%d", mask))
 		_, err = tx.ExecContext(t.Context(), `INSERT INTO "staff_member_role_permissions"
 			("role_id", "resource", "can_index", "can_create", "can_update", "can_destroy", "created_at", "updated_at")
@@ -169,7 +169,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	assert.Zero(t, remaining, "the matrix rows are replaced, not duplicated")
 
 	policy := permission.NewPolicy(db)
-	for mask := 0; mask < 1<<len(byBit); mask++ {
+	for mask := range 1 << len(byBit) {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 		for i, operations := range byBit {
@@ -200,7 +200,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
 	const holdsCourses, holdsLessons = 1, 2
-	for mask := 0; mask < 4; mask++ {
+	for mask := range 4 {
 		// A bystander grant must survive untouched.
 		grants := []string{"courses.read"}
 		if mask&holdsCourses != 0 {
@@ -215,7 +215,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 	require.NoError(t, err)
 
 	policy := permission.NewPolicy(db)
-	for mask := 0; mask < 4; mask++ {
+	for mask := range 4 {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
 

@@ -3,6 +3,7 @@ package oauthserver_test
 import (
 	"encoding/base64"
 	"encoding/json"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -212,9 +213,7 @@ func TestAuthorizationWithoutPKCES256IsRefused(t *testing.T) {
 				"scope":         {"catalog:read"},
 				"state":         {"s"},
 			}
-			for k, v := range pkce {
-				query[k] = v
-			}
+			maps.Copy(query, pkce)
 
 			res := o.Do(http.MethodGet, "/oauth/authorize?"+query.Encode(), nil)
 
