@@ -98,6 +98,9 @@ type Server struct {
 // host: the worker serves no visitor.
 type Worker struct {
 	Common
+	// HealthAddr is where the health-only listener serves /healthz and /readyz
+	// (ADR-0023); the worker has no other HTTP surface.
+	HealthAddr string `env:"HEALTH_ADDR" envDefault:":8081"`
 	// GitHubToken authenticates clones (private repos / higher rate limits). The
 	// exercises repos are public, so it is optional; when set it is used as the
 	// HTTP basic-auth password (x-access-token).

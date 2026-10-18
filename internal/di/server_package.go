@@ -61,6 +61,8 @@ const (
 
 	routerServiceName      = "router"
 	httpHandlerServiceName = "http-handler"
+	// healthServerServiceName names the worker's health-only *http.Server.
+	healthServerServiceName = "health-server"
 )
 
 // serverPackage contains the synchronous graph: HTTP delivery, event

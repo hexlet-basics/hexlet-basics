@@ -42,6 +42,8 @@ type WorkerDependencies struct {
 	EventRuntime     *events.Runtime        `do:""`
 	Bucket           *blob.Bucket           `do:""`
 	OpenTelemetrySDK *otelconf.SDK          `do:""`
+	Probes           *health.Probes         `do:""`
+	HealthServer     *http.Server           `do:"health-server"`
 
 	injector do.Injector
 }
