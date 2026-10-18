@@ -1,12 +1,40 @@
 package mcpserver
 
 import (
+	"context"
 	"maps"
+	"net/http"
 	"slices"
 	"testing"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+
+	"hexletbasics/internal/oauthserver"
 )
+
+// noVerifier is a verifier for a server that is built only to be inspected.
+type noVerifier struct{}
+
+func (noVerifier) VerifyAccessToken(context.Context, string) (oauthserver.Token, error) {
+	return oauthserver.Token{}, oauthserver.ErrInvalidToken
+}
+func (noVerifier) Resource() string { return "https://inspect.test/mcp" }
+
+// ToolScopes is the Scope each registered tool needs, by name, as the registry
+// holds it: every catalogue, learner, admin and discovery tool of a fully
+// configured server.
+func ToolScopes(t *testing.T) map[string]string {
+	t.Helper()
+	s, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	scopes := map[string]string{}
+	for _, entry := range s.registry {
+		scopes[entry.tool.Name] = entry.needs.scope
+	}
+	return scopes
+}
 
 // AllowForTest replaces the allowlist for the test that follows, to exercise the
 // pipeline with an operation the registry does not offer yet. It must run before

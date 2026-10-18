@@ -70,7 +70,6 @@ type Catalogue interface {
 	GetCourseLesson(ctx context.Context, params api.GetCourseLessonParams) (api.GetCourseLessonRes, error)
 	ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error)
 	GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error)
-	SearchCatalogue(ctx context.Context, params api.SearchCatalogueParams) (*api.SearchResultPage, error)
 }
 
 // Token info keys the verifier fills and the admin tools read into an Audit
@@ -95,16 +94,6 @@ type Deps struct {
 	// Issuer is the authorization server's origin, advertised in the resource
 	// metadata so a client that was refused knows where to sign in.
 	Issuer string
-	// SiteURL is the canonical origin of the public website, which the `url` of a
-	// search result or a fetched record is built on (a citation needs an absolute
-	// one). It is never taken from the request. Empty means the Issuer, which is
-	// the website's own origin wherever the site and the API share one.
-	SiteURL string
-	// Locale is the request locale of a call, which decides the locale prefix of
-	// the page a `fetch` result points to (the website's URLs carry it); it is the
-	// translator's own, so a prefix cannot disagree with the content. Nil means
-	// English, the unprefixed locale.
-	Locale func(ctx context.Context) string
 	// Logger receives verification failures that are ours, not the caller's.
 	Logger *slog.Logger
 	// Limits are the page, response, timeout and rate limits of the tools; a
@@ -134,9 +123,6 @@ func New(deps Deps) (*Server, error) {
 	if deps.Logger == nil {
 		deps.Logger = slog.Default()
 	}
-	if deps.SiteURL == "" {
-		deps.SiteURL = deps.Issuer
-	}
 	limits := deps.Limits.withDefaults()
 	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
 
@@ -147,9 +133,6 @@ func New(deps Deps) (*Server, error) {
 	})
 	mcpServer.AddReceivingMiddleware(s.filterToolList)
 	if err := s.addCatalogueTools(mcpServer); err != nil {
-		return nil, err
-	}
-	if err := s.addSearchTools(mcpServer); err != nil {
 		return nil, err
 	}
 	if err := s.addLearnerTools(mcpServer); err != nil {

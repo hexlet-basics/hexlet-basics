@@ -40,6 +40,7 @@ Domains, by the start of the tool name:
 - catalogue: listCourses, getCourse, getCourseLesson, listPublicCourseCategories, getPublicCourseCategory, listBlogPosts, getBlogPost. Needs the catalog:read scope.
 - learner progress: getMyDashboard, getMyCourseProgress, getMyLessonProgress. Only the signed-in user's own data. Needs progress:read.
 - content administration (admin...): banners, blog posts, courses, course versions, landing pages, categories, reviews, lessons, QnA items, attachments, leads, messages. Needs the admin scope and the matching staff Permission.
+- finding content (adminSearch, adminFetch): full-text search of courses, lessons and posts in a locale, drafts, archived and unlisted pages included, and the read of one result by its id with its state. Needs the admin scope and mcp.read. There is no public search tool.
 - access management (admin...): users, staff members, staff roles and their Permissions. Needs the admin scope and the mcp.manage Permission.
 - audit (adminListAuditRecords): the trail of what staff and assistants did. Needs audit.read.
 

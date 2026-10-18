@@ -530,54 +530,111 @@ no `call_tool(name, args)` and no `execute(code)`: either would bypass or flatte
 the per-operation checkpoint and its Audit Record. A test pins that no tool is named
 or takes an argument like one, and that `findTools` asked to run `adminCreateBanner`
 refuses the argument and leaves no row and no Audit Record. The name is `findTools`
-and not `search`, which the content search of #877 takes.
+and not `search`: it is not an admin tool (see #877 below), and an admin tool is
+named `admin...`.
 
-## Addendum: catalogue search, and the `search` and `fetch` tools (#877)
+## Addendum: catalogue search, and the `adminSearch` and `adminFetch` tools (#877)
 
-Meets the ADR as written; no departure. (The ticket calls this record "ADR-0018",
-its number when the ticket was written.)
+Meets the ADR as written, with one owner decision that changed the first
+version of this record: the content tools are **admin tools**. They found only
+what the storefront shows, and were offered to every `catalog:read` connection
+as `search` and `fetch`. The owner decided that an assistant that finds content
+is a staff assistant, that it must see everything (a draft is what an editor
+looks for), and that nothing in the tool list may suggest otherwise: an admin
+tool is named `admin...`. So the public tools are gone, and what is below is
+what stands. (The ticket calls this record "ADR-0018", its number when the
+ticket was written.)
 
-**Why these two tools and not a tool-finding tool.** Searching and loading tools
+**Why content search and not a tool-finding tool.** Searching and loading tools
 lazily is a client feature (Claude Code and the Claude API defer tools, and the
 MCP proposals for a server-side search of `tools/list` were closed unmerged), so
 the server cooperates with it and invents nothing: scope-filtered `tools/list`
 stays as it is, and a generic `call_tool(name, args)` or `execute(code)` is not
 built, since it would bypass the per-operation checkpoint and audit (ADR-0020).
-For content, `search` and `fetch` is the de facto convention of ChatGPT
-connectors and deep research, and it is what a client built to it looks for by
-name.
+For content, a search and a fetch by id is the shape of ChatGPT connectors and
+deep research; here it is kept as two operations of the contract.
 
-**The operation.** `searchCatalogue` (`GET /search`) is a public contract
-operation: `q` (1 to 200 characters), an optional `type` (`course`, `lesson`,
-`post`) and the usual `page` and `perPage`, in the request locale. It answers a
-`Page` of `SearchResult`: `type`, a typed `id`, `title`, a plain-text `snippet`
-and the page's `path` with the locale prefix and no origin. The HTTP handler and
-the MCP tool run the same method. The business rules are in `internal/search`
-(`SearchCatalogue` command, `Hit` result), per the use-case module rules.
+**Two operations of the contract, one checkpoint.** `adminSearch`
+(`GET /admin/search`: `q` of 1 to 200 characters, an optional `type` of `course`,
+`lesson` or `post`, `page` and `perPage`) answers a `Page` of `AdminSearchResult`;
+`adminFetch` (`GET /admin/search/record?id=`) answers an `AdminRecord`
+(`id`, `title`, `text`, `path`, `metadata`). Both are in the `AdminSession`
+security scheme and declare `x-access: any-staff`, as the upload and the menu's
+capabilities do, so the dispatch, the Permission check, the locale check and the
+Audit Record of a refusal are the existing machinery: they are listed in the
+admin allowlist like any other operation and become tools named after their
+operationId, with the `locale` argument every admin tool requires. Over MCP they
+need the admin Scope and `mcp.read` (the capability every admin read needs), which
+`tools/list` uses to leave them out of the list of a caller who has neither, and
+the checkpoint uses to refuse the call by name, with a `forbidden` Audit Record
+of the `mcp` channel. A test covers each way in: no admin Scope, a role without
+`mcp.read`, an administrator who is not staff, and a locale the role does not
+allow. They are reads of the site's own content, so like the other content reads
+they leave no record when they succeed.
 
-**What is searched, and what a visitor may see.** Only text the authors wrote:
-a landing page's name, header, description and outcomes; a lesson's name,
-description, theory and instructions; a post's name, description and body. The
-records are those the public reads already scope, by the same predicates
-(`landingpages.Listed`, `blogposts.Published`, the course's current Version): a
-listed landing page of a completed Course, a lesson of that Course's current
-build translated into the locale, a published post of the locale. A draft or
-unlisted page, a retired build, an unpublished post and another locale are not
-found, each tested by making the record readable and seeing it appear.
-A lesson is found only while its course has a listed landing page in the
-locale, so a lesson never outlives its course on the list.
+`x-access: any-staff` says any staff member with `mcp.read` may search, whatever
+their role's content Permissions: a role that may only edit banners can read a
+draft post through these tools. That is the owner's decision ("in the admin they
+return everything"), not an oversight; if a role must not, the way to say so is a
+Permission of its own (`search.read`) on the two operations, which is a contract
+edit and no change to the tools.
+
+**Unrestricted, in one module.** `internal/search` has one query path and the
+command says which scope applies: `SearchCatalogue.Unrestricted` drops the
+storefront's filters (a listed landing page, a completed Course, a published
+post, the current build) and keeps the locale, so the search finds every landing
+page of the locale (draft, archived, unlisted), every lesson of any course
+(including one that is not completed), and every post (any state). The public
+`searchCatalogue` operation (`GET /search`), its handler and its filters are
+unchanged, and its tests still prove that a draft, an unlisted page, a retired
+build and an unpublished post are not found, each by making the record readable
+and seeing it appear. The handler of `adminSearch` sets `Unrestricted`; nothing
+else does.
+
+A lesson has a translation in every build of its course, and in an unrestricted
+search each would be a hit with the same id. The search takes the translation of
+the newest build the lesson has in the locale (the build being worked on, and the
+current one once it is released), so a lesson is one hit and the id still names
+it. A hit carries `state` (a landing page's, a lesson's or a post's publication
+state) and `readiness` (the Course's: `draft`, `in_development`, `completed`;
+empty for a post), so the editor can tell a draft from a published page without
+a second call.
+
+**Ids and locale.** `course:<landing page slug>`, `lesson:<course slug>/<lesson
+slug>` and `post:<slug>`, unchanged: made of what the page's URL carries, never a
+database id. A landing page slug and a post slug depend on the locale, so an id is
+read in the locale of the call, and the locale is the one the caller asks for:
+`adminFetch` of a post in another locale is a 404, as is an id that is not one
+search returns or that names nothing (one answer, so the tool does not say which
+slugs exist).
+
+**`adminFetch` is a read of the record, in any state.** It does not go through
+`getCourse`, `getCourseLesson` or `getBlogPost`, which answer for a visitor (and
+which, as found earlier, serve a draft landing page by its URL while hiding a
+course that is archived). `internal/search` reads the record itself and writes
+the text: a course's landing copy and its lessons in order, each with the id that
+fetches it; a lesson's description, theory and exercise; a post's text with the
+markup dropped and its paragraphs kept. `metadata` says what the editor needs to
+know about the record's state: `state`, `readiness`, `listed` for a landing page
+(listed is a flag, not a state: an unlisted page is published and off the course
+list), `buildState` of the build a lesson was read from, and the lesson's
+position. A lesson's starter code, reference solution and tests are not in the
+text: nothing here needs them and the lesson editor has them. `path` is the page's
+address on the public site (locale prefix, no origin): a record that is not public
+has no page there yet, and the tools do not build an absolute URL, so
+`SITE_URL` is no longer a dependency of the endpoint. The text is held to the
+response limit of #851 like any admin result: the longest string is cut with the
+usual `truncation` hint.
 
 **No learner-written text, by construction.** The module reads three tables
-(landing pages, lesson translations, blog posts) and the two it needs for slugs.
-It never touches reviews, assistant messages, leads, users or lesson reviews; a
-test records the statements a search sends and fails if one names such a table,
-and another searches for the words of a fixture review and finds nothing. The
-**prompt-injection note** the research asked for: result text comes from authors
-and not from visitors, which is why it can be shown to a model as the site's own
-copy; but it is still data, not instruction, and a client is expected to treat it
-so. Keeping every user-generated field out of `search` results (and out of
-`fetch`: a post's author name is a Staff Member's public byline) is therefore a
-rule, and adding a field that carries visitor text to either needs this note
+(landing pages, lesson translations, blog posts) and the two it needs for slugs
+and states. It never touches reviews, assistant messages, leads, users or lesson
+reviews; a test records the statements a search sends and fails if one names such
+a table, and another searches for the words of a fixture review and finds
+nothing. That holds for the unrestricted search too. The **prompt-injection
+note**: result text comes from authors and not from visitors, but it is still
+data, not instruction, and a client is expected to treat it so, a draft no less
+than a published page; adding a field that carries visitor text needs this note
 revisited.
 
 **PostgreSQL full-text search, no new service.** One `IMMUTABLE` SQL function,
@@ -585,84 +642,29 @@ revisited.
 (title weight A, summary B, body C), and a migration creates a GIN index on it
 for each table and for `russian` and `english`. The query writes the
 configuration as a literal chosen from a fixed map (`ru` and `en`; any other
-locale falls back to `simple` and an unindexed scan, which is fine while the
-catalogue has no content in it), so the planner can match the index expression,
-and reads the text with `websearch_to_tsquery`: quotes, `or` and `-word` work and
-no input is a syntax error. The word `Hello` in a Russian post and in an English
-one are the same query under two configurations, which is what the locale scope
-is for. An `EXPLAIN` test records the statements a search sends and shows each
-language's index of each table in the plan. The fixtures are a handful of rows,
-for which PostgreSQL rightly reads the table, so the test turns sequential scans
-off for its transaction, and for the lessons also drops the locale index that
-would otherwise be the cheaper way in (in that transaction only): what it proves
-is that the query's expression is the one the index holds, not that the planner
-picks it at that size. Results are ranked by `ts_rank` (best first, then kind,
-then id, so a page is stable). Each kind is queried for its best
-`page * perPage` rows and the lists are merged; the window is limited to the
-first 1000 hits, because a search is for finding a page and the lists are for
-paging, and an unbounded page number would be an unbounded query. Snippets
-(`ts_headline`) are made in a second query, only for the hits of the window,
-since producing one reads the whole text of the record.
+locale falls back to `simple` and an unindexed scan), so the planner can match the
+index expression, and reads the text with `websearch_to_tsquery`: quotes, `or` and
+`-word` work and no input is a syntax error. An `EXPLAIN` test records the
+statements a search sends, for both the public and the unrestricted scope, and
+shows each language's index of each table in the plan (the fixtures are a handful
+of rows, so the test turns sequential scans off for its transaction, and for the
+lessons also drops the locale index that would otherwise be the cheaper way in:
+what it proves is that the query's expression is the one the index holds). Results
+are ranked by `ts_rank` (best first, then kind, then id, so a page is stable).
+Each kind is queried for its best `page * perPage` rows and the lists are merged;
+the window is limited to the first 1000 hits. Snippets (`ts_headline`) are made in
+a second query, only for the hits of the window.
 
-**Typed ids.** `course:<landing page slug>` (the slug `getCourse` takes, so per
-locale), `lesson:<course slug>/<lesson slug>` (the course's own slug, as
-`getCourseLesson` and the lesson page's URL have it) and `post:<slug>`. They are
-made of what the page's URL carries, so they are stable as long as the page is,
-cannot be guessed to reach anything a URL does not, and hold no database id.
-Because a landing page slug depends on the locale, an id of a course or lesson
-is read in the locale of the connection it came from; a `fetch` of a course in
-another locale is "no record has the id", and the error says so.
+**Rename, and the gap it leaves.** The convention names `search` and `fetch`;
+the tools are `adminSearch` and `adminFetch`, because every tool that needs the
+admin Scope is called `admin...` (a test over the registry requires it, and that
+nothing else carries the prefix; `findTools` is not an admin tool and keeps its
+name). A client built strictly to the ChatGPT convention will not find them under
+those names, and their results are the contract's (`items` and not `results`, a
+`path` and not an absolute `url`). A non-staff connection has the catalogue tools
+(`listCourses`, `getCourse`, `getCourseLesson`, `listBlogPosts`, `getBlogPost`)
+and no search: that is a gap, and a public search tool for a visitor's assistant
+is a decision for the owner, not something to invent here. `searchCatalogue` stays
+in the contract for whoever builds a site search box or such a tool.
 
-**The tools.** `search(query, type?, page?, perPage?)` answers `{results: [{id,
-title, url, type, snippet}], total, page, perPage}`; `fetch(id)` answers `{id,
-title, text, url, metadata}`. Both return that JSON as `structuredContent` and,
-identically, as one text block (a flag on the tool result makes the text the JSON
-of the data, written after any cut, so the two cannot differ). Both need
-`catalog:read`, spend the catalogue rate budget, carry `readOnlyHint`, and carry
-`_meta["anthropic/alwaysLoad"]: true` so a client that defers tools still loads
-them first. The `url` is absolute, from the configured site URL (`SITE_URL`,
-`Deps.SiteURL`; the Issuer when it is empty), never from the request, with the
-locale prefix of the call (`Deps.Locale` is the translator's own, so a prefix
-cannot disagree with the content). A result and the record it names carry the
-same URL, tested for all three types. `page` and `perPage` follow the other
-catalogue tools (a size above the limit is clamped). The two tools bring the whole
-list (#878) to 100 tools and 90 KB; their descriptions are one sentence each, to
-stay within the budget a description is held to, and the detail is in the
-argument descriptions.
-
-**`fetch` is the catalogue operations, as one document.** It calls `getCourse`,
-`getCourseLesson` or `getBlogPost` through the `Catalogue` and writes what they
-return as Markdown-ish text: a course's landing copy, lessons (each with the id
-that fetches it), modules and questions; a lesson's theory, exercise, definitions
-and tips; and, as #851 decided for `getCourseLesson`, its starter code,
-reference solution and tests (the HTTP read gives them to every visitor, and
-fetch adds no rule of its own); a post's text with the markup dropped and its
-paragraphs kept, and the courses it promotes. `metadata` holds the kind, slugs,
-position, reading time and the like. The text is held to the response limit of
-#851: the document is in the structured content and in the text block, so each
-gets half of `MCP_MAX_RESPONSE_BYTES`, the longest string is cut with the usual
-`truncation` hint, and the hint says the full text is on the website, at `url`.
-An id that is malformed, or that names nothing a visitor may read (missing,
-draft, archived, in another locale), is a tool error that says which; a landing
-page that was archived and moved says where. The halving has a floor: below about
-1.5 KB for `MCP_MAX_RESPONSE_BYTES` (the config minimum is 1 KB) the room left for
-the hint (700 bytes) leaves none for the document, and `search` and `fetch`
-answer a tool error naming the limit instead of a cut result.
-
-**A finding, not changed here.** `getCourse` and `getCourseLesson` answer a
-request for a landing page that is a draft, or for a lesson of a course that is
-not completed, whatever its state: the website does not link to them, but the
-URL works (`coursepages` checks the slug and the locale, and an archived page's
-redirect, not the state). The HTTP behaviour is not this ticket's to change, so
-`fetch` guards against it instead, and so adds a rule of its own to what #851
-said the tools add (nothing): a course is fetched only when its landing page is
-published and listed and its Course completed, a lesson only when its Course is
-completed. That is the part of search's scope that the view carries; a lesson's
-other condition (some listed landing page of its course in the locale) is not in
-its view and is not re-checked, so a `fetch` of a lesson whose course has no
-listed page may answer where search would not have found it. Whether the HTTP
-operations should answer 404 for drafts is a question for the owner of the
-public course pages.
-
-**Not done here.** The site has no search box; the operation is in the contract
-and the client for whoever builds one. Books have no tool (see #851).
+**Not done here.** The site has no search box. Books have no tool (see #851).
