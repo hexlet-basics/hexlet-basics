@@ -1,4 +1,4 @@
-package banners_test
+package sitebanner_test
 
 import (
 	"testing"
@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/banners"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/testsupport"
 )
 
 func TestActiveIsAPublishedBannerOfTheLocaleWhoseWindowIsOpen(t *testing.T) {
-	directory := banners.NewDirectory(testsupport.NewClient(t))
+	directory := sitebanner.NewDirectory(testsupport.NewClient(t))
 
 	row, err := directory.Active(t.Context(), "ru", testsupport.Today)
 
@@ -28,7 +28,7 @@ func TestActiveIsAPublishedBannerOfTheLocaleWhoseWindowIsOpen(t *testing.T) {
 }
 
 func TestActiveWithNoBannerInTheLocaleIsNotFound(t *testing.T) {
-	directory := banners.NewDirectory(testsupport.NewClient(t))
+	directory := sitebanner.NewDirectory(testsupport.NewClient(t))
 
 	// The fixtures hold banners in ru and en only: another locale shows nothing.
 	_, err := directory.Active(t.Context(), "es", testsupport.Today)

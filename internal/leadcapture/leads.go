@@ -1,6 +1,6 @@
-// Package leads owns the site's lead capture: storing a contact request and
+// Package leadcapture owns the site's lead capture: storing a contact request and
 // raising the LeadCreated fact the amoCRM integration consumes.
-package leads
+package leadcapture
 
 import (
 	"context"

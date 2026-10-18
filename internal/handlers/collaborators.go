@@ -10,7 +10,7 @@ import (
 	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/leads"
+	"hexletbasics/internal/leadcapture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/search"
@@ -71,7 +71,7 @@ type CourseLister interface {
 
 // LeadCreator stores a lead and raises LeadCreated with it.
 type LeadCreator interface {
-	Create(ctx context.Context, submission leads.Submission) (*ent.Lead, error)
+	Create(ctx context.Context, submission leadcapture.Submission) (*ent.Lead, error)
 }
 
 // BookRequester is the book funnel, from the request to the download.

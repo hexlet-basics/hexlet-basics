@@ -1,5 +1,5 @@
-// Package banners reads the banner a page shows.
-package banners
+// Package sitebanner reads the banner a page shows.
+package sitebanner
 
 import (
 	"context"

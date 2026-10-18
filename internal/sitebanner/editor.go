@@ -1,4 +1,4 @@
-package banners
+package sitebanner
 
 import (
 	"context"
