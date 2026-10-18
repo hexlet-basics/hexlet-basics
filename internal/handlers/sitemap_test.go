@@ -35,6 +35,7 @@ func sitemapLandingSlugs(sitemap *api.Sitemap) []string {
 // are listed, ru first, then en, by id. In the fixtures every catalog course
 // has lessons; the javascript course's archived and draft pages stay out.
 func TestGetSitemapListsLandingPagesWithLessons(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	sitemap := getSitemap(t, h)
@@ -59,6 +60,7 @@ func TestGetSitemapListsLandingPagesWithLessons(t *testing.T) {
 
 // The rows do not depend on the request locale: the page lists every locale.
 func TestGetSitemapIgnoresTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -72,6 +74,7 @@ func TestGetSitemapIgnoresTheRequestLocale(t *testing.T) {
 // Unlisted and es pages drop off; an unfinished course does not, as the
 // sitemap has no completed-course filter.
 func TestGetSitemapLeavesOutUnlistedAndSpanishPages(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 
@@ -99,6 +102,7 @@ func TestGetSitemapLeavesOutUnlistedAndSpanishPages(t *testing.T) {
 // The lessons have to be in the page's own locale and in the course's current
 // version: en lessons left only in an older version do not count.
 func TestGetSitemapNeedsLessonsInTheCurrentVersionAndLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 
@@ -131,6 +135,7 @@ func TestGetSitemapNeedsLessonsInTheCurrentVersionAndLocale(t *testing.T) {
 // Published posts of every locale, newest first; drafts and archived posts
 // stay out.
 func TestGetSitemapListsPublishedPostsNewestFirst(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	sitemap := getSitemap(t, h)
@@ -144,6 +149,7 @@ func TestGetSitemapListsPublishedPostsNewestFirst(t *testing.T) {
 
 // Every category of every locale is listed.
 func TestGetSitemapListsAllCategories(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	sitemap := getSitemap(t, h)

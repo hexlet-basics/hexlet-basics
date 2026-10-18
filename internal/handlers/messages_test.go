@@ -15,6 +15,7 @@ import (
 // ai_messages.yml seeds these three.
 
 func TestAdminListMessages(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalAssistantMessages := h.DB.AiMessage.Query().CountX(ctx)
@@ -54,6 +55,7 @@ func TestAdminListMessages(t *testing.T) {
 }
 
 func TestAdminListMessagesPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalAssistantMessages := h.DB.AiMessage.Query().CountX(ctx)

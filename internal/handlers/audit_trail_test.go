@@ -72,6 +72,7 @@ func listTrail(h *testsupport.Harness, params api.AdminListAuditRecordsParams) (
 }
 
 func TestAnAdministratorWithoutAStaffRecordIsRefusedTheTrail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
@@ -81,6 +82,7 @@ func TestAnAdministratorWithoutAStaffRecordIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestAnAdministratorWhoseRoleLacksAuditReadIsRefusedTheTrail(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, false)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
@@ -90,6 +92,7 @@ func TestAnAdministratorWhoseRoleLacksAuditReadIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
@@ -99,6 +102,7 @@ func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
 }
 
 func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
@@ -108,6 +112,7 @@ func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
 }
 
 func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	now := time.Now()
 	oldest := seedRecord(t, h, now.Add(-72*time.Hour), "AdminCreateBanner", nil)
@@ -137,6 +142,7 @@ func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
 }
 
 func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	now := time.Now().Add(-time.Hour)
 	actor := 4242
@@ -170,6 +176,7 @@ func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
 // recent past: a record older than the default window is not listed unless the
 // caller asks for it.
 func TestTheTrailIsBoundedByAWindowThatDefaultsToThirtyDays(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	now := time.Now()
 	old := seedRecord(t, h, now.Add(-45*24*time.Hour), "AdminCreateBanner", nil)
@@ -195,6 +202,7 @@ func TestTheTrailIsBoundedByAWindowThatDefaultsToThirtyDays(t *testing.T) {
 }
 
 func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	now := time.Now()
 
@@ -228,6 +236,7 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 }
 
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	at := time.Now().Add(-time.Hour)
 	banner, carol := fixture.ID(fixture.BannerEnDraft), fixture.ID(fixture.UserWithPassword)
@@ -275,6 +284,7 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 // leaves a record of AuditRecord rows being read once the worker has run, and
 // the ids are those of the records the page showed.
 func TestReadingTheTrailIsRecordedAsAReadOfPersonalData(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 	testsupport.ArriveFrom(h, "203.0.113.77")
 	seeded := seedRecord(t, h, time.Now().Add(-time.Hour), "AdminCreateBanner", nil)
@@ -296,6 +306,7 @@ func TestReadingTheTrailIsRecordedAsAReadOfPersonalData(t *testing.T) {
 
 // A refused call read nothing, so it leaves no read record.
 func TestARefusedReadOfTheTrailIsNotRecordedAsARead(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
@@ -319,24 +330,28 @@ func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
 // harness holds an open transaction, and two of them inserting a staff record
 // for the same user would wait on each other.
 func TestAnAdministratorHoldsNoCapabilityByBeingOne(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }
 
 func TestARoleWithTheGrantHoldsTheCapability(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, true)
 
 	assert.Equal(t, []string{"audit.read"}, capabilitiesOf(t, h))
 }
 
 func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
+	t.Parallel()
 	h := auditReader(t, false)
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }
 
 func TestAnyStaffMemberMayAskWhatTheyHold(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	assert.Empty(t, capabilitiesOf(t, h))

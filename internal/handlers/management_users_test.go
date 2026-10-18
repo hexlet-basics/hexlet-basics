@@ -15,6 +15,7 @@ import (
 // Reuses users.yml (totalUsers) — the management surface reads the same table.
 
 func TestAdminListManagementUsers(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalUsers := h.DB.User.Query().CountX(ctx)
@@ -29,6 +30,7 @@ func TestAdminListManagementUsers(t *testing.T) {
 }
 
 func TestAdminGetManagementUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -41,6 +43,7 @@ func TestAdminGetManagementUser(t *testing.T) {
 }
 
 func TestAdminGetManagementUserNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -50,6 +53,7 @@ func TestAdminGetManagementUserNotFound(t *testing.T) {
 }
 
 func TestAdminUpdateManagementUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

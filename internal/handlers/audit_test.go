@@ -62,6 +62,7 @@ func blogInput(name, slug string) *api.BlogPostInput {
 }
 
 func TestCreatingABlogPostLeavesOneAuditRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	testsupport.ArriveFrom(h, "203.0.113.7")
@@ -92,6 +93,7 @@ func TestCreatingABlogPostLeavesOneAuditRecord(t *testing.T) {
 }
 
 func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	// Second post: slug and state are re-sent unchanged, name and body change,
@@ -136,14 +138,15 @@ func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
 }
 
 func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
-	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)}))
+	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostToDelete)}))
 
 	rows := records(t, h, "AdminDeleteBlogPost")
 	require.Len(t, rows, 1, "the dependents' deletes are part of this one record, not records of their own")
 	assert.Equal(t, "BlogPost", *rows[0].EntityType)
-	assert.Equal(t, strconv.Itoa(fixture.ID(fixture.BlogPostHelloWorld)), *rows[0].EntityID)
+	assert.Equal(t, strconv.Itoa(fixture.ID(fixture.BlogPostToDelete)), *rows[0].EntityID)
 
 	var entities []string
 	for _, c := range changesOf(t, rows[0]) {
@@ -158,6 +161,7 @@ func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
 }
 
 func TestAReadLeavesNoAuditRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminGetBlogPost(context.Background(), api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
@@ -169,6 +173,7 @@ func TestAReadLeavesNoAuditRecord(t *testing.T) {
 }
 
 func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	name := *h.DB.BlogPost.GetX(t.Context(), fixture.ID(fixture.BlogPostSecondPost)).Name
 
@@ -194,6 +199,7 @@ func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T)
 }
 
 func TestAChangeIsNotCommittedWhenItsRecordCannotBeWritten(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	breakWrites(h, ent.TypeAuditRecord)

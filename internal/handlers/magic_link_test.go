@@ -36,6 +36,7 @@ func issuedAgo(d time.Duration) emailtoken.Option {
 }
 
 func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
 	u := fixtureUser(t, h, fixture.UserBlank)
@@ -48,6 +49,7 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 }
 
 func TestCreateMagicLinkIgnoresCase(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserBlank)
 
@@ -60,6 +62,7 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 
 // Only ru and es are emailed; a request in any other language gets ru.
 func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "en")
 	fixtureUser(t, h, fixture.UserBlank)
@@ -72,6 +75,7 @@ func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 }
 
 func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	before := h.DB.User.Query().CountX(t.Context())
 
@@ -85,6 +89,7 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 }
 
 func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	fixtureUser(t, h, fixture.UserBlank)
 
@@ -101,6 +106,7 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 // Following the link signs in exactly as a password does: the session cookie,
 // the guest's progress credited, the sign-in recorded.
 func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
 	u := fixtureUser(t, h, fixture.UserBlank)
 
@@ -119,6 +125,7 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 }
 
 func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserBlank)
 	token := issueEmailToken(t, emailtoken.MagicLink, u)
@@ -131,6 +138,7 @@ func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
 }
 
 func TestConsumeMagicLinkRefusesDeadLinks(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserBlank)
 	changed := fixtureUser(t, h, fixture.UserWithPassword)

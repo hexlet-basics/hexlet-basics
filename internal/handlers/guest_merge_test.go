@@ -24,6 +24,7 @@ import (
 // Signing up with guest progress credits exactly the lessons the visitor
 // finished.
 func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
@@ -48,6 +49,7 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 // Signing in with the browser ahead of the account adds what it finished: the
 // merge is a union, and a later lesson does not pull the earlier ones with it.
 func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
 	ctx := context.Background()
 
@@ -65,6 +67,7 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 
 // An account that already has everything the cookie names is untouched.
 func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
@@ -80,6 +83,7 @@ func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 // A cookie naming a lesson the current version no longer contains resolves to
 // nothing, so that course resets rather than corrupting the account.
 func TestSignInIgnoresAGuestLessonMissingFromTheCurrentVersion(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, "removed-in-a-later-build"))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
@@ -92,6 +96,7 @@ func TestSignInIgnoresAGuestLessonMissingFromTheCurrentVersion(t *testing.T) {
 
 // Signing in without a guest cookie behaves exactly as it did before.
 func TestSignInWithoutAGuestCookieMergesNothing(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)

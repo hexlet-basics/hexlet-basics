@@ -11,3 +11,9 @@
   user_id: {{ id "user_staff_editor" }}
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+# One like on blog_post_to_delete, so its delete test sees the like go with the post.
+- id: {{ id "blog_post_like_to_delete_staff_editor" }}
+  blog_post_id: {{ id "blog_post_to_delete" }}
+  user_id: {{ id "user_staff_editor" }}
+  created_at: '2026-07-27 13:00:00'
+  updated_at: '2026-07-27 13:00:00'

@@ -22,6 +22,7 @@ func searchIDs(page *api.SearchResultPage) []string {
 // An anonymous visitor searches in the language of the request and gets compact
 // results with the page of each record.
 func TestSearchCatalogueAnswersAVisitorInTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -41,6 +42,7 @@ func TestSearchCatalogueAnswersAVisitorInTheRequestLocale(t *testing.T) {
 }
 
 func TestSearchCatalogueNarrowsToOneType(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -56,6 +58,7 @@ func TestSearchCatalogueNarrowsToOneType(t *testing.T) {
 }
 
 func TestSearchCataloguePagesTheAnswer(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	whole, err := h.Client.SearchCatalogue(t.Context(), api.SearchCatalogueParams{Q: "Привет"})
@@ -74,6 +77,7 @@ func TestSearchCataloguePagesTheAnswer(t *testing.T) {
 
 // Nothing typed is an error: unbalanced quotes and operators are just words.
 func TestSearchCatalogueTakesAnyTextButAnEmptyOne(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 

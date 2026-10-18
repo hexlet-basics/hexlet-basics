@@ -21,6 +21,7 @@ import (
 // blog_posts.yml seeds these six (every state and locale: admin lists them all).
 
 func TestAdminListBlogPosts(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalBlogPosts := h.DB.BlogPost.Query().CountX(ctx)
@@ -67,6 +68,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 }
 
 func TestAdminGetBlogPost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -83,6 +85,7 @@ func TestAdminGetBlogPost(t *testing.T) {
 }
 
 func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -99,6 +102,7 @@ func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
 }
 
 func TestAdminGetBlogPostNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -108,6 +112,7 @@ func TestAdminGetBlogPostNotFound(t *testing.T) {
 }
 
 func TestAdminCreateBlogPost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -134,6 +139,7 @@ func TestAdminCreateBlogPost(t *testing.T) {
 // TestAdminCreateBlogPostStampsRequestLocale: the post carries the admin UI's
 // language, not a pinned default.
 func TestAdminCreateBlogPostStampsRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -148,6 +154,7 @@ func TestAdminCreateBlogPostStampsRequestLocale(t *testing.T) {
 }
 
 func TestAdminUpdateBlogPost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -170,6 +177,7 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 }
 
 func TestAdminUpdateBlogPostNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -184,29 +192,31 @@ func TestAdminUpdateBlogPostNotFound(t *testing.T) {
 }
 
 func TestAdminDeleteBlogPost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	// 6001 carries both kinds of dependents: 2 likes and 3 related-course items.
-	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
+	// The post carries both kinds of dependents: a like and two related-course items.
+	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostToDelete)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	gone, err := h.DB.BlogPost.Query().Where(blogpost.IDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Exist(ctx)
+	gone, err := h.DB.BlogPost.Query().Where(blogpost.IDEQ(fixture.ID(fixture.BlogPostToDelete))).Exist(ctx)
 	require.NoError(t, err)
 	assert.False(t, gone, "post should be deleted")
 
-	likes, err := h.DB.BlogPostLike.Query().Where(blogpostlike.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Count(ctx)
+	likes, err := h.DB.BlogPostLike.Query().Where(blogpostlike.BlogPostIDEQ(fixture.ID(fixture.BlogPostToDelete))).Count(ctx)
 	require.NoError(t, err)
 	assert.Zero(t, likes, "likes should be deleted with the post")
 
 	items, err := h.DB.BlogPostRelatedCourseItem.Query().
-		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Count(ctx)
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixture.ID(fixture.BlogPostToDelete))).Count(ctx)
 	require.NoError(t, err)
 	assert.Zero(t, items, "related-course items should be deleted with the post")
 }
 
 func TestAdminDeleteBlogPostNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -216,6 +226,7 @@ func TestAdminDeleteBlogPostNotFound(t *testing.T) {
 }
 
 func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -249,6 +260,7 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 // replace is one transaction, so the post keeps its previous three courses
 // rather than being left with none, as legacy's bare delete-then-insert was.
 func TestAdminSetBlogPostRelatedCoursesKeepsTheSetOnFailure(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -267,6 +279,7 @@ func TestAdminSetBlogPostRelatedCoursesKeepsTheSetOnFailure(t *testing.T) {
 }
 
 func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -280,6 +293,7 @@ func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 // The AI pick is asynchronous: the action only enqueues one job for the post,
 // leaving its current set in place until the worker replaces it.
 func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -292,6 +306,7 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 }
 
 func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

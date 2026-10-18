@@ -25,10 +25,11 @@ import (
 // A delete keeps the old values of the row it removed, so an investigator can
 // see what a deleted post said.
 func TestDeletingABlogPostRecordsItsOldValues(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
-	before := h.DB.BlogPost.GetX(t.Context(), fixture.ID(fixture.BlogPostHelloWorld))
+	before := h.DB.BlogPost.GetX(t.Context(), fixture.ID(fixture.BlogPostToDelete))
 
-	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)}))
+	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostToDelete)}))
 
 	rows := records(t, h, "AdminDeleteBlogPost")
 	require.Len(t, rows, 1)
@@ -42,6 +43,7 @@ func TestDeletingABlogPostRecordsItsOldValues(t *testing.T) {
 // operation fails after enqueueing (here its record cannot be written), the job
 // must not exist, or the worker would act on a change that never happened.
 func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	breakWrites(h, ent.TypeAuditRecord)
@@ -53,6 +55,7 @@ func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 }
 
 func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
@@ -68,6 +71,7 @@ func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
 // they do, with no per-operation code: a user created through the management
 // API leaves a record naming the entity.
 func TestAnOperationMarkedAdministratorsOnlyIsRecordedEndToEnd(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.AdminCreateUser(context.Background(), &api.UserInput{
@@ -89,6 +93,7 @@ func TestAnOperationMarkedAdministratorsOnlyIsRecordedEndToEnd(t *testing.T) {
 // across that call is what the standalone declaration avoids: no transaction is
 // open while the handler runs, and the record is written after it.
 func TestAStandaloneOperationRunsItsHandlerWithoutATransactionOpen(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	tracked := &trackedTransactor{inner: h.Transactor}
 	audited := handlers.NewAuditMiddleware(tracked, testsupport.NewTranslator(t),
@@ -113,6 +118,7 @@ func TestAStandaloneOperationRunsItsHandlerWithoutATransactionOpen(t *testing.T)
 // An upload still leaves its record through the real handler, naming the
 // attachment row the standalone write created.
 func TestAnUploadIsRecordedWithItsAttachment(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUploadAttachment(t.Context(), &api.AttachmentUploadFormMultipart{
@@ -130,6 +136,7 @@ func TestAnUploadIsRecordedWithItsAttachment(t *testing.T) {
 // A validation answer is a response, not an error, and nothing was changed: it
 // is recorded as failed, not as a change that succeeded.
 func TestAValidationAnswerIsRecordedAsFailed(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	audited := handlers.NewAuditMiddleware(h.Transactor, testsupport.NewTranslator(t),
 		testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
@@ -148,6 +155,7 @@ func TestAValidationAnswerIsRecordedAsFailed(t *testing.T) {
 
 // Reads, public operations and refusals of a signed-out caller leave nothing.
 func TestAnUnauthenticatedCallLeavesNoRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	_, err := h.Client.AdminCreateBlogPost(context.Background(), permissionsPostInput("anon"))

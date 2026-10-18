@@ -20,6 +20,7 @@ import (
 // contract, so adding one to the TypeSpec adds it here with no edit, and one the
 // middleware does not reach fails this test.
 func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
+	t.Parallel()
 	operations := permissioncatalog.AdminWrites()
 	require.NotEmpty(t, operations)
 
@@ -42,6 +43,7 @@ func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
 // record survives the rollback of the change. It holds no changes, because the
 // changes did not happen and may name values the caller never saw.
 func TestEveryAdminWriteOperationRecordsAFailure(t *testing.T) {
+	t.Parallel()
 	for _, operation := range permissioncatalog.AdminWrites() {
 		t.Run(operation, func(t *testing.T) {
 			h := testsupport.NewHarness(t)

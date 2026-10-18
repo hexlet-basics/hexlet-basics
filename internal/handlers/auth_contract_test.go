@@ -30,6 +30,7 @@ type openAPIPath struct {
 }
 
 func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
+	t.Parallel()
 	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
 
@@ -93,6 +94,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 // operations migrated so far: what an admin operation needs is written in the
 // contract, as a Permission and whether it reads or writes, not in a Go table.
 func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
+	t.Parallel()
 	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
 	require.NoError(t, err)
 

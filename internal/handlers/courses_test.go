@@ -20,6 +20,7 @@ import (
 // typescript's Course id is the larger of the two — proving `order` drives the
 // sort, not the id.
 func TestListCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
@@ -59,6 +60,7 @@ func TestListCourses(t *testing.T) {
 // `LandingPage.web.where(listed: true)`): a draft or archived page is not
 // public, and neither is a page written for another locale.
 func TestListCoursesServesOnlyPublishedPagesInTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	for _, locale := range []string{"ru", "en"} {
 		t.Run(locale, func(t *testing.T) {
 			h := testsupport.NewHarness(t)

@@ -18,6 +18,7 @@ import (
 // operations, and they answer as if the request had never existed: a deployment
 // that has not enabled the feature exposes no way to probe it.
 func TestConsentOperationsAnswerNotFoundWhileTheOAuthServerIsOff(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -40,6 +41,7 @@ func TestConsentOperationsAnswerNotFoundWhileTheOAuthServerIsOff(t *testing.T) {
 // both flags off the router mounts nothing for them, so each path must fall
 // through to the generated server's 404 rather than reach a half-wired handler.
 func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
+	t.Parallel()
 	router, _ := newAttachmentRouterStack(t, false)
 
 	for _, target := range []string{
@@ -63,6 +65,7 @@ func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
 // Without the OAuth server there can be no Connected App: the list is empty (the
 // account page shows its empty state) and a revoke finds nothing.
 func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminLearner)
 	ctx := context.Background()
 

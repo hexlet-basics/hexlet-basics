@@ -34,6 +34,7 @@ func categoryLandingSlugs(view *api.CourseCategoryView) []string {
 
 // The index is the request locale's categories only.
 func TestListPublicCourseCategoriesShowsTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -53,6 +54,7 @@ func TestListPublicCourseCategoriesShowsTheRequestLocale(t *testing.T) {
 // share an order and fall back to course id. The en page grouped under the
 // category is left out.
 func TestGetPublicCourseCategoryListsItsLandingPagesInCourseOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -68,6 +70,7 @@ func TestGetPublicCourseCategoryListsItsLandingPagesInCourseOrder(t *testing.T) 
 // Legacy `web.where(listed: true)`: an unlisted page, an unpublished one and a
 // page whose course is not completed drop off the category page.
 func TestGetPublicCourseCategoryLeavesOutHiddenPagesAndUnfinishedCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
@@ -91,6 +94,7 @@ func TestGetPublicCourseCategoryLeavesOutHiddenPagesAndUnfinishedCourses(t *test
 
 // The questions come with the page, oldest first.
 func TestGetPublicCourseCategoryCarriesItsQuestions(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -105,6 +109,7 @@ func TestGetPublicCourseCategoryCarriesItsQuestions(t *testing.T) {
 }
 
 func TestGetPublicCourseCategoryIsNotFoundOutsideTheLocale(t *testing.T) {
+	t.Parallel()
 	cases := map[string]struct{ locale, slug string }{
 		"another locale": {"en", "programming-ru"},
 		"missing":        {"ru", "no-such-category"},

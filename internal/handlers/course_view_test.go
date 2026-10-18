@@ -19,6 +19,7 @@ import (
 // percentage, where they resume, and per-lesson locks and checkmarks. The
 // acting user has finished the first of the three current lessons.
 func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -48,6 +49,7 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 // Lessons may be taken in any order: a learner who finished the third lesson but
 // not the second has exactly those marked, and the course is still unfinished.
 func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerWithAGap)
 	ctx := context.Background()
 
@@ -67,6 +69,7 @@ func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 // with nothing finished. It is returned rather than left out, so the page
 // renders from the same shape for everyone.
 func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := context.Background()
 
@@ -96,6 +99,7 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 // in the order the version gives them — not by id, which the fixtures set to
 // disagree — each naming its lessons in course order.
 func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -120,6 +124,7 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 // The landing page's questions and answers travel with the course, oldest
 // first, and only the course's own.
 func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -142,6 +147,7 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 // A guest carrying a cookie gets exactly the shape a signed-in learner gets,
 // derived from the lessons the cookie names, and only those.
 func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
@@ -164,6 +170,7 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 // A visitor who took the third lesson first has that one marked and not the two
 // before it: a later lesson no longer implies the earlier ones.
 func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
@@ -181,6 +188,7 @@ func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 // A cookie naming a lesson the current version dropped resolves to nothing, so
 // the guest starts that course over rather than being stranded.
 func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
 
 	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsEnglishLandingSlug})
@@ -195,6 +203,7 @@ func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 // A tampered cookie is not progress: it is discarded on the way in, leaving the
 // visitor where a first visit leaves them.
 func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	testsupport.ForgeGuestCookie(t, h, progressCookie(jsCourseSlug, thirdLessonSlug))
@@ -210,6 +219,7 @@ func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 
 // An unknown slug is a 404, not an empty page.
 func TestGetCourseIsNotFoundForAnUnknownSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -222,6 +232,7 @@ func TestGetCourseIsNotFoundForAnUnknownSlug(t *testing.T) {
 // URL, and a landing page of another locale is not served under this one. The
 // page that comes back is the one the slug names, whichever course page that is.
 func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
@@ -251,6 +262,7 @@ func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
 // redirect_archived_language chose: the page it names, else the course's main
 // page in the request locale. A live page moves nowhere.
 func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
@@ -278,6 +290,7 @@ func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
 
 // An archived page with nowhere to go is gone, not an empty redirect.
 func TestGetCourseIsNotFoundForAnArchivedPageWithNowhereToGo(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()

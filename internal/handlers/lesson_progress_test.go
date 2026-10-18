@@ -38,6 +38,7 @@ const (
 // course-started fact: the learner was already enrolled, and the CRM counts
 // transitions, not requests.
 func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -66,6 +67,7 @@ func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 // The first lesson of a course the learner has never touched enrolls them, and
 // both facts are published — course-started counting their started enrollments.
 func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonLabeled(t, h, fixture.LessonSingleLessonPrinting)
@@ -100,6 +102,7 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 // already passed, succeeds and changes nothing. Publishing a second fact would
 // corrupt the occurrence counts the CRM consumes.
 func TestStartLessonIsIdempotent(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
@@ -122,6 +125,7 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 // Lessons may be taken in any order (ADR-0016): the third lesson starts before
 // the second, and only that lesson is recorded.
 func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
@@ -139,6 +143,7 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 // A lesson the current version does not contain counts for nothing, so a learner
 // who finished one that was dropped has no more of the course done than before.
 func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
+	t.Parallel()
 	// Their only finished lesson exists in the retired version alone.
 	h := testsupport.NewHarnessAs(t, fixture.UserLearnerDroppedLesson)
 	ctx := context.Background()
@@ -156,6 +161,7 @@ func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 // Starting a lesson is not finishing it: the page the learner lands on reads the
 // course and still resumes at that lesson, with the first one checked.
 func TestStartLessonLeavesTheLearnerAtTheFirstUnfinishedLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
@@ -172,6 +178,7 @@ func TestStartLessonLeavesTheLearnerAtTheFirstUnfinishedLesson(t *testing.T) {
 // A guest starts the same way and gets the same payload, with nothing stored:
 // only a check changes what their cookie names.
 func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
@@ -194,6 +201,7 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 // A visitor with no cookie may start any lesson: nothing is stored, so there is
 // nothing to refuse.
 func TestStartLessonLetsAGuestTakeAnyLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	lesson := lessonBySlug(t, h, thirdLessonSlug)
 
@@ -250,6 +258,7 @@ func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
 
 // A lesson that does not exist is a 404: the client can stop looking.
 func TestStartLessonAnswersAnUnknownLessonAsNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: 2_000_000_000})

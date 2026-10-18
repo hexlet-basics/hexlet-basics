@@ -16,6 +16,7 @@ import (
 // for the generated ones).
 
 func TestAdminListBlogPostsSearchMatchesTheNameAndTheSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	slugs := func(page *api.BlogPostPage) []string {
@@ -33,6 +34,7 @@ func TestAdminListBlogPostsSearchMatchesTheNameAndTheSlug(t *testing.T) {
 }
 
 func TestAdminListBlogPostsSearchKeepsTheNewestFirstOrder(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListBlogPosts(context.Background(), api.AdminListBlogPostsParams{Q: api.NewOptString("post")})
@@ -45,6 +47,7 @@ func TestAdminListBlogPostsSearchKeepsTheNewestFirstOrder(t *testing.T) {
 }
 
 func TestAdminListCourseLessonsSearchMatchesTheNameTheDescriptionAndTheSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	slugs := func(page *api.CourseLessonListItemPage) []string {
@@ -65,6 +68,7 @@ func TestAdminListCourseLessonsSearchMatchesTheNameTheDescriptionAndTheSlug(t *t
 }
 
 func TestAdminListCourseLessonsSearchStaysInsideTheListedLessons(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	// "Old Hello" is a translation of a previous course version: the list does
@@ -77,6 +81,7 @@ func TestAdminListCourseLessonsSearchStaysInsideTheListedLessons(t *testing.T) {
 }
 
 func TestAdminListLeadsSearchMatchesEveryContactField(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	emails := func(q string) []string {
@@ -92,6 +97,7 @@ func TestAdminListLeadsSearchMatchesEveryContactField(t *testing.T) {
 }
 
 func TestAdminListMessagesSearchMatchesTheText(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListMessages(context.Background(), api.AdminListMessagesParams{Q: api.NewOptString("CONSOLE.LOG")})
@@ -103,6 +109,7 @@ func TestAdminListMessagesSearchMatchesTheText(t *testing.T) {
 }
 
 func TestAdminListUsersSearchMatchesTheNameAndTheEmail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

@@ -33,6 +33,7 @@ func categoryBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Cours
 // legacy language/categories.yml seeds these six.
 
 func TestAdminListCourseCategories(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
@@ -50,6 +51,7 @@ func TestAdminListCourseCategories(t *testing.T) {
 }
 
 func TestAdminListCourseCategoriesPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
@@ -66,6 +68,7 @@ func TestAdminListCourseCategoriesPaginated(t *testing.T) {
 }
 
 func TestAdminGetCourseCategory(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -81,6 +84,7 @@ func TestAdminGetCourseCategory(t *testing.T) {
 }
 
 func TestAdminGetCourseCategoryNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -92,6 +96,7 @@ func TestAdminGetCourseCategoryNotFound(t *testing.T) {
 }
 
 func TestAdminCreateCourseCategory(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)
@@ -116,6 +121,7 @@ func TestAdminCreateCourseCategory(t *testing.T) {
 }
 
 func TestAdminCreateCourseCategoryDuplicateName(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -143,6 +149,7 @@ func TestAdminCreateCourseCategoryDuplicateName(t *testing.T) {
 // reproduces Rails' `uniqueness: { scope: :locale }` for a nil locale. Without
 // it this second create would wrongly succeed.
 func TestAdminCreateCourseCategoryDuplicateSlug(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -166,6 +173,7 @@ func TestAdminCreateCourseCategoryDuplicateSlug(t *testing.T) {
 }
 
 func TestAdminUpdateCourseCategory(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -189,6 +197,7 @@ func TestAdminUpdateCourseCategory(t *testing.T) {
 }
 
 func TestAdminUpdateCourseCategoryDuplicateName(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -206,6 +215,7 @@ func TestAdminUpdateCourseCategoryDuplicateName(t *testing.T) {
 }
 
 func TestAdminUpdateCourseCategoryKeepsOwnValues(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -224,6 +234,7 @@ func TestAdminUpdateCourseCategoryKeepsOwnValues(t *testing.T) {
 }
 
 func TestAdminDeleteCourseCategory(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalCategories := h.DB.CourseCategory.Query().CountX(ctx)

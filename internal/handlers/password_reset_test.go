@@ -25,6 +25,7 @@ func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) b
 }
 
 func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
 	u := fixtureUser(t, h, fixture.UserWithPassword)
@@ -38,6 +39,7 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 
 // Unlike legacy, an unknown email is not reported.
 func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	res, err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "reset-nobody@example.com"})
@@ -49,6 +51,7 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 }
 
 func TestCheckPasswordResetToken(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
@@ -66,6 +69,7 @@ func TestCheckPasswordResetToken(t *testing.T) {
 }
 
 func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 
@@ -85,6 +89,7 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 
 // Changing the digest is what kills the link, so it cannot be used twice.
 func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
@@ -102,6 +107,7 @@ func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 }
 
 func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 
@@ -119,6 +125,7 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 // The contract's minLength is enforced by the generated server; the rejected
 // submission leaves the digest, and so the link, untouched.
 func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
@@ -137,6 +144,7 @@ func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 // session a thief may hold stops naming anyone, and only the reset's own new
 // session is left.
 func TestUpdatePasswordEndsTheSessionsOfTheOldPassword(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, fixture.UserWithPassword)
 	u := fixtureUser(t, h, fixture.UserWithPassword)
 

@@ -45,6 +45,7 @@ func (h *failingCoursesHandler) NewError(ctx context.Context, err error) *api.Pr
 }
 
 func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -89,6 +90,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 }
 
 func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 	transport := &sentry.MockTransport{}
@@ -109,6 +111,7 @@ func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
 }
 
 func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -144,6 +147,7 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 // A caller that leaves mid-request cancels the context; that is not a server
 // failure, so it must not land in the error log or Sentry.
 func TestAPIErrorHandlerDoesNotReportClientCancellation(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -167,6 +171,7 @@ func TestAPIErrorHandlerDoesNotReportClientCancellation(t *testing.T) {
 }
 
 func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
+	t.Parallel()
 	translator, err := localization.New()
 	require.NoError(t, err)
 	transport := &sentry.MockTransport{}

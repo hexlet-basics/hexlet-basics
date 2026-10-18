@@ -19,6 +19,7 @@ import (
 )
 
 func TestGetProfile(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.GetProfile(t.Context())
@@ -31,6 +32,7 @@ func TestGetProfile(t *testing.T) {
 }
 
 func TestGetProfileRequiresSignIn(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	_, err := h.Client.GetProfile(t.Context())
@@ -39,6 +41,7 @@ func TestGetProfileRequiresSignIn(t *testing.T) {
 }
 
 func TestUpdateProfile(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	var noLastName api.NilProfileName
@@ -59,6 +62,7 @@ func TestUpdateProfile(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	u := h.DB.User.GetX(t.Context(), h.UserID)
 	require.NotNil(t, u.Nickname, "the fixture user has a nickname and a phone to erase")
@@ -97,6 +101,7 @@ func TestDeleteAccount(t *testing.T) {
 // still holds — on this device until it is dropped, on any other one for its
 // whole life — must stop naming anyone once the account is gone.
 func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	_, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
@@ -112,6 +117,7 @@ func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
 
 // Removal frees the email: the same address registers again as a new account.
 func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	email := lo.FromPtr(h.DB.User.GetX(t.Context(), h.UserID).Email)
 	_, err := h.Client.DeleteAccount(t.Context())
@@ -128,6 +134,7 @@ func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 }
 
 func TestRemovedUserCannotSignInWithPassword(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	assert.False(t, signsInWith(t, h, "removed-user@example.com", fixture.Password))
@@ -135,6 +142,7 @@ func TestRemovedUserCannotSignInWithPassword(t *testing.T) {
 }
 
 func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserRemoved)
 	token := issueEmailToken(t, emailtoken.MagicLink, u)
@@ -147,6 +155,7 @@ func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 // A Password Reset issued to a removed user without a password is bound to an
 // empty digest and to an email that is still there; only the state can refuse it.
 func TestRemovedUserCannotResetAPassword(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	u := fixtureUser(t, h, fixture.UserRemovedWithoutPassword)
 	token := issueEmailToken(t, emailtoken.PasswordReset, u)
@@ -161,6 +170,7 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 var secondAdminID = fixture.ID(fixture.UserSecondAdmin)
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	// The fixtures have three administrators: user_admin_learner (the caller), user_second_admin
 	// and the staff member user_admin_staff; the caller is left the only one.
@@ -176,6 +186,7 @@ func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 // A null first name clears the column, as a null last name does: the profile
 // form sends null for exactly the names the learner emptied.
 func TestUpdateProfileClearsAFirstNameSentAsNull(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	var noFirstName api.NilProfileName

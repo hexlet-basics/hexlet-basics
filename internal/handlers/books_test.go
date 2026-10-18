@@ -18,6 +18,7 @@ import (
 // The harness user (user_admin_learner) has no book request; the fixture gives one to user_staff_editor.
 
 func TestGetBookAnswersAVisitor(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	view, err := h.Client.GetBook(t.Context())
@@ -26,6 +27,7 @@ func TestGetBookAnswersAVisitor(t *testing.T) {
 }
 
 func TestGetBookIsNotRequestedByAnotherUsersRequest(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	view, err := h.Client.GetBook(t.Context())
@@ -34,6 +36,7 @@ func TestGetBookIsNotRequestedByAnotherUsersRequest(t *testing.T) {
 }
 
 func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -55,6 +58,7 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 }
 
 func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.CreateBookRequest(t.Context())
@@ -68,6 +72,7 @@ func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
 }
 
 func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	res, err := h.Client.CreateBookRequest(t.Context())
@@ -78,6 +83,7 @@ func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
 }
 
 func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	_, err := h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
@@ -96,6 +102,7 @@ func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {
 }
 
 func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	res, err := h.Client.DownloadBook(t.Context())
@@ -109,6 +116,7 @@ func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {
 }
 
 func TestDownloadBookRequiresASignedInUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 
 	res, err := h.Client.DownloadBook(t.Context())

@@ -39,6 +39,7 @@ func blogPostID(t *testing.T, h *testsupport.Harness, slug string) int32 {
 // The list is the request locale's published posts, newest first: the
 // archived ru post and the en posts are not on the ru blog.
 func TestListBlogPostsShowsPublishedPostsOfTheRequestLocale(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -52,6 +53,7 @@ func TestListBlogPostsShowsPublishedPostsOfTheRequestLocale(t *testing.T) {
 }
 
 func TestListBlogPostsInEnglishListsOnlyEnglishPosts(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "en")
 
@@ -65,6 +67,7 @@ func TestListBlogPostsInEnglishListsOnlyEnglishPosts(t *testing.T) {
 // The post page carries the stored body, the promoted courses' main ru landing
 // pages in the post's order, and two other posts to read.
 func TestGetBlogPostReturnsThePostPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -91,6 +94,7 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 // A post that promotes no course has no related landing pages, and the page
 // still carries the post and its reading suggestions.
 func TestGetBlogPostWithoutPromotedCourses(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	post := h.DB.BlogPost.Query().Where(blogpost.Slug("hello-world")).OnlyX(t.Context())
@@ -111,6 +115,7 @@ func TestGetBlogPostWithoutPromotedCourses(t *testing.T) {
 // A promoted course whose main landing page is not public — a draft here — is
 // left out of the post's related list rather than linking readers to it.
 func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	h.DB.CourseLandingPage.Update().
@@ -134,6 +139,7 @@ func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
 }
 
 func TestGetBlogPostIsNotFoundOutsidePublishedPostsOfTheLocale(t *testing.T) {
+	t.Parallel()
 	cases := map[string]struct{ locale, slug string }{
 		"draft":          {"en", "second-post"},
 		"archived":       {"ru", "archived-notes"},
@@ -155,6 +161,7 @@ func TestGetBlogPostIsNotFoundOutsidePublishedPostsOfTheLocale(t *testing.T) {
 // Next walks the ru blog from newer to older and ends with a 404 after the
 // oldest post.
 func TestGetNextBlogPostWalksToOlderPosts(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -179,6 +186,7 @@ func TestGetNextBlogPostWalksToOlderPosts(t *testing.T) {
 
 // A like counts once per user: the second one answers with the post unchanged.
 func TestLikeBlogPostCountsOncePerUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	id := blogPostID(t, h, "learning-ruby")
 
@@ -204,6 +212,7 @@ func TestLikeBlogPostCountsOncePerUser(t *testing.T) {
 }
 
 func TestLikeBlogPostRequiresSignIn(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	id := blogPostID(t, h, "learning-ruby")
 
@@ -218,6 +227,7 @@ func TestLikeBlogPostRequiresSignIn(t *testing.T) {
 }
 
 func TestLikeBlogPostIsNotFoundForAMissingPost(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: 1})
@@ -228,6 +238,7 @@ func TestLikeBlogPostIsNotFoundForAMissingPost(t *testing.T) {
 // The blog is public, so the embedded author must not carry the staff
 // account's email or admin flag.
 func TestListBlogPostsDoesNotExposeAuthorAccountData(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
