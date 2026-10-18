@@ -4,6 +4,7 @@ import { page } from "vitest/browser";
 import { getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
 import { Route as signUpRoute } from "@/routes/{-$locale}/users/new";
 import { worker } from "@/test/msw";
+import { validationProblem } from "@/test/problem";
 import { renderRoute } from "@/test/renderRoute";
 
 // The sign-up page, driven through its real route with the API faked at the
@@ -52,11 +53,7 @@ test("drops a redirect that would leave the site", async () => {
 });
 
 test("shows a refused email at its field instead of as a toast", async () => {
-  worker.use(
-    http.post("*/users", () =>
-      HttpResponse.json({ errors: { email: ["has already been taken"] } }, { status: 422 }),
-    ),
-  );
+  worker.use(http.post("*/users", () => validationProblem({ email: ["has already been taken"] })));
   const { router } = await renderRoute(signUpRoute, {
     path: "/{-$locale}/users/new",
     initialPath: "/users/new",
