@@ -19,7 +19,6 @@ linters:
     - wrapcheck
     - goconst
     - noinlineerr
-    - forcetypeassert
     - testpackage
     - cyclop
     - funlen

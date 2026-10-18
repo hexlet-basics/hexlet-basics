@@ -23,11 +23,11 @@ import (
 func searchItems(t *testing.T, result *mcp.CallToolResult) []map[string]any {
 	t.Helper()
 	require.False(t, result.IsError, "%+v", result.Content)
-	listed := result.StructuredContent.(map[string]any)["items"].([]any)
+	listed := as[[]any](t, as[map[string]any](t, result.StructuredContent)["items"])
 
 	items := make([]map[string]any, 0, len(listed))
 	for _, item := range listed {
-		items = append(items, item.(map[string]any))
+		items = append(items, as[map[string]any](t, item))
 	}
 
 	return items
@@ -77,11 +77,11 @@ func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 			fetched := call(t, session, "adminFetch", map[string]any{"locale": tc.locale, "id": tc.id})
 
 			require.False(t, fetched.IsError, "%+v", fetched.Content)
-			record := fetched.StructuredContent.(map[string]any)
+			record := as[map[string]any](t, fetched.StructuredContent)
 			assert.Equal(t, tc.id, record["id"])
 			assert.Equal(t, hit["title"], record["title"])
 			assert.NotEmpty(t, record["text"])
-			meta := record["metadata"].(map[string]any)
+			meta := as[map[string]any](t, record["metadata"])
 			assert.Equal(t, tc.kind, meta["type"])
 			assert.Equal(t, tc.readiness, meta["readiness"], "the record says how ready its course is")
 

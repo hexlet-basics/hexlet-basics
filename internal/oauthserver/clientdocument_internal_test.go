@@ -57,7 +57,7 @@ func TestTheProductionClientRefusesALoopbackServerAtDialTime(t *testing.T) {
 		t.Error("the server must never be reached")
 	})
 	client := newGuardedClient(publicAddress, time.Second)
-	client.Transport.(*http.Transport).TLSClientConfig = tlsConfig
+	as[*http.Transport](t, client.Transport).TLSClientConfig = tlsConfig
 
 	res, err := get(t.Context(), client, srv.URL)
 
@@ -77,7 +77,7 @@ func TestAHostnameThatResolvesToLoopbackIsRefusedAtDialTime(t *testing.T) {
 		t.Error("the server must never be reached")
 	})
 	client := newGuardedClient(publicAddress, time.Second)
-	client.Transport.(*http.Transport).TLSClientConfig = tlsConfig
+	as[*http.Transport](t, client.Transport).TLSClientConfig = tlsConfig
 	_, port, found := cutLast(srv.URL, ':')
 	require.True(t, found)
 
@@ -110,7 +110,7 @@ func TestTheGuardedClientDoesNotFollowRedirects(t *testing.T) {
 		http.Redirect(w, r, "/final", http.StatusFound)
 	})
 	client := newGuardedClient(func(netip.Addr) bool { return true }, time.Second)
-	client.Transport.(*http.Transport).TLSClientConfig = tlsConfig
+	as[*http.Transport](t, client.Transport).TLSClientConfig = tlsConfig
 
 	res, err := get(t.Context(), client, srv.URL+"/start")
 
@@ -127,7 +127,7 @@ func TestTheGuardedClientGivesUpOnAHostThatStalls(t *testing.T) {
 	t.Cleanup(func() { close(release) })
 
 	client := newGuardedClient(func(netip.Addr) bool { return true }, 100*time.Millisecond)
-	client.Transport.(*http.Transport).TLSClientConfig = tlsConfig
+	as[*http.Transport](t, client.Transport).TLSClientConfig = tlsConfig
 
 	start := time.Now()
 	res, err := get(t.Context(), client, srv.URL)

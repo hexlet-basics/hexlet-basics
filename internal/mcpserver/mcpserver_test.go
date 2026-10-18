@@ -173,7 +173,7 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 	require.Len(t, result.Content, 1)
 	text, ok := result.Content[0].(*mcp.TextContent)
 	require.True(t, ok)
-	assert.Contains(t, text.Text, courses[0].(map[string]any)["slug"])
+	assert.Contains(t, text.Text, as[map[string]any](t, courses[0])["slug"])
 
 	// The advertised schema, which comes from the contract, accepts the content.
 	raw, err := json.Marshal(tool.OutputSchema)
@@ -197,8 +197,8 @@ func TestToolAnswersInTheLocaleOfTheRequest(t *testing.T) {
 		result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "listCourses"})
 		require.NoError(t, err)
 
-		for _, c := range result.StructuredContent.(map[string]any)["courses"].([]any) {
-			locales[language+":"+c.(map[string]any)["locale"].(string)] = true
+		for _, c := range as[[]any](t, as[map[string]any](t, result.StructuredContent)["courses"]) {
+			locales[language+":"+as[string](t, as[map[string]any](t, c)["locale"])] = true
 		}
 	}
 

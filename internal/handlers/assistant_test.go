@@ -307,7 +307,7 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	_, _ = io.ReadAll(res.(*api.CreateAssistantMessageOK))
+	_, _ = io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
 
 	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chatFor(t, h, lesson).ID)).AllX(ctx)
 	require.Len(t, stored, 1, "the question is spent, the broken answer is not stored")
@@ -378,7 +378,7 @@ func askAssistantWith(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLe
 	require.IsType(t, &api.CreateAssistantMessageOK{}, res)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	body, err := io.ReadAll(res.(*api.CreateAssistantMessageOK))
+	body, err := io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
 	require.NoError(t, err)
 
 	return string(body)

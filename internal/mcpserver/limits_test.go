@@ -105,7 +105,7 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
 		require.NotNil(t, denied, class)
 		assert.True(t, denied.IsError)
-		text := denied.Content[0].(*mcp.TextContent).Text
+		text := as[*mcp.TextContent](t, denied.Content[0]).Text
 		assert.Contains(t, text, "rate limit exceeded for "+class.String()+" tools")
 		assert.Contains(t, text, "retry in 60 seconds")
 		assert.Equal(t, 60, denied.Meta["retryAfterSeconds"])
@@ -173,10 +173,10 @@ func TestFitCutsTheLargestListAndSaysHowToContinueFromTheNextPage(t *testing.T) 
 	require.True(t, ok)
 	assert.LessOrEqual(t, sizeOf(t, data, 20), 4000)
 	assert.Len(t, data["small"], 2, "the small list was not touched")
-	kept := len(data["items"].([]any))
+	kept := len(as[[]any](t, data["items"]))
 	assert.Less(t, kept, 100)
 
-	hint := data[truncationKey].(map[string]any)
+	hint := as[map[string]any](t, data[truncationKey])
 	assert.Equal(t, true, hint["truncated"])
 	assert.Equal(t, kept, hint["suggestedPerPage"])
 	// Page 3 of 100 starts at offset 200, the page of that size containing it.
@@ -192,15 +192,15 @@ func TestFitShortensALongTextOnARuneBoundary(t *testing.T) {
 
 	require.True(t, ok)
 
-	theory := data["lesson"].(map[string]any)["theory"].(string)
+	theory := as[string](t, as[map[string]any](t, data["lesson"])["theory"])
 	assert.True(t, utf8.ValidString(theory), "a cut must not split a character")
 	assert.True(t, strings.HasSuffix(theory, "[cut]"))
 	assert.LessOrEqual(t, sizeOf(t, data, 0), 3000)
-	hint := data[truncationKey].(map[string]any)
-	cuts := hint["cuts"].([]any)
+	hint := as[map[string]any](t, data[truncationKey])
+	cuts := as[[]any](t, hint["cuts"])
 	require.Len(t, cuts, 1)
-	assert.Equal(t, "lesson.theory", cuts[0].(map[string]any)["path"])
-	assert.Equal(t, "bytes", cuts[0].(map[string]any)["unit"])
+	assert.Equal(t, "lesson.theory", as[map[string]any](t, cuts[0])["path"])
+	assert.Equal(t, "bytes", as[map[string]any](t, cuts[0])["unit"])
 	assert.Contains(t, hint["hint"], "lesson.theory")
 }
 
@@ -211,7 +211,7 @@ func TestFitCutsListsInsideARecordAndReportsEachPlace(t *testing.T) {
 
 	require.True(t, ok)
 	assert.LessOrEqual(t, sizeOf(t, data, 0), 5000)
-	hint := data[truncationKey].(map[string]any)
+	hint := as[map[string]any](t, data[truncationKey])
 	assert.NotEmpty(t, hint["cuts"])
 	assert.Contains(t, hint["hint"], "shortened")
 	assert.NotContains(t, hint, "suggestedPage", "not a page of a list")

@@ -51,7 +51,7 @@ func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) 
 	result := call(t, session, "adminUploadAttachment", upload("cover.png", tinyPNG()))
 
 	require.False(t, result.IsError, "%+v", result.Content)
-	out := result.StructuredContent.(map[string]any)
+	out := as[map[string]any](t, result.StructuredContent)
 	assert.Equal(t, "cover.png", out["filename"])
 	assert.Equal(t, "image/png", out["contentType"])
 	assert.EqualValues(t, len(tinyPNG()), out["byteSize"])
@@ -65,7 +65,7 @@ func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) 
 	assert.Equal(t, bob(), *records[0].ActorUserID)
 	assert.Equal(t, token.ID, *records[0].TokenID)
 	assert.Equal(t, token.ConnectedAppID, *records[0].ConnectedAppID)
-	assert.Equal(t, strconv.Itoa(int(out["id"].(float64))), *records[0].EntityID)
+	assert.Equal(t, strconv.Itoa(int(as[float64](t, out["id"]))), *records[0].EntityID)
 }
 
 func TestUploadToolOfferedWithTheContractsPartAndLimits(t *testing.T) {
@@ -160,7 +160,7 @@ func TestUploadRejectsWhatTheWebsiteRejects(t *testing.T) {
 	})
 	t.Run("invalid base64", func(t *testing.T) {
 		args := upload("cover.png", tinyPNG())
-		args["body"].(map[string]any)["contentBase64"] = "not*base64!"
+		as[map[string]any](t, args["body"])["contentBase64"] = "not*base64!"
 		result := call(t, session, "adminUploadAttachment", args)
 		require.True(t, result.IsError)
 		assert.Contains(t, textOf(t, result), "not valid base64")

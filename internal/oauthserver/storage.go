@@ -534,7 +534,7 @@ func (s *storage) SignatureAlgorithms(context.Context) ([]jose.SignatureAlgorith
 }
 
 func (s *storage) KeySet(context.Context) ([]op.Key, error) {
-	return []op.Key{publicKey{key: s.signing.Public().(ed25519.PublicKey)}}, nil
+	return []op.Key{publicKey{key: ed25519.PublicKey(s.signing[ed25519.SeedSize:])}}, nil
 }
 
 var errWrongClient = errors.New("token belongs to another client")
@@ -571,7 +571,7 @@ func keyID(key any) string {
 
 	switch k := key.(type) {
 	case ed25519.PrivateKey:
-		pub = k.Public().(ed25519.PublicKey)
+		pub = ed25519.PublicKey(k[ed25519.SeedSize:])
 	case ed25519.PublicKey:
 		pub = k
 	}

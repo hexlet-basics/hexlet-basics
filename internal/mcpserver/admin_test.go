@@ -134,8 +134,8 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	assert.True(t, list.Annotations.ReadOnlyHint)
 	input := schemaOf(list.InputSchema)
 	assert.Equal(t, []any{"locale"}, input["required"], "the locale is required, the paging is not")
-	properties := input["properties"].(map[string]any)
-	assert.Equal(t, []any{"en", "ru"}, properties["locale"].(map[string]any)["enum"])
+	properties := as[map[string]any](t, input["properties"])
+	assert.Equal(t, []any{"en", "ru"}, as[map[string]any](t, properties["locale"])["enum"])
 	assert.Contains(t, properties, "page")
 	assert.Contains(t, properties, "perPage")
 	assert.NotContains(t, properties, "body")
@@ -145,7 +145,7 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	assert.False(t, *update.Annotations.DestructiveHint)
 	input = schemaOf(update.InputSchema)
 	assert.ElementsMatch(t, []any{"locale", "id", "body"}, input["required"])
-	body := input["properties"].(map[string]any)["body"].(map[string]any)
+	body := as[map[string]any](t, as[map[string]any](t, input["properties"])["body"])
 	assert.Equal(t, "object", body["type"])
 	assert.Contains(t, body["properties"], "locale", "the banner's own locale sits in the body, apart from the call's")
 	assert.NotContains(t, body, "$ref")
@@ -160,7 +160,7 @@ func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en", "perPage": 2})
 
 	require.False(t, result.IsError, "%+v", result.Content)
-	page := result.StructuredContent.(map[string]any)
+	page := as[map[string]any](t, result.StructuredContent)
 	assert.EqualValues(t, 5, page["total"])
 	assert.Len(t, page["items"], 2, "the query parameter reached the operation")
 
@@ -198,7 +198,7 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 	})
 
 	require.False(t, result.IsError, "%+v", result.Content)
-	assert.Equal(t, "Changed by an assistant", result.StructuredContent.(map[string]any)["body"])
+	assert.Equal(t, "Changed by an assistant", as[map[string]any](t, result.StructuredContent)["body"])
 	assert.Equal(t, "Changed by an assistant", o.DB.Banner.GetX(t.Context(), id).Body)
 
 	records := o.Records("AdminUpdateBanner")
@@ -463,7 +463,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	var viaHTTP map[string]any
 	require.NoError(t, json.Unmarshal([]byte(httpBody), &viaHTTP))
 
-	mcpBanner := viaMCP.StructuredContent.(map[string]any)
+	mcpBanner := as[map[string]any](t, viaMCP.StructuredContent)
 	for _, k := range []string{"id", "body", "state", "background", "locale", "url"} {
 		assert.Equal(t, viaHTTP[k], mcpBanner[k], k)
 	}

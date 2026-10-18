@@ -208,6 +208,10 @@ func adminNeeds(op *operation) toolNeeds {
 
 // errNotAdminOperation is what adminTool answers for an operation the
 // AdminSession scheme does not guard: the checkpoint would not run for it.
+// errTrimmedInput is what adminTool answers if trimming an object schema did
+// not give an object back, which would be a defect of trimInput.
+var errTrimmedInput = errors.New("trimming the input schema did not give an object")
+
 var errNotAdminOperation = errors.New("is not an admin operation (it does not require the AdminSession scheme), so the checkpoint would not run for it")
 
 // errNotAScalar and errEmptyScalars are what scalars answers for a value that is
@@ -272,10 +276,15 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 		"additionalProperties": false,
 	}
 
+	trimmed, ok := trimInput(input).(map[string]any)
+	if !ok {
+		return nil, errTrimmedInput
+	}
+
 	tool := &mcp.Tool{
 		Name:        op.ID,
 		Description: describe(op),
-		InputSchema: trimInput(input).(map[string]any),
+		InputSchema: trimmed,
 		Annotations: adminAnnotations(op),
 	}
 	if op.Response != nil {

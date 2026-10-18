@@ -40,7 +40,7 @@ func TestJobKindsStateTheirAttempts(t *testing.T) {
 		jobs.ReviewLessonArgs{}:          3,
 		jobs.SuggestRelatedCoursesArgs{}: 3,
 	} {
-		opts := args.(river.JobArgsWithInsertOpts).InsertOpts()
+		opts := as[river.JobArgsWithInsertOpts](t, args).InsertOpts()
 		require.Equal(t, attempts, opts.MaxAttempts, args.Kind())
 	}
 }

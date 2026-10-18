@@ -89,7 +89,7 @@ func outputSchemas(t *testing.T, session *mcp.ClientSession) map[string]*jsonsch
 func courseCount(t *testing.T, session *mcp.ClientSession) int {
 	t.Helper()
 
-	return int(structured(t, callTool(t, session, "listCourses", map[string]any{"perPage": 1}))["total"].(float64))
+	return int(as[float64](t, structured(t, callTool(t, session, "listCourses", map[string]any{"perPage": 1}))["total"]))
 }
 
 func connect(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
@@ -105,9 +105,9 @@ func TestEveryCatalogueToolAnswersWithStructuredContentThatMatchesItsContractSch
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 	schemas := outputSchemas(t, session)
 
-	categories := structured(t, callTool(t, session, "listPublicCourseCategories", nil))["categories"].([]any)
+	categories := as[[]any](t, structured(t, callTool(t, session, "listPublicCourseCategories", nil))["categories"])
 	require.NotEmpty(t, categories)
-	categorySlug := categories[0].(map[string]any)["slug"].(string)
+	categorySlug := as[string](t, as[map[string]any](t, categories[0])["slug"])
 
 	for name, args := range map[string]map[string]any{
 		"listCourses":                {},
@@ -181,7 +181,7 @@ func TestLessonToolReturnsTheContentAndTestsTheHTTPOperationGivesAVisitor(t *tes
 	require.NoError(t, json.NewDecoder(res.Body).Decode(&visitor))
 	assert.Equal(t, visitor, content, "the same fields, the same values, for the same visitor")
 
-	lesson := content["lesson"].(map[string]any)
+	lesson := as[map[string]any](t, content["lesson"])
 	assert.Equal(t, firstLesson, lesson["slug"])
 	assert.Contains(t, lesson, "testCode", "the lesson tests are part of the lesson content")
 	assert.Contains(t, lesson, "preparedCode", "the starter code follows the HTTP operation's rule for visitors")
@@ -215,11 +215,11 @@ func TestOnlyPublishedPostsOfTheLocaleAreReadable(t *testing.T) {
 	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	posts := structured(t, callTool(t, session, "listBlogPosts", nil))
-	listed := posts["items"].([]any)
+	listed := as[[]any](t, posts["items"])
 
 	slugs := make([]string, 0, len(listed))
 	for _, p := range listed {
-		slugs = append(slugs, p.(map[string]any)["slug"].(string))
+		slugs = append(slugs, as[string](t, as[map[string]any](t, p)["slug"]))
 	}
 
 	assert.ElementsMatch(t, []string{"hello-world", "learning-ruby", "oldest-post"}, slugs, "no draft, archived or English post")
@@ -325,17 +325,17 @@ func TestPagesFollowEachOtherWithoutGapsAndPastTheEndIsEmpty(t *testing.T) {
 	total := courseCount(t, session)
 	for page := 1; page <= (total+1)/2; page++ {
 		content := structured(t, callTool(t, session, "listCourses", map[string]any{"page": page, "perPage": 2}))
-		for _, c := range content["courses"].([]any) {
-			slugs = append(slugs, c.(map[string]any)["slug"].(string))
+		for _, c := range as[[]any](t, content["courses"]) {
+			slugs = append(slugs, as[string](t, as[map[string]any](t, c)["slug"]))
 		}
 	}
 
-	all := structured(t, callTool(t, session, "listCourses", nil))["courses"].([]any)
+	all := as[[]any](t, structured(t, callTool(t, session, "listCourses", nil))["courses"])
 	require.Len(t, all, total)
 
 	want := make([]string, 0, len(all))
 	for _, c := range all {
-		want = append(want, c.(map[string]any)["slug"].(string))
+		want = append(want, as[string](t, as[map[string]any](t, c)["slug"]))
 	}
 
 	assert.Equal(t, want, slugs)
@@ -369,7 +369,7 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 	assert.EqualValues(t, limit, hint["limitBytes"])
 	assert.Contains(t, textOf(t, result), "truncation")
 
-	kept := len(content["courses"].([]any))
+	kept := len(as[[]any](t, content["courses"]))
 	total := courseCount(t, session)
 	assert.Less(t, kept, total)
 	assert.EqualValues(t, total, content["total"], "the total is not cut")
@@ -378,11 +378,11 @@ func TestResponseOverTheLimitIsCutWithAPaginationHintAndStaysValid(t *testing.T)
 	// Following the hint reads the rest, and the pages together hold every course.
 	var slugs []string
 
-	perPage := int(hint["suggestedPerPage"].(float64))
+	perPage := int(as[float64](t, hint["suggestedPerPage"]))
 	for page := 1; len(slugs) < total && page < 20; page++ {
 		next := structured(t, callTool(t, session, "listCourses", map[string]any{"page": page, "perPage": perPage}))
-		for _, c := range next["courses"].([]any) {
-			slugs = append(slugs, c.(map[string]any)["slug"].(string))
+		for _, c := range as[[]any](t, next["courses"]) {
+			slugs = append(slugs, as[string](t, as[map[string]any](t, c)["slug"]))
 		}
 	}
 

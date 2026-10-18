@@ -104,7 +104,8 @@ func exampleOf(schema map[string]any) any {
 		merged := map[string]any{}
 
 		for _, p := range parts {
-			example := exampleOf(p.(map[string]any))
+			part, _ := p.(map[string]any)
+			example := exampleOf(part)
 
 			m, isObject := example.(map[string]any)
 			if !isObject {
@@ -121,7 +122,7 @@ func exampleOf(schema map[string]any) any {
 	for _, choice := range []string{"anyOf", "oneOf"} {
 		if parts, ok := schema[choice].([]any); ok {
 			for _, p := range parts {
-				if pm := p.(map[string]any); pm["type"] != "null" {
+				if pm, _ := p.(map[string]any); pm["type"] != "null" {
 					return exampleOf(pm)
 				}
 			}
@@ -139,9 +140,10 @@ func exampleOf(schema map[string]any) any {
 		props, _ := schema["properties"].(map[string]any)
 
 		required, _ := schema["required"].([]any)
-		for _, name := range required {
-			if p, ok := props[name.(string)].(map[string]any); ok {
-				out[name.(string)] = exampleOf(p)
+		for _, raw := range required {
+			name, _ := raw.(string)
+			if p, ok := props[name].(map[string]any); ok {
+				out[name] = exampleOf(p)
 			}
 		}
 

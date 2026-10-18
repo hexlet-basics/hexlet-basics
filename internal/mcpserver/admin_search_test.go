@@ -107,7 +107,7 @@ func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
 			everything := structured(t, call(t, session, c.tool, c.args("")))
 			found := structured(t, call(t, session, c.tool, c.args(c.q)))
 
-			items := found["items"].([]any)
+			items := as[[]any](t, found["items"])
 			require.NotEmpty(t, items)
 
 			for _, item := range items {

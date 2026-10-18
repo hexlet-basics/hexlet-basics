@@ -42,9 +42,9 @@ func lessonStates(t *testing.T, course map[string]any) map[string]string {
 
 	states := map[string]string{}
 
-	for _, l := range course["lessons"].([]any) {
-		lesson := l.(map[string]any)
-		states[lesson["slug"].(string)] = lesson["state"].(string)
+	for _, l := range as[[]any](t, course["lessons"]) {
+		lesson := as[map[string]any](t, l)
+		states[as[string](t, lesson["slug"])] = as[string](t, lesson["state"])
 	}
 
 	return states
@@ -86,7 +86,7 @@ func TestDashboardToolAnswersWithTheTokensUsersEnrollments(t *testing.T) {
 
 	assert.Len(t, aliceBoard["started"], 1)
 	assert.Empty(t, aliceBoard["finished"])
-	progress := aliceBoard["started"].([]any)[0].(map[string]any)["progress"].(map[string]any)
+	progress := as[map[string]any](t, as[map[string]any](t, as[[]any](t, aliceBoard["started"])[0])["progress"])
 	assert.InDelta(t, float64(33), progress["completion"], 0.001)
 	assert.Empty(t, bobBoard["started"])
 	assert.Len(t, bobBoard["finished"], 1)

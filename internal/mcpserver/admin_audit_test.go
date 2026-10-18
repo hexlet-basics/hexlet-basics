@@ -57,11 +57,11 @@ func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation 
 func itemIDs(t *testing.T, page map[string]any) []int {
 	t.Helper()
 
-	listed := page["items"].([]any)
+	listed := as[[]any](t, page["items"])
 
 	ids := make([]int, 0, len(listed))
 	for _, item := range listed {
-		ids = append(ids, int(item.(map[string]any)["id"].(float64)))
+		ids = append(ids, int(as[float64](t, as[map[string]any](t, item)["id"])))
 	}
 
 	return ids
@@ -303,7 +303,7 @@ func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	require.True(t, ok, "the cut is announced")
 	assert.Equal(t, true, hint["truncated"])
 	assert.Contains(t, textOf(t, result), "truncation")
-	assert.Less(t, len(content["items"].([]any)), 40)
+	assert.Less(t, len(as[[]any](t, content["items"])), 40)
 	assert.GreaterOrEqual(t, content["total"], float64(40), "the total is not cut")
 }
 
@@ -328,16 +328,16 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 	result := call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "operation": "AdminUpdateUser"})
 
 	content := structured(t, result)
-	items := content["items"].([]any)
+	items := as[[]any](t, content["items"])
 	require.Len(t, items, 1)
-	changes := items[0].(map[string]any)["changes"].([]any)
+	changes := as[[]any](t, as[map[string]any](t, items[0])["changes"])
 	require.Len(t, changes, 1)
 
 	fields := map[string]map[string]any{}
 
-	for _, f := range changes[0].(map[string]any)["fields"].([]any) {
-		field := f.(map[string]any)
-		fields[field["name"].(string)] = field
+	for _, f := range as[[]any](t, as[map[string]any](t, changes[0])["fields"]) {
+		field := as[map[string]any](t, f)
+		fields[as[string](t, field["name"])] = field
 	}
 
 	secret, ok := fields["password_digest"]

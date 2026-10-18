@@ -201,7 +201,7 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
-	payload["workflow_run"].(map[string]any)["conclusion"] = "failure"
+	as[map[string]any](t, payload["workflow_run"])["conclusion"] = "failure"
 
 	rec := httptest.NewRecorder()
 	h.Handle(rec, signedRequest(t, "workflow_run", payload))
@@ -215,7 +215,7 @@ func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
 	h, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
-	payload["workflow_run"].(map[string]any)["head_branch"] = "feature"
+	as[map[string]any](t, payload["workflow_run"])["head_branch"] = "feature"
 
 	rec := httptest.NewRecorder()
 	h.Handle(rec, signedRequest(t, "workflow_run", payload))
