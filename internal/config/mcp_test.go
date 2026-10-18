@@ -36,7 +36,7 @@ func TestLoadRejectsMCPWithoutOAuth(t *testing.T) {
 	cfg, err := LoadServer()
 
 	require.Nil(t, cfg)
-	require.ErrorContains(t, err, "MCP_ENABLED requires OAUTH_ENABLED")
+	requireProblem(t, err, "MCP_ENABLED requires OAUTH_ENABLED")
 }
 
 func enableMCP(t *testing.T) {
@@ -84,7 +84,7 @@ func TestLoadRejectsBadMCPLimitsOnlyWhenMCPIsOn(t *testing.T) {
 			cfg, err := LoadServer()
 
 			require.Nil(t, cfg)
-			require.ErrorContains(t, err, env)
+			requireProblem(t, err, env)
 
 			t.Setenv("MCP_ENABLED", "false")
 			_, err = LoadServer()
