@@ -15,6 +15,8 @@ var (
 	errHTTPServerStopped = errors.New("http server stopped unexpectedly")
 )
 
+// httpRuntime stays an interface: the runtime tests substitute a hand-written
+// fake (stuckServer) for the *http.Server.
 type httpRuntime interface {
 	ListenAndServe() error
 	Shutdown(context.Context) error

@@ -49,7 +49,7 @@ type ConnectedApp struct {
 // An app therefore disappears thirty days after its last refresh (the refresh
 // lifetime), whether or not its MCP calls kept coming: "used" means refreshed.
 func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
-	account, ok := s.app.SignedIn(ctx)
+	account, ok := s.signedIn(ctx)
 	if !ok {
 		return nil, ErrNotSignedIn
 	}
@@ -156,7 +156,7 @@ func documentHost(clientID string) string {
 //
 // An id that is not one of this user's Connected Apps is ErrAppNotConnected.
 func (s *Server) Disconnect(ctx context.Context, appID int) error {
-	account, ok := s.app.SignedIn(ctx)
+	account, ok := s.signedIn(ctx)
 	if !ok {
 		return ErrNotSignedIn
 	}

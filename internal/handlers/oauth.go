@@ -9,16 +9,12 @@ import (
 	"hexletbasics/internal/oauthserver"
 )
 
-// OAuthSession is the application's half of the seam: who is signed in. The
-// consent operations are secured by the contract, so the user is the one the
-// session security handler already loaded into the context.
-type OAuthSession struct{}
-
-var _ oauthserver.Application = OAuthSession{}
-
-// SignedIn names the authenticated user for the consent screen: the name when
-// the profile has one, the email otherwise.
-func (OAuthSession) SignedIn(ctx context.Context) (oauthserver.Account, bool) {
+// OAuthSignedIn is the application's half of the OAuth seam: who is signed in
+// (oauthserver.Deps.SignedIn). The consent operations are secured by the
+// contract, so the user is the one the session security handler already loaded
+// into the context. It names the user for the consent screen: the name when the
+// profile has one, the email otherwise.
+func OAuthSignedIn(ctx context.Context) (oauthserver.Account, bool) {
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
 		return oauthserver.Account{}, false

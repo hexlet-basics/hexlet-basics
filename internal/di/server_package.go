@@ -722,7 +722,7 @@ var serverPackage = do.Package(
 			},
 			DB:            db,
 			Transactor:    txStore,
-			App:           handlers.OAuthSession{},
+			SignedIn:      handlers.OAuthSignedIn,
 			ClientAddress: handlers.ClientIP,
 		})
 	}),

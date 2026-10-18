@@ -8,6 +8,8 @@ import (
 	"sync/atomic"
 
 	"golang.org/x/sync/errgroup"
+
+	"hexletbasics/internal/health"
 )
 
 var (
@@ -16,6 +18,8 @@ var (
 	errEventRouterStopped = errors.New("domain event router stopped unexpectedly")
 )
 
+// jobRuntime, eventRuntime and httpRuntime stay interfaces: the runtime tests
+// substitute hand-written fakes (stuckJobs, stuckServer, healthServer).
 type jobRuntime interface {
 	Start(context.Context) error
 	Stop(context.Context) error
@@ -27,13 +31,6 @@ type httpRuntime interface {
 	ListenAndServe() error
 	Shutdown(context.Context) error
 	Close() error
-}
-
-// readiness is what the runtime tells /readyz: Started once the job queue and
-// the event router run, Drain when it begins to stop (ADR-0023).
-type readiness interface {
-	Started()
-	Drain()
 }
 
 type eventRuntime interface {
@@ -54,7 +51,7 @@ type application struct {
 	// starts with the runtime and is stopped last, so /readyz can report 503
 	// while the queue and router drain.
 	health httpRuntime
-	probes readiness
+	probes *health.Probes
 }
 
 func (a *application) run(signalCtx context.Context, stopSignals func()) error {

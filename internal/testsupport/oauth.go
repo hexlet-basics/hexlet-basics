@@ -157,7 +157,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		Config:        cfg,
 		DB:            db,
 		Transactor:    transactor,
-		App:           handlers.OAuthSession{},
+		SignedIn:      handlers.OAuthSignedIn,
 		ClientAddress: handlers.ClientIP,
 		Now:           func() time.Time { return o.now },
 	}, serverOpts...)
