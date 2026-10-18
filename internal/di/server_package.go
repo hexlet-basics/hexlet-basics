@@ -14,13 +14,13 @@ import (
 	"go.opentelemetry.io/contrib/otelconf"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/blog"
-	"hexletbasics/internal/books"
+	"hexletbasics/internal/book"
 	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursereview"
@@ -28,27 +28,27 @@ import (
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
-	"hexletbasics/internal/feeds"
+	"hexletbasics/internal/feed"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/health"
 	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/leadcapture"
-	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/lessonreview"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/permission"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/qnaitems"
-	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/qnaitem"
+	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
-	"hexletbasics/internal/versionbuilds"
+	"hexletbasics/internal/versionbuild"
 )
 
 // HTTP server timeouts. ReadHeaderTimeout caps slow-header (Slowloris) clients;
@@ -71,37 +71,37 @@ const (
 type handlerServices struct {
 	DB                *ent.Client                `do:""`
 	Config            *config.Server             `do:""`
-	Starter           *versionbuilds.Starter     `do:""`
+	Starter           *versionbuild.Starter      `do:""`
 	Jobs              *jobs.Enqueuer             `do:""`
-	RelatedCoursesSet *relatedcourses.Replacer   `do:""`
+	RelatedCoursesSet *relatedcourse.Replacer    `do:""`
 	Progress          *progress.Progress         `do:""`
 	Assets            *assetstore.Store          `do:""`
 	Sessions          *auth.Authenticator        `do:""`
-	Registrar         *accounts.Registrar        `do:""`
-	Remover           *accounts.Remover          `do:""`
-	UserEditor        *accounts.Editor           `do:""`
-	UserDirectory     *accounts.Directory        `do:""`
+	Registrar         *account.Registrar         `do:""`
+	Remover           *account.Remover           `do:""`
+	UserEditor        *account.Editor            `do:""`
+	UserDirectory     *account.Directory         `do:""`
 	Events            *events.Publisher          `do:""`
 	Leads             *leadcapture.Recorder      `do:""`
-	Books             *books.Recorder            `do:""`
+	Books             *book.Recorder             `do:""`
 	I18n              *localization.Translator   `do:""`
 	Errors            *handlers.APIErrorHandler  `do:""`
-	YandexFeed        *feeds.Yandex              `do:""`
+	YandexFeed        *feed.Yandex               `do:""`
 	Assistant         *assistant.Chat            `do:""`
 	PostRemover       *blog.Remover              `do:""`
 	Permissions       *permission.Permissions    `do:""`
 	SelfProtection    *selfprotection.Guard      `do:""`
 	BannerStates      *sitebanner.Editor         `do:""`
 	ReviewStates      *coursereview.Editor       `do:""`
-	LandingPageStates *landingpages.Editor       `do:""`
+	LandingPageStates *landingpage.Editor        `do:""`
 	CourseReadiness   *catalog.Readiness         `do:""`
 	Dashboard         *dashboard.Dashboard       `do:""`
 	Sitemap           *sitemap.Sitemap           `do:""`
 	Search            *search.Catalogue          `do:""`
-	LessonReviews     *lessonreviews.Scheduler   `do:""`
-	RelatedSuggester  *relatedcourses.Scheduler  `do:""`
-	LandingPageQna    *qnaitems.LandingPage      `do:""`
-	CategoryQna       *qnaitems.Category         `do:""`
+	LessonReviews     *lessonreview.Scheduler    `do:""`
+	RelatedSuggester  *relatedcourse.Scheduler   `do:""`
+	LandingPageQna    *qnaitem.LandingPage       `do:""`
+	CategoryQna       *qnaitem.Category          `do:""`
 	PostEditor        *blog.Editor               `do:""`
 	ReviewDirectory   *coursereview.Directory    `do:""`
 	CourseDirectory   *catalog.CourseDirectory   `do:""`
@@ -160,7 +160,7 @@ var serverPackage = do.Package(
 			}),
 		), nil
 	}),
-	do.Lazy[*accounts.Registrar](func(i do.Injector) (*accounts.Registrar, error) {
+	do.Lazy[*account.Registrar](func(i do.Injector) (*account.Registrar, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -169,7 +169,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return accounts.NewRegistrar(db, publisher), nil
+		return account.NewRegistrar(db, publisher), nil
 	}),
 	do.Lazy[*leadcapture.Recorder](func(i do.Injector) (*leadcapture.Recorder, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -182,7 +182,7 @@ var serverPackage = do.Package(
 		}
 		return leadcapture.NewRecorder(db, publisher), nil
 	}),
-	do.Lazy[*books.Recorder](func(i do.Injector) (*books.Recorder, error) {
+	do.Lazy[*book.Recorder](func(i do.Injector) (*book.Recorder, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -191,7 +191,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return books.NewRecorder(db, publisher), nil
+		return book.NewRecorder(db, publisher), nil
 	}),
 	do.Lazy[*blog.Remover](func(i do.Injector) (*blog.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -214,12 +214,12 @@ var serverPackage = do.Package(
 		}
 		return coursereview.NewEditor(db), nil
 	}),
-	do.Lazy[*landingpages.Editor](func(i do.Injector) (*landingpages.Editor, error) {
+	do.Lazy[*landingpage.Editor](func(i do.Injector) (*landingpage.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return landingpages.NewEditor(db), nil
+		return landingpage.NewEditor(db), nil
 	}),
 	do.Lazy[*catalog.Readiness](func(i do.Injector) (*catalog.Readiness, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -302,21 +302,21 @@ var serverPackage = do.Package(
 		}
 		return blog.NewEditor(db), nil
 	}),
-	do.Lazy[*qnaitems.Category](func(i do.Injector) (*qnaitems.Category, error) {
+	do.Lazy[*qnaitem.Category](func(i do.Injector) (*qnaitem.Category, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return qnaitems.NewCategory(db), nil
+		return qnaitem.NewCategory(db), nil
 	}),
-	do.Lazy[*qnaitems.LandingPage](func(i do.Injector) (*qnaitems.LandingPage, error) {
+	do.Lazy[*qnaitem.LandingPage](func(i do.Injector) (*qnaitem.LandingPage, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return qnaitems.NewLandingPage(db), nil
+		return qnaitem.NewLandingPage(db), nil
 	}),
-	do.Lazy[*lessonreviews.Scheduler](func(i do.Injector) (*lessonreviews.Scheduler, error) {
+	do.Lazy[*lessonreview.Scheduler](func(i do.Injector) (*lessonreview.Scheduler, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -325,9 +325,9 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return lessonreviews.NewScheduler(db, enqueuer), nil
+		return lessonreview.NewScheduler(db, enqueuer), nil
 	}),
-	do.Lazy[*relatedcourses.Scheduler](func(i do.Injector) (*relatedcourses.Scheduler, error) {
+	do.Lazy[*relatedcourse.Scheduler](func(i do.Injector) (*relatedcourse.Scheduler, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -336,7 +336,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return relatedcourses.NewScheduler(db, enqueuer), nil
+		return relatedcourse.NewScheduler(db, enqueuer), nil
 	}),
 	do.Lazy[*search.Catalogue](func(i do.Injector) (*search.Catalogue, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -365,28 +365,28 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return dashboard.New(db, landingpages.NewCatalog(db), tracker, logger), nil
+		return dashboard.New(db, landingpage.NewCatalog(db), tracker, logger), nil
 	}),
-	do.Lazy[*accounts.Editor](func(i do.Injector) (*accounts.Editor, error) {
+	do.Lazy[*account.Editor](func(i do.Injector) (*account.Editor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return accounts.NewEditor(db), nil
+		return account.NewEditor(db), nil
 	}),
-	do.Lazy[*accounts.Directory](func(i do.Injector) (*accounts.Directory, error) {
+	do.Lazy[*account.Directory](func(i do.Injector) (*account.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return accounts.NewDirectory(db), nil
+		return account.NewDirectory(db), nil
 	}),
-	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
+	do.Lazy[*account.Remover](func(i do.Injector) (*account.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
-		return accounts.NewRemover(db), nil
+		return account.NewRemover(db), nil
 	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		db, err := do.Invoke[*sql.DB](i)
@@ -419,7 +419,7 @@ var serverPackage = do.Package(
 		}
 		return jobs.NewEnqueuer(db, riverClient), nil
 	}),
-	do.Lazy[*versionbuilds.Starter](func(i do.Injector) (*versionbuilds.Starter, error) {
+	do.Lazy[*versionbuild.Starter](func(i do.Injector) (*versionbuild.Starter, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -428,10 +428,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return versionbuilds.NewStarter(db, enqueuer), nil
+		return versionbuild.NewStarter(db, enqueuer), nil
 	}),
 	// The Yandex feed builds its URLs on the canonical host, not the request's.
-	do.Lazy[*feeds.Yandex](func(i do.Injector) (*feeds.Yandex, error) {
+	do.Lazy[*feed.Yandex](func(i do.Injector) (*feed.Yandex, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -440,7 +440,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return feeds.NewYandex(db, cfg.AppHost), nil
+		return feed.NewYandex(db, cfg.AppHost), nil
 	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
 		services, err := do.InvokeStruct[handlerServices](i)
@@ -622,7 +622,7 @@ var serverPackage = do.Package(
 		return handlers.NewAttachmentHandler(assets, errorHandler), nil
 	}),
 	do.Lazy[*handlers.GitHubWebhookHandler](func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
-		starter, err := do.Invoke[*versionbuilds.Starter](i)
+		starter, err := do.Invoke[*versionbuild.Starter](i)
 		if err != nil {
 			return nil, err
 		}

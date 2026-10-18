@@ -3,7 +3,7 @@
 //
 // It searches only text the site's authors wrote (names, descriptions, theory,
 // instructions, post bodies) and only records a visitor can read on the website
-// today: the same scopes the public reads use (internal/landingpages,
+// today: the same scopes the public reads use (internal/landingpage,
 // internal/blog), so a draft, an unpublished post, a lesson of a retired
 // build or a record of another locale is not found by search any more than it is
 // by URL. Nothing a learner wrote is searched (no review, no message to the

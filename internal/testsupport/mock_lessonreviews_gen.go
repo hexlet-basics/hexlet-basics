@@ -5,26 +5,26 @@ package testsupport
 
 import (
 	"context"
-	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/lessonreview"
 	"sync"
 )
 
-// Ensure, that CompleterMock does implement lessonreviews.Completer.
+// Ensure, that CompleterMock does implement lessonreview.Completer.
 // If this is not the case, regenerate this file with moq.
-var _ lessonreviews.Completer = &CompleterMock{}
+var _ lessonreview.Completer = &CompleterMock{}
 
-// CompleterMock is a mock implementation of lessonreviews.Completer.
+// CompleterMock is a mock implementation of lessonreview.Completer.
 //
 //	func TestSomethingThatUsesCompleter(t *testing.T) {
 //
-//		// make and configure a mocked lessonreviews.Completer
+//		// make and configure a mocked lessonreview.Completer
 //		mockedCompleter := &CompleterMock{
 //			CompleteFunc: func(ctx context.Context, instructions string, prompt string) (string, error) {
 //				panic("mock out the Complete method")
 //			},
 //		}
 //
-//		// use mockedCompleter in code that requires lessonreviews.Completer
+//		// use mockedCompleter in code that requires lessonreview.Completer
 //		// and then make assertions.
 //
 //	}

@@ -15,7 +15,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/store"
@@ -26,9 +26,9 @@ import (
 // see what a deleted post said.
 func TestDeletingABlogPostRecordsItsOldValues(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	before := h.DB.BlogPost.GetX(t.Context(), fixtures.ID(fixtures.BlogPostHelloWorld))
+	before := h.DB.BlogPost.GetX(t.Context(), fixture.ID(fixture.BlogPostHelloWorld))
 
-	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)}))
+	require.NoError(t, h.Client.AdminDeleteBlogPost(context.Background(), api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)}))
 
 	rows := records(t, h, "AdminDeleteBlogPost")
 	require.Len(t, rows, 1)
@@ -46,7 +46,7 @@ func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 
 	breakWrites(h, ent.TypeAuditRecord)
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
-		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 
 	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})
@@ -56,10 +56,10 @@ func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
-		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 
-	assert.Equal(t, jobs.SuggestRelatedCoursesArgs{BlogPostID: fixtures.ID(fixtures.BlogPostHelloWorld)},
+	assert.Equal(t, jobs.SuggestRelatedCoursesArgs{BlogPostID: fixture.ID(fixture.BlogPostHelloWorld)},
 		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
 	require.Len(t, records(t, h, "AdminSuggestBlogPostRelatedCourses"), 1)
 }

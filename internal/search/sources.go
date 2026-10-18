@@ -19,7 +19,7 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/blog"
 	"hexletbasics/internal/htmltext"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 )
 
 // The expressions below are the document of each table, as
@@ -114,13 +114,13 @@ func (landingPages) vector(m match, s *sql.Selector) string {
 }
 
 // scope is what the course list shows: listed pages of completed courses, in the
-// locale (landingpages.Listed), that have a slug to be addressed by.
+// locale (landingpage.Listed), that have a slug to be addressed by.
 //
 // An unrestricted search (an editor's) keeps only the locale: a draft, archived
 // or unlisted page, and the page of a course still in development, are records
 // too.
 func (l landingPages) scope(m match) []predicate.CourseLandingPage {
-	visible := landingpages.Listed(m.locale)
+	visible := landingpage.Listed(m.locale)
 	if m.unrestricted {
 		visible = courselandingpage.LocaleEQ(m.locale)
 	}
@@ -217,8 +217,8 @@ func (l lessons) scope(m match) []predicate.CourseLessonTranslation {
 		where = append(where, newestBuild(m.locale))
 	} else {
 		where = append(where, courselessontranslation.HasCourseVersionWith(courseversion.HasCurrentCoursesWith(
-			landingpages.Completed(),
-			course.HasLandingPagesWith(landingpages.Listed(m.locale)),
+			landingpage.Completed(),
+			course.HasLandingPagesWith(landingpage.Listed(m.locale)),
 		)))
 	}
 	return append(where, func(s *sql.Selector) { s.Where(m.matches(l.vector(m, s))) })

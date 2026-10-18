@@ -14,7 +14,7 @@ import (
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -68,7 +68,7 @@ func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
-	lesson := lessonLabeled(t, h, fixtures.LessonSingleLessonPrinting)
+	lesson := lessonLabeled(t, h, fixture.LessonSingleLessonPrinting)
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
@@ -140,7 +140,7 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 // who finished one that was dropped has no more of the course done than before.
 func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 	// Their only finished lesson exists in the retired version alone.
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerDroppedLesson)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerDroppedLesson)
 	ctx := context.Background()
 
 	// The dropped lesson adds nothing to the course's completion.
@@ -219,14 +219,14 @@ func courseViewOf(t *testing.T, h *testsupport.Harness) *api.CourseView {
 func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.CourseLesson {
 	t.Helper()
 	return h.DB.CourseLesson.Query().
-		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixtures.ID(fixtures.CourseJavascript))).
+		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixture.ID(fixture.CourseJavascript))).
 		OnlyX(t.Context())
 }
 
 // lessonLabeled is the fixture lesson with the label.
-func lessonLabeled(t *testing.T, h *testsupport.Harness, label fixtures.Label) *ent.CourseLesson {
+func lessonLabeled(t *testing.T, h *testsupport.Harness, label fixture.Label) *ent.CourseLesson {
 	t.Helper()
-	return h.DB.CourseLesson.GetX(t.Context(), fixtures.ID(label))
+	return h.DB.CourseLesson.GetX(t.Context(), fixture.ID(label))
 }
 
 func actingUserID(t *testing.T, h *testsupport.Harness) int {

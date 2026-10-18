@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/transitions"
+	"hexletbasics/internal/transition"
 )
 
 // A state is not an update (ADR-0020, state transitions addendum): publishing,
 // unpublishing and archiving are operations of their own, and the legal moves
-// are a transitions.Transition each. This file maps a refused move to the same
+// are a transition.Transition each. This file maps a refused move to the same
 // kind of answer the self-protection refusals give, so every resource that
 // follows the pattern answers the same way: 409 with a localized `detail`.
 
@@ -30,12 +30,12 @@ var readinessNames = map[string]localization.Message{
 	"completed":      localization.ReadinessCompleted,
 }
 
-// refuseTransitionNamed turns a transitions.Illegal into a 409 refusal naming
+// refuseTransitionNamed turns a transition.Illegal into a 409 refusal naming
 // both states in the caller's language, the names from the map (the Publication
 // States' or the Course Readiness'); any other error (nil included) passes
 // through untouched.
 func refuseTransitionNamed(err error, names map[string]localization.Message) error {
-	illegal, ok := transitions.IsIllegal(err)
+	illegal, ok := transition.IsIllegal(err)
 	if !ok {
 		return err
 	}

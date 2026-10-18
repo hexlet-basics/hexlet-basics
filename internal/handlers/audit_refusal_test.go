@@ -10,7 +10,7 @@ import (
 
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -49,7 +49,7 @@ func TestARefusalRecordHoldsNoFieldValuesNorEntity(t *testing.T) {
 
 	input := permissionsPostInput("refused-secret")
 	input.RichBody = "<p>a value the record must not keep</p>"
-	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	_, err := h.Client.AdminUpdateBlogPost(context.Background(), input, api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 
 	rows := records(t, h, "AdminUpdateBlogPost")

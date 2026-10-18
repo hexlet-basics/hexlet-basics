@@ -20,7 +20,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/zitadel/oidc/v3/pkg/oidc"
 
-	"hexletbasics/internal/ids"
+	"hexletbasics/internal/ident"
 )
 
 const (
@@ -117,7 +117,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientID := ids.New()
+	clientID := ident.New()
 	_, err := s.storage.db.OAuthClient.Create().
 		SetClientID(clientID).
 		SetName(reg.name).

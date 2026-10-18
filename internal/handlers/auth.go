@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
@@ -17,7 +17,7 @@ import (
 // queries.
 func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
 	u, err := s.credentials.Authenticate(ctx, req.Email, req.Password)
-	if errors.Is(err, accounts.ErrInvalidCredentials) {
+	if errors.Is(err, account.ErrInvalidCredentials) {
 		return validationError("password", s.i18n.Text(ctx, localization.WrongCredentials)), nil
 	}
 	if err != nil {
@@ -84,14 +84,14 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.Crea
 		firstName = &value
 	}
 
-	u, err := s.registrar.Register(ctx, accounts.Registration{
+	u, err := s.registrar.Register(ctx, account.Registration{
 		Email:     req.Email,
 		Password:  req.Password,
 		FirstName: firstName,
 		Locale:    s.i18n.Locale(ctx),
 	})
 	if err != nil {
-		if errors.Is(err, accounts.ErrPasswordProcessing) {
+		if errors.Is(err, account.ErrPasswordProcessing) {
 			return validationError("password", s.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 		}
 		if ent.IsConstraintError(err) {

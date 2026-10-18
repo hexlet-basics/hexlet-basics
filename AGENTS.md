@@ -148,7 +148,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 - `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
 - `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
 - `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks` + `gen:fixtures`.
-- `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run gen:fixtures` — regenerate `internal/fixtures/labels_gen.go`, one `fixtures.Label` variable per label in `fixtures/*.yml` (directive in `internal/fixtures/gen.go`, generator in `cmd/fixturelabels`). `mise run tidy` — `go mod tidy`.
+- `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run gen:fixtures` — regenerate `internal/fixture/labels_gen.go`, one `fixtures.Label` variable per label in `fixtures/*.yml` (directive in `internal/fixture/gen.go`, generator in `cmd/fixturelabels`). `mise run tidy` — `go mod tidy`.
 - `mise run gen:check` — runs `gen:all` and fails if the tree changes; the CI `gen-check` job runs it, so generated output must be committed with its source.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
   and commit the regenerated outputs alongside the source change.
@@ -304,7 +304,7 @@ Change the source, run the generator, commit the output. Never hand-edit or
 `git restore` a generated file — regenerate it from current source.
 
 - `internal/testsupport/mock_*_gen.go` (moq mocks) ← the production interfaces via `mise run gen:mocks`.
-- `internal/fixtures/labels_gen.go` (fixture labels) ← `fixtures/*.yml` via `mise run gen:fixtures`.
+- `internal/fixture/labels_gen.go` (fixture labels) ← `fixtures/*.yml` via `mise run gen:fixtures`.
 - `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `mise run gen:spec`.
 - `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `mise run gen:api`.
 - `internal/amocrm/generated/**` (ogen client) ← the pinned amoCRM OpenAPI via

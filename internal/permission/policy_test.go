@@ -12,9 +12,9 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/user"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/permission"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -22,11 +22,11 @@ import (
 // banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator
 // without a staff record, user_admin_staff one with it.
 var (
-	adminID  = fixtures.ID(fixtures.UserAdminLearner)
-	editorID = fixtures.ID(fixtures.UserStaffEditor)
+	adminID  = fixture.ID(fixture.UserAdminLearner)
+	editorID = fixture.ID(fixture.UserStaffEditor)
 	// An administrator who is also staff, on the editor role: the harness user
 	// has no staff record, and a staff record cannot be made for oneself.
-	adminStaffID = fixtures.ID(fixtures.UserAdminStaff)
+	adminStaffID = fixture.ID(fixture.UserAdminStaff)
 )
 
 func TestPolicyFollowsTheRolesGrants(t *testing.T) {
@@ -62,7 +62,7 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 	db := testsupport.NewClient(t)
 	// user_blank is neither an administrator nor staff.
-	u := db.User.GetX(t.Context(), fixtures.ID(fixtures.UserBlank))
+	u := db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank))
 
 	err := permission.NewPolicy(db).Allow(t.Context(), u, "ru", "AdminListBanners")
 
@@ -284,5 +284,5 @@ func TestHasCapabilityRejectsANameThatIsNotACapability(t *testing.T) {
 
 // The upload is declared open to any staff member, whatever the role holds.
 func TestUploadIsDeclaredOpenToAnyStaffMember(t *testing.T) {
-	assert.Equal(t, permissions.AnyStaff, permissions.AccessOf("AdminUploadAttachment"))
+	assert.Equal(t, permissioncatalog.AnyStaff, permissioncatalog.AccessOf("AdminUploadAttachment"))
 }

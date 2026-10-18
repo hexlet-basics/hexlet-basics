@@ -12,14 +12,14 @@ import (
 
 	"hexletbasics/ent/oauthaccesstoken"
 	"hexletbasics/ent/oauthrefreshtoken"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // bob is the fixtures' editor, a second user whose grants must stay out of
 // alice's way.
-var bob = fixtures.ID(fixtures.UserStaffEditor)
+var bob = fixture.ID(fixture.UserStaffEditor)
 
 func TestRefreshRotatesTheTokenAndRefusesTheOldOne(t *testing.T) {
 	o := testsupport.NewOAuth(t)

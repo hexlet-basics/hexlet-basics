@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/oauthrefreshtoken"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -27,7 +27,7 @@ import (
 // rotates theirs, so each has a used token and its child.
 func TestPurgeOAuthTokensJobDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	alice, bob := fixtures.ID(fixtures.UserAdminLearner), fixtures.ID(fixtures.UserStaffEditor)
+	alice, bob := fixture.ID(fixture.UserAdminLearner), fixture.ID(fixture.UserStaffEditor)
 	connectAndRotate := func(userID int) {
 		tokens := o.Connect(userID, oauthserver.ScopeCatalogRead)
 		_, res := o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)

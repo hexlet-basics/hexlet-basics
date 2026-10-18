@@ -13,7 +13,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/handlers"
@@ -45,8 +45,8 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		// tests reach it while asserting what the contract protects.
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
 		Sessions:  auth.New(db),
-		Registrar: accounts.NewRegistrar(transactor, services.Events),
-		Remover:   accounts.NewRemover(transactor),
+		Registrar: account.NewRegistrar(transactor, services.Events),
+		Remover:   account.NewRemover(transactor),
 		Events:    services.Events,
 		I18n:      translator,
 		Errors:    errorHandler,

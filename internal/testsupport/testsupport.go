@@ -23,29 +23,29 @@ import (
 	"gocloud.dev/blob/memblob"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/blog"
-	"hexletbasics/internal/books"
+	"hexletbasics/internal/book"
 	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
-	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/feeds"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/emailtoken"
+	"hexletbasics/internal/feed"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/leadcapture"
-	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/lessonreview"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/permission"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/qnaitems"
-	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/qnaitem"
+	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sitebanner"
@@ -76,9 +76,9 @@ var testConfig = struct {
 
 // EmailTokens signs Magic Link and Password Reset tokens the handlers under
 // test accept, so a test can follow a link without a mailbox. Options such as
-// emailtokens.WithClock issue one that has already expired.
-func EmailTokens(opts ...emailtokens.Option) *emailtokens.Tokens {
-	return emailtokens.New(testConfig.EmailTokenSecret, opts...)
+// emailtoken.WithClock issue one that has already expired.
+func EmailTokens(opts ...emailtoken.Option) *emailtoken.Tokens {
+	return emailtoken.New(testConfig.EmailTokenSecret, opts...)
 }
 
 // NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
@@ -210,7 +210,7 @@ func (h *Harness) ResponseCookies() []string { return h.doer.setCookies }
 // socket, and exercise the exact ent-error -> status mapping the server uses.
 func NewHarness(t *testing.T) *Harness {
 	t.Helper()
-	return NewHarnessAs(t, fixtures.UserAdminLearner)
+	return NewHarnessAs(t, fixture.UserAdminLearner)
 }
 
 // Today is the day the harness's clock reads: the day the fixtures were written,
@@ -220,7 +220,7 @@ var Today = time.Date(2026, time.July, 27, 12, 0, 0, 0, time.UTC)
 
 // NewHarnessAs is NewHarness for a request authenticated as the fixture user
 // with the label, for a scenario that belongs to a user of its own.
-func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
+func NewHarnessAs(t *testing.T, userLabel fixture.Label) *Harness {
 	t.Helper()
 
 	db, tx := NewClientWithTx(t)
@@ -286,7 +286,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 // in as another fixture user: the second person of a scenario that needs one to
 // act on what the first sees, which a harness of its own could not do because it
 // has a transaction of its own. The caller's harness keeps acting as before.
-func (h *Harness) ActAs(t *testing.T, userLabel fixtures.Label) *Harness {
+func (h *Harness) ActAs(t *testing.T, userLabel fixture.Label) *Harness {
 	t.Helper()
 	// Sessions live in the database, so a manager of its own over the same client
 	// issues one the harness's pipeline recognises.
@@ -336,7 +336,7 @@ func handlerDeps(
 	t.Helper()
 	// The real registrar: it hashes, writes the user and raises the sign-up fact
 	// through the transactor, so the fact lands in the outbox like in production.
-	registrar := accounts.NewRegistrar(transactor, services.Events)
+	registrar := account.NewRegistrar(transactor, services.Events)
 	// An in-memory bucket keeps uploads off disk and out of the network while
 	// the attachment metadata still lands in the test's transaction.
 	bucket := memblob.OpenBucket(nil)
@@ -353,22 +353,22 @@ func handlerDeps(
 		Jobs:     services.Jobs,
 		// The real replacer over the savepoint transactor, so a failed replace
 		// rolls back exactly as it does in production.
-		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
+		RelatedCoursesSet: relatedcourse.NewReplacer(transactor),
 		Progress:          tracker,
 		Assets:            assets,
 		Sessions:          manager,
 		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
-		Remover:       accounts.NewRemover(transactor),
-		UserEditor:    accounts.NewEditor(db),
-		UserDirectory: accounts.NewDirectory(db),
+		Remover:       account.NewRemover(transactor),
+		UserEditor:    account.NewEditor(db),
+		UserDirectory: account.NewDirectory(db),
 		Events:        services.Events,
 		Leads:         leadRecorder,
-		Books:         books.NewRecorder(transactor, services.Events),
+		Books:         book.NewRecorder(transactor, services.Events),
 		I18n:          translator,
 		Errors:        errorHandler,
-		YandexFeed:    feeds.NewYandex(db, testConfig.AppHost),
+		YandexFeed:    feed.NewYandex(db, testConfig.AppHost),
 		Assistant: assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator,
 			assistant.WithClock(func() time.Time { return Today })),
 		// The real remover over the savepoint transactor, like the others.
@@ -377,15 +377,15 @@ func handlerDeps(
 		SelfProtection:    selfprotection.NewGuard(db),
 		BannerStates:      sitebanner.NewEditor(db),
 		ReviewStates:      coursereview.NewEditor(db),
-		LandingPageStates: landingpages.NewEditor(db),
+		LandingPageStates: landingpage.NewEditor(db),
 		CourseReadiness:   catalog.NewReadiness(db),
-		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
+		Dashboard:         dashboard.New(db, landingpage.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
 		Search:            search.NewCatalogue(db),
-		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),
-		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
-		LandingPageQna:    qnaitems.NewLandingPage(db),
-		CategoryQna:       qnaitems.NewCategory(db),
+		LessonReviews:     lessonreview.NewScheduler(db, services.Jobs),
+		RelatedSuggester:  relatedcourse.NewScheduler(db, services.Jobs),
+		LandingPageQna:    qnaitem.NewLandingPage(db),
+		CategoryQna:       qnaitem.NewCategory(db),
 		PostEditor:        blog.NewEditor(db),
 		ReviewDirectory:   coursereview.NewDirectory(db),
 		CourseDirectory:   catalog.NewCourseDirectory(db),
@@ -528,10 +528,10 @@ type harnessSecurity struct {
 // newHarnessSecurity signs the fixture user in through the real session manager
 // and keeps the cookie value that names the session, which is what a browser
 // would send on every request.
-func newHarnessSecurity(t *testing.T, db *ent.Client, manager *auth.Authenticator, userLabel fixtures.Label) *harnessSecurity {
+func newHarnessSecurity(t *testing.T, db *ent.Client, manager *auth.Authenticator, userLabel fixture.Label) *harnessSecurity {
 	t.Helper()
 
-	u, err := db.User.Get(t.Context(), fixtures.ID(userLabel))
+	u, err := db.User.Get(t.Context(), fixture.ID(userLabel))
 	if err != nil {
 		t.Fatalf("load harness user: %v", err)
 	}

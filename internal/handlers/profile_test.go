@@ -10,11 +10,11 @@ import (
 
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/auth"
-	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/emailtoken"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -62,7 +62,7 @@ func TestDeleteAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	u := h.DB.User.GetX(t.Context(), h.UserID)
 	require.NotNil(t, u.Nickname, "the fixture user has a nickname and a phone to erase")
-	other := h.DB.UserAccount.GetX(t.Context(), fixtures.ID(fixtures.UserAccountStaffEditorGithub))
+	other := h.DB.UserAccount.GetX(t.Context(), fixture.ID(fixture.UserAccountStaffEditorGithub))
 
 	res, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
@@ -80,7 +80,7 @@ func TestDeleteAccount(t *testing.T) {
 
 	// The row stays, removed and erased; what is not identifying is kept.
 	removed := h.DB.User.GetX(t.Context(), u.ID)
-	assert.Equal(t, accounts.StateRemoved, lo.FromPtr(removed.State))
+	assert.Equal(t, account.StateRemoved, lo.FromPtr(removed.State))
 	assert.Nil(t, removed.FirstName)
 	assert.Nil(t, removed.LastName)
 	assert.Nil(t, removed.Nickname)
@@ -130,14 +130,14 @@ func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 func TestRemovedUserCannotSignInWithPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 
-	assert.False(t, signsInWith(t, h, "removed-user@example.com", fixtures.Password))
+	assert.False(t, signsInWith(t, h, "removed-user@example.com", fixture.Password))
 	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
 }
 
 func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserRemoved)
-	token := issueEmailToken(t, emailtokens.MagicLink, u)
+	u := fixtureUser(t, h, fixture.UserRemoved)
+	token := issueEmailToken(t, emailtoken.MagicLink, u)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
 	require.NoError(t, err)
@@ -148,8 +148,8 @@ func TestRemovedUserCannotFollowAMagicLink(t *testing.T) {
 // empty digest and to an email that is still there; only the state can refuse it.
 func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserRemovedWithoutPassword)
-	token := issueEmailToken(t, emailtokens.PasswordReset, u)
+	u := fixtureUser(t, h, fixture.UserRemovedWithoutPassword)
+	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
@@ -158,7 +158,7 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	assert.IsType(t, &api.NotFoundError{}, res)
 }
 
-var secondAdminID = fixtures.ID(fixtures.UserSecondAdmin)
+var secondAdminID = fixture.ID(fixture.UserSecondAdmin)
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)

@@ -13,7 +13,7 @@ import (
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/progress"
 )
 
@@ -53,7 +53,7 @@ type CourseProgress interface {
 // Dashboard reads the learner's courses.
 type Dashboard struct {
 	db       *ent.Client
-	catalog  *landingpages.Catalog
+	catalog  *landingpage.Catalog
 	progress CourseProgress
 	log      *slog.Logger
 }
@@ -61,7 +61,7 @@ type Dashboard struct {
 // New builds the production dashboard over the catalog and the progress module,
 // so the dashboard and the course page report the same progress. The logger
 // reports the courses left off for lack of a card.
-func New(db *ent.Client, catalog *landingpages.Catalog, tracker CourseProgress, logger *slog.Logger) *Dashboard {
+func New(db *ent.Client, catalog *landingpage.Catalog, tracker CourseProgress, logger *slog.Logger) *Dashboard {
 	return &Dashboard{db: db, catalog: catalog, progress: tracker, log: logger}
 }
 

@@ -16,7 +16,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
-	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 )
@@ -94,12 +94,12 @@ var commonPackage = do.Package(
 	}),
 	// Both processes replace a post's related courses: the admin set in the
 	// HTTP process, the AI pick in the worker.
-	do.Lazy[*relatedcourses.Replacer](func(i do.Injector) (*relatedcourses.Replacer, error) {
+	do.Lazy[*relatedcourse.Replacer](func(i do.Injector) (*relatedcourse.Replacer, error) {
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
-		return relatedcourses.NewReplacer(txStore), nil
+		return relatedcourse.NewReplacer(txStore), nil
 	}),
 	// Both processes raise facts: the HTTP process for what learners do, the
 	// worker for the one thing it promotes (a Course Version).

@@ -9,7 +9,7 @@ import (
 )
 
 // responseSchema is the JSON Schema of an operation's 200 response body, read
-// from the embedded OpenAPI document (the same one internal/permissions reads,
+// from the embedded OpenAPI document (the same one internal/permissioncatalog reads,
 // ADR-0020) with every $ref inlined.
 //
 // A tool's output schema comes from the contract rather than from reflection on

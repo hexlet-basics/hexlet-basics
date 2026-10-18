@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandlers"
+	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/testsupport"
@@ -31,7 +31,7 @@ func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 	assert.Equal(t, "mcp", facts[0].Channel)
 	assert.Equal(t, token.ConnectedAppID, *facts[0].ConnectedAppID)
 	assert.Equal(t, token.ID, *facts[0].TokenID)
-	testsupport.Deliver(t, o.Services, eventhandlers.StaffReadPersonalData(o.DB))
+	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
 	records := o.Records("AdminListUsers")
 	require.Len(t, records, 1)
 	assert.Equal(t, "mcp", records[0].Channel)

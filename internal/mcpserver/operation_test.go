@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 func TestEveryAllowlistedOperationIsAnAdminOperationThatDeclaresItsPermission(t *testing.T) {
@@ -19,9 +19,9 @@ func TestEveryAllowlistedOperationIsAnAdminOperationThatDeclaresItsPermission(t 
 		require.NoError(t, err, id)
 		assert.True(t, op.Admin, "%s requires the AdminSession scheme, so the checkpoint runs", id)
 		name := strings.ToUpper(id[:1]) + id[1:]
-		_, declares := permissions.For(name)
+		_, declares := permissioncatalog.For(name)
 		// An any-staff operation (the upload) declares its access, not a Permission.
-		declares = declares || permissions.AccessOf(name) == permissions.AnyStaff
+		declares = declares || permissioncatalog.AccessOf(name) == permissioncatalog.AnyStaff
 		assert.True(t, declares, "%s declares its Permission or access in the contract", id)
 		_, err = adminTool(op)
 		assert.NoError(t, err, id)

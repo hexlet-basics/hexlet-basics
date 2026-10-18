@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/dashboard"
-	"hexletbasics/internal/fixtures"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -23,9 +23,9 @@ func TestCoursesLogsTheCourseWithoutACard(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	var logs bytes.Buffer
 	logger := slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelWarn}))
-	board := dashboard.New(db, landingpages.NewCatalog(db), progress.New(db, transactor, nil, nil), logger)
-	userID := fixtures.ID(fixtures.UserLearnerHiddenCards)
-	cardless := fixtures.ID(fixtures.CourseSingleLesson)
+	board := dashboard.New(db, landingpage.NewCatalog(db), progress.New(db, transactor, nil, nil), logger)
+	userID := fixture.ID(fixture.UserLearnerHiddenCards)
+	cardless := fixture.ID(fixture.CourseSingleLesson)
 
 	courses, err := board.Courses(t.Context(), userID, "ru")
 	require.NoError(t, err)

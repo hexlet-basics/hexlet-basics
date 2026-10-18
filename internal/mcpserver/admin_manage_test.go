@@ -9,17 +9,17 @@ import (
 
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/user"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
 var (
-	secondAdmin    = fixtures.ID(fixtures.UserSecondAdmin)
-	moderator      = fixtures.ID(fixtures.StaffRoleModerator)
-	adminStaffSeat = fixtures.ID(fixtures.StaffMemberAdminStaff)
-	bobSeat        = fixtures.ID(fixtures.StaffMemberStaffEditor)
+	secondAdmin    = fixture.ID(fixture.UserSecondAdmin)
+	moderator      = fixture.ID(fixture.StaffRoleModerator)
+	adminStaffSeat = fixture.ID(fixture.StaffMemberAdminStaff)
+	bobSeat        = fixture.ID(fixture.StaffMemberStaffEditor)
 )
 
 func userBody(email string, admin any) map[string]any {
@@ -61,17 +61,17 @@ func accessOperations() []struct {
 // The contract declares mcp.manage for every operation on users, staff members,
 // Staff Roles and their grants; no other operation carries it.
 func TestTheContractDeclaresMCPManageForTheAccessOperations(t *testing.T) {
-	declared := permissions.RequiredCapabilityOperations()
+	declared := permissioncatalog.RequiredCapabilityOperations()
 	assert.Len(t, declared, 22)
 	for _, name := range declared {
-		assert.Contains(t, permissions.MCPCapabilities(name), "mcp.manage", name)
-		requirement, ok := permissions.For(name)
+		assert.Contains(t, permissioncatalog.MCPCapabilities(name), "mcp.manage", name)
+		requirement, ok := permissioncatalog.For(name)
 		require.True(t, ok, name)
 		assert.Regexp(t, `^(users|staff_members|staff_roles)\.`, requirement.Permission, name)
 	}
-	assert.Equal(t, []string{"mcp.read"}, permissions.MCPCapabilities("AdminListBanners"))
-	assert.Equal(t, []string{"mcp.write", "mcp.manage"}, permissions.MCPCapabilities("AdminDeleteUser"))
-	assert.Equal(t, []string{"mcp.read", "mcp.manage"}, permissions.MCPCapabilities("AdminGetRolePermissions"))
+	assert.Equal(t, []string{"mcp.read"}, permissioncatalog.MCPCapabilities("AdminListBanners"))
+	assert.Equal(t, []string{"mcp.write", "mcp.manage"}, permissioncatalog.MCPCapabilities("AdminDeleteUser"))
+	assert.Equal(t, []string{"mcp.read", "mcp.manage"}, permissioncatalog.MCPCapabilities("AdminGetRolePermissions"))
 }
 
 func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
@@ -151,7 +151,7 @@ func TestToolsAnnounceWhatTheyDo(t *testing.T) {
 	}
 	for name, tool := range byName {
 		switch {
-		case permissions.IsAdminWrite(ogenName(name)):
+		case permissioncatalog.IsAdminWrite(ogenName(name)):
 			assert.False(t, tool.Annotations.ReadOnlyHint, name)
 			if tool.Annotations.DestructiveHint != nil && *tool.Annotations.DestructiveHint {
 				assert.Contains(t, name, "Delete", "only a delete is destructive: archive and unpublish keep the record")

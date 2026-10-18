@@ -12,7 +12,7 @@ import (
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/internal/blog"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 )
 
 // Locales are the locales the sitemap lists, in page order (legacy
@@ -50,7 +50,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 	for _, locale := range Locales {
 		rows, err := s.db.CourseLandingPage.Query().
 			Where(
-				landingpages.Published(locale),
+				landingpage.Published(locale),
 				courselandingpage.Listed(true),
 				// Legacy sent every lesson of the courses' current versions and the
 				// page hid a landing page whose course had none in its locale. Unlike

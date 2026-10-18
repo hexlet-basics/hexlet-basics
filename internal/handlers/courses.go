@@ -4,18 +4,18 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/blog"
-	"hexletbasics/internal/coursepages"
-	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/coursepage"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/feeds"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/feed"
+	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/permission"
 )
@@ -53,7 +53,7 @@ type Server struct {
 	security *Security
 	// credentials checks and changes passwords; registrar creates accounts and
 	// remover removes them.
-	credentials *accounts.Credentials
+	credentials *account.Credentials
 	registrar   UserRegistrar
 	remover     AccountRemover
 	// userEditor and userDirectory are the administrators' write and read side of
@@ -62,7 +62,7 @@ type Server struct {
 	userDirectory UserDirectory
 	events        events.StandalonePublisher
 	// emailTokens verifies the Magic Link and Password Reset links.
-	emailTokens *emailtokens.Tokens
+	emailTokens *emailtoken.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
 	// leads stores a lead and raises LeadCreated in one transaction.
@@ -72,11 +72,11 @@ type Server struct {
 	i18n   *localization.Translator
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
-	yandexFeed *feeds.Yandex
+	yandexFeed *feed.Yandex
 	// catalog reads the listed landing pages the course list and category pages share.
-	catalog *landingpages.Catalog
+	catalog *landingpage.Catalog
 	// coursePages reads the course page and the lesson page.
-	coursePages *coursepages.Pages
+	coursePages *coursepage.Pages
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
 	// blogPublic reads the posts a visitor may open.
@@ -139,7 +139,7 @@ type Deps struct {
 	Books             BookRequester
 	I18n              *localization.Translator
 	Errors            *APIErrorHandler
-	YandexFeed        *feeds.Yandex
+	YandexFeed        *feed.Yandex
 	Assistant         *assistant.Chat
 	PostRemover       PostRemover
 	Permissions       PermissionWriter
@@ -181,21 +181,21 @@ func NewServer(deps Deps) *Server {
 		assets:            deps.Assets,
 		sessions:          deps.Sessions,
 		security:          newSecurity(deps.DB, deps.Sessions, permission.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
-		credentials:       accounts.NewCredentials(deps.DB),
+		credentials:       account.NewCredentials(deps.DB),
 		registrar:         deps.Registrar,
 		remover:           deps.Remover,
 		userEditor:        deps.UserEditor,
 		userDirectory:     deps.UserDirectory,
 		events:            deps.Events,
-		emailTokens:       emailtokens.New(deps.Settings.EmailTokenSecret),
+		emailTokens:       emailtoken.New(deps.Settings.EmailTokenSecret),
 		guests:            guests,
 		i18n:              deps.I18n,
 		leads:             deps.Leads,
 		books:             deps.Books,
 		errors:            deps.Errors,
 		yandexFeed:        deps.YandexFeed,
-		catalog:           landingpages.NewCatalog(deps.DB),
-		coursePages:       coursepages.New(deps.DB, landingpages.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
+		catalog:           landingpage.NewCatalog(deps.DB),
+		coursePages:       coursepage.New(deps.DB, landingpage.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
 		blogPublic:        blog.NewPublic(deps.DB),
@@ -237,7 +237,7 @@ func (s *Server) Security() *Security {
 // URL stays `/languages` for backward-compat; the domain concept is Course.
 // Mirrors the legacy scope (`LandingPage.web.where(listed: true)`): published,
 // listed landing pages of the request locale whose Course is completed, in
-// catalog order (see landingpages.Catalog).
+// catalog order (see landingpage.Catalog).
 func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
 	pages, err := s.catalog.Pages(ctx, s.i18n.Locale(ctx))
 	if err != nil {

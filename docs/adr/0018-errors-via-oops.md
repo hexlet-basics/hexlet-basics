@@ -42,7 +42,7 @@ was not used.
   way `.Create()` is rejected in tests: the rule survives people and agents who
   do not remember it. The rule is active now with an exclusion list in
   `.golangci.yml` holding every package not yet migrated; migrating a package
-  removes its entry, and the list never grows. `internal/books` is the migrated
+  removes its entry, and the list never grows. `internal/book` is the migrated
   template (`var errs = oops.In("books")`, static messages, `.With`, one wrap at
   the exported function).
 - `oops.Recover` guards the one goroutine that does real work without a safety

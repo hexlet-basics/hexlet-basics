@@ -5,14 +5,14 @@ import (
 	"time"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/blog"
 	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/leadcapture"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/qnaitems"
+	"hexletbasics/internal/qnaitem"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sitemap"
@@ -91,7 +91,7 @@ type AccountRemover interface {
 
 // UserRegistrar creates an account and raises UserSignedUp with it.
 type UserRegistrar interface {
-	Register(ctx context.Context, input accounts.Registration) (*ent.User, error)
+	Register(ctx context.Context, input account.Registration) (*ent.User, error)
 }
 
 // PostRemover deletes a blog post with its dependents.
@@ -101,8 +101,8 @@ type PostRemover interface {
 
 // UserEditor is how an administrator creates, changes and deletes user records.
 type UserEditor interface {
-	Create(ctx context.Context, fields accounts.UserFields) (*ent.User, error)
-	Update(ctx context.Context, id int, fields accounts.UserFields) (*ent.User, error)
+	Create(ctx context.Context, fields account.UserFields) (*ent.User, error)
+	Update(ctx context.Context, id int, fields account.UserFields) (*ent.User, error)
 	Delete(ctx context.Context, id int) error
 }
 
@@ -189,15 +189,15 @@ type RelatedCoursesScheduler interface {
 // CategoryQna edits the questions and answers of a course category.
 type CategoryQna interface {
 	List(ctx context.Context, categoryID int) ([]*ent.CategoryQnaItem, error)
-	Create(ctx context.Context, categoryID int, fields qnaitems.Fields) (*ent.CategoryQnaItem, error)
-	Update(ctx context.Context, categoryID, id int, fields qnaitems.Fields) (*ent.CategoryQnaItem, error)
+	Create(ctx context.Context, categoryID int, fields qnaitem.Fields) (*ent.CategoryQnaItem, error)
+	Update(ctx context.Context, categoryID, id int, fields qnaitem.Fields) (*ent.CategoryQnaItem, error)
 	Delete(ctx context.Context, categoryID, id int) error
 }
 
 // LandingPageQna edits the questions and answers of a course landing page.
 type LandingPageQna interface {
 	List(ctx context.Context, landingPageID int) ([]*ent.LandingPageQnaItem, error)
-	Create(ctx context.Context, landingPageID int, fields qnaitems.Fields) (*ent.LandingPageQnaItem, error)
-	Update(ctx context.Context, landingPageID, id int, fields qnaitems.Fields) (*ent.LandingPageQnaItem, error)
+	Create(ctx context.Context, landingPageID int, fields qnaitem.Fields) (*ent.LandingPageQnaItem, error)
+	Update(ctx context.Context, landingPageID, id int, fields qnaitem.Fields) (*ent.LandingPageQnaItem, error)
 	Delete(ctx context.Context, landingPageID, id int) error
 }

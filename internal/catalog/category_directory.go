@@ -9,7 +9,7 @@ import (
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 )
 
 // CategoryDirectory is the public read side of the categories (legacy
@@ -17,13 +17,13 @@ import (
 // (legacy `with_locale`), so a category of another language is not found.
 type CategoryDirectory struct {
 	db      *ent.Client
-	catalog *landingpages.Catalog
+	catalog *landingpage.Catalog
 }
 
 // NewCategoryDirectory builds the directory over an ent client; the landing pages a
 // category shows come from the same catalog rule the course list uses.
 func NewCategoryDirectory(db *ent.Client) *CategoryDirectory {
-	return &CategoryDirectory{db: db, catalog: landingpages.NewCatalog(db)}
+	return &CategoryDirectory{db: db, catalog: landingpage.NewCatalog(db)}
 }
 
 // View is a category page: the category, the landing pages grouped under it and

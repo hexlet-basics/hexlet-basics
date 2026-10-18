@@ -11,13 +11,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
-var bob = fixtures.ID(fixtures.UserStaffEditor)
+var bob = fixture.ID(fixture.UserStaffEditor)
 
 const (
 	// jsLanding is the landing page slug of the JavaScript course in Russian, the

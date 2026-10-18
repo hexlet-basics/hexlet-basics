@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/transitions"
+	"hexletbasics/internal/transition"
 )
 
 // PostFields is what an administrator writes on a post. A nil field clears the
@@ -38,7 +38,7 @@ func (e *Editor) Create(ctx context.Context, creatorID int, locale string, field
 		SetNillableName(fields.Name).
 		SetNillableSlug(fields.Slug).
 		SetNillableDescription(fields.Description).
-		SetState(string(transitions.Draft)).
+		SetState(string(transition.Draft)).
 		SetRichBody(fields.RichBody).
 		SetCreatorID(creatorID).
 		SetLocale(locale).

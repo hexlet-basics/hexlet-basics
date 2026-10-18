@@ -12,7 +12,7 @@ import (
 )
 
 // yandexFeed is the slice of the YML document these tests read; the full
-// document is pinned by the golden test in internal/feeds.
+// document is pinned by the golden test in internal/feed.
 type yandexFeed struct {
 	Date   string `xml:"date,attr"`
 	Offers []struct {

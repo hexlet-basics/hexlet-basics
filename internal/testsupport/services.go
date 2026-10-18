@@ -23,7 +23,7 @@ import (
 	"hexletbasics/internal/permission"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
-	"hexletbasics/internal/versionbuilds"
+	"hexletbasics/internal/versionbuild"
 )
 
 // Services are the production event publisher and job enqueuers, wired over the
@@ -35,7 +35,7 @@ type Services struct {
 	// queue through its own JobListTx.
 	River   *river.Client[*sql.Tx]
 	Events  *events.Publisher
-	Starter *versionbuilds.Starter
+	Starter *versionbuild.Starter
 	Jobs    *jobs.Enqueuer
 
 	tx *sql.Tx
@@ -61,7 +61,7 @@ func NewServices(t *testing.T, tx *sql.Tx, transactor store.Transactor) *Service
 		tx:      tx,
 		River:   riverClient,
 		Events:  events.NewPublisher(transactor, slog.New(slog.DiscardHandler)),
-		Starter: versionbuilds.NewStarter(transactor, enqueuer),
+		Starter: versionbuild.NewStarter(transactor, enqueuer),
 		Jobs:    enqueuer,
 	}
 }
