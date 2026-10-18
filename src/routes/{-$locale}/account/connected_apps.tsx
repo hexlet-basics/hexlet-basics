@@ -55,7 +55,6 @@ function ConnectedApps() {
   // The loader filled the cache; the query keeps it current after a revoke.
   const { data } = useQuery({ ...listConnectedAppsOptions(), staleTime: 0 });
   const items = data?.items ?? [];
-  const scopeLabel = useScopeLabel();
 
   const revoke = useResourceMutation({
     mutation: revokeConnectedAppMutation(),
@@ -111,11 +110,7 @@ function ConnectedApps() {
                     <Text size="sm" fw={500}>
                       {t(($) => $.account.connected_apps.permissions)}
                     </Text>
-                    <List size="sm">
-                      {app.scopes.map((scope) => (
-                        <List.Item key={scope}>{scopeLabel(scope)}</List.Item>
-                      ))}
-                    </List>
+                    <ScopeList scopes={app.scopes} />
                   </Stack>
                   <Button
                     variant="default"
@@ -134,5 +129,18 @@ function ConnectedApps() {
         </Stack>
       </Stack>
     </Container>
+  );
+}
+
+// What an app may do, one line a scope.
+function ScopeList({ scopes }: { scopes: string[] }) {
+  const scopeLabel = useScopeLabel();
+
+  return (
+    <List size="sm">
+      {scopes.map((scope) => (
+        <List.Item key={scope}>{scopeLabel(scope)}</List.Item>
+      ))}
+    </List>
   );
 }

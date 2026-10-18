@@ -127,40 +127,7 @@ export default function Footer() {
 
           <SimpleGrid cols={{ base: 2, sm: 4 }}>
             <Stack>
-              <Group align="top">
-                <Anchor
-                  variant="nav"
-                  href="https://github.com/hexlet-basics"
-                  underline="never"
-                  aria-label="Project Repository On GitHub"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <IconBrandGithub />
-                </Anchor>
-                <Tooltip label={t(($) => $.common.telegram_channel)}>
-                  <Anchor
-                    variant="nav"
-                    href="https://t.me/hexlet_ru"
-                    underline="never"
-                    aria-label={t(($) => $.common.telegram_channel)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <IconSend />
-                  </Anchor>
-                </Tooltip>
-                <Anchor
-                  variant="nav"
-                  href="https://www.youtube.com/@HexletOrg"
-                  underline="never"
-                  aria-label="Youtube Channel"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <IconBrandYoutube />
-                </Anchor>
-              </Group>
+              <SocialLinks />
               <Anchor variant="nav" href="mailto:support@hexlet.io">
                 support@hexlet.io
               </Anchor>
@@ -219,5 +186,47 @@ function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
     >
       {children}
     </Anchor>
+  );
+}
+
+// The project's repository, its Telegram channel and its Youtube channel.
+function SocialLinks() {
+  const { t } = useTranslation();
+
+  return (
+    <Group align="top">
+      <Anchor
+        variant="nav"
+        href="https://github.com/hexlet-basics"
+        underline="never"
+        aria-label="Project Repository On GitHub"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <IconBrandGithub />
+      </Anchor>
+      <Tooltip label={t(($) => $.common.telegram_channel)}>
+        <Anchor
+          variant="nav"
+          href="https://t.me/hexlet_ru"
+          underline="never"
+          aria-label={t(($) => $.common.telegram_channel)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <IconSend />
+        </Anchor>
+      </Tooltip>
+      <Anchor
+        variant="nav"
+        href="https://www.youtube.com/@HexletOrg"
+        underline="never"
+        aria-label="Youtube Channel"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <IconBrandYoutube />
+      </Anchor>
+    </Group>
   );
 }

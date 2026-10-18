@@ -57,6 +57,12 @@ function Success() {
   const { data } = useQuery(getCourseOptions({ path: { slug } }));
 
   const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+  const careerLink = (
+    <Anchor href={t(($) => $.links.hexlet_courses_for_beginners_after_course)} {...external} />
+  );
+  const skillLink = (
+    <Anchor href={t(($) => $.links.hexlet_courses_for_programmers_after_course)} {...external} />
+  );
 
   return (
     <Container my="xl">
@@ -82,28 +88,14 @@ function Success() {
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.changing_career_html}
-                  components={{
-                    a: (
-                      <Anchor
-                        href={t(($) => $.links.hexlet_courses_for_beginners_after_course)}
-                        {...external}
-                      />
-                    ),
-                  }}
+                  components={{ a: careerLink }}
                 />
               </List.Item>
               <List.Item>
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.getting_new_skill_html}
-                  components={{
-                    a: (
-                      <Anchor
-                        href={t(($) => $.links.hexlet_courses_for_programmers_after_course)}
-                        {...external}
-                      />
-                    ),
-                  }}
+                  components={{ a: skillLink }}
                 />
               </List.Item>
             </List>

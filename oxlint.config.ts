@@ -31,6 +31,7 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/prefer-arrow-callback": ["error", { allowNamedFunctions: true }],
     "node/no-process-env": [
       "error",
       {

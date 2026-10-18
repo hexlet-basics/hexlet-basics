@@ -134,17 +134,9 @@ function Show() {
           {action}
 
           <Grid mt={40} gap="md">
-            {features.map(({ key, title, explanation, icon: Icon }) => (
-              <Grid.Col span={{ base: 12, md: 6 }} key={key}>
-                <Stack gap={4}>
-                  <Group gap={8} wrap="nowrap">
-                    <Icon size={20} />
-                    <Text fw={700} fz="lg">
-                      {title}
-                    </Text>
-                  </Group>
-                  <Text>{explanation}</Text>
-                </Stack>
+            {features.map((feature) => (
+              <Grid.Col span={{ base: 12, md: 6 }} key={feature.key}>
+                <Feature {...feature} />
               </Grid.Col>
             ))}
           </Grid>
@@ -208,5 +200,28 @@ function RequestButton() {
     >
       {t(($) => $.books.show.request)}
     </Button>
+  );
+}
+
+// One thing the book teaches: an icon and a title, then what it means.
+function Feature({
+  title,
+  explanation,
+  icon: Icon,
+}: {
+  title: string;
+  explanation: string;
+  icon: typeof IconCompass;
+}) {
+  return (
+    <Stack gap={4}>
+      <Group gap={8} wrap="nowrap">
+        <Icon size={20} />
+        <Text fw={700} fz="lg">
+          {title}
+        </Text>
+      </Group>
+      <Text>{explanation}</Text>
+    </Stack>
   );
 }

@@ -135,6 +135,19 @@ export default function LessonWorkspace({
   const finished = view.lessons.find((item) => item.slug === lesson.slug)?.finished;
   const solutionUnlocked = Boolean(finished) || Boolean(result?.passed);
 
+  // Client-only for the same reason the editor is: the buffer is read from
+  // storage on the first client render, so markup the server rendered from the
+  // starter code would disagree with it.
+  const preview = hasPreview(courseSlug) ? (
+    <ClientOnly>
+      <Suspense>
+        <Box flex="none">
+          <LessonPreview code={code} />
+        </Box>
+      </Suspense>
+    </ClientOnly>
+  ) : null;
+
   return (
     <Stack h="100%" gap={0}>
       <Tabs
@@ -190,18 +203,7 @@ export default function LessonWorkspace({
               />
             </Box>
 
-            {hasPreview(courseSlug) && (
-              // Client-only for the same reason the editor is: the buffer is read
-              // from storage on the first client render, so markup the server
-              // rendered from the starter code would disagree with it.
-              <ClientOnly>
-                <Suspense>
-                  <Box flex="none">
-                    <LessonPreview code={code} />
-                  </Box>
-                </Suspense>
-              </ClientOnly>
-            )}
+            {preview}
           </Stack>
         </Tabs.Panel>
 

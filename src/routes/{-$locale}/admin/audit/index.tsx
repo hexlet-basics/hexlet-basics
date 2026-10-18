@@ -313,48 +313,8 @@ function RecordDetails({ record }: { record: AuditRecord }) {
       {record.changes.length > 0 && (
         <Stack gap="xs">
           <Title order={5}>{t(($) => $.admin.audit.details.changes)}</Title>
-          {record.changes.map((change, index) => (
-            // A record may change the same entity twice, so the position is part of the key.
-            <Stack key={`${change.entity}-${change.id ?? ""}-${index}`} gap={4}>
-              <Text fw={500}>
-                {change.entity}
-                {change.id ? ` #${change.id}` : ""} · {change.op}
-              </Text>
-              {change.fields && change.fields.length > 0 && (
-                <Table withTableBorder>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>{t(($) => $.admin.audit.details.field)}</Table.Th>
-                      <Table.Th>{t(($) => $.admin.audit.details.old)}</Table.Th>
-                      <Table.Th>{t(($) => $.admin.audit.details.new)}</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    {change.fields.map((fieldChange) => (
-                      <Table.Tr key={fieldChange.name}>
-                        <Table.Td>{fieldChange.name}</Table.Td>
-                        {fieldChange.secret ? (
-                          <Table.Td colSpan={2}>
-                            <Text size="sm" c="dimmed">
-                              {t(($) => $.admin.audit.details.secret)}
-                            </Text>
-                          </Table.Td>
-                        ) : (
-                          <>
-                            <Table.Td>
-                              <Code>{JSON.stringify(fieldChange.old ?? null)}</Code>
-                            </Table.Td>
-                            <Table.Td>
-                              <Code>{JSON.stringify(fieldChange.new ?? null)}</Code>
-                            </Table.Td>
-                          </>
-                        )}
-                      </Table.Tr>
-                    ))}
-                  </Table.Tbody>
-                </Table>
-              )}
-            </Stack>
+          {keyedChanges(record.changes).map(({ change, key }) => (
+            <ChangeDetails key={key} change={change} />
           ))}
         </Stack>
       )}
@@ -367,6 +327,64 @@ function RecordDetails({ record }: { record: AuditRecord }) {
             <Code block>{record.reads.ids.join(", ")}</Code>
           )}
         </Stack>
+      )}
+    </Stack>
+  );
+}
+
+// A record may change the same entity twice, so a key is the entity, its id and
+// how many times it has come up so far.
+function keyedChanges(changes: AuditRecord["changes"]) {
+  const seen = new Map<string, number>();
+  return changes.map((change) => {
+    const base = `${change.entity}-${change.id ?? ""}`;
+    const count = (seen.get(base) ?? 0) + 1;
+    seen.set(base, count);
+    return { change, key: `${base}-${count}` };
+  });
+}
+
+// One change of a record: the entity and what happened to it, then the old and
+// new value of each field, a secret one naming itself and nothing else.
+function ChangeDetails({ change }: { change: AuditRecord["changes"][number] }) {
+  const { t } = useTranslation();
+
+  return (
+    <Stack gap={4}>
+      <Text fw={500}>{`${change.entity}${change.id ? ` #${change.id}` : ""} · ${change.op}`}</Text>
+      {change.fields && change.fields.length > 0 && (
+        <Table withTableBorder>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>{t(($) => $.admin.audit.details.field)}</Table.Th>
+              <Table.Th>{t(($) => $.admin.audit.details.old)}</Table.Th>
+              <Table.Th>{t(($) => $.admin.audit.details.new)}</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {change.fields.map((fieldChange) => (
+              <Table.Tr key={fieldChange.name}>
+                <Table.Td>{fieldChange.name}</Table.Td>
+                {fieldChange.secret ? (
+                  <Table.Td colSpan={2}>
+                    <Text size="sm" c="dimmed">
+                      {t(($) => $.admin.audit.details.secret)}
+                    </Text>
+                  </Table.Td>
+                ) : (
+                  <>
+                    <Table.Td>
+                      <Code>{JSON.stringify(fieldChange.old ?? null)}</Code>
+                    </Table.Td>
+                    <Table.Td>
+                      <Code>{JSON.stringify(fieldChange.new ?? null)}</Code>
+                    </Table.Td>
+                  </>
+                )}
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
       )}
     </Stack>
   );

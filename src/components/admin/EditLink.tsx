@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 // passes its own `to` and `params` (route paths are literals the router checks;
 // nothing here hides them) while the look and the label are shared.
 const EditLinkBase = forwardRef<HTMLAnchorElement, Omit<ButtonProps, "href" | "children">>(
-  (props, ref) => {
+  function EditLinkBase(props, ref) {
     const { t } = useTranslation();
     return (
       <Button ref={ref} component="a" size="xs" variant="light" {...props}>
