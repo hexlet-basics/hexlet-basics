@@ -1,4 +1,4 @@
-// Package session is how a signed-in visitor stays signed in (ADR-0017): an
+// Package auth is how a signed-in visitor stays signed in (ADR-0017): an
 // opaque token in an httpOnly cookie that names a row in the sessions table.
 //
 // It owns the cookie, the token's rotation and expiry, and the question "which

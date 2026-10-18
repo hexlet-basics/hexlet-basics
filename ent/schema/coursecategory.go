@@ -24,7 +24,7 @@ func (CourseCategory) Annotations() []schema.Annotation {
 	}
 }
 
-// The legacy columns are all nullable, but the contract disagrees: name,
+// Fields: the legacy columns are all nullable, but the contract disagrees: name,
 // header and slug are required in CourseCategoryInput (hence Required
 // overrides), and locale is absent from the admin input entirely (hence
 // Skip). Only description keeps the default nullable mapping.

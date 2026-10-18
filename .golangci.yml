@@ -1,34 +1,61 @@
 version: "2"
 
 linters:
-  default: standard
-  enable:
-    - bodyclose
-    - containedctx
-    - contextcheck
-    - copyloopvar
-    - durationcheck
-    - errname
-    - errorlint
-    - exptostd
-    - fatcontext
-    - forbidigo
-    - gosec
-    - intrange
-    - loggercheck
-    - modernize
-    - nolintlint
-    - noctx
-    - perfsprint
-    - predeclared
-    - rowserrcheck
-    - sloglint
-    - sqlclosecheck
-    - testifylint
-    - thelper
-    - unconvert
-    - usestdlibvars
-    - usetesting
+  default: all
+  # Policy (AGENTS.md, "Lint & Typecheck"): every linter is on; one is off only
+  # with a reason written next to it here.
+  disable:
+    # Replaced by another linter that stays on, or deprecated upstream.
+    - exhaustruct # deprecated upstream; and every ent/ogen builder or contract struct is built partially on purpose
+    - exhaustruct_v5 # same: requiring every field of a generated struct buries the fields that matter
+    - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
+    - wsl # deprecated upstream (wsl_v5), and a whitespace-style linter
+    - wsl_v5 # blank-line placement is style gofmt does not own; its 2k findings would only churn diffs
+    - nlreturn # whitespace style, as wsl
+    # Conflicts with a rule of ours or with the Go idiom.
+    - depguard # needs an import policy the repo has not written; the layering rules live in architecture tests
+    - exhaustive # ticket #910, blocked by two known MCP bugs
+    - nilerr # ticket #910, blocked by two known MCP bugs
+    - wrapcheck # ADR-0018: an error is wrapped once, at the package boundary; handlers return module errors raw for errorStatus
+    - noinlineerr # `if err := f(); err != nil` is the idiom that scopes err; the linter forbids it
+    - tagliatelle # json tags follow the wire formats we do not own (RFC 7591, events, ent annotations)
+    - gochecknoglobals # ADR-0018 per-package `errs` template, localization catalogues and generated labels are package-level by design
+    - ireturn # constructors of third-party seams (watermill, oidc, ent dialect) must return the library's interface
+    - interfacebloat # the goverter Converter interface is one method per mapping, generated
+    # Size and whitespace limits whose numbers would have to be absurd.
+    - varnamelen # short names (i, tx, ok, id, err) are the Go convention; 800 findings of it
+    - lll # wrapping string literals, struct tags and signatures to 120 columns hurts readability
+    - funlen # table-driven tests and parsers run past any sensible limit
+    - cyclop # as funlen
+    - gocognit # as funlen: permissioncatalog.Parse is 80 against a limit of 30
+    - nestif # as funlen
+    - testpackage # white-box tests of unexported rules are deliberate, 38 files
+    # Pending: enabled by later commits of the series that clear their findings.
+    - paralleltest
+    - tparallel
+    - goconst
+    - revive
+    - forcetypeassert
+    - err113
+    - mnd
+    - embeddedstructfieldcheck
+    - funcorder
+    - nonamedreturns
+    - prealloc
+    - inamedparam
+    - nilnil
+    - tagalign
+    - errchkjson
+    - musttag
+    - dupl
+    - dupword
+    - protogetter
+    - whitespace
+    - canonicalheader
+    - dogsled
+    - gocritic
+    - godox
+    - unparam
   settings:
     sloglint:
       # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
