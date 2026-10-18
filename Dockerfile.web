@@ -14,7 +14,12 @@ WORKDIR /app
 
 FROM base AS build
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# pnpm links the skills that dependencies ship into the agent skill directories
+# that exist (.agents/skills is not in the build context), and fails the install
+# when it finds none. The links are discarded with this stage; only node_modules
+# and dist/ are copied on.
 # --ignore-scripts: no dependency lifecycle script is needed for a build.
+RUN mkdir -p .agents/skills
 RUN --mount=type=cache,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN pnpm build
@@ -23,6 +28,8 @@ RUN pnpm build
 # production dependency tree ships beside dist/.
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Same skill directory as in the build stage.
+RUN mkdir -p .agents/skills
 RUN --mount=type=cache,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
 FROM node:26.11.1-slim
