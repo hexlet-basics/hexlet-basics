@@ -1,7 +1,7 @@
 package handlers_test
 
 import (
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
@@ -27,13 +27,13 @@ func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) b
 func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
 
 	res, err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
-	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtokens.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
+	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
 }
 
 // Unlike legacy, an unknown email is not reported.
@@ -50,8 +50,8 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 func TestCheckPasswordResetToken(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
-	token := issueEmailToken(t, emailtokens.PasswordReset, u)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
+	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
 	res, err := h.Client.CheckPasswordResetToken(t.Context(), api.CheckPasswordResetTokenParams{Token: token})
 	require.NoError(t, err)
@@ -67,11 +67,11 @@ func TestCheckPasswordResetToken(t *testing.T) {
 
 func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
-		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u)})
+		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u)})
 	require.NoError(t, err)
 
 	session, ok := res.(*api.UserHeaders)
@@ -80,14 +80,14 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	assert.True(t, startsSession(h.ResponseCookies()))
 	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 	assert.True(t, signsInWith(t, h, "with-password@example.com", "new-password"))
-	assert.False(t, signsInWith(t, h, "with-password@example.com", fixtures.Password))
+	assert.False(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 }
 
 // Changing the digest is what kills the link, so it cannot be used twice.
 func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
-	token := issueEmailToken(t, emailtokens.PasswordReset, u)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
+	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"}, api.UpdatePasswordParams{Token: token})
@@ -103,25 +103,25 @@ func TestUpdatePasswordRefusesTheSameLinkTwice(t *testing.T) {
 
 func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
-		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u, issuedAgo(emailtokens.Lifetime+time.Minute))})
+		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u, issuedAgo(emailtoken.Lifetime+time.Minute))})
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.NotFoundError{}, res)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 	assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
-	assert.True(t, signsInWith(t, h, "with-password@example.com", fixtures.Password))
+	assert.True(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 }
 
 // The contract's minLength is enforced by the generated server; the rejected
 // submission leaves the digest, and so the link, untouched.
 func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
-	token := issueEmailToken(t, emailtokens.PasswordReset, u)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
+	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "12345"}, api.UpdatePasswordParams{Token: token})
@@ -137,12 +137,12 @@ func TestUpdatePasswordRejectsAShortPasswordAndKeepsTheLink(t *testing.T) {
 // session a thief may hold stops naming anyone, and only the reset's own new
 // session is left.
 func TestUpdatePasswordEndsTheSessionsOfTheOldPassword(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserWithPassword)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
+	h := testsupport.NewHarnessAs(t, fixture.UserWithPassword)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
 
 	_, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
-		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u)})
+		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u)})
 	require.NoError(t, err)
 
 	_, err = h.Client.GetProfile(t.Context())

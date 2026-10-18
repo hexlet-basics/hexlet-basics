@@ -1,5 +1,5 @@
 # Fixtures for `languages`, exported once from the legacy Rails fixtures and then
-# given labels (internal/fixtures): edit it by hand, `mise run fixtures:import`
+# given labels (internal/fixture): edit it by hand, `mise run fixtures:import`
 # skips a file that exists.
 - id: {{ id "course_javascript" }}
   category_id:

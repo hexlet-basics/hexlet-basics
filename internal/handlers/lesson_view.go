@@ -6,7 +6,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/coursepages"
+	"hexletbasics/internal/coursepage"
 )
 
 // GetCourseLesson returns the lesson player payload: the lesson's prose for the
@@ -23,7 +23,7 @@ func (s *Server) GetCourseLesson(
 	params api.GetCourseLessonParams,
 ) (api.GetCourseLessonRes, error) {
 	page, err := s.coursePages.Lesson(ctx, currentLearner(ctx), s.i18n.Locale(ctx), params.CourseSlug, params.Slug)
-	if errors.Is(err, coursepages.ErrNotFound) {
+	if errors.Is(err, coursepage.ErrNotFound) {
 		return s.lessonNotFound(ctx), nil
 	}
 	if err != nil {

@@ -25,7 +25,7 @@ import (
 	"github.com/peterldowns/pgtestdb"
 	"github.com/peterldowns/pgtestdb/migrators/common"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 )
 
 // The server tests clone from. The defaults are the db daemon of mise.toml; CI
@@ -223,7 +223,7 @@ func applyMigrations(ctx context.Context, db *sql.DB, path string) error {
 }
 
 func loadFixtures(db *sql.DB, path string) error {
-	return fixtures.Load(db, path, false)
+	return fixture.Load(db, path, false)
 }
 
 func repositoryRoot() (string, error) {

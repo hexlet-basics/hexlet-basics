@@ -16,7 +16,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 )
 
 const (
@@ -169,7 +169,7 @@ func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 		return nil, ErrUnauthenticated
 	}
 
-	u, err := accounts.ActiveUserByID(ctx, m.db, id)
+	u, err := account.ActiveUserByID(ctx, m.db, id)
 	if ent.IsNotFound(err) {
 		return nil, m.endStale(ctx)
 	}

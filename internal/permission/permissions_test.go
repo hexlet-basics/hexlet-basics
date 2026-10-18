@@ -7,7 +7,7 @@ import (
 
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/permission"
 	"hexletbasics/internal/testsupport"
 )
@@ -24,7 +24,7 @@ func TestApplyToAMissingRoleIsNotFoundAndWritesNothing(t *testing.T) {
 
 func TestCheckRefusesAGrantTheContractDoesNotDeclare(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	role := fixtures.ID(fixtures.StaffRoleEditor)
+	role := fixture.ID(fixture.StaffRoleEditor)
 
 	err := permission.NewPermissions(db, transactor).Check(t.Context(), role, []string{"banners.read", "banners.typo"})
 
@@ -42,7 +42,7 @@ func TestCheckOfAMissingRoleIsNotFound(t *testing.T) {
 
 func TestApplyKeepsARetiredGrantTheRoleStillHolds(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
-	role := fixtures.ID(fixtures.StaffRoleEditor)
+	role := fixture.ID(fixture.StaffRoleEditor)
 	permissions := permission.NewPermissions(db, transactor)
 	held, err := db.StaffRoleGrant.Query().Where(staffrolegrant.RoleID(role)).Select(staffrolegrant.FieldPermission).Strings(t.Context())
 	require.NoError(t, err)

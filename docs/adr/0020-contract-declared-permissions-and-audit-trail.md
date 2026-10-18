@@ -123,7 +123,7 @@ groups and the migration must not widen anyone's access. "Publish" and
 "review" become Permissions of their own when their resources migrate.
 
 **Reading it in Go.** ogen ignores vendor extensions, so `internal/api` does not
-carry the declaration. `internal/permissions` reads it from the generated
+carry the declaration. `internal/permissioncatalog` reads it from the generated
 OpenAPI document, which the small package `api-spec` embeds (`go:embed` cannot
 reach up out of a package directory). Considered and not chosen: generating a Go
 catalog file as a new `gen` step. It would be a second generated artifact to
@@ -643,7 +643,7 @@ while the response models keep showing it.
 - handler: the operation names its `transitions.Transition` and runs it; the blog
   post version is `transitionBlogPost` in `internal/handlers/blog_posts.go`.
 
-**The table is code, written once.** `internal/transitions` holds the generic
+**The table is code, written once.** `internal/transition` holds the generic
 `Transition[S]{To, From}`: `Check(current)` returns a typed `*transitions.Illegal`
 (the state it is in, the state it asked for). The handler maps it with
 `refuseTransition` (`internal/handlers/publication_state.go`) to a refusal like the
@@ -690,7 +690,7 @@ The three other resources with a Publication State follow the pattern as written
 with these settled in the slice:
 
 - **One table.** The legal moves are no longer written per resource: `Publish`,
-  `Unpublish` and `Archive` live once in `internal/transitions` over a
+  `Unpublish` and `Archive` live once in `internal/transition` over a
   `PublicationState` (`draft`, `published`, `archived`, the string column every
   one of these resources stores), with `CurrentOf` reading a nullable column as a
   draft. Blog posts use them too. The frontend mirrors them once in
@@ -737,7 +737,7 @@ workflow, but it is a state, so it follows the same rule with these differences:
   Permissions `courses.mark_draft`, `courses.mark_in_development`, `courses.mark_completed`,
   kind `write`. The Permission is named `<resource>.<operation>` like the others; the
   verb is "mark" because the glossary says a Course is marked with its Readiness.
-- **Its own table, same machinery.** `internal/transitions/readiness.go` holds
+- **Its own table, same machinery.** `internal/transition/readiness.go` holds
   `MarkDraft`, `MarkInDevelopment` and `MarkCompleted` over a `Readiness` type; the
   Publication State table does not fit. Any change between two distinct values is
   legal (a completed Course may return to development), so each lists the two

@@ -9,13 +9,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
 // languages.yml seeds this many courses; ruby is one of them.
 var (
-	courseRubyIDA = fixtures.ID(fixtures.CourseRuby)
+	courseRubyIDA = fixture.ID(fixture.CourseRuby)
 )
 
 func TestAdminListCourses(t *testing.T) {

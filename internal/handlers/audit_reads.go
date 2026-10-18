@@ -12,7 +12,7 @@ import (
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // publishTimeout bounds how long a read may wait to hand its fact to the
@@ -23,7 +23,7 @@ const publishTimeout = 2 * time.Second
 // NewPersonalDataReadMiddleware records staff reads of personal data (ADR-0020
 // addendum), the sibling of NewAuditMiddleware for the operations that change
 // nothing. It is selected by the contract: an operation that declares
-// `x-personal-data` (permissions.PersonalDataEntity) is recorded, every other
+// `x-personal-data` (permissioncatalog.PersonalDataEntity) is recorded, every other
 // operation, the catalogue and content included, passes through untouched, and
 // a handler has no code of its own for it.
 //
@@ -44,7 +44,7 @@ const publishTimeout = 2 * time.Second
 func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {
 	logger := errorHandler.logger
 	return func(req middleware.Request, next middleware.Next) (middleware.Response, error) {
-		entity, personal := permissions.PersonalDataEntity(req.OperationName)
+		entity, personal := permissioncatalog.PersonalDataEntity(req.OperationName)
 		if !personal {
 			return next(req)
 		}

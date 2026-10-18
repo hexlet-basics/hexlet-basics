@@ -17,11 +17,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/auth"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
@@ -73,8 +73,8 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
 		Assets:    assets,
 		Sessions:  manager,
-		Registrar: accounts.NewRegistrar(transactor, services.Events),
-		Remover:   accounts.NewRemover(transactor),
+		Registrar: account.NewRegistrar(transactor, services.Events),
+		Remover:   account.NewRemover(transactor),
 		Events:    services.Events,
 		I18n:      translator,
 		Errors:    errorHandler,
@@ -93,11 +93,11 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 
 	// An administrator may upload; a user who is neither an administrator nor
 	// staff may not.
-	label := fixtures.UserBlank
+	label := fixture.UserBlank
 	if admin {
-		label = fixtures.UserAdminLearner
+		label = fixture.UserAdminLearner
 	}
-	u, err := db.User.Get(t.Context(), fixtures.ID(label))
+	u, err := db.User.Get(t.Context(), fixture.ID(label))
 	require.NoError(t, err)
 	token, err := manager.Issue(t.Context(), u)
 	require.NoError(t, err)

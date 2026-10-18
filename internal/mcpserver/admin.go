@@ -19,7 +19,7 @@ import (
 
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/oauthserver"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // adminOperations is the allowlist of admin operations exposed as tools: the
@@ -182,13 +182,13 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 // own Permission when it is one (the audit trail's audit.read).
 func adminNeeds(op *operation) toolNeeds {
 	needs := toolNeeds{scope: oauthserver.ScopeAdmin}
-	if requirement, ok := permissions.For(op.ogenName()); ok {
+	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs.permission = requirement.Permission
-		if permissions.IsCapability(requirement.Permission) {
+		if permissioncatalog.IsCapability(requirement.Permission) {
 			needs.capabilities = append(needs.capabilities, requirement.Permission)
 		}
 	}
-	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if !slices.Contains(needs.capabilities, capability) {
 			needs.capabilities = append(needs.capabilities, capability)
 		}
@@ -273,10 +273,10 @@ func describe(op *operation) string {
 		text = strings.ToUpper(words[:1]) + words[1:] + "."
 	}
 	needs := []string{}
-	if requirement, ok := permissions.For(op.ogenName()); ok {
+	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs = append(needs, requirement.Permission)
 	}
-	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if capability == "mcp.manage" {
 			needs = append(needs, capability)
 		}
@@ -349,7 +349,7 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 		// is not checked here but by the security handler, so a refusal is
 		// recorded.
 		class := ClassPersonal
-		if permissions.IsAdminWrite(op.ogenName()) {
+		if permissioncatalog.IsAdminWrite(op.ogenName()) {
 			class = ClassWrite
 		}
 		if _, denied := s.spend(req, userID, class); denied != nil {

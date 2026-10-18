@@ -14,7 +14,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/store"
 )
 
@@ -45,7 +45,7 @@ func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) er
 	if err := p.requireRole(ctx, roleID); err != nil {
 		return err
 	}
-	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissions.Known(name) }); len(unknown) > 0 {
+	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissioncatalog.Known(name) }); len(unknown) > 0 {
 		return fmt.Errorf("%w: %s", ErrUnknownPermission, strings.Join(unknown, ", "))
 	}
 	return nil

@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -20,7 +20,7 @@ import (
 // mark-as operations. Readiness is no workflow, so every change between two
 // distinct values is legal and only repeating the current value is refused.
 
-var readinessCourseID = fixtures.ID(fixtures.CourseGo)
+var readinessCourseID = fixture.ID(fixture.CourseGo)
 
 var readinessValues = []string{"draft", "in_development", "completed"}
 
@@ -115,9 +115,9 @@ func TestEachReadinessChangeDeclaresItsOwnWritePermission(t *testing.T) {
 		"AdminMarkCourseInDevelopment": "courses.mark_in_development",
 		"AdminMarkCourseCompleted":     "courses.mark_completed",
 	} {
-		got, ok := permissions.For(operation)
+		got, ok := permissioncatalog.For(operation)
 		require.True(t, ok)
-		assert.Equal(t, permissions.Requirement{Permission: permission, Kind: permissions.Write}, got)
+		assert.Equal(t, permissioncatalog.Requirement{Permission: permission, Kind: permissioncatalog.Write}, got)
 	}
 }
 
@@ -198,7 +198,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 
 	t.Run("update only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, fixtures.StaffRoleCourseUpdater)
+		actAs(h, fixture.StaffRoleCourseUpdater)
 
 		require.NoError(t, update(h))
 
@@ -212,7 +212,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 
 	t.Run("readiness only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, fixtures.StaffRoleCourseReadiness)
+		actAs(h, fixture.StaffRoleCourseReadiness)
 
 		shown, err := markCourse(h, "draft")
 		require.NoError(t, err)

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -17,10 +17,10 @@ import (
 func TestReapStuckFailsOnlyBuildsIdlePastThreshold(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
-	stuck := fixtures.ID(fixtures.VersionLoadableStuck)
-	running := fixtures.ID(fixtures.VersionLoadableBuilding)
-	queued := fixtures.ID(fixtures.VersionLoadableQueued)
-	built := fixtures.ID(fixtures.VersionLoadableBuilt)
+	stuck := fixture.ID(fixture.VersionLoadableStuck)
+	running := fixture.ID(fixture.VersionLoadableBuilding)
+	queued := fixture.ID(fixture.VersionLoadableQueued)
+	built := fixture.ID(fixture.VersionLoadableBuilt)
 
 	// The result quotes the timestamp as stored, before the reap bumps it.
 	staleAt := db.CourseVersion.GetX(ctx, stuck).UpdatedAt

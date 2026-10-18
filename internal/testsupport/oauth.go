@@ -19,7 +19,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/ids"
+	"hexletbasics/internal/ident"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
@@ -339,7 +339,7 @@ func (o *OAuth) StartWith(userID int, opts StartOptions) *Flow {
 	if opts.ClientID != "" {
 		redirectURI = opts.RedirectURIs[0]
 	}
-	f := &Flow{o: o, UserID: userID, ClientID: clientID, State: "state-" + ids.New(), session: SessionFor(o.t, o.DB, userID)}
+	f := &Flow{o: o, UserID: userID, ClientID: clientID, State: "state-" + ident.New(), session: SessionFor(o.t, o.DB, userID)}
 	query := url.Values{
 		"client_id":             {clientID},
 		"redirect_uri":          {redirectURI},

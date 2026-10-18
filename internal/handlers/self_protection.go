@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/selfprotection"
 )
@@ -52,7 +52,7 @@ func forbid(message localization.Message) error {
 // lastAdminError gives the last-administrator refusal its 409 and message; any
 // other error passes through.
 func lastAdminError(err error) error {
-	if errors.Is(err, accounts.ErrLastAdmin) {
+	if errors.Is(err, account.ErrLastAdmin) {
 		return &refusal{status: http.StatusConflict, message: localization.LastAdministrator, cause: err}
 	}
 	return err

@@ -19,7 +19,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/auth"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -28,12 +28,12 @@ import (
 // The fixtures seed bob (user_staff_editor) as an editor, role staff_role_editor,
 // who may read and create banners in ru and en; alice (user_admin_learner) is an
 // administrator with no Staff Role.
-var editor = fixtures.ID(fixtures.StaffRoleEditor)
+var editor = fixture.ID(fixture.StaffRoleEditor)
 
 // adminStaff is an administrator who is also a staff member, on the editor role
 // (user_admin_staff): alice has no staff record, and must not (the cases lean on it);
 // a record cannot be made for oneself.
-var adminStaff = fixtures.ID(fixtures.UserAdminStaff)
+var adminStaff = fixture.ID(fixture.UserAdminStaff)
 
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
@@ -525,7 +525,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
-	bannerID := fixtures.ID(fixtures.BannerRuPublished)
+	bannerID := fixture.ID(fixture.BannerRuPublished)
 	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder}
 
 	read := o.Do(http.MethodGet, "/api/admin/banners", nil, func(r *http.Request) {

@@ -16,7 +16,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -141,7 +141,7 @@ func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput 
 	t.Helper()
 	return &api.SessionInput{
 		Email:    lo.FromPtr(h.DB.User.GetX(t.Context(), actingUserID(t, h)).Email),
-		Password: fixtures.Password,
+		Password: fixture.Password,
 	}
 }
 

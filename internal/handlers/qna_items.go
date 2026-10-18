@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/qnaitems"
+	"hexletbasics/internal/qnaitem"
 )
 
 // QnA items are nested resources: every operation is scoped to a parent
@@ -12,8 +12,8 @@ import (
 // id, and update/delete are scoped to the parent as well as the id, so an item
 // under a different parent reads as 404. The qnaitems module owns both rules.
 
-func qnaFieldsOf(in *api.QnaItemInput) qnaitems.Fields {
-	return qnaitems.Fields{Question: in.Question, Answer: in.Answer}
+func qnaFieldsOf(in *api.QnaItemInput) qnaitem.Fields {
+	return qnaitem.Fields{Question: in.Question, Answer: in.Answer}
 }
 
 // --- Course category QnA items ---------------------------------------------

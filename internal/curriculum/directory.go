@@ -11,7 +11,7 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/landingpage"
 )
 
 // Directory is the read side of the lesson graph. Every list is in the locale it
@@ -41,7 +41,7 @@ func (d *Directory) Lessons(ctx context.Context, locale, search string, page dom
 			// Legacy `.current`: the translation's course version must be
 			// selected as current by a completed course.
 			courselessontranslation.HasCourseVersionWith(
-				courseversion.HasCurrentCoursesWith(landingpages.Completed()),
+				courseversion.HasCurrentCoursesWith(landingpage.Completed()),
 			),
 		).
 		WithLesson().

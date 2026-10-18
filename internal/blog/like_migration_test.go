@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -23,9 +23,9 @@ const likeIndex = "index_blog_post_likes_on_blog_post_id_and_user_id"
 func TestUniqueLikeMigrationKeepsTheEarliestLikePerPair(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
 	ctx := t.Context()
-	post := fixtures.ID(fixtures.BlogPostSecondPost)
-	author := fixtures.ID(fixtures.UserAdminLearner)
-	other := fixtures.ID(fixtures.UserLearnerHiddenCards)
+	post := fixture.ID(fixture.BlogPostSecondPost)
+	author := fixture.ID(fixture.UserAdminLearner)
+	other := fixture.ID(fixture.UserLearnerHiddenCards)
 
 	// Raw SQL is the arrange here: ent cannot write the duplicates the index
 	// forbids, and the legacy rows are the case under test.

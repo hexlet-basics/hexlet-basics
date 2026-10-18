@@ -10,7 +10,7 @@ import (
 
 	"hexletbasics/ent/bookrequest"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/books"
+	"hexletbasics/internal/book"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
@@ -43,7 +43,7 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 	assert.IsType(t, &api.CreateBookRequestNoContent{}, res)
 
 	stored := h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).OnlyX(t.Context())
-	assert.Equal(t, books.StateRequested, lo.FromPtr(stored.State))
+	assert.Equal(t, book.StateRequested, lo.FromPtr(stored.State))
 
 	requested := testsupport.PublishedEvents[events.BookRequested](t, h.Services)
 	require.Len(t, requested, 1)
@@ -92,7 +92,7 @@ func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {
 	assert.Equal(t, "http://localhost:3001/api/storage/book.pdf", found.Location)
 
 	stored := h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).OnlyX(t.Context())
-	assert.Equal(t, books.StateDownloaded, lo.FromPtr(stored.State))
+	assert.Equal(t, book.StateDownloaded, lo.FromPtr(stored.State))
 }
 
 func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {

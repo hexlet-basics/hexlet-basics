@@ -15,13 +15,13 @@ import (
 
 	"hexletbasics/ent/oauthaccesstoken"
 	"hexletbasics/ent/oauthrefreshtoken"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // alice is the fixture user who signs in and decides.
-var alice = fixtures.ID(fixtures.UserAdminLearner)
+var alice = fixture.ID(fixture.UserAdminLearner)
 
 func decode(t *testing.T, res *http.Response, into any) {
 	t.Helper()

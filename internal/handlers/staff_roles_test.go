@@ -11,13 +11,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
 // staff_member_roles.yml seeds editor and moderator plus an updater and a publisher role for each resource with a Publication State; editor owns three grants (banners.create, banners.read, blog_posts.read).
 var (
-	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
+	roleEditorID = fixture.ID32(fixture.StaffRoleEditor)
 )
 
 // editorGrants are the editor's grants in the fixtures, in the order the API
@@ -103,7 +103,7 @@ func TestAdminDeleteRole(t *testing.T) {
 	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
 
 	// moderator (9002) has no permissions -> no FK children to block delete.
-	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixtures.ID32(fixtures.StaffRoleModerator)})
+	err := h.Client.AdminDeleteRole(ctx, api.AdminDeleteRoleParams{ID: fixture.ID32(fixture.StaffRoleModerator)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 

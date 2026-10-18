@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/store"
 )
 
@@ -24,7 +24,7 @@ const requestIDHeader = "X-Request-ID"
 // addendum). The generated server hands a handler a context, not a
 // transaction, so the transaction is opened here, around the handler:
 //
-//  1. an operation the contract marks as an admin write (permissions.IsAdminWrite:
+//  1. an operation the contract marks as an admin write (permissioncatalog.IsAdminWrite:
 //     the admin session scheme plus a write Permission, or, for an operation
 //     that declares only an administrators-only or any-staff marker, an unsafe
 //     HTTP method) gets one transaction from txStore; every other operation
@@ -58,14 +58,14 @@ const requestIDHeader = "X-Request-ID"
 func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {
 	logger := errorHandler.logger
 	return func(req middleware.Request, next middleware.Next) (middleware.Response, error) {
-		if !permissions.IsAdminWrite(req.OperationName) {
+		if !permissioncatalog.IsAdminWrite(req.OperationName) {
 			return next(req)
 		}
 		base := req.Context
 
 		var resp middleware.Response
 		var err error
-		if permissions.Standalone(req.OperationName) {
+		if permissioncatalog.Standalone(req.OperationName) {
 			resp, err = runStandalone(txStore, i18n, req, next)
 		} else {
 			resp, err = runInTransaction(txStore, i18n, req, next)

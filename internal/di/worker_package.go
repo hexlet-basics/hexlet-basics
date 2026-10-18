@@ -10,7 +10,7 @@ import (
 	"go.opentelemetry.io/contrib/otelconf"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accountemails"
+	"hexletbasics/internal/accountemail"
 	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
@@ -18,15 +18,15 @@ import (
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
-	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/eventhandlers"
+	"hexletbasics/internal/emailtoken"
+	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/lessonreview"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/store"
 )
 
@@ -110,7 +110,7 @@ var workerPackage = do.Package(
 		}
 		return mailer.New(cfg.Mail, logger), nil
 	}),
-	do.Lazy[*accountemails.Sender](func(i do.Injector) (*accountemails.Sender, error) {
+	do.Lazy[*accountemail.Sender](func(i do.Injector) (*accountemail.Sender, error) {
 		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
@@ -127,8 +127,8 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return accountemails.NewSender(
-			db, emailtokens.New(cfg.EmailTokenSecret), mail, translator, cfg.SiteURL,
+		return accountemail.NewSender(
+			db, emailtoken.New(cfg.EmailTokenSecret), mail, translator, cfg.SiteURL,
 		), nil
 	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
@@ -167,7 +167,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
+		relatedCoursesSet, err := do.Invoke[*relatedcourse.Replacer](i)
 		if err != nil {
 			return nil, err
 		}
@@ -175,7 +175,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		emailSender, err := do.Invoke[*accountemails.Sender](i)
+		emailSender, err := do.Invoke[*accountemail.Sender](i)
 		if err != nil {
 			return nil, err
 		}
@@ -198,8 +198,8 @@ var workerPackage = do.Package(
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
 			modules = append(modules,
-				jobs.ReviewLesson(lessonreviews.NewReviewer(entClient, llm)),
-				jobs.SuggestRelatedCourses(relatedcourses.NewSuggester(entClient, relatedCoursesSet, llm, logger)),
+				jobs.ReviewLesson(lessonreview.NewReviewer(entClient, llm)),
+				jobs.SuggestRelatedCourses(relatedcourse.NewSuggester(entClient, relatedCoursesSet, llm, logger)),
 			)
 		}
 		return jobs.NewWorkerClient(
@@ -238,10 +238,10 @@ var workerPackage = do.Package(
 			return nil, err
 		}
 		return events.NewRuntime(db, logger,
-			eventhandlers.LeadCreated(riverClient),
+			eventhandler.LeadCreated(riverClient),
 			// Writes the Audit Record of a staff read of personal data, which the
 			// server only publishes (ADR-0020).
-			eventhandlers.StaffReadPersonalData(entClient),
+			eventhandler.StaffReadPersonalData(entClient),
 		)
 	}),
 )

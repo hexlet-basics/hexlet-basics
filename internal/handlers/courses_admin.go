@@ -53,7 +53,7 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 // A state is not an update (ADR-0020, state transitions addendum): the Readiness
 // of a course moves only through the three operations below, each with its own
 // Permission, and the legal moves are the courses module's. Any change between
-// two distinct values is legal, so the tables in internal/transitions differ
+// two distinct values is legal, so the tables in internal/transition differ
 // from the Publication State's, but the refusal of a repeated value is the same
 // 409.
 

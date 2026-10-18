@@ -13,7 +13,7 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 )
 
 func main() {
@@ -37,5 +37,5 @@ func run() error {
 		return fmt.Errorf("open database: %w", err)
 	}
 	defer func() { _ = db.Close() }()
-	return fixtures.Load(db, *dir, *anyDatabase)
+	return fixture.Load(db, *dir, *anyDatabase)
 }

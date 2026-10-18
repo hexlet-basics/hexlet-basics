@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -41,7 +41,7 @@ func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 // it, never with its slug. This learner has finished nothing, so they resume at
 // the first lesson, which has a Russian translation.
 func TestDashboardNamesTheNextLessonAsTheCoursePageDoes(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserQuotaUsedToday)
+	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedToday)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
 
@@ -77,7 +77,7 @@ func TestDashboardGivesAnUntranslatedNextLessonNoLink(t *testing.T) {
 
 // A finished course has nowhere to resume.
 func TestDashboardGivesAFinishedCourseNoNextLesson(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerFinishedJavascript)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerFinishedJavascript)
 	testsupport.SpeakTo(h, "ru")
 
 	res, err := h.Client.GetMyDashboard(t.Context())
@@ -88,7 +88,7 @@ func TestDashboardGivesAFinishedCourseNoNextLesson(t *testing.T) {
 
 // A finished course moves to the other list rather than disappearing.
 func TestDashboardSeparatesFinishedCourses(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerFinishedJavascript)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerFinishedJavascript)
 	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
@@ -103,7 +103,7 @@ func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 
 // Both lists at once, each carrying its own course's card.
 func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerJavascriptAndGo)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerJavascriptAndGo)
 	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
@@ -121,10 +121,10 @@ func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 // not on the dashboard at all — the legacy scope. The learner's other course,
 // which has one, still is.
 func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerHiddenCards)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerHiddenCards)
 	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
-	cardless := h.DB.Course.GetX(ctx, fixtures.ID(fixtures.CourseSingleLesson))
+	cardless := h.DB.Course.GetX(ctx, fixture.ID(fixture.CourseSingleLesson))
 
 	res, err := h.Client.GetMyDashboard(ctx)
 	require.NoError(t, err)
@@ -139,10 +139,10 @@ func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
 // main page, or one written for another locale, is no card, and the course drops
 // off the dashboard with it.
 func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerHiddenCards)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerHiddenCards)
 	testsupport.SpeakTo(h, "ru")
-	draft := fixtures.ID(fixtures.CourseWithDraftCard)
-	foreign := fixtures.ID(fixtures.CourseWithEnglishCard)
+	draft := fixture.ID(fixture.CourseWithDraftCard)
+	foreign := fixture.ID(fixture.CourseWithEnglishCard)
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
@@ -156,9 +156,9 @@ func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) 
 // Unlike the catalogue, the dashboard never required `listed`: a learner's own
 // course stays on their dashboard even when it is hidden from the public lists.
 func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserLearnerUnlistedCard)
+	h := testsupport.NewHarnessAs(t, fixture.UserLearnerUnlistedCard)
 	testsupport.SpeakTo(h, "ru")
-	hidden := fixtures.ID(fixtures.CourseWithUnlistedCard)
+	hidden := fixture.ID(fixture.CourseWithUnlistedCard)
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)

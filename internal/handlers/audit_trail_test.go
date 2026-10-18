@@ -15,7 +15,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -52,7 +52,7 @@ func newestRecord(t *testing.T, h *testsupport.Harness) int {
 // is: with the grant on the role when withGrant is true, without it otherwise.
 func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
 	t.Helper()
-	h := testsupport.NewHarnessAs(t, fixtures.UserAdminStaff)
+	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 	if withGrant {
 		h.Grant(t, int(roleEditorID), "audit.read")
 	}
@@ -230,7 +230,7 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	h := auditReader(t, true)
 	at := time.Now().Add(-time.Hour)
-	banner, carol := fixtures.ID(fixtures.BannerEnDraft), fixtures.ID(fixtures.UserWithPassword)
+	banner, carol := fixture.ID(fixture.BannerEnDraft), fixture.ID(fixture.UserWithPassword)
 
 	// A change is what the operation's own writes left in the Recorder: a banner
 	// text and a password digest, which the trail keeps by name only.
