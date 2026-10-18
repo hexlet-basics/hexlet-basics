@@ -30,7 +30,6 @@ import (
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/catalog"
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
@@ -56,15 +55,23 @@ import (
 )
 
 // testConfig gives handlers fixed public hosts so URL-building assertions are
-// deterministic (independent of the ambient env a `config.Load` would read).
-var testConfig = &config.Config{
+// deterministic (independent of the ambient environment).
+var testConfig = struct {
+	AppHost, PublicURL, GuestCookieSecret, EmailTokenSecret string
+	settings                                                handlers.Settings
+}{
 	AppHost:           "code-basics.com",
 	PublicURL:         "http://localhost:3001",
 	GuestCookieSecret: "test-secret",
 	EmailTokenSecret:  "test-email-secret",
-	CourseRepoBaseURL: "https://github.com/hexlet-basics",
-	SiteURL:           "https://code-basics.com",
-	BookBlobKey:       "book.pdf",
+	settings: handlers.Settings{
+		PublicURL:         "http://localhost:3001",
+		GuestCookieSecret: "test-secret",
+		EmailTokenSecret:  "test-email-secret",
+		CourseRepoBaseURL: "https://github.com/hexlet-basics",
+		SiteURL:           "https://code-basics.com",
+		BookBlobKey:       "book.pdf",
+	},
 }
 
 // EmailTokens signs Magic Link and Password Reset tokens the handlers under
@@ -340,10 +347,10 @@ func handlerDeps(
 	leadRecorder := leadcapture.NewRecorder(transactor, services.Events)
 	// The real chat over the real progress module: only the model is mocked.
 	return handlers.Deps{
-		DB:      db,
-		Config:  testConfig,
-		Starter: services.Starter,
-		Jobs:    services.Jobs,
+		DB:       db,
+		Settings: testConfig.settings,
+		Starter:  services.Starter,
+		Jobs:     services.Jobs,
 		// The real replacer over the savepoint transactor, so a failed replace
 		// rolls back exactly as it does in production.
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),

@@ -79,7 +79,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   graph instead of threading it through constructors.
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `mise run gen:ent` (`go generate ./ent`) after editing a schema.
-- Other `internal/` packages: `config/` (env config via `caarlos0/env`),
+- Other `internal/` packages: `config/` (env config via `caarlos0/env`; `LoadServer`/`LoadWorker`
+  roots, `APP_ENV` policy, required deploy settings; constructors take values or a section, never
+  the root, and `os.Getenv` stays in `config`: `mise run lint:config`, ADR-0024),
   `logging/` (`slog` + `tint`), `store/` (ent client construction),
   `ids/`, `apiconv/`, `testsupport/`.
 

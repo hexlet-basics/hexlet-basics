@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
 	"github.com/samber/oops"
 )
 
@@ -16,86 +15,103 @@ const (
 	developmentEmailTokenSecret  = "dev-insecure-email-token-secret-change-me"
 )
 
-// Config holds the runtime configuration for the server. Fields are populated
-// from environment variables (12-factor); defaults keep local dev zero-config.
-type Config struct {
-	Addr        string `env:"ADDR" envDefault:":3001"`
-	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://postgres:postgres@127.0.0.1:54330/code_basics_development"`
+// AppEnv is the environment a process runs in. It, and not a Sentry label,
+// decides environment policy (which secrets are acceptable, whether mail must
+// be deliverable).
+type AppEnv string
+
+// The accepted values of APP_ENV.
+const (
+	Development AppEnv = "development"
+	Production  AppEnv = "production"
+	Test        AppEnv = "test"
+)
+
+// Common is what both processes read: where the data lives, where the site is,
+// and how errors are reported. Deploy-critical settings have no code default,
+// so a missing variable stops the start instead of running on a dev value.
+type Common struct {
+	// AppEnv defaults to development so a developer's checkout runs with no
+	// setup; a deployment sets APP_ENV=production.
+	AppEnv      AppEnv `env:"APP_ENV" envDefault:"development"`
+	DatabaseURL string `env:"DATABASE_URL,required,notEmpty"`
 	// BlobBucketURL selects the gocloud.dev/blob backend (ADR-0005): local disk
-	// (fileblob) in dev, s3blob in prod, chosen by URL scheme. The dev default
-	// writes under ./storage (created on first open) so uploads survive restarts.
-	BlobBucketURL string `env:"BLOB_BUCKET_URL" envDefault:"file://./storage?create_dir=true"`
-	// BookBlobKey is the bucket key of the free book's PDF (legacy
-	// public/book.pdf). It is uploaded once, out of band, at cutover rather than
-	// shipped in the image: at ~28 MB it has no place in the repo or the build.
-	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
-	// AppHost is the canonical public site host the Yandex feed builds its
-	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed in
-	// prod; the default matches the legacy default.
-	AppHost string `env:"APP_HOST" envDefault:"code-basics.com"`
+	// (fileblob) in dev, s3blob in prod, chosen by URL scheme.
+	BlobBucketURL string `env:"BLOB_BUCKET_URL,required,notEmpty"`
 	// SiteURL is the origin of the public site that emailed links open. Unlike
 	// AppHost (canonical URLs, always the production host) it points at the
 	// local frontend in development, so a developer can follow the link.
-	SiteURL string `env:"SITE_URL" envDefault:"https://code-basics.com"`
-	// PublicURL is the public origin this server is reached at, used to build
+	SiteURL string `env:"SITE_URL,required,notEmpty"`
+	// PublicURL is the public origin the API is reached at, used to build
 	// absolute asset URLs it serves itself (the `/api/storage/{key}` blob read
 	// path). In production it is the site's own origin, since the ingress routes
-	// `/api/*` to Go (ADR-0015); the dev default reaches Go directly. Separate
-	// from AppHost, which is always the canonical production host.
-	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
+	// `/api/*` to Go (ADR-0015); in development it reaches Go directly.
+	PublicURL string `env:"PUBLIC_URL,required,notEmpty"`
 	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
-	// repo lives: the loader clones `<base>/exercises-<slug>.git`. The default
-	// matches the legacy hard-coded convention (apiconv.repositoryURL).
+	// repo lives: the loader clones `<base>/exercises-<slug>.git`.
 	CourseRepoBaseURL string `env:"COURSE_REPO_BASE_URL" envDefault:"https://github.com/hexlet-basics"`
-	// GitHubToken authenticates clones (private repos / higher rate limits). The
-	// exercises repos are public, so it is optional; when set it is used as the
-	// HTTP basic-auth password (x-access-token).
-	GitHubToken string `env:"GITHUB_TOKEN"`
-	// GitHubWebhookSecret is the shared secret GitHub signs webhook deliveries
-	// with (HMAC-SHA256). The webhook route rejects any delivery whose signature
-	// doesn't verify; an empty secret disables the webhook (fail closed).
-	GitHubWebhookSecret string `env:"GITHUB_WEBHOOK_SECRET"`
-	// amoCRM receives lead_created events through a Watermill -> River handler.
-	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
-	AmoCRMAuthToken string `env:"AMOCRM_AUTH_TOKEN"`
-	YMCounter       string `env:"YM_COUNTER"`
+	// EmailTokenSecret signs the Magic Link and Password Reset tokens: the server
+	// verifies them and the worker mints the emails that carry them. It is kept
+	// apart from GuestCookieSecret so rotating one never invalidates the other.
+	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
 	// OpenAI powers the AI features (lesson-review summaries, the in-lesson
-	// assistant). The env name matches the legacy Rails deployment so the
-	// secret carries over unchanged; an empty token disables the AI workers.
-	// The model must be a reasoning model: the assistant's stream sets a
-	// reasoning effort, which older chat models refuse.
+	// assistant). An empty token disables them. The model must be a reasoning
+	// model: the assistant's stream sets a reasoning effort.
 	OpenAIAccessToken string `env:"OPENAI_ACCESS_TOKEN"`
 	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-5.5"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
-	SentryDSN         string `env:"SENTRY_DSN"`
-	SentryEnvironment string `env:"SENTRY_ENVIRONMENT" envDefault:"development"`
-	ReleaseVersion    string `env:"HEXLET_BASICS_RELEASE_VERSION"`
+	SentryDSN      string `env:"SENTRY_DSN"`
+	ReleaseVersion string `env:"HEXLET_BASICS_RELEASE_VERSION"`
+}
+
+// Server is the configuration of the HTTP process: Common plus what only a
+// request needs.
+type Server struct {
+	Common
+	Addr string `env:"ADDR" envDefault:":3001"`
+	// AppHost is the canonical public site host the Yandex feed builds its
+	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed.
+	AppHost string `env:"APP_HOST,required,notEmpty"`
+	// BookBlobKey is the bucket key of the free book's PDF. It is uploaded once,
+	// out of band, at cutover rather than shipped in the image (~28 MB).
+	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
+	// GitHubWebhookSecret is the shared secret GitHub signs webhook deliveries
+	// with (HMAC-SHA256). An empty secret disables the webhook (fail closed).
+	GitHubWebhookSecret string `env:"GITHUB_WEBHOOK_SECRET"`
 	// GuestCookieSecret signs the cookie that carries a visitor's lesson progress
-	// until they sign up. Sessions need no secret (ADR-0017): the cookie is an
-	// opaque token, not a signed claim. The committed .env.example supplies a
-	// development value, while deployments must provide a non-empty secret
-	// explicitly.
+	// until they sign up. Sessions need no secret (ADR-0017). The committed
+	// .env.example supplies a development value; deployments provide their own.
 	GuestCookieSecret string `env:"GUEST_COOKIE_SECRET,required,notEmpty"`
-	// EmailTokenSecret signs the Magic Link and Password Reset tokens. It is kept
-	// apart from GuestCookieSecret so rotating one never invalidates the other: a
-	// leaked email token secret must not force every learner to sign in again.
-	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
+	// ExerciseRunner bounds what a learner's submission may do to the host
+	// (ADR-0013). Every limit is settable so a course that needs more room is
+	// fixable without a release.
+	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
+	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0022).
+	OAuth OAuthConfig `envPrefix:"OAUTH_"`
+	// MCP switches on the MCP endpoint at `/mcp` (ADR-0021).
+	MCP MCPConfig `envPrefix:"MCP_"`
+}
+
+// Worker is the configuration of the asynchronous process: Common plus what
+// only a job or a subscriber needs. It holds no cookie secret and no public
+// host: the worker serves no visitor.
+type Worker struct {
+	Common
+	// GitHubToken authenticates clones (private repos / higher rate limits). The
+	// exercises repos are public, so it is optional; when set it is used as the
+	// HTTP basic-auth password (x-access-token).
+	GitHubToken string `env:"GITHUB_TOKEN"`
+	// amoCRM receives lead_created events through a Watermill -> River handler.
+	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
+	AmoCRMAuthToken string `env:"AMOCRM_AUTH_TOKEN"`
+	YMCounter       string `env:"YM_COUNTER"`
 	// AuditRetentionMonths is how long Audit Records are kept (ADR-0020). The
 	// audit table is partitioned by month and retention drops whole partitions,
 	// so a record lives at least this many months and up to one month longer.
 	AuditRetentionMonths int `env:"AUDIT_RETENTION_MONTHS" envDefault:"24"`
 	// Mail configures account email (ADR-0006).
 	Mail MailConfig `envPrefix:"MAIL_"`
-	// ExerciseRunner bounds what a learner's submission may do to the host
-	// (ADR-0013). Every limit is settable because the defaults tighten what the
-	// legacy runner allowed, and a course that turns out to need more room must
-	// be fixable without a release.
-	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
-	// OAuth switches on the OAuth authorization server for MCP clients (ADR-0022).
-	OAuth OAuthConfig `envPrefix:"OAUTH_"`
-	// MCP switches on the MCP endpoint at `/mcp` (ADR-0021).
-	MCP MCPConfig `envPrefix:"MCP_"`
 }
 
 // MCPConfig configures the MCP endpoint. It is inert while Enabled is false,
@@ -223,21 +239,20 @@ type MailConfig struct {
 // PostboxEnabled reports whether real delivery is configured.
 func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
 
-// Load reads configuration from environment variables, applying defaults.
-// A local .env is loaded first if present; it only fills variables that are not
-// already set in the real environment (godotenv never overrides), so exported
-// vars and 12-factor deploys keep precedence over the dev-convenience file.
 // SecureCookies reports whether the site is served over https, which is when
 // cookies are marked Secure.
-func (c *Config) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "https://") }
+func (c *Common) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "https://") }
 
-func Load() (*Config, error) {
-	// Ignore a missing file: .env is a local convenience, absent in prod/CI.
-	_ = godotenv.Load()
-
-	cfg := &Config{}
+// LoadServer reads the HTTP process's configuration from the environment and
+// validates it. The environment is the only source: a .env file is the
+// caller's business (LoadDotenv), so production and tests never read one.
+func LoadServer() (*Server, error) {
+	cfg := &Server{}
 	if err := env.Parse(cfg); err != nil {
-		return nil, oops.Wrapf(err, "parse config from environment")
+		return nil, oops.Wrapf(err, "parse server config from environment")
+	}
+	if err := validateCommon(&cfg.Common); err != nil {
+		return nil, err
 	}
 	if err := validateOAuth(cfg.OAuth); err != nil {
 		return nil, oops.Wrapf(err, "validate OAuth config")
@@ -248,32 +263,56 @@ func Load() (*Config, error) {
 	if err := validateMCP(cfg.MCP); err != nil {
 		return nil, oops.Wrapf(err, "validate MCP config")
 	}
-	if cfg.AuditRetentionMonths < 1 {
-		// Zero would drop the month in progress; the job would refuse it on
-		// every run, so the process refuses to start instead.
-		return nil, oops.Errorf("AUDIT_RETENTION_MONTHS must be at least 1, got %d", cfg.AuditRetentionMonths)
-	}
-	if err := validateProduction(cfg); err != nil {
+	if err := validateServerProduction(cfg); err != nil {
 		return nil, oops.Wrapf(err, "validate production config")
 	}
 	return cfg, nil
 }
 
-// validateProduction keeps environment-specific safety policy separate from
-// env decoding. The development secret is committed for local convenience and
-// therefore must never be accepted as a session-signing key in production.
-func validateProduction(cfg *Config) error {
-	if cfg.SentryEnvironment != "production" {
+// LoadWorker reads the asynchronous process's configuration. It parses only the
+// worker's own settings, so a deployment need not give it a server-only secret.
+func LoadWorker() (*Worker, error) {
+	cfg := &Worker{}
+	if err := env.Parse(cfg); err != nil {
+		return nil, oops.Wrapf(err, "parse worker config from environment")
+	}
+	if err := validateCommon(&cfg.Common); err != nil {
+		return nil, err
+	}
+	if cfg.AuditRetentionMonths < 1 {
+		// Zero would drop the month in progress; the job would refuse it on
+		// every run, so the process refuses to start instead.
+		return nil, oops.Errorf("AUDIT_RETENTION_MONTHS must be at least 1, got %d", cfg.AuditRetentionMonths)
+	}
+	if cfg.AppEnv == Production && !cfg.Mail.PostboxEnabled() {
+		return nil, oops.Errorf("validate production config: MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
+	}
+	return cfg, nil
+}
+
+// validateCommon refuses an unknown APP_ENV and, in production, a secret that
+// is the public development value.
+func validateCommon(cfg *Common) error {
+	switch cfg.AppEnv {
+	case Development, Production, Test:
+	default:
+		return oops.Errorf("APP_ENV must be development, production or test, got %q", cfg.AppEnv)
+	}
+	if cfg.AppEnv == Production && cfg.EmailTokenSecret == developmentEmailTokenSecret {
+		return oops.Errorf("validate production config: EMAIL_TOKEN_SECRET must differ from the public development value")
+	}
+	return nil
+}
+
+// validateServerProduction keeps environment-specific safety policy separate
+// from env decoding. The development secret is committed for local convenience
+// and therefore must never be accepted as a cookie-signing key in production.
+func validateServerProduction(cfg *Server) error {
+	if cfg.AppEnv != Production {
 		return nil
 	}
 	if cfg.GuestCookieSecret == developmentGuestCookieSecret {
 		return oops.Errorf("GUEST_COOKIE_SECRET must differ from the public development value")
-	}
-	if cfg.EmailTokenSecret == developmentEmailTokenSecret {
-		return oops.Errorf("EMAIL_TOKEN_SECRET must differ from the public development value")
-	}
-	if !cfg.Mail.PostboxEnabled() {
-		return oops.Errorf("MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
 	}
 	if cfg.OAuth.Enabled && !strings.HasPrefix(cfg.OAuth.Issuer, "https://") {
 		return oops.Errorf("OAUTH_ISSUER must be an https origin in production")

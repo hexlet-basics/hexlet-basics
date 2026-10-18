@@ -61,9 +61,9 @@ func (s *Server) DownloadBook(ctx context.Context) (api.DownloadBookRes, error) 
 		return nil, err
 	}
 	if !marked {
-		return &api.DownloadBookFound{Location: s.cfg.SiteURL + bookPath}, nil
+		return &api.DownloadBookFound{Location: s.settings.SiteURL + bookPath}, nil
 	}
-	location, err := s.assets.DownloadURL(ctx, s.cfg.BookBlobKey, bookDelivery)
+	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery)
 	if err != nil {
 		return nil, err
 	}

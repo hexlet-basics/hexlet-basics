@@ -186,6 +186,7 @@ depends = [
   "lint:packages",
   "lint:deps",
   "lint:triggers",
+  "lint:config",
   "lint:atlas-pin",
   "lint:typos",
   "lint:workflows",
@@ -215,6 +216,24 @@ if rg -n -i --glob '!*river_backbone*' --glob '!*audit_records.sql' --glob '!*pa
   echo "a migration creates a trigger: we keep no triggers of our own" >&2
   exit 1
 fi
+'''
+
+["lint:config"]
+description = "Configuration stays in internal/config: no process-wide config (*config.Server, *config.Worker) outside di, and no os.Getenv outside config (ADR-0023)"
+run = '''
+status=0
+# A constructor takes the section or the scalars it reads, never the whole
+# process configuration. di builds them from it; cmd and tests may name it.
+if rg -n '\*config\.(Server|Worker)\b' --glob '*.go' --glob '!*_test.go' --glob '!internal/di/**' --glob '!internal/config/**' cmd internal; then
+  echo "a process-wide config is used outside di: take the section or values you read instead" >&2
+  status=1
+fi
+# The environment is read in one place, where it is parsed and validated.
+if rg -n 'os\.(Getenv|LookupEnv|Environ)\(' --glob '*.go' --glob '!*_test.go' --glob '!internal/config/**' --glob '!internal/testsupport/**' --glob '!internal/amocrm/generated/**' cmd internal; then
+  echo "os.Getenv outside internal/config: add the setting to config and pass the value in" >&2
+  status=1
+fi
+exit $status
 '''
 
 ["lint:typos"]

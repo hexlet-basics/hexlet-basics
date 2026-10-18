@@ -21,6 +21,9 @@ func serverEnv(t *testing.T, addr string) {
 	t.Setenv("DATABASE_URL", testdb.DatabaseURL())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
 	t.Setenv("GUEST_COOKIE_SECRET", "test-secret")
+	t.Setenv("PUBLIC_URL", "http://localhost:3001")
+	t.Setenv("SITE_URL", "http://localhost:5173")
+	t.Setenv("APP_HOST", "code-basics.com")
 	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
 }
 

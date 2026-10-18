@@ -15,7 +15,6 @@ import (
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/sessions"
@@ -38,10 +37,10 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
-		DB:      db,
-		Config:  &config.Config{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
-		Starter: services.Starter,
-		Jobs:    services.Jobs,
+		DB:       db,
+		Settings: handlers.Settings{GuestCookieSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
+		Starter:  services.Starter,
+		Jobs:     services.Jobs,
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
 		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),

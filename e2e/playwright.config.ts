@@ -41,6 +41,9 @@ export default defineConfig({
       cwd: root,
       url: `http://127.0.0.1:${apiPort}/api/languages`,
       env: {
+        // "test" also keeps the server from reading a developer's .env.
+        APP_ENV: "test",
+        APP_HOST: "localhost",
         ADDR: `:${apiPort}`,
         DATABASE_URL: `postgres://postgres:${dbPassword}@${dbHost}:${dbPort}/${dbName}?sslmode=disable`,
         GUEST_COOKIE_SECRET: "e2e-guest-cookie-secret",

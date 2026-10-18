@@ -33,10 +33,21 @@ import (
 // workerPackage contains the asynchronous graph: course loading, external
 // integrations, River workers, and Watermill subscribers.
 var workerPackage = do.Package(
+	// The process's own configuration root; see serverPackage.
+	do.Lazy[*config.Worker](func(do.Injector) (*config.Worker, error) {
+		return config.LoadWorker()
+	}),
+	do.Lazy[config.Common](func(i do.Injector) (config.Common, error) {
+		cfg, err := do.Invoke[*config.Worker](i)
+		if err != nil {
+			return config.Common{}, err
+		}
+		return cfg.Common, nil
+	}),
 	// The exercise loader uses the shared asset store for lesson theory images
 	// and a git fetcher for the source repository.
 	do.Lazy[courseloader.Fetcher](func(i do.Injector) (courseloader.Fetcher, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}
@@ -89,7 +100,7 @@ var workerPackage = do.Package(
 	// Account email is delivered only here: the HTTP process enqueues intent and
 	// never talks to the mail provider.
 	do.Lazy[mailer.Mailer](func(i do.Injector) (mailer.Mailer, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}
@@ -100,7 +111,7 @@ var workerPackage = do.Package(
 		return mailer.New(cfg.Mail, logger), nil
 	}),
 	do.Lazy[*accountemails.Sender](func(i do.Injector) (*accountemails.Sender, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}
@@ -121,7 +132,7 @@ var workerPackage = do.Package(
 		), nil
 	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +163,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		cfg, err := do.Invoke[*config.Config](i)
+		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}

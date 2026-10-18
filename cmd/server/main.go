@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"hexletbasics/internal/config"
 	"hexletbasics/internal/di"
 )
 
@@ -22,6 +23,12 @@ const shutdownTimeout = 15 * time.Second
 // is the last thing main does, after stop has released the signal handlers, so
 // no deferred cleanup is skipped.
 func main() {
+	// Development convenience only: LoadDotenv reads .env unless APP_ENV names
+	// another environment, and it runs here, not in run, so tests never read it.
+	if err := config.LoadDotenv(); err != nil {
+		slog.Error("loading .env", "err", err)
+		os.Exit(1)
+	}
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	err := run(signalCtx, stop)
 	stop()
