@@ -406,13 +406,17 @@ func (f *Flow) Approve() string {
 
 // Tokens is a token response.
 type Tokens struct {
-	AccessToken  string   `json:"access_token"`
-	RefreshToken string   `json:"refresh_token"`
-	IDToken      string   `json:"id_token"`
-	TokenType    string   `json:"token_type"`
-	ExpiresIn    int      `json:"expires_in"`
-	Scope        string   `json:"scope"`
-	Scopes       []string `json:"-"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	IDToken      string `json:"id_token"`
+	TokenType    string `json:"token_type"`
+	// ExpiresIn is unsigned, as the library writes it: it counts against the
+	// real clock, so a token issued under a shifted test clock is already past
+	// and the negative lifetime wraps to a huge uint64 on amd64 (CI) and
+	// saturates to 0 on arm64. An int would fail to decode the wrapped value.
+	ExpiresIn uint64   `json:"expires_in"`
+	Scope     string   `json:"scope"`
+	Scopes    []string `json:"-"`
 }
 
 // Exchange trades an authorization code for tokens at /oauth/token and returns
