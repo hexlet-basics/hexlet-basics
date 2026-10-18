@@ -145,6 +145,10 @@ export function useCrudList<
     });
   };
 
+  // Typed through the page, not read off it: a property read on a type parameter
+  // widens to its constraint, and the rows would lose their own type.
+  const rows: TPage["items"] | undefined = query.data?.["items"];
+
   const actionsColumn = ({
     edit,
     extra,
@@ -180,7 +184,7 @@ export function useCrudList<
   return {
     query,
     props: {
-      data: (query.data?.items ?? []) as TItem[],
+      data: rows,
       total: query.data?.total ?? 0,
       pagination,
       onPaginationChange,

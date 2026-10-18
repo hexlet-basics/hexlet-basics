@@ -38,7 +38,7 @@ export type CrudColumnDef<T extends RowData> = ColumnDef<typeof features, T>;
 // everything below is shared.
 export interface CrudListProps<T extends RowData> {
   columns: CrudColumnDef<T>[];
-  data: T[];
+  data?: T[];
   // Total rows across all pages (from the `XxxPage` envelope), used to derive the
   // page count for the pager — the table itself only ever holds one page.
   total: number;
@@ -51,7 +51,7 @@ export interface CrudListProps<T extends RowData> {
 
 export function CrudList<T extends RowData>({
   columns,
-  data,
+  data = [],
   total,
   pagination,
   onPaginationChange,
