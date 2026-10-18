@@ -175,7 +175,8 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 
 ## Test
 
-- `mise run test` — the Go suite (`go test -shuffle=on ./...`). Tests run in a random
+- `mise run test` — the Go suite (`go test ./...`, plus `-shuffle=on` when `CI` is set: a
+  shuffle disables go's result cache, so locally unchanged packages show `(cached)`). In CI tests run in a random
   order and `go` prints the seed, so a test must not depend on another's side
   effects; replay an order with `mise run test -- -shuffle=<seed> ./pkg`.
 - `mise run test:cover` — the Go suite over `cmd/` and `internal/` with

@@ -389,9 +389,9 @@ run = [
 # --- test --------------------------------------------------------------------------
 
 [test]
-description = "Run the Go suite; DB packages clone their database on the db daemon (needs `mise run db:up`). Pass packages/flags after `--`"
+description = "Run the Go suite; DB packages clone their database on the db daemon (needs `mise run db:up`). Shuffles only under CI: a fixed shuffle disables go's result cache. Pass packages/flags after `--`"
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
-run = 'eval "set -- $usage_go_test_args"; go test -shuffle=on "$@"'
+run = 'eval "set -- $usage_go_test_args"; go test ${CI:+-shuffle=on} "$@"'
 
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (needs `mise run db:up`)"
