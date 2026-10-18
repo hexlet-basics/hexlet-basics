@@ -3,7 +3,6 @@ package oauthserver
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/url"
 	"slices"
 	"strconv"
@@ -61,13 +60,13 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 		Where(oauthrefreshtoken.UserID(account.ID), oauthrefreshtoken.ExpiresAtGT(now)).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list refresh tokens of user: %w", err)
+		return nil, errs.Wrapf(err, "list refresh tokens of user")
 	}
 	access, err := db.OAuthAccessToken.Query().
 		Where(oauthaccesstoken.UserID(account.ID), oauthaccesstoken.ExpiresAtGT(now)).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list access tokens of user: %w", err)
+		return nil, errs.Wrapf(err, "list access tokens of user")
 	}
 
 	type grants struct {
@@ -116,7 +115,7 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 	}
 	clients, err := db.OAuthClient.Query().Where(oauthclient.ClientIDIn(clientIDs...)).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load clients of connected apps: %w", err)
+		return nil, errs.Wrapf(err, "load clients of connected apps")
 	}
 	apps := make([]ConnectedApp, 0, len(clients))
 	for _, c := range clients {
@@ -173,7 +172,7 @@ func (s *Server) Disconnect(ctx context.Context, appID int) error {
 		return ErrAppNotConnected
 	}
 	if err != nil {
-		return fmt.Errorf("load client of connected app: %w", err)
+		return errs.Wrapf(err, "load client of connected app")
 	}
 	return s.storage.TerminateSession(ctx, strconv.Itoa(account.ID), row.ClientID)
 }

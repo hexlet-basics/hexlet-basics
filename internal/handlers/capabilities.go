@@ -6,7 +6,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/permission"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // AdminGetMyCapabilities lists the capability Permissions the caller holds
@@ -21,7 +21,7 @@ func (s *Server) AdminGetMyCapabilities(ctx context.Context) (api.AdminGetMyCapa
 	policy := permission.NewPolicy(s.db)
 
 	held := []string{}
-	for _, entry := range permissions.Catalog() {
+	for _, entry := range permissioncatalog.Catalog() {
 		if !entry.Capability {
 			continue
 		}

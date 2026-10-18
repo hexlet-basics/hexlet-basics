@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -63,7 +63,7 @@ func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
 // Without the OAuth server there can be no Connected App: the list is empty (the
 // account page shows its empty state) and a revoke finds nothing.
 func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserAdminLearner)
+	h := testsupport.NewHarnessAs(t, fixture.UserAdminLearner)
 	ctx := context.Background()
 
 	list, err := h.Client.ListConnectedApps(ctx)

@@ -6,7 +6,7 @@ import (
 
 	"github.com/riverqueue/river"
 
-	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/emailtoken"
 )
 
 // accountEmailCooldown is how long a second request for the same email to the
@@ -16,7 +16,7 @@ const accountEmailCooldown = time.Minute
 // AccountEmailSender renders and delivers one account email
 // (accountemails.Sender in production).
 type AccountEmailSender interface {
-	Send(ctx context.Context, purpose emailtokens.Purpose, userID int, locale string) error
+	Send(ctx context.Context, purpose emailtoken.Purpose, userID int, locale string) error
 }
 
 // AccountEmailArgs is the intent to email a User a Magic Link or a Password
@@ -24,8 +24,8 @@ type AccountEmailSender interface {
 // when it sends, so a retried job never mails a link that already expired and
 // the job table never holds a usable credential.
 type AccountEmailArgs struct {
-	Purpose emailtokens.Purpose `json:"purpose" river:"unique"`
-	UserID  int                 `json:"user_id" river:"unique"`
+	Purpose emailtoken.Purpose `json:"purpose" river:"unique"`
+	UserID  int                `json:"user_id" river:"unique"`
 	// Locale is left out of uniqueness: switching language between two clicks
 	// is still the same request within the cooldown.
 	Locale string `json:"locale"`

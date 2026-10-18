@@ -23,7 +23,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
@@ -92,8 +92,8 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 
 	// Arrange: a course with a freshly-created version, the state the loader
 	// requires. (Its own writes roll back with the test transaction.)
-	course := db.Course.GetX(ctx, fixtures.ID(fixtures.CourseLoadable))
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 
 	loader := newLoader(t, db, txStore)
 	require.NoError(t, loader.Run(ctx, version.ID))
@@ -139,9 +139,9 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.GetX(ctx, fixtures.ID(fixtures.CourseLoadable))
+	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
 	// A version already 'built' must not be rebuilt or have its result overwritten.
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableBuilt))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableBuilt))
 
 	loader := newLoaderWith(t, db, txStore, unreachableFetcher())
 	require.NoError(t, loader.Run(ctx, version.ID))
@@ -160,7 +160,7 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 func TestLoaderBuildsAVersionOnceWhenItsJobIsDeliveredTwice(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
-	id := fixtures.ID(fixtures.VersionLoadableCreated)
+	id := fixture.ID(fixture.VersionLoadableCreated)
 
 	require.NoError(t, newLoader(t, db, txStore).Run(ctx, id))
 	built := db.CourseVersion.GetX(ctx, id)
@@ -179,17 +179,17 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.GetX(ctx, fixtures.ID(fixtures.CourseLoadable))
+	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
 	loader := newLoader(t, db, txStore)
 
 	// First build.
-	v1 := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	v1 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 	require.NoError(t, loader.Run(ctx, v1.ID))
 	module1 := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).OnlyX(ctx)
 	lesson1 := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
-	v2 := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreatedSecond))
+	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
 	require.NoError(t, loader.Run(ctx, v2.ID))
 
 	modules := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
@@ -213,17 +213,17 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
-	course := db.Course.GetX(ctx, fixtures.ID(fixtures.CourseLoadable))
+	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
 
 	// v1 builds successfully and is promoted live.
-	v1 := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	v1 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 	require.NoError(t, newLoader(t, db, txStore).Run(ctx, v1.ID))
 	course = db.Course.GetX(ctx, course.ID)
 	require.Equal(t, v1.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
 	badLoader := newLoaderWith(t, db, txStore, repoFetcher(t.TempDir()))
-	v2 := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreatedSecond))
+	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
 	require.Error(t, badLoader.Run(ctx, v2.ID))
 
 	// v2 is failed with the error recorded...
@@ -248,7 +248,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 	)
 	require.NoError(t, os.WriteFile(imagePath, []byte("<svg><script>alert(1)</script></svg>"), 0o644))
 
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err := loader.Run(ctx, version.ID)
@@ -277,7 +277,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 	require.NoError(t, os.Remove(imagePath))
 	require.NoError(t, os.Symlink(externalImagePath, imagePath))
 
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err = loader.Run(ctx, version.ID)
@@ -303,7 +303,7 @@ func TestLoaderUploadsTheoryImagesFromTheLessonAssetsDir(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644))
 
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 
 	require.NoError(t, newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID))
 
@@ -329,7 +329,7 @@ func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644))
 
-	version := db.CourseVersion.GetX(ctx, fixtures.ID(fixtures.VersionLoadableCreated))
+	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 
 	err = newLoaderWith(t, db, txStore, repoFetcher(repo)).Run(ctx, version.ID)
 

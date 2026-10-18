@@ -16,7 +16,7 @@ import (
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assistant"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -186,7 +186,7 @@ func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 // Seven questions a day (the fixture learner has asked seven today). Over the quota the operation answers 429 before the
 // model is called, stores nothing, and the history reports the disabled state.
 func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserQuotaUsedToday)
+	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedToday)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 	messages := h.DB.AiMessage.Query().CountX(ctx)
@@ -205,7 +205,7 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 
 // The quota is per day: yesterday's questions do not count against today.
 func TestAskAssistantQuotaResetsDaily(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserQuotaUsedYesterday)
+	h := testsupport.NewHarnessAs(t, fixture.UserQuotaUsedYesterday)
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
 	answer := askAssistant(t, h, lesson, "A new day?")

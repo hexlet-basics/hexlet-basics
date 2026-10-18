@@ -3,7 +3,6 @@ package progress
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"path"
 	"time"
 
@@ -84,7 +83,7 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 
 	outcome, err := p.runner.Run(ctx, submission)
 	if err != nil {
-		return nil, fmt.Errorf("run submission for lesson %d: %w", check.LessonID, err)
+		return nil, errs.With("lesson_id", check.LessonID).Wrapf(err, "run submission for lesson")
 	}
 
 	result := &CheckResult{Outcome: outcome}
@@ -100,7 +99,7 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 			Passed:     outcome.Passed,
 			OccurredAt: occurredAt,
 		}); err != nil {
-			return fmt.Errorf("publish solution checked: %w", err)
+			return errs.Wrapf(err, "publish solution checked")
 		}
 
 		if !check.Learner.SignedIn() {
@@ -143,7 +142,7 @@ func (p *Progress) submittedVersion(ctx context.Context, crs *ent.Course, check 
 		return nil, &ent.NotFoundError{}
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load lesson version %d: %w", check.VersionID, err)
+		return nil, errs.With("version_id", check.VersionID).Wrapf(err, "load lesson version")
 	}
 	return version, nil
 }
@@ -162,7 +161,7 @@ func (p *Progress) submissionFor(
 ) (Submission, error) {
 	built, err := p.db.CourseVersion.Get(ctx, version.CourseVersionID)
 	if err != nil {
-		return Submission{}, fmt.Errorf("load course version %d: %w", version.CourseVersionID, err)
+		return Submission{}, errs.With("course_version_id", version.CourseVersionID).Wrapf(err, "load course version")
 	}
 
 	image := lo.FromPtr(built.DockerImage)
@@ -230,7 +229,7 @@ func (p *Progress) record(
 	// counts the CRM consumes count transitions, not submissions.
 	if lo.FromPtr(taken.State) != StateFinished {
 		if _, err := taken.Update().SetState(StateFinished).Save(ctx); err != nil {
-			return fmt.Errorf("finish lesson progress: %w", err)
+			return errs.Wrapf(err, "finish lesson progress")
 		}
 		result.LessonFinished = true
 
@@ -245,7 +244,7 @@ func (p *Progress) record(
 			Locale:          check.Locale,
 			OccurredAt:      occurredAt,
 		}); err != nil {
-			return fmt.Errorf("publish lesson finished: %w", err)
+			return errs.Wrapf(err, "publish lesson finished")
 		}
 	}
 
@@ -295,7 +294,7 @@ func (p *Progress) finishCourse(
 	}
 
 	if _, err := enrolled.Update().SetState(StateFinished).Save(ctx); err != nil {
-		return fmt.Errorf("finish enrollment: %w", err)
+		return errs.Wrapf(err, "finish enrollment")
 	}
 	result.CourseFinished = true
 
@@ -308,7 +307,7 @@ func (p *Progress) finishCourse(
 		).
 		Count(ctx)
 	if err != nil {
-		return fmt.Errorf("count finished enrollments: %w", err)
+		return errs.Wrapf(err, "count finished enrollments")
 	}
 	if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 		OccurrenceCount: count,
@@ -316,7 +315,7 @@ func (p *Progress) finishCourse(
 		Locale:          check.Locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {
-		return fmt.Errorf("publish course finished: %w", err)
+		return errs.Wrapf(err, "publish course finished")
 	}
 	return nil
 }
@@ -328,7 +327,7 @@ func lessonProgressCount(ctx context.Context, db *ent.Client, enrollmentID int) 
 		Where(lessonprogress.EnrollmentID(enrollmentID)).
 		Count(ctx)
 	if err != nil {
-		return 0, fmt.Errorf("count lesson progress: %w", err)
+		return 0, errs.Wrapf(err, "count lesson progress")
 	}
 	return count, nil
 }

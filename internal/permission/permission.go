@@ -5,16 +5,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/samber/lo"
+	"github.com/samber/oops"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/store"
 )
 
@@ -29,6 +29,10 @@ type Permissions struct {
 func NewPermissions(db *ent.Client, tx store.Transactor) *Permissions {
 	return &Permissions{db: db, tx: tx}
 }
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With, wrapped once at the exported function that knows the operation.
+var errs = oops.In("permission")
 
 // ErrUnknownPermission is a grant that names no Permission the contract
 // declares: a typo would otherwise be stored and silently open nothing. The
@@ -45,8 +49,13 @@ func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) er
 	if err := p.requireRole(ctx, roleID); err != nil {
 		return err
 	}
-	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissions.Known(name) }); len(unknown) > 0 {
-		return fmt.Errorf("%w: %s", ErrUnknownPermission, strings.Join(unknown, ", "))
+	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissioncatalog.Known(name) }); len(unknown) > 0 {
+		// The names stay in the message on purpose: the roles screen shows
+		// err.Error() as the field's detail, so they are user-facing text and
+		// not log data. The HTTP error step (ADR-0018 follow-up) replaces this
+		// with a localized detail and the message becomes static.
+		names := strings.Join(unknown, ", ")
+		return errs.With("unknown", names).Wrapf(ErrUnknownPermission, "%s", names)
 	}
 	return nil
 }
@@ -85,14 +94,14 @@ func replaceGrants(ctx context.Context, db *ent.Client, roleID int, grants []str
 		// DoNothing reports no row back for a skipped conflict, which ent
 		// surfaces as sql.ErrNoRows; it is the expected outcome, not a failure.
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("add grants: %w", err)
+			return errs.With("role_id", roleID).Wrapf(err, "add grants")
 		}
 	}
 	_, err := db.StaffRoleGrant.Delete().
 		Where(staffrolegrant.RoleID(roleID), staffrolegrant.PermissionNotIn(grants...)).
 		Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("remove grants: %w", err)
+		return errs.With("role_id", roleID).Wrapf(err, "remove grants")
 	}
 	return nil
 }

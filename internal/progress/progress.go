@@ -13,11 +13,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"slices"
 	"time"
 
 	"github.com/samber/lo"
+	"github.com/samber/oops"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
@@ -29,6 +29,10 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With.
+var errs = oops.In("progress")
 
 // State values on an Enrollment and on Lesson Progress. They are the legacy
 // AASM strings, stored as they always were.
@@ -202,7 +206,7 @@ func (p *Progress) publishCourseStarted(
 		Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
 		Count(ctx)
 	if err != nil {
-		return fmt.Errorf("count started enrollments: %w", err)
+		return errs.Wrapf(err, "count started enrollments")
 	}
 	if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
 		OccurrenceCount: count,
@@ -210,7 +214,7 @@ func (p *Progress) publishCourseStarted(
 		Locale:          locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {
-		return fmt.Errorf("publish course started: %w", err)
+		return errs.Wrapf(err, "publish course started")
 	}
 	return nil
 }
@@ -237,7 +241,7 @@ func (p *Progress) publishLessonStarted(
 		Locale:          locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {
-		return fmt.Errorf("publish lesson started: %w", err)
+		return errs.Wrapf(err, "publish lesson started")
 	}
 	return nil
 }
@@ -260,7 +264,7 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	case err == nil:
 		return existing, false, nil
 	case !ent.IsNotFound(err):
-		return nil, false, fmt.Errorf("load enrollment: %w", err)
+		return nil, false, errs.Wrapf(err, "load enrollment")
 	}
 
 	// ON CONFLICT DO NOTHING rather than a bare insert: the read above cannot
@@ -278,24 +282,24 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 			Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
 			Only(ctx)
 		if err != nil {
-			return nil, false, fmt.Errorf("load concurrent enrollment: %w", err)
+			return nil, false, errs.Wrapf(err, "load concurrent enrollment")
 		}
 		return existing, false, nil
 	}
 	if err != nil {
-		return nil, false, fmt.Errorf("enroll: %w", err)
+		return nil, false, errs.Wrapf(err, "enroll")
 	}
 
 	row, err := db.Enrollment.Get(ctx, id)
 	if err != nil {
-		return nil, false, fmt.Errorf("load new enrollment: %w", err)
+		return nil, false, errs.Wrapf(err, "load new enrollment")
 	}
 
 	// The Course's member count stays denormalized, as the legacy counter cache
 	// kept it: it is the marketing figure on catalogue pages, which are read far
 	// more often than anyone enrolls, and it is never used as a progress figure.
 	if err := db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx); err != nil {
-		return nil, false, fmt.Errorf("count new enrollment on course %d: %w", courseID, err)
+		return nil, false, errs.With("course_id", courseID).Wrapf(err, "count new enrollment on course")
 	}
 	return row, true, nil
 }
@@ -320,7 +324,7 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 	case err == nil:
 		return existing, false, nil
 	case !ent.IsNotFound(err):
-		return nil, false, fmt.Errorf("load lesson progress: %w", err)
+		return nil, false, errs.Wrapf(err, "load lesson progress")
 	}
 
 	id, err := db.LessonProgress.Create().
@@ -335,17 +339,17 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 	if errors.Is(err, sql.ErrNoRows) {
 		existing, err := load()
 		if err != nil {
-			return nil, false, fmt.Errorf("load concurrent lesson progress: %w", err)
+			return nil, false, errs.Wrapf(err, "load concurrent lesson progress")
 		}
 		return existing, false, nil
 	}
 	if err != nil {
-		return nil, false, fmt.Errorf("create lesson progress: %w", err)
+		return nil, false, errs.Wrapf(err, "create lesson progress")
 	}
 
 	row, err := db.LessonProgress.Get(ctx, id)
 	if err != nil {
-		return nil, false, fmt.Errorf("load new lesson progress: %w", err)
+		return nil, false, errs.Wrapf(err, "load new lesson progress")
 	}
 	return row, true, nil
 }
@@ -358,7 +362,7 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 		Where(courselesson.ID(lessonID)).
 		Only(ctx)
 	if err != nil {
-		return nil, nil, fmt.Errorf("load lesson %d: %w", lessonID, err)
+		return nil, nil, errs.With("lesson_id", lessonID).Wrapf(err, "load lesson")
 	}
 	if lesson.CourseID == nil {
 		return nil, nil, &ent.NotFoundError{}
@@ -366,7 +370,7 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 
 	crs, err := db.Course.Query().Where(course.ID(*lesson.CourseID)).Only(ctx)
 	if err != nil {
-		return nil, nil, fmt.Errorf("load course %d: %w", *lesson.CourseID, err)
+		return nil, nil, errs.With("course_id", *lesson.CourseID).Wrapf(err, "load course")
 	}
 	return lesson, crs, nil
 }
@@ -440,7 +444,7 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 		}).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load current lesson versions: %w", err)
+		return nil, errs.Wrapf(err, "load current lesson versions")
 	}
 
 	byCourse := make(map[int][]currentLesson, len(courses))
@@ -479,7 +483,7 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 		}
 		state, ok := states[courseID]
 		if !ok {
-			return nil, fmt.Errorf("load course %d: %w", courseID, &ent.NotFoundError{})
+			return nil, errs.With("course_id", courseID).Wrapf(&ent.NotFoundError{}, "load course")
 		}
 		return state, nil
 	}
@@ -491,7 +495,7 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 func (p *Progress) guestCourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error) {
 	crs, err := p.db.Course.Query().Where(course.ID(courseID)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load course %d: %w", courseID, err)
+		return nil, errs.With("course_id", courseID).Wrapf(err, "load course")
 	}
 
 	lessons, err := currentLessons(ctx, p.db, crs)
@@ -533,7 +537,7 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 
 	courses, err := p.db.Course.Query().Where(course.IDIn(courseIDs...)).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load courses: %w", err)
+		return nil, errs.Wrapf(err, "load courses")
 	}
 
 	lessons, err := currentLessonsByCourse(ctx, p.db, courses)
@@ -550,7 +554,7 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 		Where(enrollment.UserID(userID), enrollment.CourseIDIn(courseIDs...)).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load enrollments: %w", err)
+		return nil, errs.Wrapf(err, "load enrollments")
 	}
 	enrollmentState := lo.SliceToMap(enrollments, func(e *ent.Enrollment) (int, string) {
 		return e.CourseID, lo.FromPtr(e.State)
@@ -613,7 +617,7 @@ func finishedLessonsByCourse(ctx context.Context, db *ent.Client, userID int, co
 		Select(lessonprogress.FieldCourseID, lessonprogress.FieldLessonID).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load finished lessons: %w", err)
+		return nil, errs.Wrapf(err, "load finished lessons")
 	}
 
 	finished := make(map[int]map[int]bool, len(courseIDs))

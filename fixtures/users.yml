@@ -1,7 +1,7 @@
 # Fixtures for `users`, HAND-CURATED (the admin CRUD surface maps only id, email,
 # first_name, last_name, admin). `mise run fixtures:import` is non-destructive and
 # skips existing files, so this survives re-imports. Loaded by cmd/fixtures and
-# the test containers (internal/fixtures); only the mapped + NOT NULL columns are
+# the test containers (internal/fixture); only the mapped + NOT NULL columns are
 # set, the rest default to null.
 #
 # Every row is named for the case it exists for, and says which tests lean on it.

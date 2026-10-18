@@ -19,7 +19,7 @@ import (
 
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/oauthserver"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // adminOperations is the allowlist of admin operations exposed as tools: the
@@ -163,11 +163,11 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 	for _, id := range adminOperations {
 		op, err := readOperation(id)
 		if err != nil {
-			return fmt.Errorf("admin tool %s: %w", id, err)
+			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
 		tool, err := adminTool(op)
 		if err != nil {
-			return fmt.Errorf("admin tool %s: %w", id, err)
+			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
 		s.note(tool, adminNeeds(op))
 		server.AddTool(tool, s.adminHandler(op))
@@ -182,13 +182,13 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 // own Permission when it is one (the audit trail's audit.read).
 func adminNeeds(op *operation) toolNeeds {
 	needs := toolNeeds{scope: oauthserver.ScopeAdmin}
-	if requirement, ok := permissions.For(op.ogenName()); ok {
+	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs.permission = requirement.Permission
-		if permissions.IsCapability(requirement.Permission) {
+		if permissioncatalog.IsCapability(requirement.Permission) {
 			needs.capabilities = append(needs.capabilities, requirement.Permission)
 		}
 	}
-	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if !slices.Contains(needs.capabilities, capability) {
 			needs.capabilities = append(needs.capabilities, capability)
 		}
@@ -213,7 +213,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	required := []string{localeArgument}
 	for _, p := range op.Params {
 		if p.Name == localeArgument || p.Name == bodyArgument {
-			return nil, fmt.Errorf("parameter %q collides with a reserved argument", p.Name)
+			return nil, errs.With("parameter", p.Name).Errorf("parameter collides with a reserved argument")
 		}
 		schema := map[string]any{}
 		for k, v := range p.Schema {
@@ -273,10 +273,10 @@ func describe(op *operation) string {
 		text = strings.ToUpper(words[:1]) + words[1:] + "."
 	}
 	needs := []string{}
-	if requirement, ok := permissions.For(op.ogenName()); ok {
+	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs = append(needs, requirement.Permission)
 	}
-	for _, capability := range permissions.MCPCapabilities(op.ogenName()) {
+	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if capability == "mcp.manage" {
 			needs = append(needs, capability)
 		}
@@ -349,7 +349,7 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 		// is not checked here but by the security handler, so a refusal is
 		// recorded.
 		class := ClassPersonal
-		if permissions.IsAdminWrite(op.ogenName()) {
+		if permissioncatalog.IsAdminWrite(op.ogenName()) {
 			class = ClassWrite
 		}
 		if _, denied := s.spend(req, userID, class); denied != nil {
@@ -560,7 +560,7 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 	}
 	var decoded any
 	if err := json.Unmarshal(body, &decoded); err != nil {
-		return nil, fmt.Errorf("decode %s response: %w", op.ID, err)
+		return nil, errs.With("operation", op.ID).Wrapf(err, "decode response")
 	}
 	if _, isObject := decoded.(map[string]any); !isObject {
 		decoded = map[string]any{"result": decoded}

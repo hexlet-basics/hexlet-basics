@@ -8,7 +8,7 @@ import (
 
 	"hexletbasics/internal/blog"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -16,11 +16,11 @@ func TestEditorCreateStampsTheCreatorAndTheLocale(t *testing.T) {
 	editor := blog.NewEditor(testsupport.NewClient(t))
 	name, slug := "Заметки", "zametki"
 
-	post, err := editor.Create(t.Context(), fixtures.ID(fixtures.UserAdminLearner), "ru",
+	post, err := editor.Create(t.Context(), fixture.ID(fixture.UserAdminLearner), "ru",
 		blog.PostFields{Name: &name, Slug: &slug, RichBody: "<p>Текст</p>"})
 
 	require.NoError(t, err)
-	assert.Equal(t, fixtures.ID(fixtures.UserAdminLearner), post.CreatorID)
+	assert.Equal(t, fixture.ID(fixture.UserAdminLearner), post.CreatorID)
 	require.NotNil(t, post.Locale)
 	assert.Equal(t, "ru", *post.Locale)
 	assert.Equal(t, "<p>Текст</p>", post.RichBody)
@@ -29,7 +29,7 @@ func TestEditorCreateStampsTheCreatorAndTheLocale(t *testing.T) {
 func TestEditorUpdateClearsWhatIsLeftOutAndKeepsTheLocale(t *testing.T) {
 	db := testsupport.NewClient(t)
 	editor := blog.NewEditor(db)
-	id := fixtures.ID(fixtures.BlogPostHelloWorld)
+	id := fixture.ID(fixture.BlogPostHelloWorld)
 	before := db.BlogPost.GetX(t.Context(), id)
 	name := "Renamed"
 

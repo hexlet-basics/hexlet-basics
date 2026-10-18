@@ -84,7 +84,7 @@ linters:
         linters: [forbidigo]
         text: samber/oops
       # Packages not yet migrated to oops (ADR-0018). Shrink this list, never grow it.
-      - path: ^(cmd/(fixturelabels|fixtures|server|worker)|internal/(accounts|amocrm|apiconv|assetstore|audit|coursepages|curriculum|di|domain|eventhandlers|events|exerciserunner|feeds|fixtures|handlers|jobs|leads|localization|mcpserver|oauthserver|permissions|progress|search|sessions|staffroles|store|telemetry))/
+      - path: ^(cmd/(fixturelabels|fixtures|server|worker)|internal/(accounts|amocrm|apiconv|assetstore|audit|coursepages|curriculum|di|domain|eventhandlers|events|exerciserunner|feeds|fixtures|handlers|jobs|leads|localization|permissions|progress|search|sessions|staffroles|store|telemetry))/
         linters: [forbidigo]
         text: samber/oops
       # The handler and OAuth server tests read responses from

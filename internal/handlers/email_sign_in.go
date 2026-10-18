@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"hexletbasics/internal/accountemails"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
+	"hexletbasics/internal/accountemail"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 )
@@ -17,7 +17,7 @@ import (
 // the same whether or not one exists, so the form cannot be used to learn which
 // emails are registered, and it never creates an account.
 func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) (api.CreateMagicLinkRes, error) {
-	if err := s.requestAccountEmail(ctx, emailtokens.MagicLink, req.Email); err != nil {
+	if err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email); err != nil {
 		return nil, err
 	}
 	return &api.CreateMagicLinkNoContent{}, nil
@@ -29,8 +29,8 @@ func (s *Server) ConsumeMagicLink(
 	ctx context.Context,
 	params api.ConsumeMagicLinkParams,
 ) (api.ConsumeMagicLinkRes, error) {
-	u, err := s.emailTokens.Verify(ctx, s.db, emailtokens.MagicLink, params.Token)
-	if errors.Is(err, emailtokens.ErrInvalid) {
+	u, err := s.emailTokens.Verify(ctx, s.db, emailtoken.MagicLink, params.Token)
+	if errors.Is(err, emailtoken.ErrInvalid) {
 		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
@@ -46,7 +46,7 @@ func (s *Server) CreatePasswordReminder(
 	ctx context.Context,
 	req *api.EmailInput,
 ) (api.CreatePasswordReminderRes, error) {
-	if err := s.requestAccountEmail(ctx, emailtokens.PasswordReset, req.Email); err != nil {
+	if err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email); err != nil {
 		return nil, err
 	}
 	return &api.CreatePasswordReminderNoContent{}, nil
@@ -58,8 +58,8 @@ func (s *Server) CheckPasswordResetToken(
 	ctx context.Context,
 	params api.CheckPasswordResetTokenParams,
 ) (api.CheckPasswordResetTokenRes, error) {
-	_, err := s.emailTokens.Verify(ctx, s.db, emailtokens.PasswordReset, params.Token)
-	if errors.Is(err, emailtokens.ErrInvalid) {
+	_, err := s.emailTokens.Verify(ctx, s.db, emailtoken.PasswordReset, params.Token)
+	if errors.Is(err, emailtoken.ErrInvalid) {
 		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
@@ -77,15 +77,15 @@ func (s *Server) UpdatePassword(
 	req *api.ResetPasswordInput,
 	params api.UpdatePasswordParams,
 ) (api.UpdatePasswordRes, error) {
-	u, err := s.emailTokens.Verify(ctx, s.db, emailtokens.PasswordReset, params.Token)
-	if errors.Is(err, emailtokens.ErrInvalid) {
+	u, err := s.emailTokens.Verify(ctx, s.db, emailtoken.PasswordReset, params.Token)
+	if errors.Is(err, emailtoken.ErrInvalid) {
 		return s.linkInvalid(ctx), nil
 	}
 	if err != nil {
 		return nil, err
 	}
 	u, err = s.credentials.SetPassword(ctx, u, req.Password)
-	if errors.Is(err, accounts.ErrPasswordProcessing) {
+	if errors.Is(err, account.ErrPasswordProcessing) {
 		return validationError("password", s.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 	}
 	if err != nil {
@@ -97,8 +97,8 @@ func (s *Server) UpdatePassword(
 // requestAccountEmail enqueues the email for a registered address and does
 // nothing for an unknown one. The lookup normalizes the email the way registration
 // stores it, as legacy's did.
-func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtokens.Purpose, email string) error {
-	u, err := accounts.ActiveUserByEmail(ctx, s.db, email)
+func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtoken.Purpose, email string) error {
+	u, err := account.ActiveUserByEmail(ctx, s.db, email)
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil
 	}
@@ -108,7 +108,7 @@ func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtokens.Pu
 	return s.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
 		Purpose: purpose,
 		UserID:  u.ID,
-		Locale:  accountemails.Locale(s.i18n.Locale(ctx)),
+		Locale:  accountemail.Locale(s.i18n.Locale(ctx)),
 	})
 }
 

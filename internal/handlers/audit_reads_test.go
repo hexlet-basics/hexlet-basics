@@ -15,10 +15,10 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandlers"
+	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -30,7 +30,7 @@ import (
 // processReads delivers the published facts to the consumer the worker runs.
 func processReads(t *testing.T, h *testsupport.Harness) {
 	t.Helper()
-	testsupport.Deliver(t, h.Services, eventhandlers.StaffReadPersonalData(h.DB))
+	testsupport.Deliver(t, h.Services, eventhandler.StaffReadPersonalData(h.DB))
 }
 
 type readsOf struct {
@@ -177,7 +177,7 @@ func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 // whatever it is. The operations come from the contract, so declaring one in the
 // TypeSpec adds it here with no edit, and one the middleware does not reach fails.
 func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
-	operations := permissions.PersonalDataReads()
+	operations := permissioncatalog.PersonalDataReads()
 	require.NotEmpty(t, operations)
 
 	for _, operation := range operations {
@@ -191,7 +191,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 
 			rows := records(t, h, operation)
 			require.Len(t, rows, 1, "%s reads personal data and must be recorded", operation)
-			entity, _ := permissions.PersonalDataEntity(operation)
+			entity, _ := permissioncatalog.PersonalDataEntity(operation)
 			assert.Equal(t, entity, *rows[0].EntityType)
 			assert.Equal(t, string(audit.OutcomeSucceeded), rows[0].Outcome)
 			var reads readsOf

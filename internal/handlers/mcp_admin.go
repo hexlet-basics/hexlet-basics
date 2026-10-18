@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"slices"
 
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/permission"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // NewAdminDispatcher is what an MCP admin tool call is served by (ADR-0021
@@ -49,7 +49,7 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 // before the body is decoded or a handler runs. Taking a Permission away is
 // seen on the next call, because nothing is cached.
 func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, p mcpserver.Principal) (context.Context, error) {
-	u, err := accounts.ActiveUserByID(ctx, s.db, p.UserID)
+	u, err := account.ActiveUserByID(ctx, s.db, p.UserID)
 	if errors.Is(err, domain.ErrNotFound) {
 		return ctx, errUnauthenticated
 	}
@@ -67,7 +67,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 		return ctx, errAdminRequired
 	}
 	err = s.policy.Allow(ctx, u, locale, operation)
-	for _, capability := range permissions.MCPCapabilities(operation) {
+	for _, capability := range permissioncatalog.MCPCapabilities(operation) {
 		if err != nil {
 			break
 		}
@@ -89,7 +89,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 // It is a convenience only: nothing here authorizes anything, and a user who is
 // gone or has no Staff Role holds nothing.
 func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, error) {
-	u, err := accounts.ActiveUserByID(ctx, s.db, userID)
+	u, err := account.ActiveUserByID(ctx, s.db, userID)
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil, nil
 	}
@@ -97,7 +97,7 @@ func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, 
 		return nil, fmt.Errorf("load user for capabilities: %w", err)
 	}
 	held := []string{}
-	for _, entry := range permissions.Catalog() {
+	for _, entry := range permissioncatalog.Catalog() {
 		if !entry.Capability {
 			continue
 		}

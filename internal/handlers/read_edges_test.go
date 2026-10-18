@@ -13,7 +13,7 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -35,9 +35,9 @@ func TestAdminListBlogPostsPastTheLastPage(t *testing.T) {
 // A post whose state was never set reads as null, not as a made-up state.
 func TestAdminGetBlogPostWithoutAState(t *testing.T) {
 	h := testsupport.NewHarness(t)
-	h.DB.BlogPost.Update().Where(blogpost.ID(fixtures.ID(fixtures.BlogPostHelloWorld))).ClearState().ExecX(t.Context())
+	h.DB.BlogPost.Update().Where(blogpost.ID(fixture.ID(fixture.BlogPostHelloWorld))).ClearState().ExecX(t.Context())
 
-	post, err := h.Client.AdminGetBlogPost(t.Context(), api.AdminGetBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	post, err := h.Client.AdminGetBlogPost(t.Context(), api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 
 	assert.True(t, post.State.Null)

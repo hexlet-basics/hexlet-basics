@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -17,9 +17,9 @@ import (
 
 // go-ru landing page and its course, ruby course — all present in the fixtures.
 var (
-	landingGoRuID = fixtures.ID32(fixtures.LandingPageGoRu)
-	courseRubyID  = fixtures.ID(fixtures.CourseRuby)
-	courseGoID    = fixtures.ID(fixtures.CourseGo)
+	landingGoRuID = fixture.ID32(fixture.LandingPageGoRu)
+	courseRubyID  = fixture.ID(fixture.CourseRuby)
+	courseGoID    = fixture.ID(fixture.CourseGo)
 )
 
 // fullLandingInput returns a complete CourseLandingPageInput with every nullable

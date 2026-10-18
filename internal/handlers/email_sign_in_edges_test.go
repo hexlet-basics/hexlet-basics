@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/emailtoken"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -18,8 +18,8 @@ import (
 // another try with a password that fits.
 func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	u := fixtureUser(t, h, fixtures.UserWithPassword)
-	token := issueEmailToken(t, emailtokens.PasswordReset, u)
+	u := fixtureUser(t, h, fixture.UserWithPassword)
+	token := issueEmailToken(t, emailtoken.PasswordReset, u)
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: strings.Repeat("a", 100)}, api.UpdatePasswordParams{Token: token})
@@ -28,7 +28,7 @@ func TestUpdatePasswordRefusesAPasswordTheHashCannotTake(t *testing.T) {
 	refusal, ok := res.(*api.ValidationError)
 	require.True(t, ok, "got %T", res)
 	assert.Contains(t, refusal.Errors, "password")
-	assert.True(t, signsInWith(t, h, "with-password@example.com", fixtures.Password))
+	assert.True(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 
 	res, err = h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "a-password-that-fits"}, api.UpdatePasswordParams{Token: token})

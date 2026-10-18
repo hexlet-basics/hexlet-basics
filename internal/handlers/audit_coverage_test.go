@@ -10,7 +10,7 @@ import (
 
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -20,7 +20,7 @@ import (
 // contract, so adding one to the TypeSpec adds it here with no edit, and one the
 // middleware does not reach fails this test.
 func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
-	operations := permissions.AdminWrites()
+	operations := permissioncatalog.AdminWrites()
 	require.NotEmpty(t, operations)
 
 	for _, operation := range operations {
@@ -42,7 +42,7 @@ func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
 // record survives the rollback of the change. It holds no changes, because the
 // changes did not happen and may name values the caller never saw.
 func TestEveryAdminWriteOperationRecordsAFailure(t *testing.T) {
-	for _, operation := range permissions.AdminWrites() {
+	for _, operation := range permissioncatalog.AdminWrites() {
 		t.Run(operation, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
 			audited := auditMiddleware(t, h)

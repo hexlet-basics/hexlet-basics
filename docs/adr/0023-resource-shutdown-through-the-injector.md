@@ -63,3 +63,17 @@ deployments switch to `httpGet` on the API port: `startupProbe` and
 `livenessProbe` on `/healthz`, `readinessProbe` on `/readyz`, each with
 `timeoutSeconds: 3` (above the 2 s readiness check). The chart is not edited
 in this change.
+
+## Worker health listener
+
+The worker has no HTTP surface, so it gets a health-only `http.Server` on
+`HEALTH_ADDR` (default `:8081`), started and stopped by its errgroup
+coordinator. `/healthz` is as on the server. `/readyz` is 503 until the job
+queue and the event router have both started, 200 while they run and the
+database answers, and 503 again from the moment shutdown begins
+(`Probes.Drain`); the listener is stopped last, after River and Watermill have
+drained, so the drain is visible to the kubelet.
+
+Ops note (chart not edited here): give the worker deployment a container port
+for `HEALTH_ADDR`, with `startupProbe` and `livenessProbe` `httpGet` on
+`/healthz` and `readinessProbe` on `/readyz`, `timeoutSeconds: 3`.

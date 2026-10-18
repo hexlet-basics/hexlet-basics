@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -19,7 +19,7 @@ import (
 // Alice (user_admin_learner) is enrolled and has finished hello-world; Bob (user_staff_editor) has a
 // finished Enrollment and has only started variables; Carol (user_with_password) has nothing.
 // carol is a fixture user.
-var carol = fixtures.ID(fixtures.UserWithPassword)
+var carol = fixture.ID(fixture.UserWithPassword)
 
 func learnerSession(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()

@@ -24,11 +24,16 @@ import (
 	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/client"
+	"github.com/samber/oops"
 	"golang.org/x/sync/semaphore"
 
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/progress"
 )
+
+// errs is the package template for errors (ADR-0018): static messages, the data
+// in With.
+var errs = oops.In("exerciserunner")
 
 // timeoutExitStatus is what GNU coreutils' `timeout` exits with when it kills
 // the command: "124 if command times out, and --preserve-status is not
@@ -129,7 +134,7 @@ type Docker struct {
 func New(opts Options) (*Docker, error) {
 	docker, err := client.New(client.FromEnv)
 	if err != nil {
-		return nil, fmt.Errorf("new docker client: %w", err)
+		return nil, errs.Wrapf(err, "new docker client")
 	}
 	if opts.Concurrency < 1 {
 		opts.Concurrency = 1
@@ -193,18 +198,18 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 
 	pulled, err := d.docker.ImagePull(ctx, source, client.ImagePullOptions{})
 	if err != nil {
-		return "", fmt.Errorf("pull %q: %w", source, err)
+		return "", errs.With("source", source).Wrapf(err, "pull image")
 	}
 	defer func() { _ = pulled.Close() }()
 	// The pull returns as soon as the daemon accepts it; starting a container
 	// against a half-present image is the confusing failure that follows from
 	// not waiting.
 	if err := pulled.Wait(ctx); err != nil {
-		return "", fmt.Errorf("pull %q: %w", source, err)
+		return "", errs.With("source", source).Wrapf(err, "wait for image pull")
 	}
 
 	if _, err := d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned}); err != nil {
-		return "", fmt.Errorf("pin %q as %q: %w", source, pinned, err)
+		return "", errs.With("source", source, "pinned", pinned).Wrapf(err, "pin image")
 	}
 	return pinned, nil
 }
@@ -280,7 +285,7 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		HostConfig: d.hostConfig(),
 	})
 	if err != nil {
-		return 0, "", fmt.Errorf("create container for %q: %w", submission.Image, err)
+		return 0, "", errs.With("image", submission.Image).Wrapf(err, "create container")
 	}
 
 	// AutoRemove cleans up after a normal exit; this covers the paths where the
@@ -299,7 +304,7 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		DestinationPath: "/",
 		Content:         archive,
 	}); err != nil {
-		return 0, "", fmt.Errorf("deliver submission to container: %w", err)
+		return 0, "", errs.Wrapf(err, "deliver submission to container")
 	}
 
 	wait := d.docker.ContainerWait(ctx, created.ID, client.ContainerWaitOptions{
@@ -312,12 +317,12 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		Stderr: true,
 	})
 	if err != nil {
-		return 0, "", fmt.Errorf("attach to container: %w", err)
+		return 0, "", errs.Wrapf(err, "attach to container")
 	}
 	defer attached.Close()
 
 	if _, err := d.docker.ContainerStart(ctx, created.ID, client.ContainerStartOptions{}); err != nil {
-		return 0, "", fmt.Errorf("start container: %w", err)
+		return 0, "", errs.Wrapf(err, "start container")
 	}
 
 	// A hijacked connection does not honour context cancellation, so reading
@@ -340,11 +345,11 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	select {
 	case result := <-wait.Result:
 		if result.Error != nil && result.Error.Message != "" {
-			return 0, "", fmt.Errorf("container wait failed: %s", result.Error.Message)
+			return 0, "", errs.With("reason", result.Error.Message).Errorf("container wait failed")
 		}
 		return int(result.StatusCode), output, nil
 	case err := <-wait.Error:
-		return 0, "", fmt.Errorf("wait for container: %w", err)
+		return 0, "", errs.Wrapf(err, "wait for container")
 	case <-ctx.Done():
 		return 0, "", d.gaveUp(ctx)
 	}
@@ -355,8 +360,8 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 // the in-container timeout classifies that one, and this cannot tell why the
 // process stopped, only that nothing was heard.
 func (d *Docker) gaveUp(ctx context.Context) error {
-	return fmt.Errorf("container did not report within %s: %w",
-		d.opts.Timeout+d.opts.GraceTimeout, ctx.Err())
+	return errs.With("deadline", d.opts.Timeout+d.opts.GraceTimeout).
+		Wrapf(ctx.Err(), "container did not report in time")
 }
 
 // command is the legacy command, unchanged: run the lesson's Makefile under a
@@ -404,13 +409,13 @@ func tarFile(destination, content string) (io.Reader, error) {
 		Mode: 0o644,
 		Size: int64(len(content)),
 	}); err != nil {
-		return nil, fmt.Errorf("write submission header: %w", err)
+		return nil, errs.Wrapf(err, "write submission header")
 	}
 	if _, err := archive.Write([]byte(content)); err != nil {
-		return nil, fmt.Errorf("write submission: %w", err)
+		return nil, errs.Wrapf(err, "write submission")
 	}
 	if err := archive.Close(); err != nil {
-		return nil, fmt.Errorf("close submission archive: %w", err)
+		return nil, errs.Wrapf(err, "close submission archive")
 	}
 	return &buf, nil
 }
@@ -423,7 +428,7 @@ func tarFile(destination, content string) (io.Reader, error) {
 func readOutput(stream io.Reader, limit int) (string, error) {
 	capped := &cappedWriter{limit: limit}
 	if _, err := stdcopy.StdCopy(capped, capped, stream); err != nil && !errors.Is(err, io.EOF) {
-		return "", fmt.Errorf("read container output: %w", err)
+		return "", errs.Wrapf(err, "read container output")
 	}
 
 	// Scrubbed rather than rejected: exercise output is whatever the learner's

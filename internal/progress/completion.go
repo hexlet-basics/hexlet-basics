@@ -3,7 +3,6 @@ package progress
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/samber/lo"
@@ -38,7 +37,7 @@ func (p *Progress) ReevaluateCompletion(
 ) error {
 	crs, err := db.Course.Query().Where(course.ID(courseID)).Only(ctx)
 	if err != nil {
-		return fmt.Errorf("load course %d: %w", courseID, err)
+		return errs.With("course_id", courseID).Wrapf(err, "load course")
 	}
 
 	lessons, err := currentLessons(ctx, db, crs)
@@ -68,7 +67,7 @@ func (p *Progress) ReevaluateCompletion(
 		Where(enrollment.IDIn(enrollmentIDs...)).
 		SetState(StateFinished).
 		Exec(ctx); err != nil {
-		return fmt.Errorf("finish completed enrollments: %w", err)
+		return errs.Wrapf(err, "finish completed enrollments")
 	}
 
 	counts, err := finishedEnrollmentCounts(ctx, db, userIDs)
@@ -84,7 +83,7 @@ func (p *Progress) ReevaluateCompletion(
 			Locale:          locale,
 			OccurredAt:      occurredAt,
 		}); err != nil {
-			return fmt.Errorf("publish course finished: %w", err)
+			return errs.Wrapf(err, "publish course finished")
 		}
 	}
 	return nil
@@ -129,7 +128,7 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 			return entsql.As(entsql.Count(entsql.Distinct(s.C(lessonprogress.FieldLessonID))), "lessons")
 		}).
 		Scan(ctx, &finishedPerLearner); err != nil {
-		return nil, fmt.Errorf("count finished lessons per learner: %w", err)
+		return nil, errs.Wrapf(err, "count finished lessons per learner")
 	}
 
 	finishers := lo.FilterMap(finishedPerLearner, func(row finishedPerLearnerRow, _ int) (int, bool) {
@@ -147,7 +146,7 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("select completed enrollments: %w", err)
+		return nil, errs.Wrapf(err, "select completed enrollments")
 	}
 
 	return lo.Map(enrollments, func(e *ent.Enrollment, _ int) completedEnrollment {
@@ -169,7 +168,7 @@ func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int
 		GroupBy(enrollment.FieldUserID).
 		Aggregate(ent.Count()).
 		Scan(ctx, &rows); err != nil {
-		return nil, fmt.Errorf("count finished enrollments: %w", err)
+		return nil, errs.Wrapf(err, "count finished enrollments")
 	}
 
 	counts := make(map[int]int, len(rows))

@@ -13,8 +13,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandlers"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/eventhandler"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -201,7 +201,7 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 
 	// Recorded after the request, by the consumer of the event.
 	assert.Empty(t, o.Records("AdminListAuditRecords"))
-	testsupport.Deliver(t, o.Services, eventhandlers.StaffReadPersonalData(o.DB))
+	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
 
 	records := o.Records("AdminListAuditRecords")
 	require.Len(t, records, 1)
@@ -300,7 +300,7 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 
 	const digest = "$2a$10$brand-new-secret-digest-value"
 	ctx, recorder := audit.WithRecorder(t.Context())
-	user := fixtures.ID(fixtures.UserWithPassword)
+	user := fixture.ID(fixture.UserWithPassword)
 	require.NoError(t, o.DB.User.UpdateOneID(user).SetPasswordDigest(digest).SetFirstName("Renamed").Exec(ctx))
 	require.NoError(t, audit.Write(t.Context(), o.DB, audit.Entry{
 		Source:    audit.Source{Channel: audit.ChannelWeb},

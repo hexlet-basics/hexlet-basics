@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/transitions"
+	"hexletbasics/internal/transition"
 )
 
 // Editor moves a review's Publication State. The review's content is edited by
@@ -28,30 +28,30 @@ func NewEditor(db *ent.Client) *Editor {
 
 // Publish makes a draft or archived review public.
 func (e *Editor) Publish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Publish)
+	return e.move(ctx, id, transition.Publish)
 }
 
 // Unpublish takes a published review back to draft.
 func (e *Editor) Unpublish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Unpublish)
+	return e.move(ctx, id, transition.Unpublish)
 }
 
 // Archive archives a draft or published review.
 func (e *Editor) Archive(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Archive)
+	return e.move(ctx, id, transition.Archive)
 }
 
 // move checks the move against the table and writes the new state through
 // UpdateOne, so the audit hook records the old and the new state. A review with
 // no state (nullable in the legacy schema) counts as a draft. A missing id is
-// domain.ErrNotFound and an illegal move a *transitions.Illegal, both before any
+// domain.ErrNotFound and an illegal move a *transition.Illegal, both before any
 // write.
-func (e *Editor) move(ctx context.Context, id int, move transitions.Transition[transitions.PublicationState]) error {
+func (e *Editor) move(ctx context.Context, id int, move transition.Transition[transition.PublicationState]) error {
 	row, err := e.db.Review.Get(ctx, id)
 	if err != nil {
 		return domain.FromStore(err)
 	}
-	if err := move.Check(transitions.CurrentOf(row.State)); err != nil {
+	if err := move.Check(transition.CurrentOf(row.State)); err != nil {
 		return err
 	}
 	return domain.FromStore(e.db.Review.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))

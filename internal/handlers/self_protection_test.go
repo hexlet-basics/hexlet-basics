@@ -10,7 +10,7 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -18,14 +18,14 @@ import (
 // (role staff_role_editor), carol a plain user, and the moderator role holds no grants. A third
 // administrator, user_admin_staff, is also a staff member (staff_member_admin_staff).
 var (
-	aliceID        = fixtures.ID(fixtures.UserAdminLearner)
-	danaID         = fixtures.ID(fixtures.UserSecondAdmin)
-	danaLabel      = fixtures.UserSecondAdmin
-	adminStaffID   = fixtures.ID(fixtures.UserAdminStaff)
-	carolID        = fixtures.ID(fixtures.UserWithPassword)
-	editorID       = fixtures.ID(fixtures.UserStaffEditor)
-	moderator      = fixtures.ID32(fixtures.StaffRoleModerator)
-	editorRecordID = fixtures.ID32(fixtures.StaffMemberStaffEditor)
+	aliceID        = fixture.ID(fixture.UserAdminLearner)
+	danaID         = fixture.ID(fixture.UserSecondAdmin)
+	danaLabel      = fixture.UserSecondAdmin
+	adminStaffID   = fixture.ID(fixture.UserAdminStaff)
+	carolID        = fixture.ID(fixture.UserWithPassword)
+	editorID       = fixture.ID(fixture.UserStaffEditor)
+	moderator      = fixture.ID32(fixture.StaffRoleModerator)
+	editorRecordID = fixture.ID32(fixture.StaffMemberStaffEditor)
 )
 
 // delegate gives the editor role Permissions it does not hold in the fixtures,
@@ -136,8 +136,8 @@ func TestStaffMemberWithTheGrantsMayChangeSomeoneElsesRecord(t *testing.T) {
 }
 
 func TestAdministratorCannotChangeTheirOwnStaffRecordButAnotherCan(t *testing.T) {
-	h := testsupport.NewHarnessAs(t, fixtures.UserAdminStaff)
-	record := fixtures.ID(fixtures.StaffMemberAdminStaff)
+	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
+	record := fixture.ID(fixture.StaffMemberAdminStaff)
 
 	_, err := h.Client.AdminUpdateStaffMember(t.Context(), staffInput(adminStaffID, int(moderator)), api.AdminUpdateStaffMemberParams{ID: int32(record)})
 	require.Error(t, err)
@@ -265,7 +265,7 @@ func TestStaffMemberCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
 
 func TestAdministratorMayChangeTheGrantsOfAnyRole(t *testing.T) {
 	// An administrator who is also staff, on the very role whose grants change.
-	h := testsupport.NewHarnessAs(t, fixtures.UserAdminStaff)
+	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 
 	updated, err := h.Client.AdminUpdateRolePermissions(t.Context(),
 		&api.RolePermissionsInput{Grants: []string{"blog_posts.read"}},

@@ -11,7 +11,7 @@ import (
 
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -19,7 +19,7 @@ import (
 // through publish, unpublish and archive (ADR-0020, state transitions addendum).
 
 // The second post is a draft in the fixtures; each test puts it in the state it needs.
-var statePostID = fixtures.ID(fixtures.BlogPostSecondPost)
+var statePostID = fixture.ID(fixture.BlogPostSecondPost)
 
 type transitionCall struct {
 	name string
@@ -155,8 +155,8 @@ func TestPublishingMakesAPostPublicAndUnpublishingHidesIt(t *testing.T) {
 }
 
 // actAs gives the signed-in editor the fixture role with the label.
-func actAs(h *testsupport.Harness, roleLabel fixtures.Label) {
-	h.DB.StaffMember.Update().SetRoleID(fixtures.ID(roleLabel)).ExecX(context.Background())
+func actAs(h *testsupport.Harness, roleLabel fixture.Label) {
+	h.DB.StaffMember.Update().SetRoleID(fixture.ID(roleLabel)).ExecX(context.Background())
 }
 
 // A role that may edit may not publish, and the reverse: the state is not an
@@ -164,9 +164,9 @@ func actAs(h *testsupport.Harness, roleLabel fixtures.Label) {
 func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 	t.Run("update only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, fixtures.StaffRoleBlogUpdater)
+		actAs(h, fixture.StaffRoleBlogUpdater)
 
-		_, err := h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		_, err := h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 		require.NoError(t, err)
 
 		_, err = h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID)})
@@ -175,12 +175,12 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 	})
 	t.Run("publish only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
-		actAs(h, fixtures.StaffRoleBlogPublisher)
+		actAs(h, fixture.StaffRoleBlogPublisher)
 
 		_, err := h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID)})
 		require.NoError(t, err)
 
-		_, err = h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		_, err = h.Client.AdminUpdateBlogPost(t.Context(), permissionsPostInput("hello-world"), api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 		require.Error(t, err)
 		assert.Equal(t, http.StatusForbidden, h.LastStatus())
 	})

@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/transitions"
+	"hexletbasics/internal/transition"
 )
 
 // Editor moves a banner's Publication State. The banner's content is edited by
@@ -29,29 +29,29 @@ func NewEditor(db *ent.Client) *Editor {
 
 // Publish makes a draft or archived banner eligible for the pages.
 func (e *Editor) Publish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Publish)
+	return e.move(ctx, id, transition.Publish)
 }
 
 // Unpublish takes a published banner back to draft.
 func (e *Editor) Unpublish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Unpublish)
+	return e.move(ctx, id, transition.Unpublish)
 }
 
 // Archive archives a draft or published banner.
 func (e *Editor) Archive(ctx context.Context, id int) error {
-	return e.move(ctx, id, transitions.Archive)
+	return e.move(ctx, id, transition.Archive)
 }
 
 // move checks the move against the table and writes the new state through
 // UpdateOne, so the audit hook records the old and the new state. A missing id
-// is domain.ErrNotFound and an illegal move a *transitions.Illegal, both before
+// is domain.ErrNotFound and an illegal move a *transition.Illegal, both before
 // any write.
-func (e *Editor) move(ctx context.Context, id int, move transitions.Transition[transitions.PublicationState]) error {
+func (e *Editor) move(ctx context.Context, id int, move transition.Transition[transition.PublicationState]) error {
 	row, err := e.db.Banner.Get(ctx, id)
 	if err != nil {
 		return domain.FromStore(err)
 	}
-	if err := move.Check(transitions.PublicationState(row.State)); err != nil {
+	if err := move.Check(transition.PublicationState(row.State)); err != nil {
 		return err
 	}
 	return domain.FromStore(e.db.Banner.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))

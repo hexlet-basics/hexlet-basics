@@ -19,7 +19,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/ids"
+	"hexletbasics/internal/ident"
 )
 
 // MaxUploadBytes is the largest asset accepted by Put.
@@ -107,7 +107,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 		return Attachment{}, fmt.Errorf("%w: %s", ErrUnsupportedMediaType, contentType)
 	}
 
-	key := ids.New() + extension
+	key := ident.New() + extension
 	writer, err := s.bucket.NewWriter(ctx, key, &blob.WriterOptions{ContentType: contentType})
 	if err != nil {
 		return Attachment{}, fmt.Errorf("open blob writer for %q: %w", key, err)

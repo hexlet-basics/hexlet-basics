@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
 )
 
 // The rules around editing users (the stored email, the last administrator)
-// live in accounts.Editor, and the reads in accounts.Directory; these handlers
+// live in account.Editor, and the reads in account.Directory; these handlers
 // only translate the contract to their commands and the rows to its models. A
 // missing id, a duplicate email and the last administrator reach the central
 // ErrorHandler as domain errors and become 404 and 409 there.
@@ -113,8 +113,8 @@ func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUser
 }
 
 // userFieldsOf is the contract's UserInput as the editor's command.
-func userFieldsOf(in *api.UserInput) accounts.UserFields {
-	return accounts.UserFields{
+func userFieldsOf(in *api.UserInput) account.UserFields {
+	return account.UserFields{
 		Email:     in.Email,
 		FirstName: inputconv.StringPtr(in.FirstName),
 		LastName:  inputconv.StringPtr(in.LastName),

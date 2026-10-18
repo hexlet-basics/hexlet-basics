@@ -16,7 +16,7 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -66,16 +66,16 @@ func (r *rig) course(t *testing.T, slug string) *ent.Course {
 func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 	t.Helper()
 	return r.db.CourseLesson.Query().
-		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixtures.ID(fixtures.CourseJavascript))).
+		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixture.ID(fixture.CourseJavascript))).
 		OnlyX(t.Context())
 }
 
 // learner is a fixture account by label: user_admin_learner has finished the
 // first lesson, user_staff_editor has the second one started, user_blank has not
 // begun.
-func (r *rig) learner(t *testing.T, label fixtures.Label) progress.Learner {
+func (r *rig) learner(t *testing.T, label fixture.Label) progress.Learner {
 	t.Helper()
-	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixtures.ID(label)).ID}
+	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID}
 }
 
 func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
@@ -112,7 +112,7 @@ func lessonSlugs(state *progress.CourseState) []string {
 func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, fixtures.UserBlank)
+	blankUser := r.learner(t, fixture.UserBlank)
 	hello := r.lesson(t, firstLesson)
 
 	state, err := r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
@@ -139,7 +139,7 @@ func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
 func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	blankUser := r.learner(t, fixtures.UserBlank)
+	blankUser := r.learner(t, fixture.UserBlank)
 
 	state, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, thirdLesson).ID, locale)
 	require.NoError(t, err)
@@ -161,7 +161,7 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 		ClearNaturalOrder().
 		ExecX(ctx)
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, fixtures.UserAdminLearner), lesson.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), lesson.ID, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -169,9 +169,9 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	orphan := r.db.CourseLesson.GetX(ctx, fixtures.ID(fixtures.LessonOrphan))
+	orphan := r.db.CourseLesson.GetX(ctx, fixture.ID(fixture.LessonOrphan))
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, fixtures.UserAdminLearner), orphan.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), orphan.ID, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -179,7 +179,7 @@ func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 func TestStartLessonReadsAnUnknownLessonAsNotFound(t *testing.T) {
 	r := newRig(t)
 
-	_, err := r.progress.StartLesson(t.Context(), r.learner(t, fixtures.UserAdminLearner), -1, locale)
+	_, err := r.progress.StartLesson(t.Context(), r.learner(t, fixture.UserAdminLearner), -1, locale)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -242,7 +242,7 @@ func TestCourseStateOfAnUnknownCourseIsNotFound(t *testing.T) {
 	_, err := r.progress.CourseState(ctx, progress.Learner{}, -1)
 	assert.True(t, ent.IsNotFound(err), "a guest: %v", err)
 
-	_, err = r.progress.CourseState(ctx, r.learner(t, fixtures.UserAdminLearner), -1)
+	_, err = r.progress.CourseState(ctx, r.learner(t, fixture.UserAdminLearner), -1)
 	assert.True(t, ent.IsNotFound(err), "an account: %v", err)
 }
 
@@ -256,7 +256,7 @@ func TestCourseStateOfACourseWithNoVersionHasNoLessons(t *testing.T) {
 	assert.Empty(t, guest.Lessons)
 	assert.Zero(t, guest.Completion)
 
-	account, err := r.progress.CourseState(ctx, r.learner(t, fixtures.UserAdminLearner), bare.ID)
+	account, err := r.progress.CourseState(ctx, r.learner(t, fixture.UserAdminLearner), bare.ID)
 	require.NoError(t, err)
 	assert.Empty(t, account.Lessons)
 }
@@ -267,7 +267,7 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	javascript := r.course(t, jsSlug)
 	ruby := r.course(t, "ruby")
 
-	states, err := r.progress.CourseStates(ctx, r.learner(t, fixtures.UserAdminLearner).UserID, []int{javascript.ID, ruby.ID, -1})
+	states, err := r.progress.CourseStates(ctx, r.learner(t, fixture.UserAdminLearner).UserID, []int{javascript.ID, ruby.ID, -1})
 	require.NoError(t, err)
 
 	assert.NotContains(t, states, -1, "a course that does not exist is absent")
@@ -292,7 +292,7 @@ func TestCourseStatesSkipsLessonsWithoutAPosition(t *testing.T) {
 		ClearNaturalOrder().
 		ExecX(ctx)
 
-	states, err := r.progress.CourseStates(ctx, r.learner(t, fixtures.UserAdminLearner).UserID, []int{r.course(t, jsSlug).ID})
+	states, err := r.progress.CourseStates(ctx, r.learner(t, fixture.UserAdminLearner).UserID, []int{r.course(t, jsSlug).ID})
 	require.NoError(t, err)
 
 	state := states[r.course(t, jsSlug).ID]
@@ -328,7 +328,7 @@ func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) 
 	r.mocks.Runner.RunFunc = func(_ context.Context, _ progress.Submission) (progress.Outcome, error) {
 		return progress.Outcome{}, boom
 	}
-	blankUser := r.learner(t, fixtures.UserBlank)
+	blankUser := r.learner(t, fixture.UserBlank)
 
 	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
@@ -339,8 +339,8 @@ func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) 
 
 func TestCheckRefusesAVersionThatIsNotTheCurrentOneOfThisLesson(t *testing.T) {
 	r := newRig(t)
-	check := r.check(t, r.learner(t, fixtures.UserAdminLearner), secondLesson)
-	check.VersionID = r.check(t, r.learner(t, fixtures.UserAdminLearner), firstLesson).VersionID
+	check := r.check(t, r.learner(t, fixture.UserAdminLearner), secondLesson)
+	check.VersionID = r.check(t, r.learner(t, fixture.UserAdminLearner), firstLesson).VersionID
 
 	_, err := r.progress.CheckSolution(t.Context(), check)
 
@@ -350,7 +350,7 @@ func TestCheckRefusesAVersionThatIsNotTheCurrentOneOfThisLesson(t *testing.T) {
 func TestCheckRefusesACourseWithNoCurrentVersion(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	check := r.check(t, r.learner(t, fixtures.UserAdminLearner), secondLesson)
+	check := r.check(t, r.learner(t, fixture.UserAdminLearner), secondLesson)
 	r.db.Course.Update().Where(course.SlugEQ(jsSlug)).ClearCurrentVersionID().ExecX(ctx)
 
 	_, err := r.progress.CheckSolution(ctx, check)
@@ -361,7 +361,7 @@ func TestCheckRefusesACourseWithNoCurrentVersion(t *testing.T) {
 func TestCheckCannotGradeAVersionBuiltWithoutAnImage(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	check := r.check(t, r.learner(t, fixtures.UserAdminLearner), secondLesson)
+	check := r.check(t, r.learner(t, fixture.UserAdminLearner), secondLesson)
 	r.db.CourseVersion.UpdateOneID(*r.course(t, jsSlug).CurrentVersionID).
 		ClearDockerImage().
 		ExecX(ctx)

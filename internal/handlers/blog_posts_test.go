@@ -2,7 +2,7 @@ package handlers_test
 
 import (
 	"context"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
@@ -70,16 +70,16 @@ func TestAdminGetBlogPost(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	post, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	post, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	assert.Equal(t, int32(fixtures.ID(fixtures.BlogPostHelloWorld)), post.ID)
+	assert.Equal(t, int32(fixture.ID(fixture.BlogPostHelloWorld)), post.ID)
 	assert.Equal(t, "hello-world", post.Slug.Value)
 	assert.Equal(t, int32(2), post.LikesCount)
 	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", post.CoverUrl.Value)
 	// Promoted-course ids surface in display order (fixture order 0,1,2).
-	assert.Equal(t, []int32{fixtures.ID32(fixtures.CourseJavascript), fixtures.ID32(fixtures.CourseRuby), fixtures.ID32(fixtures.CoursePython)}, post.RelatedCourseIds)
+	assert.Equal(t, []int32{fixture.ID32(fixture.CourseJavascript), fixture.ID32(fixture.CourseRuby), fixture.ID32(fixture.CoursePython)}, post.RelatedCourseIds)
 }
 
 func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
@@ -87,12 +87,12 @@ func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
 	ctx := context.Background()
 
 	trustedHTML := `<script>alert("trusted")</script><iframe src="https://example.com/embed" onload="ready()"></iframe><p style="background-image:url(javascript:alert(1))">Body</p>`
-	err := h.DB.BlogPost.UpdateOneID(fixtures.ID(fixtures.BlogPostHelloWorld)).
+	err := h.DB.BlogPost.UpdateOneID(fixture.ID(fixture.BlogPostHelloWorld)).
 		SetRichBody(trustedHTML).
 		Exec(ctx)
 	require.NoError(t, err)
 
-	post, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	post, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, trustedHTML, post.RichBodyHtml)
@@ -156,7 +156,7 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 		Slug:        api.NewNilString("second-post"),
 		Description: api.NilString{Null: true},
 		RichBody:    "<p>Now with a body.</p>",
-	}, api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostSecondPost)})
+	}, api.AdminUpdateBlogPostParams{ID: fixture.ID32(fixture.BlogPostSecondPost)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
@@ -188,20 +188,20 @@ func TestAdminDeleteBlogPost(t *testing.T) {
 	ctx := context.Background()
 
 	// 6001 carries both kinds of dependents: 2 likes and 3 related-course items.
-	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	gone, err := h.DB.BlogPost.Query().Where(blogpost.IDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).Exist(ctx)
+	gone, err := h.DB.BlogPost.Query().Where(blogpost.IDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Exist(ctx)
 	require.NoError(t, err)
 	assert.False(t, gone, "post should be deleted")
 
-	likes, err := h.DB.BlogPostLike.Query().Where(blogpostlike.BlogPostIDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).Count(ctx)
+	likes, err := h.DB.BlogPostLike.Query().Where(blogpostlike.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Count(ctx)
 	require.NoError(t, err)
 	assert.Zero(t, likes, "likes should be deleted with the post")
 
 	items, err := h.DB.BlogPostRelatedCourseItem.Query().
-		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).Count(ctx)
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).Count(ctx)
 	require.NoError(t, err)
 	assert.Zero(t, items, "related-course items should be deleted with the post")
 }
@@ -221,26 +221,26 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 
 	// Replace 6001's three promoted courses with two, in an explicit order.
 	post, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
-		CourseIds: []int32{fixtures.ID32(fixtures.CourseRuby), fixtures.ID32(fixtures.CourseJavascript)}, // ruby, javascript
-	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		CourseIds: []int32{fixture.ID32(fixture.CourseRuby), fixture.ID32(fixture.CourseJavascript)}, // ruby, javascript
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, []int32{fixtures.ID32(fixtures.CourseRuby), fixtures.ID32(fixtures.CourseJavascript)}, post.RelatedCourseIds)
+	assert.Equal(t, []int32{fixture.ID32(fixture.CourseRuby), fixture.ID32(fixture.CourseJavascript)}, post.RelatedCourseIds)
 
 	items, err := h.DB.BlogPostRelatedCourseItem.Query().
-		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).
 		Order(ent.Asc(blogpostrelatedcourseitem.FieldOrder)).
 		All(ctx)
 	require.NoError(t, err)
 	require.Len(t, items, 2)
 	// Submission order is the display order.
-	assert.Equal(t, fixtures.ID(fixtures.CourseRuby), items[0].CourseID)
-	assert.Equal(t, fixtures.ID(fixtures.CourseJavascript), items[1].CourseID)
+	assert.Equal(t, fixture.ID(fixture.CourseRuby), items[0].CourseID)
+	assert.Equal(t, fixture.ID(fixture.CourseJavascript), items[1].CourseID)
 
 	// Clearing the set drops the counter to zero.
 	post, err = h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
 		CourseIds: []int32{},
-	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Empty(t, post.RelatedCourseIds)
 }
@@ -253,17 +253,17 @@ func TestAdminSetBlogPostRelatedCoursesKeepsTheSetOnFailure(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
-		CourseIds: []int32{fixtures.ID32(fixtures.CourseRuby), 999999}, // ruby, no such course
-	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+		CourseIds: []int32{fixture.ID32(fixture.CourseRuby), 999999}, // ruby, no such course
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	count, err := h.DB.BlogPostRelatedCourseItem.Query().
-		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixtures.ID(fixtures.BlogPostHelloWorld))).
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(fixture.ID(fixture.BlogPostHelloWorld))).
 		Count(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, 3, count)
-	assert.Equal(t, 3, h.DB.BlogPost.GetX(ctx, fixtures.ID(fixtures.BlogPostHelloWorld)).RelatedCourseItemsCount)
+	assert.Equal(t, 3, h.DB.BlogPost.GetX(ctx, fixture.ID(fixture.BlogPostHelloWorld)).RelatedCourseItemsCount)
 }
 
 func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
@@ -271,7 +271,7 @@ func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
-		CourseIds: []int32{fixtures.ID32(fixtures.CourseJavascript)},
+		CourseIds: []int32{fixture.ID32(fixture.CourseJavascript)},
 	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
@@ -283,11 +283,11 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
+	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	assert.Equal(t,
-		jobs.SuggestRelatedCoursesArgs{BlogPostID: fixtures.ID(fixtures.BlogPostHelloWorld)},
+		jobs.SuggestRelatedCoursesArgs{BlogPostID: fixture.ID(fixture.BlogPostHelloWorld)},
 		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
 }
 

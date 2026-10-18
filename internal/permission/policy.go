@@ -2,7 +2,6 @@ package permission
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"strings"
 
@@ -12,11 +11,11 @@ import (
 	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // ErrForbidden means the user may not perform the operation.
-var ErrForbidden = fmt.Errorf("staff permission is required: %w", domain.ErrForbidden)
+var ErrForbidden = domain.ErrForbidden
 
 // Policy decides which admin operations a user may perform. An administrator
 // may do every operation. A staff member may do what their role is granted, in
@@ -43,9 +42,9 @@ func NewPolicy(db *ent.Client) *Policy {
 // Allow reports nil when u may perform operation (an ogen operation name) in
 // locale, and ErrForbidden otherwise.
 func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation string) error {
-	required, declares := permissions.For(operation)
+	required, declares := permissioncatalog.For(operation)
 	admin := lo.FromPtr(u.Admin)
-	if admin && (!declares || !permissions.IsCapability(required.Permission)) {
+	if admin && (!declares || !permissioncatalog.IsCapability(required.Permission)) {
 		return nil
 	}
 
@@ -62,7 +61,7 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 		return p.requireGrant(ctx, staff, required.Permission)
 	}
 
-	if permissions.AccessOf(operation) == permissions.AnyStaff {
+	if permissioncatalog.AccessOf(operation) == permissioncatalog.AnyStaff {
 		return nil
 	}
 	// Declaring nothing: closed.
@@ -75,8 +74,8 @@ func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation strin
 // the only way in. It is the check the MCP layer makes before it serves a call.
 // A name that is not a capability is an error of the caller, not a refusal.
 func (p *Policy) HasCapability(ctx context.Context, u *ent.User, capability string) error {
-	if !permissions.IsCapability(capability) {
-		return fmt.Errorf("%q is not a capability Permission", capability)
+	if !permissioncatalog.IsCapability(capability) {
+		return errs.With("capability", capability).Errorf("not a capability permission")
 	}
 	staff, err := p.staffMember(ctx, u)
 	if err != nil {
@@ -121,7 +120,7 @@ func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember
 // IsClassified reports whether operation says who may use it, by declaring a
 // Permission or an Access in the contract.
 func IsClassified(operation string) bool {
-	return permissions.IsClassified(operation)
+	return permissioncatalog.IsClassified(operation)
 }
 
 // OperationName turns an OpenAPI operationId (adminListBanners) into the ogen

@@ -20,7 +20,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/zitadel/oidc/v3/pkg/oidc"
 
-	"hexletbasics/internal/ids"
+	"hexletbasics/internal/ident"
 )
 
 const (
@@ -58,6 +58,13 @@ var (
 		"software_id", "software_version", "application_type",
 	}
 )
+
+// refusal is a validation failure whose text is the answer to the client (the
+// error_description of an RFC 7591 response), so it is a message built for the
+// reader rather than an error message with data in attributes (ADR-0018).
+type refusal string
+
+func (r refusal) Error() string { return string(r) }
 
 // registrationError is the RFC 7591 error response.
 type registrationError struct {
@@ -110,7 +117,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientID := ids.New()
+	clientID := ident.New()
 	_, err := s.storage.db.OAuthClient.Create().
 		SetClientID(clientID).
 		SetName(reg.name).
@@ -288,7 +295,7 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 	}
 	var name string
 	if err := json.Unmarshal(raw, &name); err != nil {
-		return "", errors.New("client_name must be a string")
+		return "", refusal("client_name must be a string")
 	}
 	name = strings.TrimSpace(strings.Map(func(r rune) rune {
 		if unicode.IsControl(r) {
@@ -297,7 +304,7 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 		return r
 	}, name))
 	if utf8.RuneCountInString(name) > maxClientNameRunes {
-		return "", fmt.Errorf("client_name may be at most %d characters", maxClientNameRunes)
+		return "", refusal(fmt.Sprintf("client_name may be at most %d characters", maxClientNameRunes))
 	}
 	if name == "" {
 		return defaultClientName, nil
@@ -316,7 +323,7 @@ func requestedScopes(fields map[string]json.RawMessage) (custom []string, offlin
 	}
 	var scope string
 	if json.Unmarshal(raw, &scope) != nil {
-		return nil, false, errors.New("scope must be a space-separated string")
+		return nil, false, refusal("scope must be a space-separated string")
 	}
 	names := strings.Fields(scope)
 	if len(names) == 0 {
@@ -334,8 +341,8 @@ func requestedScopes(fields map[string]json.RawMessage) (custom []string, offlin
 				custom = append(custom, name)
 			}
 		default:
-			return nil, false, fmt.Errorf("the scope %q is not offered. Offered scopes: %s",
-				name, strings.Join(append(slices.Clone(customScopes), oidc.ScopeOfflineAccess), ", "))
+			return nil, false, refusal(fmt.Sprintf("the scope %q is not offered. Offered scopes: %s",
+				name, strings.Join(append(slices.Clone(customScopes), oidc.ScopeOfflineAccess), ", ")))
 		}
 	}
 	return custom, offline, nil
@@ -350,21 +357,21 @@ func requestedScopes(fields map[string]json.RawMessage) (custom []string, offlin
 // RFC 6749 forbids them in a redirect URI.
 func checkRedirectURI(raw string) error {
 	if len(raw) > maxRedirectURILen {
-		return errors.New("a redirect URI is too long")
+		return refusal("a redirect URI is too long")
 	}
 	lower := strings.ToLower(raw)
 	if strings.Contains(raw, "*") || strings.Contains(lower, "%2a") {
-		return fmt.Errorf("wildcards are not allowed in a redirect URI: %q", raw)
+		return refusal(fmt.Sprintf("wildcards are not allowed in a redirect URI: %q", raw))
 	}
 	u, err := url.Parse(raw)
 	if err != nil || !u.IsAbs() || u.Opaque != "" || u.Host == "" || u.Hostname() == "" {
-		return fmt.Errorf("a redirect URI must be an absolute URL: %q", raw)
+		return refusal(fmt.Sprintf("a redirect URI must be an absolute URL: %q", raw))
 	}
 	if u.User != nil {
-		return fmt.Errorf("a redirect URI must not carry credentials: %q", raw)
+		return refusal(fmt.Sprintf("a redirect URI must not carry credentials: %q", raw))
 	}
 	if u.Fragment != "" || strings.Contains(raw, "#") {
-		return fmt.Errorf("a redirect URI must not have a fragment: %q", raw)
+		return refusal(fmt.Sprintf("a redirect URI must not have a fragment: %q", raw))
 	}
 	switch strings.ToLower(u.Scheme) {
 	case "https":
@@ -373,9 +380,9 @@ func checkRedirectURI(raw string) error {
 		if isLoopbackHost(u.Hostname()) {
 			return nil
 		}
-		return fmt.Errorf("plain http is allowed only for a loopback redirect: %q", raw)
+		return refusal(fmt.Sprintf("plain http is allowed only for a loopback redirect: %q", raw))
 	default:
-		return fmt.Errorf("a redirect URI must use https, or http on a loopback address: %q", raw)
+		return refusal(fmt.Sprintf("a redirect URI must use https, or http on a loopback address: %q", raw))
 	}
 }
 

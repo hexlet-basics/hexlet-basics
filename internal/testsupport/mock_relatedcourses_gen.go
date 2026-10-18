@@ -5,26 +5,26 @@ package testsupport
 
 import (
 	"context"
-	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/relatedcourse"
 	"sync"
 )
 
-// Ensure, that JSONCompleterMock does implement relatedcourses.JSONCompleter.
+// Ensure, that JSONCompleterMock does implement relatedcourse.JSONCompleter.
 // If this is not the case, regenerate this file with moq.
-var _ relatedcourses.JSONCompleter = &JSONCompleterMock{}
+var _ relatedcourse.JSONCompleter = &JSONCompleterMock{}
 
-// JSONCompleterMock is a mock implementation of relatedcourses.JSONCompleter.
+// JSONCompleterMock is a mock implementation of relatedcourse.JSONCompleter.
 //
 //	func TestSomethingThatUsesJSONCompleter(t *testing.T) {
 //
-//		// make and configure a mocked relatedcourses.JSONCompleter
+//		// make and configure a mocked relatedcourse.JSONCompleter
 //		mockedJSONCompleter := &JSONCompleterMock{
 //			CompleteJSONFunc: func(ctx context.Context, instructions string, prompt string, name string, schema any) (string, error) {
 //				panic("mock out the CompleteJSON method")
 //			},
 //		}
 //
-//		// use mockedJSONCompleter in code that requires relatedcourses.JSONCompleter
+//		// use mockedJSONCompleter in code that requires relatedcourse.JSONCompleter
 //		// and then make assertions.
 //
 //	}

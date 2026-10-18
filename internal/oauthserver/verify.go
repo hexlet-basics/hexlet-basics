@@ -3,7 +3,6 @@ package oauthserver
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -64,7 +63,7 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 		return Token{}, ErrInvalidToken
 	}
 	if err != nil {
-		return Token{}, fmt.Errorf("look up connected app: %w", err)
+		return Token{}, errs.Wrapf(err, "look up connected app")
 	}
 	return Token{
 		ID: row.ID, ClientID: row.ClientID, ConnectedAppID: app, UserID: userID,
@@ -90,7 +89,7 @@ func (s *storage) liveAccessToken(ctx context.Context, id, subject string) (*ent
 		if ent.IsNotFound(err) {
 			return nil, ErrInvalidToken
 		}
-		return nil, fmt.Errorf("look up access token: %w", err)
+		return nil, errs.Wrapf(err, "look up access token")
 	}
 	return row, nil
 }

@@ -8,7 +8,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/permission"
-	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/permissioncatalog"
 )
 
 // roleDetail fetches a role with its grants and converts it to the
@@ -82,8 +82,8 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 // offers. It is read from the operations' declarations in the contract, so a
 // Permission appears here exactly when some operation requires it.
 func (s *Server) AdminListPermissions(context.Context) (api.AdminListPermissionsRes, error) {
-	catalog := permissions.Catalog()
-	return &api.PermissionCatalog{Permissions: lo.Map(catalog, func(p permissions.Permission, _ int) api.Permission {
+	catalog := permissioncatalog.Catalog()
+	return &api.PermissionCatalog{Permissions: lo.Map(catalog, func(p permissioncatalog.Permission, _ int) api.Permission {
 		return api.Permission{Name: p.Name, Kind: api.PermissionKind(p.Kind), Capability: p.Capability}
 	})}, nil
 }

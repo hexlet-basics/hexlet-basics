@@ -5,7 +5,7 @@ import type { CourseReadiness } from "@/client/types.gen";
 // the server (mark as draft, in development, completed).
 //
 // Readiness describes how finished the Course is, not a workflow, so any change
-// between two distinct values is legal. The table mirrors internal/transitions
+// between two distinct values is legal. The table mirrors internal/transition
 // on the server only to pick the buttons the admin screen offers; the server
 // stays the judge and refuses repeating the current value with a 409.
 export type ReadinessTransition = "markDraft" | "markInDevelopment" | "markCompleted";

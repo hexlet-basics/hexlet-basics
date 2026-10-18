@@ -17,14 +17,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixtures"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
 )
 
 // alice is a fixture user.
-var alice = fixtures.ID(fixtures.UserAdminLearner)
+var alice = fixture.ID(fixture.UserAdminLearner)
 
 func body(t *testing.T, res *http.Response) string {
 	t.Helper()
