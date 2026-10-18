@@ -13,7 +13,7 @@ import (
 
 // developmentSecretPrefix marks every secret committed in .env.example for local
 // use; such a value is public, so production must never run on one.
-const developmentSecretPrefix = "dev-insecure-"
+const developmentSecretPrefix = "dev-insecure-" //nolint:gosec // G101: the public marker of a development secret, not a credential
 
 // validate is the one validator: it is safe for concurrent use and caches the
 // struct metadata, so it is built once. Rules sit in `validate` tags next to the

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/progress"
 )
@@ -64,7 +65,7 @@ func (s *Server) CheckLesson(
 			Passed:                result.Outcome.Passed,
 			Output:                result.Outcome.Output,
 			Result:                checkResultOf(result.Outcome),
-			Status:                int32(result.Outcome.Status),
+			Status:                apiconv.Int32FromInt(result.Outcome.Status),
 			LessonHasBeenFinished: result.LessonFinished,
 			CourseHasBeenFinished: result.CourseFinished,
 		},

@@ -31,12 +31,12 @@ func main() {
 	if len(os.Args) > 1 {
 		dir = os.Args[1]
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil { //nolint:gosec // G301: a developer script writing public sample covers into the local storage dir
 		log.Fatal(err)
 	}
 	for key, c := range covers {
 		data := gradient(c[0], c[1])
-		if err := os.WriteFile(filepath.Join(dir, key), data, 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, key), data, 0o644); err != nil { //nolint:gosec // G306: public sample cover, served as a static file
 			log.Fatal(err)
 		}
 		sum := md5.Sum(data) //nolint:gosec // see import
@@ -48,7 +48,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, 0o644); err != nil { //nolint:gosec // G306: attrs of a public sample cover
 			log.Fatal(err)
 		}
 	}

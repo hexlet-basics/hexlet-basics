@@ -12,6 +12,7 @@ linters:
     - exptostd
     - fatcontext
     - forbidigo
+    - gosec
     - loggercheck
     - nolintlint
     - noctx

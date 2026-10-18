@@ -7,6 +7,7 @@
 package apiconv
 
 import (
+	"math"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -405,7 +406,7 @@ func NamedLessonRef(slug *string, id int, name *string) api.NilLessonRef {
 	if slug == nil {
 		return api.NilLessonRef{Null: true}
 	}
-	return api.NewNilLessonRef(api.LessonRef{ID: int32(id), Slug: *slug, Name: NilStringFromPtr(name)})
+	return api.NewNilLessonRef(api.LessonRef{ID: Int32FromInt(id), Slug: *slug, Name: NilStringFromPtr(name)})
 }
 
 func lessonRef(l api.LearnerLesson) api.LessonRef {
@@ -428,7 +429,7 @@ func AdjacentLessons(slug string, lessons []api.LearnerLesson) api.AdjacentLesso
 		return api.NewNilLessonRef(lessonRef(l))
 	}
 	if index > 0 {
-		adjacent.Previous = ref(lessons[index-1])
+		adjacent.Previous = ref(lessons[index-1]) //nolint:gosec // G602: index is in [0, len) here, IndexOf returned it and the index > 0 guard above bounds it below
 	}
 	if index < len(lessons)-1 {
 		adjacent.Next = ref(lessons[index+1])
@@ -542,11 +543,21 @@ func NilEnrollmentStateFromString(v string) api.NilEnrollmentState {
 // instead of deep-copying its unexported fields.
 func TimeIdentity(v time.Time) time.Time { return v }
 
-// Int32FromInt narrows an ent int id/count to the contract's int32.
-func Int32FromInt(v int) int32 { return int32(v) }
+// Int32FromInt narrows an ent int id/count to the contract's int32. Postgres
+// ids and counts are int4, so a real value always fits; one that does not
+// saturates at the bound instead of wrapping into a negative number on the wire.
+func Int32FromInt(v int) int32 {
+	if v > math.MaxInt32 {
+		return math.MaxInt32
+	}
+	if v < math.MinInt32 {
+		return math.MinInt32
+	}
+	return int32(v)
+}
 
 // Int32FromPtr resolves a nullable ent integer to a required contract field.
-func Int32FromPtr(v *int) int32 { return int32(lo.FromPtr(v)) }
+func Int32FromPtr(v *int) int32 { return Int32FromInt(lo.FromPtr(v)) }
 
 // StringFromPtr resolves a nullable ent column to a required string field.
 func StringFromPtr(v *string) string { return lo.FromPtr(v) }
@@ -635,7 +646,7 @@ func nilInt32From(v *int) *int32 {
 	if v == nil {
 		return nil
 	}
-	return lo.ToPtr(int32(*v))
+	return lo.ToPtr(Int32FromInt(*v))
 }
 
 // NilStringFromPtr bridges a nullable ent column to ogen's NilString.
@@ -751,7 +762,7 @@ func courseDuration(c *ent.Course) int32 {
 	if c == nil {
 		return 0
 	}
-	return int32(c.LessonsCount * 15 / 60)
+	return Int32FromInt(c.LessonsCount * 15 / 60)
 }
 
 // LocalesFromPq bridges the native pg text-array column to the api's plain
@@ -764,7 +775,7 @@ func LocalesFromPq(v pq.StringArray) []string {
 // staffRolePermissionsCount is the number of Permissions the role holds, its
 // loaded grants edge: a role holding none must read as having none.
 func staffRolePermissionsCount(r *ent.StaffRole) int32 {
-	return int32(len(r.Edges.Grants))
+	return Int32FromInt(len(r.Edges.Grants))
 }
 
 // grantNames lists the Permissions a role holds, by name and in a stable order.
@@ -802,7 +813,7 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 // returns a bare CourseVersion for the 201).
 func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
 	return api.CourseVersion{
-		ID:        int32(v.ID),
+		ID:        Int32FromInt(v.ID),
 		Name:      NilStringFromPtr(v.Name),
 		Result:    NilStringFromPtr(v.Result),
 		State:     NilStringFromPtr(v.State),

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/search"
 )
@@ -101,7 +102,7 @@ func (s *Server) AdminFetch(ctx context.Context, params api.AdminFetchParams) (*
 		meta.Listed = api.NewOptBool(*rec.Listed)
 	}
 	if rec.Position != nil {
-		meta.Position = api.NewOptInt32(int32(*rec.Position))
+		meta.Position = api.NewOptInt32(apiconv.Int32FromInt(*rec.Position))
 	}
 	return &api.AdminRecord{ID: rec.ID, Title: rec.Title, Text: rec.Text, Path: rec.Path, Metadata: meta}, nil
 }

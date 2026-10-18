@@ -39,7 +39,7 @@ func TestRuntimeAnnouncesItsAddressAndTheShutdown(t *testing.T) {
 	addr := freeAddr(t)
 	logs := &logSink{}
 	app := application{
-		http:     &http.Server{Addr: addr, Handler: http.NotFoundHandler()},
+		http:     &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.NotFoundHandler()},
 		httpAddr: addr,
 		logger:   logs.logger(),
 	}
@@ -68,7 +68,7 @@ func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = taken.Close() })
 	addr := taken.Addr().String()
-	app := application{http: &http.Server{Addr: addr}, httpAddr: addr}
+	app := application{http: &http.Server{ReadHeaderTimeout: time.Second, Addr: addr}, httpAddr: addr}
 
 	err = app.run(context.Background(), func() {})
 
@@ -77,7 +77,7 @@ func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 
 func TestRuntimeReportsAServerThatStopsOnItsOwn(t *testing.T) {
 	addr := freeAddr(t)
-	server := &http.Server{Addr: addr, Handler: http.NotFoundHandler()}
+	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.NotFoundHandler()}
 	app := application{http: server, httpAddr: addr}
 
 	errCh := make(chan error, 1)

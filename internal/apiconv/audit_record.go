@@ -63,7 +63,7 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 		if err := json.Unmarshal(row.Reads, &reads); err != nil {
 			return api.AuditRecord{}, errs.With("audit_record_id", row.ID).Wrapf(err, "decode audit reads")
 		}
-		out.Reads = api.NewNilAuditReads(api.AuditReads{Count: int32(reads.Count), Ids: reads.IDs})
+		out.Reads = api.NewNilAuditReads(api.AuditReads{Count: Int32FromInt(reads.Count), Ids: reads.IDs})
 	}
 	return out, nil
 }

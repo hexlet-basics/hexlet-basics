@@ -526,7 +526,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
 	bannerID := fixture.ID(fixture.BannerRuPublished)
-	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder}
+	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
 	read := o.Do(http.MethodGet, "/api/admin/banners", nil, func(r *http.Request) {
 		r.AddCookie(placeholder)

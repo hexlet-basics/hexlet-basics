@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/paging"
 )
@@ -45,5 +46,5 @@ func listFromWith[E any, A any, P any](
 	if err != nil {
 		return zero, err
 	}
-	return mkPage(items, int32(total), window.Page, window.PerPage), nil
+	return mkPage(items, apiconv.Int32FromInt(total), window.Page, window.PerPage), nil
 }

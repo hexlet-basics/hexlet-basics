@@ -1,6 +1,7 @@
 package apiconv
 
 import (
+	"math"
 	"testing"
 
 	"github.com/samber/lo"
@@ -156,4 +157,15 @@ func TestNextLessonRefIsNamedFromTheList(t *testing.T) {
 	assert.Equal(t, "A", named.Name.Value)
 
 	assert.True(t, NextLessonRef(lo.ToPtr("z"), lessons).Null)
+}
+
+// An id or count past the contract's int32 must not wrap into a negative or
+// unrelated number on the wire: it saturates at the bound instead.
+func TestInt32FromIntSaturatesInsteadOfWrapping(t *testing.T) {
+	t.Parallel()
+	assert.Equal(t, int32(42), Int32FromInt(42))
+	assert.Equal(t, int32(math.MaxInt32), Int32FromInt(math.MaxInt32+1))
+	assert.Equal(t, int32(math.MinInt32), Int32FromInt(math.MinInt32-1))
+	assert.Equal(t, int32(7), Int32FromPtr(lo.ToPtr(7)))
+	assert.Equal(t, int32(math.MaxInt32), *nilInt32From(lo.ToPtr(math.MaxInt32 + 1)))
 }

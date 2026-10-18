@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 )
 
@@ -82,5 +83,5 @@ func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchive
 
 // getAdminBanner is the read model a state move echoes back.
 func (s *Server) getAdminBanner(ctx context.Context, id int) (*api.Banner, error) {
-	return s.db.Banner.AdminGet(ctx, int32(id), s.conv.ToBanner)
+	return s.db.Banner.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToBanner)
 }
