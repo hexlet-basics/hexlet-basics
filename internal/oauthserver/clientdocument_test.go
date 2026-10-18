@@ -172,7 +172,7 @@ func TestAClientIDURLThatIsNotAnOrdinaryPublicHTTPSResourceIsRefusedBeforeAnyFet
 	} {
 		t.Run(id[:min(len(id), 50)], func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.Documents.Serve("/c.json", func(w http.ResponseWriter, _ *http.Request) {
+			o.Documents.Serve("/c.json", func(_ http.ResponseWriter, _ *http.Request) {
 				t.Error("an unacceptable URL must not be fetched")
 			})
 

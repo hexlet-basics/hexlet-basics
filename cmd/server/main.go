@@ -1,3 +1,6 @@
+// Command server is the HTTP API process: the generated contract, the health
+// endpoints and, behind their flags, the OAuth and MCP endpoints. The
+// asynchronous consumers run in cmd/worker.
 package main
 
 import (

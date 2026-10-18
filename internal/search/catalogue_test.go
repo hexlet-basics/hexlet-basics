@@ -31,7 +31,7 @@ func newCatalogue(t *testing.T) (*search.Catalogue, *ent.Client) {
 
 func ask(t *testing.T, c *search.Catalogue, locale, text string, types ...search.Type) ([]search.Hit, int) {
 	t.Helper()
-	hits, total, err := c.Search(t.Context(), search.SearchCatalogue{
+	hits, total, err := c.Search(t.Context(), search.Query{
 		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50},
 	})
 	require.NoError(t, err)
@@ -204,7 +204,7 @@ func TestPagesOfAnAnswerAreTheAnswerInOrderWithoutGapsOrRepeats(t *testing.T) {
 
 	var paged []search.Hit
 	for offset := 0; offset < total; offset += 3 {
-		hits, pagedTotal, err := c.Search(t.Context(), search.SearchCatalogue{
+		hits, pagedTotal, err := c.Search(t.Context(), search.Query{
 			Text: "Привет", Locale: "ru", Page: domain.Page{Offset: offset, Limit: 3},
 		})
 		require.NoError(t, err)
@@ -229,7 +229,7 @@ func TestAnythingTheVisitorTypesIsASearchNotAnError(t *testing.T) {
 	c, _ := newCatalogue(t)
 
 	for _, text := range []string{`"unclosed`, "a & b | !c", "(", "-", "':*", "or ", "   ", "\x00", strings.Repeat("слово ", 400)} {
-		_, _, err := c.Search(t.Context(), search.SearchCatalogue{Text: text, Locale: "ru", Page: domain.Page{Limit: 10}})
+		_, _, err := c.Search(t.Context(), search.Query{Text: text, Locale: "ru", Page: domain.Page{Limit: 10}})
 		assert.NoError(t, err, "%q", text)
 	}
 }
@@ -237,7 +237,7 @@ func TestAnythingTheVisitorTypesIsASearchNotAnError(t *testing.T) {
 func TestAPageBeyondTheWindowIsEmptyButTheTotalIsTold(t *testing.T) {
 	c, _ := newCatalogue(t)
 
-	hits, total, err := c.Search(t.Context(), search.SearchCatalogue{
+	hits, total, err := c.Search(t.Context(), search.Query{
 		Text: "Привет", Locale: "ru", Page: domain.Page{Offset: 5000, Limit: 10},
 	})
 
@@ -344,7 +344,7 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 			_, err = tx.ExecContext(t.Context(), `DROP INDEX index_language_lesson_version_infos_on_version_id_and_locale`)
 			require.NoError(t, err)
 
-			hits, _, err := search.NewCatalogue(client).Search(t.Context(), search.SearchCatalogue{
+			hits, _, err := search.NewCatalogue(client).Search(t.Context(), search.Query{
 				Text: "hello", Locale: locale, Page: domain.Page{Limit: 50}, Unrestricted: tc.unrestricted,
 			})
 			require.NoError(t, err)
@@ -376,7 +376,7 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 // askAsEditor is the editors' search: the storefront's filters are off.
 func askAsEditor(t *testing.T, c *search.Catalogue, locale, text string, types ...search.Type) []search.Hit {
 	t.Helper()
-	hits, total, err := c.Search(t.Context(), search.SearchCatalogue{
+	hits, total, err := c.Search(t.Context(), search.Query{
 		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50}, Unrestricted: true,
 	})
 	require.NoError(t, err)

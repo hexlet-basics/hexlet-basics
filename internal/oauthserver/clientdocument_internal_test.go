@@ -48,7 +48,7 @@ func get(ctx context.Context, c *http.Client, target string) (*http.Response, er
 }
 
 func TestTheProductionClientRefusesALoopbackServerAtDialTime(t *testing.T) {
-	srv, tlsConfig := loopbackServer(t, func(w http.ResponseWriter, _ *http.Request) {
+	srv, tlsConfig := loopbackServer(t, func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("the server must never be reached")
 	})
 	client := newGuardedClient(publicAddress, time.Second)

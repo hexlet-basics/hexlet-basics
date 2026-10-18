@@ -10,9 +10,12 @@ type Readiness string
 func (Readiness) Vocabulary() Vocabulary { return CourseReadiness }
 
 const (
-	ReadinessDraft         Readiness = "draft"
+	// ReadinessDraft is a Course whose content is not started or not usable.
+	ReadinessDraft Readiness = "draft"
+	// ReadinessInDevelopment is a Course being written: usable, not finished.
 	ReadinessInDevelopment Readiness = "in_development"
-	ReadinessCompleted     Readiness = "completed"
+	// ReadinessCompleted is a finished Course.
+	ReadinessCompleted Readiness = "completed"
 )
 
 // The legal moves of a Course's Readiness, one per operation. Readiness says how

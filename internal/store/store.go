@@ -8,6 +8,8 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+	// The blank import registers the pgx driver under the name "pgx" for
+	// database/sql.
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"gocloud.dev/blob"
 	// Blank imports register the gocloud blob backends selected by URL scheme

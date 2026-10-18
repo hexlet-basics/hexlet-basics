@@ -1,3 +1,6 @@
+// Command worker is the asynchronous process: the Watermill event router and
+// the River job queue, with a health-only listener. The HTTP API runs in
+// cmd/server.
 package main
 
 import (

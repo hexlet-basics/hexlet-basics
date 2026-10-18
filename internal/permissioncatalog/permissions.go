@@ -25,7 +25,9 @@ var errs = oops.In("permissions")
 type Kind string
 
 const (
-	Read  Kind = "read"
+	// Read is an operation that changes nothing.
+	Read Kind = "read"
+	// Write is an operation that can change data.
 	Write Kind = "write"
 )
 

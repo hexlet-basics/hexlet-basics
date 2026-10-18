@@ -11,9 +11,12 @@ type PublicationState string
 func (PublicationState) Vocabulary() Vocabulary { return PublicationStates }
 
 const (
-	Draft     PublicationState = "draft"
+	// Draft is a record not shown to the public yet.
+	Draft PublicationState = "draft"
+	// Published is a record shown to the public.
 	Published PublicationState = "published"
-	Archived  PublicationState = "archived"
+	// Archived is a record withdrawn from the public but kept.
+	Archived PublicationState = "archived"
 )
 
 // The legal moves of a Publication State, one per operation (publish,

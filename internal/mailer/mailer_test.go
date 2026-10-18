@@ -48,7 +48,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 						Data string `json:"Data"`
 					} `json:"Subject"`
 					Body struct {
-						Html struct {
+						HTML struct {
 							Data string `json:"Data"`
 						} `json:"Html"`
 					} `json:"Body"`
@@ -61,7 +61,7 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 			From:    request.FromEmailAddress,
 			To:      request.Destination.ToAddresses,
 			Subject: request.Content.Simple.Subject.Data,
-			HTML:    request.Content.Simple.Body.Html.Data,
+			HTML:    request.Content.Simple.Body.HTML.Data,
 			Path:    r.URL.Path,
 		})
 		mu.Unlock()

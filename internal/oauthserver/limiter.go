@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	// DefaultRegistrationLimit and DefaultRegistrationWindow are how many
-	// registrations (successful or not) one address may attempt per window: ten
-	// an hour is far more than a person connecting assistants needs, and far too
-	// few to fill the table from one machine.
-	DefaultRegistrationLimit  = 10
+	// DefaultRegistrationLimit is how many registrations (successful or not)
+	// one address may attempt per DefaultRegistrationWindow: ten an hour is far
+	// more than a person connecting assistants needs, and far too few to fill
+	// the table from one machine.
+	DefaultRegistrationLimit = 10
+	// DefaultRegistrationWindow is the window DefaultRegistrationLimit counts in.
 	DefaultRegistrationWindow = time.Hour
 )
 

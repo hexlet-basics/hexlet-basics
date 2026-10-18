@@ -24,6 +24,7 @@ linters:
     - interfacebloat # the goverter Converter interface is one method per mapping, generated
     # Size and whitespace limits whose numbers would have to be absurd.
     - varnamelen # short names (i, tx, ok, id, err) are the Go convention; 800 findings of it
+    - goconst # a literal repeated in a test, or a JSON Schema keyword in an MCP schema map, reads better inline than behind a constant; 259 findings, 189 in tests
     - lll # wrapping string literals, struct tags and signatures to 120 columns hurts readability
     - funlen # table-driven tests and parsers run past any sensible limit
     - cyclop # as funlen
@@ -31,13 +32,11 @@ linters:
     - nestif # as funlen
     - testpackage # white-box tests of unexported rules are deliberate, 38 files
     # Pending: enabled by later commits of the series that clear their findings.
-    - paralleltest
-    - tparallel
-    - goconst
-    - revive
     - forcetypeassert
     - err113
     - mnd
+    - paralleltest
+    - tparallel
   settings:
     sloglint:
       # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
@@ -83,6 +82,17 @@ linters:
     paths:
       - internal/testsupport
     rules:
+      # revive's `exported` asks for a comment on every exported method. These
+      # two families implement an interface that documents them: ent's
+      # schema.Interface (Fields, Edges, ... of a table), and the generated
+      # api.Handler, whose operations the TypeSpec describes. Every other
+      # exported name still needs its comment.
+      - path: ^ent/schema/
+        linters: [revive]
+        text: 'exported method \w+\.(Annotations|Fields|Edges|Indexes|Mixin) should have comment'
+      - path: ^internal/handlers/
+        linters: [revive]
+        text: 'exported method Server\.\w+ should have comment'
       # Raw SQL stays available to tests (reading the outbox).
       - path: _test\.go
         linters: [forbidigo]

@@ -55,7 +55,7 @@ type match struct {
 	config string
 	locale string
 	text   string
-	// unrestricted drops the public storefront's filters (see SearchCatalogue).
+	// unrestricted drops the public storefront's filters (see Query).
 	unrestricted bool
 }
 
@@ -94,7 +94,7 @@ type source interface {
 // merge: the best N of the union are among the best N of each part. Only the hits
 // of the window get a snippet, in a second query per kind, because producing
 // one reads the whole text of the record.
-func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int, error) {
+func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	// PostgreSQL text holds neither a NUL nor an invalid sequence, and refuses
 	// the statement that carries one: a stray byte in what was typed is dropped,
 	// not an error.

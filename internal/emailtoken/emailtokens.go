@@ -33,7 +33,9 @@ const Lifetime = 15 * time.Minute
 type Purpose string
 
 const (
-	MagicLink     Purpose = "magic_link"
+	// MagicLink signs a visitor in from an emailed link.
+	MagicLink Purpose = "magic_link"
+	// PasswordReset lets the owner of an email address choose a new password.
 	PasswordReset Purpose = "password_reset"
 )
 

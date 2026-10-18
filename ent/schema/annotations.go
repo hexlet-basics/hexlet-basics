@@ -1,3 +1,5 @@
+// Package schema holds the ent schema of the database: the tables atlas owns,
+// as the generated client sees them, and the annotations the generators read.
 package schema
 
 // AdminInput marks a schema whose admin create/update handlers accept a

@@ -1,3 +1,6 @@
+// Package handlers implements the generated api.Handler: it translates the
+// contract to and from the use-case modules and owns the HTTP-only concerns
+// (security, error statuses, middleware).
 package handlers
 
 import (
