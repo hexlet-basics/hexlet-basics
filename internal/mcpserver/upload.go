@@ -23,9 +23,9 @@ import (
 
 // uploadBody is the `body` argument of a multipart tool.
 type uploadBody struct {
-	FileName      string `json:"fileName"`
-	ContentType   string `json:"contentType"`
-	ContentBase64 string `json:"contentBase64"`
+	FileName      string `json:"fileName"`      //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
+	ContentType   string `json:"contentType"`   //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
+	ContentBase64 string `json:"contentBase64"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
 // maxUploadBase64 is the longest base64 text of a file the website accepts. It

@@ -200,7 +200,7 @@ func TestTheAuthorizationResponseCarriesTheIssuer(t *testing.T) {
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 	denied, err := url.Parse(decision.RedirectURL)

@@ -179,7 +179,7 @@ func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 	res := flow.Decide(true)
 
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 	callback, err := url.Parse(decision.RedirectURL)
@@ -228,7 +228,7 @@ func TestTheConsentScreenNamesTheAccount(t *testing.T) {
 		require.Equal(t, http.StatusOK, res.StatusCode)
 
 		var consent struct {
-			AccountName string `json:"accountName"`
+			AccountName string `json:"accountName"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 		}
 		decode(t, res, &consent)
 

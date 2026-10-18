@@ -20,7 +20,6 @@ linters:
     - goconst
     - noinlineerr
     - gochecknoglobals
-    - tagliatelle
     - forcetypeassert
     - testpackage
     - cyclop
@@ -30,6 +29,15 @@ linters:
     - nestif
     - interfacebloat
   settings:
+    tagliatelle:
+      case:
+        rules:
+          # What we write is snake_case: domain events, the OAuth documents
+          # (RFC 7591, RFC 8414), the course YAML. The contract's own camelCase
+          # types are generated, not hand-tagged; packages that speak another
+          # format say which below.
+          json: snake
+          yaml: snake
     depguard:
       rules:
         # Imports that have a replacement already in use. Everything else is

@@ -18,8 +18,8 @@ type connectedApp struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	Scopes      []string  `json:"scopes"`
-	ConnectedAt time.Time `json:"connectedAt"`
-	ClientHost  string    `json:"clientHost"`
+	ConnectedAt time.Time `json:"connectedAt"` //nolint:tagliatelle // decodes the contract's camelCase JSON
+	ClientHost  string    `json:"clientHost"`  //nolint:tagliatelle // decodes the contract's camelCase JSON
 }
 
 // listApps calls the contract operation as a signed-in browser.

@@ -97,7 +97,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		Capabilities []struct {
 			Name string `yaml:"name"`
 			Kind Kind   `yaml:"kind"`
-		} `yaml:"x-capabilities"`
+		} `yaml:"x-capabilities"` //nolint:tagliatelle // OpenAPI document key
 		Paths map[string]map[string]operationDecl `yaml:"paths"`
 	}
 	if err := yaml.Unmarshal(doc, &spec); err != nil {
@@ -150,12 +150,12 @@ func Parse(doc []byte) (*Declarations, error) {
 // operationDecl is one operation of the document with the extensions this
 // package reads.
 type operationDecl struct {
-	OperationID  string                `yaml:"operationId"`
-	Permission   *permissionDecl       `yaml:"x-permission"`
-	Access       Access                `yaml:"x-access"`
-	UnitOfWork   string                `yaml:"x-unit-of-work"`
-	PersonalData string                `yaml:"x-personal-data"`
-	Requires     string                `yaml:"x-requires-capability"`
+	OperationID  string                `yaml:"operationId"`           //nolint:tagliatelle // OpenAPI document key
+	Permission   *permissionDecl       `yaml:"x-permission"`          //nolint:tagliatelle // OpenAPI document key
+	Access       Access                `yaml:"x-access"`              //nolint:tagliatelle // OpenAPI document key
+	UnitOfWork   string                `yaml:"x-unit-of-work"`        //nolint:tagliatelle // OpenAPI document key
+	PersonalData string                `yaml:"x-personal-data"`       //nolint:tagliatelle // OpenAPI document key
+	Requires     string                `yaml:"x-requires-capability"` //nolint:tagliatelle // OpenAPI document key
 	Security     []map[string][]string `yaml:"security"`
 }
 

@@ -175,8 +175,8 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 		ID          int    `json:"id"`
 		URL         string `json:"url"`
 		Filename    string `json:"filename"`
-		ContentType string `json:"contentType"`
-		ByteSize    int64  `json:"byteSize"`
+		ContentType string `json:"contentType"` //nolint:tagliatelle // decodes the contract's camelCase JSON
+		ByteSize    int64  `json:"byteSize"`    //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &att))
 

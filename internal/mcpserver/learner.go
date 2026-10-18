@@ -123,12 +123,12 @@ func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
 }
 
 type courseArgs struct {
-	CourseSlug string `json:"courseSlug"`
+	CourseSlug string `json:"courseSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
 type lessonProgressArgs struct {
-	CourseSlug string `json:"courseSlug"`
-	LessonSlug string `json:"lessonSlug"`
+	CourseSlug string `json:"courseSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
+	LessonSlug string `json:"lessonSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
 func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {

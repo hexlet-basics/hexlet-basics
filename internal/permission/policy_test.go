@@ -80,7 +80,7 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 
 	var spec struct {
 		Paths map[string]map[string]struct {
-			OperationID string                `yaml:"operationId"`
+			OperationID string                `yaml:"operationId"` //nolint:tagliatelle // OpenAPI document key
 			Security    []map[string][]string `yaml:"security"`
 		} `yaml:"paths"`
 	}

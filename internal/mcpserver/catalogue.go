@@ -31,7 +31,7 @@ const (
 // pageArgs are the arguments of every list tool.
 type pageArgs struct {
 	Page    int `json:"page"`
-	PerPage int `json:"perPage"`
+	PerPage int `json:"perPage"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
 // pageProperties is the input schema of pageArgs. The maximum of perPage is not
@@ -281,7 +281,7 @@ func (s *Server) getCourse(ctx context.Context, c call) (result, error) {
 }
 
 type lessonArgs struct {
-	CourseSlug string `json:"courseSlug"`
+	CourseSlug string `json:"courseSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 	Slug       string `json:"slug"`
 }
 

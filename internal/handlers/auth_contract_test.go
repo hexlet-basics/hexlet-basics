@@ -37,7 +37,7 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 
 	var spec struct {
 		Components struct {
-			SecuritySchemes map[string]openAPISecurityScheme `yaml:"securitySchemes"`
+			SecuritySchemes map[string]openAPISecurityScheme `yaml:"securitySchemes"` //nolint:tagliatelle // OpenAPI document key
 		} `yaml:"components"`
 		Paths map[string]openAPIPath `yaml:"paths"`
 	}
@@ -109,8 +109,8 @@ func TestBlogPostOperationsDeclareAPermissionAndAKind(t *testing.T) {
 
 	var spec struct {
 		Paths map[string]map[string]struct {
-			OperationID string    `yaml:"operationId"`
-			Permission  *declared `yaml:"x-permission"`
+			OperationID string    `yaml:"operationId"`  //nolint:tagliatelle // OpenAPI document key
+			Permission  *declared `yaml:"x-permission"` //nolint:tagliatelle // OpenAPI document key
 		} `yaml:"paths"`
 	}
 	require.NoError(t, yaml.Unmarshal(specData, &spec))

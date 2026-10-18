@@ -41,22 +41,22 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 		assert.NoError(t, err)
 
 		var request struct {
-			FromEmailAddress string `json:"FromEmailAddress"`
+			FromEmailAddress string `json:"FromEmailAddress"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
 			Destination      struct {
-				ToAddresses []string `json:"ToAddresses"`
-			} `json:"Destination"`
+				ToAddresses []string `json:"ToAddresses"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			} `json:"Destination"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
 			Content struct {
 				Simple struct {
 					Subject struct {
-						Data string `json:"Data"`
-					} `json:"Subject"`
+						Data string `json:"Data"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+					} `json:"Subject"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
 					Body struct {
 						HTML struct {
-							Data string `json:"Data"`
-						} `json:"Html"`
-					} `json:"Body"`
-				} `json:"Simple"`
-			} `json:"Content"`
+							Data string `json:"Data"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+						} `json:"Html"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+					} `json:"Body"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+				} `json:"Simple"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			} `json:"Content"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
 		}
 		assert.NoError(t, json.Unmarshal(body, &request))
 		mu.Lock()

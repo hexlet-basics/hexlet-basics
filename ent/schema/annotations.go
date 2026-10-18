@@ -16,12 +16,12 @@ package schema
 // from legacy column nullability — override per field with AdminInputField.
 type AdminInput struct {
 	// Type overrides the api input type name; empty means "<Schema>Input".
-	Type string `json:"Type"`
+	Type string
 	// Explicit flips the default from opt-out to opt-in: only fields carrying
 	// an AdminInputField annotation are mapped. Use it on wide schemas (User,
 	// Course) where the contract input covers a small slice of the columns,
 	// so a new column never leaks into SetInput by omission.
-	Explicit bool `json:"Explicit"`
+	Explicit bool
 }
 
 // Name implements schema.Annotation.
@@ -36,17 +36,17 @@ func (AdminInput) Name() string { return "AdminInput" }
 type AdminInputField struct {
 	// Skip excludes the field from SetInput entirely (the contract input has
 	// no such field, e.g. legacy columns the admin UI never edits).
-	Skip bool `json:"Skip"`
+	Skip bool
 	// Required treats the field as a plain contract value even though the
 	// legacy column (and thus the ent field) is nullable.
-	Required bool `json:"Required"`
+	Required bool
 	// SetOnly applies a nullable input field only when non-null and never
 	// clears the column — the association semantics used by FK ids, where a
 	// null means "leave as is", not "detach".
-	SetOnly bool `json:"SetOnly"`
+	SetOnly bool
 	// Rename overrides the input struct field name when it differs from the
 	// ent StructField (e.g. legacy column language_id vs contract CourseId).
-	Rename string `json:"Rename"`
+	Rename string
 }
 
 // Name implements schema.Annotation.
@@ -64,18 +64,18 @@ type AdminCRUD struct {
 	// Detail overrides the model name get/create/update return, for a
 	// resource whose single view is richer than its list row; empty means the
 	// list item model, "<Schema>".
-	Detail string `json:"Detail"`
+	Detail string
 	// Order is the default list order; empty means newest first (id DESC).
-	Order []AdminOrder `json:"Order"`
+	Order []AdminOrder
 	// Eager lists the query-builder calls that load the edges the API model
 	// embeds, emitted verbatim after Query(): `WithUser()`,
 	// `WithRole(func(q *StaffRoleQuery) { q.WithPermissions() })`.
-	Eager []string `json:"Eager"`
+	Eager []string
 	// Search lists the Go field names of the string columns the list's `q`
 	// filter matches, case-insensitively (the human-readable ones: name, slug,
 	// text). Empty means the contract's list has no `q` and AdminList takes
 	// none.
-	Search []string `json:"Search"`
+	Search []string
 }
 
 // Name implements schema.Annotation.
@@ -84,6 +84,6 @@ func (AdminCRUD) Name() string { return "AdminCRUD" }
 // AdminOrder is one ORDER BY term of an AdminCRUD list: Field is the Go field
 // name as ent spells it in its Field<Name> constant ("Name" for FieldName).
 type AdminOrder struct {
-	Field string `json:"Field"`
-	Desc  bool   `json:"Desc"`
+	Field string
+	Desc  bool
 }

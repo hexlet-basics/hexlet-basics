@@ -33,7 +33,7 @@ func responseSchema(operationID string) (map[string]any, error) {
 	for _, methods := range doc.Paths {
 		for _, node := range methods {
 			var op struct {
-				OperationID string `yaml:"operationId"`
+				OperationID string `yaml:"operationId"` //nolint:tagliatelle // OpenAPI document key
 				Responses   map[string]struct {
 					Content map[string]struct {
 						Schema any `yaml:"schema"`

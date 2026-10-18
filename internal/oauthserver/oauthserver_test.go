@@ -86,10 +86,10 @@ func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 	// After cookie sign-in the consent screen's data names the application, the
 	// host it returns to, the scopes asked for and the account.
 	var consent struct {
-		ClientName   string   `json:"clientName"`
-		RedirectHost string   `json:"redirectHost"`
+		ClientName   string   `json:"clientName"`   //nolint:tagliatelle // decodes the contract's camelCase JSON
+		RedirectHost string   `json:"redirectHost"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 		Scopes       []string `json:"scopes"`
-		AccountName  string   `json:"accountName"`
+		AccountName  string   `json:"accountName"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 
 	session := testsupport.SessionFor(t, o.DB, alice)
@@ -140,7 +140,7 @@ func TestDenyingTheConsentReturnsAccessDeniedToTheClient(t *testing.T) {
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 
