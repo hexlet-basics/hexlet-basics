@@ -228,21 +228,16 @@ func (s *Server) addFindTools(server *mcp.Server) {
 		Annotations:  hints(true, false, true),
 	}
 	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		info := req.GetExtra().TokenInfo
-		if info == nil {
-			return toolError("this connection is not signed in"), nil
-		}
-
-		userID, err := strconv.Atoi(info.UserID)
-		if err != nil || userID <= 0 {
-			return toolError("this connection is not signed in as a user"), nil
+		userID, denied := signedInUser(req)
+		if denied != nil {
+			return denied, nil
 		}
 
 		if _, denied := s.spend(req, userID, ClassCatalogue); denied != nil {
 			return denied, nil
 		}
 
-		return s.findTools(ctx, req, info)
+		return s.findTools(ctx, req, req.GetExtra().TokenInfo)
 	})
 	// No Scope: any signed-in caller may look, and what it finds is what it may use.
 	s.note(tool, toolNeeds{

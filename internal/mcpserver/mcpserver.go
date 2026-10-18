@@ -255,6 +255,23 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 // middleware has checked the subject already; it is read again from the context
 // of the call so a tool cannot run without one.
 func requireScope(req *mcp.CallToolRequest, scope string) (int, *mcp.CallToolResult) {
+	userID, denied := signedInUser(req)
+	if denied != nil {
+		return 0, denied
+	}
+
+	if !slices.Contains(req.GetExtra().TokenInfo.Scopes, scope) {
+		return 0, toolError(fmt.Sprintf("this connection was not granted the %s Scope", scope))
+	}
+
+	return userID, nil
+}
+
+// signedInUser is the user behind the connection, or the tool result that tells
+// the agent there is none. A token that is not a user's (a malformed or
+// non-positive id) is refused as a tool error, not a protocol error, like every
+// other refusal here.
+func signedInUser(req *mcp.CallToolRequest) (int, *mcp.CallToolResult) {
 	info := req.GetExtra().TokenInfo
 	if info == nil {
 		return 0, toolError("this connection is not signed in")
@@ -263,10 +280,6 @@ func requireScope(req *mcp.CallToolRequest, scope string) (int, *mcp.CallToolRes
 	userID, err := strconv.Atoi(info.UserID)
 	if err != nil || userID <= 0 {
 		return 0, toolError("this connection is not signed in as a user")
-	}
-
-	if !slices.Contains(info.Scopes, scope) {
-		return 0, toolError(fmt.Sprintf("this connection was not granted the %s Scope", scope))
 	}
 
 	return userID, nil
