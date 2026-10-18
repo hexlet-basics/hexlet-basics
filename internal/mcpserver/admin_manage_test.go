@@ -191,22 +191,34 @@ func newOAuthWithRates(t *testing.T, rates mcpserver.Rates) *testsupport.OAuth {
 
 func ogenName(operationID string) string { return string(operationID[0]-32) + operationID[1:] }
 
-// The self-protection rules (#844) live in the handlers, so a tool call is
-// refused exactly as the HTTP call is: a 403 or 409 from the handler, recorded
-// as failed, and no row changed.
-func TestSelfProtectionHoldsOverMCP(t *testing.T) {
-	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
-	staffManagement := []string{
+// selfProtectionRates is a rate limit no test of the rules reaches.
+func selfProtectionRates() mcpserver.Rates {
+	return mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
+}
+
+// staffManagementGrants is what a staff member needs to manage users, staff and
+// roles over MCP.
+func staffManagementGrants() []string {
+	return []string{
 		"users.read", "users.update", "users.delete", "users.create",
 		"staff_members.update", "staff_members.delete", "staff_members.create",
 		"staff_roles.update", "staff_roles.read", "mcp.read", "mcp.write", "mcp.manage",
 	}
+}
 
-	assertRefusedWith := func(t *testing.T, result *mcp.CallToolResult, status string) {
-		t.Helper()
-		require.True(t, result.IsError, "%+v", result.Content)
-		assert.Contains(t, textOf(t, result), status)
-	}
+// assertRefusedWith checks that a tool call was refused with the HTTP status.
+func assertRefusedWith(t *testing.T, result *mcp.CallToolResult, status string) {
+	t.Helper()
+	require.True(t, result.IsError, "%+v", result.Content)
+	assert.Contains(t, textOf(t, result), status)
+}
+
+// The self-protection rules (#844) live in the handlers, so a tool call is
+// refused exactly as the HTTP call is: a 403 or 409 from the handler, recorded
+// as failed, and no row changed.
+func TestSelfProtectionHoldsOverMCP(t *testing.T) {
+	rates := selfProtectionRates()
+	staffManagement := staffManagementGrants()
 
 	t.Run("own Staff Member record", func(t *testing.T) {
 		o := newOAuthWithRates(t, rates)
@@ -272,6 +284,13 @@ func TestSelfProtectionHoldsOverMCP(t *testing.T) {
 			"locale": "en", "id": adminStaff(), "body": userBody("admin-staff@example.com", false)})
 		assert.False(t, again.IsError, "%+v", again.Content)
 	})
+}
+
+// The rules about who may change the administrator flag and a role's own grants
+// hold over MCP as they do over HTTP.
+func TestFlagAndGrantProtectionHoldsOverMCP(t *testing.T) {
+	rates := selfProtectionRates()
+	staffManagement := staffManagementGrants()
 
 	t.Run("only an administrator changes the administrator flag", func(t *testing.T) {
 		o := newOAuthWithRates(t, rates)

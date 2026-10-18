@@ -197,6 +197,95 @@ func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *
 	})
 }
 
+// buildModule writes one module of the version, its translations and its
+// lessons with theirs, and answers how many lessons it wrote.
+func buildModule(ctx context.Context, tx *ent.Client, courseID, versionID int, module Module) (int, error) {
+	lessons := 0
+
+	moduleID, err := upsertModule(ctx, tx, courseID, module.Slug)
+	if err != nil {
+		return 0, err
+	}
+
+	courseModuleVersion, err := tx.CourseModuleVersion.Create().
+		SetCourseID(courseID).
+		SetCourseVersionID(versionID).
+		SetModuleID(moduleID).
+		SetOrder(module.Order).
+		Save(ctx)
+	if err != nil {
+		return 0, oops.Wrapf(err, "create module version %q", module.Slug)
+	}
+
+	moduleInfos := lo.Map(module.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
+		return tx.CourseModuleTranslation.Create().
+			SetCourseID(courseID).
+			SetCourseVersionID(versionID).
+			SetVersionID(courseModuleVersion.ID).
+			SetLocale(info.Locale).
+			SetName(info.Name).
+			SetDescription(info.Description)
+	})
+
+	err = saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
+		_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
+
+		return errs.Wrapf(err, "save course module translation")
+	})
+	if err != nil {
+		return 0, oops.Wrapf(err, "create module infos %q", module.Slug)
+	}
+
+	// A module's lesson infos are written together once its lessons exist: the
+	// translations need the lesson version ids, but not one round trip each.
+	var lessonInfos []*ent.CourseLessonTranslationCreate
+
+	for _, lesson := range module.Lessons {
+		lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
+		if err != nil {
+			return 0, err
+		}
+
+		courseLessonVersion, err := tx.CourseLessonVersion.Create().
+			SetCourseID(courseID).
+			SetCourseVersionID(versionID).
+			SetLessonID(lessonID).
+			SetModuleVersionID(courseModuleVersion.ID).
+			SetOrder(lesson.Order).
+			SetNaturalOrder(lesson.NaturalOrder).
+			SetTestCode(lesson.TestCode).
+			SetOriginalCode(lesson.OriginalCode).
+			SetPreparedCode(lesson.PreparedCode).
+			SetPathToCode(lesson.PathToCode).
+			Save(ctx)
+		if err != nil {
+			return 0, oops.Wrapf(err, "create lesson version %q", lesson.Slug)
+		}
+
+		for _, info := range lesson.Infos {
+			create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, info)
+			if err != nil {
+				return 0, err
+			}
+
+			lessonInfos = append(lessonInfos, create)
+		}
+
+		lessons++
+	}
+
+	err = saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
+		_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
+
+		return errs.Wrapf(err, "save course lesson translation")
+	})
+	if err != nil {
+		return 0, oops.Wrapf(err, "create lesson infos of module %q", module.Slug)
+	}
+
+	return lessons, nil
+}
+
 func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, versionID, courseID int, parsed *Course) error {
 	spec := parsed.Spec
 
@@ -216,86 +305,12 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	totalLessons := 0
 
 	for _, module := range parsed.Modules {
-		moduleID, err := upsertModule(ctx, tx, courseID, module.Slug)
+		lessons, err := buildModule(ctx, tx, courseID, versionID, module)
 		if err != nil {
 			return err
 		}
 
-		courseModuleVersion, err := tx.CourseModuleVersion.Create().
-			SetCourseID(courseID).
-			SetCourseVersionID(versionID).
-			SetModuleID(moduleID).
-			SetOrder(module.Order).
-			Save(ctx)
-		if err != nil {
-			return oops.Wrapf(err, "create module version %q", module.Slug)
-		}
-
-		moduleInfos := lo.Map(module.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
-			return tx.CourseModuleTranslation.Create().
-				SetCourseID(courseID).
-				SetCourseVersionID(versionID).
-				SetVersionID(courseModuleVersion.ID).
-				SetLocale(info.Locale).
-				SetName(info.Name).
-				SetDescription(info.Description)
-		})
-
-		err = saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
-			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
-
-			return errs.Wrapf(err, "save course module translation")
-		})
-		if err != nil {
-			return oops.Wrapf(err, "create module infos %q", module.Slug)
-		}
-
-		// A module's lesson infos are written together once its lessons exist: the
-		// translations need the lesson version ids, but not one round trip each.
-		var lessonInfos []*ent.CourseLessonTranslationCreate
-
-		for _, lesson := range module.Lessons {
-			lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
-			if err != nil {
-				return err
-			}
-
-			courseLessonVersion, err := tx.CourseLessonVersion.Create().
-				SetCourseID(courseID).
-				SetCourseVersionID(versionID).
-				SetLessonID(lessonID).
-				SetModuleVersionID(courseModuleVersion.ID).
-				SetOrder(lesson.Order).
-				SetNaturalOrder(lesson.NaturalOrder).
-				SetTestCode(lesson.TestCode).
-				SetOriginalCode(lesson.OriginalCode).
-				SetPreparedCode(lesson.PreparedCode).
-				SetPathToCode(lesson.PathToCode).
-				Save(ctx)
-			if err != nil {
-				return oops.Wrapf(err, "create lesson version %q", lesson.Slug)
-			}
-
-			for _, info := range lesson.Infos {
-				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, info)
-				if err != nil {
-					return err
-				}
-
-				lessonInfos = append(lessonInfos, create)
-			}
-
-			totalLessons++
-		}
-
-		err = saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
-			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
-
-			return errs.Wrapf(err, "save course lesson translation")
-		})
-		if err != nil {
-			return oops.Wrapf(err, "create lesson infos of module %q", module.Slug)
-		}
+		totalLessons += lessons
 	}
 
 	// Mark built + promote to live, atomically with all the content above. This is

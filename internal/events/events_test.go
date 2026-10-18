@@ -79,6 +79,19 @@ func TestLegacyEventNames(t *testing.T) {
 			Locale:          "",
 			OccurredAt:      time.Time{},
 		}, "course_finished"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.name, nameOf(tt.event))
+		})
+	}
+}
+
+func TestLegacyEventNamesOfLessonsAndStaff(t *testing.T) {
+	tests := []struct {
+		event Event
+		name  string
+	}{
 		{LessonStarted{
 			OccurrenceCount: 0,
 			LessonSlug:      "",

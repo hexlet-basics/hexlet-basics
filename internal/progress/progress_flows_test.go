@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+	"slices"
 	"testing"
 
 	entgo "entgo.io/ent"
@@ -365,6 +366,11 @@ type operation struct {
 }
 
 func operations() []operation {
+	return slices.Concat(lessonOperations(), courseOperations())
+}
+
+// lessonOperations are the calls that start and check a lesson.
+func lessonOperations() []operation {
 	return []operation{
 		{
 			name: "starting a lesson",
@@ -412,6 +418,12 @@ func operations() []operation {
 			reads:  []string{ent.TypeLessonProgress, ent.TypeEnrollment},
 			writes: []string{ent.TypeEnrollment},
 		},
+	}
+}
+
+// courseOperations are the calls that read or settle a whole course.
+func courseOperations() []operation {
+	return []operation{
 		{
 			name: "reading a learner's courses",
 			prepare: func(t *testing.T, r *rig) func() error {
