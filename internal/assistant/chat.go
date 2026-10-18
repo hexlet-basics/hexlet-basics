@@ -19,6 +19,7 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -113,7 +114,7 @@ type History struct {
 // same. Returns an ent not-found error for a lesson that does not exist.
 func (c *Chat) History(ctx context.Context, userID, lessonID int) (*History, error) {
 	if _, err := c.db.CourseLesson.Get(ctx, lessonID); err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
 
 	locale := c.i18n.Locale(ctx)
@@ -188,7 +189,7 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 
 	turns, lessonProgressID, err := c.turns(ctx, q, locale)
 	if err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
 
 	// Rows are written without the request's cancellation: once written to,

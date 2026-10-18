@@ -9,7 +9,6 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 )
@@ -23,15 +22,6 @@ const (
 	myCourseProgressTool = "getMyCourseProgress"
 	myLessonProgressTool = "getMyLessonProgress"
 )
-
-// Learner is what the learner tools read: the signed-in user's own data, with
-// the user passed explicitly. handlers.Server satisfies it with the code behind
-// the HTTP operations. Every method takes the token's user id and nothing a
-// caller could use to name another person.
-type Learner interface {
-	MyDashboard(ctx context.Context, userID int) (*api.MyDashboard, error)
-	MyCourseProgress(ctx context.Context, userID int, courseSlug string) (*progress.LearnerCourse, error)
-}
 
 // addLearnerTools registers the read-only learner tools. Each needs the
 // progress:read Scope, counts against the personal-data rate limit and reads
@@ -118,7 +108,7 @@ func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
 	if err := c.decode(&struct{}{}); err != nil {
 		return result{}, err
 	}
-	dashboard, err := s.deps.Learner.MyDashboard(ctx, c.userID)
+	dashboard, err := s.deps.MyDashboard(ctx, c.userID)
 	if err != nil {
 		return result{}, err
 	}
@@ -200,7 +190,7 @@ func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*p
 	if slug == "" {
 		return nil, userError{errors.New("invalid arguments: courseSlug is required")}
 	}
-	course, err := s.deps.Learner.MyCourseProgress(ctx, userID, slug)
+	course, err := s.deps.MyCourseProgress(ctx, userID, slug)
 	if ent.IsNotFound(err) {
 		return nil, errNotFound("course " + strconv.Quote(slug))
 	}

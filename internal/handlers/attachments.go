@@ -62,7 +62,7 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	reader, err := h.assets.Open(ctx, key)
 	if err != nil {
 		if errors.Is(err, assetstore.ErrNotFound) {
-			h.errors.Write(ctx, w, r, withHTTPStatus(http.StatusNotFound, err))
+			h.errors.Write(ctx, w, r, err)
 			return
 		}
 		h.errors.Write(ctx, w, r, errs.With("key", key).Wrapf(err, "open stored attachment"))

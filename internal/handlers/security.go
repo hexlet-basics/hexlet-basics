@@ -9,6 +9,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/auth"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/permission"
@@ -16,8 +17,8 @@ import (
 
 var (
 	errUnauthenticated = errors.New("request is not authenticated")
-	errAdminRequired   = errors.New("administrator access is required")
-	errCrossOrigin     = errors.New("cross-origin request refused")
+	errAdminRequired   = errors.Join(errors.New("administrator access is required"), domain.ErrForbidden)
+	errCrossOrigin     = errors.Join(errors.New("cross-origin request refused"), domain.ErrForbidden)
 )
 
 type authenticatedUserContextKey struct{}
@@ -94,7 +95,7 @@ func (s *Security) Pipeline(apiHandler http.Handler) http.Handler {
 
 	protection := http.NewCrossOriginProtection()
 	protection.SetDenyHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		s.errors.Write(r.Context(), w, r, withHTTPStatus(http.StatusForbidden, errCrossOrigin))
+		s.errors.Write(r.Context(), w, r, errCrossOrigin)
 	}))
 	return protection.Handler(s.sessions.Middleware(identified))
 }
@@ -159,7 +160,7 @@ func (s *Security) HandleAdminSession(
 	err = s.policy.Allow(ctx, u, s.i18n.Locale(ctx), operation)
 	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
-		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
+		return ctx, errAdminRequired
 	}
 	return ctx, err
 }
@@ -192,7 +193,7 @@ func (s *Security) attach(ctx context.Context) (context.Context, error) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {
-		return ctx, withHTTPStatus(http.StatusInternalServerError, errs.Wrapf(err, "load authenticated user"))
+		return ctx, errs.Wrapf(err, "load authenticated user")
 	}
 	return context.WithValue(ctx, authenticatedUserContextKey{}, u), nil
 }

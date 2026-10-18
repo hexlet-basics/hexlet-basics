@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"context"
+	"errors"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
@@ -22,7 +23,7 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 		s.i18n.Locale(ctx),
 	)
 	switch {
-	case ent.IsNotFound(err):
+	case errors.Is(err, domain.ErrNotFound):
 		return s.lessonNotFound(ctx), nil
 	case err != nil:
 		// Anything else is a server fault, reported by the central handler.
@@ -51,7 +52,7 @@ func (s *Server) CheckLesson(
 		Locale:    s.i18n.Locale(ctx),
 	})
 	switch {
-	case ent.IsNotFound(err):
+	case errors.Is(err, domain.ErrNotFound):
 		// The lesson, or the version the code was written against, is not part
 		// of the course's current build.
 		return s.lessonNotFound(ctx), nil

@@ -25,6 +25,7 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
@@ -82,7 +83,7 @@ func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher,
 // only a check can add to. They still get their state back, so the page they
 // land on renders from the server's answer exactly as a learner's does.
 //
-// Returns an ent not-found error when the Lesson is not part of its Course's
+// Returns domain.ErrNotFound when the Lesson is not part of its Course's
 // current Version — a Lesson a later build dropped is no longer startable.
 func (p *Progress) StartLesson(
 	ctx context.Context,
@@ -92,9 +93,10 @@ func (p *Progress) StartLesson(
 ) (*CourseState, error) {
 	courseID, err := p.startLesson(ctx, learner, lessonID, locale)
 	if err != nil {
-		return nil, err
+		return nil, domain.FromStore(err)
 	}
-	return p.CourseState(ctx, learner, courseID)
+	state, err := p.CourseState(ctx, learner, courseID)
+	return state, domain.FromStore(err)
 }
 
 // startLesson performs the write half and reports which Course was started, so

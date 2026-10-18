@@ -8,12 +8,20 @@ import (
 	"time"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
 
 // ErrPasswordProcessing identifies passwords bcrypt cannot encode.
 var ErrPasswordProcessing = errors.New("password processing failed")
+
+// userUniques names the field behind each unique index of the users table, so a
+// taken email is an invalid input naming "email" rather than a bare conflict.
+var userUniques = []domain.Unique{
+	domain.UniqueOn("index_users_on_email", "email"),
+	domain.UniqueOn("index_users_on_LOWER_email", "email"),
+}
 
 // Registration is the validated public sign-up input.
 type Registration struct {
@@ -64,7 +72,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.Us
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {
-			return errs.Wrapf(err, "create user")
+			return errs.Wrapf(domain.FromStore(err, userUniques...), "create user")
 		}
 
 		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
