@@ -264,13 +264,18 @@ function AssistantChat({
 // generated client — so the path, the session cookie and URL
 // locale come from the same place as every other call. `parseAs: "stream"`
 // hands back the body as a stream, which the transport reads as plain text.
+// The request body the chat hook forwards is untyped; only strings are sent on.
+function stringOrNull(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
 function assistantTransport(lessonId: number) {
   return new TextStreamChatTransport<UIMessage>({
     prepareSendMessagesRequest: ({ messages, body }) => {
       const input: AssistantMessageInput = {
         message: textOf(messages.at(-1)),
-        userCode: body?.userCode ?? null,
-        output: body?.output ?? null,
+        userCode: stringOrNull(body?.userCode),
+        output: stringOrNull(body?.output),
       };
       return { body: input };
     },
@@ -282,7 +287,7 @@ function assistantTransport(lessonId: number) {
       try {
         const { data, response } = await createAssistantMessage({
           path: { lessonId },
-          body: JSON.parse(init.body),
+          body: JSON.parse(init.body) as AssistantMessageInput,
           parseAs: "stream",
           signal: init?.signal ?? undefined,
           throwOnError: true,
