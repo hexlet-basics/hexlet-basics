@@ -10,7 +10,7 @@ import { Notifications } from "@mantine/notifications";
 import type { QueryClient } from "@tanstack/react-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
-import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import type { i18n as I18n } from "i18next";
 import { useEffect } from "react";
 import type { ReactNode } from "react";

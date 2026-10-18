@@ -3,7 +3,7 @@ import { useCallbackRef, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
 import type * as Monaco from "monaco-editor";
 import type { editor } from "monaco-editor";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
 import { useSyntaxMarkers } from "@/components/lesson/useSyntaxMarkers";

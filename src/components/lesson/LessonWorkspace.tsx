@@ -4,7 +4,7 @@ import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClientOnly } from "@tanstack/react-router";
 import { IconBook } from "@tabler/icons-react";
-import { lazy, Suspense, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import {

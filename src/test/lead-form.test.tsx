@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { afterEach, expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { FirstVisit, Lead, LeadInput, User } from "@/client/types.gen";

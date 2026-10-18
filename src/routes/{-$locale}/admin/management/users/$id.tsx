@@ -11,7 +11,7 @@ import {
 import { zUserInput } from "@/client/zod.gen";
 import FormSkeleton from "@/components/admin/FormSkeleton";
 import { CrudForm } from "@/components/admin/CrudForm";
-import { userToForm, useUserFields } from "@/components/admin/resources/user";
+import { useUserFields, userToForm } from "@/components/admin/resources/user";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/users/$id")({

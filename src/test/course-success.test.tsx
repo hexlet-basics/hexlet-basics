@@ -1,11 +1,11 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type {
   Course,
   CourseLandingPage,
-  CourseView,
   CourseProgress,
+  CourseView,
   EnrollmentState,
   User,
 } from "@/client/types.gen";

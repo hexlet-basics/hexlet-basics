@@ -1,4 +1,4 @@
-import { Breadcrumbs as MantineBreadcrumbs, Center, Text } from "@mantine/core";
+import { Center, Breadcrumbs as MantineBreadcrumbs, Text } from "@mantine/core";
 import { IconHome } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 import { AnchorLink } from "@/components/RouterLink";

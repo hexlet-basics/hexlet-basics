@@ -6,16 +6,16 @@ import {
   MultiSelect,
   NumberInput,
   Select,
-  Textarea,
   TextInput,
+  Textarea,
 } from "@mantine/core";
 import type {
   CheckboxProps,
   MultiSelectProps,
   NumberInputProps,
   SelectProps,
-  TextareaProps,
   TextInputProps,
+  TextareaProps,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import type { DateTimePickerProps } from "@mantine/dates";

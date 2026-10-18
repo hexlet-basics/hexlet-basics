@@ -1,20 +1,20 @@
 import Cookies from "js-cookie";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { afterAll, afterEach, beforeEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type {
   AdjacentLessons,
-  LearnerLesson,
-  LessonRef,
   Course,
   CourseLandingPage,
   CourseLesson,
   CourseLessonView,
   CourseView,
   EnrollmentState,
+  LearnerLesson,
   LessonAssistantChat,
   LessonAssistantMessage,
   LessonCheckingResponse,
+  LessonRef,
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
 import { getCourseQueryKey } from "@/client/@tanstack/react-query.gen";

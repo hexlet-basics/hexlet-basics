@@ -1,9 +1,9 @@
 import {
+  RouterProvider,
   createMemoryHistory,
   createRootRoute,
   createRoute,
   createRouter,
-  RouterProvider,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { vi } from "vitest";

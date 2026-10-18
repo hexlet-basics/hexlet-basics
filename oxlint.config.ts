@@ -32,6 +32,8 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/sort-imports": ["error", { ignoreDeclarationSort: true }],
+    "eslint/one-var": ["error", "never"],
     // Rules switched off, each with its reason.
     // The automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
@@ -41,12 +43,8 @@ export default defineConfig({
     "typescript/prefer-readonly-parameter-types": "off",
     // Taste rule, would reorder about 1000 object literals that are grouped by meaning.
     "eslint/sort-keys": "off",
-    // Conflicts with oxfmt, which owns import ordering.
-    "eslint/sort-imports": "off",
     // Bans conventional short names (t, i, e, _) with no safety gain.
     "eslint/id-length": "off",
-    // Contradicts init-declarations and one-declaration-per-line style.
-    "eslint/one-var": "off",
     // Taste rule, flags every literal including HTTP codes, sizes and Mantine props.
     "eslint/no-magic-numbers": "off",
     // Mantine layouts nest deeply by design, splitting only adds indirection.

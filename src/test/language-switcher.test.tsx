@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { afterAll, beforeEach, expect, test } from "vitest";
 import { page } from "vitest/browser";
 import { Route as pageRoute } from "@/routes/{-$locale}/pages/$id";

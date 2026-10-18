@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { BookView, User } from "@/client/types.gen";

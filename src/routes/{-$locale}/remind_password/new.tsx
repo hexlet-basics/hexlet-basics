@@ -1,7 +1,8 @@
 import { Anchor, Container, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { createPasswordReminderMutation } from "@/client/@tanstack/react-query.gen";

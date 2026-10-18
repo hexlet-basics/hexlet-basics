@@ -1,7 +1,7 @@
 import { ActionIcon, Anchor, Button, Card, NavLink as MantineNavLink, Text } from "@mantine/core";
 import type {
-  AnchorProps,
   ActionIconProps,
+  AnchorProps,
   ButtonProps,
   CardProps,
   NavLinkProps,

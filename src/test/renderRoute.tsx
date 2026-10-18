@@ -1,10 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
 import {
+  RouterProvider,
   createMemoryHistory,
   createRootRouteWithContext,
   createRoute,
   createRouter,
-  RouterProvider,
 } from "@tanstack/react-router";
 import type { AnyRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";

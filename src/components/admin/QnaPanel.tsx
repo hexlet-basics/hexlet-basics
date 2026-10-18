@@ -1,4 +1,15 @@
-import { ActionIcon, Button, Card, Group, Stack, Title, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Group,
+  Stack,
+  TextInput,
+  Textarea,
+  Title,
+  Tooltip,
+} from "@mantine/core";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { QnaItem, QnaItemInput } from "@/client/types.gen";
 import { zQnaItemInput } from "@/client/zod.gen";

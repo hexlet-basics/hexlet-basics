@@ -13,7 +13,7 @@ import {
   Title,
 } from "@mantine/core";
 import { IconBooks, IconMessage2 } from "@tabler/icons-react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
 import { getMyDashboardOptions } from "@/client/@tanstack/react-query.gen";
 import type { DashboardCourse } from "@/client/types.gen";

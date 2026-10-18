@@ -1,7 +1,7 @@
 import {
   ActionIcon,
-  Avatar,
   Anchor,
+  Avatar,
   Box,
   Burger,
   Button,
@@ -33,9 +33,9 @@ import {
   IconPlugConnected,
   IconRocket,
   IconSchool,
+  IconShieldCog,
   IconSun,
   IconTarget,
-  IconShieldCog,
   IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

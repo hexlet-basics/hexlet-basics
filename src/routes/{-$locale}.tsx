@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
+import { Outlet, createFileRoute, notFound, useMatches } from "@tanstack/react-router";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
 import { rememberLocale } from "@/lib/detect-locale";

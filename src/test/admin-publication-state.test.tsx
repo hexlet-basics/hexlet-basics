@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { Banner, CourseLandingPage, Review } from "@/client/types.gen";

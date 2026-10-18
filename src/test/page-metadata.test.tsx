@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { afterAll, expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type {
