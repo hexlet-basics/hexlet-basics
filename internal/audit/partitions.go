@@ -30,7 +30,7 @@ type Driver interface {
 // Partitions maintains the monthly partitions of audit_records (ADR-0020,
 // ticket #846). It is the only code that may remove Audit Records, and it does
 // so by dropping a whole partition; there is no path that updates or deletes a
-// single record (the database trigger refuses both).
+// single record.
 //
 // The DDL is written once, in the SQL functions of the partitioning migration;
 // this type only calls them. That is also the answer to the "no raw SQL in

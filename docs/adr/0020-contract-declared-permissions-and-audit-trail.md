@@ -71,8 +71,9 @@ Reads of the catalogue and of content are not recorded.
   (succeeded, forbidden, failed).
 - For a change it also keeps the old and new value of each changed field;
   fields marked secret in the ent schema keep only their name.
-- The table is append-only: a database trigger refuses `UPDATE` and `DELETE`.
-  It is partitioned by month and records are kept two years, configurable.
+- The table is append-only by construction: no code path updates or deletes a
+  record (an earlier trigger that refused both was dropped: we keep no triggers
+  of our own). It is partitioned by month and records are kept two years, configurable.
 - A change and its record are written in the same transaction, from one place
   in the operation layer shared by the website and MCP, so a change never lacks
   its record and a record never describes a change that did not happen. A read
@@ -275,11 +276,9 @@ for both ids exist and are nullable. The names in code are Audit Record, never
 since a record outlives the user, app and entity it names; primary key
 `(id, occurred_at)` so the table can become monthly-partitioned (#846) without
 a rewrite, which this slice does not do, nor retention. A
-row-level `BEFORE UPDATE OR DELETE` trigger raises an error, in the migration
-because production Go may not issue raw SQL (`forbidigo`); a row trigger is
-cloned onto partitions, a statement trigger is not. Retention drops whole
-partitions, which the trigger does not see. A test proves the database refuses
-both statements.
+row-level `BEFORE UPDATE OR DELETE` trigger first refused both statements; it
+was dropped later (`drop_audit_append_only_trigger`), because the project has
+no triggers of its own. Retention drops whole partitions.
 
 **Left for the next tickets, and not designed out.** Refusals never reach the
 middleware (they are rejected in `HandleAdminSession`), and a handler failure

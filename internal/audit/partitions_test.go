@@ -1,7 +1,6 @@
 package audit_test
 
 import (
-	"context"
 	"database/sql"
 	"testing"
 	"time"
@@ -99,40 +98,6 @@ func TestARecordForAMonthWithoutAPartitionIsKeptAndMovedWhenItsMonthIsCreated(t 
 	assert.Equal(t, orphan.OccurredAt.UTC(), moved.OccurredAt.UTC(), "the record is carried over unchanged")
 	assert.Contains(t, partitionNames(t, tx), "audit_records_default", "the default partition is attached again")
 
-	// Re-attaching clones the append-only trigger back: a record that still
-	// lives in the default partition cannot be changed either.
-	stranger := addRecordAt(t, client, time.Date(2030, 1, 1, 0, 0, 0, 0, time.UTC))
-	require.Equal(t, "audit_records_default", partitionOf(t, tx, stranger.ID))
-	_, err := tx.ExecContext(t.Context(), "DELETE FROM audit_records_default WHERE id = $1", stranger.ID)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "append-only")
-}
-
-func TestARecordInAPartitionCannotBeUpdatedOrDeleted(t *testing.T) {
-	client, tx := testsupport.NewClientWithTx(t)
-	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), partitionNow))
-	record := addRecordAt(t, client, time.Date(2024, 10, 20, 0, 0, 0, 0, time.UTC))
-
-	for name, statement := range map[string]string{
-		"update through the parent": "UPDATE audit_records SET outcome = 'failed' WHERE id = $1",
-		"delete through the parent": "DELETE FROM audit_records WHERE id = $1",
-		"update on the partition":   "UPDATE audit_records_p202410 SET outcome = 'failed' WHERE id = $1",
-		"delete from the partition": "DELETE FROM audit_records_p202410 WHERE id = $1",
-	} {
-		t.Run(name, func(t *testing.T) {
-			ctx := context.Background()
-			_, err := tx.ExecContext(ctx, "SAVEPOINT refusal")
-			require.NoError(t, err)
-			_, err = tx.ExecContext(ctx, statement, record.ID)
-			require.Error(t, err)
-			assert.Contains(t, err.Error(), "append-only")
-			// Roll back to the savepoint so the aborted statement does not
-			// poison the transaction the other cases share.
-			_, err = tx.ExecContext(ctx, "ROLLBACK TO SAVEPOINT refusal")
-			require.NoError(t, err)
-		})
-	}
-	assert.Equal(t, "succeeded", client.AuditRecord.GetX(t.Context(), record.ID).Outcome)
 }
 
 func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {

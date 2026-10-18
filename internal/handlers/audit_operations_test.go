@@ -44,7 +44,7 @@ func TestDeletingABlogPostRecordsItsOldValues(t *testing.T) {
 func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	breakWrites(t, h, "audit_records", "INSERT")
+	breakWrites(h, ent.TypeAuditRecord)
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(context.Background(),
 		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixtures.ID32(fixtures.BlogPostHelloWorld)})
 	require.Error(t, err)

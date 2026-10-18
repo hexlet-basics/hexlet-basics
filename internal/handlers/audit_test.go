@@ -174,7 +174,7 @@ func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T)
 
 	// The update itself succeeds, then the handler reads the likes to answer and
 	// that read fails: the operation fails after its write.
-	breakReads(t, h, "blog_post_likes")
+	breakReads(h, ent.TypeBlogPostLike)
 	_, err := h.Client.AdminUpdateBlogPost(context.Background(), blogInput("Never kept", "second-post"), api.AdminUpdateBlogPostParams{ID: fixtures.ID32(fixtures.BlogPostSecondPost)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
@@ -196,7 +196,7 @@ func TestAFailedChangeIsUndoneAndRecordedAsFailedWithoutItsChanges(t *testing.T)
 func TestAChangeIsNotCommittedWhenItsRecordCannotBeWritten(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	breakWrites(t, h, "audit_records", "INSERT")
+	breakWrites(h, ent.TypeAuditRecord)
 	_, err := h.Client.AdminCreateBlogPost(context.Background(), blogInput("Unaudited", "unaudited"))
 	require.Error(t, err)
 	assert.Equal(t, http.StatusInternalServerError, h.LastStatus())
@@ -204,25 +204,4 @@ func TestAChangeIsNotCommittedWhenItsRecordCannotBeWritten(t *testing.T) {
 	exists, err := h.DB.BlogPost.Query().Where(blogpost.Slug("unaudited")).Exist(t.Context())
 	require.NoError(t, err)
 	assert.False(t, exists, "no change without its record")
-}
-
-func TestTheDatabaseRefusesToUpdateOrDeleteAnAuditRecord(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	_, err := h.Client.AdminCreateBlogPost(context.Background(), blogInput("Kept", "kept"))
-	require.NoError(t, err)
-
-	// Each refused statement aborts the transaction, so each runs in a savepoint
-	// that is rolled back, leaving the next one a usable transaction.
-	for _, statement := range []string{
-		`UPDATE audit_records SET outcome = 'failed'`,
-		`DELETE FROM audit_records`,
-	} {
-		exec(t, h, `SAVEPOINT refused`)
-		_, execErr := h.Tx.ExecContext(t.Context(), statement)
-		require.Error(t, execErr, statement)
-		assert.Contains(t, execErr.Error(), "append-only", statement)
-		exec(t, h, `ROLLBACK TO SAVEPOINT refused`)
-	}
-
-	assert.Len(t, records(t, h, "AdminCreateBlogPost"), 1)
 }

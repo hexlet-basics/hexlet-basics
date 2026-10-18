@@ -184,10 +184,20 @@ depends = [
   "lint:syntax",
   "lint:adr",
   "lint:deps",
+  "lint:triggers",
   "lint:typos",
   "lint:workflows",
   "lint:shell",
 ]
+
+["lint:triggers"]
+description = "No database triggers of our own (river's are the only ones); the two audit migrations are the history of one that was dropped"
+run = '''
+if rg -n -i --glob '!*river_backbone*' --glob '!*audit_records.sql' --glob '!*partition_audit_records.sql' --glob '!*drop_audit_append_only_trigger.sql' 'create (or replace )?(constraint )?trigger' migrations; then
+  echo "a migration creates a trigger: we keep no triggers of our own" >&2
+  exit 1
+fi
+'''
 
 ["lint:typos"]
 description = "Spelling in code, docs and comments (_typos.toml)"

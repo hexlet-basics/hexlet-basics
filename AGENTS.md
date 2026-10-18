@@ -90,6 +90,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   ent auto-migrate and *not* Rails migrations.
 - New schema change: edit `ent/schema`, then `mise run db:migrate-new <name>` to
   scaffold a migration to hand-author, then `atlas migrate hash`.
+- **No database triggers of our own**, in migrations or in tests (river's are the only ones). A rule
+  lives in Go, where it can be read and tested; a test injects a fault with an ent hook or
+  interceptor, never DDL or a trigger. `mise run lint:triggers` rejects a migration that creates one.
 - Local PostgreSQL 18 runs as the `db` mise daemon (`mise.toml`, pitchfork) on
   port **54330** (via `mise run db:up`) to avoid clashing with a `5432` DB. It
   is a standing service: leave it running. Tests use the same server but never
