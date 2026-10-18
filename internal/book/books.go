@@ -59,7 +59,7 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 		}
 
 		if err != nil {
-			return err
+			return errs.Wrapf(err, "save book request")
 		}
 
 		if err := r.publisher.Publish(ctx, tx, events.BookRequested{
@@ -87,7 +87,7 @@ func (r *Recorder) Requested(ctx context.Context, userID int) (bool, error) {
 		exists, err := db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
 		requested = exists
 
-		return err
+		return errs.Wrapf(err, "check book request")
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "check book request")
@@ -108,7 +108,7 @@ func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (bool, error)
 			Save(ctx)
 		marked = count > 0
 
-		return err
+		return errs.Wrapf(err, "save book request")
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "mark book downloaded")

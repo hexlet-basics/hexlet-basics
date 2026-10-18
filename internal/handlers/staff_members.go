@@ -12,11 +12,21 @@ import (
 // as 409 via the central handler.
 
 func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (*api.StaffMemberPage, error) {
-	return s.db.StaffMember.AdminList(ctx, params.Page, params.PerPage, s.conv.ToStaffMembers)
+	result, err := s.db.StaffMember.AdminList(ctx, params.Page, params.PerPage, s.conv.ToStaffMembers)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin list staff member")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetStaffMemberParams) (*api.StaffMember, error) {
-	return s.db.StaffMember.AdminGet(ctx, params.ID, s.conv.ToStaffMember)
+	result, err := s.db.StaffMember.AdminGet(ctx, params.ID, s.conv.ToStaffMember)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get staff member")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (*api.StaffMember, error) {
@@ -24,7 +34,12 @@ func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMembe
 		return nil, err
 	}
 
-	return s.db.StaffMember.AdminCreate(ctx, req, s.conv.ToStaffMember)
+	result, err := s.db.StaffMember.AdminCreate(ctx, req, s.conv.ToStaffMember)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin create staff member")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (*api.StaffMember, error) {
@@ -32,7 +47,12 @@ func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMembe
 		return nil, err
 	}
 
-	return s.db.StaffMember.AdminUpdate(ctx, params.ID, req, s.conv.ToStaffMember)
+	result, err := s.db.StaffMember.AdminUpdate(ctx, params.ID, req, s.conv.ToStaffMember)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin update staff member")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) error {
@@ -41,7 +61,7 @@ func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDel
 	}
 
 	if err := s.db.StaffMember.AdminDelete(ctx, params.ID); err != nil {
-		return err
+		return errs.Wrapf(err, "admin delete staff member")
 	}
 
 	return nil

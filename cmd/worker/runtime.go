@@ -162,7 +162,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	waitErr := group.Wait()
 	if shutdownErr == nil || errors.Is(waitErr, shutdownErr) {
-		return waitErr
+		return errs.Wrapf(waitErr, "wait for the runtime")
 	}
 
 	return errors.Join(waitErr, shutdownErr)

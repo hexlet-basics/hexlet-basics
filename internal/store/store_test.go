@@ -33,7 +33,7 @@ func TestWithinTxCommitsSuccessfulCallback(t *testing.T) {
 		require.NotNil(t, txClient)
 		_, execErr := tx.ExecContext(t.Context(), "write")
 
-		return execErr
+		return errs.Wrapf(execErr, "exec in transaction")
 	})
 
 	require.NoError(t, err)
@@ -123,7 +123,7 @@ func TestWithinTxClientNeitherOwnsTheTransactionNorClosesThePool(t *testing.T) {
 
 		_, execErr := tx.ExecContext(t.Context(), "write")
 
-		return execErr
+		return errs.Wrapf(execErr, "exec in transaction")
 	})
 
 	require.NoError(t, err)

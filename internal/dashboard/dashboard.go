@@ -75,7 +75,7 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 		Order(ent.Desc(enrollment.FieldID)).
 		All(ctx)
 	if err != nil {
-		return Courses{}, err
+		return Courses{}, errs.Wrapf(err, "list enrollments")
 	}
 
 	courseIDs := lo.Map(enrollments, func(e *ent.Enrollment, _ int) int { return e.CourseID })
@@ -169,7 +169,7 @@ func (d *Dashboard) nextLessons(
 		WithLesson().
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
 
 	lessons := make(map[lessonKey]NextLesson, len(rows))

@@ -107,11 +107,15 @@ func (p *Partitions) call(ctx context.Context, function string, month time.Time)
 	for rows.Next() {
 		var name string
 		if err := rows.Scan(&name); err != nil {
-			return nil, err
+			return nil, errs.Wrapf(err, "scan partition name")
 		}
 
 		names = append(names, name)
 	}
 
-	return names, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, errs.Wrapf(err, "read partition names")
+	}
+
+	return names, nil
 }

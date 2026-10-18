@@ -46,10 +46,15 @@ func loopbackServer(t *testing.T, h http.HandlerFunc) (*httptest.Server, *tls.Co
 func get(ctx context.Context, c *http.Client, target string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "build request")
 	}
 
-	return c.Do(req)
+	result, err := c.Do(req)
+	if err != nil {
+		return result, errs.Wrapf(err, "send request")
+	}
+
+	return result, nil
 }
 
 func TestTheProductionClientRefusesALoopbackServerAtDialTime(t *testing.T) {

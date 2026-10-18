@@ -52,7 +52,12 @@ func (p *Public) Page(ctx context.Context, locale string, page domain.Page) ([]*
 
 // BySlug is the post a reader asked for; a miss is ent not-found.
 func (p *Public) BySlug(ctx context.Context, locale, slug string) (*ent.BlogPost, error) {
-	return p.Query(locale).Where(blogpost.SlugEQ(slug)).Only(ctx)
+	result, err := p.Query(locale).Where(blogpost.SlugEQ(slug)).Only(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "load blog post")
+	}
+
+	return result, nil
 }
 
 // Recommended is the posts to read next after post: newest first, never the post
@@ -60,12 +65,22 @@ func (p *Public) BySlug(ctx context.Context, locale, slug string) (*ent.BlogPost
 // which is ActiveRecord's query-part remover, not a record exclusion — a no-op,
 // so its two posts were unordered and could include the post being read.
 func (p *Public) Recommended(ctx context.Context, locale string, post *ent.BlogPost) ([]*ent.BlogPost, error) {
-	return p.Query(locale).Where(blogpost.IDNEQ(post.ID)).Limit(RecommendedLimit).All(ctx)
+	result, err := p.Query(locale).Where(blogpost.IDNEQ(post.ID)).Limit(RecommendedLimit).All(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "list blog posts")
+	}
+
+	return result, nil
 }
 
 // NextOlder is the next older published post (id strictly below the given one),
 // legacy `Api::BlogPostsController#next`. The oldest post has none: ent
 // not-found, which ends the page's infinite scroll.
 func (p *Public) NextOlder(ctx context.Context, locale string, id int) (*ent.BlogPost, error) {
-	return p.Query(locale).Where(blogpost.IDLT(id)).First(ctx)
+	result, err := p.Query(locale).Where(blogpost.IDLT(id)).First(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "find blog post")
+	}
+
+	return result, nil
 }

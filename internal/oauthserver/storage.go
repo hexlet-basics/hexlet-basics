@@ -448,7 +448,7 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 
 			return db.OAuthAccessToken.DeleteOne(access).Exec(ctx)
 		case !ent.IsNotFound(err):
-			return err
+			return errs.Wrapf(err, "load oauth access token")
 		}
 
 		refresh, err := db.OAuthRefreshToken.Get(ctx, id)
@@ -457,7 +457,7 @@ func (s *storage) RevokeToken(ctx context.Context, id, _, clientID string) *oidc
 		}
 
 		if err != nil {
-			return err
+			return errs.Wrapf(err, "load oauth refresh token")
 		}
 
 		if refresh.ClientID != clientID {
@@ -486,13 +486,13 @@ func (s *storage) TerminateSession(ctx context.Context, userID, clientID string)
 	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		if _, err := db.OAuthAccessToken.Delete().
 			Where(oauthaccesstoken.UserID(id), oauthaccesstoken.ClientID(clientID)).Exec(ctx); err != nil {
-			return err
+			return errs.Wrapf(err, "delete oauth access token")
 		}
 
 		_, err := db.OAuthRefreshToken.Delete().
 			Where(oauthrefreshtoken.UserID(id), oauthrefreshtoken.ClientID(clientID)).Exec(ctx)
 
-		return err
+		return errs.Wrapf(err, "delete oauth refresh token")
 	})
 }
 

@@ -92,10 +92,15 @@ func (c *Credentials) SetPassword(ctx context.Context, u *ent.User, password str
 		return nil, err
 	}
 
-	return u.Update().
+	result, err := u.Update().
 		SetPasswordDigest(digest).
 		SetPasswordChangedAt(time.Now().UTC().Truncate(time.Microsecond)).
 		Save(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "save user")
+	}
+
+	return result, nil
 }
 
 // hashPassword is the one place a password becomes a digest.

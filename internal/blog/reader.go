@@ -68,7 +68,7 @@ func NewReader(db *ent.Client, publicURL string) *Reader {
 func (r *Reader) Get(ctx context.Context, id int) (Post, error) {
 	row, err := r.db.BlogPost.Query().Where(blogpost.IDEQ(id)).WithCreator().Only(ctx)
 	if err != nil {
-		return Post{}, err
+		return Post{}, errs.Wrapf(err, "load blog post")
 	}
 
 	posts, err := r.Assemble(ctx, []*ent.BlogPost{row})
@@ -164,7 +164,7 @@ func (r *Reader) coverKeys(ctx context.Context, ids []int) (map[int]string, erro
 		WithBlob().
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list active storage attachments")
 	}
 
 	withBlob := lo.Filter(rows, func(a *ent.ActiveStorageAttachment, _ int) bool { return a.Edges.Blob != nil })
@@ -187,7 +187,7 @@ func (r *Reader) relatedCourseIDs(ctx context.Context, ids []int) (map[int][]int
 		).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog post related course items")
 	}
 
 	out := make(map[int][]int, len(ids))
@@ -217,7 +217,7 @@ func (r *Reader) likeCounts(ctx context.Context, ids []int) (map[int]int, error)
 		Aggregate(ent.As(ent.Count(), "count")).
 		Scan(ctx, &rows)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "read blog post likes")
 	}
 
 	return lo.SliceToMap(rows, func(r row) (int, int) { return r.BlogPostID, r.Count }), nil
@@ -248,7 +248,7 @@ func NewLiker(db *ent.Client) *Liker {
 // where a check followed by an insert would leave two.
 func (l *Liker) Like(ctx context.Context, postID, userID int) error {
 	if _, err := l.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).OnlyID(ctx); err != nil {
-		return err
+		return errs.Wrapf(err, "load blog post")
 	}
 
 	err := l.db.BlogPostLike.Create().

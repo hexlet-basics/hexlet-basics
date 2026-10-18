@@ -93,7 +93,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "save user")
 	}
 
 	return u, nil

@@ -74,13 +74,13 @@ type recorded struct {
 }
 
 func (r *recorder) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
-	return r.tx.ExecContext(ctx, query, args...)
+	return r.tx.ExecContext(ctx, query, args...) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 func (r *recorder) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
 	r.queries = append(r.queries, recorded{query: query, args: args})
 
-	return r.tx.QueryContext(ctx, query, args...)
+	return r.tx.QueryContext(ctx, query, args...) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 // planOf is PostgreSQL's plan for a query the recorder saw, as one string.

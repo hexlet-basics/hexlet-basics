@@ -16,7 +16,6 @@ linters:
     - paralleltest
     - tparallel
     - lll
-    - wrapcheck
     - goconst
     - noinlineerr
     - testpackage
@@ -25,6 +24,14 @@ linters:
     - gocognit
     - nestif
   settings:
+    wrapcheck:
+      # An error that comes from another package of this module was wrapped where
+      # it was made (ADR-0018: wrapped once, at the package boundary), so passing
+      # it up as is does not duplicate the stack. Errors of ent and of the
+      # libraries are what this checks.
+      ignore-package-globs:
+        - hexletbasics/internal/*
+        - hexletbasics/cmd/*
     ireturn:
       # Returning an interface is the point where a library or a seam of ours
       # declares one: the OIDC and Watermill and ent contracts we implement, the

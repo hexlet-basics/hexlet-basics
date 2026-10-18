@@ -321,7 +321,7 @@ func (r recorder) Query(ctx context.Context, query string, args, v any) error {
 	list, _ := args.([]any)
 	*r.queries = append(*r.queries, capturedQuery{query: query, args: list})
 
-	return r.Driver.Query(ctx, query, args, v)
+	return r.Driver.Query(ctx, query, args, v) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 // recording is an ent client over the test transaction that records every

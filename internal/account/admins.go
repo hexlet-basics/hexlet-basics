@@ -27,12 +27,12 @@ var errLastAdmin = errors.New("the last administrator cannot be removed")
 func EnsureAnotherAdmin(ctx context.Context, db *ent.Client, userID int) error {
 	isAdmin, err := db.User.Query().Where(user.ID(userID), user.Admin(true), NotRemoved()).Exist(ctx)
 	if err != nil || !isAdmin {
-		return err
+		return errs.Wrapf(err, "check user")
 	}
 
 	others, err := db.User.Query().Where(user.IDNEQ(userID), user.Admin(true), NotRemoved()).Exist(ctx)
 	if err != nil {
-		return err
+		return errs.Wrapf(err, "check user")
 	}
 
 	if !others {

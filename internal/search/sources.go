@@ -136,7 +136,12 @@ func (l landingPages) scope(m match) []predicate.CourseLandingPage {
 }
 
 func (l landingPages) count(ctx context.Context, m match) (int, error) {
-	return l.db.CourseLandingPage.Query().Where(l.scope(m)...).Count(ctx)
+	result, err := l.db.CourseLandingPage.Query().Where(l.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count course landing pages")
+	}
+
+	return result, nil
 }
 
 func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, error) {
@@ -149,7 +154,7 @@ func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, err
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
 
 	out := make([]candidate, 0, len(rows))
@@ -186,7 +191,7 @@ func (l landingPages) snippets(ctx context.Context, m match, ids []int) (map[int
 		Select(courselandingpage.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
 
 	return snippetsOf(rows, func(row *ent.CourseLandingPage) int { return row.ID })
@@ -239,7 +244,12 @@ func newestBuild(locale string) predicate.CourseLessonTranslation {
 }
 
 func (l lessons) count(ctx context.Context, m match) (int, error) {
-	return l.db.CourseLessonTranslation.Query().Where(l.scope(m)...).Count(ctx)
+	result, err := l.db.CourseLessonTranslation.Query().Where(l.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count course lesson translations")
+	}
+
+	return result, nil
 }
 
 func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
@@ -251,7 +261,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
 
 	if len(rows) == 0 {
@@ -271,7 +281,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		Select(courselesson.FieldID, courselesson.FieldSlug, courselesson.FieldState).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lessons")
 	}
 
 	courseRows, err := l.db.Course.Query().
@@ -279,7 +289,7 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		Select(course.FieldID, course.FieldSlug, course.FieldReadiness).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list courses")
 	}
 
 	lessonSlugs, lessonStates := map[int]string{}, map[int]string{}
@@ -337,7 +347,7 @@ func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]stri
 		Select(courselessontranslation.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
 
 	return snippetsOf(rows, func(row *ent.CourseLessonTranslation) int { return row.ID })
@@ -368,7 +378,12 @@ func (p posts) scope(m match) []predicate.BlogPost {
 }
 
 func (p posts) count(ctx context.Context, m match) (int, error) {
-	return p.db.BlogPost.Query().Where(p.scope(m)...).Count(ctx)
+	result, err := p.db.BlogPost.Query().Where(p.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count blog posts")
+	}
+
+	return result, nil
 }
 
 func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
@@ -379,7 +394,7 @@ func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog posts")
 	}
 
 	out := make([]candidate, 0, len(rows))
@@ -413,7 +428,7 @@ func (p posts) snippets(ctx context.Context, m match, ids []int) (map[int]string
 		Select(blogpost.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog posts")
 	}
 
 	return snippetsOf(rows, func(row *ent.BlogPost) int { return row.ID })

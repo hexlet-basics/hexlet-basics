@@ -100,7 +100,7 @@ func (p *Policy) requireGrant(ctx context.Context, staff *ent.StaffMember, permi
 		).
 		Exist(ctx)
 	if err != nil {
-		return err
+		return errs.Wrapf(err, "check staff role grant")
 	}
 
 	if !held {
@@ -122,7 +122,7 @@ func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember
 		return nil, false, nil
 	}
 
-	return staff, err == nil, err
+	return staff, err == nil, errs.Wrapf(err, "load staff member")
 }
 
 // IsClassified reports whether operation says who may use it, by declaring a

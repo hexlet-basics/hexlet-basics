@@ -37,7 +37,7 @@ func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (*api
 
 	u, err := update.Save(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "save user")
 	}
 
 	profile := s.conv.ToUser(u)

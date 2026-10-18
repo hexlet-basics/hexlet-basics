@@ -173,7 +173,7 @@ func newSubscriber(
 	consumerGroup string,
 	logger watermill.LoggerAdapter,
 ) (*wmsql.Subscriber, error) {
-	return wmsql.NewSubscriber(
+	result, err := wmsql.NewSubscriber(
 		wmsql.BeginnerFromStdSQL(db),
 		wmsql.SubscriberConfig{
 			ConsumerGroup:  consumerGroup,
@@ -182,6 +182,11 @@ func newSubscriber(
 		},
 		logger,
 	)
+	if err != nil {
+		return result, errs.Wrapf(err, "create sql subscriber")
+	}
+
+	return result, nil
 }
 
 // Run blocks while the Watermill router is alive, allowing the process
@@ -200,7 +205,14 @@ func (r *Runtime) Run(ctx context.Context) error {
 func (r *Runtime) Running() <-chan struct{} { return r.router.Running() }
 
 // Close drains subscribers and in-flight handlers.
-func (r *Runtime) Close() error { return r.router.Close() }
+func (r *Runtime) Close() error {
+	err := r.router.Close()
+	if err != nil {
+		return errs.Wrapf(err, "close event router")
+	}
+
+	return nil
+}
 
 // How the router closes and how a handler is retried before its message goes to
 // the poison queue.

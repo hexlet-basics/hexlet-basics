@@ -37,8 +37,8 @@ func work[A river.JobArgs](t *testing.T, worker river.Worker[A], args A) (*river
 	t.Helper()
 	_, tx := testsupport.NewClientWithTx(t)
 
-	return rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker).
-		Work(t.Context(), t, tx, args, nil)
+	return rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker). //nolint:wrapcheck // the worker helper passes the job error through to the test
+												Work(t.Context(), t, tx, args, nil)
 }
 
 func lastError(t *testing.T, job *rivertype.JobRow) string {

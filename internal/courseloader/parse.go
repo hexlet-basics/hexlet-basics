@@ -440,7 +440,7 @@ func localeFromDescriptionFile(base string) string {
 func subdirs(repo repository, dir string) ([]string, error) {
 	entries, err := fs.ReadDir(repo.fsys, dir)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "read directory")
 	}
 
 	names := make([]string, 0, len(entries))
@@ -456,7 +456,7 @@ func subdirs(repo repository, dir string) ([]string, error) {
 func readFile(repo repository, name string) (string, error) {
 	raw, err := fs.ReadFile(repo.fsys, name)
 	if err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "read file")
 	}
 
 	return string(raw), nil
@@ -468,5 +468,10 @@ func decodeYAML(raw []byte, target any) error {
 	decoder := yaml.NewDecoder(bytes.NewReader(raw))
 	decoder.KnownFields(true)
 
-	return decoder.Decode(target)
+	err := decoder.Decode(target)
+	if err != nil {
+		return errs.Wrapf(err, "decode yaml")
+	}
+
+	return nil
 }

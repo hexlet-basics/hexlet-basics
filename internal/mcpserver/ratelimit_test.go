@@ -135,7 +135,7 @@ func (c slowCatalogue) ListCourses(ctx context.Context) ([]api.CourseCatalogItem
 
 	c.cancelled <- ctx.Err()
 
-	return nil, ctx.Err()
+	return nil, ctx.Err() //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 func TestTimeoutCancelsTheHandlersContext(t *testing.T) {
@@ -176,5 +176,5 @@ func (bearerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
 	r.Header.Set("Authorization", "Bearer anything")
 
-	return http.DefaultTransport.RoundTrip(r)
+	return http.DefaultTransport.RoundTrip(r) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }

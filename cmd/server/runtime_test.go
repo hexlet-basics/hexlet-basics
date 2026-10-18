@@ -56,12 +56,17 @@ func freeAddr(t *testing.T) string {
 func get(ctx context.Context, url string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "build request")
 	}
 
 	client := &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
 
-	return client.Do(req)
+	result, err := client.Do(req)
+	if err != nil {
+		return result, errs.Wrapf(err, "send request")
+	}
+
+	return result, nil
 }
 
 func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {

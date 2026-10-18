@@ -36,26 +36,46 @@ func (s *Server) GetActiveBanner(ctx context.Context) (*api.ActiveBanner, error)
 // so there is no 409 path.
 
 func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (*api.BannerPage, error) {
-	return s.db.Banner.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToBanners)
+	result, err := s.db.Banner.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToBanners)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin list banner")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (*api.Banner, error) {
-	return s.db.Banner.AdminGet(ctx, params.ID, s.conv.ToBanner)
+	result, err := s.db.Banner.AdminGet(ctx, params.ID, s.conv.ToBanner)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get banner")
+	}
+
+	return result, nil
 }
 
 // AdminCreateBanner creates a banner as a draft: the state is not an input (it
 // moves only through the transition operations), so the column default applies.
 func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (*api.Banner, error) {
-	return s.db.Banner.AdminCreate(ctx, req, s.conv.ToBanner)
+	result, err := s.db.Banner.AdminCreate(ctx, req, s.conv.ToBanner)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin create banner")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (*api.Banner, error) {
-	return s.db.Banner.AdminUpdate(ctx, params.ID, req, s.conv.ToBanner)
+	result, err := s.db.Banner.AdminUpdate(ctx, params.ID, req, s.conv.ToBanner)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin update banner")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) error {
 	if err := s.db.Banner.AdminDelete(ctx, params.ID); err != nil {
-		return err
+		return errs.Wrapf(err, "admin delete banner")
 	}
 
 	return nil
@@ -85,5 +105,10 @@ func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchive
 
 // getAdminBanner is the read model a state move echoes back.
 func (s *Server) getAdminBanner(ctx context.Context, id int) (*api.Banner, error) {
-	return s.db.Banner.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToBanner)
+	result, err := s.db.Banner.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToBanner)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get banner")
+	}
+
+	return result, nil
 }

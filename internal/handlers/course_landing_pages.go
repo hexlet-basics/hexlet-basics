@@ -15,27 +15,47 @@ import (
 // the Attachments uploader lands — same deferral as the course cover.
 
 func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (*api.CourseLandingPagePage, error) {
-	return s.db.CourseLandingPage.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourseLandingPages)
+	result, err := s.db.CourseLandingPage.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourseLandingPages)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin list course landing page")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.AdminGetCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return s.db.CourseLandingPage.AdminGet(ctx, params.ID, s.conv.ToCourseLandingPage)
+	result, err := s.db.CourseLandingPage.AdminGet(ctx, params.ID, s.conv.ToCourseLandingPage)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get course landing page")
+	}
+
+	return result, nil
 }
 
 // AdminCreateCourseLandingPage creates a landing page as a draft: the state is
 // not an input (it moves only through the transition operations), so the column
 // default applies.
 func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput) (*api.CourseLandingPage, error) {
-	return s.db.CourseLandingPage.AdminCreate(ctx, req, s.conv.ToCourseLandingPage)
+	result, err := s.db.CourseLandingPage.AdminCreate(ctx, req, s.conv.ToCourseLandingPage)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin create course landing page")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput, params api.AdminUpdateCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return s.db.CourseLandingPage.AdminUpdate(ctx, params.ID, req, s.conv.ToCourseLandingPage)
+	result, err := s.db.CourseLandingPage.AdminUpdate(ctx, params.ID, req, s.conv.ToCourseLandingPage)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin update course landing page")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.AdminDeleteCourseLandingPageParams) error {
 	if err := s.db.CourseLandingPage.AdminDelete(ctx, params.ID); err != nil {
-		return err
+		return errs.Wrapf(err, "admin delete course landing page")
 	}
 
 	return nil
@@ -64,5 +84,10 @@ func (s *Server) AdminArchiveCourseLandingPage(ctx context.Context, params api.A
 
 // getAdminCourseLandingPage is the read model a state move echoes back.
 func (s *Server) getAdminCourseLandingPage(ctx context.Context, id int) (*api.CourseLandingPage, error) {
-	return s.db.CourseLandingPage.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourseLandingPage)
+	result, err := s.db.CourseLandingPage.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourseLandingPage)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get course landing page")
+	}
+
+	return result, nil
 }

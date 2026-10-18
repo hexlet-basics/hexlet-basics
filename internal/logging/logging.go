@@ -73,7 +73,12 @@ func (h traceHandler) Handle(ctx context.Context, record slog.Record) error {
 		)
 	}
 
-	return h.Handler.Handle(ctx, record)
+	err := h.Handler.Handle(ctx, record)
+	if err != nil {
+		return errs.Wrapf(err, "handle log record")
+	}
+
+	return nil
 }
 
 func (h traceHandler) WithAttrs(attrs []slog.Attr) slog.Handler {

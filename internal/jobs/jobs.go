@@ -74,7 +74,12 @@ func cancelUnfixable(err error) error {
 	if errors.Is(err, domain.ErrNotFound) ||
 		errors.Is(err, domain.ErrConflict) ||
 		errors.Is(err, domain.ErrInvalid) {
-		return river.JobCancel(err)
+		err := river.JobCancel(err)
+		if err != nil {
+			return errs.Wrapf(err, "cancel job")
+		}
+
+		return nil
 	}
 
 	return err
@@ -109,10 +114,15 @@ func NewInsertOnlyClient(
 	tracerProvider trace.TracerProvider,
 	meterProvider metric.MeterProvider,
 ) (*river.Client[*sql.Tx], error) {
-	return river.NewClient(riverdatabasesql.New(db), &river.Config{
+	result, err := river.NewClient(riverdatabasesql.New(db), &river.Config{
 		Logger:  logger,
 		Plugins: openTelemetryPlugins(tracerProvider, meterProvider),
 	})
+	if err != nil {
+		return result, errs.Wrapf(err, "create river client")
+	}
+
+	return result, nil
 }
 
 // NewWorkerClient builds the River runtime used only by the worker process.
@@ -129,10 +139,15 @@ func NewWorkerClient(
 	meterProvider metric.MeterProvider,
 	modules ...Module,
 ) (*river.Client[*sql.Tx], error) {
-	return river.NewClient(
+	result, err := river.NewClient(
 		riverdatabasesql.New(db),
 		workerConfig(logger, errorHandler, tracerProvider, meterProvider, modules),
 	)
+	if err != nil {
+		return result, errs.Wrapf(err, "create river client")
+	}
+
+	return result, nil
 }
 
 // workerConfig is the worker client's River configuration.

@@ -26,7 +26,7 @@ type txInserter struct {
 }
 
 func (i txInserter) Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error) {
-	return i.client.InsertTx(ctx, i.tx, args, opts)
+	return i.client.InsertTx(ctx, i.tx, args, opts) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 // A lead fact becomes one amoCRM job, and redelivery of the same fact does not

@@ -293,7 +293,7 @@ func stringList(fields map[string]json.RawMessage, name string) ([]string, error
 
 	var list []string
 	if err := json.Unmarshal(raw, &list); err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 
 	return list, nil

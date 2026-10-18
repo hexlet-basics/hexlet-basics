@@ -94,7 +94,7 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 		if err := db.BlogPost.UpdateOneID(postID).
 			SetRelatedCourseItemsCount(len(courseIDs)).
 			Exec(ctx); err != nil {
-			return err
+			return errs.Wrapf(err, "save blog post")
 		}
 
 		if _, err := db.BlogPostRelatedCourseItem.Delete().
@@ -205,7 +205,7 @@ func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]ca
 		Order(ent.Asc(courselandingpage.FieldID)).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
 
 	return lo.Map(pages, func(p *ent.CourseLandingPage, _ int) candidate {

@@ -31,7 +31,12 @@ func (s *logSink) Write(p []byte) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.buf.Write(p)
+	result, err := s.buf.Write(p)
+	if err != nil {
+		return result, errs.Wrapf(err, "write log")
+	}
+
+	return result, nil
 }
 
 func (s *logSink) String() string {

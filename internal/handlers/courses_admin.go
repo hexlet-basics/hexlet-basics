@@ -16,7 +16,12 @@ import (
 // is computed from the slug on read. There is no delete (parity with legacy).
 
 func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (*api.CoursePage, error) {
-	return s.db.Course.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourses)
+	result, err := s.db.Course.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToCourses)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin list course")
+	}
+
+	return result, nil
 }
 
 // AdminListCourseOptions serves selects: every course as id and name, with no
@@ -36,18 +41,33 @@ func (s *Server) AdminListCourseOptions(ctx context.Context) ([]api.CourseOption
 }
 
 func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (*api.Course, error) {
-	return s.db.Course.AdminGet(ctx, params.ID, s.conv.ToCourse)
+	result, err := s.db.Course.AdminGet(ctx, params.ID, s.conv.ToCourse)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get course")
+	}
+
+	return result, nil
 }
 
 // AdminCreateCourse creates a course as a draft: the Readiness is not an input
 // (a state is not an update), so the column default applies and it moves only
 // through the mark-as operations.
 func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (*api.Course, error) {
-	return s.db.Course.AdminCreate(ctx, req, s.conv.ToCourse)
+	result, err := s.db.Course.AdminCreate(ctx, req, s.conv.ToCourse)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin create course")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (*api.Course, error) {
-	return s.db.Course.AdminUpdate(ctx, params.ID, req, s.conv.ToCourse)
+	result, err := s.db.Course.AdminUpdate(ctx, params.ID, req, s.conv.ToCourse)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin update course")
+	}
+
+	return result, nil
 }
 
 // A state is not an update (ADR-0020, state transitions addendum): the Readiness
@@ -75,7 +95,12 @@ func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminM
 // getAdminCourse is the admin course view a readiness move echoes back, the one
 // the update gives.
 func (s *Server) getAdminCourse(ctx context.Context, id int) (*api.Course, error) {
-	return s.db.Course.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourse)
+	result, err := s.db.Course.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourse)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get course")
+	}
+
+	return result, nil
 }
 
 // AdminCreateCourseVersion starts a build of a new course version: it creates the

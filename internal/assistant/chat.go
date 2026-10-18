@@ -245,7 +245,7 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 				text.WriteString(delta)
 				_, err := writer.Write([]byte(delta))
 
-				return err
+				return errs.Wrapf(err, "write to the stream")
 			})
 			if err == nil && !signalled {
 				// An empty answer is still an answer.

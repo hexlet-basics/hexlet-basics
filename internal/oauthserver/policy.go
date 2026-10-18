@@ -62,7 +62,7 @@ func (a authorizer) ValidateAuthRequest(
 	}
 
 	if err := op.ValidateAuthReqRedirectURI(c, req.RedirectURI, req.ResponseType); err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "validate redirect uri")
 	}
 
 	for _, scope := range req.Scopes {
@@ -79,7 +79,12 @@ func (a authorizer) ValidateAuthRequest(
 		return "", errInvalidTarget(a.s.resource)
 	}
 
-	return op.ValidateAuthRequestClient(ctx, req, c, verifier)
+	result, err := op.ValidateAuthRequestClient(ctx, req, c, verifier)
+	if err != nil {
+		return result, errs.Wrapf(err, "validate authorization request client")
+	}
+
+	return result, nil
 }
 
 // acceptsResources reports whether every requested resource is the canonical
@@ -163,12 +168,12 @@ func (w *issWriter) WriteHeader(code int) {
 func withIssParameter(doc any) (map[string]any, error) {
 	raw, err := json.Marshal(doc)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "marshal json")
 	}
 
 	out := map[string]any{}
 	if err := json.Unmarshal(raw, &out); err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 
 	out["authorization_response_iss_parameter_supported"] = true

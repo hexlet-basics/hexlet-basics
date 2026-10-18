@@ -69,7 +69,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 				courselandingpage.FieldHeader, courselandingpage.FieldLocale).
 			All(ctx)
 		if err != nil {
-			return nil, err
+			return nil, errs.Wrapf(err, "list course landing pages")
 		}
 
 		pages = append(pages, rows...)
@@ -84,7 +84,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 		Select(blogpost.FieldID, blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldLocale).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog posts")
 	}
 
 	// Legacy `Language::Category.all` had no ORDER BY; id ascending is the
@@ -93,7 +93,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 		Order(coursecategory.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course categories")
 	}
 
 	return &Page{LandingPages: pages, BlogPosts: posts, Categories: categories}, nil

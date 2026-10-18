@@ -84,7 +84,7 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 
 		value, err := next.Mutate(ctx, m)
 		if err != nil {
-			return value, err
+			return value, errs.Wrapf(err, "run mutation")
 		}
 
 		change.ID = entityID(m)

@@ -45,7 +45,12 @@ func New(db *sql.DB) *Store {
 // NewDB opens the application's single database/sql pool over pgx. Both ent and
 // River use it so a business write and its background job can share one sql.Tx.
 func NewDB(dsn string) (*sql.DB, error) {
-	return sql.Open("pgx", dsn)
+	result, err := sql.Open("pgx", dsn)
+	if err != nil {
+		return result, errs.Wrapf(err, "open database")
+	}
+
+	return result, nil
 }
 
 // NewClient builds an ent client over the shared database/sql pool. It never
@@ -139,5 +144,10 @@ func (txBoundDriver) Close() error { return nil }
 // `file://…` writes to local disk in dev, `s3://…` talks to S3 in prod. The
 // caller owns Close (main.go drains it on shutdown, like the pool and ent client).
 func NewBucket(ctx context.Context, bucketURL string) (*blob.Bucket, error) {
-	return blob.OpenBucket(ctx, bucketURL)
+	result, err := blob.OpenBucket(ctx, bucketURL)
+	if err != nil {
+		return result, errs.Wrapf(err, "open blob bucket")
+	}
+
+	return result, nil
 }

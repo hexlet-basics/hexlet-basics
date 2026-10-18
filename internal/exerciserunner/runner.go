@@ -149,7 +149,14 @@ func New(opts Options) (*Docker, error) {
 }
 
 // Close releases the daemon connection.
-func (d *Docker) Close() error { return d.docker.Close() }
+func (d *Docker) Close() error {
+	err := d.docker.Close()
+	if err != nil {
+		return errs.Wrapf(err, "close docker client")
+	}
+
+	return nil
+}
 
 // Run grades one submission and returns what the container reported.
 //
@@ -158,7 +165,7 @@ func (d *Docker) Close() error { return d.docker.Close() }
 // report a failing test: a failure is an outcome, and the learner sees it.
 func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progress.Outcome, error) {
 	if err := d.slots.Acquire(ctx, 1); err != nil {
-		return progress.Outcome{}, err
+		return progress.Outcome{}, errs.Wrapf(err, "acquire runner slot")
 	}
 	defer d.slots.Release(1)
 

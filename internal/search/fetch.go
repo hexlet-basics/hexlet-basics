@@ -93,7 +93,7 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 		Order(ent.Asc(courselandingpage.FieldID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find course landing page")
 	}
 
 	title := titleOf(cmd.Ref.Slug, page.Name, page.Header)
@@ -120,7 +120,7 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 		WithLesson().
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
 
 	translations = slices.DeleteFunc(translations, func(t *ent.CourseLessonTranslation) bool {
@@ -161,14 +161,14 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, error) {
 	parent, err := c.db.Course.Query().Where(course.SlugEQ(cmd.Ref.CourseSlug)).Only(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "load course")
 	}
 
 	lesson, err := c.db.CourseLesson.Query().
 		Where(courselesson.CourseID(parent.ID), courselesson.SlugEQ(cmd.Ref.Slug)).
 		Only(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "load course lesson")
 	}
 	// The newest build the lesson is translated into, as the search finds it.
 	t, err := c.db.CourseLessonTranslation.Query().
@@ -177,7 +177,7 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 		Order(ent.Desc(courselessontranslation.FieldCourseVersionID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find course lesson translation")
 	}
 
 	title := titleOf(cmd.Ref.Slug, t.Name)
@@ -207,7 +207,7 @@ func (c *Catalogue) fetchPost(ctx context.Context, cmd FetchRecord) (*Record, er
 		Order(ent.Asc(blogpost.FieldID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find blog post")
 	}
 
 	title := titleOf(cmd.Ref.Slug, post.Name)

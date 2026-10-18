@@ -593,7 +593,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 func scalars(raw json.RawMessage) ([]string, error) {
 	var one any
 	if err := json.Unmarshal(raw, &one); err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 
 	items, isList := one.([]any)
@@ -610,7 +610,7 @@ func scalars(raw json.RawMessage) ([]string, error) {
 			// Re-encode, not format: 3 must stay 3, not 3.000000.
 			b, err := json.Marshal(v)
 			if err != nil {
-				return nil, err
+				return nil, errs.Wrapf(err, "marshal json")
 			}
 
 			out = append(out, string(b))

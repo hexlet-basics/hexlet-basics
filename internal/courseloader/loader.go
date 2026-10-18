@@ -239,7 +239,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		if err := saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
 			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
 
-			return err
+			return errs.Wrapf(err, "save course module translation")
 		}); err != nil {
 			return oops.Wrapf(err, "create module infos %q", m.Slug)
 		}
@@ -285,7 +285,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		if err := saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
 			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
 
-			return err
+			return errs.Wrapf(err, "save course lesson translation")
 		}); err != nil {
 			return oops.Wrapf(err, "create lesson infos of module %q", m.Slug)
 		}
@@ -487,7 +487,7 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 		return ast.WalkSkipChildren, nil
 	})
 	if err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "walk markdown")
 	}
 
 	slices.SortFunc(replacements, func(a, b markdownImageReplacement) int { return cmp.Compare(a.start, b.start) })
@@ -574,7 +574,7 @@ func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string
 func marshalYAML(v any) (string, error) {
 	out, err := yaml.Marshal(v)
 	if err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "marshal yaml")
 	}
 
 	return string(out), nil
