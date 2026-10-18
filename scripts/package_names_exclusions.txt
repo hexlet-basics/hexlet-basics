@@ -5,10 +5,7 @@ accounts
 banners
 blogposts
 books
-coursecategories
-courselessons
 coursepages
-courses
 emailtokens
 eventhandlers
 feeds

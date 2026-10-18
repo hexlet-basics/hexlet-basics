@@ -19,10 +19,9 @@ import (
 	"hexletbasics/internal/banners"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
+	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/config"
-	"hexletbasics/internal/coursecategories"
-	"hexletbasics/internal/courselessons"
-	"hexletbasics/internal/courses"
+	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
@@ -67,47 +66,47 @@ const (
 // type: handlers.Deps holds interfaces, which the container cannot tell apart
 // by type alone.
 type handlerServices struct {
-	DB                *ent.Client                 `do:""`
-	Config            *config.Config              `do:""`
-	Starter           *versionbuilds.Starter      `do:""`
-	Jobs              *jobs.Enqueuer              `do:""`
-	RelatedCoursesSet *relatedcourses.Replacer    `do:""`
-	Progress          *progress.Progress          `do:""`
-	Assets            *assetstore.Store           `do:""`
-	Sessions          *sessions.Manager           `do:""`
-	Registrar         *accounts.Registrar         `do:""`
-	Remover           *accounts.Remover           `do:""`
-	UserEditor        *accounts.Editor            `do:""`
-	UserDirectory     *accounts.Directory         `do:""`
-	Events            *events.Publisher           `do:""`
-	Leads             *leads.Recorder             `do:""`
-	Books             *books.Recorder             `do:""`
-	I18n              *localization.Translator    `do:""`
-	Errors            *handlers.APIErrorHandler   `do:""`
-	YandexFeed        *feeds.Yandex               `do:""`
-	Assistant         *assistant.Chat             `do:""`
-	PostRemover       *blogposts.Remover          `do:""`
-	Permissions       *staffroles.Permissions     `do:""`
-	SelfProtection    *selfprotection.Guard       `do:""`
-	BannerStates      *banners.Editor             `do:""`
-	ReviewStates      *reviews.Editor             `do:""`
-	LandingPageStates *landingpages.Editor        `do:""`
-	CourseReadiness   *courses.Readiness          `do:""`
-	Dashboard         *dashboard.Dashboard        `do:""`
-	Sitemap           *sitemap.Sitemap            `do:""`
-	Search            *search.Catalogue           `do:""`
-	LessonReviews     *lessonreviews.Scheduler    `do:""`
-	RelatedSuggester  *relatedcourses.Scheduler   `do:""`
-	LandingPageQna    *qnaitems.LandingPage       `do:""`
-	CategoryQna       *qnaitems.Category          `do:""`
-	PostEditor        *blogposts.Editor           `do:""`
-	ReviewDirectory   *reviews.Directory          `do:""`
-	CourseDirectory   *courses.Directory          `do:""`
-	LeadDirectory     *leads.Directory            `do:""`
-	MessageDirectory  *assistant.Directory        `do:""`
-	CategoryDirectory *coursecategories.Directory `do:""`
-	BannerDirectory   *banners.Directory          `do:""`
-	LessonDirectory   *courselessons.Directory    `do:""`
+	DB                *ent.Client                `do:""`
+	Config            *config.Config             `do:""`
+	Starter           *versionbuilds.Starter     `do:""`
+	Jobs              *jobs.Enqueuer             `do:""`
+	RelatedCoursesSet *relatedcourses.Replacer   `do:""`
+	Progress          *progress.Progress         `do:""`
+	Assets            *assetstore.Store          `do:""`
+	Sessions          *sessions.Manager          `do:""`
+	Registrar         *accounts.Registrar        `do:""`
+	Remover           *accounts.Remover          `do:""`
+	UserEditor        *accounts.Editor           `do:""`
+	UserDirectory     *accounts.Directory        `do:""`
+	Events            *events.Publisher          `do:""`
+	Leads             *leads.Recorder            `do:""`
+	Books             *books.Recorder            `do:""`
+	I18n              *localization.Translator   `do:""`
+	Errors            *handlers.APIErrorHandler  `do:""`
+	YandexFeed        *feeds.Yandex              `do:""`
+	Assistant         *assistant.Chat            `do:""`
+	PostRemover       *blogposts.Remover         `do:""`
+	Permissions       *staffroles.Permissions    `do:""`
+	SelfProtection    *selfprotection.Guard      `do:""`
+	BannerStates      *banners.Editor            `do:""`
+	ReviewStates      *reviews.Editor            `do:""`
+	LandingPageStates *landingpages.Editor       `do:""`
+	CourseReadiness   *catalog.Readiness         `do:""`
+	Dashboard         *dashboard.Dashboard       `do:""`
+	Sitemap           *sitemap.Sitemap           `do:""`
+	Search            *search.Catalogue          `do:""`
+	LessonReviews     *lessonreviews.Scheduler   `do:""`
+	RelatedSuggester  *relatedcourses.Scheduler  `do:""`
+	LandingPageQna    *qnaitems.LandingPage      `do:""`
+	CategoryQna       *qnaitems.Category         `do:""`
+	PostEditor        *blogposts.Editor          `do:""`
+	ReviewDirectory   *reviews.Directory         `do:""`
+	CourseDirectory   *catalog.CourseDirectory   `do:""`
+	LeadDirectory     *leads.Directory           `do:""`
+	MessageDirectory  *assistant.Directory       `do:""`
+	CategoryDirectory *catalog.CategoryDirectory `do:""`
+	BannerDirectory   *banners.Directory         `do:""`
+	LessonDirectory   *curriculum.Directory      `do:""`
 }
 
 var serverPackage = do.Package(
@@ -206,12 +205,12 @@ var serverPackage = do.Package(
 		}
 		return landingpages.NewEditor(db), nil
 	}),
-	do.Lazy[*courses.Readiness](func(i do.Injector) (*courses.Readiness, error) {
+	do.Lazy[*catalog.Readiness](func(i do.Injector) (*catalog.Readiness, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return courses.NewReadiness(db), nil
+		return catalog.NewReadiness(db), nil
 	}),
 	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -231,12 +230,12 @@ var serverPackage = do.Package(
 		}
 		return staffroles.NewPermissions(db, tx), nil
 	}),
-	do.Lazy[*courselessons.Directory](func(i do.Injector) (*courselessons.Directory, error) {
+	do.Lazy[*curriculum.Directory](func(i do.Injector) (*curriculum.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return courselessons.NewDirectory(db), nil
+		return curriculum.NewDirectory(db), nil
 	}),
 	do.Lazy[*banners.Directory](func(i do.Injector) (*banners.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -245,12 +244,12 @@ var serverPackage = do.Package(
 		}
 		return banners.NewDirectory(db), nil
 	}),
-	do.Lazy[*coursecategories.Directory](func(i do.Injector) (*coursecategories.Directory, error) {
+	do.Lazy[*catalog.CategoryDirectory](func(i do.Injector) (*catalog.CategoryDirectory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return coursecategories.NewDirectory(db), nil
+		return catalog.NewCategoryDirectory(db), nil
 	}),
 	do.Lazy[*assistant.Directory](func(i do.Injector) (*assistant.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -266,12 +265,12 @@ var serverPackage = do.Package(
 		}
 		return leads.NewDirectory(db), nil
 	}),
-	do.Lazy[*courses.Directory](func(i do.Injector) (*courses.Directory, error) {
+	do.Lazy[*catalog.CourseDirectory](func(i do.Injector) (*catalog.CourseDirectory, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
-		return courses.NewDirectory(db), nil
+		return catalog.NewCourseDirectory(db), nil
 	}),
 	do.Lazy[*reviews.Directory](func(i do.Injector) (*reviews.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)

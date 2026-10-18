@@ -7,8 +7,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/blogposts"
-	"hexletbasics/internal/coursecategories"
-	"hexletbasics/internal/courses"
+	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/leads"
@@ -129,7 +128,7 @@ type BannerDirectory interface {
 // CategoryDirectory reads the course categories a visitor browses.
 type CategoryDirectory interface {
 	Index(ctx context.Context, locale string) ([]*ent.CourseCategory, error)
-	View(ctx context.Context, locale, slug string) (*coursecategories.View, error)
+	View(ctx context.Context, locale, slug string) (*catalog.View, error)
 }
 
 // MessageDirectory is the administrators' read side of the assistant's messages.
@@ -144,7 +143,7 @@ type LeadDirectory interface {
 
 // CourseDirectory is the administrators' read side of the courses.
 type CourseDirectory interface {
-	Options(ctx context.Context) ([]courses.Option, error)
+	Options(ctx context.Context) ([]catalog.Option, error)
 }
 
 // ReviewDirectory reads the reviews a visitor may see.

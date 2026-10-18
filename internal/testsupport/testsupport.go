@@ -30,10 +30,9 @@ import (
 	"hexletbasics/internal/banners"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
+	"hexletbasics/internal/catalog"
 	"hexletbasics/internal/config"
-	"hexletbasics/internal/coursecategories"
-	"hexletbasics/internal/courselessons"
-	"hexletbasics/internal/courses"
+	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/feeds"
@@ -372,7 +371,7 @@ func handlerDeps(
 		BannerStates:      banners.NewEditor(db),
 		ReviewStates:      reviews.NewEditor(db),
 		LandingPageStates: landingpages.NewEditor(db),
-		CourseReadiness:   courses.NewReadiness(db),
+		CourseReadiness:   catalog.NewReadiness(db),
 		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
 		Search:            search.NewCatalogue(db),
@@ -382,12 +381,12 @@ func handlerDeps(
 		CategoryQna:       qnaitems.NewCategory(db),
 		PostEditor:        blogposts.NewEditor(db),
 		ReviewDirectory:   reviews.NewDirectory(db),
-		CourseDirectory:   courses.NewDirectory(db),
+		CourseDirectory:   catalog.NewCourseDirectory(db),
 		LeadDirectory:     leads.NewDirectory(db),
 		MessageDirectory:  assistant.NewDirectory(db),
-		CategoryDirectory: coursecategories.NewDirectory(db),
+		CategoryDirectory: catalog.NewCategoryDirectory(db),
 		BannerDirectory:   banners.NewDirectory(db),
-		LessonDirectory:   courselessons.NewDirectory(db),
+		LessonDirectory:   curriculum.NewDirectory(db),
 	}
 }
 

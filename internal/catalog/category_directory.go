@@ -1,5 +1,4 @@
-// Package coursecategories reads the course categories a visitor browses.
-package coursecategories
+package catalog
 
 import (
 	"context"
@@ -13,18 +12,18 @@ import (
 	"hexletbasics/internal/landingpages"
 )
 
-// Directory is the public read side of the categories (legacy
+// CategoryDirectory is the public read side of the categories (legacy
 // `Web::LanguageCategoriesController`). Both reads are scoped to a locale
 // (legacy `with_locale`), so a category of another language is not found.
-type Directory struct {
+type CategoryDirectory struct {
 	db      *ent.Client
 	catalog *landingpages.Catalog
 }
 
-// NewDirectory builds the directory over an ent client; the landing pages a
+// NewCategoryDirectory builds the directory over an ent client; the landing pages a
 // category shows come from the same catalog rule the course list uses.
-func NewDirectory(db *ent.Client) *Directory {
-	return &Directory{db: db, catalog: landingpages.NewCatalog(db)}
+func NewCategoryDirectory(db *ent.Client) *CategoryDirectory {
+	return &CategoryDirectory{db: db, catalog: landingpages.NewCatalog(db)}
 }
 
 // View is a category page: the category, the landing pages grouped under it and
@@ -37,7 +36,7 @@ type View struct {
 
 // Index lists the categories of the locale. Legacy issued no ORDER BY and got
 // the table's physical order; id ascending is the deterministic stand-in.
-func (d *Directory) Index(ctx context.Context, locale string) ([]*ent.CourseCategory, error) {
+func (d *CategoryDirectory) Index(ctx context.Context, locale string) ([]*ent.CourseCategory, error) {
 	rows, err := d.db.CourseCategory.Query().
 		Where(coursecategory.LocaleEQ(locale)).
 		Order(coursecategory.ByID()).
@@ -46,7 +45,7 @@ func (d *Directory) Index(ctx context.Context, locale string) ([]*ent.CourseCate
 }
 
 // View is the page of one category by slug. A miss is domain.ErrNotFound.
-func (d *Directory) View(ctx context.Context, locale, slug string) (*View, error) {
+func (d *CategoryDirectory) View(ctx context.Context, locale, slug string) (*View, error) {
 	category, err := d.db.CourseCategory.Query().
 		Where(coursecategory.LocaleEQ(locale), coursecategory.SlugEQ(slug)).
 		Only(ctx)

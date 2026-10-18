@@ -1,5 +1,6 @@
-// Package curriculum reads a Course Version's learning program: its modules
-// with their lessons in course order. The course page and the Yandex feed both
+// Package curriculum reads a Course Version's learning program, and the lesson
+// graph for the administrators' index pages (see Directory). The program is its
+// modules with their lessons in course order. The course page and the Yandex feed both
 // render exactly this tree, so the eager-load shape and its ordering live once
 // here rather than as a copy in each reader.
 package curriculum
