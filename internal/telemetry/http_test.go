@@ -13,6 +13,7 @@ import (
 )
 
 func TestSentryHTTPHandlerReportsAndRepanics(t *testing.T) {
+	t.Parallel()
 	transport := &sentry.MockTransport{}
 	client, err := sentry.NewClient(sentry.ClientOptions{
 		Dsn:       "https://public@example.com/1",
@@ -40,6 +41,7 @@ func TestSentryHTTPHandlerReportsAndRepanics(t *testing.T) {
 }
 
 func TestSentryHTTPHandlerIsolatesRequestHubs(t *testing.T) {
+	t.Parallel()
 	client, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
 

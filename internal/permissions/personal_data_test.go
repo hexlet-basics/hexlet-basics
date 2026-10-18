@@ -12,6 +12,7 @@ import (
 // Personal data is declared in the contract with x-personal-data, on read
 // operations only, and names the ent type the operation reads.
 func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
+	t.Parallel()
 	entity, ok := permissions.PersonalDataEntity("AdminListUsers")
 	require.True(t, ok)
 	assert.Equal(t, "User", entity)
@@ -31,6 +32,7 @@ func TestPersonalDataReadsAreReadFromTheContract(t *testing.T) {
 }
 
 func TestPersonalDataOnAWriteOrUnclassifiedOperationIsRejected(t *testing.T) {
+	t.Parallel()
 	for name, doc := range map[string]string{
 		"on a write": `
 paths:

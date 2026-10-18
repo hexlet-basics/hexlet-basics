@@ -17,6 +17,7 @@ import (
 // real daemon with an image that is not a course: it has `timeout` but no
 // `make`, so the grading command fails the way a broken exercise image would.
 func TestRunReportsAnImageThatCannotGradeAsAFailedSubmission(t *testing.T) {
+	t.Parallel()
 	runner := dockerRunner(t)
 
 	outcome, err := runner.Run(t.Context(), progress.Submission{
@@ -37,6 +38,7 @@ func TestRunReportsAnImageThatCannotGradeAsAFailedSubmission(t *testing.T) {
 // A submission that cannot get a run slot waits for one, and gives up when its
 // caller does, instead of holding the request open behind a full queue.
 func TestRunStopsWaitingForASlotWhenTheCallerGivesUp(t *testing.T) {
+	t.Parallel()
 	runner := dockerRunner(t)
 	require.True(t, runner.slots.TryAcquire(1)) // the only slot is taken
 	ctx, cancel := context.WithCancel(t.Context())
@@ -50,6 +52,7 @@ func TestRunStopsWaitingForASlotWhenTheCallerGivesUp(t *testing.T) {
 // An image nobody can pull is an error, not a failing test: the submission was
 // never run, and it must not be reported as the learner's mistake.
 func TestRunErrorsWhenTheCourseImageCannotBePulled(t *testing.T) {
+	t.Parallel()
 	runner := dockerRunner(t)
 	runner.opts.ImageTag = "latest"
 
@@ -66,6 +69,7 @@ func TestRunErrorsWhenTheCourseImageCannotBePulled(t *testing.T) {
 }
 
 func TestNewRunsOneSubmissionAtATimeUnlessToldOtherwise(t *testing.T) {
+	t.Parallel()
 	runner, err := New(Options{})
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = runner.Close() })
