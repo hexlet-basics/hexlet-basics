@@ -212,7 +212,7 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 		if errors.Is(err, oauthserver.ErrInvalidToken) {
 			return nil, auth.ErrInvalidToken
 		}
-		s.deps.Logger.ErrorContext(ctx, "verify MCP access token", slog.Any("error", err))
+		s.deps.Logger.ErrorContext(ctx, "verify MCP access token", slog.Any("err", err))
 		return nil, errors.New("token verification is unavailable")
 	}
 	if !slices.Contains(token.Audience, s.resource) || token.UserID <= 0 {
