@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { HttpResponse, http } from "msw";
-import { afterEach, expect, test } from "vitest";
+import { describe, expect, it, onTestFinished } from "vitest";
 import { page } from "vitest/browser";
 import type { FirstVisit, Lead, LeadInput, User } from "@/client/types.gen";
 import { Route as newLeadRoute } from "@/routes/{-$locale}/leads/new";
@@ -44,11 +44,6 @@ const firstVisit: FirstVisit = {
   referrer: "https://vk.com/",
 };
 
-afterEach(() => {
-  Cookies.remove("first_visit", { path: "/" });
-  delete window.ymClientId;
-});
-
 function acceptLeads(received: LeadInput[]) {
   worker.use(
     http.post("*/leads", async ({ request }) => {
@@ -59,6 +54,11 @@ function acceptLeads(received: LeadInput[]) {
 }
 
 function openForm(initialPath = "/ru/leads/new") {
+  // What a test seeds for the form, the cookie and the Metrika id, must not leak into the next one.
+  onTestFinished(() => {
+    Cookies.remove("first_visit", { path: "/" });
+    delete window.ymClientId;
+  });
   return renderRoute(newLeadRoute, { path: "/{-$locale}/leads/new", initialPath, user });
 }
 
@@ -67,56 +67,62 @@ async function submitTelegram(handle: string) {
   await page.getByRole("button", { name: "Отправить" }).click();
 }
 
-test("a lead carries the first visit and the Metrika client id, then returns home", async () => {
-  const received: LeadInput[] = [];
-  acceptLeads(received);
-  Cookies.set("first_visit", JSON.stringify(firstVisit), { path: "/" });
-  window.ymClientId = "1700000000123456789";
+describe("lead form", () => {
+  it("a lead carries the first visit and the Metrika client id, then returns home", async () => {
+    expect.hasAssertions();
+    const received: LeadInput[] = [];
+    acceptLeads(received);
+    Cookies.set("first_visit", JSON.stringify(firstVisit), { path: "/" });
+    window.ymClientId = "1700000000123456789";
 
-  const { router } = await openForm();
-  await submitTelegram("@dora");
+    const { router } = await openForm();
+    await submitTelegram("@dora");
 
-  await expect.poll(() => received).toHaveLength(1);
-  expect(received[0]).toStrictEqual({
-    contactMethod: "telegram",
-    contactValue: "@dora",
-    ymClientId: "1700000000123456789",
-    firstVisit,
-  });
-  await expect.element(page.getByText(/Заявка отправлена!/)).toBeVisible();
-  await expect.poll(() => router.state.location.pathname).toBe("/ru");
-});
+    await expect.poll(() => received).toHaveLength(1);
+    expect(received[0]).toStrictEqual({
+      contactMethod: "telegram",
+      contactValue: "@dora",
+      ymClientId: "1700000000123456789",
+      firstVisit,
+    });
+    await expect.element(page.getByText(/Заявка отправлена!/)).toBeVisible();
+    await expect.poll(() => router.state.location.pathname).toBe("/ru");
+  }, 60_000);
 
-test("a lead from a browser with no first visit still goes out, and returns to where it came from", async () => {
-  const received: LeadInput[] = [];
-  acceptLeads(received);
+  it("a lead from a browser with no first visit still goes out, and returns to where it came from", async () => {
+    expect.hasAssertions();
+    const received: LeadInput[] = [];
+    acceptLeads(received);
 
-  const { router } = await openForm("/ru/leads/new?from=%2Fru%2Flanguages%2Fpython");
-  await expect.element(page.getByRole("link", { name: "Вернуться" })).toBeVisible();
-  await submitTelegram("@dora");
+    const { router } = await openForm("/ru/leads/new?from=%2Fru%2Flanguages%2Fpython");
+    await expect.element(page.getByRole("link", { name: "Вернуться" })).toBeVisible();
+    await submitTelegram("@dora");
 
-  await expect.poll(() => received).toHaveLength(1);
-  expect(received[0]).toMatchObject({ ymClientId: null, firstVisit: null });
-  await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/python");
-});
+    await expect.poll(() => received).toHaveLength(1);
+    expect(received[0]).toMatchObject({ ymClientId: null, firstVisit: null });
+    await expect.poll(() => router.state.location.pathname).toBe("/ru/languages/python");
+  }, 60_000);
 
-test("a refused lead says to check the form and stays on the page", async () => {
-  worker.use(
-    http.post("*/leads", () => HttpResponse.json({ message: "invalid" }, { status: 422 })),
-  );
+  it("a refused lead says to check the form and stays on the page", async () => {
+    expect.hasAssertions();
+    worker.use(
+      http.post("*/leads", () => HttpResponse.json({ message: "invalid" }, { status: 422 })),
+    );
 
-  const { router } = await openForm();
-  await submitTelegram("@dora");
+    const { router } = await openForm();
+    await submitTelegram("@dora");
 
-  await expect.element(page.getByText("Проверьте ошибки в форме")).toBeVisible();
-  expect(router.state.location.pathname).toBe("/ru/leads/new");
-});
+    await expect.element(page.getByText("Проверьте ошибки в форме")).toBeVisible();
+    expect(router.state.location.pathname).toBe("/ru/leads/new");
+  }, 60_000);
 
-test("a visitor is sent to sign in first", async () => {
-  const { router } = await renderRoute(newLeadRoute, {
-    path: "/{-$locale}/leads/new",
-    initialPath: "/ru/leads/new",
-  });
+  it("a visitor is sent to sign in first", async () => {
+    expect.hasAssertions();
+    const { router } = await renderRoute(newLeadRoute, {
+      path: "/{-$locale}/leads/new",
+      initialPath: "/ru/leads/new",
+    });
 
-  await expect.poll(() => router.state.location.pathname).toBe("/session/new");
+    await expect.poll(() => router.state.location.pathname).toBe("/session/new");
+  }, 60_000);
 });

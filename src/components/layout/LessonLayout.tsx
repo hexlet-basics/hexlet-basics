@@ -3,12 +3,12 @@ import type { PropsWithChildren } from "react";
 import Header from "./Header";
 
 // The lesson player's chrome: the site header and nothing else — no footer, no
-// Floating chat button. The player is a two-pane workspace that has to fill the
-// Viewport exactly, and page furniture below it would either push the panes off
-// Screen or make the page scroll behind them.
+// floating chat button. The player is a two-pane workspace that has to fill the
+// viewport exactly, and page furniture below it would either push the panes off
+// screen or make the page scroll behind them.
 //
 // The main area is a full-viewport box (Mantine sets `box-sizing: border-box`
-// Globally, so the header offset AppShell adds as padding comes out of the same
+// globally, so the header offset AppShell adds as padding comes out of the same
 // 100dvh) — which is what gives the splitter a definite height to divide.
 export default function LessonLayout({ children }: PropsWithChildren) {
   return (

@@ -6,8 +6,8 @@ import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 
 // The "Edit" button of a list row. It is a typed router link, so each resource
-// Passes its own `to` and `params` (route paths are literals the router checks;
-// Nothing here hides them) while the look and the label are shared.
+// passes its own `to` and `params` (route paths are literals the router checks;
+// nothing here hides them) while the look and the label are shared.
 const EditLinkBase = forwardRef<HTMLAnchorElement, Omit<ButtonProps, "href" | "children">>(
   (props, ref) => {
     const { t } = useTranslation();

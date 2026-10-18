@@ -4,8 +4,8 @@ import type { LanguageRegistration } from "shiki/core";
 import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 
 // Syntax highlighting for lesson theory, ported from legacy. Grammars are
-// Imported lazily, one module per language, so a page that shows no code pays
-// For no grammar.
+// imported lazily, one module per language, so a page that shows no code pays
+// for no grammar.
 const languageModules: Record<string, () => Promise<{ default: LanguageRegistration[] }>> = {
   // Web
   html: () => import("@shikijs/langs/html"),
@@ -58,34 +58,34 @@ const languageModules: Record<string, () => Promise<{ default: LanguageRegistrat
 };
 
 // The languages actually loaded into the highlighter. Anything else renders as
-// Plain text rather than throwing "Language `x` not found" (legacy issue #597).
+// plain text rather than throwing "Language `x` not found" (legacy issue #597).
 export const supportedLanguages = new Set(Object.keys(languageModules));
 
 // Shiki's built-in "language" that needs no grammar.
 export const plainTextLanguage = "text";
 
 // Likewise built in: shiki colours ANSI escape sequences itself, which is what a
-// Test runner's report is made of.
+// test runner's report is made of.
 export const ansiLanguage = "ansi";
 
 // An author asking for plain text explicitly is not an unknown language.
 const plainTextAliases = new Set(["text", "plaintext", "plain", "txt"]);
 
 // Resolve a language name to one the highlighter has a grammar for. Needed
-// Wherever the name comes from somewhere other than a fenced block — a course
-// Slug, say — and may have no grammar at all.
+// wherever the name comes from somewhere other than a fenced block — a course
+// slug, say — and may have no grammar at all.
 export function toSupportedLanguage(language: string): string {
   return supportedLanguages.has(language) ? language : plainTextLanguage;
 }
 
 // Classify the language tag of a fenced code block. `language` is guaranteed to
-// Be loaded; `unknown` says whether the tag is worth reporting as a gap.
+// be loaded; `unknown` says whether the tag is worth reporting as a gap.
 //
 // A "glued" tag like `javapublic` or `csvar` is a content bug — the fence
-// Language ran into the first line of code (```java + public) — not a language
-// To support. Such a tag starts with a language we already know, so it falls
-// Back to plain text quietly. A genuinely new single token still reports as
-// Unknown, so a language we have yet to add is not lost in the noise.
+// language ran into the first line of code (```java + public) — not a language
+// to support. Such a tag starts with a language we already know, so it falls
+// back to plain text quietly. A genuinely new single token still reports as
+// unknown, so a language we have yet to add is not lost in the noise.
 export function classifyLanguage(requested: string): {
   language: string;
   unknown: boolean;

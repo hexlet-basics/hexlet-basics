@@ -5,8 +5,8 @@ import { getTestLanguage } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
 
 // The lesson tests, readable at any time by anyone — deliberately, as in legacy:
-// A learner who opens this tab is reading the specification of the exercise,
-// Which is the thing they are being asked to satisfy.
+// a learner who opens this tab is reading the specification of the exercise,
+// which is the thing they are being asked to satisfy.
 export default function LessonTests({
   courseSlug,
   testExtension,

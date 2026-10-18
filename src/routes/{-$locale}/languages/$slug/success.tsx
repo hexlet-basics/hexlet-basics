@@ -8,14 +8,14 @@ import { requireAuth } from "@/lib/auth";
 import { isApiError } from "@/lib/api-error";
 
 // The course completion page, ported from legacy languages#success: where the
-// Lesson player sends a learner who finished the Course.
+// lesson player sends a learner who finished the Course.
 //
 // Legacy required a session (a guest goes to sign in and comes back), then
-// Bounced anyone whose Enrollment is not finished to the course page with a
-// Warning. The finished signal is the Enrollment's state, not `progress`: the
-// Progress payload is computed for guests too, from the signed cookie, so it
-// Could say "finished" for someone who has no Enrollment at all. A learner with
-// No Enrollment is bounced the same way; legacy crashed on that case.
+// bounced anyone whose Enrollment is not finished to the course page with a
+// warning. The finished signal is the Enrollment's state, not `progress`: the
+// progress payload is computed for guests too, from the signed cookie, so it
+// could say "finished" for someone who has no Enrollment at all. A learner with
+// no Enrollment is bounced the same way; legacy crashed on that case.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);

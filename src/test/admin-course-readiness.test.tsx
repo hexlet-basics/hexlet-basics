@@ -9,10 +9,10 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // A Course's Readiness is changed by action buttons, one per operation, never by
-// The form (the same pattern as the Publication State panels, see
-// Admin-publication-state.test.tsx). Through the real routes under the real admin
-// Guard: the buttons offered are the values other than the current one, a click
-// Calls that operation and the course shown is the one it answered with.
+// the form (the same pattern as the Publication State panels, see
+// admin-publication-state.test.tsx). Through the real routes under the real admin
+// guard: the buttons offered are the values other than the current one, a click
+// calls that operation and the course shown is the one it answered with.
 
 const course = (readiness: CourseReadiness | null): Course =>
   ({
@@ -41,29 +41,36 @@ describe("the course admin screens", () => {
     ["draft", ["Mark as in development", "Mark as completed"], ["Mark as draft"]],
     ["in_development", ["Mark as draft", "Mark as completed"], ["Mark as in development"]],
     ["completed", ["Mark as draft", "Mark as in development"], ["Mark as completed"]],
-  ])("a %s course offers every readiness but its own", async (readiness, offered, hidden) => {
-    worker.use(http.get("*/admin/courses/7", () => HttpResponse.json(course(readiness))));
+  ])(
+    "a %s course offers every readiness but its own",
+    async (readiness, offered, hidden) => {
+      expect.hasAssertions();
+      worker.use(http.get("*/admin/courses/7", () => HttpResponse.json(course(readiness))));
 
-    await edit();
+      await edit();
 
-    for (const name of offered) {
-      await expect.element(button(name)).toBeVisible();
-    }
-    for (const name of hidden) {
-      await expect.element(button(name)).not.toBeInTheDocument();
-    }
-  });
+      for (const name of offered) {
+        await expect.element(button(name)).toBeVisible();
+      }
+      for (const name of hidden) {
+        await expect.element(button(name)).not.toBeInTheDocument();
+      }
+    },
+    60_000,
+  );
 
   it("the form has no readiness field", async () => {
+    expect.hasAssertions();
     worker.use(http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))));
 
     await edit();
 
     await expect.element(page.getByLabelText("Slug *")).toBeVisible();
     await expect.element(page.getByLabelText("Course readiness")).not.toBeInTheDocument();
-  });
+  }, 60_000);
 
   it("saving the form sends no readiness", async () => {
+    expect.hasAssertions();
     let sent: Record<string, unknown> | undefined;
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
@@ -78,9 +85,10 @@ describe("the course admin screens", () => {
 
     await expect.poll(() => sent).toBeDefined();
     expect(sent).not.toHaveProperty("readiness");
-  });
+  }, 60_000);
 
   it("marking a course calls that operation and shows the new readiness", async () => {
+    expect.hasAssertions();
     const called: string[] = [];
     let readiness: CourseReadiness = "draft";
     worker.use(
@@ -105,9 +113,10 @@ describe("the course admin screens", () => {
     await expect.element(button("Mark as draft")).not.toBeInTheDocument();
 
     expect(called).toStrictEqual(["mark_completed", "mark_draft"]);
-  });
+  }, 60_000);
 
   it("a refused change tells the admin and keeps the readiness", async () => {
+    expect.hasAssertions();
     worker.use(
       http.get("*/admin/courses/7", () => HttpResponse.json(course("draft"))),
       http.post("*/admin/courses/7/mark_in_development", () =>
@@ -120,9 +129,10 @@ describe("the course admin screens", () => {
 
     await expect.element(page.getByText("Could not change the readiness")).toBeVisible();
     await expect.element(button("Mark as in development")).toBeVisible();
-  });
+  }, 60_000);
 
   it("the list shows each course's readiness in words", async () => {
+    expect.hasAssertions();
     worker.use(
       http.get("*/admin/courses", () =>
         HttpResponse.json({ items: [course("in_development")], total: 1, page: 1, perPage: 25 }),
@@ -136,5 +146,5 @@ describe("the course admin screens", () => {
     });
 
     await expect.element(page.getByRole("cell", { name: "In development" })).toBeVisible();
-  });
+  }, 60_000);
 });

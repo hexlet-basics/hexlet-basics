@@ -12,7 +12,7 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // A landing page's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the page's three operations. A page
-// With no state counts as a draft, as on the server.
+// with no state counts as a draft, as on the server.
 export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage }) {
   const { t } = useTranslation();
   const options = {

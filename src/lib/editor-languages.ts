@@ -2,10 +2,10 @@
 // `app/javascript/lib/utils.ts`.
 //
 // A course slug is not a monaco language id: some courses teach a language
-// Monaco knows under another name (`racket` is scheme to it), and some are a
-// Course about one language written inside another's syntax (`css` is written
-// In html here, as legacy has it). Anything absent is passed through, which
-// Covers every course whose slug already is the language.
+// monaco knows under another name (`racket` is scheme to it), and some are a
+// course about one language written inside another's syntax (`css` is written
+// in html here, as legacy has it). Anything absent is passed through, which
+// covers every course whose slug already is the language.
 const languageBySlug: Record<string, string> = {
   css: "html",
   racket: "scheme",
@@ -19,11 +19,11 @@ const languageBySlug: Record<string, string> = {
 };
 
 // What a file extension says about the language of its contents. The build's
-// Spec.yml names the extension of the solution and of the test file, which is
-// The truth about the code on screen; the course slug is only a guess that holds
-// While a course's slug is its language (the AI course is markdown with
+// spec.yml names the extension of the solution and of the test file, which is
+// the truth about the code on screen; the course slug is only a guess that holds
+// while a course's slug is its language (the AI course is markdown with
 // JavaScript tests). Values are monaco ids. Anything absent falls back to the
-// Slug-derived language.
+// slug-derived language.
 const languageByExtension: Record<string, string> = {
   rb: "ruby",
   py: "python",
@@ -58,7 +58,7 @@ const languageByExtension: Record<string, string> = {
 };
 
 // Indentation is a property of a language's community, not of the editor, so it
-// Follows the course. Anything absent gets the default.
+// follows the course. Anything absent gets the default.
 const tabSizeBySlug: Record<string, number> = {
   "1c": 4,
   javascript: 2,
@@ -91,7 +91,7 @@ const tabSizeBySlug: Record<string, number> = {
 };
 
 // Where a tab means spaces. Absent means a real tab character — go and make are
-// Why this is not simply true everywhere.
+// why this is not simply true everywhere.
 const spacesBySlug: Record<string, boolean> = {
   javascript: true,
   json: true,
@@ -137,16 +137,16 @@ function languageFor(courseSlug: string, extension?: string | null): string {
 }
 
 // The language of the test file, which can differ from the solution's. Without a
-// Usable extension it is the course's language, as before.
+// usable extension it is the course's language, as before.
 export function getTestLanguage(courseSlug: string, testExtension?: string | null): string {
   return languageFor(courseSlug, testExtension);
 }
 
 // The three travel together — a course is opened in one language, with one
-// Indentation — so they are looked up once rather than three times.
+// indentation — so they are looked up once rather than three times.
 //
 // `extension` is the solution file's, from the build; it wins over the slug for
-// The language, while indentation stays a property of the course.
+// the language, while indentation stays a property of the course.
 export function getEditorSettings(courseSlug: string, extension?: string | null): EditorSettings {
   return {
     language: languageFor(courseSlug, extension),
@@ -156,9 +156,9 @@ export function getEditorSettings(courseSlug: string, extension?: string | null)
 }
 
 // The courses whose exercise is markup rather than a program, so the learner
-// Watches what they build instead of waiting for a run to show it. Legacy keeps
-// The same list in code (`neededPreview`) and the payload carries no flag for
-// It, so it stays a property of the course slug like everything above.
+// watches what they build instead of waiting for a run to show it. Legacy keeps
+// the same list in code (`neededPreview`) and the payload carries no flag for
+// it, so it stays a property of the course slug like everything above.
 const previewedSlugs = new Set(["css", "html", "layout-designer"]);
 
 export function hasPreview(courseSlug: string): boolean {

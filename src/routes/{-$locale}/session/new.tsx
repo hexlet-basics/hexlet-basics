@@ -12,15 +12,15 @@ import { onIdentityChanged } from "@/lib/identity";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 
 // Login page, ported from legacy sessions/new. Email + password, with links to
-// The Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
-// Deferred until their backends and routes land. Submits through the generated `createSession`
-// Mutation, which starts the session server-side; validation reuses the
-// Generated `zSessionInput` schema.
+// the Password Reset and Magic Link request forms; the legacy phone / passkey / GitHub options are
+// deferred until their backends and routes land. Submits through the generated `createSession`
+// mutation, which starts the session server-side; validation reuses the
+// generated `zSessionInput` schema.
 //
 // `redirect` is where to go once signed in: `requireAuth` sends a guest here with
-// The page they asked for (the OAuth consent screen is one, and loses its request
-// Id if the visit is forgotten). Only a path on this site is honoured, so the
-// Page cannot be used to bounce a signed-in user off to another origin.
+// the page they asked for (the OAuth consent screen is one, and loses its request
+// id if the visit is forgotten). Only a path on this site is honoured, so the
+// page cannot be used to bounce a signed-in user off to another origin.
 const signInSearchSchema = z.object({
   redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
 });

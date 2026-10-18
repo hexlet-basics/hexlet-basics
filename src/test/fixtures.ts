@@ -1,7 +1,7 @@
 import type { User } from "@/client/types.gen";
 
 // An administrator, for tests that open the admin pages: the admin layout's
-// Guard lets in a signed-in user who `canAccessAdmin`.
+// guard lets in a signed-in user who `canAccessAdmin`.
 export const admin: User = {
   id: 1,
   firstName: "Ada",

@@ -28,12 +28,12 @@ import bookToc from "@/lib/book";
 import { seoHead } from "@/lib/seo-head";
 
 // The download is a browser navigation, not a client call: the API answers it
-// With a redirect into the bucket, which an XHR would follow cross-origin. The
-// Generated type pins the path to the contract.
+// with a redirect into the bucket, which an XHR would follow cross-origin. The
+// generated type pins the path to the contract.
 const downloadHref: DownloadBookData["url"] = "/api/book/download";
 
 // The free book page, ported from legacy books/show. Legacy routed it under the
-// Ru suffix only, so `/book` and `/es/book` are not pages at all.
+// ru suffix only, so `/book` and `/es/book` are not pages at all.
 export const Route = createFileRoute("/{-$locale}/book")({
   beforeLoad: ({ params }) => {
     if (params.locale !== "ru") {
@@ -110,7 +110,7 @@ function Show() {
       return <RequestButton />;
     }
     // Legacy's request posted through its auth guard, which sent a visitor to
-    // Sign in.
+    // sign in.
     return (
       <ButtonLink to="/{-$locale}/session/new" mt="md" variant="outline" size="lg">
         {t(($) => $.books.show.request)}
@@ -182,7 +182,7 @@ function Show() {
 }
 
 // Legacy posted the request and redirected back to the page with a flash, for
-// A repeat request too. Refetching the page state swaps in the download button.
+// a repeat request too. Refetching the page state swaps in the download button.
 function RequestButton() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();

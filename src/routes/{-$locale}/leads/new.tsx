@@ -7,7 +7,7 @@ import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 
 // Only a same-site path is followed back: `from` comes from the URL, and an
-// Absolute address would turn the form into an open redirect.
+// absolute address would turn the form into an open redirect.
 const sameSitePath = z
   .string()
   .refine((path) => path.startsWith("/") && !path.startsWith("//"))
@@ -15,9 +15,9 @@ const sameSitePath = z
   .catch(undefined);
 
 // The consultation request page, ported from legacy leads/new. Legacy required
-// A session for the page as well as for the submit, so the guard sits here too.
+// a session for the page as well as for the submit, so the guard sits here too.
 // `from` is where the visitor came from: the page links back to it and the form
-// Returns there once sent.
+// returns there once sent.
 export const Route = createFileRoute("/{-$locale}/leads/new")({
   validateSearch: z.object({ from: sameSitePath }),
   beforeLoad: ({ context, location }) => {

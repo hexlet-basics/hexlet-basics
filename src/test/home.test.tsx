@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { BlogPost, Course, CourseCatalogItem } from "@/client/types.gen";
 import { Route as homeRoute } from "@/routes/{-$locale}/index";
@@ -7,8 +7,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The home page through its real route, inside the real site layout: the hero,
-// The course grid a visitor picks a course from, the latest posts and the
-// Registration form.
+// the course grid a visitor picks a course from, the latest posts and the
+// registration form.
 
 function catalogItem(id: number, slug: string, name: string): CourseCatalogItem {
   const course: Course = {
@@ -70,37 +70,42 @@ function serveHome() {
   );
 }
 
-test("greets a visitor with the hero and the course grid, each course linking to its page", async () => {
-  serveHome();
+describe("home", () => {
+  it("greets a visitor with the hero and the course grid, each course linking to its page", async () => {
+    expect.hasAssertions();
+    serveHome();
 
-  await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
+    await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-  const heading = page.getByRole("heading", { level: 1 });
-  await expect.element(heading).toBeVisible();
+    const heading = page.getByRole("heading", { level: 1 });
+    await expect.element(heading).toBeVisible();
 
-  const main = page.getByRole("main");
-  const javascript = main.getByRole("link", { name: /JavaScript/ }).first();
-  await expect.element(javascript).toHaveAttribute("href", "/languages/javascript");
-  const python = main.getByRole("link", { name: /Python/ }).first();
-  await expect.element(python).toHaveAttribute("href", "/languages/python");
-});
+    const main = page.getByRole("main");
+    const javascript = main.getByRole("link", { name: /JavaScript/ }).first();
+    await expect.element(javascript).toHaveAttribute("href", "/languages/javascript");
+    const python = main.getByRole("link", { name: /Python/ }).first();
+    await expect.element(python).toHaveAttribute("href", "/languages/python");
+  }, 60_000);
 
-test("shows the latest blog posts and the registration form to a visitor", async () => {
-  serveHome();
+  it("shows the latest blog posts and the registration form to a visitor", async () => {
+    expect.hasAssertions();
+    serveHome();
 
-  await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
+    await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-  const post = page.getByRole("link", { name: /Hello world/ });
-  await expect.element(post.first()).toHaveAttribute("href", "/blog_posts/hello-world");
-  const email = page.getByRole("textbox", { name: /Email/ });
-  await expect.element(email.first()).toBeVisible();
-});
+    const post = page.getByRole("link", { name: /Hello world/ });
+    await expect.element(post.first()).toHaveAttribute("href", "/blog_posts/hello-world");
+    const email = page.getByRole("textbox", { name: /Email/ });
+    await expect.element(email.first()).toBeVisible();
+  }, 60_000);
 
-test("answers a page that cannot be loaded with the server error page", async () => {
-  worker.use(http.get("*/languages", () => HttpResponse.json({ status: 500 }, { status: 500 })));
+  it("answers a page that cannot be loaded with the server error page", async () => {
+    expect.hasAssertions();
+    worker.use(http.get("*/languages", () => HttpResponse.json({ status: 500 }, { status: 500 })));
 
-  await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
+    await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-  const failure = page.getByRole("heading", { name: "Server Error" });
-  await expect.element(failure).toBeVisible();
+    const failure = page.getByRole("heading", { name: "Server Error" });
+    await expect.element(failure).toBeVisible();
+  }, 60_000);
 });

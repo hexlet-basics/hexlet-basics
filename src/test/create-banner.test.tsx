@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { BannerInput } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/admin/banners/new";
@@ -8,45 +8,48 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case exercising the select + datetime field types: the
-// Enum defaults ride along in the payload, blank dates serialize as null, and the
-// App confirms + navigates back.
-test("creates a banner with the default enum selections", async () => {
-  let received: BannerInput | undefined;
-  worker.use(
-    http.post("*/admin/banners", async ({ request }) => {
-      received = (await request.json()) as BannerInput;
-      return HttpResponse.json({
-        id: 1,
-        locale: "en",
-        body: "Promo",
-        url: null,
-        background: "cta_gradient",
-        state: "draft",
-        startsAt: null,
-        finishesAt: null,
-        createdAt: "2026-01-01T00:00:00Z",
-      });
-    }),
-  );
+// enum defaults ride along in the payload, blank dates serialize as null, and the
+// app confirms + navigates back.
+describe("create banner", () => {
+  it("creates a banner with the default enum selections", async () => {
+    expect.hasAssertions();
+    let received: BannerInput | undefined;
+    worker.use(
+      http.post("*/admin/banners", async ({ request }) => {
+        received = (await request.json()) as BannerInput;
+        return HttpResponse.json({
+          id: 1,
+          locale: "en",
+          body: "Promo",
+          url: null,
+          background: "cta_gradient",
+          state: "draft",
+          startsAt: null,
+          finishesAt: null,
+          createdAt: "2026-01-01T00:00:00Z",
+        });
+      }),
+    );
 
-  const { router } = await renderRoute(Route, {
-    path: "/{-$locale}/admin/banners/new",
-    initialPath: "/admin/banners/new",
-    user: admin,
-  });
+    const { router } = await renderRoute(Route, {
+      path: "/{-$locale}/admin/banners/new",
+      initialPath: "/admin/banners/new",
+      user: admin,
+    });
 
-  await page.getByLabelText("Text (Markdown) *").fill("Promo");
-  await page.getByRole("button", { name: "Create" }).click();
+    await page.getByLabelText("Text (Markdown) *").fill("Promo");
+    await page.getByRole("button", { name: "Create" }).click();
 
-  await expect.element(page.getByText("Record created")).toBeVisible();
-  expect(received).toMatchObject({
-    body: "Promo",
-    background: "cta_gradient",
-    locale: "en",
-    startsAt: null,
-    finishesAt: null,
-  });
-  // A new banner is a draft: the state has its own operations.
-  expect(received).not.toHaveProperty("state");
-  await expect.poll(() => router.state.location.pathname).toBe("/admin/banners");
+    await expect.element(page.getByText("Record created")).toBeVisible();
+    expect(received).toMatchObject({
+      body: "Promo",
+      background: "cta_gradient",
+      locale: "en",
+      startsAt: null,
+      finishesAt: null,
+    });
+    // A new banner is a draft: the state has its own operations.
+    expect(received).not.toHaveProperty("state");
+    await expect.poll(() => router.state.location.pathname).toBe("/admin/banners");
+  }, 60_000);
 });

@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type {
   Course,
@@ -13,9 +13,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The public course categories, driven through their real routes with the API
-// Faked at the HTTP boundary. Asserted is what a visitor sees: the categories,
-// A category's courses and questions
-// And the page's head.
+// faked at the HTTP boundary. Asserted is what a visitor sees: the categories,
+// a category's courses and questions
+// and the page's head.
 
 const programming: CourseCategory = {
   id: 1,
@@ -69,67 +69,76 @@ function serveCategory() {
   worker.use(http.get("*/api/language_categories/programming", () => HttpResponse.json(view)));
 }
 
-test("the index links every category the API returns", async () => {
-  worker.use(http.get("*/api/language_categories", () => HttpResponse.json([programming])));
+describe("course categories", () => {
+  it("the index links every category the API returns", async () => {
+    expect.hasAssertions();
+    worker.use(http.get("*/api/language_categories", () => HttpResponse.json([programming])));
 
-  const { router } = await renderRoute(indexRoute, {
-    path: "/{-$locale}/language_categories/",
-    initialPath: "/language_categories/",
-  });
+    const { router } = await renderRoute(indexRoute, {
+      path: "/{-$locale}/language_categories/",
+      initialPath: "/language_categories/",
+    });
 
-  await expect
-    .element(page.getByRole("heading", { name: "Course categories", level: 1 }))
-    .toBeVisible();
-  // The footer lists the same categories, after the page's own card.
-  const category = page.getByRole("link", { name: /Programming/ }).first();
-  await expect.element(category).toHaveAttribute("href", "/language_categories/programming");
+    await expect
+      .element(page.getByRole("heading", { name: "Course categories", level: 1 }))
+      .toBeVisible();
+    // The footer lists the same categories, after the page's own card.
+    const category = page.getByRole("link", { name: /Programming/ }).first();
+    await expect.element(category).toHaveAttribute("href", "/language_categories/programming");
 
-  const meta = router.state.matches.at(-1)?.meta;
-  expect(meta).toContainEqual({ title: "CodeBasics | Course categories" });
-  expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
-  expect(router.state.matches.at(-1)?.links).toContainEqual({
-    rel: "canonical",
-    href: `${window.location.origin}/language_categories`,
-  });
-});
+    const meta = router.state.matches.at(-1)?.meta;
+    expect(meta).toContainEqual({ title: "CodeBasics | Course categories" });
+    expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
+    expect(router.state.matches.at(-1)?.links).toContainEqual({
+      rel: "canonical",
+      href: `${window.location.origin}/language_categories`,
+    });
+  }, 60_000);
 
-test("a category shows its courses and questions, with the legacy head", async () => {
-  serveCategory();
+  it("a category shows its courses and questions, with the legacy head", async () => {
+    expect.hasAssertions();
+    serveCategory();
 
-  const { router } = await renderRoute(showRoute, {
-    path: "/{-$locale}/language_categories/$slug",
-    initialPath: "/language_categories/programming",
-  });
+    const { router } = await renderRoute(showRoute, {
+      path: "/{-$locale}/language_categories/$slug",
+      initialPath: "/language_categories/programming",
+    });
 
-  await expect.element(page.getByRole("heading", { name: "Programming", level: 1 })).toBeVisible();
-  await expect.element(page.getByText("Learn to program from scratch")).toBeVisible();
-  await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
-  await expect.element(page.getByText("Is experience required?")).toBeVisible();
-  await expect.element(page.getByText("none", { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByRole("heading", { name: "Programming", level: 1 }))
+      .toBeVisible();
+    await expect.element(page.getByText("Learn to program from scratch")).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
+    await expect.element(page.getByText("Is experience required?")).toBeVisible();
+    await expect.element(page.getByText("none", { exact: true })).toBeVisible();
 
-  const match = router.state.matches.at(-1);
-  expect(match?.meta).toContainEqual({ title: "CodeBasics | Courses in the Programming category" });
-  expect(match?.meta).toContainEqual({
-    name: "description",
-    content: expect.stringContaining("in the Programming category") as string,
-  });
-  expect(match?.links).toContainEqual({
-    rel: "canonical",
-    href: `${window.location.origin}/language_categories/programming`,
-  });
-});
+    const match = router.state.matches.at(-1);
+    expect(match?.meta).toContainEqual({
+      title: "CodeBasics | Courses in the Programming category",
+    });
+    expect(match?.meta).toContainEqual({
+      name: "description",
+      content: expect.stringContaining("in the Programming category") as string,
+    });
+    expect(match?.links).toContainEqual({
+      rel: "canonical",
+      href: `${window.location.origin}/language_categories/programming`,
+    });
+  }, 60_000);
 
-test("a category that is not in this locale is not found", async () => {
-  worker.use(
-    http.get("*/api/language_categories/programming", () =>
-      HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
-    ),
-  );
+  it("a category that is not in this locale is not found", async () => {
+    expect.hasAssertions();
+    worker.use(
+      http.get("*/api/language_categories/programming", () =>
+        HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
+      ),
+    );
 
-  await renderRoute(showRoute, {
-    path: "/{-$locale}/language_categories/$slug",
-    initialPath: "/language_categories/programming",
-  });
+    await renderRoute(showRoute, {
+      path: "/{-$locale}/language_categories/$slug",
+      initialPath: "/language_categories/programming",
+    });
 
-  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+  }, 60_000);
 });

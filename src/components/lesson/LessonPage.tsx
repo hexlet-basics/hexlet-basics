@@ -25,15 +25,15 @@ import { useTheoryPercent } from "@/lib/lesson-panes";
 import shikiAdapter from "@/lib/shiki";
 
 // The lesson player's shell: theory, the assistant and navigation on the left,
-// The workspace on the right. Both panes stay mounted for the life of the page —
-// The editor in the right pane must never remount and lose a learner's buffer.
+// the workspace on the right. Both panes stay mounted for the life of the page —
+// the editor in the right pane must never remount and lose a learner's buffer.
 // The assistant sits beside the editor rather than in its tabs, so the code
-// Stays in view while the learner asks about it.
+// stays in view while the learner asks about it.
 //
 // On a phone the two panes cannot sit side by side, so one fills the screen at a
-// Time and a burger in each pane's tab strip swaps which — legacy's mechanism.
+// time and a burger in each pane's tab strip swaps which — legacy's mechanism.
 // Only the pane widths change; nothing unmounts, so a swap costs the learner
-// Nothing they have typed.
+// nothing they have typed.
 export default function LessonPage({
   courseSlug,
   lessonSlug,
@@ -49,25 +49,25 @@ export default function LessonPage({
   );
 
   // Where the learner last left the divider. The server renders it from the
-  // Request's cookie, so it is the first paint's split; the state follows the
-  // Drag, and the cookie is written when the drag ends.
+  // request's cookie, so it is the first paint's split; the state follows the
+  // drag, and the cookie is written when the drag ends.
   const [savedPercent, saveTheoryPercent] = useTheoryPercent();
   const [theoryPercent, setTheoryPercent] = useState(savedPercent);
 
   // Read in an effect with a desktop default, for the same reason as the sizes
-  // Above: the server renders the desktop split, and a phone moves to its
-  // One-pane layout once it has hydrated.
+  // above: the server renders the desktop split, and a phone moves to its
+  // one-pane layout once it has hydrated.
   const theme = useMantineTheme();
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.sm})`, true, {
     getInitialValueInEffect: true,
   });
   // Whether a phone shows the theory pane rather than the workspace. The
-  // Workspace comes first, as in legacy: it is where the learner acts, and its
-  // Own theory tab keeps the reading one tap away.
+  // workspace comes first, as in legacy: it is where the learner acts, and its
+  // own theory tab keeps the reading one tap away.
   const [theoryOpened, { toggle: togglePanes }] = useDisclosure(false);
 
   // The outcome of the last check: the workspace renders it, the assistant is
-  // Asked about it.
+  // asked about it.
   const [result, setResult] = useState<LessonCheckingResponse | null>(null);
 
   if (isPending) {
@@ -177,8 +177,8 @@ export default function LessonPage({
 }
 
 // The pane switch a phone gets in place of the divider, at the head of each
-// Pane's tab strip. Hidden from `sm` up by CSS rather than by the media query, so
-// A desktop never paints it, not even before hydration.
+// pane's tab strip. Hidden from `sm` up by CSS rather than by the media query, so
+// a desktop never paints it, not even before hydration.
 function PaneBurger({
   opened,
   onToggle,
@@ -203,8 +203,8 @@ function PaneBurger({
 }
 
 // A lesson slug that resolves to nothing — a mistyped URL, or a lesson dropped
-// From the course. The route renders this too, because its loader rejects before
-// The page above ever runs.
+// from the course. The route renders this too, because its loader rejects before
+// the page above ever runs.
 export function LessonMissing() {
   const { t } = useTranslation();
 

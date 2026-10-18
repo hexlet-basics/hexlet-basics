@@ -4,8 +4,8 @@ import { courseCategoryFields } from "@/components/admin/generated/courseCategor
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Form values ARE the generated CourseCategoryInput, so the form validates against
-// ZCourseCategoryInput directly. The nullable `description` renders as "" (the
-// Engine's text fields coerce null); a fresh form leaves it null.
+// zCourseCategoryInput directly. The nullable `description` renders as "" (the
+// engine's text fields coerce null); a fresh form leaves it null.
 
 export const emptyCourseCategory: CourseCategoryInput = {
   name: "",
@@ -15,7 +15,7 @@ export const emptyCourseCategory: CourseCategoryInput = {
 };
 
 // Seed the form from an existing row: the required columns are nullable on the
-// Read model, so coalesce them to "" to keep the inputs controlled.
+// read model, so coalesce them to "" to keep the inputs controlled.
 export function courseCategoryToForm(category: CourseCategory): CourseCategoryInput {
   return {
     name: category.name ?? "",
@@ -26,7 +26,7 @@ export function courseCategoryToForm(category: CourseCategory): CourseCategoryIn
 }
 
 // Fields come from the contract (generated/courseCategory.ts); what is listed here is
-// Only what the schema cannot say.
+// only what the schema cannot say.
 export function useCourseCategoryFields(): CrudFieldSpec<CourseCategoryInput>[] {
   return useGeneratedFields<CourseCategoryInput>(courseCategoryFields, {
     set: { description: { type: "textarea" } },

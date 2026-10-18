@@ -17,8 +17,8 @@ import { listCoursesOptions } from "@/client/@tanstack/react-query.gen";
 import CourseBlock from "@/components/CourseBlock";
 
 // Course catalog, rendered at both `/` and `/languages` (legacy URL kept for
-// Compat). Data is prefetched in each route's SSR loader, so `useQuery` resolves
-// From the dehydrated cache on first paint — no loading flash.
+// compat). Data is prefetched in each route's SSR loader, so `useQuery` resolves
+// from the dehydrated cache on first paint — no loading flash.
 export default function CourseCatalog() {
   const { t, i18n } = useTranslation();
   const isRuLocale = i18n.language === "ru";

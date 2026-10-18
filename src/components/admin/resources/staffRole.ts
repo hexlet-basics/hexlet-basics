@@ -4,8 +4,8 @@ import { staffRoleFields } from "@/components/admin/generated/staffRole";
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Role form values ARE the generated request body (RoleInput). The permission
-// Matrix is a separate endpoint (rolePermissions) and lands in the specials
-// Wave — this form covers only the role identity.
+// matrix is a separate endpoint (rolePermissions) and lands in the specials
+// wave — this form covers only the role identity.
 
 export const emptyStaffRole: RoleInput = {
   name: "",
@@ -20,7 +20,7 @@ export function staffRoleToForm(role: StaffRoleDetail): RoleInput {
 }
 
 // Fields come from the contract (generated/staffRole.ts); what is listed here is
-// Only what the schema cannot say.
+// only what the schema cannot say.
 export function useStaffRoleFields(): CrudFieldSpec<RoleInput>[] {
   return useGeneratedFields<RoleInput>(staffRoleFields, {
     set: { description: { type: "textarea" } },

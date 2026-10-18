@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 // The learner's markup, rendered under the editor as they type it.
 //
 // What is rendered is whatever a learner put in the buffer, so it goes where it
-// Cannot reach the application around it: `srcdoc` with an empty `sandbox` gives
-// The frame an opaque origin and withholds `allow-same-origin` and
+// cannot reach the application around it: `srcdoc` with an empty `sandbox` gives
+// the frame an opaque origin and withholds `allow-same-origin` and
 // `allow-scripts` alike — nothing in it can read the page's cookies or storage,
-// Run code, submit a form or navigate the player away. Legacy wrote into a
-// Same-origin frame directly; the courses shown here are HTML and CSS, which
-// Need none of what the sandbox takes away.
+// run code, submit a form or navigate the player away. Legacy wrote into a
+// same-origin frame directly; the courses shown here are HTML and CSS, which
+// need none of what the sandbox takes away.
 //
 // The workspace imports this lazily, so a course without a preview never
-// Fetches it.
+// fetches it.
 export default function LessonPreview({ code }: { code: string }) {
   const { t } = useTranslation();
 

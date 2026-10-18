@@ -9,20 +9,20 @@ import tsWorker from "monaco-editor/language/typescript/ts.worker.js?worker";
 // oxlint-enable default
 
 // Monaco, served by this application. `@monaco-editor/react` otherwise fetches
-// The editor from cdn.jsdelivr.net at runtime, which puts the one thing a
-// Learner cannot work without behind a third party.
+// the editor from cdn.jsdelivr.net at runtime, which puts the one thing a
+// learner cannot work without behind a third party.
 //
 // Importing this module has the side effects that make that true, so it must be
-// Imported — and awaited — before the editor component mounts. It touches
+// imported — and awaited — before the editor component mounts. It touches
 // `self`, so it is client-only: nothing in the server bundle may reach it.
 //
 // The `?worker` specifiers use monaco's public subpaths rather than the internal
 // `monaco-editor/esm/vs/...` ones: 0.56 changed its `exports` map to
 // `"./*": "./esm/vs/*.js"`, so the old paths now resolve to a doubled,
-// Non-existent one and Vite fails to resolve them.
+// non-existent one and Vite fails to resolve them.
 
 // The language services monaco asks for by name. Everything else — every course
-// Whose language has no service of its own — gets the plain editor worker.
+// whose language has no service of its own — gets the plain editor worker.
 const workers: Record<string, new () => Worker> = {
   json: jsonWorker,
   css: cssWorker,

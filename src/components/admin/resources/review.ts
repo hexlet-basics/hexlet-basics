@@ -4,8 +4,8 @@ import { reviewFields } from "@/components/admin/generated/review";
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Review form values ARE the generated request body (ReviewInput). courseId and
-// UserId stay raw ids for now (a searchable picker is a later refinement); the
-// Input has no locale — the backend derives it, mirroring legacy.
+// userId stay raw ids for now (a searchable picker is a later refinement); the
+// input has no locale — the backend derives it, mirroring legacy.
 
 export const emptyReview: ReviewInput = {
   pinned: false,
@@ -17,7 +17,7 @@ export const emptyReview: ReviewInput = {
 };
 
 // Seed the form from an existing row: pick only the writable fields and
-// Coalesce nullable strings to "" so the inputs stay controlled.
+// coalesce nullable strings to "" so the inputs stay controlled.
 export function reviewToForm(review: Review): ReviewInput {
   return {
     pinned: review.pinned ?? false,
@@ -30,7 +30,7 @@ export function reviewToForm(review: Review): ReviewInput {
 }
 
 // Fields come from the contract (generated/review.ts); what is listed here is
-// Only what the schema cannot say.
+// only what the schema cannot say.
 export function useReviewFields(): CrudFieldSpec<ReviewInput>[] {
   return useGeneratedFields<ReviewInput>(reviewFields, {
     order: ["pinned", "courseId", "userId", "firstName", "lastName", "body"],

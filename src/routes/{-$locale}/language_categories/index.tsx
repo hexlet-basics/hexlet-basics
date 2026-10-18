@@ -9,13 +9,13 @@ import { CardLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
 // The course categories, at their legacy URL, ported from legacy
-// Language_categories/index. The loader prefetches the list so the cards are in
-// The server-rendered HTML (ADR-0008).
+// language_categories/index. The loader prefetches the list so the cards are in
+// the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/language_categories/")({
   loader: ({ context }) =>
     context.queryClient.query({ ...listPublicCourseCategoriesOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the index description, the canonical link
-  // And the social tags.
+  // and the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({

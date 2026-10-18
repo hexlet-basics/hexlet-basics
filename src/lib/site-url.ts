@@ -5,11 +5,11 @@ import { getRequest } from "@tanstack/react-start/server";
 // (canonical links), as legacy's `*_url` helpers built them.
 //
 // On the server SITE_URL wins: behind the ingress the SSR process sees the
-// Internal request (TLS terminated at the load balancer), so the request's own
-// Origin would say http. Without it — development, where Vite serves the page
-// On the origin the browser uses — the request origin is the public one. In the
-// Browser the page's own origin is the public one by definition. Server-only
-// Imports are stripped from the client bundle by the isomorphic split.
+// internal request (TLS terminated at the load balancer), so the request's own
+// origin would say http. Without it — development, where Vite serves the page
+// on the origin the browser uses — the request origin is the public one. In the
+// browser the page's own origin is the public one by definition. Server-only
+// imports are stripped from the client bundle by the isomorphic split.
 const getSiteOrigin = createIsomorphicFn()
   .server(() => process.env.SITE_URL ?? new URL(getRequest().url).origin)
   .client(() => window.location.origin);

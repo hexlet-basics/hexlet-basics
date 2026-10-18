@@ -1,8 +1,8 @@
 import { test } from "../support/test";
 
 // The catalog, not a course page: a course page is addressed by a landing page
-// Slug, and a landing page belongs to one locale, so its URL has no twin in the
-// Other languages to switch to.
+// slug, and a landing page belongs to one locale, so its URL has no twin in the
+// other languages to switch to.
 test("switching the language keeps the page and prefixes the route", async ({ site }) => {
   await site.catalog.open();
   await site.expectHeading(/./, 1);

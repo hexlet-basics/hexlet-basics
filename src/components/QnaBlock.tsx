@@ -4,8 +4,8 @@ import type { QnaItem } from "@/client/types.gen";
 import MarkdownViewer from "@/components/MarkdownViewer";
 
 // The "Sorting out the questions" block legacy closed its category and course
-// Pages with: each question in bold over its markdown answer, two columns from
-// The xs breakpoint. Nothing is rendered for a page with no questions.
+// pages with: each question in bold over its markdown answer, two columns from
+// the xs breakpoint. Nothing is rendered for a page with no questions.
 export default function QnaBlock({ items }: { items: QnaItem[] }) {
   const { t } = useTranslation();
   if (items.length === 0) {

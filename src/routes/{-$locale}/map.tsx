@@ -8,9 +8,9 @@ import type { Locale } from "@/lib/i18n";
 import { seoHead } from "@/lib/seo-head";
 
 // The HTML sitemap at its legacy URL, ported from legacy home/sitemap. Legacy
-// Served it on the ru site only (`/ru/map`); `/map` and `/es/map` are 404. It
-// Lists the ru site first, then the en one, each in its own language; es is
-// Left out because its links did not work on the legacy site.
+// served it on the ru site only (`/ru/map`); `/map` and `/es/map` are 404. It
+// lists the ru site first, then the en one, each in its own language; es is
+// left out because its links did not work on the legacy site.
 const SECTION_LOCALES: Locale[] = ["ru", "en"];
 
 // A link's `{-$locale}` param: en is the unprefixed default.

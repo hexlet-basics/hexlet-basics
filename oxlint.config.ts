@@ -1,10 +1,10 @@
 import { defineConfig } from "oxlint";
 
 // Policy: every rule of every stable category is on. A rule is switched off
-// Only below, with the reason next to it (it conflicts with oxfmt or with
-// Another enabled rule, with a convention of this repo or of TanStack, or it is
-// A taste rule whose fix churns hundreds of lines for no safety). There is no
-// Baseline and no blanket ignore: fix a finding, or justify turning its rule off.
+// only below, with the reason next to it (it conflicts with oxfmt or with
+// another enabled rule, with a convention of this repo or of TanStack, or it is
+// a taste rule whose fix churns hundreds of lines for no safety). There is no
+// baseline and no blanket ignore: fix a finding, or justify turning its rule off.
 export default defineConfig({
   plugins: [
     "eslint",
@@ -14,7 +14,6 @@ export default defineConfig({
     "react",
     "import",
     "jsx-a11y",
-    "vitest",
     "promise",
     "react-perf",
     "node",
@@ -32,10 +31,11 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    "eslint/capitalized-comments": ["error", "always", { ignoreConsecutiveComments: true }],
     "eslint/sort-imports": ["error", { ignoreDeclarationSort: true }],
     "eslint/one-var": ["error", "never"],
     // Rules switched off, each with its reason.
-    // The automatic JSX runtime needs no React import.
+    // the automatic JSX runtime needs no React import.
     "react/react-in-jsx-scope": "off",
     // User-facing strings are policed by lint:i18n (pages are exempt there on purpose).
     "react/jsx-no-literals": "off",
@@ -79,14 +79,6 @@ export default defineConfig({
     "import/max-dependencies": "off",
     // Taste rule, TypeScript members are public by default.
     "typescript/explicit-member-accessibility": "off",
-    // Expect.assertions(n) bookkeeping adds noise without safety.
-    "vitest/prefer-expect-assertions": "off",
-    // The global vitest timeout applies.
-    "vitest/require-test-timeout": "off",
-    // Flat test files are the repo style.
-    "vitest/require-top-level-describe": "off",
-    // Contradicts prefer-importing-vitest-globals, explicit imports are used.
-    "vitest/no-importing-vitest-globals": "off",
     // Route modules and components are hoisted function declarations referenced from Route, and it contradicts function-component-definition.
     "eslint/func-style": "off",
     // TanStack route modules declare Route first and the hoisted component functions below it.
@@ -115,8 +107,6 @@ export default defineConfig({
     "eslint/complexity": "off",
     // Taste threshold.
     "eslint/max-params": "off",
-    // Taste threshold, one scenario may assert several facts.
-    "vitest/max-expects": "off",
     // Micro-optimisation, no memoised children depend on identity.
     "react-perf/jsx-no-new-function-as-prop": "off",
     // Micro-optimisation, no memoised children depend on identity.
@@ -135,12 +125,6 @@ export default defineConfig({
     "unicorn/prefer-global-this": "off",
     // Side-effect imports (css, polyfills, setup) are the point.
     "import/no-unassigned-import": "off",
-    // E2e specs are Playwright *.spec.ts files, unit tests are *.test.ts.
-    "vitest/consistent-test-filename": "off",
-    // BeforeEach and afterEach are the way to reset shared state.
-    "vitest/no-hooks": "off",
-    // False positive on module-level code outside tests.
-    "vitest/require-hook": "off",
     // Mantine components take style and className by design.
     "react/forbid-component-props": "off",
     // Env is read at the edge (playwright config, SSR site url).
@@ -153,8 +137,6 @@ export default defineConfig({
     "unicorn/no-useless-undefined": "off",
     // The HTML charset meta must read utf-8, the fix writes utf8.
     "unicorn/text-encoding-identifier-case": "off",
-    // Describe titles name classes and components (ApiError), lowercasing misnames them.
-    "vitest/prefer-lowercase-title": "off",
     // Type-only imports stay a separate statement because import/consistent-type-specifier-style requires it (import/no-duplicates still catches real duplicates).
     "eslint/no-duplicate-imports": "off",
     // False positive on render callbacks such as columns and actionsColumn edit and extra, which are not component definitions.
@@ -163,16 +145,10 @@ export default defineConfig({
     "react/function-component-definition": "off",
     // ForwardRef wrappers are named by the const they are assigned to.
     "react/display-name": "off",
-    // Contradicts no-importing-vitest-globals, vitest specs import explicitly and e2e specs use Playwright test.
-    "vitest/prefer-importing-vitest-globals": "off",
     // Generated admin resources and e2e specs reach siblings with ../, the @/ alias covers src only.
     "import/no-relative-parent-imports": "off",
     // A let assigned in a callback and read after it cannot be initialised with a sound placeholder.
     "eslint/init-declarations": "off",
-    // ToBe(true) is the stricter assertion.
-    "vitest/prefer-to-be-truthy": "off",
-    // ToBe(false) is the stricter assertion.
-    "vitest/prefer-to-be-falsy": "off",
     // False positive on zod .catch and TanStack Router loaders return chains.
     "promise/prefer-await-to-then": "off",
     // False positive on zod .catch, which is not a promise.
@@ -203,8 +179,6 @@ export default defineConfig({
     "typescript/no-unsafe-type-assertion": "off",
     // DangerouslySetInnerHTML carries the JSON-LD script of the blog article, escaped on purpose.
     "react/no-danger": "off",
-    // Describes name constants and classes too, and valid-title rejects a non-string title for those.
-    "vitest/prefer-describe-function-title": "off",
     // Handlers come from records and hooks (actions[name].run), naming them handleX adds nothing.
     "react/jsx-handler-names": "off",
     // False positive, a default parameter does not replace null, which the argument may be.
@@ -217,19 +191,17 @@ export default defineConfig({
     "typescript/consistent-return": "off",
     // A lazily initialised per-mount constant has no setter to destructure.
     "react/hook-use-state": "off",
-    // ?? and ternaries only narrow nullable DOM and query results before the assertion that follows.
-    "vitest/no-conditional-in-test": "off",
     // The default allows JSX only in .jsx files; this repo writes it in .tsx.
     "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
     // An unhandled promise is a silently swallowed failure; mark deliberate
-    // Fire-and-forget calls (navigate, invalidateQueries) with `void`.
+    // fire-and-forget calls (navigate, invalidateQueries) with `void`.
     "typescript/no-floating-promises": "error",
     "typescript/no-misused-promises": "error",
     // A union grown by the contract must fail the switch, not fall into default.
     "typescript/switch-exhaustiveness-check": "error",
     "typescript/no-deprecated": "error",
     // `any` switches the checker off for everything it touches; use `unknown`
-    // And narrow, or a precise type.
+    // and narrow, or a precise type.
     "typescript/no-explicit-any": "error",
     "typescript/no-unsafe-assignment": "error",
     "typescript/no-unsafe-member-access": "error",
@@ -252,8 +224,25 @@ export default defineConfig({
   },
   overrides: [
     {
+      // The vitest rules describe vitest specs; the Playwright e2e specs, scripts
+      // and application modules are not vitest code, so the plugin is loaded for
+      // the unit-test files only.
+      files: ["**/*.test.ts", "**/*.test.tsx"],
+      plugins: ["vitest"],
+      rules: {
+        // The stricter toBe(true) is the assertion, and prefer-strict-boolean-matchers requires it.
+        "vitest/prefer-to-be-truthy": "off",
+        // The stricter toBe(false) is the assertion, and prefer-strict-boolean-matchers requires it.
+        "vitest/prefer-to-be-falsy": "off",
+        // The valid-title rule rejects the function-valued describe title this rule demands.
+        "vitest/prefer-describe-function-title": "off",
+        // Contradicts prefer-importing-vitest-globals, explicit imports are used.
+        "vitest/no-importing-vitest-globals": "off",
+      },
+    },
+    {
       // A spec says what a person does and sees through the `site` fixture. It
-      // Takes `test` from the support file, whose type hands it no `page`;
+      // takes `test` from the support file, whose type hands it no `page`;
       // Playwright's own `test` would bring `page`, selectors and waits back.
       files: ["e2e/support/**"],
       rules: {

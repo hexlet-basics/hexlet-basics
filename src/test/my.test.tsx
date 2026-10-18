@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type {
   Course,
@@ -81,26 +81,31 @@ function openMy(dashboard: MyDashboard, visitor: User | null = user) {
   return renderRoute(myRoute, { path: "/{-$locale}/my", initialPath: "/my", user: visitor });
 }
 
-test("a guest is sent to sign in first", async () => {
-  const { router } = await openMy({ started: [], finished: [] }, null);
+describe("my", () => {
+  it("a guest is sent to sign in first", async () => {
+    expect.hasAssertions();
+    const { router } = await openMy({ started: [], finished: [] }, null);
 
-  await expect.poll(() => router.state.location.pathname).toBe("/session/new");
-});
+    await expect.poll(() => router.state.location.pathname).toBe("/session/new");
+  }, 60_000);
 
-test("the dashboard shows courses in progress with where to resume, and finished ones", async () => {
-  await openMy({
-    started: [dashboardCourse(1, catalogItem(1, "javascript", "JavaScript"), "started")],
-    finished: [dashboardCourse(2, catalogItem(2, "python", "Python"), "finished")],
-  });
+  it("the dashboard shows courses in progress with where to resume, and finished ones", async () => {
+    expect.hasAssertions();
+    await openMy({
+      started: [dashboardCourse(1, catalogItem(1, "javascript", "JavaScript"), "started")],
+      finished: [dashboardCourse(2, catalogItem(2, "python", "Python"), "finished")],
+    });
 
-  await expect.element(page.getByRole("heading", { name: "JavaScript" })).toBeVisible();
-  await expect.element(page.getByText("Variables →")).toBeVisible();
-  await expect.element(page.getByText("Python")).toBeVisible();
-});
+    await expect.element(page.getByRole("heading", { name: "JavaScript" })).toBeVisible();
+    await expect.element(page.getByText("Variables →")).toBeVisible();
+    await expect.element(page.getByText("Python")).toBeVisible();
+  }, 60_000);
 
-test("a learner with no courses sees an empty state under both headings", async () => {
-  await openMy({ started: [], finished: [] });
+  it("a learner with no courses sees an empty state under both headings", async () => {
+    expect.hasAssertions();
+    await openMy({ started: [], finished: [] });
 
-  await expect.element(page.getByText("Empty").first()).toBeVisible();
-  expect(page.getByText("Empty").elements()).toHaveLength(2);
+    await expect.element(page.getByText("Empty").first()).toBeVisible();
+    expect(page.getByText("Empty").elements()).toHaveLength(2);
+  }, 60_000);
 });

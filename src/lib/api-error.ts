@@ -1,8 +1,8 @@
 import { notFound } from "@tanstack/react-router";
 
 // What the generated client throws for a non-2xx answer: the status and the
-// Parsed body (JSON when the server sent it, text otherwise). Routes and forms
-// Depend on this class, never on the HTTP library under the client.
+// parsed body (JSON when the server sent it, text otherwise). Routes and forms
+// depend on this class, never on the HTTP library under the client.
 export class ApiError extends Error {
   readonly status: number;
   readonly body: unknown;
@@ -16,8 +16,8 @@ export class ApiError extends Error {
 }
 
 // The client's error interceptor: only a failure that came with a response
-// Becomes an ApiError. A network error or an abort has no status and passes
-// Through as it is.
+// becomes an ApiError. A network error or an abort has no status and passes
+// through as it is.
 export function apiErrorOf(error: unknown, response: Response | undefined): unknown {
   if (!response || response.ok) {
     return error;
@@ -30,7 +30,7 @@ export function isApiError(error: unknown, status?: number): error is ApiError {
 }
 
 // For a loader's catch: a 404 from the API is a missing page, so it becomes the
-// Router's `notFound()`; anything else is rethrown as it was.
+// router's `notFound()`; anything else is rethrown as it was.
 export function rethrowMissingAsNotFound(error: unknown): never {
   if (isApiError(error, 404)) {
     throw notFound();

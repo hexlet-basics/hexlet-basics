@@ -12,7 +12,7 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // A review's Publication State and the buttons that change it (see
 // PublicationStatePanel); this one binds the review's three operations. A review
-// With no state counts as a draft, as on the server.
+// with no state counts as a draft, as on the server.
 export function ReviewStatePanel({ review }: { review: Review }) {
   const { t } = useTranslation();
   const options = {

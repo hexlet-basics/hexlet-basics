@@ -4,11 +4,11 @@ import { blogPostFields } from "@/components/admin/generated/blogPost";
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Blog-post form values ARE the generated request body (BlogPostInput).
-// RichBody is trusted editor HTML behind the engine's richtext field (Mantine
+// richBody is trusted editor HTML behind the engine's richtext field (Mantine
 // RTE); coverAttachmentId is deferred with the attachment wave. The related
-// Courses live on their own endpoint and get a separate panel on the edit page,
-// And so does the Publication State: it is changed by its own operations, never
-// By the form.
+// courses live on their own endpoint and get a separate panel on the edit page,
+// and so does the Publication State: it is changed by its own operations, never
+// by the form.
 
 export const emptyBlogPost: BlogPostInput = {
   name: "",
@@ -29,8 +29,8 @@ export function blogPostToForm(post: BlogPost): BlogPostInput {
 }
 
 // Fields come from the contract (generated/blogPost.ts); what is listed here is
-// Only what the schema cannot say. The state is not a field: BlogPostInput has
-// None, see the note above.
+// only what the schema cannot say. The state is not a field: BlogPostInput has
+// none, see the note above.
 export function useBlogPostFields(): CrudFieldSpec<BlogPostInput>[] {
   return useGeneratedFields<BlogPostInput>(blogPostFields, {
     // The schema allows null for these, the form insists.

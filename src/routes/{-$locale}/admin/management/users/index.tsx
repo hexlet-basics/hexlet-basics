@@ -13,7 +13,7 @@ import { EditLink } from "@/components/admin/EditLink";
 import { useCrudList } from "@/components/admin/useCrudList";
 
 // Management users (legacy `/admin/management/users`) — list + edit only,
-// No create/delete (parity with legacy: accounts are self-registered).
+// no create/delete (parity with legacy: accounts are self-registered).
 export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
   validateSearch: zAdminListManagementUsersQuery,
   component: ManagementUsersList,

@@ -14,10 +14,10 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The Publication State of a banner, a review and a landing page is changed by
-// Action buttons, one per operation, never by the form (the same pattern as the
-// Blog post, admin-blog-post-state.test.tsx). Through the real routes under the
-// Real admin guard: the buttons offered follow the current state, a click calls
-// That operation and the record shown is the one it answered with.
+// action buttons, one per operation, never by the form (the same pattern as the
+// blog post, admin-blog-post-state.test.tsx). Through the real routes under the
+// real admin guard: the buttons offered follow the current state, a click calls
+// that operation and the record shown is the one it answered with.
 
 const banner = (state: PublicationState): Banner => ({
   id: 7,
@@ -153,23 +153,29 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     ["draft", ["Publish", "Archive"], ["Unpublish"]],
     ["published", ["Unpublish", "Archive"], ["Publish"]],
     ["archived", ["Publish"], ["Unpublish", "Archive"]],
-  ])("a %s record offers only the transitions legal for it", async (state, offered, hidden) => {
-    worker.use(
-      noQna,
-      http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record(state))),
-    );
+  ])(
+    "a %s record offers only the transitions legal for it",
+    async (state, offered, hidden) => {
+      expect.hasAssertions();
+      worker.use(
+        noQna,
+        http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record(state))),
+      );
 
-    await subject.edit();
+      await subject.edit();
 
-    for (const name of offered) {
-      await expect.element(button(name)).toBeVisible();
-    }
-    for (const name of hidden) {
-      await expect.element(button(name)).not.toBeInTheDocument();
-    }
-  });
+      for (const name of offered) {
+        await expect.element(button(name)).toBeVisible();
+      }
+      for (const name of hidden) {
+        await expect.element(button(name)).not.toBeInTheDocument();
+      }
+    },
+    60_000,
+  );
 
   it("the form has no state field", async () => {
+    expect.hasAssertions();
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
@@ -179,9 +185,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
 
     await expect.element(page.getByLabelText(subject.nameLabel)).toBeVisible();
     await expect.element(page.getByLabelText("State")).not.toBeInTheDocument();
-  });
+  }, 60_000);
 
   it("publishing calls the publish operation and shows the new state", async () => {
+    expect.hasAssertions();
     let state: PublicationState = "draft";
     let published = false;
     worker.use(
@@ -201,9 +208,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     expect(published).toBe(true);
     await expect.element(button("Unpublish")).toBeVisible();
     await expect.element(button("Publish")).not.toBeInTheDocument();
-  });
+  }, 60_000);
 
   it("archiving and unpublishing call their own operations", async () => {
+    expect.hasAssertions();
     const called: string[] = [];
     let state: PublicationState = "published";
     worker.use(
@@ -228,9 +236,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await expect.element(button("Unpublish")).not.toBeInTheDocument();
 
     expect(called).toStrictEqual(["unpublish", "archive"]);
-  });
+  }, 60_000);
 
   it("a refused transition tells the admin and keeps the state", async () => {
+    expect.hasAssertions();
     worker.use(
       noQna,
       http.get(`*/admin/${subject.resource}/7`, () => HttpResponse.json(subject.record("draft"))),
@@ -244,9 +253,10 @@ describe.each(subjects)("the $name admin screens", (subject) => {
 
     await expect.element(page.getByText("Could not change the state")).toBeVisible();
     await expect.element(button("Publish")).toBeVisible();
-  });
+  }, 60_000);
 
   it("the list shows each record's state", async () => {
+    expect.hasAssertions();
     worker.use(
       http.get(`*/admin/${subject.resource}`, () =>
         HttpResponse.json({
@@ -261,5 +271,5 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await subject.list();
 
     await expect.element(page.getByRole("cell", { name: "Archived" })).toBeVisible();
-  });
+  }, 60_000);
 });

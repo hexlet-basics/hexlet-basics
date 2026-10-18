@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type {
   CourseCategory,
@@ -14,9 +14,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin edit pages that carry a nested editor under the record's own form,
-// Through their real routes under the real admin guard: the role's permissions
-// And a category's FAQ. The API is faked at the HTTP boundary; asserted is
-// What an admin sees and what the API is sent.
+// through their real routes under the real admin guard: the role's permissions
+// and a category's FAQ. The API is faked at the HTTP boundary; asserted is
+// what an admin sees and what the API is sent.
 
 const role: StaffRoleDetail = {
   id: 5,
@@ -34,61 +34,6 @@ const catalog = {
   ],
 };
 
-test("a role's permissions are shown by resource and saved as the admin ticked them", async () => {
-  let received: RolePermissionsInput | undefined;
-  worker.use(
-    http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
-    http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
-    http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
-    http.put("*/admin/management/role_permissions/5", async ({ request }) => {
-      received = (await request.json()) as RolePermissionsInput;
-      return HttpResponse.json(role);
-    }),
-  );
-
-  await renderRoute(roleRoute, {
-    path: "/{-$locale}/admin/management/roles/$id",
-    initialPath: "/admin/management/roles/5",
-    user: admin,
-  });
-
-  // Permissions are listed under the resource they belong to.
-  await expect.element(page.getByText("banners", { exact: true })).toBeVisible();
-  await expect.element(page.getByText("blog_posts", { exact: true })).toBeVisible();
-
-  // A capability is offered with its own group and a note that it is explicit only.
-  await expect.element(page.getByText("audit", { exact: true })).toBeVisible();
-  await expect.element(page.getByRole("checkbox", { name: "audit.read" })).not.toBeChecked();
-  await expect.element(page.getByText("Explicit grant only")).toBeVisible();
-
-  // The role reads blog posts and may not create them yet.
-  const read = page.getByRole("checkbox", { name: "blog_posts.read" });
-  await expect.element(read).toBeChecked();
-  const create = page.getByRole("checkbox", { name: "blog_posts.create" });
-  await expect.element(create).not.toBeChecked();
-
-  await create.click();
-  await read.click();
-  const save = page.getByRole("button", { name: "Save" }).last();
-  await save.click();
-
-  const confirmation = page.getByText("Record updated");
-  await expect.element(confirmation).toBeVisible();
-  expect(received?.grants).toStrictEqual(["blog_posts.create"]);
-});
-
-const category: CourseCategory = {
-  id: 7,
-  slug: "programming",
-  name: "Programming",
-  header: "Programming",
-  description: null,
-  locale: "en",
-  createdAt: "2026-01-01T00:00:00Z",
-};
-
-const faq: QnaItem[] = [{ id: 1, question: "Is it free?", answer: "Yes." }];
-
 function openCategory() {
   return renderRoute(categoryRoute, {
     path: "/{-$locale}/admin/course_categories/$id",
@@ -97,76 +42,137 @@ function openCategory() {
   });
 }
 
-test("an admin adds a question to a category's FAQ", async () => {
-  let created: unknown;
-  worker.use(
-    http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
-    http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
-    http.post("*/admin/course_categories/7/qna_items", async ({ request }) => {
-      created = await request.json();
-      return HttpResponse.json({ id: 2, question: "Why?", answer: "Because." });
-    }),
-  );
+describe("admin edit", () => {
+  it("a role's permissions are shown by resource and saved as the admin ticked them", async () => {
+    expect.hasAssertions();
+    let received: RolePermissionsInput | undefined;
+    worker.use(
+      http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
+      http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
+      http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
+      http.put("*/admin/management/role_permissions/5", async ({ request }) => {
+        received = (await request.json()) as RolePermissionsInput;
+        return HttpResponse.json(role);
+      }),
+    );
 
-  await openCategory();
+    await renderRoute(roleRoute, {
+      path: "/{-$locale}/admin/management/roles/$id",
+      initialPath: "/admin/management/roles/5",
+      user: admin,
+    });
 
-  const existing = page.getByLabelText("Question").first();
-  await expect.element(existing).toHaveValue("Is it free?");
+    // Permissions are listed under the resource they belong to.
+    await expect.element(page.getByText("banners", { exact: true })).toBeVisible();
+    await expect.element(page.getByText("blog_posts", { exact: true })).toBeVisible();
 
-  const question = page.getByLabelText("Question").last();
-  await question.fill("Why?");
-  const answer = page.getByLabelText("Answer").last();
-  await answer.fill("Because.");
-  const create = page.getByRole("button", { name: "Create" }).last();
-  await create.click();
+    // A capability is offered with its own group and a note that it is explicit only.
+    await expect.element(page.getByText("audit", { exact: true })).toBeVisible();
+    await expect.element(page.getByRole("checkbox", { name: "audit.read" })).not.toBeChecked();
+    await expect.element(page.getByText("Explicit grant only")).toBeVisible();
 
-  const confirmation = page.getByText("Record created");
-  await expect.element(confirmation).toBeVisible();
-  expect(created).toStrictEqual({ question: "Why?", answer: "Because." });
-});
+    // The role reads blog posts and may not create them yet.
+    const read = page.getByRole("checkbox", { name: "blog_posts.read" });
+    await expect.element(read).toBeChecked();
+    const create = page.getByRole("checkbox", { name: "blog_posts.create" });
+    await expect.element(create).not.toBeChecked();
 
-test("an admin edits a question and is told it was saved", async () => {
-  let updated: unknown;
-  worker.use(
-    http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
-    http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
-    http.put("*/admin/course_categories/7/qna_items/1", async ({ request }) => {
-      updated = await request.json();
-      return HttpResponse.json({ id: 1, question: "Is it free?", answer: "Always." });
-    }),
-  );
+    await create.click();
+    await read.click();
+    const save = page.getByRole("button", { name: "Save" }).last();
+    await save.click();
 
-  await openCategory();
+    const confirmation = page.getByText("Record updated");
+    await expect.element(confirmation).toBeVisible();
+    expect(received?.grants).toStrictEqual(["blog_posts.create"]);
+  }, 60_000);
 
-  const answer = page.getByLabelText("Answer").first();
-  await answer.fill("Always.");
-  const save = page.getByRole("button", { name: "Save" }).nth(1);
-  await save.click();
+  const category: CourseCategory = {
+    id: 7,
+    slug: "programming",
+    name: "Programming",
+    header: "Programming",
+    description: null,
+    locale: "en",
+    createdAt: "2026-01-01T00:00:00Z",
+  };
 
-  const confirmation = page.getByText("Record updated");
-  await expect.element(confirmation).toBeVisible();
-  expect(updated).toStrictEqual({ question: "Is it free?", answer: "Always." });
-});
+  const faq: QnaItem[] = [{ id: 1, question: "Is it free?", answer: "Yes." }];
 
-test("an admin deletes a question after confirming", async () => {
-  let deleted = false;
-  worker.use(
-    http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
-    http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
-    http.delete("*/admin/course_categories/7/qna_items/1", () => {
-      deleted = true;
-      return new HttpResponse(null, { status: 204 });
-    }),
-  );
+  it("an admin adds a question to a category's FAQ", async () => {
+    expect.hasAssertions();
+    let created: unknown;
+    worker.use(
+      http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
+      http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
+      http.post("*/admin/course_categories/7/qna_items", async ({ request }) => {
+        created = await request.json();
+        return HttpResponse.json({ id: 2, question: "Why?", answer: "Because." });
+      }),
+    );
 
-  await openCategory();
+    await openCategory();
 
-  const remove = page.getByRole("button", { name: "Delete" }).first();
-  await remove.click();
-  const confirm = page.getByRole("dialog").getByRole("button", { name: "Delete" });
-  await confirm.click();
+    const existing = page.getByLabelText("Question").first();
+    await expect.element(existing).toHaveValue("Is it free?");
 
-  const confirmation = page.getByText("Record deleted");
-  await expect.element(confirmation).toBeVisible();
-  expect(deleted).toBe(true);
+    const question = page.getByLabelText("Question").last();
+    await question.fill("Why?");
+    const answer = page.getByLabelText("Answer").last();
+    await answer.fill("Because.");
+    const create = page.getByRole("button", { name: "Create" }).last();
+    await create.click();
+
+    const confirmation = page.getByText("Record created");
+    await expect.element(confirmation).toBeVisible();
+    expect(created).toStrictEqual({ question: "Why?", answer: "Because." });
+  }, 60_000);
+
+  it("an admin edits a question and is told it was saved", async () => {
+    expect.hasAssertions();
+    let updated: unknown;
+    worker.use(
+      http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
+      http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
+      http.put("*/admin/course_categories/7/qna_items/1", async ({ request }) => {
+        updated = await request.json();
+        return HttpResponse.json({ id: 1, question: "Is it free?", answer: "Always." });
+      }),
+    );
+
+    await openCategory();
+
+    const answer = page.getByLabelText("Answer").first();
+    await answer.fill("Always.");
+    const save = page.getByRole("button", { name: "Save" }).nth(1);
+    await save.click();
+
+    const confirmation = page.getByText("Record updated");
+    await expect.element(confirmation).toBeVisible();
+    expect(updated).toStrictEqual({ question: "Is it free?", answer: "Always." });
+  }, 60_000);
+
+  it("an admin deletes a question after confirming", async () => {
+    expect.hasAssertions();
+    let deleted = false;
+    worker.use(
+      http.get("*/admin/course_categories/7", () => HttpResponse.json(category)),
+      http.get("*/admin/course_categories/7/qna_items", () => HttpResponse.json(faq)),
+      http.delete("*/admin/course_categories/7/qna_items/1", () => {
+        deleted = true;
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    await openCategory();
+
+    const remove = page.getByRole("button", { name: "Delete" }).first();
+    await remove.click();
+    const confirm = page.getByRole("dialog").getByRole("button", { name: "Delete" });
+    await confirm.click();
+
+    const confirmation = page.getByText("Record deleted");
+    await expect.element(confirmation).toBeVisible();
+    expect(deleted).toBe(true);
+  }, 60_000);
 });

@@ -4,7 +4,7 @@ import LessonMark from "@/components/lesson/LessonMark";
 import { NavLink } from "@/components/RouterLink";
 
 // The course's lessons, in course order, with the current one marked and a check
-// On the finished ones. Legacy's flat list: lessons may be taken in any order
+// on the finished ones. Legacy's flat list: lessons may be taken in any order
 // (ADR-0016), so every entry is a plain link.
 export default function LessonNavigation({ view }: { view: CourseLessonView }) {
   const courseSlug = view.lesson.course.slug;

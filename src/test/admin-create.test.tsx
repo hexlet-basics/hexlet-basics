@@ -1,6 +1,6 @@
 import type { AnyRoute } from "@tanstack/react-router";
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import { Route as blogPostRoute } from "@/routes/{-$locale}/admin/blog_posts/new";
 import { Route as courseLandingPageRoute } from "@/routes/{-$locale}/admin/course_landing_pages/new";
@@ -12,9 +12,9 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin "new record" pages through their real routes, under the real admin
-// Guard: an admin fills the form, the API receives what was typed, and the page
-// Goes back to the resource's list. The forms are one engine (CrudForm) fed by a
-// Field spec per resource, so each case covers a resource's spec and its route.
+// guard: an admin fills the form, the API receives what was typed, and the page
+// goes back to the resource's list. The forms are one engine (CrudForm) fed by a
+// field spec per resource, so each case covers a resource's spec and its route.
 
 interface Case {
   name: string;
@@ -74,44 +74,52 @@ const cases: Case[] = [
   },
 ];
 
-test.each(cases)("an admin creates $name and is taken back to the list", async (c) => {
-  let received: unknown;
-  worker.use(
-    http.post(`*/admin/${c.resource}`, async ({ request }) => {
-      received = await request.json();
-      return HttpResponse.json({ id: 1 });
-    }),
+describe("admin create", () => {
+  it.each(cases)(
+    "an admin creates $name and is taken back to the list",
+    async (c) => {
+      expect.hasAssertions();
+      let received: unknown;
+      worker.use(
+        http.post(`*/admin/${c.resource}`, async ({ request }) => {
+          received = await request.json();
+          return HttpResponse.json({ id: 1 });
+        }),
+      );
+
+      const { router } = await renderRoute(c.route, {
+        path: `/{-$locale}/admin/${c.resource}/new`,
+        initialPath: `/admin/${c.resource}/new`,
+        user: admin,
+      });
+
+      for (const [label, value] of c.fields) {
+        const field = page.getByLabelText(label);
+        await field.fill(value);
+      }
+      const create = page.getByRole("button", { name: "Create" });
+      await create.click();
+
+      const confirmation = page.getByText("Record created");
+      await expect.element(confirmation).toBeVisible();
+      expect(received).toMatchObject(c.sent);
+      // A new record is a draft: the state has its own operations.
+      expect(received).not.toHaveProperty("state");
+      // A new course is a draft too: its readiness has its own operations.
+      expect(received).not.toHaveProperty("readiness");
+      await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
+    },
+    60_000,
   );
 
-  const { router } = await renderRoute(c.route, {
-    path: `/{-$locale}/admin/${c.resource}/new`,
-    initialPath: `/admin/${c.resource}/new`,
-    user: admin,
-  });
+  it("a visitor who is not an admin is sent away from the admin pages", async () => {
+    expect.hasAssertions();
+    const { router } = await renderRoute(courseRoute, {
+      path: "/{-$locale}/admin/courses/new",
+      initialPath: "/admin/courses/new",
+      user: { ...admin, admin: false, canAccessAdmin: false },
+    });
 
-  for (const [label, value] of c.fields) {
-    const field = page.getByLabelText(label);
-    await field.fill(value);
-  }
-  const create = page.getByRole("button", { name: "Create" });
-  await create.click();
-
-  const confirmation = page.getByText("Record created");
-  await expect.element(confirmation).toBeVisible();
-  expect(received).toMatchObject(c.sent);
-  // A new record is a draft: the state has its own operations.
-  expect(received).not.toHaveProperty("state");
-  // A new course is a draft too: its readiness has its own operations.
-  expect(received).not.toHaveProperty("readiness");
-  await expect.poll(() => router.state.location.pathname).toBe(`/admin/${c.resource}`);
-});
-
-test("a visitor who is not an admin is sent away from the admin pages", async () => {
-  const { router } = await renderRoute(courseRoute, {
-    path: "/{-$locale}/admin/courses/new",
-    initialPath: "/admin/courses/new",
-    user: { ...admin, admin: false, canAccessAdmin: false },
-  });
-
-  await expect.poll(() => router.state.location.pathname).toBe("/");
+    await expect.poll(() => router.state.location.pathname).toBe("/");
+  }, 60_000);
 });

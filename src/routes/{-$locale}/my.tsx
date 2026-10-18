@@ -21,8 +21,8 @@ import CourseBlock from "@/components/CourseBlock";
 import { requireAuth } from "@/lib/auth";
 
 // The signed-in learner's dashboard, ported from legacy web/my#show: the
-// Courses in progress with where to resume, and the finished ones. Anonymous
-// Visitors are sent to sign in and back (ADR-0008: the guard runs on the server).
+// courses in progress with where to resume, and the finished ones. Anonymous
+// visitors are sent to sign in and back (ADR-0008: the guard runs on the server).
 export const Route = createFileRoute("/{-$locale}/my")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);

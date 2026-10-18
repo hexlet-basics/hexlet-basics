@@ -19,18 +19,18 @@ import { TextLink } from "@/components/RouterLink";
 import { ansiLanguage } from "@/lib/shiki";
 
 // What the run said. A solution that never terminated is its own outcome, not an
-// Ordinary failure: it is a loop to find, not a wrong answer to rethink, and the
-// Copy for each of the three comes from `common.check` keyed by the result.
+// ordinary failure: it is a loop to find, not a wrong answer to rethink, and the
+// copy for each of the three comes from `common.check` keyed by the result.
 //
 // The output is rendered exactly as it arrived, highlighted as ANSI so the test
-// Runner's colours show instead of their escape codes. The runner scrubs it server-side
+// runner's colours show instead of their escape codes. The runner scrubs it server-side
 // (ADR-0013), so nothing here decodes or unescapes it — a departure from legacy,
-// Which base64-encoded it.
+// which base64-encoded it.
 //
 // The run can take a while (a container starts per check), and the learner is
-// Switched to this tab the moment they press run. The tab therefore says what is
-// Going on — a spinner while the check runs, a hint before the first one — rather
-// Than showing an empty pane the run button's spinner cannot explain from here.
+// switched to this tab the moment they press run. The tab therefore says what is
+// going on — a spinner while the check runs, a hint before the first one — rather
+// than showing an empty pane the run button's spinner cannot explain from here.
 //
 // The result copy carries markup (`<a>` in the failed message), so it goes through
 // Trans; the help article it links to is the one legacy linked.
@@ -58,8 +58,8 @@ function GuestPrompt() {
 }
 
 // Before the first run the pane would otherwise be blank, and a beginner has no
-// Way to know what "output" is or what to do next. So it says what will appear
-// Here, and walks through the loop: write, run, read.
+// way to know what "output" is or what to do next. So it says what will appear
+// here, and walks through the loop: write, run, read.
 function EmptyOutput() {
   const { t } = useTranslation();
 

@@ -19,9 +19,9 @@ import { useAppForm, submitForm } from "@/lib/form";
 import { submitWithServerErrors } from "@/lib/server-validation";
 
 // The signed-in user's profile, ported from legacy account/profiles#edit
-// Without the passkey section (ADR-0015). The name rules (40 characters, no
-// Special characters) come from the generated `zProfileInput`, the same
-// Constraints the API enforces.
+// without the passkey section (ADR-0015). The name rules (40 characters, no
+// special characters) come from the generated `zProfileInput`, the same
+// constraints the API enforces.
 export const Route = createFileRoute("/{-$locale}/account/profile/edit")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
@@ -107,8 +107,8 @@ function Edit() {
 }
 
 // Account deletion behind the same yes/no confirmation legacy's useConfirmation
-// Showed. The API signs the user out, so the current-user cache is set to the
-// Guest before leaving: the root guard would otherwise keep the removed user.
+// showed. The API signs the user out, so the current-user cache is set to the
+// guest before leaving: the root guard would otherwise keep the removed user.
 function DeleteAccount() {
   const { t } = useTranslation();
   const navigate = useNavigate();

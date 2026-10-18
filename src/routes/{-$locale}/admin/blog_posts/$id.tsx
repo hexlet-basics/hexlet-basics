@@ -75,14 +75,14 @@ function EditBlogPost() {
 
 // The promoted-courses editor: an explicit set, plus the legacy AI pick
 // (`related_courses` member action). Selection order is the display order the
-// Backend persists. The pick runs in a background job, so its result shows up
-// On a later load of the post — the same manual reload legacy needed.
+// backend persists. The pick runs in a background job, so its result shows up
+// on a later load of the post — the same manual reload legacy needed.
 function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: number[] }) {
   const { t } = useTranslation();
   const [selected, setSelected] = useState(initial.map(String));
 
   // Every course, from the unpaginated options list: a page would silently drop
-  // The courses past its end from the picker.
+  // the courses past its end from the picker.
   const courses = useQuery(adminListCourseOptionsOptions());
   const options = (courses.data ?? []).map((course) => ({
     value: String(course.id),

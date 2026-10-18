@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { Sitemap } from "@/client/types.gen";
 import { Route } from "@/routes/{-$locale}/map";
@@ -8,8 +8,8 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The HTML sitemap, driven through its real route with the API faked at the
 // HTTP boundary. Asserted is what a visitor sees: a section per site, ru then
-// En, each in its own language and linking into its own locale, and that only
-// The ru site has the page.
+// en, each in its own language and linking into its own locale, and that only
+// the ru site has the page.
 
 const sitemap: Sitemap = {
   landingPages: [
@@ -48,48 +48,59 @@ function renderMap(initialPath: string) {
   return renderRoute(Route, { path: "/{-$locale}/map", initialPath });
 }
 
-test("the ru site lists both sites, each linking into its own locale", async () => {
-  const { router } = await renderMap("/ru/map");
+describe("sitemap", () => {
+  it("the ru site lists both sites, each linking into its own locale", async () => {
+    expect.hasAssertions();
+    const { router } = await renderMap("/ru/map");
 
-  await expect.element(page.getByRole("heading", { name: "Карта сайта", level: 1 })).toBeVisible();
-  await expect.element(page.getByRole("link", { name: "Главная" })).toHaveAttribute("href", "/ru");
-  await expect.element(page.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+    await expect
+      .element(page.getByRole("heading", { name: "Карта сайта", level: 1 }))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("link", { name: "Главная" }))
+      .toHaveAttribute("href", "/ru");
+    await expect.element(page.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
 
-  await page.getByRole("button", { name: "Курсы по программированию" }).click();
-  await page.getByRole("button", { name: "Courses", exact: true }).click();
-  await expect
-    .element(page.getByRole("link", { name: "Курс Ruby" }))
-    .toHaveAttribute("href", "/ru/languages/ruby-ru");
-  await expect
-    .element(page.getByRole("link", { name: "Ruby Course" }))
-    .toHaveAttribute("href", "/languages/ruby-en");
+    await page.getByRole("button", { name: "Курсы по программированию" }).click();
+    await page.getByRole("button", { name: "Courses", exact: true }).click();
+    await expect
+      .element(page.getByRole("link", { name: "Курс Ruby" }))
+      .toHaveAttribute("href", "/ru/languages/ruby-ru");
+    await expect
+      .element(page.getByRole("link", { name: "Ruby Course" }))
+      .toHaveAttribute("href", "/languages/ruby-en");
 
-  await page.getByRole("button", { name: "Блог Code Basics" }).click();
-  await page.getByRole("button", { name: "Blog", exact: true }).click();
-  await expect
-    .element(page.getByRole("link", { name: "Привет, мир" }))
-    .toHaveAttribute("href", "/ru/blog_posts/hello-ru");
-  await expect
-    .element(page.getByRole("link", { name: "Hello world" }))
-    .toHaveAttribute("href", "/blog_posts/hello-en");
-  expect(page.getByText("Hola mundo").query()).toBeNull();
+    await page.getByRole("button", { name: "Блог Code Basics" }).click();
+    await page.getByRole("button", { name: "Blog", exact: true }).click();
+    await expect
+      .element(page.getByRole("link", { name: "Привет, мир" }))
+      .toHaveAttribute("href", "/ru/blog_posts/hello-ru");
+    await expect
+      .element(page.getByRole("link", { name: "Hello world" }))
+      .toHaveAttribute("href", "/blog_posts/hello-en");
+    expect(page.getByText("Hola mundo").query()).toBeNull();
 
-  await page.getByRole("button", { name: "Категории курсов по программированию" }).click();
-  await expect
-    .element(page.getByRole("link", { name: "Программирование" }))
-    .toHaveAttribute("href", "/ru/language_categories/programming-ru");
+    await page.getByRole("button", { name: "Категории курсов по программированию" }).click();
+    await expect
+      .element(page.getByRole("link", { name: "Программирование" }))
+      .toHaveAttribute("href", "/ru/language_categories/programming-ru");
 
-  expect(router.state.matches.at(-1)?.meta).toStrictEqual([{ title: "CodeBasics | Карта сайта" }]);
-});
+    expect(router.state.matches.at(-1)?.meta).toStrictEqual([
+      { title: "CodeBasics | Карта сайта" },
+    ]);
+  }, 60_000);
 
-test("the en site has no sitemap", async () => {
-  await renderMap("/map");
+  it("the en site has no sitemap", async () => {
+    expect.hasAssertions();
+    await renderMap("/map");
 
-  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
-});
+    await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+  }, 60_000);
 
-test("the es site has no sitemap", async () => {
-  await renderMap("/es/map");
+  it("the es site has no sitemap", async () => {
+    expect.hasAssertions();
+    await renderMap("/es/map");
 
-  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+  }, 60_000);
 });

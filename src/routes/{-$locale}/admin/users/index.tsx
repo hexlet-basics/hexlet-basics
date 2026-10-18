@@ -17,8 +17,8 @@ import { useCrudList } from "@/components/admin/useCrudList";
 import { ButtonLink } from "@/components/RouterLink";
 
 // Users admin (legacy `/admin/api/users` — the `api/` segment was a Rails
-// Namespacing artifact and is dropped from the UI path). The search box is the
-// List's own `q` filter, so a search pages and totals like the list does.
+// namespacing artifact and is dropped from the UI path). The search box is the
+// list's own `q` filter, so a search pages and totals like the list does.
 export const Route = createFileRoute("/{-$locale}/admin/users/")({
   validateSearch: zAdminListUsersQuery,
   component: UsersList,

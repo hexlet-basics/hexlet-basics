@@ -6,8 +6,8 @@ import { DEFAULT_LOCALE, isPrefixedLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 // A route can ask for chrome other than the site layout. Declared per route
-// Rather than matched on the URL here, so the page that wants a bare shell says
-// So itself and this layout keeps knowing nothing about which pages exist.
+// rather than matched on the URL here, so the page that wants a bare shell says
+// so itself and this layout keeps knowing nothing about which pages exist.
 declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
     chrome?: "bare";
@@ -16,7 +16,7 @@ declare module "@tanstack/react-router" {
 
 // Optional locale prefix layout: `/` → en (unprefixed), `/ru`, `/es` → prefixed
 // (legacy `scope "(:suffix)", suffix: /es|ru/`). Only `ru`/`es` are valid
-// Prefixes; any other segment (e.g. `/xx`) is a 404, never rendered as a locale.
+// prefixes; any other segment (e.g. `/xx`) is a 404, never rendered as a locale.
 export const Route = createFileRoute("/{-$locale}")({
   beforeLoad: async ({ params, context, location }) => {
     const prefix = params.locale;
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/{-$locale}")({
 function LocaleLayout() {
   const bare = useMatches({
     // Optional access: a route that declares no staticData at all is every route
-    // But one, and this runs for all of them.
+    // but one, and this runs for all of them.
     select: (matches) => matches.some((match) => match.staticData?.chrome === "bare"),
   });
   const Layout = bare ? LessonLayout : ApplicationLayout;

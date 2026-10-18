@@ -38,9 +38,9 @@ import { isApiError } from "@/lib/api-error";
 import { lessonCodeKey } from "@/lib/lesson-code";
 
 // The in-lesson assistant (Tota). A signed-in feature: a visitor is told to
-// Sign in, a learner gets their chat for this lesson and can ask about the code
-// In the editor and the output of their last check. Ported from legacy's Chat;
-// The stream is read by the AI SDK, not by hand.
+// sign in, a learner gets their chat for this lesson and can ask about the code
+// in the editor and the output of their last check. Ported from legacy's Chat;
+// the stream is read by the AI SDK, not by hand.
 export default function LessonAssistant({
   view,
   output,
@@ -80,13 +80,13 @@ export default function LessonAssistant({
   }
 
   // Keyed by lesson: useChat takes its messages once, so another lesson needs
-  // Another chat rather than new props.
+  // another chat rather than new props.
   return <AssistantChat key={lessonId} view={view} output={output} chat={history.data} />;
 }
 
 // What a visitor sees instead of the chat: who Tota is, what she does for a
-// Learner, a sample exchange in the real chat's bubbles, and the way in. The
-// Sign-up and sign-in links carry the way back to this lesson.
+// learner, a sample exchange in the real chat's bubbles, and the way in. The
+// sign-up and sign-in links carry the way back to this lesson.
 function GuestAssistant() {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
@@ -174,7 +174,7 @@ function AssistantChat({
     messages: chat.messages.map(toUIMessage),
     transport: assistantTransport(lesson.id),
     // Re-read the history's quota flag after every exchange: the answer that
-    // Used up today's last question is what switches the panel off.
+    // used up today's last question is what switches the panel off.
     onFinish: () => {
       void queryClient.invalidateQueries({ queryKey: historyKey });
     },
@@ -198,7 +198,7 @@ function AssistantChat({
     }
 
     // The editor state travels with each question, read at the moment it is
-    // Asked rather than when the chat was created.
+    // asked rather than when the chat was created.
     void sendMessage({ text }, { body: { userCode: code, output } });
     setInput("");
   };
@@ -210,7 +210,7 @@ function AssistantChat({
       {messages.map((message) => {
         const own = message.role === "user";
         // Messenger layout: the learner's replies are filled and sit on the
-        // Right, the assistant's are neutral and sit on the left.
+        // right, the assistant's are neutral and sit on the left.
         return (
           <Group key={message.id} justify={own ? "flex-end" : "flex-start"}>
             <Paper
@@ -266,10 +266,10 @@ function AssistantChat({
 }
 
 // The transport speaks the contract rather than the AI SDK's own request shape:
-// It sends the question with the editor state, and it sends it through the
-// Generated client — so the path, the session cookie and URL
-// Locale come from the same place as every other call. `parseAs: "stream"`
-// Hands back the body as a stream, which the transport reads as plain text.
+// it sends the question with the editor state, and it sends it through the
+// generated client — so the path, the session cookie and URL
+// locale come from the same place as every other call. `parseAs: "stream"`
+// hands back the body as a stream, which the transport reads as plain text.
 // The request body the chat hook forwards is untyped; only strings are sent on.
 function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;

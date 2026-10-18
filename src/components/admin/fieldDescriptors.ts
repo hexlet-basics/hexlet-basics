@@ -1,7 +1,7 @@
 // The shape of what `scripts/gen-admin-fields.ts` writes into `./generated/*.ts`:
-// One descriptor per form field (from the resource's `XxxInput` schema) and per
-// List column (from the read model), derived from the OpenAPI contract so a
-// Field added in TypeSpec shows up here after `mise run gen`.
+// one descriptor per form field (from the resource's `XxxInput` schema) and per
+// list column (from the read model), derived from the OpenAPI contract so a
+// field added in TypeSpec shows up here after `mise run gen`.
 
 export type FieldKind =
   | "text"

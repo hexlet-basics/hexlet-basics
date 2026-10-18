@@ -1,5 +1,5 @@
 import { HttpResponse, http } from "msw";
-import { expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import type { BlogPost, CourseOption, User } from "@/client/types.gen";
 import { Route as editRoute } from "@/routes/{-$locale}/admin/blog_posts/$id";
@@ -7,8 +7,8 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin's AI pick of a post's related courses (legacy `related_courses`
-// Member action): the button only enqueues the job, so what the admin sees is
-// The confirmation, and what the API sees is the post it was asked about.
+// member action): the button only enqueues the job, so what the admin sees is
+// the confirmation, and what the API sees is the post it was asked about.
 
 const author: User = {
   id: 1,
@@ -42,28 +42,31 @@ const post: BlogPost = {
 
 const courses: CourseOption[] = [];
 
-test("enqueues the related-courses suggestion for the post", async () => {
-  let suggestedFor: string | undefined;
-  worker.use(
-    http.get("*/admin/blog_posts/10", () => HttpResponse.json(post)),
-    http.get("*/admin/courses/options", () => HttpResponse.json(courses)),
-    http.post("*/admin/blog_posts/:id/suggest_related_courses", ({ params }) => {
-      suggestedFor = String(params.id);
-      return new HttpResponse(null, { status: 204 });
-    }),
-  );
+describe("suggest related courses", () => {
+  it("enqueues the related-courses suggestion for the post", async () => {
+    expect.hasAssertions();
+    let suggestedFor: string | undefined;
+    worker.use(
+      http.get("*/admin/blog_posts/10", () => HttpResponse.json(post)),
+      http.get("*/admin/courses/options", () => HttpResponse.json(courses)),
+      http.post("*/admin/blog_posts/:id/suggest_related_courses", ({ params }) => {
+        suggestedFor = String(params.id);
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
 
-  await renderRoute(editRoute, {
-    path: "/{-$locale}/admin/blog_posts/$id",
-    initialPath: "/admin/blog_posts/10",
-    user: author,
-  });
+    await renderRoute(editRoute, {
+      path: "/{-$locale}/admin/blog_posts/$id",
+      initialPath: "/admin/blog_posts/10",
+      user: author,
+    });
 
-  const suggest = page.getByRole("button", { name: "Suggest courses" });
-  await suggest.click();
+    const suggest = page.getByRole("button", { name: "Suggest courses" });
+    await suggest.click();
 
-  await expect
-    .element(page.getByText("Course suggestion started — reload the page shortly"))
-    .toBeVisible();
-  expect(suggestedFor).toBe("10");
+    await expect
+      .element(page.getByText("Course suggestion started — reload the page shortly"))
+      .toBeVisible();
+    expect(suggestedFor).toBe("10");
+  }, 60_000);
 });

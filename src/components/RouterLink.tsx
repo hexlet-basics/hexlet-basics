@@ -13,12 +13,12 @@ import { forwardRef } from "react";
 import type { PropsWithChildren } from "react";
 
 // Typed TanStack Router links rendered as Mantine controls. Mantine's
-// Polymorphic `component={Link}` loses the router's `to`/`params` inference (so a
-// Route param has to be smuggled through `renderRoot`), whereas `createLink` —
-// The documented UI-library integration — keeps navigation fully type-checked
-// Against the generated route tree and renders a real anchor (preload,
-// Middle-click, right-click open). Use these instead of `component={Link}`
-// Whenever a Mantine control navigates.
+// polymorphic `component={Link}` loses the router's `to`/`params` inference (so a
+// route param has to be smuggled through `renderRoot`), whereas `createLink` —
+// the documented UI-library integration — keeps navigation fully type-checked
+// against the generated route tree and renders a real anchor (preload,
+// middle-click, right-click open). Use these instead of `component={Link}`
+// whenever a Mantine control navigates.
 
 type ButtonLinkProps = Omit<ButtonProps, "href">;
 
@@ -57,8 +57,8 @@ export const TextLink: LinkComponent<typeof TextLinkBase> = (props) => (
 );
 
 // An Anchor rather than TextLink's bare Text: Mantine styles Anchor with the
-// Theme's link colour and underline rules, which `Text component="a"` skips (it
-// Shows the browser's default blue). Used where a link should look like one.
+// theme's link colour and underline rules, which `Text component="a"` skips (it
+// shows the browser's default blue). Used where a link should look like one.
 type AnchorLinkProps = Omit<AnchorProps, "href">;
 
 const AnchorLinkBase = forwardRef<HTMLAnchorElement, AnchorLinkProps>((props, ref) => (

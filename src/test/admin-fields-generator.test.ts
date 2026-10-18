@@ -47,6 +47,7 @@ const widget = { name: "widget", model: "widget", input: "WidgetInput", item: "W
 
 describe("admin field generator", () => {
   it("describes each input property by kind, required and nullable", () => {
+    expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
     expect(fields.map((f) => [f.name, f.kind, f.required, f.nullable])).toStrictEqual([
@@ -60,9 +61,10 @@ describe("admin field generator", () => {
       ["optionalNote", "text", false, false],
       ["richBody", "text", true, false],
     ]);
-  });
+  }, 60_000);
 
   it("labels fields by the models.attributes convention, snake-casing the name", () => {
+    expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
     expect(fields.find((f) => f.name === "startsAt")?.labelKey).toBe(
@@ -71,32 +73,36 @@ describe("admin field generator", () => {
     expect(fields.find((f) => f.name === "richBody")?.labelKey).toBe(
       "models.attributes.widget.rich_body",
     );
-  });
+  }, 60_000);
 
   it("carries enum values with their /values label keys, through $ref and allOf", () => {
+    expect.hasAssertions();
     const { fields } = describeResource(spec, widget);
 
     expect(fields.find((f) => f.name === "state")?.enumValues).toStrictEqual([
       { value: "draft", labelKey: "models.attributes.widget.state/values.draft" },
       { value: "published", labelKey: "models.attributes.widget.state/values.published" },
     ]);
-  });
+  }, 60_000);
 
   it("lets a resource point a field's label at another model scope", () => {
+    expect.hasAssertions();
     const { fields } = describeResource(spec, { ...widget, labelScopes: { title: "base" } });
 
     expect(fields.find((f) => f.name === "title")?.labelKey).toBe("models.attributes.base.title");
-  });
+  }, 60_000);
 
   it("leaves out the input fields a resource declares it has no form field for", () => {
+    expect.hasAssertions();
     const { fields } = describeResource(spec, { ...widget, skipFields: ["seats", "pinned"] });
 
     expect(fields.map((f) => f.name)).not.toContain("seats");
     expect(fields.map((f) => f.name)).not.toContain("pinned");
     expect(fields.map((f) => f.name)).toContain("title");
-  });
+  }, 60_000);
 
   it("describes the scalar properties of the read model as list columns", () => {
+    expect.hasAssertions();
     const { columns } = describeResource(spec, widget);
 
     expect(columns.map((c) => [c.name, c.kind])).toStrictEqual([
@@ -105,13 +111,15 @@ describe("admin field generator", () => {
       ["state", "select"],
       ["startsAt", "datetime"],
     ]);
-  });
+  }, 60_000);
 
   it("fails loudly on a schema the contract does not define", () => {
+    expect.hasAssertions();
     expect(() => describeResource(spec, { ...widget, input: "NopeInput" })).toThrow(/NopeInput/);
-  });
+  }, 60_000);
 
   it("renders a module that names the generator and is stable across runs", () => {
+    expect.hasAssertions();
     const data = describeResource(spec, widget);
     const source = renderModule("widget", data);
 
@@ -119,5 +127,5 @@ describe("admin field generator", () => {
     expect(source).toContain("export const widgetFields");
     expect(source).toContain("export const widgetColumns");
     expect(renderModule("widget", describeResource(spec, widget))).toBe(source);
-  });
+  }, 60_000);
 });

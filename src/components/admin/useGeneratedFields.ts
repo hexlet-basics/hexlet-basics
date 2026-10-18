@@ -5,21 +5,21 @@ import type { CrudFieldSpec } from "./CrudForm";
 import type { ColumnDescriptor, FieldDescriptor, FieldKind } from "./fieldDescriptors";
 
 // What a resource file may still say by hand about its generated fields: the
-// Exceptions the contract cannot express.
+// exceptions the contract cannot express.
 export interface FieldOverrides<T> {
   // Contract fields the form never shows (ids deferred to a later wave, fields
-  // The server derives).
+  // the server derives).
   hide?: (keyof T & string)[];
   // Show the fields in this order (names left out keep their contract order,
-  // After the listed ones).
+  // after the listed ones).
   order?: (keyof T & string)[];
   // Per-field changes on top of the generated spec: a custom widget (`type`),
-  // A stricter `required` than the schema, enum/multiselect `options`.
+  // a stricter `required` than the schema, enum/multiselect `options`.
   set?: Partial<Record<keyof T & string, Partial<Omit<CrudFieldSpec<T>, "name">>>>;
 }
 
 // A generated key the catalog lacks would render as the raw key; fail the render
-// Instead so a contract change without its label cannot ship quietly.
+// instead so a contract change without its label cannot ship quietly.
 function labelFor(i18n: I18n, key: string): string {
   if (!i18n.exists(key)) {
     throw new Error(`missing i18n label ${key}`);
@@ -37,8 +37,8 @@ const widgets: Record<FieldKind, CrudFieldSpec<never>["type"]> = {
 };
 
 // Turns the generated descriptors of a resource into the field list CrudForm
-// Renders: labels resolve through i18n here (the descriptors carry only keys),
-// Then the resource's overrides apply. A hook, like every i18n-reading helper.
+// renders: labels resolve through i18n here (the descriptors carry only keys),
+// then the resource's overrides apply. A hook, like every i18n-reading helper.
 export function useGeneratedFields<T>(
   descriptors: FieldDescriptor[],
   overrides: FieldOverrides<T> = {},
@@ -80,8 +80,8 @@ export function useGeneratedFields<T>(
 }
 
 // The plain columns of a list: a header from the generated label and the field
-// Read off the row as-is. A route lists the names it shows, in order, and adds
-// Its special cells (links, joins, badges) by hand around them.
+// read off the row as-is. A route lists the names it shows, in order, and adds
+// its special cells (links, joins, badges) by hand around them.
 export function useGeneratedColumns<T extends object>(
   descriptors: ColumnDescriptor[],
   names: (keyof T & string)[],

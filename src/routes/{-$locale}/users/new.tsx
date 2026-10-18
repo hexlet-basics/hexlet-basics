@@ -6,11 +6,11 @@ import SignUpFormBlock from "@/components/SignUpFormBlock";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 
 // Registration page, ported from legacy users/new. The form itself is the
-// Shared SignUpFormBlock.
+// shared SignUpFormBlock.
 // Where to go once the account exists. The lesson player sends a guest here with
-// The lesson they were on, so signing up does not lose their place. Only a path
-// On this site is honoured — anything else is dropped rather than followed, so
-// The page cannot be used to bounce a new account off to another origin.
+// the lesson they were on, so signing up does not lose their place. Only a path
+// on this site is honoured — anything else is dropped rather than followed, so
+// the page cannot be used to bounce a new account off to another origin.
 const signUpSearchSchema = z.object({
   redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
 });

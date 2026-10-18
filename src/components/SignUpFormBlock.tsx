@@ -17,16 +17,16 @@ import { onIdentityChanged } from "@/lib/identity";
 import { isValidationError, submitWithServerErrors } from "@/lib/server-validation";
 
 // The registration form, ported from legacy SignUpFormBlock and shared by the
-// Registration page and the home page. Submits through the generated
+// registration page and the home page. Submits through the generated
 // `createUser` mutation, which creates the account and starts the session
-// Server-side. Validation reuses the generated `zSignUpInput` schema,
-// Tightening `firstName` to a plain (optional) string so the empty-string
-// Default validates instead of the contract's nullable form.
+// server-side. Validation reuses the generated `zSignUpInput` schema,
+// tightening `firstName` to a plain (optional) string so the empty-string
+// default validates instead of the contract's nullable form.
 const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 
 // `redirect` is where to go once the account exists: the lesson player sends a
-// Guest to sign up with the lesson they were on, so signing up does not lose
-// Their place. The caller has already made it safe (a path on this site).
+// guest to sign up with the lesson they were on, so signing up does not lose
+// their place. The caller has already made it safe (a path on this site).
 export default function SignUpFormBlock({ redirect }: { redirect?: string }) {
   const { t } = useTranslation();
   const navigate = useNavigate();

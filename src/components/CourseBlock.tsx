@@ -22,7 +22,7 @@ type Props = PropsWithChildren &
   };
 
 // Reused from legacy CourseBlock; data source rewired from Inertia props to the
-// Generated API type, and navigation from Inertia Link to TanStack Router Link.
+// generated API type, and navigation from Inertia Link to TanStack Router Link.
 export default function CourseBlock({ item, lazy, ...props }: Props) {
   return (
     <HoverLift h="100%">

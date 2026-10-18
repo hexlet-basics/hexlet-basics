@@ -26,9 +26,9 @@ import { isApiError } from "@/lib/api-error";
 import { validationMessages } from "@/lib/server-validation";
 
 // The audit trail (ADR-0020): every change a staff member made and every read of
-// Personal data, newest first. The API needs the capability Permission
+// personal data, newest first. The API needs the capability Permission
 // `audit.read` on the caller's Staff Role (an administrator included), refuses a
-// Window wider than 92 days, and records that the trail was read.
+// window wider than 92 days, and records that the trail was read.
 export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   // The generated query schema of the list operation: the page, the filters and
   // the window live in the address, so a filtered view can be shared and survives
@@ -55,11 +55,11 @@ const NO_FILTERS = {
 type Filters = typeof NO_FILTERS;
 
 // A picked day starts at the visitor's local midnight, so "from 5 May" includes
-// The morning of the 5th wherever they are.
+// the morning of the 5th wherever they are.
 const startOfDay = (day: string) => new Date(`${day}T00:00:00`).toISOString();
 
 // The API's `to` is exclusive, so the last day picked is included by ending the
-// Window at the next local midnight.
+// window at the next local midnight.
 const endOfDay = (day: string) => {
   const next = new Date(`${day}T00:00:00`);
   next.setDate(next.getDate() + 1);
@@ -103,7 +103,7 @@ function AuditTrail() {
   const field = (name: keyof Filters) => ({
     value: draft[name],
     // The value is read before the updater runs: React clears `currentTarget`
-    // Once the handler returns, and the updater runs later.
+    // once the handler returns, and the updater runs later.
     onChange: (event: { currentTarget: { value: string } }) => {
       const { value } = event.currentTarget;
       setDraft((current) => ({ ...current, [name]: value }));
@@ -272,7 +272,7 @@ function AuditTrail() {
 }
 
 // One record in full: where it came from, what it changed (old and new value of
-// Each field; a secret field names itself and nothing else) and what it read
+// each field; a secret field names itself and nothing else) and what it read
 // (a count and ids, never values).
 function RecordDetails({ record }: { record: AuditRecord }) {
   const { t } = useTranslation();

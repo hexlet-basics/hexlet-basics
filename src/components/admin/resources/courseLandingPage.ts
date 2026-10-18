@@ -4,9 +4,9 @@ import { courseLandingPageFields } from "@/components/admin/generated/courseLand
 import { useGeneratedFields } from "@/components/admin/useGeneratedFields";
 
 // Landing-page form values ARE the generated request body. courseId /
-// LandingPageToRedirectId stay raw ids for now (searchable pickers are a later
-// Refinement); outcomesImageAttachmentId is deferred with the whole
-// Cover/attachment wave, so the form always submits null for it.
+// landingPageToRedirectId stay raw ids for now (searchable pickers are a later
+// refinement); outcomesImageAttachmentId is deferred with the whole
+// cover/attachment wave, so the form always submits null for it.
 
 export const emptyCourseLandingPage: CourseLandingPageInput = {
   courseId: 0,
@@ -30,7 +30,7 @@ export const emptyCourseLandingPage: CourseLandingPageInput = {
 };
 
 // Seed the form from an existing row: pick only the writable fields and
-// Coalesce nullable strings to "" so the inputs stay controlled.
+// coalesce nullable strings to "" so the inputs stay controlled.
 export function courseLandingPageToForm(page: CourseLandingPage): CourseLandingPageInput {
   return {
     courseId: page.courseId,
@@ -55,7 +55,7 @@ export function courseLandingPageToForm(page: CourseLandingPage): CourseLandingP
 }
 
 // Fields come from the contract (generated/courseLandingPage.ts); what is listed here is
-// Only what the schema cannot say.
+// only what the schema cannot say.
 export function useCourseLandingPageFields(): CrudFieldSpec<CourseLandingPageInput>[] {
   return useGeneratedFields<CourseLandingPageInput>(courseLandingPageFields, {
     // Searchable pickers for the redirect target are a later refinement.

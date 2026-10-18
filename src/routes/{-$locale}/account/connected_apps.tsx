@@ -14,9 +14,9 @@ import { requireAuth } from "@/lib/auth";
 
 // The apps the signed-in user has connected through the OAuth server (ADR-0022,
 // #848), each with what it may do, and a way to disconnect one. The list is
-// Always fresh (staleTime 0): a revoke elsewhere or a lapse must not linger on
-// Screen. Access lapses 30 days after an app's last refresh, which the intro
-// Says in plain words.
+// always fresh (staleTime 0): a revoke elsewhere or a lapse must not linger on
+// screen. Access lapses 30 days after an app's last refresh, which the intro
+// says in plain words.
 export const Route = createFileRoute("/{-$locale}/account/connected_apps")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/{-$locale}/account/connected_apps")({
 });
 
 // What each scope means to a person; same wording as the consent screen. A scope
-// Without an entry is shown as it is.
+// without an entry is shown as it is.
 function useScopeLabel() {
   const { t } = useTranslation();
   const labels: Record<string, string> = {
@@ -65,8 +65,8 @@ function ConnectedApps() {
   });
 
   // Disconnecting is immediate and cannot be undone by the user (the app has to
-  // Be connected again), so it sits behind the same yes/no confirmation as
-  // Deleting an account.
+  // be connected again), so it sits behind the same yes/no confirmation as
+  // deleting an account.
   const confirm = (app: ConnectedApp) =>
     modals.openConfirmModal({
       centered: true,

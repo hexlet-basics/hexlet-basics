@@ -13,9 +13,9 @@ import { transitionsFromReadiness } from "@/lib/courseReadiness";
 import type { ReadinessTransition } from "@/lib/courseReadiness";
 
 // A Course's Readiness and the buttons that change it. A state is not an update:
-// The course form does not carry it, each button calls its own operation (its own
+// the course form does not carry it, each button calls its own operation (its own
 // Permission on the server). Every value but the current one is offered; the
-// Server stays the judge and refuses the rest with a 409.
+// server stays the judge and refuses the rest with a 409.
 export function CourseReadinessPanel({ course }: { course: Course }) {
   const { t } = useTranslation();
   const options = {

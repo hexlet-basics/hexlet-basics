@@ -22,8 +22,8 @@ import { seoHead } from "@/lib/seo-head";
 import { longDate } from "@/lib/time-ago";
 
 // Student reviews, at their legacy URL, ported from legacy reviews/index. The
-// Loader prefetches the requested page so the reviews are in the
-// Server-rendered HTML (ADR-0008); a malformed `page` falls back to page one.
+// loader prefetches the requested page so the reviews are in the
+// server-rendered HTML (ADR-0008); a malformed `page` falls back to page one.
 export const Route = createFileRoute("/{-$locale}/reviews/")({
   validateSearch: z.object({
     page: z.number().int().min(1).optional().catch(undefined),
@@ -35,8 +35,8 @@ export const Route = createFileRoute("/{-$locale}/reviews/")({
       staleTime: "static",
     }),
   // Legacy meta: the header as title and og:title (legacy asked for a `.title`
-  // Key that never existed), the reviews description, the canonical link and
-  // The social tags.
+  // key that never existed), the reviews description, the canonical link and
+  // the social tags.
   head: ({ match }) => {
     const { i18n } = match.context;
     return seoHead({

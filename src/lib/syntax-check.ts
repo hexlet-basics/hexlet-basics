@@ -1,22 +1,22 @@
 // Syntax errors for the languages monaco has no language service of and nothing
-// Else here checks.
+// else here checks.
 //
 // Monaco reports errors on its own for TypeScript, JavaScript, JSON, CSS and HTML,
-// And other tools cover python, ruby, go and the rest. C, C++, C#, Kotlin, make and
-// Shell would otherwise never hear that a bracket is unclosed until the learner has
-// Run the check. tree-sitter (web-tree-sitter, in the browser) parses the buffer and
-// The places it could not make sense of become markers.
+// and other tools cover python, ruby, go and the rest. C, C++, C#, Kotlin, make and
+// shell would otherwise never hear that a bracket is unclosed until the learner has
+// run the check. tree-sitter (web-tree-sitter, in the browser) parses the buffer and
+// the places it could not make sense of become markers.
 //
 // This only finds syntax errors, never type or name errors, and it is advice: the
-// Learner's code is checked by the server as before, whatever the parser says.
+// learner's code is checked by the server as before, whatever the parser says.
 //
 // Each grammar is a separate wasm asset fetched on first use, so a course pays only
-// For its own language.
+// for its own language.
 import type { Language, Node, Parser } from "web-tree-sitter";
 import runtimeUrl from "web-tree-sitter/web-tree-sitter.wasm?url";
 
 // Keyed by monaco language id (`shell` is bash; `make` is the course slug, which
-// Editor-languages passes through unchanged).
+// editor-languages passes through unchanged).
 const grammars: Record<string, () => Promise<{ default: string }>> = {
   c: () => import("tree-sitter-c/tree-sitter-c.wasm?url"),
   cpp: () => import("tree-sitter-cpp/tree-sitter-cpp.wasm?url"),
@@ -27,7 +27,7 @@ const grammars: Record<string, () => Promise<{ default: string }>> = {
 };
 
 // More than a handful of markers on one half-typed line is noise, and the first
-// Error is the one that explains the rest.
+// error is the one that explains the rest.
 const maxProblems = 5;
 
 export interface SyntaxProblem {
@@ -93,7 +93,7 @@ function parserFor(language: string): Promise<Parser> {
 }
 
 // The syntax errors in `code`, or none when the language has no grammar or the
-// Grammar could not be loaded — the editor works the same without the hints.
+// grammar could not be loaded — the editor works the same without the hints.
 export async function findSyntaxProblems(language: string, code: string): Promise<SyntaxProblem[]> {
   if (!canCheckSyntax(language)) {
     return [];
@@ -121,7 +121,7 @@ export async function findSyntaxProblems(language: string, code: string): Promis
 }
 
 // Walks only the branches that contain an error, and stops at the first error node
-// On each: what is inside an ERROR node is the parser's own guesswork.
+// on each: what is inside an ERROR node is the parser's own guesswork.
 function collect(node: Node, problems: SyntaxProblem[]): void {
   if (problems.length >= maxProblems || !node.hasError) {
     return;
@@ -145,7 +145,7 @@ function toProblem(kind: SyntaxProblem["kind"], node: Node): SyntaxProblem {
   let end = node.endPosition;
 
   // An ERROR node can swallow the rest of the file, which as one red block hides
-  // The code under it: mark the line it starts on.
+  // the code under it: mark the line it starts on.
   if (end.row !== start.row) {
     end = { row: start.row, column: Number.MAX_SAFE_INTEGER };
   }

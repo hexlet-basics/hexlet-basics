@@ -4,10 +4,10 @@ import type { QueryKey, UseMutationOptions } from "@tanstack/react-query";
 import { isValidationError } from "@/lib/server-validation";
 
 // The three things every admin CRUD mutation repeats — invalidate the affected
-// List/detail queries, toast on success, toast on failure — collapse into
-// Declarative fields, so route files stop hand-wiring onSuccess/onError. Adapted
-// From the sibling 1mail stack. Typing is inferred from the passed generated
-// Mutation, so callers keep full type-safety on variables.
+// list/detail queries, toast on success, toast on failure — collapse into
+// declarative fields, so route files stop hand-wiring onSuccess/onError. Adapted
+// from the sibling 1mail stack. Typing is inferred from the passed generated
+// mutation, so callers keep full type-safety on variables.
 interface ResourceMutationOptions<TData, TError, TVars, TCtx> {
   // The generated react-query mutation, e.g. adminCreateBannerMutation().
   mutation: UseMutationOptions<TData, TError, TVars, TCtx>;
@@ -15,7 +15,7 @@ interface ResourceMutationOptions<TData, TError, TVars, TCtx> {
   invalidate?: QueryKey[];
   // For a mutation a form submits: a 422 is then shown at the form's fields
   // (submitWithServerErrors), so it gets no toast of its own. Left off for
-  // Mutations with no form, where the toast is the only feedback.
+  // mutations with no form, where the toast is the only feedback.
   fieldErrors?: boolean;
   successMessage: string;
   errorMessage: string;

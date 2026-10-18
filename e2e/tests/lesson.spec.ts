@@ -2,7 +2,7 @@ import { learner } from "../support/people";
 import { test } from "../support/test";
 
 // The player titles the lesson with the course's landing page in the request
-// Locale; the fixtures give the JavaScript course no English page but "Frontend".
+// locale; the fixtures give the JavaScript course no English page but "Frontend".
 const lesson = "/languages/javascript/lessons/hello-world";
 
 test("a guest reads a lesson, sees the other lessons as links and is invited to sign in", async ({
