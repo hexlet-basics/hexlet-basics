@@ -243,7 +243,7 @@ var workerPackage = do.Package(
 		return jobs.NewWorkerClient(
 			db,
 			logger,
-			jobs.NewErrorHandler(sentryClient),
+			jobs.NewErrorHandler(sentryClient, logger),
 			otelSDK.TracerProvider(),
 			otelSDK.MeterProvider(),
 			modules...,
