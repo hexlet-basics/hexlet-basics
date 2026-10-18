@@ -1013,6 +1013,56 @@ export const zSearchResultType = z.enum([
 ]);
 
 /**
+ * What is known about how published a record is.
+ */
+export const zAdminRecordMetadata = z.object({
+  type: zSearchResultType,
+  slug: z.string(),
+  courseSlug: z.string().optional(),
+  state: z.string(),
+  readiness: z.string(),
+  listed: z.boolean().optional(),
+  buildState: z.string().optional(),
+  position: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * One record as an editor reads it, whatever state it is in.
+ */
+export const zAdminRecord = z.object({
+  id: z.string(),
+  title: z.string(),
+  text: z.string(),
+  path: z.string(),
+  metadata: zAdminRecordMetadata
+});
+
+/**
+ * One record the admin catalogue search found: a `SearchResult` that also says
+ * how published the record is, because the admin search finds drafts too.
+ */
+export const zAdminSearchResult = z.object({
+  type: zSearchResultType,
+  id: z.string(),
+  title: z.string(),
+  snippet: z.string(),
+  path: z.string(),
+  state: z.string(),
+  readiness: z.string()
+});
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export const zAdminSearchResultPage = z.object({
+  items: z.array(zAdminSearchResult),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
  * One record the catalogue search found: compact, to be read as a list entry and
  * opened by its id or its path.
  *
@@ -2093,6 +2143,27 @@ export const zAdminUnpublishReviewPath = z.object({
  * The request has succeeded.
  */
 export const zAdminUnpublishReviewResponse = zReview;
+
+export const zAdminSearchQuery = z.object({
+  q: z.string().min(1).max(200),
+  type: zSearchResultType.optional(),
+  page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+  perPage: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminSearchResponse = zAdminSearchResultPage;
+
+export const zAdminFetchQuery = z.object({
+  id: z.string().min(1)
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminFetchResponse = zAdminRecord;
 
 export const zListAssistantMessagesPath = z.object({
   lessonId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })

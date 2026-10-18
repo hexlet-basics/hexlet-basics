@@ -3,6 +3,7 @@ package search_test
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -267,6 +268,29 @@ func TestNoLearnerWrittenTextIsSearched(t *testing.T) {
 	}
 }
 
+// The editors' search sees drafts, not learners' words: the tables of learner
+// content stay unread by it and by the read of a record.
+func TestAnEditorsSearchAndFetchReadNoLearnerWrittenText(t *testing.T) {
+	client, queries, _ := recording(t)
+	c := search.NewCatalogue(client)
+
+	assert.Empty(t, askAsEditor(t, c, "ru", "Отличный"))
+	for _, id := range []string{"course:ruby-ru", "lesson:ruby/hello-world-ruby", "post:learning-ruby"} {
+		ref, err := search.ParseID(id)
+		require.NoError(t, err)
+		rec, err := c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: "ru"})
+		require.NoError(t, err, id)
+		assert.NotContains(t, rec.Text, "Отличный курс")
+	}
+
+	assert.NotEmpty(t, *queries)
+	for _, q := range *queries {
+		for _, table := range []string{`"reviews"`, `"ai_messages"`, `"ai_chats"`, `"leads"`, `"users"`, `"book_requests"`, `"language_lesson_reviews"`} {
+			assert.NotContains(t, q.query, table)
+		}
+	}
+}
+
 // capturedQuery is a statement the search sent, with its arguments.
 type capturedQuery struct {
 	query string
@@ -303,9 +327,12 @@ func recording(t *testing.T) (*ent.Client, *[]capturedQuery, *sql.Tx) {
 // that the planner chooses it at this size.
 func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 	// The indexes are named for the locale they serve.
-	for _, locale := range []string{"ru", "en"} {
-		suffix := locale
-		t.Run(locale, func(t *testing.T) {
+	for _, tc := range []struct {
+		locale       string
+		unrestricted bool
+	}{{"ru", false}, {"en", false}, {"ru", true}, {"en", true}} {
+		locale, suffix := tc.locale, tc.locale
+		t.Run(fmt.Sprintf("%s unrestricted=%t", locale, tc.unrestricted), func(t *testing.T) {
 			client, queries, tx := recording(t)
 			_, err := tx.ExecContext(t.Context(), "SET LOCAL enable_seqscan = off")
 			require.NoError(t, err)
@@ -316,7 +343,10 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 			_, err = tx.ExecContext(t.Context(), `DROP INDEX index_language_lesson_version_infos_on_version_id_and_locale`)
 			require.NoError(t, err)
 
-			hits, _ := ask(t, search.NewCatalogue(client), locale, "hello")
+			hits, _, err := search.NewCatalogue(client).Search(t.Context(), search.SearchCatalogue{
+				Text: "hello", Locale: locale, Page: domain.Page{Limit: 50}, Unrestricted: tc.unrestricted,
+			})
+			require.NoError(t, err)
 			require.NotEmpty(t, hits)
 
 			indexes := map[string]bool{
@@ -339,5 +369,153 @@ func TestEverySearchStatementCanUseItsIndex(t *testing.T) {
 				assert.True(t, used, "no statement of the search used %s", index)
 			}
 		})
+	}
+}
+
+// askAsEditor is the editors' search: the storefront's filters are off.
+func askAsEditor(t *testing.T, c *search.Catalogue, locale, text string, types ...search.Type) []search.Hit {
+	t.Helper()
+	hits, total, err := c.Search(t.Context(), search.SearchCatalogue{
+		Text: text, Locale: locale, Types: types, Page: domain.Page{Limit: 50}, Unrestricted: true,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(hits), total)
+	return hits
+}
+
+func hitOf(t *testing.T, hits []search.Hit, id string) search.Hit {
+	t.Helper()
+	for _, hit := range hits {
+		if hit.ID == id {
+			return hit
+		}
+	}
+	require.Failf(t, "no such hit", "%s is not among %v", id, ids(hits))
+	return search.Hit{}
+}
+
+// Each record is one a visitor cannot read (the cases above prove the public
+// search leaves it out), and the editors' search finds it and says what state it
+// is in.
+func TestAnEditorsSearchFindsWhatIsNotPublicAndSaysItsState(t *testing.T) {
+	cases := map[string]struct {
+		locale, text, id, state, readiness string
+		types                              []search.Type
+	}{
+		"a draft landing page":     {locale: "ru", text: "Node.js", id: "course:nodejs-ru", state: "draft", readiness: "completed", types: []search.Type{search.Course}},
+		"an archived landing page": {locale: "ru", text: "архив", id: "course:javascript-ru-archived", state: "archived", readiness: "completed", types: []search.Type{search.Course}},
+		"an archived post":         {locale: "ru", text: "Archived notes", id: "post:archived-notes", state: "archived", types: []search.Type{search.Post}},
+		"a draft post":             {locale: "en", text: "Second post", id: "post:second-post", state: "draft", types: []search.Type{search.Post}},
+	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			c, _ := newCatalogue(t)
+
+			public, _ := ask(t, c, tc.locale, tc.text, tc.types...)
+			editors := askAsEditor(t, c, tc.locale, tc.text, tc.types...)
+
+			assert.NotContains(t, ids(public), tc.id)
+			hit := hitOf(t, editors, tc.id)
+			assert.Equal(t, tc.state, hit.State)
+			assert.Equal(t, tc.readiness, hit.Readiness)
+		})
+	}
+}
+
+func TestAnEditorsSearchFindsAnUnlistedPageACourseInDevelopmentAndItsLessons(t *testing.T) {
+	c, db := newCatalogue(t)
+	db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("ruby-ru")).SetListed(false).ExecX(t.Context())
+	db.Course.Update().Where(course.SlugEQ("ruby")).SetReadiness("in_development").ExecX(t.Context())
+
+	pages := askAsEditor(t, c, "ru", "Ruby", search.Course)
+	lessons := askAsEditor(t, c, "ru", "первая программа", search.Lesson)
+
+	page := hitOf(t, pages, "course:ruby-ru")
+	assert.Equal(t, "published", page.State, "unlisted is not a state: the page is published and off the list")
+	assert.Equal(t, "in_development", page.Readiness)
+	assert.Equal(t, "in_development", hitOf(t, lessons, "lesson:ruby/hello-world-ruby").Readiness)
+	public, _ := ask(t, c, "ru", "первая программа", search.Lesson)
+	assert.NotContains(t, ids(public), "lesson:ruby/hello-world-ruby")
+}
+
+func TestAnEditorsSearchFindsALessonOnceThoughEveryBuildTranslatesIt(t *testing.T) {
+	c, _ := newCatalogue(t)
+
+	// The JavaScript hello-world lesson has an English translation in the current
+	// build ("Hello, World!") and one in a retired build ("Old Hello"): one lesson,
+	// so one hit, taken from the newest build.
+	hits := askAsEditor(t, c, "en", "Hello", search.Lesson)
+
+	var found []string
+	for _, hit := range hits {
+		if hit.ID == "lesson:javascript/hello-world" {
+			found = append(found, hit.Title)
+		}
+	}
+	assert.Len(t, found, 1)
+
+	seen := map[string]bool{}
+	for _, hit := range askAsEditor(t, c, "ru", "Привет", search.Lesson) {
+		assert.False(t, seen[hit.ID], "%s once", hit.ID)
+		seen[hit.ID] = true
+	}
+}
+
+func TestAnEditorsSearchStaysWithinTheLocaleItIsAskedIn(t *testing.T) {
+	c, _ := newCatalogue(t)
+
+	assert.NotContains(t, ids(askAsEditor(t, c, "ru", "Second post")), "post:second-post")
+	assert.Contains(t, ids(askAsEditor(t, c, "en", "Second post")), "post:second-post")
+}
+
+func TestAnEditorFetchesWhatIsNotPublic(t *testing.T) {
+	c, _ := newCatalogue(t)
+	fetch := func(id, locale string) *search.Record {
+		t.Helper()
+		ref, err := search.ParseID(id)
+		require.NoError(t, err)
+		rec, err := c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
+		require.NoError(t, err, id)
+		return rec
+	}
+
+	draft := fetch("course:nodejs-ru", "ru")
+	assert.Equal(t, "draft", draft.State)
+	assert.Equal(t, "completed", draft.Readiness)
+	require.NotNil(t, draft.Listed)
+	assert.True(t, *draft.Listed)
+	assert.Contains(t, draft.Text, "Node.js")
+	assert.Equal(t, "/ru/languages/nodejs-ru", draft.Path)
+
+	post := fetch("post:archived-notes", "ru")
+	assert.Equal(t, "archived", post.State)
+	assert.NotContains(t, post.Text, "<p>")
+
+	lesson := fetch("lesson:ruby/hello-world-ruby", "ru")
+	assert.Equal(t, "ruby", lesson.CourseSlug)
+	assert.Equal(t, "Привет, мир!", lesson.Title)
+	assert.Contains(t, lesson.Text, "первая программа")
+	assert.NotEmpty(t, lesson.Build)
+	assert.NotNil(t, lesson.Position)
+
+	course := fetch("course:ruby-ru", "ru")
+	assert.Contains(t, course.Text, "lesson:ruby/hello-world-ruby", "the lessons, with the ids that fetch them")
+}
+
+func TestFetchOfWhatIsNotThereIsNotFound(t *testing.T) {
+	c, _ := newCatalogue(t)
+
+	for id, locale := range map[string]string{
+		"course:no-such-course":             "ru",
+		"post:second-post":                  "ru", // a draft of the English site
+		"lesson:ruby/no-such-lesson":        "ru",
+		"lesson:no-such-course/hello-world": "ru",
+	} {
+		ref, err := search.ParseID(id)
+		require.NoError(t, err)
+
+		_, err = c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
+
+		assert.ErrorIs(t, err, domain.ErrNotFound, id)
 	}
 }

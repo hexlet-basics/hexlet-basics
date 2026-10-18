@@ -533,6 +533,96 @@ interface AdminCapabilities {
 }
 
 /**
+ * One record the admin catalogue search found: a `SearchResult` that also says
+ * how published the record is, because the admin search finds drafts too.
+ */
+model AdminSearchResult {
+  type: SearchResultType;
+
+  /** The typed id `adminFetch` takes: `course:LANDING_SLUG`, `lesson:COURSE_SLUG/LESSON_SLUG` or `post:SLUG`. */
+  id: string;
+
+  title: string;
+
+  /** A few words of the record's text around the match, plain text. */
+  snippet: string;
+
+  /** The record's page on the website once it is public: the locale prefix and the path, with no origin. */
+  path: string;
+
+  /** Publication state of the landing page, lesson or post (`draft`, `published`, `archived`, ...). */
+  state: string;
+
+  /** Readiness of the course (`draft`, `in_development`, `completed`); empty for a post. */
+  readiness: string;
+}
+
+/** What is known about how published a record is. */
+model AdminRecordMetadata {
+  type: SearchResultType;
+  slug: string;
+
+  /** The course a lesson belongs to, or a course page's own course slug. */
+  courseSlug?: string;
+
+  /** Publication state of the landing page, lesson or post. */
+  state: string;
+
+  /** Readiness of the course; empty for a post. */
+  readiness: string;
+
+  /** Whether a landing page is on the course list. */
+  listed?: boolean;
+
+  /** State of the build a lesson was read from. */
+  buildState?: string;
+
+  /** Natural order of a lesson in its course. */
+  position?: int32;
+}
+
+/** One record as an editor reads it, whatever state it is in. */
+model AdminRecord {
+  id: string;
+  title: string;
+
+  /** The record's text, as plain text or Markdown. */
+  text: string;
+
+  /** The record's page on the website once it is public, with the locale prefix and no origin. */
+  path: string;
+
+  metadata: AdminRecordMetadata;
+}
+
+@route("/admin/search")
+@tag("Admin: Search")
+@useAuth(AdminSession)
+interface AdminCatalogueSearch {
+  /**
+   * Search every course, lesson and blog post by what they say, in the request
+   * locale, whatever state they are in: draft, archived and unlisted landing
+   * pages, courses not completed yet, lessons of the newest build and
+   * unpublished posts, each with its state. Open to any staff member (and over
+   * MCP to one holding mcp.read), who may read the content; the locale must be
+   * one their Staff Role allows. The public `searchCatalogue` keeps its filters.
+   */
+  @get @extension("x-access", "any-staff") @operationId("adminSearch")
+  search(
+    @query @minLength(1) @maxLength(200) q: string,
+
+    /** Only this kind of record; every kind when absent. */
+    @query type?: SearchResultType,
+
+    ...ListQuery,
+  ): Page<AdminSearchResult> | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Read one record an `adminSearch` result names, in the request locale, whatever state it is in. */
+  @get @route("/record") @extension("x-access", "any-staff") @operationId("adminFetch")
+  fetch(@query @minLength(1) id: string): AdminRecord | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
+}
+
+/**
  * Filters of the audit trail listing. The table is partitioned by month on
  * `occurred_at`, so every query carries a time window: `from` defaults to 30
  * days before `to`, `to` defaults to now, and the window may not exceed 92 days

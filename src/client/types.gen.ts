@@ -20,6 +20,104 @@ export type AdjacentLessons = {
 };
 
 /**
+ * One record as an editor reads it, whatever state it is in.
+ */
+export type AdminRecord = {
+  id: string;
+  title: string;
+  /**
+   * The record's text, as plain text or Markdown.
+   */
+  text: string;
+  /**
+   * The record's page on the website once it is public, with the locale prefix and no origin.
+   */
+  path: string;
+  metadata: AdminRecordMetadata;
+};
+
+/**
+ * What is known about how published a record is.
+ */
+export type AdminRecordMetadata = {
+  type: SearchResultType;
+  slug: string;
+  /**
+   * The course a lesson belongs to, or a course page's own course slug.
+   */
+  courseSlug?: string;
+  /**
+   * Publication state of the landing page, lesson or post.
+   */
+  state: string;
+  /**
+   * Readiness of the course; empty for a post.
+   */
+  readiness: string;
+  /**
+   * Whether a landing page is on the course list.
+   */
+  listed?: boolean;
+  /**
+   * State of the build a lesson was read from.
+   */
+  buildState?: string;
+  /**
+   * Natural order of a lesson in its course.
+   */
+  position?: number;
+};
+
+/**
+ * One record the admin catalogue search found: a `SearchResult` that also says
+ * how published the record is, because the admin search finds drafts too.
+ */
+export type AdminSearchResult = {
+  type: SearchResultType;
+  /**
+   * The typed id `adminFetch` takes: `course:LANDING_SLUG`, `lesson:COURSE_SLUG/LESSON_SLUG` or `post:SLUG`.
+   */
+  id: string;
+  title: string;
+  /**
+   * A few words of the record's text around the match, plain text.
+   */
+  snippet: string;
+  /**
+   * The record's page on the website once it is public: the locale prefix and the path, with no origin.
+   */
+  path: string;
+  /**
+   * Publication state of the landing page, lesson or post (`draft`, `published`, `archived`, ...).
+   */
+  state: string;
+  /**
+   * Readiness of the course (`draft`, `in_development`, `completed`); empty for a post.
+   */
+  readiness: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type AdminSearchResultPage = {
+  items: Array<AdminSearchResult>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * A prompt to the in-lesson assistant, carrying the editor context.
  */
 export type AssistantMessageInput = {
@@ -5149,6 +5247,92 @@ export type AdminUnpublishReviewResponses = {
 };
 
 export type AdminUnpublishReviewResponse = AdminUnpublishReviewResponses[keyof AdminUnpublishReviewResponses];
+
+export type AdminSearchData = {
+  body?: never;
+  path?: never;
+  query: {
+    q: string;
+    /**
+     * Only this kind of record; every kind when absent.
+     */
+    type?: SearchResultType;
+    page?: number;
+    perPage?: number;
+  };
+  url: '/api/admin/search';
+};
+
+export type AdminSearchErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminSearchError = AdminSearchErrors[keyof AdminSearchErrors];
+
+export type AdminSearchResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: AdminSearchResultPage;
+};
+
+export type AdminSearchResponse = AdminSearchResponses[keyof AdminSearchResponses];
+
+export type AdminFetchData = {
+  body?: never;
+  path?: never;
+  query: {
+    id: string;
+  };
+  url: '/api/admin/search/record';
+};
+
+export type AdminFetchErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminFetchError = AdminFetchErrors[keyof AdminFetchErrors];
+
+export type AdminFetchResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: AdminRecord;
+};
+
+export type AdminFetchResponse = AdminFetchResponses[keyof AdminFetchResponses];
 
 export type ListAssistantMessagesData = {
   body?: never;

@@ -39,10 +39,13 @@ type SitemapReader interface {
 	Read(ctx context.Context) (*sitemap.Page, error)
 }
 
-// CatalogueSearcher finds records of the public catalogue by what they say: the
-// hits of one window, best first, and how many records match in all.
+// CatalogueSearcher finds records of the catalogue by what they say: the hits of
+// one window, best first, and how many records match in all. The public search
+// and the editors' (a command with Unrestricted) are the same module; Fetch reads
+// one record in any state.
 type CatalogueSearcher interface {
 	Search(ctx context.Context, cmd search.SearchCatalogue) ([]search.Hit, int, error)
+	Fetch(ctx context.Context, cmd search.FetchRecord) (*search.Record, error)
 }
 
 // PermissionWriter writes what a role may do: its grants. Check judges a

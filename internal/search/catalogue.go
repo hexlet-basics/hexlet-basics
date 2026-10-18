@@ -55,6 +55,8 @@ type match struct {
 	config string
 	locale string
 	text   string
+	// unrestricted drops the public storefront's filters (see SearchCatalogue).
+	unrestricted bool
 }
 
 // configs are the text search configurations of the languages the site is in,
@@ -107,7 +109,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int
 	if !ok {
 		config = "simple"
 	}
-	m := match{config: config, locale: cmd.Locale, text: text}
+	m := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
 
 	sources := c.sources(cmd.Types)
 	total := 0

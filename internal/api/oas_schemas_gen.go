@@ -317,6 +317,14 @@ type AdminDeleteUserUnauthorized ProblemDetails
 
 func (*AdminDeleteUserUnauthorized) adminDeleteUserRes() {}
 
+type AdminFetchForbidden ProblemDetails
+
+func (*AdminFetchForbidden) adminFetchRes() {}
+
+type AdminFetchUnauthorized ProblemDetails
+
+func (*AdminFetchUnauthorized) adminFetchRes() {}
+
 type AdminGetBannerForbidden ProblemDetails
 
 func (*AdminGetBannerForbidden) adminGetBannerRes() {}
@@ -641,6 +649,169 @@ type AdminPublishReviewUnauthorized ProblemDetails
 
 func (*AdminPublishReviewUnauthorized) adminPublishReviewRes() {}
 
+// One record as an editor reads it, whatever state it is in.
+// Ref: #/components/schemas/AdminRecord
+type AdminRecord struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	// The record's text, as plain text or Markdown.
+	Text string `json:"text"`
+	// The record's page on the website once it is public, with the locale prefix and no origin.
+	Path     string              `json:"path"`
+	Metadata AdminRecordMetadata `json:"metadata"`
+}
+
+// GetID returns the value of ID.
+func (s *AdminRecord) GetID() string {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *AdminRecord) GetTitle() string {
+	return s.Title
+}
+
+// GetText returns the value of Text.
+func (s *AdminRecord) GetText() string {
+	return s.Text
+}
+
+// GetPath returns the value of Path.
+func (s *AdminRecord) GetPath() string {
+	return s.Path
+}
+
+// GetMetadata returns the value of Metadata.
+func (s *AdminRecord) GetMetadata() AdminRecordMetadata {
+	return s.Metadata
+}
+
+// SetID sets the value of ID.
+func (s *AdminRecord) SetID(val string) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AdminRecord) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetText sets the value of Text.
+func (s *AdminRecord) SetText(val string) {
+	s.Text = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdminRecord) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMetadata sets the value of Metadata.
+func (s *AdminRecord) SetMetadata(val AdminRecordMetadata) {
+	s.Metadata = val
+}
+
+func (*AdminRecord) adminFetchRes() {}
+
+// What is known about how published a record is.
+// Ref: #/components/schemas/AdminRecordMetadata
+type AdminRecordMetadata struct {
+	Type SearchResultType `json:"type"`
+	Slug string           `json:"slug"`
+	// The course a lesson belongs to, or a course page's own course slug.
+	CourseSlug OptString `json:"courseSlug"`
+	// Publication state of the landing page, lesson or post.
+	State string `json:"state"`
+	// Readiness of the course; empty for a post.
+	Readiness string `json:"readiness"`
+	// Whether a landing page is on the course list.
+	Listed OptBool `json:"listed"`
+	// State of the build a lesson was read from.
+	BuildState OptString `json:"buildState"`
+	// Natural order of a lesson in its course.
+	Position OptInt32 `json:"position"`
+}
+
+// GetType returns the value of Type.
+func (s *AdminRecordMetadata) GetType() SearchResultType {
+	return s.Type
+}
+
+// GetSlug returns the value of Slug.
+func (s *AdminRecordMetadata) GetSlug() string {
+	return s.Slug
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *AdminRecordMetadata) GetCourseSlug() OptString {
+	return s.CourseSlug
+}
+
+// GetState returns the value of State.
+func (s *AdminRecordMetadata) GetState() string {
+	return s.State
+}
+
+// GetReadiness returns the value of Readiness.
+func (s *AdminRecordMetadata) GetReadiness() string {
+	return s.Readiness
+}
+
+// GetListed returns the value of Listed.
+func (s *AdminRecordMetadata) GetListed() OptBool {
+	return s.Listed
+}
+
+// GetBuildState returns the value of BuildState.
+func (s *AdminRecordMetadata) GetBuildState() OptString {
+	return s.BuildState
+}
+
+// GetPosition returns the value of Position.
+func (s *AdminRecordMetadata) GetPosition() OptInt32 {
+	return s.Position
+}
+
+// SetType sets the value of Type.
+func (s *AdminRecordMetadata) SetType(val SearchResultType) {
+	s.Type = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *AdminRecordMetadata) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *AdminRecordMetadata) SetCourseSlug(val OptString) {
+	s.CourseSlug = val
+}
+
+// SetState sets the value of State.
+func (s *AdminRecordMetadata) SetState(val string) {
+	s.State = val
+}
+
+// SetReadiness sets the value of Readiness.
+func (s *AdminRecordMetadata) SetReadiness(val string) {
+	s.Readiness = val
+}
+
+// SetListed sets the value of Listed.
+func (s *AdminRecordMetadata) SetListed(val OptBool) {
+	s.Listed = val
+}
+
+// SetBuildState sets the value of BuildState.
+func (s *AdminRecordMetadata) SetBuildState(val OptString) {
+	s.BuildState = val
+}
+
+// SetPosition sets the value of Position.
+func (s *AdminRecordMetadata) SetPosition(val OptInt32) {
+	s.Position = val
+}
+
 type AdminReviewCourseForbidden ProblemDetails
 
 func (*AdminReviewCourseForbidden) adminReviewCourseRes() {}
@@ -666,6 +837,158 @@ func (*AdminReviewCourseNoContent) adminReviewCourseRes() {}
 type AdminReviewCourseUnauthorized ProblemDetails
 
 func (*AdminReviewCourseUnauthorized) adminReviewCourseRes() {}
+
+type AdminSearchForbidden ProblemDetails
+
+func (*AdminSearchForbidden) adminSearchRes() {}
+
+// One record the admin catalogue search found: a `SearchResult` that also says how published the
+// record is, because the admin search finds drafts too.
+// Ref: #/components/schemas/AdminSearchResult
+type AdminSearchResult struct {
+	Type SearchResultType `json:"type"`
+	// The typed id `adminFetch` takes: `course:LANDING_SLUG`, `lesson:COURSE_SLUG/LESSON_SLUG` or
+	// `post:SLUG`.
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	// A few words of the record's text around the match, plain text.
+	Snippet string `json:"snippet"`
+	// The record's page on the website once it is public: the locale prefix and the path, with no origin.
+	Path string `json:"path"`
+	// Publication state of the landing page, lesson or post (`draft`, `published`, `archived`, ...).
+	State string `json:"state"`
+	// Readiness of the course (`draft`, `in_development`, `completed`); empty for a post.
+	Readiness string `json:"readiness"`
+}
+
+// GetType returns the value of Type.
+func (s *AdminSearchResult) GetType() SearchResultType {
+	return s.Type
+}
+
+// GetID returns the value of ID.
+func (s *AdminSearchResult) GetID() string {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *AdminSearchResult) GetTitle() string {
+	return s.Title
+}
+
+// GetSnippet returns the value of Snippet.
+func (s *AdminSearchResult) GetSnippet() string {
+	return s.Snippet
+}
+
+// GetPath returns the value of Path.
+func (s *AdminSearchResult) GetPath() string {
+	return s.Path
+}
+
+// GetState returns the value of State.
+func (s *AdminSearchResult) GetState() string {
+	return s.State
+}
+
+// GetReadiness returns the value of Readiness.
+func (s *AdminSearchResult) GetReadiness() string {
+	return s.Readiness
+}
+
+// SetType sets the value of Type.
+func (s *AdminSearchResult) SetType(val SearchResultType) {
+	s.Type = val
+}
+
+// SetID sets the value of ID.
+func (s *AdminSearchResult) SetID(val string) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AdminSearchResult) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSnippet sets the value of Snippet.
+func (s *AdminSearchResult) SetSnippet(val string) {
+	s.Snippet = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdminSearchResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetState sets the value of State.
+func (s *AdminSearchResult) SetState(val string) {
+	s.State = val
+}
+
+// SetReadiness sets the value of Readiness.
+func (s *AdminSearchResult) SetReadiness(val string) {
+	s.Readiness = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/AdminSearchResultPage
+type AdminSearchResultPage struct {
+	Items []AdminSearchResult `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *AdminSearchResultPage) GetItems() []AdminSearchResult {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *AdminSearchResultPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *AdminSearchResultPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *AdminSearchResultPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *AdminSearchResultPage) SetItems(val []AdminSearchResult) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AdminSearchResultPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *AdminSearchResultPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *AdminSearchResultPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+func (*AdminSearchResultPage) adminSearchRes() {}
+
+type AdminSearchUnauthorized ProblemDetails
+
+func (*AdminSearchUnauthorized) adminSearchRes() {}
 
 type AdminSearchUsersForbidden ProblemDetails
 
@@ -6908,6 +7231,7 @@ func (s *NotFoundError) SetMessage(val string) {
 }
 
 func (*NotFoundError) adminCreateCourseVersionRes() {}
+func (*NotFoundError) adminFetchRes()               {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) approveOAuthConsentRes()      {}

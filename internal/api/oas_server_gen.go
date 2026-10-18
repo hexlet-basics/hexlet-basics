@@ -138,6 +138,12 @@ type Handler interface {
 	//
 	// DELETE /api/admin/api/users/{id}
 	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
+	// AdminFetch implements adminFetch operation.
+	//
+	// Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
+	//
+	// GET /api/admin/search/record
+	AdminFetch(ctx context.Context, params AdminFetchParams) (AdminFetchRes, error)
 	// AdminGetBanner implements adminGetBanner operation.
 	//
 	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -370,6 +376,16 @@ type Handler interface {
 	//
 	// POST /api/admin/course_lessons/{id}/review
 	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
+	// AdminSearch implements adminSearch operation.
+	//
+	// Search every course, lesson and blog post by what they say, in the request locale, whatever state
+	// they are in: draft, archived and unlisted landing pages, courses not completed yet, lessons of the
+	// newest build and unpublished posts, each with its state. Open to any staff member (and over MCP to
+	// one holding mcp.read), who may read the content; the locale must be one their Staff Role allows. The
+	// public `searchCatalogue` keeps its filters.
+	//
+	// GET /api/admin/search
+	AdminSearch(ctx context.Context, params AdminSearchParams) (AdminSearchRes, error)
 	// AdminSearchUsers implements adminSearchUsers operation.
 	//
 	// Typeahead search by name/email.

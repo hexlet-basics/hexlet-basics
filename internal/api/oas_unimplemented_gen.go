@@ -221,6 +221,15 @@ func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDel
 	return r, ht.ErrNotImplemented
 }
 
+// AdminFetch implements adminFetch operation.
+//
+// Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
+//
+// GET /api/admin/search/record
+func (UnimplementedHandler) AdminFetch(ctx context.Context, params AdminFetchParams) (r AdminFetchRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminGetBanner implements adminGetBanner operation.
 //
 // Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -573,6 +582,19 @@ func (UnimplementedHandler) AdminReviewCourse(ctx context.Context, params AdminR
 //
 // POST /api/admin/course_lessons/{id}/review
 func (UnimplementedHandler) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (r AdminReviewCourseLessonRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminSearch implements adminSearch operation.
+//
+// Search every course, lesson and blog post by what they say, in the request locale, whatever state
+// they are in: draft, archived and unlisted landing pages, courses not completed yet, lessons of the
+// newest build and unpublished posts, each with its state. Open to any staff member (and over MCP to
+// one holding mcp.read), who may read the content; the locale must be one their Staff Role allows. The
+// public `searchCatalogue` keeps its filters.
+//
+// GET /api/admin/search
+func (UnimplementedHandler) AdminSearch(ctx context.Context, params AdminSearchParams) (r AdminSearchRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

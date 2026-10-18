@@ -54,6 +54,7 @@ tags:
   - name: 'Admin: Leads'
   - name: 'Admin: Messages'
   - name: 'Admin: Audit'
+  - name: 'Admin: Search'
   - name: 'Admin: Users'
   - name: 'Admin: Roles'
   - name: 'Admin: Staff Members'
@@ -4411,6 +4412,120 @@ paths:
       x-permission:
         name: reviews.unpublish
         kind: write
+  /api/admin/search:
+    get:
+      operationId: adminSearch
+      description: |-
+        Search every course, lesson and blog post by what they say, in the request
+        locale, whatever state they are in: draft, archived and unlisted landing
+        pages, courses not completed yet, lessons of the newest build and
+        unpublished posts, each with its state. Open to any staff member (and over
+        MCP to one holding mcp.read), who may read the content; the locale must be
+        one their Staff Role allows. The public `searchCatalogue` keeps its filters.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          explode: false
+        - name: type
+          in: query
+          required: false
+          description: Only this kind of record; every kind when absent.
+          schema:
+            $ref: '#/components/schemas/SearchResultType'
+          explode: false
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSearchResultPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Search'
+      security:
+        - AdminSession: []
+      x-access: any-staff
+  /api/admin/search/record:
+    get:
+      operationId: adminFetch
+      description: Read one record an `adminSearch` result names, in the request locale, whatever state it is in.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminRecord'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Search'
+      security:
+        - AdminSession: []
+      x-access: any-staff
   /api/ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
@@ -6006,6 +6121,120 @@ components:
             - $ref: '#/components/schemas/LessonRef'
           nullable: true
       description: The Lessons on either side of one Lesson in course order. Not the Next Lesson.
+    AdminRecord:
+      type: object
+      required:
+        - id
+        - title
+        - text
+        - path
+        - metadata
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+          description: The record's text, as plain text or Markdown.
+        path:
+          type: string
+          description: The record's page on the website once it is public, with the locale prefix and no origin.
+        metadata:
+          $ref: '#/components/schemas/AdminRecordMetadata'
+      description: One record as an editor reads it, whatever state it is in.
+    AdminRecordMetadata:
+      type: object
+      required:
+        - type
+        - slug
+        - state
+        - readiness
+      properties:
+        type:
+          $ref: '#/components/schemas/SearchResultType'
+        slug:
+          type: string
+        courseSlug:
+          type: string
+          description: The course a lesson belongs to, or a course page's own course slug.
+        state:
+          type: string
+          description: Publication state of the landing page, lesson or post.
+        readiness:
+          type: string
+          description: Readiness of the course; empty for a post.
+        listed:
+          type: boolean
+          description: Whether a landing page is on the course list.
+        buildState:
+          type: string
+          description: State of the build a lesson was read from.
+        position:
+          type: integer
+          format: int32
+          description: Natural order of a lesson in its course.
+      description: What is known about how published a record is.
+    AdminSearchResult:
+      type: object
+      required:
+        - type
+        - id
+        - title
+        - snippet
+        - path
+        - state
+        - readiness
+      properties:
+        type:
+          $ref: '#/components/schemas/SearchResultType'
+        id:
+          type: string
+          description: 'The typed id `adminFetch` takes: `course:LANDING_SLUG`, `lesson:COURSE_SLUG/LESSON_SLUG` or `post:SLUG`.'
+        title:
+          type: string
+        snippet:
+          type: string
+          description: A few words of the record's text around the match, plain text.
+        path:
+          type: string
+          description: "The record's page on the website once it is public: the locale prefix and the path, with no origin."
+        state:
+          type: string
+          description: Publication state of the landing page, lesson or post (`draft`, `published`, `archived`, ...).
+        readiness:
+          type: string
+          description: Readiness of the course (`draft`, `in_development`, `completed`); empty for a post.
+      description: |-
+        One record the admin catalogue search found: a `SearchResult` that also says
+        how published the record is, because the admin search finds drafts too.
+    AdminSearchResultPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminSearchResult'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
     AssistantMessageInput:
       type: object
       required:

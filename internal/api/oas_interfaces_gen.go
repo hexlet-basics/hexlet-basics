@@ -105,6 +105,10 @@ type AdminDeleteUserRes interface {
 	adminDeleteUserRes()
 }
 
+type AdminFetchRes interface {
+	adminFetchRes()
+}
+
 type AdminGetBannerRes interface {
 	adminGetBannerRes()
 }
@@ -267,6 +271,10 @@ type AdminReviewCourseLessonRes interface {
 
 type AdminReviewCourseRes interface {
 	adminReviewCourseRes()
+}
+
+type AdminSearchRes interface {
+	adminSearchRes()
 }
 
 type AdminSearchUsersRes interface {
