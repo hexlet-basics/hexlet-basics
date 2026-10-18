@@ -36,13 +36,37 @@ type Client struct {
 	initErr error
 }
 
+// requestTimeout bounds one request to amoCRM.
+const requestTimeout = 15 * time.Second
+
+// The ids of the custom fields of an amoCRM lead in the Hexlet account, which
+// the reports there are built on; the lead carries each under its code.
+const (
+	fieldUTMContent  = 316_913
+	fieldUTMMedium   = 316_915
+	fieldUTMCampaign = 316_917
+	fieldUTMSource   = 316_919
+	fieldUTMTerm     = 316_921
+	fieldUTMReferrer = 316_923
+	fieldReferrer    = 316_927
+	fieldFrom        = 316_937
+	fieldYMUID       = 316_941
+	fieldYMCounter   = 316_943
+	fieldGCLID       = 316_945
+	fieldYCLID       = 316_947
+	fieldFBCLID      = 316_949
+	fieldGAUTM       = 957_711
+	// fieldSourceForm has no code in amoCRM, only an id.
+	fieldSourceForm = 936_587
+)
+
 // NewClient builds the external integration adapter.
 func NewClient(baseURL, token, ymCounter string) *Client {
 	client := &Client{
 		baseURL: strings.TrimRight(baseURL, "/"),
 		token:   token,
 		http: &http.Client{
-			Timeout: 15 * time.Second,
+			Timeout: requestTimeout,
 			// Redirects from an account-specific endpoint indicate configuration
 			// drift. Do not turn one River attempt into multiple HTTP requests.
 			CheckRedirect: func(*http.Request, []*http.Request) error {
@@ -50,7 +74,10 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 			},
 		},
 		payload: newPayloadBuilder(ymCounter),
+		api:     nil,
+		initErr: nil,
 	}
+
 	api, err := generated.NewClient(
 		client.baseURL,
 		bearerToken(token),
@@ -58,9 +85,12 @@ func NewClient(baseURL, token, ymCounter string) *Client {
 	)
 	if err != nil {
 		client.initErr = errs.Wrapf(err, "initialize amoCRM client")
+
 		return client
 	}
+
 	client.api = api
+
 	return client
 }
 
@@ -70,13 +100,18 @@ func (c *Client) CreateLead(ctx context.Context, event events.LeadCreated) error
 	if c.baseURL == "" || c.token == "" {
 		return newRequestError(0, "amoCRM is not configured", nil, false)
 	}
+
 	if c.initErr != nil {
 		return newRequestError(0, "amoCRM client initialization failed", c.initErr, false)
 	}
+
 	body := []generated.UnsortedFormCreateItem{c.payload.build(event)}
-	if _, err := c.api.UnsortedLeadsCreateForms(ctx, body); err != nil {
+
+	_, err := c.api.UnsortedLeadsCreateForms(ctx, body)
+	if err != nil {
 		return classifyRequestError(err)
 	}
+
 	return nil
 }
 
@@ -101,8 +136,16 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 		FirstName: optString(event.FirstName),
 		LastName:  optString(event.LastName),
 		CustomFieldsValues: customFields(
-			customField{code: "EMAIL", value: event.Email},
-			customField{code: "PHONE", value: event.Phone},
+			customField{
+				code:  "EMAIL",
+				value: event.Email,
+				id:    0,
+			},
+			customField{
+				code:  "PHONE",
+				value: event.Phone,
+				id:    0,
+			},
 		),
 	}
 	landing := landingQuery(event.LandingPage)
@@ -111,26 +154,31 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 		PipelineID:        generated.NewOptInt64(leadPipelineID),
 		ResponsibleUserID: generated.NewOptInt64(responsibleUserID),
 		CustomFieldsValues: customFields(
-			customField{id: 316_913, code: "UTM_CONTENT", value: event.UTMContent},
-			customField{id: 316_915, code: "UTM_MEDIUM", value: event.UTMMedium},
-			customField{id: 316_917, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
-			customField{id: 316_919, code: "UTM_SOURCE", value: event.UTMSource},
-			customField{id: 316_921, code: "UTM_TERM", value: event.UTMTerm},
-			customField{id: 316_923, code: "UTM_REFERRER", value: event.Referrer},
-			customField{id: 316_927, code: "REFERRER", value: event.Referrer},
-			customField{id: 316_937, code: "FROM", value: landing("from")},
-			customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
-			customField{id: 316_943, code: "_YM_COUNTER", value: new(b.ymCounter)},
-			customField{id: 316_945, code: "GCLID", value: landing("gclid")},
+			customField{id: fieldUTMContent, code: "UTM_CONTENT", value: event.UTMContent},
+			customField{id: fieldUTMMedium, code: "UTM_MEDIUM", value: event.UTMMedium},
+			customField{id: fieldUTMCampaign, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
+			customField{id: fieldUTMSource, code: "UTM_SOURCE", value: event.UTMSource},
+			customField{id: fieldUTMTerm, code: "UTM_TERM", value: event.UTMTerm},
+			customField{id: fieldUTMReferrer, code: "UTM_REFERRER", value: event.Referrer},
+			customField{id: fieldReferrer, code: "REFERRER", value: event.Referrer},
+			customField{id: fieldFrom, code: "FROM", value: landing("from")},
+			customField{id: fieldYMUID, code: "_YM_UID", value: event.YMClientID},
+			customField{id: fieldYMCounter, code: "_YM_COUNTER", value: new(b.ymCounter)},
+			customField{id: fieldGCLID, code: "GCLID", value: landing("gclid")},
 			// Legacy sent the Metrika client id here ahead of the landing
 			// page's yclid; kept as is, since amoCRM reports are built on it.
-			customField{id: 316_947, code: "YCLID", value: lo.CoalesceOrEmpty(event.YMClientID, landing("yclid"))},
-			customField{id: 316_949, code: "FBCLID", value: landing("fbclid")},
-			customField{id: 957_711, code: "GA_UTM", value: landing("ga_utm")},
+			customField{id: fieldYCLID, code: "YCLID", value: lo.CoalesceOrEmpty(event.YMClientID, landing("yclid"))},
+			customField{id: fieldFBCLID, code: "FBCLID", value: landing("fbclid")},
+			customField{id: fieldGAUTM, code: "GA_UTM", value: landing("ga_utm")},
 			// The source-form field has no code in amoCRM, only an id.
-			customField{id: 936_587, value: new(source)},
+			customField{
+				id:    fieldSourceForm,
+				value: new(source),
+				code:  "",
+			},
 		),
 	}
+
 	return generated.UnsortedFormCreateItem{
 		SourceUID:  fmt.Sprintf("%s-%d", source, event.LeadID),
 		SourceName: source,
@@ -153,14 +201,18 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 // query string. A page that does not parse contributes nothing.
 func landingQuery(landingPage *string) func(key string) *string {
 	var query url.Values
-	if parsed, err := url.Parse(lo.FromPtr(landingPage)); err == nil {
+
+	parsed, err := url.Parse(lo.FromPtr(landingPage))
+	if err == nil {
 		query = parsed.Query()
 	}
+
 	return func(key string) *string {
 		value := query.Get(key)
 		if value == "" {
 			return nil
 		}
+
 		return &value
 	}
 }
@@ -171,6 +223,7 @@ func ipv4(ip *string) *string {
 	if err != nil || !addr.Unmap().Is4() {
 		return nil
 	}
+
 	return new(addr.Unmap().String())
 }
 
@@ -186,6 +239,7 @@ func customFields(fields ...customField) []generated.CustomFieldValue {
 		if value == "" {
 			return generated.CustomFieldValue{}, false
 		}
+
 		field := generated.CustomFieldValue{
 			Values: []generated.CustomFieldValueItem{
 				{Value: generated.NewStringCustomFieldValueItemValue(value)},
@@ -194,9 +248,11 @@ func customFields(fields ...customField) []generated.CustomFieldValue {
 		if input.code != "" {
 			field.FieldCode = generated.NewOptString(input.code)
 		}
+
 		if input.id != 0 {
 			field.FieldID = generated.NewOptInt64(input.id)
 		}
+
 		return field, true
 	})
 }
@@ -228,11 +284,14 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, newRequestError(0, "send amoCRM lead", err, true)
 	}
+
 	if response.StatusCode < http.StatusMultipleChoices || isProblem(response) {
 		return response, nil
 	}
 	defer func() { _ = response.Body.Close() }()
+
 	body, _ := io.ReadAll(io.LimitReader(response.Body, maxErrorMessageBytes))
+
 	return nil, newRequestError(
 		response.StatusCode,
 		strings.ToValidUTF8(string(body), ""),
@@ -245,6 +304,7 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 // the generated decoder, which returns them as ProblemDetailsStatusCode.
 func isProblem(response *http.Response) bool {
 	mediaType, _, err := mime.ParseMediaType(response.Header.Get("Content-Type"))
+
 	return err == nil && mediaType == "application/problem+json"
 }
 
@@ -268,9 +328,11 @@ func (e *requestError) Error() string {
 	if e.statusCode != 0 {
 		return fmt.Sprintf("amoCRM returned %d: %s", e.statusCode, e.message)
 	}
+
 	if e.cause != nil {
 		return fmt.Sprintf("%s: %s", e.message, truncate(e.cause.Error(), maxErrorMessageBytes))
 	}
+
 	return e.message
 }
 
@@ -290,6 +352,7 @@ func classifyRequestError(err error) error {
 	if classified, ok := errors.AsType[*requestError](err); ok {
 		return classified
 	}
+
 	if problem, ok := errors.AsType[*generated.ProblemDetailsStatusCode](err); ok {
 		return newRequestError(
 			problem.StatusCode,
@@ -315,6 +378,7 @@ func joinProblem(title, detail generated.OptString) string {
 	if len(parts) == 0 {
 		return "request failed"
 	}
+
 	return strings.Join(parts, ": ")
 }
 
@@ -325,6 +389,7 @@ func truncate(value string, limit int) string {
 	if len(value) <= limit {
 		return value
 	}
+
 	return strings.ToValidUTF8(value[:limit], "")
 }
 
@@ -334,5 +399,6 @@ func optString(value *string) generated.OptString {
 	if value == nil {
 		return generated.OptString{}
 	}
+
 	return generated.NewOptString(*value)
 }

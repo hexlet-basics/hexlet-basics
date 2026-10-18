@@ -20,13 +20,19 @@ const documentRedirect = "https://app.example.com/callback"
 // authorizeDocument sends the authorization request of a document client and
 // returns the flow, whose Authorize response is the answer.
 func authorizeDocument(o *testsupport.OAuth, clientID, redirect string, scopes ...string) *testsupport.Flow {
-	return o.StartWith(alice, testsupport.StartOptions{ClientID: clientID, RedirectURIs: []string{redirect}, Scopes: scopes})
+	return o.StartWith(alice(), testsupport.StartOptions{
+		ClientID:     clientID,
+		RedirectURIs: []string{redirect},
+		Scopes:       scopes,
+		Params:       nil,
+	})
 }
 
 func storedClient(t *testing.T, o *testsupport.OAuth, clientID string) bool {
 	t.Helper()
 	ok, err := o.DB.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Exist(t.Context())
 	require.NoError(t, err)
+
 	return ok
 }
 
@@ -44,21 +50,21 @@ func TestAClientWithAMetadataDocumentCompletesTheFlowAndRefreshes(t *testing.T) 
 	doc["scope"] = "catalog:read offline_access"
 	id := o.Documents.Publish("/oauth/client.json", doc)
 
-	f := authorizeDocument(o, id, documentRedirect, "catalog:read")
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	require.NotEmpty(t, f.RequestID)
+	authFlow := authorizeDocument(o, id, documentRedirect, "catalog:read")
+	require.Equal(t, http.StatusFound, authFlow.Authorize.StatusCode)
+	require.NotEmpty(t, authFlow.RequestID)
 
 	// The consent screen names the client from its document and shows where the
 	// user will be sent back to.
-	flow := o.Do(http.MethodGet, "/api/oauth/consents/"+f.RequestID, nil, func(r *http.Request) {
-		r.AddCookie(testsupport.SessionFor(t, o.DB, alice).Cookie)
+	flow := o.Do(http.MethodGet, "/api/oauth/consents/"+authFlow.RequestID, nil, func(r *http.Request) {
+		r.AddCookie(testsupport.SessionFor(t, o.DB, alice()).Cookie)
 	})
 	require.Equal(t, http.StatusOK, flow.StatusCode)
 	consent := decodeJSON[map[string]any](t, flow)
 	assert.Equal(t, "Document client", consent["clientName"])
 	assert.Equal(t, "app.example.com", consent["redirectHost"])
 
-	tokens, exchange := f.Exchange(f.Approve(), testsupport.PKCEVerifier())
+	tokens, exchange := authFlow.Exchange(authFlow.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
@@ -102,6 +108,7 @@ func TestADocumentIsRefusedUnlessItIsExactlyWhatARegistrationMayBe(t *testing.T)
 			o := testsupport.NewOAuth(t)
 			doc := testsupport.ValidDocument(documentRedirect)
 			tc.edit(doc)
+
 			id := o.Documents.Publish("/c.json", doc)
 			if doc["client_id"] == nil {
 				delete(doc, "client_id")
@@ -172,7 +179,7 @@ func TestAClientIDURLThatIsNotAnOrdinaryPublicHTTPSResourceIsRefusedBeforeAnyFet
 	} {
 		t.Run(id[:min(len(id), 50)], func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.Documents.Serve("/c.json", func(w http.ResponseWriter, _ *http.Request) {
+			o.Documents.Serve("/c.json", func(_ http.ResponseWriter, _ *http.Request) {
 				t.Error("an unacceptable URL must not be fetched")
 			})
 
@@ -215,6 +222,7 @@ func updatedName(t *testing.T, o *testsupport.OAuth, id string) string {
 	t.Helper()
 	row, err := o.DB.OAuthClient.Query().Where(oauthclient.ClientID(id)).Only(t.Context())
 	require.NoError(t, err)
+
 	return row.Name
 }
 
@@ -241,6 +249,7 @@ func TestADocumentIsCachedAccordingToItsHeadersWithinBounds(t *testing.T) {
 			publish := func(name string) string {
 				doc := testsupport.ValidDocument(documentRedirect)
 				doc["client_name"] = name
+
 				return o.Documents.Publish("/c.json", doc, tc.headers)
 			}
 			id := publish("First")
@@ -296,12 +305,14 @@ func TestAFailedFetchIsRememberedSoItIsNotRepeatedOnEveryRequest(t *testing.T) {
 func TestFetchingMetadataDocumentsIsRateLimitedPerAddress(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	attacker := testsupport.FromAddress("203.0.113.70")
+
 	start := func(path string, from func(*http.Request)) *http.Response {
 		id := o.Documents.Publish(path, testsupport.ValidDocument(documentRedirect))
 		query := url.Values{
 			"client_id": {id}, "redirect_uri": {documentRedirect}, "response_type": {"code"}, "scope": {"catalog:read"},
 			"state": {"s"}, "code_challenge": {testsupport.PKCEChallenge()}, "code_challenge_method": {"S256"},
 		}
+
 		return o.Do(http.MethodGet, "/oauth/authorize?"+query.Encode(), nil, from)
 	}
 	for i := range 10 {

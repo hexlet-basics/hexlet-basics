@@ -36,15 +36,18 @@ func listFromWith[E any, A any, P any](
 	mkPage func(items []A, total, page, perPage int32) P,
 ) (P, error) {
 	var zero P
+
 	window := paging.New(pageParam, perPageParam)
 
 	rows, total, err := fetch(ctx, domain.Page{Offset: window.Offset(), Limit: window.Limit()})
 	if err != nil {
 		return zero, err
 	}
+
 	items, err := conv(ctx, rows)
 	if err != nil {
 		return zero, err
 	}
+
 	return mkPage(items, apiconv.Int32FromInt(total), window.Page, window.PerPage), nil
 }

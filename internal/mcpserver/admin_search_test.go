@@ -33,16 +33,58 @@ type searchCase struct {
 	q string
 }
 
-var searchCases = []searchCase{
-	{tool: "adminListBanners", permission: "banners.read", q: "BLACK"},
-	{tool: "adminListBlogPosts", permission: "blog_posts.read", q: "HELLO WORLD"},
-	{tool: "adminListReviews", permission: "reviews.read", q: "PETROV"},
-	{tool: "adminListCourses", permission: "courses.read", q: "PYTHON"},
-	{tool: "adminListCourseLandingPages", permission: "course_landing_pages.read", q: "RUBY-"},
-	{tool: "adminListCourseLessons", permission: "course_lessons.read", q: "VARIABLES"},
-	{tool: "adminListLeads", permission: "leads.read", q: "ANNA@"},
-	{tool: "adminListMessages", permission: "messages.read", q: "CONSOLE.LOG"},
-	{tool: "adminListUsers", permission: "users.read", extra: []string{"mcp.manage"}, q: "SECOND-ADMIN@"},
+func searchCases() []searchCase {
+	return []searchCase{
+		{
+			tool:       "adminListBanners",
+			permission: "banners.read",
+			q:          "BLACK",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListBlogPosts",
+			permission: "blog_posts.read",
+			q:          "HELLO WORLD",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListReviews",
+			permission: "reviews.read",
+			q:          "PETROV",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourses",
+			permission: "courses.read",
+			q:          "PYTHON",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourseLandingPages",
+			permission: "course_landing_pages.read",
+			q:          "RUBY-",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListCourseLessons",
+			permission: "course_lessons.read",
+			q:          "VARIABLES",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListLeads",
+			permission: "leads.read",
+			q:          "ANNA@",
+			extra:      nil,
+		},
+		{
+			tool:       "adminListMessages",
+			permission: "messages.read",
+			q:          "CONSOLE.LOG",
+			extra:      nil,
+		},
+		{tool: "adminListUsers", permission: "users.read", extra: []string{"mcp.manage"}, q: "SECOND-ADMIN@"},
+	}
 }
 
 func (c searchCase) args(q string) map[string]any {
@@ -50,30 +92,35 @@ func (c searchCase) args(q string) map[string]any {
 	if q != "" {
 		args["q"] = q
 	}
+
 	return args
 }
 
 func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The list a caller gets holds the tools it may call, so it holds them all.
-	o.Grant(editor, "mcp.read", "mcp.manage")
-	for _, c := range searchCases {
-		o.Grant(editor, c.permission)
+	o.Grant(editor(), "mcp.read", "mcp.manage")
+
+	for _, c := range searchCases() {
+		o.Grant(editor(), c.permission)
 	}
-	session, _ := admin(t, o, bob)
+
+	session, _ := admin(t, o, bob())
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	byName := map[string]*mcp.Tool{}
 	for _, tool := range tools.Tools {
 		byName[tool.Name] = tool
 	}
 
-	for _, c := range searchCases {
-		tool, ok := byName[c.tool]
-		require.True(t, ok, c.tool)
+	for _, scenario := range searchCases() {
+		tool, ok := byName[scenario.tool]
+		require.True(t, ok, scenario.tool)
 		raw, err := json.Marshal(tool.InputSchema)
 		require.NoError(t, err)
+
 		var schema struct {
 			Properties map[string]struct {
 				Type        string `json:"type"`
@@ -83,44 +130,46 @@ func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 		}
 		require.NoError(t, json.Unmarshal(raw, &schema))
 		q, ok := schema.Properties["q"]
-		assert.True(t, ok, "%s has no q", c.tool)
-		assert.Equal(t, "string", q.Type, c.tool)
-		assert.NotEmpty(t, q.Description, c.tool)
-		assert.NotContains(t, schema.Required, "q", "%s: the filter is optional", c.tool)
+		assert.True(t, ok, "%s has no q", scenario.tool)
+		assert.Equal(t, "string", q.Type, scenario.tool)
+		assert.NotEmpty(t, q.Description, scenario.tool)
+		assert.NotContains(t, schema.Required, "q", "%s: the filter is optional", scenario.tool)
 	}
 }
 
 func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
-	for _, c := range searchCases {
-		t.Run(c.tool, func(t *testing.T) {
+	for _, scenario := range searchCases() {
+		t.Run(scenario.tool, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.Grant(editor, append([]string{c.permission, "mcp.read"}, c.extra...)...)
-			session, _ := admin(t, o, bob)
+			o.Grant(editor(), append([]string{scenario.permission, "mcp.read"}, scenario.extra...)...)
+			session, _ := admin(t, o, bob())
 
-			everything := structured(t, call(t, session, c.tool, c.args("")))
-			found := structured(t, call(t, session, c.tool, c.args(c.q)))
+			everything := structured(t, call(t, session, scenario.tool, scenario.args("")))
+			found := structured(t, call(t, session, scenario.tool, scenario.args(scenario.q)))
 
-			items := found["items"].([]any)
+			items := as[[]any](t, found["items"])
 			require.NotEmpty(t, items)
+
 			for _, item := range items {
 				raw, err := json.Marshal(item)
 				require.NoError(t, err)
-				assert.Contains(t, strings.ToLower(string(raw)), strings.ToLower(c.q))
+				assert.Contains(t, strings.ToLower(string(raw)), strings.ToLower(scenario.q))
 			}
+
 			assert.Less(t, found["total"], everything["total"], "the total follows the filter")
 		})
 	}
 }
 
 func TestAnAdminSearchToolIsRefusedToARoleThatMayNotListTheResource(t *testing.T) {
-	for _, c := range searchCases {
-		t.Run(c.tool, func(t *testing.T) {
+	for _, scenario := range searchCases() {
+		t.Run(scenario.tool, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.RevokeGrant(editor, c.permission)
-			o.Grant(editor, append([]string{"mcp.read"}, c.extra...)...)
-			session, _ := admin(t, o, bob)
+			o.RevokeGrant(editor(), scenario.permission)
+			o.Grant(editor(), append([]string{"mcp.read"}, scenario.extra...)...)
+			session, _ := admin(t, o, bob())
 
-			assertRefused(t, call(t, session, c.tool, c.args(c.q)))
+			assertRefused(t, call(t, session, scenario.tool, scenario.args(scenario.q)))
 		})
 	}
 }
@@ -129,8 +178,8 @@ func TestAnAdminSearchToolIsRefusedToARoleThatMayNotListTheResource(t *testing.T
 // is: the ids of the rows it answered, not of the rows it hid.
 func TestASearchOverPersonalDataIsRecordedAsAReadOfTheRowsItAnswered(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "leads.read", "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "leads.read", "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	page := structured(t, call(t, session, "adminListLeads", map[string]any{"locale": "en", "q": "anna@"}))
 	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
@@ -139,6 +188,7 @@ func TestASearchOverPersonalDataIsRecordedAsAReadOfTheRowsItAnswered(t *testing.
 	require.Len(t, records, 1)
 	assert.Equal(t, "mcp", records[0].Channel)
 	assert.Equal(t, "Lead", *records[0].EntityType)
+
 	var reads struct {
 		Count int      `json:"count"`
 		IDs   []string `json:"ids"`
@@ -150,8 +200,8 @@ func TestASearchOverPersonalDataIsRecordedAsAReadOfTheRowsItAnswered(t *testing.
 
 func TestARefusedSearchOverPersonalDataIsRecordedAsRefusedAndReadsNothing(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read") // leads.read is not held
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read") // leads.read is not held
+	session, _ := admin(t, o, bob())
 
 	assertRefused(t, call(t, session, "adminListLeads", map[string]any{"locale": "en", "q": "anna@"}))
 

@@ -18,9 +18,11 @@ var ErrPasswordProcessing = errors.New("password processing failed")
 
 // userUniques names the field behind each unique index of the users table, so a
 // taken email is an invalid input naming "email" rather than a bare conflict.
-var userUniques = []domain.Unique{
-	domain.UniqueOn("index_users_on_email", "email"),
-	domain.UniqueOn("index_users_on_LOWER_email", "email"),
+func userUniques() []domain.Unique {
+	return []domain.Unique{
+		domain.UniqueOn("index_users_on_email", "email"),
+		domain.UniqueOn("index_users_on_LOWER_email", "email"),
+	}
 }
 
 // Registration is the validated public sign-up input.
@@ -44,6 +46,7 @@ func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher, opts .
 	for _, opt := range opts {
 		opt(registrar)
 	}
+
 	return registrar
 }
 
@@ -58,13 +61,14 @@ func WithClock(now func() time.Time) RegistrarOption {
 
 // Register creates the user and publishes the corresponding domain fact in the
 // same PostgreSQL transaction.
-func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.User, err error) {
+func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User, error) {
 	hash, err := hashPassword(input.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	var u *ent.User
+
 	err = r.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
 		u, err = txClient.User.Create().
 			SetEmail(NormalizeEmail(input.Email)).
@@ -72,23 +76,26 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.Us
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {
-			return errs.Wrapf(domain.FromStore(err, userUniques...), "create user")
+			return errs.Wrapf(domain.FromStore(err, userUniques()...), "create user")
 		}
 
-		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
+		err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
 			UserID:     u.ID,
 			Email:      u.Email,
 			FirstName:  u.FirstName,
 			LastName:   u.LastName,
 			Locale:     input.Locale,
 			OccurredAt: r.now().UTC(),
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish user signed up")
 		}
+
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "save user")
 	}
+
 	return u, nil
 }

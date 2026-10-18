@@ -132,22 +132,30 @@ type Server struct {
 	handler       http.Handler
 }
 
+// errEncryptionKeyRequired is what New answers when the key that seals the
+// provider's tokens is missing.
+var errEncryptionKeyRequired = errors.New("oauthserver: encryption key is required")
+
 // New builds the Server. It fails on a configuration the provider rejects (an
 // issuer that is not an origin, a missing key) so a misconfigured deployment
 // refuses to start rather than answering with a broken metadata document.
 func New(deps Deps, opts ...Option) (*Server, error) {
 	if deps.Config.EncryptionKey == "" {
-		return nil, errors.New("oauthserver: encryption key is required")
+		return nil, errEncryptionKeyRequired
 	}
+
 	if deps.Now == nil {
 		deps.Now = time.Now
 	}
+
 	if deps.Config.AccessTokenLifetime <= 0 {
 		deps.Config.AccessTokenLifetime = defaultAccessTokenLifetime
 	}
+
 	if deps.Config.RefreshTokenLifetime <= 0 {
 		deps.Config.RefreshTokenLifetime = defaultRefreshTokenLifetime
 	}
+
 	issuer, err := url.Parse(deps.Config.Issuer)
 	if err != nil {
 		return nil, errs.Wrapf(err, "parse issuer")
@@ -155,7 +163,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 
 	key := sha256.Sum256([]byte(deps.Config.EncryptionKey))
 	signing := deriveSigningKey(deps.Config.EncryptionKey)
-	st := &storage{
+	backing := &storage{
 		db:       deps.DB,
 		tx:       deps.Transactor,
 		issuer:   deps.Config.Issuer,
@@ -196,6 +204,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 	if issuer.Scheme == "http" {
 		providerOpts = append(providerOpts, op.WithAllowInsecure())
 	}
+
 	provider, err := op.NewProvider(&op.Config{
 		CryptoKey:             key,
 		CodeMethodS256:        true,
@@ -203,7 +212,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		SupportedScopes: []string{
 			ScopeCatalogRead, ScopeProgressRead, ScopeAdmin, "offline_access",
 		},
-	}, st, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
+	}, backing, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
 	if err != nil {
 		return nil, errs.Wrapf(err, "build provider")
 	}
@@ -212,17 +221,23 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 	if clientAddress == nil {
 		clientAddress = func(context.Context) (string, bool) { return "", false }
 	}
-	s := &Server{
-		issuer: deps.Config.Issuer, resource: st.resource, signedIn: deps.SignedIn, storage: st, provider: provider,
-		limiter:       newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
-		clientAddress: clientAddress,
+
+	server := &Server{
+		issuer: deps.Config.Issuer, resource: backing.resource, signedIn: deps.SignedIn, storage: backing, provider: provider,
+		limiter:        newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
+		clientAddress:  clientAddress,
+		documents:      nil,
+		metadataClient: nil,
+		handler:        nil,
 	}
 	for _, opt := range opts {
-		opt(s)
+		opt(server)
 	}
-	s.documents = newDocumentClients(s.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
-	s.handler = s.routes()
-	return s, nil
+
+	server.documents = newDocumentClients(server.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
+	server.handler = server.routes()
+
+	return server, nil
 }
 
 // Handler serves every public path of the server: /oauth/* and the two
@@ -255,6 +270,7 @@ func (s *Server) routes() http.Handler {
 	// has none.
 	mux.Handle(registerPath, s.registerHandler())
 	mux.Handle("/oauth/", s.provider)
+
 	return mux
 }
 
@@ -265,5 +281,6 @@ func (s *Server) routes() http.Handler {
 func deriveSigningKey(secret string) ed25519.PrivateKey {
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte("hexlet-basics oauth id-token signing key v1"))
+
 	return ed25519.NewKeyFromSeed(mac.Sum(nil))
 }

@@ -19,11 +19,21 @@ import (
 
 const width, height = 1200, 600
 
+// Permissions of the written files, and the number of axes the gradient runs
+// along (its parameter is their mean).
+const (
+	dirMode      = 0o755
+	fileMode     = 0o644
+	diagonalAxes = 2
+)
+
 // covers maps a blob key from the fixtures to the two corners of its gradient.
-var covers = map[string][2]color.RGBA{
-	"blogcoverkey001": {{79, 70, 229, 255}, {14, 165, 233, 255}},
-	"blogcoverkey002": {{244, 63, 94, 255}, {251, 146, 60, 255}},
-	"blogcoverkey003": {{16, 185, 129, 255}, {59, 130, 246, 255}},
+func covers() map[string][2]color.RGBA {
+	return map[string][2]color.RGBA{
+		"blogcoverkey001": {{79, 70, 229, 255}, {14, 165, 233, 255}},
+		"blogcoverkey002": {{244, 63, 94, 255}, {251, 146, 60, 255}},
+		"blogcoverkey003": {{16, 185, 129, 255}, {59, 130, 246, 255}},
+	}
 }
 
 func main() {
@@ -31,15 +41,22 @@ func main() {
 	if len(os.Args) > 1 {
 		dir = os.Args[1]
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil { //nolint:gosec // G301: a developer script writing public sample covers into the local storage dir
+
+	err := os.MkdirAll(dir, dirMode) //nolint:gosec // G301, G703: a developer script writing public sample covers into the local storage dir
+	if err != nil {
 		log.Fatal(err)
 	}
-	for key, c := range covers {
+
+	for key, c := range covers() {
 		data := gradient(c[0], c[1])
-		if err := os.WriteFile(filepath.Join(dir, key), data, 0o644); err != nil { //nolint:gosec // G306: public sample cover, served as a static file
+
+		err := os.WriteFile(filepath.Join(dir, key), data, fileMode) //nolint:gosec // G306, G703: public sample cover, served as a static file
+		if err != nil {
 			log.Fatal(err)
 		}
+
 		sum := md5.Sum(data) //nolint:gosec // see import
+
 		attrs, err := json.Marshal(map[string]any{
 			"user.cache_control": "", "user.content_disposition": "", "user.content_encoding": "",
 			"user.content_language": "", "user.content_type": "image/png", "user.metadata": nil,
@@ -48,7 +65,9 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, 0o644); err != nil { //nolint:gosec // G306: attrs of a public sample cover
+
+		err = os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, fileMode) //nolint:gosec // G306, G703: attrs of a public sample cover
+		if err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -58,14 +77,18 @@ func gradient(from, to color.RGBA) []byte {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for y := range height {
 		for x := range width {
-			t := (float64(x)/width + float64(y)/height) / 2
+			t := (float64(x)/width + float64(y)/height) / diagonalAxes
 			mix := func(a, b uint8) uint8 { return uint8(float64(a) + (float64(b)-float64(a))*t) }
 			img.SetRGBA(x, y, color.RGBA{mix(from.R, to.R), mix(from.G, to.G), mix(from.B, to.B), 255})
 		}
 	}
+
 	var buf bytes.Buffer
-	if err := png.Encode(&buf, img); err != nil {
+
+	err := png.Encode(&buf, img)
+	if err != nil {
 		log.Fatal(err)
 	}
+
 	return buf.Bytes()
 }

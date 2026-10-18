@@ -43,9 +43,11 @@ func (c *OpenAI) Complete(ctx context.Context, instructions, prompt string) (str
 	if err != nil {
 		return "", oops.Wrapf(err, "openai chat completion")
 	}
+
 	if len(resp.Choices) == 0 {
 		return "", oops.Errorf("openai chat completion returned no choices")
 	}
+
 	return resp.Choices[0].Message.Content, nil
 }
 
@@ -74,12 +76,15 @@ func (c *OpenAI) CompleteJSON(ctx context.Context, instructions, prompt, name st
 	if err != nil {
 		return "", oops.Wrapf(err, "openai structured completion")
 	}
+
 	if len(resp.Choices) == 0 {
 		return "", oops.Errorf("openai structured completion returned no choices")
 	}
+
 	if refusal := resp.Choices[0].Message.Refusal; refusal != "" {
 		return "", oops.Errorf("openai structured completion refused: %s", refusal)
 	}
+
 	return resp.Choices[0].Message.Content, nil
 }
 
@@ -117,19 +122,26 @@ func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) 
 	defer func() { _ = stream.Close() }()
 
 	acc := openai.ChatCompletionAccumulator{}
+
 	for stream.Next() {
 		chunk := stream.Current()
 		acc.AddChunk(chunk)
+
 		if len(chunk.Choices) == 0 || chunk.Choices[0].Delta.Content == "" {
 			continue
 		}
-		if err := onDelta(chunk.Choices[0].Delta.Content); err != nil {
+
+		err := onDelta(chunk.Choices[0].Delta.Content)
+		if err != nil {
 			return Usage{}, err
 		}
 	}
-	if err := stream.Err(); err != nil {
+
+	err := stream.Err()
+	if err != nil {
 		return Usage{}, oops.Wrapf(err, "openai chat completion stream")
 	}
+
 	return Usage{
 		InputTokens:  int(acc.Usage.PromptTokens),
 		OutputTokens: int(acc.Usage.CompletionTokens),

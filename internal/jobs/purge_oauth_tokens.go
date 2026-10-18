@@ -27,6 +27,7 @@ func (PurgeOAuthTokensArgs) Kind() string { return "purge_oauth_tokens" }
 
 type purgeOAuthTokensWorker struct {
 	river.WorkerDefaults[PurgeOAuthTokensArgs]
+
 	db     *ent.Client
 	logger *slog.Logger
 	now    func() time.Time
@@ -37,9 +38,11 @@ func (w *purgeOAuthTokensWorker) Work(ctx context.Context, _ *river.Job[PurgeOAu
 	if err != nil {
 		return errs.Wrapf(err, "purge oauth tokens")
 	}
+
 	if n > 0 {
 		w.logger.InfoContext(ctx, "purged expired oauth rows", slog.Int("rows", n))
 	}
+
 	return nil
 }
 
@@ -53,7 +56,12 @@ func PurgeOAuthTokens(db *ent.Client, logger *slog.Logger) Module {
 // PurgeOAuthTokensWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
 func PurgeOAuthTokensWorker(db *ent.Client, logger *slog.Logger) river.Worker[PurgeOAuthTokensArgs] {
-	return &purgeOAuthTokensWorker{db: db, logger: logger, now: time.Now}
+	return &purgeOAuthTokensWorker{
+		db:             db,
+		logger:         logger,
+		now:            time.Now,
+		WorkerDefaults: river.WorkerDefaults[PurgeOAuthTokensArgs]{},
+	}
 }
 
 // purgeOAuthTokensSchedule is the recurring insert, without unique options for

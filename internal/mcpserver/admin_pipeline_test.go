@@ -20,8 +20,8 @@ import (
 func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 	mcpserver.AllowForTest(t, "adminListUsers", "adminUpdateBanner")
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "users.read", "banners.update", "mcp.read", "mcp.write", "mcp.manage")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "users.read", "banners.update", "mcp.read", "mcp.write", "mcp.manage")
+	session, token := admin(t, o, bob())
 
 	read := call(t, session, "adminListUsers", map[string]any{"locale": "en", "perPage": 2})
 	require.False(t, read.IsError, "%+v", read.Content)
@@ -40,6 +40,7 @@ func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 		"locale": "en", "id": firstBannerID(t, o), "body": bannerInput("Both middlewares"),
 	})
 	require.False(t, write.IsError, "%+v", write.Content)
+
 	written := o.Records("AdminUpdateBanner")
 	require.Len(t, written, 1)
 	assert.Equal(t, audit.OutcomeSucceeded, audit.Outcome(written[0].Outcome))

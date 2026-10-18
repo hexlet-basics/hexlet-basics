@@ -32,6 +32,7 @@ func TestADeleteRecordsTheOldValuesOfTheRow(t *testing.T) {
 	for _, f := range changes[0].Fields {
 		byName[f.Name] = f
 	}
+
 	assert.JSONEq(t, `"with-password@example.com"`, string(byName["email"].Old))
 	assert.JSONEq(t, `"Password"`, string(byName["first_name"].Old))
 	assert.Empty(t, byName["email"].New)

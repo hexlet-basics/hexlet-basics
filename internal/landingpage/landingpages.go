@@ -80,7 +80,7 @@ func NewCatalog(db *ent.Client) *Catalog {
 // listed pages, leaving their order undefined; the last two terms make it
 // deterministic. Ordering happens in SQL.
 func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.CourseLandingPage) ([]*ent.CourseLandingPage, error) {
-	return c.db.CourseLandingPage.Query().
+	result, err := c.db.CourseLandingPage.Query().
 		Where(Listed(locale)).
 		Where(within...).
 		// The current Version populates Course.currentVersion in apiconv; without
@@ -95,6 +95,11 @@ func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.
 			func(s *sql.Selector) { s.OrderBy(s.C(courselandingpage.FieldID)) },
 		).
 		All(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "list course landing pages")
+	}
+
+	return result, nil
 }
 
 // MainPages returns, for each of courseIDs that has one, its main landing page
@@ -120,7 +125,7 @@ func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int
 		Order(courselandingpage.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
 
 	byCourse := make(map[int]*ent.CourseLandingPage, len(pages))
@@ -129,5 +134,6 @@ func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int
 			byCourse[page.CourseID] = page
 		}
 	}
+
 	return byCourse, nil
 }

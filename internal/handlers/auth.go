@@ -21,9 +21,11 @@ func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api
 	if errors.Is(err, account.ErrInvalidCredentials) {
 		return nil, invalid("password", localization.WrongCredentials)
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return s.signIn(ctx, u)
 }
 
@@ -31,15 +33,17 @@ func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api
 // already exists — password, Magic Link, Password Reset — so none of them can
 // skip recording the sign-in. It then starts the session like sign-up does.
 func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	if err := s.events.PublishStandalone(ctx, events.UserSignedIn{
+	err := s.events.PublishStandalone(ctx, events.UserSignedIn{
 		UserID:          u.ID,
 		OccurrenceCount: -1,
 		Email:           u.Email,
 		Locale:          s.i18n.Locale(ctx),
 		OccurredAt:      time.Now().UTC(),
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
 	}
+
 	return s.startSession(ctx, u)
 }
 
@@ -48,13 +52,16 @@ func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, err
 // in one place is what stops sign-in and sign-up from issuing different
 // sessions.
 func (s *Server) startSession(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	if err := s.sessions.Begin(ctx, u); err != nil {
+	err := s.sessions.Begin(ctx, u)
+	if err != nil {
 		return nil, err
 	}
+
 	cookies, err := s.mergeGuestProgress(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.UserHeaders{SetCookie: cookies, Response: s.conv.ToUser(u)}, nil
 }
 
@@ -72,9 +79,11 @@ func (s *Server) mergeGuestProgress(ctx context.Context, userID int) ([]string, 
 		return nil, nil
 	}
 
-	if err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx)); err != nil {
+	err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx))
+	if err != nil {
 		return nil, err
 	}
+
 	return []string{s.guests.cleared()}, nil
 }
 
@@ -95,19 +104,24 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (*api.Use
 		if errors.Is(err, account.ErrPasswordProcessing) {
 			return nil, invalid("password", localization.PasswordProcessingFailed)
 		}
+
 		if field, ok := domain.FieldOf(err); ok && field == "email" {
 			return nil, invalid("email", localization.EmailTaken)
 		}
+
 		return nil, err
 	}
+
 	return s.startSession(ctx, u)
 }
 
 // DeleteSession ends the session; the session middleware expires its cookie.
 func (s *Server) DeleteSession(ctx context.Context) error {
-	if err := s.sessions.End(ctx); err != nil {
+	err := s.sessions.End(ctx)
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -119,11 +133,13 @@ func (s *Server) GetCurrentUser(ctx context.Context, _ api.GetCurrentUserParams)
 	if !ok {
 		return anonymousCurrentUser(), nil
 	}
+
 	return &api.CurrentUser{User: api.NewNilUser(s.conv.ToUser(u))}, nil
 }
 
 func anonymousCurrentUser() *api.CurrentUser {
 	var user api.NilUser
 	user.SetToNull()
+
 	return &api.CurrentUser{User: user}
 }

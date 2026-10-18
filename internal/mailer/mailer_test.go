@@ -30,30 +30,42 @@ type postboxSent struct {
 // test reads what the provider would have received.
 func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxSent) {
 	t.Helper()
+
 	var (
 		mu   sync.Mutex
 		sent []postboxSent
 	)
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		assert.NoError(t, err)
+
 		var request struct {
-			FromEmailAddress string
-			Destination      struct{ ToAddresses []string }
-			Content          struct {
+			FromEmailAddress string `json:"FromEmailAddress"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			Destination      struct {
+				ToAddresses []string `json:"ToAddresses"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			} `json:"Destination"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			Content struct {
 				Simple struct {
-					Subject struct{ Data string }
-					Body    struct{ Html struct{ Data string } }
-				}
-			}
+					Subject struct {
+						Data string `json:"Data"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+					} `json:"Subject"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+					Body struct {
+						HTML struct {
+							Data string `json:"Data"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+						} `json:"Html"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+					} `json:"Body"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+				} `json:"Simple"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
+			} `json:"Content"` //nolint:tagliatelle // the SES v2 API names its fields in PascalCase
 		}
 		assert.NoError(t, json.Unmarshal(body, &request))
 		mu.Lock()
+
 		sent = append(sent, postboxSent{
 			From:    request.FromEmailAddress,
 			To:      request.Destination.ToAddresses,
 			Subject: request.Content.Simple.Subject.Data,
-			HTML:    request.Content.Simple.Body.Html.Data,
+			HTML:    request.Content.Simple.Body.HTML.Data,
 			Path:    r.URL.Path,
 		})
 		mu.Unlock()
@@ -70,9 +82,11 @@ func fakePostbox(t *testing.T, status int) (config.MailConfig, func() []postboxS
 		PostboxAccessKeyID:     "key",
 		PostboxSecretAccessKey: "secret",
 	}
+
 	return cfg, func() []postboxSent {
 		mu.Lock()
 		defer mu.Unlock()
+
 		return append([]postboxSent(nil), sent...)
 	}
 }
@@ -100,7 +114,11 @@ func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
 	t.Parallel()
 	cfg, _ := fakePostbox(t, http.StatusBadRequest)
 
-	err := NewPostbox(cfg).Send(t.Context(), Message{To: "learner@example.com", Subject: "Welcome"})
+	err := NewPostbox(cfg).Send(t.Context(), Message{
+		To:      "learner@example.com",
+		Subject: "Welcome",
+		HTML:    "",
+	})
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "send email via postbox")
@@ -108,14 +126,33 @@ func TestPostboxReportsAMessageTheProviderRefused(t *testing.T) {
 
 func TestNewChoosesPostboxOnlyWhenItsAccessKeyIsSet(t *testing.T) {
 	t.Parallel()
+
 	logger := slog.New(slog.DiscardHandler)
 
-	assert.IsType(t, &Postbox{}, New(config.MailConfig{PostboxAccessKeyID: "key"}, logger))
-	assert.IsType(t, &Log{}, New(config.MailConfig{}, logger))
+	assert.IsType(t, &Postbox{
+		client: nil,
+		from:   "",
+	}, New(config.MailConfig{
+		PostboxAccessKeyID:     "key",
+		From:                   "",
+		PostboxEndpoint:        "",
+		PostboxRegion:          "",
+		PostboxSecretAccessKey: "",
+	}, logger))
+	assert.IsType(t, &Log{
+		logger: nil,
+	}, New(config.MailConfig{
+		From:                   "",
+		PostboxEndpoint:        "",
+		PostboxRegion:          "",
+		PostboxAccessKeyID:     "",
+		PostboxSecretAccessKey: "",
+	}, logger))
 }
 
 func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 	t.Parallel()
+
 	var out bytes.Buffer
 
 	err := NewLog(slog.New(slog.NewTextHandler(&out, nil))).Send(t.Context(), Message{
@@ -129,9 +166,21 @@ func TestLogAdapterWritesTheMessageAndNeverFails(t *testing.T) {
 
 func TestRecorderKeepsMessagesInOrderAndHandsOutACopy(t *testing.T) {
 	t.Parallel()
-	recorder := &Recorder{}
-	require.NoError(t, recorder.Send(t.Context(), Message{To: "a@example.com"}))
-	require.NoError(t, recorder.Send(t.Context(), Message{To: "b@example.com"}))
+
+	recorder := &Recorder{
+		mu:   sync.Mutex{},
+		sent: nil,
+	}
+	require.NoError(t, recorder.Send(t.Context(), Message{
+		To:      "a@example.com",
+		Subject: "",
+		HTML:    "",
+	}))
+	require.NoError(t, recorder.Send(t.Context(), Message{
+		To:      "b@example.com",
+		Subject: "",
+		HTML:    "",
+	}))
 
 	sent := recorder.Sent()
 	sent[0].To = "changed@example.com"

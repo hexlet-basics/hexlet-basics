@@ -51,10 +51,13 @@ func (p *Partitions) EnsureAhead(ctx context.Context, now time.Time) error {
 	month := firstOfMonth(now)
 	for i := 0; i <= PartitionsAhead; i++ {
 		target := month.AddDate(0, i, 0)
-		if _, err := p.call(ctx, "audit_records_ensure_partition", target); err != nil {
+
+		_, err := p.call(ctx, "audit_records_ensure_partition", target)
+		if err != nil {
 			return errs.With("month", target.Format("2006-01")).Wrapf(err, "ensure audit partition")
 		}
 	}
+
 	return nil
 }
 
@@ -66,16 +69,20 @@ func (p *Partitions) DropExpired(ctx context.Context, now time.Time, retentionMo
 	if retentionMonths < 1 {
 		return nil, errs.With("retention_months", retentionMonths).Errorf("audit retention must be at least one month")
 	}
+
 	cutoff := now.UTC().AddDate(0, -retentionMonths, 0)
+
 	dropped, err := p.call(ctx, "audit_records_drop_partitions_ended_before", cutoff)
 	if err != nil {
 		return nil, errs.With("cutoff", cutoff.Format(time.DateOnly)).Wrapf(err, "drop audit partitions")
 	}
+
 	return dropped, nil
 }
 
 func firstOfMonth(t time.Time) time.Time {
 	u := t.UTC()
+
 	return time.Date(u.Year(), u.Month(), 1, 0, 0, 0, 0, time.UTC)
 }
 
@@ -89,18 +96,33 @@ func (p *Partitions) call(ctx context.Context, function string, month time.Time)
 			b.WriteString(function).WriteByte('(').Arg(month).WriteByte(')')
 		}), "name").
 		Query()
+
 	rows := &entsql.Rows{}
-	if err := p.db.Query(ctx, query, args, rows); err != nil {
+
+	err := p.db.Query(ctx, query, args, rows)
+	if err != nil {
 		return nil, err
 	}
+
 	defer func() { _ = rows.Close() }()
+
 	var names []string
+
 	for rows.Next() {
 		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, err
+
+		err := rows.Scan(&name)
+		if err != nil {
+			return nil, errs.Wrapf(err, "scan partition name")
 		}
+
 		names = append(names, name)
 	}
-	return names, rows.Err()
+
+	err = rows.Err()
+	if err != nil {
+		return nil, errs.Wrapf(err, "read partition names")
+	}
+
+	return names, nil
 }

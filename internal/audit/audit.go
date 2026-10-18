@@ -70,7 +70,12 @@ func SourceFrom(ctx context.Context) Source {
 	if s, ok := ctx.Value(sourceKey{}).(Source); ok && s.Channel != "" {
 		return s
 	}
-	return Source{Channel: ChannelWeb}
+
+	return Source{
+		Channel:        ChannelWeb,
+		ConnectedAppID: nil,
+		TokenID:        nil,
+	}
 }
 
 // Entry is everything an Audit Record says except the changes, which come from
@@ -139,37 +144,46 @@ type recorderKey struct{}
 // WithRecorder returns a context in which row changes are noted, and the
 // Recorder that holds them.
 func WithRecorder(ctx context.Context) (context.Context, *Recorder) {
-	r := &Recorder{}
+	r := &Recorder{
+		mu:      sync.Mutex{},
+		changes: nil,
+	}
+
 	return context.WithValue(ctx, recorderKey{}, r), r
 }
 
 func recorderFrom(ctx context.Context) *Recorder {
 	r, _ := ctx.Value(recorderKey{}).(*Recorder)
-	return r
-}
 
-func (r *Recorder) add(c Change) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	r.changes = append(r.changes, c)
+	return r
 }
 
 // Changes returns what was noted so far, in order.
 func (r *Recorder) Changes() []Change {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	return append([]Change(nil), r.changes...)
+}
+
+func (r *Recorder) add(c Change) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.changes = append(r.changes, c)
 }
 
 // primary is the entity the record is filed under: the first single-row change.
 // An operation that deletes children by predicate and then the post therefore
 // files under the post, and an operation that changed no row files under none.
-func primary(changes []Change) (entity, id string) {
+// It returns the entity name and the row id.
+func primary(changes []Change) (string, string) {
 	for _, c := range changes {
 		if c.ID != "" {
 			return c.Entity, c.ID
 		}
 	}
+
 	return "", ""
 }
 
@@ -177,61 +191,76 @@ func primary(changes []Change) (entity, id string) {
 // the client of the operation's transaction: the row then commits or rolls back
 // with the change it describes. An error means the record could not be written,
 // and the caller must not commit.
-func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) error {
+func Write(ctx context.Context, client *ent.Client, entry Entry, rec *Recorder) error {
 	var changes []Change
 	if rec != nil {
 		changes = rec.Changes()
 	}
-	occurredAt := e.OccurredAt
+
+	occurredAt := entry.OccurredAt
 	if occurredAt.IsZero() {
 		occurredAt = time.Now()
 	}
+
 	create := client.AuditRecord.Create().
 		SetOccurredAt(occurredAt).
-		SetChannel(string(e.Source.Channel)).
-		SetOperation(e.Operation).
-		SetOutcome(string(e.Outcome)).
-		SetNillableActorUserID(e.Actor).
-		SetNillableConnectedAppID(e.Source.ConnectedAppID).
-		SetNillableTokenID(e.Source.TokenID)
-	if e.RequestID != "" {
-		create.SetRequestID(e.RequestID)
+		SetChannel(string(entry.Source.Channel)).
+		SetOperation(entry.Operation).
+		SetOutcome(string(entry.Outcome)).
+		SetNillableActorUserID(entry.Actor).
+		SetNillableConnectedAppID(entry.Source.ConnectedAppID).
+		SetNillableTokenID(entry.Source.TokenID)
+	if entry.RequestID != "" {
+		create.SetRequestID(entry.RequestID)
 	}
-	if e.Address != "" {
-		create.SetAddress(e.Address)
+
+	if entry.Address != "" {
+		create.SetAddress(entry.Address)
 	}
-	if e.UserAgent != "" {
-		create.SetUserAgent(e.UserAgent)
+
+	if entry.UserAgent != "" {
+		create.SetUserAgent(entry.UserAgent)
 	}
-	if e.Locale != "" {
-		create.SetLocale(e.Locale)
+
+	if entry.Locale != "" {
+		create.SetLocale(entry.Locale)
 	}
-	entity, id := e.EntityType, e.EntityID
+
+	entity, id := entry.EntityType, entry.EntityID
 	if entity == "" {
 		entity, id = primary(changes)
 	}
+
 	if entity != "" {
 		create.SetEntityType(entity)
 	}
+
 	if id != "" {
 		create.SetEntityID(id)
 	}
-	if e.Reads != nil {
-		raw, err := json.Marshal(e.Reads)
+
+	if entry.Reads != nil {
+		raw, err := json.Marshal(entry.Reads)
 		if err != nil {
 			return errs.Wrapf(err, "encode audit reads")
 		}
+
 		create.SetReads(raw)
 	}
+
 	if len(changes) > 0 {
 		raw, err := json.Marshal(changes)
 		if err != nil {
 			return errs.Wrapf(err, "encode audit changes")
 		}
+
 		create.SetChanges(raw)
 	}
-	if err := create.Exec(ctx); err != nil {
-		return errs.With("operation", e.Operation).Wrapf(err, "write audit record")
+
+	err := create.Exec(ctx)
+	if err != nil {
+		return errs.With("operation", entry.Operation).Wrapf(err, "write audit record")
 	}
+
 	return nil
 }

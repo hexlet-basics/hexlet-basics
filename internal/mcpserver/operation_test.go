@@ -14,6 +14,7 @@ import (
 
 func TestEveryAllowlistedOperationIsAnAdminOperationThatDeclaresItsPermission(t *testing.T) {
 	require.NotEmpty(t, adminOperations)
+
 	for _, id := range adminOperations {
 		op, err := readOperation(id)
 		require.NoError(t, err, id)
@@ -23,6 +24,7 @@ func TestEveryAllowlistedOperationIsAnAdminOperationThatDeclaresItsPermission(t 
 		// An any-staff operation (the upload) declares its access, not a Permission.
 		declares = declares || permissioncatalog.AccessOf(name) == permissioncatalog.AnyStaff
 		assert.True(t, declares, "%s declares its Permission or access in the contract", id)
+
 		_, err = adminTool(op)
 		assert.NoError(t, err, id)
 	}
@@ -39,16 +41,84 @@ func TestAnOperationWithoutTheAdminSessionIsNotOffered(t *testing.T) {
 
 func TestNewRefusesAnAllowlistEntryThatIsNotInTheContract(t *testing.T) {
 	was := adminOperations
+
 	t.Cleanup(func() { adminOperations = was })
+
 	adminOperations = []string{"adminNoSuchOperation"}
 
-	err := (&Server{}).addAdminTools(nil)
+	err := (&Server{
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		limits: Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}).addAdminTools(nil)
 
 	require.ErrorContains(t, err, "not in the contract")
 }
 
 func TestAToolRefusesAParameterThatCollidesWithAReservedArgument(t *testing.T) {
-	op := &operation{ID: "x", Admin: true, Params: []parameter{{Name: "locale", In: "query"}}}
+	op := &operation{
+		ID:    "x",
+		Admin: true,
+		Params: []parameter{{
+			Name:        "locale",
+			In:          "query",
+			Required:    false,
+			Description: "",
+			Schema:      nil,
+		}},
+		Method:       "",
+		Path:         "",
+		Description:  "",
+		Body:         nil,
+		BodyRequired: false,
+		Multipart:    nil,
+		Response:     nil,
+	}
 
 	_, err := adminTool(op)
 
@@ -81,6 +151,7 @@ func TestScalarsKeepNumbersAsWritten(t *testing.T) {
 		require.NoError(t, err, raw)
 		assert.Equal(t, want, got, raw)
 	}
+
 	for _, raw := range []string{`{}`, `[]`, `[[1]]`, `null`, `nope`} {
 		_, err := scalars(json.RawMessage(raw))
 		assert.Error(t, err, raw)
@@ -91,6 +162,7 @@ func TestParseArgumentsAndLocaleAreStrict(t *testing.T) {
 	args, problem := parseArguments(nil)
 	assert.Empty(t, problem)
 	assert.Empty(t, args)
+
 	_, problem = parseArguments(json.RawMessage(`[1]`))
 	assert.NotEmpty(t, problem)
 }

@@ -26,6 +26,8 @@ func TestRunReportsAnImageThatCannotGradeAsAFailedSubmission(t *testing.T) {
 		TestDir:      "/submission",
 		ExerciseFile: "/submission/solution.txt",
 		Code:         "code\n",
+		VersionID:    0,
+		UserID:       0,
 	})
 
 	// A failing run is an outcome, never an error: the learner sees it.
@@ -44,7 +46,14 @@ func TestRunStopsWaitingForASlotWhenTheCallerGivesUp(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
 
-	_, err := runner.Run(ctx, progress.Submission{Image: runnerImage})
+	_, err := runner.Run(ctx, progress.Submission{
+		Image:        runnerImage,
+		VersionID:    0,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	require.ErrorIs(t, err, context.Canceled)
 }
@@ -62,7 +71,14 @@ func TestRunErrorsWhenTheCourseImageCannotBePulled(t *testing.T) {
 	ctx, cancel := context.WithTimeout(t.Context(), 3*time.Second)
 	defer cancel()
 
-	_, err := runner.Run(ctx, progress.Submission{Image: "localhost:1/exercises-none", VersionID: 7})
+	_, err := runner.Run(ctx, progress.Submission{
+		Image:        "localhost:1/exercises-none",
+		VersionID:    7,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "pull")
@@ -70,7 +86,20 @@ func TestRunErrorsWhenTheCourseImageCannotBePulled(t *testing.T) {
 
 func TestNewRunsOneSubmissionAtATimeUnlessToldOtherwise(t *testing.T) {
 	t.Parallel()
-	runner, err := New(Options{})
+
+	runner, err := New(Options{
+		Timeout:        0,
+		GraceTimeout:   0,
+		MemoryBytes:    0,
+		SwapBytes:      0,
+		PidsLimit:      0,
+		NanoCPUs:       0,
+		ReadonlyRootfs: false,
+		User:           "",
+		MaxOutputBytes: 0,
+		Concurrency:    0,
+		ImageTag:       "",
+	})
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = runner.Close() })
 

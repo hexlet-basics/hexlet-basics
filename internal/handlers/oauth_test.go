@@ -68,6 +68,7 @@ func TestConnectedAppsAreEmptyWhileTheOAuthServerIsOff(t *testing.T) {
 
 	list, err := h.Client.ListConnectedApps(ctx)
 	require.NoError(t, err)
+
 	apps := list
 	assert.NotNil(t, apps.Items)
 	assert.Empty(t, apps.Items)

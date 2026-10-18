@@ -21,6 +21,7 @@ import (
 // newest first (legacy `order(id: :desc)`, pagy's 20 per page).
 func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFromWith(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.BlogPost, int, error) {
 			return s.blogPublic.Page(ctx, locale, page)
@@ -36,10 +37,12 @@ func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsPara
 // the courses it promotes. Keyed by slug; a miss is a 404.
 func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (*api.BlogPostView, error) {
 	locale := s.i18n.Locale(ctx)
+
 	row, err := s.blogPublic.BySlug(ctx, locale, params.Slug)
 	if err != nil {
 		return nil, err
 	}
+
 	recommendedRows, err := s.blogPublic.Recommended(ctx, locale, row)
 	if err != nil {
 		return nil, err
@@ -49,6 +52,7 @@ func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) 
 	if err != nil {
 		return nil, err
 	}
+
 	post := posts[0]
 
 	related, err := s.relatedLandingPages(ctx, post.RelatedCourseIds)
@@ -90,6 +94,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 			ordered = append(ordered, p)
 		}
 	}
+
 	return s.conv.ToCatalogItems(ordered), nil
 }
 
@@ -101,6 +106,7 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 	if err != nil {
 		return nil, err
 	}
+
 	return s.blogPostToAPI(ctx, row.ID)
 }
 
@@ -113,9 +119,11 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (*api.BlogPost, error) {
 	liker := MustAuthenticatedUser(ctx)
 
-	if err := s.blogLikes.Like(ctx, int(params.ID), liker.ID); err != nil {
+	err := s.blogLikes.Like(ctx, int(params.ID), liker.ID)
+	if err != nil {
 		return nil, err
 	}
+
 	return s.blogPostToAPI(ctx, int(params.ID))
 }
 
@@ -125,6 +133,8 @@ func (s *Server) blogPostToAPI(ctx context.Context, id int) (*api.BlogPost, erro
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToBlogPost(post)
+
 	return &item, nil
 }

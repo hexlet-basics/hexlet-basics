@@ -31,6 +31,7 @@ func (ReapStuckVersionBuildsArgs) InsertOpts() river.InsertOpts {
 
 type reapStuckVersionBuildsWorker struct {
 	river.WorkerDefaults[ReapStuckVersionBuildsArgs]
+
 	loader *courseloader.Loader
 	logger *slog.Logger
 }
@@ -45,6 +46,7 @@ func (w *reapStuckVersionBuildsWorker) Work(ctx context.Context, _ *river.Job[Re
 			slog.Int("course_id", version.CourseID),
 		)
 	}
+
 	return err
 }
 
@@ -57,7 +59,11 @@ func ReapStuckVersionBuilds(loader *courseloader.Loader, logger *slog.Logger) Mo
 // ReapStuckVersionBuildsWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
 func ReapStuckVersionBuildsWorker(loader *courseloader.Loader, logger *slog.Logger) river.Worker[ReapStuckVersionBuildsArgs] {
-	return &reapStuckVersionBuildsWorker{loader: loader, logger: logger}
+	return &reapStuckVersionBuildsWorker{
+		loader:         loader,
+		logger:         logger,
+		WorkerDefaults: river.WorkerDefaults[ReapStuckVersionBuildsArgs]{},
+	}
 }
 
 // reapStuckVersionBuildsSchedule is the sweep's recurring insert. River runs the scheduler only

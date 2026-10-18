@@ -19,9 +19,11 @@ func TestActiveIsAPublishedBannerOfTheLocaleWhoseWindowIsOpen(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "published", row.State)
 	assert.Equal(t, "ru", row.Locale)
+
 	if row.StartsAt != nil {
 		assert.False(t, row.StartsAt.After(testsupport.Today))
 	}
+
 	if row.FinishesAt != nil {
 		assert.False(t, row.FinishesAt.Before(testsupport.Today))
 	}

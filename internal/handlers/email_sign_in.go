@@ -17,9 +17,11 @@ import (
 // the same whether or not one exists, so the form cannot be used to learn which
 // emails are registered, and it never creates an account.
 func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) error {
-	if err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email); err != nil {
+	err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email)
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -33,9 +35,11 @@ func (s *Server) ConsumeMagicLink(
 	if errors.Is(err, emailtoken.ErrInvalid) {
 		return nil, errEmailLinkInvalid
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return s.signIn(ctx, u)
 }
 
@@ -46,9 +50,11 @@ func (s *Server) CreatePasswordReminder(
 	ctx context.Context,
 	req *api.EmailInput,
 ) error {
-	if err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email); err != nil {
+	err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email)
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -62,9 +68,11 @@ func (s *Server) CheckPasswordResetToken(
 	if errors.Is(err, emailtoken.ErrInvalid) {
 		return errEmailLinkInvalid
 	}
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -81,16 +89,20 @@ func (s *Server) UpdatePassword(
 	if errors.Is(err, emailtoken.ErrInvalid) {
 		return nil, errEmailLinkInvalid
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	u, err = s.credentials.SetPassword(ctx, u, req.Password)
 	if errors.Is(err, account.ErrPasswordProcessing) {
 		return nil, invalid("password", localization.PasswordProcessingFailed)
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return s.signIn(ctx, u)
 }
 
@@ -102,9 +114,11 @@ func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtoken.Pur
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil
 	}
+
 	if err != nil {
 		return err
 	}
+
 	return s.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
 		Purpose: purpose,
 		UserID:  u.ID,

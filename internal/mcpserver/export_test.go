@@ -25,14 +25,40 @@ func (noVerifier) Resource() string { return "https://inspect.test/mcp" }
 // configured server.
 func ToolScopes(t *testing.T) map[string]string {
 	t.Helper()
-	s, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test"})
+
+	server, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test",
+		Catalogue:        nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		Limits: Limits{
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		HeldCapabilities: nil,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	scopes := map[string]string{}
-	for _, entry := range s.registry {
+	for _, entry := range server.registry {
 		scopes[entry.tool.Name] = entry.needs.scope
 	}
+
 	return scopes
 }
 
@@ -41,8 +67,11 @@ func ToolScopes(t *testing.T) map[string]string {
 // the server is built, which reads the list once.
 func AllowForTest(t *testing.T, operationIDs ...string) {
 	t.Helper()
+
 	was := adminOperations
+
 	t.Cleanup(func() { adminOperations = was })
+
 	adminOperations = operationIDs
 }
 
@@ -56,14 +85,18 @@ const CookiePlaceholder = cookiePlaceholder
 // contract that requires the AdminSession scheme, sorted.
 func ContractAdminOperations(t *testing.T) []string {
 	t.Helper()
+
 	doc, err := contract()
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	var ids []string
+
 	for _, methods := range doc.Paths {
 		for _, raw := range methods {
 			node, _ := raw.(map[string]any)
+
 			id, _ := node["operationId"].(string)
 			if id == "" {
 				continue
@@ -74,13 +107,16 @@ func ContractAdminOperations(t *testing.T) []string {
 				if m, ok := requirement.(map[string]any); ok {
 					if _, admin := m["AdminSession"]; admin {
 						ids = append(ids, id)
+
 						break
 					}
 				}
 			}
 		}
 	}
+
 	slices.Sort(ids)
+
 	return ids
 }
 
@@ -88,23 +124,27 @@ func ContractAdminOperations(t *testing.T) []string {
 func AllowlistedAdminOperations() []string { return slices.Clone(adminOperations) }
 
 // ExcludedAdminOperations are the operationIds deliberately not tools.
-func ExcludedAdminOperations() map[string]string { return maps.Clone(excludedAdminOperations) }
+func ExcludedAdminOperations() map[string]string { return maps.Clone(excludedAdminOperations()) }
 
 // AdminToolsFromTheContract builds the tool of every allowlisted operation, the
 // way the registry does at start-up.
 func AdminToolsFromTheContract(t *testing.T) []*mcp.Tool {
 	t.Helper()
-	var tools []*mcp.Tool
+
+	tools := make([]*mcp.Tool, 0, len(adminOperations))
 	for _, id := range adminOperations {
 		op, err := readOperation(id)
 		if err != nil {
 			t.Fatalf("%s: %v", id, err)
 		}
+
 		tool, err := adminTool(op)
 		if err != nil {
 			t.Fatalf("%s: %v", id, err)
 		}
+
 		tools = append(tools, tool)
 	}
+
 	return tools
 }

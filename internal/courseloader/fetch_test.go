@@ -19,10 +19,12 @@ import (
 // and the test needs no network.
 func publishRepo(t *testing.T, base, slug string) {
 	t.Helper()
+
 	path := filepath.Join(base, "exercises-"+slug+".git")
 	repo, err := git.PlainInit(path, false)
 	require.NoError(t, err)
 	require.NoError(t, os.WriteFile(filepath.Join(path, "spec.yml"), []byte("language: {}\n"), 0o644))
+
 	tree, err := repo.Worktree()
 	require.NoError(t, err)
 	_, err = tree.Add("spec.yml")

@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/field"
 )
 
 // LandingPageQnaItem maps the legacy `language_landing_page_qna_items` table — a
@@ -24,14 +23,7 @@ func (LandingPageQnaItem) Annotations() []schema.Annotation {
 }
 
 func (LandingPageQnaItem) Fields() []ent.Field {
-	return []ent.Field{
-		field.Int("course_landing_page_id").StorageKey("language_landing_page_id").
-			Annotations(AdminInputField{Skip: true}),
-		field.String("question").Optional().Nillable().
-			Annotations(AdminInputField{Required: true}),
-		field.String("answer").Optional().Nillable().
-			Annotations(AdminInputField{Required: true}),
-	}
+	return qnaItemFields("course_landing_page_id", "language_landing_page_id")
 }
 
 func (LandingPageQnaItem) Mixin() []ent.Mixin {

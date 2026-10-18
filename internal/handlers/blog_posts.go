@@ -42,7 +42,9 @@ func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, e
 	if err != nil {
 		return nil, err
 	}
+
 	item := s.conv.ToBlogPost(post)
+
 	return &item, nil
 }
 
@@ -55,6 +57,7 @@ func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput
 	if err != nil {
 		return nil, err
 	}
+
 	return s.getAdminBlogPost(ctx, row.ID)
 }
 
@@ -65,6 +68,7 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 	if err != nil {
 		return nil, err
 	}
+
 	return s.getAdminBlogPost(ctx, row.ID)
 }
 
@@ -99,9 +103,11 @@ func (s *Server) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchi
 // courses go with it, in one transaction, inside the remover, which also
 // reports a missing post as not-found).
 func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDeleteBlogPostParams) error {
-	if err := s.postRemover.Remove(ctx, int(params.ID)); err != nil {
+	err := s.postRemover.Remove(ctx, int(params.ID))
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -114,7 +120,9 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 	id := int(params.ID)
 
 	courseIDs := lo.Map(req.CourseIds, func(courseID int32, _ int) int { return int(courseID) })
-	if err := s.relatedCoursesSet.Replace(ctx, id, courseIDs); err != nil {
+
+	err := s.relatedCoursesSet.Replace(ctx, id, courseIDs)
+	if err != nil {
 		return nil, err
 	}
 
@@ -126,9 +134,11 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 // FindRelatedCoursesForBlogPostJob). The worker replaces the set
 // asynchronously, so the answer carries no post; a missing id is a 404.
 func (s *Server) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params api.AdminSuggestBlogPostRelatedCoursesParams) error {
-	if err := s.relatedSuggester.Suggest(ctx, int(params.ID)); err != nil {
+	err := s.relatedSuggester.Suggest(ctx, int(params.ID))
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -140,5 +150,6 @@ func (s *Server) blogPostsToAPI(ctx context.Context, rows []*ent.BlogPost) ([]ap
 	if err != nil {
 		return nil, err
 	}
+
 	return s.conv.ToBlogPosts(posts), nil
 }

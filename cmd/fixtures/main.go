@@ -17,19 +17,25 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
+	err := run()
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "fixtures:", err)
 		os.Exit(1)
 	}
 }
 
+// errConnRequired is what run answers when no connection string is given.
+var errConnRequired = errors.New("-conn is required")
+
 func run() error {
 	conn := flag.String("conn", "", "PostgreSQL connection string")
 	dir := flag.String("dir", "fixtures", "directory of fixture files")
 	anyDatabase := flag.Bool("any-database", false, `load into a database whose name does not contain "test" (the development database)`)
+
 	flag.Parse()
+
 	if *conn == "" {
-		return errors.New("-conn is required")
+		return errConnRequired
 	}
 
 	db, err := sql.Open("pgx", *conn)
@@ -37,5 +43,6 @@ func run() error {
 		return errs.Wrapf(err, "open database")
 	}
 	defer func() { _ = db.Close() }()
+
 	return fixture.Load(db, *dir, *anyDatabase)
 }

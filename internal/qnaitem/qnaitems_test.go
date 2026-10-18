@@ -18,6 +18,7 @@ func TestAnItemUnderAnotherCategoryIsNotFound(t *testing.T) {
 	item := db.CategoryQnaItem.GetX(t.Context(), fixture.ID(fixture.CategoryQnaLayoutingRu))
 	other := db.CategoryQnaItem.GetX(t.Context(), fixture.ID(fixture.CategoryQnaProgrammingEn)).CourseCategoryID
 	require.NotEqual(t, item.CourseCategoryID, other, "the fixtures hold items of two categories")
+
 	fields := qnaitem.Fields{Question: "Q?", Answer: "A."}
 
 	_, err := items.Update(t.Context(), other, item.ID, fields)
@@ -41,6 +42,7 @@ func TestAnItemOfTheCategoryIsRewrittenAndRemoved(t *testing.T) {
 	require.NoError(t, items.Delete(t.Context(), item.CourseCategoryID, item.ID))
 	rest, err := items.List(t.Context(), item.CourseCategoryID)
 	require.NoError(t, err)
+
 	for _, left := range rest {
 		assert.NotEqual(t, item.ID, left.ID)
 	}
@@ -55,8 +57,10 @@ func TestAListIsOldestFirstAndOnlyTheParents(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NotEmpty(t, listed)
+
 	for i, item := range listed {
 		assert.Equal(t, first.CourseLandingPageID, item.CourseLandingPageID)
+
 		if i > 0 {
 			assert.Greater(t, item.ID, listed[i-1].ID)
 		}

@@ -34,6 +34,7 @@ func (e *Enqueuer) Enqueue(ctx context.Context, args ...river.JobArgs) error {
 	if len(args) == 0 {
 		return nil
 	}
+
 	return e.store.WithinTx(ctx, func(tx *sql.Tx, _ *ent.Client) error {
 		return e.EnqueueTx(ctx, tx, args...)
 	})
@@ -45,11 +46,15 @@ func (e *Enqueuer) EnqueueTx(ctx context.Context, tx *sql.Tx, args ...river.JobA
 	if len(args) == 0 {
 		return nil
 	}
+
 	params := lo.Map(args, func(a river.JobArgs, _ int) river.InsertManyParams {
 		return river.InsertManyParams{Args: a}
 	})
-	if _, err := e.river.InsertManyTx(ctx, tx, params); err != nil {
+
+	_, err := e.river.InsertManyTx(ctx, tx, params)
+	if err != nil {
 		return oops.Wrapf(err, "enqueue %s", args[0].Kind())
 	}
+
 	return nil
 }

@@ -10,11 +10,14 @@ import (
 // GetYandexCoursesFeedXml serves the Yandex course catalogue at
 // `/api/feeds/yandex_courses.xml`, the address production answers on and
 // Yandex is registered with.
+//
+//nolint:revive // var-naming: the name is generated from the contract's operationId
 func (s *Server) GetYandexCoursesFeedXml(ctx context.Context) (api.GetYandexCoursesFeedXmlOK, error) {
 	doc, err := s.yandexFeed.Build(ctx)
 	if err != nil {
 		return api.GetYandexCoursesFeedXmlOK{}, err
 	}
+
 	return api.GetYandexCoursesFeedXmlOK{Data: bytes.NewReader(doc)}, nil
 }
 
@@ -25,5 +28,6 @@ func (s *Server) GetYandexCoursesFeed(ctx context.Context) (api.GetYandexCourses
 	if err != nil {
 		return api.GetYandexCoursesFeedOK{}, err
 	}
+
 	return api.GetYandexCoursesFeedOK{Data: bytes.NewReader(doc)}, nil
 }

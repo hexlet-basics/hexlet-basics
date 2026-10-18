@@ -56,6 +56,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 				"Completion and next lesson, with the course card.",
 			input:  object(map[string]any{}),
 			output: dashboardSchema,
+			scope:  "",
+			class:  0,
 		}, s.myDashboard},
 		{toolSpec{
 			name:  myCourseProgressTool,
@@ -66,7 +68,7 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 			output: object(map[string]any{
 				"courseSlug": map[string]any{"type": "string"},
 				"state":      lessonState,
-				"completion": map[string]any{"type": "integer", "minimum": 0, "maximum": 100},
+				"completion": map[string]any{"type": "integer", "minimum": 0, "maximum": maxCompletion},
 				"nextLesson": map[string]any{"type": []string{"string", "null"}, "description": "Slug of the Next Lesson; null when every lesson is finished."},
 				"lessons": map[string]any{"type": "array", "items": object(map[string]any{
 					"slug":     map[string]any{"type": "string"},
@@ -74,6 +76,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 					"state":    lessonState,
 				}, "slug", "position", "state")},
 			}, "courseSlug", "state", "completion", "nextLesson", "lessons"),
+			scope: "",
+			class: 0,
 		}, s.myCourseProgress},
 		{toolSpec{
 			name:  myLessonProgressTool,
@@ -91,6 +95,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 				"state":       lessonState,
 				"passedCheck": map[string]any{"type": "boolean"},
 			}, "courseSlug", "lessonSlug", "position", "state", "passedCheck"),
+			scope: "",
+			class: 0,
 		}, s.myLessonProgress},
 	}
 
@@ -100,40 +106,48 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 		spec.class = ClassPersonal
 		s.addTool(server, spec, t.run)
 	}
+
 	return nil
 }
 
-func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
+func (s *Server) myDashboard(ctx context.Context, request call) (result, error) {
 	// Nothing is declared, so anything sent (a userId, say) is refused.
-	if err := c.decode(&struct{}{}); err != nil {
-		return result{}, err
-	}
-	dashboard, err := s.deps.MyDashboard(ctx, c.userID)
+	err := request.decode(&struct{}{})
 	if err != nil {
 		return result{}, err
 	}
+
+	dashboard, err := s.deps.MyDashboard(ctx, request.userID)
+	if err != nil {
+		return result{}, err
+	}
+
 	return result{
 		text: fmt.Sprintf("%d courses in progress, %d finished",
 			len(dashboard.Started), len(dashboard.Finished)),
 		data: dashboard,
+		list: nil,
 	}, nil
 }
 
 type courseArgs struct {
-	CourseSlug string `json:"courseSlug"`
+	CourseSlug string `json:"courseSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
 type lessonProgressArgs struct {
-	CourseSlug string `json:"courseSlug"`
-	LessonSlug string `json:"lessonSlug"`
+	CourseSlug string `json:"courseSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
+	LessonSlug string `json:"lessonSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
-func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
+func (s *Server) myCourseProgress(ctx context.Context, request call) (result, error) {
 	var args courseArgs
-	if err := c.decode(&args); err != nil {
+
+	err := request.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
-	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
+
+	course, err := s.learnerCourse(ctx, request.userID, args.CourseSlug)
 	if err != nil {
 		return result{}, err
 	}
@@ -142,6 +156,7 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 	for _, l := range course.Lessons {
 		lessons = append(lessons, map[string]any{"slug": l.Slug, "position": l.Position, "state": l.State})
 	}
+
 	return result{
 		text: fmt.Sprintf("%s: %s, %d%% complete", course.CourseSlug, course.State, course.Completion),
 		data: map[string]any{
@@ -151,36 +166,45 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 			"nextLesson": course.NextLessonSlug,
 			"lessons":    lessons,
 		},
+		list: nil,
 	}, nil
 }
 
-func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
+func (s *Server) myLessonProgress(ctx context.Context, request call) (result, error) {
 	var args lessonProgressArgs
-	if err := c.decode(&args); err != nil {
-		return result{}, err
-	}
-	if args.LessonSlug == "" {
-		return result{}, userError{errors.New("invalid arguments: lessonSlug is required")}
-	}
-	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
+
+	err := request.decode(&args)
 	if err != nil {
 		return result{}, err
 	}
-	for _, l := range course.Lessons {
-		if l.Slug != args.LessonSlug {
+
+	if args.LessonSlug == "" {
+		return result{}, userError{errLessonSlugRequired}
+	}
+
+	course, err := s.learnerCourse(ctx, request.userID, args.CourseSlug)
+	if err != nil {
+		return result{}, err
+	}
+
+	for _, learnerLesson := range course.Lessons {
+		if learnerLesson.Slug != args.LessonSlug {
 			continue
 		}
+
 		return result{
-			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, l.Slug, l.State),
+			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, learnerLesson.Slug, learnerLesson.State),
 			data: map[string]any{
 				"courseSlug":  course.CourseSlug,
-				"lessonSlug":  l.Slug,
-				"position":    l.Position,
-				"state":       l.State,
-				"passedCheck": l.State == progress.StateFinished,
+				"lessonSlug":  learnerLesson.Slug,
+				"position":    learnerLesson.Position,
+				"state":       learnerLesson.State,
+				"passedCheck": learnerLesson.State == progress.StateFinished,
 			},
+			list: nil,
 		}, nil
 	}
+
 	return result{}, errNotFound("lesson " + strconv.Quote(args.LessonSlug))
 }
 
@@ -188,14 +212,26 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 // course is an answer the agent can act on, not a failure of ours.
 func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*progress.LearnerCourse, error) {
 	if slug == "" {
-		return nil, userError{errors.New("invalid arguments: courseSlug is required")}
+		return nil, userError{errCourseSlugRequired}
 	}
+
 	course, err := s.deps.MyCourseProgress(ctx, userID, slug)
 	if ent.IsNotFound(err) {
 		return nil, errNotFound("course " + strconv.Quote(slug))
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return course, nil
 }
+
+// The answers to a call that omits the slug the tool is about.
+var (
+	errLessonSlugRequired = errors.New("invalid arguments: lessonSlug is required")
+	errCourseSlugRequired = errors.New("invalid arguments: courseSlug is required")
+)
+
+// maxCompletion is the completion of a finished course, in percent.
+const maxCompletion = 100

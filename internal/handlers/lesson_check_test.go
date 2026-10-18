@@ -59,7 +59,6 @@ func TestCheckFinishesALesson(t *testing.T) {
 	require.Len(t, finished, 1)
 	assert.Equal(t, 2, finished[0].OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
 	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
-
 }
 
 // A failed check is still work done on the lesson: it is recorded, and the
@@ -285,7 +284,9 @@ func TestGuestCheckFinishesALessonOutOfOrder(t *testing.T) {
 // it to what the cookie carries.
 func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progress.GuestProgress{
+		Entries: nil,
+	}.Record(jsCourseSlug, firstLessonSlug))
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
 	result := submitSolution(t, h, lesson)
@@ -317,7 +318,7 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 // lesson the cookie counts.
 func TestGuestCheckIgnoresALessonTheCurrentVersionDropped(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
+	h := testsupport.NewVisitorHarness(t, progressCookie("removed-in-a-later-build"))
 
 	first := lessonBySlug(t, h, firstLessonSlug)
 	result := submitSolution(t, h, first)
@@ -335,6 +336,7 @@ const submittedCode = "console.log('hello, world!')"
 // build, which is the only version a client can legitimately have loaded.
 func checkLesson(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) (*api.LessonCheckingResponseHeaders, error) {
 	t.Helper()
+
 	return h.Client.CheckLesson(t.Context(),
 		&api.CheckLessonInput{
 			Code:      submittedCode,
@@ -349,7 +351,9 @@ func submitSolution(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLess
 	t.Helper()
 	res, err := checkLesson(t, h, lesson)
 	require.NoError(t, err)
+
 	result := res
+
 	return result
 }
 
@@ -358,6 +362,7 @@ func currentLessonVersionID(t *testing.T, h *testsupport.Harness, lesson *ent.Co
 	ctx := t.Context()
 	crs := h.DB.Course.Query().Where(course.ID(*lesson.CourseID)).OnlyX(ctx)
 	require.NotNil(t, crs.CurrentVersionID)
+
 	return h.DB.CourseLessonVersion.Query().
 		Where(
 			courselessonversion.LessonID(lesson.ID),
@@ -372,7 +377,12 @@ func TestCheckReportsASolutionThatNeverTerminatedAsItsOwnResult(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
-		return progress.Outcome{Result: progress.ResultFailedInfinity, Status: 124}, nil
+		return progress.Outcome{
+			Result: progress.ResultFailedInfinity,
+			Status: 124,
+			Passed: false,
+			Output: "",
+		}, nil
 	}
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 

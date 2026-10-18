@@ -45,12 +45,15 @@ var ErrUnknownPermission = errors.New("unknown permission")
 // splits one Permission in two), and trusted callers rewriting what a role
 // holds must not be refused for it.
 func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) error {
-	if err := p.requireRole(ctx, roleID); err != nil {
+	err := p.requireRole(ctx, roleID)
+	if err != nil {
 		return err
 	}
+
 	if unknown := lo.Reject(grants, func(name string, _ int) bool { return permissioncatalog.Known(name) }); len(unknown) > 0 {
 		return errs.With("unknown", unknown).Wrapf(ErrUnknownPermission, "check grants")
 	}
+
 	return nil
 }
 
@@ -61,16 +64,20 @@ func UnknownNames(err error) []string {
 	if !ok {
 		return nil
 	}
+
 	names, _ := oopsErr.Context()["unknown"].([]string)
+
 	return names
 }
 
 // Apply writes the roles screen's save: the role holds exactly grants
 // afterwards. A missing role is domain.ErrNotFound, before any write.
 func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) error {
-	if err := p.requireRole(ctx, roleID); err != nil {
+	err := p.requireRole(ctx, roleID)
+	if err != nil {
 		return err
 	}
+
 	return p.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		return replaceGrants(ctx, db, roleID, grants)
 	})
@@ -78,6 +85,7 @@ func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) er
 
 func (p *Permissions) requireRole(ctx context.Context, roleID int) error {
 	_, err := p.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx)
+
 	return domain.FromStore(err)
 }
 
@@ -102,11 +110,13 @@ func replaceGrants(ctx context.Context, db *ent.Client, roleID int, grants []str
 			return errs.With("role_id", roleID).Wrapf(err, "add grants")
 		}
 	}
+
 	_, err := db.StaffRoleGrant.Delete().
 		Where(staffrolegrant.RoleID(roleID), staffrolegrant.PermissionNotIn(grants...)).
 		Exec(ctx)
 	if err != nil {
 		return errs.With("role_id", roleID).Wrapf(err, "remove grants")
 	}
+
 	return nil
 }

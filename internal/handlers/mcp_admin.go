@@ -47,35 +47,43 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 // forbidden (channel mcp, since the tool put its Source in the context) and 403,
 // before the body is decoded or a handler runs. Taking a Permission away is
 // seen on the next call, because nothing is cached.
-func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, p mcpserver.Principal) (context.Context, error) {
-	u, err := account.ActiveUserByID(ctx, s.db, p.UserID)
+func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, principal mcpserver.Principal) (context.Context, error) {
+	u, err := account.ActiveUserByID(ctx, s.db, principal.UserID)
 	if errors.Is(err, domain.ErrNotFound) {
 		return ctx, errUnauthenticated
 	}
+
 	if err != nil {
 		return ctx, errs.Wrapf(err, "load authenticated user")
 	}
+
 	ctx = context.WithValue(ctx, authenticatedUserContextKey{}, u)
 
 	// The locale the generated server resolved must be the one the tool named;
 	// anything else (a dispatcher wired without the locale middleware, a header
 	// that did not survive) would judge the call in a locale nobody asked for.
 	locale := s.i18n.Locale(ctx)
-	if locale != p.Locale || !slices.Contains(p.Scopes, oauthserver.ScopeAdmin) {
+	if locale != principal.Locale || !slices.Contains(principal.Scopes, oauthserver.ScopeAdmin) {
 		s.recordRefusal(ctx, operation)
+
 		return ctx, errAdminRequired
 	}
+
 	err = s.policy.Allow(ctx, u, locale, operation)
 	for _, capability := range permissioncatalog.MCPCapabilities(operation) {
 		if err != nil {
 			break
 		}
+
 		err = s.policy.HasCapability(ctx, u, capability)
 	}
+
 	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
+
 		return ctx, errAdminRequired
 	}
+
 	return ctx, err
 }
 
@@ -92,22 +100,29 @@ func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, 
 	if errors.Is(err, domain.ErrNotFound) {
 		return nil, nil
 	}
+
 	if err != nil {
 		return nil, errs.Wrapf(err, "load user for capabilities")
 	}
+
 	held := []string{}
+
 	for _, entry := range permissioncatalog.Catalog() {
 		if !entry.Capability {
 			continue
 		}
+
 		err := s.policy.HasCapability(ctx, u, entry.Name)
 		if errors.Is(err, permission.ErrForbidden) {
 			continue
 		}
+
 		if err != nil {
 			return nil, errs.With("capability", entry.Name).Wrapf(err, "check capability")
 		}
+
 		held = append(held, entry.Name)
 	}
+
 	return held, nil
 }

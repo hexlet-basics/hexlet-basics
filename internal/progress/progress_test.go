@@ -21,6 +21,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoom = errors.New("docker is down")
+)
+
 // The progress module over the test's own transaction: the real rules, the real
 // transitions and the real event publisher, with the exercise runner the one
 // mock. Asserted is what a learner or a guest is left with — the rows, the
@@ -47,6 +52,7 @@ func newRig(t *testing.T) *rig {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
+
 	return &rig{
 		db:       db,
 		tx:       tx,
@@ -58,6 +64,7 @@ func newRig(t *testing.T) *rig {
 
 func (r *rig) course(t *testing.T, slug string) *ent.Course {
 	t.Helper()
+
 	return r.db.Course.Query().Where(course.SlugEQ(slug)).OnlyX(t.Context())
 }
 
@@ -65,6 +72,7 @@ func (r *rig) course(t *testing.T, slug string) *ent.Course {
 // lesson of the same name, so the slug alone does not say which.
 func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 	t.Helper()
+
 	return r.db.CourseLesson.Query().
 		Where(courselesson.SlugEQ(slug), courselesson.CourseID(fixture.ID(fixture.CourseJavascript))).
 		OnlyX(t.Context())
@@ -75,7 +83,13 @@ func (r *rig) lesson(t *testing.T, slug string) *ent.CourseLesson {
 // begun.
 func (r *rig) learner(t *testing.T, label fixture.Label) progress.Learner {
 	t.Helper()
-	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID}
+
+	return progress.Learner{
+		UserID: r.db.User.GetX(t.Context(), fixture.ID(label)).ID,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}
 }
 
 func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
@@ -84,21 +98,29 @@ func (r *rig) finishedSlugs(t *testing.T, learner progress.Learner) []string {
 		Where(lessonprogress.UserID(learner.UserID), lessonprogress.StateEQ(progress.StateFinished)).
 		WithLesson().
 		AllX(t.Context())
+
 	slugs := make([]string, 0, len(rows))
 	for _, row := range rows {
 		slugs = append(slugs, *row.Edges.Lesson.Slug)
 	}
+
 	return slugs
 }
 
 // guestWith is a visitor whose cookie names exactly these JavaScript lessons as
 // finished.
 func guestWith(lessonSlugs ...string) progress.Learner {
-	guest := progress.GuestProgress{}
+	guest := progress.GuestProgress{
+		Entries: nil,
+	}
 	for _, slug := range lessonSlugs {
 		guest = guest.Record(jsSlug, slug)
 	}
-	return progress.Learner{Guest: guest}
+
+	return progress.Learner{
+		Guest:  guest,
+		UserID: 0,
+	}
 }
 
 func lessonSlugs(state *progress.CourseState) []string {
@@ -106,6 +128,7 @@ func lessonSlugs(state *progress.CourseState) []string {
 	for _, lesson := range state.Lessons {
 		slugs = append(slugs, lesson.Slug)
 	}
+
 	return slugs
 }
 
@@ -190,7 +213,12 @@ func TestStartLessonLetsAGuestTakeAnyLessonAndWritesNothing(t *testing.T) {
 	before := r.db.LessonProgress.Query().CountX(ctx)
 
 	// A first-time visitor may open any lesson, and one with progress too.
-	for _, learner := range []progress.Learner{{}, guestWith(firstLesson)} {
+	for _, learner := range []progress.Learner{{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, guestWith(firstLesson)} {
 		_, err := r.progress.StartLesson(ctx, learner, r.lesson(t, thirdLesson).ID, locale)
 		require.NoError(t, err)
 	}
@@ -211,25 +239,31 @@ func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
 		completed int
 		next      string
 	}{
-		{"a first visit has not started", progress.Learner{}, "", 0, firstLesson},
+		{"a first visit has not started", progress.Learner{
+			UserID: 0,
+			Guest: progress.GuestProgress{
+				Entries: nil,
+			},
+		}, "", 0, firstLesson},
 		{"a visitor part way is started", guestWith(firstLesson, secondLesson), progress.StateStarted, 66, thirdLesson},
 		{"a visitor who took a later lesson first has only that one", guestWith(thirdLesson), progress.StateStarted, 33, firstLesson},
 		{"a visitor who finished every lesson has finished", guestWith(firstLesson, secondLesson, thirdLesson), progress.StateFinished, 100, ""},
 		{"a slug the version dropped counts as a first visit", guestWith("gone"), "", 0, firstLesson},
 	}
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			state, err := r.progress.CourseState(ctx, c.learner, courseID)
+	for _, record := range cases {
+		t.Run(record.name, func(t *testing.T) {
+			state, err := r.progress.CourseState(ctx, record.learner, courseID)
 			require.NoError(t, err)
 
-			assert.Equal(t, c.state, state.State)
-			assert.Equal(t, c.completed, state.Completion)
+			assert.Equal(t, record.state, state.State)
+			assert.Equal(t, record.completed, state.Completion)
 			assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(state))
-			if c.next == "" {
+
+			if record.next == "" {
 				assert.Nil(t, state.NextLessonSlug)
 			} else {
 				require.NotNil(t, state.NextLessonSlug)
-				assert.Equal(t, c.next, *state.NextLessonSlug)
+				assert.Equal(t, record.next, *state.NextLessonSlug)
 			}
 		})
 	}
@@ -239,7 +273,12 @@ func TestCourseStateOfAnUnknownCourseIsNotFound(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 
-	_, err := r.progress.CourseState(ctx, progress.Learner{}, -1)
+	_, err := r.progress.CourseState(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, -1)
 	assert.True(t, ent.IsNotFound(err), "a guest: %v", err)
 
 	_, err = r.progress.CourseState(ctx, r.learner(t, fixture.UserAdminLearner), -1)
@@ -251,7 +290,12 @@ func TestCourseStateOfACourseWithNoVersionHasNoLessons(t *testing.T) {
 	ctx := t.Context()
 	bare := r.course(t, "bare")
 
-	guest, err := r.progress.CourseState(ctx, progress.Learner{}, bare.ID)
+	guest, err := r.progress.CourseState(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, bare.ID)
 	require.NoError(t, err)
 	assert.Empty(t, guest.Lessons)
 	assert.Zero(t, guest.Completion)
@@ -271,14 +315,16 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.NotContains(t, states, -1, "a course that does not exist is absent")
-	js := states[javascript.ID]
-	require.NotNil(t, js)
-	assert.Equal(t, progress.StateStarted, js.State)
-	assert.Equal(t, 33, js.Completion)
-	finished := make([]bool, 0, len(js.Lessons))
-	for _, lesson := range js.Lessons {
+	courseState := states[javascript.ID]
+	require.NotNil(t, courseState)
+	assert.Equal(t, progress.StateStarted, courseState.State)
+	assert.Equal(t, 33, courseState.Completion)
+
+	finished := make([]bool, 0, len(courseState.Lessons))
+	for _, lesson := range courseState.Lessons {
 		finished = append(finished, lesson.Finished)
 	}
+
 	assert.Equal(t, []bool{true, false, false}, finished)
 	assert.Empty(t, states[ruby.ID].State, "a course the learner never joined has no state")
 }
@@ -318,21 +364,21 @@ func (r *rig) check(t *testing.T, learner progress.Learner, lessonSlug string) p
 	version := r.db.CourseLessonVersion.Query().
 		Where(courselessonversion.LessonID(lesson.ID), courselessonversion.CourseVersionID(current)).
 		OnlyX(ctx)
+
 	return progress.Check{Learner: learner, LessonID: lesson.ID, VersionID: version.ID, Code: "x", Locale: locale}
 }
 
 func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
-	boom := errors.New("docker is down")
 	r.mocks.Runner.RunFunc = func(_ context.Context, _ progress.Submission) (progress.Outcome, error) {
-		return progress.Outcome{}, boom
+		return progress.Outcome{}, errBoom
 	}
 	blankUser := r.learner(t, fixture.UserBlank)
 
 	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
-	require.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, errBoom)
 	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }
@@ -372,13 +418,27 @@ func TestCheckCannotGradeAVersionBuiltWithoutAnImage(t *testing.T) {
 }
 
 func TestUnavailableRunnerFailsLoudly(t *testing.T) {
-	_, err := progress.UnavailableRunner{}.Run(t.Context(), progress.Submission{})
+	_, err := progress.UnavailableRunner{}.Run(t.Context(), progress.Submission{
+		Image:        "",
+		VersionID:    0,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	assert.ErrorIs(t, err, progress.ErrRunnerUnavailable)
 }
 
 func TestSubmissionWithImageChangesOnlyTheImage(t *testing.T) {
-	original := progress.Submission{Image: "repo", VersionID: 7, Code: "x"}
+	original := progress.Submission{
+		Image:        "repo",
+		VersionID:    7,
+		Code:         "x",
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+	}
 
 	pinned := original.WithImage("repo:7")
 

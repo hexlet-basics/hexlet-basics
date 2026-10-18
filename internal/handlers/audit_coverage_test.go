@@ -14,6 +14,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoomSecretValue4242 = errors.New("boom: secret value 4242")
+)
+
 // Every admin write operation of the contract leaves an Audit Record, whatever
 // marks it (a write Permission, an administrators-only or any-staff marker, or
 // only the admin session scheme). The operations are enumerated from the
@@ -21,6 +26,7 @@ import (
 // middleware does not reach fails this test.
 func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
 	t.Parallel()
+
 	operations := permissioncatalog.AdminWrites()
 	require.NotEmpty(t, operations)
 
@@ -44,13 +50,14 @@ func TestEveryAdminWriteOperationOfTheContractIsRecorded(t *testing.T) {
 // changes did not happen and may name values the caller never saw.
 func TestEveryAdminWriteOperationRecordsAFailure(t *testing.T) {
 	t.Parallel()
+
 	for _, operation := range permissioncatalog.AdminWrites() {
 		t.Run(operation, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
 			audited := auditMiddleware(t, h)
 
 			_, err := audited(middleware.Request{Context: t.Context(), OperationName: operation}, func(middleware.Request) (middleware.Response, error) {
-				return middleware.Response{}, errors.New("boom: secret value 4242")
+				return middleware.Response{}, errBoomSecretValue4242
 			})
 			require.Error(t, err)
 
@@ -67,5 +74,6 @@ func succeeds(middleware.Request) (middleware.Response, error) { return middlewa
 
 func auditMiddleware(t *testing.T, h *testsupport.Harness) middleware.Middleware {
 	t.Helper()
+
 	return handlers.NewAuditMiddleware(h.Transactor, testsupport.NewTranslator(t), testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 }

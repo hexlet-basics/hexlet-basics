@@ -19,6 +19,7 @@ func reviewNames(reviews []api.Review) []string {
 	for i, r := range reviews {
 		names[i] = r.FullName.Value
 	}
+
 	return names
 }
 

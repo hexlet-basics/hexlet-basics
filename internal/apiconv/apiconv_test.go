@@ -36,6 +36,7 @@ func TestNullableColumnsBecomeNullOrTheirValue(t *testing.T) {
 
 func TestModuleLessonSlugsKeepOrderAndSkipLessonsWithoutAUrl(t *testing.T) {
 	t.Parallel()
+
 	version := func(slug *string) *ent.CourseLessonVersion {
 		return &ent.CourseLessonVersion{Edges: ent.CourseLessonVersionEdges{
 			Lesson: &ent.CourseLesson{Slug: slug},
@@ -66,6 +67,7 @@ func lessonProgressNamed(names ...string) *ent.LessonProgress {
 	for i, name := range names {
 		infos[i] = &ent.CourseLessonTranslation{Name: new(name)}
 	}
+
 	return &ent.LessonProgress{Edges: ent.LessonProgressEdges{
 		Lesson: &ent.CourseLesson{Edges: ent.CourseLessonEdges{Infos: infos}},
 	}}
@@ -85,6 +87,7 @@ func TestLessonProgressNameIsEmptyWhenNothingNamesTheLesson(t *testing.T) {
 
 func TestAssistantMessageNamesTheLessonOfItsChat(t *testing.T) {
 	t.Parallel()
+
 	message := &ent.AiMessage{Edges: ent.AiMessageEdges{
 		Chat: &ent.AiChat{Edges: ent.AiChatEdges{LessonProgress: lessonProgressNamed("Variables")}},
 	}}
@@ -110,6 +113,7 @@ func TestCourseDurationIsWholeHoursOfFifteenMinuteLessons(t *testing.T) {
 // The lessons on either side of one are decided from the list's order alone.
 func TestAdjacentLessonsAreTheNeighboursInTheGivenOrder(t *testing.T) {
 	t.Parallel()
+
 	lessons := []api.LearnerLesson{
 		{Slug: "a", Name: api.NewNilString("A")},
 		{Slug: "b", Name: api.NewNilString("B")},
@@ -133,6 +137,7 @@ func TestAdjacentLessonsAreTheNeighboursInTheGivenOrder(t *testing.T) {
 // both ends are null rather than a guess.
 func TestAdjacentLessonsOfALoneOrUnlistedLessonAreNull(t *testing.T) {
 	t.Parallel()
+
 	lone := AdjacentLessons("a", []api.LearnerLesson{{Slug: "a"}})
 	assert.True(t, lone.Previous.Null)
 	assert.True(t, lone.Next.Null)
@@ -147,6 +152,7 @@ func TestAdjacentLessonsOfALoneOrUnlistedLessonAreNull(t *testing.T) {
 // there is nothing to point at.
 func TestNextLessonRefIsNamedFromTheList(t *testing.T) {
 	t.Parallel()
+
 	lessons := []api.LearnerLesson{{ID: 7, Slug: "a", Name: api.NewNilString("A")}}
 
 	assert.True(t, NextLessonRef(nil, lessons).Null, "a finished course has none")

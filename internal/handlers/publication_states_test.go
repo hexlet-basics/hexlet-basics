@@ -45,165 +45,21 @@ type stateSubject struct {
 	visible func(t *testing.T, h *testsupport.Harness) bool
 }
 
-var (
-	bannerSubject = stateSubject{
-		name: "banner", operation: "Banner", id: fixture.ID(fixture.BannerEnPublished),
-		updaterRole: fixture.StaffRoleBannerUpdater, publisherRole: fixture.StaffRoleBannerPublisher,
-		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Banner.UpdateOneID(fixture.ID(fixture.BannerEnPublished)).SetState(state).ExecX(context.Background())
-		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			t.Helper()
-			state := h.DB.Banner.GetX(t.Context(), fixture.ID(fixture.BannerEnPublished)).State
-			return &state
-		},
-		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
-			var banner *api.Banner
-			var err error
-			switch verb {
-			case "publish":
-				banner, err = h.Client.AdminPublishBanner(context.Background(), api.AdminPublishBannerParams{ID: int32(id)})
-			case "unpublish":
-				banner, err = h.Client.AdminUnpublishBanner(context.Background(), api.AdminUnpublishBannerParams{ID: int32(id)})
-			case "archive":
-				banner, err = h.Client.AdminArchiveBanner(context.Background(), api.AdminArchiveBannerParams{ID: int32(id)})
-			}
-			if err != nil {
-				return "", err
-			}
-			return string(banner.State), nil
-		},
-		update: func(h *testsupport.Harness) error {
-			_, err := h.Client.AdminUpdateBanner(context.Background(), &api.BannerInput{
-				Background: api.BannerBackgroundBlue,
-				Locale:     api.BannerLocaleEn,
-				Body:       "Edited",
-				URL:        api.NilString{Null: true},
-				StartsAt:   api.NilDateTime{Null: true},
-				FinishesAt: api.NilDateTime{Null: true},
-			}, api.AdminUpdateBannerParams{ID: int32(fixture.ID(fixture.BannerEnPublished))})
-			return err
-		},
-		// The page shows the live banner of the request locale: the published, in-window one.
-		visible: func(t *testing.T, h *testsupport.Harness) bool {
-			t.Helper()
-			testsupport.SpeakTo(h, "en")
-			view, err := h.Client.GetActiveBanner(t.Context())
-			require.NoError(t, err)
-			banner, ok := view.Banner.Get()
-			return ok && banner.Body == "Free programming courses — start learning today"
-		},
-	}
-
-	reviewSubject = stateSubject{
-		name: "review", operation: "Review", id: fixture.ID(fixture.ReviewAdminLearnerRubyPublished),
-		updaterRole: fixture.StaffRoleReviewUpdater, publisherRole: fixture.StaffRoleReviewPublisher,
-		nullable: true,
-		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).SetState(state).ExecX(context.Background())
-		},
-		clearState: func(h *testsupport.Harness) {
-			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).ClearState().ExecX(context.Background())
-		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			t.Helper()
-			return h.DB.Review.GetX(t.Context(), fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).State
-		},
-		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
-			var review *api.Review
-			var err error
-			switch verb {
-			case "publish":
-				review, err = h.Client.AdminPublishReview(context.Background(), api.AdminPublishReviewParams{ID: int32(id)})
-			case "unpublish":
-				review, err = h.Client.AdminUnpublishReview(context.Background(), api.AdminUnpublishReviewParams{ID: int32(id)})
-			case "archive":
-				review, err = h.Client.AdminArchiveReview(context.Background(), api.AdminArchiveReviewParams{ID: int32(id)})
-			}
-			if err != nil {
-				return "", err
-			}
-			return string(review.State.Value), nil
-		},
-		update: func(h *testsupport.Harness) error {
-			_, err := h.Client.AdminUpdateReview(context.Background(), &api.ReviewInput{
-				Pinned:    api.NilBool{Null: true},
-				CourseId:  api.NilInt32{Null: true},
-				UserId:    api.NilInt32{Null: true},
-				Body:      api.NewNilString("Edited"),
-				FirstName: api.NewNilString("Ivan"),
-				LastName:  api.NilString{Null: true},
-			}, api.AdminUpdateReviewParams{ID: int32(fixture.ID(fixture.ReviewAdminLearnerRubyPublished))})
-			return err
-		},
-		// The public reviews page lists the published reviews of the request locale.
-		visible: func(t *testing.T, h *testsupport.Harness) bool {
-			t.Helper()
-			testsupport.SpeakTo(h, "ru")
-			page, err := h.Client.ListPublicReviews(t.Context(), api.ListPublicReviewsParams{})
-			require.NoError(t, err)
-			return slices.Contains(reviewNames(page.Items), "Ivan Petrov")
-		},
-	}
-
-	landingSubject = stateSubject{
-		name: "landing page", operation: "CourseLandingPage", id: fixture.ID(fixture.LandingPageGoRu),
-		updaterRole: fixture.StaffRoleLandingPageUpdater, publisherRole: fixture.StaffRoleLandingPagePublisher,
-		nullable: true,
-		setState: func(h *testsupport.Harness, state string) {
-			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).SetState(state).ExecX(context.Background())
-		},
-		clearState: func(h *testsupport.Harness) {
-			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).ClearState().ExecX(context.Background())
-		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
-			t.Helper()
-			return h.DB.CourseLandingPage.GetX(t.Context(), fixture.ID(fixture.LandingPageGoRu)).State
-		},
-		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
-			var page *api.CourseLandingPage
-			var err error
-			switch verb {
-			case "publish":
-				page, err = h.Client.AdminPublishCourseLandingPage(context.Background(), api.AdminPublishCourseLandingPageParams{ID: int32(id)})
-			case "unpublish":
-				page, err = h.Client.AdminUnpublishCourseLandingPage(context.Background(), api.AdminUnpublishCourseLandingPageParams{ID: int32(id)})
-			case "archive":
-				page, err = h.Client.AdminArchiveCourseLandingPage(context.Background(), api.AdminArchiveCourseLandingPageParams{ID: int32(id)})
-			}
-			if err != nil {
-				return "", err
-			}
-			return string(page.State.Value), nil
-		},
-		update: func(h *testsupport.Harness) error {
-			in := fullLandingInput(int32(courseGoID))
-			in.Slug = api.NewNilString("go-ru")
-			in.Name = api.NewNilString("Edited")
-			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixture.ID(fixture.LandingPageGoRu))})
-			return err
-		},
-		// A published page is listed on the category page through the category items it
-		// already has; nothing is copied when it is published.
-		visible: func(t *testing.T, h *testsupport.Harness) bool {
-			t.Helper()
-			testsupport.SpeakTo(h, "ru")
-			return slices.Contains(categoryLandingSlugs(getCategoryView(t, h, "programming-ru")), "go-ru")
-		},
-	}
-
-	stateSubjects = []stateSubject{bannerSubject, reviewSubject, landingSubject}
-)
+var ()
 
 // legalMoves is the table as the issue states it; every other pair of (operation,
 // current state) is refused, repeating the current state included.
-var legalMoves = map[string][]string{
-	"publish":   {"draft", "archived"},
-	"unpublish": {"published"},
-	"archive":   {"draft", "published"},
+func legalMoves() map[string][]string {
+	return map[string][]string{
+		"publish":   {"draft", "archived"},
+		"unpublish": {"published"},
+		"archive":   {"draft", "published"},
+	}
 }
 
-var movesTo = map[string]string{"publish": "published", "unpublish": "draft", "archive": "archived"}
+func movesTo() map[string]string {
+	return map[string]string{"publish": "published", "unpublish": "draft", "archive": "archived"}
+}
 
 func capitalized(verb string) string {
 	return map[string]string{"publish": "Publish", "unpublish": "Unpublish", "archive": "Archive"}[verb]
@@ -211,8 +67,9 @@ func capitalized(verb string) string {
 
 func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
-		for verb, legal := range legalMoves {
+
+	for _, subject := range stateSubjects() {
+		for verb, legal := range legalMoves() {
 			for _, from := range []string{"draft", "published", "archived"} {
 				t.Run(subject.name+" "+verb+" from "+from, func(t *testing.T) {
 					h := testsupport.NewHarness(t)
@@ -222,10 +79,12 @@ func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t 
 
 					if slices.Contains(legal, from) {
 						require.NoError(t, err)
-						assert.Equal(t, movesTo[verb], shown, "the answer shows the new state")
-						assert.Equal(t, movesTo[verb], *subject.stateOf(t, h))
+						assert.Equal(t, movesTo()[verb], shown, "the answer shows the new state")
+						assert.Equal(t, movesTo()[verb], *subject.stateOf(t, h))
+
 						return
 					}
+
 					require.Error(t, err)
 					assert.Equal(t, http.StatusConflict, h.LastStatus())
 					assert.Equal(t, from, *subject.stateOf(t, h), "a refused move changes nothing")
@@ -238,7 +97,8 @@ func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t 
 
 func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
+
+	for _, subject := range stateSubjects() {
 		for locale, want := range map[string]string{
 			"ru": "«опубликовано»",
 			"en": "published to published",
@@ -260,10 +120,12 @@ func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
 
 func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
+
+	for _, subject := range stateSubjects() {
 		if !subject.nullable {
 			continue
 		}
+
 		t.Run(subject.name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
 			subject.clearState(h)
@@ -280,8 +142,9 @@ func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
 // GLOSSARY term of the resource.
 func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
 	t.Parallel()
+
 	for operation, resource := range map[string]string{"Banner": "banners", "Review": "reviews", "CourseLandingPage": "course_landing_pages"} {
-		for verb := range legalMoves {
+		for verb := range legalMoves() {
 			got, ok := permissioncatalog.For("Admin" + capitalized(verb) + operation)
 			require.True(t, ok)
 			assert.Equal(t, permissioncatalog.Requirement{Permission: resource + "." + verb, Kind: permissioncatalog.Write}, got)
@@ -291,7 +154,8 @@ func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
 
 func TestAMoveOfAMissingRowIs404(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
+
+	for _, subject := range stateSubjects() {
 		t.Run(subject.name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
 
@@ -308,7 +172,8 @@ func TestAMoveOfAMissingRowIs404(t *testing.T) {
 // queries read the state column and nothing is cached or copied.
 func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
+
+	for _, subject := range stateSubjects() {
 		t.Run(subject.name, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
 			require.True(t, subject.visible(t, h), "published in the fixtures")
@@ -332,9 +197,10 @@ func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
 // update. Unpublishing and archiving are granted apart from publishing too.
 func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
+
+	for _, subject := range stateSubjects() {
 		t.Run(subject.name+" update only", func(t *testing.T) {
-			h := testsupport.NewHarnessAs(t, editorLabel)
+			h := testsupport.NewHarnessAs(t, editorLabel())
 			actAs(h, subject.updaterRole)
 
 			require.NoError(t, subject.update(h))
@@ -346,7 +212,7 @@ func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 			assert.Equal(t, "draft", *subject.stateOf(t, h))
 		})
 		t.Run(subject.name+" publish only", func(t *testing.T) {
-			h := testsupport.NewHarnessAs(t, editorLabel)
+			h := testsupport.NewHarnessAs(t, editorLabel())
 			actAs(h, subject.publisherRole)
 
 			subject.setState(h, "draft")
@@ -369,9 +235,11 @@ func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 
 func TestEachMoveLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
 	t.Parallel()
-	for _, subject := range stateSubjects {
-		for verb, legal := range legalMoves {
+
+	for _, subject := range stateSubjects() {
+		for verb, legal := range legalMoves() {
 			from := legal[0]
+
 			t.Run(subject.name+" "+verb, func(t *testing.T) {
 				h := testsupport.NewHarness(t)
 				subject.setState(h, from)
@@ -385,8 +253,191 @@ func TestEachMoveLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
 				state, ok := fieldOf(changesOf(t, rows[0]), "state")
 				require.True(t, ok)
 				assert.JSONEq(t, `"`+from+`"`, string(state.Old))
-				assert.JSONEq(t, `"`+movesTo[verb]+`"`, string(state.New))
+				assert.JSONEq(t, `"`+movesTo()[verb]+`"`, string(state.New))
 			})
 		}
 	}
+}
+
+func bannerSubject() stateSubject {
+	return stateSubject{
+		name: "banner", operation: "Banner", id: fixture.ID(fixture.BannerEnPublished),
+		updaterRole: fixture.StaffRoleBannerUpdater, publisherRole: fixture.StaffRoleBannerPublisher,
+		setState: func(h *testsupport.Harness, state string) {
+			h.DB.Banner.UpdateOneID(fixture.ID(fixture.BannerEnPublished)).SetState(state).ExecX(context.Background())
+		},
+		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
+			state := h.DB.Banner.GetX(t.Context(), fixture.ID(fixture.BannerEnPublished)).State
+
+			return &state
+		},
+		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
+			var (
+				banner *api.Banner
+				err    error
+			)
+
+			switch verb {
+			case "publish":
+				banner, err = h.Client.AdminPublishBanner(context.Background(), api.AdminPublishBannerParams{ID: int32(id)})
+			case "unpublish":
+				banner, err = h.Client.AdminUnpublishBanner(context.Background(), api.AdminUnpublishBannerParams{ID: int32(id)})
+			case "archive":
+				banner, err = h.Client.AdminArchiveBanner(context.Background(), api.AdminArchiveBannerParams{ID: int32(id)})
+			}
+
+			if err != nil {
+				return "", err
+			}
+
+			return string(banner.State), nil
+		},
+		update: func(h *testsupport.Harness) error {
+			_, err := h.Client.AdminUpdateBanner(context.Background(), &api.BannerInput{
+				Background: api.BannerBackgroundBlue,
+				Locale:     api.BannerLocaleEn,
+				Body:       "Edited",
+				URL:        api.NilString{Null: true},
+				StartsAt:   api.NilDateTime{Null: true},
+				FinishesAt: api.NilDateTime{Null: true},
+			}, api.AdminUpdateBannerParams{ID: int32(fixture.ID(fixture.BannerEnPublished))})
+
+			return err
+		},
+		// The page shows the live banner of the request locale: the published, in-window one.
+		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
+			testsupport.SpeakTo(h, "en")
+			view, err := h.Client.GetActiveBanner(t.Context())
+			require.NoError(t, err)
+
+			banner, ok := view.Banner.Get()
+
+			return ok && banner.Body == "Free programming courses — start learning today"
+		},
+		nullable:   false,
+		clearState: nil,
+	}
+}
+
+func reviewSubject() stateSubject {
+	return stateSubject{
+		name: "review", operation: "Review", id: fixture.ID(fixture.ReviewAdminLearnerRubyPublished),
+		updaterRole: fixture.StaffRoleReviewUpdater, publisherRole: fixture.StaffRoleReviewPublisher,
+		nullable: true,
+		setState: func(h *testsupport.Harness, state string) {
+			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).SetState(state).ExecX(context.Background())
+		},
+		clearState: func(h *testsupport.Harness) {
+			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).ClearState().ExecX(context.Background())
+		},
+		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
+
+			return h.DB.Review.GetX(t.Context(), fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).State
+		},
+		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
+			var (
+				review *api.Review
+				err    error
+			)
+
+			switch verb {
+			case "publish":
+				review, err = h.Client.AdminPublishReview(context.Background(), api.AdminPublishReviewParams{ID: int32(id)})
+			case "unpublish":
+				review, err = h.Client.AdminUnpublishReview(context.Background(), api.AdminUnpublishReviewParams{ID: int32(id)})
+			case "archive":
+				review, err = h.Client.AdminArchiveReview(context.Background(), api.AdminArchiveReviewParams{ID: int32(id)})
+			}
+
+			if err != nil {
+				return "", err
+			}
+
+			return string(review.State.Value), nil
+		},
+		update: func(h *testsupport.Harness) error {
+			_, err := h.Client.AdminUpdateReview(context.Background(), &api.ReviewInput{
+				Pinned:    api.NilBool{Null: true},
+				CourseId:  api.NilInt32{Null: true},
+				UserId:    api.NilInt32{Null: true},
+				Body:      api.NewNilString("Edited"),
+				FirstName: api.NewNilString("Ivan"),
+				LastName:  api.NilString{Null: true},
+			}, api.AdminUpdateReviewParams{ID: int32(fixture.ID(fixture.ReviewAdminLearnerRubyPublished))})
+
+			return err
+		},
+		// The public reviews page lists the published reviews of the request locale.
+		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
+			testsupport.SpeakTo(h, "ru")
+			page, err := h.Client.ListPublicReviews(t.Context(), api.ListPublicReviewsParams{})
+			require.NoError(t, err)
+
+			return slices.Contains(reviewNames(page.Items), "Ivan Petrov")
+		},
+	}
+}
+
+func landingSubject() stateSubject {
+	return stateSubject{
+		name: "landing page", operation: "CourseLandingPage", id: fixture.ID(fixture.LandingPageGoRu),
+		updaterRole: fixture.StaffRoleLandingPageUpdater, publisherRole: fixture.StaffRoleLandingPagePublisher,
+		nullable: true,
+		setState: func(h *testsupport.Harness, state string) {
+			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).SetState(state).ExecX(context.Background())
+		},
+		clearState: func(h *testsupport.Harness) {
+			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).ClearState().ExecX(context.Background())
+		},
+		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+			t.Helper()
+
+			return h.DB.CourseLandingPage.GetX(t.Context(), fixture.ID(fixture.LandingPageGoRu)).State
+		},
+		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
+			var (
+				page *api.CourseLandingPage
+				err  error
+			)
+
+			switch verb {
+			case "publish":
+				page, err = h.Client.AdminPublishCourseLandingPage(context.Background(), api.AdminPublishCourseLandingPageParams{ID: int32(id)})
+			case "unpublish":
+				page, err = h.Client.AdminUnpublishCourseLandingPage(context.Background(), api.AdminUnpublishCourseLandingPageParams{ID: int32(id)})
+			case "archive":
+				page, err = h.Client.AdminArchiveCourseLandingPage(context.Background(), api.AdminArchiveCourseLandingPageParams{ID: int32(id)})
+			}
+
+			if err != nil {
+				return "", err
+			}
+
+			return string(page.State.Value), nil
+		},
+		update: func(h *testsupport.Harness) error {
+			in := fullLandingInput(int32(courseGoID()))
+			in.Slug = api.NewNilString("go-ru")
+			in.Name = api.NewNilString("Edited")
+			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixture.ID(fixture.LandingPageGoRu))})
+
+			return err
+		},
+		// A published page is listed on the category page through the category items it
+		// already has; nothing is copied when it is published.
+		visible: func(t *testing.T, h *testsupport.Harness) bool {
+			t.Helper()
+			testsupport.SpeakTo(h, "ru")
+
+			return slices.Contains(categoryLandingSlugs(getCategoryView(t, h, "programming-ru")), "go-ru")
+		},
+	}
+}
+
+func stateSubjects() []stateSubject {
+	return []stateSubject{bannerSubject(), reviewSubject(), landingSubject()}
 }

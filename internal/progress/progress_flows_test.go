@@ -112,12 +112,16 @@ func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
-	stale := progress.GuestProgress{}.
+	stale := progress.GuestProgress{
+		Entries: nil,
+	}.
 		Record("no-such-course", firstLesson).
 		Record(jsSlug, "a-lesson-the-build-dropped")
 
 	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, stale, locale))
-	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{}, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{
+		Entries: nil,
+	}, locale))
 
 	assert.Empty(t, r.finishedSlugs(t, blankUser))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
@@ -128,6 +132,7 @@ func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 
 func (r *rig) dropLessonsAfterTheFirst(t *testing.T) {
 	t.Helper()
+
 	for _, slug := range []string{secondLesson, thirdLesson} {
 		r.db.CourseLessonVersion.Update().
 			Where(courselessonversion.LessonID(r.lesson(t, slug).ID)).
@@ -241,14 +246,17 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 	blankUser := r.learner(t, fixture.UserBlank)
 	courseID := r.course(t, jsSlug).ID
 	raced := false
+
 	r.db.Enrollment.Use(func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if !raced && m.Op().Is(ent.OpCreate) {
+		return ent.MutateFunc(func(ctx context.Context, mod ent.Mutation) (ent.Value, error) {
+			if !raced && mod.Op().Is(ent.OpCreate) {
 				raced = true
+
 				r.db.Enrollment.Create(). //nolint:forbidigo // the competing request that wins the race is the act
 								SetUserID(blankUser.UserID).SetCourseID(courseID).SetState(progress.StateStarted).ExecX(ctx)
 			}
-			return next.Mutate(ctx, m)
+
+			return next.Mutate(ctx, mod)
 		})
 	})
 
@@ -268,15 +276,18 @@ func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 	courseID := r.course(t, jsSlug).ID
 	enrolled := r.db.Enrollment.Query().Where(enrollment.UserID(adminLearner.UserID)).OnlyX(ctx)
 	raced := false
+
 	r.db.LessonProgress.Use(func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if !raced && m.Op().Is(ent.OpCreate) {
+		return ent.MutateFunc(func(ctx context.Context, mod ent.Mutation) (ent.Value, error) {
+			if !raced && mod.Op().Is(ent.OpCreate) {
 				raced = true
+
 				r.db.LessonProgress.Create(). //nolint:forbidigo // the competing request that wins the race is the act
 								SetUserID(adminLearner.UserID).SetCourseID(courseID).SetEnrollmentID(enrolled.ID).
 								SetLessonID(second.ID).SetState(progress.StateStarted).ExecX(ctx)
 			}
-			return next.Mutate(ctx, m)
+
+			return next.Mutate(ctx, mod)
 		})
 	})
 
@@ -293,6 +304,7 @@ func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 func signed(secret, body string) string {
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte(body))
+
 	return base64.RawURLEncoding.EncodeToString([]byte(body)) + "." + base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
 }
 
@@ -324,6 +336,7 @@ func (r *rig) failReads(entity string) {
 			if entgo.QueryFromContext(ctx).Type == entity {
 				return nil, errStore
 			}
+
 			return next.Query(ctx, q)
 		})
 	}))
@@ -335,6 +348,7 @@ func (r *rig) failWrites(entity string) {
 			if m.Type() == entity {
 				return nil, errStore
 			}
+
 			return next.Mutate(ctx, m)
 		})
 	})
@@ -357,8 +371,10 @@ func operations() []operation {
 			prepare: func(t *testing.T, r *rig) func() error {
 				t.Helper()
 				blankUser, lesson := r.learner(t, fixture.UserBlank), r.lesson(t, firstLesson)
+
 				return func() error {
 					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID, locale)
+
 					return err
 				}
 			},
@@ -370,8 +386,10 @@ func operations() []operation {
 			prepare: func(t *testing.T, r *rig) func() error {
 				t.Helper()
 				check := r.check(t, r.learner(t, fixture.UserBlank), firstLesson)
+
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
+
 					return err
 				}
 			},
@@ -384,8 +402,10 @@ func operations() []operation {
 				t.Helper()
 				r.dropLessonsAfterTheFirst(t)
 				check := r.check(t, r.learner(t, fixture.UserAdminLearner), firstLesson)
+
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
+
 					return err
 				}
 			},
@@ -397,30 +417,37 @@ func operations() []operation {
 			prepare: func(t *testing.T, r *rig) func() error {
 				t.Helper()
 				adminLearner, courseID := r.learner(t, fixture.UserAdminLearner), r.course(t, jsSlug).ID
+
 				return func() error {
 					_, err := r.progress.CourseStates(t.Context(), adminLearner.UserID, []int{courseID})
+
 					return err
 				}
 			},
-			reads: []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
+			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
+			writes: nil,
 		},
 		{
 			name: "reading a guest's course",
 			prepare: func(t *testing.T, r *rig) func() error {
 				t.Helper()
 				courseID := r.course(t, jsSlug).ID
+
 				return func() error {
 					_, err := r.progress.CourseState(t.Context(), guestWith(secondLesson), courseID)
+
 					return err
 				}
 			},
-			reads: []string{ent.TypeCourse, ent.TypeCourseLessonVersion},
+			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion},
+			writes: nil,
 		},
 		{
 			name: "merging a guest's progress",
 			prepare: func(t *testing.T, r *rig) func() error {
 				t.Helper()
 				staffEditor := r.learner(t, fixture.UserStaffEditor)
+
 				return func() error {
 					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest, locale)
 				}
@@ -434,6 +461,7 @@ func operations() []operation {
 				t.Helper()
 				r.dropLessonsAfterTheFirst(t)
 				courseID := r.course(t, jsSlug).ID
+
 				return func() error {
 					return r.progress.ReevaluateCompletion(t.Context(), r.tx, r.db, courseID, locale)
 				}

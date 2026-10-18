@@ -31,7 +31,7 @@ import (
 //
 // Each operation still passes the one checkpoint when it is called (see
 // callAdminTool); the list says what may be offered, not what may be done.
-var adminOperations = []string{
+var adminOperations = []string{ //nolint:gochecknoglobals // a test seam: AllowForTest swaps the list to exercise the pipeline with an operation the registry does not offer
 	"adminArchiveBanner",
 	"adminArchiveBlogPost",
 	"adminArchiveCourseLandingPage",
@@ -128,15 +128,19 @@ var adminOperations = []string{
 // A test requires every admin operation of the contract to be in
 // adminOperations or here, so an operation added to the contract later cannot
 // be forgotten: it is either offered to agents or excluded on the record.
-var excludedAdminOperations = map[string]string{
-	"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
+func excludedAdminOperations() map[string]string {
+	return map[string]string{
+		"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
+	}
 }
 
 // adminLocales are the locales staff work in. The tool's locale argument is
 // validated against them, because the website's locale matcher silently falls
 // back to English for a language it does not know, which would judge a call in a
 // locale the caller never named.
-var adminLocales = []string{"en", "ru"}
+func adminLocales() []string {
+	return []string{"en", "ru"}
+}
 
 const (
 	// localeArgument and bodyArgument are reserved names of a tool's input. The
@@ -166,13 +170,16 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 		if err != nil {
 			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
+
 		tool, err := adminTool(op)
 		if err != nil {
 			return errs.With("tool", id).Wrapf(err, "admin tool")
 		}
+
 		s.note(tool, adminNeeds(op))
 		server.AddTool(tool, s.adminHandler(op))
 	}
+
 	return nil
 }
 
@@ -182,62 +189,90 @@ func (s *Server) addAdminTools(server *mcp.Server) error {
 // (mcp.read or mcp.write by kind, mcp.manage where declared) and the operation's
 // own Permission when it is one (the audit trail's audit.read).
 func adminNeeds(op *operation) toolNeeds {
-	needs := toolNeeds{scope: oauthserver.ScopeAdmin}
+	needs := toolNeeds{
+		scope:        oauthserver.ScopeAdmin,
+		permission:   "",
+		capabilities: nil,
+	}
 	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs.permission = requirement.Permission
 		if permissioncatalog.IsCapability(requirement.Permission) {
 			needs.capabilities = append(needs.capabilities, requirement.Permission)
 		}
 	}
+
 	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if !slices.Contains(needs.capabilities, capability) {
 			needs.capabilities = append(needs.capabilities, capability)
 		}
 	}
+
 	return needs
 }
+
+// errNotAdminOperation is what adminTool answers for an operation the
+// AdminSession scheme does not guard: the checkpoint would not run for it.
+// errTrimmedInput is what adminTool answers if trimming an object schema did
+// not give an object back, which would be a defect of trimInput.
+var errTrimmedInput = errors.New("trimming the input schema did not give an object")
+
+var errNotAdminOperation = errors.New("is not an admin operation (it does not require the AdminSession scheme), so the checkpoint would not run for it")
+
+// errNotAScalar and errEmptyScalars are what scalars answers for a value that is
+// not a string, number or boolean, or for an empty list of them.
+var (
+	errNotAScalar   = errors.New("not a scalar")
+	errEmptyScalars = errors.New("empty")
+)
 
 // adminTool describes an operation as a tool: named after its operationId, with
 // input and output schemas derived from the contract.
 func adminTool(op *operation) (*mcp.Tool, error) {
 	if !op.Admin {
-		return nil, errors.New("is not an admin operation (it does not require the AdminSession scheme), so the checkpoint would not run for it")
+		return nil, errNotAdminOperation
 	}
 
 	properties := map[string]any{
 		localeArgument: map[string]any{
 			"type":        "string",
-			"enum":        adminLocales,
+			"enum":        adminLocales(),
 			"description": "The locale this call is made in: the one your Staff Role must allow. Required, never inferred.",
 		},
 	}
+
 	required := []string{localeArgument}
-	for _, p := range op.Params {
-		if p.Name == localeArgument || p.Name == bodyArgument {
-			return nil, errs.With("parameter", p.Name).Errorf("parameter collides with a reserved argument")
+	for _, arg := range op.Params {
+		if arg.Name == localeArgument || arg.Name == bodyArgument {
+			return nil, errs.With("parameter", arg.Name).Errorf("parameter collides with a reserved argument")
 		}
+
 		schema := map[string]any{}
-		maps.Copy(schema, p.Schema)
-		if p.Description != "" {
-			schema["description"] = p.Description
+		maps.Copy(schema, arg.Schema)
+
+		if arg.Description != "" {
+			schema["description"] = arg.Description
 		}
-		properties[p.Name] = schema
-		if p.Required {
-			required = append(required, p.Name)
+
+		properties[arg.Name] = schema
+		if arg.Required {
+			required = append(required, arg.Name)
 		}
 	}
+
 	if op.Body != nil {
 		properties[bodyArgument] = op.Body
 		if op.BodyRequired {
 			required = append(required, bodyArgument)
 		}
 	}
+
 	if op.Multipart != nil {
 		properties[bodyArgument] = uploadSchema(op.Multipart)
 		if op.BodyRequired {
 			required = append(required, bodyArgument)
 		}
 	}
+
 	input := map[string]any{
 		"type":                 "object",
 		"properties":           properties,
@@ -245,15 +280,21 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 		"additionalProperties": false,
 	}
 
+	trimmed, ok := trimInput(input).(map[string]any)
+	if !ok {
+		return nil, errTrimmedInput
+	}
+
 	tool := &mcp.Tool{
 		Name:        op.ID,
 		Description: describe(op),
-		InputSchema: trimInput(input).(map[string]any),
+		InputSchema: trimmed,
 		Annotations: adminAnnotations(op),
 	}
 	if op.Response != nil {
 		tool.OutputSchema = withTruncation(outputShape(wrapObject(op.Response)))
 	}
+
 	return tool, nil
 }
 
@@ -271,30 +312,37 @@ func describe(op *operation) string {
 		words := camelWords(strings.TrimPrefix(op.ID, "admin"))
 		text = strings.ToUpper(words[:1]) + words[1:] + "."
 	}
+
 	needs := []string{}
 	if requirement, ok := permissioncatalog.For(op.ogenName()); ok {
 		needs = append(needs, requirement.Permission)
 	}
+
 	for _, capability := range permissioncatalog.MCPCapabilities(op.ogenName()) {
 		if capability == "mcp.manage" {
 			needs = append(needs, capability)
 		}
 	}
+
 	if len(needs) > 0 {
 		text += " Needs " + strings.Join(needs, " and ") + "."
 	}
+
 	return text
 }
 
 // camelWords splits "ListBlogPosts" into "list blog posts".
 func camelWords(name string) string {
 	var out strings.Builder
+
 	for i, r := range name {
 		if i > 0 && r >= 'A' && r <= 'Z' {
 			out.WriteByte(' ')
 		}
+
 		out.WriteRune(r)
 	}
+
 	return strings.ToLower(out.String())
 }
 
@@ -304,6 +352,7 @@ func wrapObject(schema map[string]any) map[string]any {
 	if schema["type"] == "object" {
 		return schema
 	}
+
 	return map[string]any{
 		"type":                 "object",
 		"properties":           map[string]any{"result": schema},
@@ -319,6 +368,7 @@ func adminAnnotations(op *operation) *mcp.ToolAnnotations {
 	if op.Method == http.MethodGet {
 		return hints(true, false, true)
 	}
+
 	return hints(false, op.Method == http.MethodDelete, op.Method == http.MethodPut || op.Method == http.MethodDelete)
 }
 
@@ -338,6 +388,7 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 		if info == nil {
 			return toolError("this connection is not signed in"), nil
 		}
+
 		userID, err := strconv.Atoi(info.UserID)
 		if err != nil || userID <= 0 {
 			return toolError("this connection is not signed in as a user"), nil
@@ -351,9 +402,11 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 		if permissioncatalog.IsAdminWrite(op.ogenName()) {
 			class = ClassWrite
 		}
+
 		if _, denied := s.spend(req, userID, class); denied != nil {
 			return denied, nil
 		}
+
 		ctx, cancel := context.WithTimeout(ctx, s.limits.ToolTimeout)
 		defer cancel()
 
@@ -361,16 +414,19 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 		if problem != "" {
 			return toolError(problem), nil
 		}
+
 		locale, problem := localeOf(args)
 		if problem != "" {
 			return toolError(problem), nil
 		}
+
 		principal := Principal{
 			UserID: userID,
 			Scopes: info.Scopes,
 			Locale: locale,
 		}
 		callCtx := WithPrincipal(audit.WithSource(ctx, sourceOf(info)), principal)
+
 		httpReq, problem := buildRequest(callCtx, op, args, locale, req.GetExtra().Header)
 		if problem != "" {
 			return toolError(problem), nil
@@ -378,6 +434,7 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 
 		rec := httptest.NewRecorder()
 		s.deps.API.ServeHTTP(rec, httpReq)
+
 		return s.answer(op, rec)
 	}
 }
@@ -387,13 +444,19 @@ func (s *Server) adminHandler(op *operation) mcp.ToolHandler {
 // id of the client the token was issued to, and the access token's own id (not
 // the bearer, which is that id encrypted).
 func sourceOf(info *auth.TokenInfo) audit.Source {
-	source := audit.Source{Channel: audit.ChannelMCP}
+	source := audit.Source{
+		Channel:        audit.ChannelMCP,
+		ConnectedAppID: nil,
+		TokenID:        nil,
+	}
 	if id, ok := info.Extra[extraConnectedAppID].(int); ok && id > 0 {
 		source.ConnectedAppID = &id
 	}
+
 	if id, ok := info.Extra[extraTokenID].(string); ok && id != "" {
 		source.TokenID = &id
 	}
+
 	return source
 }
 
@@ -404,9 +467,12 @@ func parseArguments(raw json.RawMessage) (map[string]json.RawMessage, string) {
 	if len(raw) == 0 {
 		return args, ""
 	}
-	if err := json.Unmarshal(raw, &args); err != nil {
+
+	err := json.Unmarshal(raw, &args)
+	if err != nil {
 		return nil, "the arguments are not a JSON object"
 	}
+
 	return args, ""
 }
 
@@ -417,10 +483,14 @@ func localeOf(args map[string]json.RawMessage) (string, string) {
 	if !ok {
 		return "", "the locale argument is required"
 	}
+
 	var locale string
-	if err := json.Unmarshal(raw, &locale); err != nil || !slices.Contains(adminLocales, locale) {
-		return "", "the locale argument must be one of " + strings.Join(adminLocales, ", ")
+
+	err := json.Unmarshal(raw, &locale)
+	if err != nil || !slices.Contains(adminLocales(), locale) {
+		return "", "the locale argument must be one of " + strings.Join(adminLocales(), ", ")
 	}
+
 	return locale, ""
 }
 
@@ -433,30 +503,38 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	known := map[string]bool{localeArgument: true}
 	path := op.Path
 	query := url.Values{}
-	for _, p := range op.Params {
-		known[p.Name] = true
-		raw, ok := args[p.Name]
+
+	for _, arg := range op.Params {
+		known[arg.Name] = true
+
+		raw, ok := args[arg.Name]
 		if !ok {
-			if p.Required {
-				return nil, fmt.Sprintf("the %s argument is required", p.Name)
+			if arg.Required {
+				return nil, fmt.Sprintf("the %s argument is required", arg.Name)
 			}
+
 			continue
 		}
+
 		values, err := scalars(raw)
 		if err != nil {
-			return nil, fmt.Sprintf("the %s argument must be a value or a list of values", p.Name)
+			return nil, fmt.Sprintf("the %s argument must be a value or a list of values", arg.Name)
 		}
-		switch p.In {
+
+		switch arg.In {
 		case "path":
-			path = strings.ReplaceAll(path, "{"+p.Name+"}", url.PathEscape(values[0]))
+			path = strings.ReplaceAll(path, "{"+arg.Name+"}", url.PathEscape(values[0]))
 		default:
 			for _, v := range values {
-				query.Add(p.Name, v)
+				query.Add(arg.Name, v)
 			}
 		}
 	}
+
 	var body []byte
+
 	contentType := "application/json"
+
 	if op.Multipart != nil {
 		known[bodyArgument] = true
 		if raw, ok := args[bodyArgument]; ok {
@@ -468,6 +546,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 			return nil, "the body argument is required"
 		}
 	}
+
 	if op.Body != nil {
 		known[bodyArgument] = true
 		if raw, ok := args[bodyArgument]; ok {
@@ -476,14 +555,17 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 			return nil, "the body argument is required"
 		}
 	}
+
 	names := make([]string, 0, len(args))
 	for name := range args {
 		if !known[name] {
 			names = append(names, name)
 		}
 	}
+
 	if len(names) > 0 {
 		sort.Strings(names)
+
 		return nil, "unknown arguments: " + strings.Join(names, ", ")
 	}
 
@@ -491,11 +573,14 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	if len(query) > 0 {
 		target += "?" + query.Encode()
 	}
+
 	req, err := http.NewRequestWithContext(ctx, op.Method, target, bytes.NewReader(body))
 	if err != nil {
 		return nil, "the arguments do not make a request"
 	}
+
 	req.Header.Set("Accept", "application/json")
+
 	if body != nil {
 		req.Header.Set("Content-Type", contentType)
 	}
@@ -510,6 +595,7 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 			req.Header.Set(h, v)
 		}
 	}
+
 	return req, ""
 }
 
@@ -517,13 +603,17 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 // a string, number or boolean is one value, an array of them is several.
 func scalars(raw json.RawMessage) ([]string, error) {
 	var one any
-	if err := json.Unmarshal(raw, &one); err != nil {
-		return nil, err
+
+	err := json.Unmarshal(raw, &one)
+	if err != nil {
+		return nil, errs.Wrapf(err, "unmarshal json")
 	}
+
 	items, isList := one.([]any)
 	if !isList {
 		items = []any{one}
 	}
+
 	out := make([]string, 0, len(items))
 	for _, item := range items {
 		switch v := item.(type) {
@@ -531,15 +621,21 @@ func scalars(raw json.RawMessage) ([]string, error) {
 			out = append(out, v)
 		case float64, bool:
 			// Re-encode, not format: 3 must stay 3, not 3.000000.
-			b, _ := json.Marshal(v)
+			b, err := json.Marshal(v)
+			if err != nil {
+				return nil, errs.Wrapf(err, "marshal json")
+			}
+
 			out = append(out, string(b))
 		default:
-			return nil, errors.New("not a scalar")
+			return nil, errNotAScalar
 		}
 	}
+
 	if len(out) == 0 {
-		return nil, errors.New("empty")
+		return nil, errEmptyScalars
 	}
+
 	return out, nil
 }
 
@@ -549,20 +645,35 @@ func scalars(raw json.RawMessage) ([]string, error) {
 func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.CallToolResult, error) {
 	res := rec.Result()
 	defer func() { _ = res.Body.Close() }()
+
 	body := bytes.TrimSpace(rec.Body.Bytes())
 
 	if res.StatusCode < 200 || res.StatusCode > 299 {
 		return toolError(fmt.Sprintf("HTTP %d: %s", res.StatusCode, body)), nil
 	}
+
 	if op.Response == nil || len(body) == 0 {
-		return s.finish(op.ID, result{text: op.ID + ": done", data: map[string]any{}})
+		return s.finish(op.ID, result{
+			text: op.ID + ": done",
+			data: map[string]any{},
+			list: nil,
+		})
 	}
+
 	var decoded any
-	if err := json.Unmarshal(body, &decoded); err != nil {
+
+	err := json.Unmarshal(body, &decoded)
+	if err != nil {
 		return nil, errs.With("operation", op.ID).Wrapf(err, "decode response")
 	}
+
 	if _, isObject := decoded.(map[string]any); !isObject {
 		decoded = map[string]any{"result": decoded}
 	}
-	return s.finish(op.ID, result{text: fmt.Sprintf("%s: %s", op.ID, http.StatusText(res.StatusCode)), data: decoded})
+
+	return s.finish(op.ID, result{
+		text: fmt.Sprintf("%s: %s", op.ID, http.StatusText(res.StatusCode)),
+		data: decoded,
+		list: nil,
+	})
 }

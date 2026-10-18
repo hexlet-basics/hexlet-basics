@@ -52,7 +52,9 @@ func TestAJobEnqueuedByAnOperationThatFailsIsNotKept(t *testing.T) {
 		api.AdminSuggestBlogPostRelatedCoursesParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
 	require.Error(t, err)
 
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+		BlogPostID: 0,
+	})
 }
 
 func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
@@ -64,7 +66,9 @@ func TestAJobEnqueuedBySucceedingOperationIsKeptWithItsRecord(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, jobs.SuggestRelatedCoursesArgs{BlogPostID: fixture.ID(fixture.BlogPostHelloWorld)},
-		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
+		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+			BlogPostID: 0,
+		}))
 	require.Len(t, records(t, h, "AdminSuggestBlogPostRelatedCourses"), 1)
 }
 
@@ -96,13 +100,18 @@ func TestAnOperationMarkedAdministratorsOnlyIsRecordedEndToEnd(t *testing.T) {
 func TestAStandaloneOperationRunsItsHandlerWithoutATransactionOpen(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	tracked := &trackedTransactor{inner: h.Transactor}
+	tracked := &trackedTransactor{
+		inner: h.Transactor,
+		open:  atomic.Int32{},
+	}
 	audited := handlers.NewAuditMiddleware(tracked, testsupport.NewTranslator(t),
 		testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t)))
 
 	var openDuringHandler int32 = -1
+
 	probe := func(middleware.Request) (middleware.Response, error) {
 		openDuringHandler = tracked.open.Load()
+
 		return middleware.Response{}, nil
 	}
 
@@ -123,7 +132,7 @@ func TestAnUploadIsRecordedWithItsAttachment(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUploadAttachment(t.Context(), &api.AttachmentUploadFormMultipart{
-		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG), Size: int64(len(tinyPNG))},
+		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG()), Size: int64(len(tinyPNG()))},
 	})
 	require.NoError(t, err)
 
@@ -177,5 +186,6 @@ type trackedTransactor struct {
 func (t *trackedTransactor) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) error) error {
 	t.open.Add(1)
 	defer t.open.Add(-1)
+
 	return t.inner.WithinTx(ctx, fn)
 }

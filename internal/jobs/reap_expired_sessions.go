@@ -25,6 +25,7 @@ func (ReapExpiredSessionsArgs) Kind() string { return "reap_expired_sessions" }
 
 type reapExpiredSessionsWorker struct {
 	river.WorkerDefaults[ReapExpiredSessionsArgs]
+
 	sessions *auth.Authenticator
 	logger   *slog.Logger
 }
@@ -36,7 +37,9 @@ func (w *reapExpiredSessionsWorker) Work(ctx context.Context, _ *river.Job[ReapE
 	if err != nil {
 		return err
 	}
+
 	w.logger.InfoContext(ctx, "reaped expired sessions", slog.Int("removed", removed))
+
 	return nil
 }
 
@@ -48,7 +51,11 @@ func ReapExpiredSessions(manager *auth.Authenticator, logger *slog.Logger) Modul
 // ReapExpiredSessionsWorker is the worker alone, without its schedule, so that a
 // test can work a sweep through it in a transaction (rivertest.Worker).
 func ReapExpiredSessionsWorker(manager *auth.Authenticator, logger *slog.Logger) river.Worker[ReapExpiredSessionsArgs] {
-	return &reapExpiredSessionsWorker{sessions: manager, logger: logger}
+	return &reapExpiredSessionsWorker{
+		sessions:       manager,
+		logger:         logger,
+		WorkerDefaults: river.WorkerDefaults[ReapExpiredSessionsArgs]{},
+	}
 }
 
 // reapExpiredSessionsSchedule is the sweep's recurring insert. Like the other

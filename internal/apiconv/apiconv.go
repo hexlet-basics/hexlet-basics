@@ -53,7 +53,7 @@ import (
 // goverter:extend LocaleFromPtr
 // goverter:extend NilBlogPostStateFromPtr
 // goverter:extend NilStringFromEmpty
-type Converter interface {
+type Converter interface { //nolint:interfacebloat // goverter generates the implementation of this one interface, one method per mapping
 	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
 
 	// goverter:map Edges.Course Course
@@ -288,7 +288,7 @@ type Converter interface {
 	// version both carry the Lesson Version id, as the legacy serializer emitted
 	// them (one from the Translation's FK column, one from the row it points at);
 	// the check operation reads the former.
-	// goverter:map Course Course
+	// goverter:map Course
 	// goverter:map Lesson.ID ID
 	// goverter:map Lesson.Slug Slug
 	// goverter:map Lesson.CreatedAt CreatedAt
@@ -337,11 +337,13 @@ func LearnerLessonSources(infos []*ent.CourseLessonTranslation, state *progress.
 	for _, lesson := range state.Lessons {
 		standing[lesson.Slug] = lesson
 	}
+
 	return lo.Map(infos, func(info *ent.CourseLessonTranslation, _ int) LearnerLessonSource {
 		slug := ""
 		if info.Edges.Lesson != nil {
 			slug = lo.FromPtr(info.Edges.Lesson.Slug)
 		}
+
 		return LearnerLessonSource{Info: info, Standing: standing[slug]}
 	})
 }
@@ -360,11 +362,13 @@ type ModuleSource struct {
 // as in the flat list.
 func ModuleSources(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []ModuleSource {
 	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
+
 	return lo.Map(rows, func(row *ent.CourseModuleTranslation, _ int) ModuleSource {
 		return ModuleSource{
 			Row: row,
 			Lessons: lo.FilterMap(moduleLessonSlugs(row), func(slug string, _ int) (api.LearnerLesson, bool) {
 				lesson, ok := bySlug[slug]
+
 				return lesson, ok
 			}),
 		}
@@ -382,6 +386,7 @@ func dashboardNextLesson(c dashboard.Course) api.NilLessonRef {
 	if c.NextLesson == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	return NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
 }
 
@@ -392,11 +397,13 @@ func NextLessonRef(slug *string, lessons []api.LearnerLesson) api.NilLessonRef {
 	if slug == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	for _, lesson := range lessons {
 		if lesson.Slug == *slug {
 			return api.NewNilLessonRef(lessonRef(lesson))
 		}
 	}
+
 	return api.NilLessonRef{Null: true}
 }
 
@@ -406,6 +413,7 @@ func NamedLessonRef(slug *string, id int, name *string) api.NilLessonRef {
 	if slug == nil {
 		return api.NilLessonRef{Null: true}
 	}
+
 	return api.NewNilLessonRef(api.LessonRef{ID: Int32FromInt(id), Slug: *slug, Name: NilStringFromPtr(name)})
 }
 
@@ -421,19 +429,23 @@ func AdjacentLessons(slug string, lessons []api.LearnerLesson) api.AdjacentLesso
 		Previous: api.NilLessonRef{Null: true},
 		Next:     api.NilLessonRef{Null: true},
 	}
+
 	index := lo.IndexOf(lo.Map(lessons, func(l api.LearnerLesson, _ int) string { return l.Slug }), slug)
 	if index < 0 {
 		return adjacent
 	}
+
 	ref := func(l api.LearnerLesson) api.NilLessonRef {
 		return api.NewNilLessonRef(lessonRef(l))
 	}
 	if index > 0 {
 		adjacent.Previous = ref(lessons[index-1]) //nolint:gosec // G602: index is in [0, len) here, IndexOf returned it and the index > 0 guard above bounds it below
 	}
+
 	if index < len(lessons)-1 {
 		adjacent.Next = ref(lessons[index+1])
 	}
+
 	return adjacent
 }
 
@@ -471,6 +483,7 @@ func currentBuild(c LessonContent) *ent.CourseVersion {
 	if c.Course == nil || c.Course.Edges.CurrentVersion == nil {
 		return &ent.CourseVersion{}
 	}
+
 	return c.Course.Edges.CurrentVersion
 }
 
@@ -486,6 +499,7 @@ func nilExtension(ext string) api.NilString {
 	if ext == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(ext)
 }
 
@@ -499,6 +513,7 @@ func nilExtension(ext string) api.NilString {
 func lessonTips(raw *string) []string {
 	tips := []string{}
 	decodeLessonYAML(raw, &tips)
+
 	return tips
 }
 
@@ -513,6 +528,7 @@ func lessonDefinitions(raw *string) []api.LessonDefinition {
 	for _, d := range decoded {
 		definitions = append(definitions, api.LessonDefinition{Name: d.Name, Description: d.Description})
 	}
+
 	return definitions
 }
 
@@ -520,6 +536,7 @@ func decodeLessonYAML(raw *string, into any) {
 	if raw == nil || *raw == "" {
 		return
 	}
+
 	_ = yaml.Unmarshal([]byte(*raw), into)
 }
 
@@ -530,6 +547,7 @@ func NilEnrollmentStateFromPtr(v *string) api.NilEnrollmentState {
 	if v == nil || *v == "" {
 		return api.NilEnrollmentState{Null: true}
 	}
+
 	return api.NewNilEnrollmentState(api.EnrollmentState(*v))
 }
 
@@ -546,14 +564,16 @@ func TimeIdentity(v time.Time) time.Time { return v }
 // Int32FromInt narrows an ent int id/count to the contract's int32. Postgres
 // ids and counts are int4, so a real value always fits; one that does not
 // saturates at the bound instead of wrapping into a negative number on the wire.
-func Int32FromInt(v int) int32 {
-	if v > math.MaxInt32 {
+func Int32FromInt(value int) int32 {
+	if value > math.MaxInt32 {
 		return math.MaxInt32
 	}
-	if v < math.MinInt32 {
+
+	if value < math.MinInt32 {
 		return math.MinInt32
 	}
-	return int32(v)
+
+	return int32(value)
 }
 
 // Int32FromPtr resolves a nullable ent integer to a required contract field.
@@ -567,6 +587,7 @@ func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	if v == nil || *v == "" {
 		return api.EnrollmentStateStarted
 	}
+
 	return api.EnrollmentState(*v)
 }
 
@@ -577,10 +598,12 @@ func moduleLessonSlugs(source *ent.CourseModuleTranslation) []string {
 	if source == nil || source.Edges.Version == nil {
 		return []string{}
 	}
+
 	return lo.FilterMap(source.Edges.Version.Edges.LessonVersions, func(v *ent.CourseLessonVersion, _ int) (string, bool) {
 		if v.Edges.Lesson == nil || v.Edges.Lesson.Slug == nil {
 			return "", false
 		}
+
 		return *v.Edges.Lesson.Slug, true
 	})
 }
@@ -592,6 +615,7 @@ func lessonProgressLessonName(source *ent.LessonProgress) string {
 	if source == nil || source.Edges.Lesson == nil || len(source.Edges.Lesson.Edges.Infos) == 0 {
 		return ""
 	}
+
 	return StringFromPtr(source.Edges.Lesson.Edges.Infos[0].Name)
 }
 
@@ -602,6 +626,7 @@ func assistantMessageLessonName(source *ent.AiMessage) string {
 	if source == nil || source.Edges.Chat == nil || source.Edges.Chat.Edges.LessonProgress == nil {
 		return ""
 	}
+
 	return lessonProgressLessonName(source.Edges.Chat.Edges.LessonProgress)
 }
 
@@ -609,20 +634,23 @@ func assistantMessageLessonName(source *ent.AiMessage) string {
 // on a pointer receiver.
 type nilSetter[V any, N any] interface {
 	*N
-	SetTo(V)
+	SetTo(value V)
 	SetToNull()
 }
 
 // nilOf bridges a nullable ent column to the ogen Nil wrapper N of its value
 // type: null when v is nil, the value otherwise. Every NilXFromPtr below is
 // this with the contract type spelled out.
-func nilOf[V any, N any, P nilSetter[V, N]](v *V) N {
+func nilOf[V any, N any, P nilSetter[V, N]](value *V) N {
 	var out N
-	if v == nil {
+	if value == nil {
 		P(&out).SetToNull()
+
 		return out
 	}
-	P(&out).SetTo(*v)
+
+	P(&out).SetTo(*value)
+
 	return out
 }
 
@@ -632,6 +660,7 @@ func nilStringAs[V ~string](v *string) *V {
 	if v == nil {
 		return nil
 	}
+
 	return new(V(*v))
 }
 
@@ -646,6 +675,7 @@ func nilInt32From(v *int) *int32 {
 	if v == nil {
 		return nil
 	}
+
 	return new(Int32FromInt(*v))
 }
 
@@ -699,6 +729,7 @@ func NilStringFromEmpty(v string) api.NilString {
 	if v == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(v)
 }
 
@@ -754,6 +785,12 @@ func NilLandingPageStateFromPtr(v *string) api.NilLandingPageState {
 	return nilEnumOf[api.LandingPageState, api.NilLandingPageState](v)
 }
 
+// minutesPerLesson is the legacy estimate of a lesson's length.
+const (
+	minutesPerLesson = 15
+	minutesPerHour   = 60
+)
+
 // courseDuration mirrors Language#duration: estimated hours from the lesson
 // count (lessons_count * 15 minutes, integer-divided to hours). Guards nil
 // because a listed landing page may reference a course absent from the current
@@ -762,7 +799,8 @@ func courseDuration(c *ent.Course) int32 {
 	if c == nil {
 		return 0
 	}
-	return Int32FromInt(c.LessonsCount * 15 / 60)
+
+	return Int32FromInt(c.LessonsCount * minutesPerLesson / minutesPerHour)
 }
 
 // LocalesFromPq bridges the native pg text-array column to the api's plain
@@ -785,7 +823,9 @@ func grantNames(grants []*ent.StaffRoleGrant) []string {
 	for _, g := range grants {
 		names = append(names, g.Permission)
 	}
+
 	slices.Sort(names)
+
 	return names
 }
 
@@ -805,19 +845,20 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 	if v == nil {
 		return api.NilCourseVersion{Null: true}
 	}
+
 	return api.NewNilCourseVersion(CourseVersionFromEnt(v))
 }
 
 // CourseVersionFromEnt maps an ent course version to the API body. Used both by
 // the current-version bridge above and by the createVersion handler (which
 // returns a bare CourseVersion for the 201).
-func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
+func CourseVersionFromEnt(value *ent.CourseVersion) api.CourseVersion {
 	return api.CourseVersion{
-		ID:        Int32FromInt(v.ID),
-		Name:      NilStringFromPtr(v.Name),
-		Result:    NilStringFromPtr(v.Result),
-		State:     NilStringFromPtr(v.State),
-		CreatedAt: v.CreatedAt,
+		ID:        Int32FromInt(value.ID),
+		Name:      NilStringFromPtr(value.Name),
+		Result:    NilStringFromPtr(value.Result),
+		State:     NilStringFromPtr(value.State),
+		CreatedAt: value.CreatedAt,
 	}
 }
 
@@ -834,21 +875,31 @@ func hexletProgramLandingPage(c *ent.Course) api.NilString {
 	if c.HexletProgramLandingPage == nil || *c.HexletProgramLandingPage == "" {
 		return api.NilString{Null: true}
 	}
+
 	return api.NewNilString(*c.HexletProgramLandingPage)
 }
+
+// The legacy serializer's placeholder rating, kept for parity: the number of
+// ratings, and the value by the parity of the course id.
+const (
+	placeholderRatingCount = 89
+	placeholderRatingEven  = 4
+	placeholderRatingOdd   = 5
+)
 
 // ratingCount reproduces the legacy serializer's placeholder rating count. The
 // real aggregate over reviews is not implemented yet (the legacy code carries
 // the same TODO); this keeps parity until it is.
-func ratingCount(*ent.Course) int32 { return 89 }
+func ratingCount(*ent.Course) int32 { return placeholderRatingCount }
 
 // ratingValue reproduces the legacy serializer's placeholder rating: a fixed
 // value keyed off id parity, pending a real reviews aggregate.
 func ratingValue(c *ent.Course) float64 {
 	if c.ID%2 == 0 {
-		return 4
+		return placeholderRatingEven
 	}
-	return 5
+
+	return placeholderRatingOdd
 }
 
 // coverVariantNull keeps the cover variant URLs null until course cover assets

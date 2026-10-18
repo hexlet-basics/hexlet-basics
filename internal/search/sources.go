@@ -61,9 +61,11 @@ func (m match) headline(text string) sql.Querier {
 // not be.
 func withArgs(text string, args ...any) func(*sql.Builder) {
 	parts := strings.Split(text, "?")
+
 	return func(b *sql.Builder) {
 		for i, part := range parts {
 			b.WriteString(part)
+
 			if i < len(args) {
 				b.Arg(args[i])
 			}
@@ -100,6 +102,7 @@ func htmlText(fragment string) string {
 	if !strings.ContainsAny(fragment, "<&") {
 		return fragment
 	}
+
 	return html.UnescapeString(htmltext.PlainText(fragment))
 }
 
@@ -119,52 +122,62 @@ func (landingPages) vector(m match, s *sql.Selector) string {
 // An unrestricted search (an editor's) keeps only the locale: a draft, archived
 // or unlisted page, and the page of a course still in development, are records
 // too.
-func (l landingPages) scope(m match) []predicate.CourseLandingPage {
-	visible := landingpage.Listed(m.locale)
-	if m.unrestricted {
-		visible = courselandingpage.LocaleEQ(m.locale)
+func (l landingPages) scope(matching match) []predicate.CourseLandingPage {
+	visible := landingpage.Listed(matching.locale)
+	if matching.unrestricted {
+		visible = courselandingpage.LocaleEQ(matching.locale)
 	}
+
 	return []predicate.CourseLandingPage{
 		visible,
 		courselandingpage.SlugNotNil(),
-		func(s *sql.Selector) { s.Where(m.matches(l.vector(m, s))) },
+		func(s *sql.Selector) { s.Where(matching.matches(l.vector(matching, s))) },
 	}
 }
 
 func (l landingPages) count(ctx context.Context, m match) (int, error) {
-	return l.db.CourseLandingPage.Query().Where(l.scope(m)...).Count(ctx)
+	result, err := l.db.CourseLandingPage.Query().Where(l.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count course landing pages")
+	}
+
+	return result, nil
 }
 
-func (l landingPages) top(ctx context.Context, m match, n int) ([]candidate, error) {
+func (l landingPages) top(ctx context.Context, matching match, n int) ([]candidate, error) {
 	rows, err := l.db.CourseLandingPage.Query().
-		Where(l.scope(m)...).
+		Where(l.scope(matching)...).
 		Select(courselandingpage.FieldID, courselandingpage.FieldSlug, courselandingpage.FieldName, courselandingpage.FieldHeader,
 			courselandingpage.FieldState, courselandingpage.FieldCourseID).
 		WithCourse(func(q *ent.CourseQuery) { q.Select(course.FieldID, course.FieldReadiness) }).
-		Order(courselandingpage.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return m.rank(l.vector(m, s)) }))).
+		Order(courselandingpage.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return matching.rank(l.vector(matching, s)) }))).
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
+
 	out := make([]candidate, 0, len(rows))
 	for _, row := range rows {
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		slug := *row.Slug
 		out = append(out, candidate{rank: rank, typ: Course, id: row.ID, hit: Hit{
 			Type:  Course,
 			ID:    CourseID(slug),
 			Title: titleOf(slug, row.Name, row.Header),
-			Path:  pagePath(m.locale, "/languages/"+slug),
+			Path:  pagePath(matching.locale, "/languages/"+slug),
 			State: lo.FromPtr(row.State),
 			// The course's own readiness, which says whether the page is a course
 			// that can be learned yet.
 			Readiness: readinessOf(row.Edges.Course),
+			Snippet:   "",
 		}})
 	}
+
 	return out, nil
 }
 
@@ -179,17 +192,10 @@ func (l landingPages) snippets(ctx context.Context, m match, ids []int) (map[int
 		Select(courselandingpage.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
-	out := make(map[int]string, len(rows))
-	for _, row := range rows {
-		value, err := row.Value("snippet")
-		if err != nil {
-			return nil, errs.Wrapf(err, "read snippet")
-		}
-		out[row.ID] = textOf(value)
-	}
-	return out, nil
+
+	return snippetsOf(rows, func(row *ent.CourseLandingPage) int { return row.ID })
 }
 
 // lessons are the lessons of the current build of the courses the catalogue
@@ -211,17 +217,18 @@ func (lessons) vector(m match, s *sql.Selector) string {
 // lesson has a translation in: the build being worked on, which is the current
 // one once a build is released. A lesson has a translation per build, so without
 // the choice one lesson would be one hit per build under the same id.
-func (l lessons) scope(m match) []predicate.CourseLessonTranslation {
-	where := []predicate.CourseLessonTranslation{courselessontranslation.LocaleEQ(m.locale)}
-	if m.unrestricted {
-		where = append(where, newestBuild(m.locale))
+func (l lessons) scope(matching match) []predicate.CourseLessonTranslation {
+	where := []predicate.CourseLessonTranslation{courselessontranslation.LocaleEQ(matching.locale)}
+	if matching.unrestricted {
+		where = append(where, newestBuild(matching.locale))
 	} else {
 		where = append(where, courselessontranslation.HasCourseVersionWith(courseversion.HasCurrentCoursesWith(
 			landingpage.Completed(),
-			course.HasLandingPagesWith(landingpage.Listed(m.locale)),
+			course.HasLandingPagesWith(landingpage.Listed(matching.locale)),
 		)))
 	}
-	return append(where, func(s *sql.Selector) { s.Where(m.matches(l.vector(m, s))) })
+
+	return append(where, func(s *sql.Selector) { s.Where(matching.matches(l.vector(matching, s))) })
 }
 
 // newestBuild holds for a translation that no later build of the same lesson
@@ -238,20 +245,26 @@ func newestBuild(locale string) predicate.CourseLessonTranslation {
 }
 
 func (l lessons) count(ctx context.Context, m match) (int, error) {
-	return l.db.CourseLessonTranslation.Query().Where(l.scope(m)...).Count(ctx)
+	result, err := l.db.CourseLessonTranslation.Query().Where(l.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count course lesson translations")
+	}
+
+	return result, nil
 }
 
-func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
+func (l lessons) top(ctx context.Context, matching match, n int) ([]candidate, error) {
 	rows, err := l.db.CourseLessonTranslation.Query().
-		Where(l.scope(m)...).
+		Where(l.scope(matching)...).
 		Select(courselessontranslation.FieldID, courselessontranslation.FieldName,
 			courselessontranslation.FieldCourseID, courselessontranslation.FieldCourseLessonID).
-		Order(courselessontranslation.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return m.rank(l.vector(m, s)) }))).
+		Order(courselessontranslation.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return matching.rank(l.vector(matching, s)) }))).
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
+
 	if len(rows) == 0 {
 		return nil, nil
 	}
@@ -263,28 +276,34 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		lessonIDs = append(lessonIDs, row.CourseLessonID)
 		courseIDs = append(courseIDs, row.CourseID)
 	}
+
 	lessonRows, err := l.db.CourseLesson.Query().
 		Where(courselesson.IDIn(lessonIDs...)).
 		Select(courselesson.FieldID, courselesson.FieldSlug, courselesson.FieldState).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lessons")
 	}
+
 	courseRows, err := l.db.Course.Query().
 		Where(course.IDIn(courseIDs...)).
 		Select(course.FieldID, course.FieldSlug, course.FieldReadiness).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list courses")
 	}
+
 	lessonSlugs, lessonStates := map[int]string{}, map[int]string{}
+
 	for _, row := range lessonRows {
 		if row.Slug != nil {
 			lessonSlugs[row.ID] = *row.Slug
 			lessonStates[row.ID] = lo.FromPtr(row.State)
 		}
 	}
+
 	courseSlugs, courseReadiness := map[int]string{}, map[int]string{}
+
 	for _, row := range courseRows {
 		if row.Slug != nil {
 			courseSlugs[row.ID] = *row.Slug
@@ -298,44 +317,42 @@ func (l lessons) top(ctx context.Context, m match, n int) ([]candidate, error) {
 		if lessonSlug == "" || courseSlug == "" {
 			continue
 		}
+
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		out = append(out, candidate{rank: rank, typ: Lesson, id: row.ID, hit: Hit{
 			Type:  Lesson,
 			ID:    LessonID(courseSlug, lessonSlug),
 			Title: titleOf(lessonSlug, row.Name),
-			Path:  pagePath(m.locale, "/languages/"+courseSlug+"/lessons/"+lessonSlug),
+			Path:  pagePath(matching.locale, "/languages/"+courseSlug+"/lessons/"+lessonSlug),
 			State: lessonStates[row.CourseLessonID], Readiness: courseReadiness[row.CourseID],
+			Snippet: "",
 		}})
 	}
+
 	return out, nil
 }
 
-func (l lessons) snippets(ctx context.Context, m match, ids []int) (map[int]string, error) {
+func (l lessons) snippets(ctx context.Context, matching match, ids []int) (map[int]string, error) {
 	rows, err := l.db.CourseLessonTranslation.Query().
 		Where(
 			courselessontranslation.IDIn(ids...),
 			predicate.CourseLessonTranslation(withColumn("snippet", func(s *sql.Selector) sql.Querier {
 				body := "coalesce(" + s.C(courselessontranslation.FieldTheory) + ", '') || ' ' || coalesce(" + s.C(courselessontranslation.FieldInstructions) + ", '')"
-				return m.headline(summaryAndBody(s.C(courselessontranslation.FieldDescription), body))
+
+				return matching.headline(summaryAndBody(s.C(courselessontranslation.FieldDescription), body))
 			})),
 		).
 		Select(courselessontranslation.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
-	out := make(map[int]string, len(rows))
-	for _, row := range rows {
-		value, err := row.Value("snippet")
-		if err != nil {
-			return nil, errs.Wrapf(err, "read snippet")
-		}
-		out[row.ID] = textOf(value)
-	}
-	return out, nil
+
+	return snippetsOf(rows, func(row *ent.CourseLessonTranslation) int { return row.ID })
 }
 
 // posts are the published blog posts of the locale.
@@ -349,47 +366,58 @@ func (posts) vector(m match, s *sql.Selector) string {
 // have a slug to be addressed by.
 //
 // An unrestricted search takes the posts of the locale in any state.
-func (p posts) scope(m match) []predicate.BlogPost {
-	visible := blog.Published(m.locale)
-	if m.unrestricted {
-		visible = blogpost.LocaleEQ(m.locale)
+func (p posts) scope(matching match) []predicate.BlogPost {
+	visible := blog.Published(matching.locale)
+	if matching.unrestricted {
+		visible = blogpost.LocaleEQ(matching.locale)
 	}
+
 	return []predicate.BlogPost{
 		visible,
 		blogpost.SlugNotNil(),
-		func(s *sql.Selector) { s.Where(m.matches(p.vector(m, s))) },
+		func(s *sql.Selector) { s.Where(matching.matches(p.vector(matching, s))) },
 	}
 }
 
 func (p posts) count(ctx context.Context, m match) (int, error) {
-	return p.db.BlogPost.Query().Where(p.scope(m)...).Count(ctx)
+	result, err := p.db.BlogPost.Query().Where(p.scope(m)...).Count(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "count blog posts")
+	}
+
+	return result, nil
 }
 
-func (p posts) top(ctx context.Context, m match, n int) ([]candidate, error) {
+func (p posts) top(ctx context.Context, matching match, n int) ([]candidate, error) {
 	rows, err := p.db.BlogPost.Query().
-		Where(p.scope(m)...).
+		Where(p.scope(matching)...).
 		Select(blogpost.FieldID, blogpost.FieldSlug, blogpost.FieldName, blogpost.FieldState).
-		Order(blogpost.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return m.rank(p.vector(m, s)) }))).
+		Order(blogpost.OrderOption(ranked(func(s *sql.Selector) sql.Querier { return matching.rank(p.vector(matching, s)) }))).
 		Limit(n).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog posts")
 	}
+
 	out := make([]candidate, 0, len(rows))
 	for _, row := range rows {
 		rank, err := rankOf(row.Value)
 		if err != nil {
 			return nil, err
 		}
+
 		slug := *row.Slug
 		out = append(out, candidate{rank: rank, typ: Post, id: row.ID, hit: Hit{
-			Type:  Post,
-			ID:    PostID(slug),
-			Title: titleOf(slug, row.Name),
-			Path:  pagePath(m.locale, "/blog_posts/"+slug),
-			State: lo.FromPtr(row.State),
+			Type:      Post,
+			ID:        PostID(slug),
+			Title:     titleOf(slug, row.Name),
+			Path:      pagePath(matching.locale, "/blog_posts/"+slug),
+			State:     lo.FromPtr(row.State),
+			Snippet:   "",
+			Readiness: "",
 		}})
 	}
+
 	return out, nil
 }
 
@@ -404,16 +432,27 @@ func (p posts) snippets(ctx context.Context, m match, ids []int) (map[int]string
 		Select(blogpost.FieldID).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list blog posts")
 	}
+
+	return snippetsOf(rows, func(row *ent.BlogPost) int { return row.ID })
+}
+
+// snippetsOf reads the "snippet" column the query selected beside each row's
+// id, by id; both sources that headline a match select it the same way.
+func snippetsOf[R interface {
+	Value(name string) (ent.Value, error)
+}](rows []R, id func(R) int) (map[int]string, error) {
 	out := make(map[int]string, len(rows))
 	for _, row := range rows {
 		value, err := row.Value("snippet")
 		if err != nil {
 			return nil, errs.Wrapf(err, "read snippet")
 		}
-		out[row.ID] = textOf(value)
+
+		out[id(row)] = textOf(value)
 	}
+
 	return out, nil
 }
 
@@ -422,5 +461,6 @@ func readinessOf(c *ent.Course) string {
 	if c == nil {
 		return ""
 	}
+
 	return lo.FromPtr(c.Readiness)
 }

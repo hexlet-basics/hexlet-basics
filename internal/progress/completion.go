@@ -44,6 +44,7 @@ func (p *Progress) ReevaluateCompletion(
 	if err != nil {
 		return err
 	}
+
 	if len(lessons) == 0 {
 		// A Version with no Lessons completes nobody; the alternative reading —
 		// everybody has finished all zero of them — is the worse one.
@@ -56,6 +57,7 @@ func (p *Progress) ReevaluateCompletion(
 	if err != nil {
 		return err
 	}
+
 	if len(completed) == 0 {
 		return nil
 	}
@@ -63,10 +65,11 @@ func (p *Progress) ReevaluateCompletion(
 	enrollmentIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.id })
 	userIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.userID })
 
-	if err := db.Enrollment.Update().
+	err = db.Enrollment.Update().
 		Where(enrollment.IDIn(enrollmentIDs...)).
 		SetState(StateFinished).
-		Exec(ctx); err != nil {
+		Exec(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "finish completed enrollments")
 	}
 
@@ -77,15 +80,17 @@ func (p *Progress) ReevaluateCompletion(
 
 	occurredAt := p.now()
 	for _, row := range completed {
-		if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
+		err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 			OccurrenceCount: counts[row.userID],
 			Slug:            lo.FromPtr(crs.Slug),
 			Locale:          locale,
 			OccurredAt:      occurredAt,
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish course finished")
 		}
 	}
+
 	return nil
 }
 
@@ -117,8 +122,10 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		UserID  int `json:"user_id"`
 		Lessons int `json:"lessons"`
 	}
+
 	var finishedPerLearner []finishedPerLearnerRow
-	if err := db.LessonProgress.Query().
+
+	err := db.LessonProgress.Query().
 		Where(
 			lessonprogress.State(StateFinished),
 			lessonprogress.LessonIDIn(lessonIDs...),
@@ -127,7 +134,8 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		Aggregate(func(s *entsql.Selector) string {
 			return entsql.As(entsql.Count(entsql.Distinct(s.C(lessonprogress.FieldLessonID))), "lessons")
 		}).
-		Scan(ctx, &finishedPerLearner); err != nil {
+		Scan(ctx, &finishedPerLearner)
+	if err != nil {
 		return nil, errs.Wrapf(err, "count finished lessons per learner")
 	}
 
@@ -163,11 +171,13 @@ func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int
 		UserID int `json:"user_id"`
 		Count  int `json:"count"`
 	}
-	if err := db.Enrollment.Query().
+
+	err := db.Enrollment.Query().
 		Where(enrollment.UserIDIn(userIDs...), enrollment.State(StateFinished)).
 		GroupBy(enrollment.FieldUserID).
 		Aggregate(ent.Count()).
-		Scan(ctx, &rows); err != nil {
+		Scan(ctx, &rows)
+	if err != nil {
 		return nil, errs.Wrapf(err, "count finished enrollments")
 	}
 
@@ -175,5 +185,6 @@ func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int
 	for _, row := range rows {
 		counts[row.UserID] = row.Count
 	}
+
 	return counts, nil
 }

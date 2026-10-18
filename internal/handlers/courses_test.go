@@ -23,6 +23,7 @@ func TestListCourses(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
+
 	ctx := context.Background()
 
 	items, err := h.Client.ListCourses(ctx)
@@ -61,6 +62,7 @@ func TestListCourses(t *testing.T) {
 // public, and neither is a page written for another locale.
 func TestListCoursesServesOnlyPublishedPagesInTheRequestLocale(t *testing.T) {
 	t.Parallel()
+
 	for _, locale := range []string{"ru", "en"} {
 		t.Run(locale, func(t *testing.T) {
 			h := testsupport.NewHarness(t)

@@ -137,28 +137,42 @@ func New(deps Deps) (*Server, error) {
 	if deps.Logger == nil {
 		deps.Logger = slog.Default()
 	}
+
 	limits := deps.Limits.withDefaults()
-	s := &Server{deps: deps, resource: deps.Verifier.Resource(), limits: limits, meter: newMeter(limits)}
+	server := &Server{
+		deps:     deps,
+		resource: deps.Verifier.Resource(),
+		limits:   limits,
+		meter:    newMeter(limits),
+		handler:  nil,
+		registry: nil,
+	}
 
 	mcpServer := mcp.NewServer(&mcp.Implementation{Name: serverName, Title: "Hexlet Basics"}, &mcp.ServerOptions{
 		Instructions: instructionsText,
 		// A tool list differs by caller, so it is private to the one that asked.
 		SetCacheable: markPrivate,
 	})
-	mcpServer.AddReceivingMiddleware(s.filterToolList)
-	if err := s.addCatalogueTools(mcpServer); err != nil {
+	mcpServer.AddReceivingMiddleware(server.filterToolList)
+
+	err := server.addCatalogueTools(mcpServer)
+	if err != nil {
 		return nil, err
 	}
-	if err := s.addLearnerTools(mcpServer); err != nil {
+
+	err = server.addLearnerTools(mcpServer)
+	if err != nil {
 		return nil, err
 	}
+
 	if deps.API != nil {
-		if err := s.addAdminTools(mcpServer); err != nil {
+		err := server.addAdminTools(mcpServer)
+		if err != nil {
 			return nil, err
 		}
 	}
 
-	s.addFindTools(mcpServer)
+	server.addFindTools(mcpServer)
 
 	// Stateless: one request, one response, no sessions and no long-lived
 	// streams, so the load is that of any other API call (ADR-0021). JSON
@@ -172,7 +186,7 @@ func New(deps Deps) (*Server, error) {
 		},
 	)
 	metadataURL := deps.Issuer + metadataPathForResource
-	protected := auth.RequireBearerToken(s.verify, &auth.RequireBearerTokenOptions{
+	protected := auth.RequireBearerToken(server.verify, &auth.RequireBearerTokenOptions{
 		ResourceMetadataURL: metadataURL,
 		// The verifier has already refused an expired token by looking it up
 		// (ADR-0022), and the library does not carry an expiry.
@@ -180,7 +194,7 @@ func New(deps Deps) (*Server, error) {
 	})(streamable)
 
 	resourceMetadata := auth.ProtectedResourceMetadataHandler(&oauthex.ProtectedResourceMetadata{
-		Resource:               s.resource,
+		Resource:               server.resource,
 		AuthorizationServers:   []string{deps.Issuer},
 		ScopesSupported:        []string{oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin},
 		BearerMethodsSupported: []string{"header"},
@@ -191,8 +205,9 @@ func New(deps Deps) (*Server, error) {
 	mux.Handle(Path, protected)
 	mux.Handle(metadataPath, resourceMetadata)
 	mux.Handle(metadataPathForResource, resourceMetadata)
-	s.handler = mux
-	return s, nil
+	server.handler = mux
+
+	return server, nil
 }
 
 // Handler serves the endpoint and its metadata, for the router to mount at Patterns.
@@ -214,12 +229,16 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 		if errors.Is(err, oauthserver.ErrInvalidToken) {
 			return nil, auth.ErrInvalidToken
 		}
+
 		s.deps.Logger.ErrorContext(ctx, "verify MCP access token", slog.Any("err", err))
-		return nil, errors.New("token verification is unavailable")
+
+		return nil, errVerificationUnavailable
 	}
+
 	if !slices.Contains(token.Audience, s.resource) || token.UserID <= 0 {
 		return nil, auth.ErrInvalidToken
 	}
+
 	return &auth.TokenInfo{
 		Scopes: token.Scopes,
 		UserID: strconv.Itoa(token.UserID),
@@ -235,18 +254,21 @@ func (s *Server) verify(ctx context.Context, bearer string, _ *http.Request) (*a
 // the Scope, and the token's subject must be a user (ADR-0021). The endpoint
 // middleware has checked the subject already; it is read again from the context
 // of the call so a tool cannot run without one.
-func requireScope(req *mcp.CallToolRequest, scope string) (userID int, denied *mcp.CallToolResult) {
+func requireScope(req *mcp.CallToolRequest, scope string) (int, *mcp.CallToolResult) {
 	info := req.GetExtra().TokenInfo
 	if info == nil {
 		return 0, toolError("this connection is not signed in")
 	}
+
 	userID, err := strconv.Atoi(info.UserID)
 	if err != nil || userID <= 0 {
 		return 0, toolError("this connection is not signed in as a user")
 	}
+
 	if !slices.Contains(info.Scopes, scope) {
 		return 0, toolError(fmt.Sprintf("this connection was not granted the %s Scope", scope))
 	}
+
 	return userID, nil
 }
 
@@ -260,3 +282,7 @@ func toolError(message string) *mcp.CallToolResult {
 func summarize(noun string, names []string) string {
 	return fmt.Sprintf("%d %s: %s", len(names), noun, strings.Join(names, ", "))
 }
+
+// errVerificationUnavailable is what an MCP client is told when the token could
+// not be verified for a reason that is ours; the cause is logged, not sent.
+var errVerificationUnavailable = errors.New("token verification is unavailable")

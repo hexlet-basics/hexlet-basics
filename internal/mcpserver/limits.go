@@ -75,44 +75,63 @@ type Limits struct {
 	Now func() time.Time
 }
 
+// The sizes, the timeout and the per-window rates of DefaultLimits. A Connected
+// App speaks for many users, so its rates are ten times those of one user.
+const (
+	defaultPageSize      = 50
+	defaultResponseBytes = 100 * 1024
+	defaultToolTimeout   = 30 * time.Second
+
+	defaultUserCatalogue   = 60
+	defaultUserPersonal    = 30
+	defaultUserWrite       = 10
+	defaultClientCatalogue = 10 * defaultUserCatalogue
+	defaultClientPersonal  = 10 * defaultUserPersonal
+	defaultClientWrite     = 10 * defaultUserWrite
+)
+
 // DefaultLimits are the values config applies when nothing is set; they are
 // repeated in internal/config's env defaults, which production reads.
 func DefaultLimits() Limits {
 	return Limits{
-		MaxPageSize:      50,
-		MaxResponseBytes: 100 * 1024,
-		ToolTimeout:      30 * time.Second,
+		MaxPageSize:      defaultPageSize,
+		MaxResponseBytes: defaultResponseBytes,
+		ToolTimeout:      defaultToolTimeout,
 		RateWindow:       time.Minute,
-		User:             Rates{Catalogue: 60, Personal: 30, Write: 10},
-		Client:           Rates{Catalogue: 600, Personal: 300, Write: 100},
+		User:             Rates{Catalogue: defaultUserCatalogue, Personal: defaultUserPersonal, Write: defaultUserWrite},
+		Client:           Rates{Catalogue: defaultClientCatalogue, Personal: defaultClientPersonal, Write: defaultClientWrite},
 		Now:              time.Now,
 	}
 }
 
 func (l Limits) withDefaults() Limits {
-	d := DefaultLimits()
+	limits := DefaultLimits()
 	fill := func(v *int, def int) {
 		if *v <= 0 {
 			*v = def
 		}
 	}
-	fill(&l.MaxPageSize, d.MaxPageSize)
-	fill(&l.MaxResponseBytes, d.MaxResponseBytes)
-	fill(&l.User.Catalogue, d.User.Catalogue)
-	fill(&l.User.Personal, d.User.Personal)
-	fill(&l.User.Write, d.User.Write)
-	fill(&l.Client.Catalogue, d.Client.Catalogue)
-	fill(&l.Client.Personal, d.Client.Personal)
-	fill(&l.Client.Write, d.Client.Write)
+	fill(&l.MaxPageSize, limits.MaxPageSize)
+	fill(&l.MaxResponseBytes, limits.MaxResponseBytes)
+	fill(&l.User.Catalogue, limits.User.Catalogue)
+	fill(&l.User.Personal, limits.User.Personal)
+	fill(&l.User.Write, limits.User.Write)
+	fill(&l.Client.Catalogue, limits.Client.Catalogue)
+	fill(&l.Client.Personal, limits.Client.Personal)
+	fill(&l.Client.Write, limits.Client.Write)
+
 	if l.ToolTimeout <= 0 {
-		l.ToolTimeout = d.ToolTimeout
+		l.ToolTimeout = limits.ToolTimeout
 	}
+
 	if l.RateWindow <= 0 {
-		l.RateWindow = d.RateWindow
+		l.RateWindow = limits.RateWindow
 	}
+
 	if l.Now == nil {
-		l.Now = d.Now
+		l.Now = limits.Now
 	}
+
 	return l
 }
 
@@ -133,7 +152,7 @@ func newMeter(limits Limits) *meter {
 // Connected App's, or neither: a call refused because the app is out of budget
 // does not also cost the user one. When it refuses, wait is the time until the
 // caller may try again.
-func (m *meter) allow(class Class, userID int, clientID string) (ok bool, wait time.Duration) {
+func (m *meter) allow(class Class, userID int, clientID string) (bool, time.Duration) {
 	return m.counter.Allow(
 		ratelimit.Charge{Key: class.String() + "|user|" + strconv.Itoa(userID), Limit: m.limits.User.of(class)},
 		ratelimit.Charge{Key: class.String() + "|client|" + clientID, Limit: m.limits.Client.of(class)},
@@ -151,12 +170,14 @@ func (m *meter) allow(class Class, userID int, clientID string) (ok bool, wait t
 // the endpoint would also stop `initialize` and `tools/list`, which cost
 // nothing, and an SDK client reads it as a broken transport, not as a message
 // to the agent. The error names the wait, in the text and in `_meta`.
-func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (userID int, clientID string, denied *mcp.CallToolResult) {
-	userID, denied = requireScope(req, scope)
+func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (int, string, *mcp.CallToolResult) {
+	userID, denied := requireScope(req, scope)
 	if denied != nil {
 		return 0, "", denied
 	}
-	clientID, denied = s.spend(req, userID, class)
+
+	clientID, denied := s.spend(req, userID, class)
+
 	return userID, clientID, denied
 }
 
@@ -164,10 +185,12 @@ func (s *Server) admit(req *mcp.CallToolRequest, scope string, class Class) (use
 // refuses it when either budget is gone. Admin tools call it without admit's
 // Scope check, because their Scope is judged by the generated server's security
 // handler, which records a refusal.
-func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (clientID string, denied *mcp.CallToolResult) {
+func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (string, *mcp.CallToolResult) {
+	var clientID string
 	if client, ok := req.GetExtra().TokenInfo.Extra["client_id"].(string); ok {
 		clientID = client
 	}
+
 	if ok, wait := s.meter.allow(class, userID, clientID); !ok {
 		seconds := int(wait.Round(time.Second) / time.Second)
 		seconds = max(seconds, 1)
@@ -175,7 +198,9 @@ func (s *Server) spend(req *mcp.CallToolRequest, userID int, class Class) (clien
 			"rate limit exceeded for %s tools: retry in %d seconds (not before %s)",
 			class, seconds, s.limits.Now().Add(wait).UTC().Format(time.RFC3339)))
 		refusal.Meta = mcp.Meta{"retryAfterSeconds": seconds, "rateLimitClass": class.String()}
+
 		return "", refusal
 	}
+
 	return clientID, nil
 }

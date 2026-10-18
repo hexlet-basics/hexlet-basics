@@ -20,6 +20,7 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (*api.Lead,
 	u := MustAuthenticatedUser(ctx)
 
 	ip, hasIP := ClientIP(ctx)
+
 	created, err := s.leads.Create(ctx, leadcapture.Submission{
 		UserID:        u.ID,
 		ContactMethod: string(req.ContactMethod),
@@ -31,7 +32,9 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (*api.Lead,
 	if err != nil {
 		return nil, err
 	}
+
 	out := s.conv.ToLead(created)
+
 	return &out, nil
 }
 
@@ -40,8 +43,17 @@ func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (*api.Lead,
 func firstVisitOf(input api.OptNilFirstVisit) leadcapture.FirstVisit {
 	visit, ok := input.Get()
 	if !ok {
-		return leadcapture.FirstVisit{}
+		return leadcapture.FirstVisit{
+			UTMSource:   nil,
+			UTMMedium:   nil,
+			UTMCampaign: nil,
+			UTMContent:  nil,
+			UTMTerm:     nil,
+			LandingPage: nil,
+			Referrer:    nil,
+		}
 	}
+
 	return leadcapture.FirstVisit{
 		UTMSource:   inputconv.Ptr(visit.UtmSource),
 		UTMMedium:   inputconv.Ptr(visit.UtmMedium),

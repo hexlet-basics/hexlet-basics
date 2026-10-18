@@ -16,7 +16,7 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-var update = flag.Bool("update", false, "rewrite the golden files from the current output")
+var update = flag.Bool("update", false, "rewrite the golden files from the current output") //nolint:gochecknoglobals // go test flags are registered at package level
 
 // TestYandexGolden compares the whole feed for the fixtures against
 // testdata/yandex_courses.xml. Of the ru main landing pages only JavaScript's
@@ -46,6 +46,7 @@ func TestYandexGolden(t *testing.T) {
 	if *update {
 		require.NoError(t, os.WriteFile(golden, got, 0o600))
 	}
+
 	want, err := os.ReadFile(golden)
 	require.NoError(t, err)
 	assert.Equal(t, string(want), string(got))

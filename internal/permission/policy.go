@@ -43,17 +43,18 @@ func NewPolicy(db *ent.Client) *Policy {
 // locale, and ErrForbidden otherwise.
 func (p *Policy) Allow(ctx context.Context, u *ent.User, locale, operation string) error {
 	required, declares := permissioncatalog.For(operation)
+
 	admin := lo.FromPtr(u.Admin)
 	if admin && (!declares || !permissioncatalog.IsCapability(required.Permission)) {
 		return nil
 	}
 
-	staff, err := p.staffMember(ctx, u)
+	staff, isStaff, err := p.staffMember(ctx, u)
 	if err != nil {
 		return err
 	}
 	// An administrator is not held to the locales of a staff record.
-	if staff == nil || (!admin && !slices.Contains(staff.AllowedLocales, locale)) {
+	if !isStaff || (!admin && !slices.Contains(staff.AllowedLocales, locale)) {
 		return ErrForbidden
 	}
 
@@ -77,13 +78,16 @@ func (p *Policy) HasCapability(ctx context.Context, u *ent.User, capability stri
 	if !permissioncatalog.IsCapability(capability) {
 		return errs.With("capability", capability).Errorf("not a capability permission")
 	}
-	staff, err := p.staffMember(ctx, u)
+
+	staff, isStaff, err := p.staffMember(ctx, u)
 	if err != nil {
 		return err
 	}
-	if staff == nil {
+
+	if !isStaff {
 		return ErrForbidden
 	}
+
 	return p.requireGrant(ctx, staff, capability)
 }
 
@@ -96,25 +100,29 @@ func (p *Policy) requireGrant(ctx context.Context, staff *ent.StaffMember, permi
 		).
 		Exist(ctx)
 	if err != nil {
-		return err
+		return errs.Wrapf(err, "check staff role grant")
 	}
+
 	if !held {
 		return ErrForbidden
 	}
+
 	return nil
 }
 
-// staffMember is the user's staff record, nil for someone who is not an
-// employee. A record already loaded with the user is used as is.
-func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember, error) {
+// staffMember is the user's staff record; found is false for someone who is not
+// an employee. A record already loaded with the user is used as is.
+func (p *Policy) staffMember(ctx context.Context, u *ent.User) (*ent.StaffMember, bool, error) {
 	if staff := u.Edges.StaffMember; staff != nil {
-		return staff, nil
+		return staff, true, nil
 	}
+
 	staff, err := u.QueryStaffMember().Only(ctx)
 	if ent.IsNotFound(err) {
-		return nil, nil
+		return nil, false, nil
 	}
-	return staff, err
+
+	return staff, err == nil, errs.Wrapf(err, "load staff member")
 }
 
 // IsClassified reports whether operation says who may use it, by declaring a

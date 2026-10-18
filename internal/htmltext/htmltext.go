@@ -14,7 +14,9 @@ import (
 // Markup is tokenized, not parsed: the fragment needs no well-formedness.
 func PlainText(fragment string) string {
 	tokenizer := html.NewTokenizer(strings.NewReader(fragment))
+
 	var plain strings.Builder
+
 	for {
 		switch tokenizer.Next() {
 		case html.TextToken:

@@ -17,6 +17,12 @@ import (
 	"hexletbasics/internal/telemetry"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errCloneFailed = errors.New("clone failed")
+	errSMTPDown    = errors.New("smtp down")
+)
+
 func TestErrorHandlerSendsOopsAttributesOfJobErrors(t *testing.T) {
 	transport := &sentry.MockTransport{}
 	client, err := telemetry.NewSentryClient(
@@ -24,10 +30,11 @@ func TestErrorHandlerSendsOopsAttributesOfJobErrors(t *testing.T) {
 		telemetry.WithSentryTransport(transport),
 	)
 	require.NoError(t, err)
+
 	handler := jobs.NewErrorHandler(client, slog.New(slog.DiscardHandler))
 	job := &rivertype.JobRow{ID: 1, Kind: "exercise_loader", Queue: "default", Attempt: 3, MaxAttempts: 3}
 
-	handler.HandleError(t.Context(), job, oops.In("courseloader").With("course_id", 7).Wrapf(errors.New("clone failed"), "load course"))
+	handler.HandleError(t.Context(), job, oops.In("courseloader").With("course_id", 7).Wrapf(errCloneFailed, "load course"))
 
 	events := transport.Events()
 	require.Len(t, events, 1)
@@ -42,6 +49,7 @@ func TestErrorHandlerCapturesJobErrors(t *testing.T) {
 		Transport: transport,
 	})
 	require.NoError(t, err)
+
 	handler := jobs.NewErrorHandler(client, slog.New(slog.DiscardHandler))
 	job := &rivertype.JobRow{
 		ID:          42,
@@ -51,9 +59,10 @@ func TestErrorHandlerCapturesJobErrors(t *testing.T) {
 		MaxAttempts: 25,
 	}
 
-	result := handler.HandleError(t.Context(), job, errors.New("clone failed"))
+	result := handler.HandleError(t.Context(), job, errCloneFailed)
 
 	assert.Nil(t, result, "observability must not change River retry behavior")
+
 	events := transport.Events()
 	require.Len(t, events, 1)
 	require.Len(t, events[0].Exception, 1)
@@ -72,12 +81,14 @@ func TestErrorHandlerCapturesJobPanics(t *testing.T) {
 		Transport: transport,
 	})
 	require.NoError(t, err)
+
 	handler := jobs.NewErrorHandler(client, slog.New(slog.DiscardHandler))
 	job := &rivertype.JobRow{ID: 7, Kind: "ping", Queue: "critical", Attempt: 3, MaxAttempts: 3}
 
 	result := handler.HandlePanic(t.Context(), job, "boom", "goroutine 1 [running]")
 
 	assert.Nil(t, result, "observability must not cancel the job")
+
 	events := transport.Events()
 	require.Len(t, events, 1)
 	// The panic value travels as an attribute (read by telemetry's BeforeSend), not in the message.
@@ -95,18 +106,20 @@ func TestErrorHandlerSendsOnlyTheFinalAttemptToSentry(t *testing.T) {
 		Transport: transport,
 	})
 	require.NoError(t, err)
+
 	var logs bytes.Buffer
+
 	handler := jobs.NewErrorHandler(client, slog.New(slog.NewJSONHandler(&logs, nil)))
 	job := &rivertype.JobRow{ID: 9, Kind: "account_email", Queue: "mail", Attempt: 1, MaxAttempts: 3}
 
-	handler.HandleError(t.Context(), job, errors.New("smtp down"))
+	handler.HandleError(t.Context(), job, errSMTPDown)
 
 	assert.Empty(t, transport.Events(), "a retry is not an incident")
 	assert.Contains(t, logs.String(), "smtp down", "the attempt still reaches the logs")
 	assert.Contains(t, logs.String(), `"job_kind":"account_email"`)
 
 	job.Attempt = 3
-	handler.HandleError(t.Context(), job, errors.New("smtp down"))
+	handler.HandleError(t.Context(), job, errSMTPDown)
 
 	require.Len(t, transport.Events(), 1)
 }
@@ -118,6 +131,7 @@ func TestErrorHandlerDoesNotSendAPanicOfANonFinalAttempt(t *testing.T) {
 		Transport: transport,
 	})
 	require.NoError(t, err)
+
 	handler := jobs.NewErrorHandler(client, slog.New(slog.DiscardHandler))
 
 	handler.HandlePanic(t.Context(), &rivertype.JobRow{ID: 1, Kind: "k", Attempt: 1, MaxAttempts: 2}, "boom", "trace")

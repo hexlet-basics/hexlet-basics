@@ -52,6 +52,7 @@ func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug str
 	if err != nil {
 		return nil, err
 	}
+
 	state := states[crs.ID]
 
 	lessons, err := currentLessons(ctx, p.db, crs)
@@ -71,10 +72,12 @@ func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug str
 	if err != nil {
 		return nil, errs.Wrapf(err, "load started lessons")
 	}
+
 	slugByID := make(map[int]string, len(lessons))
 	for _, l := range lessons {
 		slugByID[l.lessonID] = l.slug
 	}
+
 	started := make(map[string]bool, len(rows))
 	for _, row := range rows {
 		started[slugByID[row.LessonID]] = true
@@ -95,7 +98,9 @@ func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug str
 		case started[l.Slug]:
 			lesson.State = StateStarted
 		}
+
 		out.Lessons = append(out.Lessons, lesson)
 	}
+
 	return out, nil
 }

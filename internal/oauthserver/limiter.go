@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	// DefaultRegistrationLimit and DefaultRegistrationWindow are how many
-	// registrations (successful or not) one address may attempt per window: ten
-	// an hour is far more than a person connecting assistants needs, and far too
-	// few to fill the table from one machine.
-	DefaultRegistrationLimit  = 10
+	// DefaultRegistrationLimit is how many registrations (successful or not)
+	// one address may attempt per DefaultRegistrationWindow: ten an hour is far
+	// more than a person connecting assistants needs, and far too few to fill
+	// the table from one machine.
+	DefaultRegistrationLimit = 10
+	// DefaultRegistrationWindow is the window DefaultRegistrationLimit counts in.
 	DefaultRegistrationWindow = time.Hour
 )
 
@@ -30,17 +31,22 @@ func newLimiter(limit int, window time.Duration, now func() time.Time) *limiter 
 	if limit <= 0 {
 		limit = DefaultRegistrationLimit
 	}
+
 	if window <= 0 {
 		window = DefaultRegistrationWindow
 	}
+
 	return &limiter{limit: limit, counter: ratelimit.New(window, now)}
 }
 
 // allow spends one attempt of an address. When it refuses, wait is how long
 // until the address has its budget back.
-func (l *limiter) allow(address string) (ok bool, wait time.Duration) {
+func (l *limiter) allow(address string) (bool, time.Duration) {
 	return l.counter.Allow(ratelimit.Charge{Key: addressKey(address), Limit: l.limit})
 }
+
+// customerPrefixBits is the size of the block an IPv6 customer is handed.
+const customerPrefixBits = 64
 
 // addressKey names the bucket of an address. An IPv6 customer is handed a whole
 // /64, so counting single addresses would let one machine mint a new budget per
@@ -52,11 +58,14 @@ func addressKey(address string) string {
 	if err != nil {
 		return "unknown"
 	}
+
 	ip = ip.Unmap()
 	if ip.Is6() {
-		if p, err := ip.Prefix(64); err == nil {
+		p, err := ip.Prefix(customerPrefixBits)
+		if err == nil {
 			return p.String()
 		}
 	}
+
 	return ip.String()
 }

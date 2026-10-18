@@ -1,3 +1,6 @@
+// Command server is the HTTP API process: the generated contract, the health
+// endpoints and, behind their flags, the OAuth and MCP endpoints. The
+// asynchronous consumers run in cmd/worker.
 package main
 
 import (
@@ -23,13 +26,16 @@ const shutdownTimeout = 15 * time.Second
 func main() {
 	// Development convenience only: LoadDotenv reads .env unless APP_ENV names
 	// another environment, and it runs here, not in run, so tests never read it.
-	if err := config.LoadDotenv(); err != nil {
+	err := config.LoadDotenv()
+	if err != nil {
 		slog.Error("loading .env", "err", err)
 		os.Exit(1)
 	}
+
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
-	err := run(signalCtx, stop)
+	err = run(signalCtx, stop)
 	stop()
+
 	if err != nil {
 		// The one place a run failure is logged; run returns it unlogged.
 		slog.Error("process failed", "err", err)
@@ -49,10 +55,11 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	slog.SetDefault(dependencies.Logger)
 
 	app := application{
-		http:     dependencies.HTTPServer,
-		httpAddr: dependencies.HTTPServer.Addr,
-		logger:   dependencies.Logger,
-		drain:    dependencies.Probes.Drain,
+		http:            dependencies.HTTPServer,
+		httpAddr:        dependencies.HTTPServer.Addr,
+		logger:          dependencies.Logger,
+		drain:           dependencies.Probes.Drain,
+		shutdownTimeout: 0,
 	}
 	runtimeErr := app.run(signalCtx, stopSignals)
 
@@ -62,7 +69,8 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	defer cancelCleanup()
 	// Every actor has stopped by now, so the injector may release the resources
 	// they used (ADR-0023).
-	if err := dependencies.Shutdown(cleanupCtx); err != nil {
+	err = dependencies.Shutdown(cleanupCtx)
+	if err != nil {
 		dependencies.Logger.ErrorContext(cleanupCtx, "releasing resources", "err", err)
 	}
 

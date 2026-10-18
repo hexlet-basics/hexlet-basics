@@ -29,33 +29,53 @@ import (
 // the editor role) with the admin Scope and the given grants on the role.
 func trailReader(t *testing.T, o *testsupport.OAuth, grants ...string) (*mcp.ClientSession, oauthserver.Token) {
 	t.Helper()
-	o.Grant(editor, grants...)
-	return admin(t, o, adminStaff)
+	o.Grant(editor(), grants...)
+
+	return admin(t, o, adminStaff())
 }
 
 // seedTrail writes one Audit Record through the production writer, placed in the
 // past so that its position in a newest-first listing is known.
 func seedTrail(t *testing.T, o *testsupport.OAuth, ago time.Duration, operation string, mutate func(*audit.Entry)) int {
 	t.Helper()
+
 	entry := audit.Entry{
 		OccurredAt: time.Now().Add(-ago),
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  operation,
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}
 	if mutate != nil {
 		mutate(&entry)
 	}
+
 	require.NoError(t, audit.Write(t.Context(), o.DB, entry, nil))
+
 	return o.DB.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context()).ID
 }
 
 func itemIDs(t *testing.T, page map[string]any) []int {
 	t.Helper()
-	var ids []int
-	for _, item := range page["items"].([]any) {
-		ids = append(ids, int(item.(map[string]any)["id"].(float64)))
+
+	listed := as[[]any](t, page["items"])
+
+	ids := make([]int, 0, len(listed))
+	for _, item := range listed {
+		ids = append(ids, int(as[float64](t, as[map[string]any](t, item)["id"])))
 	}
+
 	return ids
 }
 
@@ -90,10 +110,10 @@ func TestTrailToolListsNewestFirstPaginatesAndFilters(t *testing.T) {
 	assert.Equal(t, []int{middle}, itemIDs(t, window))
 
 	actor := seedTrail(t, o, 12*time.Hour, "AdminUpdateBanner", func(e *audit.Entry) {
-		id := bob
+		id := bob()
 		e.Actor = &id
 	})
-	byActor := structured(t, call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "actorUserId": bob}))
+	byActor := structured(t, call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "actorUserId": bob()}))
 	assert.Equal(t, []int{actor}, itemIDs(t, byActor))
 }
 
@@ -159,16 +179,16 @@ func TestTrailToolNeedsAuditReadAndMCPReadAndTheAdminScope(t *testing.T) {
 
 	t.Run("an administrator with no staff record", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "audit.read", "mcp.read")
-		session, _ := admin(t, o, alice)
+		o.Grant(editor(), "audit.read", "mcp.read")
+		session, _ := admin(t, o, alice())
 
 		assertRefused(t, call(t, session, "adminListAuditRecords", args))
 	})
 
 	t.Run("a token without the admin Scope", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "audit.read", "mcp.read")
-		tokens := o.Connect(adminStaff, oauthserver.ScopeCatalogRead)
+		o.Grant(editor(), "audit.read", "mcp.read")
+		tokens := o.Connect(adminStaff(), oauthserver.ScopeCatalogRead)
 		session := o.MCPClient(tokens.AccessToken)
 
 		assertRefused(t, call(t, session, "adminListAuditRecords", args))
@@ -207,7 +227,7 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 	require.Len(t, records, 1)
 	record := records[0]
 	assert.Equal(t, "mcp", record.Channel)
-	assert.Equal(t, adminStaff, *record.ActorUserID)
+	assert.Equal(t, adminStaff(), *record.ActorUserID)
 	assert.Equal(t, "succeeded", record.Outcome)
 	assert.Equal(t, "AuditRecord", *record.EntityType)
 	assert.Equal(t, "ru", *record.Locale)
@@ -225,7 +245,21 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 
 func TestReadingTheTrailSpendsThePersonalDataRateClass(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User: mcpserver.Rates{Personal: 1, Write: 100},
+		User: mcpserver.Rates{
+			Personal:  1,
+			Write:     100,
+			Catalogue: 0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 	args := map[string]any{"locale": "en"}
@@ -241,25 +275,30 @@ func TestTrailToolDeclaresTheFiltersAndARequiredLocale(t *testing.T) {
 	require.NoError(t, err)
 
 	var tool *mcp.Tool
+
 	for _, candidate := range tools.Tools {
 		if candidate.Name == "adminListAuditRecords" {
 			tool = candidate
 		}
 	}
+
 	require.NotNil(t, tool)
 	assert.True(t, tool.Annotations.ReadOnlyHint)
 
 	raw, err := json.Marshal(tool.InputSchema)
 	require.NoError(t, err)
+
 	var input struct {
 		Required   []string       `json:"required"`
 		Properties map[string]any `json:"properties"`
 	}
 	require.NoError(t, json.Unmarshal(raw, &input))
 	assert.Equal(t, []string{"locale"}, input.Required, "only the locale is required")
+
 	for _, name := range []string{"actorUserId", "channel", "operation", "entityType", "entityId", "from", "to", "page", "perPage"} {
 		assert.Contains(t, input.Properties, name)
 	}
+
 	assert.NotContains(t, input.Properties, "body")
 }
 
@@ -267,13 +306,32 @@ func TestTrailToolDeclaresTheFiltersAndARequiredLocale(t *testing.T) {
 // the answer stays valid JSON that still matches the output schema.
 func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	const limit = 6000
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{MaxResponseBytes: limit}))
+
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		MaxResponseBytes: limit,
+		MaxPageSize:      0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
+
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 	for i := range 40 {
 		seedTrail(t, o, time.Duration(i+1)*time.Minute, "AdminUpdateBanner", func(e *audit.Entry) {
 			e.UserAgent = "padding-padding-padding-padding-padding-padding-padding-padding"
 		})
 	}
+
 	schemas := outputSchemas(t, session)
 
 	result := call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "perPage": 100})
@@ -287,7 +345,7 @@ func TestTrailToolResponseOverTheLimitIsCutAndStaysValid(t *testing.T) {
 	require.True(t, ok, "the cut is announced")
 	assert.Equal(t, true, hint["truncated"])
 	assert.Contains(t, textOf(t, result), "truncation")
-	assert.Less(t, len(content["items"].([]any)), 40)
+	assert.Less(t, len(as[[]any](t, content["items"])), 40)
 	assert.GreaterOrEqual(t, content["total"], float64(40), "the total is not cut")
 }
 
@@ -299,28 +357,44 @@ func TestTrailToolShowsASecretFieldByNameWithoutValues(t *testing.T) {
 	session, _ := trailReader(t, o, "audit.read", "mcp.read")
 
 	const digest = "$2a$10$brand-new-secret-digest-value"
+
 	ctx, recorder := audit.WithRecorder(t.Context())
 	user := fixture.ID(fixture.UserWithPassword)
 	require.NoError(t, o.DB.User.UpdateOneID(user).SetPasswordDigest(digest).SetFirstName("Renamed").Exec(ctx))
 	require.NoError(t, audit.Write(t.Context(), o.DB, audit.Entry{
-		Source:    audit.Source{Channel: audit.ChannelWeb},
-		Operation: "AdminUpdateUser",
-		Outcome:   audit.OutcomeSucceeded,
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
+		Operation:  "AdminUpdateUser",
+		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		OccurredAt: time.Time{},
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, recorder))
 
 	result := call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "operation": "AdminUpdateUser"})
 
 	content := structured(t, result)
-	items := content["items"].([]any)
+	items := as[[]any](t, content["items"])
 	require.Len(t, items, 1)
-	changes := items[0].(map[string]any)["changes"].([]any)
+	changes := as[[]any](t, as[map[string]any](t, items[0])["changes"])
 	require.Len(t, changes, 1)
 
 	fields := map[string]map[string]any{}
-	for _, f := range changes[0].(map[string]any)["fields"].([]any) {
-		field := f.(map[string]any)
-		fields[field["name"].(string)] = field
+
+	for _, f := range as[[]any](t, as[map[string]any](t, changes[0])["fields"]) {
+		field := as[map[string]any](t, f)
+		fields[as[string](t, field["name"])] = field
 	}
+
 	secret, ok := fields["password_digest"]
 	require.True(t, ok, "a changed secret is still listed")
 	assert.Equal(t, true, secret["secret"])

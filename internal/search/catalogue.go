@@ -55,7 +55,7 @@ type match struct {
 	config string
 	locale string
 	text   string
-	// unrestricted drops the public storefront's filters (see SearchCatalogue).
+	// unrestricted drops the public storefront's filters (see Query).
 	unrestricted bool
 }
 
@@ -65,7 +65,9 @@ type match struct {
 // these values can be there, and a literal is what lets the planner match the
 // index expression. A locale without one is searched with the language-neutral
 // `simple`, with no index, which is right while it has no content.
-var configs = map[string]string{"ru": "russian", "en": "english"}
+func configs() map[string]string {
+	return map[string]string{"ru": "russian", "en": "english"}
+}
 
 // candidate is a hit before its page is known: how well it matches, and
 // what is needed to tell it from another.
@@ -94,7 +96,7 @@ type source interface {
 // merge: the best N of the union are among the best N of each part. Only the hits
 // of the window get a snippet, in a second query per kind, because producing
 // one reads the whole text of the record.
-func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int, error) {
+func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	// PostgreSQL text holds neither a NUL nor an invalid sequence, and refuses
 	// the statement that carries one: a stray byte in what was typed is dropped,
 	// not an error.
@@ -102,22 +104,27 @@ func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int
 	if len(text) > maxTextBytes {
 		text = strings.ToValidUTF8(text[:maxTextBytes], "")
 	}
+
 	if text == "" || cmd.Page.Limit <= 0 {
 		return []Hit{}, 0, nil
 	}
-	config, ok := configs[cmd.Locale]
+
+	config, ok := configs()[cmd.Locale]
 	if !ok {
 		config = "simple"
 	}
-	m := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
+
+	matcher := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
 
 	sources := c.sources(cmd.Types)
 	total := 0
+
 	for _, src := range sources {
-		n, err := src.count(ctx, m)
+		n, err := src.count(ctx, matcher)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
+
 		total += n
 	}
 
@@ -125,14 +132,18 @@ func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int
 	if cmd.Page.Offset >= window {
 		return []Hit{}, total, nil
 	}
+
 	var candidates []candidate
+
 	for _, src := range sources {
-		found, err := src.top(ctx, m, window)
+		found, err := src.top(ctx, matcher, window)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
+
 		candidates = append(candidates, found...)
 	}
+
 	slices.SortStableFunc(candidates, func(a, b candidate) int {
 		return cmp.Or(
 			-cmp.Compare(a.rank, b.rank),
@@ -142,17 +153,19 @@ func (c *Catalogue) Search(ctx context.Context, cmd SearchCatalogue) ([]Hit, int
 	})
 	candidates = candidates[min(cmd.Page.Offset, len(candidates)):min(window, len(candidates))]
 
-	hits, err := withSnippets(ctx, m, sources, candidates)
+	hits, err := withSnippets(ctx, matcher, sources, candidates)
 	if err != nil {
 		return nil, 0, err
 	}
+
 	return hits, total, nil
 }
 
 // kind is a source with the type of record it holds.
 type kind struct {
-	typ Type
 	source
+
+	typ Type
 }
 
 // sources are the kinds the command asks for, all of them when it names none.
@@ -162,41 +175,50 @@ func (c *Catalogue) sources(types []Type) []kind {
 		Lesson: lessons{c.db},
 		Post:   posts{c.db},
 	}
+
 	var out []kind
-	for _, t := range Types {
+
+	for _, t := range Types() {
 		if len(types) == 0 || slices.Contains(types, t) {
-			out = append(out, kind{t, all[t]})
+			out = append(out, kind{source: all[t], typ: t})
 		}
 	}
+
 	return out
 }
 
-func typeOrder(t Type) int { return slices.Index(Types, t) }
+func typeOrder(t Type) int { return slices.Index(Types(), t) }
 
 // withSnippets fills the snippet of each candidate's hit, asking each kind once
 // for the ids it contributed.
-func withSnippets(ctx context.Context, m match, kinds []kind, candidates []candidate) ([]Hit, error) {
+func withSnippets(ctx context.Context, matcher match, kinds []kind, candidates []candidate) ([]Hit, error) {
 	byType := map[Type][]int{}
 	for _, cand := range candidates {
 		byType[cand.typ] = append(byType[cand.typ], cand.id)
 	}
+
 	snippets := map[Type]map[int]string{}
-	for _, k := range kinds {
-		if len(byType[k.typ]) == 0 {
+
+	for _, entry := range kinds {
+		if len(byType[entry.typ]) == 0 {
 			continue
 		}
-		found, err := k.snippets(ctx, m, byType[k.typ])
+
+		found, err := entry.snippets(ctx, matcher, byType[entry.typ])
 		if err != nil {
 			return nil, domain.FromStore(err)
 		}
-		snippets[k.typ] = found
+
+		snippets[entry.typ] = found
 	}
+
 	hits := make([]Hit, len(candidates))
 	for i, cand := range candidates {
 		hit := cand.hit
 		hit.Snippet = tidy(snippets[cand.typ][cand.id])
 		hits[i] = hit
 	}
+
 	return hits, nil
 }
 
@@ -213,6 +235,7 @@ func titleOf(slug string, names ...*string) string {
 			return strings.TrimSpace(*name)
 		}
 	}
+
 	return slug
 }
 
@@ -220,10 +243,12 @@ func titleOf(slug string, names ...*string) string {
 // post is stored as HTML, and a headline can cut through a tag.
 func tidy(snippet string) string {
 	plain := strings.Join(strings.Fields(htmlText(snippet)), " ")
+
 	runes := []rune(plain)
 	if len(runes) > snippetRunes {
 		return string(runes[:snippetRunes]) + "…"
 	}
+
 	return plain
 }
 
@@ -242,6 +267,7 @@ func rankOf(value func(string) (entgo.Value, error)) (float64, error) {
 	if err != nil {
 		return 0, errs.Wrapf(err, "read search rank")
 	}
+
 	switch rank := raw.(type) {
 	case float64:
 		return rank, nil

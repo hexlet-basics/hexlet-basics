@@ -37,7 +37,7 @@ func TestASignedOutCallAnswersProblemDetails401(t *testing.T) {
 func TestARefusalAnswersProblemDetails403WithADetail(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID)})
+	err := h.Client.AdminDeleteUser(t.Context(), api.AdminDeleteUserParams{ID: int32(aliceID())})
 
 	problem := problemWithStatus(t, err, http.StatusForbidden)
 	assert.NotEmpty(t, problem.Response.Detail.Value, "the refusal is explained in the caller's language")

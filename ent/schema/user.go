@@ -65,8 +65,8 @@ func (User) Fields() []ent.Field {
 	}
 }
 
-// Edges: a user who is an employee has
-// one staff record, with the role and locales the admin policy reads.
+// Edges say that a user who is an employee has one staff record, with the
+// role and locales the admin policy reads.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("staff_member", StaffMember.Type).Unique(),

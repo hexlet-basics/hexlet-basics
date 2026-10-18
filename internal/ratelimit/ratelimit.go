@@ -43,7 +43,12 @@ type keyWindow struct {
 // New builds a limiter whose counters reset window after their first attempt.
 // now is the clock, injected so a test can move time without sleeping.
 func New(window time.Duration, now func() time.Time) *Limiter {
-	return &Limiter{window: window, now: now, windows: map[string]*keyWindow{}}
+	return &Limiter{
+		window:  window,
+		now:     now,
+		windows: map[string]*keyWindow{},
+		mu:      sync.Mutex{},
+	}
 }
 
 // Allow spends one attempt of every charge, or none: the attempt is refused as
@@ -51,39 +56,51 @@ func New(window time.Duration, now func() time.Time) *Limiter {
 // (the Connected App) does not also lose budget on another (the user). When it
 // refuses, wait is how long until the key that is out of budget has it back
 // (the longest, if several are).
-func (l *Limiter) Allow(charges ...Charge) (ok bool, wait time.Duration) {
+func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
+	var wait time.Duration
+
 	now := l.now()
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
 	current := make([]*keyWindow, len(charges))
-	for i, c := range charges {
-		w := l.windows[c.Key]
+	for i, charge := range charges {
+		w := l.windows[charge.Key]
 		if w != nil && now.Sub(w.start) >= l.window {
-			delete(l.windows, c.Key)
+			delete(l.windows, charge.Key)
+
 			w = nil
 		}
+
 		current[i] = w
 		switch {
-		case w != nil && w.count >= c.Limit:
+		case w != nil && w.count >= charge.Limit:
 			wait = max(wait, w.start.Add(l.window).Sub(now))
 		case w == nil && len(l.windows) >= maxTracked:
 			l.pruneLocked(now)
+
 			if len(l.windows) >= maxTracked {
 				wait = max(wait, l.window)
 			}
 		}
 	}
+
 	if wait > 0 {
 		return false, wait
 	}
-	for i, c := range charges {
+
+	for i, charge := range charges {
 		if current[i] == nil {
-			current[i] = &keyWindow{start: now}
-			l.windows[c.Key] = current[i]
+			current[i] = &keyWindow{
+				start: now,
+				count: 0,
+			}
+			l.windows[charge.Key] = current[i]
 		}
+
 		current[i].count++
 	}
+
 	return true, 0
 }
 

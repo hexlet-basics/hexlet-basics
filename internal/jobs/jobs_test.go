@@ -1,8 +1,10 @@
 package jobs_test
 
 import (
+	"hexletbasics/internal/events"
 	"log/slog"
 	"testing"
+	"time"
 
 	"github.com/riverqueue/river"
 	"github.com/stretchr/testify/require"
@@ -18,11 +20,15 @@ func TestJobKindsLandOnTheirQueues(t *testing.T) {
 	require.NoError(t, err)
 
 	for args, queue := range map[river.JobArgs]string{
-		jobs.AccountEmailArgs{Purpose: "magic_link", UserID: 1}: jobs.QueueMail,
-		jobs.ExerciseLoaderArgs{VersionID: 1}:                   jobs.QueueBuilds,
-		jobs.ReapStuckVersionBuildsArgs{}:                       jobs.QueueBuilds,
-		jobs.ReviewLessonArgs{LessonInfoID: 1}:                  jobs.QueueLLM,
-		jobs.SuggestRelatedCoursesArgs{BlogPostID: 1}:           jobs.QueueLLM,
+		jobs.AccountEmailArgs{
+			Purpose: "magic_link",
+			UserID:  1,
+			Locale:  "",
+		}: jobs.QueueMail,
+		jobs.ExerciseLoaderArgs{VersionID: 1}:         jobs.QueueBuilds,
+		jobs.ReapStuckVersionBuildsArgs{}:             jobs.QueueBuilds,
+		jobs.ReviewLessonArgs{LessonInfoID: 1}:        jobs.QueueLLM,
+		jobs.SuggestRelatedCoursesArgs{BlogPostID: 1}: jobs.QueueLLM,
 	} {
 		res, err := client.InsertTx(t.Context(), tx, args, nil)
 		require.NoError(t, err)
@@ -34,13 +40,45 @@ func TestJobKindsLandOnTheirQueues(t *testing.T) {
 // River's 25 (weeks of retries).
 func TestJobKindsStateTheirAttempts(t *testing.T) {
 	for args, attempts := range map[river.JobArgs]int{
-		jobs.AccountEmailArgs{}:          5,
-		jobs.AmoCRMLeadArgs{}:            8,
-		jobs.ExerciseLoaderArgs{}:        1,
-		jobs.ReviewLessonArgs{}:          3,
-		jobs.SuggestRelatedCoursesArgs{}: 3,
+		jobs.AccountEmailArgs{
+			Purpose: "",
+			UserID:  0,
+			Locale:  "",
+		}: 5,
+		jobs.AmoCRMLeadArgs{
+			Event: events.LeadCreated{
+				LeadID:      0,
+				UserID:      0,
+				UserName:    "",
+				FirstName:   nil,
+				LastName:    nil,
+				YMClientID:  nil,
+				UTMSource:   nil,
+				UTMMedium:   nil,
+				UTMCampaign: nil,
+				UTMTerm:     nil,
+				UTMContent:  nil,
+				Email:       nil,
+				Phone:       nil,
+				Telegram:    nil,
+				WhatsApp:    nil,
+				LandingPage: nil,
+				Referrer:    nil,
+				IP:          nil,
+				OccurredAt:  time.Time{},
+			},
+		}: 8,
+		jobs.ExerciseLoaderArgs{
+			VersionID: 0,
+		}: 1,
+		jobs.ReviewLessonArgs{
+			LessonInfoID: 0,
+		}: 3,
+		jobs.SuggestRelatedCoursesArgs{
+			BlogPostID: 0,
+		}: 3,
 	} {
-		opts := args.(river.JobArgsWithInsertOpts).InsertOpts()
+		opts := as[river.JobArgsWithInsertOpts](t, args).InsertOpts()
 		require.Equal(t, attempts, opts.MaxAttempts, args.Kind())
 	}
 }

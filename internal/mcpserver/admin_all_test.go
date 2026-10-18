@@ -26,13 +26,16 @@ func TestEveryAdminOperationIsAToolOrExcludedWithAReason(t *testing.T) {
 		assert.NotEqual(t, slices.Contains(allowed, id), isExcluded,
 			"%s must be in exactly one of the allowlist and the exclusions", id)
 	}
+
 	for _, id := range allowed {
 		assert.Contains(t, contractIDs, id, "an allowlisted name that is not an admin operation")
 	}
+
 	for id, reason := range excluded {
 		assert.Contains(t, contractIDs, id, "an exclusion that is not an admin operation")
 		assert.NotEmpty(t, reason)
 	}
+
 	sorted := slices.Sorted(slices.Values(allowed))
 	assert.Len(t, slices.Compact(sorted), len(allowed), "no operation is listed twice")
 }
@@ -45,6 +48,7 @@ func TestEveryAdminToolSchemaBuildsAndAcceptsAnExample(t *testing.T) {
 		t.Run(tool.Name, func(t *testing.T) {
 			raw, err := json.Marshal(tool.InputSchema)
 			require.NoError(t, err)
+
 			var schema jsonschema.Schema
 			require.NoError(t, json.Unmarshal(raw, &schema))
 			resolved, err := schema.Resolve(nil)
@@ -58,6 +62,7 @@ func TestEveryAdminToolSchemaBuildsAndAcceptsAnExample(t *testing.T) {
 			if tool.OutputSchema != nil {
 				raw, err := json.Marshal(tool.OutputSchema)
 				require.NoError(t, err)
+
 				var out jsonschema.Schema
 				require.NoError(t, json.Unmarshal(raw, &out))
 				_, err = out.Resolve(nil)
@@ -73,13 +78,18 @@ func TestEveryAdminToolSchemaBuildsAndAcceptsAnExample(t *testing.T) {
 // a decision to make on purpose, not a side effect of a contract change.
 func TestTheAdminToolListStaysWithinItsSizeBudget(t *testing.T) {
 	const budget = 90 * 1024
+
 	total := 0
+
 	for _, tool := range mcpserver.AdminToolsFromTheContract(t) {
 		raw, err := json.Marshal(tool)
 		require.NoError(t, err)
+
 		total += len(raw)
+
 		assert.NotEmpty(t, tool.Description, tool.Name)
 	}
+
 	assert.Less(t, total, budget)
 }
 
@@ -89,42 +99,54 @@ func exampleOf(schema map[string]any) any {
 	if values, ok := schema["enum"].([]any); ok && len(values) > 0 {
 		return values[0]
 	}
+
 	if parts, ok := schema["allOf"].([]any); ok {
 		merged := map[string]any{}
+
 		for _, p := range parts {
-			example := exampleOf(p.(map[string]any))
-			m, isObject := example.(map[string]any)
+			part, _ := p.(map[string]any)
+			example := exampleOf(part)
+
+			combined, isObject := example.(map[string]any)
 			if !isObject {
 				// A scalar branch (a named enum) is the value itself.
 				return example
 			}
-			maps.Copy(merged, m)
+
+			maps.Copy(merged, combined)
 		}
+
 		return merged
 	}
+
 	for _, choice := range []string{"anyOf", "oneOf"} {
 		if parts, ok := schema[choice].([]any); ok {
 			for _, p := range parts {
-				if pm := p.(map[string]any); pm["type"] != "null" {
+				if pm, _ := p.(map[string]any); pm["type"] != "null" {
 					return exampleOf(pm)
 				}
 			}
 		}
 	}
+
 	typ := schema["type"]
 	if list, ok := typ.([]any); ok {
 		typ = list[0]
 	}
+
 	switch typ {
 	case "object":
 		out := map[string]any{}
 		props, _ := schema["properties"].(map[string]any)
+
 		required, _ := schema["required"].([]any)
-		for _, name := range required {
-			if p, ok := props[name.(string)].(map[string]any); ok {
-				out[name.(string)] = exampleOf(p)
+		for _, raw := range required {
+			name, _ := raw.(string)
+			if p, ok := props[name].(map[string]any); ok {
+				out[name] = exampleOf(p)
 			}
 		}
+
 		return out
 	case "array":
 		return []any{}
@@ -132,6 +154,7 @@ func exampleOf(schema map[string]any) any {
 		if m, ok := schema["minimum"].(float64); ok {
 			return m
 		}
+
 		return 1
 	case "boolean":
 		return true
@@ -140,6 +163,7 @@ func exampleOf(schema map[string]any) any {
 		if m, ok := schema["minLength"].(float64); ok && m > 1 {
 			n = int(m)
 		}
+
 		return strings.Repeat("x", n)
 	}
 }

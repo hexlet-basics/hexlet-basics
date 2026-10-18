@@ -38,11 +38,15 @@ func (AmoCRMLeadArgs) InsertOpts() river.InsertOpts {
 
 // AmoCRMLead syncs created leads to amoCRM through syncer.
 func AmoCRMLead(syncer LeadSyncer) Module {
-	return module(&amoCRMLeadWorker{syncer: syncer})
+	return module(&amoCRMLeadWorker{
+		syncer:         syncer,
+		WorkerDefaults: river.WorkerDefaults[AmoCRMLeadArgs]{},
+	})
 }
 
 type amoCRMLeadWorker struct {
 	river.WorkerDefaults[AmoCRMLeadArgs]
+
 	syncer LeadSyncer
 }
 
@@ -51,10 +55,17 @@ func (w *amoCRMLeadWorker) Work(ctx context.Context, job *river.Job[AmoCRMLeadAr
 	if err == nil {
 		return nil
 	}
+
 	var classified retryableError
 	if errors.As(err, &classified) && !classified.Retryable() {
-		return river.JobCancel(err)
+		err := river.JobCancel(err)
+		if err != nil {
+			return errs.Wrapf(err, "cancel job")
+		}
+
+		return nil
 	}
+
 	return err
 }
 

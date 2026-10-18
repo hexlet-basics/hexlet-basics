@@ -8,6 +8,7 @@ import (
 
 func TestLessonSourceURL(t *testing.T) {
 	const base = "https://github.com/hexlet-basics"
+
 	ptr := func(s string) *string { return &s }
 
 	for _, tt := range []struct {

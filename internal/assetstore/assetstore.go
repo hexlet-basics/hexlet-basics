@@ -32,14 +32,19 @@ var (
 	// ErrTooLarge means the uploaded bytes exceed MaxUploadBytes.
 	ErrTooLarge = errors.New("asset is too large")
 	// ErrNotFound means the requested storage key does not exist.
-	ErrNotFound = fmt.Errorf("asset %w", domain.ErrNotFound)
+	ErrNotFound = errors.Join(errAssetNotFound, domain.ErrNotFound)
+
+	// errAssetNotFound is the message of ErrNotFound.
+	errAssetNotFound = errors.New("asset not found")
 )
 
-var extensionsByContentType = map[string]string{
-	"image/png":  ".png",
-	"image/jpeg": ".jpg",
-	"image/gif":  ".gif",
-	"image/webp": ".webp",
+func extensionsByContentType() map[string]string {
+	return map[string]string{
+		"image/png":  ".png",
+		"image/jpeg": ".jpg",
+		"image/gif":  ".gif",
+		"image/webp": ".webp",
+	}
 }
 
 // Upload is the minimal input Put needs. Content type and byte size are derived
@@ -62,6 +67,7 @@ type Attachment struct {
 // without leaking the blob backend or its error model to callers.
 type Reader struct {
 	io.ReadSeekCloser
+
 	ContentType string
 	ModTime     time.Time
 }
@@ -95,18 +101,21 @@ func URL(origin, key string) string {
 // the key, so callers never need to coordinate partial storage state.
 func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 	src := bufio.NewReader(input.Body)
+
 	header, err := src.Peek(sniffBytes)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return Attachment{}, errs.With("filename", input.Filename).Wrapf(err, "inspect asset")
 	}
 
 	contentType := http.DetectContentType(header)
-	extension, ok := extensionsByContentType[contentType]
+
+	extension, ok := extensionsByContentType()[contentType]
 	if !ok {
 		return Attachment{}, errs.With("content_type", contentType).Wrapf(ErrUnsupportedMediaType, "reject asset")
 	}
 
 	key := ident.New() + extension
+
 	writer, err := s.bucket.NewWriter(ctx, key, &blob.WriterOptions{ContentType: contentType})
 	if err != nil {
 		return Attachment{}, errs.With("key", key).Wrapf(err, "open blob writer")
@@ -114,11 +123,14 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	limited := &io.LimitedReader{R: src, N: MaxUploadBytes + 1}
 	written, copyErr := io.Copy(writer, limited)
+
 	closeErr := writer.Close()
 	if copyErr != nil || closeErr != nil {
 		cause := errors.Join(copyErr, closeErr)
+
 		return Attachment{}, s.compensate(ctx, key, errs.With("key", key).Wrapf(cause, "write blob"))
 	}
+
 	if written > MaxUploadBytes {
 		return Attachment{}, s.compensate(ctx, key, ErrTooLarge)
 	}
@@ -150,8 +162,10 @@ func (s *Store) Open(ctx context.Context, key string) (*Reader, error) {
 		if gcerrors.Code(err) == gcerrors.NotFound {
 			return nil, errs.With("key", key).Wrapf(ErrNotFound, "open asset")
 		}
+
 		return nil, errs.With("key", key).Wrapf(err, "open asset")
 	}
+
 	return &Reader{
 		ReadSeekCloser: reader,
 		ContentType:    reader.ContentType(),
@@ -185,27 +199,36 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 				input.ResponseContentType = aws.String(delivery.ContentType)
 				input.ResponseContentDisposition = aws.String(delivery.ContentDisposition)
 			}
+
 			return nil
 		},
 	})
 	if gcerrors.Code(err) == gcerrors.Unimplemented {
 		return URL(s.publicURL, key), nil
 	}
+
 	if err != nil {
 		return "", errs.With("key", key).Wrapf(err, "sign download url")
 	}
+
 	return signed, nil
 }
+
+// compensateTimeout is how long the cleanup of a failed upload may take, on a
+// context that outlives the request.
+const compensateTimeout = 5 * time.Second
 
 // compensate deletes a partially written blob. A cancelled request must not
 // leave the blob behind, so the cleanup keeps the context's values but not its
 // cancellation, with a deadline of its own.
 func (s *Store) compensate(ctx context.Context, key string, cause error) error {
-	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), compensateTimeout)
 	defer cancel()
 
-	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {
+	err := s.bucket.Delete(cleanupCtx, key)
+	if err != nil && gcerrors.Code(err) != gcerrors.NotFound {
 		return errors.Join(cause, errs.With("key", key).Wrapf(err, "delete partial blob"))
 	}
+
 	return cause
 }

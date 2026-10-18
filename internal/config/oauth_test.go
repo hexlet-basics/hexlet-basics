@@ -79,6 +79,7 @@ func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.
 	require.Equal(t, time.Hour, cfg.OAuth.RegistrationWindow)
 
 	t.Setenv("OAUTH_REGISTRATION_LIMIT", "0")
+
 	_, err = LoadServer()
 	requireProblem(t, err, "OAUTH_REGISTRATION_LIMIT")
 }
@@ -96,6 +97,7 @@ func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
 
 	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "2h")
 	t.Setenv("OAUTH_REFRESH_TOKEN_TTL", "48h")
+
 	cfg, err = LoadServer()
 	require.NoError(t, err)
 	require.Equal(t, 2*time.Hour, cfg.OAuth.AccessTokenTTL)
@@ -110,12 +112,14 @@ func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Setenv("OAUTH_ACCESS_TOKEN_TTL", env[0])
 			t.Setenv("OAUTH_REFRESH_TOKEN_TTL", env[1])
+
 			_, err := LoadServer()
 			requireProblem(t, err, "OAUTH_ACCESS_TOKEN_TTL")
 		})
 	}
 
 	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "soon")
+
 	_, err = LoadServer()
 	require.Error(t, err, "an unparsable duration is a config error")
 }

@@ -21,6 +21,7 @@ func TestThePackageDoesNotDependOnTheHTTPHandlers(t *testing.T) {
 
 	deps := strings.Fields(string(out))
 	require.Contains(t, deps, "hexletbasics/internal/oauthserver", "go list did not report the package itself")
+
 	for _, forbidden := range []string{
 		"hexletbasics/internal/handlers",
 		"hexletbasics/internal/testsupport",

@@ -32,7 +32,9 @@ func (s *Server) AdminUploadAttachment(
 	case err != nil:
 		return nil, errs.Wrapf(err, "store uploaded attachment")
 	}
+
 	attachment := s.conv.ToAttachment(att)
+
 	return &attachment, nil
 }
 
@@ -63,9 +65,12 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, assetstore.ErrNotFound) {
 			h.errors.Write(ctx, w, r, err)
+
 			return
 		}
+
 		h.errors.Write(ctx, w, r, errs.With("key", key).Wrapf(err, "open stored attachment"))
+
 		return
 	}
 	defer func() { _ = reader.Close() }()

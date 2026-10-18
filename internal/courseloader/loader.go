@@ -73,6 +73,7 @@ func NewLoader(
 	for _, opt := range opts {
 		opt(loader)
 	}
+
 	return loader
 }
 
@@ -108,6 +109,7 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	if err != nil {
 		return err
 	}
+
 	if !claimed {
 		return nil
 	}
@@ -116,9 +118,11 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	if err != nil {
 		return oops.Wrapf(err, "load course %d for version %d", version.CourseID, versionID)
 	}
+
 	if course.Slug == nil || *course.Slug == "" {
 		return l.fail(ctx, version, oops.Errorf("course %d has no slug", course.ID))
 	}
+
 	slug := *course.Slug
 
 	dir, cleanup, err := l.fetcher.Fetch(ctx, slug)
@@ -139,13 +143,16 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	// lessons — an S3-writing transaction held open that long risks statement
 	// timeouts and pins a connection). The transaction that follows only writes
 	// rows, and still flips the course live only on success.
-	if err := l.uploadImages(ctx, parsed); err != nil {
+	err = l.uploadImages(ctx, parsed)
+	if err != nil {
 		return l.fail(ctx, version, oops.Wrapf(err, "upload images for %q", slug))
 	}
 
-	if err := l.build(ctx, version, course, parsed); err != nil {
+	err = l.build(ctx, version, course, parsed)
+	if err != nil {
 		return l.fail(ctx, version, err)
 	}
+
 	return nil
 }
 
@@ -163,6 +170,7 @@ func (l *Loader) claim(ctx context.Context, versionID int) (bool, error) {
 	if err != nil {
 		return false, oops.Wrapf(err, "claim course version %d", versionID)
 	}
+
 	return updated == 1, nil
 }
 
@@ -175,6 +183,7 @@ func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause err
 		SetState(stateFailed).
 		SetResult("Error: " + cause.Error()).
 		Save(ctx)
+
 	return cause
 }
 
@@ -190,7 +199,8 @@ func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *
 
 func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, versionID, courseID int, parsed *Course) error {
 	spec := parsed.Spec
-	if _, err := tx.CourseVersion.UpdateOneID(versionID).
+
+	_, err := tx.CourseVersion.UpdateOneID(versionID).
 		SetName(spec.Name).
 		SetProgress(spec.Progress).
 		SetLearnAs(spec.LearnAs).
@@ -198,58 +208,63 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		SetDockerImage(spec.DockerImage).
 		SetExerciseFilename(spec.ExerciseFilename).
 		SetExerciseTestFilename(spec.ExerciseTestFilename).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "update version spec")
 	}
 
 	totalLessons := 0
-	for _, m := range parsed.Modules {
-		moduleID, err := upsertModule(ctx, tx, courseID, m.Slug)
+
+	for _, module := range parsed.Modules {
+		moduleID, err := upsertModule(ctx, tx, courseID, module.Slug)
 		if err != nil {
 			return err
 		}
 
-		mv, err := tx.CourseModuleVersion.Create().
+		courseModuleVersion, err := tx.CourseModuleVersion.Create().
 			SetCourseID(courseID).
 			SetCourseVersionID(versionID).
 			SetModuleID(moduleID).
-			SetOrder(m.Order).
+			SetOrder(module.Order).
 			Save(ctx)
 		if err != nil {
-			return oops.Wrapf(err, "create module version %q", m.Slug)
+			return oops.Wrapf(err, "create module version %q", module.Slug)
 		}
 
-		moduleInfos := lo.Map(m.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
+		moduleInfos := lo.Map(module.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
 			return tx.CourseModuleTranslation.Create().
 				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
-				SetVersionID(mv.ID).
+				SetVersionID(courseModuleVersion.ID).
 				SetLocale(info.Locale).
 				SetName(info.Name).
 				SetDescription(info.Description)
 		})
-		if err := saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
+
+		err = saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
 			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
-			return err
-		}); err != nil {
-			return oops.Wrapf(err, "create module infos %q", m.Slug)
+
+			return errs.Wrapf(err, "save course module translation")
+		})
+		if err != nil {
+			return oops.Wrapf(err, "create module infos %q", module.Slug)
 		}
 
 		// A module's lesson infos are written together once its lessons exist: the
 		// translations need the lesson version ids, but not one round trip each.
 		var lessonInfos []*ent.CourseLessonTranslationCreate
 
-		for _, lesson := range m.Lessons {
+		for _, lesson := range module.Lessons {
 			lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
 			if err != nil {
 				return err
 			}
 
-			lv, err := tx.CourseLessonVersion.Create().
+			courseLessonVersion, err := tx.CourseLessonVersion.Create().
 				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
 				SetLessonID(lessonID).
-				SetModuleVersionID(mv.ID).
+				SetModuleVersionID(courseModuleVersion.ID).
 				SetOrder(lesson.Order).
 				SetNaturalOrder(lesson.NaturalOrder).
 				SetTestCode(lesson.TestCode).
@@ -262,35 +277,43 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 			}
 
 			for _, info := range lesson.Infos {
-				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, lv.ID, info)
+				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, info)
 				if err != nil {
 					return err
 				}
+
 				lessonInfos = append(lessonInfos, create)
 			}
+
 			totalLessons++
 		}
-		if err := saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
+
+		err = saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
 			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
-			return err
-		}); err != nil {
-			return oops.Wrapf(err, "create lesson infos of module %q", m.Slug)
+
+			return errs.Wrapf(err, "save course lesson translation")
+		})
+		if err != nil {
+			return oops.Wrapf(err, "create lesson infos of module %q", module.Slug)
 		}
 	}
 
 	// Mark built + promote to live, atomically with all the content above. This is
 	// the moment the new version becomes the one learners see.
-	if _, err := tx.CourseVersion.UpdateOneID(versionID).
+	_, err = tx.CourseVersion.UpdateOneID(versionID).
 		SetState(stateBuilt).
 		SetResult("Success").
 		SetLessonsCount(totalLessons).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "mark version built")
 	}
-	if _, err := tx.Course.UpdateOneID(courseID).
+
+	_, err = tx.Course.UpdateOneID(courseID).
 		SetCurrentVersionID(versionID).
 		SetLessonsCount(totalLessons).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "promote version to live")
 	}
 
@@ -302,9 +325,11 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	//
 	// The worker has no request locale, so the facts carry the same default the
 	// translator falls back to.
-	if err := l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale); err != nil {
+	err = l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale)
+	if err != nil {
 		return oops.Wrapf(err, "re-evaluate completion after promotion")
 	}
+
 	return nil
 }
 
@@ -313,10 +338,12 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 // column of every row.
 func saveInChunks[T any](rows []T, save func([]T) error) error {
 	for chunk := range slices.Chunk(rows, bulkInsertRows) {
-		if err := save(chunk); err != nil {
+		err := save(chunk)
+		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -342,20 +369,25 @@ func lessonInfoCreate(tx *ent.Client, courseID, versionID, lessonID, lessonVersi
 	if info.Description != "" {
 		create.SetDescription(info.Description)
 	}
+
 	if len(info.Tips) > 0 {
 		s, err := marshalYAML(info.Tips)
 		if err != nil {
 			return nil, oops.Wrapf(err, "serialize tips")
 		}
+
 		create.SetTips(s)
 	}
+
 	if len(info.Definitions) > 0 {
 		s, err := marshalYAML(info.Definitions)
 		if err != nil {
 			return nil, oops.Wrapf(err, "serialize definitions")
 		}
+
 		create.SetDefinitions(s)
 	}
+
 	return create, nil
 }
 
@@ -372,6 +404,7 @@ func upsertModule(ctx context.Context, tx *ent.Client, courseID int, slug string
 	if err != nil {
 		return 0, oops.Wrapf(err, "upsert module %q", slug)
 	}
+
 	return id, nil
 }
 
@@ -393,6 +426,7 @@ func upsertLesson(ctx context.Context, tx *ent.Client, courseID, moduleID int, s
 	if err != nil {
 		return 0, oops.Wrapf(err, "upsert lesson %q", slug)
 	}
+
 	return id, nil
 }
 
@@ -406,15 +440,17 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 	for mi := range parsed.Modules {
 		for li := range parsed.Modules[mi].Lessons {
 			infos := parsed.Modules[mi].Lessons[li].Infos
-			for ii := range infos {
-				theory, err := l.processImages(ctx, infos[ii].Theory, infos[ii].Dir)
+			for index := range infos {
+				theory, err := l.processImages(ctx, infos[index].Theory, infos[index].Dir)
 				if err != nil {
-					return oops.Wrapf(err, "lesson info %s", infos[ii].Locale)
+					return oops.Wrapf(err, "lesson info %s", infos[index].Locale)
 				}
-				infos[ii].Theory = theory
+
+				infos[index].Theory = theory
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -425,12 +461,14 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (string, error) {
 	source := []byte(theory)
 	document := goldmark.DefaultParser().Parse(text.NewReader(source))
+
 	var replacements []markdownImageReplacement
 
 	err := ast.Walk(document, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering {
 			return ast.WalkContinue, nil
 		}
+
 		image, ok := node.(*ast.Image)
 		if !ok || image.Reference != nil || len(image.Destination) == 0 {
 			return ast.WalkContinue, nil
@@ -450,27 +488,32 @@ func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (s
 		if !ok {
 			return ast.WalkStop, oops.Errorf("locate Markdown image destination %q", ref)
 		}
+
 		replacements = append(replacements, markdownImageReplacement{
 			start: start,
 			end:   start + len(image.Destination),
 			url:   url,
 		})
+
 		return ast.WalkSkipChildren, nil
 	})
 	if err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "walk markdown")
 	}
 
 	slices.SortFunc(replacements, func(a, b markdownImageReplacement) int { return cmp.Compare(a.start, b.start) })
 
 	var result bytes.Buffer
+
 	cursor := 0
 	for _, replacement := range replacements {
 		result.Write(source[cursor:replacement.start])
 		result.WriteString(replacement.url)
 		cursor = replacement.end
 	}
+
 	result.Write(source[cursor:])
+
 	return result.String(), nil
 }
 
@@ -487,11 +530,13 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 	if len(part) == 0 || len(part) > len(source) {
 		return 0, false
 	}
+
 	for i := 0; i+len(part) <= len(source); i++ {
 		if &source[i] == &part[0] {
 			return i, true
 		}
 	}
+
 	return 0, false
 }
 
@@ -500,6 +545,7 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 // "http" (http_flow.png) is a local file.
 func isRemoteRef(ref string) bool {
 	u, err := url.Parse(ref)
+
 	return err == nil && (u.Scheme != "" || u.Host != "")
 }
 
@@ -514,10 +560,12 @@ func isRemoteRef(ref string) bool {
 // that climbs out of it fails the build.
 func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
 	lessonDir := filepath.Dir(localeDir)
+
 	file, err := os.OpenInRoot(lessonDir, filepath.Join(filepath.Base(localeDir), ref))
 	if err != nil {
 		return "", oops.Wrapf(err, "open image %q", ref)
 	}
+
 	defer func() { _ = file.Close() }()
 
 	attachment, err := l.assets.Put(ctx, assetstore.Upload{
@@ -537,7 +585,8 @@ func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string
 func marshalYAML(v any) (string, error) {
 	out, err := yaml.Marshal(v)
 	if err != nil {
-		return "", err
+		return "", errs.Wrapf(err, "marshal yaml")
 	}
+
 	return string(out), nil
 }

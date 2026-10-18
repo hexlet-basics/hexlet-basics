@@ -87,9 +87,12 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 	if info == nil {
 		return nil
 	}
+
 	var held map[string]bool
+
 	if s.deps.HeldCapabilities != nil && slices.Contains(info.Scopes, oauthserver.ScopeAdmin) {
-		if userID, err := strconv.Atoi(info.UserID); err == nil && userID > 0 {
+		userID, err := strconv.Atoi(info.UserID)
+		if err == nil && userID > 0 {
 			names, err := s.deps.HeldCapabilities(ctx, userID)
 			if err != nil {
 				s.deps.Logger.ErrorContext(ctx, "read capabilities for the MCP tool list", slog.Any("err", err))
@@ -103,16 +106,21 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 	}
 
 	var shown []listedTool
-	for _, t := range s.registry {
-		if t.needs.scope != "" && !slices.Contains(info.Scopes, t.needs.scope) {
+
+	for _, listed := range s.registry {
+		if listed.needs.scope != "" && !slices.Contains(info.Scopes, listed.needs.scope) {
 			continue
 		}
-		if held != nil && slices.ContainsFunc(t.needs.capabilities, func(c string) bool { return !held[c] }) {
+
+		if held != nil && slices.ContainsFunc(listed.needs.capabilities, func(c string) bool { return !held[c] }) {
 			continue
 		}
-		shown = append(shown, t)
+
+		shown = append(shown, listed)
 	}
+
 	slices.SortFunc(shown, func(a, b listedTool) int { return strings.Compare(a.tool.Name, b.tool.Name) })
+
 	return shown
 }
 
@@ -122,25 +130,31 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 func (s *Server) filterToolList(next mcp.MethodHandler) mcp.MethodHandler {
 	return func(ctx context.Context, method string, req mcp.Request) (mcp.Result, error) {
 		res, err := next(ctx, method, req)
+
 		list, ok := res.(*mcp.ListToolsResult)
 		if err != nil || method != "tools/list" || !ok {
 			return res, err
 		}
+
 		var info *auth.TokenInfo
 		if extra := req.GetExtra(); extra != nil {
 			info = extra.TokenInfo
 		}
+
 		shown := map[string]bool{}
 		for _, t := range s.visibleTo(ctx, info) {
 			shown[t.tool.Name] = true
 		}
+
 		kept := make([]*mcp.Tool, 0, len(list.Tools))
 		for _, tool := range list.Tools {
 			if shown[tool.Name] {
 				kept = append(kept, tool)
 			}
 		}
+
 		list.Tools = kept
+
 		return list, nil
 	}
 }
@@ -171,26 +185,28 @@ const (
 
 // findToolsOutput is the advertised result: small on purpose, the detail it
 // carries is the caller's to ask for.
-var findToolsOutput = withTruncation(map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		"total": map[string]any{"type": "integer"},
-		"tools": map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type":     "object",
-				"required": []string{"name"},
-				"properties": map[string]any{
-					"name":        map[string]any{"type": "string"},
-					"description": map[string]any{"type": "string"},
-					"needs":       map[string]any{"type": "object"},
-					"inputSchema": map[string]any{"type": "object"},
+func findToolsOutput() map[string]any {
+	return withTruncation(map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"total": map[string]any{"type": "integer"},
+			"tools": map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type":     "object",
+					"required": []string{"name"},
+					"properties": map[string]any{
+						"name":        map[string]any{"type": "string"},
+						"description": map[string]any{"type": "string"},
+						"needs":       map[string]any{"type": "object"},
+						"inputSchema": map[string]any{"type": "object"},
+					},
 				},
 			},
 		},
-	},
-	"required": []string{"total", "tools"},
-})
+		"required": []string{"total", "tools"},
+	})
+}
 
 // addFindTools registers the discovery tool. It only reads the registry: it
 // holds no handler of any other tool, so there is nothing in it that could run
@@ -208,7 +224,7 @@ func (s *Server) addFindTools(server *mcp.Server) {
 		Name:         findToolsName,
 		Description:  "Find tools by a word, with what each needs. Looks up only; call a tool by its own name.",
 		InputSchema:  input,
-		OutputSchema: findToolsOutput,
+		OutputSchema: findToolsOutput(),
 		Annotations:  hints(true, false, true),
 	}
 	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -216,38 +232,61 @@ func (s *Server) addFindTools(server *mcp.Server) {
 		if info == nil {
 			return toolError("this connection is not signed in"), nil
 		}
+
 		userID, err := strconv.Atoi(info.UserID)
 		if err != nil || userID <= 0 {
 			return toolError("this connection is not signed in as a user"), nil
 		}
+
 		if _, denied := s.spend(req, userID, ClassCatalogue); denied != nil {
 			return denied, nil
 		}
+
 		return s.findTools(ctx, req, info)
 	})
 	// No Scope: any signed-in caller may look, and what it finds is what it may use.
-	s.note(tool, toolNeeds{})
+	s.note(tool, toolNeeds{
+		scope:        "",
+		permission:   "",
+		capabilities: nil,
+	})
 }
 
 func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *auth.TokenInfo) (*mcp.CallToolResult, error) {
-	c := call{args: req.Params.Arguments}
-	args := findToolsArgs{Detail: detailDescription}
-	if err := c.decode(&args); err != nil {
+	request := call{
+		args:     req.Params.Arguments,
+		userID:   0,
+		clientID: "",
+	}
+
+	args := findToolsArgs{
+		Detail: detailDescription,
+		Query:  "",
+		Limit:  0,
+	}
+
+	err := request.decode(&args)
+	if err != nil {
 		return toolError(err.Error()), nil
 	}
+
 	if !slices.Contains([]string{detailName, detailDescription, detailSchema}, args.Detail) {
 		return toolError("detail must be name, description or schema"), nil
 	}
+
 	if args.Limit < 0 {
 		return toolError("limit must be at least 1"), nil
 	}
+
 	limit := defaultFindLimit
 	if args.Limit > 0 {
 		limit = min(args.Limit, maxFindLimit)
 	}
 
 	words := strings.Fields(strings.ToLower(args.Query))
+
 	var matched []listedTool
+
 	for _, t := range s.visibleTo(ctx, info) {
 		haystack := strings.ToLower(t.tool.Name + " " + t.tool.Description)
 		if !slices.ContainsFunc(words, func(w string) bool { return !strings.Contains(haystack, w) }) {
@@ -256,19 +295,28 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 	}
 
 	rows := []map[string]any{}
-	for _, t := range matched[:min(len(matched), limit)] {
-		row := map[string]any{"name": t.tool.Name}
+
+	for _, listed := range matched[:min(len(matched), limit)] {
+		row := map[string]any{"name": listed.tool.Name}
 		if args.Detail != detailName {
-			row["description"] = t.tool.Description
-			row["needs"] = t.needs.describe()
+			row["description"] = listed.tool.Description
+			row["needs"] = listed.needs.describe()
 		}
+
 		if args.Detail == detailSchema {
-			row["inputSchema"] = t.tool.InputSchema
+			row["inputSchema"] = listed.tool.InputSchema
 		}
+
 		rows = append(rows, row)
 	}
+
 	text := fmt.Sprintf("%d of %d matching tools", len(rows), len(matched))
-	return s.finish(findToolsName, result{text: text, data: map[string]any{"total": len(matched), "tools": rows}})
+
+	return s.finish(findToolsName, result{
+		text: text,
+		data: map[string]any{"total": len(matched), "tools": rows},
+		list: nil,
+	})
 }
 
 // describe is what a tool needs, as findTools says it.
@@ -277,11 +325,14 @@ func (n toolNeeds) describe() map[string]any {
 	if n.scope != "" {
 		out["scope"] = n.scope
 	}
+
 	if n.permission != "" {
 		out["permission"] = n.permission
 	}
+
 	if len(n.capabilities) > 0 {
 		out["capabilities"] = n.capabilities
 	}
+
 	return out
 }

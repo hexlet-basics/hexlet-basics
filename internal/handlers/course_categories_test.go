@@ -17,16 +17,20 @@ import (
 // read the id back rather than hard-coding it.
 func categoryBySlug(t *testing.T, h *testsupport.Harness, slug string) api.CourseCategory {
 	t.Helper()
+
 	page, err := h.Client.AdminListCourseCategories(context.Background(), api.AdminListCourseCategoriesParams{
 		PerPage: api.NewOptInt32(100),
 	})
 	require.NoError(t, err)
+
 	for _, it := range page.Items {
 		if it.Slug.Value == slug {
 			return it
 		}
 	}
+
 	t.Fatalf("category with slug %q not found", slug)
+
 	return api.CourseCategory{}
 }
 

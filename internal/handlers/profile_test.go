@@ -72,11 +72,14 @@ func TestDeleteAccount(t *testing.T) {
 
 	// The session cookie comes back expired, as on sign-out.
 	expired := map[string]bool{}
+
 	for _, raw := range h.ResponseCookies() {
 		cookie, err := http.ParseSetCookie(raw)
 		require.NoError(t, err)
+
 		expired[cookie.Name] = cookie.MaxAge < 0 || cookie.Value == ""
 	}
+
 	assert.Equal(t, map[string]bool{auth.CookieName: true}, expired)
 
 	// The row stays, removed and erased; what is not identifying is kept.
@@ -162,7 +165,9 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	requireProblem(t, err, http.StatusNotFound)
 }
 
-var secondAdminID = fixture.ID(fixture.UserSecondAdmin)
+func secondAdminID() int {
+	return fixture.ID(fixture.UserSecondAdmin)
+}
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	t.Parallel()

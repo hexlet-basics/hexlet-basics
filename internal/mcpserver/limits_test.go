@@ -17,42 +17,50 @@ import (
 
 func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) {
 	now := time.Now()
-	m := newMeter(Limits{
-		RateWindow: time.Minute,
-		User:       Rates{Catalogue: 3, Personal: 2, Write: 1},
-		Client:     Rates{Catalogue: 6, Personal: 5, Write: 4},
-		Now:        func() time.Time { return now },
+	budget := newMeter(Limits{
+		RateWindow:       time.Minute,
+		User:             Rates{Catalogue: 3, Personal: 2, Write: 1},
+		Client:           Rates{Catalogue: 6, Personal: 5, Write: 4},
+		Now:              func() time.Time { return now },
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
 	}.withDefaults())
 
 	for class, userLimit := range map[Class]int{ClassCatalogue: 3, ClassPersonal: 2, ClassWrite: 1} {
 		for range userLimit {
-			ok, _ := m.allow(class, 1, "app")
+			ok, _ := budget.allow(class, 1, "app")
 			require.True(t, ok, class)
 		}
-		ok, wait := m.allow(class, 1, "app")
+
+		ok, wait := budget.allow(class, 1, "app")
 		assert.False(t, ok, "%s: the user's own limit applies", class)
 		assert.Equal(t, time.Minute, wait, class)
 	}
 
 	// Each class counted on its own: exhausting one left another's budget alone,
 	// and another user of the same app is unaffected by the first's.
-	ok, _ := m.allow(ClassCatalogue, 2, "app")
+	ok, _ := budget.allow(ClassCatalogue, 2, "app")
 	assert.True(t, ok)
 }
 
 func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 	now := time.Now()
-	m := newMeter(Limits{
-		User:   Rates{Catalogue: 100, Personal: 100, Write: 100},
-		Client: Rates{Catalogue: 100, Personal: 100, Write: 2},
-		Now:    func() time.Time { return now },
+	budget := newMeter(Limits{
+		User:             Rates{Catalogue: 100, Personal: 100, Write: 100},
+		Client:           Rates{Catalogue: 100, Personal: 100, Write: 2},
+		Now:              func() time.Time { return now },
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
 	}.withDefaults())
 
-	first, _ := m.allow(ClassWrite, 1, "app")
-	second, _ := m.allow(ClassWrite, 2, "app")
-	third, _ := m.allow(ClassWrite, 3, "app")
-	otherApp, _ := m.allow(ClassWrite, 3, "other")
-	reads, _ := m.allow(ClassCatalogue, 3, "app")
+	first, _ := budget.allow(ClassWrite, 1, "app")
+	second, _ := budget.allow(ClassWrite, 2, "app")
+	third, _ := budget.allow(ClassWrite, 3, "app")
+	otherApp, _ := budget.allow(ClassWrite, 3, "other")
+	reads, _ := budget.allow(ClassCatalogue, 3, "app")
 
 	assert.True(t, first)
 	assert.True(t, second)
@@ -62,21 +70,38 @@ func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 }
 
 func TestDefaultLimitsAreStricterForPersonalReadsAndWrites(t *testing.T) {
-	d := DefaultLimits()
+	limits := DefaultLimits()
 
-	assert.Equal(t, 50, d.MaxPageSize)
-	assert.Equal(t, 100*1024, d.MaxResponseBytes)
-	assert.Equal(t, 30*time.Second, d.ToolTimeout)
-	for _, r := range []Rates{d.User, d.Client} {
+	assert.Equal(t, 50, limits.MaxPageSize)
+	assert.Equal(t, 100*1024, limits.MaxResponseBytes)
+	assert.Equal(t, 30*time.Second, limits.ToolTimeout)
+
+	for _, r := range []Rates{limits.User, limits.Client} {
 		assert.Greater(t, r.Catalogue, r.Personal)
 		assert.Greater(t, r.Personal, r.Write)
 	}
 
-	filled := Limits{MaxPageSize: 3, User: Rates{Write: 1}}.withDefaults()
+	filled := Limits{
+		MaxPageSize: 3,
+		User: Rates{
+			Write:     1,
+			Catalogue: 0,
+			Personal:  0,
+		},
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}.withDefaults()
 	assert.Equal(t, 3, filled.MaxPageSize, "a value that is set stays")
 	assert.Equal(t, 1, filled.User.Write)
-	assert.Equal(t, d.User.Catalogue, filled.User.Catalogue, "a value that is not set takes its default")
-	assert.Equal(t, d.ToolTimeout, filled.ToolTimeout)
+	assert.Equal(t, limits.User.Catalogue, filled.User.Catalogue, "a value that is not set takes its default")
+	assert.Equal(t, limits.ToolTimeout, filled.ToolTimeout)
 }
 
 func requestFor(userID, client string, scopes ...string) *mcp.CallToolRequest {
@@ -87,22 +112,72 @@ func requestFor(userID, client string, scopes ...string) *mcp.CallToolRequest {
 
 func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 	now := time.Now()
-	s := &Server{limits: Limits{Now: func() time.Time { return now }}.withDefaults()}
-	s.limits.User = Rates{Catalogue: 3, Personal: 2, Write: 1}
-	s.meter = newMeter(s.limits)
+	server := &Server{
+		limits: Limits{
+			Now:              func() time.Time { return now },
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			ToolTimeout:      0,
+			RateWindow:       0,
+			User: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+		}.withDefaults(),
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}
+	server.limits.User = Rates{Catalogue: 3, Personal: 2, Write: 1}
+	server.meter = newMeter(server.limits)
 	req := requestFor("7", "app", oauthserver.ScopeCatalogRead)
 
 	for class, limit := range map[Class]int{ClassCatalogue: 3, ClassPersonal: 2, ClassWrite: 1} {
 		for range limit {
-			userID, client, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
+			userID, client, denied := server.admit(req, oauthserver.ScopeCatalogRead, class)
 			require.Nil(t, denied, class)
 			assert.Equal(t, 7, userID)
 			assert.Equal(t, "app", client)
 		}
-		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
+
+		_, _, denied := server.admit(req, oauthserver.ScopeCatalogRead, class)
 		require.NotNil(t, denied, class)
 		assert.True(t, denied.IsError)
-		text := denied.Content[0].(*mcp.TextContent).Text
+		text := as[*mcp.TextContent](t, denied.Content[0]).Text
 		assert.Contains(t, text, "rate limit exceeded for "+class.String()+" tools")
 		assert.Contains(t, text, "retry in 60 seconds")
 		assert.Equal(t, 60, denied.Meta["retryAfterSeconds"])
@@ -111,15 +186,48 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 }
 
 func TestAdmitRefusesAMissingScopeOrSubjectBeforeCounting(t *testing.T) {
-	s := &Server{limits: DefaultLimits()}
-	s.meter = newMeter(s.limits)
+	server := &Server{
+		limits: DefaultLimits(),
+		deps: Deps{
+			Verifier:         nil,
+			Catalogue:        nil,
+			API:              nil,
+			MyDashboard:      nil,
+			MyCourseProgress: nil,
+			Issuer:           "",
+			Logger:           nil,
+			Limits: Limits{
+				MaxPageSize:      0,
+				MaxResponseBytes: 0,
+				ToolTimeout:      0,
+				RateWindow:       0,
+				User: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Client: Rates{
+					Catalogue: 0,
+					Personal:  0,
+					Write:     0,
+				},
+				Now: nil,
+			},
+			HeldCapabilities: nil,
+		},
+		resource: "",
+		meter:    nil,
+		handler:  nil,
+		registry: nil,
+	}
+	server.meter = newMeter(server.limits)
 
 	for name, req := range map[string]*mcp.CallToolRequest{
 		"no token":    {Extra: &mcp.RequestExtra{}},
 		"not a user":  requestFor("client-3", "app", oauthserver.ScopeCatalogRead),
 		"wrong scope": requestFor("7", "app", oauthserver.ScopeProgressRead),
 	} {
-		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, ClassCatalogue)
+		_, _, denied := server.admit(req, oauthserver.ScopeCatalogRead, ClassCatalogue)
 		require.NotNil(t, denied, name)
 		assert.True(t, denied.IsError, name)
 	}
@@ -137,8 +245,10 @@ func TestClassNamesAreStableAndUnknownClassIsNamedNotHidden(t *testing.T) {
 // sizeOf is the size fit measures: the JSON of the data and the text.
 func sizeOf(t *testing.T, data map[string]any, textLen int) int {
 	t.Helper()
+
 	raw, err := json.Marshal(data)
 	require.NoError(t, err)
+
 	return len(raw) + textLen
 }
 
@@ -147,6 +257,7 @@ func records(n int) []any {
 	for i := range out {
 		out[i] = map[string]any{"slug": strings.Repeat("x", 100), "i": i}
 	}
+
 	return out
 }
 
@@ -167,9 +278,10 @@ func TestFitCutsTheLargestListAndSaysHowToContinueFromTheNextPage(t *testing.T) 
 	require.True(t, ok)
 	assert.LessOrEqual(t, sizeOf(t, data, 20), 4000)
 	assert.Len(t, data["small"], 2, "the small list was not touched")
-	kept := len(data["items"].([]any))
+	kept := len(as[[]any](t, data["items"]))
 	assert.Less(t, kept, 100)
-	hint := data[truncationKey].(map[string]any)
+
+	hint := as[map[string]any](t, data[truncationKey])
 	assert.Equal(t, true, hint["truncated"])
 	assert.Equal(t, kept, hint["suggestedPerPage"])
 	// Page 3 of 100 starts at offset 200, the page of that size containing it.
@@ -184,15 +296,16 @@ func TestFitShortensALongTextOnARuneBoundary(t *testing.T) {
 	ok := fit(data, 0, 3000, nil)
 
 	require.True(t, ok)
-	theory := data["lesson"].(map[string]any)["theory"].(string)
+
+	theory := as[string](t, as[map[string]any](t, data["lesson"])["theory"])
 	assert.True(t, utf8.ValidString(theory), "a cut must not split a character")
 	assert.True(t, strings.HasSuffix(theory, "[cut]"))
 	assert.LessOrEqual(t, sizeOf(t, data, 0), 3000)
-	hint := data[truncationKey].(map[string]any)
-	cuts := hint["cuts"].([]any)
+	hint := as[map[string]any](t, data[truncationKey])
+	cuts := as[[]any](t, hint["cuts"])
 	require.Len(t, cuts, 1)
-	assert.Equal(t, "lesson.theory", cuts[0].(map[string]any)["path"])
-	assert.Equal(t, "bytes", cuts[0].(map[string]any)["unit"])
+	assert.Equal(t, "lesson.theory", as[map[string]any](t, cuts[0])["path"])
+	assert.Equal(t, "bytes", as[map[string]any](t, cuts[0])["unit"])
 	assert.Contains(t, hint["hint"], "lesson.theory")
 }
 
@@ -203,7 +316,7 @@ func TestFitCutsListsInsideARecordAndReportsEachPlace(t *testing.T) {
 
 	require.True(t, ok)
 	assert.LessOrEqual(t, sizeOf(t, data, 0), 5000)
-	hint := data[truncationKey].(map[string]any)
+	hint := as[map[string]any](t, data[truncationKey])
 	assert.NotEmpty(t, hint["cuts"])
 	assert.Contains(t, hint["hint"], "shortened")
 	assert.NotContains(t, hint, "suggestedPage", "not a page of a list")

@@ -42,13 +42,15 @@ const (
 )
 
 // vocabularyStates is every state of each vocabulary.
-var vocabularyStates = map[Vocabulary][]State{
-	PublicationStates: {State(Draft), State(Published), State(Archived)},
-	CourseReadiness:   {State(ReadinessDraft), State(ReadinessInDevelopment), State(ReadinessCompleted)},
+func vocabularyStates() map[Vocabulary][]State {
+	return map[Vocabulary][]State{
+		PublicationStates: {State(Draft), State(Published), State(Archived)},
+		CourseReadiness:   {State(ReadinessDraft), State(ReadinessInDevelopment), State(ReadinessCompleted)},
+	}
 }
 
 // States lists the states of the vocabulary.
-func (v Vocabulary) States() []State { return slices.Clone(vocabularyStates[v]) }
+func (v Vocabulary) States() []State { return slices.Clone(vocabularyStates()[v]) }
 
 // Named is implemented by a state type that belongs to a vocabulary.
 type Named interface{ Vocabulary() Vocabulary }
@@ -75,6 +77,7 @@ func IsIllegal(err error) (*IllegalError, bool) {
 	if illegal, ok := errors.AsType[*IllegalError](err); ok {
 		return illegal, true
 	}
+
 	return nil, false
 }
 
@@ -83,9 +86,15 @@ func (t Transition[S]) Check(current S) error {
 	if slices.Contains(t.From, current) {
 		return nil
 	}
-	illegal := &IllegalError{From: State(current), To: State(t.To)}
+
+	illegal := &IllegalError{
+		From:       State(current),
+		To:         State(t.To),
+		Vocabulary: "",
+	}
 	if named, ok := any(current).(Named); ok {
 		illegal.Vocabulary = named.Vocabulary()
 	}
+
 	return illegal
 }

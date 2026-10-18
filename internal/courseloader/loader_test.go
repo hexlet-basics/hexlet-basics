@@ -29,6 +29,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errGitIsUnreachable = errors.New("git is unreachable")
+)
+
 // repoFetcher is the git boundary answering with a local checkout instead of
 // cloning, so the loader runs fully offline against a fixture course.
 func repoFetcher(dir string) *testsupport.FetcherMock {
@@ -43,7 +48,7 @@ func repoFetcher(dir string) *testsupport.FetcherMock {
 func unreachableFetcher() *testsupport.FetcherMock {
 	return &testsupport.FetcherMock{
 		FetchFunc: func(context.Context, string) (string, func(), error) {
-			return "", nil, errors.New("git is unreachable")
+			return "", nil, errGitIsUnreachable
 		},
 	}
 }
@@ -55,6 +60,7 @@ func newLoaderWith(
 	fetcher courseloader.Fetcher,
 ) *courseloader.Loader {
 	t.Helper()
+
 	return newLoaderWithCompletion(t, db, txStore, fetcher,
 		events.NewPublisher(txStore, slog.New(slog.DiscardHandler)))
 }
@@ -69,13 +75,17 @@ func newLoaderWithCompletion(
 	publisher events.TxPublisher,
 ) *courseloader.Loader {
 	t.Helper()
+
 	bucket := memblob.OpenBucket(nil)
+
 	t.Cleanup(func() { _ = bucket.Close() })
+
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
 
 	// Promotion re-evaluates completion and never runs a submission, so the
 	// loader's progress module needs no exercise runner.
 	tracker := progress.New(db, txStore, publisher, progress.UnavailableRunner{})
+
 	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker,
 		courseloader.WithClock(func() time.Time { return testsupport.Today }))
 }
@@ -83,6 +93,7 @@ func newLoaderWithCompletion(
 // newLoader builds a loader that fetches the committed fixture course.
 func newLoader(t *testing.T, db *ent.Client, txStore store.Transactor) *courseloader.Loader {
 	t.Helper()
+
 	return newLoaderWith(t, db, txStore, repoFetcher(fixtureRepo(t)))
 }
 
@@ -115,6 +126,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	mods := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
 	require.Len(t, mods, 1)
 	assert.Equal(t, "basics", derefStr(mods[0].Slug))
+
 	mvs := db.CourseModuleVersion.Query().Where(coursemoduleversion.CourseVersionID(version.ID)).AllX(ctx)
 	require.Len(t, mvs, 1)
 	assert.Equal(t, 10, *mvs[0].Order)
@@ -189,8 +201,8 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	lesson1 := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
-	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
-	require.NoError(t, loader.Run(ctx, v2.ID))
+	secondVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
+	require.NoError(t, loader.Run(ctx, secondVersion.ID))
 
 	modules := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
 	require.Len(t, modules, 1)
@@ -202,7 +214,7 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 
 	// Current version is the newest built one.
 	course = db.Course.GetX(ctx, course.ID)
-	assert.Equal(t, v2.ID, *course.CurrentVersionID)
+	assert.Equal(t, secondVersion.ID, *course.CurrentVersionID)
 }
 
 // TestLoaderFailedRebuildKeepsLiveVersion is the load-bearing invariant (legacy
@@ -216,24 +228,24 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
 
 	// v1 builds successfully and is promoted live.
-	v1 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
-	require.NoError(t, newLoader(t, db, txStore).Run(ctx, v1.ID))
+	firstVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
+	require.NoError(t, newLoader(t, db, txStore).Run(ctx, firstVersion.ID))
 	course = db.Course.GetX(ctx, course.ID)
-	require.Equal(t, v1.ID, *course.CurrentVersionID)
+	require.Equal(t, firstVersion.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
 	badLoader := newLoaderWith(t, db, txStore, repoFetcher(t.TempDir()))
-	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
-	require.Error(t, badLoader.Run(ctx, v2.ID))
+	secondVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
+	require.Error(t, badLoader.Run(ctx, secondVersion.ID))
 
 	// v2 is failed with the error recorded...
-	v2 = db.CourseVersion.GetX(ctx, v2.ID)
-	assert.Equal(t, "failed", derefStr(v2.State))
-	assert.Contains(t, derefStr(v2.Result), "Error")
+	secondVersion = db.CourseVersion.GetX(ctx, secondVersion.ID)
+	assert.Equal(t, "failed", derefStr(secondVersion.State))
+	assert.Contains(t, derefStr(secondVersion.Result), "Error")
 
 	// ...and the live version is STILL v1 — the broken rebuild changed nothing.
 	course = db.Course.GetX(ctx, course.ID)
-	assert.Equal(t, v1.ID, *course.CurrentVersionID)
+	assert.Equal(t, firstVersion.ID, *course.CurrentVersionID)
 }
 
 func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
@@ -255,6 +267,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 
 	require.Error(t, err)
 	require.ErrorContains(t, err, "unsupported asset media type")
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -284,6 +297,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 
 	require.Error(t, err)
 	require.ErrorContains(t, err, "open image")
+
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "failed", derefStr(version.State))
 }
@@ -341,16 +355,20 @@ func derefStr(s *string) string {
 	if s == nil {
 		return ""
 	}
+
 	return *s
 }
 
 func lessonInfoByLocale(t *testing.T, infos []*ent.CourseLessonTranslation, locale string) *ent.CourseLessonTranslation {
 	t.Helper()
+
 	for _, in := range infos {
 		if in.Locale != nil && *in.Locale == locale {
 			return in
 		}
 	}
+
 	t.Fatalf("no lesson info for locale %q", locale)
+
 	return nil
 }

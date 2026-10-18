@@ -19,14 +19,17 @@ import (
 
 // allCapabilities is every capability Permission, for a role that is to see
 // every admin tool.
-var allCapabilities = []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"}
+func allCapabilities() []string {
+	return []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"}
+}
 
 // everything connects bob, whose role is granted every capability, with every
 // Scope: the caller that sees the whole tool list.
 func everything(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 	t.Helper()
-	o.Grant(editor, allCapabilities...)
-	tokens := o.Connect(bob, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin)
+	o.Grant(editor(), allCapabilities()...)
+	tokens := o.Connect(bob(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin)
+
 	return o.MCPClient(tokens.AccessToken)
 }
 
@@ -34,6 +37,7 @@ func listTools(t *testing.T, session *mcp.ClientSession) *mcp.ListToolsResult {
 	t.Helper()
 	list, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	return list
 }
 
@@ -42,6 +46,7 @@ func names(tools []*mcp.Tool) []string {
 	for i, tool := range tools {
 		out[i] = tool.Name
 	}
+
 	return out
 }
 
@@ -54,9 +59,11 @@ func TestInstructionsNameTheDomainsAndSayWhenToSearch(t *testing.T) {
 	instructions := session.InitializeResult().Instructions
 	assert.NotEmpty(t, instructions)
 	assert.Less(t, len(instructions), 4096)
+
 	for _, domain := range []string{"catalogue", "learner progress", "content administration", "access management", "audit"} {
 		assert.Contains(t, instructions, domain)
 	}
+
 	assert.Contains(t, instructions, "findTools")
 	assert.Contains(t, instructions, "does not load tools on demand")
 }
@@ -69,6 +76,7 @@ func TestEveryToolSaysWhatItDoesToTheWorld(t *testing.T) {
 	tools := listTools(t, everything(t, o)).Tools
 
 	require.Greater(t, len(tools), len(mcpserver.AllowlistedAdminOperations()))
+
 	for _, tool := range tools {
 		require.NotNil(t, tool.Annotations, tool.Name)
 		assert.NotNil(t, tool.Annotations.DestructiveHint, "%s: destructiveHint", tool.Name)
@@ -78,6 +86,7 @@ func TestEveryToolSaysWhatItDoesToTheWorld(t *testing.T) {
 		if tool.Annotations.ReadOnlyHint {
 			assert.False(t, *tool.Annotations.DestructiveHint, "%s: a read destroys nothing", tool.Name)
 		}
+
 		assert.False(t, *tool.Annotations.OpenWorldHint, "%s: nothing here leaves the site's own data", tool.Name)
 	}
 }
@@ -95,9 +104,11 @@ func TestTheToolListIsValidStableAndWithinItsBudget(t *testing.T) {
 	serverName := session.InitializeResult().ServerInfo.Name
 
 	total := 0
+
 	for _, tool := range first.Tools {
 		raw, err := json.Marshal(tool)
 		require.NoError(t, err)
+
 		total += len(raw)
 
 		// The client-side full name is mcp__<server>__<tool>, and Claude Code
@@ -110,11 +121,14 @@ func TestTheToolListIsValidStableAndWithinItsBudget(t *testing.T) {
 			if schema == nil {
 				continue
 			}
+
 			raw, err := json.Marshal(schema)
 			require.NoError(t, err)
+
 			var decoded map[string]any
 			require.NoError(t, json.Unmarshal(raw, &decoded))
 			assert.Equal(t, "object", decoded["type"], "%s %s: the root is an object", tool.Name, kind)
+
 			for _, combined := range []string{"anyOf", "oneOf", "allOf"} {
 				assert.NotContains(t, decoded, combined, "%s %s: Claude Code flattens a root %s and loses its enforcement", tool.Name, kind, combined)
 			}
@@ -125,6 +139,7 @@ func TestTheToolListIsValidStableAndWithinItsBudget(t *testing.T) {
 			require.NoError(t, err, "%s %s is a valid JSON Schema (2020-12)", tool.Name, kind)
 		}
 	}
+
 	t.Logf("tool list: %d tools, %d bytes (budget %d)", len(first.Tools), total, budget)
 	assert.Less(t, total, budget)
 
@@ -149,39 +164,42 @@ func TestAConnectionIsOnlyShownWhatItsGrantsAllow(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	// Without the admin Scope: the catalogue, the lookup, and no admin tool.
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 	shown := names(listTools(t, catalogueOnly).Tools)
 	assert.Contains(t, shown, "listCourses")
 	assert.Contains(t, shown, "findTools")
 	assert.NotContains(t, shown, "getMyDashboard", "no progress:read Scope")
+
 	for _, name := range shown {
 		assert.False(t, strings.HasPrefix(name, "admin"), "%s needs the admin Scope", name)
 	}
 
 	// With the admin Scope but a role that holds no capability: nothing to offer
 	// that the door would not close at once.
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
 	shown = names(listTools(t, adminScope).Tools)
 	assert.NotContains(t, shown, "adminListBanners", "bob's role holds no mcp.read")
 
 	// mcp.read opens the reads; mcp.write the writes; mcp.manage the access
 	// operations; audit.read the audit trail.
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
+
 	shown = names(listTools(t, adminScope).Tools)
 	assert.Contains(t, shown, "adminListBanners")
 	assert.NotContains(t, shown, "adminUpdateBanner")
 	assert.NotContains(t, shown, "adminListUsers")
 	assert.NotContains(t, shown, "adminListAuditRecords")
 
-	o.Grant(editor, "mcp.write")
+	o.Grant(editor(), "mcp.write")
 	assert.Contains(t, names(listTools(t, adminScope).Tools), "adminUpdateBanner")
-	o.Grant(editor, "mcp.manage", "audit.read")
+	o.Grant(editor(), "mcp.manage", "audit.read")
+
 	shown = names(listTools(t, adminScope).Tools)
 	assert.Contains(t, shown, "adminListUsers")
 	assert.Contains(t, shown, "adminListAuditRecords")
 
 	// Taking a grant away is seen by the next list.
-	o.RevokeGrant(editor, "mcp.write")
+	o.RevokeGrant(editor(), "mcp.write")
 	assert.NotContains(t, names(listTools(t, adminScope).Tools), "adminUpdateBanner")
 }
 
@@ -191,29 +209,34 @@ func TestHidingAToolIsNotAuthorizingTheOthers(t *testing.T) {
 
 	// bob holds no mcp.write, and a token without the admin Scope would not be
 	// offered adminCreateBanner either. Both call it by name anyway.
-	o.Grant(editor, "mcp.read")
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	o.Grant(editor(), "mcp.read")
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
 	require.NotContains(t, names(listTools(t, adminScope).Tools), "adminCreateBanner")
 	assertRefused(t, call(t, adminScope, "adminCreateBanner", map[string]any{
 		"locale": "en", "body": bannerInput("created by name"),
 	}))
 
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 	assertRefused(t, call(t, catalogueOnly, "adminListBanners", map[string]any{"locale": "en"}))
 
 	assert.Equal(t, before, o.DB.Banner.Query().CountX(t.Context()), "nothing was created")
+
 	for _, record := range o.Records("AdminCreateBanner") {
 		assert.NotEqual(t, audit.OutcomeSucceeded, record.Outcome, "a call refused at the door is never a succeeded record")
 	}
 }
 
-func findTools(t *testing.T, session *mcp.ClientSession, args map[string]any) (total int, tools []map[string]any) {
+func findTools(t *testing.T, session *mcp.ClientSession, args map[string]any) (int, []map[string]any) {
 	t.Helper()
 	content := structured(t, callTool(t, session, "findTools", args))
-	total = int(content["total"].(float64))
-	for _, row := range content["tools"].([]any) {
-		tools = append(tools, row.(map[string]any))
+	total := int(as[float64](t, content["total"]))
+	rows := as[[]any](t, content["tools"])
+
+	tools := make([]map[string]any, 0, len(rows))
+	for _, row := range rows {
+		tools = append(tools, as[map[string]any](t, row))
 	}
+
 	return total, tools
 }
 
@@ -223,10 +246,12 @@ func TestFindToolsLooksToolsUpAtEachLevelOfDetail(t *testing.T) {
 
 	total, rows := findTools(t, session, map[string]any{"query": "banner", "detail": "name"})
 	assert.Equal(t, len(rows), total)
+
 	for _, row := range rows {
-		assert.Contains(t, strings.ToLower(row["name"].(string)), "banner")
+		assert.Contains(t, strings.ToLower(as[string](t, row["name"])), "banner")
 		assert.Equal(t, []string{"name"}, sortedKeys(row), "name only")
 	}
+
 	assert.GreaterOrEqual(t, len(rows), 6, "a group of tools by resource: list, get, create, update, publish, delete...")
 
 	_, rows = findTools(t, session, map[string]any{"query": "update banner"})
@@ -254,7 +279,7 @@ func TestFindToolsLooksToolsUpAtEachLevelOfDetail(t *testing.T) {
 // findTools shows a caller only the tools it may use, as tools/list does.
 func TestFindToolsDoesNotNameWhatTheCallerIsNotOffered(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	session := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	session := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 
 	total, rows := findTools(t, session, map[string]any{"query": "banner"})
 	assert.Zero(t, total)
@@ -275,10 +300,12 @@ func TestNoToolRunsAnotherToolByName(t *testing.T) {
 		assert.NotRegexp(t, `(?i)^(call|execute|exec|run|invoke|dispatch|proxy)`, tool.Name, "a tool that runs others by name would bypass the checkpoint")
 		raw, err := json.Marshal(tool.InputSchema)
 		require.NoError(t, err)
+
 		var schema struct {
 			Properties map[string]json.RawMessage `json:"properties"`
 		}
 		require.NoError(t, json.Unmarshal(raw, &schema))
+
 		for _, argument := range []string{"tool", "toolName", "tool_name", "operationId", "code", "script"} {
 			assert.NotContains(t, schema.Properties, argument, "%s takes %s", tool.Name, argument)
 		}
@@ -302,22 +329,27 @@ func byName(tools []*mcp.Tool) map[string]*mcp.Tool {
 	for _, tool := range tools {
 		out[tool.Name] = tool
 	}
+
 	return out
 }
 
 func sortedKeys(m map[string]any) []string {
-	var out []string
+	out := make([]string, 0, len(m))
 	for k := range m {
 		out = append(out, k)
 	}
+
 	slices.Sort(out)
+
 	return out
 }
 
 func mapNames(rows []map[string]any) []string {
-	var out []string
+	out := make([]string, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, row["name"].(string))
+		name, _ := row["name"].(string)
+		out = append(out, name)
 	}
+
 	return out
 }

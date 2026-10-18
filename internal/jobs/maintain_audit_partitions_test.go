@@ -20,9 +20,11 @@ import (
 
 func auditPartitionExists(t *testing.T, tx *sql.Tx, name string) bool {
 	t.Helper()
+
 	var exists bool
 	require.NoError(t, tx.QueryRowContext(t.Context(),
 		"SELECT to_regclass($1) IS NOT NULL", name).Scan(&exists))
+
 	return exists
 }
 
@@ -41,9 +43,21 @@ func TestMaintainAuditPartitionsJobDropsTheExpiredAndCreatesTheNext(t *testing.T
 	// instant: it lands in the partition just created.
 	require.NoError(t, audit.Write(t.Context(), db, audit.Entry{
 		OccurredAt: old,
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  "AdminUpdateBlogPost",
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, nil))
 	oldRecord := db.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context())
 	oldName := "audit_records_p" + old.Format("200601")

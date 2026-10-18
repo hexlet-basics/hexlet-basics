@@ -27,6 +27,7 @@ func breakReads(h *testsupport.Harness, entity string) {
 			if entgo.QueryFromContext(ctx).Type == entity {
 				return nil, errStorageDown
 			}
+
 			return next.Query(ctx, q)
 		})
 	}))
@@ -40,6 +41,7 @@ func breakWrites(h *testsupport.Harness, entity string) {
 			if m.Type() == entity {
 				return nil, errStorageDown
 			}
+
 			return next.Mutate(ctx, m)
 		})
 	})

@@ -31,6 +31,7 @@ func rejected(t *testing.T, result *mcp.CallToolResult) int {
 	seconds, ok := result.Meta["retryAfterSeconds"].(float64)
 	require.True(t, ok, "the wait is machine readable too: %v", result.Meta)
 	assert.Positive(t, seconds)
+
 	return int(seconds)
 }
 
@@ -43,9 +44,22 @@ func accepted(t *testing.T, session *mcp.ClientSession) {
 func TestCallerOverTheUserLimitIsToldWhenToRetryAndGetsItsBudgetBack(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
 		RateWindow: 90 * time.Second,
-		User:       mcpserver.Rates{Catalogue: 2},
+		User: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
 	}))
-	session := connect(t, o, alice, oauthserver.ScopeCatalogRead)
+	session := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	accepted(t, session)
 	accepted(t, session)
@@ -64,9 +78,25 @@ func TestCallerOverTheUserLimitIsToldWhenToRetryAndGetsItsBudgetBack(t *testing.
 }
 
 func TestOneUsersBudgetIsNotAnotherUsers(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Catalogue: 1}}))
-	first := connect(t, o, alice, oauthserver.ScopeCatalogRead)
-	second := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob, oauthserver.ScopeCatalogRead).AccessToken, russian)
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
+	first := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
+	second := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
 	accepted(t, first)
 	rejected(t, callTool(t, first, "listCourses", nil))
@@ -76,11 +106,27 @@ func TestOneUsersBudgetIsNotAnotherUsers(t *testing.T) {
 }
 
 func TestOneConnectedAppsBudgetIsNotAnotherAppsAndIsSharedByItsUsers(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{Client: mcpserver.Rates{Catalogue: 2}}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		Client: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		User: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
 	// Alice and Bob through the app Connect registers, Alice also through another.
-	aliceHere := connect(t, o, alice, oauthserver.ScopeCatalogRead)
-	bobHere := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob, oauthserver.ScopeCatalogRead).AccessToken, russian)
-	aliceThere := o.MCPClient(o.ConnectAs(secondClient, alice, oauthserver.ScopeCatalogRead).AccessToken, russian)
+	aliceHere := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
+	bobHere := o.MCPClient(o.ConnectAs(testsupport.OAuthClientID, bob(), oauthserver.ScopeCatalogRead).AccessToken, russian)
+	aliceThere := o.MCPClient(o.ConnectAs(secondClient, alice(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
 	accepted(t, aliceHere)
 	accepted(t, bobHere)
@@ -94,11 +140,24 @@ func TestOneConnectedAppsBudgetIsNotAnotherAppsAndIsSharedByItsUsers(t *testing.
 
 func TestCallRefusedForTheAppsLimitDoesNotSpendTheUsersBudget(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
-		User:   mcpserver.Rates{Catalogue: 2},
-		Client: mcpserver.Rates{Catalogue: 1},
+		User: mcpserver.Rates{
+			Catalogue: 2,
+			Personal:  0,
+			Write:     0,
+		},
+		Client: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Now:              nil,
 	}))
-	here := connect(t, o, alice, oauthserver.ScopeCatalogRead)
-	there := o.MCPClient(o.ConnectAs(secondClient, alice, oauthserver.ScopeCatalogRead).AccessToken, russian)
+	here := connect(t, o, alice(), oauthserver.ScopeCatalogRead)
+	there := o.MCPClient(o.ConnectAs(secondClient, alice(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
 	accepted(t, here)
 	rejected(t, callTool(t, here, "listCourses", nil))
@@ -110,9 +169,25 @@ func TestCallRefusedForTheAppsLimitDoesNotSpendTheUsersBudget(t *testing.T) {
 }
 
 func TestCallRefusedForItsScopeSpendsNoBudget(t *testing.T) {
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Catalogue: 1}}))
-	withoutScope := connect(t, o, alice, oauthserver.ScopeProgressRead)
-	withScope := o.MCPClient(o.ConnectAs(secondClient, alice, oauthserver.ScopeCatalogRead).AccessToken, russian)
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User: mcpserver.Rates{
+			Catalogue: 1,
+			Personal:  0,
+			Write:     0,
+		},
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Client: mcpserver.Rates{
+			Catalogue: 0,
+			Personal:  0,
+			Write:     0,
+		},
+		Now: nil,
+	}))
+	withoutScope := connect(t, o, alice(), oauthserver.ScopeProgressRead)
+	withScope := o.MCPClient(o.ConnectAs(secondClient, alice(), oauthserver.ScopeCatalogRead).AccessToken, russian)
 
 	for range 3 {
 		assert.Contains(t, textOf(t, callTool(t, withoutScope, "listCourses", nil)), oauthserver.ScopeCatalogRead)
@@ -125,28 +200,61 @@ func TestCallRefusedForItsScopeSpendsNoBudget(t *testing.T) {
 // handler's context.
 type slowCatalogue struct {
 	mcpserver.Catalogue
+
 	cancelled chan error
 }
 
 func (c slowCatalogue) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
 	<-ctx.Done()
+
 	c.cancelled <- ctx.Err()
-	return nil, ctx.Err()
+
+	return nil, ctx.Err() //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }
 
 func TestTimeoutCancelsTheHandlersContext(t *testing.T) {
-	catalogue := slowCatalogue{cancelled: make(chan error, 1)}
+	catalogue := slowCatalogue{
+		cancelled: make(chan error, 1),
+		Catalogue: nil,
+	}
 	server, err := mcpserver.New(mcpserver.Deps{
 		Verifier: verifier{token: oauthserver.Token{
-			UserID: alice, ClientID: "c", Scopes: []string{oauthserver.ScopeCatalogRead}, Audience: []string{testsupport.MCPEndpoint},
-		}},
+			UserID: alice(), ClientID: "c", Scopes: []string{oauthserver.ScopeCatalogRead}, Audience: []string{testsupport.MCPEndpoint},
+			ID:             "",
+			ConnectedAppID: 0,
+		},
+			err: nil,
+		},
 		Catalogue: catalogue,
 		Issuer:    testsupport.OAuthIssuer,
-		Limits:    mcpserver.Limits{ToolTimeout: 50 * time.Millisecond},
+		Limits: mcpserver.Limits{
+			ToolTimeout:      50 * time.Millisecond,
+			MaxPageSize:      0,
+			MaxResponseBytes: 0,
+			RateWindow:       0,
+			User: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Client: mcpserver.Rates{
+				Catalogue: 0,
+				Personal:  0,
+				Write:     0,
+			},
+			Now: nil,
+		},
+		API:              nil,
+		MyDashboard:      nil,
+		MyCourseProgress: nil,
+		Logger:           nil,
+		HeldCapabilities: nil,
 	})
 	require.NoError(t, err)
+
 	ts := httptest.NewServer(server.Handler())
 	t.Cleanup(ts.Close)
+
 	client := mcp.NewClient(&mcp.Implementation{Name: "t", Version: "0"}, nil)
 	session, err := client.Connect(t.Context(), &mcp.StreamableClientTransport{
 		Endpoint:             ts.URL + "/mcp",
@@ -169,5 +277,6 @@ type bearerTransport struct{}
 func (bearerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
 	r.Header.Set("Authorization", "Bearer anything")
-	return http.DefaultTransport.RoundTrip(r)
+
+	return http.DefaultTransport.RoundTrip(r) //nolint:wrapcheck // a test double that passes the wrapped call through, so the error stays the real one
 }

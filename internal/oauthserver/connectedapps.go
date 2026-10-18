@@ -53,6 +53,7 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 	if !ok {
 		return nil, ErrNotSignedIn
 	}
+
 	now := s.storage.now()
 	db := s.storage.db
 
@@ -62,6 +63,7 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "list refresh tokens of user")
 	}
+
 	access, err := db.OAuthAccessToken.Query().
 		Where(oauthaccesstoken.UserID(account.ID), oauthaccesstoken.ExpiresAtGT(now)).
 		All(ctx)
@@ -75,23 +77,31 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 		newest      time.Time
 		scopes      []string
 	}
+
 	byClient := map[string]*grants{}
 	// Times come from the token's own columns, never from created_at: that one
 	// is stamped by the process clock (and without a zone), while expiry and
 	// auth_time follow the injected clock the rest of the package runs on.
 	see := func(clientID string, connected, issued time.Time, scopes []string, live bool) {
-		g := byClient[clientID]
-		if g == nil {
-			g = &grants{connectedAt: connected}
-			byClient[clientID] = g
+		grant := byClient[clientID]
+		if grant == nil {
+			grant = &grants{
+				connectedAt: connected,
+				live:        false,
+				newest:      time.Time{},
+				scopes:      nil,
+			}
+			byClient[clientID] = grant
 		}
-		if connected.Before(g.connectedAt) {
-			g.connectedAt = connected
+
+		if connected.Before(grant.connectedAt) {
+			grant.connectedAt = connected
 		}
+
 		if live {
-			g.live = true
-			if issued.After(g.newest) {
-				g.newest, g.scopes = issued, scopes
+			grant.live = true
+			if issued.After(grant.newest) {
+				grant.newest, grant.scopes = issued, scopes
 			}
 		}
 	}
@@ -99,6 +109,7 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 		// auth_time is when the user approved; every rotation inherits it.
 		see(r.ClientID, r.AuthTime, r.ExpiresAt.Add(-s.storage.refreshLifetime), r.Scopes, r.UsedAt == nil)
 	}
+
 	for _, a := range access {
 		issued := a.ExpiresAt.Add(-s.storage.accessLifetime)
 		see(a.ClientID, issued, issued, a.Scopes, true)
@@ -110,13 +121,16 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 			clientIDs = append(clientIDs, id)
 		}
 	}
+
 	if len(clientIDs) == 0 {
 		return []ConnectedApp{}, nil
 	}
+
 	clients, err := db.OAuthClient.Query().Where(oauthclient.ClientIDIn(clientIDs...)).All(ctx)
 	if err != nil {
 		return nil, errs.Wrapf(err, "load clients of connected apps")
 	}
+
 	apps := make([]ConnectedApp, 0, len(clients))
 	for _, c := range clients {
 		g := byClient[c.ClientID]
@@ -125,12 +139,15 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 			ConnectedAt: g.connectedAt, ClientHost: documentHost(c.ClientID),
 		})
 	}
+
 	slices.SortFunc(apps, func(a, b ConnectedApp) int {
 		if c := b.ConnectedAt.Compare(a.ConnectedAt); c != 0 {
 			return c
 		}
+
 		return b.ID - a.ID
 	})
+
 	return apps, nil
 }
 
@@ -140,10 +157,12 @@ func documentHost(clientID string) string {
 	if !strings.HasPrefix(clientID, "https://") {
 		return ""
 	}
+
 	u, err := url.Parse(clientID)
 	if err != nil {
 		return ""
 	}
+
 	return u.Host
 }
 
@@ -160,19 +179,24 @@ func (s *Server) Disconnect(ctx context.Context, appID int) error {
 	if !ok {
 		return ErrNotSignedIn
 	}
+
 	apps, err := s.ConnectedApps(ctx)
 	if err != nil {
 		return err
 	}
+
 	if !slices.ContainsFunc(apps, func(a ConnectedApp) bool { return a.ID == appID }) {
 		return ErrAppNotConnected
 	}
+
 	row, err := s.storage.db.OAuthClient.Get(ctx, appID)
 	if ent.IsNotFound(err) {
 		return ErrAppNotConnected
 	}
+
 	if err != nil {
 		return errs.Wrapf(err, "load client of connected app")
 	}
+
 	return s.storage.TerminateSession(ctx, strconv.Itoa(account.ID), row.ClientID)
 }

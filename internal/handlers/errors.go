@@ -53,6 +53,7 @@ func NewAPIErrorHandler(
 // an application handler.
 func (h *APIErrorHandler) NewError(ctx context.Context, err error) *api.ProblemDetailsStatusCode {
 	status, problem := h.answer(ctx, nil, err)
+
 	return &api.ProblemDetailsStatusCode{StatusCode: status, Response: problem}
 }
 
@@ -74,6 +75,7 @@ func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *h
 func (h *APIErrorHandler) answer(ctx context.Context, r *http.Request, err error) (int, api.ProblemDetails) {
 	status := errorStatus(err)
 	h.report(ctx, r, status, err)
+
 	return status, h.problem(ctx, status, err)
 }
 
@@ -81,9 +83,12 @@ func (h *APIErrorHandler) answer(ctx context.Context, r *http.Request, err error
 func (h *APIErrorHandler) send(ctx context.Context, w http.ResponseWriter, status int, problem api.ProblemDetails) {
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(status)
+
 	encoder := new(jx.Encoder)
 	problem.Encode(encoder)
-	if _, writeErr := encoder.WriteTo(w); writeErr != nil {
+
+	_, writeErr := encoder.WriteTo(w)
+	if writeErr != nil {
 		h.logger.ErrorContext(ctx, "writing error response", "err", writeErr)
 	}
 }
@@ -99,14 +104,19 @@ const statusClientClosedRequest = 499
 // refusal wraps ErrForbidden, the asset store's missing key wraps ErrNotFound) instead of
 // carrying a status of its own, and ent's errors reach it already translated
 // by domain.FromStore.
-var domainStatus = []struct {
+func domainStatus() []struct {
 	err    error
 	status int
-}{
-	{domain.ErrNotFound, http.StatusNotFound},
-	{domain.ErrConflict, http.StatusConflict},
-	{domain.ErrInvalid, http.StatusUnprocessableEntity},
-	{domain.ErrForbidden, http.StatusForbidden},
+} {
+	return []struct {
+		err    error
+		status int
+	}{
+		{domain.ErrNotFound, http.StatusNotFound},
+		{domain.ErrConflict, http.StatusConflict},
+		{domain.ErrInvalid, http.StatusUnprocessableEntity},
+		{domain.ErrForbidden, http.StatusForbidden},
+	}
 }
 
 func errorStatus(err error) int {
@@ -114,17 +124,20 @@ func errorStatus(err error) int {
 	// returns in its own 401, and a refusal of a signed-in caller (ErrForbidden)
 	// must stay a 403.
 	translated := domain.FromStore(err)
-	for _, row := range domainStatus {
+	for _, row := range domainStatus() {
 		if errors.Is(translated, row.err) {
 			return row.status
 		}
 	}
+
 	if ogenErr, ok := errors.AsType[ogenerrors.Error](err); ok {
 		return ogenErr.Code()
 	}
+
 	if errors.Is(err, context.Canceled) {
 		return statusClientClosedRequest
 	}
+
 	return http.StatusInternalServerError
 }
 
@@ -142,11 +155,13 @@ func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) ap
 	if found, ok := detailFor(err); ok {
 		problem.Detail = api.NewOptString(h.detailText(ctx, found))
 	}
+
 	if status == http.StatusUnprocessableEntity {
 		if fields := h.fieldErrors(ctx, status, err); len(fields) > 0 {
 			problem.Errors = api.NewOptProblemDetailsErrors(fields)
 		}
 	}
+
 	return problem
 }
 
@@ -158,11 +173,14 @@ func (h *APIErrorHandler) fieldErrors(ctx context.Context, status int, err error
 		if input.text != "" {
 			return api.ProblemDetailsErrors{input.field: {input.text}}
 		}
+
 		return api.ProblemDetailsErrors{input.field: {h.translator.Text(ctx, input.message)}}
 	}
+
 	if field, ok := domain.FieldOf(err); ok {
 		return api.ProblemDetailsErrors{field: {h.translator.StatusText(ctx, status)}}
 	}
+
 	return nil
 }
 
@@ -185,13 +203,21 @@ func (e *invalidInputError) Unwrap() error { return domain.ErrInvalid }
 // invalid reports input the caller can fix: field names the request property
 // and message says what is wrong with it.
 func invalid(field string, message localization.Message) error {
-	return &invalidInputError{field: field, message: message}
+	return &invalidInputError{
+		field:   field,
+		message: message,
+		text:    "",
+	}
 }
 
 // invalidText is invalid for a message that echoes the caller's own input and
 // has no translation.
 func invalidText(field, text string) error {
-	return &invalidInputError{field: field, text: text}
+	return &invalidInputError{
+		field:   field,
+		text:    text,
+		message: localization.Message{},
+	}
 }
 
 // notFoundError is a domain.ErrNotFound that says what was not found, so details can
@@ -217,37 +243,44 @@ var (
 // details is the table from an error to the localized explanation the client
 // may show as `detail`. It lives in the adapter, not in the domain, so no
 // module imports localization to word its own failure.
-var details = []struct {
+func details() []struct {
 	err     error
 	message localization.Message
-}{
-	{errLessonNotFound, localization.LessonNotFound},
-	{errCourseNotFound, localization.CourseNotFound},
-	{errEmailLinkInvalid, localization.EmailLinkInvalid},
-	{errOAuthRequestNotFound, localization.OAuthRequestNotFound},
-	{errConnectedAppNotFound, localization.ConnectedAppNotFound},
-	{selfprotection.ErrOwnStaffRecord, localization.OwnStaffRecord},
-	{selfprotection.ErrOwnRoleGrants, localization.OwnRoleGrants},
-	{selfprotection.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
-	{selfprotection.ErrOwnAccountDeletion, localization.OwnAccountDeletion},
-	{account.ErrLastAdmin, localization.LastAdministrator},
+} {
+	return []struct {
+		err     error
+		message localization.Message
+	}{
+		{errLessonNotFound, localization.LessonNotFound},
+		{errCourseNotFound, localization.CourseNotFound},
+		{errEmailLinkInvalid, localization.EmailLinkInvalid},
+		{errOAuthRequestNotFound, localization.OAuthRequestNotFound},
+		{errConnectedAppNotFound, localization.ConnectedAppNotFound},
+		{selfprotection.ErrOwnStaffRecord, localization.OwnStaffRecord},
+		{selfprotection.ErrOwnRoleGrants, localization.OwnRoleGrants},
+		{selfprotection.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
+		{selfprotection.ErrOwnAccountDeletion, localization.OwnAccountDeletion},
+		{account.ErrLastAdmin, localization.LastAdministrator},
+	}
 }
 
 // stateNames are the localized names of the states in each vocabulary
 // (transition.Vocabulary): Publication States (GLOSSARY) are shared by every
 // resource that has them, a Course's Readiness has a vocabulary of its own. A
 // test checks that every state transition lists has a name here.
-var stateNames = map[transition.Vocabulary]map[transition.State]localization.Message{
-	transition.PublicationStates: {
-		transition.State(transition.Draft):     localization.PublicationStateDraft,
-		transition.State(transition.Published): localization.PublicationStatePublished,
-		transition.State(transition.Archived):  localization.PublicationStateArchived,
-	},
-	transition.CourseReadiness: {
-		transition.State(transition.ReadinessDraft):         localization.ReadinessDraft,
-		transition.State(transition.ReadinessInDevelopment): localization.ReadinessInDevelopment,
-		transition.State(transition.ReadinessCompleted):     localization.ReadinessCompleted,
-	},
+func stateNames() map[transition.Vocabulary]map[transition.State]localization.Message {
+	return map[transition.Vocabulary]map[transition.State]localization.Message{
+		transition.PublicationStates: {
+			transition.State(transition.Draft):     localization.PublicationStateDraft,
+			transition.State(transition.Published): localization.PublicationStatePublished,
+			transition.State(transition.Archived):  localization.PublicationStateArchived,
+		},
+		transition.CourseReadiness: {
+			transition.State(transition.ReadinessDraft):         localization.ReadinessDraft,
+			transition.State(transition.ReadinessInDevelopment): localization.ReadinessInDevelopment,
+			transition.State(transition.ReadinessCompleted):     localization.ReadinessCompleted,
+		},
+	}
 }
 
 // detail is the localized explanation of an error: a message and, for a refused
@@ -263,12 +296,20 @@ func detailFor(err error) (detail, bool) {
 	if illegal, ok := transition.IsIllegal(err); ok {
 		return detail{message: localization.IllegalStateTransition, move: illegal}, true
 	}
-	for _, row := range details {
+
+	for _, row := range details() {
 		if errors.Is(err, row.err) {
-			return detail{message: row.message}, true
+			return detail{
+				message: row.message,
+				move:    nil,
+			}, true
 		}
 	}
-	return detail{}, false
+
+	return detail{
+		message: localization.Message{},
+		move:    nil,
+	}, false
 }
 
 // detailText is the explanation in the caller's language, with a refused move's
@@ -277,6 +318,7 @@ func (h *APIErrorHandler) detailText(ctx context.Context, found detail) string {
 	if found.move == nil {
 		return h.translator.Text(ctx, found.message)
 	}
+
 	return h.translator.TextWith(ctx, found.message, struct{ From, To string }{
 		From: h.stateText(ctx, found.move.Vocabulary, found.move.From),
 		To:   h.stateText(ctx, found.move.Vocabulary, found.move.To),
@@ -286,9 +328,10 @@ func (h *APIErrorHandler) detailText(ctx context.Context, found detail) string {
 // stateText is the localized name of a state, or the raw value of one the
 // vocabulary does not know (a legacy row with a state of its own).
 func (h *APIErrorHandler) stateText(ctx context.Context, vocabulary transition.Vocabulary, state transition.State) string {
-	if message, ok := stateNames[vocabulary][state]; ok {
+	if message, ok := stateNames()[vocabulary][state]; ok {
 		return h.translator.Text(ctx, message)
 	}
+
 	return string(state)
 }
 
@@ -311,6 +354,7 @@ func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status in
 		"span_id":  spanID,
 	}
 	httpContext := sentry.Context{"status": status}
+
 	if r != nil {
 		attrs = append(attrs, "method", r.Method, "path", r.URL.Path)
 		tags["http.method"] = r.Method
@@ -320,10 +364,12 @@ func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status in
 	}
 
 	h.logger.ErrorContext(ctx, "request failed", attrs...)
+
 	hub := sentry.GetHubFromContext(ctx)
 	if hub == nil {
 		return
 	}
+
 	hub.WithScope(func(scope *sentry.Scope) {
 		scope.SetTags(tags)
 		scope.SetContext("http", httpContext)
@@ -345,8 +391,10 @@ func NewMethodNotAllowedHandler(problems *APIErrorHandler) func(http.ResponseWri
 	return func(w http.ResponseWriter, r *http.Request, allowed string) {
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
+
 			return
 		}
+
 		w.Header().Set("Allow", allowed)
 		problems.unmatched(w, r, http.StatusMethodNotAllowed)
 	}

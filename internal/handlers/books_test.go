@@ -88,6 +88,7 @@ func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {
 	res, err := h.Client.DownloadBook(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusFound, h.LastStatus())
+
 	found := res
 	// The harness bucket cannot presign, so the PDF is served by the storage
 	// read route; on S3 this is a presigned bucket URL.
@@ -104,6 +105,7 @@ func TestDownloadBookWithoutARequestReturnsToTheBookPage(t *testing.T) {
 	res, err := h.Client.DownloadBook(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusFound, h.LastStatus())
+
 	found := res
 	assert.Equal(t, "https://code-basics.com/ru/book", found.Location)
 

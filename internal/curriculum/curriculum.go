@@ -52,5 +52,6 @@ func Modules(ctx context.Context, db *ent.Client, locale string, versionIDs ...i
 	if err != nil {
 		return nil, errs.With("version_ids", versionIDs).Wrapf(err, "load modules of versions")
 	}
+
 	return rows, nil
 }

@@ -21,6 +21,7 @@ func signedIn(t *testing.T, router http.Handler, email string) *http.Cookie {
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	cookie := sessionCookie(resp)
 	require.NotNil(t, cookie)
+
 	return cookie
 }
 
@@ -57,6 +58,7 @@ func TestACrossSiteWriteIsRefused(t *testing.T) {
 	t.Parallel()
 	router := newAuthRouter(t)
 	cookie := signedIn(t, router, "cross-site@example.com")
+
 	const edit = `{"firstName":"Grace","lastName":null}`
 
 	patch := func(site string) int {
@@ -64,11 +66,14 @@ func TestACrossSiteWriteIsRefused(t *testing.T) {
 			strings.NewReader(edit))
 		req.Header.Set("Content-Type", "application/json")
 		req.AddCookie(cookie)
+
 		if site != "" {
 			req.Header.Set("Sec-Fetch-Site", site)
 		}
+
 		rec := httptest.NewRecorder()
 		router.ServeHTTP(rec, req)
+
 		return rec.Code
 	}
 
@@ -83,6 +88,7 @@ func TestACrossSiteWriteIsRefused(t *testing.T) {
 func TestSignUpAndSignInStartSessionsOfOneShape(t *testing.T) {
 	t.Parallel()
 	router := newAuthRouter(t)
+
 	const email, password = "one-shape@example.com", "s3cret-pass"
 
 	signUp := sessionCookie(do(t, router, http.MethodPost, "/api/users",

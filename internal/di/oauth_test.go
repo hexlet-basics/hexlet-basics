@@ -12,13 +12,17 @@ import (
 
 func serveRouter(t *testing.T, path string) *httptest.ResponseRecorder {
 	t.Helper()
+
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
+
 	router, err := do.InvokeNamed[http.Handler](injector, routerServiceName)
 	require.NoError(t, err)
 
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, path, nil))
+
 	return rec
 }
 

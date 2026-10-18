@@ -42,6 +42,7 @@ func WithAmbientTx(ctx context.Context, tx *sql.Tx, client *ent.Client) context.
 
 func ambientFrom(ctx context.Context) (*ambient, bool) {
 	a, ok := ctx.Value(ambientKey{}).(*ambient)
+
 	return a, ok
 }
 
@@ -51,25 +52,58 @@ func ambientFrom(ctx context.Context) (*ambient, bool) {
 // of per client.
 type routingDriver struct{ dialect.Driver }
 
-func (d routingDriver) Exec(ctx context.Context, query string, args, v any) error {
+func (d routingDriver) Exec(ctx context.Context, query string, args, dest any) error {
 	if a, ok := ambientFrom(ctx); ok {
-		return a.driver.Exec(ctx, query, args, v)
+		err := a.driver.Exec(ctx, query, args, dest)
+		if err != nil {
+			return errs.Wrapf(err, "exec")
+		}
+
+		return nil
 	}
-	return d.Driver.Exec(ctx, query, args, v)
+
+	err := d.Driver.Exec(ctx, query, args, dest)
+	if err != nil {
+		return errs.Wrapf(err, "exec")
+	}
+
+	return nil
 }
 
-func (d routingDriver) Query(ctx context.Context, query string, args, v any) error {
+func (d routingDriver) Query(ctx context.Context, query string, args, dest any) error {
 	if a, ok := ambientFrom(ctx); ok {
-		return a.driver.Query(ctx, query, args, v)
+		err := a.driver.Query(ctx, query, args, dest)
+		if err != nil {
+			return errs.Wrapf(err, "query")
+		}
+
+		return nil
 	}
-	return d.Driver.Query(ctx, query, args, v)
+
+	err := d.Driver.Query(ctx, query, args, dest)
+	if err != nil {
+		return errs.Wrapf(err, "query")
+	}
+
+	return nil
 }
 
 // Tx joins the ambient transaction (a no-op commit and rollback, like
 // NewTxClient) so ent's own client.Tx does not open a nested one.
 func (d routingDriver) Tx(ctx context.Context) (dialect.Tx, error) {
 	if a, ok := ambientFrom(ctx); ok {
-		return a.driver.Tx(ctx)
+		result, err := a.driver.Tx(ctx)
+		if err != nil {
+			return result, errs.Wrapf(err, "begin transaction")
+		}
+
+		return result, nil
 	}
-	return d.Driver.Tx(ctx)
+
+	result, err := d.Driver.Tx(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "begin transaction")
+	}
+
+	return result, nil
 }

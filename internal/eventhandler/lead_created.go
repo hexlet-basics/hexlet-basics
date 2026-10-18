@@ -15,7 +15,7 @@ import (
 const leadCreatedHandlerName = "lead_created_to_amocrm_v1"
 
 type inserter interface {
-	Insert(context.Context, river.JobArgs, *river.InsertOpts) (*rivertype.JobInsertResult, error)
+	Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error)
 }
 
 // LeadCreated routes the domain fact to River; the Watermill consumer stays
@@ -25,6 +25,7 @@ func LeadCreated(client inserter) cqrs.EventHandler {
 		leadCreatedHandlerName,
 		func(ctx context.Context, event *events.LeadCreated) error {
 			_, err := client.Insert(ctx, jobs.AmoCRMLeadArgs{Event: *event}, nil)
+
 			return err
 		},
 	)

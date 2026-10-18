@@ -36,9 +36,11 @@ func (s *Scheduler) ReviewCourse(ctx context.Context, courseID int) error {
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	if course.CurrentVersionID == nil {
 		return nil
 	}
+
 	return s.review(ctx, courselessontranslation.CourseVersionID(*course.CurrentVersionID))
 }
 
@@ -51,6 +53,7 @@ func (s *Scheduler) ReviewLesson(ctx context.Context, lessonID int) error {
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	return s.review(ctx, courselessontranslation.CourseLessonID(lesson.ID))
 }
 
@@ -68,5 +71,6 @@ func (s *Scheduler) review(ctx context.Context, within ...predicate.CourseLesson
 	for i, id := range ids {
 		args[i] = jobs.ReviewLessonArgs{LessonInfoID: id}
 	}
+
 	return s.jobs.Enqueue(ctx, args...)
 }

@@ -87,6 +87,7 @@ const emptySurveyAnswers = "[]"
 // amoCRM note would have read by symbol), and the admin list shows them as is.
 func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead, error) {
 	var created *ent.Lead
+
 	err := r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		u, err := db.User.Get(ctx, submission.UserID)
 		if err != nil {
@@ -114,17 +115,20 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			// The contract's enum rejects anything else before it gets here.
 			return errs.With("contact_method", submission.ContactMethod).Errorf("unknown contact method")
 		}
+
 		created, err = create.Save(ctx)
 		if err != nil {
 			return errs.Wrapf(err, "create lead")
 		}
 
-		if err := removeShouldBeLead(ctx, db, u.ID); err != nil {
+		err = removeShouldBeLead(ctx, db, u.ID)
+		if err != nil {
 			return err
 		}
 
 		visit := submission.FirstVisit
-		if err := r.publisher.Publish(ctx, tx, events.LeadCreated{
+
+		err = r.publisher.Publish(ctx, tx, events.LeadCreated{
 			LeadID:      created.ID,
 			UserID:      u.ID,
 			UserName:    userName(u),
@@ -144,14 +148,17 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			Referrer:    visit.Referrer,
 			IP:          submission.IP,
 			OccurredAt:  r.now().UTC(),
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish lead created")
 		}
+
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return created, nil
 }
 
@@ -166,17 +173,18 @@ const shouldBeLeadTag = "should_be_lead"
 // off). It runs in the lead's transaction, so a rolled-back lead keeps the tag.
 // A user who never had the tag, or a database without it, is no change.
 func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
-	t, err := db.Tag.Query().Where(tag.Name(shouldBeLeadTag)).Only(ctx)
+	tagRow, err := db.Tag.Query().Where(tag.Name(shouldBeLeadTag)).Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil
 	}
+
 	if err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "load lead tag")
 	}
 
 	removed, err := db.Tagging.Delete().
 		Where(
-			tagging.TagID(t.ID),
+			tagging.TagID(tagRow.ID),
 			tagging.TaggableType(userTaggableType),
 			tagging.TaggableID(userID),
 			tagging.Context(tagListContext),
@@ -185,12 +193,16 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 	if err != nil {
 		return errs.With("tag", shouldBeLeadTag, "user_id", userID).Wrapf(err, "remove lead tag from user")
 	}
+
 	if removed == 0 {
 		return nil
 	}
-	if err := db.Tag.UpdateOneID(t.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
+
+	err = db.Tag.UpdateOneID(tagRow.ID).AddTaggingsCount(-removed).Exec(ctx)
+	if err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "count lead taggings")
 	}
+
 	return nil
 }
 
@@ -216,20 +228,23 @@ func coursesData(ctx context.Context, db *ent.Client, userID int) (string, error
 		return "", errs.Wrapf(err, "load lead enrollments")
 	}
 
-	data := lo.Map(enrollments, func(e *ent.Enrollment, _ int) courseData {
+	data := lo.Map(enrollments, func(enrolled *ent.Enrollment, _ int) courseData {
 		var slug *string
-		if e.Edges.Course != nil {
-			slug = e.Edges.Course.Slug
+		if enrolled.Edges.Course != nil {
+			slug = enrolled.Edges.Course.Slug
 		}
+
 		return courseData{
 			Slug:                 slug,
-			LessonsFinishedCount: len(e.Edges.LessonProgress),
+			LessonsFinishedCount: len(enrolled.Edges.LessonProgress),
 		}
 	})
+
 	encoded, err := json.Marshal(data)
 	if err != nil {
 		return "", errs.Wrapf(err, "encode courses data")
 	}
+
 	return string(encoded), nil
 }
 
@@ -239,9 +254,11 @@ func userName(u *ent.User) string {
 	if lo.FromPtr(u.FirstName) != "" || lo.FromPtr(u.LastName) != "" {
 		return lo.FromPtr(u.FirstName) + " " + lo.FromPtr(u.LastName)
 	}
+
 	if email := lo.FromPtr(u.Email); email != "" {
 		return email
 	}
+
 	return fmt.Sprintf("User #%d", u.ID)
 }
 
@@ -268,5 +285,6 @@ func (d *Directory) List(ctx context.Context, search string, page domain.Page) (
 			lead.TelegramContainsFold(term),
 		))
 	}
+
 	return domain.Paged(ctx, query, page)
 }

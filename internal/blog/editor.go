@@ -43,6 +43,7 @@ func (e *Editor) Create(ctx context.Context, creatorID int, locale string, field
 		SetCreatorID(creatorID).
 		SetLocale(locale).
 		Save(ctx)
+
 	return row, domain.FromStore(err)
 }
 
@@ -57,16 +58,20 @@ func (e *Editor) Update(ctx context.Context, id int, fields PostFields) (*ent.Bl
 	} else {
 		update.SetName(*fields.Name)
 	}
+
 	if fields.Slug == nil {
 		update.ClearSlug()
 	} else {
 		update.SetSlug(*fields.Slug)
 	}
+
 	if fields.Description == nil {
 		update.ClearDescription()
 	} else {
 		update.SetDescription(*fields.Description)
 	}
+
 	row, err := update.Save(ctx)
+
 	return row, domain.FromStore(err)
 }

@@ -1,3 +1,6 @@
+// Command worker is the asynchronous process: the Watermill event router and
+// the River job queue, with a health-only listener. The HTTP API runs in
+// cmd/server.
 package main
 
 import (
@@ -23,13 +26,16 @@ const shutdownTimeout = 15 * time.Second
 func main() {
 	// Development convenience only: LoadDotenv reads .env unless APP_ENV names
 	// another environment, and it runs here, not in run, so tests never read it.
-	if err := config.LoadDotenv(); err != nil {
+	err := config.LoadDotenv()
+	if err != nil {
 		slog.Error("loading .env", "err", err)
 		os.Exit(1)
 	}
+
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
-	err := run(signalCtx, stop)
+	err = run(signalCtx, stop)
 	stop()
+
 	if err != nil {
 		// The one place a run failure is logged; run returns it unlogged.
 		slog.Error("process failed", "err", err)
@@ -63,7 +69,8 @@ func run(signalCtx context.Context, stopSignals func()) error {
 	defer cancelCleanup()
 	// Every actor has stopped by now, so the injector may release the resources
 	// they used (ADR-0023).
-	if err := dependencies.Shutdown(cleanupCtx); err != nil {
+	err = dependencies.Shutdown(cleanupCtx)
+	if err != nil {
 		dependencies.Logger.ErrorContext(cleanupCtx, "releasing resources", "err", err)
 	}
 

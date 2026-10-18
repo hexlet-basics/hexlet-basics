@@ -33,9 +33,11 @@ func (s *store) FindCtx(ctx context.Context, token string) ([]byte, bool, error)
 	if ent.IsNotFound(err) {
 		return nil, false, nil
 	}
+
 	if err != nil {
-		return nil, false, err
+		return nil, false, errs.Wrapf(err, "load session")
 	}
+
 	return row.Data, true, nil
 }
 
@@ -43,34 +45,34 @@ func (s *store) FindCtx(ctx context.Context, token string) ([]byte, bool, error)
 // already there: scs commits again on every request when an idle timeout moves
 // the expiry forward.
 func (s *store) CommitCtx(ctx context.Context, token string, data []byte, expiry time.Time) error {
-	return s.db.Session.Create().
+	err := s.db.Session.Create().
 		SetID(token).
 		SetData(data).
 		SetExpiry(expiry.UTC()).
 		OnConflictColumns(session.FieldID).
 		UpdateNewValues().
 		Exec(ctx)
+	if err != nil {
+		return errs.Wrapf(err, "save session")
+	}
+
+	return nil
 }
 
 // DeleteCtx removes a session. A token that is not there is not an error, as
 // scs requires: signing out twice is not a failure.
 func (s *store) DeleteCtx(ctx context.Context, token string) error {
 	_, err := s.db.Session.Delete().Where(session.ID(token)).Exec(ctx)
-	return err
-}
 
-// deleteExpired removes every session whose expiry has passed and reports how
-// many it removed.
-func (s *store) deleteExpired(ctx context.Context) (int, error) {
-	return s.db.Session.Delete().Where(session.ExpiryLTE(s.clock().UTC())).Exec(ctx)
+	return errs.Wrapf(err, "delete session")
 }
-
-// The context-free methods scs's Store interface demands. scs prefers the Ctx
-// variants when a store has them, so these are only the interface's price.
 
 func (s *store) Find(token string) ([]byte, bool, error) {
 	return s.FindCtx(context.Background(), token)
 }
+
+// The context-free methods scs's Store interface demands. scs prefers the Ctx
+// variants when a store has them, so these are only the interface's price.
 
 func (s *store) Commit(token string, data []byte, expiry time.Time) error {
 	return s.CommitCtx(context.Background(), token, data, expiry)
@@ -78,4 +80,15 @@ func (s *store) Commit(token string, data []byte, expiry time.Time) error {
 
 func (s *store) Delete(token string) error {
 	return s.DeleteCtx(context.Background(), token)
+}
+
+// deleteExpired removes every session whose expiry has passed and reports how
+// many it removed.
+func (s *store) deleteExpired(ctx context.Context) (int, error) {
+	result, err := s.db.Session.Delete().Where(session.ExpiryLTE(s.clock().UTC())).Exec(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "delete session")
+	}
+
+	return result, nil
 }

@@ -53,6 +53,7 @@ type Submission struct {
 // rest of the request is unchanged.
 func (s Submission) WithImage(image string) Submission {
 	s.Image = image
+
 	return s
 }
 

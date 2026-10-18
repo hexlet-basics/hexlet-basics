@@ -23,28 +23,34 @@ import (
 func searchItems(t *testing.T, result *mcp.CallToolResult) []map[string]any {
 	t.Helper()
 	require.False(t, result.IsError, "%+v", result.Content)
-	var items []map[string]any
-	for _, item := range result.StructuredContent.(map[string]any)["items"].([]any) {
-		items = append(items, item.(map[string]any))
+	listed := as[[]any](t, as[map[string]any](t, result.StructuredContent)["items"])
+
+	items := make([]map[string]any, 0, len(listed))
+	for _, item := range listed {
+		items = append(items, as[map[string]any](t, item))
 	}
+
 	return items
 }
 
 func itemByID(t *testing.T, items []map[string]any, id string) map[string]any {
 	t.Helper()
+
 	for _, item := range items {
 		if item["id"] == id {
 			return item
 		}
 	}
+
 	require.Failf(t, "not found", "%s is not among the results", id)
+
 	return nil
 }
 
 func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	// A course not yet completed, on an unlisted page, is one more record the
 	// storefront hides.
@@ -71,13 +77,14 @@ func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 			fetched := call(t, session, "adminFetch", map[string]any{"locale": tc.locale, "id": tc.id})
 
 			require.False(t, fetched.IsError, "%+v", fetched.Content)
-			record := fetched.StructuredContent.(map[string]any)
+			record := as[map[string]any](t, fetched.StructuredContent)
 			assert.Equal(t, tc.id, record["id"])
 			assert.Equal(t, hit["title"], record["title"])
 			assert.NotEmpty(t, record["text"])
-			meta := record["metadata"].(map[string]any)
+			meta := as[map[string]any](t, record["metadata"])
 			assert.Equal(t, tc.kind, meta["type"])
 			assert.Equal(t, tc.readiness, meta["readiness"], "the record says how ready its course is")
+
 			if tc.state != "" {
 				assert.Equal(t, tc.state, hit["state"])
 				assert.Equal(t, tc.state, meta["state"], "the record says how published it is")
@@ -90,8 +97,8 @@ func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 // another locale is not found there.
 func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	russian := call(t, session, "adminSearch", map[string]any{"locale": "ru", "q": "Second post"})
 	english := call(t, session, "adminSearch", map[string]any{"locale": "en", "q": "Second post"})
@@ -100,6 +107,7 @@ func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 	for _, item := range searchItems(t, russian) {
 		assert.NotEqual(t, "post:second-post", item["id"])
 	}
+
 	itemByID(t, searchItems(t, english), "post:second-post")
 	require.True(t, fetched.IsError)
 	assert.Contains(t, textOf(t, fetched), "HTTP 404")
@@ -107,8 +115,8 @@ func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 
 func TestAdminFetchOfAnIdThatIsNotOneSearchReturnsIsNotFound(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	for _, id := range []string{"javascript-ru", "page:home", "lesson:javascript", "post:", "post:no-such-post", "course:no-such-course"} {
 		result := call(t, session, "adminFetch", map[string]any{"locale": "ru", "id": id})
@@ -134,33 +142,37 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	tools := []string{"adminSearch", "adminFetch"}
 
 	// A connection without the admin Scope, the public ones included.
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead).AccessToken)
 	shown := names(listTools(t, catalogueOnly).Tools)
 	assert.Contains(t, shown, "listCourses", "the catalogue tools keep working")
 	assert.NotContains(t, shown, "search")
 	assert.NotContains(t, shown, "fetch")
+
 	for _, name := range tools {
 		assert.NotContains(t, shown, name, "the admin Scope is missing")
 	}
 
 	// A staff member whose role does not hold mcp.read.
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
+
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
 		assert.NotContains(t, shown, name, "the role holds no mcp.read")
 	}
 
 	// A user who is not staff at all.
-	notStaff := o.MCPClient(o.Connect(alice, oauthserver.ScopeAdmin).AccessToken)
+	notStaff := o.MCPClient(o.Connect(alice(), oauthserver.ScopeAdmin).AccessToken)
 	for _, name := range tools {
 		assert.NotContains(t, names(listTools(t, notStaff).Tools), name)
 	}
 
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
+
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
 		assert.Contains(t, shown, name)
 	}
+
 	assert.NotContains(t, shown, "search")
 	assert.NotContains(t, shown, "fetch")
 }
@@ -174,13 +186,15 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a token without the admin Scope", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "mcp.read")
-		session := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+		o.Grant(editor(), "mcp.read")
+
+		session := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 		for tool, args := range arguments {
 			result := call(t, session, tool, args)
 
 			assertRefused(t, result)
 			assert.NotContains(t, textOf(t, result), "Node.js", "nothing of the record is told")
+
 			records := o.Records(operations[tool])
 			require.Len(t, records, 1, tool)
 			assert.Equal(t, "forbidden", records[0].Outcome)
@@ -190,7 +204,8 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a staff member whose role holds no mcp.read", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		session, _ := admin(t, o, bob)
+
+		session, _ := admin(t, o, bob())
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
 			records := o.Records(operations[tool])
@@ -201,7 +216,8 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("an administrator who is not staff", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		session, _ := admin(t, o, alice)
+
+		session, _ := admin(t, o, alice())
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
 			records := o.Records(operations[tool])
@@ -212,9 +228,9 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a locale the staff role does not allow", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "mcp.read")
+		o.Grant(editor(), "mcp.read")
 		o.DB.StaffMember.Update().SetAllowedLocales([]string{"en"}).ExecX(t.Context())
-		session, _ := admin(t, o, bob)
+		session, _ := admin(t, o, bob())
 
 		assertRefused(t, call(t, session, "adminSearch", arguments["adminSearch"]))
 	})
@@ -233,6 +249,7 @@ func TestEveryToolThatNeedsTheAdminScopeIsNamedAdmin(t *testing.T) {
 			assert.False(t, strings.HasPrefix(name, "admin"), "%s is named admin and needs the %q Scope", name, scope)
 		}
 	}
+
 	assert.NotEqual(t, oauthserver.ScopeAdmin, scopes["findTools"], "findTools is not an admin tool")
 	require.Contains(t, scopes, "findTools")
 	assert.NotContains(t, scopes, "search")

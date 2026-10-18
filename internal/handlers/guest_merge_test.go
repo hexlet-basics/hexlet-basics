@@ -25,7 +25,7 @@ import (
 // finished.
 func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(firstLessonSlug, secondLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateUser(ctx, &api.SignUpInput{
@@ -33,7 +33,9 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 		Password: "correct horse battery staple",
 	})
 	require.NoError(t, err)
+
 	created := res
+
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	finished := finishedLessonSlugs(t, h, int(created.Response.ID), jsCourseSlug)
@@ -49,11 +51,12 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 // merge is a union, and a later lesson does not pull the earlier ones with it.
 func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, thirdLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(thirdLessonSlug))
 	ctx := context.Background()
 
 	res, err := h.Client.CreateSession(ctx, signInAsActingUser(t, h))
 	require.NoError(t, err)
+
 	session := res
 	finished := finishedLessonSlugs(t, h, int(session.Response.ID), jsCourseSlug)
 	assert.ElementsMatch(t, []string{firstLessonSlug, thirdLessonSlug}, finished,
@@ -67,7 +70,7 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 // An account that already has everything the cookie names is untouched.
 func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
+	h := testsupport.NewGuestHarness(t, progressCookie(firstLessonSlug))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 
@@ -83,7 +86,9 @@ func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 // nothing, so that course resets rather than corrupting the account.
 func TestSignInIgnoresAGuestLessonMissingFromTheCurrentVersion(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewGuestHarness(t, progress.GuestProgress{}.Record(jsCourseSlug, "removed-in-a-later-build"))
+	h := testsupport.NewGuestHarness(t, progress.GuestProgress{
+		Entries: nil,
+	}.Record(jsCourseSlug, "removed-in-a-later-build"))
 	ctx := context.Background()
 	before := h.DB.LessonProgress.Query().CountX(ctx)
 
@@ -126,7 +131,9 @@ func finishedLessonSlugs(t *testing.T, h *testsupport.Harness, userID int, cours
 		lesson := h.DB.CourseLesson.GetX(ctx, row.LessonID)
 		slugs = append(slugs, *lesson.Slug)
 	}
+
 	assertEnrollmentExists(t, h, userID, crs.ID)
+
 	return slugs
 }
 
@@ -143,6 +150,7 @@ func assertEnrollmentExists(t *testing.T, h *testsupport.Harness, userID, course
 // harness session.
 func signInAsActingUser(t *testing.T, h *testsupport.Harness) *api.SessionInput {
 	t.Helper()
+
 	return &api.SessionInput{
 		Email:    lo.FromPtr(h.DB.User.GetX(t.Context(), actingUserID(t, h)).Email),
 		Password: fixture.Password,
@@ -161,6 +169,7 @@ func startsSession(setCookie []string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 

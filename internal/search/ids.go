@@ -19,7 +19,9 @@ const (
 
 // Types are every kind of record the search covers, in the order a tie between
 // two hits is broken: a course before its lessons, and both before a post.
-var Types = []Type{Course, Lesson, Post}
+func Types() []Type {
+	return []Type{Course, Lesson, Post}
+}
 
 // ErrBadID is a reference that is not an id this package makes.
 var ErrBadID = errors.New("not a catalogue id")
@@ -59,17 +61,24 @@ func ParseID(id string) (Ref, error) {
 	if !ok || rest == "" {
 		return Ref{}, ErrBadID
 	}
+
 	switch Type(kind) {
 	case Course, Post:
 		if strings.Contains(rest, "/") {
 			return Ref{}, ErrBadID
 		}
-		return Ref{Type: Type(kind), Slug: rest}, nil
+
+		return Ref{
+			Type:       Type(kind),
+			Slug:       rest,
+			CourseSlug: "",
+		}, nil
 	case Lesson:
 		course, lesson, ok := strings.Cut(rest, "/")
 		if !ok || course == "" || lesson == "" || strings.Contains(lesson, "/") {
 			return Ref{}, ErrBadID
 		}
+
 		return Ref{Type: Lesson, CourseSlug: course, Slug: lesson}, nil
 	default:
 		return Ref{}, ErrBadID

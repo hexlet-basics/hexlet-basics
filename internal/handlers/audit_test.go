@@ -30,13 +30,16 @@ func records(t *testing.T, h *testsupport.Harness, operation string) []*ent.Audi
 		Order(ent.Asc(auditrecord.FieldID)).
 		All(t.Context())
 	require.NoError(t, err)
+
 	return rows
 }
 
 func changesOf(t *testing.T, record *ent.AuditRecord) []audit.Change {
 	t.Helper()
+
 	var changes []audit.Change
 	require.NoError(t, json.Unmarshal(record.Changes, &changes))
+
 	return changes
 }
 
@@ -48,7 +51,13 @@ func fieldOf(changes []audit.Change, name string) (audit.FieldChange, bool) {
 			}
 		}
 	}
-	return audit.FieldChange{}, false
+
+	return audit.FieldChange{
+		Name:   "",
+		Old:    nil,
+		New:    nil,
+		Secret: false,
+	}, false
 }
 
 // blogInput is a complete input: the contract requires every field, null or not.
@@ -133,6 +142,7 @@ func TestUpdatingABlogPostRecordsOldAndNewOfEachChangedField(t *testing.T) {
 
 	_, slugChanged := fieldOf(changes, "slug")
 	assert.False(t, slugChanged, "an unchanged field is not recorded")
+
 	_, stamped := fieldOf(changes, "updated_at")
 	assert.False(t, stamped, "ent-owned timestamps are not recorded")
 }
@@ -148,10 +158,13 @@ func TestDeletingABlogPostLeavesOneAuditRecordForThePost(t *testing.T) {
 	assert.Equal(t, "BlogPost", *rows[0].EntityType)
 	assert.Equal(t, strconv.Itoa(fixture.ID(fixture.BlogPostToDelete)), *rows[0].EntityID)
 
-	var entities []string
-	for _, c := range changesOf(t, rows[0]) {
+	changes := changesOf(t, rows[0])
+
+	entities := make([]string, 0, len(changes))
+	for _, c := range changes {
 		entities = append(entities, c.Entity)
 	}
+
 	assert.Contains(t, entities, "BlogPostLike")
 	assert.Contains(t, entities, "BlogPost")
 

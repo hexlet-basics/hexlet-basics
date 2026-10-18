@@ -20,13 +20,16 @@ import (
 // fixtureUser is the fixture user with the label.
 func fixtureUser(t *testing.T, h *testsupport.Harness, label fixture.Label) *ent.User {
 	t.Helper()
+
 	return h.DB.User.GetX(t.Context(), fixture.ID(label))
 }
 
 func issueEmailToken(t *testing.T, purpose emailtoken.Purpose, u *ent.User, opts ...emailtoken.Option) string {
 	t.Helper()
+
 	token, err := testsupport.EmailTokens(opts...).Issue(purpose, u)
 	require.NoError(t, err)
+
 	return token
 }
 
@@ -43,7 +46,11 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 
 	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
-	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
+	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	}))
 }
 
 func TestCreateMagicLinkIgnoresCase(t *testing.T) {
@@ -54,7 +61,11 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Blank-User@Example.com"})
 	require.NoError(t, err)
 
-	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	})
 	assert.Equal(t, u.ID, email.UserID)
 }
 
@@ -68,7 +79,11 @@ func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "blank-user@example.com"})
 	require.NoError(t, err)
 
-	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	})
 	assert.Equal(t, "ru", email.Locale)
 }
 
@@ -80,7 +95,11 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 	err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "magic-nobody@example.com"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	})
 	assert.Equal(t, before, h.DB.User.Query().CountX(t.Context()), "no account is created")
 }
 
@@ -95,14 +114,18 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 	}
 
 	// RequireEnqueued fails on a second job: River skipped the repeat.
-	testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	})
 }
 
 // Following the link signs in exactly as a password does: the session cookie,
 // the guest's progress credited, the sign-in recorded.
 func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug, secondLessonSlug))
+	h := testsupport.NewVisitorHarness(t, progressCookie(firstLessonSlug, secondLessonSlug))
 	u := fixtureUser(t, h, fixture.UserBlank)
 
 	res, err := h.Client.ConsumeMagicLink(t.Context(),

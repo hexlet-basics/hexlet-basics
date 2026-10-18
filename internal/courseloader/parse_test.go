@@ -48,6 +48,7 @@ func TestParseLessonInfosRejectsUnknownFields(t *testing.T) {
 	dir := t.TempDir()
 	localeDir := filepath.Join(dir, "en")
 	require.NoError(t, os.Mkdir(localeDir, 0o755))
+
 	data := `name: Hello
 description: First lesson
 tips: []
@@ -72,10 +73,12 @@ func TestParseSpecReportsEveryMissingKeyInOrder(t *testing.T) {
 	_, err := parseSpec(openRepo(t, dir))
 
 	require.Error(t, err)
+
 	message := err.Error()
 	for _, key := range []string{"progress", "learn_as", "docker_image", "exercise_filename", "exercise_test_filename"} {
 		assert.Contains(t, message, "language."+key+" is required")
 	}
+
 	assert.NotContains(t, message, "language.name")
 	assert.Less(t, strings.Index(message, "language.progress"), strings.Index(message, "language.exercise_test_filename"))
 }
@@ -95,9 +98,11 @@ func TestIsRemoteRef(t *testing.T) {
 // openRepo opens dir the way Parse does: confined to it.
 func openRepo(t *testing.T, dir string) repository {
 	t.Helper()
+
 	root, err := os.OpenRoot(dir)
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = root.Close() })
+
 	return repository{fsys: root.FS(), dir: dir}
 }
 

@@ -61,29 +61,32 @@ const (
 // from, beyond what netip classifies as private, loopback, link-local, multicast
 // or unspecified. The IPv6 entries are the forms that carry an IPv4 address
 // inside them and so could name a private host indirectly.
-var blockedNetworks = parsePrefixes(
-	"0.0.0.0/8",       // "this network"
-	"100.64.0.0/10",   // carrier-grade NAT, internal to many providers
-	"192.0.0.0/24",    // IETF protocol assignments
-	"192.0.2.0/24",    // documentation
-	"198.18.0.0/15",   // benchmarking
-	"198.51.100.0/24", // documentation
-	"203.0.113.0/24",  // documentation
-	"240.0.0.0/4",     // reserved, includes the broadcast address
-	"64:ff9b::/96",    // NAT64: embeds an IPv4 address
-	"64:ff9b:1::/48",  // local-use NAT64
-	"100::/64",        // discard
-	"2001::/32",       // Teredo: embeds an IPv4 address
-	"2001:db8::/32",   // documentation
-	"2002::/16",       // 6to4: embeds an IPv4 address
-	"fec0::/10",       // deprecated site-local
-)
+func blockedNetworks() []netip.Prefix {
+	return parsePrefixes(
+		"0.0.0.0/8",       // "this network"
+		"100.64.0.0/10",   // carrier-grade NAT, internal to many providers
+		"192.0.0.0/24",    // IETF protocol assignments
+		"192.0.2.0/24",    // documentation
+		"198.18.0.0/15",   // benchmarking
+		"198.51.100.0/24", // documentation
+		"203.0.113.0/24",  // documentation
+		"240.0.0.0/4",     // reserved, includes the broadcast address
+		"64:ff9b::/96",    // NAT64: embeds an IPv4 address
+		"64:ff9b:1::/48",  // local-use NAT64
+		"100::/64",        // discard
+		"2001::/32",       // Teredo: embeds an IPv4 address
+		"2001:db8::/32",   // documentation
+		"2002::/16",       // 6to4: embeds an IPv4 address
+		"fec0::/10",       // deprecated site-local
+	)
+}
 
 func parsePrefixes(list ...string) []netip.Prefix {
 	out := make([]netip.Prefix, len(list))
 	for i, p := range list {
 		out[i] = netip.MustParsePrefix(p)
 	}
+
 	return out
 }
 
@@ -98,11 +101,13 @@ func publicAddress(ip netip.Addr) bool {
 		ip.IsLinkLocalUnicast() || ip.IsMulticast() || ip.IsUnspecified() {
 		return false
 	}
-	for _, p := range blockedNetworks {
+
+	for _, p := range blockedNetworks() {
 		if p.Contains(ip) {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -121,16 +126,19 @@ func newGuardedClient(allow func(netip.Addr) bool, timeout time.Duration) *http.
 	dialer := &net.Dialer{
 		Timeout: timeout,
 		Control: func(_, address string, _ syscall.RawConn) error {
-			ap, err := netip.ParseAddrPort(address)
+			addrPort, err := netip.ParseAddrPort(address)
 			if err != nil {
 				return errs.With("address", address).Wrapf(err, "refusing to connect")
 			}
-			if !allow(ap.Addr()) {
-				return errs.With("address", ap.Addr().String()).Errorf("refusing to connect: not a public address")
+
+			if !allow(addrPort.Addr()) {
+				return errs.With("address", addrPort.Addr().String()).Errorf("refusing to connect: not a public address")
 			}
+
 			return nil
 		},
 	}
+
 	return &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
@@ -141,7 +149,7 @@ func newGuardedClient(allow func(netip.Addr) bool, timeout time.Duration) *http.
 			ForceAttemptHTTP2:      true,
 			TLSClientConfig:        &tls.Config{MinVersion: tls.VersionTLS12},
 			TLSHandshakeTimeout:    timeout,
-			MaxResponseHeaderBytes: 16 << 10,
+			MaxResponseHeaderBytes: maxDocumentHeaderBytes,
 			DisableKeepAlives:      true,
 		},
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
@@ -170,7 +178,11 @@ type documentError struct {
 func (e *documentError) Error() string { return e.reason }
 
 func invalidDocument(format string, args ...any) *documentError {
-	return &documentError{status: http.StatusBadRequest, reason: fmt.Sprintf(format, args...)}
+	return &documentError{
+		status:     http.StatusBadRequest,
+		reason:     fmt.Sprintf(format, args...),
+		retryAfter: 0,
+	}
 }
 
 // documentClients resolves client ids that are URLs into client rows.
@@ -189,7 +201,16 @@ func newDocumentClients(client *http.Client, lim *limiter, db *ent.Client, now f
 	if client == nil {
 		client = newGuardedClient(publicAddress, documentTimeout)
 	}
-	return &documentClients{client: client, limiter: lim, db: db, now: now, failures: map[string]time.Time{}}
+
+	return &documentClients{
+		client:   client,
+		limiter:  lim,
+		db:       db,
+		now:      now,
+		failures: map[string]time.Time{},
+		flight:   singleflight.Group{},
+		mu:       sync.Mutex{},
+	}
 }
 
 // isDocumentID reports whether a client id is the kind this file handles. Any
@@ -198,35 +219,53 @@ func isDocumentID(clientID string) bool {
 	return len(clientID) >= len("https://") && strings.EqualFold(clientID[:len("https://")], "https://")
 }
 
+// What checkClientIDURL answers, in the order it checks.
+var (
+	errClientIDTooLong     = errors.New("the client_id URL is too long")
+	errClientIDNotHTTPS    = errors.New("the client_id must be an absolute https URL")
+	errClientIDCredentials = errors.New("the client_id URL must not carry credentials")
+	errClientIDFragment    = errors.New("the client_id URL must not have a fragment")
+	errClientIDPort        = errors.New("the client_id URL must use the default https port")
+	errClientIDNoPath      = errors.New("the client_id URL must have a path")
+	errClientIDDotSegments = errors.New("the client_id URL must not contain dot segments")
+)
+
 // checkClientIDURL holds a client id to what the specification requires of one,
 // plus the rules of this server: https, a path, no credentials, no fragment, no
 // dot segments, and the default port, so the URL names an ordinary public web
 // resource and nothing else.
 func checkClientIDURL(clientID string) error {
 	if len(clientID) > maxClientIDLen {
-		return errors.New("the client_id URL is too long")
+		return errClientIDTooLong
 	}
-	u, err := url.Parse(clientID)
-	if err != nil || u.Scheme != "https" || u.Opaque != "" || u.Hostname() == "" {
-		return errors.New("the client_id must be an absolute https URL")
+
+	parsedURL, err := url.Parse(clientID)
+	if err != nil || parsedURL.Scheme != "https" || parsedURL.Opaque != "" || parsedURL.Hostname() == "" {
+		return errClientIDNotHTTPS
 	}
-	if u.User != nil {
-		return errors.New("the client_id URL must not carry credentials")
+
+	if parsedURL.User != nil {
+		return errClientIDCredentials
 	}
-	if u.Fragment != "" || strings.Contains(clientID, "#") {
-		return errors.New("the client_id URL must not have a fragment")
+
+	if parsedURL.Fragment != "" || strings.Contains(clientID, "#") {
+		return errClientIDFragment
 	}
-	if port := u.Port(); port != "" && port != "443" {
-		return errors.New("the client_id URL must use the default https port")
+
+	if port := parsedURL.Port(); port != "" && port != "443" {
+		return errClientIDPort
 	}
-	if u.Path == "" || u.Path == "/" {
-		return errors.New("the client_id URL must have a path")
+
+	if parsedURL.Path == "" || parsedURL.Path == "/" {
+		return errClientIDNoPath
 	}
-	for segment := range strings.SplitSeq(u.Path, "/") {
+
+	for segment := range strings.SplitSeq(parsedURL.Path, "/") {
 		if segment == "." || segment == ".." {
-			return errors.New("the client_id URL must not contain dot segments")
+			return errClientIDDotSegments
 		}
 	}
+
 	return nil
 }
 
@@ -245,10 +284,14 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 	if !isDocumentID(clientID) {
 		return nil
 	}
-	if err := checkClientIDURL(clientID); err != nil {
+
+	err := checkClientIDURL(clientID)
+	if err != nil {
 		return invalidDocument("%s", err)
 	}
+
 	now := d.now()
+
 	row, err := d.db.OAuthClient.Query().Where(oauthclient.ClientID(clientID)).Only(ctx)
 	switch {
 	case err == nil:
@@ -256,7 +299,11 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 			return nil
 		}
 	case !ent.IsNotFound(err):
-		return &documentError{status: http.StatusInternalServerError, reason: "could not load the client"}
+		return &documentError{
+			status:     http.StatusInternalServerError,
+			reason:     "could not load the client",
+			retryAfter: 0,
+		}
 	}
 
 	if d.failed(clientID, now) {
@@ -268,41 +315,55 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 	if ok, wait := d.limiter.allow(address); !ok {
 		return &documentError{http.StatusTooManyRequests, wait, "too many client metadata fetches from this address, try again later"}
 	}
+
 	_, err, _ = d.flight.Do(clientID, func() (any, error) { return nil, d.refresh(ctx, clientID) })
 	if err != nil {
 		if de, ok := errors.AsType[*documentError](err); ok {
 			d.remember(clientID, now)
+
 			return de
 		}
-		return &documentError{status: http.StatusInternalServerError, reason: "could not store the client"}
+
+		return &documentError{
+			status:     http.StatusInternalServerError,
+			reason:     "could not store the client",
+			retryAfter: 0,
+		}
 	}
+
 	return nil
 }
 
 func (d *documentClients) failed(clientID string, now time.Time) bool {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+
 	until, ok := d.failures[clientID]
 	if ok && !now.Before(until) {
 		delete(d.failures, clientID)
+
 		return false
 	}
+
 	return ok
 }
 
 func (d *documentClients) remember(clientID string, now time.Time) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+
 	if len(d.failures) >= maxRememberedFailures {
 		for id, until := range d.failures {
 			if !now.Before(until) {
 				delete(d.failures, id)
 			}
 		}
+
 		if len(d.failures) >= maxRememberedFailures {
 			return
 		}
 	}
+
 	d.failures[clientID] = now.Add(failureTTL)
 }
 
@@ -313,16 +374,20 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 	if derr != nil {
 		return derr
 	}
+
 	expires := d.now().Add(ttl)
+
 	n, err := d.db.OAuthClient.Update().Where(oauthclient.ClientID(clientID)).
 		SetName(reg.name).SetRedirectUris(reg.redirectURIs).SetScopes(reg.scopes).SetMetadataExpiresAt(expires).
 		Save(ctx)
 	if err != nil {
 		return errs.Wrapf(err, "update client from metadata document")
 	}
+
 	if n > 0 {
 		return nil
 	}
+
 	_, err = d.db.OAuthClient.Create().
 		SetClientID(clientID).SetName(reg.name).SetRedirectUris(reg.redirectURIs).SetScopes(reg.scopes).
 		SetMetadataExpiresAt(expires).Save(ctx)
@@ -332,9 +397,11 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 			SetName(reg.name).SetRedirectUris(reg.redirectURIs).SetScopes(reg.scopes).SetMetadataExpiresAt(expires).
 			Save(ctx)
 	}
+
 	if err != nil {
 		return errs.Wrapf(err, "create client from metadata document")
 	}
+
 	return nil
 }
 
@@ -346,32 +413,45 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client_id URL could not be requested")
 	}
+
 	req.Header.Set("Accept", "application/json")
+
 	res, err := d.client.Do(req) //nolint:gosec // G704: guarded by the dialer Control hook that refuses private, loopback and link-local addresses
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client metadata document could not be fetched")
 	}
+
 	defer func() { _ = res.Body.Close() }()
+
 	if res.StatusCode != http.StatusOK {
 		return registration{}, 0, invalidDocument("the client metadata document answered %d: redirects are not followed and only 200 is accepted", res.StatusCode)
 	}
-	if mt, _, err := mime.ParseMediaType(res.Header.Get("Content-Type")); err != nil || mt != "application/json" {
+
+	mt, _, err := mime.ParseMediaType(res.Header.Get("Content-Type"))
+	if err != nil || mt != "application/json" {
 		return registration{}, 0, invalidDocument("the client metadata document must be application/json")
 	}
+
 	raw, err := io.ReadAll(io.LimitReader(res.Body, maxDocumentBody+1))
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client metadata document could not be read")
 	}
+
 	if len(raw) > maxDocumentBody {
 		return registration{}, 0, invalidDocument("the client metadata document is larger than %d bytes", maxDocumentBody)
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(raw))
+
 	var fields map[string]json.RawMessage
-	if err := dec.Decode(&fields); err != nil || fields == nil {
+
+	err = dec.Decode(&fields)
+	if err != nil || fields == nil {
 		return registration{}, 0, invalidDocument("the client metadata document must be a JSON object")
 	}
-	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+
+	_, err = dec.Token()
+	if !errors.Is(err, io.EOF) {
 		return registration{}, 0, invalidDocument("the client metadata document must be a single JSON object")
 	}
 	// The document vouches for the URL it was fetched from: its own client_id
@@ -381,11 +461,14 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 	if json.Unmarshal(fields["client_id"], &documented) != nil || documented != clientID {
 		return registration{}, 0, invalidDocument("the client_id of the document must equal the URL it was fetched from")
 	}
+
 	delete(fields, "client_id")
+
 	reg, regErr := parseMetadata(fields)
 	if regErr != nil {
 		return registration{}, 0, invalidDocument("%s", regErr.Description)
 	}
+
 	return reg, d.cacheTTL(res.Header), nil
 }
 
@@ -393,17 +476,21 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 // headers (s-maxage, max-age, then Expires), clamped to the bounds above.
 // no-store and no-cache cannot be honoured literally, because the row must
 // exist to run the flow, so they mean the shortest allowed time.
-func (d *documentClients) cacheTTL(h http.Header) time.Duration {
+func (d *documentClients) cacheTTL(header http.Header) time.Duration {
 	ttl := defaultDocumentTTL
+
 	var maxAge, sMaxAge *time.Duration
+
 	immediate := false
-	for directive := range strings.SplitSeq(h.Get("Cache-Control"), ",") {
+
+	for directive := range strings.SplitSeq(header.Get("Cache-Control"), ",") {
 		name, value, _ := strings.Cut(strings.ToLower(strings.TrimSpace(directive)), "=")
 		switch name {
 		case "no-store", "no-cache":
 			immediate = true
 		case "max-age", "s-maxage":
-			if secs, err := strconv.ParseInt(strings.Trim(value, `"`), 10, 64); err == nil && secs >= 0 {
+			secs, err := strconv.ParseInt(strings.Trim(value, `"`), 10, 64)
+			if err == nil && secs >= 0 {
 				v := time.Duration(min(secs, int64(maxDocumentTTL/time.Second))) * time.Second
 				if name == "max-age" {
 					maxAge = &v
@@ -413,6 +500,7 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 			}
 		}
 	}
+
 	switch {
 	case immediate:
 		ttl = 0
@@ -421,27 +509,36 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 	case maxAge != nil:
 		ttl = *maxAge
 	default:
-		if expires, err := http.ParseTime(h.Get("Expires")); err == nil {
+		expires, err := http.ParseTime(header.Get("Expires"))
+		if err == nil {
 			ttl = expires.Sub(d.now())
 		}
 	}
+
 	return min(max(ttl, minDocumentTTL), maxDocumentTTL)
 }
 
 // writeDocumentError answers an authorization request whose client id could not
 // be resolved. The redirect URI of an unverified client is not trusted, so the
 // answer is direct, never a redirect.
-func writeDocumentError(w http.ResponseWriter, e *documentError) {
+func writeDocumentError(w http.ResponseWriter, docErr *documentError) {
 	code := "invalid_request"
-	if e.status == http.StatusTooManyRequests {
+	if docErr.status == http.StatusTooManyRequests {
 		code = "temporarily_unavailable"
-		w.Header().Set("Retry-After", strconv.Itoa(int(e.retryAfter/time.Second)+1))
+
+		w.Header().Set("Retry-After", strconv.Itoa(int(docErr.retryAfter/time.Second)+1))
 	}
-	if e.status >= http.StatusInternalServerError {
+
+	if docErr.status >= http.StatusInternalServerError {
 		code = "server_error"
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
-	w.WriteHeader(e.status)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": code, "error_description": e.reason})
+	w.WriteHeader(docErr.status)
+	writeJSON(w, map[string]string{"error": code, "error_description": docErr.reason})
 }
+
+// maxDocumentHeaderBytes bounds the response headers of a client metadata
+// document.
+const maxDocumentHeaderBytes = 16 << 10

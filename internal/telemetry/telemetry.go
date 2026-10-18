@@ -42,10 +42,12 @@ func NewSentryClient(dsn string, environment config.AppEnv, release string, opts
 	for _, opt := range opts {
 		opt(&options)
 	}
+
 	client, err := sentry.NewClient(options)
 	if err != nil {
 		return nil, errs.Wrapf(err, "initialize Sentry")
 	}
+
 	return client, nil
 }
 
@@ -57,22 +59,28 @@ func attachOopsAttributes(event *sentry.Event, hint *sentry.EventHint) *sentry.E
 	if hint == nil || hint.OriginalException == nil {
 		return event
 	}
+
 	oopsErr, ok := errors.AsType[oops.OopsError](hint.OriginalException)
 	if !ok {
 		return event
 	}
+
 	if domain := oopsErr.Domain(); domain != "" {
 		if event.Tags == nil {
 			event.Tags = map[string]string{}
 		}
+
 		event.Tags["oops.domain"] = domain
 	}
+
 	if attrs := oopsErr.Context(); len(attrs) > 0 {
 		if event.Contexts == nil {
 			event.Contexts = map[string]sentry.Context{}
 		}
+
 		event.Contexts["oops"] = attrs
 	}
+
 	return event
 }
 
@@ -86,6 +94,7 @@ func NewOpenTelemetrySDK(
 	otel.SetErrorHandler(otel.ErrorHandlerFunc(func(err error) {
 		logger.ErrorContext(context.WithoutCancel(ctx), "OpenTelemetry error", "err", err)
 	}))
+
 	sdk, err := otelconf.NewSDK(otelconf.WithContext(ctx))
 	if err != nil {
 		return nil, errs.Wrapf(err, "initialize OpenTelemetry SDK")
@@ -95,5 +104,6 @@ func NewOpenTelemetrySDK(
 	otel.SetMeterProvider(sdk.MeterProvider())
 	otel.SetLoggerProvider(sdk.LoggerProvider())
 	otel.SetTextMapPropagator(sdk.Propagator())
+
 	return &sdk, nil
 }

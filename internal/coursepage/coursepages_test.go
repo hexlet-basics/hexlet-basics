@@ -43,12 +43,19 @@ func newRig(t *testing.T) *rig {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 	tracker := progress.New(db, transactor, services.Events, testsupport.NewMocks().Runner)
+
 	return &rig{db: db, pages: coursepage.New(db, landingpage.NewCatalog(db), tracker, repoBase)}
 }
 
 func (r *rig) learner(t *testing.T) progress.Learner {
 	t.Helper()
-	return progress.Learner{UserID: r.db.User.GetX(t.Context(), fixture.ID(fixture.UserAdminLearner)).ID}
+
+	return progress.Learner{
+		UserID: r.db.User.GetX(t.Context(), fixture.ID(fixture.UserAdminLearner)).ID,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}
 }
 
 func lessonSlugs(infos []*ent.CourseLessonTranslation) []string {
@@ -78,7 +85,12 @@ func TestCoursePageOfALearner(t *testing.T) {
 func TestCoursePageOfAGuestHasNoEnrollment(t *testing.T) {
 	r := newRig(t)
 
-	page, err := r.pages.Course(t.Context(), progress.Learner{}, "en", enLanding)
+	page, err := r.pages.Course(t.Context(), progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "en", enLanding)
 	require.NoError(t, err)
 
 	assert.Nil(t, page.Enrollment)
@@ -98,7 +110,12 @@ func TestCoursePageOrdersLessonsByTheProgressPositions(t *testing.T) {
 		Where(courselessonversion.LessonID(first.ID)).
 		SetNaturalOrder(9).ExecX(ctx)
 
-	page, err := r.pages.Course(ctx, progress.Learner{}, "en", enLanding)
+	page, err := r.pages.Course(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "en", enLanding)
 	require.NoError(t, err)
 
 	assert.Equal(t, []string{secondLesson, thirdLesson, firstLesson}, lessonSlugs(page.Infos))
@@ -109,10 +126,20 @@ func TestCoursePageOrdersLessonsByTheProgressPositions(t *testing.T) {
 func TestCoursePageIsNotFoundForAnUnknownOrForeignSlug(t *testing.T) {
 	r := newRig(t)
 
-	_, err := r.pages.Course(t.Context(), progress.Learner{}, "en", "no-such-page")
+	_, err := r.pages.Course(t.Context(), progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "en", "no-such-page")
 	require.ErrorIs(t, err, domain.ErrNotFound)
 
-	_, err = r.pages.Course(t.Context(), progress.Learner{}, untranslated, enLanding)
+	_, err = r.pages.Course(t.Context(), progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, untranslated, enLanding)
 	require.ErrorIs(t, err, domain.ErrNotFound, "a page of another locale")
 }
 
@@ -123,11 +150,21 @@ func TestCoursePageSaysWhereAnArchivedPageMoved(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 
-	live, err := r.pages.Course(ctx, progress.Learner{}, "ru", ruLanding)
+	live, err := r.pages.Course(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "ru", ruLanding)
 	require.NoError(t, err)
 	assert.Nil(t, live.MovedTo)
 
-	moved, err := r.pages.Course(ctx, progress.Learner{}, "ru", archivedRu)
+	moved, err := r.pages.Course(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "ru", archivedRu)
 	require.NoError(t, err)
 	require.NotNil(t, moved.MovedTo)
 	assert.Equal(t, ruLanding, *moved.MovedTo, "the main page")
@@ -135,14 +172,24 @@ func TestCoursePageSaysWhereAnArchivedPageMoved(t *testing.T) {
 	named := r.db.CourseLandingPage.Query().Where(courselandingpage.SlugEQ("nodejs-ru")).OnlyX(ctx)
 	r.db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ(archivedRu)).
 		SetLandingPageToRedirectID(named.ID).ExecX(ctx)
-	moved, err = r.pages.Course(ctx, progress.Learner{}, "ru", archivedRu)
+	moved, err = r.pages.Course(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "ru", archivedRu)
 	require.NoError(t, err)
 	assert.Equal(t, "nodejs-ru", *moved.MovedTo, "the page it names wins")
 
 	r.db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ(archivedRu)).
 		ClearLandingPageToRedirectID().ExecX(ctx)
 	r.db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ(ruLanding)).SetMain(false).ExecX(ctx)
-	_, err = r.pages.Course(ctx, progress.Learner{}, "ru", archivedRu)
+	_, err = r.pages.Course(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "ru", archivedRu)
 	require.ErrorIs(t, err, domain.ErrNotFound)
 }
 
@@ -172,7 +219,12 @@ func TestLessonPageWithoutALandingPageHasNone(t *testing.T) {
 	js := r.db.Course.Query().Where(course.SlugEQ(jsCourse)).OnlyX(ctx)
 	r.db.CourseLandingPage.Delete().Where(courselandingpage.CourseID(js.ID)).ExecX(ctx)
 
-	page, err := r.pages.Lesson(ctx, progress.Learner{}, "en", jsCourse, secondLesson)
+	page, err := r.pages.Lesson(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "en", jsCourse, secondLesson)
 	require.NoError(t, err)
 	assert.Nil(t, page.Landing)
 }
@@ -190,11 +242,21 @@ func TestLessonPageIsNotFound(t *testing.T) {
 		"untranslated":     {untranslated, jsCourse, secondLesson},
 		"another course's": {"en", "typescript", "no-such-lesson"},
 	} {
-		_, err := r.pages.Lesson(ctx, progress.Learner{}, args[0], args[1], args[2])
+		_, err := r.pages.Lesson(ctx, progress.Learner{
+			UserID: 0,
+			Guest: progress.GuestProgress{
+				Entries: nil,
+			},
+		}, args[0], args[1], args[2])
 		require.ErrorIs(t, err, domain.ErrNotFound, name)
 	}
 
 	r.db.Course.Update().Where(course.SlugEQ(jsCourse)).ClearCurrentVersionID().ExecX(ctx)
-	_, err := r.pages.Lesson(ctx, progress.Learner{}, "en", jsCourse, secondLesson)
+	_, err := r.pages.Lesson(ctx, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, "en", jsCourse, secondLesson)
 	require.ErrorIs(t, err, domain.ErrNotFound, "nothing built")
 }

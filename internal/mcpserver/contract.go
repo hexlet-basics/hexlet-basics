@@ -26,35 +26,44 @@ func responseSchema(operationID string) (map[string]any, error) {
 			Schemas map[string]any `yaml:"schemas"`
 		} `yaml:"components"`
 	}
-	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
+
+	err := yaml.Unmarshal(apispec.OpenAPI, &doc)
+	if err != nil {
 		return nil, errs.Wrapf(err, "parse OpenAPI")
 	}
 
 	for _, methods := range doc.Paths {
 		for _, node := range methods {
 			var op struct {
-				OperationID string `yaml:"operationId"`
+				OperationID string `yaml:"operationId"` //nolint:tagliatelle // OpenAPI document key
 				Responses   map[string]struct {
 					Content map[string]struct {
 						Schema any `yaml:"schema"`
 					} `yaml:"content"`
 				} `yaml:"responses"`
 			}
-			if err := node.Decode(&op); err != nil || op.OperationID != operationID {
+
+			err := node.Decode(&op)
+			if err != nil || op.OperationID != operationID {
 				continue
 			}
+
 			body, ok := op.Responses["200"].Content["application/json"]
 			if !ok || body.Schema == nil {
 				return nil, errs.With("operation", operationID).Errorf("operation declares no JSON 200 response")
 			}
+
 			resolved, err := inline(body.Schema, doc.Components.Schemas, nil)
 			if err != nil {
 				return nil, errs.With("operation", operationID).Wrapf(err, "operation schema")
 			}
+
 			schema, _ := resolved.(map[string]any)
+
 			return schema, nil
 		}
 	}
+
 	return nil, errs.With("operation", operationID).Errorf("operation is not in the contract")
 }
 
@@ -70,28 +79,37 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 			if !found {
 				return nil, errs.With("ref", ref).Errorf("unsupported reference")
 			}
+
 			if slices.Contains(stack, name) {
 				return nil, errs.With("schema", name).Errorf("reference cycle")
 			}
+
 			target, ok := components[name]
 			if !ok {
 				return nil, errs.With("schema", name).Errorf("unknown schema")
 			}
+
 			return inline(target, components, append(stack, name))
 		}
+
 		out := make(map[string]any, len(n))
-		for k, v := range n {
+		for key, v := range n {
 			resolved, err := inline(v, components, stack)
 			if err != nil {
 				return nil, err
 			}
-			out[k] = resolved
+
+			out[key] = resolved
 		}
+
 		if nullable, _ := out["nullable"].(bool); nullable {
 			delete(out, "nullable")
+
 			return allowNull(out), nil
 		}
+
 		delete(out, "nullable")
+
 		return out, nil
 	case []any:
 		out := make([]any, len(n))
@@ -100,8 +118,10 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 			if err != nil {
 				return nil, err
 			}
+
 			out[i] = resolved
 		}
+
 		return out, nil
 	default:
 		return node, nil
@@ -119,11 +139,14 @@ func allowNull(schema map[string]any) map[string]any {
 			return map[string]any{"anyOf": []any{schema, map[string]any{"type": "null"}}}
 		}
 	}
+
 	if typ, ok := schema["type"].(string); ok {
 		schema["type"] = []any{typ, "null"}
 	}
+
 	if values, ok := schema["enum"].([]any); ok {
 		schema["enum"] = append(values, nil)
 	}
+
 	return schema
 }

@@ -20,11 +20,12 @@ import (
 
 func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, "openid", oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), "openid", oauthserver.ScopeCatalogRead)
 	require.NotEmpty(t, tokens.IDToken, "an openid request gets an ID token")
 
 	res := o.Do(http.MethodGet, "/oauth/keys", nil)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var set struct {
 		Keys []struct {
 			Kid string `json:"kid"`
@@ -40,47 +41,54 @@ func TestTheKeySetPublishesTheKeyIDTokensAreSignedWith(t *testing.T) {
 	// The ID token names that key and algorithm.
 	header, err := base64.RawURLEncoding.DecodeString(strings.Split(tokens.IDToken, ".")[0])
 	require.NoError(t, err)
-	var parsed struct{ Alg, Kid string }
+
+	var parsed struct {
+		Alg string `json:"alg"`
+		Kid string `json:"kid"`
+	}
 	require.NoError(t, json.Unmarshal(header, &parsed))
 	assert.Equal(t, "EdDSA", parsed.Alg)
 	assert.Equal(t, set.Keys[0].Kid, parsed.Kid)
 
 	payload, err := base64.RawURLEncoding.DecodeString(strings.Split(tokens.IDToken, ".")[1])
 	require.NoError(t, err)
+
 	var claims struct {
 		Sub string `json:"sub"`
 		Iss string `json:"iss"`
 		Azp string `json:"azp"`
 	}
 	require.NoError(t, json.Unmarshal(payload, &claims))
-	assert.Equal(t, strconv.Itoa(alice), claims.Sub)
+	assert.Equal(t, strconv.Itoa(alice()), claims.Sub)
 	assert.Equal(t, testsupport.OAuthIssuer, claims.Iss)
 	assert.Equal(t, testsupport.OAuthClientID, claims.Azp)
 }
 
 func TestUserinfoAnswersWithTheSubjectOfALiveToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	bearer := func(r *http.Request) { r.Header.Set("Authorization", "Bearer "+tokens.AccessToken) }
 
 	res := o.Do(http.MethodGet, "/oauth/userinfo", nil, bearer)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var info struct {
 		Sub string `json:"sub"`
 	}
 	decode(t, res, &info)
-	assert.Equal(t, strconv.Itoa(alice), info.Sub)
+	assert.Equal(t, strconv.Itoa(alice()), info.Sub)
 
 	// Once the token is revoked the endpoint refuses it.
 	_, err := o.DB.OAuthAccessToken.Delete().Exec(t.Context())
 	require.NoError(t, err)
+
 	res = o.Do(http.MethodGet, "/oauth/userinfo", nil, bearer)
 	assert.NotEqual(t, http.StatusOK, res.StatusCode)
 }
 
 func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{
 		"client_id": {testsupport.OAuthClientID}, "token": {tokens.RefreshToken}, "token_type_hint": {"refresh_token"},
@@ -89,6 +97,7 @@ func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.ErrorIs(t, err, oauthserver.ErrInvalidToken)
+
 	res = o.Do(http.MethodPost, "/oauth/token", url.Values{
 		"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {tokens.RefreshToken},
 	})
@@ -97,7 +106,7 @@ func TestRevokingARefreshTokenEndsItsPairToo(t *testing.T) {
 
 func TestAClientCannotRevokeAnotherClientsToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	// Another client registers itself, the way a client does.
 	res := o.Register(request(nil))
 	require.Equal(t, http.StatusCreated, res.StatusCode)
@@ -107,13 +116,14 @@ func TestAClientCannotRevokeAnotherClientsToken(t *testing.T) {
 		res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{"client_id": {other.ClientID}, "token": {token}})
 		assert.Equal(t, http.StatusUnauthorized, res.StatusCode)
 	}
+
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err, "the token survived")
 }
 
 func TestEndingTheSessionRevokesTheClientsGrants(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, "openid", oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), "openid", oauthserver.ScopeCatalogRead)
 
 	res := o.Do(http.MethodGet, "/oauth/end_session?"+url.Values{"id_token_hint": {tokens.IDToken}}.Encode(), nil)
 	body, _ := io.ReadAll(res.Body)
@@ -126,6 +136,7 @@ func TestEndingTheSessionRevokesTheClientsGrants(t *testing.T) {
 func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	o.SeedClient(oauthserver.ScopeCatalogRead)
+
 	base := func() url.Values {
 		return url.Values{
 			"client_id": {testsupport.OAuthClientID}, "redirect_uri": {testsupport.OAuthRedirectURI},
@@ -135,26 +146,30 @@ func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	}
 
 	// prompt=none: nobody can sign in without a screen, so there is no silent grant.
-	q := base()
-	q.Set("prompt", "none")
-	res := o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
+	values := base()
+	values.Set("prompt", "none")
+	res := o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
 	to, err := res.Location()
 	require.NoError(t, err)
 	assert.Equal(t, "login_required", to.Query().Get("error"))
 
 	// An unknown client has no redirect URI to trust, so there is nobody to send the error to.
-	q = base()
-	q.Set("client_id", "nobody")
-	res = o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
+	values = base()
+	values.Set("client_id", "nobody")
+	res = o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
 	assert.NotEqual(t, http.StatusFound, res.StatusCode)
 
 	// The implicit flow is not offered.
-	q = base()
-	q.Set("response_type", "id_token token")
-	res = o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
-	if loc, err := res.Location(); err == nil {
+	values = base()
+	values.Set("response_type", "id_token token")
+
+	res = o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
+
+	loc, err := res.Location()
+	if err == nil {
 		assert.NotContains(t, loc.Path, "/connect")
 	}
+
 	count, err := o.DB.OAuthAuthRequest.Query().Count(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, count)
@@ -162,10 +177,11 @@ func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 
 func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 	res := flow.Decide(true)
+
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 	callback, err := url.Parse(decision.RedirectURL)
@@ -178,6 +194,7 @@ func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 
 	// Opening the same callback again cannot mint a second code.
 	second := o.Do(http.MethodGet, callback.RequestURI(), nil)
+
 	to, err = second.Location()
 	if err == nil {
 		assert.Empty(t, to.Query().Get("code"))
@@ -186,7 +203,7 @@ func TestACallbackIssuesOneCodeOnly(t *testing.T) {
 
 func TestAnUnapprovedRequestCannotBeExchangedForACode(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 
 	res := o.Do(http.MethodGet, "/oauth/authorize/callback?id="+flow.RequestID, nil)
 
@@ -198,7 +215,7 @@ func TestAnUnapprovedRequestCannotBeExchangedForACode(t *testing.T) {
 
 func TestApprovingTwiceIsRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 
 	assert.Equal(t, http.StatusOK, flow.Decide(true).StatusCode)
 	assert.Equal(t, http.StatusNotFound, flow.Decide(true).StatusCode)
@@ -206,33 +223,35 @@ func TestApprovingTwiceIsRefused(t *testing.T) {
 
 func TestTheConsentScreenNamesTheAccount(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
-	session := testsupport.SessionFor(t, o.DB, alice)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
+	session := testsupport.SessionFor(t, o.DB, alice())
 	accountName := func() string {
 		res := o.Do(http.MethodGet, "/api/oauth/consents/"+flow.RequestID, nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 		require.Equal(t, http.StatusOK, res.StatusCode)
+
 		var consent struct {
-			AccountName string `json:"accountName"`
+			AccountName string `json:"accountName"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 		}
 		decode(t, res, &consent)
+
 		return consent.AccountName
 	}
 
-	_, err := o.DB.User.UpdateOneID(alice).SetFirstName("Ada").SetLastName("Lovelace").Save(t.Context())
+	_, err := o.DB.User.UpdateOneID(alice()).SetFirstName("Ada").SetLastName("Lovelace").Save(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, "Ada Lovelace", accountName())
 
 	// Without a name the email stands in.
-	_, err = o.DB.User.UpdateOneID(alice).ClearFirstName().ClearLastName().Save(t.Context())
+	_, err = o.DB.User.UpdateOneID(alice()).ClearFirstName().ClearLastName().Save(t.Context())
 	require.NoError(t, err)
-	u, err := o.DB.User.Get(t.Context(), alice)
+	u, err := o.DB.User.Get(t.Context(), alice())
 	require.NoError(t, err)
 	assert.Equal(t, *u.Email, accountName())
 }
 
 func TestConsentOperationsOfTheServerNeedASignedInUser(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 	ctx := context.Background()
 
 	_, err := o.Server.Pending(ctx, flow.RequestID)
@@ -244,9 +263,35 @@ func TestConsentOperationsOfTheServerNeedASignedInUser(t *testing.T) {
 }
 
 func TestTheServerRefusesAConfigurationItCannotRunWith(t *testing.T) {
-	_, err := oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{Issuer: "https://code-basics.test"}})
+	_, err := oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{Issuer: "https://code-basics.test",
+		EncryptionKey:        "",
+		RegistrationLimit:    0,
+		RegistrationWindow:   0,
+		AccessTokenLifetime:  0,
+		RefreshTokenLifetime: 0,
+	},
+		DB:            nil,
+		Transactor:    nil,
+		SignedIn:      nil,
+		ClientAddress: nil,
+		Now:           nil,
+	})
 	require.ErrorContains(t, err, "encryption key")
 
-	_, err = oauthserver.New(oauthserver.Deps{Config: oauthserver.Config{EncryptionKey: "k", Issuer: "not an origin"}})
+	_, err = oauthserver.New(oauthserver.Deps{
+		Config: oauthserver.Config{
+			EncryptionKey:        "k",
+			Issuer:               "not an origin",
+			RegistrationLimit:    0,
+			RegistrationWindow:   0,
+			AccessTokenLifetime:  0,
+			RefreshTokenLifetime: 0,
+		},
+		DB:            nil,
+		Transactor:    nil,
+		SignedIn:      nil,
+		ClientAddress: nil,
+		Now:           nil,
+	})
 	require.Error(t, err)
 }

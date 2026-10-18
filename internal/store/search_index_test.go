@@ -36,24 +36,28 @@ func TestTheSearchOfEachLargeTableIsServedByATrigramIndex(t *testing.T) {
 	_, err := tx.ExecContext(t.Context(), `SET LOCAL enable_seqscan = off`)
 	require.NoError(t, err)
 
-	for _, c := range cases {
-		t.Run(c.table+"."+c.column, func(t *testing.T) {
+	for _, record := range cases {
+		t.Run(record.table+"."+record.column, func(t *testing.T) {
 			// The predicate is the one ent's generated `<Field>ContainsFold` builds.
 			query, args := sql.Dialect(dialect.Postgres).
 				Select(sql.Count("*")).
-				From(sql.Table(c.table)).
-				Where(sql.ContainsFold(c.column, "term")).
+				From(sql.Table(record.table)).
+				Where(sql.ContainsFold(record.column, "term")).
 				Query()
 
 			rows, err := tx.QueryContext(t.Context(), "EXPLAIN "+query, args...)
 			require.NoError(t, err)
+
 			defer func() { _ = rows.Close() }()
+
 			var plan []string
+
 			for rows.Next() {
 				var line string
 				require.NoError(t, rows.Scan(&line))
 				plan = append(plan, line)
 			}
+
 			require.NoError(t, rows.Err())
 
 			// users.email also has the unique btree, which the planner may scan
@@ -63,8 +67,8 @@ func TestTheSearchOfEachLargeTableIsServedByATrigramIndex(t *testing.T) {
 			require.NoError(t, tx.QueryRowContext(t.Context(),
 				`SELECT count(*) FROM pg_indexes
 				 WHERE tablename = $1 AND indexdef LIKE '%USING gin (' || $2 || ' gin_trgm_ops)'`,
-				c.table, c.column).Scan(&trigram))
-			assert.Equal(t, 1, trigram, "a trigram index on %s.%s", c.table, c.column)
+				record.table, record.column).Scan(&trigram))
+			assert.Equal(t, 1, trigram, "a trigram index on %s.%s", record.table, record.column)
 
 			joined := strings.Join(plan, "\n")
 			assert.NotContains(t, joined, "Seq Scan", joined)

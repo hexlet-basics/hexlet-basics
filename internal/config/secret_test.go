@@ -13,23 +13,25 @@ import (
 const secretValue = "hunter2-very-secret"
 
 func TestSecretNeverPrintsItsValue(t *testing.T) {
-	s := Secret(secretValue)
-	holder := struct{ Key Secret }{s}
+	secret := Secret(secretValue)
+	holder := struct {
+		Key Secret `json:"key"`
+	}{secret}
 
 	var logs bytes.Buffer
-	slog.New(slog.NewJSONHandler(&logs, nil)).Info("loaded", "secret", s, "config", holder)
+	slog.New(slog.NewJSONHandler(&logs, nil)).Info("loaded", "secret", secret, "config", holder)
 	asJSON, err := json.Marshal(holder)
 	require.NoError(t, err)
 
 	outputs := map[string]string{
-		"%s":        fmt.Sprintf("%s", s),
-		"%v":        fmt.Sprintf("%v", s),
-		"%+v":       fmt.Sprintf("%+v", s),
-		"%#v":       fmt.Sprintf("%#v", s),
-		"%q":        fmt.Sprintf("%q", s),
-		"%x":        fmt.Sprintf("%x", s),
+		"%s":        fmt.Sprintf("%s", secret),
+		"%v":        fmt.Sprintf("%v", secret),
+		"%+v":       fmt.Sprintf("%+v", secret),
+		"%#v":       fmt.Sprintf("%#v", secret),
+		"%q":        fmt.Sprintf("%q", secret),
+		"%x":        fmt.Sprintf("%x", secret),
 		"struct %v": fmt.Sprintf("%v", holder),
-		"Sprint":    fmt.Sprint(s),
+		"Sprint":    fmt.Sprint(secret),
 		"slog":      logs.String(),
 		"json":      string(asJSON),
 	}

@@ -17,9 +17,17 @@ func TestAnIdParsesBackToWhatMadeIt(t *testing.T) {
 	post, err := search.ParseID(search.PostID("hello-world"))
 	require.NoError(t, err)
 
-	assert.Equal(t, search.Ref{Type: search.Course, Slug: "javascript-ru"}, course)
+	assert.Equal(t, search.Ref{
+		Type:       search.Course,
+		Slug:       "javascript-ru",
+		CourseSlug: "",
+	}, course)
 	assert.Equal(t, search.Ref{Type: search.Lesson, CourseSlug: "javascript", Slug: "hello-world"}, lesson)
-	assert.Equal(t, search.Ref{Type: search.Post, Slug: "hello-world"}, post)
+	assert.Equal(t, search.Ref{
+		Type:       search.Post,
+		Slug:       "hello-world",
+		CourseSlug: "",
+	}, post)
 }
 
 func TestWhatIsNotAnIdIsRefused(t *testing.T) {

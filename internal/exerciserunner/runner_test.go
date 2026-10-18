@@ -22,6 +22,7 @@ import (
 // in-container timeout, everything else is an ordinary failure.
 func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
 	t.Parallel()
+
 	passed := outcomeOf(0, "1 test, 0 failures")
 	assert.True(t, passed.Passed)
 	assert.Equal(t, progress.ResultPassed, passed.Result)
@@ -42,6 +43,7 @@ func TestOutcomeOfMapsTheExitStatus(t *testing.T) {
 // same line, and the classification already says everything.
 func TestOutcomeOfDropsTheOutputOfATimedOutRun(t *testing.T) {
 	t.Parallel()
+
 	timedOut := outcomeOf(timeoutExitStatus, strings.Repeat("looping\n", 1000))
 
 	assert.False(t, timedOut.Passed)
@@ -89,9 +91,21 @@ func TestReadOutputScrubsInvalidUTF8(t *testing.T) {
 // timeout, which is the interface every exercise image already exposes.
 func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 	t.Parallel()
-	runner := &Docker{opts: OptionsFrom(testConfig())}
 
-	command := runner.command(progress.Submission{TestDir: "/exercises-go/modules/10-basics/20-vars"})
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
+
+	command := runner.command(progress.Submission{
+		TestDir:      "/exercises-go/modules/10-basics/20-vars",
+		Image:        "",
+		VersionID:    0,
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	})
 
 	assert.Equal(t,
 		[]string{"timeout", "6", "make", "--silent", "-C", "/exercises-go/modules/10-basics/20-vars", "test"},
@@ -102,6 +116,7 @@ func TestCommandRunsTheLessonsMakefileUnderTheTimeout(t *testing.T) {
 // it lands exactly on the file the reference solution ships.
 func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 	t.Parallel()
+
 	archive, err := tarFile("/exercises-go/modules/10-basics/20-vars/index.go", "package main\n")
 	require.NoError(t, err)
 
@@ -122,7 +137,12 @@ func TestTarFileTargetsTheExerciseFile(t *testing.T) {
 // in most of these languages.
 func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 	t.Parallel()
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	host := runner.hostConfig()
 
@@ -142,15 +162,24 @@ func TestHostConfigCarriesTheHardenedLimits(t *testing.T) {
 // stay writable or nothing compiles at all.
 func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
 	t.Parallel()
+
 	cfg := testConfig()
 	cfg.ReadonlyRootfs = true
-	runner := &Docker{opts: OptionsFrom(cfg)}
+	runner := &Docker{
+		opts:   OptionsFrom(cfg),
+		docker: nil,
+		slots:  nil,
+	}
 
 	host := runner.hostConfig()
 
 	assert.True(t, host.ReadonlyRootfs)
 	assert.Contains(t, host.Tmpfs, "/tmp")
-	assert.Empty(t, (&Docker{opts: OptionsFrom(testConfig())}).hostConfig().Tmpfs,
+	assert.Empty(t, (&Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}).hostConfig().Tmpfs,
 		"and no scratch mount when the rootfs is writable anyway")
 }
 
@@ -159,6 +188,7 @@ func TestReadonlyRootfsBringsWritableScratch(t *testing.T) {
 // payload — so the demultiplexing under test is the real one.
 func multiplexed(t *testing.T, stdout, stderr string) io.Reader {
 	t.Helper()
+
 	var buf bytes.Buffer
 
 	for _, frame := range []struct {
@@ -168,12 +198,14 @@ func multiplexed(t *testing.T, stdout, stderr string) io.Reader {
 		if frame.payload == "" {
 			continue
 		}
+
 		header := make([]byte, 8)
 		header[0] = byte(frame.stream)
 		binary.BigEndian.PutUint32(header[4:], uint32(len(frame.payload)))
 		buf.Write(header)
 		buf.WriteString(frame.payload)
 	}
+
 	return &buf
 }
 
@@ -184,9 +216,11 @@ func testConfig() config.ExerciseRunnerConfig {
 	var cfg config.ExerciseRunnerConfig
 	// Decoded against an empty environment on purpose: what is asserted is the
 	// shipped default, not whatever the machine running the tests exports.
-	if err := env.ParseWithOptions(&cfg, env.Options{Environment: map[string]string{}}); err != nil {
+	err := env.ParseWithOptions(&cfg, env.Options{Environment: map[string]string{}})
+	if err != nil {
 		panic(err)
 	}
+
 	return cfg
 }
 
@@ -195,11 +229,20 @@ func testConfig() config.ExerciseRunnerConfig {
 // version must keep being graded by the build it was promoted as.
 func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 	t.Parallel()
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, source := runner.imageRefs(progress.Submission{
-		Image:     "hexletbasics/exercises-javascript",
-		VersionID: 965227298,
+		Image:        "hexletbasics/exercises-javascript",
+		VersionID:    965227298,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "hexletbasics/exercises-javascript:lv965227298", pinned)
@@ -211,11 +254,20 @@ func TestImageRefsPinToTheCourseVersion(t *testing.T) {
 // own pin, and nothing is pulled or re-tagged behind it.
 func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 	t.Parallel()
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, source := runner.imageRefs(progress.Submission{
-		Image:     "ghcr.io/hexlet-basics/exercises-go:2026-08",
-		VersionID: 1,
+		Image:        "ghcr.io/hexlet-basics/exercises-go:2026-08",
+		VersionID:    1,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "ghcr.io/hexlet-basics/exercises-go:2026-08", pinned)
@@ -225,11 +277,20 @@ func TestImageRefsRespectAnExplicitTag(t *testing.T) {
 // A registry host carries a port, which is not a tag.
 func TestImageRefsPinAnImageOnAPortedRegistry(t *testing.T) {
 	t.Parallel()
-	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	runner := &Docker{
+		opts:   OptionsFrom(testConfig()),
+		docker: nil,
+		slots:  nil,
+	}
 
 	pinned, _ := runner.imageRefs(progress.Submission{
-		Image:     "registry.example.com:5000/exercises-go",
-		VersionID: 7,
+		Image:        "registry.example.com:5000/exercises-go",
+		VersionID:    7,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
 	})
 
 	assert.Equal(t, "registry.example.com:5000/exercises-go:lv7", pinned)

@@ -28,7 +28,7 @@ const (
 type Common struct {
 	// AppEnv defaults to development so a developer's checkout runs with no
 	// setup; a deployment sets APP_ENV=production.
-	AppEnv      AppEnv `env:"APP_ENV" envDefault:"development" validate:"oneof=development production test"`
+	AppEnv      AppEnv `env:"APP_ENV"      envDefault:"development" validate:"oneof=development production test"`
 	DatabaseURL string `env:"DATABASE_URL" validate:"required"`
 	// BlobBucketURL selects the gocloud.dev/blob backend (ADR-0005): local disk
 	// (fileblob) in dev, s3blob in prod, chosen by URL scheme.
@@ -53,14 +53,14 @@ type Common struct {
 	// assistant). An empty token disables them. The model must be a reasoning
 	// model: the assistant's stream sets a reasoning effort.
 	OpenAIAccessToken Secret `env:"OPENAI_ACCESS_TOKEN"`
-	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-5.5"`
+	OpenAIModel       string `env:"OPENAI_MODEL"        envDefault:"gpt-5.5"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
 	SentryDSN string `env:"SENTRY_DSN"`
 	// LogLevelName is the threshold of the application log (ADR-0026). Only the
 	// four names are accepted: slog.Level would also parse "INFO+2" and numbers,
 	// which no operator needs.
-	LogLevelName   string `env:"LOG_LEVEL" envDefault:"info" validate:"oneof=debug info warn error"`
+	LogLevelName   string `env:"LOG_LEVEL"                     envDefault:"info" validate:"oneof=debug info warn error"`
 	ReleaseVersion string `env:"HEXLET_BASICS_RELEASE_VERSION"`
 }
 
@@ -68,6 +68,7 @@ type Common struct {
 // request needs.
 type Server struct {
 	Common
+
 	Addr string `env:"ADDR" envDefault:":3001"`
 	// AppHost is the canonical public site host the Yandex feed builds its
 	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed.
@@ -97,6 +98,7 @@ type Server struct {
 // host: the worker serves no visitor.
 type Worker struct {
 	Common
+
 	// HealthAddr is where the health-only listener serves /healthz and /readyz
 	// (ADR-0023); the worker has no other HTTP surface.
 	HealthAddr string `env:"HEALTH_ADDR" envDefault:":8081"`
@@ -141,13 +143,13 @@ type MCPConfig struct {
 	// Catalogue reads are public data; reads of personal data and writes are
 	// stricter, and writes the strictest. They are in memory, per replica.
 	RateUserCatalogue int `env:"RATE_USER_CATALOGUE" envDefault:"60" validate:"required,min=1"`
-	RateUserPersonal  int `env:"RATE_USER_PERSONAL" envDefault:"30" validate:"required,min=1"`
-	RateUserWrite     int `env:"RATE_USER_WRITE" envDefault:"10" validate:"required,min=1"`
+	RateUserPersonal  int `env:"RATE_USER_PERSONAL"  envDefault:"30" validate:"required,min=1"`
+	RateUserWrite     int `env:"RATE_USER_WRITE"     envDefault:"10" validate:"required,min=1"`
 	// The Connected App limits are higher than the per-user ones, since an app
 	// speaks for many users; they stop one misbehaving app, not one user.
 	RateClientCatalogue int `env:"RATE_CLIENT_CATALOGUE" envDefault:"600" validate:"required,min=1"`
-	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL" envDefault:"300" validate:"required,min=1"`
-	RateClientWrite     int `env:"RATE_CLIENT_WRITE" envDefault:"100" validate:"required,min=1"`
+	RateClientPersonal  int `env:"RATE_CLIENT_PERSONAL"  envDefault:"300" validate:"required,min=1"`
+	RateClientWrite     int `env:"RATE_CLIENT_WRITE"     envDefault:"100" validate:"required,min=1"`
 }
 
 // OAuthConfig configures the in-process OAuth authorization server. Everything
@@ -188,7 +190,7 @@ type ExerciseRunnerConfig struct {
 	// GraceSeconds is added to it for the outer deadline, which fires only when
 	// the container never reported at all.
 	GraceSeconds int   `env:"GRACE_SECONDS" envDefault:"10"`
-	MemoryBytes  int64 `env:"MEMORY_BYTES" envDefault:"536870912"`
+	MemoryBytes  int64 `env:"MEMORY_BYTES"  envDefault:"536870912"`
 	// SwapBytes equals MemoryBytes by default, which means no swap. Legacy set
 	// -1 — unlimited swap, which is the absence of a limit rather than one.
 	SwapBytes int64 `env:"SWAP_BYTES" envDefault:"536870912"`
@@ -225,8 +227,8 @@ type MailConfig struct {
 	From string `env:"FROM" envDefault:"support@hexlet.io"`
 	// PostboxEndpoint and PostboxRegion point the SES v2 client at Yandex Cloud
 	// Postbox rather than AWS.
-	PostboxEndpoint        string `env:"POSTBOX_ENDPOINT" envDefault:"https://postbox.cloud.yandex.net"`
-	PostboxRegion          string `env:"POSTBOX_REGION" envDefault:"ru-central1"`
+	PostboxEndpoint        string `env:"POSTBOX_ENDPOINT"          envDefault:"https://postbox.cloud.yandex.net"`
+	PostboxRegion          string `env:"POSTBOX_REGION"            envDefault:"ru-central1"`
 	PostboxAccessKeyID     string `env:"POSTBOX_ACCESS_KEY_ID"`
 	PostboxSecretAccessKey Secret `env:"POSTBOX_SECRET_ACCESS_KEY"`
 }
@@ -238,9 +240,12 @@ func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
 // restricted it to the four known names.
 func (c *Common) LogLevel() slog.Level {
 	var level slog.Level
-	if err := level.UnmarshalText([]byte(c.LogLevelName)); err != nil {
+
+	err := level.UnmarshalText([]byte(c.LogLevelName))
+	if err != nil {
 		return slog.LevelInfo
 	}
+
 	return level
 }
 
@@ -253,26 +258,36 @@ func (c *Common) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "h
 // caller's business (LoadDotenv), so production and tests never read one.
 // Every violated rule is reported at once, named by variable.
 func LoadServer() (*Server, error) {
-	cfg := &Server{}
-	if err := env.Parse(cfg); err != nil {
+	cfg := new(Server)
+
+	err := env.Parse(cfg)
+	if err != nil {
 		return nil, oops.Wrapf(err, "parse server config from environment")
 	}
-	if err := check(cfg, cfg.AppEnv); err != nil {
+
+	err = check(cfg, cfg.AppEnv)
+	if err != nil {
 		return nil, err
 	}
+
 	return cfg, nil
 }
 
 // LoadWorker reads the asynchronous process's configuration. It parses only the
 // worker's own settings, so a deployment need not give it a server-only secret.
 func LoadWorker() (*Worker, error) {
-	cfg := &Worker{}
-	if err := env.Parse(cfg); err != nil {
+	cfg := new(Worker)
+
+	err := env.Parse(cfg)
+	if err != nil {
 		return nil, oops.Wrapf(err, "parse worker config from environment")
 	}
-	if err := check(cfg, cfg.AppEnv); err != nil {
+
+	err = check(cfg, cfg.AppEnv)
+	if err != nil {
 		return nil, err
 	}
+
 	return cfg, nil
 }
 
@@ -283,9 +298,11 @@ func (c *Server) crossChecks() []string {
 	if c.OAuth.Enabled {
 		problems = append(problems, violations(c.OAuth, "OAUTH_", c.AppEnv)...)
 	}
+
 	if c.MCP.Enabled {
 		problems = append(problems, violations(c.MCP, "MCP_", c.AppEnv)...)
 	}
+
 	if c.MCP.Enabled && !c.OAuth.Enabled {
 		problems = append(problems, "MCP_ENABLED requires OAUTH_ENABLED: the MCP endpoint accepts only OAuth tokens")
 	}
@@ -293,9 +310,11 @@ func (c *Server) crossChecks() []string {
 	if c.OAuth.Enabled && c.OAuth.RefreshTokenTTL <= c.OAuth.AccessTokenTTL {
 		problems = append(problems, "OAUTH_REFRESH_TOKEN_TTL must be longer than OAUTH_ACCESS_TOKEN_TTL")
 	}
+
 	if c.AppEnv == Production && c.OAuth.Enabled && !strings.HasPrefix(c.OAuth.Issuer, "https://") {
 		problems = append(problems, "OAUTH_ISSUER must be an https origin in production")
 	}
+
 	return problems
 }
 
@@ -304,5 +323,6 @@ func (c *Worker) crossChecks() []string {
 	if c.AppEnv == Production && !c.Mail.PostboxEnabled() {
 		return []string{"MAIL_POSTBOX_ACCESS_KEY_ID is required in production"}
 	}
+
 	return nil
 }

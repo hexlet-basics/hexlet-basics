@@ -71,6 +71,7 @@ func TestLessonProgressResolvesItsEnrollment(t *testing.T) {
 
 func firstEnrollmentIn(t *testing.T, client *ent.Client, slug string) *ent.Enrollment {
 	t.Helper()
+
 	return client.Enrollment.Query().
 		Where(enrollment.HasCourseWith(course.SlugEQ(slug))).
 		FirstX(t.Context())

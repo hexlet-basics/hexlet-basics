@@ -17,13 +17,17 @@ import (
 // decoded: the test reads what an operator's log pipeline would read.
 func record(t *testing.T, level slog.Level, log func(context.Context, *slog.Logger)) map[string]any {
 	t.Helper()
+
 	var out bytes.Buffer
 	log(context.Background(), logging.NewTo(&out, level))
+
 	if out.Len() == 0 {
 		return nil
 	}
+
 	var line map[string]any
 	require.NoError(t, json.Unmarshal(out.Bytes(), &line), out.String())
+
 	return line
 }
 
@@ -36,6 +40,7 @@ func TestLogLineCarriesTraceIDOfAnUnsampledSpan(t *testing.T) {
 	spanContext := trace.NewSpanContext(trace.SpanContextConfig{TraceID: traceID, SpanID: spanID})
 
 	var out bytes.Buffer
+
 	ctx := trace.ContextWithSpanContext(context.Background(), spanContext)
 	logging.NewTo(&out, slog.LevelInfo).InfoContext(ctx, "request served")
 
@@ -67,9 +72,11 @@ func TestSecretNamedAttributesAreRedacted(t *testing.T) {
 	})
 
 	require.EqualValues(t, 7, line["user_id"])
+
 	for _, key := range []string{"password", "access_token", "Authorization", "cookie", "email"} {
 		require.Equal(t, "[redacted]", line[key], key)
 	}
+
 	request, ok := line["request"].(map[string]any)
 	require.True(t, ok)
 	require.Equal(t, "[redacted]", request["api_key"])

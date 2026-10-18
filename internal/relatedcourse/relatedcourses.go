@@ -41,16 +41,18 @@ const suggestInstructions = `Ты — ассистент, который пом�
 
 // suggestSchema is the structured shape of the model's answer. The API demands
 // an object at the root, hence the wrapper around the id list.
-var suggestSchema = map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		"course_ids": map[string]any{
-			"type":  "array",
-			"items": map[string]any{"type": "integer"},
+func suggestSchema() map[string]any {
+	return map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"course_ids": map[string]any{
+				"type":  "array",
+				"items": map[string]any{"type": "integer"},
+			},
 		},
-	},
-	"required":             []string{"course_ids"},
-	"additionalProperties": false,
+		"required":             []string{"course_ids"},
+		"additionalProperties": false,
+	}
 }
 
 // suggestion is the decoded answer.
@@ -84,18 +86,21 @@ func NewReplacer(txStore store.Transactor) *Replacer {
 // ids it offered.
 func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) error {
 	courseIDs = lo.Uniq(courseIDs)
+
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		// First, so a missing post is ent not-found before anything is written
 		// (the insert would otherwise fail its FK and read as a conflict). Left
 		// unwrapped: the central handler maps ent's not-found to 404.
-		if err := db.BlogPost.UpdateOneID(postID).
+		err := db.BlogPost.UpdateOneID(postID).
 			SetRelatedCourseItemsCount(len(courseIDs)).
-			Exec(ctx); err != nil {
-			return err
+			Exec(ctx)
+		if err != nil {
+			return errs.Wrapf(err, "save blog post")
 		}
 
-		if _, err := db.BlogPostRelatedCourseItem.Delete().
-			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
+		_, err = db.BlogPostRelatedCourseItem.Delete().
+			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "clear related courses of post %d", postID)
 		}
 
@@ -105,7 +110,9 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 				SetCourseID(courseID).
 				SetOrder(i)
 		})
-		if _, err := db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
+
+		_, err = db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "store related courses of post %d", postID)
 		}
 
@@ -161,7 +168,8 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	if err != nil {
 		return err
 	}
-	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema)
+
+	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema())
 	if err != nil {
 		return oops.Wrapf(err, "suggest related courses for post %d", blogPostID)
 	}
@@ -170,13 +178,20 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	if err != nil {
 		return oops.Wrapf(err, "parse related courses for post %d", blogPostID)
 	}
+
 	s.logger.InfoContext(ctx, "related courses suggested", "blog_post_id", blogPostID, "course_ids", courseIDs)
+
 	if len(courseIDs) == 0 {
 		return nil
 	}
 
 	offered := lo.SliceToMap(candidates, func(c candidate) (int, struct{}) { return c.ID, struct{}{} })
-	known := lo.Filter(courseIDs, func(id int, _ int) bool { _, ok := offered[id]; return ok })
+	known := lo.Filter(courseIDs, func(id int, _ int) bool {
+		_, ok := offered[id]
+
+		return ok
+	})
+
 	return s.replacer.Replace(ctx, blogPostID, known)
 }
 
@@ -194,8 +209,9 @@ func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]ca
 		Order(ent.Asc(courselandingpage.FieldID)).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course landing pages")
 	}
+
 	return lo.Map(pages, func(p *ent.CourseLandingPage, _ int) candidate {
 		return candidate{ID: p.CourseID, Name: p.Header}
 	}), nil
@@ -210,14 +226,18 @@ func suggestPrompt(richBody string, candidates []candidate) (string, error) {
 	}
 	// Whitespace collapses first so markup indentation does not eat the budget.
 	text := lo.Ellipsis(strings.Join(strings.Fields(htmltext.PlainText(richBody)), " "), maxTextLength)
+
 	return "Текст статьи: " + text + "\n\n" + "Список курсов: " + string(courses), nil
 }
 
 // parseCourseIDs decodes the structured answer into the ordered id list.
 func parseCourseIDs(answer string) ([]int, error) {
 	var parsed suggestion
-	if err := json.Unmarshal([]byte(answer), &parsed); err != nil {
+
+	err := json.Unmarshal([]byte(answer), &parsed)
+	if err != nil {
 		return nil, oops.Wrapf(err, "decode course id list %q", answer)
 	}
+
 	return parsed.CourseIDs, nil
 }

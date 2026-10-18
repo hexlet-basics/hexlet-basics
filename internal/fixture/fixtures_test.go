@@ -15,8 +15,10 @@ import (
 // labelOf reads the label an error carries as data: the message is static (ADR-0018).
 func labelOf(t *testing.T, err error) any {
 	t.Helper()
+
 	oopsErr, ok := errors.AsType[oops.OopsError](err)
 	require.True(t, ok)
+
 	return oopsErr.Context()["label"]
 }
 
@@ -52,6 +54,7 @@ func TestScanRefusesALabelDefinedTwice(t *testing.T) {
 
 func TestAReferenceToALabelNoRowDefinesIsAnError(t *testing.T) {
 	t.Parallel()
+
 	_, err := labels{"known": firstID}.id("unknown")
 
 	require.ErrorContains(t, err, "fixture label is not defined by any row")
@@ -66,6 +69,7 @@ func TestIDResolvesALabelOfTheRepositoryFixtures(t *testing.T) {
 
 func TestPasswordIsTheCleartextOfTheFixtureDigest(t *testing.T) {
 	t.Parallel()
+
 	digest, err := PasswordDigest()
 	require.NoError(t, err)
 	assert.NoError(t, bcrypt.CompareHashAndPassword([]byte(digest), []byte(Password)))

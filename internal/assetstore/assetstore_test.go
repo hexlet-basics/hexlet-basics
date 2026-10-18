@@ -21,22 +21,33 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-var pngHeader = []byte{
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errAttachmentInsertFailed = errors.New("attachment insert failed")
+	errSourceReadFailed       = errors.New("source read failed")
+)
+
+func pngHeader() []byte {
+	return []byte{
+		0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+	}
 }
 
 func newStore(t *testing.T) (*assetstore.Store, *ent.Client, *blob.Bucket) {
 	t.Helper()
 	db := testsupport.NewClient(t)
 	bucket := memblob.OpenBucket(nil)
+
 	t.Cleanup(func() { _ = bucket.Close() })
+
 	return assetstore.New(db, bucket, "https://assets.example.test/"), db, bucket
 }
 
 func TestPutAndOpen(t *testing.T) {
 	store, db, _ := newStore(t)
 	ctx := context.Background()
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	got, err := store.Put(ctx, assetstore.Upload{
 		Filename: "course-cover.anything",
@@ -58,25 +69,28 @@ func TestPutAndOpen(t *testing.T) {
 
 	reader, err := store.Open(ctx, record.StorageKey)
 	require.NoError(t, err)
+
 	defer func() { _ = reader.Close() }()
+
 	assert.Equal(t, "image/png", reader.ContentType)
 	assert.False(t, reader.ModTime.IsZero())
 	stored, err := io.ReadAll(reader)
 	require.NoError(t, err)
 	assert.Equal(t, data, stored)
 
-	offset, err := reader.Seek(int64(len(pngHeader)), io.SeekStart)
+	offset, err := reader.Seek(int64(len(pngHeader())), io.SeekStart)
 	require.NoError(t, err)
-	assert.Equal(t, int64(len(pngHeader)), offset)
+	assert.Equal(t, int64(len(pngHeader())), offset)
+
 	storedAfterSeek, err := io.ReadAll(reader)
 	require.NoError(t, err)
-	assert.Equal(t, data[len(pngHeader):], storedAfterSeek)
+	assert.Equal(t, data[len(pngHeader()):], storedAfterSeek)
 }
 
 func TestPutAcceptsExactSizeLimit(t *testing.T) {
 	store, _, _ := newStore(t)
 	data := make([]byte, assetstore.MaxUploadBytes)
-	copy(data, pngHeader)
+	copy(data, pngHeader())
 
 	got, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "limit.png",
@@ -101,7 +115,7 @@ func TestPutRejectsUnsupportedContentWithoutWriting(t *testing.T) {
 func TestPutCleansUpOversizedBlob(t *testing.T) {
 	store, _, bucket := newStore(t)
 	data := make([]byte, assetstore.MaxUploadBytes+1)
-	copy(data, pngHeader)
+	copy(data, pngHeader())
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "large.png",
@@ -114,11 +128,15 @@ func TestPutCleansUpOversizedBlob(t *testing.T) {
 
 func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 	store, _, bucket := newStore(t)
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 1016)...)
+
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 1016)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
-		Body:     &failAfterFirstRead{data: data},
+		Body: &failAfterFirstRead{
+			data: data,
+			read: false,
+		},
 	})
 
 	require.Error(t, err)
@@ -130,10 +148,11 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 	store, db, bucket := newStore(t)
 	db.Attachment.Use(func(ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(context.Context, ent.Mutation) (ent.Value, error) {
-			return nil, errors.New("attachment insert failed")
+			return nil, errAttachmentInsertFailed
 		})
 	})
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "orphan.png",
@@ -158,16 +177,19 @@ type failAfterFirstRead struct {
 	read bool
 }
 
-func (r *failAfterFirstRead) Read(p []byte) (int, error) {
+func (r *failAfterFirstRead) Read(octets []byte) (int, error) {
 	if r.read {
-		return 0, errors.New("source read failed")
+		return 0, errSourceReadFailed
 	}
+
 	r.read = true
-	return copy(p, r.data), nil
+
+	return copy(octets, r.data), nil
 }
 
 func assertBucketEmpty(t *testing.T, bucket *blob.Bucket) {
 	t.Helper()
+
 	_, err := bucket.List(nil).Next(context.Background())
 	require.ErrorIs(t, err, io.EOF)
 }
@@ -178,8 +200,9 @@ func TestDownloadURLFallsBackToTheReadRoute(t *testing.T) {
 	store, _, _ := newStore(t)
 
 	got, err := store.DownloadURL(context.Background(), "a b.pdf", assetstore.Delivery{
-		ContentType: "application/pdf",
-		Expiry:      time.Minute,
+		ContentType:        "application/pdf",
+		Expiry:             time.Minute,
+		ContentDisposition: "",
 	})
 
 	require.NoError(t, err)
@@ -192,6 +215,7 @@ func TestDownloadURLFallsBackToTheReadRoute(t *testing.T) {
 func TestDownloadURLPresignsAnS3ObjectWithTheDeliveryHeaders(t *testing.T) {
 	t.Setenv("AWS_ACCESS_KEY_ID", "test-key")
 	t.Setenv("AWS_SECRET_ACCESS_KEY", "test-secret")
+
 	ctx := context.Background()
 	bucket, err := blob.OpenBucket(ctx,
 		"s3://books?region=us-east-1&endpoint=http://127.0.0.1:1&use_path_style=true&disable_https=true")
@@ -219,7 +243,11 @@ func TestDownloadURLReportsABucketThatFails(t *testing.T) {
 	store, _, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
 
-	_, err := store.DownloadURL(context.Background(), "book.pdf", assetstore.Delivery{Expiry: time.Minute})
+	_, err := store.DownloadURL(context.Background(), "book.pdf", assetstore.Delivery{
+		Expiry:             time.Minute,
+		ContentType:        "",
+		ContentDisposition: "",
+	})
 
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "sign download url")
@@ -232,7 +260,10 @@ func TestPutReportsAnUnreadableUpload(t *testing.T) {
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
-		Body:     &failAfterFirstRead{read: true},
+		Body: &failAfterFirstRead{
+			read: true,
+			data: nil,
+		},
 	})
 
 	require.Error(t, err)
@@ -244,7 +275,8 @@ func TestPutReportsAnUnreadableUpload(t *testing.T) {
 func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 	store, db, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "x.png",

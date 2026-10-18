@@ -13,6 +13,7 @@ import (
 // is read-only (index only).
 func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (*api.LessonAssistantMessagePage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.AiMessage, int, error) {
 			return s.messageDirectory.Messages(ctx, locale, params.Q.Value, page)

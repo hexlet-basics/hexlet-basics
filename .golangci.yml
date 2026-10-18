@@ -1,35 +1,150 @@
 version: "2"
 
 linters:
-  default: standard
-  enable:
-    - bodyclose
-    - containedctx
-    - contextcheck
-    - copyloopvar
-    - durationcheck
-    - errname
-    - errorlint
-    - exptostd
-    - fatcontext
-    - forbidigo
-    - gosec
-    - intrange
-    - loggercheck
-    - modernize
-    - nolintlint
-    - noctx
-    - perfsprint
-    - predeclared
-    - rowserrcheck
-    - sloglint
-    - sqlclosecheck
-    - testifylint
-    - thelper
-    - unconvert
-    - usestdlibvars
-    - usetesting
+  default: all
+  # Policy (AGENTS.md, "Lint & Typecheck"): every linter is on; one is off only
+  # with a reason written next to it here.
+  disable:
+    - exhaustruct # deprecated upstream, replaced by exhaustruct_v5, which is on
+    - gomodguard # deprecated upstream, replaced by gomodguard_v2, which stays on
+    - wsl # deprecated upstream, replaced by wsl_v5, which is on
+    - exhaustive # ticket #910, blocked by two known MCP bugs
+    - nilerr # ticket #910, blocked by two known MCP bugs
+    # Pending: enabled by the commits that follow, each with its findings fixed.
+    - paralleltest
+    - tparallel
+    - lll
+    - goconst
+    - testpackage
+    - cyclop
+    - funlen
+    - gocognit
+    - nestif
   settings:
+    varnamelen:
+      # The names Go code reads by convention: an index, an id, the comma-ok
+      # boolean, a transaction, a database client, an HTTP writer and request.
+      ignore-names:
+        - i
+        - id
+        - ok
+        - tx
+        - db
+        - w
+        - r
+        - n
+        - to
+        - ip
+        - in
+        - op
+        - tc
+        - tt
+        - wg
+        - mu
+        - fn
+      # The handles every test of a package passes around: the harness (h), the
+      # OAuth fixture (o) and the application under test (a).
+      ignore-decls:
+        - h *testsupport.Harness
+        - o *testsupport.OAuth
+        - t *testing.T
+        - db *ent.Client
+        - u *ent.User
+        - c *ent.Client
+    wrapcheck:
+      # An error that comes from another package of this module was wrapped where
+      # it was made (ADR-0018: wrapped once, at the package boundary), so passing
+      # it up as is does not duplicate the stack. Errors of ent and of the
+      # libraries are what this checks.
+      ignore-package-globs:
+        - hexletbasics/internal/*
+        - hexletbasics/cmd/*
+    ireturn:
+      # Returning an interface is the point where a library or a seam of ours
+      # declares one: the OIDC and Watermill and ent contracts we implement, the
+      # generated api response sum types, and the mailer's seam (AGENTS.md,
+      # "Interfaces": the exception for a boundary with a second adapter).
+      allow:
+        - anon
+        - error
+        - empty
+        - stdlib
+        - generic
+        - github.com/ThreeDotsLabs/watermill/.*
+        - github.com/zitadel/oidc/v3/.*
+        - entgo.io/ent/.*
+        - github.com/samber/do/v2.Injector
+        - hexletbasics/ent.Mutator
+        - hexletbasics/internal/api.*
+        - hexletbasics/internal/mailer.Mailer
+    exhaustruct_v5:
+      # Our own types, where a field left out is a decision to leave it out. The
+      # structs of libraries, ent builders and the generated contract are filled
+      # partially by design: their zero values are defined.
+      explicit-mode: true
+      enforce-patterns:
+        - 'hexletbasics/.*'
+      # Options structs whose zero value means "the default", by their own
+      # documentation: the ent annotations the generators read and the embedded
+      # mixin base.
+      optional-patterns:
+        - 'hexletbasics/ent/schema\.(?:Admin.*|TimestampsMixin)'
+      ignore-patterns:
+        - 'hexletbasics/internal/api\..*'
+        - 'hexletbasics/internal/amocrm/generated\..*'
+        - 'hexletbasics/ent\..*'
+    tagliatelle:
+      case:
+        rules:
+          # What we write is snake_case: domain events, the OAuth documents
+          # (RFC 7591, RFC 8414), the course YAML. The contract's own camelCase
+          # types are generated, not hand-tagged; packages that speak another
+          # format say which below.
+          json: snake
+          yaml: snake
+    depguard:
+      rules:
+        # Imports that have a replacement already in use. Everything else is
+        # allowed (lax): the policy names what must not come in, not a list of
+        # every dependency.
+        banned:
+          list-mode: lax
+          files: ["$all"]
+          deny:
+            - pkg: math/rand$
+              desc: use math/rand/v2
+            - pkg: io/ioutil
+              desc: deprecated since Go 1.16; use io and os
+            - pkg: github.com/pkg/errors
+              desc: ADR-0018 builds errors with samber/oops
+            - pkg: golang.org/x/net/context
+              desc: use the standard context package
+            - pkg: ^log$
+              desc: ADR-0026 logs with log/slog
+        # ADR-0001: an operation's rules never see the generated contract types,
+        # and the handlers that translate them are not imported back. Only the
+        # adapters (handlers, apiconv, inputconv, paging, mcpserver, permission,
+        # di, the commands) and the tests may touch internal/api.
+        modules-do-not-know-the-contract:
+          list-mode: lax
+          files:
+            - "$all"
+            - "!**/internal/api/**"
+            - "!**/internal/handlers/**"
+            - "!**/internal/apiconv/**"
+            - "!**/internal/inputconv/**"
+            - "!**/internal/paging/**"
+            - "!**/internal/mcpserver/**"
+            - "!**/internal/permission/**"
+            - "!**/internal/di/**"
+            - "!**/internal/testsupport/**"
+            - "!**/cmd/**"
+            - "!$test"
+          deny:
+            - pkg: hexletbasics/internal/api
+              desc: ADR-0001, a module takes a plain command, never a generated api type
+            - pkg: hexletbasics/internal/handlers
+              desc: a module does not depend on the HTTP adapter
     sloglint:
       # ADR-0026: *Context variants when a ctx is in scope, snake_case keys,
       # static messages, one call style (key-value pairs).
@@ -74,6 +189,32 @@ linters:
     paths:
       - internal/testsupport
     rules:
+      # ADR-0018: each package keeps one `errs` template (oops.In("<package>")),
+      # the single place its error attributes are declared. A function in its
+      # place would make every call site `errs()`.
+      - linters: [gochecknoglobals]
+        text: "errs is a global variable"
+      # The DI graph (AGENTS.md, "Architecture: Handlers, DI, and Data"): each
+      # process package is one do.Package value, the single place a service is
+      # added; wrapping it in a function would only hide the same table.
+      - path: ^internal/di/.*_package\.go$|^internal/di/closers\.go$
+        linters: [gochecknoglobals]
+        text: "Package is a global variable"
+      # The backend message registry: `goi18n extract` reads the i18n.Message
+      # literals of these package-level values into the locale catalogs.
+      - path: ^internal/localization/
+        linters: [gochecknoglobals]
+      # revive's `exported` asks for a comment on every exported method. These
+      # two families implement an interface that documents them: ent's
+      # schema.Interface (Fields, Edges, ... of a table), and the generated
+      # api.Handler, whose operations the TypeSpec describes. Every other
+      # exported name still needs its comment.
+      - path: ^ent/schema/
+        linters: [revive]
+        text: 'exported method \w+\.(Annotations|Fields|Edges|Indexes|Mixin) should have comment'
+      - path: ^internal/handlers/
+        linters: [revive]
+        text: 'exported method Server\.\w+ should have comment'
       # Raw SQL stays available to tests (reading the outbox).
       - path: _test\.go
         linters: [forbidigo]

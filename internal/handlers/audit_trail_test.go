@@ -28,22 +28,38 @@ import (
 // in the past without a back door.
 func seedRecord(t *testing.T, h *testsupport.Harness, at time.Time, operation string, mutate func(*audit.Entry)) int {
 	t.Helper()
+
 	entry := audit.Entry{
 		OccurredAt: at,
-		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation:  operation,
 		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}
 	if mutate != nil {
 		mutate(&entry)
 	}
+
 	require.NoError(t, audit.Write(t.Context(), h.DB, entry, nil))
+
 	return newestRecord(t, h)
 }
 
 // newestRecord is the id of the Audit Record written last in the test's transaction.
 func newestRecord(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
+
 	return h.DB.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context()).ID
 }
 
@@ -52,10 +68,12 @@ func newestRecord(t *testing.T, h *testsupport.Harness) int {
 // is: with the grant on the role when withGrant is true, without it otherwise.
 func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
 	t.Helper()
+
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 	if withGrant {
-		h.Grant(t, int(roleEditorID), "audit.read")
+		h.Grant(t, int(roleEditorID()), "audit.read")
 	}
+
 	return h
 }
 
@@ -64,7 +82,9 @@ func listTrail(h *testsupport.Harness, params api.AdminListAuditRecordsParams) (
 	if err != nil {
 		return nil, err
 	}
+
 	page := res
+
 	return page, nil
 }
 
@@ -100,7 +120,7 @@ func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
 
 func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
 
@@ -122,10 +142,11 @@ func TestTheTrailListsNewestFirstAndPaginates(t *testing.T) {
 	// The records written by this very call and the fixtures are not in the way:
 	// the three seeded rows are the only ones in the window except the ones the
 	// listing's own refusals left, so assert on relative order.
-	var ids []int64
+	ids := make([]int64, 0, len(page.Items))
 	for _, item := range page.Items {
 		ids = append(ids, item.ID)
 	}
+
 	require.Len(t, ids, 2)
 	assert.Equal(t, int64(newest), ids[0])
 	assert.Equal(t, int64(middle), ids[1])
@@ -153,10 +174,12 @@ func TestTheTrailFiltersByActorChannelOperationAndEntity(t *testing.T) {
 	only := func(params api.AdminListAuditRecordsParams) []int64 {
 		page, err := listTrail(h, params)
 		require.NoError(t, err)
-		var ids []int64
+
+		ids := make([]int64, 0, len(page.Items))
 		for _, item := range page.Items {
 			ids = append(ids, item.ID)
 		}
+
 		return ids
 	}
 
@@ -233,7 +256,7 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	t.Parallel()
 	h := auditReader(t, true)
-	at := time.Now().Add(-time.Hour)
+	occurredAt := time.Now().Add(-time.Hour)
 	banner, carol := fixture.ID(fixture.BannerEnDraft), fixture.ID(fixture.UserWithPassword)
 
 	// A change is what the operation's own writes left in the Recorder: a banner
@@ -242,13 +265,36 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	h.DB.Banner.UpdateOneID(banner).SetBody("Cyber Monday sale").ExecX(ctx)
 	h.DB.User.UpdateOneID(carol).SetPasswordDigest("digest-the-trail-must-not-keep").ExecX(ctx)
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		OccurredAt: occurredAt, Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation: "AdminUpdateBanner", Outcome: audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, changes))
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{Channel: audit.ChannelWeb},
+		OccurredAt: occurredAt, Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
 		Operation: "AdminListUsers", Outcome: audit.OutcomeSucceeded,
-		Reads: &audit.Reads{Count: 2, IDs: []string{"1", "2"}},
+		Reads:      &audit.Reads{Count: 2, IDs: []string{"1", "2"}},
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		EntityType: "",
+		EntityID:   "",
 	}, nil))
 
 	page, err := listTrail(h, api.AdminListAuditRecordsParams{Operation: api.NewOptString("AdminUpdateBanner")})
@@ -313,9 +359,12 @@ func TestARefusedReadOfTheTrailIsNotRecordedAsARead(t *testing.T) {
 
 func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {
 	t.Helper()
+
 	res, err := h.Client.AdminGetMyCapabilities(context.Background())
 	require.NoError(t, err)
+
 	held := res
+
 	return held.Held
 }
 
@@ -346,7 +395,7 @@ func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
 
 func TestAnyStaffMemberMayAskWhatTheyHold(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }

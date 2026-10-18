@@ -60,11 +60,15 @@ func AccountEmail(sender AccountEmailSender) Module {
 // AccountEmailWorker is the worker alone, without its registration, so that a test
 // can work a job through it in a transaction (rivertest.Worker).
 func AccountEmailWorker(sender AccountEmailSender) river.Worker[AccountEmailArgs] {
-	return &accountEmailWorker{sender: sender}
+	return &accountEmailWorker{
+		sender:         sender,
+		WorkerDefaults: river.WorkerDefaults[AccountEmailArgs]{},
+	}
 }
 
 type accountEmailWorker struct {
 	river.WorkerDefaults[AccountEmailArgs]
+
 	sender AccountEmailSender
 }
 

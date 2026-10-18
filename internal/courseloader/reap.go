@@ -57,10 +57,13 @@ func (l *Loader) ReapStuck(ctx context.Context) ([]*ent.CourseVersion, error) {
 		if ent.IsNotFound(err) {
 			continue
 		}
+
 		if err != nil {
 			return reaped, oops.Wrapf(err, "reap course version %d", version.ID)
 		}
+
 		reaped = append(reaped, updated)
 	}
+
 	return reaped, nil
 }

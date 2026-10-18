@@ -32,9 +32,12 @@ func WithClientIP(next http.Handler) http.Handler {
 			userAgent: r.UserAgent(),
 			requestID: r.Header.Get(requestIDHeader),
 		})
-		if ip, err := realip.Get(r); err == nil && ip != "" {
+
+		ip, err := realip.Get(r)
+		if err == nil && ip != "" {
 			ctx = context.WithValue(ctx, clientIPKey{}, ip)
 		}
+
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
@@ -43,5 +46,6 @@ func WithClientIP(next http.Handler) http.Handler {
 // ClientIP returns the address WithClientIP resolved, if any.
 func ClientIP(ctx context.Context) (string, bool) {
 	ip, ok := ctx.Value(clientIPKey{}).(string)
+
 	return ip, ok
 }

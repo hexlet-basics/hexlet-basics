@@ -75,8 +75,10 @@ func (s *Server) CheckLesson(
 		if err != nil {
 			return nil, err
 		}
+
 		response.SetCookie = []string{cookie}
 	}
+
 	return response, nil
 }
 
@@ -86,10 +88,20 @@ func (s *Server) CheckLesson(
 // who has finished nothing.
 func currentLearner(ctx context.Context) progress.Learner {
 	if u, ok := AuthenticatedUser(ctx); ok {
-		return progress.Learner{UserID: u.ID}
+		return progress.Learner{
+			UserID: u.ID,
+			Guest: progress.GuestProgress{
+				Entries: nil,
+			},
+		}
 	}
+
 	guest, _ := GuestProgress(ctx)
-	return progress.Learner{Guest: guest}
+
+	return progress.Learner{
+		Guest:  guest,
+		UserID: 0,
+	}
 }
 
 // checkResultOf maps the runner's classification onto the contract's enum. An

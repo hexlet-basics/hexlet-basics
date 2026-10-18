@@ -14,21 +14,24 @@ func TestEveryStateOfATableBelongsToItsVocabulary(t *testing.T) {
 	t.Parallel()
 
 	publication := transition.PublicationStates.States()
-	for _, move := range []transition.Transition[transition.PublicationState]{transition.Publish, transition.Unpublish, transition.Archive} {
+	for _, move := range []transition.Transition[transition.PublicationState]{transition.Publish(), transition.Unpublish(), transition.Archive()} {
 		assert.Contains(t, publication, transition.State(move.To))
+
 		for _, from := range move.From {
 			assert.Contains(t, publication, transition.State(from))
 		}
 	}
+
 	readiness := transition.CourseReadiness.States()
-	for _, move := range []transition.Transition[transition.Readiness]{transition.MarkDraft, transition.MarkInDevelopment, transition.MarkCompleted} {
+	for _, move := range []transition.Transition[transition.Readiness]{transition.MarkDraft(), transition.MarkInDevelopment(), transition.MarkCompleted()} {
 		assert.Contains(t, readiness, transition.State(move.To))
+
 		for _, from := range move.From {
 			assert.Contains(t, readiness, transition.State(from))
 		}
 	}
 
-	illegal, ok := transition.IsIllegal(transition.Publish.Check(transition.Published))
+	illegal, ok := transition.IsIllegal(transition.Publish().Check(transition.Published))
 	assert.True(t, ok)
 	assert.Equal(t, transition.PublicationStates, illegal.Vocabulary)
 }

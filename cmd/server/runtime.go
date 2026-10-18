@@ -19,7 +19,7 @@ var (
 // fake (stuckServer) for the *http.Server.
 type httpRuntime interface {
 	ListenAndServe() error
-	Shutdown(context.Context) error
+	Shutdown(ctx context.Context) error
 	Close() error
 }
 
@@ -49,6 +49,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		select {
 		case <-signalCtx.Done():
 			stopSignals()
+
 			return errRuntimeSignal
 		case <-groupCtx.Done():
 			return nil
@@ -59,25 +60,32 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		if a.logger != nil {
 			a.logger.InfoContext(groupCtx, "backend listening", "addr", a.httpAddr)
 		}
-		if err := a.http.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+
+		err := a.http.ListenAndServe()
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return errs.Wrapf(err, "serve HTTP")
 		}
+
 		return errHTTPServerStopped
 	})
 
 	// The group keeps only its first error, and on a signal that is the
 	// sentinel, so the shutdown's own failure is kept apart and joined in.
 	var shutdownErr error
+
 	group.Go(func() error {
 		<-groupCtx.Done()
+
 		shutdownErr = a.shutdown(processCtx, cancelProcess)
+
 		return shutdownErr
 	})
 
 	waitErr := group.Wait()
 	if shutdownErr == nil || errors.Is(waitErr, shutdownErr) {
-		return waitErr
+		return errs.Wrapf(waitErr, "wait for the runtime")
 	}
+
 	return errors.Join(waitErr, shutdownErr)
 }
 
@@ -90,16 +98,20 @@ func failure(err error) error {
 		Unwrap() []error
 	}](err); ok {
 		var rest []error
+
 		for _, e := range joined.Unwrap() {
 			if !errors.Is(e, errRuntimeSignal) {
 				rest = append(rest, e)
 			}
 		}
+
 		return errors.Join(rest...)
 	}
+
 	if errors.Is(err, errRuntimeSignal) {
 		return nil
 	}
+
 	return err
 }
 
@@ -109,27 +121,38 @@ func (a *application) shutdown(parent context.Context, cancelProcess context.Can
 	if a.drain != nil {
 		a.drain()
 	}
+
 	timeout := a.shutdownTimeout
 	if timeout == 0 {
 		timeout = shutdownTimeout
 	}
+
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(parent), timeout)
 	defer cancel()
 
 	if a.logger != nil {
 		a.logger.InfoContext(ctx, "shutting down")
 	}
-	if err := a.http.Shutdown(ctx); err != nil {
+
+	err := a.http.Shutdown(ctx)
+	if err != nil {
 		stopErr := errs.Wrapf(err, "stop HTTP server")
-		if closeErr := a.http.Close(); closeErr != nil {
+
+		closeErr := a.http.Close()
+		if closeErr != nil {
 			forceCloseErr := errs.Wrapf(closeErr, "force-close HTTP server")
+
 			cancelProcess()
+
 			return errors.Join(stopErr, forceCloseErr)
 		}
+
 		cancelProcess()
+
 		return stopErr
 	}
 
 	cancelProcess()
+
 	return nil
 }

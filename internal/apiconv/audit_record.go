@@ -38,14 +38,18 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 
 	if len(row.Changes) > 0 {
 		var changes []audit.Change
-		if err := json.Unmarshal(row.Changes, &changes); err != nil {
+
+		err := json.Unmarshal(row.Changes, &changes)
+		if err != nil {
 			return api.AuditRecord{}, errs.With("audit_record_id", row.ID).Wrapf(err, "decode audit changes")
 		}
+
 		for _, change := range changes {
 			item := api.AuditChange{Entity: change.Entity, Op: change.Op}
 			if change.ID != "" {
 				item.ID = api.NewOptString(change.ID)
 			}
+
 			for _, field := range change.Fields {
 				item.Fields = append(item.Fields, api.AuditFieldChange{
 					Name:   field.Name,
@@ -54,16 +58,21 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 					Secret: api.NewOptBool(field.Secret),
 				})
 			}
+
 			out.Changes = append(out.Changes, item)
 		}
 	}
 
 	if len(row.Reads) > 0 {
 		var reads audit.Reads
-		if err := json.Unmarshal(row.Reads, &reads); err != nil {
+
+		err := json.Unmarshal(row.Reads, &reads)
+		if err != nil {
 			return api.AuditRecord{}, errs.With("audit_record_id", row.ID).Wrapf(err, "decode audit reads")
 		}
+
 		out.Reads = api.NewNilAuditReads(api.AuditReads{Count: Int32FromInt(reads.Count), Ids: reads.IDs})
 	}
+
 	return out, nil
 }

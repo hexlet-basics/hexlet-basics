@@ -37,12 +37,19 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 	t.Helper()
 	db := testsupport.NewClient(t)
 	manager := auth.New(db, append([]auth.Option{auth.WithClock(clk.Now)}, opts...)...)
-	a := &app{t: t, db: db, sessions: manager}
+	application := &app{
+		t:        t,
+		db:       db,
+		sessions: manager,
+		handler:  nil,
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /signin/{label}", func(w http.ResponseWriter, r *http.Request) {
 		u := db.User.GetX(r.Context(), fixture.ID(fixture.LabelOf(r.PathValue("label"))))
-		if err := manager.Begin(r.Context(), u); err != nil {
+
+		err := manager.Begin(r.Context(), u)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
@@ -50,27 +57,34 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		u, err := manager.User(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+
 			return
 		}
+
 		_, _ = w.Write([]byte(strconv.Itoa(u.ID)))
 	})
 	mux.HandleFunc("POST /signout", func(w http.ResponseWriter, r *http.Request) {
-		if err := manager.End(r.Context()); err != nil {
+		err := manager.End(r.Context())
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
-	a.handler = manager.Middleware(mux)
-	return a
+	application.handler = manager.Middleware(mux)
+
+	return application
 }
 
 func (a *app) do(method, path string, cookie *http.Cookie) *httptest.ResponseRecorder {
 	a.t.Helper()
+
 	req := httptest.NewRequestWithContext(a.t.Context(), method, path, nil)
 	if cookie != nil {
 		req.AddCookie(cookie)
 	}
+
 	rec := httptest.NewRecorder()
 	a.handler.ServeHTTP(rec, req)
+
 	return rec
 }
 
@@ -78,23 +92,29 @@ func (a *app) do(method, path string, cookie *http.Cookie) *httptest.ResponseRec
 // set.
 func (a *app) signIn(label fixture.Label, with ...*http.Cookie) *http.Cookie {
 	a.t.Helper()
+
 	var planted *http.Cookie
 	if len(with) > 0 {
 		planted = with[0]
 	}
+
 	rec := a.do(http.MethodPost, "/signin/"+label.String(), planted)
 	require.Equal(a.t, http.StatusOK, rec.Code)
+
 	return cookieNamed(rec.Result(), auth.CookieName)
 }
 
 func (a *app) me(cookie *http.Cookie) int {
 	a.t.Helper()
+
 	rec := a.do(http.MethodGet, "/me", cookie)
 	if rec.Code != http.StatusOK {
 		return 0
 	}
+
 	id, err := strconv.Atoi(rec.Body.String())
 	require.NoError(a.t, err)
+
 	return id
 }
 
@@ -106,6 +126,7 @@ func cookieNamed(resp *http.Response, name string) *http.Cookie {
 			return c
 		}
 	}
+
 	return nil
 }
 
@@ -113,20 +134,20 @@ func newClock() *clock { return &clock{now: time.Now()} }
 
 // A visitor who never signs in costs nothing: no row, no cookie.
 func TestAnAnonymousRequestCreatesNoSession(t *testing.T) {
-	a := newApp(t, newClock())
-	before := a.rows()
+	application := newApp(t, newClock())
+	before := application.rows()
 
-	rec := a.do(http.MethodGet, "/me", nil)
+	rec := application.do(http.MethodGet, "/me", nil)
 
 	assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	assert.Empty(t, rec.Result().Cookies())
-	assert.Equal(t, before, a.rows())
+	assert.Equal(t, before, application.rows())
 }
 
 func TestSigningInStartsASessionTheCookieNames(t *testing.T) {
-	a := newApp(t, newClock())
+	application := newApp(t, newClock())
 
-	cookie := a.signIn(fixture.UserWithPassword)
+	cookie := application.signIn(fixture.UserWithPassword)
 
 	require.NotNil(t, cookie)
 	assert.True(t, cookie.HttpOnly)
@@ -135,45 +156,45 @@ func TestSigningInStartsASessionTheCookieNames(t *testing.T) {
 	// sign-in, so a page rendered by a server that does not relay cookies cannot
 	// leave the browser holding a stale one.
 	assert.InDelta(t, int(auth.MaxLifetime.Seconds()), cookie.MaxAge, 5)
-	assert.Equal(t, fixture.ID(fixture.UserWithPassword), a.me(cookie))
+	assert.Equal(t, fixture.ID(fixture.UserWithPassword), application.me(cookie))
 }
 
 // A leaked table must not be a list of working cookies: the row is keyed by a
 // digest, never by the value a browser sends.
 func TestTheStoredSessionIsKeyedByADigestOfTheToken(t *testing.T) {
-	a := newApp(t, newClock())
+	application := newApp(t, newClock())
 
-	cookie := a.signIn(fixture.UserWithPassword)
+	cookie := application.signIn(fixture.UserWithPassword)
 
-	exists := a.db.Session.Query().Where(session.ID(cookie.Value)).ExistX(t.Context())
+	exists := application.db.Session.Query().Where(session.ID(cookie.Value)).ExistX(t.Context())
 	assert.False(t, exists, "the token itself is not stored")
-	assert.Equal(t, 1, a.rows())
+	assert.Equal(t, 1, application.rows())
 }
 
 // A token planted before sign-in must be worthless after it (session fixation).
 func TestSigningInRenewsAPlantedToken(t *testing.T) {
-	a := newApp(t, newClock())
-	planted := a.signIn(fixture.UserBlank)
+	application := newApp(t, newClock())
+	planted := application.signIn(fixture.UserBlank)
 
-	fresh := a.signIn(fixture.UserWithPassword, planted)
+	fresh := application.signIn(fixture.UserWithPassword, planted)
 
 	assert.NotEqual(t, planted.Value, fresh.Value)
-	assert.Equal(t, fixture.ID(fixture.UserWithPassword), a.me(fresh))
-	assert.Zero(t, a.me(planted), "the old token no longer names anyone")
+	assert.Equal(t, fixture.ID(fixture.UserWithPassword), application.me(fresh))
+	assert.Zero(t, application.me(planted), "the old token no longer names anyone")
 }
 
 func TestSigningOutEndsTheSessionNotJustTheCookie(t *testing.T) {
-	a := newApp(t, newClock())
-	cookie := a.signIn(fixture.UserWithPassword)
+	application := newApp(t, newClock())
+	cookie := application.signIn(fixture.UserWithPassword)
 
-	rec := a.do(http.MethodPost, "/signout", cookie)
+	rec := application.do(http.MethodPost, "/signout", cookie)
 	require.Equal(t, http.StatusOK, rec.Code)
 
 	cleared := cookieNamed(rec.Result(), auth.CookieName)
 	require.NotNil(t, cleared)
 	assert.Negative(t, cleared.MaxAge)
-	assert.Zero(t, a.me(cookie), "a copy of the cookie opens nothing")
-	assert.Zero(t, a.rows())
+	assert.Zero(t, application.me(cookie), "a copy of the cookie opens nothing")
+	assert.Zero(t, application.rows())
 }
 
 func TestARemovedAccountIsSignedOutAtOnce(t *testing.T) {
@@ -188,66 +209,69 @@ func TestARemovedAccountIsSignedOutAtOnce(t *testing.T) {
 // Changing the password ends every session that began under the old one, on
 // every device, and leaves the one that began under the new one alone.
 func TestChangingThePasswordEndsTheOtherSessions(t *testing.T) {
-	a := newApp(t, newClock())
-	laptop := a.signIn(fixture.UserWithPassword)
-	phone := a.signIn(fixture.UserWithPassword)
-	u := a.db.User.GetX(t.Context(), fixture.ID(fixture.UserWithPassword))
+	application := newApp(t, newClock())
+	laptop := application.signIn(fixture.UserWithPassword)
+	phone := application.signIn(fixture.UserWithPassword)
+	u := application.db.User.GetX(t.Context(), fixture.ID(fixture.UserWithPassword))
 
-	_, err := account.NewCredentials(a.db).SetPassword(t.Context(), u, "a-new-password")
+	_, err := account.NewCredentials(application.db).SetPassword(t.Context(), u, "a-new-password")
 	require.NoError(t, err)
 
-	assert.Zero(t, a.me(laptop))
-	assert.Zero(t, a.me(phone))
-	assert.Equal(t, fixture.ID(fixture.UserWithPassword), a.me(a.signIn(fixture.UserWithPassword)))
+	assert.Zero(t, application.me(laptop))
+	assert.Zero(t, application.me(phone))
+	assert.Equal(t, fixture.ID(fixture.UserWithPassword), application.me(application.signIn(fixture.UserWithPassword)))
 }
 
 // A week without a request ends a session.
 func TestASessionNobodyUsesEndsAfterTheIdleWeek(t *testing.T) {
 	clk := newClock()
-	a := newApp(t, clk)
-	cookie := a.signIn(fixture.UserWithPassword)
+	application := newApp(t, clk)
+	cookie := application.signIn(fixture.UserWithPassword)
 
 	clk.advance(auth.IdleTimeout - time.Hour)
-	require.Equal(t, fixture.ID(fixture.UserWithPassword), a.me(cookie))
+	require.Equal(t, fixture.ID(fixture.UserWithPassword), application.me(cookie))
 
 	clk.advance(auth.IdleTimeout + time.Hour)
-	assert.Zero(t, a.me(cookie))
+	assert.Zero(t, application.me(cookie))
 }
 
 // Use keeps a session alive, but only to the thirty-first day from sign-in.
 func TestAnActiveSessionStillEndsAtItsMaximumAge(t *testing.T) {
 	clk := newClock()
-	a := newApp(t, clk)
-	cookie := a.signIn(fixture.UserWithPassword)
+	application := newApp(t, clk)
+	cookie := application.signIn(fixture.UserWithPassword)
 
 	for range 5 {
 		clk.advance(6 * 24 * time.Hour)
-		require.Equal(t, fixture.ID(fixture.UserWithPassword), a.me(cookie), "active, so extended")
+		require.Equal(t, fixture.ID(fixture.UserWithPassword), application.me(cookie), "active, so extended")
 	}
 
 	clk.advance(2 * 24 * time.Hour)
-	assert.Zero(t, a.me(cookie), "thirty-two days after sign-in")
+	assert.Zero(t, application.me(cookie), "thirty-two days after sign-in")
 }
 
 // Reading is not writing: a busy session records that it was seen at most once
 // an hour, and its end, which the browser's cookie also carries, never moves.
 func TestABusySessionIsWrittenBackAtMostOnceAnHour(t *testing.T) {
 	clk := newClock()
-	a := newApp(t, clk)
-	cookie := a.signIn(fixture.UserWithPassword)
-	stored := func() (data []byte, expiry time.Time) {
-		row := a.db.Session.Query().OnlyX(t.Context())
+	application := newApp(t, clk)
+	cookie := application.signIn(fixture.UserWithPassword)
+	stored := func() ([]byte, time.Time) {
+		row := application.db.Session.Query().OnlyX(t.Context())
+
 		return row.Data, row.Expiry
 	}
 	signedInData, signedInExpiry := stored()
 
 	clk.advance(30 * time.Minute)
-	require.NotZero(t, a.me(cookie))
+	require.NotZero(t, application.me(cookie))
+
 	data, _ := stored()
 	assert.Equal(t, signedInData, data, "within the hour nothing is written")
 
 	clk.advance(90 * time.Minute)
-	require.NotZero(t, a.me(cookie))
+	require.NotZero(t, application.me(cookie))
+
 	data, expiry := stored()
 	assert.NotEqual(t, signedInData, data, "after the hour the sighting is recorded")
 	assert.Equal(t, signedInExpiry, expiry, "the end of the session does not move")
@@ -255,21 +279,23 @@ func TestABusySessionIsWrittenBackAtMostOnceAnHour(t *testing.T) {
 
 func TestDeleteExpiredRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	clk := newClock()
-	a := newApp(t, clk)
-	a.signIn(fixture.UserWithPassword)
-	a.signIn(fixture.UserBlank)
-	require.Equal(t, 2, a.rows())
+	application := newApp(t, clk)
+	application.signIn(fixture.UserWithPassword)
+	application.signIn(fixture.UserBlank)
+	require.Equal(t, 2, application.rows())
 
 	clk.advance(auth.MaxLifetime - time.Hour)
-	removed, err := a.sessions.DeleteExpired(t.Context())
+
+	removed, err := application.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, removed, "a session within its lifetime stays, used or not")
 
 	clk.advance(2 * time.Hour)
-	removed, err = a.sessions.DeleteExpired(t.Context())
+
+	removed, err = application.sessions.DeleteExpired(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, 2, removed)
-	assert.Zero(t, a.rows())
+	assert.Zero(t, application.rows())
 }
 
 func TestTheCookieIsSecureWhereTheSiteIsHTTPS(t *testing.T) {

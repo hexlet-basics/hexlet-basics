@@ -21,12 +21,15 @@ const mcpResource = testsupport.OAuthIssuer + "/mcp"
 // ID token says.
 func jwtClaims(t *testing.T, jwt string) map[string]any {
 	t.Helper()
+
 	parts := strings.Split(jwt, ".")
 	require.Len(t, parts, 3)
 	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
 	require.NoError(t, err)
+
 	var claims map[string]any
 	require.NoError(t, json.Unmarshal(payload, &claims))
+
 	return claims
 }
 
@@ -37,6 +40,7 @@ func refusal(t *testing.T, f *testsupport.Flow) url.Values {
 	to, err := f.Authorize.Location()
 	require.NoError(t, err)
 	require.Equal(t, "127.0.0.1:8976", to.Host, "the error goes to the client, not to the consent screen")
+
 	return to.Query()
 }
 
@@ -44,7 +48,7 @@ func TestTheThreeScopesAreAdmittedAndAppearInTheIssuedToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	all := []string{oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin}
 
-	tokens := o.Connect(alice, all...)
+	tokens := o.Connect(alice(), all...)
 
 	assert.ElementsMatch(t, append(all, "offline_access"), tokens.Scopes)
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
@@ -55,7 +59,7 @@ func TestTheThreeScopesAreAdmittedAndAppearInTheIssuedToken(t *testing.T) {
 func TestTheFlowWorksWithoutTheOpenIDScope(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	assert.NotContains(t, tokens.Scopes, "openid")
 	assert.Equal(t, "Bearer", tokens.TokenType)
@@ -70,15 +74,18 @@ func TestAnUnknownScopeIsRefusedWithInvalidScopeNotDropped(t *testing.T) {
 		"profile",                 // a standard OpenID scope that discloses nothing here
 		"email",
 	} {
-		f := o.StartWith(alice, testsupport.StartOptions{
-			Scopes: []string{oauthserver.ScopeCatalogRead},
-			Params: func(q url.Values) { q.Set("scope", scope) },
+		flow := o.StartWith(alice(), testsupport.StartOptions{
+			Scopes:       []string{oauthserver.ScopeCatalogRead},
+			Params:       func(q url.Values) { q.Set("scope", scope) },
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
-		q := refusal(t, f)
+		q := refusal(t, flow)
 		assert.Equal(t, "invalid_scope", q.Get("error"), scope)
 		assert.Contains(t, q.Get("error_description"), "Supported scopes", scope)
-		assert.Equal(t, f.State, q.Get("state"))
+		assert.Equal(t, flow.State, q.Get("state"))
 	}
+
 	count, err := o.DB.OAuthAuthRequest.Query().Count(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, count, "a refused request leaves nothing to approve")
@@ -87,12 +94,14 @@ func TestAnUnknownScopeIsRefusedWithInvalidScopeNotDropped(t *testing.T) {
 func TestAKnownScopeTheClientWasNotRegisteredForIsRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
-	f := o.StartWith(alice, testsupport.StartOptions{
-		Scopes: []string{oauthserver.ScopeCatalogRead},
-		Params: func(q url.Values) { q.Set("scope", "catalog:read admin") },
+	flow := o.StartWith(alice(), testsupport.StartOptions{
+		Scopes:       []string{oauthserver.ScopeCatalogRead},
+		Params:       func(q url.Values) { q.Set("scope", "catalog:read admin") },
+		RedirectURIs: nil,
+		ClientID:     "",
 	})
 
-	assert.Equal(t, "invalid_scope", refusal(t, f).Get("error"))
+	assert.Equal(t, "invalid_scope", refusal(t, flow).Get("error"))
 }
 
 func TestTheResourceBindsTheTokenAudienceToTheCanonicalMCPURL(t *testing.T) {
@@ -103,17 +112,19 @@ func TestTheResourceBindsTheTokenAudienceToTheCanonicalMCPURL(t *testing.T) {
 		"named":   {mcpResource},
 		"omitted": nil,
 	} {
-		f := o.StartWith(alice, testsupport.StartOptions{
+		flow := o.StartWith(alice(), testsupport.StartOptions{
 			Scopes: []string{"openid", oauthserver.ScopeCatalogRead},
 			Params: func(q url.Values) {
 				if resource != nil {
 					q["resource"] = resource
 				}
 			},
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
-		require.Equal(t, http.StatusFound, f.Authorize.StatusCode, name)
-		code := f.Approve()
-		tokens, res := f.ExchangeWith(code, testsupport.PKCEVerifier(), url.Values{"resource": {mcpResource}})
+		require.Equal(t, http.StatusFound, flow.Authorize.StatusCode, name)
+		code := flow.Approve()
+		tokens, res := flow.ExchangeWith(code, testsupport.PKCEVerifier(), url.Values{"resource": {mcpResource}})
 		require.Equal(t, http.StatusOK, res.StatusCode, name)
 
 		verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
@@ -126,6 +137,7 @@ func TestTheResourceBindsTheTokenAudienceToTheCanonicalMCPURL(t *testing.T) {
 			"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {tokens.RefreshToken},
 		})
 		require.Equal(t, http.StatusOK, res.StatusCode, name)
+
 		var refreshed testsupport.Tokens
 		decode(t, res, &refreshed)
 		verified, err = o.Server.VerifyAccessToken(t.Context(), refreshed.AccessToken)
@@ -143,11 +155,13 @@ func TestAnotherResourceIsRefusedWithInvalidTarget(t *testing.T) {
 		{testsupport.OAuthIssuer + "/mcp/"},
 		{mcpResource, "https://other.example/mcp"}, // one wrong value among right ones
 	} {
-		f := o.StartWith(alice, testsupport.StartOptions{
-			Scopes: []string{oauthserver.ScopeCatalogRead},
-			Params: func(q url.Values) { q["resource"] = resource },
+		flow := o.StartWith(alice(), testsupport.StartOptions{
+			Scopes:       []string{oauthserver.ScopeCatalogRead},
+			Params:       func(q url.Values) { q["resource"] = resource },
+			RedirectURIs: nil,
+			ClientID:     "",
 		})
-		q := refusal(t, f)
+		q := refusal(t, flow)
 		assert.Equal(t, "invalid_target", q.Get("error"), resource)
 		assert.Contains(t, q.Get("error_description"), mcpResource)
 	}
@@ -155,23 +169,24 @@ func TestAnotherResourceIsRefusedWithInvalidTarget(t *testing.T) {
 
 func TestTheTokenRequestRefusesAnotherResource(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	f := o.Start(alice, oauthserver.ScopeCatalogRead)
-	code := f.Approve()
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
+	code := flow.Approve()
 
-	_, res := f.ExchangeWith(code, testsupport.PKCEVerifier(), url.Values{"resource": {"https://other.example/mcp"}})
+	_, res := flow.ExchangeWith(code, testsupport.PKCEVerifier(), url.Values{"resource": {"https://other.example/mcp"}})
 	require.Equal(t, http.StatusBadRequest, res.StatusCode)
+
 	var body struct{ Error string }
 	decode(t, res, &body)
 	assert.Equal(t, "invalid_target", body.Error)
 
 	// The refusal did not spend the code.
-	_, res = f.Exchange(code, testsupport.PKCEVerifier())
+	_, res = flow.Exchange(code, testsupport.PKCEVerifier())
 	assert.Equal(t, http.StatusOK, res.StatusCode)
 }
 
 func TestRevokingTheRowStillRevokesATokenWithAnAudience(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	_, err := o.DB.OAuthAccessToken.Delete().Exec(t.Context())
 	require.NoError(t, err)
 
@@ -183,16 +198,17 @@ func TestTheAuthorizationResponseCarriesTheIssuer(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	// Success.
-	f := o.Start(alice, oauthserver.ScopeCatalogRead)
-	f.Approve()
-	assert.Equal(t, testsupport.OAuthIssuer, f.Callback.Query().Get("iss"))
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
+	flow.Approve()
+	assert.Equal(t, testsupport.OAuthIssuer, flow.Callback.Query().Get("iss"))
 
 	// The user denies.
-	f = o.Start(alice, oauthserver.ScopeCatalogRead)
-	res := f.Decide(false)
+	flow = o.Start(alice(), oauthserver.ScopeCatalogRead)
+	res := flow.Decide(false)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 	denied, err := url.Parse(decision.RedirectURL)
@@ -201,15 +217,17 @@ func TestTheAuthorizationResponseCarriesTheIssuer(t *testing.T) {
 	assert.Equal(t, testsupport.OAuthIssuer, denied.Query().Get("iss"))
 
 	// The request is refused.
-	f = o.StartWith(alice, testsupport.StartOptions{
-		Scopes: []string{oauthserver.ScopeCatalogRead},
-		Params: func(q url.Values) { q.Set("scope", "superpower") },
+	flow = o.StartWith(alice(), testsupport.StartOptions{
+		Scopes:       []string{oauthserver.ScopeCatalogRead},
+		Params:       func(q url.Values) { q.Set("scope", "superpower") },
+		RedirectURIs: nil,
+		ClientID:     "",
 	})
-	assert.Equal(t, testsupport.OAuthIssuer, refusal(t, f).Get("iss"))
+	assert.Equal(t, testsupport.OAuthIssuer, refusal(t, flow).Get("iss"))
 
 	// The hop to the consent screen is not a response to the client.
-	f = o.Start(alice, oauthserver.ScopeCatalogRead)
-	to, err := f.Authorize.Location()
+	flow = o.Start(alice(), oauthserver.ScopeCatalogRead)
+	to, err := flow.Authorize.Location()
 	require.NoError(t, err)
 	assert.True(t, strings.HasPrefix(to.String(), testsupport.OAuthIssuer+"/connect"))
 	assert.NotContains(t, to.Query(), "iss")
@@ -221,6 +239,7 @@ func TestTheMetadataDeclaresTheIssuerParameterAtBothPaths(t *testing.T) {
 	for _, path := range []string{"/.well-known/oauth-authorization-server", "/.well-known/openid-configuration"} {
 		res := o.Do(http.MethodGet, path, nil)
 		require.Equal(t, http.StatusOK, res.StatusCode, path)
+
 		var doc map[string]any
 		decode(t, res, &doc)
 		assert.Equal(t, true, doc["authorization_response_iss_parameter_supported"], path)
@@ -234,16 +253,19 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 	registered := []string{"http://127.0.0.1:8976/callback", "https://app.example/cb"}
 
 	connects := func(redirect string) bool {
-		f := o.StartWith(alice, testsupport.StartOptions{
+		flow := o.StartWith(alice(), testsupport.StartOptions{
 			Scopes:       []string{oauthserver.ScopeCatalogRead},
 			RedirectURIs: registered,
 			Params:       func(q url.Values) { q.Set("redirect_uri", redirect) },
+			ClientID:     "",
 		})
-		if f.Authorize.StatusCode != http.StatusFound {
+		if flow.Authorize.StatusCode != http.StatusFound {
 			return false
 		}
-		to, err := f.Authorize.Location()
+
+		to, err := flow.Authorize.Location()
 		require.NoError(t, err)
+
 		return strings.HasPrefix(to.String(), testsupport.OAuthIssuer+"/connect")
 	}
 
@@ -279,8 +301,10 @@ func TestALoopbackRedirectMatchesOnAnyPortWithTheSamePath(t *testing.T) {
 	} {
 		if redirect == "https://app.example/cb" {
 			assert.True(t, connects(redirect), "an exact https match is accepted")
+
 			continue
 		}
+
 		assert.False(t, connects(redirect), redirect)
 	}
 }
@@ -289,14 +313,15 @@ func TestAPlainHTTPRedirectOnANonLoopbackHostIsRefusedEvenWhenRegistered(t *test
 	o := testsupport.NewOAuth(t)
 	redirect := "http://app.example/cb"
 
-	f := o.StartWith(alice, testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		Scopes:       []string{oauthserver.ScopeCatalogRead},
 		RedirectURIs: []string{redirect},
 		Params:       func(q url.Values) { q.Set("redirect_uri", redirect) },
+		ClientID:     "",
 	})
 
 	// There is no trusted redirect to send the error to: the browser stays here.
-	assert.NotEqual(t, http.StatusFound, f.Authorize.StatusCode)
+	assert.NotEqual(t, http.StatusFound, flow.Authorize.StatusCode)
 	count, err := o.DB.OAuthAuthRequest.Query().Count(t.Context())
 	require.NoError(t, err)
 	assert.Zero(t, count)

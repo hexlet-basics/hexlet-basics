@@ -9,6 +9,7 @@ import (
 
 func TestServerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 	configureTestEnvironment(t)
+
 	deps, err := BuildServer()
 	require.NoError(t, err)
 
@@ -21,6 +22,7 @@ func TestServerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 
 func TestWorkerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 	configureTestEnvironment(t)
+
 	deps, err := BuildWorker()
 	require.NoError(t, err)
 
@@ -34,6 +36,7 @@ func TestWorkerShutdownReleasesEveryResourceTheProcessOwns(t *testing.T) {
 // A resource that cannot close is reported, not swallowed.
 func TestShutdownReportsWhatFailsToClose(t *testing.T) {
 	configureTestEnvironment(t)
+
 	deps, err := BuildServer()
 	require.NoError(t, err)
 	require.NoError(t, deps.Bucket.Close())

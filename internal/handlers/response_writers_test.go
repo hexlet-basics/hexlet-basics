@@ -26,6 +26,7 @@ func (c *goneClient) Header() http.Header {
 	if c.header == nil {
 		c.header = http.Header{}
 	}
+
 	return c.header
 }
 func (c *goneClient) WriteHeader(status int)    { c.status = status }
@@ -57,7 +58,10 @@ func TestMethodNotAllowedHandlerAnswersOptionsWithNoContent(t *testing.T) {
 func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
 	t.Parallel()
 	handler := testsupport.NewAPIErrorHandler(t, testsupport.NewTranslator(t))
-	client := &goneClient{}
+	client := &goneClient{
+		header: nil,
+		status: 0,
+	}
 
 	assert.NotPanics(t, func() {
 		handler.Write(t.Context(), client, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil), io.ErrUnexpectedEOF)
@@ -69,8 +73,12 @@ func TestErrorHandlerSurvivesAClientThatLeft(t *testing.T) {
 // stops the copy feeding it.
 func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 	t.Parallel()
-	var written int
-	var writeErr error
+
+	var (
+		written  int
+		writeErr error
+	)
+
 	next := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		written, writeErr = w.Write([]byte("chunk"))
 	})
@@ -85,7 +93,10 @@ func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 	assert.True(t, recorder.Flushed, "the chunk is on the wire, not buffered")
 	assert.Equal(t, "no", recorder.Header().Get("X-Accel-Buffering"), "nginx must not buffer it either")
 
-	serve(&goneClient{})
+	serve(&goneClient{
+		header: nil,
+		status: 0,
+	})
 	require.ErrorIs(t, writeErr, errGone)
 
 	serve(flakyFlusher{httptest.NewRecorder()})
@@ -96,6 +107,7 @@ func TestStreamResponsesFlushesEachWriteAndReportsAGoneClient(t *testing.T) {
 // connection is cut rather than a JSON error glued to a short answer.
 func TestStreamResponsesCutsAnAnswerThatFailsMidway(t *testing.T) {
 	t.Parallel()
+
 	failMidway := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("partial"))
 		w.WriteHeader(http.StatusInternalServerError)

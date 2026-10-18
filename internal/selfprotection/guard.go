@@ -36,16 +36,20 @@ func NewGuard(db *ent.Client) *Guard {
 // oneself is caught as well. A record that is not there is domain.ErrNotFound.
 func (g *Guard) StaffRecordChange(ctx context.Context, actor Actor, recordID, newOwner int) error {
 	owner := 0
+
 	if recordID != 0 {
 		record, err := g.db.StaffMember.Get(ctx, recordID)
 		if err != nil {
 			return domain.FromStore(err)
 		}
+
 		owner = record.UserID
 	}
+
 	if owner == actor.ID || newOwner == actor.ID {
 		return ErrOwnStaffRecord
 	}
+
 	return nil
 }
 
@@ -57,15 +61,18 @@ func (g *Guard) OwnRoleGrants(ctx context.Context, actor Actor, roleID int) erro
 	if actor.Administrator {
 		return nil
 	}
+
 	holds, err := g.db.StaffMember.Query().
 		Where(staffmember.UserID(actor.ID), staffmember.RoleID(roleID)).
 		Exist(ctx)
 	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	if holds {
 		return ErrOwnRoleGrants
 	}
+
 	return nil
 }
 
@@ -77,6 +84,7 @@ func (g *Guard) AdministratorFlag(actor Actor, was, will bool) error {
 	if was == will || actor.Administrator {
 		return nil
 	}
+
 	return ErrAdministratorFlagRestricted
 }
 
@@ -86,5 +94,6 @@ func (g *Guard) OwnAccountDeletion(actor Actor, userID int) error {
 	if actor.ID == userID {
 		return ErrOwnAccountDeletion
 	}
+
 	return nil
 }

@@ -30,6 +30,7 @@ func serverEnv(t *testing.T, addr string) {
 func TestRunServesUntilSignalledAndStopsCleanly(t *testing.T) {
 	addr := freeAddr(t)
 	serverEnv(t, addr)
+
 	signalCtx, signal := context.WithCancel(t.Context())
 	defer signal()
 
@@ -41,11 +42,14 @@ func TestRunServesUntilSignalledAndStopsCleanly(t *testing.T) {
 		if err != nil {
 			return false
 		}
+
 		_ = res.Body.Close()
+
 		return res.StatusCode == http.StatusOK
 	}, 30*time.Second, 50*time.Millisecond, "the process answers requests")
 
 	signal()
+
 	select {
 	case err := <-done:
 		require.NoError(t, err, "a signal is the normal way to stop, not a failure")
@@ -67,7 +71,9 @@ func TestRunFailsWhenTheDependenciesCannotBeBuilt(t *testing.T) {
 func TestRunFailsWhenTheAddressIsTaken(t *testing.T) {
 	taken, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
+
 	defer func() { _ = taken.Close() }()
+
 	serverEnv(t, taken.Addr().String())
 
 	runErr := run(t.Context(), func() {})

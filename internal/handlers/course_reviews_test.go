@@ -17,10 +17,13 @@ import (
 // enqueuedLessonInfoIDs extracts the lesson-info ids of the queued review jobs.
 func enqueuedLessonInfoIDs(t *testing.T, h *testsupport.Harness) []int {
 	t.Helper()
-	var ids []int
-	for _, args := range testsupport.EnqueuedJobs[jobs.ReviewLessonArgs](t, h.Services) {
+	enqueued := testsupport.EnqueuedJobs[jobs.ReviewLessonArgs](t, h.Services)
+
+	ids := make([]int, 0, len(enqueued))
+	for _, args := range enqueued {
 		ids = append(ids, args.LessonInfoID)
 	}
+
 	return ids
 }
 

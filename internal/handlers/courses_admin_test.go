@@ -14,9 +14,7 @@ import (
 )
 
 // languages.yml seeds this many courses; ruby is one of them.
-var (
-	courseRubyIDA = fixture.ID(fixture.CourseRuby)
-)
+var ()
 
 func TestAdminListCourses(t *testing.T) {
 	t.Parallel()
@@ -40,7 +38,7 @@ func TestAdminGetCourse(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(courseRubyIDA)})
+	got, err := h.Client.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(courseRubyIDA())})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "ruby", got.Slug)
@@ -116,13 +114,13 @@ func TestAdminUpdateCourse(t *testing.T) {
 		HexletProgramLandingPage: api.NilString{Null: true}, // clears
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
-	}, api.AdminUpdateCourseParams{ID: int32(courseRubyIDA)})
+	}, api.AdminUpdateCourseParams{ID: int32(courseRubyIDA())})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness.Value, "update never changes the readiness")
 	assert.Equal(t, api.CourseLearnAsFirstLanguage, updated.LearnAs.Value)
 
-	row, err := h.DB.Course.Get(ctx, courseRubyIDA)
+	row, err := h.DB.Course.Get(ctx, courseRubyIDA())
 	require.NoError(t, err)
 	assert.Nil(t, row.HexletProgramLandingPage, "null hexletProgramLandingPage should clear the column")
 }
@@ -138,15 +136,22 @@ func TestAdminListCourseOptionsIsNotPaginated(t *testing.T) {
 	res, err := h.Client.AdminListCourseOptions(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
+
 	options := res
 	assert.Len(t, options, totalCourses)
 
 	var ruby *api.CourseOption
+
 	for i := range options {
-		if options[i].ID == int32(courseRubyIDA) {
+		if options[i].ID == int32(courseRubyIDA()) {
 			ruby = &options[i]
 		}
 	}
+
 	require.NotNil(t, ruby, "ruby is among the options")
 	assert.NotEmpty(t, ruby.Name)
+}
+
+func courseRubyIDA() int {
+	return fixture.ID(fixture.CourseRuby)
 }

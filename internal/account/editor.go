@@ -42,14 +42,16 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 		SetNillableLastName(fields.LastName).
 		SetNillableAdmin(fields.Admin).
 		Save(ctx)
-	return u, domain.FromStore(err, userUniques...)
+
+	return u, domain.FromStore(err, userUniques()...)
 }
 
 // Update replaces a user's editable fields. A missing id is domain.ErrNotFound;
 // taking the flag from the last administrator is ErrLastAdmin.
 func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.User, error) {
 	if fields.Admin == nil || !*fields.Admin {
-		if err := EnsureAnotherAdmin(ctx, e.db, id); err != nil {
+		err := EnsureAnotherAdmin(ctx, e.db, id)
+		if err != nil {
 			return nil, domain.FromStore(err)
 		}
 	}
@@ -60,11 +62,13 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	} else {
 		update.SetFirstName(*fields.FirstName)
 	}
+
 	if fields.LastName == nil {
 		update.ClearLastName()
 	} else {
 		update.SetLastName(*fields.LastName)
 	}
+
 	if fields.Admin == nil {
 		update.ClearAdmin()
 	} else {
@@ -72,14 +76,17 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	}
 
 	u, err := update.Save(ctx)
-	return u, domain.FromStore(err, userUniques...)
+
+	return u, domain.FromStore(err, userUniques()...)
 }
 
 // Delete removes a user. A missing id is domain.ErrNotFound; the last
 // administrator is refused with ErrLastAdmin.
 func (e *Editor) Delete(ctx context.Context, id int) error {
-	if err := EnsureAnotherAdmin(ctx, e.db, id); err != nil {
+	err := EnsureAnotherAdmin(ctx, e.db, id)
+	if err != nil {
 		return domain.FromStore(err)
 	}
+
 	return domain.FromStore(e.db.User.DeleteOneID(id).Exec(ctx))
 }

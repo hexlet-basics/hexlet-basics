@@ -18,11 +18,14 @@ import (
 
 func signsInWith(t *testing.T, h *testsupport.Harness, email, password string) bool {
 	t.Helper()
+
 	_, err := h.Client.CreateSession(t.Context(), &api.SessionInput{Email: email, Password: password})
 	if err == nil {
 		return true
 	}
+
 	requireProblem(t, err, http.StatusUnprocessableEntity)
+
 	return false
 }
 
@@ -34,7 +37,11 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 
 	err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "with-password@example.com"})
 	require.NoError(t, err)
-	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
+	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	}))
 }
 
 // Unlike legacy, an unknown email is not reported.
@@ -45,7 +52,11 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 	err := h.Client.CreatePasswordReminder(t.Context(), &api.EmailInput{Email: "reset-nobody@example.com"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{
+		Purpose: "",
+		UserID:  0,
+		Locale:  "",
+	})
 }
 
 func TestCheckPasswordResetToken(t *testing.T) {

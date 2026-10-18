@@ -37,10 +37,12 @@ func NewRuntime(
 	handlers ...cqrs.EventHandler,
 ) (*Runtime, error) {
 	watermillLogger := watermill.NewSlogLogger(logger)
-	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: 15 * time.Second}, watermillLogger)
+
+	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: routerCloseTimeout}, watermillLogger)
 	if err != nil {
 		return nil, errs.Wrapf(err, "create Watermill router")
 	}
+
 	poisonPublisher, err := wmsql.NewPublisher(
 		wmsql.BeginnerFromStdSQL(db),
 		wmsql.PublisherConfig{SchemaAdapter: wmsql.DefaultPostgreSQLSchema{}},
@@ -49,10 +51,12 @@ func NewRuntime(
 	if err != nil {
 		return nil, errs.Wrapf(err, "create poison queue publisher")
 	}
+
 	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher, sentryClient)
 	if err != nil {
 		return nil, err
 	}
+
 	router.AddMiddleware(delivery...)
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
@@ -67,6 +71,7 @@ func NewRuntime(
 		observerSubscriber,
 		func(msg *message.Message) error {
 			observeMessage(logger, msg)
+
 			return nil
 		},
 	)
@@ -80,13 +85,15 @@ func NewRuntime(
 				return newSubscriber(db, params.HandlerName, watermillLogger)
 			},
 			AckOnUnknownEvent: true,
-			Marshaler:         Marshaler,
+			Marshaler:         Marshaler(),
 			Logger:            watermillLogger,
 		})
 		if err != nil {
 			return nil, errs.Wrapf(err, "create Watermill event processor")
 		}
-		if err := processor.AddHandlers(handlers...); err != nil {
+
+		err = processor.AddHandlers(handlers...)
+		if err != nil {
 			return nil, errs.Wrapf(err, "register domain event handlers")
 		}
 	}
@@ -115,14 +122,15 @@ func deliveryMiddleware(
 	if err != nil {
 		return nil, errs.Wrapf(err, "create poison queue middleware")
 	}
+
 	return []message.HandlerMiddleware{
 		poisonQueue,
 		reportPoisoned(sentryClient),
 		middleware.Retry{
-			MaxRetries:          3,
-			InitialInterval:     100 * time.Millisecond,
-			MaxInterval:         2 * time.Second,
-			Multiplier:          2,
+			MaxRetries:          handlerRetries,
+			InitialInterval:     handlerRetryInitial,
+			MaxInterval:         handlerRetryMax,
+			Multiplier:          handlerRetryMultiplier,
 			ResetContextOnRetry: true,
 			Logger:              logger,
 		}.Middleware,
@@ -147,6 +155,7 @@ func reportPoisoned(sentryClient *sentry.Client) message.HandlerMiddleware {
 				})
 				sentryClient.CaptureException(err, &sentry.EventHint{Context: msg.Context(), OriginalException: err}, scope)
 			}
+
 			return produced, err
 		}
 	}
@@ -165,7 +174,7 @@ func newSubscriber(
 	consumerGroup string,
 	logger watermill.LoggerAdapter,
 ) (*wmsql.Subscriber, error) {
-	return wmsql.NewSubscriber(
+	result, err := wmsql.NewSubscriber(
 		wmsql.BeginnerFromStdSQL(db),
 		wmsql.SubscriberConfig{
 			ConsumerGroup:  consumerGroup,
@@ -174,14 +183,21 @@ func newSubscriber(
 		},
 		logger,
 	)
+	if err != nil {
+		return result, errs.Wrapf(err, "create sql subscriber")
+	}
+
+	return result, nil
 }
 
 // Run blocks while the Watermill router is alive, allowing the process
 // supervisor to observe router termination directly.
 func (r *Runtime) Run(ctx context.Context) error {
-	if err := r.router.Run(ctx); err != nil {
+	err := r.router.Run(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "run Watermill router")
 	}
+
 	return nil
 }
 
@@ -191,4 +207,21 @@ func (r *Runtime) Run(ctx context.Context) error {
 func (r *Runtime) Running() <-chan struct{} { return r.router.Running() }
 
 // Close drains subscribers and in-flight handlers.
-func (r *Runtime) Close() error { return r.router.Close() }
+func (r *Runtime) Close() error {
+	err := r.router.Close()
+	if err != nil {
+		return errs.Wrapf(err, "close event router")
+	}
+
+	return nil
+}
+
+// How the router closes and how a handler is retried before its message goes to
+// the poison queue.
+const (
+	routerCloseTimeout     = 15 * time.Second
+	handlerRetries         = 3
+	handlerRetryInitial    = 100 * time.Millisecond
+	handlerRetryMax        = 2 * time.Second
+	handlerRetryMultiplier = 2
+)

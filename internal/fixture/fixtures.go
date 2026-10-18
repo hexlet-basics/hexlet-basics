@@ -64,42 +64,52 @@ func scan(dir string) (labels, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "list fixture files")
 	}
+
 	sort.Strings(files)
 
 	found := labels{}
+
 	next := firstID
 	for _, file := range files {
-		if err := scanFile(file, found, &next); err != nil {
+		err := scanFile(file, found, &next)
+		if err != nil {
 			return nil, err
 		}
 	}
+
 	return found, nil
 }
 
 // scanFile numbers the rows of one file, continuing from next.
 func scanFile(path string, found labels, next *int) error {
-	f, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
+	file, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
 	if err != nil {
 		return errs.Wrapf(err, "open fixture file")
 	}
-	defer func() { _ = f.Close() }()
+	defer func() { _ = file.Close() }()
 
-	scanner := bufio.NewScanner(f)
-	scanner.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
+	scanner := bufio.NewScanner(file)
+	scanner.Buffer(make([]byte, 0, scannerStartBytes), scannerMaxLineBytes)
+
 	for scanner.Scan() {
-		m := definition.FindStringSubmatch(scanner.Text())
-		if m == nil {
+		texts := definition.FindStringSubmatch(scanner.Text())
+		if texts == nil {
 			continue
 		}
-		if _, dup := found[m[1]]; dup {
-			return errs.With("label", m[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
+
+		if _, dup := found[texts[1]]; dup {
+			return errs.With("label", texts[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
 		}
-		found[m[1]] = *next
+
+		found[texts[1]] = *next
 		*next++
 	}
-	if err := scanner.Err(); err != nil {
+
+	err = scanner.Err()
+	if err != nil {
 		return errs.With("file", filepath.Base(path)).Wrapf(err, "read fixture file")
 	}
+
 	return nil
 }
 
@@ -108,12 +118,14 @@ func (l labels) id(label string) (int, error) {
 	if !ok {
 		return 0, errs.With("label", label).Errorf("fixture label is not defined by any row")
 	}
+
 	return id, nil
 }
 
+// The repository labels are loaded once for every caller in the process.
 var (
-	repoOnce   sync.Once
-	repoLabels labels
+	repoOnce   sync.Once //nolint:gochecknoglobals // memoized once per process
+	repoLabels labels    //nolint:gochecknoglobals // memoized once per process
 	errRepo    error
 )
 
@@ -141,11 +153,14 @@ func LabelNames(dir string) ([]string, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "number fixture rows")
 	}
+
 	names := make([]string, 0, len(found))
 	for name := range found {
 		names = append(names, name)
 	}
+
 	sort.Strings(names)
+
 	return names, nil
 }
 
@@ -154,17 +169,22 @@ func LabelNames(dir string) ([]string, error) {
 func ID(label Label) int {
 	repoOnce.Do(func() {
 		var dir string
-		if dir, errRepo = Dir(); errRepo == nil {
+
+		dir, errRepo = Dir()
+		if errRepo == nil {
 			repoLabels, errRepo = scan(dir)
 		}
 	})
+
 	if errRepo != nil {
 		panic(fmt.Sprintf("fixtures: %v", errRepo))
 	}
+
 	id, err := repoLabels.id(label.name)
 	if err != nil {
 		panic(fmt.Sprintf("fixtures: %v", err))
 	}
+
 	return id
 }
 
@@ -180,23 +200,28 @@ func Dir() (string, error) {
 	if err != nil {
 		return "", errs.Wrapf(err, "get working directory")
 	}
+
 	for {
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+		_, err := os.Stat(filepath.Join(dir, "go.mod"))
+		if err == nil {
 			return filepath.Join(dir, "fixtures"), nil
 		} else if !errors.Is(err, os.ErrNotExist) {
 			return "", errs.Wrapf(err, "inspect repository root")
 		}
+
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", errors.New("find the repository root: go.mod not found")
+			return "", errNoRepositoryRoot
 		}
+
 		dir = parent
 	}
 }
 
+// The bcrypt digest is computed once and shared by every fixture user.
 var (
-	digestOnce sync.Once
-	digest     string
+	digestOnce sync.Once //nolint:gochecknoglobals // memoized once per process
+	digest     string    //nolint:gochecknoglobals // memoized once per process
 	errDigest  error
 )
 
@@ -208,6 +233,7 @@ func PasswordDigest() (string, error) {
 		hash, err := bcrypt.GenerateFromPassword([]byte(Password), bcrypt.MinCost)
 		digest, errDigest = string(hash), err
 	})
+
 	return digest, errDigest
 }
 
@@ -235,12 +261,27 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 	if allowAnyDatabase {
 		options = append(options, testfixtures.DangerousSkipTestDatabaseCheck())
 	}
+
 	loader, err := testfixtures.New(options...)
 	if err != nil {
 		return errs.Wrapf(err, "create fixture loader")
 	}
-	if err := loader.Load(); err != nil {
+
+	err = loader.Load()
+	if err != nil {
 		return errs.Wrapf(err, "load fixtures")
 	}
+
 	return nil
 }
+
+// errNoRepositoryRoot is what the search for the fixtures directory answers
+// when no parent directory holds go.mod.
+var errNoRepositoryRoot = errors.New("find the repository root: go.mod not found")
+
+// The line buffer of the fixture scanner: it starts small and may grow to hold
+// the longest line a fixture file has.
+const (
+	scannerStartBytes   = 64 << 10
+	scannerMaxLineBytes = 4 << 20
+)

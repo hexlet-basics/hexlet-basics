@@ -14,6 +14,7 @@ import (
 
 func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -23,7 +24,12 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 		expected string
 		locale   string
 	}{
-		{name: "missing header", expected: "Wrong email or password", locale: "en"},
+		{
+			name:     "missing header",
+			expected: "Wrong email or password",
+			locale:   "en",
+			header:   "",
+		},
 		{name: "Russian region", header: "ru-RU", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},
 		{name: "Spanish", header: "es", expected: "Correo electrónico o contraseña incorrectos", locale: "es"},
 		{name: "quality priority", header: "es;q=0.7, ru-RU;q=0.9", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},
@@ -38,6 +44,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 			}))
 			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 			req.Header.Set("Accept-Language", tt.header)
+
 			rec := httptest.NewRecorder()
 
 			handler.ServeHTTP(rec, req)
@@ -50,6 +57,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 
 func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -58,6 +66,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 	}))
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 	req.Header.Set("Accept-Language", "es-MX")
+
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)
@@ -67,6 +76,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 
 func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 
@@ -76,8 +86,10 @@ func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 
 func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	assert.Equal(t, "en", translator.Locale(ctx))
@@ -86,8 +98,10 @@ func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
 
 func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	// net/http knows no text for this status either, so the answer is the
@@ -101,6 +115,7 @@ func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
 
 func TestTranslatorKeepsNetHTTPTextForAStatusItHasNoCatalogEntryFor(t *testing.T) {
 	t.Parallel()
+
 	translator, err := localization.New()
 	require.NoError(t, err)
 

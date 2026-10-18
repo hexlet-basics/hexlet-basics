@@ -18,6 +18,11 @@ import (
 	"hexletbasics/internal/testsupport/testdb"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errWant = errors.New("load localization")
+)
+
 // configureWorkerEnvironment is everything the worker is given: no cookie
 // secret and no public host, which only the server needs.
 func configureWorkerEnvironment(t *testing.T) {
@@ -43,6 +48,7 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	configureTestEnvironment(t)
 
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -57,6 +63,7 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 	configureWorkerEnvironment(t)
 
 	injector := newWorkerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
@@ -82,6 +89,7 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 	require.NoError(t, err)
 
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
 	do.OverrideValue(injector, client)
 	do.OverrideNamedValue[http.Handler](injector, routerServiceName, http.HandlerFunc(
@@ -106,14 +114,13 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 func TestServerProviderReturnsDependencyError(t *testing.T) {
 	configureTestEnvironment(t)
 
-	wantErr := errors.New("load localization")
 	injector := newServerContainer()
 	do.Override(injector, func(do.Injector) (*localization.Translator, error) {
-		return nil, wantErr
+		return nil, errWant
 	})
 
 	_, err := do.Invoke[*http.Server](injector)
-	require.ErrorIs(t, err, wantErr)
+	require.ErrorIs(t, err, errWant)
 }
 
 func TestBuildServerReturnsStartupError(t *testing.T) {

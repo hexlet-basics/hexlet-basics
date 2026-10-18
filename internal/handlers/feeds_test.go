@@ -59,11 +59,13 @@ func TestYandexCoursesFeed(t *testing.T) {
 			offer.URL)
 
 		var lessons []string
+
 		for _, p := range offer.Params {
 			if p.Name == "Ссылка на контент курса" {
 				lessons = append(lessons, p.Text)
 			}
 		}
+
 		assert.Equal(t, []string{
 			"https://code-basics.com/ru/languages/javascript/lessons/hello-world",
 			"https://code-basics.com/ru/languages/javascript/lessons/variables",

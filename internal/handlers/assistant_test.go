@@ -83,10 +83,12 @@ func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
 		for _, delta := range []string{"Declare it ", "with ", "`let`."} {
-			if err := onDelta(delta); err != nil {
+			err := onDelta(delta)
+			if err != nil {
 				return assistant.Usage{}, err
 			}
 		}
+
 		return assistant.Usage{InputTokens: 321, OutputTokens: 12}, nil
 	}
 	counterBefore := assistantMessagesCount(t, h)
@@ -144,11 +146,16 @@ func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
 // line per turn, so a test reads the prompt through the response.
 func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
 	for _, turn := range turns {
-		if err := onDelta(turn.Role + ": " + turn.Content + "\n"); err != nil {
+		err := onDelta(turn.Role + ": " + turn.Content + "\n")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
 	}
-	return assistant.Usage{}, nil
+
+	return assistant.Usage{
+		InputTokens:  0,
+		OutputTokens: 0,
+	}, nil
 }
 
 // A learner reading the course in Russian is tutored in Russian, from the
@@ -181,12 +188,14 @@ func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 		"assistant: Use console.log to print a string.",
 		"user: ",
 	}
+
 	rest := prompt
 	for _, line := range history {
 		at := strings.Index(rest, line)
 		require.NotEqual(t, -1, at, "%q follows the previous turn", line)
 		rest = rest[at+len(line):]
 	}
+
 	assert.Contains(t, rest, "And a number?")
 }
 
@@ -204,6 +213,7 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
 	require.NoError(t, err)
+
 	refused, ok := res.(*api.ProblemDetails)
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, int32(http.StatusTooManyRequests), refused.Status)
@@ -289,9 +299,11 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
-		if err := onDelta("Declare it "); err != nil {
+		err := onDelta("Declare it ")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
+
 		panic("model client blew up")
 	}
 
@@ -300,7 +312,8 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
 	require.NoError(t, err)
-	_, _ = io.ReadAll(res.(*api.CreateAssistantMessageOK))
+
+	_, _ = io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
 
 	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chatFor(t, h, lesson).ID)).AllX(ctx)
 	require.Len(t, stored, 1, "the question is spent, the broken answer is not stored")
@@ -316,9 +329,11 @@ func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
-		if err := onDelta("Declare it "); err != nil {
+		err := onDelta("Declare it ")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
+
 		return assistant.Usage{}, io.ErrUnexpectedEOF
 	}
 
@@ -351,11 +366,13 @@ func listAssistantChat(t *testing.T, h *testsupport.Harness, lesson *ent.CourseL
 	t.Helper()
 	res, err := h.Client.ListAssistantMessages(t.Context(), api.ListAssistantMessagesParams{LessonId: int32(lesson.ID)})
 	require.NoError(t, err)
+
 	return res
 }
 
 func askAssistant(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson, question string) string {
 	t.Helper()
+
 	return askAssistantWith(t, h, lesson, &api.AssistantMessageInput{Message: question})
 }
 
@@ -367,8 +384,10 @@ func askAssistantWith(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLe
 	require.NoError(t, err)
 	require.IsType(t, &api.CreateAssistantMessageOK{}, res)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	body, err := io.ReadAll(res.(*api.CreateAssistantMessageOK))
+
+	body, err := io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
 	require.NoError(t, err)
+
 	return string(body)
 }
 
@@ -376,6 +395,7 @@ func askAssistantWith(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLe
 // find it: through their lesson progress.
 func chatFor(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) *ent.AiChat {
 	t.Helper()
+
 	return h.DB.AiChat.Query().
 		Where(aichat.HasLessonProgressWith(
 			lessonprogress.LessonID(lesson.ID),
@@ -386,6 +406,7 @@ func chatFor(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) *en
 
 func hasLessonProgress(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) bool {
 	t.Helper()
+
 	return h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
 		ExistX(t.Context())
@@ -393,9 +414,11 @@ func hasLessonProgress(t *testing.T, h *testsupport.Harness, lesson *ent.CourseL
 
 func assistantMessagesCount(t *testing.T, h *testsupport.Harness) int {
 	t.Helper()
+
 	u := h.DB.User.GetX(t.Context(), actingUserID(t, h))
 	if u.AssistantMessagesCount == nil {
 		return 0
 	}
+
 	return *u.AssistantMessagesCount
 }

@@ -35,28 +35,33 @@ type registrationError struct {
 
 func decodeJSON[T any](t *testing.T, res *http.Response) T {
 	t.Helper()
+
 	defer func() { _ = res.Body.Close() }()
+
 	var v T
 	require.NoError(t, json.NewDecoder(res.Body).Decode(&v))
+
 	return v
 }
 
 // request is a valid registration an attacker edits one field of.
 func request(edit func(map[string]any)) map[string]any {
-	m := map[string]any{
+	fields := map[string]any{
 		"client_name":   "Attacker",
 		"redirect_uris": []string{"https://app.example.com/callback"},
 	}
 	if edit != nil {
-		edit(m)
+		edit(fields)
 	}
-	return m
+
+	return fields
 }
 
 func clientCount(t *testing.T, o *testsupport.OAuth) int {
 	t.Helper()
 	n, err := o.DB.OAuthClient.Query().Count(t.Context())
 	require.NoError(t, err)
+
 	return n
 }
 
@@ -86,13 +91,14 @@ func TestAPublicClientWithAnHTTPSRedirectRegistersAndCompletesTheFlow(t *testing
 	assert.Equal(t, []string{"https://app.example.com/callback"}, got.RedirectURIs)
 	assert.ElementsMatch(t, []string{"catalog:read", "offline_access"}, strings.Fields(got.Scope))
 
-	f := o.StartWith(alice, testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"catalog:read"},
+		Params: nil,
 	})
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	require.NotEmpty(t, f.RequestID)
-	code := f.Approve()
-	tokens, exchange := f.Exchange(code, testsupport.PKCEVerifier())
+	require.Equal(t, http.StatusFound, flow.Authorize.StatusCode)
+	require.NotEmpty(t, flow.RequestID)
+	code := flow.Approve()
+	tokens, exchange := flow.Exchange(code, testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
@@ -127,12 +133,13 @@ func TestARegisteredClientCannotRequestAScopeItDidNotRegisterFor(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	got := decodeJSON[registered](t, o.Register(request(func(m map[string]any) { m["scope"] = "catalog:read" })))
 
-	f := o.StartWith(alice, testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"admin"},
+		Params: nil,
 	})
 
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	to, err := f.Authorize.Location()
+	require.Equal(t, http.StatusFound, flow.Authorize.StatusCode)
+	to, err := flow.Authorize.Location()
 	require.NoError(t, err)
 	assert.Equal(t, "invalid_scope", to.Query().Get("error"))
 }
@@ -146,7 +153,8 @@ func TestRegistrationRefusals(t *testing.T) {
 	set := func(key string, value any) func(map[string]any) {
 		return func(m map[string]any) { m[key] = value }
 	}
-	var manyRedirects []string
+
+	manyRedirects := make([]string, 0, 50)
 	for i := range 50 {
 		manyRedirects = append(manyRedirects, fmt.Sprintf("https://app.example.com/cb%d", i))
 	}
@@ -202,9 +210,11 @@ func TestRegistrationRefusals(t *testing.T) {
 	}
 	o := testsupport.NewOAuth(t)
 	before := clientCount(t, o)
+
 	i := 0
 	for name, tc := range cases {
 		i++
+
 		t.Run(name, func(t *testing.T) {
 			// A different address per case: this test is about validation, not
 			// about the rate limit.
@@ -214,6 +224,7 @@ func TestRegistrationRefusals(t *testing.T) {
 			assert.Equal(t, tc.code, decodeJSON[registrationError](t, res).Error)
 		})
 	}
+
 	assert.Equal(t, before, clientCount(t, o), "no refused registration may leave a client behind")
 }
 
@@ -260,6 +271,7 @@ func TestARefusedRegistrationNeverRevealsAnExistingClient(t *testing.T) {
 
 func TestRegistrationIsRateLimitedPerAddress(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+
 	attacker := testsupport.FromAddress("203.0.113.50")
 	for i := range 10 {
 		res := o.Register(request(nil), attacker)
@@ -283,6 +295,7 @@ func TestRegistrationIsRateLimitedPerAddress(t *testing.T) {
 
 func TestRefusedAttemptsSpendTheRateLimitToo(t *testing.T) {
 	o := testsupport.NewOAuth(t)
+
 	attacker := testsupport.FromAddress("203.0.113.60")
 	for range 10 {
 		res := o.Register(`{`, attacker)

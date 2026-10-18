@@ -22,6 +22,12 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoom              = errors.New("boom")
+	errOutboxUnavailable = errors.New("outbox unavailable")
+)
+
 // A staff read of personal data is recorded asynchronously (ADR-0020): the
 // request publishes a fact, and the worker's consumer writes the Audit Record.
 // These tests go through the operation, then deliver the fact the way the
@@ -71,10 +77,12 @@ func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
 	var reads readsOf
 	require.NoError(t, json.Unmarshal(row.Reads, &reads))
 	assert.Equal(t, 3, reads.Count)
-	var want []string
+
+	want := make([]string, 0, len(page.Items))
 	for _, user := range page.Items {
 		want = append(want, strconv.Itoa(int(user.ID)))
 	}
+
 	assert.Equal(t, want, reads.IDs)
 }
 
@@ -107,8 +115,10 @@ func TestAReadRecordHoldsNoFieldValues(t *testing.T) {
 	for _, user := range page.Items {
 		assert.NotContains(t, string(row.Reads), user.Email)
 	}
+
 	var keys map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(row.Reads, &keys))
+
 	for key := range keys {
 		assert.Contains(t, []string{"count", "ids"}, key)
 	}
@@ -167,7 +177,7 @@ func TestReadingContentLeavesNoRecord(t *testing.T) {
 // never reaches the middleware, so no read fact follows it.
 func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
 	require.Error(t, err)
@@ -184,13 +194,14 @@ func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 // TypeSpec adds it here with no edit, and one the middleware does not reach fails.
 func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 	t.Parallel()
+
 	operations := permissioncatalog.PersonalDataReads()
 	require.NotEmpty(t, operations)
 
 	for _, operation := range operations {
 		t.Run(operation, func(t *testing.T) {
 			h := testsupport.NewHarness(t)
-			read := personalDataMiddleware(t, h, h.Events)
+			read := personalDataMiddleware(t, h.Events)
 
 			_, err := read(middleware.Request{Context: t.Context(), OperationName: operation}, answers(`{"items":[{"id":7},{"id":9}],"total":2}`))
 			require.NoError(t, err)
@@ -201,6 +212,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 			entity, _ := permissioncatalog.PersonalDataEntity(operation)
 			assert.Equal(t, entity, *rows[0].EntityType)
 			assert.Equal(t, string(audit.OutcomeSucceeded), rows[0].Outcome)
+
 			var reads readsOf
 			require.NoError(t, json.Unmarshal(rows[0].Reads, &reads))
 			assert.Equal(t, readsOf{Count: 2, IDs: []string{"7", "9"}}, reads)
@@ -213,7 +225,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, brokenPublisher{})
+	read := personalDataMiddleware(t, brokenPublisher{})
 
 	resp, err := read(middleware.Request{Context: t.Context(), OperationName: "AdminListLeads"}, answers(`{"items":[{"id":1}]}`))
 	require.NoError(t, err)
@@ -226,10 +238,10 @@ func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
 func TestAnErrorAnswerIsNotARead(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, h.Events)
+	read := personalDataMiddleware(t, h.Events)
 
 	_, err := read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, func(middleware.Request) (middleware.Response, error) {
-		return middleware.Response{}, errors.New("boom")
+		return middleware.Response{}, errBoom
 	})
 	require.Error(t, err)
 	_, err = read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, answers(`{"status":404,"title":"Not Found"}`))
@@ -243,12 +255,13 @@ func TestAnErrorAnswerIsNotARead(t *testing.T) {
 func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	read := personalDataMiddleware(t, h, h.Events)
+	read := personalDataMiddleware(t, h.Events)
 
 	items := make([]map[string]int, audit.MaxReadIDs+50)
 	for i := range items {
 		items[i] = map[string]int{"id": i + 1}
 	}
+
 	body, err := json.Marshal(map[string]any{"items": items})
 	require.NoError(t, err)
 
@@ -265,12 +278,13 @@ func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 type brokenPublisher struct{}
 
 func (brokenPublisher) PublishStandalone(context.Context, events.Event) error {
-	return errors.New("outbox unavailable")
+	return errOutboxUnavailable
 }
 
-func personalDataMiddleware(t *testing.T, h *testsupport.Harness, publisher events.StandalonePublisher) middleware.Middleware {
+func personalDataMiddleware(t *testing.T, publisher events.StandalonePublisher) middleware.Middleware {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
+
 	return handlers.NewPersonalDataReadMiddleware(publisher, translator, testsupport.NewAPIErrorHandler(t, translator))
 }
 

@@ -18,6 +18,7 @@ const origin = "https://blog.example.test/"
 func newReader(t *testing.T) (*blog.Reader, *ent.Client) {
 	t.Helper()
 	db := testsupport.NewClient(t)
+
 	return blog.NewReader(db, origin), db
 }
 
@@ -85,6 +86,7 @@ func TestAssembleKeepsTheOrderOfTheRows(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, posts, len(rows))
+
 	for i, row := range rows {
 		assert.Equal(t, row.ID, posts[i].ID)
 	}

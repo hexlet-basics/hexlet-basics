@@ -47,7 +47,8 @@ func New() (*Translator, error) {
 		"locales/active.ru.json",
 		"locales/active.es.json",
 	} {
-		if _, err := bundle.LoadMessageFileFS(localeFiles, name); err != nil {
+		_, err := bundle.LoadMessageFileFS(localeFiles, name)
+		if err != nil {
 			return nil, errs.With("catalog", name).Wrapf(err, "load localization catalog")
 		}
 	}
@@ -79,6 +80,7 @@ func (t *Translator) Locale(ctx context.Context) string {
 	if locale, ok := ctx.Value(localeContextKey{}).(string); ok {
 		return locale
 	}
+
 	return language.English.String()
 }
 
@@ -96,6 +98,7 @@ func (t *Translator) TextWith(ctx context.Context, message Message, data any) st
 	if !ok {
 		localizer = i18n.NewLocalizer(t.bundle, language.English.String())
 	}
+
 	return localize(localizer, message, data)
 }
 
@@ -115,6 +118,7 @@ func localize(localizer *i18n.Localizer, message Message, data any) string {
 	if err != nil {
 		return message.value.Other
 	}
+
 	return text
 }
 
@@ -124,8 +128,10 @@ func (t *Translator) StatusText(ctx context.Context, status int) string {
 	if message, ok := statusMessages[status]; ok {
 		return t.Text(ctx, message)
 	}
+
 	if text := http.StatusText(status); text != "" {
 		return text
 	}
+
 	return t.Text(ctx, InternalServerError)
 }

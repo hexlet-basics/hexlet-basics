@@ -57,49 +57,63 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil
 		}
+
+		if err != nil {
+			return errs.Wrapf(err, "save book request")
+		}
+
+		err = r.publisher.Publish(ctx, tx, events.BookRequested{
+			Locale:     locale,
+			OccurredAt: r.now().UTC(),
+		})
 		if err != nil {
 			return err
 		}
-		if err := r.publisher.Publish(ctx, tx, events.BookRequested{
-			Locale:     locale,
-			OccurredAt: r.now().UTC(),
-		}); err != nil {
-			return err
-		}
+
 		return nil
 	})
 	if err != nil {
 		return errs.With("user_id", userID).Wrapf(err, "record book request")
 	}
+
 	return nil
 }
 
 // Requested reports whether the user has requested the book, in any state: the
 // page picks the request or the download button by it.
-func (r *Recorder) Requested(ctx context.Context, userID int) (requested bool, err error) {
-	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		requested, err = db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
-		return err
+func (r *Recorder) Requested(ctx context.Context, userID int) (bool, error) {
+	var requested bool
+
+	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		exists, err := db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
+		requested = exists
+
+		return errs.Wrapf(err, "check book request")
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "check book request")
 	}
+
 	return requested, nil
 }
 
 // MarkDownloaded moves the user's request to downloaded, on every download as
 // legacy did, and reports whether there was a request to move.
-func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (marked bool, err error) {
-	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (bool, error) {
+	var marked bool
+
+	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		count, err := db.BookRequest.Update().
 			Where(bookrequest.UserID(userID)).
 			SetState(StateDownloaded).
 			Save(ctx)
 		marked = count > 0
-		return err
+
+		return errs.Wrapf(err, "save book request")
 	})
 	if err != nil {
 		return false, errs.With("user_id", userID).Wrapf(err, "mark book downloaded")
 	}
+
 	return marked, nil
 }

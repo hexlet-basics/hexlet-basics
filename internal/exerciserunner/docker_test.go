@@ -44,6 +44,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			result: progress.ResultPassed,
 			passed: true,
 			output: "1 test, 0 failures",
+			status: 0,
 		},
 		{
 			name:   "a failing submission, with what it printed",
@@ -51,6 +52,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			result: progress.ResultFailed,
 			status: 1,
 			output: "expected 3, got 2",
+			passed: false,
 		},
 		{
 			// What GNU `timeout` reports when it kills a non-terminating program.
@@ -58,6 +60,8 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			script: "echo 'looping'; exit 124",
 			result: progress.ResultFailedInfinity,
 			status: 124,
+			passed: false,
+			output: "",
 		},
 	}
 
@@ -69,6 +73,7 @@ func TestRunGradesAContainerItReallyStarts(t *testing.T) {
 			assert.Equal(t, tc.result, outcome.Result)
 			assert.Equal(t, tc.passed, outcome.Passed)
 			assert.Equal(t, tc.status, outcome.Status)
+
 			if tc.output == "" {
 				assert.Empty(t, outcome.Output)
 			} else {
@@ -113,12 +118,16 @@ func dockerRunner(t *testing.T) *Docker {
 	if err != nil {
 		t.Fatalf("no docker client: %v", err)
 	}
+
 	t.Cleanup(func() { _ = runner.Close() })
 
-	if _, err := runner.docker.Ping(context.Background(), client.PingOptions{}); err != nil {
+	_, err = runner.docker.Ping(context.Background(), client.PingOptions{})
+	if err != nil {
 		t.Fatalf("no docker daemon: %v", err)
 	}
+
 	pullImage(t, runner)
+
 	return runner
 }
 
@@ -126,17 +135,21 @@ func pullImage(t *testing.T, runner *Docker) {
 	t.Helper()
 	ctx := t.Context()
 
-	if _, err := runner.docker.ImageInspect(ctx, runnerImage); err == nil {
+	_, err := runner.docker.ImageInspect(ctx, runnerImage)
+	if err == nil {
 		return
 	}
+
 	pulled, err := runner.docker.ImagePull(ctx, runnerImage, client.ImagePullOptions{})
 	if err != nil {
 		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
+
 	defer func() { _ = pulled.Close() }()
 	// The pull returns before it finishes; starting a container against a
 	// half-present image is the classic way to get a confusing failure.
-	if err := pulled.Wait(ctx); err != nil {
+	err = pulled.Wait(ctx)
+	if err != nil {
 		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
 }
@@ -154,11 +167,15 @@ func runScript(t *testing.T, runner *Docker, script string) (progress.Outcome, e
 		TestDir:      "/submission",
 		ExerciseFile: "/submission/solution.txt",
 		Code:         "the learner's code\n",
+		VersionID:    0,
+		UserID:       0,
 	}
+
 	status, output, err := runner.run(t.Context(), submission, []string{"sh", "-c", script})
 	if err != nil {
 		return progress.Outcome{}, err
 	}
+
 	return outcomeOf(status, output), nil
 }
 
@@ -172,6 +189,7 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 	runner.opts.GraceTimeout = 3 * time.Second
 
 	done := make(chan error, 1)
+
 	go func() {
 		_, err := runScript(t, runner, "sleep 60")
 		done <- err
@@ -194,8 +212,16 @@ func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
 func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
 	runner := dockerRunner(t)
 	runner.opts.ImageTag = "3"
-	submission := progress.Submission{Image: "alpine", VersionID: 20260812}
+	submission := progress.Submission{
+		Image:        "alpine",
+		VersionID:    20260812,
+		TestDir:      "",
+		ExerciseFile: "",
+		UserID:       0,
+		Code:         "",
+	}
 	pinned, _ := runner.imageRefs(submission)
+
 	t.Cleanup(func() {
 		_, _ = runner.docker.ImageRemove(context.Background(), pinned, client.ImageRemoveOptions{})
 	})

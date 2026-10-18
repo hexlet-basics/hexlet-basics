@@ -92,14 +92,21 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("slug", slug).Wrapf(err, "load landing page")
 	}
+
 	crs := landing.Edges.Course
 
-	movedTo, err := p.archivedTarget(ctx, landing, locale)
+	target, moved, err := p.archivedTarget(ctx, landing, locale)
 	if err != nil {
 		return nil, err
+	}
+
+	var movedTo *string
+	if moved {
+		movedTo = &target
 	}
 
 	// Everyone has a standing: a visitor who has finished nothing stands at the
@@ -108,6 +115,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	if err != nil {
 		return nil, err
 	}
+
 	infos, err := p.lessonInfos(ctx, crs, locale, state)
 	if err != nil {
 		return nil, err
@@ -131,17 +139,19 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	}
 
 	page := &CoursePage{
-		Course:   crs,
-		Landing:  landing,
-		MovedTo:  movedTo,
-		State:    state,
-		Infos:    infos,
-		Modules:  modules,
-		QnaItems: qna,
+		Course:     crs,
+		Landing:    landing,
+		MovedTo:    movedTo,
+		State:      state,
+		Infos:      infos,
+		Modules:    modules,
+		QnaItems:   qna,
+		Enrollment: nil,
 	}
 	if !learner.SignedIn() {
 		return page, nil
 	}
+
 	enrolled, err := p.db.Enrollment.Query().
 		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(crs.ID)).
 		Only(ctx)
@@ -151,105 +161,10 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	case err != nil:
 		return nil, errs.Wrapf(err, "load enrollment")
 	}
+
 	page.Enrollment = enrolled
+
 	return page, nil
-}
-
-// archivedTarget is the slug an archived landing page's URL moved to, as
-// legacy's redirect_archived_language chose it: the page the archived one names,
-// else the course's main page in the locale (the catalog's rule). Nil for a page
-// that is not archived. An archived page with neither has nowhere to go.
-func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage, locale string) (*string, error) {
-	if page.State == nil || *page.State != stateArchived {
-		return nil, nil
-	}
-
-	var target *ent.CourseLandingPage
-	if page.LandingPageToRedirectID != nil {
-		named, err := p.db.CourseLandingPage.Get(ctx, *page.LandingPageToRedirectID)
-		if ent.IsNotFound(err) {
-			return nil, domain.ErrNotFound
-		}
-		if err != nil {
-			return nil, errs.Wrapf(err, "load redirect target")
-		}
-		target = named
-	} else {
-		mains, err := p.catalog.MainPages(ctx, locale, page.CourseID)
-		if err != nil {
-			return nil, err
-		}
-		main, ok := mains[page.CourseID]
-		if !ok || main.ID == page.ID {
-			return nil, domain.ErrNotFound
-		}
-		target = main
-	}
-	slug := lo.FromPtr(target.Slug)
-	return &slug, nil
-}
-
-// lessonInfos is the translations of the current version's lessons in locale,
-// each with its Lesson loaded, in course order.
-//
-// The order is the progress state's, not a second sort of our own: the state's
-// positions are the one decision of where a lesson stands in the course, so a
-// lesson row and its checkmark line up by construction. A lesson the state does
-// not place (no position yet) follows the placed ones, oldest first.
-func (p *Pages) lessonInfos(
-	ctx context.Context,
-	crs *ent.Course,
-	locale string,
-	state *progress.CourseState,
-) ([]*ent.CourseLessonTranslation, error) {
-	if crs.CurrentVersionID == nil {
-		return nil, nil
-	}
-	infos, err := p.db.CourseLessonTranslation.Query().
-		Where(
-			courselessontranslation.LocaleEQ(locale),
-			courselessontranslation.CourseVersionID(*crs.CurrentVersionID),
-		).
-		WithLesson().
-		Order(courselessontranslation.ByID()).
-		All(ctx)
-	if err != nil {
-		return nil, errs.Wrapf(err, "load lesson translations")
-	}
-
-	position := make(map[string]int, len(state.Lessons))
-	for _, lesson := range state.Lessons {
-		position[lesson.Slug] = lesson.Position
-	}
-	unplaced := len(position) + 1
-	rank := func(info *ent.CourseLessonTranslation) int {
-		if info.Edges.Lesson == nil {
-			return unplaced
-		}
-		if pos, ok := position[lo.FromPtr(info.Edges.Lesson.Slug)]; ok {
-			return pos
-		}
-		return unplaced
-	}
-	slices.SortStableFunc(infos, func(a, b *ent.CourseLessonTranslation) int { return rank(a) - rank(b) })
-	return infos, nil
-}
-
-// LessonPage is everything the lesson player shows.
-type LessonPage struct {
-	Course      *ent.Course
-	Lesson      *ent.CourseLesson
-	Version     *ent.CourseLessonVersion
-	Translation *ent.CourseLessonTranslation
-	// SourceURL is the lesson's README in the content repository; empty when
-	// the version carries no path.
-	SourceURL string
-	// Landing is the course's main landing page in the locale, which titles the
-	// page; nil when it has none a visitor may open.
-	Landing *ent.CourseLandingPage
-	State   *progress.CourseState
-	// Infos are the course's lessons in course order, as on the course page.
-	Infos []*ent.CourseLessonTranslation
 }
 
 // Lesson reads the lesson page: the lesson with lessonSlug of the course with
@@ -278,9 +193,11 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("lesson_slug", lessonSlug, "course_slug", courseSlug).Wrapf(err, "load lesson")
 	}
+
 	if translation.Edges.Lesson == nil || translation.Edges.Version == nil {
 		return nil, domain.ErrNotFound
 	}
@@ -292,6 +209,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if ent.IsNotFound(err) {
 		return nil, domain.ErrNotFound
 	}
+
 	if err != nil {
 		return nil, errs.With("course_slug", courseSlug).Wrapf(err, "load course")
 	}
@@ -300,6 +218,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	if err != nil {
 		return nil, err
 	}
+
 	infos, err := p.lessonInfos(ctx, crs, locale, state)
 	if err != nil {
 		return nil, err
@@ -312,6 +231,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	}
 
 	version := translation.Edges.Version
+
 	return &LessonPage{
 		Course:      crs,
 		Lesson:      translation.Edges.Lesson,
@@ -322,6 +242,115 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		State:       state,
 		Infos:       infos,
 	}, nil
+}
+
+// archivedTarget is the slug an archived landing page's URL moved to, as
+// legacy's redirect_archived_language chose it: the page the archived one names,
+// else the course's main page in the locale (the catalog's rule). Nil for a page
+// that is not archived (moved is false). An archived page with neither has
+// nowhere to go.
+func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage, locale string) (string, bool, error) {
+	if page.State == nil || *page.State != stateArchived {
+		return "", false, nil
+	}
+
+	var target *ent.CourseLandingPage
+
+	if page.LandingPageToRedirectID != nil {
+		named, err := p.db.CourseLandingPage.Get(ctx, *page.LandingPageToRedirectID)
+		if ent.IsNotFound(err) {
+			return "", false, domain.ErrNotFound
+		}
+
+		if err != nil {
+			return "", false, errs.Wrapf(err, "load redirect target")
+		}
+
+		target = named
+	} else {
+		mains, err := p.catalog.MainPages(ctx, locale, page.CourseID)
+		if err != nil {
+			return "", false, err
+		}
+
+		main, ok := mains[page.CourseID]
+		if !ok || main.ID == page.ID {
+			return "", false, domain.ErrNotFound
+		}
+
+		target = main
+	}
+
+	return lo.FromPtr(target.Slug), true, nil
+}
+
+// LessonPage is everything the lesson player shows.
+type LessonPage struct {
+	Course      *ent.Course
+	Lesson      *ent.CourseLesson
+	Version     *ent.CourseLessonVersion
+	Translation *ent.CourseLessonTranslation
+	// SourceURL is the lesson's README in the content repository; empty when
+	// the version carries no path.
+	SourceURL string
+	// Landing is the course's main landing page in the locale, which titles the
+	// page; nil when it has none a visitor may open.
+	Landing *ent.CourseLandingPage
+	State   *progress.CourseState
+	// Infos are the course's lessons in course order, as on the course page.
+	Infos []*ent.CourseLessonTranslation
+}
+
+// lessonInfos is the translations of the current version's lessons in locale,
+// each with its Lesson loaded, in course order.
+//
+// The order is the progress state's, not a second sort of our own: the state's
+// positions are the one decision of where a lesson stands in the course, so a
+// lesson row and its checkmark line up by construction. A lesson the state does
+// not place (no position yet) follows the placed ones, oldest first.
+func (p *Pages) lessonInfos(
+	ctx context.Context,
+	crs *ent.Course,
+	locale string,
+	state *progress.CourseState,
+) ([]*ent.CourseLessonTranslation, error) {
+	if crs.CurrentVersionID == nil {
+		return nil, nil
+	}
+
+	infos, err := p.db.CourseLessonTranslation.Query().
+		Where(
+			courselessontranslation.LocaleEQ(locale),
+			courselessontranslation.CourseVersionID(*crs.CurrentVersionID),
+		).
+		WithLesson().
+		Order(courselessontranslation.ByID()).
+		All(ctx)
+	if err != nil {
+		return nil, errs.Wrapf(err, "load lesson translations")
+	}
+
+	position := make(map[string]int, len(state.Lessons))
+	for _, lesson := range state.Lessons {
+		position[lesson.Slug] = lesson.Position
+	}
+
+	unplaced := len(position) + 1
+	rank := func(info *ent.CourseLessonTranslation) int {
+		if info.Edges.Lesson == nil {
+			return unplaced
+		}
+
+		if pos, ok := position[lo.FromPtr(info.Edges.Lesson.Slug)]; ok {
+			return pos
+		}
+
+		return unplaced
+	}
+
+	slices.SortStableFunc(infos, func(a, b *ent.CourseLessonTranslation) int { return rank(a) - rank(b) })
+
+	return infos, nil
 }
 
 // lessonSourceURL points at the lesson's README in the content repository, so a
@@ -335,9 +364,11 @@ func lessonSourceURL(base string, pathToCode *string, locale string) string {
 	if pathToCode == nil || *pathToCode == "" {
 		return ""
 	}
+
 	link, err := url.JoinPath(base, *pathToCode, locale, "README.md")
 	if err != nil {
 		return ""
 	}
+
 	return strings.Replace(link, path.Join("/", "modules"), "/blob/main/modules", 1)
 }

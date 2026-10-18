@@ -71,6 +71,7 @@ func (g GuestProgress) Has(courseSlug, lessonSlug string) bool {
 			return slices.Contains(entry.Lessons, lessonSlug)
 		}
 	}
+
 	return false
 }
 
@@ -79,17 +80,22 @@ func (g GuestProgress) Has(courseSlug, lessonSlug string) bool {
 // Course's recency.
 func (g GuestProgress) Record(courseSlug, lessonSlug string) GuestProgress {
 	var lessons []string
+
 	kept := make([]GuestEntry, 0, len(g.Entries)+1)
 	for _, entry := range g.Entries {
 		if entry.CourseSlug == courseSlug {
 			lessons = entry.Lessons
+
 			continue
 		}
+
 		kept = append(kept, entry)
 	}
+
 	if !slices.Contains(lessons, lessonSlug) {
 		lessons = append(slices.Clone(lessons), lessonSlug)
 	}
+
 	return GuestProgress{Entries: append(kept, GuestEntry{CourseSlug: courseSlug, Lessons: lessons})}
 }
 
@@ -115,9 +121,11 @@ func (c *GuestCodec) Encode(progress GuestProgress) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
 		if len(value) <= guestCookieMaxBytes || len(progress.Entries) == 0 {
 			return value, nil
 		}
+
 		progress = GuestProgress{Entries: progress.Entries[1:]}
 	}
 }
@@ -133,18 +141,23 @@ func (c *GuestCodec) Decode(raw string) (GuestProgress, error) {
 	if err != nil {
 		return GuestProgress{}, ErrGuestCookieInvalid
 	}
+
 	got, err := base64.RawURLEncoding.DecodeString(signature)
 	if err != nil {
 		return GuestProgress{}, ErrGuestCookieInvalid
 	}
+
 	if !hmac.Equal(got, c.mac(body)) {
 		return GuestProgress{}, ErrGuestCookieInvalid
 	}
 
 	var progress GuestProgress
-	if err := json.Unmarshal(body, &progress); err != nil {
+
+	err = json.Unmarshal(body, &progress)
+	if err != nil {
 		return GuestProgress{}, ErrGuestCookieInvalid
 	}
+
 	return progress, nil
 }
 
@@ -188,6 +201,7 @@ func (c *GuestCodec) sign(progress GuestProgress) (string, error) {
 	if err != nil {
 		return "", errs.Wrapf(err, "encode guest progress")
 	}
+
 	return base64.RawURLEncoding.EncodeToString(body) + "." +
 		base64.RawURLEncoding.EncodeToString(c.mac(body)), nil
 }
@@ -195,6 +209,7 @@ func (c *GuestCodec) sign(progress GuestProgress) (string, error) {
 func (c *GuestCodec) mac(body []byte) []byte {
 	sum := hmac.New(sha256.New, c.secret)
 	sum.Write(body)
+
 	return sum.Sum(nil)
 }
 
@@ -213,10 +228,12 @@ func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgre
 
 	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		for _, entry := range guest.Entries {
-			if err := p.mergeCourse(ctx, tx, db, userID, entry, locale); err != nil {
+			err := p.mergeCourse(ctx, tx, db, userID, entry, locale)
+			if err != nil {
 				return err
 			}
 		}
+
 		return nil
 	})
 }
@@ -256,6 +273,7 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 	}
 
 	occurredAt := p.now()
+
 	if createdEnrollment {
 		count, err := db.Enrollment.Query().
 			Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
@@ -263,12 +281,14 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		if err != nil {
 			return errs.Wrapf(err, "count started enrollments")
 		}
-		if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
+
+		err = p.publisher.Publish(ctx, tx, events.CourseStarted{
 			OccurrenceCount: count,
 			Slug:            entry.CourseSlug,
 			Locale:          locale,
 			OccurredAt:      occurredAt,
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish course started")
 		}
 	}
@@ -301,6 +321,7 @@ func (p *Progress) creditLessons(
 	}
 
 	lessonIDs := lo.Map(lessons, func(l currentLesson, _ int) int { return l.lessonID })
+
 	held, err := db.LessonProgress.Query().
 		Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lessonIDs...)).
 		Select(lessonprogress.FieldLessonID).
@@ -308,6 +329,7 @@ func (p *Progress) creditLessons(
 	if err != nil {
 		return errs.Wrapf(err, "load lesson progress")
 	}
+
 	isHeld := lo.SliceToMap(held, func(row *ent.LessonProgress) (int, bool) { return row.LessonID, true })
 
 	count, err := lessonProgressCount(ctx, db, enrolled.ID)
@@ -317,10 +339,11 @@ func (p *Progress) creditLessons(
 
 	// Started but not finished: the guest's cookie says otherwise.
 	if len(held) > 0 {
-		if _, err := db.LessonProgress.Update().
+		_, err := db.LessonProgress.Update().
 			Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lo.Keys(isHeld)...)).
 			SetState(StateFinished).
-			Save(ctx); err != nil {
+			Save(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "finish lesson progress")
 		}
 	}
@@ -335,7 +358,9 @@ func (p *Progress) creditLessons(
 				SetLessonID(l.lessonID).
 				SetState(StateFinished)
 		})
-		if _, err := db.LessonProgress.CreateBulk(builders...).Save(ctx); err != nil {
+
+		_, err := db.LessonProgress.CreateBulk(builders...).Save(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "create finished lesson progress")
 		}
 	}
@@ -344,6 +369,7 @@ func (p *Progress) creditLessons(
 		if !isHeld[lesson.lessonID] {
 			count++
 		}
+
 		for _, event := range []events.Event{
 			events.LessonStarted{
 				OccurrenceCount: count,
@@ -360,10 +386,12 @@ func (p *Progress) creditLessons(
 				OccurredAt:      occurredAt,
 			},
 		} {
-			if err := p.publisher.Publish(ctx, tx, event); err != nil {
+			err := p.publisher.Publish(ctx, tx, event)
+			if err != nil {
 				return errs.Wrapf(err, "publish merge fact")
 			}
 		}
 	}
+
 	return nil
 }

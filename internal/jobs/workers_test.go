@@ -24,6 +24,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errLlmUnavailable = errors.New("llm unavailable")
+)
+
 // work runs one job through worker inside the test's transaction and returns
 // what River recorded about it: the event it ended in and the job row as an
 // operator would see it, and the error the worker returned. Nothing is
@@ -31,13 +36,15 @@ import (
 func work[A river.JobArgs](t *testing.T, worker river.Worker[A], args A) (*rivertest.WorkResult, error) {
 	t.Helper()
 	_, tx := testsupport.NewClientWithTx(t)
-	return rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker).
-		Work(t.Context(), t, tx, args, nil)
+
+	return rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker). //nolint:wrapcheck // the worker helper passes the job error through to the test
+												Work(t.Context(), t, tx, args, nil)
 }
 
 func lastError(t *testing.T, job *rivertype.JobRow) string {
 	t.Helper()
 	require.NotEmpty(t, job.Errors)
+
 	return job.Errors[len(job.Errors)-1].Error
 }
 
@@ -50,14 +57,16 @@ type suggesterStub struct{ err error }
 func (s suggesterStub) SuggestRelatedCourses(context.Context, int) error { return s.err }
 
 func TestReviewLessonJobCompletesWhenTheReviewSucceeds(t *testing.T) {
-	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{}), jobs.ReviewLessonArgs{LessonInfoID: 1})
+	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{
+		err: nil,
+	}), jobs.ReviewLessonArgs{LessonInfoID: 1})
 
 	require.NoError(t, err)
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
 }
 
 func TestReviewLessonJobSurfacesAFailedReviewAndStaysRetryable(t *testing.T) {
-	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{err: errors.New("llm unavailable")}),
+	result, err := work(t, jobs.ReviewLessonWorker(reviewerStub{err: errLlmUnavailable}),
 		jobs.ReviewLessonArgs{LessonInfoID: 1})
 
 	require.ErrorContains(t, err, "llm unavailable")
@@ -68,14 +77,16 @@ func TestReviewLessonJobSurfacesAFailedReviewAndStaysRetryable(t *testing.T) {
 }
 
 func TestSuggestRelatedCoursesJobCompletesWhenTheSuggestionSucceeds(t *testing.T) {
-	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
+	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{
+		err: nil,
+	}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 
 	require.NoError(t, err)
 	assert.Equal(t, river.EventKindJobCompleted, result.EventKind)
 }
 
 func TestSuggestRelatedCoursesJobSurfacesAFailedSuggestionAndStaysRetryable(t *testing.T) {
-	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: errors.New("llm unavailable")}),
+	result, err := work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: errLlmUnavailable}),
 		jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 
 	require.ErrorContains(t, err, "llm unavailable")
@@ -127,6 +138,7 @@ func TestReapExpiredSessionsJobRemovesOnlyTheSessionsThatRanOut(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
 	_, err := auth.New(db).Issue(t.Context(), db.User.GetX(t.Context(), fixture.ID(fixture.UserWithPassword)))
 	require.NoError(t, err)
+
 	sweep := func(now time.Time) {
 		t.Helper()
 		worker := rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{},
@@ -161,7 +173,11 @@ func TestJobsCancelWhenTheErrorIsOneRetryingCannotFix(t *testing.T) {
 			return work(t, jobs.SuggestRelatedCoursesWorker(suggesterStub{err: err}), jobs.SuggestRelatedCoursesArgs{BlogPostID: 1})
 		},
 		"account email": func(err error) (*rivertest.WorkResult, error) {
-			return work(t, jobs.AccountEmailWorker(senderStub{err: err}), jobs.AccountEmailArgs{UserID: 1})
+			return work(t, jobs.AccountEmailWorker(senderStub{err: err}), jobs.AccountEmailArgs{
+				UserID:  1,
+				Purpose: "",
+				Locale:  "",
+			})
 		},
 	}
 	for kind, run := range kinds {

@@ -30,6 +30,7 @@ func NormalizeEmail(email string) string {
 // removed state (see NotRemoved).
 func ActiveUserByID(ctx context.Context, db *ent.Client, id int) (*ent.User, error) {
 	u, err := db.User.Query().Where(user.ID(id), NotRemoved()).WithStaffMember().Only(ctx)
+
 	return u, domain.FromStore(err)
 }
 
@@ -37,6 +38,7 @@ func ActiveUserByID(ctx context.Context, db *ent.Client, id int) (*ent.User, err
 // registration stores it. A removed account has no email, so it never matches.
 func ActiveUserByEmail(ctx context.Context, db *ent.Client, email string) (*ent.User, error) {
 	u, err := db.User.Query().Where(user.Email(NormalizeEmail(email)), NotRemoved()).WithStaffMember().Only(ctx)
+
 	return u, domain.FromStore(err)
 }
 
@@ -60,15 +62,20 @@ func (c *Credentials) Authenticate(ctx context.Context, email, password string) 
 	if ent.IsNotFound(err) {
 		return nil, ErrInvalidCredentials
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	if u.PasswordDigest == nil {
 		return nil, ErrInvalidCredentials
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)); err != nil {
+
+	err = bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password))
+	if err != nil {
 		return nil, ErrInvalidCredentials
 	}
+
 	return u, nil
 }
 
@@ -85,10 +92,16 @@ func (c *Credentials) SetPassword(ctx context.Context, u *ent.User, password str
 	if err != nil {
 		return nil, err
 	}
-	return u.Update().
+
+	result, err := u.Update().
 		SetPasswordDigest(digest).
 		SetPasswordChangedAt(time.Now().UTC().Truncate(time.Microsecond)).
 		Save(ctx)
+	if err != nil {
+		return result, errs.Wrapf(err, "save user")
+	}
+
+	return result, nil
 }
 
 // hashPassword is the one place a password becomes a digest.
@@ -97,5 +110,6 @@ func hashPassword(password string) (string, error) {
 	if err != nil {
 		return "", errs.Wrapf(errors.Join(ErrPasswordProcessing, err), "hash password")
 	}
+
 	return string(hash), nil
 }

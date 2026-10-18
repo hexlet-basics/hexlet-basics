@@ -22,11 +22,15 @@ import (
 )
 
 // alice is the fixture user who signs in and decides.
-var alice = fixture.ID(fixture.UserAdminLearner)
+func alice() int {
+	return fixture.ID(fixture.UserAdminLearner)
+}
 
 func decode(t *testing.T, res *http.Response, into any) {
 	t.Helper()
+
 	defer func() { _ = res.Body.Close() }()
+
 	require.NoError(t, json.NewDecoder(res.Body).Decode(into))
 }
 
@@ -71,7 +75,7 @@ func TestTheLibrariesRootLevelRoutesAreNotReachable(t *testing.T) {
 func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead)
 
 	// The authorization request sends the browser to the consent screen on the
 	// canonical origin, which is an SSR route outside /oauth.
@@ -84,12 +88,13 @@ func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 	// After cookie sign-in the consent screen's data names the application, the
 	// host it returns to, the scopes asked for and the account.
 	var consent struct {
-		ClientName   string   `json:"clientName"`
-		RedirectHost string   `json:"redirectHost"`
+		ClientName   string   `json:"clientName"`   //nolint:tagliatelle // decodes the contract's camelCase JSON
+		RedirectHost string   `json:"redirectHost"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 		Scopes       []string `json:"scopes"`
-		AccountName  string   `json:"accountName"`
+		AccountName  string   `json:"accountName"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
-	session := testsupport.SessionFor(t, o.DB, alice)
+
+	session := testsupport.SessionFor(t, o.DB, alice())
 	res := o.Do(http.MethodGet, "/api/oauth/consents/"+flow.RequestID, nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 	require.Equal(t, http.StatusOK, res.StatusCode)
 	decode(t, res, &consent)
@@ -109,14 +114,14 @@ func TestPreRegisteredClientCompletesAuthorizationCodeWithPKCE(t *testing.T) {
 
 	granted, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
-	assert.Equal(t, alice, granted.UserID)
+	assert.Equal(t, alice(), granted.UserID)
 	assert.Equal(t, testsupport.OAuthClientID, granted.ClientID)
 	assert.ElementsMatch(t, []string{"catalog:read", "progress:read", "offline_access"}, granted.Scopes)
 }
 
 func TestVerificationNamesTheConnectedAppByItsRowAndRefusesATokenOfARemovedClient(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	app := o.DB.OAuthClient.Query().OnlyX(t.Context())
 
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
@@ -131,12 +136,13 @@ func TestVerificationNamesTheConnectedAppByItsRowAndRefusesATokenOfARemovedClien
 
 func TestDenyingTheConsentReturnsAccessDeniedToTheClient(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 
 	res := flow.Decide(false)
 	require.Equal(t, http.StatusOK, res.StatusCode)
+
 	var decision struct {
-		RedirectURL string `json:"redirectUrl"`
+		RedirectURL string `json:"redirectUrl"` //nolint:tagliatelle // decodes the contract's camelCase JSON
 	}
 	decode(t, res, &decision)
 
@@ -154,8 +160,8 @@ func TestDenyingTheConsentReturnsAccessDeniedToTheClient(t *testing.T) {
 
 func TestConsentOperationsNeedTheSessionAndRefuseCrossSiteWrites(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
-	session := testsupport.SessionFor(t, o.DB, alice)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
+	session := testsupport.SessionFor(t, o.DB, alice())
 	target := "/api/oauth/consents/" + flow.RequestID
 
 	// Signed out: no data, no decision.
@@ -179,8 +185,8 @@ func TestConsentOperationsNeedTheSessionAndRefuseCrossSiteWrites(t *testing.T) {
 
 func TestAnUnknownOrExpiredRequestIsNotFound(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
-	session := testsupport.SessionFor(t, o.DB, alice)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
+	session := testsupport.SessionFor(t, o.DB, alice())
 	get := func(id string) int {
 		return o.Do(http.MethodGet, "/api/oauth/consents/"+id, nil, func(r *http.Request) { r.AddCookie(session.Cookie) }).StatusCode
 	}
@@ -206,6 +212,7 @@ func TestAuthorizationWithoutPKCES256IsRefused(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
 			o.SeedClient(oauthserver.ScopeCatalogRead)
+
 			query := url.Values{
 				"client_id":     {testsupport.OAuthClientID},
 				"redirect_uri":  {testsupport.OAuthRedirectURI},
@@ -233,7 +240,7 @@ func TestAuthorizationWithoutPKCES256IsRefused(t *testing.T) {
 
 func TestAnAuthorizationCodeWorksOnceAndOnlyWithItsVerifier(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	flow := o.Start(alice, oauthserver.ScopeCatalogRead)
+	flow := o.Start(alice(), oauthserver.ScopeCatalogRead)
 	code := flow.Approve()
 
 	_, res := flow.Exchange(code, "a-different-verifier-that-is-long-enough-0123456789-0123456789")
@@ -248,7 +255,7 @@ func TestAnAuthorizationCodeWorksOnceAndOnlyWithItsVerifier(t *testing.T) {
 
 func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	// Opaque: not a JWT, no readable subject in it.
 	// The library mints the bearer as an encrypted compact JWE (five parts, an
@@ -259,7 +266,7 @@ func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 	require.NoError(t, err)
 	assert.Contains(t, string(header), "A256GCM")
 	assert.NotContains(t, string(header), "sub")
-	assert.NotContains(t, tokens.AccessToken, strconv.Itoa(alice))
+	assert.NotContains(t, tokens.AccessToken, strconv.Itoa(alice()))
 
 	// The row holds an id. Presenting that id as a bearer token is refused.
 	row, err := o.DB.OAuthAccessToken.Query().Only(t.Context())
@@ -276,6 +283,7 @@ func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 	assert.Zero(t, count)
 	stored, err := o.DB.OAuthRefreshToken.Query().Only(t.Context())
 	require.NoError(t, err)
+
 	res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 		"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {stored.TokenHash},
 	})
@@ -288,12 +296,12 @@ func TestTokensAreOpaqueAndTheDatabaseHoldsNoUsableToken(t *testing.T) {
 
 func TestVerificationIsALookupSoDeletingTheRowRevokesAtOnce(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
 
-	_, err = o.DB.OAuthAccessToken.Delete().Where(oauthaccesstoken.UserID(alice)).Exec(t.Context())
+	_, err = o.DB.OAuthAccessToken.Delete().Where(oauthaccesstoken.UserID(alice())).Exec(t.Context())
 	require.NoError(t, err)
 
 	_, err = o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
@@ -302,7 +310,7 @@ func TestVerificationIsALookupSoDeletingTheRowRevokesAtOnce(t *testing.T) {
 
 func TestAnAccessTokenExpiresAfterAnHour(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	o.Advance(59 * time.Minute)
 	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
@@ -315,15 +323,17 @@ func TestAnAccessTokenExpiresAfterAnHour(t *testing.T) {
 
 func TestRefreshExchangesTheTokenForANewPair(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	first := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	first := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	refresh := func(token string) (testsupport.Tokens, int) {
 		res := o.Do(http.MethodPost, "/oauth/token", url.Values{
 			"grant_type": {"refresh_token"}, "client_id": {testsupport.OAuthClientID}, "refresh_token": {token},
 		})
+
 		var tokens testsupport.Tokens
 		if res.StatusCode == http.StatusOK {
 			decode(t, res, &tokens)
 		}
+
 		return tokens, res.StatusCode
 	}
 
@@ -343,7 +353,7 @@ func TestRefreshExchangesTheTokenForANewPair(t *testing.T) {
 
 func TestRevokingATokenEndsItAtOnce(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	res := o.Do(http.MethodPost, "/oauth/revoke", url.Values{
 		"client_id": {testsupport.OAuthClientID}, "token": {tokens.AccessToken}, "token_type_hint": {"access_token"},

@@ -15,10 +15,12 @@ const bookPath = "/ru/book"
 // bookDelivery is how legacy's send_file handed the PDF over: shown in the
 // browser, saved under a readable name. The URL only has to outlive the click
 // that follows the redirect.
-var bookDelivery = assetstore.Delivery{
-	ContentType:        "application/pdf",
-	ContentDisposition: `inline; filename="profession-developer-hexlet-book.pdf"`,
-	Expiry:             time.Hour,
+func bookDelivery() assetstore.Delivery {
+	return assetstore.Delivery{
+		ContentType:        "application/pdf",
+		ContentDisposition: `inline; filename="profession-developer-hexlet-book.pdf"`,
+		Expiry:             time.Hour,
+	}
 }
 
 // GetBook answers the book page (legacy `books#show`): whether the visitor has
@@ -26,15 +28,19 @@ var bookDelivery = assetstore.Delivery{
 // button. A visitor has no request, so the page renders for them too.
 func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 	view := &api.BookView{}
+
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
 		return view, nil
 	}
+
 	requested, err := s.books.Requested(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	view.Requested = requested
+
 	return view, nil
 }
 
@@ -43,9 +49,12 @@ func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 // flashed the same success for it; only a first request raises BookRequested.
 func (s *Server) CreateBookRequest(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
-	if err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx)); err != nil {
+
+	err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx))
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -56,16 +65,20 @@ func (s *Server) CreateBookRequest(ctx context.Context) error {
 // requested the book is sent back to the book page.
 func (s *Server) DownloadBook(ctx context.Context) (*api.DownloadBookFound, error) {
 	u := MustAuthenticatedUser(ctx)
+
 	marked, err := s.books.MarkDownloaded(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	if !marked {
 		return &api.DownloadBookFound{Location: s.settings.SiteURL + bookPath}, nil
 	}
-	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery)
+
+	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery())
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.DownloadBookFound{Location: location}, nil
 }

@@ -43,15 +43,18 @@ const publishTimeout = 2 * time.Second
 // set, so the same record carries the channel and Connected App.
 func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {
 	logger := errorHandler.logger
+
 	return func(req middleware.Request, next middleware.Next) (middleware.Response, error) {
 		entity, personal := permissioncatalog.PersonalDataEntity(req.OperationName)
 		if !personal {
 			return next(req)
 		}
+
 		resp, err := next(req)
 		if err != nil {
 			return resp, err
 		}
+
 		read, ok := touched(resp.Type)
 		if !ok {
 			return resp, nil
@@ -59,7 +62,9 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 
 		ctx, cancel := context.WithTimeout(context.WithoutCancel(req.Context), publishTimeout)
 		defer cancel()
+
 		entry := auditEntry(ctx, req.OperationName, i18n, audit.OutcomeSucceeded)
+
 		fact := events.StaffReadPersonalData{
 			ActorUserID:    entry.Actor,
 			Channel:        string(entry.Source.Channel),
@@ -75,9 +80,12 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 			Locale:         entry.Locale,
 			OccurredAt:     time.Now(),
 		}
-		if publishErr := publisher.PublishStandalone(ctx, fact); publishErr != nil {
+
+		publishErr := publisher.PublishStandalone(ctx, fact)
+		if publishErr != nil {
 			logger.ErrorContext(ctx, "publishing a read of personal data", "operation", req.OperationName, "err", publishErr)
 		}
+
 		return resp, nil
 	}
 }
@@ -90,40 +98,61 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 func touched(response any) (audit.Reads, bool) {
 	raw, err := json.Marshal(response)
 	if err != nil {
-		return audit.Reads{}, false
+		return audit.Reads{
+			Count: 0,
+			IDs:   nil,
+		}, false
 	}
+
 	var value any
+
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
-	if err := decoder.Decode(&value); err != nil {
-		return audit.Reads{}, false
+
+	err = decoder.Decode(&value)
+	if err != nil {
+		return audit.Reads{
+			Count: 0,
+			IDs:   nil,
+		}, false
 	}
-	switch v := value.(type) {
+
+	switch decoded := value.(type) {
 	case []any:
-		return readsOf(v), true
+		return readsOf(decoded), true
 	case map[string]any:
-		if items, ok := v["items"].([]any); ok {
+		if items, ok := decoded["items"].([]any); ok {
 			return readsOf(items), true
 		}
-		if id, ok := idOf(v); ok {
+
+		if id, ok := idOf(decoded); ok {
 			return audit.Reads{Count: 1, IDs: []string{id}}, true
 		}
 	}
-	return audit.Reads{}, false
+
+	return audit.Reads{
+		Count: 0,
+		IDs:   nil,
+	}, false
 }
 
 func readsOf(rows []any) audit.Reads {
-	reads := audit.Reads{Count: len(rows)}
+	reads := audit.Reads{
+		Count: len(rows),
+		IDs:   nil,
+	}
 	for _, row := range rows {
 		if len(reads.IDs) == audit.MaxReadIDs {
 			break
 		}
+
 		if object, ok := row.(map[string]any); ok {
 			if id, ok := idOf(object); ok {
 				reads.IDs = append(reads.IDs, id)
 			}
 		}
 	}
+
 	return reads
 }
 
@@ -134,5 +163,6 @@ func idOf(object map[string]any) (string, bool) {
 	case string:
 		return id, id != ""
 	}
+
 	return "", false
 }

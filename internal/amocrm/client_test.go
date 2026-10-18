@@ -19,15 +19,24 @@ import (
 	"hexletbasics/internal/events"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errReset = errors.New("connection reset")
+)
+
 func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 	t.Parallel()
+
 	var body []map[string]any
+
 	client := NewClient("https://example.amocrm.test", "secret", "counter")
 	client.http.Transport = roundTripFunc(func(r *http.Request) (*http.Response, error) {
 		assert.Equal(t, "/api/v4/leads/unsorted/forms", r.URL.Path)
 		assert.Equal(t, "Bearer secret", r.Header.Get("Authorization"))
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&body))
+
 		const responseBody = `{"_total_items":1,"_embedded":{"unsorted":[]}}`
+
 		return &http.Response{
 			StatusCode:    http.StatusOK,
 			Body:          io.NopCloser(bytes.NewBufferString(responseBody)),
@@ -42,6 +51,19 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 	err := client.CreateLead(t.Context(), events.LeadCreated{
 		LeadID: 10, UserID: 20, Email: &email, FirstName: &firstName,
 		UTMSource: &utmSource, OccurredAt: time.Unix(123, 0),
+		UserName:    "",
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
 	})
 	require.NoError(t, err)
 	require.Len(t, body, 1)
@@ -68,13 +90,28 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 
 func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
 	t.Parallel()
+
 	landing := "https://code-basics.com/ru/languages/python?from=vk&gclid=g-1&yclid=y-1&fbclid=f-1&ga_utm=ga-1"
 	referrer := "https://ya.ru/"
 	ip := "203.0.113.7"
 
 	body := sendLead(t, events.LeadCreated{
 		LeadID: 10, LandingPage: &landing, Referrer: &referrer, IP: &ip,
-		OccurredAt: time.Unix(123, 0),
+		OccurredAt:  time.Unix(123, 0),
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
 	})
 
 	metadata := requireMap(t, body["metadata"])
@@ -95,10 +132,31 @@ func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
 
 func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
 	t.Parallel()
+
 	landing := "https://code-basics.com/?yclid=y-1"
 	clientID := "1700000000123456789"
 
-	body := sendLead(t, events.LeadCreated{LeadID: 10, LandingPage: &landing, YMClientID: &clientID})
+	body := sendLead(t, events.LeadCreated{
+		LeadID:      10,
+		LandingPage: &landing,
+		YMClientID:  &clientID,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	fields := requireMap(t, requireSlice(t, requireMap(t, body["_embedded"])["leads"])[0])["custom_fields_values"]
 	assertCustomField(t, fields, "YCLID", 316_947, clientID)
@@ -107,9 +165,30 @@ func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
 
 func TestCreateLeadDropsAnIPv6Address(t *testing.T) {
 	t.Parallel()
+
 	ip := "2001:db8::1"
 
-	body := sendLead(t, events.LeadCreated{LeadID: 10, IP: &ip})
+	body := sendLead(t, events.LeadCreated{
+		LeadID:      10,
+		IP:          &ip,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		OccurredAt:  time.Time{},
+	})
 
 	assert.NotContains(t, requireMap(t, body["metadata"]), "ip")
 }
@@ -118,11 +197,15 @@ func TestCreateLeadDropsAnIPv6Address(t *testing.T) {
 // unsorted form it sent.
 func sendLead(t *testing.T, event events.LeadCreated) map[string]any {
 	t.Helper()
+
 	var body []map[string]any
+
 	client := NewClient("https://example.amocrm.test", "secret", "counter")
 	client.http.Transport = roundTripFunc(func(r *http.Request) (*http.Response, error) {
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&body))
+
 		const responseBody = `{"_total_items":1,"_embedded":{"unsorted":[]}}`
+
 		return &http.Response{
 			StatusCode:    http.StatusOK,
 			Body:          io.NopCloser(bytes.NewBufferString(responseBody)),
@@ -132,11 +215,13 @@ func sendLead(t *testing.T, event events.LeadCreated) map[string]any {
 	})
 	require.NoError(t, client.CreateLead(t.Context(), event))
 	require.Len(t, body, 1)
+
 	return body[0]
 }
 
 func TestCreateLeadReturnsRemoteError(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name      string
 		status    int
@@ -156,7 +241,9 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 			client := NewClient("https://example.amocrm.test", "secret", "")
 			client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
 				requests++
+
 				const body = `{"title":"invalid lead","detail":"email is malformed"}`
+
 				return &http.Response{
 					StatusCode:    tt.status,
 					Body:          io.NopCloser(bytes.NewBufferString(body)),
@@ -165,10 +252,31 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 				}, nil
 			})
 
-			err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+			err := client.CreateLead(t.Context(), events.LeadCreated{
+				LeadID:      1,
+				UserID:      0,
+				UserName:    "",
+				FirstName:   nil,
+				LastName:    nil,
+				YMClientID:  nil,
+				UTMSource:   nil,
+				UTMMedium:   nil,
+				UTMCampaign: nil,
+				UTMTerm:     nil,
+				UTMContent:  nil,
+				Email:       nil,
+				Phone:       nil,
+				Telegram:    nil,
+				WhatsApp:    nil,
+				LandingPage: nil,
+				Referrer:    nil,
+				IP:          nil,
+				OccurredAt:  time.Time{},
+			})
 
 			require.ErrorContains(t, err, "invalid lead")
 			assert.Equal(t, 1, requests, "one River attempt must make one HTTP request")
+
 			var classified interface{ Retryable() bool }
 			require.ErrorAs(t, err, &classified)
 			assert.Equal(t, tt.retryable, classified.Retryable())
@@ -178,6 +286,7 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 
 func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name      string
 		status    int
@@ -191,6 +300,7 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 			client := NewClient("https://example.amocrm.test", "secret", "")
 			client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
 				const body = "<html>upstream failure</html>"
+
 				return &http.Response{
 					StatusCode:    tt.status,
 					Body:          io.NopCloser(bytes.NewBufferString(body)),
@@ -199,9 +309,30 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 				}, nil
 			})
 
-			err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+			err := client.CreateLead(t.Context(), events.LeadCreated{
+				LeadID:      1,
+				UserID:      0,
+				UserName:    "",
+				FirstName:   nil,
+				LastName:    nil,
+				YMClientID:  nil,
+				UTMSource:   nil,
+				UTMMedium:   nil,
+				UTMCampaign: nil,
+				UTMTerm:     nil,
+				UTMContent:  nil,
+				Email:       nil,
+				Phone:       nil,
+				Telegram:    nil,
+				WhatsApp:    nil,
+				LandingPage: nil,
+				Referrer:    nil,
+				IP:          nil,
+				OccurredAt:  time.Time{},
+			})
 
 			require.ErrorContains(t, err, strconv.Itoa(tt.status))
+
 			var classified interface{ Retryable() bool }
 			require.ErrorAs(t, err, &classified)
 			assert.Equal(t, tt.retryable, classified.Retryable())
@@ -211,10 +342,12 @@ func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
 
 func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 	t.Parallel()
+
 	requests := 0
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
 		requests++
+
 		return &http.Response{
 			StatusCode: http.StatusNoContent,
 			Body:       io.NopCloser(bytes.NewBufferString("")),
@@ -222,10 +355,31 @@ func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 		}, nil
 	})
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.Error(t, err)
 	assert.Equal(t, 1, requests)
+
 	var classified interface{ Retryable() bool }
 	require.ErrorAs(t, err, &classified)
 	assert.False(t, classified.Retryable(), "amoCRM accepted the lead; a retry would duplicate it")
@@ -233,14 +387,36 @@ func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
 
 func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 	t.Parallel()
+
 	client := NewClient("https://example.amocrm.test", "secret", "")
 	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
-		return nil, errors.New("connection reset")
+		return nil, errReset
 	})
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, "connection reset")
+
 	var classified interface{ Retryable() bool }
 	require.ErrorAs(t, err, &classified)
 	assert.True(t, classified.Retryable())
@@ -248,7 +424,27 @@ func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {
 
 func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 	t.Parallel()
-	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	var classified interface{ Retryable() bool }
 	require.ErrorAs(t, err, &classified)
@@ -259,17 +455,42 @@ func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 // reported, not followed, so one attempt stays one request to one host.
 func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
 	t.Parallel()
+
 	var landed int
+
 	elsewhere := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { landed++ }))
 	t.Cleanup(elsewhere.Close)
+
 	var asked int
+
 	moved := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		asked++
+
 		http.Redirect(w, r, elsewhere.URL, http.StatusFound)
 	}))
 	t.Cleanup(moved.Close)
 
-	err := NewClient(moved.URL, "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient(moved.URL, "secret", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, strconv.Itoa(http.StatusFound))
 	assert.Equal(t, 1, asked)
@@ -280,9 +501,30 @@ func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
 // the same client — and keeps the cause for the logs.
 func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 	t.Parallel()
-	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.ErrorContains(t, err, "initialization failed")
+
 	var classified interface{ Retryable() bool }
 	require.ErrorAs(t, err, &classified)
 	assert.False(t, classified.Retryable())
@@ -291,7 +533,27 @@ func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
 
 func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
 	t.Parallel()
-	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
 	require.EqualError(t, err, "amoCRM is not configured")
 	assert.NoError(t, errors.Unwrap(err))
@@ -299,19 +561,40 @@ func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
 
 func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
 	t.Parallel()
-	reset := errors.New("connection reset")
+
 	client := NewClient("https://example.amocrm.test", "secret", "")
-	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, reset })
+	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, errReset })
 
-	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	err := client.CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 
-	assert.ErrorIs(t, err, reset)
+	assert.ErrorIs(t, err, errReset)
 }
 
 // A refusal that says nothing still says something, and one that says too much
 // is cut: the message ends up in a job's error column.
 func TestCreateLeadWordsARefusalForTheLogs(t *testing.T) {
 	t.Parallel()
+
 	problem := func(body string) *Client {
 		client := NewClient("https://example.amocrm.test", "secret", "")
 		client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
@@ -322,13 +605,54 @@ func TestCreateLeadWordsARefusalForTheLogs(t *testing.T) {
 				Header:        http.Header{"Content-Type": []string{"application/problem+json"}},
 			}, nil
 		})
+
 		return client
 	}
 
-	empty := problem(`{}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	empty := problem(`{}`).CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 	require.EqualError(t, empty, "amoCRM returned 400: request failed")
 
-	long := problem(`{"detail":"`+strings.Repeat("x", 5000)+`"}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	long := problem(`{"detail":"`+strings.Repeat("x", 5000)+`"}`).CreateLead(t.Context(), events.LeadCreated{
+		LeadID:      1,
+		UserID:      0,
+		UserName:    "",
+		FirstName:   nil,
+		LastName:    nil,
+		YMClientID:  nil,
+		UTMSource:   nil,
+		UTMMedium:   nil,
+		UTMCampaign: nil,
+		UTMTerm:     nil,
+		UTMContent:  nil,
+		Email:       nil,
+		Phone:       nil,
+		Telegram:    nil,
+		WhatsApp:    nil,
+		LandingPage: nil,
+		Referrer:    nil,
+		IP:          nil,
+		OccurredAt:  time.Time{},
+	})
 	require.Error(t, long)
 	assert.LessOrEqual(t, len(long.Error()), maxErrorMessageBytes+len("amoCRM returned 400: "))
 }
@@ -341,49 +665,62 @@ func (f roundTripFunc) RoundTrip(request *http.Request) (*http.Response, error) 
 
 func requireMap(t *testing.T, value any) map[string]any {
 	t.Helper()
+
 	result, ok := value.(map[string]any)
 	require.True(t, ok)
+
 	return result
 }
 
 func requireSlice(t *testing.T, value any) []any {
 	t.Helper()
+
 	result, ok := value.([]any)
 	require.True(t, ok)
 	require.NotEmpty(t, result)
+
 	return result
 }
 
 func assertCustomField(t *testing.T, value any, code string, id int, expected string) {
 	t.Helper()
+
 	fields := requireSlice(t, value)
 	for _, rawField := range fields {
 		field := requireMap(t, rawField)
 		if field["field_code"] != code {
 			continue
 		}
+
 		if id != 0 {
 			assert.InDelta(t, float64(id), field["field_id"], 0.001)
 		}
+
 		values := requireSlice(t, field["values"])
 		assert.Equal(t, expected, requireMap(t, values[0])["value"])
+
 		return
 	}
+
 	t.Errorf("custom field %q not found", code)
 }
 
 func assertCustomFieldByID(t *testing.T, value any, id int, expected string) {
 	t.Helper()
+
 	for _, rawField := range requireSlice(t, value) {
 		field := requireMap(t, rawField)
 		if field["field_id"] != float64(id) {
 			continue
 		}
+
 		assert.NotContains(t, field, "field_code")
 		values := requireSlice(t, field["values"])
 		assert.Equal(t, expected, requireMap(t, values[0])["value"])
+
 		return
 	}
+
 	t.Errorf("custom field %d not found", id)
 }
 

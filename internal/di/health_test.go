@@ -15,20 +15,31 @@ import (
 	"hexletbasics/internal/health"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errDatabaseIsDown = errors.New("database is down")
+)
+
 func probe(t *testing.T, handler http.Handler, path string) int {
 	t.Helper()
+
 	rec := httptest.NewRecorder()
 	handler.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, path, nil))
+
 	return rec.Code
 }
 
 func builtHandler(t *testing.T) (do.Injector, http.Handler) {
 	t.Helper()
 	configureTestEnvironment(t)
+
 	injector := newServerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
+
 	handler, err := do.InvokeNamed[http.Handler](injector, httpHandlerServiceName)
 	require.NoError(t, err)
+
 	return injector, handler
 }
 
@@ -36,11 +47,12 @@ func builtHandler(t *testing.T) (do.Injector, http.Handler) {
 // away would, without touching DDL.
 func failDatabase(t *testing.T, injector do.Injector) {
 	t.Helper()
+
 	client, err := do.Invoke[*ent.Client](injector)
 	require.NoError(t, err)
 	client.Intercept(ent.InterceptFunc(func(ent.Querier) ent.Querier {
 		return ent.QuerierFunc(func(context.Context, ent.Query) (ent.Value, error) {
-			return nil, errors.New("database is down")
+			return nil, errDatabaseIsDown
 		})
 	}))
 }
@@ -73,8 +85,11 @@ func TestReadyzIs503AfterTheProcessStartsDraining(t *testing.T) {
 
 func TestWorkerHealthServerIsReadyOnlyAfterStartAndWhileTheDatabaseWorks(t *testing.T) {
 	configureWorkerEnvironment(t)
+
 	injector := newWorkerContainer()
+
 	t.Cleanup(func() { _ = injector.Shutdown() })
+
 	server, err := do.InvokeNamed[*http.Server](injector, healthServerServiceName)
 	require.NoError(t, err)
 	probes, err := do.Invoke[*health.Probes](injector)

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,6 +17,11 @@ import (
 	"hexletbasics/internal/testsupport/testdb"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errBoom = errors.New("operation failed")
+)
+
 // These run on a real pool (not the test's shared transaction) because what is
 // under test is which connection a statement uses. Every write is rolled back,
 // so nothing outlives the test.
@@ -23,6 +29,7 @@ import (
 func openPool(t *testing.T) (*store.Store, *ent.Client) {
 	t.Helper()
 	db := testdb.Clone(t)
+
 	return store.New(db), store.NewClient(db)
 }
 
@@ -31,23 +38,38 @@ func openPool(t *testing.T) (*store.Store, *ent.Client) {
 // capture without the caller knowing.
 func probe(ctx context.Context, client *ent.Client, operation string) error {
 	return audit.Write(ctx, client, audit.Entry{
-		Source:    audit.Source{Channel: audit.ChannelWeb},
-		Operation: operation,
-		Outcome:   audit.OutcomeSucceeded,
+		Source: audit.Source{
+			Channel:        audit.ChannelWeb,
+			ConnectedAppID: nil,
+			TokenID:        nil,
+		},
+		Operation:  operation,
+		Outcome:    audit.OutcomeSucceeded,
+		Actor:      nil,
+		RequestID:  "",
+		Address:    "",
+		UserAgent:  "",
+		Locale:     "",
+		OccurredAt: time.Time{},
+		EntityType: "",
+		EntityID:   "",
+		Reads:      nil,
 	}, nil)
 }
 
 func countOf(ctx context.Context, t *testing.T, client *ent.Client, operation string) int {
 	t.Helper()
+
 	n, err := client.AuditRecord.Query().Where(auditrecord.Operation(operation)).Count(ctx)
 	require.NoError(t, err)
+
 	return n
 }
 
 func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 	txStore, client := openPool(t)
+
 	const operation = "AmbientJoinProbe"
-	boom := errors.New("operation failed")
 
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
 		ctx := store.WithAmbientTx(t.Context(), tx, txClient)
@@ -59,17 +81,18 @@ func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 		assert.Equal(t, 1, countOf(ctx, t, client, operation))
 		// ... while another connection does not, because nothing committed.
 		assert.Zero(t, countOf(t.Context(), t, client, operation))
-		return boom
+
+		return errBoom
 	})
 
-	require.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, errBoom)
 	assert.Zero(t, countOf(t.Context(), t, client, operation), "rolled back with the operation")
 }
 
 func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T) {
 	txStore, client := openPool(t)
+
 	const operation = "AmbientNestedProbe"
-	boom := errors.New("operation failed")
 
 	err := txStore.WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
 		ctx := store.WithAmbientTx(t.Context(), tx, txClient)
@@ -79,9 +102,10 @@ func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T)
 		require.NoError(t, txStore.WithinTx(ctx, func(_ *sql.Tx, inner *ent.Client) error {
 			return probe(ctx, inner, operation)
 		}))
-		return boom
+
+		return errBoom
 	})
 
-	require.ErrorIs(t, err, boom)
+	require.ErrorIs(t, err, errBoom)
 	assert.Zero(t, countOf(t.Context(), t, client, operation), "the module's step is undone with the operation")
 }

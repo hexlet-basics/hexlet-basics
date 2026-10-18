@@ -23,13 +23,17 @@ const mcpPath = "/mcp"
 func (s *Server) Resource() string { return s.resource }
 
 // customScopes are the Scopes a user can consent to.
-var customScopes = []string{ScopeCatalogRead, ScopeProgressRead, ScopeAdmin}
+func customScopes() []string {
+	return []string{ScopeCatalogRead, ScopeProgressRead, ScopeAdmin}
+}
 
 // standardScopes are the OpenID/OAuth scopes that are accepted but carry no
 // grant here: openid only asks for an ID token (which discloses the subject and
 // nothing else), offline_access for a refresh token. The flow works without
 // openid.
-var standardScopes = []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
+func standardScopes() []string {
+	return []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
+}
 
 // authorizer is the provider with this server's admission policy added. The
 // library decides what to do with a scope or resource it does not know by
@@ -38,10 +42,14 @@ var standardScopes = []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
 // holds something it was not given.
 type authorizer struct {
 	*op.Provider
+
 	s *Server
 }
 
-var _ op.AuthorizeValidator = authorizer{}
+var _ op.AuthorizeValidator = authorizer{
+	Provider: nil,
+	s:        nil,
+}
 
 type resourceKey struct{}
 
@@ -51,26 +59,36 @@ type resourceKey struct{}
 func (a authorizer) ValidateAuthRequest(
 	ctx context.Context, req *oidc.AuthRequest, storage op.Storage, verifier *op.IDTokenHintVerifier,
 ) (string, error) {
-	c, err := storage.GetClientByClientID(ctx, req.ClientID)
+	oauthClient, err := storage.GetClientByClientID(ctx, req.ClientID)
 	if err != nil {
 		return "", oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err)
 	}
-	if err := op.ValidateAuthReqRedirectURI(c, req.RedirectURI, req.ResponseType); err != nil {
-		return "", err
+
+	err = op.ValidateAuthReqRedirectURI(oauthClient, req.RedirectURI, req.ResponseType)
+	if err != nil {
+		return "", errs.Wrapf(err, "validate redirect uri")
 	}
+
 	for _, scope := range req.Scopes {
 		switch {
-		case slices.Contains(standardScopes, scope):
-		case slices.Contains(customScopes, scope) && c.IsScopeAllowed(scope):
+		case slices.Contains(standardScopes(), scope):
+		case slices.Contains(customScopes(), scope) && oauthClient.IsScopeAllowed(scope):
 		default:
 			return "", oidc.ErrInvalidScope().WithDescription("The scope %q is not available to this client. "+
-				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes), standardScopes...), ", "))
+				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes()), standardScopes()...), ", "))
 		}
 	}
+
 	if resources, _ := ctx.Value(resourceKey{}).([]string); !a.s.acceptsResources(resources) {
 		return "", errInvalidTarget(a.s.resource)
 	}
-	return op.ValidateAuthRequestClient(ctx, req, c, verifier)
+
+	result, err := op.ValidateAuthRequestClient(ctx, req, oauthClient, verifier)
+	if err != nil {
+		return result, errs.Wrapf(err, "validate authorization request client")
+	}
+
+	return result, nil
 }
 
 // acceptsResources reports whether every requested resource is the canonical
@@ -89,16 +107,22 @@ func errInvalidTarget(resource string) *oidc.Error {
 // (RFC 9207) added to any redirect to the client.
 func (s *Server) authorize(w http.ResponseWriter, r *http.Request) {
 	ctx := op.ContextWithIssuer(r.Context(), s.issuer)
-	if err := r.ParseForm(); err == nil {
+
+	err := r.ParseForm()
+	if err == nil {
 		ctx = context.WithValue(ctx, resourceKey{}, r.Form["resource"])
 		// A client id that is a URL is registered by its metadata document, which
 		// is fetched (or refreshed) here, before the library looks the client up.
 		address, _ := s.clientAddress(ctx)
-		if derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address); derr != nil {
+
+		derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address)
+		if derr != nil {
 			writeDocumentError(w, derr)
+
 			return
 		}
 	}
+
 	op.Authorize(s.issuerWriter(w), r.WithContext(ctx), authorizer{Provider: s.provider, s: s})
 }
 
@@ -113,8 +137,10 @@ func (s *Server) authorizeCallback(w http.ResponseWriter, r *http.Request) {
 func (s *Server) token(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost && r.ParseForm() == nil && !s.acceptsResources(r.PostForm["resource"]) {
 		op.RequestError(w, r, errInvalidTarget(s.resource), nil)
+
 		return
 	}
+
 	s.provider.ServeHTTP(w, r)
 }
 
@@ -128,18 +154,21 @@ func (s *Server) issuerWriter(w http.ResponseWriter) http.ResponseWriter {
 
 type issWriter struct {
 	http.ResponseWriter
+
 	issuer, own string
 }
 
 func (w *issWriter) WriteHeader(code int) {
 	if loc := w.Header().Get("Location"); code == http.StatusFound && loc != "" && !strings.HasPrefix(loc, w.own) {
-		if u, err := url.Parse(loc); err == nil {
+		u, err := url.Parse(loc)
+		if err == nil {
 			q := u.Query()
 			q.Set("iss", w.issuer)
 			u.RawQuery = q.Encode()
 			w.Header().Set("Location", u.String())
 		}
 	}
+
 	w.ResponseWriter.WriteHeader(code)
 }
 
@@ -148,12 +177,17 @@ func (w *issWriter) WriteHeader(code int) {
 func withIssParameter(doc any) (map[string]any, error) {
 	raw, err := json.Marshal(doc)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "marshal json")
 	}
+
 	out := map[string]any{}
-	if err := json.Unmarshal(raw, &out); err != nil {
-		return nil, err
+
+	err = json.Unmarshal(raw, &out)
+	if err != nil {
+		return nil, errs.Wrapf(err, "unmarshal json")
 	}
+
 	out["authorization_response_iss_parameter_supported"] = true
+
 	return out, nil
 }

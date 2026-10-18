@@ -28,36 +28,47 @@ import (
 type databaseCloser struct{ client *ent.Client }
 
 func (c *databaseCloser) Shutdown() error {
-	if err := c.client.Close(); err != nil {
+	err := c.client.Close()
+	if err != nil {
 		return errs.Wrapf(err, "closing database")
 	}
+
 	return nil
 }
 
 // HealthCheck is the readiness probe's database check (ADR-0023): one cheap
 // query through the pool, which fails when the database is unreachable.
 func (c *databaseCloser) HealthCheck(ctx context.Context) error {
-	if _, err := c.client.User.Query().Exist(ctx); err != nil {
+	_, err := c.client.User.Query().Exist(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "pinging database")
 	}
+
 	return nil
 }
 
 type bucketCloser struct{ bucket *blob.Bucket }
 
 func (c *bucketCloser) Shutdown() error {
-	if err := c.bucket.Close(); err != nil {
+	err := c.bucket.Close()
+	if err != nil {
 		return errs.Wrapf(err, "closing blob bucket")
 	}
+
 	return nil
 }
 
 type sentryCloser struct{ client *sentry.Client }
 
+// errSentryFlushTimeout is what the closer answers when Sentry's queue was not
+// delivered before the shutdown deadline.
+var errSentryFlushTimeout = errors.New("flushing Sentry events timed out")
+
 func (c *sentryCloser) Shutdown(ctx context.Context) error {
 	if !c.client.FlushWithContext(ctx) {
-		return errors.New("flushing Sentry events timed out")
+		return errSentryFlushTimeout
 	}
+
 	return nil
 }
 
@@ -68,6 +79,7 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return &sentryCloser{client: client}, nil
 	}),
 	do.Lazy[*databaseCloser](func(i do.Injector) (*databaseCloser, error) {
@@ -75,9 +87,12 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		if _, err := do.Invoke[*sentryCloser](i); err != nil {
+
+		_, err = do.Invoke[*sentryCloser](i)
+		if err != nil {
 			return nil, err
 		}
+
 		return &databaseCloser{client: client}, nil
 	}),
 	do.Lazy[*bucketCloser](func(i do.Injector) (*bucketCloser, error) {
@@ -85,9 +100,12 @@ var closersPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		if _, err := do.Invoke[*sentryCloser](i); err != nil {
+
+		_, err = do.Invoke[*sentryCloser](i)
+		if err != nil {
 			return nil, err
 		}
+
 		return &bucketCloser{bucket: bucket}, nil
 	}),
 )
@@ -95,12 +113,16 @@ var closersPackage = do.Package(
 // registerClosers makes every closer known to the injector, which only shuts
 // down services it has built.
 func registerClosers(injector do.Injector) error {
-	if _, err := do.Invoke[*databaseCloser](injector); err != nil {
+	_, err := do.Invoke[*databaseCloser](injector)
+	if err != nil {
 		return err
 	}
-	if _, err := do.Invoke[*bucketCloser](injector); err != nil {
+
+	_, err = do.Invoke[*bucketCloser](injector)
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -111,5 +133,6 @@ func shutdown(ctx context.Context, injector do.Injector) error {
 	if report == nil || report.Succeed {
 		return nil
 	}
+
 	return report
 }

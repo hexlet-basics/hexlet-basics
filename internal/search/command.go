@@ -2,9 +2,9 @@ package search
 
 import "hexletbasics/internal/domain"
 
-// SearchCatalogue is a search of the catalogue, the public one by default: what the words are, in
+// Query is a search of the catalogue, the public one by default: what the words are, in
 // which language, for which kinds of record, and which window of the answer.
-type SearchCatalogue struct {
+type Query struct {
 	// Text is what the visitor typed. It is read as a web search query (quoted
 	// phrases, `or`, `-word`), never as tsquery syntax, so no input is an error.
 	Text string

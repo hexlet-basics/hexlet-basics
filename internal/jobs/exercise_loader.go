@@ -51,11 +51,15 @@ func ExerciseLoader(loader *courseloader.Loader) Module {
 // ExerciseLoaderWorker is the worker alone, without its registration, so that a test
 // can work a job through it in a transaction (rivertest.Worker).
 func ExerciseLoaderWorker(loader *courseloader.Loader) river.Worker[ExerciseLoaderArgs] {
-	return &exerciseLoaderWorker{loader: loader}
+	return &exerciseLoaderWorker{
+		loader:         loader,
+		WorkerDefaults: river.WorkerDefaults[ExerciseLoaderArgs]{},
+	}
 }
 
 type exerciseLoaderWorker struct {
 	river.WorkerDefaults[ExerciseLoaderArgs]
+
 	loader *courseloader.Loader
 }
 

@@ -16,6 +16,7 @@ import (
 // empty page, not an error, as legacy's `with_locale` scope gave it.
 func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	locale := s.i18n.Locale(ctx)
+
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.Review, int, error) {
 			return s.reviewDirectory.Public(ctx, locale, page)
@@ -36,25 +37,47 @@ func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicRev
 
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (*api.ReviewPage, error) {
-	return s.db.Review.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToReviews)
+	result, err := s.db.Review.AdminList(ctx, params.Page, params.PerPage, params.Q, s.conv.ToReviews)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin list review")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (*api.Review, error) {
-	return s.db.Review.AdminGet(ctx, params.ID, s.conv.ToReview)
+	result, err := s.db.Review.AdminGet(ctx, params.ID, s.conv.ToReview)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get review")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (*api.Review, error) {
-	return s.db.Review.AdminCreate(ctx, req, s.conv.ToReview)
+	result, err := s.db.Review.AdminCreate(ctx, req, s.conv.ToReview)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin create review")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (*api.Review, error) {
-	return s.db.Review.AdminUpdate(ctx, params.ID, req, s.conv.ToReview)
+	result, err := s.db.Review.AdminUpdate(ctx, params.ID, req, s.conv.ToReview)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin update review")
+	}
+
+	return result, nil
 }
 
 func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) error {
-	if err := s.db.Review.AdminDelete(ctx, params.ID); err != nil {
-		return err
+	err := s.db.Review.AdminDelete(ctx, params.ID)
+	if err != nil {
+		return errs.Wrapf(err, "admin delete review")
 	}
+
 	return nil
 }
 
@@ -81,5 +104,10 @@ func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchive
 
 // getAdminReview is the read model a state move echoes back.
 func (s *Server) getAdminReview(ctx context.Context, id int) (*api.Review, error) {
-	return s.db.Review.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToReview)
+	result, err := s.db.Review.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToReview)
+	if err != nil {
+		return result, errs.Wrapf(err, "admin get review")
+	}
+
+	return result, nil
 }

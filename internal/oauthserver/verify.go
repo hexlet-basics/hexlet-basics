@@ -44,14 +44,17 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 	if err != nil {
 		return Token{}, ErrInvalidToken
 	}
+
 	id, subject, ok := strings.Cut(plain, ":")
 	if !ok {
 		return Token{}, ErrInvalidToken
 	}
+
 	userID, err := strconv.Atoi(subject)
 	if err != nil {
 		return Token{}, ErrInvalidToken
 	}
+
 	row, err := s.storage.liveAccessToken(ctx, id, subject)
 	if err != nil {
 		return Token{}, err
@@ -62,9 +65,11 @@ func (s *Server) VerifyAccessToken(ctx context.Context, bearer string) (Token, e
 	if ent.IsNotFound(err) {
 		return Token{}, ErrInvalidToken
 	}
+
 	if err != nil {
 		return Token{}, errs.Wrapf(err, "look up connected app")
 	}
+
 	return Token{
 		ID: row.ID, ClientID: row.ClientID, ConnectedAppID: app, UserID: userID,
 		Scopes: row.Scopes, Audience: []string{s.resource},
@@ -78,6 +83,7 @@ func (s *storage) liveAccessToken(ctx context.Context, id, subject string) (*ent
 	if err != nil || !validTokenID(id) {
 		return nil, ErrInvalidToken
 	}
+
 	row, err := s.db.OAuthAccessToken.Query().
 		Where(
 			oauthaccesstoken.ID(id),
@@ -89,7 +95,9 @@ func (s *storage) liveAccessToken(ctx context.Context, id, subject string) (*ent
 		if ent.IsNotFound(err) {
 			return nil, ErrInvalidToken
 		}
+
 		return nil, errs.Wrapf(err, "look up access token")
 	}
+
 	return row, nil
 }

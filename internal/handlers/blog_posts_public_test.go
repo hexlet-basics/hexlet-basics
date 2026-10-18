@@ -24,6 +24,7 @@ func blogSlugs(posts []api.BlogPost) []string {
 	for i, p := range posts {
 		slugs[i] = p.Slug.Value
 	}
+
 	return slugs
 }
 
@@ -33,6 +34,7 @@ func blogPostID(t *testing.T, h *testsupport.Harness, slug string) int32 {
 	t.Helper()
 	row, err := h.DB.BlogPost.Query().Where(blogpost.SlugEQ(slug)).Only(t.Context())
 	require.NoError(t, err)
+
 	return int32(row.ID)
 }
 
@@ -73,6 +75,7 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.Equal(t, "hello-world", view.Post.Slug.Value)
@@ -84,6 +87,7 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 		related[i] = lp.Course.Slug
 		assert.Equal(t, "ru", lp.Locale.Value, "the request locale's landing page")
 	}
+
 	assert.Equal(t, []string{"javascript", "ruby", "python"}, related, "in the post's display order")
 
 	assert.Equal(t, []string{"learning-ruby", "oldest-post"}, blogSlugs(view.RecommendedPosts),
@@ -103,6 +107,7 @@ func TestGetBlogPostWithoutPromotedCourses(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
+
 	view := res
 
 	assert.Equal(t, "hello-world", view.Post.Slug.Value)
@@ -127,17 +132,20 @@ func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
 
 	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
 	require.NoError(t, err)
+
 	view := res
 
 	related := make([]string, len(view.RelatedLandingPages))
 	for i, lp := range view.RelatedLandingPages {
 		related[i] = lp.Course.Slug
 	}
+
 	assert.Equal(t, []string{"ruby", "python"}, related)
 }
 
 func TestGetBlogPostIsNotFoundOutsidePublishedPostsOfTheLocale(t *testing.T) {
 	t.Parallel()
+
 	cases := map[string]struct{ locale, slug string }{
 		"draft":          {"en", "second-post"},
 		"archived":       {"ru", "archived-notes"},
@@ -164,13 +172,16 @@ func TestGetNextBlogPostWalksToOlderPosts(t *testing.T) {
 	testsupport.SpeakTo(h, "ru")
 
 	walked := []string{}
+
 	id := blogPostID(t, h, "learning-ruby")
 	for {
 		res, err := h.Client.GetNextBlogPost(t.Context(), api.GetNextBlogPostParams{ID: id})
 		if err != nil {
 			assert.Equal(t, http.StatusNotFound, h.LastStatus(), "the chain ends in a 404")
+
 			break
 		}
+
 		post := res
 		walked = append(walked, post.Slug.Value)
 		id = post.ID
@@ -189,12 +200,15 @@ func TestLikeBlogPostCountsOncePerUser(t *testing.T) {
 
 	first, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
 	require.NoError(t, err)
+
 	liked := first
+
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.Equal(t, int32(1), liked.LikesCount)
 
 	second, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
 	require.NoError(t, err)
+
 	again := second
 	assert.Equal(t, int32(1), again.LikesCount, "a repeat like changes nothing")
 

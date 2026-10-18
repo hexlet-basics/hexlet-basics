@@ -302,7 +302,9 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	assert.Equal(t,
 		jobs.SuggestRelatedCoursesArgs{BlogPostID: fixture.ID(fixture.BlogPostHelloWorld)},
-		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
+		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+			BlogPostID: 0,
+		}))
 }
 
 func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
@@ -313,5 +315,7 @@ func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
 	err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{
+		BlogPostID: 0,
+	})
 }

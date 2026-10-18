@@ -136,9 +136,11 @@ func New(opts Options) (*Docker, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "new docker client")
 	}
+
 	if opts.Concurrency < 1 {
 		opts.Concurrency = 1
 	}
+
 	return &Docker{
 		docker: docker,
 		opts:   opts,
@@ -147,7 +149,14 @@ func New(opts Options) (*Docker, error) {
 }
 
 // Close releases the daemon connection.
-func (d *Docker) Close() error { return d.docker.Close() }
+func (d *Docker) Close() error {
+	err := d.docker.Close()
+	if err != nil {
+		return errs.Wrapf(err, "close docker client")
+	}
+
+	return nil
+}
 
 // Run grades one submission and returns what the container reported.
 //
@@ -155,8 +164,9 @@ func (d *Docker) Close() error { return d.docker.Close() }
 // daemon, a missing image, a container that never reported. It is never used to
 // report a failing test: a failure is an outcome, and the learner sees it.
 func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progress.Outcome, error) {
-	if err := d.slots.Acquire(ctx, 1); err != nil {
-		return progress.Outcome{}, err
+	err := d.slots.Acquire(ctx, 1)
+	if err != nil {
+		return progress.Outcome{}, errs.Wrapf(err, "acquire runner slot")
 	}
 	defer d.slots.Release(1)
 
@@ -169,6 +179,7 @@ func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progr
 	if err != nil {
 		return progress.Outcome{}, err
 	}
+
 	return outcomeOf(status, output), nil
 }
 
@@ -192,7 +203,8 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 		return pinned, nil
 	}
 
-	if _, err := d.docker.ImageInspect(ctx, pinned); err == nil {
+	_, err := d.docker.ImageInspect(ctx, pinned)
+	if err == nil {
 		return pinned, nil
 	}
 
@@ -204,28 +216,35 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 	// The pull returns as soon as the daemon accepts it; starting a container
 	// against a half-present image is the confusing failure that follows from
 	// not waiting.
-	if err := pulled.Wait(ctx); err != nil {
+	err = pulled.Wait(ctx)
+	if err != nil {
 		return "", errs.With("source", source).Wrapf(err, "wait for image pull")
 	}
 
-	if _, err := d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned}); err != nil {
+	_, err = d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned})
+	if err != nil {
 		return "", errs.With("source", source, "pinned", pinned).Wrapf(err, "pin image")
 	}
+
 	return pinned, nil
 }
 
 // imageRefs are the two references a submission needs: the pinned one it is
 // graded in, and the moving one that is pulled to create it. They are equal
 // when the Course Version already named a tag, which is its own pin.
-func (d *Docker) imageRefs(submission progress.Submission) (pinned, source string) {
+func (d *Docker) imageRefs(submission progress.Submission) (string, string) {
 	repository := submission.Image
-	if named, err := reference.Parse(repository); err == nil {
+
+	named, err := reference.Parse(repository)
+	if err == nil {
 		_, tagged := named.(reference.Tagged)
+
 		_, digested := named.(reference.Digested)
 		if tagged || digested {
 			return repository, repository
 		}
 	}
+
 	return fmt.Sprintf("%s:lv%d", repository, submission.VersionID),
 		fmt.Sprintf("%s:%s", repository, d.opts.ImageTag)
 }
@@ -241,9 +260,19 @@ func outcomeOf(status int, output string) progress.Outcome {
 	case 0:
 		return progress.Outcome{Passed: true, Result: progress.ResultPassed, Output: output, Status: status}
 	case timeoutExitStatus:
-		return progress.Outcome{Result: progress.ResultFailedInfinity, Output: "", Status: status}
+		return progress.Outcome{
+			Result: progress.ResultFailedInfinity,
+			Output: "",
+			Status: status,
+			Passed: false,
+		}
 	default:
-		return progress.Outcome{Result: progress.ResultFailed, Output: output, Status: status}
+		return progress.Outcome{
+			Result: progress.ResultFailed,
+			Output: output,
+			Status: status,
+			Passed: false,
+		}
 	}
 }
 
@@ -300,10 +329,11 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	}
 	// Copied in rather than bind-mounted: a mount ties the runner to host paths
 	// and cannot work against a daemon that is not local.
-	if _, err := d.docker.CopyToContainer(ctx, created.ID, client.CopyToContainerOptions{
+	_, err = d.docker.CopyToContainer(ctx, created.ID, client.CopyToContainerOptions{
 		DestinationPath: "/",
 		Content:         archive,
-	}); err != nil {
+	})
+	if err != nil {
 		return 0, "", errs.Wrapf(err, "deliver submission to container")
 	}
 
@@ -321,7 +351,8 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	}
 	defer attached.Close()
 
-	if _, err := d.docker.ContainerStart(ctx, created.ID, client.ContainerStartOptions{}); err != nil {
+	_, err = d.docker.ContainerStart(ctx, created.ID, client.ContainerStartOptions{})
+	if err != nil {
 		return 0, "", errs.Wrapf(err, "start container")
 	}
 
@@ -334,11 +365,14 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	// the read; the deferred Close above is then a second, harmless one.
 	stop := context.AfterFunc(ctx, func() { attached.Close() })
 	output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
+
 	stop()
+
 	if err != nil {
 		if ctx.Err() != nil {
 			return 0, "", d.gaveUp(ctx)
 		}
+
 		return 0, "", err
 	}
 
@@ -347,6 +381,7 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		if result.Error != nil && result.Error.Message != "" {
 			return 0, "", errs.With("reason", result.Error.Message).Errorf("container wait failed")
 		}
+
 		return int(result.StatusCode), output, nil
 	case err := <-wait.Error:
 		return 0, "", errs.Wrapf(err, "wait for container")
@@ -368,6 +403,7 @@ func (d *Docker) gaveUp(ctx context.Context) error {
 // timeout. `make` is the interface every exercise image already exposes.
 func (d *Docker) command(submission progress.Submission) []string {
 	seconds := strconv.Itoa(int(d.opts.Timeout.Seconds()))
+
 	return []string{"timeout", seconds, "make", "--silent", "-C", submission.TestDir, "test"}
 }
 
@@ -375,6 +411,7 @@ func (d *Docker) hostConfig() *container.HostConfig {
 	// Copied, because the field is a pointer and the options are shared by every
 	// run this runner performs.
 	pidsLimit := d.opts.PidsLimit
+
 	tmpfs := map[string]string{}
 	if d.opts.ReadonlyRootfs {
 		// Something has to be writable, or nothing compiles at all.
@@ -395,26 +432,36 @@ func (d *Docker) hostConfig() *container.HostConfig {
 	}
 }
 
+// submissionFileMode is the mode of a file placed in the container.
+const submissionFileMode = 0o644
+
 // tarFile wraps the submitted code as the tar archive CopyToContainer takes,
 // with the destination path baked in so the copy lands exactly on the file the
 // reference solution ships.
 func tarFile(destination, content string) (io.Reader, error) {
 	var buf bytes.Buffer
+
 	archive := tar.NewWriter(&buf)
 
-	if err := archive.WriteHeader(&tar.Header{
+	err := archive.WriteHeader(&tar.Header{
 		Name: strings.TrimPrefix(path.Clean(destination), "/"),
-		Mode: 0o644,
+		Mode: submissionFileMode,
 		Size: int64(len(content)),
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, errs.Wrapf(err, "write submission header")
 	}
-	if _, err := archive.Write([]byte(content)); err != nil {
+
+	_, err = archive.Write([]byte(content))
+	if err != nil {
 		return nil, errs.Wrapf(err, "write submission")
 	}
-	if err := archive.Close(); err != nil {
+
+	err = archive.Close()
+	if err != nil {
 		return nil, errs.Wrapf(err, "close submission archive")
 	}
+
 	return &buf, nil
 }
 
@@ -424,8 +471,13 @@ func tarFile(destination, content string) (io.Reader, error) {
 // stdout and stderr are merged deliberately: a learner reads one console, and
 // the tests write their failures to whichever they please.
 func readOutput(stream io.Reader, limit int) (string, error) {
-	capped := &cappedWriter{limit: limit}
-	if _, err := stdcopy.StdCopy(capped, capped, stream); err != nil && !errors.Is(err, io.EOF) {
+	capped := &cappedWriter{
+		limit: limit,
+		buf:   bytes.Buffer{},
+	}
+
+	_, err := stdcopy.StdCopy(capped, capped, stream)
+	if err != nil && !errors.Is(err, io.EOF) {
 		return "", errs.Wrapf(err, "read container output")
 	}
 
@@ -443,13 +495,13 @@ type cappedWriter struct {
 	limit int
 }
 
-func (w *cappedWriter) Write(p []byte) (int, error) {
+func (w *cappedWriter) Write(octets []byte) (int, error) {
 	room := w.limit - w.buf.Len()
 	if room > 0 {
-		w.buf.Write(p[:min(room, len(p))])
+		w.buf.Write(octets[:min(room, len(octets))])
 	}
 	// The full length is reported so the demultiplexer keeps draining: stopping
 	// early would block the container on a full pipe rather than letting it
 	// finish and report its status.
-	return len(p), nil
+	return len(octets), nil
 }

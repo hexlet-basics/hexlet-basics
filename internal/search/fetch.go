@@ -65,6 +65,7 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 		rec *Record
 		err error
 	)
+
 	switch cmd.Ref.Type {
 	case Course:
 		rec, err = c.fetchCourse(ctx, cmd)
@@ -75,9 +76,11 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 	default:
 		return nil, errs.With("type", cmd.Ref.Type).Wrapf(ErrBadID, "fetch a record of unknown type")
 	}
+
 	if err != nil {
 		return nil, domain.FromStore(err)
 	}
+
 	return rec, nil
 }
 
@@ -90,96 +93,115 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 		Order(ent.Asc(courselandingpage.FieldID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find course landing page")
 	}
+
 	title := titleOf(cmd.Ref.Slug, page.Name, page.Header)
 
-	var d body
-	d.title(title)
+	var doc body
+	doc.title(title)
+
 	if header := strings.TrimSpace(lo.FromPtr(page.Header)); header != title {
-		d.section("", header)
+		doc.section("", header)
 	}
-	d.section("", lo.FromPtr(page.Description))
-	d.section(firstOf(lo.FromPtr(page.OutcomesHeader), "What you will learn"), lo.FromPtr(page.OutcomesDescription))
-	d.section(lo.FromPtr(page.UsedInHeader), lo.FromPtr(page.UsedInDescription))
+
+	doc.section("", lo.FromPtr(page.Description))
+	doc.section(firstOf(lo.FromPtr(page.OutcomesHeader), "What you will learn"), lo.FromPtr(page.OutcomesDescription))
+	doc.section(lo.FromPtr(page.UsedInHeader), lo.FromPtr(page.UsedInDescription))
 
 	// The lessons of the newest build, in order, each with the id that fetches it.
 	courseSlug := ""
 	if page.Edges.Course != nil {
 		courseSlug = lo.FromPtr(page.Edges.Course.Slug)
 	}
+
 	translations, err := c.db.CourseLessonTranslation.Query().
 		Where(courselessontranslation.CourseID(page.CourseID), courselessontranslation.LocaleEQ(cmd.Locale), newestBuild(cmd.Locale)).
 		WithLesson().
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
+
 	translations = slices.DeleteFunc(translations, func(t *ent.CourseLessonTranslation) bool {
 		return t.Edges.Lesson == nil || t.Edges.Lesson.Slug == nil
 	})
 	position := func(t *ent.CourseLessonTranslation) int { return lo.FromPtr(t.Edges.Lesson.NaturalOrder) }
+
 	slices.SortFunc(translations, func(a, b *ent.CourseLessonTranslation) int {
 		if p := position(a) - position(b); p != 0 {
 			return p
 		}
+
 		return a.ID - b.ID
 	})
+
 	var list strings.Builder
+
 	for i, t := range translations {
 		slug := *t.Edges.Lesson.Slug
 		fmt.Fprintf(&list, "%d. %s (%s)", i+1, titleOf(slug, t.Name), LessonID(courseSlug, slug))
+
 		if description := strings.TrimSpace(lo.FromPtr(t.Description)); description != "" {
 			list.WriteString(": " + description)
 		}
+
 		list.WriteString("\n")
 	}
-	d.section("Lessons", list.String())
+
+	doc.section("Lessons", list.String())
 
 	return &Record{
-		Type: Course, ID: CourseID(cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Course, ID: CourseID(cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, CourseSlug: courseSlug,
 		State: lo.FromPtr(page.State), Readiness: readinessOf(page.Edges.Course), Listed: page.Listed,
+		Build:    "",
+		Position: nil,
 	}, nil
 }
 
 func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, error) {
 	parent, err := c.db.Course.Query().Where(course.SlugEQ(cmd.Ref.CourseSlug)).Only(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "load course")
 	}
+
 	lesson, err := c.db.CourseLesson.Query().
 		Where(courselesson.CourseID(parent.ID), courselesson.SlugEQ(cmd.Ref.Slug)).
 		Only(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "load course lesson")
 	}
 	// The newest build the lesson is translated into, as the search finds it.
-	t, err := c.db.CourseLessonTranslation.Query().
+	courseLessonTranslation, err := c.db.CourseLessonTranslation.Query().
 		Where(courselessontranslation.CourseLessonID(lesson.ID), courselessontranslation.LocaleEQ(cmd.Locale)).
 		WithCourseVersion().
 		Order(ent.Desc(courselessontranslation.FieldCourseVersionID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find course lesson translation")
 	}
-	title := titleOf(cmd.Ref.Slug, t.Name)
 
-	var d body
-	d.title(title)
-	d.section("", lo.FromPtr(t.Description))
-	d.section("Theory", lo.FromPtr(t.Theory))
-	d.section("Exercise", lo.FromPtr(t.Instructions))
+	title := titleOf(cmd.Ref.Slug, courseLessonTranslation.Name)
+
+	var doc body
+	doc.title(title)
+	doc.section("", lo.FromPtr(courseLessonTranslation.Description))
+	doc.section("Theory", lo.FromPtr(courseLessonTranslation.Theory))
+	doc.section("Exercise", lo.FromPtr(courseLessonTranslation.Instructions))
 
 	rec := &Record{
-		Type: Lesson, ID: LessonID(cmd.Ref.CourseSlug, cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Lesson, ID: LessonID(cmd.Ref.CourseSlug, cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.CourseSlug+"/lessons/"+cmd.Ref.Slug),
 		Slug: cmd.Ref.Slug, CourseSlug: cmd.Ref.CourseSlug,
 		State: lo.FromPtr(lesson.State), Readiness: lo.FromPtr(parent.Readiness), Position: lesson.NaturalOrder,
+		Listed: nil,
+		Build:  "",
 	}
-	if t.Edges.CourseVersion != nil {
-		rec.Build = lo.FromPtr(t.Edges.CourseVersion.State)
+	if courseLessonTranslation.Edges.CourseVersion != nil {
+		rec.Build = lo.FromPtr(courseLessonTranslation.Edges.CourseVersion.State)
 	}
+
 	return rec, nil
 }
 
@@ -189,17 +211,24 @@ func (c *Catalogue) fetchPost(ctx context.Context, cmd FetchRecord) (*Record, er
 		Order(ent.Asc(blogpost.FieldID)).
 		First(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "find blog post")
 	}
+
 	title := titleOf(cmd.Ref.Slug, post.Name)
 
-	var d body
-	d.title(title)
-	d.section("", lo.FromPtr(post.Description))
-	d.section("", readable(post.RichBody))
+	var doc body
+	doc.title(title)
+	doc.section("", lo.FromPtr(post.Description))
+	doc.section("", readable(post.RichBody))
+
 	return &Record{
-		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/blog_posts/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, State: lo.FromPtr(post.State),
+		CourseSlug: "",
+		Readiness:  "",
+		Listed:     nil,
+		Build:      "",
+		Position:   nil,
 	}, nil
 }
 
@@ -210,11 +239,14 @@ func firstOf(texts ...string) string {
 			return strings.TrimSpace(t)
 		}
 	}
+
 	return ""
 }
 
 // body builds a Markdown text out of sections, leaving out the empty ones.
 type body struct{ b strings.Builder }
+
+func (d *body) String() string { return strings.TrimSpace(d.b.String()) }
 
 // title writes the heading of the whole text.
 func (d *body) title(text string) { d.b.WriteString("# " + text + "\n\n") }
@@ -224,16 +256,15 @@ func (d *body) section(heading, text string) {
 	if text = strings.TrimSpace(text); text == "" {
 		return
 	}
+
 	if heading != "" {
 		d.b.WriteString("## " + heading + "\n\n")
 	}
+
 	d.b.WriteString(text + "\n\n")
 }
 
-func (d *body) String() string { return strings.TrimSpace(d.b.String()) }
-
 var (
-	blockEnd   = strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")
 	spaces     = regexp.MustCompile(`[ \t]+`)
 	blankLines = regexp.MustCompile(`\n[ \t]*(\n[ \t]*)+`)
 )
@@ -242,9 +273,14 @@ var (
 // dropped and each block ends a line, which is enough for a model and does not
 // pretend to be Markdown.
 func readable(fragment string) string {
-	text := htmltext.PlainText(blockEnd.Replace(fragment))
+	text := htmltext.PlainText(blockEnd().Replace(fragment))
 	text = spaces.ReplaceAllString(text, " ")
 	text = strings.ReplaceAll(text, " \n", "\n")
 	text = strings.ReplaceAll(text, "\n ", "\n")
+
 	return strings.TrimSpace(blankLines.ReplaceAllString(text, "\n\n"))
+}
+
+func blockEnd() *strings.Replacer {
+	return strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")
 }

@@ -75,14 +75,16 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 		Order(ent.Desc(enrollment.FieldID)).
 		All(ctx)
 	if err != nil {
-		return Courses{}, err
+		return Courses{}, errs.Wrapf(err, "list enrollments")
 	}
 
 	courseIDs := lo.Map(enrollments, func(e *ent.Enrollment, _ int) int { return e.CourseID })
+
 	cards, err := d.catalog.MainPages(ctx, locale, courseIDs...)
 	if err != nil {
 		return Courses{}, err
 	}
+
 	states, err := d.progress.CourseStates(ctx, userID, courseIDs)
 	if err != nil {
 		return Courses{}, err
@@ -94,28 +96,39 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 	}
 
 	var dashboard Courses
-	for _, e := range enrollments {
-		card, ok := cards[e.CourseID]
+
+	for _, enrolled := range enrollments {
+		card, ok := cards[enrolled.CourseID]
 		if !ok {
 			// Skipped, not failed: the learner's page is fine without it, but
 			// the course is a content gap somebody has to hear about.
 			d.log.WarnContext(ctx, "dashboard course has no catalog card",
-				"course_id", e.CourseID, "user_id", userID, "locale", locale)
+				"course_id", enrolled.CourseID, "user_id", userID, "locale", locale)
+
 			continue
 		}
-		state := states[e.CourseID]
-		listed := Course{Enrollment: e, Card: card, State: state}
+
+		state := states[enrolled.CourseID]
+
+		listed := Course{
+			Enrollment: enrolled,
+			Card:       card,
+			State:      state,
+			NextLesson: nil,
+		}
 		if state.NextLessonSlug != nil {
-			if lesson, ok := next[lessonKey{courseID: e.CourseID, slug: *state.NextLessonSlug}]; ok {
+			if lesson, ok := next[lessonKey{courseID: enrolled.CourseID, slug: *state.NextLessonSlug}]; ok {
 				listed.NextLesson = &lesson
 			}
 		}
+
 		if state.State == progress.StateFinished {
 			dashboard.Finished = append(dashboard.Finished, listed)
 		} else {
 			dashboard.Started = append(dashboard.Started, listed)
 		}
 	}
+
 	return dashboard, nil
 }
 
@@ -134,16 +147,20 @@ func (d *Dashboard) nextLessons(
 	locale string,
 	states map[int]*progress.CourseState,
 ) (map[lessonKey]NextLesson, error) {
-	var courseIDs []int
-	var slugs []string
+	var (
+		courseIDs []int
+		slugs     []string
+	)
+
 	for courseID, state := range states {
 		if state.NextLessonSlug != nil {
 			courseIDs = append(courseIDs, courseID)
 			slugs = append(slugs, *state.NextLessonSlug)
 		}
 	}
+
 	if len(slugs) == 0 {
-		return nil, nil
+		return map[lessonKey]NextLesson{}, nil
 	}
 
 	rows, err := d.db.CourseLessonTranslation.Query().
@@ -157,7 +174,7 @@ func (d *Dashboard) nextLessons(
 		WithLesson().
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "list course lesson translations")
 	}
 
 	lessons := make(map[lessonKey]NextLesson, len(rows))
@@ -165,10 +182,12 @@ func (d *Dashboard) nextLessons(
 		if row.Edges.Lesson == nil || row.Edges.Lesson.Slug == nil || row.Name == nil {
 			continue
 		}
+
 		lessons[lessonKey{courseID: row.CourseID, slug: *row.Edges.Lesson.Slug}] = NextLesson{
 			ID:   row.CourseLessonID,
 			Name: *row.Name,
 		}
 	}
+
 	return lessons, nil
 }

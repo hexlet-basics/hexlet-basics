@@ -39,6 +39,7 @@ func New(cfg config.MailConfig, logger *slog.Logger) Mailer {
 	if cfg.PostboxEnabled() {
 		return NewPostbox(cfg)
 	}
+
 	return NewLog(logger)
 }
 
@@ -58,6 +59,7 @@ func NewPostbox(cfg config.MailConfig) *Postbox {
 			cfg.PostboxAccessKeyID, cfg.PostboxSecretAccessKey.Reveal(), "",
 		),
 	})
+
 	return &Postbox{client: client, from: cfg.From}
 }
 
@@ -76,6 +78,7 @@ func (p *Postbox) Send(ctx context.Context, msg Message) error {
 	if err != nil {
 		return oops.Wrapf(err, "send email via postbox")
 	}
+
 	return nil
 }
 
@@ -94,6 +97,7 @@ func NewLog(logger *slog.Logger) *Log {
 func (l *Log) Send(ctx context.Context, msg Message) error {
 	l.logger.InfoContext(ctx, "email not sent: no mail provider configured",
 		"to", msg.To, "subject", msg.Subject, "html", msg.HTML)
+
 	return nil
 }
 
@@ -108,7 +112,9 @@ type Recorder struct {
 func (r *Recorder) Send(_ context.Context, msg Message) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	r.sent = append(r.sent, msg)
+
 	return nil
 }
 
@@ -116,5 +122,6 @@ func (r *Recorder) Send(_ context.Context, msg Message) error {
 func (r *Recorder) Sent() []Message {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	return append([]Message(nil), r.sent...)
 }

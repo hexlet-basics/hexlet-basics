@@ -24,6 +24,7 @@ func TestAdminListManagementUsers(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, int32(totalUsers), page.Total)
+
 	for i := 1; i < len(page.Items); i++ {
 		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
 	}

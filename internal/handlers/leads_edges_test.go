@@ -26,6 +26,7 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 
 	res, err := h.Client.CreateLead(t.Context(), input)
 	require.NoError(t, err)
+
 	created := res
 
 	stored := h.DB.Lead.Query().Where(lead.ID(int(created.ID))).OnlyX(t.Context())
@@ -38,6 +39,7 @@ func TestCreateLeadWritesTheWhatsAppColumnForAWhatsAppContact(t *testing.T) {
 // else a number — never an empty string.
 func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 	t.Parallel()
+
 	cases := []struct {
 		name string
 		user fixture.Label
@@ -49,16 +51,16 @@ func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 			func(h *testsupport.Harness) string { return fmt.Sprintf("User #%d", h.UserID) }},
 	}
 
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			h := testsupport.NewHarnessAs(t, c.user)
+	for _, record := range cases {
+		t.Run(record.name, func(t *testing.T) {
+			h := testsupport.NewHarnessAs(t, record.user)
 
 			_, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 			require.NoError(t, err)
 
 			facts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
 			require.Len(t, facts, 1)
-			assert.Equal(t, c.want(h), facts[0].UserName)
+			assert.Equal(t, record.want(h), facts[0].UserName)
 		})
 	}
 }

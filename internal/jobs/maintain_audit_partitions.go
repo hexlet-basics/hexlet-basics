@@ -26,6 +26,7 @@ func (MaintainAuditPartitionsArgs) Kind() string { return "maintain_audit_partit
 
 type maintainAuditPartitionsWorker struct {
 	river.WorkerDefaults[MaintainAuditPartitionsArgs]
+
 	partitions      *audit.Partitions
 	retentionMonths int
 	logger          *slog.Logger
@@ -38,19 +39,24 @@ type maintainAuditPartitionsWorker struct {
 // audit data should never be silent.
 func (w *maintainAuditPartitionsWorker) Work(ctx context.Context, _ *river.Job[MaintainAuditPartitionsArgs]) error {
 	now := w.now()
-	if err := w.partitions.EnsureAhead(ctx, now); err != nil {
+
+	err := w.partitions.EnsureAhead(ctx, now)
+	if err != nil {
 		return errs.Wrapf(err, "maintain audit partitions")
 	}
+
 	dropped, err := w.partitions.DropExpired(ctx, now, w.retentionMonths)
 	if err != nil {
 		return errs.Wrapf(err, "maintain audit partitions")
 	}
+
 	for _, name := range dropped {
 		w.logger.InfoContext(ctx, "dropped expired audit partition",
 			slog.String("partition", name),
 			slog.Int("retention_months", w.retentionMonths),
 		)
 	}
+
 	return nil
 }
 
@@ -68,6 +74,7 @@ func MaintainAuditPartitionsWorker(partitions *audit.Partitions, retentionMonths
 		retentionMonths: retentionMonths,
 		logger:          logger,
 		now:             time.Now,
+		WorkerDefaults:  river.WorkerDefaults[MaintainAuditPartitionsArgs]{},
 	}
 }
 

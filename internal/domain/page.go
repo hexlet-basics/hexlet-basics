@@ -14,10 +14,10 @@ type Page struct {
 // what lets Paged stay generic over otherwise unrelated query types.
 type pagedQuery[E any, Q any] interface {
 	Clone() Q
-	Count(context.Context) (int, error)
-	Offset(int) Q
-	Limit(int) Q
-	All(context.Context) ([]E, error)
+	Count(ctx context.Context) (int, error)
+	Offset(offset int) Q
+	Limit(limit int) Q
+	All(ctx context.Context) ([]E, error)
 }
 
 // Paged runs the standard list once: how many rows the query matches and the
@@ -29,9 +29,11 @@ func Paged[E any, Q pagedQuery[E, Q]](ctx context.Context, query Q, page Page) (
 	if err != nil {
 		return nil, 0, FromStore(err)
 	}
+
 	rows, err := query.Offset(page.Offset).Limit(page.Limit).All(ctx)
 	if err != nil {
 		return nil, 0, FromStore(err)
 	}
+
 	return rows, total, nil
 }

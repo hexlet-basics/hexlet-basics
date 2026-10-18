@@ -36,6 +36,14 @@ const (
 	QueueLLM = "llm"
 )
 
+// The workers of each queue, sized as the comment on queues says.
+const (
+	defaultWorkers = 10
+	mailWorkers    = 5
+	buildWorkers   = 2
+	llmWorkers     = 3
+)
+
 // DiscardedRetention is how long River keeps a job that used every attempt
 // (state `discarded`). Those rows are the dead-letter store: an operator reads
 // the failure there and replays the job with River's own retry, so they must
@@ -49,10 +57,10 @@ const DiscardedRetention = 30 * 24 * time.Hour
 // rate limits; River's default queue keeps the remaining light jobs.
 func queues() map[string]river.QueueConfig {
 	return map[string]river.QueueConfig{
-		river.QueueDefault: {MaxWorkers: 10},
-		QueueMail:          {MaxWorkers: 5},
-		QueueBuilds:        {MaxWorkers: 2},
-		QueueLLM:           {MaxWorkers: 3},
+		river.QueueDefault: {MaxWorkers: defaultWorkers},
+		QueueMail:          {MaxWorkers: mailWorkers},
+		QueueBuilds:        {MaxWorkers: buildWorkers},
+		QueueLLM:           {MaxWorkers: llmWorkers},
 	}
 }
 
@@ -66,8 +74,14 @@ func cancelUnfixable(err error) error {
 	if errors.Is(err, domain.ErrNotFound) ||
 		errors.Is(err, domain.ErrConflict) ||
 		errors.Is(err, domain.ErrInvalid) {
-		return river.JobCancel(err)
+		err := river.JobCancel(err)
+		if err != nil {
+			return errs.Wrapf(err, "cancel job")
+		}
+
+		return nil
 	}
+
 	return err
 }
 
@@ -100,10 +114,15 @@ func NewInsertOnlyClient(
 	tracerProvider trace.TracerProvider,
 	meterProvider metric.MeterProvider,
 ) (*river.Client[*sql.Tx], error) {
-	return river.NewClient(riverdatabasesql.New(db), &river.Config{
+	result, err := river.NewClient(riverdatabasesql.New(db), &river.Config{
 		Logger:  logger,
 		Plugins: openTelemetryPlugins(tracerProvider, meterProvider),
 	})
+	if err != nil {
+		return result, errs.Wrapf(err, "create river client")
+	}
+
+	return result, nil
 }
 
 // NewWorkerClient builds the River runtime used only by the worker process.
@@ -120,10 +139,15 @@ func NewWorkerClient(
 	meterProvider metric.MeterProvider,
 	modules ...Module,
 ) (*river.Client[*sql.Tx], error) {
-	return river.NewClient(
+	result, err := river.NewClient(
 		riverdatabasesql.New(db),
 		workerConfig(logger, errorHandler, tracerProvider, meterProvider, modules),
 	)
+	if err != nil {
+		return result, errs.Wrapf(err, "create river client")
+	}
+
+	return result, nil
 }
 
 // workerConfig is the worker client's River configuration.
@@ -135,11 +159,14 @@ func workerConfig(
 	modules []Module,
 ) *river.Config {
 	workers := river.NewWorkers()
+
 	var periodic []*river.PeriodicJob
+
 	for _, m := range modules {
 		m.register(workers)
 		periodic = append(periodic, m.periodic...)
 	}
+
 	return &river.Config{
 		ErrorHandler:                errorHandler,
 		DiscardedJobRetentionPeriod: DiscardedRetention,

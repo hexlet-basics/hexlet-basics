@@ -21,6 +21,7 @@ func newScheduler(t *testing.T) (*lessonreview.Scheduler, *testsupport.Services,
 	translationsOfLesson := func(lessonID int) int {
 		return db.CourseLessonTranslation.Query().Where(courselessontranslation.CourseLessonID(lessonID)).CountX(t.Context())
 	}
+
 	return lessonreview.NewScheduler(db, services.Jobs), services, translationsOfLesson
 }
 

@@ -35,11 +35,15 @@ func SuggestRelatedCourses(suggester RelatedCoursesSuggester) Module {
 // SuggestRelatedCoursesWorker is the worker alone, without its registration, so that a test
 // can work a job through it in a transaction (rivertest.Worker).
 func SuggestRelatedCoursesWorker(suggester RelatedCoursesSuggester) river.Worker[SuggestRelatedCoursesArgs] {
-	return &suggestRelatedCoursesWorker{suggester: suggester}
+	return &suggestRelatedCoursesWorker{
+		suggester:      suggester,
+		WorkerDefaults: river.WorkerDefaults[SuggestRelatedCoursesArgs]{},
+	}
 }
 
 type suggestRelatedCoursesWorker struct {
 	river.WorkerDefaults[SuggestRelatedCoursesArgs]
+
 	suggester RelatedCoursesSuggester
 }
 

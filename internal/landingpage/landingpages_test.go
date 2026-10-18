@@ -13,6 +13,7 @@ import (
 
 func newCatalog(t *testing.T) *landingpage.Catalog {
 	t.Helper()
+
 	return landingpage.NewCatalog(testsupport.NewClient(t))
 }
 
@@ -45,9 +46,11 @@ func TestCatalogOrdersByCourseOrderAndLoadsTheCourse(t *testing.T) {
 	require.NotEmpty(t, pages)
 
 	assert.Equal(t, "typescript-ru", *pages[0].Slug)
+
 	for _, page := range pages {
 		require.NotNil(t, page.Edges.Course, *page.Slug)
 	}
+
 	for i := 1; i < len(pages); i++ {
 		if pages[i].CourseID == pages[i-1].CourseID {
 			assert.Less(t, pages[i-1].ID, pages[i].ID, "same-course pages ascend by id")
@@ -79,6 +82,7 @@ func TestMainPagesKeyedByCourseWithoutDraftsOrForeignLocales(t *testing.T) {
 
 	listed, err := catalog.Pages(t.Context(), "ru")
 	require.NoError(t, err)
+
 	ids := make([]int, 0, len(listed))
 	for _, page := range listed {
 		ids = append(ids, page.CourseID)
@@ -87,6 +91,7 @@ func TestMainPagesKeyedByCourseWithoutDraftsOrForeignLocales(t *testing.T) {
 	mains, err := catalog.MainPages(t.Context(), "ru", ids...)
 	require.NoError(t, err)
 	require.NotEmpty(t, mains)
+
 	for courseID, page := range mains {
 		assert.Equal(t, courseID, page.CourseID)
 		assert.True(t, *page.Main, *page.Slug)

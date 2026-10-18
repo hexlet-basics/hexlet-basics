@@ -27,7 +27,12 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 
 	before := r.db.LessonProgress.Query().CountX(ctx)
 
-	passed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{}, firstLesson))
+	passed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		UserID: 0,
+		Guest: progress.GuestProgress{
+			Entries: nil,
+		},
+	}, firstLesson))
 	require.NoError(t, err)
 	require.NotNil(t, passed.Guest, "a first pass is worth a cookie")
 	assert.True(t, passed.Guest.Has(jsSlug, firstLesson))
@@ -35,13 +40,19 @@ func TestCheckByAGuestAddsToTheCookieOnlyWhenThePassFinishesSomethingNew(t *test
 	assert.Zero(t, r.db.LessonProgress.Query().CountX(ctx)-before, "and leaves no rows")
 
 	// The same lesson again finishes nothing new, so there is nothing to write.
-	again, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{Guest: *passed.Guest}, firstLesson))
+	again, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		Guest:  *passed.Guest,
+		UserID: 0,
+	}, firstLesson))
 	require.NoError(t, err)
 	assert.Nil(t, again.Guest)
 
 	// A failing run never moves them.
 	r.failTheRun()
-	failed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{Guest: *passed.Guest}, secondLesson))
+	failed, err := r.progress.CheckSolution(ctx, r.check(t, progress.Learner{
+		Guest:  *passed.Guest,
+		UserID: 0,
+	}, secondLesson))
 	require.NoError(t, err)
 	assert.False(t, failed.Outcome.Passed)
 	assert.Nil(t, failed.Guest)
@@ -63,6 +74,7 @@ func TestCheckThatFailsLeavesTheLessonStartedAndNothingFinished(t *testing.T) {
 	assert.False(t, result.Outcome.Passed)
 	assert.False(t, result.LessonFinished)
 	assert.Nil(t, result.Guest)
+
 	row := r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).OnlyX(ctx)
 	assert.Equal(t, progress.StateStarted, *row.State)
 	assert.Empty(t, testsupport.PublishedEvents[events.LessonFinished](t, r.services))
@@ -73,17 +85,22 @@ func TestPassingEveryLessonFinishesTheCourseOnceAndRepeatsChangeNothing(t *testi
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 
-	var results []*progress.CheckResult
-	for _, slug := range []string{firstLesson, secondLesson, thirdLesson} {
+	slugs := []string{firstLesson, secondLesson, thirdLesson}
+
+	results := make([]*progress.CheckResult, 0, len(slugs))
+	for _, slug := range slugs {
 		result, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, slug))
 		require.NoError(t, err)
+
 		results = append(results, result)
 	}
 
 	assert.Equal(t, []bool{false, false, true}, []bool{results[0].CourseFinished, results[1].CourseFinished, results[2].CourseFinished})
+
 	for _, result := range results {
 		assert.True(t, result.LessonFinished)
 	}
+
 	state, err := r.progress.CourseState(ctx, blankUser, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)

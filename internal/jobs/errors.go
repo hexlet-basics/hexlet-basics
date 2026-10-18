@@ -33,6 +33,7 @@ func (h *ErrorHandler) HandleError(
 	err error,
 ) *river.ErrorHandlerResult {
 	h.capture(ctx, job, err, "")
+
 	return nil
 }
 
@@ -44,6 +45,7 @@ func (h *ErrorHandler) HandlePanic(
 	trace string,
 ) *river.ErrorHandlerResult {
 	h.capture(ctx, job, errs.With("panic", panicVal).Errorf("job panic"), trace)
+
 	return nil
 }
 
@@ -58,9 +60,11 @@ func (h *ErrorHandler) capture(ctx context.Context, job *rivertype.JobRow, err e
 		slog.Int("job_max_attempts", job.MaxAttempts),
 		slog.Bool("final_attempt", final),
 	)
+
 	if !final {
 		return
 	}
+
 	scope := sentry.NewScope()
 	scope.SetTags(map[string]string{
 		"job.id":           strconv.FormatInt(job.ID, 10),
@@ -69,6 +73,7 @@ func (h *ErrorHandler) capture(ctx context.Context, job *rivertype.JobRow, err e
 		"job.attempt":      strconv.Itoa(job.Attempt),
 		"job.max_attempts": strconv.Itoa(job.MaxAttempts),
 	})
+
 	riverContext := sentry.Context{
 		"id":           job.ID,
 		"kind":         job.Kind,
@@ -79,6 +84,7 @@ func (h *ErrorHandler) capture(ctx context.Context, job *rivertype.JobRow, err e
 	if panicTrace != "" {
 		riverContext["panic_trace"] = panicTrace
 	}
+
 	scope.SetContext("river", riverContext)
 	h.sentryClient.CaptureException(err, &sentry.EventHint{Context: ctx, OriginalException: err}, scope)
 }

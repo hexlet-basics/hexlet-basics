@@ -43,6 +43,7 @@ func TestAdminListLeads(t *testing.T) {
 	for _, it := range page.Items {
 		byEmail[it.Email.Value] = it
 	}
+
 	anna, ok := byEmail["anna@example.com"]
 	require.True(t, ok, "lead anna@example.com not found")
 	assert.True(t, anna.FullName.Null, "fullName should be null until User schema lands")
@@ -93,6 +94,7 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	res, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
+
 	created := res
 
 	// The contact method names the column the value lands in; the others stay
@@ -160,6 +162,7 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 
 	res, err := h.Client.CreateLead(t.Context(), input)
 	require.NoError(t, err)
+
 	created := res
 
 	stored := h.DB.Lead.Query().Where(lead.ID(int(created.ID))).OnlyX(t.Context())

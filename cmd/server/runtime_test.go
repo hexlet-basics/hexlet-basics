@@ -20,17 +20,25 @@ func TestRuntimeReportsNotReadyAfterTheSignal(t *testing.T) {
 	probes := health.New(func(context.Context) error { return nil })
 	handler := probes.Wrap(http.NotFoundHandler())
 	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: handler}
-	app := application{http: server, httpAddr: addr, drain: probes.Drain}
+	app := application{
+		http:            server,
+		httpAddr:        addr,
+		drain:           probes.Drain,
+		logger:          nil,
+		shutdownTimeout: 0,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
 	readyz := func() int {
 		rec := httptest.NewRecorder()
 		handler.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/readyz", nil))
+
 		return rec.Code
 	}
 	require.Equal(t, http.StatusOK, readyz())
 
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(signalCtx, func() {}) }()
+
 	signal()
 	require.ErrorIs(t, <-errCh, errRuntimeSignal)
 
@@ -44,18 +52,27 @@ func freeAddr(t *testing.T) string {
 	t.Helper()
 	listener, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
+
 	addr := listener.Addr().String()
 	require.NoError(t, listener.Close())
+
 	return addr
 }
 
 func get(ctx context.Context, url string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrapf(err, "build request")
 	}
+
 	client := &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
-	return client.Do(req)
+
+	result, err := client.Do(req)
+	if err != nil {
+		return result, errs.Wrapf(err, "send request")
+	}
+
+	return result, nil
 }
 
 func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
@@ -63,8 +80,15 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 	server := &http.Server{ReadHeaderTimeout: time.Second, Addr: addr, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})}
-	app := application{http: server, httpAddr: addr}
+	app := application{
+		http:            server,
+		httpAddr:        addr,
+		logger:          nil,
+		drain:           nil,
+		shutdownTimeout: 0,
+	}
 	signalCtx, signal := context.WithCancel(context.Background())
+
 	var stopSignalsCalled atomic.Bool
 
 	errCh := make(chan error, 1)
@@ -77,7 +101,9 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 		if err != nil {
 			return false
 		}
+
 		_ = res.Body.Close()
+
 		return res.StatusCode == http.StatusNoContent
 	}, eventually, 20*time.Millisecond, "the server answers requests")
 
@@ -94,6 +120,7 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 	if res != nil {
 		_ = res.Body.Close()
 	}
+
 	require.Error(t, err, "the port no longer accepts connections")
 	assert.True(t, stopSignalsCalled.Load())
 }
@@ -101,24 +128,38 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 	listener, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
+
 	release := make(chan struct{})
+
 	t.Cleanup(func() { close(release) })
+
 	inFlight := make(chan struct{})
+
 	server := &http.Server{ReadHeaderTimeout: time.Second, Handler: http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		close(inFlight)
 		<-release
 	})}
 	go func() { _ = server.Serve(listener) }()
-	app := application{http: server, shutdownTimeout: 200 * time.Millisecond}
+
+	app := application{
+		http:            server,
+		shutdownTimeout: 200 * time.Millisecond,
+		httpAddr:        "",
+		logger:          nil,
+		drain:           nil,
+	}
 
 	clientErr := make(chan error, 1)
+
 	go func() {
 		res, err := get(t.Context(), "http://"+listener.Addr().String())
 		if err == nil {
 			_ = res.Body.Close()
 		}
+
 		clientErr <- err
 	}()
+
 	select {
 	case <-inFlight:
 	case <-time.After(eventually):
@@ -128,6 +169,7 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 	err = app.shutdown(t.Context(), func() {})
 
 	require.ErrorIs(t, err, context.DeadlineExceeded, "the drain gave up")
+
 	select {
 	case err := <-clientErr:
 		require.Error(t, err, "the in-flight request was cut off")

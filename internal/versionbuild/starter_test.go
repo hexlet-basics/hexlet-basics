@@ -23,6 +23,7 @@ func TestStarterCreatesTheVersionAndItsJobTogether(t *testing.T) {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	riverClient, err := jobs.NewInsertOnlyClient(nil, nil, nil, nil)
 	require.NoError(t, err)
+
 	starter := versionbuild.NewStarter(transactor, jobs.NewEnqueuer(transactor, riverClient))
 
 	version, err := starter.Start(ctx, fixture.ID(fixture.CourseRuby))
@@ -31,7 +32,9 @@ func TestStarterCreatesTheVersionAndItsJobTogether(t *testing.T) {
 	saved := db.CourseVersion.GetX(ctx, version.ID)
 	require.NotNil(t, saved.State)
 	assert.Equal(t, "created", *saved.State)
-	job := rivertest.RequireInsertedTx[*riverdatabasesql.Driver](ctx, t, tx, jobs.ExerciseLoaderArgs{}, nil)
+	job := rivertest.RequireInsertedTx[*riverdatabasesql.Driver](ctx, t, tx, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	}, nil)
 	assert.Equal(t, version.ID, job.Args.VersionID)
 
 	// The build is unique per version: asking for it again queues nothing new.
@@ -52,7 +55,9 @@ func TestStartBySlugBuildsTheCourseAndAnUnknownSlugNothing(t *testing.T) {
 	version, err := services.Starter.StartBySlug(ctx, *ruby.Slug)
 	require.NoError(t, err)
 	assert.Equal(t, ruby.ID, version.CourseID)
-	assert.Equal(t, version.ID, testsupport.RequireEnqueued(t, services, jobs.ExerciseLoaderArgs{}).VersionID)
+	assert.Equal(t, version.ID, testsupport.RequireEnqueued(t, services, jobs.ExerciseLoaderArgs{
+		VersionID: 0,
+	}).VersionID)
 
 	_, err = services.Starter.StartBySlug(ctx, "no-such-course")
 	require.ErrorIs(t, err, domain.ErrNotFound)

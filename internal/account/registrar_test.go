@@ -20,6 +20,11 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
+// Faults a test injects; each is told apart from the others by identity.
+var (
+	errOutboxUnavailable = errors.New("outbox unavailable")
+)
+
 const newUserEmail = "new-sign-up@example.com"
 
 func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
@@ -29,26 +34,27 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 		account.WithClock(func() time.Time { return occurredAt }))
 	firstName := "Ada"
 
-	u, err := registrar.Register(t.Context(), account.Registration{
+	created, err := registrar.Register(t.Context(), account.Registration{
 		Email: newUserEmail, Password: "secret", FirstName: &firstName, Locale: "ru",
 	})
 	require.NoError(t, err)
 
-	saved, err := db.User.Query().Where(user.ID(u.ID)).Only(t.Context())
+	saved, err := db.User.Query().Where(user.ID(created.ID)).Only(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, newUserEmail, *saved.Email)
 
 	var payloadJSON, metadataJSON []byte
+
 	err = tx.QueryRowContext(t.Context(), `
 		SELECT payload, metadata
 		FROM watermill_domain_events
 		WHERE payload->>'user_id' = $1
-	`, strconv.Itoa(u.ID)).Scan(&payloadJSON, &metadataJSON)
+	`, strconv.Itoa(created.ID)).Scan(&payloadJSON, &metadataJSON)
 	require.NoError(t, err)
 
 	var payload events.UserSignedUp
 	require.NoError(t, json.Unmarshal(payloadJSON, &payload))
-	assert.Equal(t, u.ID, payload.UserID)
+	assert.Equal(t, created.ID, payload.UserID)
 	assert.Equal(t, newUserEmail, *payload.Email)
 	assert.Equal(t, firstName, *payload.FirstName)
 	assert.Equal(t, "ru", payload.Locale)
@@ -63,7 +69,7 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 type failingPublisher struct{}
 
 func (failingPublisher) Publish(context.Context, *sql.Tx, events.Event) error {
-	return errors.New("outbox unavailable")
+	return errOutboxUnavailable
 }
 
 func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
@@ -72,6 +78,7 @@ func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
 
 	_, err := registrar.Register(t.Context(), account.Registration{
 		Email: newUserEmail, Password: "secret", Locale: "en",
+		FirstName: nil,
 	})
 	require.ErrorContains(t, err, "outbox unavailable")
 
@@ -81,8 +88,10 @@ func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
 func TestRegistrarRejectsPasswordBeforeOpeningTransaction(t *testing.T) {
 	registrar := account.NewRegistrar(nil, nil)
 	_, err := registrar.Register(t.Context(), account.Registration{
-		Email:    "long-password@example.com",
-		Password: string(make([]byte, 73)),
+		Email:     "long-password@example.com",
+		Password:  string(make([]byte, 73)),
+		FirstName: nil,
+		Locale:    "",
 	})
 	require.ErrorIs(t, err, account.ErrPasswordProcessing)
 }
@@ -97,6 +106,7 @@ func TestRegistrarNamesTheFieldOfATakenEmail(t *testing.T) {
 
 	_, err := registrar.Register(t.Context(), account.Registration{
 		Email: *taken.Email, Password: "secret", Locale: "en",
+		FirstName: nil,
 	})
 
 	require.ErrorIs(t, err, domain.ErrInvalid)

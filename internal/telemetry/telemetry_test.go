@@ -51,7 +51,9 @@ func TestNewOpenTelemetrySDKExportsConfiguredSpans(t *testing.T) {
 
 		request := &collectortrace.ExportTraceServiceRequest{}
 		assert.NoError(t, proto.Unmarshal(body, request))
+
 		requests <- request
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	t.Cleanup(collector.Close)
@@ -92,8 +94,8 @@ tracer_provider:
 
 	select {
 	case request := <-requests:
-		require.Len(t, request.ResourceSpans, 1)
-		attributes := request.ResourceSpans[0].Resource.Attributes
+		require.Len(t, request.GetResourceSpans(), 1)
+		attributes := request.GetResourceSpans()[0].GetResource().GetAttributes()
 		assert.Contains(t, attributes, attribute("service.name", "hexlet-basics-api"))
 		assert.Contains(t, attributes, attribute("service.version", "test-release"))
 	case <-time.After(time.Second):
@@ -140,6 +142,7 @@ func writeOTelConfig(t *testing.T, contents string) string {
 
 	path := filepath.Join(t.TempDir(), "otel.yaml")
 	require.NoError(t, os.WriteFile(path, []byte(contents), 0o600))
+
 	return path
 }
 

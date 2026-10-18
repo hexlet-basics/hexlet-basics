@@ -47,62 +47,90 @@ const legacyMatrixTable = `CREATE TABLE IF NOT EXISTS "staff_member_role_permiss
   PRIMARY KEY ("id")
 )`
 
-var cutovers = []cutover{
-	{
-		migration: "20261017210200_staff_role_grants.sql",
-		resources: map[string]opened{
-			"blog_posts": {
-				index:   []string{"AdminListBlogPosts", "AdminGetBlogPost"},
-				create:  []string{"AdminCreateBlogPost"},
-				update:  []string{"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses"},
-				destroy: []string{"AdminDeleteBlogPost"},
+func cutovers() []cutover {
+	return []cutover{
+		{
+			migration: "20261017210200_staff_role_grants.sql",
+			resources: map[string]opened{
+				"blog_posts": {
+					index:   []string{"AdminListBlogPosts", "AdminGetBlogPost"},
+					create:  []string{"AdminCreateBlogPost"},
+					update:  []string{"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses"},
+					destroy: []string{"AdminDeleteBlogPost"},
+				},
 			},
 		},
-	},
-	{
-		migration: "20261017210300_banners_reviews_leads_messages_into_grants.sql",
-		resources: map[string]opened{
-			"banners": {
-				index:   []string{"AdminListBanners", "AdminGetBanner"},
-				create:  []string{"AdminCreateBanner"},
-				update:  []string{"AdminUpdateBanner"},
-				destroy: []string{"AdminDeleteBanner"},
-			},
-			"reviews": {
-				index:   []string{"AdminListReviews", "AdminGetReview"},
-				create:  []string{"AdminCreateReview"},
-				update:  []string{"AdminUpdateReview"},
-				destroy: []string{"AdminDeleteReview"},
-			},
-			"leads":    {index: []string{"AdminListLeads"}},
-			"messages": {index: []string{"AdminListMessages"}},
-		},
-	},
-	{
-		migration: "20261017210400_course_resources_into_grants.sql",
-		resources: map[string]opened{
-			"language_categories": {
-				index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
-				create:  []string{"AdminCreateCourseCategory"},
-				update:  []string{"AdminUpdateCourseCategory"},
-				destroy: []string{"AdminDeleteCourseCategory"},
-			},
-			"languages": {
-				index:  []string{"AdminListCourses", "AdminGetCourse"},
-				create: []string{"AdminCreateCourse"},
-				update: []string{"AdminUpdateCourse"},
-			},
-			"language_lessons":        {index: []string{"AdminListCourseLessons"}},
-			"language_lesson_reviews": {index: []string{"AdminListCourseLessonReviews"}},
-			"language_lesson_members": {index: []string{"AdminListLessonProgress"}},
-			"language_landing_pages": {
-				index:   []string{"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
-				create:  []string{"AdminCreateCourseLandingPage"},
-				update:  []string{"AdminUpdateCourseLandingPage"},
-				destroy: []string{"AdminDeleteCourseLandingPage"},
+		{
+			migration: "20261017210300_banners_reviews_leads_messages_into_grants.sql",
+			resources: map[string]opened{
+				"banners": {
+					index:   []string{"AdminListBanners", "AdminGetBanner"},
+					create:  []string{"AdminCreateBanner"},
+					update:  []string{"AdminUpdateBanner"},
+					destroy: []string{"AdminDeleteBanner"},
+				},
+				"reviews": {
+					index:   []string{"AdminListReviews", "AdminGetReview"},
+					create:  []string{"AdminCreateReview"},
+					update:  []string{"AdminUpdateReview"},
+					destroy: []string{"AdminDeleteReview"},
+				},
+				"leads": {
+					index:   []string{"AdminListLeads"},
+					create:  nil,
+					update:  nil,
+					destroy: nil,
+				},
+				"messages": {
+					index:   []string{"AdminListMessages"},
+					create:  nil,
+					update:  nil,
+					destroy: nil,
+				},
 			},
 		},
-	},
+		{
+			migration: "20261017210400_course_resources_into_grants.sql",
+			resources: map[string]opened{
+				"language_categories": {
+					index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
+					create:  []string{"AdminCreateCourseCategory"},
+					update:  []string{"AdminUpdateCourseCategory"},
+					destroy: []string{"AdminDeleteCourseCategory"},
+				},
+				"languages": {
+					index:   []string{"AdminListCourses", "AdminGetCourse"},
+					create:  []string{"AdminCreateCourse"},
+					update:  []string{"AdminUpdateCourse"},
+					destroy: nil,
+				},
+				"language_lessons": {
+					index:   []string{"AdminListCourseLessons"},
+					create:  nil,
+					update:  nil,
+					destroy: nil,
+				},
+				"language_lesson_reviews": {
+					index:   []string{"AdminListCourseLessonReviews"},
+					create:  nil,
+					update:  nil,
+					destroy: nil,
+				},
+				"language_lesson_members": {
+					index:   []string{"AdminListLessonProgress"},
+					create:  nil,
+					update:  nil,
+					destroy: nil,
+				},
+				"language_landing_pages": {
+					index:   []string{"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
+					create:  []string{"AdminCreateCourseLandingPage"},
+					update:  []string{"AdminUpdateCourseLandingPage"},
+					destroy: []string{"AdminDeleteCourseLandingPage"},
+				},
+			},
+		},
+	}
 }
 
 // TestMigrationsCarryEveryMatrixRightIntoGrants runs each cutover migration over
@@ -110,7 +138,7 @@ var cutovers = []cutover{
 // asks the policy about each operation the bits used to open: nobody gains or
 // loses an operation.
 func TestMigrationsCarryEveryMatrixRightIntoGrants(t *testing.T) {
-	for _, c := range cutovers {
+	for _, c := range cutovers() {
 		for resource, ops := range c.resources {
 			t.Run(c.migration+"/"+resource, func(t *testing.T) {
 				assertMigrationKeepsAccess(t, c.migration, resource, ops)
@@ -125,15 +153,20 @@ func createRole(t *testing.T, h *testsupport.Harness, name string) int {
 	t.Helper()
 	role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{Name: name, Description: api.NilString{Null: true}})
 	require.NoError(t, err)
+
 	return int(role.ID)
 }
 
 func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened) {
 	t.Helper()
+
 	migration, err := os.ReadFile("../../migrations/" + file)
 	require.NoError(t, err)
+
 	text := string(migration)
-	data := text[strings.Index(text, "INSERT INTO"):]
+	start := strings.Index(text, "INSERT INTO")
+	require.NotEqual(t, -1, start, "the migration inserts the roles")
+	data := text[start:]
 
 	byBit := [][]string{ops.index, ops.create, ops.update, ops.destroy}
 
@@ -141,7 +174,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	// operation; the harness's transaction is the one the migration runs in.
 	h := testsupport.NewHarness(t)
 	db, tx := h.DB, h.Tx
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	// Start from the old shape: no grants, and the matrix table as the baseline
 	// made it. The table is long gone from the migrated schema, so the test
@@ -160,6 +193,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 			role, resource, mask&1 != 0, mask&2 != 0, mask&4 != 0, mask&8 != 0)
 		require.NoError(t, err)
 	}
+
 	_, err = tx.ExecContext(t.Context(), data)
 	require.NoError(t, err)
 
@@ -172,6 +206,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	for mask := range 1 << len(byBit) {
 		roleID := db.StaffRole.Query().Where(staffrole.Name(fmt.Sprintf("combo-%d", mask))).OnlyX(t.Context()).ID
 		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
+
 		for i, operations := range byBit {
 			for _, operation := range operations {
 				err := policy.Allow(t.Context(), editor, "ru", operation)
@@ -195,22 +230,26 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 
 	h := testsupport.NewHarness(t)
 	db, tx := h.DB, h.Tx
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
 	const holdsCourses, holdsLessons = 1, 2
+
 	for mask := range 4 {
 		// A bystander grant must survive untouched.
 		grants := []string{"courses.read"}
 		if mask&holdsCourses != 0 {
 			grants = append(grants, "courses.update")
 		}
+
 		if mask&holdsLessons != 0 {
 			grants = append(grants, "course_lessons.update")
 		}
+
 		h.Grant(t, createRole(t, h, fmt.Sprintf("combo-%d", mask)), grants...)
 	}
+
 	_, err = tx.ExecContext(t.Context(), string(migration))
 	require.NoError(t, err)
 
@@ -252,11 +291,13 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 	// operations, so the scenario holds exactly the grants the API can give.
 	h := testsupport.NewHarness(t)
 	db := h.DB
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
+
 	grants := map[int]string{holdsUpdate: "blog_posts.update", holdsPublish: "blog_posts.publish", holdsRead: "blog_posts.read"}
+
 	roles := make([]int, 8)
 	for mask := range roles {
 		role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -264,14 +305,17 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 			Description: api.NilString{Null: true},
 		})
 		require.NoError(t, err)
+
 		roles[mask] = int(role.ID)
 
 		held := []string{}
+
 		for bit, permission := range grants {
 			if mask&bit != 0 {
 				held = append(held, permission)
 			}
 		}
+
 		_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 			api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 		require.NoError(t, err)
@@ -325,15 +369,17 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 			// operations, so the scenario holds exactly the grants the API can give.
 			h := testsupport.NewHarness(t)
 			db := h.DB
-			editor := db.User.GetX(t.Context(), editorID)
+			editor := db.User.GetX(t.Context(), editorID())
 			staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 			const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
+
 			grants := map[int]string{
 				holdsUpdate:  resource.permissions + ".update",
 				holdsPublish: resource.permissions + ".publish",
 				holdsRead:    resource.permissions + ".read",
 			}
+
 			roles := make([]int, 8)
 			for mask := range roles {
 				role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -341,14 +387,17 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 					Description: api.NilString{Null: true},
 				})
 				require.NoError(t, err)
+
 				roles[mask] = int(role.ID)
 
 				held := []string{}
+
 				for bit, permission := range grants {
 					if mask&bit != 0 {
 						held = append(held, permission)
 					}
 				}
+
 				_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 					api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 				require.NoError(t, err)
@@ -396,15 +445,17 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 	// operations, so the scenario holds exactly the grants the API can give.
 	h := testsupport.NewHarness(t)
 	db := h.DB
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsCompleted, holdsRead = 1, 2, 4
+
 	grants := map[int]string{
 		holdsUpdate:    "courses.update",
 		holdsCompleted: "courses.mark_completed",
 		holdsRead:      "courses.read",
 	}
+
 	roles := make([]int, 8)
 	for mask := range roles {
 		role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
@@ -412,14 +463,17 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 			Description: api.NilString{Null: true},
 		})
 		require.NoError(t, err)
+
 		roles[mask] = int(role.ID)
 
 		held := []string{}
+
 		for bit, permission := range grants {
 			if mask&bit != 0 {
 				held = append(held, permission)
 			}
 		}
+
 		_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
 			api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
 		require.NoError(t, err)

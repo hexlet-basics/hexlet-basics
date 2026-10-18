@@ -19,21 +19,26 @@ func LoadDotenv() error {
 	if appEnv := os.Getenv("APP_ENV"); appEnv != "" && appEnv != string(Development) {
 		return nil
 	}
-	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
+
+	err := godotenv.Load()
+	if err != nil && !os.IsNotExist(err) {
 		return oops.Wrapf(err, "load .env")
 	}
+
 	return nil
 }
 
 // ColorOverride reports the NO_COLOR / FORCE_COLOR conventions: set says
 // whether either is present, enabled what it asks for. NO_COLOR wins. It lives
 // here because the environment is read only in this package.
-func ColorOverride() (enabled, set bool) {
+func ColorOverride() (bool, bool) {
 	if os.Getenv("NO_COLOR") != "" {
 		return false, true
 	}
+
 	if os.Getenv("FORCE_COLOR") != "" {
 		return true, true
 	}
+
 	return false, false
 }

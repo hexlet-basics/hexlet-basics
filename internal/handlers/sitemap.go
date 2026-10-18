@@ -13,6 +13,7 @@ func (s *Server) GetSitemap(ctx context.Context) (*api.Sitemap, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &api.Sitemap{
 		LandingPages: s.conv.ToSitemapCourseLandingPages(page.LandingPages),
 		BlogPosts:    s.conv.ToSitemapBlogPosts(page.BlogPosts),

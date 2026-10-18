@@ -25,7 +25,9 @@ var errs = oops.In("permissions")
 type Kind string
 
 const (
-	Read  Kind = "read"
+	// Read is an operation that changes nothing.
+	Read Kind = "read"
+	// Write is an operation that can change data.
 	Write Kind = "write"
 )
 
@@ -75,13 +77,14 @@ type Declarations struct {
 // parsed is a build defect, not a runtime condition, and TestTheCatalog...
 // covers it, so a failure here panics at start-up rather than silently opening
 // or closing every operation.
-var declared = mustParse(apispec.OpenAPI)
+var declared = mustParse(apispec.OpenAPI) //nolint:gochecknoglobals // memoized: For and AccessOf run on every request and must not re-parse the contract
 
 func mustParse(doc []byte) *Declarations {
 	d, err := Parse(doc)
 	if err != nil {
 		panic(fmt.Sprintf("permissions: read the contract: %v", err))
 	}
+
 	return d
 }
 
@@ -94,22 +97,16 @@ func Parse(doc []byte) (*Declarations, error) {
 		Capabilities []struct {
 			Name string `yaml:"name"`
 			Kind Kind   `yaml:"kind"`
-		} `yaml:"x-capabilities"`
-		Paths map[string]map[string]struct {
-			OperationID  string                `yaml:"operationId"`
-			Permission   *permissionDecl       `yaml:"x-permission"`
-			Access       Access                `yaml:"x-access"`
-			UnitOfWork   string                `yaml:"x-unit-of-work"`
-			PersonalData string                `yaml:"x-personal-data"`
-			Requires     string                `yaml:"x-requires-capability"`
-			Security     []map[string][]string `yaml:"security"`
-		} `yaml:"paths"`
+		} `yaml:"x-capabilities"` //nolint:tagliatelle // OpenAPI document key
+		Paths map[string]map[string]operationDecl `yaml:"paths"`
 	}
-	if err := yaml.Unmarshal(doc, &spec); err != nil {
+
+	err := yaml.Unmarshal(doc, &spec)
+	if err != nil {
 		return nil, errs.Wrapf(err, "parse openapi")
 	}
 
-	d := &Declarations{
+	declarations := &Declarations{
 		operations:   map[string]Requirement{},
 		access:       map[string]Access{},
 		capabilities: map[string]Kind{},
@@ -117,87 +114,58 @@ func Parse(doc []byte) (*Declarations, error) {
 		standalone:   map[string]bool{},
 		personalData: map[string]string{},
 		required:     map[string]string{},
+		catalog:      nil,
 	}
 	kinds := map[string]Kind{}
-	for _, c := range spec.Capabilities {
-		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
-			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
+
+	for _, record := range spec.Capabilities {
+		if record.Name == "" || (record.Kind != Read && record.Kind != Write) {
+			return nil, errs.With("capability", record.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
 		}
-		if _, dup := kinds[c.Name]; dup {
-			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry is listed twice")
+
+		if _, dup := kinds[record.Name]; dup {
+			return nil, errs.With("capability", record.Name).Errorf("x-capabilities entry is listed twice")
 		}
-		kinds[c.Name] = c.Kind
-		d.capabilities[c.Name] = c.Kind
+
+		kinds[record.Name] = record.Kind
+		declarations.capabilities[record.Name] = record.Kind
 	}
+
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
-			if op.Access != "" {
-				if op.Access != AnyStaff {
-					return nil, errs.With("operation", where, "access", op.Access).Errorf("x-access is not any-staff")
-				}
-				if op.Permission != nil {
-					return nil, errs.With("operation", where).Errorf("operation declares both x-permission and x-access")
-				}
-				if op.OperationID == "" {
-					return nil, errs.With("operation", where).Errorf("x-access needs an operationId")
-				}
-				d.access[operationName(op.OperationID)] = op.Access
+
+			err := declarations.read(where, method, op, kinds)
+			if err != nil {
+				return nil, err
 			}
-			if op.UnitOfWork != "" {
-				if op.UnitOfWork != unitStandalone {
-					return nil, errs.With("operation", where, "unit_of_work", op.UnitOfWork).Errorf("x-unit-of-work is not standalone")
-				}
-				if op.OperationID == "" {
-					return nil, errs.With("operation", where).Errorf("x-unit-of-work needs an operationId")
-				}
-				d.standalone[operationName(op.OperationID)] = true
-			}
-			if op.Requires != "" {
-				if op.OperationID == "" {
-					return nil, errs.With("operation", where).Errorf("x-requires-capability needs an operationId")
-				}
-				if _, ok := d.capabilities[op.Requires]; !ok {
-					return nil, errs.With("operation", where, "capability", op.Requires).Errorf("x-requires-capability is not listed under x-capabilities")
-				}
-				d.required[operationName(op.OperationID)] = op.Requires
-			}
-			if op.PersonalData != "" {
-				if op.OperationID == "" {
-					return nil, errs.With("operation", where).Errorf("x-personal-data needs an operationId")
-				}
-				if op.Permission == nil || op.Permission.Kind != Read {
-					return nil, errs.With("operation", where).Errorf("x-personal-data belongs on an operation that declares a read permission")
-				}
-				d.personalData[operationName(op.OperationID)] = op.PersonalData
-			}
-			if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
-				d.adminWrite[operationName(op.OperationID)] = true
-			}
-			if op.Permission == nil {
-				continue
-			}
-			if op.OperationID == "" || op.Permission.Name == "" {
-				return nil, errs.With("operation", where).Errorf("x-permission needs an operationId and a name")
-			}
-			if op.Permission.Kind != Read && op.Permission.Kind != Write {
-				return nil, errs.With("operation", where, "kind", op.Permission.Kind).Errorf("x-permission kind is neither read nor write")
-			}
-			if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
-				return nil, errs.With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).Errorf("permission is declared both read and write")
-			}
-			kinds[op.Permission.Name] = op.Permission.Kind
-			d.operations[operationName(op.OperationID)] = Requirement{Permission: op.Permission.Name, Kind: op.Permission.Kind}
 		}
 	}
 
 	for name, kind := range kinds {
-		_, capability := d.capabilities[name]
-		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind, Capability: capability})
+		_, capability := declarations.capabilities[name]
+		declarations.catalog = append(declarations.catalog, Permission{Name: name, Kind: kind, Capability: capability})
 	}
-	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
-	return d, nil
+
+	slices.SortFunc(declarations.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
+
+	return declarations, nil
 }
+
+// operationDecl is one operation of the document with the extensions this
+// package reads.
+type operationDecl struct {
+	OperationID  string                `yaml:"operationId"`           //nolint:tagliatelle // OpenAPI document key
+	Permission   *permissionDecl       `yaml:"x-permission"`          //nolint:tagliatelle // OpenAPI document key
+	Access       Access                `yaml:"x-access"`              //nolint:tagliatelle // OpenAPI document key
+	UnitOfWork   string                `yaml:"x-unit-of-work"`        //nolint:tagliatelle // OpenAPI document key
+	PersonalData string                `yaml:"x-personal-data"`       //nolint:tagliatelle // OpenAPI document key
+	Requires     string                `yaml:"x-requires-capability"` //nolint:tagliatelle // OpenAPI document key
+	Security     []map[string][]string `yaml:"security"`
+}
+
+// IsAdminWrite is the package-level function over these declarations.
+func (d *Declarations) IsAdminWrite(operation string) bool { return d.adminWrite[operation] }
 
 // unitStandalone is the only value of `x-unit-of-work`: the operation calls a
 // service outside the database, so the audit middleware must not hold a
@@ -214,6 +182,7 @@ func permissionKind(p *permissionDecl) Kind {
 	if p == nil {
 		return ""
 	}
+
 	return p.Kind
 }
 
@@ -226,21 +195,26 @@ func permissionKind(p *permissionDecl) Kind {
 // audited before #843 gives it a Permission, and stays audited after.
 func isAdminWrite(method string, security []map[string][]string, hasPermission, hasAccess bool, kind Kind) bool {
 	admin := hasPermission || hasAccess
+
 	for _, requirement := range security {
 		if _, ok := requirement["AdminSession"]; ok {
 			admin = true
 		}
 	}
+
 	if !admin {
 		return false
 	}
+
 	if kind != "" {
 		return kind == Write
 	}
+
 	switch strings.ToUpper(method) {
 	case "GET", "HEAD", "OPTIONS":
 		return false
 	}
+
 	return true
 }
 
@@ -255,6 +229,7 @@ func operationName(operationID string) string {
 // whether it declares an Access instead.
 func For(operation string) (Requirement, bool) {
 	r, ok := declared.operations[operation]
+
 	return r, ok
 }
 
@@ -270,6 +245,7 @@ func AccessOf(operation string) Access {
 // is never closed by accident.
 func IsClassified(operation string) bool {
 	_, hasPermission := declared.operations[operation]
+
 	return hasPermission || declared.access[operation] != ""
 }
 
@@ -294,27 +270,33 @@ func Standalone(operation string) bool {
 	return declared.Standalone(operation)
 }
 
-// IsAdminWrite is the package-level function over these declarations.
-func (d *Declarations) IsAdminWrite(operation string) bool { return d.adminWrite[operation] }
-
 // AdminWrites is the package-level function over these declarations.
 func (d *Declarations) AdminWrites() []string {
 	names := make([]string, 0, len(d.adminWrite))
 	for name := range d.adminWrite {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
 }
 
 // Standalone is the package-level function over these declarations.
 func (d *Declarations) Standalone(operation string) bool { return d.standalone[operation] }
 
+// PersonalDataEntity is the package-level function over these declarations.
+func (d *Declarations) PersonalDataEntity(operation string) (string, bool) {
+	entity, ok := d.personalData[operation]
+
+	return entity, ok
+}
+
 // PersonalDataEntity reports whether an operation reads personal data, as the
 // contract declares with `x-personal-data`, and the ent type it reads (User,
 // Lead). Every such read leaves an Audit Record (ADR-0020); a read of the
 // catalogue or of content declares nothing and leaves none.
-func PersonalDataEntity(operation string) (entity string, ok bool) {
+func PersonalDataEntity(operation string) (string, bool) {
 	return declared.PersonalDataEntity(operation)
 }
 
@@ -324,20 +306,97 @@ func PersonalDataReads() []string {
 	return declared.PersonalDataReads()
 }
 
-// PersonalDataEntity is the package-level function over these declarations.
-func (d *Declarations) PersonalDataEntity(operation string) (string, bool) {
-	entity, ok := d.personalData[operation]
-	return entity, ok
-}
-
 // PersonalDataReads is the package-level function over these declarations.
 func (d *Declarations) PersonalDataReads() []string {
 	names := make([]string, 0, len(d.personalData))
 	for name := range d.personalData {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
+}
+
+// read records what one operation declares, or says what is wrong with it.
+// kinds is shared by all operations: a permission is read or write everywhere.
+func (d *Declarations) read(where, method string, op operationDecl, kinds map[string]Kind) error {
+	if op.Access != "" {
+		if op.Access != AnyStaff {
+			return errs.With("operation", where, "access", op.Access).Errorf("x-access is not any-staff")
+		}
+
+		if op.Permission != nil {
+			return errs.With("operation", where).Errorf("operation declares both x-permission and x-access")
+		}
+
+		if op.OperationID == "" {
+			return errs.With("operation", where).Errorf("x-access needs an operationId")
+		}
+
+		d.access[operationName(op.OperationID)] = op.Access
+	}
+
+	if op.UnitOfWork != "" {
+		if op.UnitOfWork != unitStandalone {
+			return errs.With("operation", where, "unit_of_work", op.UnitOfWork).Errorf("x-unit-of-work is not standalone")
+		}
+
+		if op.OperationID == "" {
+			return errs.With("operation", where).Errorf("x-unit-of-work needs an operationId")
+		}
+
+		d.standalone[operationName(op.OperationID)] = true
+	}
+
+	if op.Requires != "" {
+		if op.OperationID == "" {
+			return errs.With("operation", where).Errorf("x-requires-capability needs an operationId")
+		}
+
+		if _, ok := d.capabilities[op.Requires]; !ok {
+			return errs.With("operation", where, "capability", op.Requires).Errorf("x-requires-capability is not listed under x-capabilities")
+		}
+
+		d.required[operationName(op.OperationID)] = op.Requires
+	}
+
+	if op.PersonalData != "" {
+		if op.OperationID == "" {
+			return errs.With("operation", where).Errorf("x-personal-data needs an operationId")
+		}
+
+		if op.Permission == nil || op.Permission.Kind != Read {
+			return errs.With("operation", where).Errorf("x-personal-data belongs on an operation that declares a read permission")
+		}
+
+		d.personalData[operationName(op.OperationID)] = op.PersonalData
+	}
+
+	if op.OperationID != "" && isAdminWrite(method, op.Security, op.Permission != nil, op.Access != "", permissionKind(op.Permission)) {
+		d.adminWrite[operationName(op.OperationID)] = true
+	}
+
+	if op.Permission == nil {
+		return nil
+	}
+
+	if op.OperationID == "" || op.Permission.Name == "" {
+		return errs.With("operation", where).Errorf("x-permission needs an operationId and a name")
+	}
+
+	if op.Permission.Kind != Read && op.Permission.Kind != Write {
+		return errs.With("operation", where, "kind", op.Permission.Kind).Errorf("x-permission kind is neither read nor write")
+	}
+
+	if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
+		return errs.With("operation", where, "permission", op.Permission.Name, "kind", op.Permission.Kind, "known_kind", known).Errorf("permission is declared both read and write")
+	}
+
+	kinds[op.Permission.Name] = op.Permission.Kind
+	d.operations[operationName(op.OperationID)] = Requirement{Permission: op.Permission.Name, Kind: op.Permission.Kind}
+
+	return nil
 }
 
 // Catalog lists every declared Permission once, ordered by name so the roles
@@ -351,6 +410,7 @@ func Catalog() []Permission {
 // these: a role must be given them explicitly, administrators' included.
 func IsCapability(name string) bool {
 	_, ok := declared.capabilities[name]
+
 	return ok
 }
 
@@ -373,9 +433,11 @@ func MCPCapabilities(operation string) []string {
 	if IsAdminWrite(operation) {
 		kind = "mcp.write"
 	}
+
 	if extra, ok := declared.required[operation]; ok {
 		return []string{kind, extra}
 	}
+
 	return []string{kind}
 }
 
@@ -386,6 +448,8 @@ func RequiredCapabilityOperations() []string {
 	for name := range declared.required {
 		names = append(names, name)
 	}
+
 	slices.Sort(names)
+
 	return names
 }

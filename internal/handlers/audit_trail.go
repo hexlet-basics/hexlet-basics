@@ -28,6 +28,7 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 	// One instant for the check, the count and the page, so the window cannot
 	// shift between them.
 	now := time.Now()
+
 	query, err := filter.Query(s.db, now)
 	if err != nil {
 		return nil, s.auditWindowProblem(err)
@@ -44,8 +45,10 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 				if err != nil {
 					return nil, err
 				}
+
 				items = append(items, item)
 			}
+
 			return items, nil
 		},
 		func(items []api.AuditRecord, total, page, perPage int32) *api.AuditRecordPage {
@@ -55,35 +58,44 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 	if err != nil {
 		return nil, err
 	}
+
 	return page, nil
 }
 
 // auditFilterOf maps the query parameters to the audit package's filter.
 func auditFilterOf(params api.AdminListAuditRecordsParams) audit.Filter {
 	var filter audit.Filter
+
 	if v, ok := params.ActorUserId.Get(); ok {
 		actor := int(v)
 		filter.ActorUserID = &actor
 	}
+
 	if v, ok := params.Channel.Get(); ok {
 		channel := audit.Channel(v)
 		filter.Channel = &channel
 	}
+
 	if v, ok := params.Operation.Get(); ok {
 		filter.Operation = &v
 	}
+
 	if v, ok := params.EntityType.Get(); ok {
 		filter.EntityType = &v
 	}
+
 	if v, ok := params.EntityId.Get(); ok {
 		filter.EntityID = &v
 	}
+
 	if v, ok := params.From.Get(); ok {
 		filter.From = &v
 	}
+
 	if v, ok := params.To.Get(); ok {
 		filter.To = &v
 	}
+
 	return filter
 }
 
@@ -98,5 +110,6 @@ func (s *Server) auditWindowProblem(err error) error {
 	case errors.Is(err, audit.ErrEntityIDWithoutType):
 		return invalid("entityId", localization.AuditEntityIDNeedsType)
 	}
+
 	return err
 }

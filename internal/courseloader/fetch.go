@@ -49,6 +49,7 @@ func (f *GitFetcher) Fetch(ctx context.Context, slug string) (string, func(), er
 	if err != nil {
 		return "", func() {}, oops.Wrapf(err, "create temp dir for %s", slug)
 	}
+
 	cleanup := func() { _ = os.RemoveAll(dir) }
 
 	opts := &git.CloneOptions{
@@ -62,8 +63,10 @@ func (f *GitFetcher) Fetch(ctx context.Context, slug string) (string, func(), er
 		opts.Auth = &http.BasicAuth{Username: "x-access-token", Password: f.token}
 	}
 
-	if _, err := git.PlainCloneContext(ctx, dir, false, opts); err != nil {
+	_, err = git.PlainCloneContext(ctx, dir, false, opts)
+	if err != nil {
 		cleanup()
+
 		return "", func() {}, oops.Wrapf(err, "clone %s", f.RepoURL(slug))
 	}
 

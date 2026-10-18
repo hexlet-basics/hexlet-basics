@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"maps"
 	"net/http"
+	"slices"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
@@ -40,15 +42,13 @@ var workerPackage = do.Package(
 	// Readiness is the database (ADR-0023), and only once the job queue and the
 	// event router have started: cmd/worker calls Started and Drain.
 	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
-		if _, err := do.Invoke[*databaseCloser](i); err != nil {
+		_, err := do.Invoke[*databaseCloser](i)
+		if err != nil {
 			return nil, err
 		}
+
 		return health.NewAwaitingStart(func(ctx context.Context) error {
-			var errs []error
-			for _, err := range i.HealthCheckWithContext(ctx) {
-				errs = append(errs, err)
-			}
-			return errors.Join(errs...)
+			return errors.Join(slices.Collect(maps.Values(i.HealthCheckWithContext(ctx)))...)
 		}), nil
 	}),
 	// The worker's only HTTP surface: /healthz and /readyz on HEALTH_ADDR. Named
@@ -58,10 +58,12 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		probes, err := do.Invoke[*health.Probes](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return &http.Server{
 			Addr:              cfg.HealthAddr,
 			Handler:           probes.Wrap(http.NotFoundHandler()),
@@ -80,6 +82,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return config.Common{}, err
 		}
+
 		return cfg.Common, nil
 	}),
 	// The exercise loader uses the shared asset store for lesson theory images
@@ -89,6 +92,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken.Reveal()), nil
 	}),
 	do.Lazy[*courseloader.Loader](func(i do.Injector) (*courseloader.Loader, error) {
@@ -96,22 +100,27 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		store, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		assets, err := do.Invoke[*assetstore.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		fetcher, err := do.Invoke[courseloader.Fetcher](i)
 		if err != nil {
 			return nil, err
 		}
+
 		completion, err := do.Invoke[*progress.Progress](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return courseloader.NewLoader(db, store, assets, fetcher, completion), nil
 	}),
 	// Promoting a version re-evaluates completion, so the worker graph carries
@@ -122,10 +131,12 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
+
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
@@ -142,10 +153,12 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return mailer.New(cfg.Mail, logger), nil
 	}),
 	do.Lazy[*accountemail.Sender](func(i do.Injector) (*accountemail.Sender, error) {
@@ -153,18 +166,22 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		mail, err := do.Invoke[mailer.Mailer](i)
 		if err != nil {
 			return nil, err
 		}
+
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return accountemail.NewSender(
 			db, emailtoken.New(cfg.EmailTokenSecret.Reveal()), mail, translator, cfg.SiteURL,
 		), nil
@@ -174,6 +191,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken.Reveal(), cfg.YMCounter), nil
 	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
@@ -181,42 +199,52 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		otelSDK, err := do.Invoke[*otelconf.SDK](i)
 		if err != nil {
 			return nil, err
 		}
+
 		loader, err := do.Invoke[*courseloader.Loader](i)
 		if err != nil {
 			return nil, err
 		}
+
 		amoCRMClient, err := do.Invoke[*amocrm.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		sentryClient, err := do.Invoke[*sentry.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		cfg, err := do.Invoke[*config.Worker](i)
 		if err != nil {
 			return nil, err
 		}
+
 		relatedCoursesSet, err := do.Invoke[*relatedcourse.Replacer](i)
 		if err != nil {
 			return nil, err
 		}
+
 		entClient, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		emailSender, err := do.Invoke[*accountemail.Sender](i)
 		if err != nil {
 			return nil, err
 		}
+
 		manager, err := do.Invoke[*auth.Authenticator](i)
 		if err != nil {
 			return nil, err
@@ -240,6 +268,7 @@ var workerPackage = do.Package(
 				jobs.SuggestRelatedCourses(relatedcourse.NewSuggester(entClient, relatedCoursesSet, llm, logger)),
 			)
 		}
+
 		return jobs.NewWorkerClient(
 			db,
 			logger,
@@ -256,6 +285,7 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		return auth.New(db), nil
 	}),
 	do.Lazy[*events.Runtime](func(i do.Injector) (*events.Runtime, error) {
@@ -263,22 +293,27 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+
 		logger, err := do.Invoke[*slog.Logger](i)
 		if err != nil {
 			return nil, err
 		}
+
 		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
 		if err != nil {
 			return nil, err
 		}
+
 		entClient, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		sentryClient, err := do.Invoke[*sentry.Client](i)
 		if err != nil {
 			return nil, err
 		}
+
 		return events.NewRuntime(db, logger, sentryClient,
 			eventhandler.LeadCreated(riverClient),
 			// Writes the Audit Record of a staff read of personal data, which the

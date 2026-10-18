@@ -22,12 +22,12 @@ var magicLinkURL = regexp.MustCompile(`https://code-basics\.test/ru/magic_links/
 
 func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 	db, _ := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank))
+	user := db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank))
 	tokens := emailtoken.New("test-email-secret")
 	recorder := &mailer.Recorder{}
 	sender := accountemail.NewSender(db, tokens, recorder, testsupport.NewTranslator(t), siteURL)
 
-	require.NoError(t, sender.Send(t.Context(), emailtoken.MagicLink, u.ID, "ru"))
+	require.NoError(t, sender.Send(t.Context(), emailtoken.MagicLink, user.ID, "ru"))
 
 	sent := recorder.Sent()
 	require.Len(t, sent, 1)
@@ -37,7 +37,7 @@ func TestSenderMailsRussianMagicLinkThatVerifies(t *testing.T) {
 	require.NotNil(t, match, "the email must carry a ru Magic Link: %s", sent[0].HTML)
 	verified, err := tokens.Verify(t.Context(), db, emailtoken.MagicLink, match[1])
 	require.NoError(t, err)
-	assert.Equal(t, u.ID, verified.ID)
+	assert.Equal(t, user.ID, verified.ID)
 }
 
 func TestSenderMailsSpanishPasswordResetLink(t *testing.T) {
@@ -68,19 +68,19 @@ func TestSenderSkipsDeletedUser(t *testing.T) {
 
 func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 	db, tx := testsupport.NewClientWithTx(t)
-	u := db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank))
+	user := db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank))
 	client, err := jobs.NewInsertOnlyClient(nil, slog.New(slog.DiscardHandler), nil, nil)
 	require.NoError(t, err)
 
 	first, err := client.InsertTx(t.Context(), tx,
-		jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "ru"}, nil)
+		jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: user.ID, Locale: "ru"}, nil)
 	require.NoError(t, err)
 	// Another language within the cooldown is still the same request.
 	again, err := client.InsertTx(t.Context(), tx,
-		jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: u.ID, Locale: "es"}, nil)
+		jobs.AccountEmailArgs{Purpose: emailtoken.MagicLink, UserID: user.ID, Locale: "es"}, nil)
 	require.NoError(t, err)
 	reset, err := client.InsertTx(t.Context(), tx,
-		jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: u.ID, Locale: "ru"}, nil)
+		jobs.AccountEmailArgs{Purpose: emailtoken.PasswordReset, UserID: user.ID, Locale: "ru"}, nil)
 	require.NoError(t, err)
 
 	assert.False(t, first.UniqueSkippedAsDuplicate)

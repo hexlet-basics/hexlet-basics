@@ -22,10 +22,13 @@ import (
 // server's write timeout: an answer takes as long as the model takes.
 func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T) {
 	t.Parallel()
+
 	release := make(chan struct{})
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = io.WriteString(w, "first\n")
+
 		<-release
+
 		_, _ = io.WriteString(w, "second\n")
 	})
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
@@ -38,6 +41,7 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	// Registered after Close so it runs first: a failed assertion must still
 	// let the handler finish, or Close waits on it forever.
 	var releaseOnce sync.Once
+
 	unblock := func() { releaseOnce.Do(func() { close(release) }) }
 	t.Cleanup(unblock)
 
@@ -49,28 +53,47 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 		line string
 		err  error
 	}
+
 	arrived := make(chan firstChunk, 1)
+
 	go func() {
 		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
 		if err != nil {
-			arrived <- firstChunk{err: err}
+			arrived <- firstChunk{
+				err:  err,
+				res:  nil,
+				body: nil,
+				line: "",
+			}
+
 			return
 		}
+
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			arrived <- firstChunk{err: err}
+			arrived <- firstChunk{
+				err:  err,
+				res:  nil,
+				body: nil,
+				line: "",
+			}
+
 			return
 		}
+
 		body := bufio.NewReader(res.Body)
+
 		line, err := body.ReadString('\n')
 		arrived <- firstChunk{res: res, body: body, line: line, err: err}
 	}()
+
 	var first firstChunk
 	select {
 	case first = <-arrived:
 	case <-time.After(5 * time.Second):
 		t.Fatal("the first chunk was buffered")
 	}
+
 	require.NoError(t, first.err)
 	t.Cleanup(func() { _ = first.res.Body.Close() })
 	assert.Equal(t, "first\n", first.line, "the first chunk arrives while the handler is still writing")
@@ -79,6 +102,7 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	// Past the write timeout before the handler writes again.
 	time.Sleep(300 * time.Millisecond)
 	unblock()
+
 	rest, err := io.ReadAll(first.body)
 	require.NoError(t, err)
 	assert.Equal(t, "second\n", string(rest))
@@ -90,6 +114,7 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 // a broken stream rather than a short answer with JSON glued to it.
 func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
 	t.Parallel()
+
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = io.WriteString(w, "partial ")
 		w.Header().Set("Content-Type", "application/problem+json")

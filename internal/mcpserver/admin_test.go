@@ -28,12 +28,16 @@ import (
 // The fixtures seed bob (user_staff_editor) as an editor, role staff_role_editor,
 // who may read and create banners in ru and en; alice (user_admin_learner) is an
 // administrator with no Staff Role.
-var editor = fixture.ID(fixture.StaffRoleEditor)
+func editor() int {
+	return fixture.ID(fixture.StaffRoleEditor)
+}
 
 // adminStaff is an administrator who is also a staff member, on the editor role
 // (user_admin_staff): alice has no staff record, and must not (the cases lean on it);
 // a record cannot be made for oneself.
-var adminStaff = fixture.ID(fixture.UserAdminStaff)
+func adminStaff() int {
+	return fixture.ID(fixture.UserAdminStaff)
+}
 
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
@@ -47,20 +51,24 @@ func call(t *testing.T, session *mcp.ClientSession, name string, args map[string
 	t.Helper()
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: name, Arguments: args})
 	require.NoError(t, err)
+
 	return result
 }
 
 // admin connects an assistant for the user with the admin Scope.
 func admin(t *testing.T, o *testsupport.OAuth, userID int) (*mcp.ClientSession, oauthserver.Token) {
 	t.Helper()
+
 	tokens := o.Connect(userID, oauthserver.ScopeAdmin)
 	token, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
+
 	return o.MCPClient(tokens.AccessToken), token
 }
 
 func firstBannerID(t *testing.T, o *testsupport.OAuth) int {
 	t.Helper()
+
 	return o.DB.Banner.Query().Order(banner.ByID()).FirstIDX(t.Context())
 }
 
@@ -73,18 +81,20 @@ func assertRefused(t *testing.T, result *mcp.CallToolResult) {
 func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The list shows what the role may be offered, so give it every capability.
-	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write", "mcp.manage", "audit.read")
+	session, _ := admin(t, o, bob())
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
 	var names []string
+
 	for _, tool := range tools.Tools {
 		if strings.HasPrefix(tool.Name, "admin") {
 			names = append(names, tool.Name)
 		}
 	}
+
 	slices.Sort(names)
 	// The tools are exactly the allowlist: an excluded operation is in the
 	// contract and is not a tool.
@@ -100,8 +110,8 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 
 func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write", "mcp.manage", "audit.read")
+	session, _ := admin(t, o, bob())
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
@@ -109,11 +119,14 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	for _, tool := range tools.Tools {
 		byName[tool.Name] = tool
 	}
+
 	schemaOf := func(v any) map[string]any {
 		raw, err := json.Marshal(v)
 		require.NoError(t, err)
+
 		var m map[string]any
 		require.NoError(t, json.Unmarshal(raw, &m))
+
 		return m
 	}
 
@@ -121,8 +134,8 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	assert.True(t, list.Annotations.ReadOnlyHint)
 	input := schemaOf(list.InputSchema)
 	assert.Equal(t, []any{"locale"}, input["required"], "the locale is required, the paging is not")
-	properties := input["properties"].(map[string]any)
-	assert.Equal(t, []any{"en", "ru"}, properties["locale"].(map[string]any)["enum"])
+	properties := as[map[string]any](t, input["properties"])
+	assert.Equal(t, []any{"en", "ru"}, as[map[string]any](t, properties["locale"])["enum"])
 	assert.Contains(t, properties, "page")
 	assert.Contains(t, properties, "perPage")
 	assert.NotContains(t, properties, "body")
@@ -132,7 +145,7 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	assert.False(t, *update.Annotations.DestructiveHint)
 	input = schemaOf(update.InputSchema)
 	assert.ElementsMatch(t, []any{"locale", "id", "body"}, input["required"])
-	body := input["properties"].(map[string]any)["body"].(map[string]any)
+	body := as[map[string]any](t, as[map[string]any](t, input["properties"])["body"])
 	assert.Equal(t, "object", body["type"])
 	assert.Contains(t, body["properties"], "locale", "the banner's own locale sits in the body, apart from the call's")
 	assert.NotContains(t, body, "$ref")
@@ -141,25 +154,28 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 
 func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en", "perPage": 2})
 
 	require.False(t, result.IsError, "%+v", result.Content)
-	page := result.StructuredContent.(map[string]any)
+	page := as[map[string]any](t, result.StructuredContent)
 	assert.EqualValues(t, 5, page["total"])
 	assert.Len(t, page["items"], 2, "the query parameter reached the operation")
 
 	// The advertised output schema accepts what came back.
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
+
 	for _, tool := range tools.Tools {
 		if tool.Name != "adminListBanners" {
 			continue
 		}
+
 		raw, err := json.Marshal(tool.OutputSchema)
 		require.NoError(t, err)
+
 		var schema jsonschema.Schema
 		require.NoError(t, json.Unmarshal(raw, &schema))
 		resolved, err := schema.Resolve(nil)
@@ -173,8 +189,8 @@ func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 
 func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, token := admin(t, o, bob())
 	id := firstBannerID(t, o)
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
@@ -182,7 +198,7 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 	})
 
 	require.False(t, result.IsError, "%+v", result.Content)
-	assert.Equal(t, "Changed by an assistant", result.StructuredContent.(map[string]any)["body"])
+	assert.Equal(t, "Changed by an assistant", as[map[string]any](t, result.StructuredContent)["body"])
 	assert.Equal(t, "Changed by an assistant", o.DB.Banner.GetX(t.Context(), id).Body)
 
 	records := o.Records("AdminUpdateBanner")
@@ -190,7 +206,7 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 	record := records[0]
 	assert.Equal(t, audit.OutcomeSucceeded, audit.Outcome(record.Outcome))
 	assert.Equal(t, "mcp", record.Channel)
-	assert.Equal(t, bob, *record.ActorUserID)
+	assert.Equal(t, bob(), *record.ActorUserID)
 	assert.Equal(t, "ru", *record.Locale, "the locale of the call is the argument")
 	assert.Equal(t, strconv.Itoa(id), *record.EntityID)
 	// The Connected App is the oauth_clients row the token was issued to, and the
@@ -204,8 +220,8 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 
 func TestWriteIsRefusedWithOnlyMCPReadAndRecordedAsForbidden(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.read")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.read")
+	session, token := admin(t, o, bob())
 	id := firstBannerID(t, o)
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
@@ -226,8 +242,8 @@ func TestWriteIsRefusedWithOnlyMCPReadAndRecordedAsForbidden(t *testing.T) {
 func TestOperationPermissionIsRequiredAlongsideTheMCPCapability(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The role may use MCP but was never given banners.update.
-	o.Grant(editor, "mcp.read", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
 		"locale": "ru", "id": firstBannerID(t, o), "body": bannerInput("Nope"),
@@ -238,11 +254,12 @@ func TestOperationPermissionIsRequiredAlongsideTheMCPCapability(t *testing.T) {
 
 func TestReadIsRefusedWithoutMCPRead(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	session, _ := admin(t, o, bob) // banners.read is held, mcp.read is not
+	session, _ := admin(t, o, bob()) // banners.read is held, mcp.read is not
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 
 	assertRefused(t, result)
+
 	records := o.Records("AdminListBanners")
 	require.Len(t, records, 1)
 	assert.Equal(t, "forbidden", records[0].Outcome)
@@ -252,13 +269,13 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	t.Run("no staff record", func(t *testing.T) {
-		session, _ := admin(t, o, alice)
+		session, _ := admin(t, o, alice())
 		assertRefused(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}))
 	})
 
 	// An administrator who is staff, on a role that holds mcp.read but not mcp.write.
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, adminStaff)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, adminStaff())
 
 	assert.False(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}).IsError, "read is granted")
 	write := call(t, session, "adminUpdateBanner", map[string]any{
@@ -267,7 +284,7 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	assertRefused(t, write)
 	assert.NotEqual(t, "Administrator without mcp.write", o.DB.Banner.Query().Order(banner.ByID()).FirstX(t.Context()).Body)
 
-	o.Grant(editor, "mcp.write")
+	o.Grant(editor(), "mcp.write")
 	write = call(t, session, "adminUpdateBanner", map[string]any{
 		"locale": "en", "id": firstBannerID(t, o), "body": bannerInput("Administrator with mcp.write"),
 	})
@@ -276,13 +293,14 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 
 func TestTokenWithoutTheAdminScopeIsRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	tokens := o.Connect(bob, oauthserver.ScopeCatalogRead)
+	o.Grant(editor(), "mcp.read")
+	tokens := o.Connect(bob(), oauthserver.ScopeCatalogRead)
 	session := o.MCPClient(tokens.AccessToken)
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 
 	assertRefused(t, result)
+
 	records := o.Records("AdminListBanners")
 	require.Len(t, records, 1)
 	assert.Equal(t, "forbidden", records[0].Outcome)
@@ -291,26 +309,26 @@ func TestTokenWithoutTheAdminScopeIsRefused(t *testing.T) {
 
 func TestTakingAPermissionAwayTakesEffectOnTheNextCall(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 	args := map[string]any{"locale": "en"}
 
 	require.False(t, call(t, session, "adminListBanners", args).IsError)
 
-	o.RevokeGrant(editor, "mcp.read")
+	o.RevokeGrant(editor(), "mcp.read")
 	assertRefused(t, call(t, session, "adminListBanners", args))
 
-	o.Grant(editor, "mcp.read")
-	o.RevokeGrant(editor, "banners.read")
+	o.Grant(editor(), "mcp.read")
+	o.RevokeGrant(editor(), "banners.read")
 	assertRefused(t, call(t, session, "adminListBanners", args))
 }
 
 func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
 	// Bob works in ru and en; narrow him to ru.
 	o.DB.StaffMember.Update().SetAllowedLocales([]string{"ru"}).ExecX(t.Context())
-	tokens := o.Connect(bob, oauthserver.ScopeAdmin)
+	tokens := o.Connect(bob(), oauthserver.ScopeAdmin)
 	// The connection's own Accept-Language says en; the argument is what counts.
 	session := o.MCPClient(tokens.AccessToken, func(r *http.Request) { r.Header.Set("Accept-Language", "en") })
 
@@ -324,6 +342,7 @@ func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 		assert.True(t, result.IsError, name)
 		assert.Contains(t, textOf(t, result), "locale", name)
 	}
+
 	assert.Empty(t, o.Records("AdminListBanners"), "an invalid call never reaches the checkpoint")
 
 	assertRefused(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}))
@@ -337,8 +356,8 @@ func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 
 func TestArgumentsTheOperationDoesNotDeclareAreRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	extra := call(t, session, "adminListBanners", map[string]any{"locale": "en", "color": "red"})
 	assert.True(t, extra.IsError)
@@ -351,14 +370,15 @@ func TestArgumentsTheOperationDoesNotDeclareAreRefused(t *testing.T) {
 
 func TestValidationFailureIsAToolErrorAndIsRecordedAsFailed(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	invalid := bannerInput("")
 	result := call(t, session, "adminUpdateBanner", map[string]any{"locale": "ru", "id": firstBannerID(t, o), "body": invalid})
 
 	require.True(t, result.IsError)
 	assert.Contains(t, textOf(t, result), "HTTP 400")
+
 	records := o.Records("AdminUpdateBanner")
 	// The generated server refuses an empty body while decoding, before the
 	// handler and before the audit middleware, like over HTTP.
@@ -369,13 +389,14 @@ func TestValidationFailureIsAToolErrorAndIsRecordedAsFailed(t *testing.T) {
 
 func TestMissingBannerIsTheSameNotFoundHTTPAnswers(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{"locale": "ru", "id": 999999, "body": bannerInput("x")})
 
 	require.True(t, result.IsError)
 	assert.Contains(t, textOf(t, result), "HTTP 404")
+
 	records := o.Records("AdminUpdateBanner")
 	require.Len(t, records, 1)
 	assert.Equal(t, "failed", records[0].Outcome)
@@ -386,14 +407,15 @@ func TestMissingBannerIsTheSameNotFoundHTTPAnswers(t *testing.T) {
 // and records the same, apart from the channel.
 func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	cookie := testsupport.SessionFor(t, o.DB, bob)
-	session, _ := admin(t, o, bob)
+	cookie := testsupport.SessionFor(t, o.DB, bob())
+	session, _ := admin(t, o, bob())
 	id := firstBannerID(t, o)
 	path := "/api/admin/banners/" + strconv.Itoa(id)
 
 	overHTTP := func(input map[string]any) (int, string) {
 		raw, err := json.Marshal(input)
 		require.NoError(t, err)
+
 		res := o.Do(http.MethodPut, path, nil, func(r *http.Request) {
 			r.Body = io.NopCloser(bytes.NewReader(raw))
 			r.ContentLength = int64(len(raw))
@@ -402,6 +424,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 			r.AddCookie(cookie.Cookie)
 		})
 		defer func() { _ = res.Body.Close() }()
+
 		return res.StatusCode, body(t, res)
 	}
 	overMCP := func(input map[string]any) *mcp.CallToolResult {
@@ -411,16 +434,21 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	// 1. Refused: banners.update is not held. The same status and the same
 	// problem document, and a forbidden record from each channel.
 	status, httpBody := overHTTP(bannerInput("refused"))
-	o.Grant(editor, "mcp.write")
+
+	o.Grant(editor(), "mcp.write")
+
 	refused := overMCP(bannerInput("refused"))
+
 	assert.Equal(t, http.StatusForbidden, status)
 	require.True(t, refused.IsError)
 	assert.Equal(t, "HTTP 403: "+httpBody, textOf(t, refused))
 
 	// 2. Invalid input: the same 400 and problem document.
-	o.Grant(editor, "banners.update")
+	o.Grant(editor(), "banners.update")
+
 	status, httpBody = overHTTP(bannerInput(""))
 	invalid := overMCP(bannerInput(""))
+
 	assert.Equal(t, http.StatusBadRequest, status)
 	require.True(t, invalid.IsError)
 	assert.Equal(t, "HTTP 400: "+httpBody, textOf(t, invalid))
@@ -428,23 +456,29 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	// 3. Allowed: the same banner comes back and the same record is written.
 	status, httpBody = overHTTP(bannerInput("same"))
 	require.Equal(t, http.StatusOK, status, httpBody)
+
 	viaMCP := overMCP(bannerInput("same"))
 	require.False(t, viaMCP.IsError, "%+v", viaMCP.Content)
+
 	var viaHTTP map[string]any
 	require.NoError(t, json.Unmarshal([]byte(httpBody), &viaHTTP))
-	mcpBanner := viaMCP.StructuredContent.(map[string]any)
+
+	mcpBanner := as[map[string]any](t, viaMCP.StructuredContent)
 	for _, k := range []string{"id", "body", "state", "background", "locale", "url"} {
 		assert.Equal(t, viaHTTP[k], mcpBanner[k], k)
 	}
 
 	records := o.Records("AdminUpdateBanner")
+
 	byOutcome := map[string]map[string]*string{}
 	for _, r := range records {
 		if byOutcome[r.Outcome] == nil {
 			byOutcome[r.Outcome] = map[string]*string{}
 		}
+
 		byOutcome[r.Outcome][r.Channel] = r.Locale
 	}
+
 	for _, outcome := range []string{"forbidden", "succeeded"} {
 		assert.Contains(t, byOutcome[outcome], "web", outcome)
 		assert.Contains(t, byOutcome[outcome], "mcp", outcome)
@@ -464,10 +498,18 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 	// One call per tool must reach the checkpoint, so the budgets are not the
 	// subject here.
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
-	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
+	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
+		User:             rates,
+		Client:           rates,
+		MaxPageSize:      0,
+		MaxResponseBytes: 0,
+		ToolTimeout:      0,
+		RateWindow:       0,
+		Now:              nil,
+	}))
 	// A role with nothing: bob's grants are removed, and no mcp.* is held.
 	o.DB.StaffRoleGrant.Delete().ExecX(t.Context())
-	session, _ := admin(t, o, bob)
+	session, _ := admin(t, o, bob())
 	// The tools come from the contract, not from the list: a role with nothing is
 	// not shown the admin tools (#878), and hiding is no authorization, so every
 	// one is called by name all the same.
@@ -479,6 +521,7 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 		result := call(t, session, tool.Name, sampleArguments(t, tool))
 		assertRefused(t, result)
 	}
+
 	assert.Positive(t, checked)
 	assert.Zero(t, o.DB.AuditRecord.Query().Where(auditrecord.Outcome("succeeded")).CountX(t.Context()))
 	assert.Equal(t, 5, o.DB.Banner.Query().CountX(t.Context()))
@@ -489,14 +532,18 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 // refuses before the request is read.
 func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 	t.Helper()
+
 	raw, err := json.Marshal(tool.InputSchema)
 	require.NoError(t, err)
+
 	var schema struct {
 		Required   []string                  `json:"required"`
 		Properties map[string]map[string]any `json:"properties"`
 	}
 	require.NoError(t, json.Unmarshal(raw, &schema))
+
 	args := map[string]any{}
+
 	for _, name := range schema.Required {
 		switch property := schema.Properties[name]; {
 		case name == "locale":
@@ -511,6 +558,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 			args[name] = map[string]any{}
 		}
 	}
+
 	return args
 }
 
@@ -524,7 +572,8 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 // value instead of a Principal in the context.
 func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
+	o.Grant(editor(), "banners.update", "banners.read", "mcp.write", "mcp.read")
+
 	bannerID := fixture.ID(fixture.BannerRuPublished)
 	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
@@ -533,6 +582,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 		r.Header.Set("Accept-Language", "en")
 	})
 	defer func() { _ = read.Body.Close() }()
+
 	assert.Equal(t, http.StatusUnauthorized, read.StatusCode)
 
 	// What the in-process request carries, sent from outside.
@@ -543,6 +593,7 @@ func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 		r.Body = io.NopCloser(strings.NewReader(`{}`))
 	})
 	defer func() { _ = write.Body.Close() }()
+
 	assert.Equal(t, http.StatusUnauthorized, write.StatusCode)
 	assert.NotEqual(t, "Nope", o.DB.Banner.GetX(t.Context(), bannerID).Body)
 }

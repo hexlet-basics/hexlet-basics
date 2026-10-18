@@ -17,8 +17,12 @@ import (
 
 var (
 	errUnauthenticated = errors.New("request is not authenticated")
-	errAdminRequired   = errors.Join(errors.New("administrator access is required"), domain.ErrForbidden)
-	errCrossOrigin     = errors.Join(errors.New("cross-origin request refused"), domain.ErrForbidden)
+	errAdminRequired   = errors.Join(errAdministratorOnly, domain.ErrForbidden)
+	errCrossOrigin     = errors.Join(errRefusedCrossOrigin, domain.ErrForbidden)
+
+	// The messages of errAdminRequired and errCrossOrigin.
+	errAdministratorOnly  = errors.New("administrator access is required")
+	errRefusedCrossOrigin = errors.New("cross-origin request refused")
 )
 
 type authenticatedUserContextKey struct{}
@@ -31,6 +35,7 @@ func AuthenticatedUser(ctx context.Context) (*ent.User, bool) {
 	if !ok || u == nil {
 		return nil, false
 	}
+
 	return u, true
 }
 
@@ -44,6 +49,7 @@ func MustAuthenticatedUser(ctx context.Context) *ent.User {
 	if !ok {
 		panic("handlers: operation reached its handler without an authenticated user; declare @useAuth in the contract")
 	}
+
 	return u
 }
 
@@ -97,28 +103,8 @@ func (s *Security) Pipeline(apiHandler http.Handler) http.Handler {
 	protection.SetDenyHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s.errors.Write(r.Context(), w, r, errCrossOrigin)
 	}))
-	return protection.Handler(s.sessions.Middleware(identified))
-}
 
-// identify attaches the signed-in user to the request context when its session
-// names one, and does nothing otherwise.
-//
-// Contract-declared authentication (ADR-0011) covers operations that REQUIRE a
-// session: ogen runs their security handler and rejects the request. The
-// public reads are different: they must answer a visitor and a learner alike,
-// with the learner getting their progress, and ogen never invokes security for
-// an operation that declares none. This middleware supplies that optional
-// identity, and never fails a request: no session, or one that no longer names a
-// current user, leaves the context anonymous.
-func (s *Security) identify(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx, err := s.attach(r.Context())
-		if err != nil {
-			next.ServeHTTP(w, r)
-			return
-		}
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+	return protection.Handler(s.sessions.Middleware(identified))
 }
 
 // HandleUserSession implements ogen's generated user-session security seam. The
@@ -149,20 +135,48 @@ func (s *Security) HandleAdminSession(
 	if principal, ok := mcpserver.PrincipalFrom(ctx); ok {
 		return s.authorizeMCP(ctx, operation, principal)
 	}
+
 	ctx, err := s.attach(ctx)
 	if err != nil {
 		return ctx, err
 	}
+
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
 		return ctx, errUnauthenticated
 	}
+
 	err = s.policy.Allow(ctx, u, s.i18n.Locale(ctx), operation)
 	if errors.Is(err, permission.ErrForbidden) {
 		s.recordRefusal(ctx, operation)
+
 		return ctx, errAdminRequired
 	}
+
 	return ctx, err
+}
+
+// identify attaches the signed-in user to the request context when its session
+// names one, and does nothing otherwise.
+//
+// Contract-declared authentication (ADR-0011) covers operations that REQUIRE a
+// session: ogen runs their security handler and rejects the request. The
+// public reads are different: they must answer a visitor and a learner alike,
+// with the learner getting their progress, and ogen never invokes security for
+// an operation that declares none. This middleware supplies that optional
+// identity, and never fails a request: no session, or one that no longer names a
+// current user, leaves the context anonymous.
+func (s *Security) identify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, err := s.attach(r.Context())
+		if err != nil {
+			next.ServeHTTP(w, r)
+
+			return
+		}
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 // recordRefusal leaves an Audit Record with outcome forbidden for a call the
@@ -175,8 +189,11 @@ func (s *Security) HandleAdminSession(
 // written is logged and does not turn a refusal into a different answer.
 func (s *Security) recordRefusal(ctx context.Context, operation string) {
 	ctx = context.WithoutCancel(ctx)
+
 	entry := auditEntry(ctx, operation, s.i18n, audit.OutcomeForbidden)
-	if err := audit.Write(ctx, s.db, entry, nil); err != nil {
+
+	err := audit.Write(ctx, s.db, entry, nil)
+	if err != nil {
 		s.errors.logger.ErrorContext(ctx, "recording a refused admin call", "operation", operation, "err", err)
 	}
 }
@@ -192,8 +209,10 @@ func (s *Security) attach(ctx context.Context) (context.Context, error) {
 	if errors.Is(err, auth.ErrUnauthenticated) {
 		return ctx, errUnauthenticated
 	}
+
 	if err != nil {
 		return ctx, errs.Wrapf(err, "load authenticated user")
 	}
+
 	return context.WithValue(ctx, authenticatedUserContextKey{}, u), nil
 }

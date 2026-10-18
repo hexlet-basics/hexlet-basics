@@ -13,11 +13,11 @@ func TestResponseSchemaOfAnOperationIsFullyInlined(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "array", schema["type"])
 	assert.NotContains(t, schema, "$ref")
-	item := schema["items"].(map[string]any)
+	item := as[map[string]any](t, schema["items"])
 	assert.Equal(t, "object", item["type"])
 	// A nullable property becomes a type list, and a referenced schema its body.
-	assert.Equal(t, []any{"string", "null"}, item["properties"].(map[string]any)["name"].(map[string]any)["type"])
-	assert.Equal(t, "object", item["properties"].(map[string]any)["course"].(map[string]any)["type"])
+	assert.Equal(t, []any{"string", "null"}, as[map[string]any](t, as[map[string]any](t, item["properties"])["name"])["type"])
+	assert.Equal(t, "object", as[map[string]any](t, as[map[string]any](t, item["properties"])["course"])["type"])
 }
 
 func TestResponseSchemaRefusesWhatTheContractDoesNotDeclare(t *testing.T) {

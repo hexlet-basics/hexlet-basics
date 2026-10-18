@@ -28,17 +28,17 @@ func NewEditor(db *ent.Client) *Editor {
 
 // Publish makes a draft or archived review public.
 func (e *Editor) Publish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transition.Publish)
+	return e.move(ctx, id, transition.Publish())
 }
 
 // Unpublish takes a published review back to draft.
 func (e *Editor) Unpublish(ctx context.Context, id int) error {
-	return e.move(ctx, id, transition.Unpublish)
+	return e.move(ctx, id, transition.Unpublish())
 }
 
 // Archive archives a draft or published review.
 func (e *Editor) Archive(ctx context.Context, id int) error {
-	return e.move(ctx, id, transition.Archive)
+	return e.move(ctx, id, transition.Archive())
 }
 
 // move checks the move against the table and writes the new state through
@@ -51,8 +51,11 @@ func (e *Editor) move(ctx context.Context, id int, move transition.Transition[tr
 	if err != nil {
 		return domain.FromStore(err)
 	}
-	if err := move.Check(transition.CurrentOf(row.State)); err != nil {
+
+	err = move.Check(transition.CurrentOf(row.State))
+	if err != nil {
 		return err
 	}
+
 	return domain.FromStore(e.db.Review.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))
 }

@@ -16,7 +16,12 @@ import (
 func TestEditorStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
 	editor := account.NewEditor(testsupport.NewClient(t))
 
-	created, err := editor.Create(t.Context(), account.UserFields{Email: "  Mixed.Case@Example.TEST "})
+	created, err := editor.Create(t.Context(), account.UserFields{
+		Email:     "  Mixed.Case@Example.TEST ",
+		FirstName: nil,
+		LastName:  nil,
+		Admin:     nil,
+	})
 	require.NoError(t, err)
 
 	require.NotNil(t, created.Email)
@@ -26,7 +31,12 @@ func TestEditorStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
 func TestEditorAnEmailInUseIsInvalidInputNamingTheEmail(t *testing.T) {
 	editor := account.NewEditor(testsupport.NewClient(t))
 
-	_, err := editor.Create(t.Context(), account.UserFields{Email: "admin-learner@example.com"})
+	_, err := editor.Create(t.Context(), account.UserFields{
+		Email:     "admin-learner@example.com",
+		FirstName: nil,
+		LastName:  nil,
+		Admin:     nil,
+	})
 
 	require.ErrorIs(t, err, domain.ErrInvalid)
 	field, ok := domain.FieldOf(err)
@@ -43,6 +53,7 @@ func TestEditorUpdateClearsWhatIsLeftOut(t *testing.T) {
 
 	updated, err := editor.Update(t.Context(), id, account.UserFields{
 		Email: "blank-user@example.com", FirstName: &first, Admin: &admin,
+		LastName: nil,
 	})
 	require.NoError(t, err)
 
@@ -56,7 +67,12 @@ func TestEditorUpdateClearsWhatIsLeftOut(t *testing.T) {
 func TestEditorUpdateOfAMissingUserIsNotFound(t *testing.T) {
 	editor := account.NewEditor(testsupport.NewClient(t))
 
-	_, err := editor.Update(t.Context(), 0, account.UserFields{Email: "nobody@example.com"})
+	_, err := editor.Update(t.Context(), 0, account.UserFields{
+		Email:     "nobody@example.com",
+		FirstName: nil,
+		LastName:  nil,
+		Admin:     nil,
+	})
 
 	require.ErrorIs(t, err, domain.ErrNotFound)
 }
@@ -71,7 +87,12 @@ func TestEditorKeepsTheLastAdministrator(t *testing.T) {
 	db.User.UpdateOneID(fixture.ID(fixture.UserSecondAdmin)).SetAdmin(false).ExecX(t.Context())
 	db.User.UpdateOneID(fixture.ID(fixture.UserAdminStaff)).SetAdmin(false).ExecX(t.Context())
 
-	_, err := editor.Update(t.Context(), lastAdmin, account.UserFields{Email: "admin-learner@example.com", Admin: &notAdmin})
+	_, err := editor.Update(t.Context(), lastAdmin, account.UserFields{
+		Email:     "admin-learner@example.com",
+		Admin:     &notAdmin,
+		FirstName: nil,
+		LastName:  nil,
+	})
 	require.ErrorIs(t, err, account.ErrLastAdmin)
 	require.ErrorIs(t, err, domain.ErrConflict)
 
@@ -79,7 +100,12 @@ func TestEditorKeepsTheLastAdministrator(t *testing.T) {
 
 	// With a second administrator the same changes go through.
 	db.User.UpdateOneID(fixture.ID(fixture.UserSecondAdmin)).SetAdmin(true).ExecX(t.Context())
-	_, err = editor.Update(t.Context(), lastAdmin, account.UserFields{Email: "admin-learner@example.com", Admin: &notAdmin})
+	_, err = editor.Update(t.Context(), lastAdmin, account.UserFields{
+		Email:     "admin-learner@example.com",
+		Admin:     &notAdmin,
+		FirstName: nil,
+		LastName:  nil,
+	})
 	require.NoError(t, err)
 }
 

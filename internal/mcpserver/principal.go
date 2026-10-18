@@ -34,5 +34,6 @@ func WithPrincipal(ctx context.Context, p Principal) context.Context {
 // PrincipalFrom is the Principal WithPrincipal set, if any.
 func PrincipalFrom(ctx context.Context) (Principal, bool) {
 	p, ok := ctx.Value(principalKey{}).(Principal)
+
 	return p, ok
 }

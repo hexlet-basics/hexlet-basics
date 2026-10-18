@@ -13,6 +13,7 @@ func Ptr[T any](value Nullable[T]) *T {
 	if !ok {
 		return nil
 	}
+
 	return &v
 }
 
@@ -23,7 +24,9 @@ func StringPtr[T ~string](value Nullable[T]) *string {
 	if !ok {
 		return nil
 	}
+
 	s := string(v)
+
 	return &s
 }
 
@@ -34,6 +37,8 @@ func IntPtr[T ~int32](value Nullable[T]) *int {
 	if !ok {
 		return nil
 	}
+
 	n := int(v)
+
 	return &n
 }

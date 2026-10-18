@@ -38,6 +38,7 @@ func TestASecretFieldIsRecordedByNameOnly(t *testing.T) {
 	for _, f := range changes[0].Fields {
 		byName[f.Name] = f
 	}
+
 	secret, ok := byName["password_digest"]
 	require.True(t, ok, "a changed secret is still a change")
 	assert.True(t, secret.Secret)
@@ -67,7 +68,11 @@ func TestSourceDefaultsToTheWebsite(t *testing.T) {
 	assert.Equal(t, audit.ChannelWeb, audit.SourceFrom(t.Context()).Channel)
 
 	app := 7
-	got := audit.SourceFrom(audit.WithSource(t.Context(), audit.Source{Channel: audit.ChannelMCP, ConnectedAppID: &app}))
+	got := audit.SourceFrom(audit.WithSource(t.Context(), audit.Source{
+		Channel:        audit.ChannelMCP,
+		ConnectedAppID: &app,
+		TokenID:        nil,
+	}))
 	assert.Equal(t, audit.ChannelMCP, got.Channel)
 	assert.Equal(t, 7, *got.ConnectedAppID)
 }

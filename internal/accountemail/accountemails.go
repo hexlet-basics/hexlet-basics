@@ -21,7 +21,9 @@ import (
 //go:embed templates/email.html
 var templateFiles embed.FS
 
-var emailTemplate = template.Must(template.ParseFS(templateFiles, "templates/email.html"))
+func emailTemplate() *template.Template {
+	return template.Must(template.ParseFS(templateFiles, "templates/email.html"))
+}
 
 // Locale picks the language of an account email from the request locale. Only
 // ru and es are emailed; anything else — including en, which the rewrite is
@@ -30,6 +32,7 @@ func Locale(requestLocale string) string {
 	if requestLocale == "es" {
 		return "es"
 	}
+
 	return "ru"
 }
 
@@ -58,41 +61,47 @@ type copyText struct {
 	subject, intro, action, linkLabel, ignore localization.Message
 }
 
-var copies = map[emailtoken.Purpose]copyText{
-	emailtoken.MagicLink: {
-		subject:   localization.MagicLinkSubject,
-		intro:     localization.MagicLinkIntro,
-		action:    localization.MagicLinkAction,
-		linkLabel: localization.MagicLinkLinkLabel,
-		ignore:    localization.MagicLinkIgnore,
-	},
-	emailtoken.PasswordReset: {
-		subject:   localization.PasswordResetSubject,
-		intro:     localization.PasswordResetIntro,
-		action:    localization.PasswordResetAction,
-		linkLabel: localization.PasswordResetLinkLabel,
-		ignore:    localization.PasswordResetIgnore,
-	},
+func copies() map[emailtoken.Purpose]copyText {
+	return map[emailtoken.Purpose]copyText{
+		emailtoken.MagicLink: {
+			subject:   localization.MagicLinkSubject,
+			intro:     localization.MagicLinkIntro,
+			action:    localization.MagicLinkAction,
+			linkLabel: localization.MagicLinkLinkLabel,
+			ignore:    localization.MagicLinkIgnore,
+		},
+		emailtoken.PasswordReset: {
+			subject:   localization.PasswordResetSubject,
+			intro:     localization.PasswordResetIntro,
+			action:    localization.PasswordResetAction,
+			linkLabel: localization.PasswordResetLinkLabel,
+			ignore:    localization.PasswordResetIgnore,
+		},
+	}
 }
 
 // Send issues a fresh token and mails the link. A User deleted, or left without
 // an email, between the request and the job has nobody to mail, so the job
 // completes instead of retrying.
 func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID int, locale string) error {
-	text, ok := copies[purpose]
+	text, ok := copies()[purpose]
 	if !ok {
 		return oops.Errorf("unknown account email purpose %q", purpose)
 	}
+
 	u, err := s.db.User.Get(ctx, userID)
 	if ent.IsNotFound(err) {
 		return nil
 	}
+
 	if err != nil {
 		return oops.Wrapf(err, "load user for %s email", purpose)
 	}
+
 	if u.Email == nil {
 		return nil
 	}
+
 	token, err := s.tokens.Issue(purpose, u)
 	if err != nil {
 		return err
@@ -104,8 +113,10 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 	}
 
 	subject := s.i18n.TextIn(locale, text.subject)
+
 	var body bytes.Buffer
-	err = emailTemplate.Execute(&body, map[string]string{
+
+	err = emailTemplate().Execute(&body, map[string]string{
 		"Locale":    locale,
 		"Subject":   subject,
 		"Intro":     s.i18n.TextIn(locale, text.intro),
@@ -117,6 +128,7 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 	if err != nil {
 		return oops.Wrapf(err, "render %s email", purpose)
 	}
+
 	return s.mail.Send(ctx, mailer.Message{To: *u.Email, Subject: subject, HTML: body.String()})
 }
 
@@ -127,9 +139,11 @@ func (s *Sender) link(purpose emailtoken.Purpose, token, locale string) (string,
 	if purpose == emailtoken.PasswordReset {
 		segments = []string{locale, "password", token, "edit"}
 	}
+
 	link, err := url.JoinPath(s.siteURL, segments...)
 	if err != nil {
 		return "", oops.Wrapf(err, "build %s link", purpose)
 	}
+
 	return link, nil
 }

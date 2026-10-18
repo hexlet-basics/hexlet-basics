@@ -8,6 +8,8 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+	// The blank import registers the pgx driver under the name "pgx" for
+	// database/sql.
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"gocloud.dev/blob"
 	// Blank imports register the gocloud blob backends selected by URL scheme
@@ -27,7 +29,7 @@ import (
 // receives both views of the same PostgreSQL transaction: database/sql for
 // River and Watermill adapters, and ent for application persistence.
 type Transactor interface {
-	WithinTx(context.Context, func(*sql.Tx, *ent.Client) error) error
+	WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) error) error
 }
 
 // Store owns the application's transaction lifecycle over the shared SQL pool.
@@ -43,7 +45,12 @@ func New(db *sql.DB) *Store {
 // NewDB opens the application's single database/sql pool over pgx. Both ent and
 // River use it so a business write and its background job can share one sql.Tx.
 func NewDB(dsn string) (*sql.DB, error) {
-	return sql.Open("pgx", dsn)
+	result, err := sql.Open("pgx", dsn)
+	if err != nil {
+		return result, errs.Wrapf(err, "open database")
+	}
+
+	return result, nil
 }
 
 // NewClient builds an ent client over the shared database/sql pool. It never
@@ -55,6 +62,7 @@ func NewDB(dsn string) (*sql.DB, error) {
 func NewClient(db *sql.DB) *ent.Client {
 	client := ent.NewClient(ent.Driver(routingDriver{Driver: entsql.OpenDB(dialect.Postgres, db)}))
 	client.Use(audit.Hook(client))
+
 	return client
 }
 
@@ -64,6 +72,7 @@ func NewClient(db *sql.DB) *ent.Client {
 func NewTxClient(tx *sql.Tx) *ent.Client {
 	client := ent.NewClient(ent.Driver(newTxDriver(tx)))
 	client.Use(audit.Hook(client))
+
 	return client
 }
 
@@ -81,6 +90,7 @@ func NewTxDriver(tx *sql.Tx) dialect.Driver { return newTxDriver(tx) }
 
 func newTxDriver(tx *sql.Tx) dialect.Driver {
 	driver := entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: tx})
+
 	return txBoundDriver{Driver: driver}
 }
 
@@ -96,6 +106,7 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 	if a, ok := ambientFrom(ctx); ok {
 		return fn(a.tx, a.client)
 	}
+
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return errs.Wrapf(err, "begin transaction")
@@ -104,16 +115,21 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 	// report rollback failures without obscuring the callback error.
 	defer func() { _ = tx.Rollback() }()
 
-	if err := fn(tx, NewTxClient(tx)); err != nil {
+	err = fn(tx, NewTxClient(tx))
+	if err != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr == nil || errors.Is(rollbackErr, sql.ErrTxDone) {
 			return err
 		}
+
 		return errors.Join(err, errs.Wrapf(rollbackErr, "rollback transaction"))
 	}
-	if err := tx.Commit(); err != nil {
+
+	err = tx.Commit()
+	if err != nil {
 		return errs.Wrapf(err, "commit transaction")
 	}
+
 	return nil
 }
 
@@ -130,5 +146,10 @@ func (txBoundDriver) Close() error { return nil }
 // `file://…` writes to local disk in dev, `s3://…` talks to S3 in prod. The
 // caller owns Close (main.go drains it on shutdown, like the pool and ent client).
 func NewBucket(ctx context.Context, bucketURL string) (*blob.Bucket, error) {
-	return blob.OpenBucket(ctx, bucketURL)
+	result, err := blob.OpenBucket(ctx, bucketURL)
+	if err != nil {
+		return result, errs.Wrapf(err, "open blob bucket")
+	}
+
+	return result, nil
 }

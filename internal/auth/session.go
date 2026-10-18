@@ -1,4 +1,4 @@
-// Package session is how a signed-in visitor stays signed in (ADR-0017): an
+// Package auth is how a signed-in visitor stays signed in (ADR-0017): an
 // opaque token in an httpOnly cookie that names a row in the sessions table.
 //
 // It owns the cookie, the token's rotation and expiry, and the question "which
@@ -81,28 +81,34 @@ func WithErrorFunc(fn func(http.ResponseWriter, *http.Request, error)) Option {
 
 // New builds a Authenticator whose sessions live in db.
 func New(db *ent.Client, opts ...Option) *Authenticator {
-	cfg := options{clock: time.Now}
+	cfg := options{
+		clock:  time.Now,
+		secure: false,
+		onErr:  nil,
+	}
 	for _, opt := range opts {
 		opt(&cfg)
 	}
 
-	st := &store{db: db, clock: cfg.clock}
-	sm := scs.New()
-	sm.Store = st
+	sessionStore := &store{db: db, clock: cfg.clock}
+	sessionManager := scs.New()
+	sessionManager.Store = sessionStore
 	// scs expires a session MaxLifetime after sign-in and nothing else; idleness
 	// is judged by User from the session's own last_seen.
-	sm.Lifetime = MaxLifetime
+	sessionManager.Lifetime = MaxLifetime
 	// A leaked sessions table must not be a list of working cookies.
-	sm.HashTokenInStore = true
-	sm.Cookie.Name = CookieName
-	sm.Cookie.Secure = cfg.secure
-	sm.Cookie.HttpOnly = true
-	sm.Cookie.SameSite = http.SameSiteLaxMode
-	sm.Cookie.Persist = true
+	sessionManager.HashTokenInStore = true
+	sessionManager.Cookie.Name = CookieName
+	sessionManager.Cookie.Secure = cfg.secure
+	sessionManager.Cookie.HttpOnly = true
+	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+
+	sessionManager.Cookie.Persist = true
 	if cfg.onErr != nil {
-		sm.ErrorFunc = cfg.onErr
+		sessionManager.ErrorFunc = cfg.onErr
 	}
-	return &Authenticator{sessions: sm, db: db, store: st, clock: cfg.clock}
+
+	return &Authenticator{sessions: sessionManager, db: db, store: sessionStore, clock: cfg.clock}
 }
 
 // Middleware loads the session a request's cookie names and writes it back, with
@@ -119,10 +125,13 @@ func (m *Authenticator) Middleware(next http.Handler) http.Handler {
 // planted before sign-in is worthless (session fixation), and the session
 // remembers who u is and which password they signed in with.
 func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
-	if err := m.sessions.RenewToken(ctx); err != nil {
+	err := m.sessions.RenewToken(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "renew session token")
 	}
+
 	m.remember(ctx, u)
+
 	return nil
 }
 
@@ -134,26 +143,24 @@ func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) 
 	if err != nil {
 		return "", errs.Wrapf(err, "load session")
 	}
+
 	m.remember(ctx, u)
+
 	token, _, err := m.sessions.Commit(ctx)
 	if err != nil {
 		return "", errs.Wrapf(err, "commit session")
 	}
-	return token, nil
-}
 
-// remember records on the session who u is and which password they are using.
-func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
-	m.sessions.Put(ctx, userIDKey, u.ID)
-	m.sessions.Put(ctx, epochKey, passwordEpoch(u))
-	m.sessions.Put(ctx, lastSeenKey, m.clock().Unix())
+	return token, nil
 }
 
 // End signs the visitor out: the session row is deleted and the cookie expired.
 func (m *Authenticator) End(ctx context.Context) error {
-	if err := m.sessions.Destroy(ctx); err != nil {
+	err := m.sessions.Destroy(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "destroy session")
 	}
+
 	return nil
 }
 
@@ -172,29 +179,27 @@ func (m *Authenticator) User(ctx context.Context) (*ent.User, error) {
 	if ent.IsNotFound(err) {
 		return nil, m.endStale(ctx)
 	}
+
 	if err != nil {
 		return nil, errs.Wrapf(err, "load session user")
 	}
+
 	if m.sessions.GetInt64(ctx, epochKey) != passwordEpoch(u) {
 		return nil, m.endStale(ctx)
 	}
 
 	now := m.clock()
+
 	idle := now.Sub(time.Unix(m.sessions.GetInt64(ctx, lastSeenKey), 0))
 	if idle > IdleTimeout {
 		return nil, m.endStale(ctx)
 	}
+
 	if idle >= touchEvery {
 		m.sessions.Put(ctx, lastSeenKey, now.Unix())
 	}
-	return u, nil
-}
 
-func (m *Authenticator) endStale(ctx context.Context) error {
-	if err := m.End(ctx); err != nil {
-		return err
-	}
-	return ErrUnauthenticated
+	return u, nil
 }
 
 // DeleteExpired removes the sessions whose time has passed and reports how many
@@ -204,11 +209,28 @@ func (m *Authenticator) DeleteExpired(ctx context.Context) (int, error) {
 	return m.store.deleteExpired(ctx)
 }
 
+// remember records on the session who u is and which password they are using.
+func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
+	m.sessions.Put(ctx, userIDKey, u.ID)
+	m.sessions.Put(ctx, epochKey, passwordEpoch(u))
+	m.sessions.Put(ctx, lastSeenKey, m.clock().Unix())
+}
+
+func (m *Authenticator) endStale(ctx context.Context) error {
+	err := m.End(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ErrUnauthenticated
+}
+
 // passwordEpoch is the value a session compares to know its user's password has
 // not changed: the moment of the last change, zero for a password never changed.
 func passwordEpoch(u *ent.User) int64 {
 	if u.PasswordChangedAt == nil {
 		return 0
 	}
+
 	return u.PasswordChangedAt.UnixMicro()
 }

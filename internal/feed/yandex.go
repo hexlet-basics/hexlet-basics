@@ -66,16 +66,90 @@ const xmlDeclaration = `<?xml version="1.0"?>` + "\n"
 
 // fixedParams are the course facts the legacy builder asserted for every
 // offer, in its order.
-var fixedParams = []param{
-	{Name: "Продолжительность", Unit: "месяц", Text: "1"},
-	{Name: "Формат обучения", Text: "Самостоятельно"},
-	{Name: "Сложность", Text: "Для новичков"},
-	{Name: "Тип обучения", Text: "Курс"},
-	{Name: "Результат обучения", Text: "Сертификат"},
-	{Name: "Есть бесплатная часть", Text: "true"},
-	{Name: "Есть текстовые уроки", Text: "true"},
-	{Name: "Есть тренажеры", Text: "true"},
-	{Name: "Есть сообщество", Text: "true"},
+func fixedParams() []param {
+	return []param{
+		{
+			Name:    "Продолжительность",
+			Unit:    "месяц",
+			Text:    "1",
+			XMLName: xml.Name{},
+			Order:   "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Формат обучения",
+			Text:    "Самостоятельно",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Сложность",
+			Text:    "Для новичков",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Тип обучения",
+			Text:    "Курс",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Результат обучения",
+			Text:    "Сертификат",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть бесплатная часть",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть текстовые уроки",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть тренажеры",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+		{
+			Name:    "Есть сообщество",
+			Text:    "true",
+			XMLName: xml.Name{},
+			Order:   "",
+			Unit:    "",
+			Hours:   "",
+			CDATA:   "",
+		},
+	}
 }
 
 // Yandex builds the YML course catalogue Yandex reads to list the courses in
@@ -103,6 +177,7 @@ func NewYandex(db *ent.Client, appHost string, opts ...Option) *Yandex {
 	for _, opt := range opts {
 		opt(y)
 	}
+
 	return y
 }
 
@@ -113,6 +188,7 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	items, err := y.offers(ctx)
 	if err != nil {
 		return nil, err
@@ -131,16 +207,21 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 			Sets:        sets{Set: categories},
 			Offers:      offers{Offer: items},
 		},
+		XMLName: xml.Name{},
 	}
 
 	var buf bytes.Buffer
 	buf.WriteString(xmlDeclaration)
 	enc := xml.NewEncoder(&buf)
 	enc.Indent("", "  ")
-	if err := enc.Encode(doc); err != nil {
+
+	err = enc.Encode(doc)
+	if err != nil {
 		return nil, errs.Wrapf(err, "encode yandex feed")
 	}
+
 	buf.WriteString("\n")
+
 	return buf.Bytes(), nil
 }
 
@@ -155,6 +236,7 @@ func (y *Yandex) categories(ctx context.Context) ([]set, error) {
 	if err != nil {
 		return nil, errs.Wrapf(err, "load feed categories")
 	}
+
 	return lo.Map(rows, func(c *ent.CourseCategory, _ int) set {
 		return set{
 			ID:   c.ID,
@@ -190,17 +272,21 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 	}
 
 	var result []offer
+
 	for _, page := range pages {
 		crs := page.Edges.Course
 		if crs.CurrentVersionID == nil {
 			continue
 		}
+
 		plan := modules[*crs.CurrentVersionID]
 		if len(plan) < minModules {
 			continue
 		}
+
 		result = append(result, y.offer(page, crs, plan))
 	}
+
 	return result, nil
 }
 
@@ -214,6 +300,7 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (map[int][]*ent.CourseModuleTranslation, error) {
 	versionIDs := lo.Uniq(lo.FilterMap(pages, func(p *ent.CourseLandingPage, _ int) (int, bool) {
 		id := p.Edges.Course.CurrentVersionID
+
 		return lo.FromPtr(id), id != nil
 	}))
 	if len(versionIDs) == 0 {
@@ -224,6 +311,7 @@ func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (m
 	if err != nil {
 		return nil, errs.Wrapf(err, "load feed modules")
 	}
+
 	return lo.GroupBy(rows, func(m *ent.CourseModuleTranslation) int { return m.CourseVersionID }), nil
 }
 
@@ -244,39 +332,50 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		"utm_term":     {"page_" + slug},
 	}
 
-	o := offer{
+	item := offer{
 		ID:   crs.ID,
 		Name: lo.FromPtr(page.Header),
 		// Encode sorts keys, matching Rails' to_query.
 		URL:         y.localized("/languages/"+url.PathEscape(slug)) + "?" + utm.Encode(),
 		CategoryID:  yandexCategoryID,
 		CurrencyID:  currencyID,
-		Params:      fixedParams,
+		Params:      fixedParams(),
 		Description: lo.FromPtr(page.Description),
+		Price:       0,
+		SetIDs:      "",
+		Plan:        nil,
 	}
 	if page.LanguageCategoryID != nil {
-		o.SetIDs = strconv.Itoa(*page.LanguageCategoryID)
+		item.SetIDs = strconv.Itoa(*page.LanguageCategoryID)
 	}
 
 	for i, module := range plan {
-		o.Plan = append(o.Plan, param{
-			Name:  "План",
-			Order: strconv.Itoa(i + 1),
-			Unit:  lo.FromPtr(module.Name),
-			Hours: planHours,
-			CDATA: planIndent + lo.FromPtr(module.Description) + "\n",
+		item.Plan = append(item.Plan, param{
+			Name:    "План",
+			Order:   strconv.Itoa(i + 1),
+			Unit:    lo.FromPtr(module.Name),
+			Hours:   planHours,
+			CDATA:   planIndent + lo.FromPtr(module.Description) + "\n",
+			XMLName: xml.Name{},
+			Text:    "",
 		})
 		for _, lv := range module.Edges.Version.Edges.LessonVersions {
-			o.Plan = append(o.Plan, param{
+			item.Plan = append(item.Plan, param{
 				Name: "Ссылка на контент курса",
 				Text: y.localized(strings.Join([]string{
 					"/languages", url.PathEscape(lo.FromPtr(crs.Slug)),
 					"lessons", url.PathEscape(lo.FromPtr(lv.Edges.Lesson.Slug)),
 				}, "/")),
+				XMLName: xml.Name{},
+				Order:   "",
+				Unit:    "",
+				Hours:   "",
+				CDATA:   "",
 			})
 		}
 	}
-	return o
+
+	return item
 }
 
 // localized is an absolute ru page URL.
