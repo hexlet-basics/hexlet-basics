@@ -177,8 +177,8 @@ const framingTurns = 2
 //
 // Returns ErrQuotaExceeded, or an ent not-found error for a lesson outside the
 // course's current build.
-func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
-	exhausted, err := c.quota.Exhausted(ctx, q.UserID)
+func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error) {
+	exhausted, err := c.quota.Exhausted(ctx, question.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -192,16 +192,16 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 	locale := c.i18n.Locale(ctx)
 
 	learner := progress.Learner{
-		UserID: q.UserID,
+		UserID: question.UserID,
 		Guest: progress.GuestProgress{
 			Entries: nil,
 		},
 	}
-	if _, err := c.lessons.StartLesson(ctx, learner, q.LessonID, locale); err != nil {
+	if _, err := c.lessons.StartLesson(ctx, learner, question.LessonID, locale); err != nil {
 		return nil, err
 	}
 
-	turns, lessonProgressID, err := c.turns(ctx, q, locale)
+	turns, lessonProgressID, err := c.turns(ctx, question, locale)
 	if err != nil {
 		return nil, domain.FromStore(err)
 	}
@@ -232,7 +232,7 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 
 			chatID := 0
 			begin := func() error {
-				id, err := c.saveQuestion(storeCtx, q, lessonProgressID)
+				id, err := c.saveQuestion(storeCtx, question, lessonProgressID)
 				chatID = id
 
 				signal(err)
@@ -291,16 +291,16 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 
 // turns builds what the model is sent: the lesson's system prompt, the
 // conversation so far, and the new question wrapped with the editor state.
-func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, int, error) {
-	lp, err := c.db.LessonProgress.Query().
-		Where(lessonprogress.UserID(q.UserID), lessonprogress.LessonID(q.LessonID)).
+func (c *Chat) turns(ctx context.Context, question Question, locale string) ([]Turn, int, error) {
+	lessonProgress, err := c.db.LessonProgress.Query().
+		Where(lessonprogress.UserID(question.UserID), lessonprogress.LessonID(question.LessonID)).
 		WithCourse().
 		Only(ctx)
 	if err != nil {
-		return nil, 0, oops.Wrapf(err, "load lesson progress for lesson %d", q.LessonID)
+		return nil, 0, oops.Wrapf(err, "load lesson progress for lesson %d", question.LessonID)
 	}
 
-	crs := lp.Edges.Course
+	crs := lessonProgress.Edges.Course
 	if crs.CurrentVersionID == nil {
 		return nil, 0, &ent.NotFoundError{}
 	}
@@ -308,18 +308,18 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 	// The text the learner is reading: the current build, in their locale.
 	info, err := c.db.CourseLessonTranslation.Query().
 		Where(
-			courselessontranslation.CourseLessonID(q.LessonID),
+			courselessontranslation.CourseLessonID(question.LessonID),
 			courselessontranslation.CourseVersionID(*crs.CurrentVersionID),
 			courselessontranslation.LocaleEQ(locale),
 		).
 		Only(ctx)
 	if err != nil {
-		return nil, 0, oops.Wrapf(err, "load lesson %d info in %s", q.LessonID, locale)
+		return nil, 0, oops.Wrapf(err, "load lesson %d info in %s", question.LessonID, locale)
 	}
 
-	previous, err := c.conversation(aichat.LessonProgressID(lp.ID)).All(ctx)
+	previous, err := c.conversation(aichat.LessonProgressID(lessonProgress.ID)).All(ctx)
 	if err != nil {
-		return nil, 0, oops.Wrapf(err, "load assistant chat for lesson %d", q.LessonID)
+		return nil, 0, oops.Wrapf(err, "load assistant chat for lesson %d", question.LessonID)
 	}
 
 	turns := make([]Turn, 0, len(previous)+framingTurns)
@@ -335,12 +335,12 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 	}
 
 	turns = append(turns, Turn{Role: RoleUser, Content: c.i18n.TextWith(ctx, localization.AssistantQuestion, map[string]string{
-		"Code":     q.UserCode,
-		"Output":   q.Output,
-		"Question": q.Message,
+		"Code":     question.UserCode,
+		"Output":   question.Output,
+		"Question": question.Message,
 	})})
 
-	return turns, lp.ID, nil
+	return turns, lessonProgress.ID, nil
 }
 
 // saveQuestion records the question as asked (the wrapped prompt is rebuilt
@@ -348,7 +348,7 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 // boilerplate), creating the chat on first use, and returns the chat. The
 // question is attributed to the learner and counted on
 // users.assistant_messages_count, as legacy's counter cache did.
-func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID int) (int, error) {
+func (c *Chat) saveQuestion(ctx context.Context, question Question, lessonProgressID int) (int, error) {
 	chatID := 0
 	err := c.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		load := func() (*ent.AiChat, error) {
@@ -361,7 +361,7 @@ func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID in
 			// question racing the first reads the chat the first one created
 			// rather than failing the whole transaction on a constraint.
 			_, err = db.AiChat.Create().
-				SetUserID(q.UserID).
+				SetUserID(question.UserID).
 				SetLessonProgressID(lessonProgressID).
 				OnConflictColumns(aichat.FieldUserID, aichat.FieldLessonProgressID).
 				DoNothing().
@@ -381,8 +381,8 @@ func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID in
 		if err := db.AiMessage.Create().
 			SetAiChatID(chat.ID).
 			SetRole(RoleUser).
-			SetContent(q.Message).
-			SetUserID(q.UserID).
+			SetContent(question.Message).
+			SetUserID(question.UserID).
 			SetCreatedAt(now).
 			SetUpdatedAt(now).
 			Exec(ctx); err != nil {
@@ -390,7 +390,7 @@ func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID in
 		}
 
 		return oops.Wrapf(
-			db.User.UpdateOneID(q.UserID).AddAssistantMessagesCount(1).Exec(ctx),
+			db.User.UpdateOneID(question.UserID).AddAssistantMessagesCount(1).Exec(ctx),
 			"count assistant question",
 		)
 	})

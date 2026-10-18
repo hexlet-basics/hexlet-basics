@@ -27,7 +27,7 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := permission.NewPolicy(db)
 
-	for name, c := range map[string]struct {
+	for name, record := range map[string]struct {
 		user      int
 		locale    string
 		operation string
@@ -43,10 +43,10 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 		"operation the role does not hold":    {editorID(), "ru", "AdminListUsers", false},
 		"upload needs only being staff":       {editorID(), "ru", "AdminUploadAttachment", true},
 	} {
-		u := db.User.GetX(t.Context(), c.user)
+		u := db.User.GetX(t.Context(), record.user)
 
-		err := policy.Allow(t.Context(), u, c.locale, c.operation)
-		if c.allowed {
+		err := policy.Allow(t.Context(), u, record.locale, record.operation)
+		if record.allowed {
 			assert.NoError(t, err, name)
 		} else {
 			assert.ErrorIs(t, err, permission.ErrForbidden, name)

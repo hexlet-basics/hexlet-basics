@@ -26,7 +26,7 @@ func (noVerifier) Resource() string { return "https://inspect.test/mcp" }
 func ToolScopes(t *testing.T) map[string]string {
 	t.Helper()
 
-	s, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test",
+	server, err := New(Deps{Verifier: noVerifier{}, API: http.NotFoundHandler(), Issuer: "https://inspect.test",
 		Catalogue:        nil,
 		MyDashboard:      nil,
 		MyCourseProgress: nil,
@@ -55,7 +55,7 @@ func ToolScopes(t *testing.T) map[string]string {
 	}
 
 	scopes := map[string]string{}
-	for _, entry := range s.registry {
+	for _, entry := range server.registry {
 		scopes[entry.tool.Name] = entry.needs.scope
 	}
 

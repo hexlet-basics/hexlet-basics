@@ -256,7 +256,7 @@ func TestTheTrailRefusesAWindowItCannotAffordOrMakeSenseOf(t *testing.T) {
 func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	t.Parallel()
 	h := auditReader(t, true)
-	at := time.Now().Add(-time.Hour)
+	occurredAt := time.Now().Add(-time.Hour)
 	banner, carol := fixture.ID(fixture.BannerEnDraft), fixture.ID(fixture.UserWithPassword)
 
 	// A change is what the operation's own writes left in the Recorder: a banner
@@ -265,7 +265,7 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 	h.DB.Banner.UpdateOneID(banner).SetBody("Cyber Monday sale").ExecX(ctx)
 	h.DB.User.UpdateOneID(carol).SetPasswordDigest("digest-the-trail-must-not-keep").ExecX(ctx)
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{
+		OccurredAt: occurredAt, Source: audit.Source{
 			Channel:        audit.ChannelWeb,
 			ConnectedAppID: nil,
 			TokenID:        nil,
@@ -281,7 +281,7 @@ func TestTheTrailShowsChangesAndReads(t *testing.T) {
 		Reads:      nil,
 	}, changes))
 	require.NoError(t, audit.Write(t.Context(), h.DB, audit.Entry{
-		OccurredAt: at, Source: audit.Source{
+		OccurredAt: occurredAt, Source: audit.Source{
 			Channel:        audit.ChannelWeb,
 			ConnectedAppID: nil,
 			TokenID:        nil,

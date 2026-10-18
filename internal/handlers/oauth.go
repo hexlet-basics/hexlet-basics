@@ -116,15 +116,15 @@ func (s *Server) ListConnectedApps(ctx context.Context) (*api.ConnectedApps, err
 	}
 
 	items := make([]api.ConnectedApp, 0, len(apps))
-	for _, a := range apps {
+	for _, connectedApp := range apps {
 		item := api.ConnectedApp{
-			ID:          int64(a.ID),
-			Name:        a.Name,
-			Scopes:      a.Scopes,
-			ConnectedAt: a.ConnectedAt,
+			ID:          int64(connectedApp.ID),
+			Name:        connectedApp.Name,
+			Scopes:      connectedApp.Scopes,
+			ConnectedAt: connectedApp.ConnectedAt,
 		}
-		if a.ClientHost != "" {
-			item.ClientHost = api.NewOptString(a.ClientHost)
+		if connectedApp.ClientHost != "" {
+			item.ClientHost = api.NewOptString(connectedApp.ClientHost)
 		}
 
 		items = append(items, item)

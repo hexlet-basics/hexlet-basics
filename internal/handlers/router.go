@@ -50,7 +50,7 @@ const UploadBodyLimit = assetstore.MaxUploadBytes + 1<<20
 func NewRouter(
 	generated http.Handler,
 	att *AttachmentHandler,
-	gh *GitHubWebhookHandler,
+	gitHubWebhookHandler *GitHubWebhookHandler,
 	oauth http.Handler,
 	mcp http.Handler,
 ) http.Handler {
@@ -63,7 +63,7 @@ func NewRouter(
 	// GitHub webhook: verifies its own HMAC signature, so it is safe outside any
 	// auth middleware — but it must stay a build TRIGGER only. GitHub still
 	// delivers to the legacy `/webhooks/github`; the ingress maps it here.
-	transport.HandleFunc("POST /api/webhooks/github", gh.Handle)
+	transport.HandleFunc("POST /api/webhooks/github", gitHubWebhookHandler.Handle)
 
 	if oauth != nil {
 		for _, pattern := range oauthserver.Patterns() {

@@ -241,21 +241,21 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	}
 
 	required := []string{localeArgument}
-	for _, p := range op.Params {
-		if p.Name == localeArgument || p.Name == bodyArgument {
-			return nil, errs.With("parameter", p.Name).Errorf("parameter collides with a reserved argument")
+	for _, arg := range op.Params {
+		if arg.Name == localeArgument || arg.Name == bodyArgument {
+			return nil, errs.With("parameter", arg.Name).Errorf("parameter collides with a reserved argument")
 		}
 
 		schema := map[string]any{}
-		maps.Copy(schema, p.Schema)
+		maps.Copy(schema, arg.Schema)
 
-		if p.Description != "" {
-			schema["description"] = p.Description
+		if arg.Description != "" {
+			schema["description"] = arg.Description
 		}
 
-		properties[p.Name] = schema
-		if p.Required {
-			required = append(required, p.Name)
+		properties[arg.Name] = schema
+		if arg.Required {
+			required = append(required, arg.Name)
 		}
 	}
 
@@ -501,13 +501,13 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 	path := op.Path
 	query := url.Values{}
 
-	for _, p := range op.Params {
-		known[p.Name] = true
+	for _, arg := range op.Params {
+		known[arg.Name] = true
 
-		raw, ok := args[p.Name]
+		raw, ok := args[arg.Name]
 		if !ok {
-			if p.Required {
-				return nil, fmt.Sprintf("the %s argument is required", p.Name)
+			if arg.Required {
+				return nil, fmt.Sprintf("the %s argument is required", arg.Name)
 			}
 
 			continue
@@ -515,15 +515,15 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 
 		values, err := scalars(raw)
 		if err != nil {
-			return nil, fmt.Sprintf("the %s argument must be a value or a list of values", p.Name)
+			return nil, fmt.Sprintf("the %s argument must be a value or a list of values", arg.Name)
 		}
 
-		switch p.In {
+		switch arg.In {
 		case "path":
-			path = strings.ReplaceAll(path, "{"+p.Name+"}", url.PathEscape(values[0]))
+			path = strings.ReplaceAll(path, "{"+arg.Name+"}", url.PathEscape(values[0]))
 		default:
 			for _, v := range values {
-				query.Add(p.Name, v)
+				query.Add(arg.Name, v)
 			}
 		}
 	}

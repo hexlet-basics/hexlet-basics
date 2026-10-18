@@ -89,13 +89,13 @@ func inline(node any, components map[string]any, stack []string) (any, error) {
 		}
 
 		out := make(map[string]any, len(n))
-		for k, v := range n {
+		for key, v := range n {
 			resolved, err := inline(v, components, stack)
 			if err != nil {
 				return nil, err
 			}
 
-			out[k] = resolved
+			out[key] = resolved
 		}
 
 		if nullable, _ := out["nullable"].(bool); nullable {

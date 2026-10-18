@@ -163,20 +163,20 @@ func parseSpec(repo repository) (*Spec, error) {
 		return nil, oops.Wrapf(err, "parse %s", repo.abs("spec.yml"))
 	}
 
-	s := doc.Course
+	spec := doc.Course
 	// Mirror legacy's fetch("...") — a missing key is a hard error, not a blank
 	// build. Every missing key is reported, in file order, so one run shows the
 	// whole fix.
 	var missing []error
 
 	for _, key := range []struct{ name, value string }{
-		{"name", s.Name},
-		{"progress", s.Progress},
-		{"learn_as", s.LearnAs},
-		{"docker_image", s.DockerImage},
-		{"extension", s.Extension},
-		{"exercise_filename", s.ExerciseFilename},
-		{"exercise_test_filename", s.ExerciseTestFilename},
+		{"name", spec.Name},
+		{"progress", spec.Progress},
+		{"learn_as", spec.LearnAs},
+		{"docker_image", spec.DockerImage},
+		{"extension", spec.Extension},
+		{"exercise_filename", spec.ExerciseFilename},
+		{"exercise_test_filename", spec.ExerciseTestFilename},
 	} {
 		if key.value == "" {
 			missing = append(missing, oops.Errorf("spec.yml: language.%s is required", key.name))
@@ -187,7 +187,7 @@ func parseSpec(repo repository) (*Spec, error) {
 		return nil, err
 	}
 
-	return &s, nil
+	return &spec, nil
 }
 
 func parseModules(repo repository, modulesDir string, spec *Spec, courseSlug string) ([]Module, error) {

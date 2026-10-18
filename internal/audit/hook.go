@@ -39,28 +39,28 @@ func Hook(loader RowLoader) ent.Hook {
 }
 
 func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
-	return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	return ent.MutateFunc(func(ctx context.Context, mutation ent.Mutation) (ent.Value, error) {
 		rec := recorderFrom(ctx)
 		// The record being written must not describe itself.
-		if rec == nil || m.Type() == ent.TypeAuditRecord {
-			return next.Mutate(ctx, m)
+		if rec == nil || mutation.Type() == ent.TypeAuditRecord {
+			return next.Mutate(ctx, mutation)
 		}
 
 		change := Change{
-			Entity: m.Type(),
-			Op:     opName(m.Op()),
+			Entity: mutation.Type(),
+			Op:     opName(mutation.Op()),
 			ID:     "",
 			Fields: nil,
 		}
-		secret := ent.AuditSecretFields[m.Type()]
+		secret := ent.AuditSecretFields[mutation.Type()]
 
 		var old map[string]any
-		if m.Op().Is(ent.OpUpdateOne) {
-			old = make(map[string]any, len(m.Fields()))
-			for _, name := range slices.Concat(m.Fields(), m.ClearedFields()) {
-				v, err := m.OldField(ctx, name)
+		if mutation.Op().Is(ent.OpUpdateOne) {
+			old = make(map[string]any, len(mutation.Fields()))
+			for _, name := range slices.Concat(mutation.Fields(), mutation.ClearedFields()) {
+				v, err := mutation.OldField(ctx, name)
 				if err != nil {
-					return nil, errs.With("type", m.Type(), "field", name).Wrapf(err, "audit: read old value")
+					return nil, errs.With("type", mutation.Type(), "field", name).Wrapf(err, "audit: read old value")
 				}
 
 				old[name] = v
@@ -71,32 +71,32 @@ func hook(loader RowLoader, next ent.Mutator) ent.Mutator {
 
 		missing := false
 
-		if m.Op().Is(ent.OpDeleteOne) {
-			if key := entityKey(m); key != nil {
-				row, err := loader.AuditRow(ctx, m.Type(), key)
+		if mutation.Op().Is(ent.OpDeleteOne) {
+			if key := entityKey(mutation); key != nil {
+				row, err := loader.AuditRow(ctx, mutation.Type(), key)
 				switch {
 				case ent.IsNotFound(err):
 					// Nothing to keep and nothing deleted: ent reports the
 					// missing row after the mutation, and no change happened.
 					missing = true
 				case err != nil:
-					return nil, errs.With("type", m.Type(), "id", key).Wrapf(err, "audit: read before delete")
+					return nil, errs.With("type", mutation.Type(), "id", key).Wrapf(err, "audit: read before delete")
 				default:
 					deleted = deletedFields(row, secret)
 				}
 			}
 		}
 
-		value, err := next.Mutate(ctx, m)
+		value, err := next.Mutate(ctx, mutation)
 		if err != nil {
 			return value, errs.Wrapf(err, "run mutation")
 		}
 
-		change.ID = entityID(m)
-		if m.Op().Is(ent.OpDelete | ent.OpDeleteOne) {
+		change.ID = entityID(mutation)
+		if mutation.Op().Is(ent.OpDelete | ent.OpDeleteOne) {
 			change.Fields = deleted
 		} else {
-			change.Fields = fieldChanges(m, old, secret)
+			change.Fields = fieldChanges(mutation, old, secret)
 		}
 
 		if !missing {
@@ -122,13 +122,13 @@ func opName(op ent.Op) string {
 // id, nil for a bulk one. ent's typed mutations expose ID(); both id kinds the
 // schema uses are handled.
 func entityKey(m ent.Mutation) any {
-	switch m := m.(type) {
+	switch typed := m.(type) {
 	case interface{ ID() (int, bool) }:
-		if id, ok := m.ID(); ok {
+		if id, ok := typed.ID(); ok {
 			return id
 		}
 	case interface{ ID() (string, bool) }:
-		if id, ok := m.ID(); ok {
+		if id, ok := typed.ID(); ok {
 			return id
 		}
 	}
@@ -193,16 +193,16 @@ func deletedFields(row map[string]any, secret []string) []FieldChange {
 
 // fieldChanges lists what the mutation set or cleared. old is nil for a create
 // and for a bulk update, where there is no single row to read.
-func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldChange {
+func fieldChanges(mutation ent.Mutation, old map[string]any, secret []string) []FieldChange {
 	var out []FieldChange
 
-	for _, name := range slices.Concat(m.Fields(), m.ClearedFields()) {
+	for _, name := range slices.Concat(mutation.Fields(), mutation.ClearedFields()) {
 		if slices.Contains(ownedFields(), name) {
 			continue
 		}
 
 		var newValue any
-		if v, ok := m.Field(name); ok {
+		if v, ok := mutation.Field(name); ok {
 			newValue = v
 		}
 
@@ -228,32 +228,32 @@ func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldCh
 			continue
 		}
 
-		fc := FieldChange{
+		fieldChange := FieldChange{
 			Name:   name,
 			Old:    nil,
 			New:    nil,
 			Secret: false,
 		}
 		if old != nil {
-			fc.Old = toJSON(oldValue)
+			fieldChange.Old = toJSON(oldValue)
 		}
 
-		fc.New = toJSON(newValue)
-		out = append(out, fc)
+		fieldChange.New = toJSON(newValue)
+		out = append(out, fieldChange)
 	}
 
 	return out
 }
 
 // toJSON encodes a value for the trail; nil becomes absent rather than "null".
-func toJSON(v any) json.RawMessage {
-	if v == nil {
+func toJSON(value any) json.RawMessage {
+	if value == nil {
 		return nil
 	}
 
-	raw, err := json.Marshal(v)
+	raw, err := json.Marshal(value)
 	if err != nil {
-		return json.RawMessage(strconv.Quote(fmt.Sprint(v)))
+		return json.RawMessage(strconv.Quote(fmt.Sprint(value)))
 	}
 
 	if bytes.Equal(raw, []byte("null")) {

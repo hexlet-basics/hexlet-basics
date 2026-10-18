@@ -177,14 +177,14 @@ type failAfterFirstRead struct {
 	read bool
 }
 
-func (r *failAfterFirstRead) Read(p []byte) (int, error) {
+func (r *failAfterFirstRead) Read(octets []byte) (int, error) {
 	if r.read {
 		return 0, errSourceReadFailed
 	}
 
 	r.read = true
 
-	return copy(p, r.data), nil
+	return copy(octets, r.data), nil
 }
 
 func assertBucketEmpty(t *testing.T, bucket *blob.Bucket) {

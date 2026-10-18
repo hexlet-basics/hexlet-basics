@@ -114,13 +114,13 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 		config = "simple"
 	}
 
-	m := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
+	matcher := match{config: config, locale: cmd.Locale, text: text, unrestricted: cmd.Unrestricted}
 
 	sources := c.sources(cmd.Types)
 	total := 0
 
 	for _, src := range sources {
-		n, err := src.count(ctx, m)
+		n, err := src.count(ctx, matcher)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
@@ -136,7 +136,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	var candidates []candidate
 
 	for _, src := range sources {
-		found, err := src.top(ctx, m, window)
+		found, err := src.top(ctx, matcher, window)
 		if err != nil {
 			return nil, 0, domain.FromStore(err)
 		}
@@ -153,7 +153,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	})
 	candidates = candidates[min(cmd.Page.Offset, len(candidates)):min(window, len(candidates))]
 
-	hits, err := withSnippets(ctx, m, sources, candidates)
+	hits, err := withSnippets(ctx, matcher, sources, candidates)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -191,7 +191,7 @@ func typeOrder(t Type) int { return slices.Index(Types(), t) }
 
 // withSnippets fills the snippet of each candidate's hit, asking each kind once
 // for the ids it contributed.
-func withSnippets(ctx context.Context, m match, kinds []kind, candidates []candidate) ([]Hit, error) {
+func withSnippets(ctx context.Context, matcher match, kinds []kind, candidates []candidate) ([]Hit, error) {
 	byType := map[Type][]int{}
 	for _, cand := range candidates {
 		byType[cand.typ] = append(byType[cand.typ], cand.id)
@@ -199,17 +199,17 @@ func withSnippets(ctx context.Context, m match, kinds []kind, candidates []candi
 
 	snippets := map[Type]map[int]string{}
 
-	for _, k := range kinds {
-		if len(byType[k.typ]) == 0 {
+	for _, entry := range kinds {
+		if len(byType[entry.typ]) == 0 {
 			continue
 		}
 
-		found, err := k.snippets(ctx, m, byType[k.typ])
+		found, err := entry.snippets(ctx, matcher, byType[entry.typ])
 		if err != nil {
 			return nil, domain.FromStore(err)
 		}
 
-		snippets[k.typ] = found
+		snippets[entry.typ] = found
 	}
 
 	hits := make([]Hit, len(candidates))

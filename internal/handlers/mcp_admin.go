@@ -47,8 +47,8 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 // forbidden (channel mcp, since the tool put its Source in the context) and 403,
 // before the body is decoded or a handler runs. Taking a Permission away is
 // seen on the next call, because nothing is cached.
-func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, p mcpserver.Principal) (context.Context, error) {
-	u, err := account.ActiveUserByID(ctx, s.db, p.UserID)
+func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName, principal mcpserver.Principal) (context.Context, error) {
+	u, err := account.ActiveUserByID(ctx, s.db, principal.UserID)
 	if errors.Is(err, domain.ErrNotFound) {
 		return ctx, errUnauthenticated
 	}
@@ -63,7 +63,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 	// anything else (a dispatcher wired without the locale middleware, a header
 	// that did not survive) would judge the call in a locale nobody asked for.
 	locale := s.i18n.Locale(ctx)
-	if locale != p.Locale || !slices.Contains(p.Scopes, oauthserver.ScopeAdmin) {
+	if locale != principal.Locale || !slices.Contains(principal.Scopes, oauthserver.ScopeAdmin) {
 		s.recordRefusal(ctx, operation)
 
 		return ctx, errAdminRequired

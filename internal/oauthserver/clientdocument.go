@@ -126,13 +126,13 @@ func newGuardedClient(allow func(netip.Addr) bool, timeout time.Duration) *http.
 	dialer := &net.Dialer{
 		Timeout: timeout,
 		Control: func(_, address string, _ syscall.RawConn) error {
-			ap, err := netip.ParseAddrPort(address)
+			addrPort, err := netip.ParseAddrPort(address)
 			if err != nil {
 				return errs.With("address", address).Wrapf(err, "refusing to connect")
 			}
 
-			if !allow(ap.Addr()) {
-				return errs.With("address", ap.Addr().String()).Errorf("refusing to connect: not a public address")
+			if !allow(addrPort.Addr()) {
+				return errs.With("address", addrPort.Addr().String()).Errorf("refusing to connect: not a public address")
 			}
 
 			return nil
@@ -239,28 +239,28 @@ func checkClientIDURL(clientID string) error {
 		return errClientIDTooLong
 	}
 
-	u, err := url.Parse(clientID)
-	if err != nil || u.Scheme != "https" || u.Opaque != "" || u.Hostname() == "" {
+	parsedURL, err := url.Parse(clientID)
+	if err != nil || parsedURL.Scheme != "https" || parsedURL.Opaque != "" || parsedURL.Hostname() == "" {
 		return errClientIDNotHTTPS
 	}
 
-	if u.User != nil {
+	if parsedURL.User != nil {
 		return errClientIDCredentials
 	}
 
-	if u.Fragment != "" || strings.Contains(clientID, "#") {
+	if parsedURL.Fragment != "" || strings.Contains(clientID, "#") {
 		return errClientIDFragment
 	}
 
-	if port := u.Port(); port != "" && port != "443" {
+	if port := parsedURL.Port(); port != "" && port != "443" {
 		return errClientIDPort
 	}
 
-	if u.Path == "" || u.Path == "/" {
+	if parsedURL.Path == "" || parsedURL.Path == "/" {
 		return errClientIDNoPath
 	}
 
-	for segment := range strings.SplitSeq(u.Path, "/") {
+	for segment := range strings.SplitSeq(parsedURL.Path, "/") {
 		if segment == "." || segment == ".." {
 			return errClientIDDotSegments
 		}
@@ -471,14 +471,14 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 // headers (s-maxage, max-age, then Expires), clamped to the bounds above.
 // no-store and no-cache cannot be honoured literally, because the row must
 // exist to run the flow, so they mean the shortest allowed time.
-func (d *documentClients) cacheTTL(h http.Header) time.Duration {
+func (d *documentClients) cacheTTL(header http.Header) time.Duration {
 	ttl := defaultDocumentTTL
 
 	var maxAge, sMaxAge *time.Duration
 
 	immediate := false
 
-	for directive := range strings.SplitSeq(h.Get("Cache-Control"), ",") {
+	for directive := range strings.SplitSeq(header.Get("Cache-Control"), ",") {
 		name, value, _ := strings.Cut(strings.ToLower(strings.TrimSpace(directive)), "=")
 		switch name {
 		case "no-store", "no-cache":
@@ -503,7 +503,7 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 	case maxAge != nil:
 		ttl = *maxAge
 	default:
-		if expires, err := http.ParseTime(h.Get("Expires")); err == nil {
+		if expires, err := http.ParseTime(header.Get("Expires")); err == nil {
 			ttl = expires.Sub(d.now())
 		}
 	}
@@ -514,22 +514,22 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 // writeDocumentError answers an authorization request whose client id could not
 // be resolved. The redirect URI of an unverified client is not trusted, so the
 // answer is direct, never a redirect.
-func writeDocumentError(w http.ResponseWriter, e *documentError) {
+func writeDocumentError(w http.ResponseWriter, docErr *documentError) {
 	code := "invalid_request"
-	if e.status == http.StatusTooManyRequests {
+	if docErr.status == http.StatusTooManyRequests {
 		code = "temporarily_unavailable"
 
-		w.Header().Set("Retry-After", strconv.Itoa(int(e.retryAfter/time.Second)+1))
+		w.Header().Set("Retry-After", strconv.Itoa(int(docErr.retryAfter/time.Second)+1))
 	}
 
-	if e.status >= http.StatusInternalServerError {
+	if docErr.status >= http.StatusInternalServerError {
 		code = "server_error"
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
-	w.WriteHeader(e.status)
-	writeJSON(w, map[string]string{"error": code, "error_description": e.reason})
+	w.WriteHeader(docErr.status)
+	writeJSON(w, map[string]string{"error": code, "error_description": docErr.reason})
 }
 
 // maxDocumentHeaderBytes bounds the response headers of a client metadata

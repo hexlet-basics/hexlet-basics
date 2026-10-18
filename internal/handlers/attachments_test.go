@@ -165,22 +165,22 @@ func uploadRequest(t *testing.T, filename, contentType string, data []byte) *htt
 
 	var body bytes.Buffer
 
-	mw := multipart.NewWriter(&body)
-	h := textproto.MIMEHeader{}
-	h.Set("Content-Disposition", `form-data; name="file"; filename="`+filename+`"`)
+	writer := multipart.NewWriter(&body)
+	mimeHeader := textproto.MIMEHeader{}
+	mimeHeader.Set("Content-Disposition", `form-data; name="file"; filename="`+filename+`"`)
 
 	if contentType != "" {
-		h.Set("Content-Type", contentType)
+		mimeHeader.Set("Content-Type", contentType)
 	}
 
-	part, err := mw.CreatePart(h)
+	part, err := writer.CreatePart(mimeHeader)
 	require.NoError(t, err)
 	_, err = part.Write(data)
 	require.NoError(t, err)
-	require.NoError(t, mw.Close())
+	require.NoError(t, writer.Close())
 
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/admin/attachments", &body)
-	req.Header.Set("Content-Type", mw.FormDataContentType())
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	return req
 }
@@ -231,15 +231,15 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	assert.Contains(t, att.URL, ".png", "the read URL uses the detected image extension")
 
 	// The returned url must actually serve the stored bytes.
-	dl := httptest.NewRecorder()
-	router.ServeHTTP(dl, httptest.NewRequestWithContext(t.Context(), http.MethodGet, att.URL, nil))
+	responseRecorder := httptest.NewRecorder()
+	router.ServeHTTP(responseRecorder, httptest.NewRequestWithContext(t.Context(), http.MethodGet, att.URL, nil))
 
-	require.Equal(t, http.StatusOK, dl.Code)
-	assert.Equal(t, "image/png", dl.Header().Get("Content-Type"))
-	assert.Equal(t, strconv.Itoa(len(tinyPNG())), dl.Header().Get("Content-Length"))
-	assert.NotEmpty(t, dl.Header().Get("Last-Modified"))
-	assert.Equal(t, "nosniff", dl.Header().Get("X-Content-Type-Options"))
-	got, err := io.ReadAll(dl.Body)
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
+	assert.Equal(t, "image/png", responseRecorder.Header().Get("Content-Type"))
+	assert.Equal(t, strconv.Itoa(len(tinyPNG())), responseRecorder.Header().Get("Content-Length"))
+	assert.NotEmpty(t, responseRecorder.Header().Get("Last-Modified"))
+	assert.Equal(t, "nosniff", responseRecorder.Header().Get("X-Content-Type-Options"))
+	got, err := io.ReadAll(responseRecorder.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG(), got)
 }

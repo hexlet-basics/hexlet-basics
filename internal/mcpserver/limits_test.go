@@ -17,7 +17,7 @@ import (
 
 func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) {
 	now := time.Now()
-	m := newMeter(Limits{
+	budget := newMeter(Limits{
 		RateWindow:       time.Minute,
 		User:             Rates{Catalogue: 3, Personal: 2, Write: 1},
 		Client:           Rates{Catalogue: 6, Personal: 5, Write: 4},
@@ -29,24 +29,24 @@ func TestEveryClassHasItsOwnConfigurableBudgetPerUserAndPerClient(t *testing.T) 
 
 	for class, userLimit := range map[Class]int{ClassCatalogue: 3, ClassPersonal: 2, ClassWrite: 1} {
 		for range userLimit {
-			ok, _ := m.allow(class, 1, "app")
+			ok, _ := budget.allow(class, 1, "app")
 			require.True(t, ok, class)
 		}
 
-		ok, wait := m.allow(class, 1, "app")
+		ok, wait := budget.allow(class, 1, "app")
 		assert.False(t, ok, "%s: the user's own limit applies", class)
 		assert.Equal(t, time.Minute, wait, class)
 	}
 
 	// Each class counted on its own: exhausting one left another's budget alone,
 	// and another user of the same app is unaffected by the first's.
-	ok, _ := m.allow(ClassCatalogue, 2, "app")
+	ok, _ := budget.allow(ClassCatalogue, 2, "app")
 	assert.True(t, ok)
 }
 
 func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 	now := time.Now()
-	m := newMeter(Limits{
+	budget := newMeter(Limits{
 		User:             Rates{Catalogue: 100, Personal: 100, Write: 100},
 		Client:           Rates{Catalogue: 100, Personal: 100, Write: 2},
 		Now:              func() time.Time { return now },
@@ -56,11 +56,11 @@ func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 		RateWindow:       0,
 	}.withDefaults())
 
-	first, _ := m.allow(ClassWrite, 1, "app")
-	second, _ := m.allow(ClassWrite, 2, "app")
-	third, _ := m.allow(ClassWrite, 3, "app")
-	otherApp, _ := m.allow(ClassWrite, 3, "other")
-	reads, _ := m.allow(ClassCatalogue, 3, "app")
+	first, _ := budget.allow(ClassWrite, 1, "app")
+	second, _ := budget.allow(ClassWrite, 2, "app")
+	third, _ := budget.allow(ClassWrite, 3, "app")
+	otherApp, _ := budget.allow(ClassWrite, 3, "other")
+	reads, _ := budget.allow(ClassCatalogue, 3, "app")
 
 	assert.True(t, first)
 	assert.True(t, second)
@@ -70,13 +70,13 @@ func TestClientLimitOfAClassStopsAnAppWhateverTheUser(t *testing.T) {
 }
 
 func TestDefaultLimitsAreStricterForPersonalReadsAndWrites(t *testing.T) {
-	d := DefaultLimits()
+	limits := DefaultLimits()
 
-	assert.Equal(t, 50, d.MaxPageSize)
-	assert.Equal(t, 100*1024, d.MaxResponseBytes)
-	assert.Equal(t, 30*time.Second, d.ToolTimeout)
+	assert.Equal(t, 50, limits.MaxPageSize)
+	assert.Equal(t, 100*1024, limits.MaxResponseBytes)
+	assert.Equal(t, 30*time.Second, limits.ToolTimeout)
 
-	for _, r := range []Rates{d.User, d.Client} {
+	for _, r := range []Rates{limits.User, limits.Client} {
 		assert.Greater(t, r.Catalogue, r.Personal)
 		assert.Greater(t, r.Personal, r.Write)
 	}
@@ -100,8 +100,8 @@ func TestDefaultLimitsAreStricterForPersonalReadsAndWrites(t *testing.T) {
 	}.withDefaults()
 	assert.Equal(t, 3, filled.MaxPageSize, "a value that is set stays")
 	assert.Equal(t, 1, filled.User.Write)
-	assert.Equal(t, d.User.Catalogue, filled.User.Catalogue, "a value that is not set takes its default")
-	assert.Equal(t, d.ToolTimeout, filled.ToolTimeout)
+	assert.Equal(t, limits.User.Catalogue, filled.User.Catalogue, "a value that is not set takes its default")
+	assert.Equal(t, limits.ToolTimeout, filled.ToolTimeout)
 }
 
 func requestFor(userID, client string, scopes ...string) *mcp.CallToolRequest {
@@ -112,7 +112,7 @@ func requestFor(userID, client string, scopes ...string) *mcp.CallToolRequest {
 
 func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 	now := time.Now()
-	s := &Server{
+	server := &Server{
 		limits: Limits{
 			Now:              func() time.Time { return now },
 			MaxPageSize:      0,
@@ -162,19 +162,19 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 		handler:  nil,
 		registry: nil,
 	}
-	s.limits.User = Rates{Catalogue: 3, Personal: 2, Write: 1}
-	s.meter = newMeter(s.limits)
+	server.limits.User = Rates{Catalogue: 3, Personal: 2, Write: 1}
+	server.meter = newMeter(server.limits)
 	req := requestFor("7", "app", oauthserver.ScopeCatalogRead)
 
 	for class, limit := range map[Class]int{ClassCatalogue: 3, ClassPersonal: 2, ClassWrite: 1} {
 		for range limit {
-			userID, client, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
+			userID, client, denied := server.admit(req, oauthserver.ScopeCatalogRead, class)
 			require.Nil(t, denied, class)
 			assert.Equal(t, 7, userID)
 			assert.Equal(t, "app", client)
 		}
 
-		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, class)
+		_, _, denied := server.admit(req, oauthserver.ScopeCatalogRead, class)
 		require.NotNil(t, denied, class)
 		assert.True(t, denied.IsError)
 		text := as[*mcp.TextContent](t, denied.Content[0]).Text
@@ -186,7 +186,7 @@ func TestAdmitAppliesTheRateLimitOfTheClassTheToolNames(t *testing.T) {
 }
 
 func TestAdmitRefusesAMissingScopeOrSubjectBeforeCounting(t *testing.T) {
-	s := &Server{
+	server := &Server{
 		limits: DefaultLimits(),
 		deps: Deps{
 			Verifier:         nil,
@@ -220,14 +220,14 @@ func TestAdmitRefusesAMissingScopeOrSubjectBeforeCounting(t *testing.T) {
 		handler:  nil,
 		registry: nil,
 	}
-	s.meter = newMeter(s.limits)
+	server.meter = newMeter(server.limits)
 
 	for name, req := range map[string]*mcp.CallToolRequest{
 		"no token":    {Extra: &mcp.RequestExtra{}},
 		"not a user":  requestFor("client-3", "app", oauthserver.ScopeCatalogRead),
 		"wrong scope": requestFor("7", "app", oauthserver.ScopeProgressRead),
 	} {
-		_, _, denied := s.admit(req, oauthserver.ScopeCatalogRead, ClassCatalogue)
+		_, _, denied := server.admit(req, oauthserver.ScopeCatalogRead, ClassCatalogue)
 		require.NotNil(t, denied, name)
 		assert.True(t, denied.IsError, name)
 	}

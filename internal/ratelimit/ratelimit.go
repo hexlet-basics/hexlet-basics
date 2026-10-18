@@ -64,17 +64,17 @@ func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
 	defer l.mu.Unlock()
 
 	current := make([]*keyWindow, len(charges))
-	for i, c := range charges {
-		w := l.windows[c.Key]
+	for i, charge := range charges {
+		w := l.windows[charge.Key]
 		if w != nil && now.Sub(w.start) >= l.window {
-			delete(l.windows, c.Key)
+			delete(l.windows, charge.Key)
 
 			w = nil
 		}
 
 		current[i] = w
 		switch {
-		case w != nil && w.count >= c.Limit:
+		case w != nil && w.count >= charge.Limit:
 			wait = max(wait, w.start.Add(l.window).Sub(now))
 		case w == nil && len(l.windows) >= maxTracked:
 			l.pruneLocked(now)
@@ -89,13 +89,13 @@ func (l *Limiter) Allow(charges ...Charge) (bool, time.Duration) {
 		return false, wait
 	}
 
-	for i, c := range charges {
+	for i, charge := range charges {
 		if current[i] == nil {
 			current[i] = &keyWindow{
 				start: now,
 				count: 0,
 			}
-			l.windows[c.Key] = current[i]
+			l.windows[charge.Key] = current[i]
 		}
 
 		current[i].count++

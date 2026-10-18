@@ -34,10 +34,10 @@ type appEnvKey struct{}
 
 // newValidator registers the two rules the library has no tag for.
 func newValidator() *validator.Validate {
-	v := validator.New(validator.WithRequiredStructEnabled())
+	engine := validator.New(validator.WithRequiredStructEnabled())
 	// origin: scheme and host only, as in https://code-basics.com. A URL with a
 	// path or query would be baked into tokens and links built from it.
-	mustRegister(v, "origin", func(_ context.Context, fl validator.FieldLevel) bool {
+	mustRegister(engine, "origin", func(_ context.Context, fl validator.FieldLevel) bool {
 		u, err := url.Parse(fl.Field().String())
 		if err != nil || u.Host == "" || (u.Scheme != "https" && u.Scheme != "http") {
 			return false
@@ -46,13 +46,13 @@ func newValidator() *validator.Validate {
 		return u.Path == "" && u.RawQuery == "" && u.Fragment == "" && u.User == nil
 	})
 	// notdevsecret: in production a secret must not be a public development value.
-	mustRegister(v, "notdevsecret", func(ctx context.Context, fl validator.FieldLevel) bool {
+	mustRegister(engine, "notdevsecret", func(ctx context.Context, fl validator.FieldLevel) bool {
 		env, _ := ctx.Value(appEnvKey{}).(AppEnv)
 
 		return env != Production || !strings.HasPrefix(fl.Field().String(), developmentSecretPrefix)
 	})
 
-	return v
+	return engine
 }
 
 func mustRegister(v *validator.Validate, tag string, fn validator.FuncCtx) {
@@ -119,20 +119,20 @@ func violations(value any, prefix string, appEnv AppEnv) []string {
 }
 
 // describe states the violated rule without the offending value.
-func describe(fe validator.FieldError) string {
-	switch fe.Tag() {
+func describe(fieldError validator.FieldError) string {
+	switch fieldError.Tag() {
 	case "required":
 		return "is required"
 	case "oneof":
-		return "must be one of: " + fe.Param()
+		return "must be one of: " + fieldError.Param()
 	case "origin":
 		return "must be a bare origin such as https://code-basics.com (scheme and host, no path)"
 	case "notdevsecret":
 		return "must differ from the public development value"
 	case "min", "gte":
-		return "must be at least " + fe.Param()
+		return "must be at least " + fieldError.Param()
 	default:
-		return "is invalid (" + fe.Tag() + ")"
+		return "is invalid (" + fieldError.Tag() + ")"
 	}
 }
 
@@ -142,15 +142,15 @@ func describe(fe validator.FieldError) string {
 func envName(root reflect.Type, namespace string) string {
 	segments := strings.Split(namespace, ".")[1:] // the first is the root type
 
-	t := root
-	for t.Kind() == reflect.Pointer {
-		t = t.Elem()
+	typeValue := root
+	for typeValue.Kind() == reflect.Pointer {
+		typeValue = typeValue.Elem()
 	}
 
 	prefix := ""
 
 	for i, seg := range segments {
-		field, ok := t.FieldByName(seg)
+		field, ok := typeValue.FieldByName(seg)
 		if !ok {
 			return namespace
 		}
@@ -160,7 +160,7 @@ func envName(root reflect.Type, namespace string) string {
 		}
 
 		prefix += field.Tag.Get("envPrefix")
-		t = field.Type
+		typeValue = field.Type
 	}
 
 	return namespace

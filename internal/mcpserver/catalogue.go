@@ -53,13 +53,13 @@ var errPageArguments = errors.New("page and perPage must be at least 1")
 // resolve checks the arguments and applies the page size limit: a perPage above
 // the limit is clamped (not refused, an agent asking for "everything" still gets
 // a useful page) and note says so for the text of the result.
-func (s *Server) resolve(a pageArgs) (int, int, string, error) {
-	if a.Page < 0 || a.PerPage < 0 {
+func (s *Server) resolve(args pageArgs) (int, int, string, error) {
+	if args.Page < 0 || args.PerPage < 0 {
 		return 0, 0, "", userError{errPageArguments}
 	}
 
-	page := max(a.Page, 1)
-	perPage := a.PerPage
+	page := max(args.Page, 1)
+	perPage := args.PerPage
 
 	var note string
 
@@ -163,19 +163,19 @@ func (s *Server) addCatalogueTools(server *mcp.Server) error {
 		}, s.getBlogPost},
 	}
 
-	for _, t := range specs {
-		spec := t.spec
-		spec.name = t.name
+	for _, toolEntry := range specs {
+		spec := toolEntry.spec
+		spec.name = toolEntry.name
 		spec.scope = oauthserver.ScopeCatalogRead
 		spec.class = ClassCatalogue
 
-		output, err := s.outputSchema(t.name)
+		output, err := s.outputSchema(toolEntry.name)
 		if err != nil {
-			return errs.With("tool", t.name).Wrapf(err, "build output schema")
+			return errs.With("tool", toolEntry.name).Wrapf(err, "build output schema")
 		}
 
 		spec.output = output
-		s.addTool(server, spec, t.run)
+		s.addTool(server, spec, toolEntry.run)
 	}
 
 	return nil

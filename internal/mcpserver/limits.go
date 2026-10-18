@@ -105,31 +105,31 @@ func DefaultLimits() Limits {
 }
 
 func (l Limits) withDefaults() Limits {
-	d := DefaultLimits()
+	limits := DefaultLimits()
 	fill := func(v *int, def int) {
 		if *v <= 0 {
 			*v = def
 		}
 	}
-	fill(&l.MaxPageSize, d.MaxPageSize)
-	fill(&l.MaxResponseBytes, d.MaxResponseBytes)
-	fill(&l.User.Catalogue, d.User.Catalogue)
-	fill(&l.User.Personal, d.User.Personal)
-	fill(&l.User.Write, d.User.Write)
-	fill(&l.Client.Catalogue, d.Client.Catalogue)
-	fill(&l.Client.Personal, d.Client.Personal)
-	fill(&l.Client.Write, d.Client.Write)
+	fill(&l.MaxPageSize, limits.MaxPageSize)
+	fill(&l.MaxResponseBytes, limits.MaxResponseBytes)
+	fill(&l.User.Catalogue, limits.User.Catalogue)
+	fill(&l.User.Personal, limits.User.Personal)
+	fill(&l.User.Write, limits.User.Write)
+	fill(&l.Client.Catalogue, limits.Client.Catalogue)
+	fill(&l.Client.Personal, limits.Client.Personal)
+	fill(&l.Client.Write, limits.Client.Write)
 
 	if l.ToolTimeout <= 0 {
-		l.ToolTimeout = d.ToolTimeout
+		l.ToolTimeout = limits.ToolTimeout
 	}
 
 	if l.RateWindow <= 0 {
-		l.RateWindow = d.RateWindow
+		l.RateWindow = limits.RateWindow
 	}
 
 	if l.Now == nil {
-		l.Now = d.Now
+		l.Now = limits.Now
 	}
 
 	return l

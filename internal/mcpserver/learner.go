@@ -110,13 +110,13 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 	return nil
 }
 
-func (s *Server) myDashboard(ctx context.Context, c call) (result, error) {
+func (s *Server) myDashboard(ctx context.Context, request call) (result, error) {
 	// Nothing is declared, so anything sent (a userId, say) is refused.
-	if err := c.decode(&struct{}{}); err != nil {
+	if err := request.decode(&struct{}{}); err != nil {
 		return result{}, err
 	}
 
-	dashboard, err := s.deps.MyDashboard(ctx, c.userID)
+	dashboard, err := s.deps.MyDashboard(ctx, request.userID)
 	if err != nil {
 		return result{}, err
 	}
@@ -138,13 +138,13 @@ type lessonProgressArgs struct {
 	LessonSlug string `json:"lessonSlug"` //nolint:tagliatelle // an MCP tool argument is named as in the contract, camelCase
 }
 
-func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
+func (s *Server) myCourseProgress(ctx context.Context, request call) (result, error) {
 	var args courseArgs
-	if err := c.decode(&args); err != nil {
+	if err := request.decode(&args); err != nil {
 		return result{}, err
 	}
 
-	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
+	course, err := s.learnerCourse(ctx, request.userID, args.CourseSlug)
 	if err != nil {
 		return result{}, err
 	}
@@ -167,9 +167,9 @@ func (s *Server) myCourseProgress(ctx context.Context, c call) (result, error) {
 	}, nil
 }
 
-func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
+func (s *Server) myLessonProgress(ctx context.Context, request call) (result, error) {
 	var args lessonProgressArgs
-	if err := c.decode(&args); err != nil {
+	if err := request.decode(&args); err != nil {
 		return result{}, err
 	}
 
@@ -177,24 +177,24 @@ func (s *Server) myLessonProgress(ctx context.Context, c call) (result, error) {
 		return result{}, userError{errLessonSlugRequired}
 	}
 
-	course, err := s.learnerCourse(ctx, c.userID, args.CourseSlug)
+	course, err := s.learnerCourse(ctx, request.userID, args.CourseSlug)
 	if err != nil {
 		return result{}, err
 	}
 
-	for _, l := range course.Lessons {
-		if l.Slug != args.LessonSlug {
+	for _, learnerLesson := range course.Lessons {
+		if learnerLesson.Slug != args.LessonSlug {
 			continue
 		}
 
 		return result{
-			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, l.Slug, l.State),
+			text: fmt.Sprintf("%s/%s: %s", course.CourseSlug, learnerLesson.Slug, learnerLesson.State),
 			data: map[string]any{
 				"courseSlug":  course.CourseSlug,
-				"lessonSlug":  l.Slug,
-				"position":    l.Position,
-				"state":       l.State,
-				"passedCheck": l.State == progress.StateFinished,
+				"lessonSlug":  learnerLesson.Slug,
+				"position":    learnerLesson.Position,
+				"state":       learnerLesson.State,
+				"passedCheck": learnerLesson.State == progress.StateFinished,
 			},
 			list: nil,
 		}, nil

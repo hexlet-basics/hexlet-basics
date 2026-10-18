@@ -28,7 +28,7 @@ func TestAnAdminWriteIsDecidedFromTheContractNotFromAList(t *testing.T) {
 func TestAnOperationOnlyAnAccessMarkerClassifiesIsJudgedByItsMethod(t *testing.T) {
 	t.Parallel()
 
-	d, err := permissioncatalog.Parse([]byte(`
+	declarations, err := permissioncatalog.Parse([]byte(`
 paths:
   /a:
     get:
@@ -46,7 +46,7 @@ paths:
       operationId: publicPut
 `))
 	require.NoError(t, err)
-	assert.Equal(t, []string{"AdminBareDelete", "AdminWriteThing"}, d.AdminWrites())
+	assert.Equal(t, []string{"AdminBareDelete", "AdminWriteThing"}, declarations.AdminWrites())
 }
 
 func TestAStandaloneOperationIsReadFromTheContract(t *testing.T) {

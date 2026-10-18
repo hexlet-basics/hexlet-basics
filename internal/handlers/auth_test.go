@@ -169,14 +169,14 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	var me struct {
+	var record struct {
 		User *struct {
 			Email string `json:"email"`
 		} `json:"user"`
 	}
-	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
-	require.NotNil(t, me.User)
-	assert.Equal(t, email, me.User.Email)
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&record))
+	require.NotNil(t, record.User)
+	assert.Equal(t, email, record.User.Email)
 
 	// Without the cookie, /me is anonymous, not an error.
 	resp = do(t, router, http.MethodGet, "/api/me", "", nil)
@@ -198,9 +198,9 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	// Login and signup issue equivalent cookies that resolve through /me.
 	resp = do(t, router, http.MethodGet, "/api/me", "", loginCookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
-	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
-	require.NotNil(t, me.User)
-	assert.Equal(t, email, me.User.Email)
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&record))
+	require.NotNil(t, record.User)
+	assert.Equal(t, email, record.User.Email)
 
 	// A wrong password is rejected with a 422 validation error.
 	resp = do(t, router, http.MethodPost, "/api/session",
@@ -256,14 +256,14 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	var me struct {
+	var record struct {
 		User *struct {
 			Email string `json:"email"`
 		} `json:"user"`
 	}
-	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
-	require.NotNil(t, me.User)
-	assert.Equal(t, newEmail, me.User.Email)
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&record))
+	require.NotNil(t, record.User)
+	assert.Equal(t, newEmail, record.User.Email)
 }
 
 func TestAuthLogoutClearsCookie(t *testing.T) {

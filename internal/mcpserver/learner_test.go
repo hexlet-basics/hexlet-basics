@@ -98,22 +98,22 @@ func TestCourseProgressToolTellsFinishedStartedAndNotStarted(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	args := map[string]any{"courseSlug": jsCourse}
 
-	a := structured(t, callTool(t, learnerSession(t, o, alice()), "getMyCourseProgress", args))
-	b := structured(t, callTool(t, learnerSession(t, o, bob()), "getMyCourseProgress", args))
-	c := structured(t, callTool(t, learnerSession(t, o, carol()), "getMyCourseProgress", args))
+	first := structured(t, callTool(t, learnerSession(t, o, alice()), "getMyCourseProgress", args))
+	second := structured(t, callTool(t, learnerSession(t, o, bob()), "getMyCourseProgress", args))
+	third := structured(t, callTool(t, learnerSession(t, o, carol()), "getMyCourseProgress", args))
 
-	assert.Equal(t, "started", a["state"])
-	assert.InDelta(t, float64(33), a["completion"], 0.001)
-	assert.Equal(t, "variables", a["nextLesson"])
-	assert.Equal(t, map[string]string{"hello-world": "finished", "variables": "not_started", "strings": "not_started"}, lessonStates(t, a))
+	assert.Equal(t, "started", first["state"])
+	assert.InDelta(t, float64(33), first["completion"], 0.001)
+	assert.Equal(t, "variables", first["nextLesson"])
+	assert.Equal(t, map[string]string{"hello-world": "finished", "variables": "not_started", "strings": "not_started"}, lessonStates(t, first))
 
 	// Bob's rows are his: he started variables, and alice's finished lesson is
 	// not his.
-	assert.Equal(t, map[string]string{"hello-world": "not_started", "variables": "started", "strings": "not_started"}, lessonStates(t, b))
-	assert.Equal(t, "hello-world", b["nextLesson"])
+	assert.Equal(t, map[string]string{"hello-world": "not_started", "variables": "started", "strings": "not_started"}, lessonStates(t, second))
+	assert.Equal(t, "hello-world", second["nextLesson"])
 
-	assert.Equal(t, "not_started", c["state"])
-	assert.InDelta(t, float64(0), c["completion"], 0.001)
+	assert.Equal(t, "not_started", third["state"])
+	assert.InDelta(t, float64(0), third["completion"], 0.001)
 }
 
 func TestLessonProgressToolNeverShowsAnotherUsersLesson(t *testing.T) {
@@ -136,48 +136,48 @@ func TestLessonProgressToolNeverShowsAnotherUsersLesson(t *testing.T) {
 
 func TestLearnerToolsRefuseAnArgumentThatNamesAUser(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice())
+	clientSession := learnerSession(t, o, alice())
 
 	for _, args := range []map[string]any{
 		{"courseSlug": jsCourse, "userId": bob()},
 		{"courseSlug": jsCourse, "user_id": bob()},
 		{"courseSlug": jsCourse, "email": "bob@example.com"},
 	} {
-		result := callTool(t, s, "getMyCourseProgress", args)
+		result := callTool(t, clientSession, "getMyCourseProgress", args)
 		assert.True(t, result.IsError, "%v", args)
 		assert.Nil(t, result.StructuredContent)
 	}
 
-	assert.True(t, callTool(t, s, "getMyDashboard", map[string]any{"userId": bob()}).IsError)
-	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": "variables", "userId": bob()}).IsError)
+	assert.True(t, callTool(t, clientSession, "getMyDashboard", map[string]any{"userId": bob()}).IsError)
+	assert.True(t, callTool(t, clientSession, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": "variables", "userId": bob()}).IsError)
 }
 
 func TestLearnerToolsReportWhatIsMissing(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice())
+	clientSession := learnerSession(t, o, alice())
 
 	for name, args := range map[string]map[string]any{
 		"getMyCourseProgress": {"courseSlug": "no-such-course"},
 		"getMyLessonProgress": {"courseSlug": jsCourse, "lessonSlug": "no-such-lesson"},
 	} {
-		assert.True(t, callTool(t, s, name, args).IsError, name)
+		assert.True(t, callTool(t, clientSession, name, args).IsError, name)
 	}
 
-	assert.True(t, callTool(t, s, "getMyCourseProgress", nil).IsError, "an empty course slug is refused")
-	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse}).IsError)
-	assert.True(t, callTool(t, s, "getMyCourseProgress", map[string]any{"courseSlug": 7}).IsError, "a malformed argument")
+	assert.True(t, callTool(t, clientSession, "getMyCourseProgress", nil).IsError, "an empty course slug is refused")
+	assert.True(t, callTool(t, clientSession, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse}).IsError)
+	assert.True(t, callTool(t, clientSession, "getMyCourseProgress", map[string]any{"courseSlug": 7}).IsError, "a malformed argument")
 }
 
 func TestLearnerToolsRefuseATokenWithoutTheProgressReadScope(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice(), oauthserver.ScopeCatalogRead)
+	clientSession := learnerSession(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	for name, args := range map[string]map[string]any{
 		"getMyDashboard":      nil,
 		"getMyCourseProgress": {"courseSlug": jsCourse},
 		"getMyLessonProgress": {"courseSlug": jsCourse, "lessonSlug": "variables"},
 	} {
-		result := callTool(t, s, name, args)
+		result := callTool(t, clientSession, name, args)
 		assert.True(t, result.IsError, name)
 		assert.Nil(t, result.StructuredContent, name)
 	}
@@ -205,9 +205,9 @@ func keys(node any, into *[]string) {
 
 func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice())
+	clientSession := learnerSession(t, o, alice())
 
-	tools, err := s.ListTools(t.Context(), nil)
+	tools, err := clientSession.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
 	var learnerTools int
@@ -237,7 +237,7 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 		"getMyCourseProgress": {"courseSlug": jsCourse},
 		"getMyLessonProgress": {"courseSlug": jsCourse, "lessonSlug": "hello-world"},
 	} {
-		result := callTool(t, s, name, args)
+		result := callTool(t, clientSession, name, args)
 
 		var names []string
 		keys(result.StructuredContent, &names)

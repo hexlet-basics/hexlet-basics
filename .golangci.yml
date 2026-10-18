@@ -11,7 +11,6 @@ linters:
     - exhaustive # ticket #910, blocked by two known MCP bugs
     - nilerr # ticket #910, blocked by two known MCP bugs
     # Pending: enabled by the commits that follow, each with its findings fixed.
-    - varnamelen
     - paralleltest
     - tparallel
     - lll
@@ -23,6 +22,36 @@ linters:
     - gocognit
     - nestif
   settings:
+    varnamelen:
+      # The names Go code reads by convention: an index, an id, the comma-ok
+      # boolean, a transaction, a database client, an HTTP writer and request.
+      ignore-names:
+        - i
+        - id
+        - ok
+        - tx
+        - db
+        - w
+        - r
+        - n
+        - to
+        - ip
+        - in
+        - op
+        - tc
+        - tt
+        - wg
+        - mu
+        - fn
+      # The handles every test of a package passes around: the harness (h), the
+      # OAuth fixture (o) and the application under test (a).
+      ignore-decls:
+        - h *testsupport.Harness
+        - o *testsupport.OAuth
+        - t *testing.T
+        - db *ent.Client
+        - u *ent.User
+        - c *ent.Client
     wrapcheck:
       # An error that comes from another package of this module was wrapped where
       # it was made (ADR-0018: wrapped once, at the package boundary), so passing

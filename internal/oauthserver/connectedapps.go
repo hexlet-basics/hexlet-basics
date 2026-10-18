@@ -83,25 +83,25 @@ func (s *Server) ConnectedApps(ctx context.Context) ([]ConnectedApp, error) {
 	// is stamped by the process clock (and without a zone), while expiry and
 	// auth_time follow the injected clock the rest of the package runs on.
 	see := func(clientID string, connected, issued time.Time, scopes []string, live bool) {
-		g := byClient[clientID]
-		if g == nil {
-			g = &grants{
+		grant := byClient[clientID]
+		if grant == nil {
+			grant = &grants{
 				connectedAt: connected,
 				live:        false,
 				newest:      time.Time{},
 				scopes:      nil,
 			}
-			byClient[clientID] = g
+			byClient[clientID] = grant
 		}
 
-		if connected.Before(g.connectedAt) {
-			g.connectedAt = connected
+		if connected.Before(grant.connectedAt) {
+			grant.connectedAt = connected
 		}
 
 		if live {
-			g.live = true
-			if issued.After(g.newest) {
-				g.newest, g.scopes = issued, scopes
+			grant.live = true
+			if issued.After(grant.newest) {
+				grant.newest, grant.scopes = issued, scopes
 			}
 		}
 	}

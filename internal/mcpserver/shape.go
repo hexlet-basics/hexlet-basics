@@ -57,31 +57,31 @@ func trimInput(node any) any {
 	switch n := node.(type) {
 	case map[string]any:
 		out := make(map[string]any, len(n))
-		for k, v := range n {
+		for key, value := range n {
 			switch {
-			case k == "title" || k == "example" || k == "examples" || strings.HasPrefix(k, "x-"):
+			case key == "title" || key == "example" || key == "examples" || strings.HasPrefix(key, "x-"):
 				continue
-			case k == "format" && slices.Contains([]any{"int32", "int64", "float", "double"}, v):
+			case key == "format" && slices.Contains([]any{"int32", "int64", "float", "double"}, value):
 				// The width of a number says nothing an agent can use; date-time
 				// and email do, and stay.
 				continue
-			case k == "description":
-				if text, ok := v.(string); ok {
-					out[k] = firstSentence(text, maxDescription)
+			case key == "description":
+				if text, ok := value.(string); ok {
+					out[key] = firstSentence(text, maxDescription)
 				}
-			case k == "properties":
-				properties, _ := v.(map[string]any)
+			case key == "properties":
+				properties, _ := value.(map[string]any)
 
 				trimmed := make(map[string]any, len(properties))
 				for name, property := range properties {
 					trimmed[name] = trimInput(property)
 				}
 
-				out[k] = trimmed
-			case k == "enum" || k == "required" || k == "const" || k == "default":
-				out[k] = v
+				out[key] = trimmed
+			case key == "enum" || key == "required" || key == "const" || key == "default":
+				out[key] = value
 			default:
-				out[k] = trimInput(v)
+				out[key] = trimInput(value)
 			}
 		}
 

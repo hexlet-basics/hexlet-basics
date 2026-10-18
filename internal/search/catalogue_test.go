@@ -143,14 +143,14 @@ func TestWhatAVisitorCannotReadIsNotFoundUntilItIsPublic(t *testing.T) {
 	}
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			c, db := newCatalogue(t)
+			catalogue, db := newCatalogue(t)
 			if tc.hide != nil {
 				tc.hide(t.Context(), db)
 			}
 
-			before, _ := ask(t, c, tc.locale, tc.text)
+			before, _ := ask(t, catalogue, tc.locale, tc.text)
 			tc.reveal(t.Context(), db)
-			after, _ := ask(t, c, tc.locale, tc.text)
+			after, _ := ask(t, catalogue, tc.locale, tc.text)
 
 			assert.NotContains(t, ids(before), tc.hidden)
 			assert.Contains(t, ids(after), tc.hidden)
@@ -162,20 +162,20 @@ func TestWhatAVisitorCannotReadIsNotFoundUntilItIsPublic(t *testing.T) {
 // completed, or its landing pages are not published, its lessons leave search
 // with it.
 func TestALessonIsFoundOnlyWhileItsCourseIsOnTheCourseList(t *testing.T) {
-	c, db := newCatalogue(t)
+	catalogue, db := newCatalogue(t)
 
 	const lesson = "lesson:ruby/hello-world-ruby"
 
-	found, _ := ask(t, c, "ru", "первая программа", search.Lesson)
+	found, _ := ask(t, catalogue, "ru", "первая программа", search.Lesson)
 	require.Contains(t, ids(found), lesson)
 
 	db.Course.Update().Where(course.SlugEQ("ruby")).SetReadiness("in_development").ExecX(t.Context())
-	hits, _ := ask(t, c, "ru", "первая программа", search.Lesson)
+	hits, _ := ask(t, catalogue, "ru", "первая программа", search.Lesson)
 	assert.NotContains(t, ids(hits), lesson, "a course in development")
 
 	db.Course.Update().Where(course.SlugEQ("ruby")).SetReadiness("completed").ExecX(t.Context())
 	db.CourseLandingPage.Update().Where(courselandingpage.HasCourseWith(course.SlugEQ("ruby"))).SetState("draft").ExecX(t.Context())
-	hits, _ = ask(t, c, "ru", "первая программа", search.Lesson)
+	hits, _ = ask(t, catalogue, "ru", "первая программа", search.Lesson)
 	assert.NotContains(t, ids(hits), lesson, "a course whose landing pages are drafts")
 }
 
@@ -219,14 +219,14 @@ func TestTheTypeFilterNarrowsTheAnswerAndItsTotal(t *testing.T) {
 }
 
 func TestPagesOfAnAnswerAreTheAnswerInOrderWithoutGapsOrRepeats(t *testing.T) {
-	c, _ := newCatalogue(t)
-	whole, total := ask(t, c, "ru", "Привет")
+	catalogue, _ := newCatalogue(t)
+	whole, total := ask(t, catalogue, "ru", "Привет")
 	require.Greater(t, total, 3, "the fixtures have several lessons that greet")
 
 	var paged []search.Hit
 
 	for offset := 0; offset < total; offset += 3 {
-		hits, pagedTotal, err := c.Search(t.Context(), search.Query{
+		hits, pagedTotal, err := catalogue.Search(t.Context(), search.Query{
 			Text: "Привет", Locale: "ru", Page: domain.Page{Offset: offset, Limit: 3},
 			Types:        nil,
 			Unrestricted: false,
@@ -308,14 +308,14 @@ func TestNoLearnerWrittenTextIsSearched(t *testing.T) {
 // content stay unread by it and by the read of a record.
 func TestAnEditorsSearchAndFetchReadNoLearnerWrittenText(t *testing.T) {
 	client, queries, _ := recording(t)
-	c := search.NewCatalogue(client)
+	catalogue := search.NewCatalogue(client)
 
-	assert.Empty(t, askAsEditor(t, c, "ru", "Отличный"))
+	assert.Empty(t, askAsEditor(t, catalogue, "ru", "Отличный"))
 
 	for _, id := range []string{"course:ruby-ru", "lesson:ruby/hello-world-ruby", "post:learning-ruby"} {
 		ref, err := search.ParseID(id)
 		require.NoError(t, err)
-		rec, err := c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: "ru"})
+		rec, err := catalogue.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: "ru"})
 		require.NoError(t, err, id)
 		assert.NotContains(t, rec.Text, "Отличный курс")
 	}
@@ -500,28 +500,28 @@ func TestAnEditorsSearchFindsWhatIsNotPublicAndSaysItsState(t *testing.T) {
 }
 
 func TestAnEditorsSearchFindsAnUnlistedPageACourseInDevelopmentAndItsLessons(t *testing.T) {
-	c, db := newCatalogue(t)
+	catalogue, db := newCatalogue(t)
 	db.CourseLandingPage.Update().Where(courselandingpage.SlugEQ("ruby-ru")).SetListed(false).ExecX(t.Context())
 	db.Course.Update().Where(course.SlugEQ("ruby")).SetReadiness("in_development").ExecX(t.Context())
 
-	pages := askAsEditor(t, c, "ru", "Ruby", search.Course)
-	lessons := askAsEditor(t, c, "ru", "первая программа", search.Lesson)
+	pages := askAsEditor(t, catalogue, "ru", "Ruby", search.Course)
+	lessons := askAsEditor(t, catalogue, "ru", "первая программа", search.Lesson)
 
 	page := hitOf(t, pages, "course:ruby-ru")
 	assert.Equal(t, "published", page.State, "unlisted is not a state: the page is published and off the list")
 	assert.Equal(t, "in_development", page.Readiness)
 	assert.Equal(t, "in_development", hitOf(t, lessons, "lesson:ruby/hello-world-ruby").Readiness)
-	public, _ := ask(t, c, "ru", "первая программа", search.Lesson)
+	public, _ := ask(t, catalogue, "ru", "первая программа", search.Lesson)
 	assert.NotContains(t, ids(public), "lesson:ruby/hello-world-ruby")
 }
 
 func TestAnEditorsSearchFindsALessonOnceThoughEveryBuildTranslatesIt(t *testing.T) {
-	c, _ := newCatalogue(t)
+	catalogue, _ := newCatalogue(t)
 
 	// The JavaScript hello-world lesson has an English translation in the current
 	// build ("Hello, World!") and one in a retired build ("Old Hello"): one lesson,
 	// so one hit, taken from the newest build.
-	hits := askAsEditor(t, c, "en", "Hello", search.Lesson)
+	hits := askAsEditor(t, catalogue, "en", "Hello", search.Lesson)
 
 	var found []string
 
@@ -534,7 +534,7 @@ func TestAnEditorsSearchFindsALessonOnceThoughEveryBuildTranslatesIt(t *testing.
 	assert.Len(t, found, 1)
 
 	seen := map[string]bool{}
-	for _, hit := range askAsEditor(t, c, "ru", "Привет", search.Lesson) {
+	for _, hit := range askAsEditor(t, catalogue, "ru", "Привет", search.Lesson) {
 		assert.False(t, seen[hit.ID], "%s once", hit.ID)
 		seen[hit.ID] = true
 	}
@@ -548,13 +548,13 @@ func TestAnEditorsSearchStaysWithinTheLocaleItIsAskedIn(t *testing.T) {
 }
 
 func TestAnEditorFetchesWhatIsNotPublic(t *testing.T) {
-	c, _ := newCatalogue(t)
+	catalogue, _ := newCatalogue(t)
 	fetch := func(id, locale string) *search.Record {
 		t.Helper()
 
 		ref, err := search.ParseID(id)
 		require.NoError(t, err)
-		rec, err := c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
+		rec, err := catalogue.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
 		require.NoError(t, err, id)
 
 		return rec
@@ -584,7 +584,7 @@ func TestAnEditorFetchesWhatIsNotPublic(t *testing.T) {
 }
 
 func TestFetchOfWhatIsNotThereIsNotFound(t *testing.T) {
-	c, _ := newCatalogue(t)
+	catalogue, _ := newCatalogue(t)
 
 	for id, locale := range map[string]string{
 		"course:no-such-course":             "ru",
@@ -595,7 +595,7 @@ func TestFetchOfWhatIsNotThereIsNotFound(t *testing.T) {
 		ref, err := search.ParseID(id)
 		require.NoError(t, err)
 
-		_, err = c.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
+		_, err = catalogue.Fetch(t.Context(), search.FetchRecord{Ref: ref, Locale: locale})
 
 		assert.ErrorIs(t, err, domain.ErrNotFound, id)
 	}

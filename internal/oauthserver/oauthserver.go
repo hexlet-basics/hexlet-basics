@@ -163,7 +163,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 
 	key := sha256.Sum256([]byte(deps.Config.EncryptionKey))
 	signing := deriveSigningKey(deps.Config.EncryptionKey)
-	st := &storage{
+	backing := &storage{
 		db:       deps.DB,
 		tx:       deps.Transactor,
 		issuer:   deps.Config.Issuer,
@@ -212,7 +212,7 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		SupportedScopes: []string{
 			ScopeCatalogRead, ScopeProgressRead, ScopeAdmin, "offline_access",
 		},
-	}, st, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
+	}, backing, op.StaticIssuer(deps.Config.Issuer), providerOpts...)
 	if err != nil {
 		return nil, errs.Wrapf(err, "build provider")
 	}
@@ -222,8 +222,8 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		clientAddress = func(context.Context) (string, bool) { return "", false }
 	}
 
-	s := &Server{
-		issuer: deps.Config.Issuer, resource: st.resource, signedIn: deps.SignedIn, storage: st, provider: provider,
+	server := &Server{
+		issuer: deps.Config.Issuer, resource: backing.resource, signedIn: deps.SignedIn, storage: backing, provider: provider,
 		limiter:        newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now),
 		clientAddress:  clientAddress,
 		documents:      nil,
@@ -231,13 +231,13 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		handler:        nil,
 	}
 	for _, opt := range opts {
-		opt(s)
+		opt(server)
 	}
 
-	s.documents = newDocumentClients(s.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
-	s.handler = s.routes()
+	server.documents = newDocumentClients(server.metadataClient, newLimiter(deps.Config.RegistrationLimit, deps.Config.RegistrationWindow, deps.Now), deps.DB, deps.Now)
+	server.handler = server.routes()
 
-	return s, nil
+	return server, nil
 }
 
 // Handler serves every public path of the server: /oauth/* and the two

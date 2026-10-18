@@ -107,13 +107,13 @@ func exampleOf(schema map[string]any) any {
 			part, _ := p.(map[string]any)
 			example := exampleOf(part)
 
-			m, isObject := example.(map[string]any)
+			combined, isObject := example.(map[string]any)
 			if !isObject {
 				// A scalar branch (a named enum) is the value itself.
 				return example
 			}
 
-			maps.Copy(merged, m)
+			maps.Copy(merged, combined)
 		}
 
 		return merged

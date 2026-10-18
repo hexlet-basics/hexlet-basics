@@ -50,13 +50,13 @@ func TestAClientWithAMetadataDocumentCompletesTheFlowAndRefreshes(t *testing.T) 
 	doc["scope"] = "catalog:read offline_access"
 	id := o.Documents.Publish("/oauth/client.json", doc)
 
-	f := authorizeDocument(o, id, documentRedirect, "catalog:read")
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	require.NotEmpty(t, f.RequestID)
+	authFlow := authorizeDocument(o, id, documentRedirect, "catalog:read")
+	require.Equal(t, http.StatusFound, authFlow.Authorize.StatusCode)
+	require.NotEmpty(t, authFlow.RequestID)
 
 	// The consent screen names the client from its document and shows where the
 	// user will be sent back to.
-	flow := o.Do(http.MethodGet, "/api/oauth/consents/"+f.RequestID, nil, func(r *http.Request) {
+	flow := o.Do(http.MethodGet, "/api/oauth/consents/"+authFlow.RequestID, nil, func(r *http.Request) {
 		r.AddCookie(testsupport.SessionFor(t, o.DB, alice()).Cookie)
 	})
 	require.Equal(t, http.StatusOK, flow.StatusCode)
@@ -64,7 +64,7 @@ func TestAClientWithAMetadataDocumentCompletesTheFlowAndRefreshes(t *testing.T) 
 	assert.Equal(t, "Document client", consent["clientName"])
 	assert.Equal(t, "app.example.com", consent["redirectHost"])
 
-	tokens, exchange := f.Exchange(f.Approve(), testsupport.PKCEVerifier())
+	tokens, exchange := authFlow.Exchange(authFlow.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)

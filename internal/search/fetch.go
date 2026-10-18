@@ -98,16 +98,16 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 
 	title := titleOf(cmd.Ref.Slug, page.Name, page.Header)
 
-	var d body
-	d.title(title)
+	var doc body
+	doc.title(title)
 
 	if header := strings.TrimSpace(lo.FromPtr(page.Header)); header != title {
-		d.section("", header)
+		doc.section("", header)
 	}
 
-	d.section("", lo.FromPtr(page.Description))
-	d.section(firstOf(lo.FromPtr(page.OutcomesHeader), "What you will learn"), lo.FromPtr(page.OutcomesDescription))
-	d.section(lo.FromPtr(page.UsedInHeader), lo.FromPtr(page.UsedInDescription))
+	doc.section("", lo.FromPtr(page.Description))
+	doc.section(firstOf(lo.FromPtr(page.OutcomesHeader), "What you will learn"), lo.FromPtr(page.OutcomesDescription))
+	doc.section(lo.FromPtr(page.UsedInHeader), lo.FromPtr(page.UsedInDescription))
 
 	// The lessons of the newest build, in order, each with the id that fetches it.
 	courseSlug := ""
@@ -149,10 +149,10 @@ func (c *Catalogue) fetchCourse(ctx context.Context, cmd FetchRecord) (*Record, 
 		list.WriteString("\n")
 	}
 
-	d.section("Lessons", list.String())
+	doc.section("Lessons", list.String())
 
 	return &Record{
-		Type: Course, ID: CourseID(cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Course, ID: CourseID(cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, CourseSlug: courseSlug,
 		State: lo.FromPtr(page.State), Readiness: readinessOf(page.Edges.Course), Listed: page.Listed,
 		Build:    "",
@@ -173,7 +173,7 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 		return nil, errs.Wrapf(err, "load course lesson")
 	}
 	// The newest build the lesson is translated into, as the search finds it.
-	t, err := c.db.CourseLessonTranslation.Query().
+	courseLessonTranslation, err := c.db.CourseLessonTranslation.Query().
 		Where(courselessontranslation.CourseLessonID(lesson.ID), courselessontranslation.LocaleEQ(cmd.Locale)).
 		WithCourseVersion().
 		Order(ent.Desc(courselessontranslation.FieldCourseVersionID)).
@@ -182,24 +182,24 @@ func (c *Catalogue) fetchLesson(ctx context.Context, cmd FetchRecord) (*Record, 
 		return nil, errs.Wrapf(err, "find course lesson translation")
 	}
 
-	title := titleOf(cmd.Ref.Slug, t.Name)
+	title := titleOf(cmd.Ref.Slug, courseLessonTranslation.Name)
 
-	var d body
-	d.title(title)
-	d.section("", lo.FromPtr(t.Description))
-	d.section("Theory", lo.FromPtr(t.Theory))
-	d.section("Exercise", lo.FromPtr(t.Instructions))
+	var doc body
+	doc.title(title)
+	doc.section("", lo.FromPtr(courseLessonTranslation.Description))
+	doc.section("Theory", lo.FromPtr(courseLessonTranslation.Theory))
+	doc.section("Exercise", lo.FromPtr(courseLessonTranslation.Instructions))
 
 	rec := &Record{
-		Type: Lesson, ID: LessonID(cmd.Ref.CourseSlug, cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Lesson, ID: LessonID(cmd.Ref.CourseSlug, cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/languages/"+cmd.Ref.CourseSlug+"/lessons/"+cmd.Ref.Slug),
 		Slug: cmd.Ref.Slug, CourseSlug: cmd.Ref.CourseSlug,
 		State: lo.FromPtr(lesson.State), Readiness: lo.FromPtr(parent.Readiness), Position: lesson.NaturalOrder,
 		Listed: nil,
 		Build:  "",
 	}
-	if t.Edges.CourseVersion != nil {
-		rec.Build = lo.FromPtr(t.Edges.CourseVersion.State)
+	if courseLessonTranslation.Edges.CourseVersion != nil {
+		rec.Build = lo.FromPtr(courseLessonTranslation.Edges.CourseVersion.State)
 	}
 
 	return rec, nil
@@ -216,13 +216,13 @@ func (c *Catalogue) fetchPost(ctx context.Context, cmd FetchRecord) (*Record, er
 
 	title := titleOf(cmd.Ref.Slug, post.Name)
 
-	var d body
-	d.title(title)
-	d.section("", lo.FromPtr(post.Description))
-	d.section("", readable(post.RichBody))
+	var doc body
+	doc.title(title)
+	doc.section("", lo.FromPtr(post.Description))
+	doc.section("", readable(post.RichBody))
 
 	return &Record{
-		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: d.String(),
+		Type: Post, ID: PostID(cmd.Ref.Slug), Title: title, Text: doc.String(),
 		Path: pagePath(cmd.Locale, "/blog_posts/"+cmd.Ref.Slug), Slug: cmd.Ref.Slug, State: lo.FromPtr(post.State),
 		CourseSlug: "",
 		Readiness:  "",

@@ -65,13 +65,13 @@ func TestAGarbledSessionCookieIsNoSession(t *testing.T) {
 	router := newAuthRouter(t)
 	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
-	me := do(t, router, http.MethodGet, "/api/me", "", garbled)
-	require.Equal(t, http.StatusOK, me.StatusCode)
+	response := do(t, router, http.MethodGet, "/api/me", "", garbled)
+	require.Equal(t, http.StatusOK, response.StatusCode)
 
 	var current struct {
 		User *struct{} `json:"user"`
 	}
-	require.NoError(t, json.NewDecoder(me.Body).Decode(&current))
+	require.NoError(t, json.NewDecoder(response.Body).Decode(&current))
 	assert.Nil(t, current.User)
 
 	lead := do(t, router, http.MethodPost, "/api/leads",

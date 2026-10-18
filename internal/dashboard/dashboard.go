@@ -97,27 +97,27 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 
 	var dashboard Courses
 
-	for _, e := range enrollments {
-		card, ok := cards[e.CourseID]
+	for _, enrolled := range enrollments {
+		card, ok := cards[enrolled.CourseID]
 		if !ok {
 			// Skipped, not failed: the learner's page is fine without it, but
 			// the course is a content gap somebody has to hear about.
 			d.log.WarnContext(ctx, "dashboard course has no catalog card",
-				"course_id", e.CourseID, "user_id", userID, "locale", locale)
+				"course_id", enrolled.CourseID, "user_id", userID, "locale", locale)
 
 			continue
 		}
 
-		state := states[e.CourseID]
+		state := states[enrolled.CourseID]
 
 		listed := Course{
-			Enrollment: e,
+			Enrollment: enrolled,
 			Card:       card,
 			State:      state,
 			NextLesson: nil,
 		}
 		if state.NextLessonSlug != nil {
-			if lesson, ok := next[lessonKey{courseID: e.CourseID, slug: *state.NextLessonSlug}]; ok {
+			if lesson, ok := next[lessonKey{courseID: enrolled.CourseID, slug: *state.NextLessonSlug}]; ok {
 				listed.NextLesson = &lesson
 			}
 		}

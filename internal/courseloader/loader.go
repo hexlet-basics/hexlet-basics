@@ -211,27 +211,27 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 
 	totalLessons := 0
 
-	for _, m := range parsed.Modules {
-		moduleID, err := upsertModule(ctx, tx, courseID, m.Slug)
+	for _, module := range parsed.Modules {
+		moduleID, err := upsertModule(ctx, tx, courseID, module.Slug)
 		if err != nil {
 			return err
 		}
 
-		mv, err := tx.CourseModuleVersion.Create().
+		courseModuleVersion, err := tx.CourseModuleVersion.Create().
 			SetCourseID(courseID).
 			SetCourseVersionID(versionID).
 			SetModuleID(moduleID).
-			SetOrder(m.Order).
+			SetOrder(module.Order).
 			Save(ctx)
 		if err != nil {
-			return oops.Wrapf(err, "create module version %q", m.Slug)
+			return oops.Wrapf(err, "create module version %q", module.Slug)
 		}
 
-		moduleInfos := lo.Map(m.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
+		moduleInfos := lo.Map(module.Infos, func(info ModuleInfo, _ int) *ent.CourseModuleTranslationCreate {
 			return tx.CourseModuleTranslation.Create().
 				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
-				SetVersionID(mv.ID).
+				SetVersionID(courseModuleVersion.ID).
 				SetLocale(info.Locale).
 				SetName(info.Name).
 				SetDescription(info.Description)
@@ -241,24 +241,24 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 
 			return errs.Wrapf(err, "save course module translation")
 		}); err != nil {
-			return oops.Wrapf(err, "create module infos %q", m.Slug)
+			return oops.Wrapf(err, "create module infos %q", module.Slug)
 		}
 
 		// A module's lesson infos are written together once its lessons exist: the
 		// translations need the lesson version ids, but not one round trip each.
 		var lessonInfos []*ent.CourseLessonTranslationCreate
 
-		for _, lesson := range m.Lessons {
+		for _, lesson := range module.Lessons {
 			lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
 			if err != nil {
 				return err
 			}
 
-			lv, err := tx.CourseLessonVersion.Create().
+			courseLessonVersion, err := tx.CourseLessonVersion.Create().
 				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
 				SetLessonID(lessonID).
-				SetModuleVersionID(mv.ID).
+				SetModuleVersionID(courseModuleVersion.ID).
 				SetOrder(lesson.Order).
 				SetNaturalOrder(lesson.NaturalOrder).
 				SetTestCode(lesson.TestCode).
@@ -271,7 +271,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 			}
 
 			for _, info := range lesson.Infos {
-				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, lv.ID, info)
+				create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, info)
 				if err != nil {
 					return err
 				}
@@ -287,7 +287,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 
 			return errs.Wrapf(err, "save course lesson translation")
 		}); err != nil {
-			return oops.Wrapf(err, "create lesson infos of module %q", m.Slug)
+			return oops.Wrapf(err, "create lesson infos of module %q", module.Slug)
 		}
 	}
 
@@ -429,13 +429,13 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 	for mi := range parsed.Modules {
 		for li := range parsed.Modules[mi].Lessons {
 			infos := parsed.Modules[mi].Lessons[li].Infos
-			for ii := range infos {
-				theory, err := l.processImages(ctx, infos[ii].Theory, infos[ii].Dir)
+			for index := range infos {
+				theory, err := l.processImages(ctx, infos[index].Theory, infos[index].Dir)
 				if err != nil {
-					return oops.Wrapf(err, "lesson info %s", infos[ii].Locale)
+					return oops.Wrapf(err, "lesson info %s", infos[index].Locale)
 				}
 
-				infos[ii].Theory = theory
+				infos[index].Theory = theory
 			}
 		}
 	}

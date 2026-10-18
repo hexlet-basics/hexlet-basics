@@ -38,7 +38,7 @@ type call struct {
 // decode reads the arguments into v. Unknown arguments are refused rather than
 // ignored: an agent that misspells `perPage` would otherwise get a default page
 // and never learn why.
-func (c call) decode(v any) error {
+func (c call) decode(value any) error {
 	raw := bytes.TrimSpace(c.args)
 	if len(raw) == 0 {
 		raw = []byte("{}")
@@ -47,7 +47,7 @@ func (c call) decode(v any) error {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
 
-	if err := dec.Decode(v); err != nil {
+	if err := dec.Decode(value); err != nil {
 		return userError{errs.Wrapf(err, "invalid arguments")}
 	}
 

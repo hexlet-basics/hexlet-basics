@@ -201,8 +201,8 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	lesson1 := db.CourseLesson.Query().Where(courselesson.CourseID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
-	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
-	require.NoError(t, loader.Run(ctx, v2.ID))
+	secondVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
+	require.NoError(t, loader.Run(ctx, secondVersion.ID))
 
 	modules := db.CourseModule.Query().Where(coursemodule.CourseID(course.ID)).AllX(ctx)
 	require.Len(t, modules, 1)
@@ -214,7 +214,7 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 
 	// Current version is the newest built one.
 	course = db.Course.GetX(ctx, course.ID)
-	assert.Equal(t, v2.ID, *course.CurrentVersionID)
+	assert.Equal(t, secondVersion.ID, *course.CurrentVersionID)
 }
 
 // TestLoaderFailedRebuildKeepsLiveVersion is the load-bearing invariant (legacy
@@ -228,24 +228,24 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	course := db.Course.GetX(ctx, fixture.ID(fixture.CourseLoadable))
 
 	// v1 builds successfully and is promoted live.
-	v1 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
-	require.NoError(t, newLoader(t, db, txStore).Run(ctx, v1.ID))
+	firstVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
+	require.NoError(t, newLoader(t, db, txStore).Run(ctx, firstVersion.ID))
 	course = db.Course.GetX(ctx, course.ID)
-	require.Equal(t, v1.ID, *course.CurrentVersionID)
+	require.Equal(t, firstVersion.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
 	badLoader := newLoaderWith(t, db, txStore, repoFetcher(t.TempDir()))
-	v2 := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
-	require.Error(t, badLoader.Run(ctx, v2.ID))
+	secondVersion := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreatedSecond))
+	require.Error(t, badLoader.Run(ctx, secondVersion.ID))
 
 	// v2 is failed with the error recorded...
-	v2 = db.CourseVersion.GetX(ctx, v2.ID)
-	assert.Equal(t, "failed", derefStr(v2.State))
-	assert.Contains(t, derefStr(v2.Result), "Error")
+	secondVersion = db.CourseVersion.GetX(ctx, secondVersion.ID)
+	assert.Equal(t, "failed", derefStr(secondVersion.State))
+	assert.Contains(t, derefStr(secondVersion.Result), "Error")
 
 	// ...and the live version is STILL v1 — the broken rebuild changed nothing.
 	course = db.Course.GetX(ctx, course.ID)
-	assert.Equal(t, v1.ID, *course.CurrentVersionID)
+	assert.Equal(t, firstVersion.ID, *course.CurrentVersionID)
 }
 
 func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {

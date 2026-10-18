@@ -89,28 +89,28 @@ func (f Filter) Query(db *ent.Client, now time.Time) (*ent.AuditRecordQuery, err
 		return nil, err
 	}
 
-	q := db.AuditRecord.Query().
+	auditRecordQuery := db.AuditRecord.Query().
 		Where(auditrecord.OccurredAtGTE(from), auditrecord.OccurredAtLT(to)).
 		Order(ent.Desc(auditrecord.FieldOccurredAt), ent.Desc(auditrecord.FieldID))
 	if f.ActorUserID != nil {
-		q = q.Where(auditrecord.ActorUserID(*f.ActorUserID))
+		auditRecordQuery = auditRecordQuery.Where(auditrecord.ActorUserID(*f.ActorUserID))
 	}
 
 	if f.Channel != nil {
-		q = q.Where(auditrecord.Channel(string(*f.Channel)))
+		auditRecordQuery = auditRecordQuery.Where(auditrecord.Channel(string(*f.Channel)))
 	}
 
 	if f.Operation != nil {
-		q = q.Where(auditrecord.Operation(*f.Operation))
+		auditRecordQuery = auditRecordQuery.Where(auditrecord.Operation(*f.Operation))
 	}
 
 	if f.EntityType != nil {
-		q = q.Where(auditrecord.EntityType(*f.EntityType))
+		auditRecordQuery = auditRecordQuery.Where(auditrecord.EntityType(*f.EntityType))
 	}
 
 	if f.EntityID != nil {
-		q = q.Where(auditrecord.EntityID(*f.EntityID))
+		auditRecordQuery = auditRecordQuery.Where(auditrecord.EntityID(*f.EntityID))
 	}
 
-	return q, nil
+	return auditRecordQuery, nil
 }

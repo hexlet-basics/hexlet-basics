@@ -139,7 +139,7 @@ func New(deps Deps) (*Server, error) {
 	}
 
 	limits := deps.Limits.withDefaults()
-	s := &Server{
+	server := &Server{
 		deps:     deps,
 		resource: deps.Verifier.Resource(),
 		limits:   limits,
@@ -153,23 +153,23 @@ func New(deps Deps) (*Server, error) {
 		// A tool list differs by caller, so it is private to the one that asked.
 		SetCacheable: markPrivate,
 	})
-	mcpServer.AddReceivingMiddleware(s.filterToolList)
+	mcpServer.AddReceivingMiddleware(server.filterToolList)
 
-	if err := s.addCatalogueTools(mcpServer); err != nil {
+	if err := server.addCatalogueTools(mcpServer); err != nil {
 		return nil, err
 	}
 
-	if err := s.addLearnerTools(mcpServer); err != nil {
+	if err := server.addLearnerTools(mcpServer); err != nil {
 		return nil, err
 	}
 
 	if deps.API != nil {
-		if err := s.addAdminTools(mcpServer); err != nil {
+		if err := server.addAdminTools(mcpServer); err != nil {
 			return nil, err
 		}
 	}
 
-	s.addFindTools(mcpServer)
+	server.addFindTools(mcpServer)
 
 	// Stateless: one request, one response, no sessions and no long-lived
 	// streams, so the load is that of any other API call (ADR-0021). JSON
@@ -183,7 +183,7 @@ func New(deps Deps) (*Server, error) {
 		},
 	)
 	metadataURL := deps.Issuer + metadataPathForResource
-	protected := auth.RequireBearerToken(s.verify, &auth.RequireBearerTokenOptions{
+	protected := auth.RequireBearerToken(server.verify, &auth.RequireBearerTokenOptions{
 		ResourceMetadataURL: metadataURL,
 		// The verifier has already refused an expired token by looking it up
 		// (ADR-0022), and the library does not carry an expiry.
@@ -191,7 +191,7 @@ func New(deps Deps) (*Server, error) {
 	})(streamable)
 
 	resourceMetadata := auth.ProtectedResourceMetadataHandler(&oauthex.ProtectedResourceMetadata{
-		Resource:               s.resource,
+		Resource:               server.resource,
 		AuthorizationServers:   []string{deps.Issuer},
 		ScopesSupported:        []string{oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin},
 		BearerMethodsSupported: []string{"header"},
@@ -202,9 +202,9 @@ func New(deps Deps) (*Server, error) {
 	mux.Handle(Path, protected)
 	mux.Handle(metadataPath, resourceMetadata)
 	mux.Handle(metadataPathForResource, resourceMetadata)
-	s.handler = mux
+	server.handler = mux
 
-	return s, nil
+	return server, nil
 }
 
 // Handler serves the endpoint and its metadata, for the router to mount at Patterns.

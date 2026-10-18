@@ -104,7 +104,7 @@ func Parse(doc []byte) (*Declarations, error) {
 		return nil, errs.Wrapf(err, "parse openapi")
 	}
 
-	d := &Declarations{
+	declarations := &Declarations{
 		operations:   map[string]Requirement{},
 		access:       map[string]Access{},
 		capabilities: map[string]Kind{},
@@ -116,36 +116,36 @@ func Parse(doc []byte) (*Declarations, error) {
 	}
 	kinds := map[string]Kind{}
 
-	for _, c := range spec.Capabilities {
-		if c.Name == "" || (c.Kind != Read && c.Kind != Write) {
-			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
+	for _, record := range spec.Capabilities {
+		if record.Name == "" || (record.Kind != Read && record.Kind != Write) {
+			return nil, errs.With("capability", record.Name).Errorf("x-capabilities entry needs a name and a kind of read or write")
 		}
 
-		if _, dup := kinds[c.Name]; dup {
-			return nil, errs.With("capability", c.Name).Errorf("x-capabilities entry is listed twice")
+		if _, dup := kinds[record.Name]; dup {
+			return nil, errs.With("capability", record.Name).Errorf("x-capabilities entry is listed twice")
 		}
 
-		kinds[c.Name] = c.Kind
-		d.capabilities[c.Name] = c.Kind
+		kinds[record.Name] = record.Kind
+		declarations.capabilities[record.Name] = record.Kind
 	}
 
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
-			if err := d.read(where, method, op, kinds); err != nil {
+			if err := declarations.read(where, method, op, kinds); err != nil {
 				return nil, err
 			}
 		}
 	}
 
 	for name, kind := range kinds {
-		_, capability := d.capabilities[name]
-		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind, Capability: capability})
+		_, capability := declarations.capabilities[name]
+		declarations.catalog = append(declarations.catalog, Permission{Name: name, Kind: kind, Capability: capability})
 	}
 
-	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
+	slices.SortFunc(declarations.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
 
-	return d, nil
+	return declarations, nil
 }
 
 // operationDecl is one operation of the document with the extensions this

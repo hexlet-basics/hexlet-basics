@@ -34,12 +34,12 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 		account.WithClock(func() time.Time { return occurredAt }))
 	firstName := "Ada"
 
-	u, err := registrar.Register(t.Context(), account.Registration{
+	created, err := registrar.Register(t.Context(), account.Registration{
 		Email: newUserEmail, Password: "secret", FirstName: &firstName, Locale: "ru",
 	})
 	require.NoError(t, err)
 
-	saved, err := db.User.Query().Where(user.ID(u.ID)).Only(t.Context())
+	saved, err := db.User.Query().Where(user.ID(created.ID)).Only(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, newUserEmail, *saved.Email)
 
@@ -49,12 +49,12 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 		SELECT payload, metadata
 		FROM watermill_domain_events
 		WHERE payload->>'user_id' = $1
-	`, strconv.Itoa(u.ID)).Scan(&payloadJSON, &metadataJSON)
+	`, strconv.Itoa(created.ID)).Scan(&payloadJSON, &metadataJSON)
 	require.NoError(t, err)
 
 	var payload events.UserSignedUp
 	require.NoError(t, json.Unmarshal(payloadJSON, &payload))
-	assert.Equal(t, u.ID, payload.UserID)
+	assert.Equal(t, created.ID, payload.UserID)
 	assert.Equal(t, newUserEmail, *payload.Email)
 	assert.Equal(t, firstName, *payload.FirstName)
 	assert.Equal(t, "ru", payload.Locale)

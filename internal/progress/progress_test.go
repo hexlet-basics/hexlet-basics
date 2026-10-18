@@ -250,20 +250,20 @@ func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
 		{"a visitor who finished every lesson has finished", guestWith(firstLesson, secondLesson, thirdLesson), progress.StateFinished, 100, ""},
 		{"a slug the version dropped counts as a first visit", guestWith("gone"), "", 0, firstLesson},
 	}
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			state, err := r.progress.CourseState(ctx, c.learner, courseID)
+	for _, record := range cases {
+		t.Run(record.name, func(t *testing.T) {
+			state, err := r.progress.CourseState(ctx, record.learner, courseID)
 			require.NoError(t, err)
 
-			assert.Equal(t, c.state, state.State)
-			assert.Equal(t, c.completed, state.Completion)
+			assert.Equal(t, record.state, state.State)
+			assert.Equal(t, record.completed, state.Completion)
 			assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(state))
 
-			if c.next == "" {
+			if record.next == "" {
 				assert.Nil(t, state.NextLessonSlug)
 			} else {
 				require.NotNil(t, state.NextLessonSlug)
-				assert.Equal(t, c.next, *state.NextLessonSlug)
+				assert.Equal(t, record.next, *state.NextLessonSlug)
 			}
 		})
 	}
@@ -315,13 +315,13 @@ func TestCourseStatesReadsEachLearnersStandingInOnePass(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.NotContains(t, states, -1, "a course that does not exist is absent")
-	js := states[javascript.ID]
-	require.NotNil(t, js)
-	assert.Equal(t, progress.StateStarted, js.State)
-	assert.Equal(t, 33, js.Completion)
+	courseState := states[javascript.ID]
+	require.NotNil(t, courseState)
+	assert.Equal(t, progress.StateStarted, courseState.State)
+	assert.Equal(t, 33, courseState.Completion)
 
-	finished := make([]bool, 0, len(js.Lessons))
-	for _, lesson := range js.Lessons {
+	finished := make([]bool, 0, len(courseState.Lessons))
+	for _, lesson := range courseState.Lessons {
 		finished = append(finished, lesson.Finished)
 	}
 

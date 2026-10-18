@@ -14,13 +14,13 @@ func TestAKeyHasItsBudgetBackWhenTheWindowPasses(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
-	l := New(time.Minute, func() time.Time { return now })
+	limiter := New(time.Minute, func() time.Time { return now })
 
-	first, _ := l.Allow(Charge{"a", 1})
-	second, wait := l.Allow(Charge{"a", 1})
-	other, _ := l.Allow(Charge{"b", 1})
+	first, _ := limiter.Allow(Charge{"a", 1})
+	second, wait := limiter.Allow(Charge{"a", 1})
+	other, _ := limiter.Allow(Charge{"b", 1})
 	now = now.Add(time.Minute)
-	later, _ := l.Allow(Charge{"a", 1})
+	later, _ := limiter.Allow(Charge{"a", 1})
 
 	assert.True(t, first)
 	assert.False(t, second)
@@ -33,14 +33,14 @@ func TestARefusedAttemptSpendsNoBudgetOnTheOtherKeys(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
-	l := New(time.Hour, func() time.Time { return now })
-	ok, _ := l.Allow(Charge{"client", 1})
+	limiter := New(time.Hour, func() time.Time { return now })
+	ok, _ := limiter.Allow(Charge{"client", 1})
 	require.True(t, ok)
 
-	refused, wait := l.Allow(Charge{"user", 2}, Charge{"client", 1})
-	first, _ := l.Allow(Charge{"user", 2})
-	second, _ := l.Allow(Charge{"user", 2})
-	third, _ := l.Allow(Charge{"user", 2})
+	refused, wait := limiter.Allow(Charge{"user", 2}, Charge{"client", 1})
+	first, _ := limiter.Allow(Charge{"user", 2})
+	second, _ := limiter.Allow(Charge{"user", 2})
+	third, _ := limiter.Allow(Charge{"user", 2})
 
 	assert.False(t, refused)
 	assert.Equal(t, time.Hour, wait)
@@ -54,19 +54,19 @@ func TestTheLimiterStopsTrackingNewKeysAtItsCapUntilWindowsExpire(t *testing.T) 
 
 	now := time.Now()
 
-	l := New(time.Hour, func() time.Time { return now })
+	limiter := New(time.Hour, func() time.Time { return now })
 	for i := range maxTracked {
-		ok, _ := l.Allow(Charge{strconv.Itoa(i), 1})
+		ok, _ := limiter.Allow(Charge{strconv.Itoa(i), 1})
 		require.True(t, ok)
 	}
 
-	full, _ := l.Allow(Charge{"new", 1})
+	full, _ := limiter.Allow(Charge{"new", 1})
 	now = now.Add(time.Hour + time.Second)
-	later, _ := l.Allow(Charge{"new", 1})
+	later, _ := limiter.Allow(Charge{"new", 1})
 
 	assert.False(t, full)
 	assert.True(t, later, "expired windows are pruned to make room")
-	assert.Len(t, l.windows, 1)
+	assert.Len(t, limiter.windows, 1)
 }
 
 // The refusal's wait is the real time left in the window: with the wall clock
@@ -82,16 +82,16 @@ func TestTheRealClockFreesTheBudgetAfterTheWaitItReported(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			synctest.Test(t, func(t *testing.T) {
-				l := New(time.Minute, time.Now)
-				first, _ := l.Allow(Charge{"a", 1})
-				refused, wait := l.Allow(Charge{"a", 1})
+				limiter := New(time.Minute, time.Now)
+				first, _ := limiter.Allow(Charge{"a", 1})
+				refused, wait := limiter.Allow(Charge{"a", 1})
 
 				require.True(t, first)
 				require.False(t, refused)
 
 				time.Sleep(wait - early)
 
-				again, _ := l.Allow(Charge{"a", 1})
+				again, _ := limiter.Allow(Charge{"a", 1})
 
 				assert.Equal(t, early == 0, again)
 			})

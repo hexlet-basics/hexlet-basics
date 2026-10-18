@@ -482,13 +482,13 @@ type cappedWriter struct {
 	limit int
 }
 
-func (w *cappedWriter) Write(p []byte) (int, error) {
+func (w *cappedWriter) Write(octets []byte) (int, error) {
 	room := w.limit - w.buf.Len()
 	if room > 0 {
-		w.buf.Write(p[:min(room, len(p))])
+		w.buf.Write(octets[:min(room, len(octets))])
 	}
 	// The full length is reported so the demultiplexer keeps draining: stopping
 	// early would block the container on a full pipe rather than letting it
 	// finish and report its status.
-	return len(p), nil
+	return len(octets), nil
 }

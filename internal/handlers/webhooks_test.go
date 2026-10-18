@@ -90,13 +90,13 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 
 func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 	t.Parallel()
-	h, _, services := newWebhookHandler(t, webhookSecret)
+	gitHubWebhookHandler, _, services := newWebhookHandler(t, webhookSecret)
 
 	req := signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby"))
 	req.Header.Set("X-Hub-Signature-256", "sha256=deadbeef")
 
 	rec := httptest.NewRecorder()
-	h.Handle(rec, req)
+	gitHubWebhookHandler.Handle(rec, req)
 
 	assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
@@ -216,13 +216,13 @@ func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
 
 func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 	t.Parallel()
-	h, _, services := newWebhookHandler(t, webhookSecret)
+	gitHubWebhookHandler, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
 	as[map[string]any](t, payload["workflow_run"])["conclusion"] = "failure"
 
 	rec := httptest.NewRecorder()
-	h.Handle(rec, signedRequest(t, "workflow_run", payload))
+	gitHubWebhookHandler.Handle(rec, signedRequest(t, "workflow_run", payload))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
 	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{
@@ -232,13 +232,13 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 
 func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
 	t.Parallel()
-	h, _, services := newWebhookHandler(t, webhookSecret)
+	gitHubWebhookHandler, _, services := newWebhookHandler(t, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
 	as[map[string]any](t, payload["workflow_run"])["head_branch"] = "feature"
 
 	rec := httptest.NewRecorder()
-	h.Handle(rec, signedRequest(t, "workflow_run", payload))
+	gitHubWebhookHandler.Handle(rec, signedRequest(t, "workflow_run", payload))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
 	testsupport.RequireNotEnqueued(t, services, jobs.ExerciseLoaderArgs{

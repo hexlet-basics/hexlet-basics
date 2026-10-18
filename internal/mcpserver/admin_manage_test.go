@@ -74,18 +74,18 @@ func TestTheContractDeclaresMCPManageForTheAccessOperations(t *testing.T) {
 func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
 
-	for _, c := range accessOperations() {
-		t.Run(c.class, func(t *testing.T) {
+	for _, record := range accessOperations() {
+		t.Run(record.class, func(t *testing.T) {
 			o := newOAuthWithRates(t, rates)
 			// Everything the operation needs except mcp.manage.
-			o.Grant(editor(), c.permission, c.capability)
+			o.Grant(editor(), record.permission, record.capability)
 			session, token := admin(t, o, bob())
 
-			refused := call(t, session, c.tool, c.args)
+			refused := call(t, session, record.tool, record.args)
 
 			assertRefused(t, refused)
 
-			records := o.Records(ogenName(c.tool))
+			records := o.Records(ogenName(record.tool))
 			require.Len(t, records, 1)
 			assert.Equal(t, "forbidden", records[0].Outcome)
 			assert.Equal(t, "mcp", records[0].Channel)
@@ -93,7 +93,7 @@ func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 
 			o.Grant(editor(), "mcp.manage")
 
-			allowed := call(t, session, c.tool, c.args)
+			allowed := call(t, session, record.tool, record.args)
 			assert.False(t, allowed.IsError, "%+v", allowed.Content)
 		})
 	}
@@ -102,26 +102,26 @@ func TestAccessOperationsNeedMCPManageOnTopOfEverythingElse(t *testing.T) {
 func TestAnAdministratorWithoutAnExplicitMCPManageGrantIsRefused(t *testing.T) {
 	rates := mcpserver.Rates{Catalogue: 1000, Personal: 1000, Write: 1000}
 
-	for _, c := range accessOperations() {
-		t.Run(c.class, func(t *testing.T) {
+	for _, record := range accessOperations() {
+		t.Run(record.class, func(t *testing.T) {
 			o := newOAuthWithRates(t, rates)
 			// The administrator flag gives every operation Permission; the role
 			// holds the MCP capabilities of the kind but not mcp.manage.
 			o.Grant(editor(), "mcp.read", "mcp.write")
 			session, _ := admin(t, o, adminStaff())
 
-			args := c.args
-			if c.tool == "adminUpdateStaffMember" {
+			args := record.args
+			if record.tool == "adminUpdateStaffMember" {
 				// Not the caller's own record: that is refused by self-protection.
 				args = map[string]any{"locale": "en", "id": bobSeat(), "body": map[string]any{
 					"userId": bob(), "roleId": editor(), "allowedLocales": []string{"en", "ru"}}}
 			}
 
-			assertRefused(t, call(t, session, c.tool, args))
+			assertRefused(t, call(t, session, record.tool, args))
 
 			o.Grant(editor(), "mcp.manage")
 
-			allowed := call(t, session, c.tool, args)
+			allowed := call(t, session, record.tool, args)
 			assert.False(t, allowed.IsError, "%+v", allowed.Content)
 		})
 	}

@@ -115,9 +115,9 @@ func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 		byName[tool.Name] = tool
 	}
 
-	for _, c := range searchCases() {
-		tool, ok := byName[c.tool]
-		require.True(t, ok, c.tool)
+	for _, scenario := range searchCases() {
+		tool, ok := byName[scenario.tool]
+		require.True(t, ok, scenario.tool)
 		raw, err := json.Marshal(tool.InputSchema)
 		require.NoError(t, err)
 
@@ -130,22 +130,22 @@ func TestEveryAdminSearchToolDeclaresQInItsInputSchema(t *testing.T) {
 		}
 		require.NoError(t, json.Unmarshal(raw, &schema))
 		q, ok := schema.Properties["q"]
-		assert.True(t, ok, "%s has no q", c.tool)
-		assert.Equal(t, "string", q.Type, c.tool)
-		assert.NotEmpty(t, q.Description, c.tool)
-		assert.NotContains(t, schema.Required, "q", "%s: the filter is optional", c.tool)
+		assert.True(t, ok, "%s has no q", scenario.tool)
+		assert.Equal(t, "string", q.Type, scenario.tool)
+		assert.NotEmpty(t, q.Description, scenario.tool)
+		assert.NotContains(t, schema.Required, "q", "%s: the filter is optional", scenario.tool)
 	}
 }
 
 func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
-	for _, c := range searchCases() {
-		t.Run(c.tool, func(t *testing.T) {
+	for _, scenario := range searchCases() {
+		t.Run(scenario.tool, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.Grant(editor(), append([]string{c.permission, "mcp.read"}, c.extra...)...)
+			o.Grant(editor(), append([]string{scenario.permission, "mcp.read"}, scenario.extra...)...)
 			session, _ := admin(t, o, bob())
 
-			everything := structured(t, call(t, session, c.tool, c.args("")))
-			found := structured(t, call(t, session, c.tool, c.args(c.q)))
+			everything := structured(t, call(t, session, scenario.tool, scenario.args("")))
+			found := structured(t, call(t, session, scenario.tool, scenario.args(scenario.q)))
 
 			items := as[[]any](t, found["items"])
 			require.NotEmpty(t, items)
@@ -153,7 +153,7 @@ func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
 			for _, item := range items {
 				raw, err := json.Marshal(item)
 				require.NoError(t, err)
-				assert.Contains(t, strings.ToLower(string(raw)), strings.ToLower(c.q))
+				assert.Contains(t, strings.ToLower(string(raw)), strings.ToLower(scenario.q))
 			}
 
 			assert.Less(t, found["total"], everything["total"], "the total follows the filter")
@@ -162,14 +162,14 @@ func TestAnAdminSearchToolReturnsOnlyTheRowsTheTermFinds(t *testing.T) {
 }
 
 func TestAnAdminSearchToolIsRefusedToARoleThatMayNotListTheResource(t *testing.T) {
-	for _, c := range searchCases() {
-		t.Run(c.tool, func(t *testing.T) {
+	for _, scenario := range searchCases() {
+		t.Run(scenario.tool, func(t *testing.T) {
 			o := testsupport.NewOAuth(t)
-			o.RevokeGrant(editor(), c.permission)
-			o.Grant(editor(), append([]string{"mcp.read"}, c.extra...)...)
+			o.RevokeGrant(editor(), scenario.permission)
+			o.Grant(editor(), append([]string{"mcp.read"}, scenario.extra...)...)
 			session, _ := admin(t, o, bob())
 
-			assertRefused(t, call(t, session, c.tool, c.args(c.q)))
+			assertRefused(t, call(t, session, scenario.tool, scenario.args(scenario.q)))
 		})
 	}
 }

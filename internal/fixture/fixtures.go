@@ -81,26 +81,26 @@ func scan(dir string) (labels, error) {
 
 // scanFile numbers the rows of one file, continuing from next.
 func scanFile(path string, found labels, next *int) error {
-	f, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
+	file, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
 	if err != nil {
 		return errs.Wrapf(err, "open fixture file")
 	}
-	defer func() { _ = f.Close() }()
+	defer func() { _ = file.Close() }()
 
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(file)
 	scanner.Buffer(make([]byte, 0, scannerStartBytes), scannerMaxLineBytes)
 
 	for scanner.Scan() {
-		m := definition.FindStringSubmatch(scanner.Text())
-		if m == nil {
+		texts := definition.FindStringSubmatch(scanner.Text())
+		if texts == nil {
 			continue
 		}
 
-		if _, dup := found[m[1]]; dup {
-			return errs.With("label", m[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
+		if _, dup := found[texts[1]]; dup {
+			return errs.With("label", texts[1], "file", filepath.Base(path)).Errorf("fixture label is defined twice")
 		}
 
-		found[m[1]] = *next
+		found[texts[1]] = *next
 		*next++
 	}
 

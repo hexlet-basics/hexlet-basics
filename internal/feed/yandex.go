@@ -331,7 +331,7 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		"utm_term":     {"page_" + slug},
 	}
 
-	o := offer{
+	item := offer{
 		ID:   crs.ID,
 		Name: lo.FromPtr(page.Header),
 		// Encode sorts keys, matching Rails' to_query.
@@ -345,11 +345,11 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		Plan:        nil,
 	}
 	if page.LanguageCategoryID != nil {
-		o.SetIDs = strconv.Itoa(*page.LanguageCategoryID)
+		item.SetIDs = strconv.Itoa(*page.LanguageCategoryID)
 	}
 
 	for i, module := range plan {
-		o.Plan = append(o.Plan, param{
+		item.Plan = append(item.Plan, param{
 			Name:    "План",
 			Order:   strconv.Itoa(i + 1),
 			Unit:    lo.FromPtr(module.Name),
@@ -359,7 +359,7 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 			Text:    "",
 		})
 		for _, lv := range module.Edges.Version.Edges.LessonVersions {
-			o.Plan = append(o.Plan, param{
+			item.Plan = append(item.Plan, param{
 				Name: "Ссылка на контент курса",
 				Text: y.localized(strings.Join([]string{
 					"/languages", url.PathEscape(lo.FromPtr(crs.Slug)),
@@ -374,7 +374,7 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		}
 	}
 
-	return o
+	return item
 }
 
 // localized is an absolute ru page URL.

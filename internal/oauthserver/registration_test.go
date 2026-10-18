@@ -46,15 +46,15 @@ func decodeJSON[T any](t *testing.T, res *http.Response) T {
 
 // request is a valid registration an attacker edits one field of.
 func request(edit func(map[string]any)) map[string]any {
-	m := map[string]any{
+	fields := map[string]any{
 		"client_name":   "Attacker",
 		"redirect_uris": []string{"https://app.example.com/callback"},
 	}
 	if edit != nil {
-		edit(m)
+		edit(fields)
 	}
 
-	return m
+	return fields
 }
 
 func clientCount(t *testing.T, o *testsupport.OAuth) int {
@@ -91,14 +91,14 @@ func TestAPublicClientWithAnHTTPSRedirectRegistersAndCompletesTheFlow(t *testing
 	assert.Equal(t, []string{"https://app.example.com/callback"}, got.RedirectURIs)
 	assert.ElementsMatch(t, []string{"catalog:read", "offline_access"}, strings.Fields(got.Scope))
 
-	f := o.StartWith(alice(), testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"catalog:read"},
 		Params: nil,
 	})
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	require.NotEmpty(t, f.RequestID)
-	code := f.Approve()
-	tokens, exchange := f.Exchange(code, testsupport.PKCEVerifier())
+	require.Equal(t, http.StatusFound, flow.Authorize.StatusCode)
+	require.NotEmpty(t, flow.RequestID)
+	code := flow.Approve()
+	tokens, exchange := flow.Exchange(code, testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, exchange.StatusCode)
 	verified, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.NoError(t, err)
@@ -133,13 +133,13 @@ func TestARegisteredClientCannotRequestAScopeItDidNotRegisterFor(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	got := decodeJSON[registered](t, o.Register(request(func(m map[string]any) { m["scope"] = "catalog:read" })))
 
-	f := o.StartWith(alice(), testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"admin"},
 		Params: nil,
 	})
 
-	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
-	to, err := f.Authorize.Location()
+	require.Equal(t, http.StatusFound, flow.Authorize.StatusCode)
+	to, err := flow.Authorize.Location()
 	require.NoError(t, err)
 	assert.Equal(t, "invalid_scope", to.Query().Get("error"))
 }

@@ -90,25 +90,25 @@ func New(db *ent.Client, opts ...Option) *Authenticator {
 		opt(&cfg)
 	}
 
-	st := &store{db: db, clock: cfg.clock}
-	sm := scs.New()
-	sm.Store = st
+	sessionStore := &store{db: db, clock: cfg.clock}
+	sessionManager := scs.New()
+	sessionManager.Store = sessionStore
 	// scs expires a session MaxLifetime after sign-in and nothing else; idleness
 	// is judged by User from the session's own last_seen.
-	sm.Lifetime = MaxLifetime
+	sessionManager.Lifetime = MaxLifetime
 	// A leaked sessions table must not be a list of working cookies.
-	sm.HashTokenInStore = true
-	sm.Cookie.Name = CookieName
-	sm.Cookie.Secure = cfg.secure
-	sm.Cookie.HttpOnly = true
-	sm.Cookie.SameSite = http.SameSiteLaxMode
+	sessionManager.HashTokenInStore = true
+	sessionManager.Cookie.Name = CookieName
+	sessionManager.Cookie.Secure = cfg.secure
+	sessionManager.Cookie.HttpOnly = true
+	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
 
-	sm.Cookie.Persist = true
+	sessionManager.Cookie.Persist = true
 	if cfg.onErr != nil {
-		sm.ErrorFunc = cfg.onErr
+		sessionManager.ErrorFunc = cfg.onErr
 	}
 
-	return &Authenticator{sessions: sm, db: db, store: st, clock: cfg.clock}
+	return &Authenticator{sessions: sessionManager, db: db, store: sessionStore, clock: cfg.clock}
 }
 
 // Middleware loads the session a request's cookie names and writes it back, with

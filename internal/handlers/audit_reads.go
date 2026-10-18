@@ -114,15 +114,15 @@ func touched(response any) (audit.Reads, bool) {
 		}, false
 	}
 
-	switch v := value.(type) {
+	switch decoded := value.(type) {
 	case []any:
-		return readsOf(v), true
+		return readsOf(decoded), true
 	case map[string]any:
-		if items, ok := v["items"].([]any); ok {
+		if items, ok := decoded["items"].([]any); ok {
 			return readsOf(items), true
 		}
 
-		if id, ok := idOf(v); ok {
+		if id, ok := idOf(decoded); ok {
 			return audit.Reads{Count: 1, IDs: []string{id}}, true
 		}
 	}

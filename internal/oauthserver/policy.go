@@ -59,19 +59,19 @@ type resourceKey struct{}
 func (a authorizer) ValidateAuthRequest(
 	ctx context.Context, req *oidc.AuthRequest, storage op.Storage, verifier *op.IDTokenHintVerifier,
 ) (string, error) {
-	c, err := storage.GetClientByClientID(ctx, req.ClientID)
+	oauthClient, err := storage.GetClientByClientID(ctx, req.ClientID)
 	if err != nil {
 		return "", oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err)
 	}
 
-	if err := op.ValidateAuthReqRedirectURI(c, req.RedirectURI, req.ResponseType); err != nil {
+	if err := op.ValidateAuthReqRedirectURI(oauthClient, req.RedirectURI, req.ResponseType); err != nil {
 		return "", errs.Wrapf(err, "validate redirect uri")
 	}
 
 	for _, scope := range req.Scopes {
 		switch {
 		case slices.Contains(standardScopes(), scope):
-		case slices.Contains(customScopes(), scope) && c.IsScopeAllowed(scope):
+		case slices.Contains(customScopes(), scope) && oauthClient.IsScopeAllowed(scope):
 		default:
 			return "", oidc.ErrInvalidScope().WithDescription("The scope %q is not available to this client. "+
 				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes()), standardScopes()...), ", "))
@@ -82,7 +82,7 @@ func (a authorizer) ValidateAuthRequest(
 		return "", errInvalidTarget(a.s.resource)
 	}
 
-	result, err := op.ValidateAuthRequestClient(ctx, req, c, verifier)
+	result, err := op.ValidateAuthRequestClient(ctx, req, oauthClient, verifier)
 	if err != nil {
 		return result, errs.Wrapf(err, "validate authorization request client")
 	}

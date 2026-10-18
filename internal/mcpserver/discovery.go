@@ -106,16 +106,16 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 
 	var shown []listedTool
 
-	for _, t := range s.registry {
-		if t.needs.scope != "" && !slices.Contains(info.Scopes, t.needs.scope) {
+	for _, listed := range s.registry {
+		if listed.needs.scope != "" && !slices.Contains(info.Scopes, listed.needs.scope) {
 			continue
 		}
 
-		if held != nil && slices.ContainsFunc(t.needs.capabilities, func(c string) bool { return !held[c] }) {
+		if held != nil && slices.ContainsFunc(listed.needs.capabilities, func(c string) bool { return !held[c] }) {
 			continue
 		}
 
-		shown = append(shown, t)
+		shown = append(shown, listed)
 	}
 
 	slices.SortFunc(shown, func(a, b listedTool) int { return strings.Compare(a.tool.Name, b.tool.Name) })
@@ -252,7 +252,7 @@ func (s *Server) addFindTools(server *mcp.Server) {
 }
 
 func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *auth.TokenInfo) (*mcp.CallToolResult, error) {
-	c := call{
+	request := call{
 		args:     req.Params.Arguments,
 		userID:   0,
 		clientID: "",
@@ -263,7 +263,7 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 		Query:  "",
 		Limit:  0,
 	}
-	if err := c.decode(&args); err != nil {
+	if err := request.decode(&args); err != nil {
 		return toolError(err.Error()), nil
 	}
 
@@ -293,15 +293,15 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 
 	rows := []map[string]any{}
 
-	for _, t := range matched[:min(len(matched), limit)] {
-		row := map[string]any{"name": t.tool.Name}
+	for _, listed := range matched[:min(len(matched), limit)] {
+		row := map[string]any{"name": listed.tool.Name}
 		if args.Detail != detailName {
-			row["description"] = t.tool.Description
-			row["needs"] = t.needs.describe()
+			row["description"] = listed.tool.Description
+			row["needs"] = listed.needs.describe()
 		}
 
 		if args.Detail == detailSchema {
-			row["inputSchema"] = t.tool.InputSchema
+			row["inputSchema"] = listed.tool.InputSchema
 		}
 
 		rows = append(rows, row)

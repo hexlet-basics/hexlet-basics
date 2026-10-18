@@ -146,24 +146,24 @@ func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	}
 
 	// prompt=none: nobody can sign in without a screen, so there is no silent grant.
-	q := base()
-	q.Set("prompt", "none")
-	res := o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
+	values := base()
+	values.Set("prompt", "none")
+	res := o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
 	to, err := res.Location()
 	require.NoError(t, err)
 	assert.Equal(t, "login_required", to.Query().Get("error"))
 
 	// An unknown client has no redirect URI to trust, so there is nobody to send the error to.
-	q = base()
-	q.Set("client_id", "nobody")
-	res = o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
+	values = base()
+	values.Set("client_id", "nobody")
+	res = o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
 	assert.NotEqual(t, http.StatusFound, res.StatusCode)
 
 	// The implicit flow is not offered.
-	q = base()
-	q.Set("response_type", "id_token token")
+	values = base()
+	values.Set("response_type", "id_token token")
 
-	res = o.Do(http.MethodGet, "/oauth/authorize?"+q.Encode(), nil)
+	res = o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
 	if loc, err := res.Location(); err == nil {
 		assert.NotContains(t, loc.Path, "/connect")
 	}

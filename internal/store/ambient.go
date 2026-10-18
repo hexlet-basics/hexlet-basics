@@ -52,9 +52,9 @@ func ambientFrom(ctx context.Context) (*ambient, bool) {
 // of per client.
 type routingDriver struct{ dialect.Driver }
 
-func (d routingDriver) Exec(ctx context.Context, query string, args, v any) error {
+func (d routingDriver) Exec(ctx context.Context, query string, args, dest any) error {
 	if a, ok := ambientFrom(ctx); ok {
-		err := a.driver.Exec(ctx, query, args, v)
+		err := a.driver.Exec(ctx, query, args, dest)
 		if err != nil {
 			return errs.Wrapf(err, "exec")
 		}
@@ -62,7 +62,7 @@ func (d routingDriver) Exec(ctx context.Context, query string, args, v any) erro
 		return nil
 	}
 
-	err := d.Driver.Exec(ctx, query, args, v)
+	err := d.Driver.Exec(ctx, query, args, dest)
 	if err != nil {
 		return errs.Wrapf(err, "exec")
 	}
@@ -70,9 +70,9 @@ func (d routingDriver) Exec(ctx context.Context, query string, args, v any) erro
 	return nil
 }
 
-func (d routingDriver) Query(ctx context.Context, query string, args, v any) error {
+func (d routingDriver) Query(ctx context.Context, query string, args, dest any) error {
 	if a, ok := ambientFrom(ctx); ok {
-		err := a.driver.Query(ctx, query, args, v)
+		err := a.driver.Query(ctx, query, args, dest)
 		if err != nil {
 			return errs.Wrapf(err, "query")
 		}
@@ -80,7 +80,7 @@ func (d routingDriver) Query(ctx context.Context, query string, args, v any) err
 		return nil
 	}
 
-	err := d.Driver.Query(ctx, query, args, v)
+	err := d.Driver.Query(ctx, query, args, dest)
 	if err != nil {
 		return errs.Wrapf(err, "query")
 	}

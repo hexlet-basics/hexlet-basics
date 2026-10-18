@@ -564,16 +564,16 @@ func TimeIdentity(v time.Time) time.Time { return v }
 // Int32FromInt narrows an ent int id/count to the contract's int32. Postgres
 // ids and counts are int4, so a real value always fits; one that does not
 // saturates at the bound instead of wrapping into a negative number on the wire.
-func Int32FromInt(v int) int32 {
-	if v > math.MaxInt32 {
+func Int32FromInt(value int) int32 {
+	if value > math.MaxInt32 {
 		return math.MaxInt32
 	}
 
-	if v < math.MinInt32 {
+	if value < math.MinInt32 {
 		return math.MinInt32
 	}
 
-	return int32(v)
+	return int32(value)
 }
 
 // Int32FromPtr resolves a nullable ent integer to a required contract field.
@@ -641,15 +641,15 @@ type nilSetter[V any, N any] interface {
 // nilOf bridges a nullable ent column to the ogen Nil wrapper N of its value
 // type: null when v is nil, the value otherwise. Every NilXFromPtr below is
 // this with the contract type spelled out.
-func nilOf[V any, N any, P nilSetter[V, N]](v *V) N {
+func nilOf[V any, N any, P nilSetter[V, N]](value *V) N {
 	var out N
-	if v == nil {
+	if value == nil {
 		P(&out).SetToNull()
 
 		return out
 	}
 
-	P(&out).SetTo(*v)
+	P(&out).SetTo(*value)
 
 	return out
 }
@@ -852,13 +852,13 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 // CourseVersionFromEnt maps an ent course version to the API body. Used both by
 // the current-version bridge above and by the createVersion handler (which
 // returns a bare CourseVersion for the 201).
-func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
+func CourseVersionFromEnt(value *ent.CourseVersion) api.CourseVersion {
 	return api.CourseVersion{
-		ID:        Int32FromInt(v.ID),
-		Name:      NilStringFromPtr(v.Name),
-		Result:    NilStringFromPtr(v.Result),
-		State:     NilStringFromPtr(v.State),
-		CreatedAt: v.CreatedAt,
+		ID:        Int32FromInt(value.ID),
+		Name:      NilStringFromPtr(value.Name),
+		Result:    NilStringFromPtr(value.Result),
+		State:     NilStringFromPtr(value.State),
+		CreatedAt: value.CreatedAt,
 	}
 }
 

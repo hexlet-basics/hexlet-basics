@@ -391,24 +391,24 @@ func checkRedirectURI(raw string) error {
 		return refusal(fmt.Sprintf("wildcards are not allowed in a redirect URI: %q", raw))
 	}
 
-	u, err := url.Parse(raw)
-	if err != nil || !u.IsAbs() || u.Opaque != "" || u.Host == "" || u.Hostname() == "" {
+	redirect, err := url.Parse(raw)
+	if err != nil || !redirect.IsAbs() || redirect.Opaque != "" || redirect.Host == "" || redirect.Hostname() == "" {
 		return refusal(fmt.Sprintf("a redirect URI must be an absolute URL: %q", raw))
 	}
 
-	if u.User != nil {
+	if redirect.User != nil {
 		return refusal(fmt.Sprintf("a redirect URI must not carry credentials: %q", raw))
 	}
 
-	if u.Fragment != "" || strings.Contains(raw, "#") {
+	if redirect.Fragment != "" || strings.Contains(raw, "#") {
 		return refusal(fmt.Sprintf("a redirect URI must not have a fragment: %q", raw))
 	}
 
-	switch strings.ToLower(u.Scheme) {
+	switch strings.ToLower(redirect.Scheme) {
 	case "https":
 		return nil
 	case "http":
-		if isLoopbackHost(u.Hostname()) {
+		if isLoopbackHost(redirect.Hostname()) {
 			return nil
 		}
 

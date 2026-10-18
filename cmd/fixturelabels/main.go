@@ -76,7 +76,7 @@ func render(names []string) ([]byte, error) {
 
 // identifier is a label in the exported-name form: user_removed → UserRemoved.
 func identifier(label string) string {
-	var b strings.Builder
+	var builder strings.Builder
 
 	for part := range strings.SplitSeq(label, "_") {
 		if part == "" {
@@ -85,8 +85,8 @@ func identifier(label string) string {
 
 		runes := []rune(part)
 		runes[0] = unicode.ToUpper(runes[0])
-		b.WriteString(string(runes))
+		builder.WriteString(string(runes))
 	}
 
-	return b.String()
+	return builder.String()
 }

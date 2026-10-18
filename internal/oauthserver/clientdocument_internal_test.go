@@ -43,13 +43,13 @@ func loopbackServer(t *testing.T, h http.HandlerFunc) (*httptest.Server, *tls.Co
 	return srv, &tls.Config{RootCAs: roots, MinVersion: tls.VersionTLS12}
 }
 
-func get(ctx context.Context, c *http.Client, target string) (*http.Response, error) {
+func get(ctx context.Context, httpClient *http.Client, target string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
 	if err != nil {
 		return nil, errs.Wrapf(err, "build request")
 	}
 
-	result, err := c.Do(req)
+	result, err := httpClient.Do(req)
 	if err != nil {
 		return result, errs.Wrapf(err, "send request")
 	}
@@ -96,14 +96,14 @@ func TestAHostnameThatResolvesToLoopbackIsRefusedAtDialTime(t *testing.T) {
 	assert.Contains(t, err.Error(), "not a public address")
 }
 
-func cutLast(s string, sep byte) (string, string, bool) {
-	for i := len(s) - 1; i >= 0; i-- {
-		if s[i] == sep {
-			return s[:i], s[i+1:], true
+func cutLast(text string, sep byte) (string, string, bool) {
+	for i := len(text) - 1; i >= 0; i-- {
+		if text[i] == sep {
+			return text[:i], text[i+1:], true
 		}
 	}
 
-	return s, "", false
+	return text, "", false
 }
 
 func TestTheGuardedClientDoesNotFollowRedirects(t *testing.T) {

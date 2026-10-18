@@ -170,7 +170,7 @@ const shouldBeLeadTag = "should_be_lead"
 // off). It runs in the lead's transaction, so a rolled-back lead keeps the tag.
 // A user who never had the tag, or a database without it, is no change.
 func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
-	t, err := db.Tag.Query().Where(tag.Name(shouldBeLeadTag)).Only(ctx)
+	tagRow, err := db.Tag.Query().Where(tag.Name(shouldBeLeadTag)).Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil
 	}
@@ -181,7 +181,7 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 
 	removed, err := db.Tagging.Delete().
 		Where(
-			tagging.TagID(t.ID),
+			tagging.TagID(tagRow.ID),
 			tagging.TaggableType(userTaggableType),
 			tagging.TaggableID(userID),
 			tagging.Context(tagListContext),
@@ -195,7 +195,7 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 		return nil
 	}
 
-	if err := db.Tag.UpdateOneID(t.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
+	if err := db.Tag.UpdateOneID(tagRow.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "count lead taggings")
 	}
 
@@ -224,15 +224,15 @@ func coursesData(ctx context.Context, db *ent.Client, userID int) (string, error
 		return "", errs.Wrapf(err, "load lead enrollments")
 	}
 
-	data := lo.Map(enrollments, func(e *ent.Enrollment, _ int) courseData {
+	data := lo.Map(enrollments, func(enrolled *ent.Enrollment, _ int) courseData {
 		var slug *string
-		if e.Edges.Course != nil {
-			slug = e.Edges.Course.Slug
+		if enrolled.Edges.Course != nil {
+			slug = enrolled.Edges.Course.Slug
 		}
 
 		return courseData{
 			Slug:                 slug,
-			LessonsFinishedCount: len(e.Edges.LessonProgress),
+			LessonsFinishedCount: len(enrolled.Edges.LessonProgress),
 		}
 	})
 

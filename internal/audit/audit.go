@@ -191,42 +191,42 @@ func primary(changes []Change) (string, string) {
 // the client of the operation's transaction: the row then commits or rolls back
 // with the change it describes. An error means the record could not be written,
 // and the caller must not commit.
-func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) error {
+func Write(ctx context.Context, client *ent.Client, entry Entry, rec *Recorder) error {
 	var changes []Change
 	if rec != nil {
 		changes = rec.Changes()
 	}
 
-	occurredAt := e.OccurredAt
+	occurredAt := entry.OccurredAt
 	if occurredAt.IsZero() {
 		occurredAt = time.Now()
 	}
 
 	create := client.AuditRecord.Create().
 		SetOccurredAt(occurredAt).
-		SetChannel(string(e.Source.Channel)).
-		SetOperation(e.Operation).
-		SetOutcome(string(e.Outcome)).
-		SetNillableActorUserID(e.Actor).
-		SetNillableConnectedAppID(e.Source.ConnectedAppID).
-		SetNillableTokenID(e.Source.TokenID)
-	if e.RequestID != "" {
-		create.SetRequestID(e.RequestID)
+		SetChannel(string(entry.Source.Channel)).
+		SetOperation(entry.Operation).
+		SetOutcome(string(entry.Outcome)).
+		SetNillableActorUserID(entry.Actor).
+		SetNillableConnectedAppID(entry.Source.ConnectedAppID).
+		SetNillableTokenID(entry.Source.TokenID)
+	if entry.RequestID != "" {
+		create.SetRequestID(entry.RequestID)
 	}
 
-	if e.Address != "" {
-		create.SetAddress(e.Address)
+	if entry.Address != "" {
+		create.SetAddress(entry.Address)
 	}
 
-	if e.UserAgent != "" {
-		create.SetUserAgent(e.UserAgent)
+	if entry.UserAgent != "" {
+		create.SetUserAgent(entry.UserAgent)
 	}
 
-	if e.Locale != "" {
-		create.SetLocale(e.Locale)
+	if entry.Locale != "" {
+		create.SetLocale(entry.Locale)
 	}
 
-	entity, id := e.EntityType, e.EntityID
+	entity, id := entry.EntityType, entry.EntityID
 	if entity == "" {
 		entity, id = primary(changes)
 	}
@@ -239,8 +239,8 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 		create.SetEntityID(id)
 	}
 
-	if e.Reads != nil {
-		raw, err := json.Marshal(e.Reads)
+	if entry.Reads != nil {
+		raw, err := json.Marshal(entry.Reads)
 		if err != nil {
 			return errs.Wrapf(err, "encode audit reads")
 		}
@@ -258,7 +258,7 @@ func Write(ctx context.Context, client *ent.Client, e Entry, rec *Recorder) erro
 	}
 
 	if err := create.Exec(ctx); err != nil {
-		return errs.With("operation", e.Operation).Wrapf(err, "write audit record")
+		return errs.With("operation", entry.Operation).Wrapf(err, "write audit record")
 	}
 
 	return nil

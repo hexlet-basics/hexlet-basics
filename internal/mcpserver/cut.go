@@ -138,12 +138,12 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 // arguments that continue it.
 func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 	if list != nil {
-		for _, c := range cuts {
-			if c.path != list.key || c.unit != "items" {
+		for _, piece := range cuts {
+			if piece.path != list.key || piece.unit != "items" {
 				continue
 			}
 
-			perPage := max(c.kept, 1)
+			perPage := max(piece.kept, 1)
 			// The first record of the cut page, as an offset into the whole list,
 			// and the page of the smaller size that contains it.
 			offset := (list.page - 1) * list.perPage
@@ -152,7 +152,7 @@ func continuation(cuts []cut, list *listInfo, hint map[string]any) string {
 			hint["suggestedPage"] = page
 
 			return fmt.Sprintf("Only %d of %d records of this page fit. Call again with perPage=%d and page=%d, then page=%d and on, to read the rest; the first call may repeat a few records already received.",
-				c.kept, c.total, perPage, page, page+1)
+				piece.kept, piece.total, perPage, page, page+1)
 		}
 	}
 
@@ -188,35 +188,35 @@ func largest(data map[string]any) *node {
 		}
 	}
 	walk = func(path string, v any, set func(any)) {
-		switch x := v.(type) {
+		switch typed := v.(type) {
 		case map[string]any:
-			for k, child := range x {
-				if path == "" && k == truncationKey {
+			for key, child := range typed {
+				if path == "" && key == truncationKey {
 					continue
 				}
 
-				childPath := k
+				childPath := key
 				if path != "" {
-					childPath = path + "." + k
+					childPath = path + "." + key
 				}
 
-				walk(childPath, child, func(nv any) { x[k] = nv })
+				walk(childPath, child, func(nv any) { typed[key] = nv })
 			}
 		case []any:
-			if len(x) > 1 {
+			if len(typed) > 1 {
 				// A value decoded from JSON always marshals; were it not, there
 				// is no size to weigh it by and it is not a candidate.
-				if raw, err := json.Marshal(x); err == nil {
-					consider(node{path: path, size: len(raw), value: x, set: set})
+				if raw, err := json.Marshal(typed); err == nil {
+					consider(node{path: path, size: len(raw), value: typed, set: set})
 				}
 			}
 
-			for i, child := range x {
-				walk(fmt.Sprintf("%s[%d]", path, i), child, func(nv any) { x[i] = nv })
+			for i, child := range typed {
+				walk(fmt.Sprintf("%s[%d]", path, i), child, func(nv any) { typed[i] = nv })
 			}
 		case string:
-			if len(x) > longStringBytes {
-				consider(node{path: path, size: len(x), value: x, set: set})
+			if len(typed) > longStringBytes {
+				consider(node{path: path, size: len(typed), value: typed, set: set})
 			}
 		}
 	}
@@ -231,36 +231,36 @@ func largest(data map[string]any) *node {
 func shorten(cuts []cut, n *node, ratio float64) []cut {
 	ratio = min(max(ratio, minKeepRatio), maxKeepRatio)
 
-	switch x := n.value.(type) {
+	switch typed := n.value.(type) {
 	case []any:
-		keep := min(max(int(float64(len(x))*ratio), 1), len(x)-1)
-		n.set(x[:keep])
+		keep := min(max(int(float64(len(typed))*ratio), 1), len(typed)-1)
+		n.set(typed[:keep])
 
-		return record(cuts, cut{path: n.path, kept: keep, total: len(x), unit: "items"})
+		return record(cuts, cut{path: n.path, kept: keep, total: len(typed), unit: "items"})
 	case string:
-		keep := min(max(int(float64(len(x))*ratio), minKeptBytes), len(x)-1)
+		keep := min(max(int(float64(len(typed))*ratio), minKeptBytes), len(typed)-1)
 		// Never split a rune: the string must stay valid UTF-8 to stay valid JSON.
-		for keep > 0 && !utf8.RuneStart(x[keep]) {
+		for keep > 0 && !utf8.RuneStart(typed[keep]) {
 			keep--
 		}
 
-		n.set(strings.Clone(x[:keep]) + " [cut]")
+		n.set(strings.Clone(typed[:keep]) + " [cut]")
 
-		return record(cuts, cut{path: n.path, kept: keep, total: len(x), unit: "bytes"})
+		return record(cuts, cut{path: n.path, kept: keep, total: len(typed), unit: "bytes"})
 	}
 
 	return cuts
 }
 
 // record keeps the original total of a place cut more than once.
-func record(cuts []cut, c cut) []cut {
+func record(cuts []cut, piece cut) []cut {
 	for i := range cuts {
-		if cuts[i].path == c.path && cuts[i].unit == c.unit {
-			cuts[i].kept = c.kept
+		if cuts[i].path == piece.path && cuts[i].unit == piece.unit {
+			cuts[i].kept = piece.kept
 
 			return cuts
 		}
 	}
 
-	return append(cuts, c)
+	return append(cuts, piece)
 }

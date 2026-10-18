@@ -110,30 +110,30 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 	}
 
 	for _, raw := range asList(node["parameters"]) {
-		p, _ := raw.(map[string]any)
-		if ref, ok := p["$ref"].(string); ok {
+		part, _ := raw.(map[string]any)
+		if ref, ok := part["$ref"].(string); ok {
 			name, found := strings.CutPrefix(ref, "#/components/parameters/")
 			if !found || doc.Components.Parameters[name] == nil {
 				return nil, errs.With("operation", id, "ref", ref).Errorf("unresolvable parameter reference")
 			}
 
-			p, _ = doc.Components.Parameters[name].(map[string]any)
+			part, _ = doc.Components.Parameters[name].(map[string]any)
 		}
 
 		param := parameter{
-			Name:        asString(p["name"]),
-			In:          asString(p["in"]),
-			Description: asString(p["description"]),
+			Name:        asString(part["name"]),
+			In:          asString(part["in"]),
+			Description: asString(part["description"]),
 			Required:    false,
 			Schema:      nil,
 		}
 
-		param.Required, _ = p["required"].(bool)
+		param.Required, _ = part["required"].(bool)
 		if param.In != "path" && param.In != "query" {
 			return nil, errs.With("operation", id, "parameter", param.Name, "in", param.In).Errorf("parameter location a tool cannot carry")
 		}
 
-		schema, err := inline(p["schema"], doc.Components.Schemas, nil)
+		schema, err := inline(part["schema"], doc.Components.Schemas, nil)
 		if err != nil {
 			return nil, errs.With("operation", id, "parameter", param.Name).Wrapf(err, "parameter")
 		}

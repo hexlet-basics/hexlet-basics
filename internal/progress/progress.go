@@ -461,16 +461,16 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 
 	byCourse := make(map[int][]currentLesson, len(courses))
 
-	for _, v := range versions {
-		if v.NaturalOrder == nil {
+	for _, courseLessonVersion := range versions {
+		if courseLessonVersion.NaturalOrder == nil {
 			continue
 		}
 
-		courseID := courseOf[v.CourseVersionID]
+		courseID := courseOf[courseLessonVersion.CourseVersionID]
 		byCourse[courseID] = append(byCourse[courseID], currentLesson{
-			lessonID: v.LessonID,
-			slug:     lessonSlug(v),
-			position: *v.NaturalOrder,
+			lessonID: courseLessonVersion.LessonID,
+			slug:     lessonSlug(courseLessonVersion),
+			position: *courseLessonVersion.NaturalOrder,
 		})
 	}
 
@@ -619,19 +619,19 @@ func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, i
 	}
 	finishedCount := 0
 
-	for _, l := range lessons {
-		finished := finishedIDs[l.lessonID]
+	for _, lesson := range lessons {
+		finished := finishedIDs[lesson.lessonID]
 		if finished {
 			finishedCount++
 		}
 
 		state.Lessons = append(state.Lessons, LessonState{
-			Slug:     l.slug,
-			Position: l.position,
+			Slug:     lesson.slug,
+			Position: lesson.position,
 			Finished: finished,
 		})
 		if !finished && state.NextLessonSlug == nil {
-			slug := l.slug
+			slug := lesson.slug
 			state.NextLessonSlug = &slug
 		}
 	}
