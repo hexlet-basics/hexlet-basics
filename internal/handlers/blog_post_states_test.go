@@ -60,6 +60,7 @@ var legal = map[string][]string{
 }
 
 func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testing.T) {
+	t.Parallel()
 	for _, call := range transitionCalls {
 		for _, from := range []string{"draft", "published", "archived"} {
 			t.Run(call.name+" from "+from, func(t *testing.T) {
@@ -88,6 +89,7 @@ func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testin
 }
 
 func TestARefusedTransitionExplainsItselfInTheCallersLanguage(t *testing.T) {
+	t.Parallel()
 	for locale, want := range map[string]string{
 		"ru": "«опубликовано»",
 		"en": "published to published",
@@ -107,6 +109,7 @@ func TestARefusedTransitionExplainsItselfInTheCallersLanguage(t *testing.T) {
 }
 
 func TestAPostWithoutAStateCountsAsADraft(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.DB.BlogPost.UpdateOneID(statePostID).ClearState().ExecX(t.Context())
 
@@ -117,6 +120,7 @@ func TestAPostWithoutAStateCountsAsADraft(t *testing.T) {
 }
 
 func TestATransitionOfAMissingPostIs404(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: 999999})
@@ -126,6 +130,7 @@ func TestATransitionOfAMissingPostIs404(t *testing.T) {
 }
 
 func TestUpdateDoesNotChangeThePublicationState(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	setState(h, "archived")
 
@@ -136,6 +141,7 @@ func TestUpdateDoesNotChangeThePublicationState(t *testing.T) {
 }
 
 func TestPublishingMakesAPostPublicAndUnpublishingHidesIt(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	setState(h, "draft")
 	slug := *h.DB.BlogPost.GetX(t.Context(), statePostID).Slug
@@ -162,6 +168,7 @@ func actAs(h *testsupport.Harness, roleLabel fixture.Label) {
 // A role that may edit may not publish, and the reverse: the state is not an
 // update.
 func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
+	t.Parallel()
 	t.Run("update only", func(t *testing.T) {
 		h := testsupport.NewHarnessAs(t, editorLabel)
 		actAs(h, fixture.StaffRoleBlogUpdater)
@@ -187,6 +194,7 @@ func TestEditingAndPublishingAreGrantedSeparately(t *testing.T) {
 }
 
 func TestEachTransitionLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
+	t.Parallel()
 	for _, call := range transitionCalls {
 		from := legal[call.name][0]
 		t.Run(call.name, func(t *testing.T) {

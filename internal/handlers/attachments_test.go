@@ -150,6 +150,7 @@ func uploadAttachmentURL(t *testing.T, router http.Handler) string {
 }
 
 func TestUploadAttachmentAndDownload(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
@@ -195,6 +196,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 // generated client, so the generated multipart encoder and decoder meet over
 // the contract and the stored row is what the response names.
 func TestAdminUploadAttachmentThroughGeneratedClient(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 
@@ -213,6 +215,7 @@ func TestAdminUploadAttachmentThroughGeneratedClient(t *testing.T) {
 }
 
 func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
+	t.Parallel()
 	t.Run("missing session", func(t *testing.T) {
 		router, _ := newAttachmentRouterStack(t, true)
 		rec := httptest.NewRecorder()
@@ -248,6 +251,7 @@ func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 }
 
 func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 	url := uploadAttachmentURL(t, router)
 
@@ -333,6 +337,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 }
 
 func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 	req := uploadRequest(t, "notes.png", "image/png", []byte("hello"))
 	req.Header.Set("Accept-Language", "es")
@@ -347,6 +352,7 @@ func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
 }
 
 func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
@@ -361,6 +367,7 @@ func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
 }
 
 func TestUploadAttachmentRequiresFilePart(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 
 	var body bytes.Buffer
@@ -380,6 +387,7 @@ func TestUploadAttachmentRequiresFilePart(t *testing.T) {
 }
 
 func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
@@ -395,6 +403,7 @@ func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
 }
 
 func TestUploadAttachmentRejectsOversizedBody(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 	// Valid PNG bytes padded past the whole-body cap, so only the router can stop
 	// it before the bytes reach the bucket.
@@ -408,6 +417,7 @@ func TestUploadAttachmentRejectsOversizedBody(t *testing.T) {
 }
 
 func TestUploadAttachmentRejectsFileOverAssetLimit(t *testing.T) {
+	t.Parallel()
 	router := newAttachmentRouter(t)
 	// Over the file limit but inside the body cap's envelope allowance, so the
 	// request reaches assetstore and fails as a field error, not a transport one.

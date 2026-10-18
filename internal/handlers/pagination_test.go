@@ -53,6 +53,7 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 }
 
 func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
+	t.Parallel()
 	tests := []string{
 		"/api/reviews?page=0",
 		"/api/reviews?page=-100",
@@ -76,6 +77,7 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 }
 
 func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
+	t.Parallel()
 	router := newPaginationRouter(t, &paginationContractHandler{})
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/reviews?page=0", nil)
 	req.Header.Set("Accept-Language", "ru")
@@ -90,6 +92,7 @@ func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 }
 
 func TestRouterErrorsUseRequestLocale(t *testing.T) {
+	t.Parallel()
 	router := newPaginationRouter(t, &paginationContractHandler{})
 	tests := []struct {
 		name       string
@@ -134,6 +137,7 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 }
 
 func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name        string
 		path        string

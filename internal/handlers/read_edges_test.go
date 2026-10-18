@@ -20,6 +20,7 @@ import (
 // A page past the last one is an empty page, not an error: the total still says
 // how many posts there are.
 func TestAdminListBlogPostsPastTheLastPage(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListBlogPosts(t.Context(), api.AdminListBlogPostsParams{
@@ -34,6 +35,7 @@ func TestAdminListBlogPostsPastTheLastPage(t *testing.T) {
 
 // A post whose state was never set reads as null, not as a made-up state.
 func TestAdminGetBlogPostWithoutAState(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.DB.BlogPost.Update().Where(blogpost.ID(fixture.ID(fixture.BlogPostHelloWorld))).ClearState().ExecX(t.Context())
 
@@ -46,6 +48,7 @@ func TestAdminGetBlogPostWithoutAState(t *testing.T) {
 // A course with no built version is still a page: no lessons, no modules and no
 // position, rather than a failed read.
 func TestGetCourseWithoutABuiltVersion(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	h.DB.Course.Update().Where(course.SlugEQ(jsCourseSlug)).ClearCurrentVersionID().ExecX(t.Context())
@@ -61,6 +64,7 @@ func TestGetCourseWithoutABuiltVersion(t *testing.T) {
 // A lesson of an unknown course is the not-found answer, as is one of a course
 // with nothing built: there is no content to serve.
 func TestGetCourseLessonIsNotFoundWhereThereIsNothingToServe(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
@@ -87,6 +91,7 @@ func TestGetCourseLessonIsNotFoundWhereThereIsNothingToServe(t *testing.T) {
 // A lesson whose version records no path in the course repository has no
 // "propose a fix" link, rather than a broken one.
 func TestGetCourseLessonWithoutASourcePathHasNoSourceLink(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	h.DB.CourseLessonVersion.Update().ClearPathToCode().ExecX(t.Context())
 
@@ -103,6 +108,7 @@ func TestGetCourseLessonWithoutASourcePathHasNoSourceLink(t *testing.T) {
 // A signed-in learner who never started the course has no enrollment: the page
 // says so with null, not with an empty record.
 func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()

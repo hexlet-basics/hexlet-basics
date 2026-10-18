@@ -25,6 +25,7 @@ var (
 var editorGrants = []string{"banners.create", "banners.read", "blog_posts.read"}
 
 func TestAdminListRoles(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
@@ -45,6 +46,7 @@ func TestAdminListRoles(t *testing.T) {
 }
 
 func TestAdminGetRole(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -56,6 +58,7 @@ func TestAdminGetRole(t *testing.T) {
 }
 
 func TestAdminCreateRole(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -70,6 +73,7 @@ func TestAdminCreateRole(t *testing.T) {
 }
 
 func TestAdminCreateRoleDuplicateName(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -82,6 +86,7 @@ func TestAdminCreateRoleDuplicateName(t *testing.T) {
 }
 
 func TestAdminUpdateRole(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -98,6 +103,7 @@ func TestAdminUpdateRole(t *testing.T) {
 }
 
 func TestAdminDeleteRole(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalRoles := h.DB.StaffRole.Query().CountX(ctx)
@@ -113,6 +119,7 @@ func TestAdminDeleteRole(t *testing.T) {
 }
 
 func TestAdminGetRolePermissions(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -127,6 +134,7 @@ func TestAdminGetRolePermissions(t *testing.T) {
 // submitted are exactly the grants the role holds afterwards: the new ones are
 // added, the ones left out are removed, the ones kept stay.
 func TestAdminUpdateRolePermissionsReplacesTheGrants(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	updated, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
@@ -147,6 +155,7 @@ func TestAdminUpdateRolePermissionsReplacesTheGrants(t *testing.T) {
 // stored as a Permission that opens nothing, and writes nothing else of the
 // save either.
 func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
@@ -163,6 +172,7 @@ func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
 // TestAdminListPermissions serves the catalog the roles screen offers, the one
 // read from the operations' declarations in the contract.
 func TestAdminListPermissions(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	got, err := h.Client.AdminListPermissions(context.Background())

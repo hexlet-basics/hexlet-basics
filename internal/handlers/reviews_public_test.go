@@ -26,6 +26,7 @@ func reviewNames(reviews []api.Review) []string {
 // review sorts above the pinned one (legacy ordered by id only), and the ru
 // draft is not shown.
 func TestListPublicReviewsShowsPublishedReviewsOfTheRequestLocaleNewestFirst(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -40,6 +41,7 @@ func TestListPublicReviewsShowsPublishedReviewsOfTheRequestLocaleNewestFirst(t *
 }
 
 func TestListPublicReviewsInEnglishListsOnlyEnglishReviews(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "en")
 
@@ -52,6 +54,7 @@ func TestListPublicReviewsInEnglishListsOnlyEnglishReviews(t *testing.T) {
 
 // Reviews are written in ru or en only, so the es page is empty, not missing.
 func TestListPublicReviewsInSpanishIsEmpty(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "es")
 
@@ -64,6 +67,7 @@ func TestListPublicReviewsInSpanishIsEmpty(t *testing.T) {
 
 // Pages slice the same ordered list; the total counts every page.
 func TestListPublicReviewsPaginates(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
@@ -90,6 +94,7 @@ func TestListPublicReviewsPaginates(t *testing.T) {
 // The public list is anonymous, so the embedded reviewer must not carry the
 // account's email or admin flag, only what the page shows.
 func TestListPublicReviewsDoesNotExposeReviewerAccountData(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 

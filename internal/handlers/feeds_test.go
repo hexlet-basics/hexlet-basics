@@ -30,6 +30,7 @@ type yandexFeed struct {
 // client only decodes an `application/xml` answer, so a successful call also
 // pins the content type.
 func TestYandexCoursesFeed(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 

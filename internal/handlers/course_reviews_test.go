@@ -25,6 +25,7 @@ func enqueuedLessonInfoIDs(t *testing.T, h *testsupport.Harness) []int {
 }
 
 func TestAdminReviewCourse(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -40,6 +41,7 @@ func TestAdminReviewCourse(t *testing.T) {
 }
 
 func TestAdminReviewCourseNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -50,6 +52,7 @@ func TestAdminReviewCourseNotFound(t *testing.T) {
 }
 
 func TestAdminReviewCourseLesson(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -64,6 +67,7 @@ func TestAdminReviewCourseLesson(t *testing.T) {
 }
 
 func TestAdminReviewCourseLessonNotFound(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 

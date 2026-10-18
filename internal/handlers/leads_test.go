@@ -14,12 +14,14 @@ import (
 	"hexletbasics/ent/tagging"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
 // leads.yml seeds these two.
 
 func TestAdminListLeads(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalLeads := h.DB.Lead.Query().CountX(ctx)
@@ -50,6 +52,7 @@ func TestAdminListLeads(t *testing.T) {
 }
 
 func TestAdminListLeadsPaginated(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 	totalLeads := h.DB.Lead.Query().CountX(ctx)
@@ -83,6 +86,7 @@ func leadFromTheSite() *api.LeadInput {
 }
 
 func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.ArriveFrom(h, "203.0.113.7")
 
@@ -127,7 +131,8 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 // `tag_list.remove` + `save!`). The survey item tagged under the same id is
 // not the user and keeps its tag.
 func TestCreateLeadClearsTheUsersShouldBeLeadTag(t *testing.T) {
-	h := testsupport.NewHarness(t)
+	t.Parallel()
+	h := testsupport.NewHarnessAs(t, fixture.UserFlaggedAsLead)
 	ctx := t.Context()
 
 	_, err := h.Client.CreateLead(ctx, leadFromTheSite())
@@ -145,6 +150,7 @@ func TestCreateLeadClearsTheUsersShouldBeLeadTag(t *testing.T) {
 }
 
 func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	input := leadFromTheSite()
 	input.ContactMethod = api.LeadInputContactMethodPhone
@@ -169,6 +175,7 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 }
 
 func TestCreateLeadRequiresASignedInUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
 	totalLeads := h.DB.Lead.Query().CountX(t.Context())
 

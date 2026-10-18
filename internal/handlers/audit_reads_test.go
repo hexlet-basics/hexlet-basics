@@ -39,6 +39,7 @@ type readsOf struct {
 }
 
 func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	testsupport.SpeakTo(h, "ru")
 	testsupport.ArriveFrom(h, "203.0.113.20")
@@ -78,6 +79,7 @@ func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
 }
 
 func TestReadingOneUserIsFiledUnderThatUser(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	user, err := h.Client.AdminGetUser(context.Background(), api.AdminGetUserParams{ID: int32(h.UserID)})
@@ -93,6 +95,7 @@ func TestReadingOneUserIsFiledUnderThatUser(t *testing.T) {
 // A record holds identifiers and a count, never what the response said: not the
 // email of a user the list showed.
 func TestAReadRecordHoldsNoFieldValues(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 
 	page, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
@@ -112,6 +115,7 @@ func TestAReadRecordHoldsNoFieldValues(t *testing.T) {
 }
 
 func TestSearchingLeadsMessagesAndProgressLeaveRecords(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -140,6 +144,7 @@ func TestSearchingLeadsMessagesAndProgressLeaveRecords(t *testing.T) {
 // Reading the catalogue or content is not a read of personal data: no fact, no
 // record, even after the consumer ran.
 func TestReadingContentLeavesNoRecord(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
@@ -161,6 +166,7 @@ func TestReadingContentLeavesNoRecord(t *testing.T) {
 // A refused read is recorded once, as a refusal, by the security handler; it
 // never reaches the middleware, so no read fact follows it.
 func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarnessAs(t, editorLabel)
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
@@ -177,6 +183,7 @@ func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 // whatever it is. The operations come from the contract, so declaring one in the
 // TypeSpec adds it here with no edit, and one the middleware does not reach fails.
 func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
+	t.Parallel()
 	operations := permissioncatalog.PersonalDataReads()
 	require.NotEmpty(t, operations)
 
@@ -204,6 +211,7 @@ func TestEveryPersonalDataReadOfTheContractIsRecorded(t *testing.T) {
 // Recording must never fail or change a read: a publisher that cannot take the
 // fact leaves the response as the handler gave it.
 func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	read := personalDataMiddleware(t, h, brokenPublisher{})
 
@@ -216,6 +224,7 @@ func TestABrokenRecorderDoesNotFailTheRead(t *testing.T) {
 
 // A handler that fails, or answers with an error body, read nothing.
 func TestAnErrorAnswerIsNotARead(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	read := personalDataMiddleware(t, h, h.Events)
 
@@ -232,6 +241,7 @@ func TestAnErrorAnswerIsNotARead(t *testing.T) {
 // A page is far smaller than the cap, but a record that grew with the table
 // would turn one read into a bulk write: ids stop at the cap, the count does not.
 func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
+	t.Parallel()
 	h := testsupport.NewHarness(t)
 	read := personalDataMiddleware(t, h, h.Events)
 

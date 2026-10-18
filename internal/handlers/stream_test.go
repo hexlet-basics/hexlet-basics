@@ -21,6 +21,7 @@ import (
 // Sentry middleware that wraps every production request, and outlives the
 // server's write timeout: an answer takes as long as the model takes.
 func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T) {
+	t.Parallel()
 	release := make(chan struct{})
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = io.WriteString(w, "first\n")
@@ -88,6 +89,7 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 // server would append is dropped and the connection is cut, so the client sees
 // a broken stream rather than a short answer with JSON glued to it.
 func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
+	t.Parallel()
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = io.WriteString(w, "partial ")
 		w.Header().Set("Content-Type", "application/problem+json")
