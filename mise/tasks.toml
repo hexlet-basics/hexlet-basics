@@ -400,7 +400,7 @@ run = "go test -tags=docker ./internal/exerciserunner"
 ["test:cover"]
 description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (needs `mise run db:up`)"
 run = [
-  "go test -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
+  "go test -tags=docker -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
   "go tool go-test-coverage --config=.testcoverage.yml",
 ]
 
