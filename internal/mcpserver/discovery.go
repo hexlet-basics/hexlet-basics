@@ -91,7 +91,8 @@ func (s *Server) visibleTo(ctx context.Context, info *auth.TokenInfo) []listedTo
 	var held map[string]bool
 
 	if s.deps.HeldCapabilities != nil && slices.Contains(info.Scopes, oauthserver.ScopeAdmin) {
-		if userID, err := strconv.Atoi(info.UserID); err == nil && userID > 0 {
+		userID, err := strconv.Atoi(info.UserID)
+		if err == nil && userID > 0 {
 			names, err := s.deps.HeldCapabilities(ctx, userID)
 			if err != nil {
 				s.deps.Logger.ErrorContext(ctx, "read capabilities for the MCP tool list", slog.Any("err", err))
@@ -263,7 +264,9 @@ func (s *Server) findTools(ctx context.Context, req *mcp.CallToolRequest, info *
 		Query:  "",
 		Limit:  0,
 	}
-	if err := request.decode(&args); err != nil {
+
+	err := request.decode(&args)
+	if err != nil {
 		return toolError(err.Error()), nil
 	}
 

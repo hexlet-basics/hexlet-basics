@@ -57,7 +57,8 @@ func (r *Readiness) move(ctx context.Context, id int, move transition.Transition
 		return domain.FromStore(err)
 	}
 
-	if err := move.Check(transition.ReadinessOf(row.Readiness)); err != nil {
+	err = move.Check(transition.ReadinessOf(row.Readiness))
+	if err != nil {
 		return err
 	}
 

@@ -39,7 +39,9 @@ type maintainAuditPartitionsWorker struct {
 // audit data should never be silent.
 func (w *maintainAuditPartitionsWorker) Work(ctx context.Context, _ *river.Job[MaintainAuditPartitionsArgs]) error {
 	now := w.now()
-	if err := w.partitions.EnsureAhead(ctx, now); err != nil {
+
+	err := w.partitions.EnsureAhead(ctx, now)
+	if err != nil {
 		return errs.Wrapf(err, "maintain audit partitions")
 	}
 

@@ -106,7 +106,9 @@ func (c *Client) CreateLead(ctx context.Context, event events.LeadCreated) error
 	}
 
 	body := []generated.UnsortedFormCreateItem{c.payload.build(event)}
-	if _, err := c.api.UnsortedLeadsCreateForms(ctx, body); err != nil {
+
+	_, err := c.api.UnsortedLeadsCreateForms(ctx, body)
+	if err != nil {
 		return classifyRequestError(err)
 	}
 
@@ -199,7 +201,9 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 // query string. A page that does not parse contributes nothing.
 func landingQuery(landingPage *string) func(key string) *string {
 	var query url.Values
-	if parsed, err := url.Parse(lo.FromPtr(landingPage)); err == nil {
+
+	parsed, err := url.Parse(lo.FromPtr(landingPage))
+	if err == nil {
 		query = parsed.Query()
 	}
 

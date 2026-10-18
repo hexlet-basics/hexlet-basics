@@ -49,7 +49,9 @@ func (s *Server) Pending(ctx context.Context, requestID string) (Consent, error)
 	}
 
 	host := ""
-	if u, err := url.Parse(req.RedirectURI); err == nil {
+
+	u, err := url.Parse(req.RedirectURI)
+	if err == nil {
 		host = u.Host
 	}
 
@@ -103,7 +105,8 @@ func (s *Server) Deny(ctx context.Context, requestID string) (string, error) {
 		return "", err
 	}
 
-	if err := s.storage.DeleteAuthRequest(ctx, requestID); err != nil {
+	err = s.storage.DeleteAuthRequest(ctx, requestID)
+	if err != nil {
 		return "", err
 	}
 

@@ -216,7 +216,8 @@ func testConfig() config.ExerciseRunnerConfig {
 	var cfg config.ExerciseRunnerConfig
 	// Decoded against an empty environment on purpose: what is asserted is the
 	// shipped default, not whatever the machine running the tests exports.
-	if err := env.ParseWithOptions(&cfg, env.Options{Environment: map[string]string{}}); err != nil {
+	err := env.ParseWithOptions(&cfg, env.Options{Environment: map[string]string{}})
+	if err != nil {
 		panic(err)
 	}
 

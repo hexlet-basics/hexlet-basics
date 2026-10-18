@@ -115,7 +115,8 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 	// report rollback failures without obscuring the callback error.
 	defer func() { _ = tx.Rollback() }()
 
-	if err := fn(tx, NewTxClient(tx)); err != nil {
+	err = fn(tx, NewTxClient(tx))
+	if err != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr == nil || errors.Is(rollbackErr, sql.ErrTxDone) {
 			return err
@@ -124,7 +125,8 @@ func (s *Store) WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) erro
 		return errors.Join(err, errs.Wrapf(rollbackErr, "rollback transaction"))
 	}
 
-	if err := tx.Commit(); err != nil {
+	err = tx.Commit()
+	if err != nil {
 		return errs.Wrapf(err, "commit transaction")
 	}
 

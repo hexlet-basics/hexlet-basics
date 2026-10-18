@@ -50,7 +50,9 @@ func (e *Enqueuer) EnqueueTx(ctx context.Context, tx *sql.Tx, args ...river.JobA
 	params := lo.Map(args, func(a river.JobArgs, _ int) river.InsertManyParams {
 		return river.InsertManyParams{Args: a}
 	})
-	if _, err := e.river.InsertManyTx(ctx, tx, params); err != nil {
+
+	_, err := e.river.InsertManyTx(ctx, tx, params)
+	if err != nil {
 		return oops.Wrapf(err, "enqueue %s", args[0].Kind())
 	}
 

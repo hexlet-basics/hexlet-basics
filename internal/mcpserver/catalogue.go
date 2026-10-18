@@ -212,7 +212,9 @@ func (s *Server) outputSchema(operationID string) (map[string]any, error) {
 
 func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 	var args pageArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -242,7 +244,9 @@ func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 
 func (s *Server) listCategories(ctx context.Context, c call) (result, error) {
 	var args pageArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -276,7 +280,9 @@ type slugArgs struct {
 
 func (s *Server) getCategory(ctx context.Context, c call) (result, error) {
 	var args slugArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -294,7 +300,9 @@ func (s *Server) getCategory(ctx context.Context, c call) (result, error) {
 
 func (s *Server) getCourse(ctx context.Context, c call) (result, error) {
 	var args slugArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -317,7 +325,9 @@ type lessonArgs struct {
 
 func (s *Server) getCourseLesson(ctx context.Context, c call) (result, error) {
 	var args lessonArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -335,7 +345,9 @@ func (s *Server) getCourseLesson(ctx context.Context, c call) (result, error) {
 
 func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	var args pageArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -366,7 +378,9 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 
 func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 	var args slugArgs
-	if err := c.decode(&args); err != nil {
+
+	err := c.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 

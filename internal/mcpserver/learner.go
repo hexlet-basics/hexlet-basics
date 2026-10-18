@@ -112,7 +112,8 @@ func (s *Server) addLearnerTools(server *mcp.Server) error {
 
 func (s *Server) myDashboard(ctx context.Context, request call) (result, error) {
 	// Nothing is declared, so anything sent (a userId, say) is refused.
-	if err := request.decode(&struct{}{}); err != nil {
+	err := request.decode(&struct{}{})
+	if err != nil {
 		return result{}, err
 	}
 
@@ -140,7 +141,9 @@ type lessonProgressArgs struct {
 
 func (s *Server) myCourseProgress(ctx context.Context, request call) (result, error) {
 	var args courseArgs
-	if err := request.decode(&args); err != nil {
+
+	err := request.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 
@@ -169,7 +172,9 @@ func (s *Server) myCourseProgress(ctx context.Context, request call) (result, er
 
 func (s *Server) myLessonProgress(ctx context.Context, request call) (result, error) {
 	var args lessonProgressArgs
-	if err := request.decode(&args); err != nil {
+
+	err := request.decode(&args)
+	if err != nil {
 		return result{}, err
 	}
 

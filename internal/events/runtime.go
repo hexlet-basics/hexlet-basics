@@ -92,7 +92,8 @@ func NewRuntime(
 			return nil, errs.Wrapf(err, "create Watermill event processor")
 		}
 
-		if err := processor.AddHandlers(handlers...); err != nil {
+		err = processor.AddHandlers(handlers...)
+		if err != nil {
 			return nil, errs.Wrapf(err, "register domain event handlers")
 		}
 	}
@@ -192,7 +193,8 @@ func newSubscriber(
 // Run blocks while the Watermill router is alive, allowing the process
 // supervisor to observe router termination directly.
 func (r *Runtime) Run(ctx context.Context) error {
-	if err := r.router.Run(ctx); err != nil {
+	err := r.router.Run(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "run Watermill router")
 	}
 

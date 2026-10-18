@@ -47,7 +47,9 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /signin/{label}", func(w http.ResponseWriter, r *http.Request) {
 		u := db.User.GetX(r.Context(), fixture.ID(fixture.LabelOf(r.PathValue("label"))))
-		if err := manager.Begin(r.Context(), u); err != nil {
+
+		err := manager.Begin(r.Context(), u)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
@@ -62,7 +64,8 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		_, _ = w.Write([]byte(strconv.Itoa(u.ID)))
 	})
 	mux.HandleFunc("POST /signout", func(w http.ResponseWriter, r *http.Request) {
-		if err := manager.End(r.Context()); err != nil {
+		err := manager.End(r.Context())
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})

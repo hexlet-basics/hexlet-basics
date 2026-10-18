@@ -42,13 +42,16 @@ func main() {
 		dir = os.Args[1]
 	}
 
-	if err := os.MkdirAll(dir, dirMode); err != nil { //nolint:gosec // G301: a developer script writing public sample covers into the local storage dir
+	err := os.MkdirAll(dir, dirMode) //nolint:gosec // G301, G703: a developer script writing public sample covers into the local storage dir
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	for key, c := range covers() {
 		data := gradient(c[0], c[1])
-		if err := os.WriteFile(filepath.Join(dir, key), data, fileMode); err != nil { //nolint:gosec // G306: public sample cover, served as a static file
+
+		err := os.WriteFile(filepath.Join(dir, key), data, fileMode) //nolint:gosec // G306, G703: public sample cover, served as a static file
+		if err != nil {
 			log.Fatal(err)
 		}
 
@@ -63,7 +66,8 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if err := os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, fileMode); err != nil { //nolint:gosec // G306: attrs of a public sample cover
+		err = os.WriteFile(filepath.Join(dir, key+".attrs"), attrs, fileMode) //nolint:gosec // G306, G703: attrs of a public sample cover
+		if err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -80,7 +84,9 @@ func gradient(from, to color.RGBA) []byte {
 	}
 
 	var buf bytes.Buffer
-	if err := png.Encode(&buf, img); err != nil {
+
+	err := png.Encode(&buf, img)
+	if err != nil {
 		log.Fatal(err)
 	}
 

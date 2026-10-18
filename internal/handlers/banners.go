@@ -74,7 +74,8 @@ func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, pa
 }
 
 func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) error {
-	if err := s.db.Banner.AdminDelete(ctx, params.ID); err != nil {
+	err := s.db.Banner.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete banner")
 	}
 

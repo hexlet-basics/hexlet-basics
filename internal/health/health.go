@@ -75,7 +75,8 @@ func (p *Probes) ready(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), readyTimeout)
 	defer cancel()
 
-	if err := p.check(ctx); err != nil {
+	err := p.check(ctx)
+	if err != nil {
 		http.Error(w, "not ready", http.StatusServiceUnavailable)
 
 		return

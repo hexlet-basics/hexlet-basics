@@ -38,7 +38,9 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 
 	if len(row.Changes) > 0 {
 		var changes []audit.Change
-		if err := json.Unmarshal(row.Changes, &changes); err != nil {
+
+		err := json.Unmarshal(row.Changes, &changes)
+		if err != nil {
 			return api.AuditRecord{}, errs.With("audit_record_id", row.ID).Wrapf(err, "decode audit changes")
 		}
 
@@ -63,7 +65,9 @@ func AuditRecord(row *ent.AuditRecord) (api.AuditRecord, error) {
 
 	if len(row.Reads) > 0 {
 		var reads audit.Reads
-		if err := json.Unmarshal(row.Reads, &reads); err != nil {
+
+		err := json.Unmarshal(row.Reads, &reads)
+		if err != nil {
 			return api.AuditRecord{}, errs.With("audit_record_id", row.ID).Wrapf(err, "decode audit reads")
 		}
 

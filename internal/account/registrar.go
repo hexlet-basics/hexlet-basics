@@ -79,14 +79,15 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 			return errs.Wrapf(domain.FromStore(err, userUniques()...), "create user")
 		}
 
-		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
+		err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
 			UserID:     u.ID,
 			Email:      u.Email,
 			FirstName:  u.FirstName,
 			LastName:   u.LastName,
 			Locale:     input.Locale,
 			OccurredAt: r.now().UTC(),
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish user signed up")
 		}
 

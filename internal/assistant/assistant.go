@@ -131,12 +131,14 @@ func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) 
 			continue
 		}
 
-		if err := onDelta(chunk.Choices[0].Delta.Content); err != nil {
+		err := onDelta(chunk.Choices[0].Delta.Content)
+		if err != nil {
 			return Usage{}, err
 		}
 	}
 
-	if err := stream.Err(); err != nil {
+	err := stream.Err()
+	if err != nil {
 		return Usage{}, oops.Wrapf(err, "openai chat completion stream")
 	}
 

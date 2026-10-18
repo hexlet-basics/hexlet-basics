@@ -240,7 +240,9 @@ func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
 // restricted it to the four known names.
 func (c *Common) LogLevel() slog.Level {
 	var level slog.Level
-	if err := level.UnmarshalText([]byte(c.LogLevelName)); err != nil {
+
+	err := level.UnmarshalText([]byte(c.LogLevelName))
+	if err != nil {
 		return slog.LevelInfo
 	}
 
@@ -257,11 +259,14 @@ func (c *Common) SecureCookies() bool { return strings.HasPrefix(c.PublicURL, "h
 // Every violated rule is reported at once, named by variable.
 func LoadServer() (*Server, error) {
 	cfg := new(Server)
-	if err := env.Parse(cfg); err != nil {
+
+	err := env.Parse(cfg)
+	if err != nil {
 		return nil, oops.Wrapf(err, "parse server config from environment")
 	}
 
-	if err := check(cfg, cfg.AppEnv); err != nil {
+	err = check(cfg, cfg.AppEnv)
+	if err != nil {
 		return nil, err
 	}
 
@@ -272,11 +277,14 @@ func LoadServer() (*Server, error) {
 // worker's own settings, so a deployment need not give it a server-only secret.
 func LoadWorker() (*Worker, error) {
 	cfg := new(Worker)
-	if err := env.Parse(cfg); err != nil {
+
+	err := env.Parse(cfg)
+	if err != nil {
 		return nil, oops.Wrapf(err, "parse worker config from environment")
 	}
 
-	if err := check(cfg, cfg.AppEnv); err != nil {
+	err = check(cfg, cfg.AppEnv)
+	if err != nil {
 		return nil, err
 	}
 

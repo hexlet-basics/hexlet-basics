@@ -61,7 +61,8 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 // sent. A write that fails means the client went away, which is routine and
 // cannot be answered any more, so it is noted at debug level and nothing else.
 func writeJSON(w http.ResponseWriter, body any) {
-	if err := json.NewEncoder(w).Encode(body); err != nil {
+	err := json.NewEncoder(w).Encode(body)
+	if err != nil {
 		slog.Debug("write json response", "err", err)
 	}
 }

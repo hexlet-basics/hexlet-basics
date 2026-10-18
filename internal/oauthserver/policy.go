@@ -64,7 +64,8 @@ func (a authorizer) ValidateAuthRequest(
 		return "", oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err)
 	}
 
-	if err := op.ValidateAuthReqRedirectURI(oauthClient, req.RedirectURI, req.ResponseType); err != nil {
+	err = op.ValidateAuthReqRedirectURI(oauthClient, req.RedirectURI, req.ResponseType)
+	if err != nil {
 		return "", errs.Wrapf(err, "validate redirect uri")
 	}
 
@@ -106,12 +107,16 @@ func errInvalidTarget(resource string) *oidc.Error {
 // (RFC 9207) added to any redirect to the client.
 func (s *Server) authorize(w http.ResponseWriter, r *http.Request) {
 	ctx := op.ContextWithIssuer(r.Context(), s.issuer)
-	if err := r.ParseForm(); err == nil {
+
+	err := r.ParseForm()
+	if err == nil {
 		ctx = context.WithValue(ctx, resourceKey{}, r.Form["resource"])
 		// A client id that is a URL is registered by its metadata document, which
 		// is fetched (or refreshed) here, before the library looks the client up.
 		address, _ := s.clientAddress(ctx)
-		if derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address); derr != nil {
+
+		derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address)
+		if derr != nil {
 			writeDocumentError(w, derr)
 
 			return
@@ -155,7 +160,8 @@ type issWriter struct {
 
 func (w *issWriter) WriteHeader(code int) {
 	if loc := w.Header().Get("Location"); code == http.StatusFound && loc != "" && !strings.HasPrefix(loc, w.own) {
-		if u, err := url.Parse(loc); err == nil {
+		u, err := url.Parse(loc)
+		if err == nil {
 			q := u.Query()
 			q.Set("iss", w.issuer)
 			u.RawQuery = q.Encode()
@@ -175,7 +181,9 @@ func withIssParameter(doc any) (map[string]any, error) {
 	}
 
 	out := map[string]any{}
-	if err := json.Unmarshal(raw, &out); err != nil {
+
+	err = json.Unmarshal(raw, &out)
+	if err != nil {
 		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 

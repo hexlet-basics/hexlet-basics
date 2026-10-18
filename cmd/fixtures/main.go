@@ -17,7 +17,8 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
+	err := run()
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "fixtures:", err)
 		os.Exit(1)
 	}

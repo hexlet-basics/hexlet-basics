@@ -80,7 +80,9 @@ func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *l
 			Locale:         entry.Locale,
 			OccurredAt:     time.Now(),
 		}
-		if publishErr := publisher.PublishStandalone(ctx, fact); publishErr != nil {
+
+		publishErr := publisher.PublishStandalone(ctx, fact)
+		if publishErr != nil {
 			logger.ErrorContext(ctx, "publishing a read of personal data", "operation", req.OperationName, "err", publishErr)
 		}
 
@@ -107,7 +109,8 @@ func touched(response any) (audit.Reads, bool) {
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
 
-	if err := decoder.Decode(&value); err != nil {
+	err = decoder.Decode(&value)
+	if err != nil {
 		return audit.Reads{
 			Count: 0,
 			IDs:   nil,

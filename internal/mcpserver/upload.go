@@ -78,7 +78,8 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.DisallowUnknownFields()
 
-	if err := decoder.Decode(&in); err != nil {
+	err := decoder.Decode(&in)
+	if err != nil {
 		return nil, "", "the body argument must be an object with fileName, contentBase64 and optionally contentType"
 	}
 

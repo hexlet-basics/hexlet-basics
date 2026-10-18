@@ -155,16 +155,19 @@ func New(deps Deps) (*Server, error) {
 	})
 	mcpServer.AddReceivingMiddleware(server.filterToolList)
 
-	if err := server.addCatalogueTools(mcpServer); err != nil {
+	err := server.addCatalogueTools(mcpServer)
+	if err != nil {
 		return nil, err
 	}
 
-	if err := server.addLearnerTools(mcpServer); err != nil {
+	err = server.addLearnerTools(mcpServer)
+	if err != nil {
 		return nil, err
 	}
 
 	if deps.API != nil {
-		if err := server.addAdminTools(mcpServer); err != nil {
+		err := server.addAdminTools(mcpServer)
+		if err != nil {
 			return nil, err
 		}
 	}

@@ -235,7 +235,8 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 
 		occurredAt := p.now()
 		if createdEnrollment {
-			if err := p.publishCourseStarted(ctx, tx, db, userID, open.course, locale, occurredAt); err != nil {
+			err := p.publishCourseStarted(ctx, tx, db, userID, open.course, locale, occurredAt)
+			if err != nil {
 				return err
 			}
 		}
@@ -293,12 +294,13 @@ func (p *Progress) publishCourseStarted(
 		return errs.Wrapf(err, "count started enrollments")
 	}
 
-	if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
+	err = p.publisher.Publish(ctx, tx, events.CourseStarted{
 		OccurrenceCount: count,
 		Slug:            lo.FromPtr(crs.Slug),
 		Locale:          locale,
 		OccurredAt:      occurredAt,
-	}); err != nil {
+	})
+	if err != nil {
 		return errs.Wrapf(err, "publish course started")
 	}
 
@@ -497,13 +499,14 @@ func (p *Progress) publishLessonStarted(
 		return err
 	}
 
-	if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
+	err = p.publisher.Publish(ctx, tx, events.LessonStarted{
 		OccurrenceCount: count,
 		LessonSlug:      lo.FromPtr(open.lesson.Slug),
 		CourseSlug:      lo.FromPtr(open.course.Slug),
 		Locale:          locale,
 		OccurredAt:      occurredAt,
-	}); err != nil {
+	})
+	if err != nil {
 		return errs.Wrapf(err, "publish lesson started")
 	}
 
@@ -564,7 +567,8 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	// The Course's member count stays denormalized, as the legacy counter cache
 	// kept it: it is the marketing figure on catalogue pages, which are read far
 	// more often than anyone enrolls, and it is never used as a progress figure.
-	if err := db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx); err != nil {
+	err = db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx)
+	if err != nil {
 		return nil, false, errs.With("course_id", courseID).Wrapf(err, "count new enrollment on course")
 	}
 

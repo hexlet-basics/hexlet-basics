@@ -61,7 +61,8 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 		return errs.Wrapf(err, "create Watermill event bus")
 	}
 
-	if err := bus.Publish(ctx, event); err != nil {
+	err = bus.Publish(ctx, event)
+	if err != nil {
 		return errs.With("event", event.eventName()).Wrapf(err, "publish event")
 	}
 

@@ -152,7 +152,9 @@ func (c *GuestCodec) Decode(raw string) (GuestProgress, error) {
 	}
 
 	var progress GuestProgress
-	if err := json.Unmarshal(body, &progress); err != nil {
+
+	err = json.Unmarshal(body, &progress)
+	if err != nil {
 		return GuestProgress{}, ErrGuestCookieInvalid
 	}
 
@@ -226,7 +228,8 @@ func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgre
 
 	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		for _, entry := range guest.Entries {
-			if err := p.mergeCourse(ctx, tx, db, userID, entry, locale); err != nil {
+			err := p.mergeCourse(ctx, tx, db, userID, entry, locale)
+			if err != nil {
 				return err
 			}
 		}
@@ -279,12 +282,13 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 			return errs.Wrapf(err, "count started enrollments")
 		}
 
-		if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
+		err = p.publisher.Publish(ctx, tx, events.CourseStarted{
 			OccurrenceCount: count,
 			Slug:            entry.CourseSlug,
 			Locale:          locale,
 			OccurredAt:      occurredAt,
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish course started")
 		}
 	}
@@ -335,10 +339,11 @@ func (p *Progress) creditLessons(
 
 	// Started but not finished: the guest's cookie says otherwise.
 	if len(held) > 0 {
-		if _, err := db.LessonProgress.Update().
+		_, err := db.LessonProgress.Update().
 			Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lo.Keys(isHeld)...)).
 			SetState(StateFinished).
-			Save(ctx); err != nil {
+			Save(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "finish lesson progress")
 		}
 	}
@@ -353,7 +358,9 @@ func (p *Progress) creditLessons(
 				SetLessonID(l.lessonID).
 				SetState(StateFinished)
 		})
-		if _, err := db.LessonProgress.CreateBulk(builders...).Save(ctx); err != nil {
+
+		_, err := db.LessonProgress.CreateBulk(builders...).Save(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "create finished lesson progress")
 		}
 	}
@@ -379,7 +386,8 @@ func (p *Progress) creditLessons(
 				OccurredAt:      occurredAt,
 			},
 		} {
-			if err := p.publisher.Publish(ctx, tx, event); err != nil {
+			err := p.publisher.Publish(ctx, tx, event)
+			if err != nil {
 				return errs.Wrapf(err, "publish merge fact")
 			}
 		}

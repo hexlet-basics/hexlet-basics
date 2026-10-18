@@ -61,7 +61,8 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			a.logger.InfoContext(groupCtx, "backend listening", "addr", a.httpAddr)
 		}
 
-		if err := a.http.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		err := a.http.ListenAndServe()
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return errs.Wrapf(err, "serve HTTP")
 		}
 
@@ -133,9 +134,12 @@ func (a *application) shutdown(parent context.Context, cancelProcess context.Can
 		a.logger.InfoContext(ctx, "shutting down")
 	}
 
-	if err := a.http.Shutdown(ctx); err != nil {
+	err := a.http.Shutdown(ctx)
+	if err != nil {
 		stopErr := errs.Wrapf(err, "stop HTTP server")
-		if closeErr := a.http.Close(); closeErr != nil {
+
+		closeErr := a.http.Close()
+		if closeErr != nil {
 			forceCloseErr := errs.Wrapf(closeErr, "force-close HTTP server")
 
 			cancelProcess()

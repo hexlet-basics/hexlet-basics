@@ -91,14 +91,16 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 		// First, so a missing post is ent not-found before anything is written
 		// (the insert would otherwise fail its FK and read as a conflict). Left
 		// unwrapped: the central handler maps ent's not-found to 404.
-		if err := db.BlogPost.UpdateOneID(postID).
+		err := db.BlogPost.UpdateOneID(postID).
 			SetRelatedCourseItemsCount(len(courseIDs)).
-			Exec(ctx); err != nil {
+			Exec(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "save blog post")
 		}
 
-		if _, err := db.BlogPostRelatedCourseItem.Delete().
-			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
+		_, err = db.BlogPostRelatedCourseItem.Delete().
+			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "clear related courses of post %d", postID)
 		}
 
@@ -108,7 +110,9 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 				SetCourseID(courseID).
 				SetOrder(i)
 		})
-		if _, err := db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
+
+		_, err = db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "store related courses of post %d", postID)
 		}
 
@@ -229,7 +233,9 @@ func suggestPrompt(richBody string, candidates []candidate) (string, error) {
 // parseCourseIDs decodes the structured answer into the ordered id list.
 func parseCourseIDs(answer string) ([]int, error) {
 	var parsed suggestion
-	if err := json.Unmarshal([]byte(answer), &parsed); err != nil {
+
+	err := json.Unmarshal([]byte(answer), &parsed)
+	if err != nil {
 		return nil, oops.Wrapf(err, "decode course id list %q", answer)
 	}
 

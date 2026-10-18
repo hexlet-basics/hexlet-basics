@@ -71,7 +71,8 @@ func scan(dir string) (labels, error) {
 
 	next := firstID
 	for _, file := range files {
-		if err := scanFile(file, found, &next); err != nil {
+		err := scanFile(file, found, &next)
+		if err != nil {
 			return nil, err
 		}
 	}
@@ -104,7 +105,8 @@ func scanFile(path string, found labels, next *int) error {
 		*next++
 	}
 
-	if err := scanner.Err(); err != nil {
+	err = scanner.Err()
+	if err != nil {
 		return errs.With("file", filepath.Base(path)).Wrapf(err, "read fixture file")
 	}
 
@@ -167,7 +169,9 @@ func LabelNames(dir string) ([]string, error) {
 func ID(label Label) int {
 	repoOnce.Do(func() {
 		var dir string
-		if dir, errRepo = Dir(); errRepo == nil {
+
+		dir, errRepo = Dir()
+		if errRepo == nil {
 			repoLabels, errRepo = scan(dir)
 		}
 	})
@@ -198,7 +202,8 @@ func Dir() (string, error) {
 	}
 
 	for {
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+		_, err := os.Stat(filepath.Join(dir, "go.mod"))
+		if err == nil {
 			return filepath.Join(dir, "fixtures"), nil
 		} else if !errors.Is(err, os.ErrNotExist) {
 			return "", errs.Wrapf(err, "inspect repository root")
@@ -262,7 +267,8 @@ func Load(db *sql.DB, dir string, allowAnyDatabase bool) error {
 		return errs.Wrapf(err, "create fixture loader")
 	}
 
-	if err := loader.Load(); err != nil {
+	err = loader.Load()
+	if err != nil {
 		return errs.Wrapf(err, "load fixtures")
 	}
 

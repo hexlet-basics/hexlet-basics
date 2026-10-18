@@ -32,7 +32,9 @@ func WithClientIP(next http.Handler) http.Handler {
 			userAgent: r.UserAgent(),
 			requestID: r.Header.Get(requestIDHeader),
 		})
-		if ip, err := realip.Get(r); err == nil && ip != "" {
+
+		ip, err := realip.Get(r)
+		if err == nil && ip != "" {
 			ctx = context.WithValue(ctx, clientIPKey{}, ip)
 		}
 

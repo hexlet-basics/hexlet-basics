@@ -170,7 +170,8 @@ func writeRegistrationError(w http.ResponseWriter, e *registrationError) {
 
 // readRegistration reads and validates the body.
 func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (registration, *registrationError) {
-	if mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type")); err != nil || mt != "application/json" {
+	mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil || mt != "application/json" {
 		return registration{}, &registrationError{
 			http.StatusUnsupportedMediaType, "invalid_client_metadata", "the request must be application/json",
 		}
@@ -190,11 +191,14 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 	dec := json.NewDecoder(bytes.NewReader(raw))
 
 	var fields map[string]json.RawMessage
-	if err := dec.Decode(&fields); err != nil || fields == nil {
+
+	err = dec.Decode(&fields)
+	if err != nil || fields == nil {
 		return registration{}, metadataError("the body must be a JSON object")
 	}
 
-	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+	_, err = dec.Token()
+	if !errors.Is(err, io.EOF) {
 		return registration{}, metadataError("the body must be a single JSON object")
 	}
 
@@ -229,14 +233,16 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 	}
 
 	for _, uri := range uris {
-		if err := checkRedirectURI(uri); err != nil {
+		err := checkRedirectURI(uri)
+		if err != nil {
 			return reg, redirectError("%s", err)
 		}
 	}
 
 	reg.redirectURIs = uris
 
-	if reg.name, err = clientName(fields); err != nil {
+	reg.name, err = clientName(fields)
+	if err != nil {
 		return reg, metadataError("%s", err)
 	}
 
@@ -277,7 +283,8 @@ func parseRegistration(fields map[string]json.RawMessage) (registration, *regist
 		}
 	}
 
-	if reg.scopes, reg.offlineAccess, err = requestedScopes(fields); err != nil {
+	reg.scopes, reg.offlineAccess, err = requestedScopes(fields)
+	if err != nil {
 		return reg, metadataError("%s", err)
 	}
 
@@ -292,7 +299,9 @@ func stringList(fields map[string]json.RawMessage, name string) ([]string, error
 	}
 
 	var list []string
-	if err := json.Unmarshal(raw, &list); err != nil {
+
+	err := json.Unmarshal(raw, &list)
+	if err != nil {
 		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 
@@ -310,7 +319,9 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 	}
 
 	var name string
-	if err := json.Unmarshal(raw, &name); err != nil {
+
+	err := json.Unmarshal(raw, &name)
+	if err != nil {
 		return "", refusal("client_name must be a string")
 	}
 

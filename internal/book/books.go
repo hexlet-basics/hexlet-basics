@@ -62,10 +62,11 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 			return errs.Wrapf(err, "save book request")
 		}
 
-		if err := r.publisher.Publish(ctx, tx, events.BookRequested{
+		err = r.publisher.Publish(ctx, tx, events.BookRequested{
 			Locale:     locale,
 			OccurredAt: r.now().UTC(),
-		}); err != nil {
+		})
+		if err != nil {
 			return err
 		}
 

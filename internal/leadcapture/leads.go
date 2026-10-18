@@ -121,12 +121,14 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			return errs.Wrapf(err, "create lead")
 		}
 
-		if err := removeShouldBeLead(ctx, db, u.ID); err != nil {
+		err = removeShouldBeLead(ctx, db, u.ID)
+		if err != nil {
 			return err
 		}
 
 		visit := submission.FirstVisit
-		if err := r.publisher.Publish(ctx, tx, events.LeadCreated{
+
+		err = r.publisher.Publish(ctx, tx, events.LeadCreated{
 			LeadID:      created.ID,
 			UserID:      u.ID,
 			UserName:    userName(u),
@@ -146,7 +148,8 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			Referrer:    visit.Referrer,
 			IP:          submission.IP,
 			OccurredAt:  r.now().UTC(),
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish lead created")
 		}
 
@@ -195,7 +198,8 @@ func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
 		return nil
 	}
 
-	if err := db.Tag.UpdateOneID(tagRow.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
+	err = db.Tag.UpdateOneID(tagRow.ID).AddTaggingsCount(-removed).Exec(ctx)
+	if err != nil {
 		return errs.With("tag", shouldBeLeadTag).Wrapf(err, "count lead taggings")
 	}
 

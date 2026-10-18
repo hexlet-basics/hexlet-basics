@@ -83,7 +83,8 @@ func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
 		for _, delta := range []string{"Declare it ", "with ", "`let`."} {
-			if err := onDelta(delta); err != nil {
+			err := onDelta(delta)
+			if err != nil {
 				return assistant.Usage{}, err
 			}
 		}
@@ -145,7 +146,8 @@ func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
 // line per turn, so a test reads the prompt through the response.
 func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
 	for _, turn := range turns {
-		if err := onDelta(turn.Role + ": " + turn.Content + "\n"); err != nil {
+		err := onDelta(turn.Role + ": " + turn.Content + "\n")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
 	}
@@ -297,7 +299,8 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
-		if err := onDelta("Declare it "); err != nil {
+		err := onDelta("Declare it ")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
 
@@ -326,7 +329,8 @@ func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
-		if err := onDelta("Declare it "); err != nil {
+		err := onDelta("Declare it ")
+		if err != nil {
 			return assistant.Usage{}, err
 		}
 

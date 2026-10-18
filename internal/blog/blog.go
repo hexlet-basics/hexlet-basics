@@ -31,13 +31,15 @@ func NewRemover(txStore store.Transactor) *Remover {
 // post that has lost its likes and related courses.
 func (r *Remover) Remove(ctx context.Context, postID int) error {
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		if _, err := db.BlogPostRelatedCourseItem.Delete().
-			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
+		_, err := db.BlogPostRelatedCourseItem.Delete().
+			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "delete related courses of post %d", postID)
 		}
 
-		if _, err := db.BlogPostLike.Delete().
-			Where(blogpostlike.BlogPostID(postID)).Exec(ctx); err != nil {
+		_, err = db.BlogPostLike.Delete().
+			Where(blogpostlike.BlogPostID(postID)).Exec(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "delete likes of post %d", postID)
 		}
 		// Left unwrapped: the central handler maps ent's constraint errors.

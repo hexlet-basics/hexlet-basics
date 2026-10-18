@@ -56,7 +56,8 @@ func newValidator() *validator.Validate {
 }
 
 func mustRegister(v *validator.Validate, tag string, fn validator.FuncCtx) {
-	if err := v.RegisterValidationCtx(tag, fn); err != nil {
+	err := v.RegisterValidationCtx(tag, fn)
+	if err != nil {
 		panic("register validator " + tag + ": " + err.Error())
 	}
 }

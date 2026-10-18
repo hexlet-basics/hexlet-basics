@@ -82,7 +82,9 @@ func NewAuditMiddleware(txStore store.Transactor, i18n *localization.Translator,
 		// The caller may be gone (a cancelled request), which must not stop the
 		// record of what was attempted.
 		ctx := context.WithoutCancel(base)
-		if recordErr := RecordOutcome(ctx, txStore, i18n, req.OperationName, audit.OutcomeFailed); recordErr != nil {
+
+		recordErr := RecordOutcome(ctx, txStore, i18n, req.OperationName, audit.OutcomeFailed)
+		if recordErr != nil {
 			logger.ErrorContext(ctx, "recording a failed admin call", "operation", req.OperationName, "err", recordErr)
 		}
 

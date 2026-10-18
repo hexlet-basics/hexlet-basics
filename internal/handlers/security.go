@@ -191,7 +191,9 @@ func (s *Security) recordRefusal(ctx context.Context, operation string) {
 	ctx = context.WithoutCancel(ctx)
 
 	entry := auditEntry(ctx, operation, s.i18n, audit.OutcomeForbidden)
-	if err := audit.Write(ctx, s.db, entry, nil); err != nil {
+
+	err := audit.Write(ctx, s.db, entry, nil)
+	if err != nil {
 		s.errors.logger.ErrorContext(ctx, "recording a refused admin call", "operation", operation, "err", err)
 	}
 }

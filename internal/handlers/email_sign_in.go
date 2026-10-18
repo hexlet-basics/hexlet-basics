@@ -17,7 +17,8 @@ import (
 // the same whether or not one exists, so the form cannot be used to learn which
 // emails are registered, and it never creates an account.
 func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) error {
-	if err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email); err != nil {
+	err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email)
+	if err != nil {
 		return err
 	}
 
@@ -49,7 +50,8 @@ func (s *Server) CreatePasswordReminder(
 	ctx context.Context,
 	req *api.EmailInput,
 ) error {
-	if err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email); err != nil {
+	err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email)
+	if err != nil {
 		return err
 	}
 

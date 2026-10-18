@@ -164,7 +164,8 @@ func (d *Docker) Close() error {
 // daemon, a missing image, a container that never reported. It is never used to
 // report a failing test: a failure is an outcome, and the learner sees it.
 func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progress.Outcome, error) {
-	if err := d.slots.Acquire(ctx, 1); err != nil {
+	err := d.slots.Acquire(ctx, 1)
+	if err != nil {
 		return progress.Outcome{}, errs.Wrapf(err, "acquire runner slot")
 	}
 	defer d.slots.Release(1)
@@ -202,7 +203,8 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 		return pinned, nil
 	}
 
-	if _, err := d.docker.ImageInspect(ctx, pinned); err == nil {
+	_, err := d.docker.ImageInspect(ctx, pinned)
+	if err == nil {
 		return pinned, nil
 	}
 
@@ -214,11 +216,13 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 	// The pull returns as soon as the daemon accepts it; starting a container
 	// against a half-present image is the confusing failure that follows from
 	// not waiting.
-	if err := pulled.Wait(ctx); err != nil {
+	err = pulled.Wait(ctx)
+	if err != nil {
 		return "", errs.With("source", source).Wrapf(err, "wait for image pull")
 	}
 
-	if _, err := d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned}); err != nil {
+	_, err = d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned})
+	if err != nil {
 		return "", errs.With("source", source, "pinned", pinned).Wrapf(err, "pin image")
 	}
 
@@ -230,7 +234,9 @@ func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission
 // when the Course Version already named a tag, which is its own pin.
 func (d *Docker) imageRefs(submission progress.Submission) (string, string) {
 	repository := submission.Image
-	if named, err := reference.Parse(repository); err == nil {
+
+	named, err := reference.Parse(repository)
+	if err == nil {
 		_, tagged := named.(reference.Tagged)
 
 		_, digested := named.(reference.Digested)
@@ -323,10 +329,11 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	}
 	// Copied in rather than bind-mounted: a mount ties the runner to host paths
 	// and cannot work against a daemon that is not local.
-	if _, err := d.docker.CopyToContainer(ctx, created.ID, client.CopyToContainerOptions{
+	_, err = d.docker.CopyToContainer(ctx, created.ID, client.CopyToContainerOptions{
 		DestinationPath: "/",
 		Content:         archive,
-	}); err != nil {
+	})
+	if err != nil {
 		return 0, "", errs.Wrapf(err, "deliver submission to container")
 	}
 
@@ -344,7 +351,8 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	}
 	defer attached.Close()
 
-	if _, err := d.docker.ContainerStart(ctx, created.ID, client.ContainerStartOptions{}); err != nil {
+	_, err = d.docker.ContainerStart(ctx, created.ID, client.ContainerStartOptions{})
+	if err != nil {
 		return 0, "", errs.Wrapf(err, "start container")
 	}
 
@@ -435,19 +443,22 @@ func tarFile(destination, content string) (io.Reader, error) {
 
 	archive := tar.NewWriter(&buf)
 
-	if err := archive.WriteHeader(&tar.Header{
+	err := archive.WriteHeader(&tar.Header{
 		Name: strings.TrimPrefix(path.Clean(destination), "/"),
 		Mode: submissionFileMode,
 		Size: int64(len(content)),
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, errs.Wrapf(err, "write submission header")
 	}
 
-	if _, err := archive.Write([]byte(content)); err != nil {
+	_, err = archive.Write([]byte(content))
+	if err != nil {
 		return nil, errs.Wrapf(err, "write submission")
 	}
 
-	if err := archive.Close(); err != nil {
+	err = archive.Close()
+	if err != nil {
 		return nil, errs.Wrapf(err, "close submission archive")
 	}
 
@@ -464,7 +475,9 @@ func readOutput(stream io.Reader, limit int) (string, error) {
 		limit: limit,
 		buf:   bytes.Buffer{},
 	}
-	if _, err := stdcopy.StdCopy(capped, capped, stream); err != nil && !errors.Is(err, io.EOF) {
+
+	_, err := stdcopy.StdCopy(capped, capped, stream)
+	if err != nil && !errors.Is(err, io.EOF) {
 		return "", errs.Wrapf(err, "read container output")
 	}
 

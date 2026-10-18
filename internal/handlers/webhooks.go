@@ -72,7 +72,8 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := github.ValidateSignature(r.Header.Get(github.SHA256SignatureHeader), body, []byte(h.secret)); err != nil {
+	err = github.ValidateSignature(r.Header.Get(github.SHA256SignatureHeader), body, []byte(h.secret))
+	if err != nil {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookSignature), http.StatusUnauthorized)
 
 		return

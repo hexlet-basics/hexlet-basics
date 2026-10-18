@@ -882,7 +882,8 @@ var serverPackage = do.Package(
 	// Readiness is the database only (ADR-0023): the injector asks every built
 	// service that can check itself, and databaseCloser is the one that does.
 	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
-		if _, err := do.Invoke[*databaseCloser](i); err != nil {
+		_, err := do.Invoke[*databaseCloser](i)
+		if err != nil {
 			return nil, err
 		}
 

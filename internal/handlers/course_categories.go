@@ -51,7 +51,8 @@ func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseC
 }
 
 func (s *Server) AdminDeleteCourseCategory(ctx context.Context, params api.AdminDeleteCourseCategoryParams) error {
-	if err := s.db.CourseCategory.AdminDelete(ctx, params.ID); err != nil {
+	err := s.db.CourseCategory.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete course category")
 	}
 

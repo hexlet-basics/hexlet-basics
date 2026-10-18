@@ -36,7 +36,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := os.WriteFile(*out, src, labelsFileMode); err != nil {
+	err = os.WriteFile(*out, src, labelsFileMode)
+	if err != nil {
 		log.Fatal(err)
 	}
 }

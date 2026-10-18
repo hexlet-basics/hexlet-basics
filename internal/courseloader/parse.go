@@ -159,7 +159,9 @@ func parseSpec(repo repository) (*Spec, error) {
 	var doc struct {
 		Course Spec `yaml:"language"`
 	}
-	if err := decodeYAML(raw, &doc); err != nil {
+
+	err = decodeYAML(raw, &doc)
+	if err != nil {
 		return nil, oops.Wrapf(err, "parse %s", repo.abs("spec.yml"))
 	}
 
@@ -183,7 +185,8 @@ func parseSpec(repo repository) (*Spec, error) {
 		}
 	}
 
-	if err := errors.Join(missing...); err != nil {
+	err = errors.Join(missing...)
+	if err != nil {
 		return nil, err
 	}
 
@@ -252,7 +255,9 @@ func parseModuleInfos(repo repository, moduleDir string) ([]ModuleInfo, error) {
 			Name        string `yaml:"name"`
 			Description string `yaml:"description"`
 		}
-		if err := decodeYAML(raw, &data); err != nil {
+
+		err = decodeYAML(raw, &data)
+		if err != nil {
 			return nil, oops.Wrapf(err, "parse %s", repo.abs(file))
 		}
 
@@ -328,7 +333,9 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 		// A locale dir is exactly one that carries a data.yml — this is how the
 		// legacy loader tells `en/`/`ru/` apart from `assets/`.
 		dataPath := path.Join(localeDir, "data.yml")
-		if _, err := fs.Stat(repo.fsys, dataPath); err != nil {
+
+		_, err := fs.Stat(repo.fsys, dataPath)
+		if err != nil {
 			continue
 		}
 
@@ -343,7 +350,9 @@ func parseLessonInfos(repo repository, lessonDir string) ([]LessonInfo, error) {
 			Tips        []string     `yaml:"tips"`
 			Definitions []Definition `yaml:"definitions"`
 		}
-		if err := decodeYAML(raw, &data); err != nil {
+
+		err = decodeYAML(raw, &data)
+		if err != nil {
 			return nil, oops.Wrapf(err, "parse %s", repo.abs(dataPath))
 		}
 

@@ -55,7 +55,8 @@ func (e *Editor) move(ctx context.Context, id int, move transition.Transition[tr
 		return domain.FromStore(err)
 	}
 
-	if err := move.Check(transition.CurrentOf(row.State)); err != nil {
+	err = move.Check(transition.CurrentOf(row.State))
+	if err != nil {
 		return err
 	}
 

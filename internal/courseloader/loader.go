@@ -143,11 +143,13 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 	// lessons — an S3-writing transaction held open that long risks statement
 	// timeouts and pins a connection). The transaction that follows only writes
 	// rows, and still flips the course live only on success.
-	if err := l.uploadImages(ctx, parsed); err != nil {
+	err = l.uploadImages(ctx, parsed)
+	if err != nil {
 		return l.fail(ctx, version, oops.Wrapf(err, "upload images for %q", slug))
 	}
 
-	if err := l.build(ctx, version, course, parsed); err != nil {
+	err = l.build(ctx, version, course, parsed)
+	if err != nil {
 		return l.fail(ctx, version, err)
 	}
 
@@ -197,7 +199,8 @@ func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *
 
 func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, versionID, courseID int, parsed *Course) error {
 	spec := parsed.Spec
-	if _, err := tx.CourseVersion.UpdateOneID(versionID).
+
+	_, err := tx.CourseVersion.UpdateOneID(versionID).
 		SetName(spec.Name).
 		SetProgress(spec.Progress).
 		SetLearnAs(spec.LearnAs).
@@ -205,7 +208,8 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 		SetDockerImage(spec.DockerImage).
 		SetExerciseFilename(spec.ExerciseFilename).
 		SetExerciseTestFilename(spec.ExerciseTestFilename).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "update version spec")
 	}
 
@@ -236,11 +240,13 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 				SetName(info.Name).
 				SetDescription(info.Description)
 		})
-		if err := saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
+
+		err = saveInChunks(moduleInfos, func(chunk []*ent.CourseModuleTranslationCreate) error {
 			_, err := tx.CourseModuleTranslation.CreateBulk(chunk...).Save(ctx)
 
 			return errs.Wrapf(err, "save course module translation")
-		}); err != nil {
+		})
+		if err != nil {
 			return oops.Wrapf(err, "create module infos %q", module.Slug)
 		}
 
@@ -282,29 +288,32 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 			totalLessons++
 		}
 
-		if err := saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
+		err = saveInChunks(lessonInfos, func(chunk []*ent.CourseLessonTranslationCreate) error {
 			_, err := tx.CourseLessonTranslation.CreateBulk(chunk...).Save(ctx)
 
 			return errs.Wrapf(err, "save course lesson translation")
-		}); err != nil {
+		})
+		if err != nil {
 			return oops.Wrapf(err, "create lesson infos of module %q", module.Slug)
 		}
 	}
 
 	// Mark built + promote to live, atomically with all the content above. This is
 	// the moment the new version becomes the one learners see.
-	if _, err := tx.CourseVersion.UpdateOneID(versionID).
+	_, err = tx.CourseVersion.UpdateOneID(versionID).
 		SetState(stateBuilt).
 		SetResult("Success").
 		SetLessonsCount(totalLessons).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "mark version built")
 	}
 
-	if _, err := tx.Course.UpdateOneID(courseID).
+	_, err = tx.Course.UpdateOneID(courseID).
 		SetCurrentVersionID(versionID).
 		SetLessonsCount(totalLessons).
-		Save(ctx); err != nil {
+		Save(ctx)
+	if err != nil {
 		return oops.Wrapf(err, "promote version to live")
 	}
 
@@ -316,7 +325,8 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	//
 	// The worker has no request locale, so the facts carry the same default the
 	// translator falls back to.
-	if err := l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale); err != nil {
+	err = l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale)
+	if err != nil {
 		return oops.Wrapf(err, "re-evaluate completion after promotion")
 	}
 
@@ -328,7 +338,8 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 // column of every row.
 func saveInChunks[T any](rows []T, save func([]T) error) error {
 	for chunk := range slices.Chunk(rows, bulkInsertRows) {
-		if err := save(chunk); err != nil {
+		err := save(chunk)
+		if err != nil {
 			return err
 		}
 	}

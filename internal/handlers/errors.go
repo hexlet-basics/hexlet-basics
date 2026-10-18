@@ -87,7 +87,8 @@ func (h *APIErrorHandler) send(ctx context.Context, w http.ResponseWriter, statu
 	encoder := new(jx.Encoder)
 	problem.Encode(encoder)
 
-	if _, writeErr := encoder.WriteTo(w); writeErr != nil {
+	_, writeErr := encoder.WriteTo(w)
+	if writeErr != nil {
 		h.logger.ErrorContext(ctx, "writing error response", "err", writeErr)
 	}
 }

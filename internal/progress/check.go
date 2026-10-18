@@ -98,13 +98,14 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 
 		// Published for everyone, guests included: pre-signup activity is exactly
 		// what this fact exists to keep visible.
-		if err := p.publisher.Publish(ctx, tx, events.SolutionChecked{
+		err := p.publisher.Publish(ctx, tx, events.SolutionChecked{
 			LessonSlug: lo.FromPtr(open.lesson.Slug),
 			CourseSlug: lo.FromPtr(open.course.Slug),
 			Locale:     check.Locale,
 			Passed:     outcome.Passed,
 			OccurredAt: occurredAt,
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish solution checked")
 		}
 
@@ -213,7 +214,8 @@ func (p *Progress) record(
 	}
 
 	if createdEnrollment {
-		if err := p.publishCourseStarted(ctx, tx, db, userID, open.course, check.Locale, occurredAt); err != nil {
+		err := p.publishCourseStarted(ctx, tx, db, userID, open.course, check.Locale, occurredAt)
+		if err != nil {
 			return err
 		}
 	}
@@ -227,7 +229,8 @@ func (p *Progress) record(
 		// The learner reached this Lesson without pressing start — a deep link,
 		// or a page restored from history. Submitting is as deliberate an act as
 		// starting, so it produces the same fact.
-		if err := p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, check.Locale, occurredAt); err != nil {
+		err := p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, check.Locale, occurredAt)
+		if err != nil {
 			return err
 		}
 	}
@@ -242,7 +245,8 @@ func (p *Progress) record(
 	// publishes nothing — experimenting must stay safe, and the occurrence
 	// counts the CRM consumes count transitions, not submissions.
 	if lo.FromPtr(taken.State) != StateFinished {
-		if _, err := taken.Update().SetState(StateFinished).Save(ctx); err != nil {
+		_, err := taken.Update().SetState(StateFinished).Save(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "finish lesson progress")
 		}
 
@@ -253,13 +257,14 @@ func (p *Progress) record(
 			return err
 		}
 
-		if err := p.publisher.Publish(ctx, tx, events.LessonFinished{
+		err = p.publisher.Publish(ctx, tx, events.LessonFinished{
 			OccurrenceCount: count,
 			LessonSlug:      lo.FromPtr(open.lesson.Slug),
 			CourseSlug:      lo.FromPtr(open.course.Slug),
 			Locale:          check.Locale,
 			OccurredAt:      occurredAt,
-		}); err != nil {
+		})
+		if err != nil {
 			return errs.Wrapf(err, "publish lesson finished")
 		}
 	}
@@ -311,7 +316,8 @@ func (p *Progress) finishCourse(
 		return nil
 	}
 
-	if _, err := enrolled.Update().SetState(StateFinished).Save(ctx); err != nil {
+	_, err = enrolled.Update().SetState(StateFinished).Save(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "finish enrollment")
 	}
 
@@ -329,12 +335,13 @@ func (p *Progress) finishCourse(
 		return errs.Wrapf(err, "count finished enrollments")
 	}
 
-	if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
+	err = p.publisher.Publish(ctx, tx, events.CourseFinished{
 		OccurrenceCount: count,
 		Slug:            lo.FromPtr(open.course.Slug),
 		Locale:          check.Locale,
 		OccurredAt:      occurredAt,
-	}); err != nil {
+	})
+	if err != nil {
 		return errs.Wrapf(err, "publish course finished")
 	}
 

@@ -30,7 +30,8 @@ func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetSta
 }
 
 func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (*api.StaffMember, error) {
-	if err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), 0, int(req.UserId)); err != nil {
+	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), 0, int(req.UserId))
+	if err != nil {
 		return nil, err
 	}
 
@@ -43,7 +44,8 @@ func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMembe
 }
 
 func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (*api.StaffMember, error) {
-	if err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), int(req.UserId)); err != nil {
+	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), int(req.UserId))
+	if err != nil {
 		return nil, err
 	}
 
@@ -56,11 +58,13 @@ func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMembe
 }
 
 func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) error {
-	if err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), 0); err != nil {
+	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), 0)
+	if err != nil {
 		return err
 	}
 
-	if err := s.db.StaffMember.AdminDelete(ctx, params.ID); err != nil {
+	err = s.db.StaffMember.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete staff member")
 	}
 

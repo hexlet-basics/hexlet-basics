@@ -61,7 +61,8 @@ func addressKey(address string) string {
 
 	ip = ip.Unmap()
 	if ip.Is6() {
-		if p, err := ip.Prefix(customerPrefixBits); err == nil {
+		p, err := ip.Prefix(customerPrefixBits)
+		if err == nil {
 			return p.String()
 		}
 	}

@@ -225,7 +225,8 @@ func (s *Store) compensate(ctx context.Context, key string, cause error) error {
 	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), compensateTimeout)
 	defer cancel()
 
-	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {
+	err := s.bucket.Delete(cleanupCtx, key)
+	if err != nil && gcerrors.Code(err) != gcerrors.NotFound {
 		return errors.Join(cause, errs.With("key", key).Wrapf(err, "delete partial blob"))
 	}
 

@@ -47,7 +47,8 @@ func (c call) decode(value any) error {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
 
-	if err := dec.Decode(value); err != nil {
+	err := dec.Decode(value)
+	if err != nil {
 		return userError{errs.Wrapf(err, "invalid arguments")}
 	}
 
@@ -152,7 +153,9 @@ func (s *Server) finish(name string, res result) (*mcp.CallToolResult, error) {
 	// encoders produce (omitted optional fields, null for nullable ones), not
 	// the Go shape of the generated types.
 	var data map[string]any
-	if err := json.Unmarshal(raw, &data); err != nil {
+
+	err = json.Unmarshal(raw, &data)
+	if err != nil {
 		return nil, errs.With("tool", name).Wrapf(err, "decode result")
 	}
 

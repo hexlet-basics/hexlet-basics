@@ -47,7 +47,8 @@ func New() (*Translator, error) {
 		"locales/active.ru.json",
 		"locales/active.es.json",
 	} {
-		if _, err := bundle.LoadMessageFileFS(localeFiles, name); err != nil {
+		_, err := bundle.LoadMessageFileFS(localeFiles, name)
+		if err != nil {
 			return nil, errs.With("catalog", name).Wrapf(err, "load localization catalog")
 		}
 	}

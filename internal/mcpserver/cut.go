@@ -206,7 +206,8 @@ func largest(data map[string]any) *node {
 			if len(typed) > 1 {
 				// A value decoded from JSON always marshals; were it not, there
 				// is no size to weigh it by and it is not a candidate.
-				if raw, err := json.Marshal(typed); err == nil {
+				raw, err := json.Marshal(typed)
+				if err == nil {
 					consider(node{path: path, size: len(raw), value: typed, set: set})
 				}
 			}

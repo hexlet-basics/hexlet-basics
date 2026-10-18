@@ -125,7 +125,8 @@ func (m *Authenticator) Middleware(next http.Handler) http.Handler {
 // planted before sign-in is worthless (session fixation), and the session
 // remembers who u is and which password they signed in with.
 func (m *Authenticator) Begin(ctx context.Context, u *ent.User) error {
-	if err := m.sessions.RenewToken(ctx); err != nil {
+	err := m.sessions.RenewToken(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "renew session token")
 	}
 
@@ -155,7 +156,8 @@ func (m *Authenticator) Issue(ctx context.Context, u *ent.User) (string, error) 
 
 // End signs the visitor out: the session row is deleted and the cookie expired.
 func (m *Authenticator) End(ctx context.Context) error {
-	if err := m.sessions.Destroy(ctx); err != nil {
+	err := m.sessions.Destroy(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "destroy session")
 	}
 
@@ -215,7 +217,8 @@ func (m *Authenticator) remember(ctx context.Context, u *ent.User) {
 }
 
 func (m *Authenticator) endStale(ctx context.Context) error {
-	if err := m.End(ctx); err != nil {
+	err := m.End(ctx)
+	if err != nil {
 		return err
 	}
 

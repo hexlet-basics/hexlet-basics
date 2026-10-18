@@ -73,7 +73,8 @@ func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, pa
 }
 
 func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) error {
-	if err := s.db.Review.AdminDelete(ctx, params.ID); err != nil {
+	err := s.db.Review.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete review")
 	}
 

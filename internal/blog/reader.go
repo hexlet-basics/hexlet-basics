@@ -248,11 +248,12 @@ func NewLiker(db *ent.Client) *Liker {
 // the unique (post, user) index, so two simultaneous clicks leave one row
 // where a check followed by an insert would leave two.
 func (l *Liker) Like(ctx context.Context, postID, userID int) error {
-	if _, err := l.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).OnlyID(ctx); err != nil {
+	_, err := l.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).OnlyID(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "load blog post")
 	}
 
-	err := l.db.BlogPostLike.Create().
+	err = l.db.BlogPostLike.Create().
 		SetBlogPostID(postID).
 		SetUserID(userID).
 		OnConflictColumns(blogpostlike.FieldBlogPostID, blogpostlike.FieldUserID).

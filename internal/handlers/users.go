@@ -63,7 +63,8 @@ func (s *Server) userCrud(ctx context.Context, id int) (*api.UserCrud, error) {
 
 // AdminCreateUser creates a user.
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.UserCrud, error) {
-	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), false, !req.Admin.Null && req.Admin.Value); err != nil {
+	err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), false, !req.Admin.Null && req.Admin.Value)
+	if err != nil {
 		return nil, err
 	}
 
@@ -94,7 +95,9 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*a
 	}
 
 	admin := !req.Admin.Null && req.Admin.Value
-	if err := s.selfProtection.AdministratorFlag(actorOfRequest(ctx), isAdministrator(current), admin); err != nil {
+
+	err = s.selfProtection.AdministratorFlag(actorOfRequest(ctx), isAdministrator(current), admin)
+	if err != nil {
 		return nil, err
 	}
 
@@ -112,11 +115,13 @@ func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*a
 // through the admin operations, and the last administrator is refused with a
 // localized explanation (the editor returns ErrLastAdmin).
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) error {
-	if err := s.selfProtection.OwnAccountDeletion(actorOfRequest(ctx), int(params.ID)); err != nil {
+	err := s.selfProtection.OwnAccountDeletion(actorOfRequest(ctx), int(params.ID))
+	if err != nil {
 		return err
 	}
 
-	if err := s.userEditor.Delete(ctx, int(params.ID)); err != nil {
+	err = s.userEditor.Delete(ctx, int(params.ID))
+	if err != nil {
 		return err
 	}
 

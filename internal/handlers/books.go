@@ -49,7 +49,9 @@ func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 // flashed the same success for it; only a first request raises BookRequested.
 func (s *Server) CreateBookRequest(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
-	if err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx)); err != nil {
+
+	err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx))
+	if err != nil {
 		return err
 	}
 

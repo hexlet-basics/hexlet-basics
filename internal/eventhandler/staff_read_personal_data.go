@@ -49,7 +49,8 @@ func StaffReadPersonalData(client *ent.Client) cqrs.EventHandler {
 				entry.EntityID = event.EntityIDs[0]
 			}
 
-			if err := audit.Write(ctx, client, entry, nil); err != nil {
+			err := audit.Write(ctx, client, entry, nil)
+			if err != nil {
 				return errs.Wrapf(err, "record read of personal data")
 			}
 

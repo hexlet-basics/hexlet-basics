@@ -42,7 +42,8 @@ var workerPackage = do.Package(
 	// Readiness is the database (ADR-0023), and only once the job queue and the
 	// event router have started: cmd/worker calls Started and Drain.
 	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
-		if _, err := do.Invoke[*databaseCloser](i); err != nil {
+		_, err := do.Invoke[*databaseCloser](i)
+		if err != nil {
 			return nil, err
 		}
 

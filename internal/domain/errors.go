@@ -80,7 +80,8 @@ func FromStore(err error, uniques ...Unique) error {
 	case ent.IsNotFound(err):
 		return errors.Join(ErrNotFound, err)
 	case ent.IsConstraintError(err):
-		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok && pgErr.Code == uniqueViolation {
+		pgErr, ok := errors.AsType[*pgconn.PgError](err)
+		if ok && pgErr.Code == uniqueViolation {
 			for _, unique := range uniques {
 				if unique.Constraint == pgErr.ConstraintName {
 					return &FieldError{Field: unique.Field, cause: err}

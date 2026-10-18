@@ -164,7 +164,9 @@ func TestAuthorizationRefusesWhatCannotBeServed(t *testing.T) {
 	values.Set("response_type", "id_token token")
 
 	res = o.Do(http.MethodGet, "/oauth/authorize?"+values.Encode(), nil)
-	if loc, err := res.Location(); err == nil {
+
+	loc, err := res.Location()
+	if err == nil {
 		assert.NotContains(t, loc.Path, "/connect")
 	}
 

@@ -468,7 +468,8 @@ func parseArguments(raw json.RawMessage) (map[string]json.RawMessage, string) {
 		return args, ""
 	}
 
-	if err := json.Unmarshal(raw, &args); err != nil {
+	err := json.Unmarshal(raw, &args)
+	if err != nil {
 		return nil, "the arguments are not a JSON object"
 	}
 
@@ -484,7 +485,9 @@ func localeOf(args map[string]json.RawMessage) (string, string) {
 	}
 
 	var locale string
-	if err := json.Unmarshal(raw, &locale); err != nil || !slices.Contains(adminLocales(), locale) {
+
+	err := json.Unmarshal(raw, &locale)
+	if err != nil || !slices.Contains(adminLocales(), locale) {
 		return "", "the locale argument must be one of " + strings.Join(adminLocales(), ", ")
 	}
 
@@ -600,7 +603,9 @@ func buildRequest(ctx context.Context, op *operation, args map[string]json.RawMe
 // a string, number or boolean is one value, an array of them is several.
 func scalars(raw json.RawMessage) ([]string, error) {
 	var one any
-	if err := json.Unmarshal(raw, &one); err != nil {
+
+	err := json.Unmarshal(raw, &one)
+	if err != nil {
 		return nil, errs.Wrapf(err, "unmarshal json")
 	}
 
@@ -656,7 +661,9 @@ func (s *Server) answer(op *operation, rec *httptest.ResponseRecorder) (*mcp.Cal
 	}
 
 	var decoded any
-	if err := json.Unmarshal(body, &decoded); err != nil {
+
+	err := json.Unmarshal(body, &decoded)
+	if err != nil {
 		return nil, errs.With("operation", op.ID).Wrapf(err, "decode response")
 	}
 

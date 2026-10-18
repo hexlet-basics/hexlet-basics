@@ -285,7 +285,8 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 		return nil
 	}
 
-	if err := checkClientIDURL(clientID); err != nil {
+	err := checkClientIDURL(clientID)
+	if err != nil {
 		return invalidDocument("%s", err)
 	}
 
@@ -426,7 +427,8 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 		return registration{}, 0, invalidDocument("the client metadata document answered %d: redirects are not followed and only 200 is accepted", res.StatusCode)
 	}
 
-	if mt, _, err := mime.ParseMediaType(res.Header.Get("Content-Type")); err != nil || mt != "application/json" {
+	mt, _, err := mime.ParseMediaType(res.Header.Get("Content-Type"))
+	if err != nil || mt != "application/json" {
 		return registration{}, 0, invalidDocument("the client metadata document must be application/json")
 	}
 
@@ -442,11 +444,14 @@ func (d *documentClients) fetch(ctx context.Context, clientID string) (registrat
 	dec := json.NewDecoder(bytes.NewReader(raw))
 
 	var fields map[string]json.RawMessage
-	if err := dec.Decode(&fields); err != nil || fields == nil {
+
+	err = dec.Decode(&fields)
+	if err != nil || fields == nil {
 		return registration{}, 0, invalidDocument("the client metadata document must be a JSON object")
 	}
 
-	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+	_, err = dec.Token()
+	if !errors.Is(err, io.EOF) {
 		return registration{}, 0, invalidDocument("the client metadata document must be a single JSON object")
 	}
 	// The document vouches for the URL it was fetched from: its own client_id
@@ -484,7 +489,8 @@ func (d *documentClients) cacheTTL(header http.Header) time.Duration {
 		case "no-store", "no-cache":
 			immediate = true
 		case "max-age", "s-maxage":
-			if secs, err := strconv.ParseInt(strings.Trim(value, `"`), 10, 64); err == nil && secs >= 0 {
+			secs, err := strconv.ParseInt(strings.Trim(value, `"`), 10, 64)
+			if err == nil && secs >= 0 {
 				v := time.Duration(min(secs, int64(maxDocumentTTL/time.Second))) * time.Second
 				if name == "max-age" {
 					maxAge = &v
@@ -503,7 +509,8 @@ func (d *documentClients) cacheTTL(header http.Header) time.Duration {
 	case maxAge != nil:
 		ttl = *maxAge
 	default:
-		if expires, err := http.ParseTime(header.Get("Expires")); err == nil {
+		expires, err := http.ParseTime(header.Get("Expires"))
+		if err == nil {
 			ttl = expires.Sub(d.now())
 		}
 	}

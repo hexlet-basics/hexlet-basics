@@ -45,7 +45,8 @@ var ErrUnknownPermission = errors.New("unknown permission")
 // splits one Permission in two), and trusted callers rewriting what a role
 // holds must not be refused for it.
 func (p *Permissions) Check(ctx context.Context, roleID int, grants []string) error {
-	if err := p.requireRole(ctx, roleID); err != nil {
+	err := p.requireRole(ctx, roleID)
+	if err != nil {
 		return err
 	}
 
@@ -72,7 +73,8 @@ func UnknownNames(err error) []string {
 // Apply writes the roles screen's save: the role holds exactly grants
 // afterwards. A missing role is domain.ErrNotFound, before any write.
 func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) error {
-	if err := p.requireRole(ctx, roleID); err != nil {
+	err := p.requireRole(ctx, roleID)
+	if err != nil {
 		return err
 	}
 

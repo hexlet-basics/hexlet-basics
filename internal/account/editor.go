@@ -50,7 +50,8 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 // taking the flag from the last administrator is ErrLastAdmin.
 func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.User, error) {
 	if fields.Admin == nil || !*fields.Admin {
-		if err := EnsureAnotherAdmin(ctx, e.db, id); err != nil {
+		err := EnsureAnotherAdmin(ctx, e.db, id)
+		if err != nil {
 			return nil, domain.FromStore(err)
 		}
 	}
@@ -82,7 +83,8 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 // Delete removes a user. A missing id is domain.ErrNotFound; the last
 // administrator is refused with ErrLastAdmin.
 func (e *Editor) Delete(ctx context.Context, id int) error {
-	if err := EnsureAnotherAdmin(ctx, e.db, id); err != nil {
+	err := EnsureAnotherAdmin(ctx, e.db, id)
+	if err != nil {
 		return domain.FromStore(err)
 	}
 

@@ -51,7 +51,9 @@ func (p *Partitions) EnsureAhead(ctx context.Context, now time.Time) error {
 	month := firstOfMonth(now)
 	for i := 0; i <= PartitionsAhead; i++ {
 		target := month.AddDate(0, i, 0)
-		if _, err := p.call(ctx, "audit_records_ensure_partition", target); err != nil {
+
+		_, err := p.call(ctx, "audit_records_ensure_partition", target)
+		if err != nil {
 			return errs.With("month", target.Format("2006-01")).Wrapf(err, "ensure audit partition")
 		}
 	}
@@ -96,7 +98,9 @@ func (p *Partitions) call(ctx context.Context, function string, month time.Time)
 		Query()
 
 	rows := &entsql.Rows{}
-	if err := p.db.Query(ctx, query, args, rows); err != nil {
+
+	err := p.db.Query(ctx, query, args, rows)
+	if err != nil {
 		return nil, err
 	}
 
@@ -106,14 +110,17 @@ func (p *Partitions) call(ctx context.Context, function string, month time.Time)
 
 	for rows.Next() {
 		var name string
-		if err := rows.Scan(&name); err != nil {
+
+		err := rows.Scan(&name)
+		if err != nil {
 			return nil, errs.Wrapf(err, "scan partition name")
 		}
 
 		names = append(names, name)
 	}
 
-	if err := rows.Err(); err != nil {
+	err = rows.Err()
+	if err != nil {
 		return nil, errs.Wrapf(err, "read partition names")
 	}
 

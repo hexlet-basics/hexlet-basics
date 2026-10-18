@@ -13,7 +13,8 @@ import "context"
 // through read. The same two steps serve every resource that has a state: the
 // Publication State and the Course Readiness alike.
 func moveState[T any](ctx context.Context, id int, move func(context.Context, int) error, read func(context.Context, int) (*T, error)) (*T, error) {
-	if err := move(ctx, id); err != nil {
+	err := move(ctx, id)
+	if err != nil {
 		return nil, err
 	}
 

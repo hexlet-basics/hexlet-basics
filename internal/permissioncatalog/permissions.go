@@ -100,7 +100,9 @@ func Parse(doc []byte) (*Declarations, error) {
 		} `yaml:"x-capabilities"` //nolint:tagliatelle // OpenAPI document key
 		Paths map[string]map[string]operationDecl `yaml:"paths"`
 	}
-	if err := yaml.Unmarshal(doc, &spec); err != nil {
+
+	err := yaml.Unmarshal(doc, &spec)
+	if err != nil {
 		return nil, errs.Wrapf(err, "parse openapi")
 	}
 
@@ -132,7 +134,9 @@ func Parse(doc []byte) (*Declarations, error) {
 	for path, methods := range spec.Paths {
 		for method, op := range methods {
 			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
-			if err := declarations.read(where, method, op, kinds); err != nil {
+
+			err := declarations.read(where, method, op, kinds)
+			if err != nil {
 				return nil, err
 			}
 		}

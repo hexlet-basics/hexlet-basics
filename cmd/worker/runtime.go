@@ -130,7 +130,8 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			a.logger.InfoContext(groupCtx, "async worker started")
 		}
 
-		if err := a.events.Run(processCtx); err != nil {
+		err := a.events.Run(processCtx)
+		if err != nil {
 			return errs.Wrapf(err, "run domain event router")
 		}
 
@@ -139,7 +140,8 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	if a.health != nil {
 		group.Go(func() error {
-			if err := a.health.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			err := a.health.ListenAndServe()
+			if err != nil && !errors.Is(err, http.ErrServerClosed) {
 				return errs.Wrapf(err, "serve health")
 			}
 			// A closed listener is the shutdown's doing; wait for the group to
@@ -216,21 +218,24 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 	var shutdownErrors []error
 
 	if state.eventsWereStarted() {
-		if err := a.events.Close(); err != nil {
+		err := a.events.Close()
+		if err != nil {
 			stopErr := errs.Wrapf(err, "stop domain event router")
 			shutdownErrors = append(shutdownErrors, stopErr)
 		}
 	}
 
 	if state.jobsWereStarted() {
-		if err := a.jobs.Stop(ctx); err != nil {
+		err := a.jobs.Stop(ctx)
+		if err != nil {
 			stopErr := errs.Wrapf(err, "stop job queue")
 			shutdownErrors = append(shutdownErrors, stopErr)
 		}
 	}
 
 	if a.health != nil {
-		if err := a.health.Shutdown(ctx); err != nil {
+		err := a.health.Shutdown(ctx)
+		if err != nil {
 			stopErr := errs.Wrapf(err, "stop health listener")
 			shutdownErrors = append(shutdownErrors, stopErr)
 			_ = a.health.Close()

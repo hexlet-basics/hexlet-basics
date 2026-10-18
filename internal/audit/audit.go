@@ -257,7 +257,8 @@ func Write(ctx context.Context, client *ent.Client, entry Entry, rec *Recorder) 
 		create.SetChanges(raw)
 	}
 
-	if err := create.Exec(ctx); err != nil {
+	err := create.Exec(ctx)
+	if err != nil {
 		return errs.With("operation", entry.Operation).Wrapf(err, "write audit record")
 	}
 

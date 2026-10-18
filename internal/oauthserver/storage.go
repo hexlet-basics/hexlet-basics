@@ -51,12 +51,14 @@ var errUnsupported = errors.New("oauthserver: not supported")
 // randomToken returns n random bytes as unpadded base64url: an unguessable
 // credential or id.
 func randomToken(n int) (string, error) {
-	b := make([]byte, n)
-	if _, err := rand.Read(b); err != nil {
+	buf := make([]byte, n)
+
+	_, err := rand.Read(buf)
+	if err != nil {
 		return "", errs.Wrapf(err, "read random bytes")
 	}
 
-	return base64.RawURLEncoding.EncodeToString(b), nil
+	return base64.RawURLEncoding.EncodeToString(buf), nil
 }
 
 // validTokenID reports whether id could be one randomToken minted: the base64url
@@ -185,7 +187,8 @@ func (s *storage) SaveAuthCode(ctx context.Context, id, code string) error {
 // DeleteAuthRequest consumes a request: after the token exchange its code is
 // dead, which is what makes a code single-use.
 func (s *storage) DeleteAuthRequest(ctx context.Context, id string) error {
-	if _, err := s.db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ID(id)).Exec(ctx); err != nil {
+	_, err := s.db.OAuthAuthRequest.Delete().Where(oauthauthrequest.ID(id)).Exec(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "delete authorization request")
 	}
 
@@ -337,8 +340,10 @@ func (s *storage) CreateAccessAndRefreshTokens(
 			}
 
 			family = old.FamilyID
-			if _, err := db.OAuthAccessToken.Delete().
-				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx); err != nil {
+
+			_, err = db.OAuthAccessToken.Delete().
+				Where(oauthaccesstoken.RefreshTokenID(old.ID)).Exec(ctx)
+			if err != nil {
 				return errs.Wrapf(err, "delete paired access token")
 			}
 		}
@@ -484,12 +489,13 @@ func (s *storage) TerminateSession(ctx context.Context, userID, clientID string)
 	}
 
 	return s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		if _, err := db.OAuthAccessToken.Delete().
-			Where(oauthaccesstoken.UserID(id), oauthaccesstoken.ClientID(clientID)).Exec(ctx); err != nil {
+		_, err := db.OAuthAccessToken.Delete().
+			Where(oauthaccesstoken.UserID(id), oauthaccesstoken.ClientID(clientID)).Exec(ctx)
+		if err != nil {
 			return errs.Wrapf(err, "delete oauth access token")
 		}
 
-		_, err := db.OAuthRefreshToken.Delete().
+		_, err = db.OAuthRefreshToken.Delete().
 			Where(oauthrefreshtoken.UserID(id), oauthrefreshtoken.ClientID(clientID)).Exec(ctx)
 
 		return errs.Wrapf(err, "delete oauth refresh token")
@@ -497,11 +503,13 @@ func (s *storage) TerminateSession(ctx context.Context, userID, clientID string)
 }
 
 func deleteFamily(ctx context.Context, db *ent.Client, familyID string) error {
-	if _, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx); err != nil {
+	_, err := db.OAuthAccessToken.Delete().Where(oauthaccesstoken.FamilyID(familyID)).Exec(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "delete family access tokens")
 	}
 
-	if _, err := db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx); err != nil {
+	_, err = db.OAuthRefreshToken.Delete().Where(oauthrefreshtoken.FamilyID(familyID)).Exec(ctx)
+	if err != nil {
 		return errs.Wrapf(err, "delete family refresh tokens")
 	}
 
@@ -601,7 +609,8 @@ func (s *storage) SetUserinfoFromScopes(_ context.Context, info *oidc.UserInfo, 
 // SetUserinfoFromToken answers the userinfo endpoint with the subject only,
 // for a token that is still on file.
 func (s *storage) SetUserinfoFromToken(ctx context.Context, info *oidc.UserInfo, tokenID, subject, _ string) error {
-	if _, err := s.liveAccessToken(ctx, tokenID, subject); err != nil {
+	_, err := s.liveAccessToken(ctx, tokenID, subject)
+	if err != nil {
 		return err
 	}
 
@@ -649,7 +658,8 @@ func (s *storage) insertAccessToken(
 		create.SetRefreshTokenID(refreshID)
 	}
 
-	if err := create.Exec(ctx); err != nil {
+	err = create.Exec(ctx)
+	if err != nil {
 		return "", time.Time{}, errs.Wrapf(err, "create access token")
 	}
 
@@ -678,7 +688,8 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 // the newer tokens, the thief and the owner alike, loses them, and the user must
 // sign in again (ADR-0022, the MCP authorization spec).
 func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
-	if err := s.revokeFamily(ctx, row.FamilyID); err != nil {
+	err := s.revokeFamily(ctx, row.FamilyID)
+	if err != nil {
 		return oidc.ErrServerError().WithParent(err)
 	}
 

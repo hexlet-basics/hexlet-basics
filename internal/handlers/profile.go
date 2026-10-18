@@ -52,11 +52,14 @@ func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (*api
 // account is refused whatever session it carries.
 func (s *Server) DeleteAccount(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
-	if err := s.remover.Remove(ctx, u.ID); err != nil {
+
+	err := s.remover.Remove(ctx, u.ID)
+	if err != nil {
 		return err
 	}
 
-	if err := s.sessions.End(ctx); err != nil {
+	err = s.sessions.End(ctx)
+	if err != nil {
 		return err
 	}
 

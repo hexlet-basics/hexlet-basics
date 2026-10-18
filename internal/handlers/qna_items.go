@@ -50,7 +50,8 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 }
 
 func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) error {
-	if err := s.categoryQna.Delete(ctx, int(params.CategoryId), int(params.ID)); err != nil {
+	err := s.categoryQna.Delete(ctx, int(params.CategoryId), int(params.ID))
+	if err != nil {
 		return err
 	}
 
@@ -91,7 +92,8 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 }
 
 func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) error {
-	if err := s.landingPageQna.Delete(ctx, int(params.LandingPageId), int(params.ID)); err != nil {
+	err := s.landingPageQna.Delete(ctx, int(params.LandingPageId), int(params.ID))
+	if err != nil {
 		return err
 	}
 

@@ -20,7 +20,8 @@ func LoadDotenv() error {
 		return nil
 	}
 
-	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
+	err := godotenv.Load()
+	if err != nil && !os.IsNotExist(err) {
 		return oops.Wrapf(err, "load .env")
 	}
 

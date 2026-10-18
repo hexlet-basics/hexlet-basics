@@ -215,7 +215,8 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 	enc := xml.NewEncoder(&buf)
 	enc.Indent("", "  ")
 
-	if err := enc.Encode(doc); err != nil {
+	err = enc.Encode(doc)
+	if err != nil {
 		return nil, errs.Wrapf(err, "encode yandex feed")
 	}
 

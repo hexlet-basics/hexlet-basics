@@ -114,7 +114,8 @@ type History struct {
 // lesson they never asked about has no chat yet, and an empty one reads the
 // same. Returns an ent not-found error for a lesson that does not exist.
 func (c *Chat) History(ctx context.Context, userID, lessonID int) (*History, error) {
-	if _, err := c.db.CourseLesson.Get(ctx, lessonID); err != nil {
+	_, err := c.db.CourseLesson.Get(ctx, lessonID)
+	if err != nil {
 		return nil, domain.FromStore(err)
 	}
 
@@ -197,7 +198,9 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 			Entries: nil,
 		},
 	}
-	if _, err := c.lessons.StartLesson(ctx, learner, question.LessonID, locale); err != nil {
+
+	_, err = c.lessons.StartLesson(ctx, learner, question.LessonID, locale)
+	if err != nil {
 		return nil, err
 	}
 
@@ -242,7 +245,8 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 
 			usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
 				if !signalled {
-					if err := begin(); err != nil {
+					err := begin()
+					if err != nil {
 						return err
 					}
 				}
@@ -282,7 +286,8 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 		writer.CloseWithError(panicErr)
 	}()
 
-	if err := <-started; err != nil {
+	err = <-started
+	if err != nil {
 		return nil, err
 	}
 
@@ -378,14 +383,16 @@ func (c *Chat) saveQuestion(ctx context.Context, question Question, lessonProgre
 		chatID = chat.ID
 
 		now := c.now().UTC()
-		if err := db.AiMessage.Create().
+
+		err = db.AiMessage.Create().
 			SetAiChatID(chat.ID).
 			SetRole(RoleUser).
 			SetContent(question.Message).
 			SetUserID(question.UserID).
 			SetCreatedAt(now).
 			SetUpdatedAt(now).
-			Exec(ctx); err != nil {
+			Exec(ctx)
+		if err != nil {
 			return oops.Wrapf(err, "store assistant question")
 		}
 

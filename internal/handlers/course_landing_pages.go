@@ -54,7 +54,8 @@ func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.Cour
 }
 
 func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.AdminDeleteCourseLandingPageParams) error {
-	if err := s.db.CourseLandingPage.AdminDelete(ctx, params.ID); err != nil {
+	err := s.db.CourseLandingPage.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete course landing page")
 	}
 

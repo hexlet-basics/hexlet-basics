@@ -69,7 +69,8 @@ func (s *Server) AdminUpdateRole(ctx context.Context, req *api.RoleInput, params
 }
 
 func (s *Server) AdminDeleteRole(ctx context.Context, params api.AdminDeleteRoleParams) error {
-	if err := s.db.StaffRole.AdminDelete(ctx, params.ID); err != nil {
+	err := s.db.StaffRole.AdminDelete(ctx, params.ID)
+	if err != nil {
 		return errs.Wrapf(err, "admin delete staff role")
 	}
 
@@ -88,11 +89,13 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (*api.StaffRoleDetail, error) {
 	roleID := int(params.RoleId)
 
-	if err := s.selfProtection.OwnRoleGrants(ctx, actorOfRequest(ctx), roleID); err != nil {
+	err := s.selfProtection.OwnRoleGrants(ctx, actorOfRequest(ctx), roleID)
+	if err != nil {
 		return nil, err
 	}
 
-	if err := s.permissions.Check(ctx, roleID, req.Grants); err != nil {
+	err = s.permissions.Check(ctx, roleID, req.Grants)
+	if err != nil {
 		if errors.Is(err, permission.ErrUnknownPermission) {
 			return nil, invalidText("grants", strings.Join(permission.UnknownNames(err), ", "))
 		}
@@ -100,7 +103,8 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return nil, err
 	}
 
-	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
+	err = s.permissions.Apply(ctx, roleID, req.Grants)
+	if err != nil {
 		return nil, err
 	}
 

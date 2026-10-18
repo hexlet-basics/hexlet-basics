@@ -26,7 +26,9 @@ func responseSchema(operationID string) (map[string]any, error) {
 			Schemas map[string]any `yaml:"schemas"`
 		} `yaml:"components"`
 	}
-	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
+
+	err := yaml.Unmarshal(apispec.OpenAPI, &doc)
+	if err != nil {
 		return nil, errs.Wrapf(err, "parse OpenAPI")
 	}
 
@@ -40,7 +42,9 @@ func responseSchema(operationID string) (map[string]any, error) {
 					} `yaml:"content"`
 				} `yaml:"responses"`
 			}
-			if err := node.Decode(&op); err != nil || op.OperationID != operationID {
+
+			err := node.Decode(&op)
+			if err != nil || op.OperationID != operationID {
 				continue
 			}
 

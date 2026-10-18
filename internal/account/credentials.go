@@ -71,7 +71,8 @@ func (c *Credentials) Authenticate(ctx context.Context, email, password string) 
 		return nil, ErrInvalidCredentials
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)); err != nil {
+	err = bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password))
+	if err != nil {
 		return nil, ErrInvalidCredentials
 	}
 

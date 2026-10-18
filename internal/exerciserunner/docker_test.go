@@ -121,7 +121,8 @@ func dockerRunner(t *testing.T) *Docker {
 
 	t.Cleanup(func() { _ = runner.Close() })
 
-	if _, err := runner.docker.Ping(context.Background(), client.PingOptions{}); err != nil {
+	_, err = runner.docker.Ping(context.Background(), client.PingOptions{})
+	if err != nil {
 		t.Fatalf("no docker daemon: %v", err)
 	}
 
@@ -134,7 +135,8 @@ func pullImage(t *testing.T, runner *Docker) {
 	t.Helper()
 	ctx := t.Context()
 
-	if _, err := runner.docker.ImageInspect(ctx, runnerImage); err == nil {
+	_, err := runner.docker.ImageInspect(ctx, runnerImage)
+	if err == nil {
 		return
 	}
 
@@ -146,7 +148,8 @@ func pullImage(t *testing.T, runner *Docker) {
 	defer func() { _ = pulled.Close() }()
 	// The pull returns before it finishes; starting a container against a
 	// half-present image is the classic way to get a confusing failure.
-	if err := pulled.Wait(ctx); err != nil {
+	err = pulled.Wait(ctx)
+	if err != nil {
 		t.Fatalf("cannot pull %s: %v", runnerImage, err)
 	}
 }

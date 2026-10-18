@@ -142,7 +142,8 @@ func (w *flushingWriter) Write(p []byte) (int, error) {
 		return n, errs.Wrapf(err, "write response")
 	}
 
-	if err := w.controller.Flush(); err != nil && !errors.Is(err, http.ErrNotSupported) {
+	err = w.controller.Flush()
+	if err != nil && !errors.Is(err, http.ErrNotSupported) {
 		return n, errs.Wrapf(err, "flush response")
 	}
 

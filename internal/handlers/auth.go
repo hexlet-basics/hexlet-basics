@@ -33,13 +33,14 @@ func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api
 // already exists — password, Magic Link, Password Reset — so none of them can
 // skip recording the sign-in. It then starts the session like sign-up does.
 func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	if err := s.events.PublishStandalone(ctx, events.UserSignedIn{
+	err := s.events.PublishStandalone(ctx, events.UserSignedIn{
 		UserID:          u.ID,
 		OccurrenceCount: -1,
 		Email:           u.Email,
 		Locale:          s.i18n.Locale(ctx),
 		OccurredAt:      time.Now().UTC(),
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
 	}
 
@@ -51,7 +52,8 @@ func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, err
 // in one place is what stops sign-in and sign-up from issuing different
 // sessions.
 func (s *Server) startSession(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	if err := s.sessions.Begin(ctx, u); err != nil {
+	err := s.sessions.Begin(ctx, u)
+	if err != nil {
 		return nil, err
 	}
 
@@ -77,7 +79,8 @@ func (s *Server) mergeGuestProgress(ctx context.Context, userID int) ([]string, 
 		return nil, nil
 	}
 
-	if err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx)); err != nil {
+	err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx))
+	if err != nil {
 		return nil, err
 	}
 
@@ -114,7 +117,8 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (*api.Use
 
 // DeleteSession ends the session; the session middleware expires its cookie.
 func (s *Server) DeleteSession(ctx context.Context) error {
-	if err := s.sessions.End(ctx); err != nil {
+	err := s.sessions.End(ctx)
+	if err != nil {
 		return err
 	}
 

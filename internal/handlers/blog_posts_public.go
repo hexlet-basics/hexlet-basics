@@ -119,7 +119,8 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (*api.BlogPost, error) {
 	liker := MustAuthenticatedUser(ctx)
 
-	if err := s.blogLikes.Like(ctx, int(params.ID), liker.ID); err != nil {
+	err := s.blogLikes.Like(ctx, int(params.ID), liker.ID)
+	if err != nil {
 		return nil, err
 	}
 
