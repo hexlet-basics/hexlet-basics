@@ -1,5 +1,4 @@
-// Package courses reads the courses for the administrators' pickers.
-package courses
+package catalog
 
 import (
 	"context"
@@ -9,14 +8,14 @@ import (
 	"hexletbasics/internal/domain"
 )
 
-// Directory is the administrators' read side of the courses.
-type Directory struct {
+// CourseDirectory is the administrators' read side of the courses.
+type CourseDirectory struct {
 	db *ent.Client
 }
 
-// NewDirectory builds the directory over an ent client.
-func NewDirectory(db *ent.Client) *Directory {
-	return &Directory{db: db}
+// NewCourseDirectory builds the directory over an ent client.
+func NewCourseDirectory(db *ent.Client) *CourseDirectory {
+	return &CourseDirectory{db: db}
 }
 
 // Option is a course as a select offers it.
@@ -29,7 +28,7 @@ type Option struct {
 // picker cannot silently lose the courses past a page boundary. The order is
 // oldest first, a stable order for a list people scan by name; a course without
 // a name is listed by its slug, the one label every course has.
-func (d *Directory) Options(ctx context.Context) ([]Option, error) {
+func (d *CourseDirectory) Options(ctx context.Context) ([]Option, error) {
 	rows, err := d.db.Course.Query().
 		Select(course.FieldID, course.FieldSlug, course.FieldName).
 		Order(ent.Asc(course.FieldID)).

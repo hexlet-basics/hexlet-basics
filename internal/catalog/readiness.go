@@ -1,4 +1,6 @@
-package courses
+// Package catalog reads the courses and course categories: the administrators'
+// course picker, the visitor's category pages and the readiness of a course.
+package catalog
 
 import (
 	"context"

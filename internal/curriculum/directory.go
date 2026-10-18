@@ -1,7 +1,4 @@
-// Package courselessons reads the lesson graph for the administrators' index
-// pages: the lessons of the current course versions, how far learners have got
-// with each, and the AI reviews of them.
-package courselessons
+package curriculum
 
 import (
 	"context"
