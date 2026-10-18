@@ -54,32 +54,32 @@ func revokeApp(t *testing.T, o *testsupport.OAuth, userID, appID int, sameSite b
 
 func TestTheListShowsTheAppsOfTheSignedInUserOnly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Connect(alice, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead)
+	o.Connect(alice(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead)
 
-	mine := listApps(t, o, alice)
+	mine := listApps(t, o, alice())
 	require.Len(t, mine, 1)
 	assert.Equal(t, "Test MCP client", mine[0].Name)
 	assert.ElementsMatch(t, []string{"catalog:read", "progress:read", "offline_access"}, mine[0].Scopes)
 	assert.WithinDuration(t, o.Now(), mine[0].ConnectedAt, time.Minute)
 	assert.Empty(t, mine[0].ClientHost, "a client with an opaque id has no host to show")
 
-	assert.Empty(t, listApps(t, o, bob), "another user's apps are not mine")
+	assert.Empty(t, listApps(t, o, bob()), "another user's apps are not mine")
 }
 
 func TestTheListIsAnEmptyArrayWithoutApps(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
-	assert.NotNil(t, listApps(t, o, alice))
-	assert.Empty(t, listApps(t, o, alice))
+	assert.NotNil(t, listApps(t, o, alice()))
+	assert.Empty(t, listApps(t, o, alice()))
 }
 
 func TestSeveralSignInsToOneClientAreOneApp(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Connect(alice, oauthserver.ScopeCatalogRead)
+	o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	o.Advance(time.Hour)
-	o.Connect(alice, oauthserver.ScopeCatalogRead)
+	o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
-	assert.Len(t, listApps(t, o, alice), 1)
+	assert.Len(t, listApps(t, o, alice()), 1)
 }
 
 func TestAnAppOfAClientDocumentShowsTheHostOfItsClientID(t *testing.T) {
@@ -91,7 +91,7 @@ func TestAnAppOfAClientDocumentShowsTheHostOfItsClientID(t *testing.T) {
 	_, res := f.Exchange(f.Approve(), testsupport.PKCEVerifier())
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
-	apps := listApps(t, o, alice)
+	apps := listApps(t, o, alice())
 
 	require.Len(t, apps, 1)
 	assert.Equal(t, "Document client", apps[0].Name)
@@ -100,19 +100,19 @@ func TestAnAppOfAClientDocumentShowsTheHostOfItsClientID(t *testing.T) {
 
 func TestRevokingAnAppEndsItsAccessAndRefreshTokensAtOnce(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	first := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	first := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	// A rotation leaves a used tombstone behind, and a second sign-in is a second
 	// family: the revoke ends all of it.
 	second, res := o.Refresh(testsupport.OAuthClientID, first.RefreshToken)
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
-	otherFamily := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	otherFamily := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	require.True(t, o.Accepts(second.AccessToken))
 	require.True(t, o.Accepts(otherFamily.AccessToken))
 
-	apps := listApps(t, o, alice)
+	apps := listApps(t, o, alice())
 	require.Len(t, apps, 1)
-	res = revokeApp(t, o, alice, apps[0].ID, true)
+	res = revokeApp(t, o, alice(), apps[0].ID, true)
 	require.Equal(t, http.StatusNoContent, res.StatusCode)
 
 	assert.False(t, o.Accepts(second.AccessToken), "the token that worked a moment ago is refused")
@@ -123,16 +123,16 @@ func TestRevokingAnAppEndsItsAccessAndRefreshTokensAtOnce(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, res.StatusCode, "no refresh token survives, used ones included")
 	}
 
-	assert.Empty(t, listApps(t, o, alice))
+	assert.Empty(t, listApps(t, o, alice()))
 }
 
 func TestRevokingAnAppLeavesOtherUsersAndOtherAppsAlone(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	mine := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	theirs := o.Connect(bob, oauthserver.ScopeCatalogRead)
-	other, _ := connectOtherClient(t, o, alice)
+	mine := o.Connect(alice(), oauthserver.ScopeCatalogRead)
+	theirs := o.Connect(bob(), oauthserver.ScopeCatalogRead)
+	other, _ := connectOtherClient(t, o, alice())
 
-	apps := listApps(t, o, alice)
+	apps := listApps(t, o, alice())
 	require.Len(t, apps, 2)
 
 	var target connectedApp
@@ -144,46 +144,46 @@ func TestRevokingAnAppLeavesOtherUsersAndOtherAppsAlone(t *testing.T) {
 	}
 
 	require.NotZero(t, target.ID)
-	require.Equal(t, http.StatusNoContent, revokeApp(t, o, alice, target.ID, true).StatusCode)
+	require.Equal(t, http.StatusNoContent, revokeApp(t, o, alice(), target.ID, true).StatusCode)
 
 	assert.False(t, o.Accepts(mine.AccessToken))
 	assert.True(t, o.Accepts(theirs.AccessToken), "the same client for another user is untouched")
 	assert.True(t, o.Accepts(other.AccessToken), "another client of the same user is untouched")
-	assert.Len(t, listApps(t, o, bob), 1)
+	assert.Len(t, listApps(t, o, bob()), 1)
 }
 
 func TestRevokingSomeoneElsesOrAnUnknownAppIsNotFound(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	theirs := o.Connect(bob, oauthserver.ScopeCatalogRead)
-	bobsApp := listApps(t, o, bob)[0]
+	theirs := o.Connect(bob(), oauthserver.ScopeCatalogRead)
+	bobsApp := listApps(t, o, bob())[0]
 
 	// Alice has not connected it.
-	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, alice, bobsApp.ID, true).StatusCode)
+	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, alice(), bobsApp.ID, true).StatusCode)
 	assert.True(t, o.Accepts(theirs.AccessToken), "a refused revoke ends nothing")
-	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, alice, 987654, true).StatusCode)
+	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, alice(), 987654, true).StatusCode)
 
 	// Revoking twice: the second finds nothing to revoke.
-	require.Equal(t, http.StatusNoContent, revokeApp(t, o, bob, bobsApp.ID, true).StatusCode)
-	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, bob, bobsApp.ID, true).StatusCode)
+	require.Equal(t, http.StatusNoContent, revokeApp(t, o, bob(), bobsApp.ID, true).StatusCode)
+	assert.Equal(t, http.StatusNotFound, revokeApp(t, o, bob(), bobsApp.ID, true).StatusCode)
 }
 
 func TestTheOperationsNeedASessionAndTheRevokeRefusesACrossSiteWrite(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	app := listApps(t, o, alice)[0]
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
+	app := listApps(t, o, alice())[0]
 
 	assert.Equal(t, http.StatusUnauthorized, o.Do(http.MethodGet, "/api/oauth/connected_apps", nil).StatusCode)
 	assert.Equal(t, http.StatusUnauthorized, o.Do(http.MethodDelete, "/api/oauth/connected_apps/"+strconv.Itoa(app.ID), nil).StatusCode)
-	assert.Equal(t, http.StatusForbidden, revokeApp(t, o, alice, app.ID, false).StatusCode)
+	assert.Equal(t, http.StatusForbidden, revokeApp(t, o, alice(), app.ID, false).StatusCode)
 	assert.True(t, o.Accepts(tokens.AccessToken))
 }
 
 func TestAnAppUnusedForThirtyDaysLapsesAndOneRefreshedStaysConnected(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	idle := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	idle := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	// A second client that keeps refreshing.
-	active, otherClientID := connectOtherClient(t, o, alice)
-	require.Len(t, listApps(t, o, alice), 2)
+	active, otherClientID := connectOtherClient(t, o, alice())
+	require.Len(t, listApps(t, o, alice()), 2)
 
 	// Every few days the active app refreshes; the idle one does nothing, not
 	// even a refresh (an MCP call with a live access token is not a use).
@@ -198,7 +198,7 @@ func TestAnAppUnusedForThirtyDaysLapsesAndOneRefreshedStaysConnected(t *testing.
 	}
 
 	// 35 days in: the idle app's refresh token (30 days from its issue) is gone.
-	apps := listApps(t, o, alice)
+	apps := listApps(t, o, alice())
 	require.Len(t, apps, 1)
 	assert.Equal(t, "Other", apps[0].Name)
 	assert.False(t, o.Accepts(idle.AccessToken))
@@ -208,12 +208,12 @@ func TestAnAppUnusedForThirtyDaysLapsesAndOneRefreshedStaysConnected(t *testing.
 
 func TestAnAppListedJustBeforeTheThirtiethDayIsGoneJustAfter(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Connect(alice, oauthserver.ScopeCatalogRead)
+	o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	o.Advance(30*24*time.Hour - time.Minute)
-	assert.Len(t, listApps(t, o, alice), 1)
+	assert.Len(t, listApps(t, o, alice()), 1)
 	o.Advance(2 * time.Minute)
-	assert.Empty(t, listApps(t, o, alice))
+	assert.Empty(t, listApps(t, o, alice()))
 }
 
 // connectOtherClient completes the flow for a second client, registered through

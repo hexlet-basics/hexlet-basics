@@ -238,7 +238,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	assert.Equal(t, http.StatusForbidden, h.LastStatus())
 
 	// With a second administrator the same changes go through.
-	h.DB.User.UpdateOneID(secondAdminID).SetAdmin(true).ExecX(ctx)
+	h.DB.User.UpdateOneID(secondAdminID()).SetAdmin(true).ExecX(ctx)
 	_, err = h.Client.AdminUpdateUser(ctx, input, api.AdminUpdateUserParams{ID: int32(h.UserID)})
 	require.NoError(t, err)
 }

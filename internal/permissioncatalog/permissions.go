@@ -77,7 +77,7 @@ type Declarations struct {
 // parsed is a build defect, not a runtime condition, and TestTheCatalog...
 // covers it, so a failure here panics at start-up rather than silently opening
 // or closing every operation.
-var declared = mustParse(apispec.OpenAPI)
+var declared = mustParse(apispec.OpenAPI) //nolint:gochecknoglobals // memoized: For and AccessOf run on every request and must not re-parse the contract
 
 func mustParse(doc []byte) *Declarations {
 	d, err := Parse(doc)

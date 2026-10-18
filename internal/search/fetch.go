@@ -256,7 +256,6 @@ func (d *body) section(heading, text string) {
 }
 
 var (
-	blockEnd   = strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")
 	spaces     = regexp.MustCompile(`[ \t]+`)
 	blankLines = regexp.MustCompile(`\n[ \t]*(\n[ \t]*)+`)
 )
@@ -265,10 +264,14 @@ var (
 // dropped and each block ends a line, which is enough for a model and does not
 // pretend to be Markdown.
 func readable(fragment string) string {
-	text := htmltext.PlainText(blockEnd.Replace(fragment))
+	text := htmltext.PlainText(blockEnd().Replace(fragment))
 	text = spaces.ReplaceAllString(text, " ")
 	text = strings.ReplaceAll(text, " \n", "\n")
 	text = strings.ReplaceAll(text, "\n ", "\n")
 
 	return strings.TrimSpace(blankLines.ReplaceAllString(text, "\n\n"))
+}
+
+func blockEnd() *strings.Replacer {
+	return strings.NewReplacer("</p>", "</p>\n\n", "</h1>", "</h1>\n\n", "</h2>", "</h2>\n\n", "</h3>", "</h3>\n\n", "</h4>", "</h4>\n\n", "</li>", "</li>\n", "</pre>", "</pre>\n\n", "<br>", "\n", "<br/>", "\n", "<br />", "\n")
 }

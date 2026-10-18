@@ -20,15 +20,19 @@ import (
 // mark-as operations. Readiness is no workflow, so every change between two
 // distinct values is legal and only repeating the current value is refused.
 
-var readinessCourseID = fixture.ID(fixture.CourseGo)
+func readinessCourseID() int {
+	return fixture.ID(fixture.CourseGo)
+}
 
-var readinessValues = []string{"draft", "in_development", "completed"}
+func readinessValues() []string {
+	return []string{"draft", "in_development", "completed"}
+}
 
 // markCourse calls the mark-as operation of the target readiness and returns the
 // readiness the answer shows.
 func markCourse(h *testsupport.Harness, to string) (string, error) {
 	ctx := context.Background()
-	id := int32(readinessCourseID)
+	id := int32(readinessCourseID())
 
 	var (
 		course *api.Course
@@ -52,20 +56,20 @@ func markCourse(h *testsupport.Harness, to string) (string, error) {
 }
 
 func setReadiness(h *testsupport.Harness, readiness string) {
-	h.DB.Course.UpdateOneID(readinessCourseID).SetReadiness(readiness).ExecX(context.Background())
+	h.DB.Course.UpdateOneID(readinessCourseID()).SetReadiness(readiness).ExecX(context.Background())
 }
 
 func readinessOf(t *testing.T, h *testsupport.Harness) *string {
 	t.Helper()
 
-	return h.DB.Course.GetX(t.Context(), readinessCourseID).Readiness
+	return h.DB.Course.GetX(t.Context(), readinessCourseID()).Readiness
 }
 
 func TestEveryChangeOfReadinessBetweenDistinctValuesWorksAndRepeatingIs409(t *testing.T) {
 	t.Parallel()
 
-	for _, from := range readinessValues {
-		for _, to := range readinessValues {
+	for _, from := range readinessValues() {
+		for _, to := range readinessValues() {
 			t.Run(from+" to "+to, func(t *testing.T) {
 				h := testsupport.NewHarness(t)
 				setReadiness(h, from)
@@ -113,7 +117,7 @@ func TestARefusedReadinessChangeExplainsItselfInTheCallersLanguage(t *testing.T)
 func TestACourseWithoutReadinessCountsAsADraft(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	h.DB.Course.UpdateOneID(readinessCourseID).ClearReadiness().ExecX(t.Context())
+	h.DB.Course.UpdateOneID(readinessCourseID()).ClearReadiness().ExecX(t.Context())
 
 	_, err := markCourse(h, "draft")
 	require.Error(t, err, "it already is a draft")
@@ -187,7 +191,7 @@ func TestCreateMakesADraftAndUpdateKeepsTheReadiness(t *testing.T) {
 		HexletProgramLandingPage: api.NilString{Null: true},
 		RepositoryUrl:            api.NilString{Null: true},
 		CoverAttachmentId:        api.NilInt32{Null: true},
-	}, api.AdminUpdateCourseParams{ID: int32(readinessCourseID)})
+	}, api.AdminUpdateCourseParams{ID: int32(readinessCourseID())})
 	require.NoError(t, err)
 	assert.Equal(t, "in_development", *readinessOf(t, h))
 
@@ -215,18 +219,18 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 		CoverAttachmentId:        api.NilInt32{Null: true},
 	}
 	update := func(h *testsupport.Harness) error {
-		_, err := h.Client.AdminUpdateCourse(context.Background(), input, api.AdminUpdateCourseParams{ID: int32(readinessCourseID)})
+		_, err := h.Client.AdminUpdateCourse(context.Background(), input, api.AdminUpdateCourseParams{ID: int32(readinessCourseID())})
 
 		return err
 	}
 
 	t.Run("update only", func(t *testing.T) {
-		h := testsupport.NewHarnessAs(t, editorLabel)
+		h := testsupport.NewHarnessAs(t, editorLabel())
 		actAs(h, fixture.StaffRoleCourseUpdater)
 
 		require.NoError(t, update(h))
 
-		for _, to := range readinessValues {
+		for _, to := range readinessValues() {
 			_, err := markCourse(h, to)
 			require.Error(t, err, to)
 			assert.Equal(t, http.StatusForbidden, h.LastStatus(), to)
@@ -236,7 +240,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 	})
 
 	t.Run("readiness only", func(t *testing.T) {
-		h := testsupport.NewHarnessAs(t, editorLabel)
+		h := testsupport.NewHarnessAs(t, editorLabel())
 		actAs(h, fixture.StaffRoleCourseReadiness)
 
 		shown, err := markCourse(h, "draft")

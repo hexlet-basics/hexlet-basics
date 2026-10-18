@@ -14,19 +14,14 @@ import (
 )
 
 // Parent ids seeded by the qna fixtures.
-var (
-	qnaCategoryID       = fixture.ID32(fixture.CategoryLayoutingRu)   // layouting-ru, 2 items (7001, 7002)
-	qnaOtherCategoryID  = fixture.ID32(fixture.CategoryProgrammingEn) // programming-en, 1 item (7003)
-	qnaLandingPageID    = fixture.ID32(fixture.LandingPageGoRu)       // go-ru, 2 items (8001, 8002)
-	qnaOtherLandingPage = fixture.ID32(fixture.LandingPageRubyRu)     // ruby-ru, 1 item (8003)
-)
+var ()
 
 func TestAdminListCategoryQnaItems(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID})
+	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
@@ -36,7 +31,7 @@ func TestAdminListCategoryQnaItems(t *testing.T) {
 	assert.Less(t, items[0].ID, items[1].ID)
 
 	// A different category sees only its own item.
-	other, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaOtherCategoryID})
+	other, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaOtherCategoryID()})
 	require.NoError(t, err)
 	assert.Len(t, other, 1)
 }
@@ -49,13 +44,13 @@ func TestAdminCreateCategoryQnaItem(t *testing.T) {
 	created, err := h.Client.AdminCreateCategoryQnaItem(ctx, &api.QnaItemInput{
 		Question: "Новый вопрос?",
 		Answer:   "Новый ответ.",
-	}, api.AdminCreateCategoryQnaItemParams{CategoryId: qnaCategoryID})
+	}, api.AdminCreateCategoryQnaItemParams{CategoryId: qnaCategoryID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "Новый вопрос?", created.Question)
 
-	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID})
+	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID()})
 	require.NoError(t, err)
 	assert.Len(t, items, 3)
 }
@@ -68,7 +63,7 @@ func TestAdminUpdateCategoryQnaItem(t *testing.T) {
 	updated, err := h.Client.AdminUpdateCategoryQnaItem(ctx, &api.QnaItemInput{
 		Question: "Изменённый вопрос?",
 		Answer:   "Изменённый ответ.",
-	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixture.ID32(fixture.CategoryQnaLayoutingRu)})
+	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaCategoryID(), ID: fixture.ID32(fixture.CategoryQnaLayoutingRu)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Изменённый вопрос?", updated.Question)
@@ -84,7 +79,7 @@ func TestAdminUpdateCategoryQnaItemWrongParent(t *testing.T) {
 	_, err := h.Client.AdminUpdateCategoryQnaItem(ctx, &api.QnaItemInput{
 		Question: "x",
 		Answer:   "y",
-	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaOtherCategoryID, ID: fixture.ID32(fixture.CategoryQnaLayoutingRu)})
+	}, api.AdminUpdateCategoryQnaItemParams{CategoryId: qnaOtherCategoryID(), ID: fixture.ID32(fixture.CategoryQnaLayoutingRu)})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
@@ -94,11 +89,11 @@ func TestAdminDeleteCategoryQnaItem(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	err := h.Client.AdminDeleteCategoryQnaItem(ctx, api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID, ID: fixture.ID32(fixture.CategoryQnaLayoutingRu2)})
+	err := h.Client.AdminDeleteCategoryQnaItem(ctx, api.AdminDeleteCategoryQnaItemParams{CategoryId: qnaCategoryID(), ID: fixture.ID32(fixture.CategoryQnaLayoutingRu2)})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID})
+	items, err := h.Client.AdminListCategoryQnaItems(ctx, api.AdminListCategoryQnaItemsParams{CategoryId: qnaCategoryID()})
 	require.NoError(t, err)
 	assert.Len(t, items, 1)
 }
@@ -108,13 +103,13 @@ func TestAdminListLandingPageQnaItems(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	items, err := h.Client.AdminListLandingPageQnaItems(ctx, api.AdminListLandingPageQnaItemsParams{LandingPageId: qnaLandingPageID})
+	items, err := h.Client.AdminListLandingPageQnaItems(ctx, api.AdminListLandingPageQnaItemsParams{LandingPageId: qnaLandingPageID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	require.Len(t, items, 2)
 	assert.Less(t, items[0].ID, items[1].ID)
 
-	other, err := h.Client.AdminListLandingPageQnaItems(ctx, api.AdminListLandingPageQnaItemsParams{LandingPageId: qnaOtherLandingPage})
+	other, err := h.Client.AdminListLandingPageQnaItems(ctx, api.AdminListLandingPageQnaItemsParams{LandingPageId: qnaOtherLandingPage()})
 	require.NoError(t, err)
 	assert.Len(t, other, 1)
 }
@@ -127,25 +122,41 @@ func TestAdminLandingPageQnaItemLifecycle(t *testing.T) {
 	created, err := h.Client.AdminCreateLandingPageQnaItem(ctx, &api.QnaItemInput{
 		Question: "Q?",
 		Answer:   "A.",
-	}, api.AdminCreateLandingPageQnaItemParams{LandingPageId: qnaLandingPageID})
+	}, api.AdminCreateLandingPageQnaItemParams{LandingPageId: qnaLandingPageID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	updated, err := h.Client.AdminUpdateLandingPageQnaItem(ctx, &api.QnaItemInput{
 		Question: "Q2?",
 		Answer:   "A2.",
-	}, api.AdminUpdateLandingPageQnaItemParams{LandingPageId: qnaLandingPageID, ID: created.ID})
+	}, api.AdminUpdateLandingPageQnaItemParams{LandingPageId: qnaLandingPageID(), ID: created.ID})
 	require.NoError(t, err)
 	assert.Equal(t, "Q2?", updated.Question)
 
 	// Wrong parent -> 404.
 	_, err = h.Client.AdminUpdateLandingPageQnaItem(ctx, &api.QnaItemInput{
 		Question: "x", Answer: "y",
-	}, api.AdminUpdateLandingPageQnaItemParams{LandingPageId: qnaOtherLandingPage, ID: created.ID})
+	}, api.AdminUpdateLandingPageQnaItemParams{LandingPageId: qnaOtherLandingPage(), ID: created.ID})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 
-	err = h.Client.AdminDeleteLandingPageQnaItem(ctx, api.AdminDeleteLandingPageQnaItemParams{LandingPageId: qnaLandingPageID, ID: created.ID})
+	err = h.Client.AdminDeleteLandingPageQnaItem(ctx, api.AdminDeleteLandingPageQnaItemParams{LandingPageId: qnaLandingPageID(), ID: created.ID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
+}
+
+func qnaCategoryID() int32 {
+	return fixture.ID32(fixture.CategoryLayoutingRu)
+}
+
+func qnaOtherCategoryID() int32 {
+	return fixture.ID32(fixture.CategoryProgrammingEn)
+}
+
+func qnaLandingPageID() int32 {
+	return fixture.ID32(fixture.LandingPageGoRu)
+}
+
+func qnaOtherLandingPage() int32 {
+	return fixture.ID32(fixture.LandingPageRubyRu)
 }

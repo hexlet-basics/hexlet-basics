@@ -22,20 +22,7 @@ const (
 // The legal moves of a Publication State, one per operation (publish,
 // unpublish, archive). Each names the states it may start from; repeating the
 // current state is not among them, so it is refused like any illegal move.
-var (
-	Publish = Transition[PublicationState]{
-		To:   Published,
-		From: []PublicationState{Draft, Archived},
-	}
-	Unpublish = Transition[PublicationState]{
-		To:   Draft,
-		From: []PublicationState{Published},
-	}
-	Archive = Transition[PublicationState]{
-		To:   Archived,
-		From: []PublicationState{Draft, Published},
-	}
-)
+var ()
 
 // CurrentOf reads the state column of a row. A row with no state (the column is
 // nullable in the legacy schema) counts as a draft, which is what the public
@@ -46,4 +33,28 @@ func CurrentOf(column *string) PublicationState {
 	}
 
 	return PublicationState(*column)
+}
+
+// Publish moves a draft or an archived record to published.
+func Publish() Transition[PublicationState] {
+	return Transition[PublicationState]{
+		To:   Published,
+		From: []PublicationState{Draft, Archived},
+	}
+}
+
+// Unpublish takes a published record back to draft.
+func Unpublish() Transition[PublicationState] {
+	return Transition[PublicationState]{
+		To:   Draft,
+		From: []PublicationState{Published},
+	}
+}
+
+// Archive withdraws a draft or published record.
+func Archive() Transition[PublicationState] {
+	return Transition[PublicationState]{
+		To:   Archived,
+		From: []PublicationState{Draft, Published},
+	}
 }

@@ -76,7 +76,7 @@ func busConfig(logger watermill.LoggerAdapter) cqrs.EventBusConfig {
 		GeneratePublishTopic: func(cqrs.GenerateEventPublishTopicParams) (string, error) {
 			return Topic, nil
 		},
-		Marshaler: Marshaler,
+		Marshaler: Marshaler(),
 		Logger:    logger,
 		OnPublish: func(params cqrs.OnEventSendParams) error {
 			if params.EventName == "" {

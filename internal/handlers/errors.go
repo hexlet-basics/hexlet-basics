@@ -103,14 +103,19 @@ const statusClientClosedRequest = 499
 // refusal wraps ErrForbidden, the asset store's missing key wraps ErrNotFound) instead of
 // carrying a status of its own, and ent's errors reach it already translated
 // by domain.FromStore.
-var domainStatus = []struct {
+func domainStatus() []struct {
 	err    error
 	status int
-}{
-	{domain.ErrNotFound, http.StatusNotFound},
-	{domain.ErrConflict, http.StatusConflict},
-	{domain.ErrInvalid, http.StatusUnprocessableEntity},
-	{domain.ErrForbidden, http.StatusForbidden},
+} {
+	return []struct {
+		err    error
+		status int
+	}{
+		{domain.ErrNotFound, http.StatusNotFound},
+		{domain.ErrConflict, http.StatusConflict},
+		{domain.ErrInvalid, http.StatusUnprocessableEntity},
+		{domain.ErrForbidden, http.StatusForbidden},
+	}
 }
 
 func errorStatus(err error) int {
@@ -118,7 +123,7 @@ func errorStatus(err error) int {
 	// returns in its own 401, and a refusal of a signed-in caller (ErrForbidden)
 	// must stay a 403.
 	translated := domain.FromStore(err)
-	for _, row := range domainStatus {
+	for _, row := range domainStatus() {
 		if errors.Is(translated, row.err) {
 			return row.status
 		}
@@ -229,37 +234,44 @@ var (
 // details is the table from an error to the localized explanation the client
 // may show as `detail`. It lives in the adapter, not in the domain, so no
 // module imports localization to word its own failure.
-var details = []struct {
+func details() []struct {
 	err     error
 	message localization.Message
-}{
-	{errLessonNotFound, localization.LessonNotFound},
-	{errCourseNotFound, localization.CourseNotFound},
-	{errEmailLinkInvalid, localization.EmailLinkInvalid},
-	{errOAuthRequestNotFound, localization.OAuthRequestNotFound},
-	{errConnectedAppNotFound, localization.ConnectedAppNotFound},
-	{selfprotection.ErrOwnStaffRecord, localization.OwnStaffRecord},
-	{selfprotection.ErrOwnRoleGrants, localization.OwnRoleGrants},
-	{selfprotection.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
-	{selfprotection.ErrOwnAccountDeletion, localization.OwnAccountDeletion},
-	{account.ErrLastAdmin, localization.LastAdministrator},
+} {
+	return []struct {
+		err     error
+		message localization.Message
+	}{
+		{errLessonNotFound, localization.LessonNotFound},
+		{errCourseNotFound, localization.CourseNotFound},
+		{errEmailLinkInvalid, localization.EmailLinkInvalid},
+		{errOAuthRequestNotFound, localization.OAuthRequestNotFound},
+		{errConnectedAppNotFound, localization.ConnectedAppNotFound},
+		{selfprotection.ErrOwnStaffRecord, localization.OwnStaffRecord},
+		{selfprotection.ErrOwnRoleGrants, localization.OwnRoleGrants},
+		{selfprotection.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
+		{selfprotection.ErrOwnAccountDeletion, localization.OwnAccountDeletion},
+		{account.ErrLastAdmin, localization.LastAdministrator},
+	}
 }
 
 // stateNames are the localized names of the states in each vocabulary
 // (transition.Vocabulary): Publication States (GLOSSARY) are shared by every
 // resource that has them, a Course's Readiness has a vocabulary of its own. A
 // test checks that every state transition lists has a name here.
-var stateNames = map[transition.Vocabulary]map[transition.State]localization.Message{
-	transition.PublicationStates: {
-		transition.State(transition.Draft):     localization.PublicationStateDraft,
-		transition.State(transition.Published): localization.PublicationStatePublished,
-		transition.State(transition.Archived):  localization.PublicationStateArchived,
-	},
-	transition.CourseReadiness: {
-		transition.State(transition.ReadinessDraft):         localization.ReadinessDraft,
-		transition.State(transition.ReadinessInDevelopment): localization.ReadinessInDevelopment,
-		transition.State(transition.ReadinessCompleted):     localization.ReadinessCompleted,
-	},
+func stateNames() map[transition.Vocabulary]map[transition.State]localization.Message {
+	return map[transition.Vocabulary]map[transition.State]localization.Message{
+		transition.PublicationStates: {
+			transition.State(transition.Draft):     localization.PublicationStateDraft,
+			transition.State(transition.Published): localization.PublicationStatePublished,
+			transition.State(transition.Archived):  localization.PublicationStateArchived,
+		},
+		transition.CourseReadiness: {
+			transition.State(transition.ReadinessDraft):         localization.ReadinessDraft,
+			transition.State(transition.ReadinessInDevelopment): localization.ReadinessInDevelopment,
+			transition.State(transition.ReadinessCompleted):     localization.ReadinessCompleted,
+		},
+	}
 }
 
 // detail is the localized explanation of an error: a message and, for a refused
@@ -276,7 +288,7 @@ func detailFor(err error) (detail, bool) {
 		return detail{message: localization.IllegalStateTransition, move: illegal}, true
 	}
 
-	for _, row := range details {
+	for _, row := range details() {
 		if errors.Is(err, row.err) {
 			return detail{message: row.message}, true
 		}
@@ -301,7 +313,7 @@ func (h *APIErrorHandler) detailText(ctx context.Context, found detail) string {
 // stateText is the localized name of a state, or the raw value of one the
 // vocabulary does not know (a legacy row with a state of its own).
 func (h *APIErrorHandler) stateText(ctx context.Context, vocabulary transition.Vocabulary, state transition.State) string {
-	if message, ok := stateNames[vocabulary][state]; ok {
+	if message, ok := stateNames()[vocabulary][state]; ok {
 		return h.translator.Text(ctx, message)
 	}
 

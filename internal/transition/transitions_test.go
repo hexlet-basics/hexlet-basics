@@ -43,7 +43,7 @@ func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {
 	t.Parallel()
 
 	moves := map[string]transition.Transition[transition.PublicationState]{
-		"publish": transition.Publish, "unpublish": transition.Unpublish, "archive": transition.Archive,
+		"publish": transition.Publish(), "unpublish": transition.Unpublish(), "archive": transition.Archive(),
 	}
 
 	legal := map[string][]transition.PublicationState{

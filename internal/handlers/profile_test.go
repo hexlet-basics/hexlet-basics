@@ -165,7 +165,9 @@ func TestRemovedUserCannotResetAPassword(t *testing.T) {
 	requireProblem(t, err, http.StatusNotFound)
 }
 
-var secondAdminID = fixture.ID(fixture.UserSecondAdmin)
+func secondAdminID() int {
+	return fixture.ID(fixture.UserSecondAdmin)
+}
 
 func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	t.Parallel()

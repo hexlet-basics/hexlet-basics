@@ -21,7 +21,9 @@ import (
 //go:embed templates/email.html
 var templateFiles embed.FS
 
-var emailTemplate = template.Must(template.ParseFS(templateFiles, "templates/email.html"))
+func emailTemplate() *template.Template {
+	return template.Must(template.ParseFS(templateFiles, "templates/email.html"))
+}
 
 // Locale picks the language of an account email from the request locale. Only
 // ru and es are emailed; anything else — including en, which the rewrite is
@@ -59,28 +61,30 @@ type copyText struct {
 	subject, intro, action, linkLabel, ignore localization.Message
 }
 
-var copies = map[emailtoken.Purpose]copyText{
-	emailtoken.MagicLink: {
-		subject:   localization.MagicLinkSubject,
-		intro:     localization.MagicLinkIntro,
-		action:    localization.MagicLinkAction,
-		linkLabel: localization.MagicLinkLinkLabel,
-		ignore:    localization.MagicLinkIgnore,
-	},
-	emailtoken.PasswordReset: {
-		subject:   localization.PasswordResetSubject,
-		intro:     localization.PasswordResetIntro,
-		action:    localization.PasswordResetAction,
-		linkLabel: localization.PasswordResetLinkLabel,
-		ignore:    localization.PasswordResetIgnore,
-	},
+func copies() map[emailtoken.Purpose]copyText {
+	return map[emailtoken.Purpose]copyText{
+		emailtoken.MagicLink: {
+			subject:   localization.MagicLinkSubject,
+			intro:     localization.MagicLinkIntro,
+			action:    localization.MagicLinkAction,
+			linkLabel: localization.MagicLinkLinkLabel,
+			ignore:    localization.MagicLinkIgnore,
+		},
+		emailtoken.PasswordReset: {
+			subject:   localization.PasswordResetSubject,
+			intro:     localization.PasswordResetIntro,
+			action:    localization.PasswordResetAction,
+			linkLabel: localization.PasswordResetLinkLabel,
+			ignore:    localization.PasswordResetIgnore,
+		},
+	}
 }
 
 // Send issues a fresh token and mails the link. A User deleted, or left without
 // an email, between the request and the job has nobody to mail, so the job
 // completes instead of retrying.
 func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID int, locale string) error {
-	text, ok := copies[purpose]
+	text, ok := copies()[purpose]
 	if !ok {
 		return oops.Errorf("unknown account email purpose %q", purpose)
 	}
@@ -112,7 +116,7 @@ func (s *Sender) Send(ctx context.Context, purpose emailtoken.Purpose, userID in
 
 	var body bytes.Buffer
 
-	err = emailTemplate.Execute(&body, map[string]string{
+	err = emailTemplate().Execute(&body, map[string]string{
 		"Locale":    locale,
 		"Subject":   subject,
 		"Intro":     s.i18n.TextIn(locale, text.intro),

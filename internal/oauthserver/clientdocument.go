@@ -61,23 +61,25 @@ const (
 // from, beyond what netip classifies as private, loopback, link-local, multicast
 // or unspecified. The IPv6 entries are the forms that carry an IPv4 address
 // inside them and so could name a private host indirectly.
-var blockedNetworks = parsePrefixes(
-	"0.0.0.0/8",       // "this network"
-	"100.64.0.0/10",   // carrier-grade NAT, internal to many providers
-	"192.0.0.0/24",    // IETF protocol assignments
-	"192.0.2.0/24",    // documentation
-	"198.18.0.0/15",   // benchmarking
-	"198.51.100.0/24", // documentation
-	"203.0.113.0/24",  // documentation
-	"240.0.0.0/4",     // reserved, includes the broadcast address
-	"64:ff9b::/96",    // NAT64: embeds an IPv4 address
-	"64:ff9b:1::/48",  // local-use NAT64
-	"100::/64",        // discard
-	"2001::/32",       // Teredo: embeds an IPv4 address
-	"2001:db8::/32",   // documentation
-	"2002::/16",       // 6to4: embeds an IPv4 address
-	"fec0::/10",       // deprecated site-local
-)
+func blockedNetworks() []netip.Prefix {
+	return parsePrefixes(
+		"0.0.0.0/8",       // "this network"
+		"100.64.0.0/10",   // carrier-grade NAT, internal to many providers
+		"192.0.0.0/24",    // IETF protocol assignments
+		"192.0.2.0/24",    // documentation
+		"198.18.0.0/15",   // benchmarking
+		"198.51.100.0/24", // documentation
+		"203.0.113.0/24",  // documentation
+		"240.0.0.0/4",     // reserved, includes the broadcast address
+		"64:ff9b::/96",    // NAT64: embeds an IPv4 address
+		"64:ff9b:1::/48",  // local-use NAT64
+		"100::/64",        // discard
+		"2001::/32",       // Teredo: embeds an IPv4 address
+		"2001:db8::/32",   // documentation
+		"2002::/16",       // 6to4: embeds an IPv4 address
+		"fec0::/10",       // deprecated site-local
+	)
+}
 
 func parsePrefixes(list ...string) []netip.Prefix {
 	out := make([]netip.Prefix, len(list))
@@ -100,7 +102,7 @@ func publicAddress(ip netip.Addr) bool {
 		return false
 	}
 
-	for _, p := range blockedNetworks {
+	for _, p := range blockedNetworks() {
 		if p.Contains(ip) {
 			return false
 		}

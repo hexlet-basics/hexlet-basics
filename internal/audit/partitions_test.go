@@ -18,7 +18,9 @@ import (
 // The tests pin "now" to a past date so they never collide with the partitions
 // the migration created around the real current month, and they run inside the
 // harness transaction, so every partition they create or drop rolls back.
-var partitionNow = time.Date(2024, 10, 17, 12, 0, 0, 0, time.UTC)
+func partitionNow() time.Time {
+	return time.Date(2024, 10, 17, 12, 0, 0, 0, time.UTC)
+}
 
 func partitionNames(t *testing.T, tx *sql.Tx) []string {
 	t.Helper()
@@ -70,8 +72,8 @@ func TestEnsureAheadCreatesThisAndTheNextMonthsOnce(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
 	partitions := audit.NewPartitions(store.NewTxDriver(tx))
 
-	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow))
-	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow), "running twice is harmless")
+	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow()))
+	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow()), "running twice is harmless")
 
 	names := partitionNames(t, tx)
 	for _, want := range []string{"audit_records_p202410", "audit_records_p202411", "audit_records_p202412", "audit_records_p202501"} {
@@ -84,7 +86,7 @@ func TestEnsureAheadCreatesThisAndTheNextMonthsOnce(t *testing.T) {
 
 func TestARecordLandsInThePartitionOfItsMonth(t *testing.T) {
 	client, tx := testsupport.NewClientWithTx(t)
-	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), partitionNow))
+	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), partitionNow()))
 
 	next := addRecordAt(t, client, time.Date(2024, 11, 30, 23, 59, 59, 0, time.UTC))
 	lastOfMonth := addRecordAt(t, client, time.Date(2024, 10, 31, 23, 59, 59, 0, time.UTC))
@@ -100,7 +102,7 @@ func TestARecordForAMonthWithoutAPartitionIsKeptAndMovedWhenItsMonthIsCreated(t 
 	orphan := addRecordAt(t, client, time.Date(2024, 11, 5, 8, 0, 0, 0, time.UTC))
 	assert.Equal(t, "audit_records_default", partitionOf(t, tx, orphan.ID), "an insert never fails for a missing month")
 
-	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), partitionNow))
+	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), partitionNow()))
 
 	assert.Equal(t, "audit_records_p202411", partitionOf(t, tx, orphan.ID))
 	moved := client.AuditRecord.GetX(t.Context(), orphan.ID)
@@ -120,7 +122,7 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 	}
 
 	// Retention of one month from 17 October: the cutoff is 17 September.
-	dropped, err := partitions.DropExpired(t.Context(), partitionNow, 1)
+	dropped, err := partitions.DropExpired(t.Context(), partitionNow(), 1)
 	require.NoError(t, err)
 
 	assert.ElementsMatch(t, []string{
@@ -144,11 +146,11 @@ func TestDropExpiredDropsWholeOldPartitionsAndKeepsTheRest(t *testing.T) {
 func TestDropExpiredNeverDropsTheMonthInProgressOrTheDefaultPartition(t *testing.T) {
 	client, tx := testsupport.NewClientWithTx(t)
 	partitions := audit.NewPartitions(store.NewTxDriver(tx))
-	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow))
+	require.NoError(t, partitions.EnsureAhead(t.Context(), partitionNow()))
 	// An ancient record parked in the default partition is not a month to drop.
 	ancient := addRecordAt(t, client, time.Date(1999, 1, 1, 0, 0, 0, 0, time.UTC))
 
-	dropped, err := partitions.DropExpired(t.Context(), partitionNow, 1)
+	dropped, err := partitions.DropExpired(t.Context(), partitionNow(), 1)
 	require.NoError(t, err)
 
 	assert.Empty(t, dropped)
@@ -158,6 +160,6 @@ func TestDropExpiredNeverDropsTheMonthInProgressOrTheDefaultPartition(t *testing
 
 func TestRetentionBelowOneMonthIsRefused(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
-	_, err := audit.NewPartitions(store.NewTxDriver(tx)).DropExpired(t.Context(), partitionNow, 0)
+	_, err := audit.NewPartitions(store.NewTxDriver(tx)).DropExpired(t.Context(), partitionNow(), 0)
 	assert.Error(t, err, "zero months would drop the month in progress")
 }

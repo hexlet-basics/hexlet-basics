@@ -28,10 +28,12 @@ const (
 )
 
 // covers maps a blob key from the fixtures to the two corners of its gradient.
-var covers = map[string][2]color.RGBA{
-	"blogcoverkey001": {{79, 70, 229, 255}, {14, 165, 233, 255}},
-	"blogcoverkey002": {{244, 63, 94, 255}, {251, 146, 60, 255}},
-	"blogcoverkey003": {{16, 185, 129, 255}, {59, 130, 246, 255}},
+func covers() map[string][2]color.RGBA {
+	return map[string][2]color.RGBA{
+		"blogcoverkey001": {{79, 70, 229, 255}, {14, 165, 233, 255}},
+		"blogcoverkey002": {{244, 63, 94, 255}, {251, 146, 60, 255}},
+		"blogcoverkey003": {{16, 185, 129, 255}, {59, 130, 246, 255}},
+	}
 }
 
 func main() {
@@ -44,7 +46,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for key, c := range covers {
+	for key, c := range covers() {
 		data := gradient(c[0], c[1])
 		if err := os.WriteFile(filepath.Join(dir, key), data, fileMode); err != nil { //nolint:gosec // G306: public sample cover, served as a static file
 			log.Fatal(err)

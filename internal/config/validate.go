@@ -25,7 +25,9 @@ const developmentSecretPrefix = "dev-insecure-" //nolint:gosec // G101: the publ
 // across settings) is a crossChecks method on the root; a section that matters
 // only when its flag is on (OAuth, MCP) is excluded from the root's tags
 // (`validate:"-"`) and checked by the root's crossChecks via violations.
-var validate = newValidator()
+func validate() *validator.Validate {
+	return newValidator()
+}
 
 // appEnvKey carries the APP_ENV a check runs under into the custom rules.
 type appEnvKey struct{}
@@ -98,7 +100,7 @@ func Problems(err error) []string {
 // violations reports the violations of value; prefix is the env prefix of a
 // nested section a root validates conditionally (OAuth, MCP).
 func violations(value any, prefix string, appEnv AppEnv) []string {
-	err := validate.StructCtx(context.WithValue(context.Background(), appEnvKey{}, appEnv), value)
+	err := validate().StructCtx(context.WithValue(context.Background(), appEnvKey{}, appEnv), value)
 	if err == nil {
 		return nil
 	}

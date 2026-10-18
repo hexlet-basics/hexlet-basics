@@ -19,7 +19,6 @@ linters:
     - wrapcheck
     - goconst
     - noinlineerr
-    - gochecknoglobals
     - forcetypeassert
     - testpackage
     - cyclop
@@ -141,6 +140,21 @@ linters:
     paths:
       - internal/testsupport
     rules:
+      # ADR-0018: each package keeps one `errs` template (oops.In("<package>")),
+      # the single place its error attributes are declared. A function in its
+      # place would make every call site `errs()`.
+      - linters: [gochecknoglobals]
+        text: "errs is a global variable"
+      # The DI graph (AGENTS.md, "Architecture: Handlers, DI, and Data"): each
+      # process package is one do.Package value, the single place a service is
+      # added; wrapping it in a function would only hide the same table.
+      - path: ^internal/di/.*_package\.go$|^internal/di/closers\.go$
+        linters: [gochecknoglobals]
+        text: "Package is a global variable"
+      # The backend message registry: `goi18n extract` reads the i18n.Message
+      # literals of these package-level values into the locale catalogs.
+      - path: ^internal/localization/
+        linters: [gochecknoglobals]
       # revive's `exported` asks for a comment on every exported method. These
       # two families implement an interface that documents them: ent's
       # schema.Interface (Fields, Edges, ... of a table), and the generated

@@ -19,7 +19,9 @@ import (
 // `[I18n.locale, *(available_locales - [I18n.locale, :es])]` with the page
 // only ever rendered for ru). es is left out because its links did not work
 // on the legacy site.
-var Locales = []string{"ru", "en"}
+func Locales() []string {
+	return []string{"ru", "en"}
+}
 
 // Page is what the sitemap lists.
 type Page struct {
@@ -48,7 +50,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 	// predicates, and lets each query tie the lessons check to its own locale.
 	var pages []*ent.CourseLandingPage
 
-	for _, locale := range Locales {
+	for _, locale := range Locales() {
 		rows, err := s.db.CourseLandingPage.Query().
 			Where(
 				landingpage.Published(locale),

@@ -49,8 +49,8 @@ func itemByID(t *testing.T, items []map[string]any, id string) map[string]any {
 
 func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	// A course not yet completed, on an unlisted page, is one more record the
 	// storefront hides.
@@ -97,8 +97,8 @@ func TestAnAdminFindsAndFetchesWhatTheStorefrontHides(t *testing.T) {
 // another locale is not found there.
 func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	russian := call(t, session, "adminSearch", map[string]any{"locale": "ru", "q": "Second post"})
 	english := call(t, session, "adminSearch", map[string]any{"locale": "en", "q": "Second post"})
@@ -115,8 +115,8 @@ func TestAdminSearchAndFetchStayWithinTheLocaleOfTheCall(t *testing.T) {
 
 func TestAdminFetchOfAnIdThatIsNotOneSearchReturnsIsNotFound(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	for _, id := range []string{"javascript-ru", "page:home", "lesson:javascript", "post:", "post:no-such-post", "course:no-such-course"} {
 		result := call(t, session, "adminFetch", map[string]any{"locale": "ru", "id": id})
@@ -142,7 +142,7 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	tools := []string{"adminSearch", "adminFetch"}
 
 	// A connection without the admin Scope, the public ones included.
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead).AccessToken)
 	shown := names(listTools(t, catalogueOnly).Tools)
 	assert.Contains(t, shown, "listCourses", "the catalogue tools keep working")
 	assert.NotContains(t, shown, "search")
@@ -153,7 +153,7 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	}
 
 	// A staff member whose role does not hold mcp.read.
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
 
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
@@ -161,12 +161,12 @@ func TestOnlyStaffWithMCPReadAndTheAdminScopeAreOfferedTheSearchTools(t *testing
 	}
 
 	// A user who is not staff at all.
-	notStaff := o.MCPClient(o.Connect(alice, oauthserver.ScopeAdmin).AccessToken)
+	notStaff := o.MCPClient(o.Connect(alice(), oauthserver.ScopeAdmin).AccessToken)
 	for _, name := range tools {
 		assert.NotContains(t, names(listTools(t, notStaff).Tools), name)
 	}
 
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
 
 	shown = names(listTools(t, adminScope).Tools)
 	for _, name := range tools {
@@ -186,9 +186,9 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a token without the admin Scope", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "mcp.read")
+		o.Grant(editor(), "mcp.read")
 
-		session := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+		session := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 		for tool, args := range arguments {
 			result := call(t, session, tool, args)
 
@@ -205,7 +205,7 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 	t.Run("a staff member whose role holds no mcp.read", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
 
-		session, _ := admin(t, o, bob)
+		session, _ := admin(t, o, bob())
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
 			records := o.Records(operations[tool])
@@ -217,7 +217,7 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 	t.Run("an administrator who is not staff", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
 
-		session, _ := admin(t, o, alice)
+		session, _ := admin(t, o, alice())
 		for tool, args := range arguments {
 			assertRefused(t, call(t, session, tool, args))
 			records := o.Records(operations[tool])
@@ -228,9 +228,9 @@ func TestTheSearchToolsAreRefusedByNameAndRecordedWhenTheCallerMayNotUseThem(t *
 
 	t.Run("a locale the staff role does not allow", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "mcp.read")
+		o.Grant(editor(), "mcp.read")
 		o.DB.StaffMember.Update().SetAllowedLocales([]string{"en"}).ExecX(t.Context())
-		session, _ := admin(t, o, bob)
+		session, _ := admin(t, o, bob())
 
 		assertRefused(t, call(t, session, "adminSearch", arguments["adminSearch"]))
 	})

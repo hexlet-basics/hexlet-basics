@@ -65,7 +65,9 @@ type match struct {
 // these values can be there, and a literal is what lets the planner match the
 // index expression. A locale without one is searched with the language-neutral
 // `simple`, with no index, which is right while it has no content.
-var configs = map[string]string{"ru": "russian", "en": "english"}
+func configs() map[string]string {
+	return map[string]string{"ru": "russian", "en": "english"}
+}
 
 // candidate is a hit before its page is known: how well it matches, and
 // what is needed to tell it from another.
@@ -107,7 +109,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 		return []Hit{}, 0, nil
 	}
 
-	config, ok := configs[cmd.Locale]
+	config, ok := configs()[cmd.Locale]
 	if !ok {
 		config = "simple"
 	}
@@ -176,7 +178,7 @@ func (c *Catalogue) sources(types []Type) []kind {
 
 	var out []kind
 
-	for _, t := range Types {
+	for _, t := range Types() {
 		if len(types) == 0 || slices.Contains(types, t) {
 			out = append(out, kind{source: all[t], typ: t})
 		}
@@ -185,7 +187,7 @@ func (c *Catalogue) sources(types []Type) []kind {
 	return out
 }
 
-func typeOrder(t Type) int { return slices.Index(Types, t) }
+func typeOrder(t Type) int { return slices.Index(Types(), t) }
 
 // withSnippets fills the snippet of each candidate's hit, asking each kind once
 // for the ids it contributed.

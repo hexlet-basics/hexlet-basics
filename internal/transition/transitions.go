@@ -42,13 +42,15 @@ const (
 )
 
 // vocabularyStates is every state of each vocabulary.
-var vocabularyStates = map[Vocabulary][]State{
-	PublicationStates: {State(Draft), State(Published), State(Archived)},
-	CourseReadiness:   {State(ReadinessDraft), State(ReadinessInDevelopment), State(ReadinessCompleted)},
+func vocabularyStates() map[Vocabulary][]State {
+	return map[Vocabulary][]State{
+		PublicationStates: {State(Draft), State(Published), State(Archived)},
+		CourseReadiness:   {State(ReadinessDraft), State(ReadinessInDevelopment), State(ReadinessCompleted)},
+	}
 }
 
 // States lists the states of the vocabulary.
-func (v Vocabulary) States() []State { return slices.Clone(vocabularyStates[v]) }
+func (v Vocabulary) States() []State { return slices.Clone(vocabularyStates()[v]) }
 
 // Named is implemented by a state type that belongs to a vocabulary.
 type Named interface{ Vocabulary() Vocabulary }

@@ -16,11 +16,7 @@ import (
 // language_landing_pages.yml (exported from legacy) seeds this many rows.
 
 // go-ru landing page and its course, ruby course — all present in the fixtures.
-var (
-	landingGoRuID = fixture.ID32(fixture.LandingPageGoRu)
-	courseRubyID  = fixture.ID(fixture.CourseRuby)
-	courseGoID    = fixture.ID(fixture.CourseGo)
-)
+var ()
 
 // fullLandingInput returns a complete CourseLandingPageInput with every nullable
 // field set to null. The contract fields are required-nullable, so the client
@@ -85,7 +81,7 @@ func TestAdminListCourseLandingPages(t *testing.T) {
 	// The embedded course supplies courseSlug (go-ru -> course "go").
 	goRu := landingBySlug(t, h, "go-ru")
 	assert.Equal(t, "go", goRu.CourseSlug)
-	assert.Equal(t, int32(courseGoID), goRu.CourseId)
+	assert.Equal(t, int32(courseGoID()), goRu.CourseId)
 	assert.Equal(t, api.LandingPageStatePublished, goRu.State.Value)
 	assert.True(t, goRu.Main.Value)
 	assert.Equal(t, "Курс Go", goRu.Header)
@@ -96,7 +92,7 @@ func TestAdminGetCourseLandingPage(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetCourseLandingPage(ctx, api.AdminGetCourseLandingPageParams{ID: landingGoRuID})
+	got, err := h.Client.AdminGetCourseLandingPage(ctx, api.AdminGetCourseLandingPageParams{ID: landingGoRuID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "go-ru", got.Slug)
@@ -121,7 +117,7 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 	ctx := context.Background()
 	totalLandingPages := h.DB.CourseLandingPage.Query().CountX(ctx)
 
-	in := fullLandingInput(int32(courseRubyID))
+	in := fullLandingInput(int32(courseRubyID()))
 	in.Slug = api.NewNilString("ruby-extra")
 	in.Name = api.NewNilString("Ruby Extra")
 	in.Main = api.NewNilBool(false)
@@ -178,7 +174,7 @@ func TestAdminDeleteCourseLandingPage(t *testing.T) {
 
 	// Create a childless landing page, then delete it — avoids FK conflicts with
 	// fixture landing pages that own qna items / category items.
-	in := fullLandingInput(int32(courseRubyID))
+	in := fullLandingInput(int32(courseRubyID()))
 	in.Slug = api.NewNilString("to-delete")
 	in.Name = api.NewNilString("Temp")
 	created, err := h.Client.AdminCreateCourseLandingPage(ctx, &in)
@@ -191,4 +187,16 @@ func TestAdminDeleteCourseLandingPage(t *testing.T) {
 	total, err := h.DB.CourseLandingPage.Query().Count(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, totalLandingPages, total)
+}
+
+func landingGoRuID() int32 {
+	return fixture.ID32(fixture.LandingPageGoRu)
+}
+
+func courseRubyID() int {
+	return fixture.ID(fixture.CourseRuby)
+}
+
+func courseGoID() int {
+	return fixture.ID(fixture.CourseGo)
 }

@@ -19,7 +19,9 @@ const (
 
 // Types are every kind of record the search covers, in the order a tie between
 // two hits is broken: a course before its lessons, and both before a post.
-var Types = []Type{Course, Lesson, Post}
+func Types() []Type {
+	return []Type{Course, Lesson, Post}
+}
 
 // ErrBadID is a reference that is not an id this package makes.
 var ErrBadID = errors.New("not a catalogue id")

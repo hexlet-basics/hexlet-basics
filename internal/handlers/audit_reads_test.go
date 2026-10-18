@@ -177,7 +177,7 @@ func TestReadingContentLeavesNoRecord(t *testing.T) {
 // never reaches the middleware, so no read fact follows it.
 func TestARefusedReadIsNotAlsoRecordedAsARead(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	_, err := h.Client.AdminListUsers(context.Background(), api.AdminListUsersParams{})
 	require.Error(t, err)

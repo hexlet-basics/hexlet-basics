@@ -45,8 +45,222 @@ type stateSubject struct {
 	visible func(t *testing.T, h *testsupport.Harness) bool
 }
 
-var (
-	bannerSubject = stateSubject{
+var ()
+
+// legalMoves is the table as the issue states it; every other pair of (operation,
+// current state) is refused, repeating the current state included.
+func legalMoves() map[string][]string {
+	return map[string][]string{
+		"publish":   {"draft", "archived"},
+		"unpublish": {"published"},
+		"archive":   {"draft", "published"},
+	}
+}
+
+func movesTo() map[string]string {
+	return map[string]string{"publish": "published", "unpublish": "draft", "archive": "archived"}
+}
+
+func capitalized(verb string) string {
+	return map[string]string{"publish": "Publish", "unpublish": "Unpublish", "archive": "Archive"}[verb]
+}
+
+func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		for verb, legal := range legalMoves() {
+			for _, from := range []string{"draft", "published", "archived"} {
+				t.Run(subject.name+" "+verb+" from "+from, func(t *testing.T) {
+					h := testsupport.NewHarness(t)
+					subject.setState(h, from)
+
+					shown, err := subject.move(h, verb, subject.id)
+
+					if slices.Contains(legal, from) {
+						require.NoError(t, err)
+						assert.Equal(t, movesTo()[verb], shown, "the answer shows the new state")
+						assert.Equal(t, movesTo()[verb], *subject.stateOf(t, h))
+
+						return
+					}
+
+					require.Error(t, err)
+					assert.Equal(t, http.StatusConflict, h.LastStatus())
+					assert.Equal(t, from, *subject.stateOf(t, h), "a refused move changes nothing")
+					assert.NotEmpty(t, problemOf(t, err).Detail.Value, "the refusal explains itself")
+				})
+			}
+		}
+	}
+}
+
+func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		for locale, want := range map[string]string{
+			"ru": "«опубликовано»",
+			"en": "published to published",
+			"es": "«publicado»",
+		} {
+			t.Run(subject.name+" "+locale, func(t *testing.T) {
+				h := testsupport.NewHarness(t)
+				testsupport.SpeakTo(h, locale)
+				subject.setState(h, "published")
+
+				_, err := subject.move(h, "publish", subject.id)
+
+				require.Error(t, err)
+				assert.Contains(t, problemOf(t, err).Detail.Value, want)
+			})
+		}
+	}
+}
+
+func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		if !subject.nullable {
+			continue
+		}
+
+		t.Run(subject.name, func(t *testing.T) {
+			h := testsupport.NewHarness(t)
+			subject.clearState(h)
+
+			shown, err := subject.move(h, "publish", subject.id)
+
+			require.NoError(t, err)
+			assert.Equal(t, "published", shown)
+		})
+	}
+}
+
+// Each move is a write operation with a Permission of its own, named with the
+// GLOSSARY term of the resource.
+func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
+	t.Parallel()
+
+	for operation, resource := range map[string]string{"Banner": "banners", "Review": "reviews", "CourseLandingPage": "course_landing_pages"} {
+		for verb := range legalMoves() {
+			got, ok := permissioncatalog.For("Admin" + capitalized(verb) + operation)
+			require.True(t, ok)
+			assert.Equal(t, permissioncatalog.Requirement{Permission: resource + "." + verb, Kind: permissioncatalog.Write}, got)
+		}
+	}
+}
+
+func TestAMoveOfAMissingRowIs404(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		t.Run(subject.name, func(t *testing.T) {
+			h := testsupport.NewHarness(t)
+
+			_, err := subject.move(h, "publish", 999999)
+
+			require.Error(t, err)
+			assert.Equal(t, http.StatusNotFound, h.LastStatus())
+		})
+	}
+}
+
+// Publishing is what the public sees follow, and unpublishing or archiving what
+// takes it away: nothing else of the old update is lost, because the public
+// queries read the state column and nothing is cached or copied.
+func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		t.Run(subject.name, func(t *testing.T) {
+			h := testsupport.NewHarness(t)
+			require.True(t, subject.visible(t, h), "published in the fixtures")
+
+			_, err := subject.move(h, "unpublish", subject.id)
+			require.NoError(t, err)
+			assert.False(t, subject.visible(t, h), "a draft is not shown")
+
+			_, err = subject.move(h, "publish", subject.id)
+			require.NoError(t, err)
+			assert.True(t, subject.visible(t, h), "publishing shows it again")
+
+			_, err = subject.move(h, "archive", subject.id)
+			require.NoError(t, err)
+			assert.False(t, subject.visible(t, h), "an archived one is withdrawn")
+		})
+	}
+}
+
+// A role that may edit may not publish, and the reverse: the state is not an
+// update. Unpublishing and archiving are granted apart from publishing too.
+func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		t.Run(subject.name+" update only", func(t *testing.T) {
+			h := testsupport.NewHarnessAs(t, editorLabel())
+			actAs(h, subject.updaterRole)
+
+			require.NoError(t, subject.update(h))
+
+			subject.setState(h, "draft")
+			_, err := subject.move(h, "publish", subject.id)
+			require.Error(t, err)
+			assert.Equal(t, http.StatusForbidden, h.LastStatus())
+			assert.Equal(t, "draft", *subject.stateOf(t, h))
+		})
+		t.Run(subject.name+" publish only", func(t *testing.T) {
+			h := testsupport.NewHarnessAs(t, editorLabel())
+			actAs(h, subject.publisherRole)
+
+			subject.setState(h, "draft")
+			_, err := subject.move(h, "publish", subject.id)
+			require.NoError(t, err)
+
+			require.Error(t, subject.update(h))
+			assert.Equal(t, http.StatusForbidden, h.LastStatus())
+
+			_, err = subject.move(h, "unpublish", subject.id)
+			require.Error(t, err, "publishing does not include unpublishing")
+			assert.Equal(t, http.StatusForbidden, h.LastStatus())
+			_, err = subject.move(h, "archive", subject.id)
+			require.Error(t, err, "publishing does not include archiving")
+			assert.Equal(t, http.StatusForbidden, h.LastStatus())
+			assert.Equal(t, "published", *subject.stateOf(t, h))
+		})
+	}
+}
+
+func TestEachMoveLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
+	t.Parallel()
+
+	for _, subject := range stateSubjects() {
+		for verb, legal := range legalMoves() {
+			from := legal[0]
+
+			t.Run(subject.name+" "+verb, func(t *testing.T) {
+				h := testsupport.NewHarness(t)
+				subject.setState(h, from)
+
+				_, err := subject.move(h, verb, subject.id)
+				require.NoError(t, err)
+
+				rows := records(t, h, "Admin"+capitalized(verb)+subject.operation)
+				require.Len(t, rows, 1)
+				assert.Equal(t, strconv.Itoa(subject.id), *rows[0].EntityID)
+				state, ok := fieldOf(changesOf(t, rows[0]), "state")
+				require.True(t, ok)
+				assert.JSONEq(t, `"`+from+`"`, string(state.Old))
+				assert.JSONEq(t, `"`+movesTo()[verb]+`"`, string(state.New))
+			})
+		}
+	}
+}
+
+func bannerSubject() stateSubject {
+	return stateSubject{
 		name: "banner", operation: "Banner", id: fixture.ID(fixture.BannerEnPublished),
 		updaterRole: fixture.StaffRoleBannerUpdater, publisherRole: fixture.StaffRoleBannerPublisher,
 		setState: func(h *testsupport.Harness, state string) {
@@ -103,8 +317,10 @@ var (
 			return ok && banner.Body == "Free programming courses — start learning today"
 		},
 	}
+}
 
-	reviewSubject = stateSubject{
+func reviewSubject() stateSubject {
+	return stateSubject{
 		name: "review", operation: "Review", id: fixture.ID(fixture.ReviewAdminLearnerRubyPublished),
 		updaterRole: fixture.StaffRoleReviewUpdater, publisherRole: fixture.StaffRoleReviewPublisher,
 		nullable: true,
@@ -162,8 +378,10 @@ var (
 			return slices.Contains(reviewNames(page.Items), "Ivan Petrov")
 		},
 	}
+}
 
-	landingSubject = stateSubject{
+func landingSubject() stateSubject {
+	return stateSubject{
 		name: "landing page", operation: "CourseLandingPage", id: fixture.ID(fixture.LandingPageGoRu),
 		updaterRole: fixture.StaffRoleLandingPageUpdater, publisherRole: fixture.StaffRoleLandingPagePublisher,
 		nullable: true,
@@ -200,7 +418,7 @@ var (
 			return string(page.State.Value), nil
 		},
 		update: func(h *testsupport.Harness) error {
-			in := fullLandingInput(int32(courseGoID))
+			in := fullLandingInput(int32(courseGoID()))
 			in.Slug = api.NewNilString("go-ru")
 			in.Name = api.NewNilString("Edited")
 			_, err := h.Client.AdminUpdateCourseLandingPage(context.Background(), &in, api.AdminUpdateCourseLandingPageParams{ID: int32(fixture.ID(fixture.LandingPageGoRu))})
@@ -216,214 +434,8 @@ var (
 			return slices.Contains(categoryLandingSlugs(getCategoryView(t, h, "programming-ru")), "go-ru")
 		},
 	}
-
-	stateSubjects = []stateSubject{bannerSubject, reviewSubject, landingSubject}
-)
-
-// legalMoves is the table as the issue states it; every other pair of (operation,
-// current state) is refused, repeating the current state included.
-var legalMoves = map[string][]string{
-	"publish":   {"draft", "archived"},
-	"unpublish": {"published"},
-	"archive":   {"draft", "published"},
 }
 
-var movesTo = map[string]string{"publish": "published", "unpublish": "draft", "archive": "archived"}
-
-func capitalized(verb string) string {
-	return map[string]string{"publish": "Publish", "unpublish": "Unpublish", "archive": "Archive"}[verb]
-}
-
-func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		for verb, legal := range legalMoves {
-			for _, from := range []string{"draft", "published", "archived"} {
-				t.Run(subject.name+" "+verb+" from "+from, func(t *testing.T) {
-					h := testsupport.NewHarness(t)
-					subject.setState(h, from)
-
-					shown, err := subject.move(h, verb, subject.id)
-
-					if slices.Contains(legal, from) {
-						require.NoError(t, err)
-						assert.Equal(t, movesTo[verb], shown, "the answer shows the new state")
-						assert.Equal(t, movesTo[verb], *subject.stateOf(t, h))
-
-						return
-					}
-
-					require.Error(t, err)
-					assert.Equal(t, http.StatusConflict, h.LastStatus())
-					assert.Equal(t, from, *subject.stateOf(t, h), "a refused move changes nothing")
-					assert.NotEmpty(t, problemOf(t, err).Detail.Value, "the refusal explains itself")
-				})
-			}
-		}
-	}
-}
-
-func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		for locale, want := range map[string]string{
-			"ru": "«опубликовано»",
-			"en": "published to published",
-			"es": "«publicado»",
-		} {
-			t.Run(subject.name+" "+locale, func(t *testing.T) {
-				h := testsupport.NewHarness(t)
-				testsupport.SpeakTo(h, locale)
-				subject.setState(h, "published")
-
-				_, err := subject.move(h, "publish", subject.id)
-
-				require.Error(t, err)
-				assert.Contains(t, problemOf(t, err).Detail.Value, want)
-			})
-		}
-	}
-}
-
-func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		if !subject.nullable {
-			continue
-		}
-
-		t.Run(subject.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-			subject.clearState(h)
-
-			shown, err := subject.move(h, "publish", subject.id)
-
-			require.NoError(t, err)
-			assert.Equal(t, "published", shown)
-		})
-	}
-}
-
-// Each move is a write operation with a Permission of its own, named with the
-// GLOSSARY term of the resource.
-func TestEachMoveDeclaresItsOwnWritePermission(t *testing.T) {
-	t.Parallel()
-
-	for operation, resource := range map[string]string{"Banner": "banners", "Review": "reviews", "CourseLandingPage": "course_landing_pages"} {
-		for verb := range legalMoves {
-			got, ok := permissioncatalog.For("Admin" + capitalized(verb) + operation)
-			require.True(t, ok)
-			assert.Equal(t, permissioncatalog.Requirement{Permission: resource + "." + verb, Kind: permissioncatalog.Write}, got)
-		}
-	}
-}
-
-func TestAMoveOfAMissingRowIs404(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		t.Run(subject.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-
-			_, err := subject.move(h, "publish", 999999)
-
-			require.Error(t, err)
-			assert.Equal(t, http.StatusNotFound, h.LastStatus())
-		})
-	}
-}
-
-// Publishing is what the public sees follow, and unpublishing or archiving what
-// takes it away: nothing else of the old update is lost, because the public
-// queries read the state column and nothing is cached or copied.
-func TestWhatThePublicSeesFollowsTheState(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		t.Run(subject.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-			require.True(t, subject.visible(t, h), "published in the fixtures")
-
-			_, err := subject.move(h, "unpublish", subject.id)
-			require.NoError(t, err)
-			assert.False(t, subject.visible(t, h), "a draft is not shown")
-
-			_, err = subject.move(h, "publish", subject.id)
-			require.NoError(t, err)
-			assert.True(t, subject.visible(t, h), "publishing shows it again")
-
-			_, err = subject.move(h, "archive", subject.id)
-			require.NoError(t, err)
-			assert.False(t, subject.visible(t, h), "an archived one is withdrawn")
-		})
-	}
-}
-
-// A role that may edit may not publish, and the reverse: the state is not an
-// update. Unpublishing and archiving are granted apart from publishing too.
-func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		t.Run(subject.name+" update only", func(t *testing.T) {
-			h := testsupport.NewHarnessAs(t, editorLabel)
-			actAs(h, subject.updaterRole)
-
-			require.NoError(t, subject.update(h))
-
-			subject.setState(h, "draft")
-			_, err := subject.move(h, "publish", subject.id)
-			require.Error(t, err)
-			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-			assert.Equal(t, "draft", *subject.stateOf(t, h))
-		})
-		t.Run(subject.name+" publish only", func(t *testing.T) {
-			h := testsupport.NewHarnessAs(t, editorLabel)
-			actAs(h, subject.publisherRole)
-
-			subject.setState(h, "draft")
-			_, err := subject.move(h, "publish", subject.id)
-			require.NoError(t, err)
-
-			require.Error(t, subject.update(h))
-			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-
-			_, err = subject.move(h, "unpublish", subject.id)
-			require.Error(t, err, "publishing does not include unpublishing")
-			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-			_, err = subject.move(h, "archive", subject.id)
-			require.Error(t, err, "publishing does not include archiving")
-			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-			assert.Equal(t, "published", *subject.stateOf(t, h))
-		})
-	}
-}
-
-func TestEachMoveLeavesAnAuditRecordWithTheOldAndNewState(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects {
-		for verb, legal := range legalMoves {
-			from := legal[0]
-
-			t.Run(subject.name+" "+verb, func(t *testing.T) {
-				h := testsupport.NewHarness(t)
-				subject.setState(h, from)
-
-				_, err := subject.move(h, verb, subject.id)
-				require.NoError(t, err)
-
-				rows := records(t, h, "Admin"+capitalized(verb)+subject.operation)
-				require.Len(t, rows, 1)
-				assert.Equal(t, strconv.Itoa(subject.id), *rows[0].EntityID)
-				state, ok := fieldOf(changesOf(t, rows[0]), "state")
-				require.True(t, ok)
-				assert.JSONEq(t, `"`+from+`"`, string(state.Old))
-				assert.JSONEq(t, `"`+movesTo[verb]+`"`, string(state.New))
-			})
-		}
-	}
+func stateSubjects() []stateSubject {
+	return []stateSubject{bannerSubject(), reviewSubject(), landingSubject()}
 }

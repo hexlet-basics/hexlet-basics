@@ -29,9 +29,9 @@ import (
 // the editor role) with the admin Scope and the given grants on the role.
 func trailReader(t *testing.T, o *testsupport.OAuth, grants ...string) (*mcp.ClientSession, oauthserver.Token) {
 	t.Helper()
-	o.Grant(editor, grants...)
+	o.Grant(editor(), grants...)
 
-	return admin(t, o, adminStaff)
+	return admin(t, o, adminStaff())
 }
 
 // seedTrail writes one Audit Record through the production writer, placed in the
@@ -98,10 +98,10 @@ func TestTrailToolListsNewestFirstPaginatesAndFilters(t *testing.T) {
 	assert.Equal(t, []int{middle}, itemIDs(t, window))
 
 	actor := seedTrail(t, o, 12*time.Hour, "AdminUpdateBanner", func(e *audit.Entry) {
-		id := bob
+		id := bob()
 		e.Actor = &id
 	})
-	byActor := structured(t, call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "actorUserId": bob}))
+	byActor := structured(t, call(t, session, "adminListAuditRecords", map[string]any{"locale": "en", "actorUserId": bob()}))
 	assert.Equal(t, []int{actor}, itemIDs(t, byActor))
 }
 
@@ -167,16 +167,16 @@ func TestTrailToolNeedsAuditReadAndMCPReadAndTheAdminScope(t *testing.T) {
 
 	t.Run("an administrator with no staff record", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "audit.read", "mcp.read")
-		session, _ := admin(t, o, alice)
+		o.Grant(editor(), "audit.read", "mcp.read")
+		session, _ := admin(t, o, alice())
 
 		assertRefused(t, call(t, session, "adminListAuditRecords", args))
 	})
 
 	t.Run("a token without the admin Scope", func(t *testing.T) {
 		o := testsupport.NewOAuth(t)
-		o.Grant(editor, "audit.read", "mcp.read")
-		tokens := o.Connect(adminStaff, oauthserver.ScopeCatalogRead)
+		o.Grant(editor(), "audit.read", "mcp.read")
+		tokens := o.Connect(adminStaff(), oauthserver.ScopeCatalogRead)
 		session := o.MCPClient(tokens.AccessToken)
 
 		assertRefused(t, call(t, session, "adminListAuditRecords", args))
@@ -215,7 +215,7 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 	require.Len(t, records, 1)
 	record := records[0]
 	assert.Equal(t, "mcp", record.Channel)
-	assert.Equal(t, adminStaff, *record.ActorUserID)
+	assert.Equal(t, adminStaff(), *record.ActorUserID)
 	assert.Equal(t, "succeeded", record.Outcome)
 	assert.Equal(t, "AuditRecord", *record.EntityType)
 	assert.Equal(t, "ru", *record.Locale)

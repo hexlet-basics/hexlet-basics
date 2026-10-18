@@ -18,8 +18,8 @@ func TestAdminToolsAreRateLimitedByClass(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
 		User: mcpserver.Rates{Personal: 1, Write: 1},
 	}))
-	o.Grant(editor, "banners.update", "mcp.read", "mcp.write")
-	session := connect(t, o, bob, oauthserver.ScopeAdmin)
+	o.Grant(editor(), "banners.update", "mcp.read", "mcp.write")
+	session := connect(t, o, bob(), oauthserver.ScopeAdmin)
 	read := map[string]any{"locale": "en"}
 	write := map[string]any{"locale": "en", "id": firstBannerID(t, o), "body": bannerInput("Once")}
 

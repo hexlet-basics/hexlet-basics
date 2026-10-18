@@ -28,13 +28,15 @@ import (
 )
 
 // tinyPNG is a minimal (1x1) PNG so uploads carry real image bytes.
-var tinyPNG = []byte{
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-	0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-	0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
-	0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
-	0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
-	0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+func tinyPNG() []byte {
+	return []byte{
+		0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+		0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+		0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
+		0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
+		0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
+		0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+	}
 }
 
 type authenticatedHandler struct {
@@ -149,7 +151,7 @@ func uploadAttachmentURL(t *testing.T, router http.Handler) string {
 	t.Helper()
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG()))
 	require.Equal(t, http.StatusCreated, rec.Code)
 
 	var response struct {
@@ -166,7 +168,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "application/octet-stream", tinyPNG))
+	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "application/octet-stream", tinyPNG()))
 
 	require.Equal(t, http.StatusCreated, rec.Code)
 	assert.Equal(t, "application/json; charset=utf-8", rec.Header().Get("Content-Type"))
@@ -183,7 +185,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	assert.NotZero(t, att.ID)
 	assert.Equal(t, "cover.png", att.Filename)
 	assert.Equal(t, "image/png", att.ContentType)
-	assert.Equal(t, int64(len(tinyPNG)), att.ByteSize)
+	assert.Equal(t, int64(len(tinyPNG())), att.ByteSize)
 	// The configured public origin is canonical even when the request arrived
 	// through a different host or proxy.
 	assert.True(t, strings.HasPrefix(att.URL, "http://assets.example.test/api/storage/"),
@@ -196,12 +198,12 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, dl.Code)
 	assert.Equal(t, "image/png", dl.Header().Get("Content-Type"))
-	assert.Equal(t, strconv.Itoa(len(tinyPNG)), dl.Header().Get("Content-Length"))
+	assert.Equal(t, strconv.Itoa(len(tinyPNG())), dl.Header().Get("Content-Length"))
 	assert.NotEmpty(t, dl.Header().Get("Last-Modified"))
 	assert.Equal(t, "nosniff", dl.Header().Get("X-Content-Type-Options"))
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
-	assert.Equal(t, tinyPNG, got)
+	assert.Equal(t, tinyPNG(), got)
 }
 
 // TestAdminUploadAttachmentThroughGeneratedClient drives the upload with the
@@ -213,14 +215,14 @@ func TestAdminUploadAttachmentThroughGeneratedClient(t *testing.T) {
 	ctx := t.Context()
 
 	att, err := h.Client.AdminUploadAttachment(ctx, &api.AttachmentUploadFormMultipart{
-		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG), Size: int64(len(tinyPNG))},
+		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG()), Size: int64(len(tinyPNG()))},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	assert.Equal(t, "cover.png", att.Filename)
 	assert.Equal(t, "image/png", att.ContentType)
-	assert.Equal(t, int64(len(tinyPNG)), att.ByteSize)
+	assert.Equal(t, int64(len(tinyPNG())), att.ByteSize)
 	stored, err := h.DB.Attachment.Get(ctx, int(att.ID))
 	require.NoError(t, err)
 	assert.Equal(t, "cover.png", stored.Filename)
@@ -232,7 +234,7 @@ func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 		router, _ := newAttachmentRouterStack(t, true)
 		rec := httptest.NewRecorder()
 
-		router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+		router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG()))
 
 		assert.Equal(t, http.StatusUnauthorized, rec.Code)
 		assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))
@@ -243,7 +245,7 @@ func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 		rec := httptest.NewRecorder()
 
 		authenticatedHandler{next: router, cookies: cookies}.
-			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG()))
 
 		assert.Equal(t, http.StatusForbidden, rec.Code)
 	})
@@ -253,7 +255,7 @@ func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
 	t.Run("cross-site request", func(t *testing.T) {
 		router, cookies := newAttachmentRouterStack(t, true)
 		rec := httptest.NewRecorder()
-		req := uploadRequest(t, "cover.png", "image/png", tinyPNG)
+		req := uploadRequest(t, "cover.png", "image/png", tinyPNG())
 		req.Header.Set("Sec-Fetch-Site", "cross-site")
 
 		authenticatedHandler{next: router, cookies: cookies}.ServeHTTP(rec, req)
@@ -282,10 +284,10 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		router.ServeHTTP(rec, req)
 
 		require.Equal(t, http.StatusPartialContent, rec.Code)
-		assert.Equal(t, "bytes 1-8/"+strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Range"))
+		assert.Equal(t, "bytes 1-8/"+strconv.Itoa(len(tinyPNG())), rec.Header().Get("Content-Range"))
 		assert.Equal(t, "8", rec.Header().Get("Content-Length"))
 		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
-		assert.Equal(t, tinyPNG[1:9], rec.Body.Bytes())
+		assert.Equal(t, tinyPNG()[1:9], rec.Body.Bytes())
 	})
 
 	t.Run("invalid range", func(t *testing.T) {
@@ -297,7 +299,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		router.ServeHTTP(rec, req)
 
 		require.Equal(t, http.StatusRequestedRangeNotSatisfiable, rec.Code)
-		assert.Equal(t, "bytes */"+strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Range"))
+		assert.Equal(t, "bytes */"+strconv.Itoa(len(tinyPNG())), rec.Header().Get("Content-Range"))
 		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
 	})
 
@@ -307,7 +309,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodHead, url, nil))
 
 		require.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Length"))
+		assert.Equal(t, strconv.Itoa(len(tinyPNG())), rec.Header().Get("Content-Length"))
 		assert.Equal(t, lastModified, rec.Header().Get("Last-Modified"))
 		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
 		assert.Empty(t, rec.Body.Bytes())
@@ -336,7 +338,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		router.ServeHTTP(rec, req)
 
 		require.Equal(t, http.StatusPartialContent, rec.Code)
-		assert.Equal(t, tinyPNG[1:9], rec.Body.Bytes())
+		assert.Equal(t, tinyPNG()[1:9], rec.Body.Bytes())
 	})
 
 	t.Run("if range is stale", func(t *testing.T) {
@@ -349,7 +351,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 		router.ServeHTTP(rec, req)
 
 		require.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, tinyPNG, rec.Body.Bytes())
+		assert.Equal(t, tinyPNG(), rec.Body.Bytes())
 	})
 }
 
@@ -428,7 +430,7 @@ func TestUploadAttachmentRejectsOversizedBody(t *testing.T) {
 	router := newAttachmentRouter(t)
 	// Valid PNG bytes padded past the whole-body cap, so only the router can stop
 	// it before the bytes reach the bucket.
-	data := append(append([]byte{}, tinyPNG...), make([]byte, handlers.UploadBodyLimit)...)
+	data := append(append([]byte{}, tinyPNG()...), make([]byte, handlers.UploadBodyLimit)...)
 
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, uploadRequest(t, "huge.png", "image/png", data))
@@ -442,7 +444,7 @@ func TestUploadAttachmentRejectsFileOverAssetLimit(t *testing.T) {
 	router := newAttachmentRouter(t)
 	// Over the file limit but inside the body cap's envelope allowance, so the
 	// request reaches assetstore and fails as a field error, not a transport one.
-	data := append(append([]byte{}, tinyPNG...), make([]byte, assetstore.MaxUploadBytes)...)
+	data := append(append([]byte{}, tinyPNG()...), make([]byte, assetstore.MaxUploadBytes)...)
 
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, uploadRequest(t, "large.png", "image/png", data))

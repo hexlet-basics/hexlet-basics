@@ -128,15 +128,15 @@ func EnqueuedJobs[A river.JobArgs](t *testing.T, s *Services) []A {
 func PublishedEvents[E events.Event](t *testing.T, s *Services) []E {
 	t.Helper()
 	var zero E
-	name := events.Marshaler.Name(zero)
+	name := events.Marshaler().Name(zero)
 
 	var found []E
 	for _, msg := range outbox(t, s) {
-		if events.Marshaler.NameFromMessage(msg) != name {
+		if events.Marshaler().NameFromMessage(msg) != name {
 			continue
 		}
 		var event E
-		require.NoError(t, events.Marshaler.Unmarshal(msg, &event))
+		require.NoError(t, events.Marshaler().Unmarshal(msg, &event))
 		found = append(found, event)
 	}
 	return found
@@ -175,13 +175,13 @@ func outbox(t *testing.T, s *Services) []*message.Message {
 // rows. Facts of other types are skipped.
 func Deliver(t *testing.T, s *Services, handler cqrs.EventHandler) {
 	t.Helper()
-	name := events.Marshaler.Name(handler.NewEvent())
+	name := events.Marshaler().Name(handler.NewEvent())
 	for _, msg := range outbox(t, s) {
-		if events.Marshaler.NameFromMessage(msg) != name {
+		if events.Marshaler().NameFromMessage(msg) != name {
 			continue
 		}
 		event := handler.NewEvent()
-		require.NoError(t, events.Marshaler.Unmarshal(msg, event))
+		require.NoError(t, events.Marshaler().Unmarshal(msg, event))
 		require.NoError(t, handler.Handle(t.Context(), event))
 	}
 }

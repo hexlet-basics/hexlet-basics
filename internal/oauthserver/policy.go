@@ -23,13 +23,17 @@ const mcpPath = "/mcp"
 func (s *Server) Resource() string { return s.resource }
 
 // customScopes are the Scopes a user can consent to.
-var customScopes = []string{ScopeCatalogRead, ScopeProgressRead, ScopeAdmin}
+func customScopes() []string {
+	return []string{ScopeCatalogRead, ScopeProgressRead, ScopeAdmin}
+}
 
 // standardScopes are the OpenID/OAuth scopes that are accepted but carry no
 // grant here: openid only asks for an ID token (which discloses the subject and
 // nothing else), offline_access for a refresh token. The flow works without
 // openid.
-var standardScopes = []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
+func standardScopes() []string {
+	return []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess}
+}
 
 // authorizer is the provider with this server's admission policy added. The
 // library decides what to do with a scope or resource it does not know by
@@ -63,11 +67,11 @@ func (a authorizer) ValidateAuthRequest(
 
 	for _, scope := range req.Scopes {
 		switch {
-		case slices.Contains(standardScopes, scope):
-		case slices.Contains(customScopes, scope) && c.IsScopeAllowed(scope):
+		case slices.Contains(standardScopes(), scope):
+		case slices.Contains(customScopes(), scope) && c.IsScopeAllowed(scope):
 		default:
 			return "", oidc.ErrInvalidScope().WithDescription("The scope %q is not available to this client. "+
-				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes), standardScopes...), ", "))
+				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes()), standardScopes()...), ", "))
 		}
 	}
 

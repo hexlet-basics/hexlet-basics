@@ -18,9 +18,11 @@ var ErrPasswordProcessing = errors.New("password processing failed")
 
 // userUniques names the field behind each unique index of the users table, so a
 // taken email is an invalid input naming "email" rather than a bare conflict.
-var userUniques = []domain.Unique{
-	domain.UniqueOn("index_users_on_email", "email"),
-	domain.UniqueOn("index_users_on_LOWER_email", "email"),
+func userUniques() []domain.Unique {
+	return []domain.Unique{
+		domain.UniqueOn("index_users_on_email", "email"),
+		domain.UniqueOn("index_users_on_LOWER_email", "email"),
+	}
 }
 
 // Registration is the validated public sign-up input.
@@ -74,7 +76,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {
-			return errs.Wrapf(domain.FromStore(err, userUniques...), "create user")
+			return errs.Wrapf(domain.FromStore(err, userUniques()...), "create user")
 		}
 
 		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{

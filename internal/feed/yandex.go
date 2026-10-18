@@ -66,16 +66,18 @@ const xmlDeclaration = `<?xml version="1.0"?>` + "\n"
 
 // fixedParams are the course facts the legacy builder asserted for every
 // offer, in its order.
-var fixedParams = []param{
-	{Name: "Продолжительность", Unit: "месяц", Text: "1"},
-	{Name: "Формат обучения", Text: "Самостоятельно"},
-	{Name: "Сложность", Text: "Для новичков"},
-	{Name: "Тип обучения", Text: "Курс"},
-	{Name: "Результат обучения", Text: "Сертификат"},
-	{Name: "Есть бесплатная часть", Text: "true"},
-	{Name: "Есть текстовые уроки", Text: "true"},
-	{Name: "Есть тренажеры", Text: "true"},
-	{Name: "Есть сообщество", Text: "true"},
+func fixedParams() []param {
+	return []param{
+		{Name: "Продолжительность", Unit: "месяц", Text: "1"},
+		{Name: "Формат обучения", Text: "Самостоятельно"},
+		{Name: "Сложность", Text: "Для новичков"},
+		{Name: "Тип обучения", Text: "Курс"},
+		{Name: "Результат обучения", Text: "Сертификат"},
+		{Name: "Есть бесплатная часть", Text: "true"},
+		{Name: "Есть текстовые уроки", Text: "true"},
+		{Name: "Есть тренажеры", Text: "true"},
+		{Name: "Есть сообщество", Text: "true"},
+	}
 }
 
 // Yandex builds the YML course catalogue Yandex reads to list the courses in
@@ -263,7 +265,7 @@ func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent
 		URL:         y.localized("/languages/"+url.PathEscape(slug)) + "?" + utm.Encode(),
 		CategoryID:  yandexCategoryID,
 		CurrencyID:  currencyID,
-		Params:      fixedParams,
+		Params:      fixedParams(),
 		Description: lo.FromPtr(page.Description),
 	}
 	if page.LanguageCategoryID != nil {

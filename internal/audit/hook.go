@@ -13,7 +13,9 @@ import (
 
 // ownedFields are maintained by ent itself (the timestamps mixin), so a change
 // of them says nothing the operation did.
-var ownedFields = []string{"created_at", "updated_at"}
+func ownedFields() []string {
+	return []string{"created_at", "updated_at"}
+}
 
 // RowLoader reads one row of any schema type by id. *ent.Client satisfies it
 // through the generated AuditRow (ent/template/auditrow.tmpl).
@@ -147,7 +149,7 @@ func entityID(m ent.Mutation) string {
 func deletedFields(row map[string]any, secret []string) []FieldChange {
 	names := make([]string, 0, len(row))
 	for name := range row {
-		if !slices.Contains(ownedFields, name) {
+		if !slices.Contains(ownedFields(), name) {
 			names = append(names, name)
 		}
 	}
@@ -180,7 +182,7 @@ func fieldChanges(m ent.Mutation, old map[string]any, secret []string) []FieldCh
 	var out []FieldChange
 
 	for _, name := range slices.Concat(m.Fields(), m.ClearedFields()) {
-		if slices.Contains(ownedFields, name) {
+		if slices.Contains(ownedFields(), name) {
 			continue
 		}
 

@@ -59,7 +59,7 @@ func auditReader(t *testing.T, withGrant bool) *testsupport.Harness {
 
 	h := testsupport.NewHarnessAs(t, fixture.UserAdminStaff)
 	if withGrant {
-		h.Grant(t, int(roleEditorID), "audit.read")
+		h.Grant(t, int(roleEditorID()), "audit.read")
 	}
 
 	return h
@@ -108,7 +108,7 @@ func TestGrantingAuditReadOpensTheTrailToAnAdministrator(t *testing.T) {
 
 func TestAnEditorWithoutAuditReadIsRefusedTheTrail(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	_, err := listTrail(h, api.AdminListAuditRecordsParams{})
 
@@ -360,7 +360,7 @@ func TestARoleWithoutTheGrantHoldsNoCapability(t *testing.T) {
 
 func TestAnyStaffMemberMayAskWhatTheyHold(t *testing.T) {
 	t.Parallel()
-	h := testsupport.NewHarnessAs(t, editorLabel)
+	h := testsupport.NewHarnessAs(t, editorLabel())
 
 	assert.Empty(t, capabilitiesOf(t, h))
 }

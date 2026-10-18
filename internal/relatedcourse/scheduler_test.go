@@ -16,9 +16,9 @@ func TestSuggestSchedulesThePickForAPost(t *testing.T) {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 
-	require.NoError(t, relatedcourse.NewScheduler(db, services.Jobs).Suggest(t.Context(), helloWorldPost))
+	require.NoError(t, relatedcourse.NewScheduler(db, services.Jobs).Suggest(t.Context(), helloWorldPost()))
 
-	assert.Equal(t, helloWorldPost, testsupport.RequireEnqueued(t, services, jobs.SuggestRelatedCoursesArgs{}).BlogPostID)
+	assert.Equal(t, helloWorldPost(), testsupport.RequireEnqueued(t, services, jobs.SuggestRelatedCoursesArgs{}).BlogPostID)
 }
 
 func TestSuggestForAMissingPostIsNotFoundAndSchedulesNothing(t *testing.T) {

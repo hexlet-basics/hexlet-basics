@@ -24,20 +24,7 @@ const (
 // development, a draft may be declared completed). Each names the two values it
 // may start from; repeating the current one is not among them, so it is refused
 // like any illegal move.
-var (
-	MarkDraft = Transition[Readiness]{
-		To:   ReadinessDraft,
-		From: []Readiness{ReadinessInDevelopment, ReadinessCompleted},
-	}
-	MarkInDevelopment = Transition[Readiness]{
-		To:   ReadinessInDevelopment,
-		From: []Readiness{ReadinessDraft, ReadinessCompleted},
-	}
-	MarkCompleted = Transition[Readiness]{
-		To:   ReadinessCompleted,
-		From: []Readiness{ReadinessDraft, ReadinessInDevelopment},
-	}
-)
+var ()
 
 // ReadinessOf reads the readiness column of a Course. A Course with none (the
 // column is nullable in the legacy schema) counts as a draft, which is how the
@@ -48,4 +35,28 @@ func ReadinessOf(column *string) Readiness {
 	}
 
 	return Readiness(*column)
+}
+
+// MarkDraft sends a Course back to draft from any other readiness.
+func MarkDraft() Transition[Readiness] {
+	return Transition[Readiness]{
+		To:   ReadinessDraft,
+		From: []Readiness{ReadinessInDevelopment, ReadinessCompleted},
+	}
+}
+
+// MarkInDevelopment marks a Course as being written.
+func MarkInDevelopment() Transition[Readiness] {
+	return Transition[Readiness]{
+		To:   ReadinessInDevelopment,
+		From: []Readiness{ReadinessDraft, ReadinessCompleted},
+	}
+}
+
+// MarkCompleted marks a Course as finished.
+func MarkCompleted() Transition[Readiness] {
+	return Transition[Readiness]{
+		To:   ReadinessCompleted,
+		From: []Readiness{ReadinessDraft, ReadinessInDevelopment},
+	}
 }

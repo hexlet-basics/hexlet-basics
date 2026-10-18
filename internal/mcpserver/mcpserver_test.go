@@ -29,7 +29,9 @@ var (
 )
 
 // alice is a fixture user.
-var alice = fixture.ID(fixture.UserAdminLearner)
+func alice() int {
+	return fixture.ID(fixture.UserAdminLearner)
+}
 
 func body(t *testing.T, res *http.Response) string {
 	t.Helper()
@@ -98,7 +100,7 @@ func TestResourceMetadataIsServedAtBothWellKnownLocations(t *testing.T) {
 
 func TestWebsiteSessionCookieIsNotAcceptedOnTheEndpoint(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	session := testsupport.SessionFor(t, o.DB, alice)
+	session := testsupport.SessionFor(t, o.DB, alice())
 
 	res := initialize(t, o, func(r *http.Request) {
 		r.AddCookie(session.Cookie)
@@ -111,24 +113,24 @@ func TestWebsiteSessionCookieIsNotAcceptedOnTheEndpoint(t *testing.T) {
 
 func TestBearerTokenIsNotAcceptedOnAnyAPIOperation(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead, oauthserver.ScopeAdmin)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead, oauthserver.ScopeAdmin)
 	bearer := func(r *http.Request) { r.Header.Set("Authorization", "Bearer "+tokens.AccessToken) }
 
 	// An operation that identifies the caller when it can: the cookie session
 	// resolves the user, the bearer token does not, so a visitor comes back.
-	session := testsupport.SessionFor(t, o.DB, alice)
+	session := testsupport.SessionFor(t, o.DB, alice())
 
 	withCookie := o.Do(http.MethodGet, "/api/me", nil, func(r *http.Request) { r.AddCookie(session.Cookie) })
 	defer func() { _ = withCookie.Body.Close() }()
 
 	require.Equal(t, http.StatusOK, withCookie.StatusCode)
-	assert.Contains(t, body(t, withCookie), strconv.Itoa(alice))
+	assert.Contains(t, body(t, withCookie), strconv.Itoa(alice()))
 
 	withBearer := o.Do(http.MethodGet, "/api/me", nil, bearer)
 	defer func() { _ = withBearer.Body.Close() }()
 
 	require.Equal(t, http.StatusOK, withBearer.StatusCode)
-	assert.NotContains(t, body(t, withBearer), strconv.Itoa(alice))
+	assert.NotContains(t, body(t, withBearer), strconv.Itoa(alice()))
 
 	// Operations that need a signed-in user refuse it.
 	for _, path := range []string{"/api/my", "/api/admin/api/users"} {
@@ -140,7 +142,7 @@ func TestBearerTokenIsNotAcceptedOnAnyAPIOperation(t *testing.T) {
 
 func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	session := o.MCPClient(tokens.AccessToken)
 
 	tools, err := session.ListTools(t.Context(), nil)
@@ -186,7 +188,7 @@ func TestClientListsCoursesThroughOneToolWithTheContractSchema(t *testing.T) {
 
 func TestToolAnswersInTheLocaleOfTheRequest(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	locales := map[string]bool{}
 
@@ -205,7 +207,7 @@ func TestToolAnswersInTheLocaleOfTheRequest(t *testing.T) {
 
 func TestToolRefusesAConnectionWithoutTheCatalogReadScope(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeProgressRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeProgressRead)
 	session := o.MCPClient(tokens.AccessToken)
 
 	result, err := session.CallTool(t.Context(), &mcp.CallToolParams{Name: "listCourses"})
@@ -248,7 +250,7 @@ func status(t *testing.T, v verifier) int {
 }
 
 func TestTokenIsAcceptedOnlyForTheCanonicalResourceAndAUserSubject(t *testing.T) {
-	good := oauthserver.Token{UserID: alice, Scopes: []string{"catalog:read"}, Audience: []string{testsupport.MCPEndpoint}}
+	good := oauthserver.Token{UserID: alice(), Scopes: []string{"catalog:read"}, Audience: []string{testsupport.MCPEndpoint}}
 
 	other := good
 	other.Audience = []string{"https://elsewhere.example/mcp"}

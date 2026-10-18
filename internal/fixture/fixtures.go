@@ -120,9 +120,10 @@ func (l labels) id(label string) (int, error) {
 	return id, nil
 }
 
+// The repository labels are loaded once for every caller in the process.
 var (
-	repoOnce   sync.Once
-	repoLabels labels
+	repoOnce   sync.Once //nolint:gochecknoglobals // memoized once per process
+	repoLabels labels    //nolint:gochecknoglobals // memoized once per process
 	errRepo    error
 )
 
@@ -212,9 +213,10 @@ func Dir() (string, error) {
 	}
 }
 
+// The bcrypt digest is computed once and shared by every fixture user.
 var (
-	digestOnce sync.Once
-	digest     string
+	digestOnce sync.Once //nolint:gochecknoglobals // memoized once per process
+	digest     string    //nolint:gochecknoglobals // memoized once per process
 	errDigest  error
 )
 

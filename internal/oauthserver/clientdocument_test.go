@@ -20,7 +20,7 @@ const documentRedirect = "https://app.example.com/callback"
 // authorizeDocument sends the authorization request of a document client and
 // returns the flow, whose Authorize response is the answer.
 func authorizeDocument(o *testsupport.OAuth, clientID, redirect string, scopes ...string) *testsupport.Flow {
-	return o.StartWith(alice, testsupport.StartOptions{ClientID: clientID, RedirectURIs: []string{redirect}, Scopes: scopes})
+	return o.StartWith(alice(), testsupport.StartOptions{ClientID: clientID, RedirectURIs: []string{redirect}, Scopes: scopes})
 }
 
 func storedClient(t *testing.T, o *testsupport.OAuth, clientID string) bool {
@@ -52,7 +52,7 @@ func TestAClientWithAMetadataDocumentCompletesTheFlowAndRefreshes(t *testing.T) 
 	// The consent screen names the client from its document and shows where the
 	// user will be sent back to.
 	flow := o.Do(http.MethodGet, "/api/oauth/consents/"+f.RequestID, nil, func(r *http.Request) {
-		r.AddCookie(testsupport.SessionFor(t, o.DB, alice).Cookie)
+		r.AddCookie(testsupport.SessionFor(t, o.DB, alice()).Cookie)
 	})
 	require.Equal(t, http.StatusOK, flow.StatusCode)
 	consent := decodeJSON[map[string]any](t, flow)

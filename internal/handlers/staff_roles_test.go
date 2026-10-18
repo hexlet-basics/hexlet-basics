@@ -16,13 +16,13 @@ import (
 )
 
 // staff_member_roles.yml seeds editor and moderator plus an updater and a publisher role for each resource with a Publication State; editor owns three grants (banners.create, banners.read, blog_posts.read).
-var (
-	roleEditorID = fixture.ID32(fixture.StaffRoleEditor)
-)
+var ()
 
 // editorGrants are the editor's grants in the fixtures, in the order the API
 // lists them.
-var editorGrants = []string{"banners.create", "banners.read", "blog_posts.read"}
+func editorGrants() []string {
+	return []string{"banners.create", "banners.read", "blog_posts.read"}
+}
 
 func TestAdminListRoles(t *testing.T) {
 	t.Parallel()
@@ -51,11 +51,11 @@ func TestAdminGetRole(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetRole(ctx, api.AdminGetRoleParams{ID: roleEditorID})
+	got, err := h.Client.AdminGetRole(ctx, api.AdminGetRoleParams{ID: roleEditorID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Equal(t, editorGrants, got.Grants)
+	assert.Equal(t, editorGrants(), got.Grants)
 }
 
 func TestAdminCreateRole(t *testing.T) {
@@ -94,13 +94,13 @@ func TestAdminUpdateRole(t *testing.T) {
 	updated, err := h.Client.AdminUpdateRole(ctx, &api.RoleInput{
 		Name:        "editor-renamed",
 		Description: api.NilString{Null: true}, // clears
-	}, api.AdminUpdateRoleParams{ID: roleEditorID})
+	}, api.AdminUpdateRoleParams{ID: roleEditorID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor-renamed", updated.Name)
 	assert.True(t, updated.Description.Null)
 	// Grants are untouched by a role update.
-	assert.Equal(t, editorGrants, updated.Grants)
+	assert.Equal(t, editorGrants(), updated.Grants)
 }
 
 func TestAdminDeleteRole(t *testing.T) {
@@ -124,11 +124,11 @@ func TestAdminGetRolePermissions(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	got, err := h.Client.AdminGetRolePermissions(ctx, api.AdminGetRolePermissionsParams{RoleId: roleEditorID})
+	got, err := h.Client.AdminGetRolePermissions(ctx, api.AdminGetRolePermissionsParams{RoleId: roleEditorID()})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Equal(t, editorGrants, got.Grants)
+	assert.Equal(t, editorGrants(), got.Grants)
 }
 
 // TestAdminUpdateRolePermissionsReplacesTheGrants checks that the grants
@@ -140,14 +140,14 @@ func TestAdminUpdateRolePermissionsReplacesTheGrants(t *testing.T) {
 
 	updated, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
 		Grants: []string{"blog_posts.update", "blog_posts.create", "blog_posts.create"},
-	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID()})
 	require.NoError(t, err)
 
 	assert.Equal(t, []string{"blog_posts.create", "blog_posts.update"}, updated.Grants)
 
 	again, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
 		Grants: []string{},
-	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID()})
 	require.NoError(t, err)
 	assert.Empty(t, again.Grants)
 }
@@ -161,13 +161,13 @@ func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
 
 	_, err := h.Client.AdminUpdateRolePermissions(context.Background(), &api.RolePermissionsInput{
 		Grants: []string{"blog_posts.frobnicate"},
-	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
+	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID()})
 
 	require.Error(t, err)
 	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
-	got, err := h.Client.AdminGetRole(context.Background(), api.AdminGetRoleParams{ID: roleEditorID})
+	got, err := h.Client.AdminGetRole(context.Background(), api.AdminGetRoleParams{ID: roleEditorID()})
 	require.NoError(t, err)
-	assert.Equal(t, editorGrants, got.Grants)
+	assert.Equal(t, editorGrants(), got.Grants)
 }
 
 // TestAdminListPermissions serves the catalog the roles screen offers, the one
@@ -194,4 +194,8 @@ func TestAdminListPermissions(t *testing.T) {
 		{Name: "mcp.manage", Kind: api.PermissionKindWrite, Capability: true},
 		{Name: "audit.read", Kind: api.PermissionKindRead, Capability: true},
 	})
+}
+
+func roleEditorID() int32 {
+	return fixture.ID32(fixture.StaffRoleEditor)
 }

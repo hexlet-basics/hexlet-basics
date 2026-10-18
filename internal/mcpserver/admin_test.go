@@ -28,12 +28,16 @@ import (
 // The fixtures seed bob (user_staff_editor) as an editor, role staff_role_editor,
 // who may read and create banners in ru and en; alice (user_admin_learner) is an
 // administrator with no Staff Role.
-var editor = fixture.ID(fixture.StaffRoleEditor)
+func editor() int {
+	return fixture.ID(fixture.StaffRoleEditor)
+}
 
 // adminStaff is an administrator who is also a staff member, on the editor role
 // (user_admin_staff): alice has no staff record, and must not (the cases lean on it);
 // a record cannot be made for oneself.
-var adminStaff = fixture.ID(fixture.UserAdminStaff)
+func adminStaff() int {
+	return fixture.ID(fixture.UserAdminStaff)
+}
 
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
@@ -77,8 +81,8 @@ func assertRefused(t *testing.T, result *mcp.CallToolResult) {
 func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The list shows what the role may be offered, so give it every capability.
-	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write", "mcp.manage", "audit.read")
+	session, _ := admin(t, o, bob())
 
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
@@ -106,8 +110,8 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 
 func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read", "mcp.write", "mcp.manage", "audit.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write", "mcp.manage", "audit.read")
+	session, _ := admin(t, o, bob())
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
@@ -150,8 +154,8 @@ func TestAdminToolSchemasComeFromTheContract(t *testing.T) {
 
 func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en", "perPage": 2})
 
@@ -185,8 +189,8 @@ func TestRoleWithTheGrantsListsBanners(t *testing.T) {
 
 func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, token := admin(t, o, bob())
 	id := firstBannerID(t, o)
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
@@ -202,7 +206,7 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 	record := records[0]
 	assert.Equal(t, audit.OutcomeSucceeded, audit.Outcome(record.Outcome))
 	assert.Equal(t, "mcp", record.Channel)
-	assert.Equal(t, bob, *record.ActorUserID)
+	assert.Equal(t, bob(), *record.ActorUserID)
 	assert.Equal(t, "ru", *record.Locale, "the locale of the call is the argument")
 	assert.Equal(t, strconv.Itoa(id), *record.EntityID)
 	// The Connected App is the oauth_clients row the token was issued to, and the
@@ -216,8 +220,8 @@ func TestWriteToolChangesTheBannerAndLeavesAnAuditRecordOfTheMCPChannel(t *testi
 
 func TestWriteIsRefusedWithOnlyMCPReadAndRecordedAsForbidden(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.read")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.read")
+	session, token := admin(t, o, bob())
 	id := firstBannerID(t, o)
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
@@ -238,8 +242,8 @@ func TestWriteIsRefusedWithOnlyMCPReadAndRecordedAsForbidden(t *testing.T) {
 func TestOperationPermissionIsRequiredAlongsideTheMCPCapability(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// The role may use MCP but was never given banners.update.
-	o.Grant(editor, "mcp.read", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{
 		"locale": "ru", "id": firstBannerID(t, o), "body": bannerInput("Nope"),
@@ -250,7 +254,7 @@ func TestOperationPermissionIsRequiredAlongsideTheMCPCapability(t *testing.T) {
 
 func TestReadIsRefusedWithoutMCPRead(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	session, _ := admin(t, o, bob) // banners.read is held, mcp.read is not
+	session, _ := admin(t, o, bob()) // banners.read is held, mcp.read is not
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 
@@ -265,13 +269,13 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	t.Run("no staff record", func(t *testing.T) {
-		session, _ := admin(t, o, alice)
+		session, _ := admin(t, o, alice())
 		assertRefused(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}))
 	})
 
 	// An administrator who is staff, on a role that holds mcp.read but not mcp.write.
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, adminStaff)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, adminStaff())
 
 	assert.False(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}).IsError, "read is granted")
 	write := call(t, session, "adminUpdateBanner", map[string]any{
@@ -280,7 +284,7 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 	assertRefused(t, write)
 	assert.NotEqual(t, "Administrator without mcp.write", o.DB.Banner.Query().Order(banner.ByID()).FirstX(t.Context()).Body)
 
-	o.Grant(editor, "mcp.write")
+	o.Grant(editor(), "mcp.write")
 	write = call(t, session, "adminUpdateBanner", map[string]any{
 		"locale": "en", "id": firstBannerID(t, o), "body": bannerInput("Administrator with mcp.write"),
 	})
@@ -289,8 +293,8 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 
 func TestTokenWithoutTheAdminScopeIsRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	tokens := o.Connect(bob, oauthserver.ScopeCatalogRead)
+	o.Grant(editor(), "mcp.read")
+	tokens := o.Connect(bob(), oauthserver.ScopeCatalogRead)
 	session := o.MCPClient(tokens.AccessToken)
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
@@ -305,26 +309,26 @@ func TestTokenWithoutTheAdminScopeIsRefused(t *testing.T) {
 
 func TestTakingAPermissionAwayTakesEffectOnTheNextCall(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 	args := map[string]any{"locale": "en"}
 
 	require.False(t, call(t, session, "adminListBanners", args).IsError)
 
-	o.RevokeGrant(editor, "mcp.read")
+	o.RevokeGrant(editor(), "mcp.read")
 	assertRefused(t, call(t, session, "adminListBanners", args))
 
-	o.Grant(editor, "mcp.read")
-	o.RevokeGrant(editor, "banners.read")
+	o.Grant(editor(), "mcp.read")
+	o.RevokeGrant(editor(), "banners.read")
 	assertRefused(t, call(t, session, "adminListBanners", args))
 }
 
 func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
 	// Bob works in ru and en; narrow him to ru.
 	o.DB.StaffMember.Update().SetAllowedLocales([]string{"ru"}).ExecX(t.Context())
-	tokens := o.Connect(bob, oauthserver.ScopeAdmin)
+	tokens := o.Connect(bob(), oauthserver.ScopeAdmin)
 	// The connection's own Accept-Language says en; the argument is what counts.
 	session := o.MCPClient(tokens.AccessToken, func(r *http.Request) { r.Header.Set("Accept-Language", "en") })
 
@@ -352,8 +356,8 @@ func TestLocaleIsARequiredArgumentThatDecidesTheCheck(t *testing.T) {
 
 func TestArgumentsTheOperationDoesNotDeclareAreRefused(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
 
 	extra := call(t, session, "adminListBanners", map[string]any{"locale": "en", "color": "red"})
 	assert.True(t, extra.IsError)
@@ -366,8 +370,8 @@ func TestArgumentsTheOperationDoesNotDeclareAreRefused(t *testing.T) {
 
 func TestValidationFailureIsAToolErrorAndIsRecordedAsFailed(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	invalid := bannerInput("")
 	result := call(t, session, "adminUpdateBanner", map[string]any{"locale": "ru", "id": firstBannerID(t, o), "body": invalid})
@@ -385,8 +389,8 @@ func TestValidationFailureIsAToolErrorAndIsRecordedAsFailed(t *testing.T) {
 
 func TestMissingBannerIsTheSameNotFoundHTTPAnswers(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "banners.update", "mcp.write")
+	session, _ := admin(t, o, bob())
 
 	result := call(t, session, "adminUpdateBanner", map[string]any{"locale": "ru", "id": 999999, "body": bannerInput("x")})
 
@@ -403,8 +407,8 @@ func TestMissingBannerIsTheSameNotFoundHTTPAnswers(t *testing.T) {
 // and records the same, apart from the channel.
 func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	cookie := testsupport.SessionFor(t, o.DB, bob)
-	session, _ := admin(t, o, bob)
+	cookie := testsupport.SessionFor(t, o.DB, bob())
+	session, _ := admin(t, o, bob())
 	id := firstBannerID(t, o)
 	path := "/api/admin/banners/" + strconv.Itoa(id)
 
@@ -431,7 +435,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	// problem document, and a forbidden record from each channel.
 	status, httpBody := overHTTP(bannerInput("refused"))
 
-	o.Grant(editor, "mcp.write")
+	o.Grant(editor(), "mcp.write")
 
 	refused := overMCP(bannerInput("refused"))
 
@@ -440,7 +444,7 @@ func TestHTTPAndMCPBehaveTheSameForTheSameOperation(t *testing.T) {
 	assert.Equal(t, "HTTP 403: "+httpBody, textOf(t, refused))
 
 	// 2. Invalid input: the same 400 and problem document.
-	o.Grant(editor, "banners.update")
+	o.Grant(editor(), "banners.update")
 
 	status, httpBody = overHTTP(bannerInput(""))
 	invalid := overMCP(bannerInput(""))
@@ -497,7 +501,7 @@ func TestNoRegisteredAdminToolRunsWithoutTheCheck(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: rates, Client: rates}))
 	// A role with nothing: bob's grants are removed, and no mcp.* is held.
 	o.DB.StaffRoleGrant.Delete().ExecX(t.Context())
-	session, _ := admin(t, o, bob)
+	session, _ := admin(t, o, bob())
 	// The tools come from the contract, not from the list: a role with nothing is
 	// not shown the admin tools (#878), and hiding is no authorization, so every
 	// one is called by name all the same.
@@ -560,7 +564,7 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 // value instead of a Principal in the context.
 func TestSessionPlaceholderOpensNothingOverHTTP(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "banners.update", "banners.read", "mcp.write", "mcp.read")
+	o.Grant(editor(), "banners.update", "banners.read", "mcp.write", "mcp.read")
 
 	bannerID := fixture.ID(fixture.BannerRuPublished)
 	placeholder := &http.Cookie{Name: mcpserver.SessionCookie, Value: mcpserver.CookiePlaceholder} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie

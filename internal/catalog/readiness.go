@@ -33,17 +33,17 @@ func NewReadiness(db *ent.Client) *Readiness {
 
 // MarkDraft takes a course back to a draft.
 func (r *Readiness) MarkDraft(ctx context.Context, id int) error {
-	return r.move(ctx, id, transition.MarkDraft)
+	return r.move(ctx, id, transition.MarkDraft())
 }
 
 // MarkInDevelopment marks a course as being developed.
 func (r *Readiness) MarkInDevelopment(ctx context.Context, id int) error {
-	return r.move(ctx, id, transition.MarkInDevelopment)
+	return r.move(ctx, id, transition.MarkInDevelopment())
 }
 
 // MarkCompleted marks a course as finished, which lists it publicly.
 func (r *Readiness) MarkCompleted(ctx context.Context, id int) error {
-	return r.move(ctx, id, transition.MarkCompleted)
+	return r.move(ctx, id, transition.MarkCompleted())
 }
 
 // move checks the move against the table and writes the new readiness through

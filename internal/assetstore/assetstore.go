@@ -38,11 +38,13 @@ var (
 	errAssetNotFound = errors.New("asset not found")
 )
 
-var extensionsByContentType = map[string]string{
-	"image/png":  ".png",
-	"image/jpeg": ".jpg",
-	"image/gif":  ".gif",
-	"image/webp": ".webp",
+func extensionsByContentType() map[string]string {
+	return map[string]string{
+		"image/png":  ".png",
+		"image/jpeg": ".jpg",
+		"image/gif":  ".gif",
+		"image/webp": ".webp",
+	}
 }
 
 // Upload is the minimal input Put needs. Content type and byte size are derived
@@ -107,7 +109,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	contentType := http.DetectContentType(header)
 
-	extension, ok := extensionsByContentType[contentType]
+	extension, ok := extensionsByContentType()[contentType]
 	if !ok {
 		return Attachment{}, errs.With("content_type", contentType).Wrapf(ErrUnsupportedMediaType, "reject asset")
 	}

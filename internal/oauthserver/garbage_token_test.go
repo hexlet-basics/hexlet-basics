@@ -36,7 +36,7 @@ func TestPresentingAStrangerNeverFailsTheServer(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	// A client that has connected: revoking is a client's call, and an unknown
 	// client is a different refusal.
-	o.Connect(alice, oauthserver.ScopeCatalogRead)
+	o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	const strangers = 300
 
@@ -57,7 +57,7 @@ func TestPresentingAStrangerNeverFailsTheServer(t *testing.T) {
 // away what could not be ours.
 func TestTheShapeOfAnIdDoesNotTurnARealTokenAway(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	assert.True(t, o.Accepts(tokens.AccessToken))
 	require.Equal(t, http.StatusOK, o.Revoke(testsupport.OAuthClientID, tokens.AccessToken).StatusCode)

@@ -40,7 +40,9 @@ const (
 // request later: reading, never admin. A client that wants more asks for it by
 // name, and the user still consents and the user's Permissions still decide
 // (ADR-0022 addendum, #840).
-var defaultRegistrationScopes = []string{ScopeCatalogRead, ScopeProgressRead}
+func defaultRegistrationScopes() []string {
+	return []string{ScopeCatalogRead, ScopeProgressRead}
+}
 
 // registrationFields are the metadata (RFC 7591) a registration is judged on;
 // ignoredRegistrationFields are harmless descriptive metadata that is accepted
@@ -48,16 +50,7 @@ var defaultRegistrationScopes = []string{ScopeCatalogRead, ScopeProgressRead}
 // is anonymous, and a field it does not understand (an audience, a secret,
 // skip_consent) is exactly what an attacker would try, so silence would let a
 // future change give one of them meaning by accident.
-var (
-	registrationFields = []string{
-		"redirect_uris", "client_name", "grant_types", "response_types",
-		"token_endpoint_auth_method", "scope",
-	}
-	ignoredRegistrationFields = []string{
-		"client_uri", "logo_uri", "tos_uri", "policy_uri", "contacts",
-		"software_id", "software_version", "application_type",
-	}
-)
+var ()
 
 // refusal is a validation failure whose text is the answer to the client (the
 // error_description of an RFC 7591 response), so it is a message built for the
@@ -214,7 +207,7 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 // Fields other than those this server understands are refused, never ignored.
 func parseMetadata(fields map[string]json.RawMessage, extraFields ...string) (registration, *registrationError) {
 	for name := range fields {
-		if !slices.Contains(registrationFields, name) && !slices.Contains(ignoredRegistrationFields, name) &&
+		if !slices.Contains(registrationFields(), name) && !slices.Contains(ignoredRegistrationFields(), name) &&
 			!slices.Contains(extraFields, name) {
 			return registration{}, metadataError("the field %q is not accepted", name)
 		}
@@ -346,7 +339,7 @@ func clientName(fields map[string]json.RawMessage) (string, error) {
 func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) {
 	raw, ok := fields["scope"]
 	if !ok {
-		return slices.Clone(defaultRegistrationScopes), false, nil
+		return slices.Clone(defaultRegistrationScopes()), false, nil
 	}
 
 	var scope string
@@ -356,7 +349,7 @@ func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) 
 
 	names := strings.Fields(scope)
 	if len(names) == 0 {
-		return slices.Clone(defaultRegistrationScopes), false, nil
+		return slices.Clone(defaultRegistrationScopes()), false, nil
 	}
 	// Never nil: the column is NOT NULL, and a client that asked only for
 	// offline_access holds no custom Scope.
@@ -368,13 +361,13 @@ func requestedScopes(fields map[string]json.RawMessage) ([]string, bool, error) 
 		switch {
 		case name == oidc.ScopeOfflineAccess:
 			offline = true
-		case slices.Contains(customScopes, name):
+		case slices.Contains(customScopes(), name):
 			if !slices.Contains(custom, name) {
 				custom = append(custom, name)
 			}
 		default:
 			return nil, false, refusal(fmt.Sprintf("the scope %q is not offered. Offered scopes: %s",
-				name, strings.Join(append(slices.Clone(customScopes), oidc.ScopeOfflineAccess), ", ")))
+				name, strings.Join(append(slices.Clone(customScopes()), oidc.ScopeOfflineAccess), ", ")))
 		}
 	}
 
@@ -433,4 +426,18 @@ func isLoopbackHost(host string) bool {
 	ip := net.ParseIP(host)
 
 	return ip != nil && ip.IsLoopback()
+}
+
+func registrationFields() []string {
+	return []string{
+		"redirect_uris", "client_name", "grant_types", "response_types",
+		"token_endpoint_auth_method", "scope",
+	}
+}
+
+func ignoredRegistrationFields() []string {
+	return []string{
+		"client_uri", "logo_uri", "tos_uri", "policy_uri", "contacts",
+		"software_id", "software_version", "application_type",
+	}
 }

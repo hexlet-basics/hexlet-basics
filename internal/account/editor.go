@@ -43,7 +43,7 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 		SetNillableAdmin(fields.Admin).
 		Save(ctx)
 
-	return u, domain.FromStore(err, userUniques...)
+	return u, domain.FromStore(err, userUniques()...)
 }
 
 // Update replaces a user's editable fields. A missing id is domain.ErrNotFound;
@@ -76,7 +76,7 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 
 	u, err := update.Save(ctx)
 
-	return u, domain.FromStore(err, userUniques...)
+	return u, domain.FromStore(err, userUniques()...)
 }
 
 // Delete removes a user. A missing id is domain.ErrNotFound; the last

@@ -91,7 +91,7 @@ func TestAPublicClientWithAnHTTPSRedirectRegistersAndCompletesTheFlow(t *testing
 	assert.Equal(t, []string{"https://app.example.com/callback"}, got.RedirectURIs)
 	assert.ElementsMatch(t, []string{"catalog:read", "offline_access"}, strings.Fields(got.Scope))
 
-	f := o.StartWith(alice, testsupport.StartOptions{
+	f := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"catalog:read"},
 	})
 	require.Equal(t, http.StatusFound, f.Authorize.StatusCode)
@@ -132,7 +132,7 @@ func TestARegisteredClientCannotRequestAScopeItDidNotRegisterFor(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	got := decodeJSON[registered](t, o.Register(request(func(m map[string]any) { m["scope"] = "catalog:read" })))
 
-	f := o.StartWith(alice, testsupport.StartOptions{
+	f := o.StartWith(alice(), testsupport.StartOptions{
 		ClientID: got.ClientID, RedirectURIs: got.RedirectURIs, Scopes: []string{"admin"},
 	})
 

@@ -31,7 +31,7 @@ import (
 //
 // Each operation still passes the one checkpoint when it is called (see
 // callAdminTool); the list says what may be offered, not what may be done.
-var adminOperations = []string{
+var adminOperations = []string{ //nolint:gochecknoglobals // a test seam: AllowForTest swaps the list to exercise the pipeline with an operation the registry does not offer
 	"adminArchiveBanner",
 	"adminArchiveBlogPost",
 	"adminArchiveCourseLandingPage",
@@ -128,15 +128,19 @@ var adminOperations = []string{
 // A test requires every admin operation of the contract to be in
 // adminOperations or here, so an operation added to the contract later cannot
 // be forgotten: it is either offered to agents or excluded on the record.
-var excludedAdminOperations = map[string]string{
-	"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
+func excludedAdminOperations() map[string]string {
+	return map[string]string{
+		"adminGetMyCapabilities": "tells the admin menu which entries to show for the signed-in user; an agent learns what it may do from the tools' answers (a refusal names the status), and the call needs no Permission, so it is not an operation an agent acts through",
+	}
 }
 
 // adminLocales are the locales staff work in. The tool's locale argument is
 // validated against them, because the website's locale matcher silently falls
 // back to English for a language it does not know, which would judge a call in a
 // locale the caller never named.
-var adminLocales = []string{"en", "ru"}
+func adminLocales() []string {
+	return []string{"en", "ru"}
+}
 
 const (
 	// localeArgument and bodyArgument are reserved names of a tool's input. The
@@ -223,7 +227,7 @@ func adminTool(op *operation) (*mcp.Tool, error) {
 	properties := map[string]any{
 		localeArgument: map[string]any{
 			"type":        "string",
-			"enum":        adminLocales,
+			"enum":        adminLocales(),
 			"description": "The locale this call is made in: the one your Staff Role must allow. Required, never inferred.",
 		},
 	}
@@ -463,8 +467,8 @@ func localeOf(args map[string]json.RawMessage) (string, string) {
 	}
 
 	var locale string
-	if err := json.Unmarshal(raw, &locale); err != nil || !slices.Contains(adminLocales, locale) {
-		return "", "the locale argument must be one of " + strings.Join(adminLocales, ", ")
+	if err := json.Unmarshal(raw, &locale); err != nil || !slices.Contains(adminLocales(), locale) {
+		return "", "the locale argument must be one of " + strings.Join(adminLocales(), ", ")
 	}
 
 	return locale, ""

@@ -11,9 +11,9 @@ import (
 
 func TestTokenOfARemovedAccountIsNotSignedIn(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, bob)
-	o.DB.User.UpdateOneID(bob).SetState("removed").ExecX(t.Context())
+	o.Grant(editor(), "mcp.read")
+	session, _ := admin(t, o, bob())
+	o.DB.User.UpdateOneID(bob()).SetState("removed").ExecX(t.Context())
 
 	result := call(t, session, "adminListBanners", map[string]any{"locale": "en"})
 

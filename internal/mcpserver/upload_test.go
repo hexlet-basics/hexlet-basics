@@ -18,13 +18,15 @@ import (
 )
 
 // tinyPNG is a minimal (1x1) PNG, real image bytes for the store's sniffing.
-var tinyPNG = []byte{
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-	0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-	0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
-	0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
-	0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
-	0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+func tinyPNG() []byte {
+	return []byte{
+		0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+		0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+		0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
+		0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
+		0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
+		0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+	}
 }
 
 func upload(fileName string, content []byte) map[string]any {
@@ -42,17 +44,17 @@ func attachments(t *testing.T, o *testsupport.OAuth) int {
 
 func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.write")
-	session, token := admin(t, o, bob)
+	o.Grant(editor(), "mcp.write")
+	session, token := admin(t, o, bob())
 	before := attachments(t, o)
 
-	result := call(t, session, "adminUploadAttachment", upload("cover.png", tinyPNG))
+	result := call(t, session, "adminUploadAttachment", upload("cover.png", tinyPNG()))
 
 	require.False(t, result.IsError, "%+v", result.Content)
 	out := result.StructuredContent.(map[string]any)
 	assert.Equal(t, "cover.png", out["filename"])
 	assert.Equal(t, "image/png", out["contentType"])
-	assert.EqualValues(t, len(tinyPNG), out["byteSize"])
+	assert.EqualValues(t, len(tinyPNG()), out["byteSize"])
 	assert.NotEmpty(t, out["url"])
 	assert.Equal(t, before+1, attachments(t, o))
 
@@ -60,7 +62,7 @@ func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) 
 	require.Len(t, records, 1)
 	assert.Equal(t, audit.OutcomeSucceeded, audit.Outcome(records[0].Outcome))
 	assert.Equal(t, "mcp", records[0].Channel)
-	assert.Equal(t, bob, *records[0].ActorUserID)
+	assert.Equal(t, bob(), *records[0].ActorUserID)
 	assert.Equal(t, token.ID, *records[0].TokenID)
 	assert.Equal(t, token.ConnectedAppID, *records[0].ConnectedAppID)
 	assert.Equal(t, strconv.Itoa(int(out["id"].(float64))), *records[0].EntityID)
@@ -68,8 +70,8 @@ func TestUploadToolStoresTheAttachmentAndRecordsItOnTheMCPChannel(t *testing.T) 
 
 func TestUploadToolOfferedWithTheContractsPartAndLimits(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.write")
+	session, _ := admin(t, o, bob())
 	tools, err := session.ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
@@ -92,20 +94,20 @@ func TestUploadIsRefusedAndRecordedAsForbiddenWithoutWhatTheWebsiteNeeds(t *test
 	cases := map[string]func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession{
 		"no mcp.write": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 			t.Helper()
-			o.Grant(editor, "mcp.read")
-			session, _ := admin(t, o, bob)
+			o.Grant(editor(), "mcp.read")
+			session, _ := admin(t, o, bob())
 
 			return session
 		},
 		"no admin scope": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 			t.Helper()
-			o.Grant(editor, "mcp.write")
+			o.Grant(editor(), "mcp.write")
 
-			return connect(t, o, bob, oauthserver.ScopeCatalogRead)
+			return connect(t, o, bob(), oauthserver.ScopeCatalogRead)
 		},
 		"not staff": func(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 			t.Helper()
-			session, _ := admin(t, o, alice)
+			session, _ := admin(t, o, alice())
 
 			return session
 		},
@@ -116,7 +118,7 @@ func TestUploadIsRefusedAndRecordedAsForbiddenWithoutWhatTheWebsiteNeeds(t *test
 			session := setup(t, o)
 			before := attachments(t, o)
 
-			assertRefused(t, call(t, session, "adminUploadAttachment", upload("cover.png", tinyPNG)))
+			assertRefused(t, call(t, session, "adminUploadAttachment", upload("cover.png", tinyPNG())))
 
 			assert.Equal(t, before, attachments(t, o), "nothing is stored")
 			records := o.Records("AdminUploadAttachment")
@@ -129,11 +131,11 @@ func TestUploadIsRefusedAndRecordedAsForbiddenWithoutWhatTheWebsiteNeeds(t *test
 
 func TestUploadOfTheLargestAllowedFileFitsAndOneByteMoreIsRefusedBeforeDecoding(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.write")
+	session, _ := admin(t, o, bob())
 	before := attachments(t, o)
 
-	largest := append(append([]byte{}, tinyPNG...), make([]byte, int(assetstore.MaxUploadBytes)-len(tinyPNG))...)
+	largest := append(append([]byte{}, tinyPNG()...), make([]byte, int(assetstore.MaxUploadBytes)-len(tinyPNG()))...)
 	ok := call(t, session, "adminUploadAttachment", upload("big.png", largest))
 	require.False(t, ok.IsError, "%+v", ok.Content)
 	assert.Equal(t, before+1, attachments(t, o))
@@ -147,8 +149,8 @@ func TestUploadOfTheLargestAllowedFileFitsAndOneByteMoreIsRefusedBeforeDecoding(
 
 func TestUploadRejectsWhatTheWebsiteRejects(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	o.Grant(editor, "mcp.write")
-	session, _ := admin(t, o, bob)
+	o.Grant(editor(), "mcp.write")
+	session, _ := admin(t, o, bob())
 	before := attachments(t, o)
 
 	t.Run("not an image", func(t *testing.T) {
@@ -157,14 +159,14 @@ func TestUploadRejectsWhatTheWebsiteRejects(t *testing.T) {
 		assert.Contains(t, textOf(t, result), "HTTP 422")
 	})
 	t.Run("invalid base64", func(t *testing.T) {
-		args := upload("cover.png", tinyPNG)
+		args := upload("cover.png", tinyPNG())
 		args["body"].(map[string]any)["contentBase64"] = "not*base64!"
 		result := call(t, session, "adminUploadAttachment", args)
 		require.True(t, result.IsError)
 		assert.Contains(t, textOf(t, result), "not valid base64")
 	})
 	t.Run("missing file name", func(t *testing.T) {
-		result := call(t, session, "adminUploadAttachment", upload("", tinyPNG))
+		result := call(t, session, "adminUploadAttachment", upload("", tinyPNG()))
 		require.True(t, result.IsError)
 		assert.Contains(t, textOf(t, result), "fileName")
 	})
@@ -173,11 +175,11 @@ func TestUploadRejectsWhatTheWebsiteRejects(t *testing.T) {
 
 func TestUploadSpendsTheWriteBudget(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{User: mcpserver.Rates{Write: 1}}))
-	o.Grant(editor, "mcp.write")
-	session := connect(t, o, bob, oauthserver.ScopeAdmin)
+	o.Grant(editor(), "mcp.write")
+	session := connect(t, o, bob(), oauthserver.ScopeAdmin)
 
-	require.False(t, callTool(t, session, "adminUploadAttachment", upload("a.png", tinyPNG)).IsError)
-	rejected(t, callTool(t, session, "adminUploadAttachment", upload("b.png", tinyPNG)))
+	require.False(t, callTool(t, session, "adminUploadAttachment", upload("a.png", tinyPNG())).IsError)
+	rejected(t, callTool(t, session, "adminUploadAttachment", upload("b.png", tinyPNG())))
 	assert.Len(t, o.Records("AdminUploadAttachment"), 1)
 }
 

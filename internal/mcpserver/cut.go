@@ -35,7 +35,9 @@ const (
 // property and its type only: the same paragraph on each of 90 tools was a
 // tenth of the tool list, so what the hint contains is told once, in the
 // server's instructions, and every schema points there (#878).
-var truncationSchema = map[string]any{"type": "object"}
+func truncationSchema() map[string]any {
+	return map[string]any{"type": "object"}
+}
 
 // withTruncation adds the optional `truncation` property to an output schema.
 // The contract's own schemas are closed objects, and a result that carries a
@@ -49,7 +51,7 @@ func withTruncation(schema map[string]any) map[string]any {
 		maps.Copy(properties, existing)
 	}
 
-	properties[truncationKey] = truncationSchema
+	properties[truncationKey] = truncationSchema()
 	out["properties"] = properties
 
 	return out

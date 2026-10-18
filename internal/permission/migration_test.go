@@ -47,62 +47,64 @@ const legacyMatrixTable = `CREATE TABLE IF NOT EXISTS "staff_member_role_permiss
   PRIMARY KEY ("id")
 )`
 
-var cutovers = []cutover{
-	{
-		migration: "20261017210200_staff_role_grants.sql",
-		resources: map[string]opened{
-			"blog_posts": {
-				index:   []string{"AdminListBlogPosts", "AdminGetBlogPost"},
-				create:  []string{"AdminCreateBlogPost"},
-				update:  []string{"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses"},
-				destroy: []string{"AdminDeleteBlogPost"},
+func cutovers() []cutover {
+	return []cutover{
+		{
+			migration: "20261017210200_staff_role_grants.sql",
+			resources: map[string]opened{
+				"blog_posts": {
+					index:   []string{"AdminListBlogPosts", "AdminGetBlogPost"},
+					create:  []string{"AdminCreateBlogPost"},
+					update:  []string{"AdminUpdateBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses"},
+					destroy: []string{"AdminDeleteBlogPost"},
+				},
 			},
 		},
-	},
-	{
-		migration: "20261017210300_banners_reviews_leads_messages_into_grants.sql",
-		resources: map[string]opened{
-			"banners": {
-				index:   []string{"AdminListBanners", "AdminGetBanner"},
-				create:  []string{"AdminCreateBanner"},
-				update:  []string{"AdminUpdateBanner"},
-				destroy: []string{"AdminDeleteBanner"},
-			},
-			"reviews": {
-				index:   []string{"AdminListReviews", "AdminGetReview"},
-				create:  []string{"AdminCreateReview"},
-				update:  []string{"AdminUpdateReview"},
-				destroy: []string{"AdminDeleteReview"},
-			},
-			"leads":    {index: []string{"AdminListLeads"}},
-			"messages": {index: []string{"AdminListMessages"}},
-		},
-	},
-	{
-		migration: "20261017210400_course_resources_into_grants.sql",
-		resources: map[string]opened{
-			"language_categories": {
-				index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
-				create:  []string{"AdminCreateCourseCategory"},
-				update:  []string{"AdminUpdateCourseCategory"},
-				destroy: []string{"AdminDeleteCourseCategory"},
-			},
-			"languages": {
-				index:  []string{"AdminListCourses", "AdminGetCourse"},
-				create: []string{"AdminCreateCourse"},
-				update: []string{"AdminUpdateCourse"},
-			},
-			"language_lessons":        {index: []string{"AdminListCourseLessons"}},
-			"language_lesson_reviews": {index: []string{"AdminListCourseLessonReviews"}},
-			"language_lesson_members": {index: []string{"AdminListLessonProgress"}},
-			"language_landing_pages": {
-				index:   []string{"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
-				create:  []string{"AdminCreateCourseLandingPage"},
-				update:  []string{"AdminUpdateCourseLandingPage"},
-				destroy: []string{"AdminDeleteCourseLandingPage"},
+		{
+			migration: "20261017210300_banners_reviews_leads_messages_into_grants.sql",
+			resources: map[string]opened{
+				"banners": {
+					index:   []string{"AdminListBanners", "AdminGetBanner"},
+					create:  []string{"AdminCreateBanner"},
+					update:  []string{"AdminUpdateBanner"},
+					destroy: []string{"AdminDeleteBanner"},
+				},
+				"reviews": {
+					index:   []string{"AdminListReviews", "AdminGetReview"},
+					create:  []string{"AdminCreateReview"},
+					update:  []string{"AdminUpdateReview"},
+					destroy: []string{"AdminDeleteReview"},
+				},
+				"leads":    {index: []string{"AdminListLeads"}},
+				"messages": {index: []string{"AdminListMessages"}},
 			},
 		},
-	},
+		{
+			migration: "20261017210400_course_resources_into_grants.sql",
+			resources: map[string]opened{
+				"language_categories": {
+					index:   []string{"AdminListCourseCategories", "AdminGetCourseCategory"},
+					create:  []string{"AdminCreateCourseCategory"},
+					update:  []string{"AdminUpdateCourseCategory"},
+					destroy: []string{"AdminDeleteCourseCategory"},
+				},
+				"languages": {
+					index:  []string{"AdminListCourses", "AdminGetCourse"},
+					create: []string{"AdminCreateCourse"},
+					update: []string{"AdminUpdateCourse"},
+				},
+				"language_lessons":        {index: []string{"AdminListCourseLessons"}},
+				"language_lesson_reviews": {index: []string{"AdminListCourseLessonReviews"}},
+				"language_lesson_members": {index: []string{"AdminListLessonProgress"}},
+				"language_landing_pages": {
+					index:   []string{"AdminListCourseLandingPages", "AdminGetCourseLandingPage"},
+					create:  []string{"AdminCreateCourseLandingPage"},
+					update:  []string{"AdminUpdateCourseLandingPage"},
+					destroy: []string{"AdminDeleteCourseLandingPage"},
+				},
+			},
+		},
+	}
 }
 
 // TestMigrationsCarryEveryMatrixRightIntoGrants runs each cutover migration over
@@ -110,7 +112,7 @@ var cutovers = []cutover{
 // asks the policy about each operation the bits used to open: nobody gains or
 // loses an operation.
 func TestMigrationsCarryEveryMatrixRightIntoGrants(t *testing.T) {
-	for _, c := range cutovers {
+	for _, c := range cutovers() {
 		for resource, ops := range c.resources {
 			t.Run(c.migration+"/"+resource, func(t *testing.T) {
 				assertMigrationKeepsAccess(t, c.migration, resource, ops)
@@ -146,7 +148,7 @@ func assertMigrationKeepsAccess(t *testing.T, file, resource string, ops opened)
 	// operation; the harness's transaction is the one the migration runs in.
 	h := testsupport.NewHarness(t)
 	db, tx := h.DB, h.Tx
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	// Start from the old shape: no grants, and the matrix table as the baseline
 	// made it. The table is long gone from the migrated schema, so the test
@@ -202,7 +204,7 @@ func TestReviewMigrationKeepsEveryRolesAccess(t *testing.T) {
 
 	h := testsupport.NewHarness(t)
 	db, tx := h.DB, h.Tx
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 	db.StaffRoleGrant.Delete().ExecX(t.Context())
 
@@ -263,7 +265,7 @@ func TestBlogPostStateMigrationGrantsTheTransitionsToEveryUpdater(t *testing.T) 
 	// operations, so the scenario holds exactly the grants the API can give.
 	h := testsupport.NewHarness(t)
 	db := h.DB
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
@@ -341,7 +343,7 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 			// operations, so the scenario holds exactly the grants the API can give.
 			h := testsupport.NewHarness(t)
 			db := h.DB
-			editor := db.User.GetX(t.Context(), editorID)
+			editor := db.User.GetX(t.Context(), editorID())
 			staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 			const holdsUpdate, holdsPublish, holdsRead = 1, 2, 4
@@ -417,7 +419,7 @@ func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
 	// operations, so the scenario holds exactly the grants the API can give.
 	h := testsupport.NewHarness(t)
 	db := h.DB
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	const holdsUpdate, holdsCompleted, holdsRead = 1, 2, 4

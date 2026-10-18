@@ -19,7 +19,9 @@ import (
 // Alice (user_admin_learner) is enrolled and has finished hello-world; Bob (user_staff_editor) has a
 // finished Enrollment and has only started variables; Carol (user_with_password) has nothing.
 // carol is a fixture user.
-var carol = fixture.ID(fixture.UserWithPassword)
+func carol() int {
+	return fixture.ID(fixture.UserWithPassword)
+}
 
 func learnerSession(t *testing.T, o *testsupport.OAuth, userID int, scopes ...string) *mcp.ClientSession {
 	t.Helper()
@@ -50,7 +52,7 @@ func lessonStates(t *testing.T, course map[string]any) map[string]string {
 
 func TestLearnerToolsAreReadOnlyAndTakeNoParameterNamingAUser(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tools, err := learnerSession(t, o, alice).ListTools(t.Context(), nil)
+	tools, err := learnerSession(t, o, alice()).ListTools(t.Context(), nil)
 	require.NoError(t, err)
 
 	names := map[string][]string{}
@@ -78,9 +80,9 @@ func TestLearnerToolsAreReadOnlyAndTakeNoParameterNamingAUser(t *testing.T) {
 func TestDashboardToolAnswersWithTheTokensUsersEnrollments(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
-	aliceBoard := structured(t, callTool(t, learnerSession(t, o, alice), "getMyDashboard", nil))
-	bobBoard := structured(t, callTool(t, learnerSession(t, o, bob), "getMyDashboard", nil))
-	carolBoard := structured(t, callTool(t, learnerSession(t, o, carol), "getMyDashboard", nil))
+	aliceBoard := structured(t, callTool(t, learnerSession(t, o, alice()), "getMyDashboard", nil))
+	bobBoard := structured(t, callTool(t, learnerSession(t, o, bob()), "getMyDashboard", nil))
+	carolBoard := structured(t, callTool(t, learnerSession(t, o, carol()), "getMyDashboard", nil))
 
 	assert.Len(t, aliceBoard["started"], 1)
 	assert.Empty(t, aliceBoard["finished"])
@@ -96,9 +98,9 @@ func TestCourseProgressToolTellsFinishedStartedAndNotStarted(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	args := map[string]any{"courseSlug": jsCourse}
 
-	a := structured(t, callTool(t, learnerSession(t, o, alice), "getMyCourseProgress", args))
-	b := structured(t, callTool(t, learnerSession(t, o, bob), "getMyCourseProgress", args))
-	c := structured(t, callTool(t, learnerSession(t, o, carol), "getMyCourseProgress", args))
+	a := structured(t, callTool(t, learnerSession(t, o, alice()), "getMyCourseProgress", args))
+	b := structured(t, callTool(t, learnerSession(t, o, bob()), "getMyCourseProgress", args))
+	c := structured(t, callTool(t, learnerSession(t, o, carol()), "getMyCourseProgress", args))
 
 	assert.Equal(t, "started", a["state"])
 	assert.InDelta(t, float64(33), a["completion"], 0.001)
@@ -124,21 +126,21 @@ func TestLessonProgressToolNeverShowsAnotherUsersLesson(t *testing.T) {
 		return structured(t, callTool(t, learnerSession(t, o, userID), "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": slug}))
 	}
 
-	assert.Equal(t, "started", lesson(bob, "variables")["state"])
-	assert.Equal(t, false, lesson(bob, "variables")["passedCheck"])
-	assert.Equal(t, "not_started", lesson(alice, "variables")["state"], "bob's lesson is not alice's")
-	assert.Equal(t, "finished", lesson(alice, "hello-world")["state"])
-	assert.Equal(t, true, lesson(alice, "hello-world")["passedCheck"])
-	assert.Equal(t, "not_started", lesson(bob, "hello-world")["state"])
+	assert.Equal(t, "started", lesson(bob(), "variables")["state"])
+	assert.Equal(t, false, lesson(bob(), "variables")["passedCheck"])
+	assert.Equal(t, "not_started", lesson(alice(), "variables")["state"], "bob's lesson is not alice's")
+	assert.Equal(t, "finished", lesson(alice(), "hello-world")["state"])
+	assert.Equal(t, true, lesson(alice(), "hello-world")["passedCheck"])
+	assert.Equal(t, "not_started", lesson(bob(), "hello-world")["state"])
 }
 
 func TestLearnerToolsRefuseAnArgumentThatNamesAUser(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice)
+	s := learnerSession(t, o, alice())
 
 	for _, args := range []map[string]any{
-		{"courseSlug": jsCourse, "userId": bob},
-		{"courseSlug": jsCourse, "user_id": bob},
+		{"courseSlug": jsCourse, "userId": bob()},
+		{"courseSlug": jsCourse, "user_id": bob()},
 		{"courseSlug": jsCourse, "email": "bob@example.com"},
 	} {
 		result := callTool(t, s, "getMyCourseProgress", args)
@@ -146,13 +148,13 @@ func TestLearnerToolsRefuseAnArgumentThatNamesAUser(t *testing.T) {
 		assert.Nil(t, result.StructuredContent)
 	}
 
-	assert.True(t, callTool(t, s, "getMyDashboard", map[string]any{"userId": bob}).IsError)
-	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": "variables", "userId": bob}).IsError)
+	assert.True(t, callTool(t, s, "getMyDashboard", map[string]any{"userId": bob()}).IsError)
+	assert.True(t, callTool(t, s, "getMyLessonProgress", map[string]any{"courseSlug": jsCourse, "lessonSlug": "variables", "userId": bob()}).IsError)
 }
 
 func TestLearnerToolsReportWhatIsMissing(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice)
+	s := learnerSession(t, o, alice())
 
 	for name, args := range map[string]map[string]any{
 		"getMyCourseProgress": {"courseSlug": "no-such-course"},
@@ -168,7 +170,7 @@ func TestLearnerToolsReportWhatIsMissing(t *testing.T) {
 
 func TestLearnerToolsRefuseATokenWithoutTheProgressReadScope(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice, oauthserver.ScopeCatalogRead)
+	s := learnerSession(t, o, alice(), oauthserver.ScopeCatalogRead)
 
 	for name, args := range map[string]map[string]any{
 		"getMyDashboard":      nil,
@@ -183,7 +185,9 @@ func TestLearnerToolsRefuseATokenWithoutTheProgressReadScope(t *testing.T) {
 
 // forbidden are the names of what a learner's assistant must never be offered:
 // the solution code, the assistant chat, the email and the rest of the profile.
-var forbidden = []string{"code", "solution", "message", "chat", "email", "password", "firstname", "lastname", "phone"}
+func forbidden() []string {
+	return []string{"code", "solution", "message", "chat", "email", "password", "firstname", "lastname", "phone"}
+}
 
 func keys(node any, into *[]string) {
 	switch n := node.(type) {
@@ -201,7 +205,7 @@ func keys(node any, into *[]string) {
 
 func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	s := learnerSession(t, o, alice)
+	s := learnerSession(t, o, alice())
 
 	tools, err := s.ListTools(t.Context(), nil)
 	require.NoError(t, err)
@@ -220,7 +224,7 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 		keys(tool.OutputSchema, &names)
 
 		for _, name := range names {
-			for _, bad := range forbidden {
+			for _, bad := range forbidden() {
 				assert.NotContains(t, strings.ToLower(name), bad, "%s schema property %s", tool.Name, name)
 			}
 		}
@@ -239,7 +243,7 @@ func TestLearnerSchemasAndResultsCarryNoSolutionChatOrProfileData(t *testing.T) 
 		keys(result.StructuredContent, &names)
 
 		for _, n := range names {
-			for _, bad := range forbidden {
+			for _, bad := range forbidden() {
 				assert.NotContains(t, strings.ToLower(n), bad, "%s result field %s", name, n)
 			}
 		}
@@ -256,7 +260,7 @@ func TestLearnerToolsAreLimitedAsPersonalDataReads(t *testing.T) {
 	o := testsupport.NewOAuth(t, testsupport.WithMCPLimits(mcpserver.Limits{
 		User: mcpserver.Rates{Personal: 1, Catalogue: 5},
 	}))
-	session := o.MCPClient(o.Connect(alice, oauthserver.ScopeProgressRead, oauthserver.ScopeCatalogRead).AccessToken, russian)
+	session := o.MCPClient(o.Connect(alice(), oauthserver.ScopeProgressRead, oauthserver.ScopeCatalogRead).AccessToken, russian)
 
 	structured(t, callTool(t, session, "getMyDashboard", nil))
 	limited := callTool(t, session, "getMyCourseProgress", map[string]any{"courseSlug": jsCourse})

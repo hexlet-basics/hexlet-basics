@@ -125,7 +125,7 @@ func TestAnUploadIsRecordedWithItsAttachment(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
 	_, err := h.Client.AdminUploadAttachment(t.Context(), &api.AttachmentUploadFormMultipart{
-		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG), Size: int64(len(tinyPNG))},
+		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG()), Size: int64(len(tinyPNG()))},
 	})
 	require.NoError(t, err)
 

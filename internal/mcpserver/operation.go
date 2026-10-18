@@ -62,7 +62,7 @@ type contractDoc struct {
 }
 
 // contract is parsed once: every tool of the registry reads it.
-var contract = sync.OnceValues(func() (*contractDoc, error) {
+var contract = sync.OnceValues(func() (*contractDoc, error) { //nolint:gochecknoglobals // memoized: building the tool registry reads it once per tool
 	var doc contractDoc
 	if err := yaml.Unmarshal(apispec.OpenAPI, &doc); err != nil {
 		return nil, errs.Wrapf(err, "parse OpenAPI")

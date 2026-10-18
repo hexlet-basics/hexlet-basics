@@ -101,7 +101,7 @@ func ContractAdminOperations(t *testing.T) []string {
 func AllowlistedAdminOperations() []string { return slices.Clone(adminOperations) }
 
 // ExcludedAdminOperations are the operationIds deliberately not tools.
-func ExcludedAdminOperations() map[string]string { return maps.Clone(excludedAdminOperations) }
+func ExcludedAdminOperations() map[string]string { return maps.Clone(excludedAdminOperations()) }
 
 // AdminToolsFromTheContract builds the tool of every allowlisted operation, the
 // way the registry does at start-up.

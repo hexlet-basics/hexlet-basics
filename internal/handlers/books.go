@@ -15,10 +15,12 @@ const bookPath = "/ru/book"
 // bookDelivery is how legacy's send_file handed the PDF over: shown in the
 // browser, saved under a readable name. The URL only has to outlive the click
 // that follows the redirect.
-var bookDelivery = assetstore.Delivery{
-	ContentType:        "application/pdf",
-	ContentDisposition: `inline; filename="profession-developer-hexlet-book.pdf"`,
-	Expiry:             time.Hour,
+func bookDelivery() assetstore.Delivery {
+	return assetstore.Delivery{
+		ContentType:        "application/pdf",
+		ContentDisposition: `inline; filename="profession-developer-hexlet-book.pdf"`,
+		Expiry:             time.Hour,
+	}
 }
 
 // GetBook answers the book page (legacy `books#show`): whether the visitor has
@@ -71,7 +73,7 @@ func (s *Server) DownloadBook(ctx context.Context) (*api.DownloadBookFound, erro
 		return &api.DownloadBookFound{Location: s.settings.SiteURL + bookPath}, nil
 	}
 
-	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery)
+	location, err := s.assets.DownloadURL(ctx, s.settings.BookBlobKey, bookDelivery())
 	if err != nil {
 		return nil, err
 	}

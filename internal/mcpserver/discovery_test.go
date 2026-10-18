@@ -19,14 +19,16 @@ import (
 
 // allCapabilities is every capability Permission, for a role that is to see
 // every admin tool.
-var allCapabilities = []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"}
+func allCapabilities() []string {
+	return []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"}
+}
 
 // everything connects bob, whose role is granted every capability, with every
 // Scope: the caller that sees the whole tool list.
 func everything(t *testing.T, o *testsupport.OAuth) *mcp.ClientSession {
 	t.Helper()
-	o.Grant(editor, allCapabilities...)
-	tokens := o.Connect(bob, oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin)
+	o.Grant(editor(), allCapabilities()...)
+	tokens := o.Connect(bob(), oauthserver.ScopeCatalogRead, oauthserver.ScopeProgressRead, oauthserver.ScopeAdmin)
 
 	return o.MCPClient(tokens.AccessToken)
 }
@@ -162,7 +164,7 @@ func TestAConnectionIsOnlyShownWhatItsGrantsAllow(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 
 	// Without the admin Scope: the catalogue, the lookup, and no admin tool.
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 	shown := names(listTools(t, catalogueOnly).Tools)
 	assert.Contains(t, shown, "listCourses")
 	assert.Contains(t, shown, "findTools")
@@ -174,13 +176,13 @@ func TestAConnectionIsOnlyShownWhatItsGrantsAllow(t *testing.T) {
 
 	// With the admin Scope but a role that holds no capability: nothing to offer
 	// that the door would not close at once.
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
 	shown = names(listTools(t, adminScope).Tools)
 	assert.NotContains(t, shown, "adminListBanners", "bob's role holds no mcp.read")
 
 	// mcp.read opens the reads; mcp.write the writes; mcp.manage the access
 	// operations; audit.read the audit trail.
-	o.Grant(editor, "mcp.read")
+	o.Grant(editor(), "mcp.read")
 
 	shown = names(listTools(t, adminScope).Tools)
 	assert.Contains(t, shown, "adminListBanners")
@@ -188,16 +190,16 @@ func TestAConnectionIsOnlyShownWhatItsGrantsAllow(t *testing.T) {
 	assert.NotContains(t, shown, "adminListUsers")
 	assert.NotContains(t, shown, "adminListAuditRecords")
 
-	o.Grant(editor, "mcp.write")
+	o.Grant(editor(), "mcp.write")
 	assert.Contains(t, names(listTools(t, adminScope).Tools), "adminUpdateBanner")
-	o.Grant(editor, "mcp.manage", "audit.read")
+	o.Grant(editor(), "mcp.manage", "audit.read")
 
 	shown = names(listTools(t, adminScope).Tools)
 	assert.Contains(t, shown, "adminListUsers")
 	assert.Contains(t, shown, "adminListAuditRecords")
 
 	// Taking a grant away is seen by the next list.
-	o.RevokeGrant(editor, "mcp.write")
+	o.RevokeGrant(editor(), "mcp.write")
 	assert.NotContains(t, names(listTools(t, adminScope).Tools), "adminUpdateBanner")
 }
 
@@ -207,14 +209,14 @@ func TestHidingAToolIsNotAuthorizingTheOthers(t *testing.T) {
 
 	// bob holds no mcp.write, and a token without the admin Scope would not be
 	// offered adminCreateBanner either. Both call it by name anyway.
-	o.Grant(editor, "mcp.read")
-	adminScope := o.MCPClient(o.Connect(bob, oauthserver.ScopeAdmin).AccessToken)
+	o.Grant(editor(), "mcp.read")
+	adminScope := o.MCPClient(o.Connect(bob(), oauthserver.ScopeAdmin).AccessToken)
 	require.NotContains(t, names(listTools(t, adminScope).Tools), "adminCreateBanner")
 	assertRefused(t, call(t, adminScope, "adminCreateBanner", map[string]any{
 		"locale": "en", "body": bannerInput("created by name"),
 	}))
 
-	catalogueOnly := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	catalogueOnly := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 	assertRefused(t, call(t, catalogueOnly, "adminListBanners", map[string]any{"locale": "en"}))
 
 	assert.Equal(t, before, o.DB.Banner.Query().CountX(t.Context()), "nothing was created")
@@ -277,7 +279,7 @@ func TestFindToolsLooksToolsUpAtEachLevelOfDetail(t *testing.T) {
 // findTools shows a caller only the tools it may use, as tools/list does.
 func TestFindToolsDoesNotNameWhatTheCallerIsNotOffered(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	session := o.MCPClient(o.Connect(bob, oauthserver.ScopeCatalogRead).AccessToken)
+	session := o.MCPClient(o.Connect(bob(), oauthserver.ScopeCatalogRead).AccessToken)
 
 	total, rows := findTools(t, session, map[string]any{"query": "banner"})
 	assert.Zero(t, total)

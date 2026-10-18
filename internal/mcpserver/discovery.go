@@ -184,26 +184,28 @@ const (
 
 // findToolsOutput is the advertised result: small on purpose, the detail it
 // carries is the caller's to ask for.
-var findToolsOutput = withTruncation(map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		"total": map[string]any{"type": "integer"},
-		"tools": map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type":     "object",
-				"required": []string{"name"},
-				"properties": map[string]any{
-					"name":        map[string]any{"type": "string"},
-					"description": map[string]any{"type": "string"},
-					"needs":       map[string]any{"type": "object"},
-					"inputSchema": map[string]any{"type": "object"},
+func findToolsOutput() map[string]any {
+	return withTruncation(map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"total": map[string]any{"type": "integer"},
+			"tools": map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type":     "object",
+					"required": []string{"name"},
+					"properties": map[string]any{
+						"name":        map[string]any{"type": "string"},
+						"description": map[string]any{"type": "string"},
+						"needs":       map[string]any{"type": "object"},
+						"inputSchema": map[string]any{"type": "object"},
+					},
 				},
 			},
 		},
-	},
-	"required": []string{"total", "tools"},
-})
+		"required": []string{"total", "tools"},
+	})
+}
 
 // addFindTools registers the discovery tool. It only reads the registry: it
 // holds no handler of any other tool, so there is nothing in it that could run
@@ -221,7 +223,7 @@ func (s *Server) addFindTools(server *mcp.Server) {
 		Name:         findToolsName,
 		Description:  "Find tools by a word, with what each needs. Looks up only; call a tool by its own name.",
 		InputSchema:  input,
-		OutputSchema: findToolsOutput,
+		OutputSchema: findToolsOutput(),
 		Annotations:  hints(true, false, true),
 	}
 	server.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {

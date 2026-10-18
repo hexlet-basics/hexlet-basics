@@ -31,7 +31,9 @@ type uploadBody struct {
 // maxUploadBase64 is the longest base64 text of a file the website accepts. It
 // is checked on the string, before it is decoded, so an oversized argument never
 // costs the memory of its decoded copy.
-var maxUploadBase64 = base64.StdEncoding.EncodedLen(int(assetstore.MaxUploadBytes))
+func maxUploadBase64() int {
+	return base64.StdEncoding.EncodedLen(int(assetstore.MaxUploadBytes))
+}
 
 // requestBodyLimit is how large a `/mcp` request may be: the SDK's 4 MiB
 // default, raised for the upload tool, whose base64 argument for the largest
@@ -45,7 +47,7 @@ func requestBodyLimit(hasUpload bool) int64 {
 		return sdkDefault
 	}
 
-	return int64(maxUploadBase64) + 1<<20
+	return int64(maxUploadBase64()) + 1<<20
 }
 
 // uploadSchema describes the `body` argument of a multipart tool for the agent.
@@ -58,7 +60,7 @@ func uploadSchema(file *multipartFile) map[string]any {
 		"properties": map[string]any{
 			"fileName":      map[string]any{"type": "string", "minLength": 1, "description": "The file's name, with its extension."},
 			"contentType":   map[string]any{"type": "string", "description": "Optional MIME type of the file. Advisory: the stored type is derived from the bytes."},
-			"contentBase64": map[string]any{"type": "string", "minLength": 1, "maxLength": maxUploadBase64, "description": "The file's bytes, standard base64."},
+			"contentBase64": map[string]any{"type": "string", "minLength": 1, "maxLength": maxUploadBase64(), "description": "The file's bytes, standard base64."},
 		},
 	}
 }
@@ -88,7 +90,7 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 		return nil, "", "body.contentBase64 is required"
 	}
 
-	if len(in.ContentBase64) > maxUploadBase64 {
+	if len(in.ContentBase64) > maxUploadBase64() {
 		return nil, "", fmt.Sprintf("the file is too large: at most %d bytes (%d MiB) are accepted, as on the website", assetstore.MaxUploadBytes, assetstore.MaxUploadBytes/bytesPerMiB)
 	}
 

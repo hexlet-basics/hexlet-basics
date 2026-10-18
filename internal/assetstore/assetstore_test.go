@@ -27,8 +27,10 @@ var (
 	errSourceReadFailed       = errors.New("source read failed")
 )
 
-var pngHeader = []byte{
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+func pngHeader() []byte {
+	return []byte{
+		0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+	}
 }
 
 func newStore(t *testing.T) (*assetstore.Store, *ent.Client, *blob.Bucket) {
@@ -45,7 +47,7 @@ func TestPutAndOpen(t *testing.T) {
 	store, db, _ := newStore(t)
 	ctx := context.Background()
 
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	got, err := store.Put(ctx, assetstore.Upload{
 		Filename: "course-cover.anything",
@@ -76,19 +78,19 @@ func TestPutAndOpen(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, data, stored)
 
-	offset, err := reader.Seek(int64(len(pngHeader)), io.SeekStart)
+	offset, err := reader.Seek(int64(len(pngHeader())), io.SeekStart)
 	require.NoError(t, err)
-	assert.Equal(t, int64(len(pngHeader)), offset)
+	assert.Equal(t, int64(len(pngHeader())), offset)
 
 	storedAfterSeek, err := io.ReadAll(reader)
 	require.NoError(t, err)
-	assert.Equal(t, data[len(pngHeader):], storedAfterSeek)
+	assert.Equal(t, data[len(pngHeader()):], storedAfterSeek)
 }
 
 func TestPutAcceptsExactSizeLimit(t *testing.T) {
 	store, _, _ := newStore(t)
 	data := make([]byte, assetstore.MaxUploadBytes)
-	copy(data, pngHeader)
+	copy(data, pngHeader())
 
 	got, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "limit.png",
@@ -113,7 +115,7 @@ func TestPutRejectsUnsupportedContentWithoutWriting(t *testing.T) {
 func TestPutCleansUpOversizedBlob(t *testing.T) {
 	store, _, bucket := newStore(t)
 	data := make([]byte, assetstore.MaxUploadBytes+1)
-	copy(data, pngHeader)
+	copy(data, pngHeader())
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "large.png",
@@ -127,7 +129,7 @@ func TestPutCleansUpOversizedBlob(t *testing.T) {
 func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 	store, _, bucket := newStore(t)
 
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 1016)...)
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 1016)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
@@ -147,7 +149,7 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 		})
 	})
 
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "orphan.png",
@@ -263,7 +265,7 @@ func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 	store, db, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
 
-	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "x.png",

@@ -41,16 +41,18 @@ const suggestInstructions = `Ты — ассистент, который пом�
 
 // suggestSchema is the structured shape of the model's answer. The API demands
 // an object at the root, hence the wrapper around the id list.
-var suggestSchema = map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		"course_ids": map[string]any{
-			"type":  "array",
-			"items": map[string]any{"type": "integer"},
+func suggestSchema() map[string]any {
+	return map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"course_ids": map[string]any{
+				"type":  "array",
+				"items": map[string]any{"type": "integer"},
+			},
 		},
-	},
-	"required":             []string{"course_ids"},
-	"additionalProperties": false,
+		"required":             []string{"course_ids"},
+		"additionalProperties": false,
+	}
 }
 
 // suggestion is the decoded answer.
@@ -163,7 +165,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 		return err
 	}
 
-	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema)
+	answer, err := s.llm.CompleteJSON(ctx, suggestInstructions, prompt, "related_courses", suggestSchema())
 	if err != nil {
 		return oops.Wrapf(err, "suggest related courses for post %d", blogPostID)
 	}

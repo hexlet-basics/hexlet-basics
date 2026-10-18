@@ -21,13 +21,7 @@ import (
 // The fixtures seed user_staff_editor as an editor holding the blog_posts.read,
 // banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator
 // without a staff record, user_admin_staff one with it.
-var (
-	adminID  = fixture.ID(fixture.UserAdminLearner)
-	editorID = fixture.ID(fixture.UserStaffEditor)
-	// An administrator who is also staff, on the editor role: the harness user
-	// has no staff record, and a staff record cannot be made for oneself.
-	adminStaffID = fixture.ID(fixture.UserAdminStaff)
-)
+var ()
 
 func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 	db := testsupport.NewClient(t)
@@ -39,15 +33,15 @@ func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 		operation string
 		allowed   bool
 	}{
-		"administrator may do anything":       {adminID, "es", "AdminDeleteUser", true},
-		"granted bit":                         {editorID, "ru", "AdminListBlogPosts", true},
-		"another grant of the same resource":  {editorID, "en", "AdminCreateBanner", true},
-		"grant the role lacks, same resource": {editorID, "ru", "AdminDeleteBanner", false},
-		"bit the role lacks":                  {editorID, "ru", "AdminCreateBlogPost", false},
-		"resource the role has no row for":    {editorID, "ru", "AdminListReviews", false},
-		"locale outside the staff record":     {editorID, "es", "AdminListBlogPosts", false},
-		"operation the role does not hold":    {editorID, "ru", "AdminListUsers", false},
-		"upload needs only being staff":       {editorID, "ru", "AdminUploadAttachment", true},
+		"administrator may do anything":       {adminID(), "es", "AdminDeleteUser", true},
+		"granted bit":                         {editorID(), "ru", "AdminListBlogPosts", true},
+		"another grant of the same resource":  {editorID(), "en", "AdminCreateBanner", true},
+		"grant the role lacks, same resource": {editorID(), "ru", "AdminDeleteBanner", false},
+		"bit the role lacks":                  {editorID(), "ru", "AdminCreateBlogPost", false},
+		"resource the role has no row for":    {editorID(), "ru", "AdminListReviews", false},
+		"locale outside the staff record":     {editorID(), "es", "AdminListBlogPosts", false},
+		"operation the role does not hold":    {editorID(), "ru", "AdminListUsers", false},
+		"upload needs only being staff":       {editorID(), "ru", "AdminUploadAttachment", true},
 	} {
 		u := db.User.GetX(t.Context(), c.user)
 
@@ -109,7 +103,7 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := permission.NewPolicy(db)
-	editor := db.User.Query().Where(user.ID(editorID)).WithStaffMember().OnlyX(t.Context())
+	editor := db.User.Query().Where(user.ID(editorID())).WithStaffMember().OnlyX(t.Context())
 
 	require.NoError(t, policy.Allow(t.Context(), editor, "ru", "AdminListBlogPosts"))
 	assert.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminCreateBlogPost"), permission.ErrForbidden)
@@ -120,7 +114,7 @@ func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
 func TestPolicyGrantsUpdateAndDeleteOnlyWhenTheRoleHoldsThem(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := permission.NewPolicy(db)
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	require.ErrorIs(t, policy.Allow(t.Context(), editor, "ru", "AdminUpdateBlogPost"), permission.ErrForbidden)
@@ -149,7 +143,7 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 	} {
 		t.Run(name, func(t *testing.T) {
 			db, tx := testsupport.NewClientWithTx(t)
-			editor := db.User.GetX(t.Context(), editorID)
+			editor := db.User.GetX(t.Context(), editorID())
 			_, err := tx.ExecContext(t.Context(),
 				`ALTER TABLE "`+table+`" RENAME TO "`+table+`_gone"`)
 			require.NoError(t, err)
@@ -172,7 +166,7 @@ func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
 func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := permission.NewPolicy(db)
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	former := map[string][]string{
@@ -208,7 +202,7 @@ func TestFormerAdministratorsOnlyOperationsFollowTheirPermissions(t *testing.T) 
 func TestAdministratorsKeepTheFormerAdministratorsOnlyOperations(t *testing.T) {
 	db := testsupport.NewClient(t)
 	policy := permission.NewPolicy(db)
-	alice := db.User.GetX(t.Context(), adminID)
+	alice := db.User.GetX(t.Context(), adminID())
 
 	for _, operation := range []string{
 		"AdminListUsers", "AdminUpdateRolePermissions", "AdminListPermissions", "AdminCreateCourseVersion",
@@ -223,7 +217,7 @@ func TestAdministratorsKeepTheFormerAdministratorsOnlyOperations(t *testing.T) {
 func TestReviewIsSeparateFromUpdate(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := permission.NewPolicy(db)
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	testsupport.Grant(t, db, transactor, staff.RoleID, "courses.update")
@@ -248,13 +242,13 @@ func TestAdministratorFlagDoesNotImplyCapabilities(t *testing.T) {
 	policy := permission.NewPolicy(db)
 
 	// Not staff: refused, though an administrator.
-	alice := db.User.GetX(t.Context(), adminID)
+	alice := db.User.GetX(t.Context(), adminID())
 	for _, capability := range []string{"mcp.read", "mcp.write", "mcp.manage", "audit.read"} {
 		require.ErrorIs(t, policy.HasCapability(t.Context(), alice, capability), permission.ErrForbidden, capability)
 	}
 
 	// An administrator who is staff, on a role that holds no capability.
-	staffAdmin := db.User.GetX(t.Context(), adminStaffID)
+	staffAdmin := db.User.GetX(t.Context(), adminStaffID())
 	require.ErrorIs(t, policy.HasCapability(t.Context(), staffAdmin, "mcp.read"), permission.ErrForbidden)
 	// The administrator still passes ordinary operation Permissions.
 	assert.NoError(t, policy.Allow(t.Context(), staffAdmin, "es", "AdminListBlogPosts"))
@@ -270,7 +264,7 @@ func TestAdministratorFlagDoesNotImplyCapabilities(t *testing.T) {
 func TestAStaffRoleHoldsCapabilitiesThroughGrants(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	policy := permission.NewPolicy(db)
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 	staff := editor.QueryStaffMember().OnlyX(t.Context())
 
 	require.ErrorIs(t, policy.HasCapability(t.Context(), editor, "audit.read"), permission.ErrForbidden)
@@ -282,7 +276,7 @@ func TestAStaffRoleHoldsCapabilitiesThroughGrants(t *testing.T) {
 // a refusal, so it cannot be mistaken for "not allowed".
 func TestHasCapabilityRejectsANameThatIsNotACapability(t *testing.T) {
 	db := testsupport.NewClient(t)
-	editor := db.User.GetX(t.Context(), editorID)
+	editor := db.User.GetX(t.Context(), editorID())
 
 	err := permission.NewPolicy(db).HasCapability(t.Context(), editor, "blog_posts.read")
 
@@ -293,4 +287,18 @@ func TestHasCapabilityRejectsANameThatIsNotACapability(t *testing.T) {
 // The upload is declared open to any staff member, whatever the role holds.
 func TestUploadIsDeclaredOpenToAnyStaffMember(t *testing.T) {
 	assert.Equal(t, permissioncatalog.AnyStaff, permissioncatalog.AccessOf("AdminUploadAttachment"))
+}
+
+func adminID() int {
+	return fixture.ID(fixture.UserAdminLearner)
+}
+
+func editorID() int {
+	return fixture.ID(fixture.UserStaffEditor)
+}
+
+// An administrator who is also staff, on the editor role: the harness user
+// has no staff record, and a staff record cannot be made for oneself.
+func adminStaffID() int {
+	return fixture.ID(fixture.UserAdminStaff)
 }

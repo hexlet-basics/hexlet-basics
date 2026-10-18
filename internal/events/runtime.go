@@ -85,7 +85,7 @@ func NewRuntime(
 				return newSubscriber(db, params.HandlerName, watermillLogger)
 			},
 			AckOnUnknownEvent: true,
-			Marshaler:         Marshaler,
+			Marshaler:         Marshaler(),
 			Logger:            watermillLogger,
 		})
 		if err != nil {

@@ -20,8 +20,10 @@ const redacted = "[redacted]"
 // sensitiveKeyParts are lowercase fragments of an attribute key that mark its
 // value as one that must never reach a log: credentials and personal data.
 // Identity in a log line is user_id, never an email.
-var sensitiveKeyParts = []string{
-	"password", "passwd", "secret", "token", "authorization", "cookie", "email", "api_key", "apikey",
+func sensitiveKeyParts() []string {
+	return []string{
+		"password", "passwd", "secret", "token", "authorization", "cookie", "email", "api_key", "apikey",
+	}
 }
 
 // New returns the logger of a process, writing to stderr at the given level.
@@ -48,7 +50,7 @@ func NewTo(w io.Writer, level slog.Level) *slog.Logger {
 // review standard is that none is passed; this catches the slip by key name.
 func redact(_ []string, attr slog.Attr) slog.Attr {
 	key := strings.ToLower(attr.Key)
-	for _, part := range sensitiveKeyParts {
+	for _, part := range sensitiveKeyParts() {
 		if strings.Contains(key, part) {
 			return slog.String(attr.Key, redacted)
 		}

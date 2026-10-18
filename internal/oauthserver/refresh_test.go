@@ -19,11 +19,13 @@ import (
 
 // bob is the fixtures' editor, a second user whose grants must stay out of
 // alice's way.
-var bob = fixture.ID(fixture.UserStaffEditor)
+func bob() int {
+	return fixture.ID(fixture.UserStaffEditor)
+}
 
 func TestRefreshRotatesTheTokenAndRefusesTheOldOne(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	first := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	first := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	second, res := o.Refresh(testsupport.OAuthClientID, first.RefreshToken)
 	require.Equal(t, http.StatusOK, res.StatusCode)
@@ -37,7 +39,7 @@ func TestRefreshRotatesTheTokenAndRefusesTheOldOne(t *testing.T) {
 
 func TestReplayingAUsedRefreshTokenRevokesTheWholeFamily(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	first := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	first := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	second, res := o.Refresh(testsupport.OAuthClientID, first.RefreshToken)
 	require.Equal(t, http.StatusOK, res.StatusCode)
 	third, res := o.Refresh(testsupport.OAuthClientID, second.RefreshToken)
@@ -60,9 +62,9 @@ func TestReplayingAUsedRefreshTokenRevokesTheWholeFamily(t *testing.T) {
 
 func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	victim := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	laterSignIn := o.Connect(alice, oauthserver.ScopeCatalogRead)
-	otherUser := o.Connect(bob, oauthserver.ScopeCatalogRead)
+	victim := o.Connect(alice(), oauthserver.ScopeCatalogRead)
+	laterSignIn := o.Connect(alice(), oauthserver.ScopeCatalogRead)
+	otherUser := o.Connect(bob(), oauthserver.ScopeCatalogRead)
 
 	// Another client of the same user, which registered itself.
 	res := o.Register(request(func(m map[string]any) {
@@ -71,7 +73,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 	}))
 	require.Equal(t, http.StatusCreated, res.StatusCode)
 	other := decodeJSON[registered](t, res)
-	flow := o.StartWith(alice, testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: other.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
 	})
 	otherClient, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
@@ -98,7 +100,7 @@ func TestARevokedFamilyLeavesOtherGrantsAlone(t *testing.T) {
 
 func TestTheFamilySurvivesSeveralRotations(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 
 	spent := make([]string, 0, 5)
 	for range 5 {
@@ -127,7 +129,7 @@ func TestTheFamilySurvivesSeveralRotations(t *testing.T) {
 
 func TestRevokingARefreshTokenEndsTheFamilyAndAnAccessTokenOnlyItself(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	rotated, res := o.Refresh(testsupport.OAuthClientID, tokens.RefreshToken)
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
@@ -149,7 +151,7 @@ func TestRevokingARefreshTokenEndsTheFamilyAndAnAccessTokenOnlyItself(t *testing
 
 func TestTokensExpireOnTheirOwnLifetimes(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	// The library counts expires_in against the real clock, not the test's.
 	assert.InDelta(t, 3600, tokens.ExpiresIn, 5, "an access token lives an hour")
 
@@ -174,7 +176,7 @@ func TestConfiguredLifetimesApply(t *testing.T) {
 	o := testsupport.NewOAuthWith(t, oauthserver.Config{
 		AccessTokenLifetime: 5 * time.Minute, RefreshTokenLifetime: time.Hour,
 	})
-	tokens := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	tokens := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	assert.InDelta(t, 300, tokens.ExpiresIn, 5)
 
 	o.Advance(6 * time.Minute)
@@ -186,7 +188,7 @@ func TestConfiguredLifetimesApply(t *testing.T) {
 
 func TestPurgeDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 	o := testsupport.NewOAuth(t)
-	old := o.Connect(alice, oauthserver.ScopeCatalogRead)
+	old := o.Connect(alice(), oauthserver.ScopeCatalogRead)
 	_, res := o.Refresh(testsupport.OAuthClientID, old.RefreshToken) // leaves a used tombstone
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
@@ -196,12 +198,12 @@ func TestPurgeDeletesWhatExpiredAndKeepsTheRest(t *testing.T) {
 	assert.Zero(t, n)
 
 	o.Advance(31 * 24 * time.Hour)
-	fresh := o.Connect(bob, oauthserver.ScopeCatalogRead)
+	fresh := o.Connect(bob(), oauthserver.ScopeCatalogRead)
 	n, err = oauthserver.PurgeExpired(t.Context(), o.DB, o.Now())
 	require.NoError(t, err)
 	assert.Equal(t, 3, n, "the rotated pair's access token, and both refresh tokens (one used) of the old family")
 
-	access, err := o.DB.OAuthAccessToken.Query().Where(oauthaccesstoken.UserID(bob)).Count(t.Context())
+	access, err := o.DB.OAuthAccessToken.Query().Where(oauthaccesstoken.UserID(bob())).Count(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, 1, access)
 	refresh, err := o.DB.OAuthRefreshToken.Query().Count(t.Context())
@@ -226,7 +228,7 @@ func TestParallelRefreshesNeverBothSucceed(t *testing.T) {
 	}))
 	require.Equal(t, http.StatusCreated, res.StatusCode)
 	racer := decodeJSON[registered](t, res)
-	flow := o.StartWith(alice, testsupport.StartOptions{
+	flow := o.StartWith(alice(), testsupport.StartOptions{
 		Scopes: []string{oauthserver.ScopeCatalogRead}, ClientID: racer.ClientID, RedirectURIs: []string{"http://127.0.0.1:1/cb"},
 	})
 	tokens, res := flow.Exchange(flow.Approve(), testsupport.PKCEVerifier())
