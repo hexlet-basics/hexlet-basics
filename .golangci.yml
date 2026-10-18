@@ -44,8 +44,7 @@ linters:
         - pattern: '^ent\.\w+Client\.(Query|Create|CreateBulk|MapCreateBulk|Update|UpdateOne|UpdateOneID|Delete|DeleteOne|DeleteOneID|Get|GetX)$'
           msg: a handler does not build ent queries; put the rule in a use-case module, or generate the admin CRUD from the schema's AdminCRUD annotation
         # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
-        # may use it; production packages not yet migrated are listed in the
-        # exclusions below, and each migration removes its entry.
+        # may use it (see the exclusion below); production code may not.
         - pattern: '^fmt\.Errorf$'
           msg: build the error with samber/oops (errs.With(...).Wrapf), see ADR-0018
       analyze-types: true

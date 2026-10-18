@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"hexletbasics/ent"
@@ -193,7 +192,7 @@ func (s *Security) attach(ctx context.Context) (context.Context, error) {
 		return ctx, errUnauthenticated
 	}
 	if err != nil {
-		return ctx, withHTTPStatus(http.StatusInternalServerError, fmt.Errorf("load authenticated user: %w", err))
+		return ctx, withHTTPStatus(http.StatusInternalServerError, errs.Wrapf(err, "load authenticated user"))
 	}
 	return context.WithValue(ctx, authenticatedUserContextKey{}, u), nil
 }

@@ -5,7 +5,6 @@ package domain
 
 import (
 	"errors"
-	"fmt"
 
 	"hexletbasics/ent"
 )
@@ -26,9 +25,9 @@ func FromStore(err error) error {
 	case err == nil:
 		return nil
 	case ent.IsNotFound(err):
-		return fmt.Errorf("%w: %w", ErrNotFound, err)
+		return errors.Join(ErrNotFound, err)
 	case ent.IsConstraintError(err):
-		return fmt.Errorf("%w: %w", ErrConflict, err)
+		return errors.Join(ErrConflict, err)
 	default:
 		return err
 	}

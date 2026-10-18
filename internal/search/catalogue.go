@@ -240,7 +240,7 @@ func ranked(rank func(*sql.Selector) sql.Querier) func(*sql.Selector) {
 func rankOf(value func(string) (entgo.Value, error)) (float64, error) {
 	raw, err := value("search_rank")
 	if err != nil {
-		return 0, fmt.Errorf("read search rank: %w", err)
+		return 0, errs.Wrapf(err, "read search rank")
 	}
 	switch rank := raw.(type) {
 	case float64:
@@ -248,6 +248,6 @@ func rankOf(value func(string) (entgo.Value, error)) (float64, error) {
 	case float32:
 		return float64(rank), nil
 	default:
-		return 0, fmt.Errorf("search rank is %T", raw)
+		return 0, errs.With("type", fmt.Sprintf("%T", raw)).Errorf("search rank has an unexpected type")
 	}
 }

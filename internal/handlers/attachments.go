@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"hexletbasics/internal/api"
@@ -31,7 +30,7 @@ func (s *Server) AdminUploadAttachment(
 	case errors.Is(err, assetstore.ErrTooLarge):
 		return validationError("file", s.i18n.Text(ctx, localization.FileTooLarge)), nil
 	case err != nil:
-		return nil, fmt.Errorf("store uploaded attachment: %w", err)
+		return nil, errs.Wrapf(err, "store uploaded attachment")
 	}
 	attachment := s.conv.ToAttachment(att)
 	return &attachment, nil
@@ -66,7 +65,7 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 			h.errors.Write(ctx, w, r, withHTTPStatus(http.StatusNotFound, err))
 			return
 		}
-		h.errors.Write(ctx, w, r, fmt.Errorf("open stored attachment %q: %w", key, err))
+		h.errors.Write(ctx, w, r, errs.With("key", key).Wrapf(err, "open stored attachment"))
 		return
 	}
 	defer func() { _ = reader.Close() }()

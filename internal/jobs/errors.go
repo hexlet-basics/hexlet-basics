@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/getsentry/sentry-go"
@@ -38,7 +37,7 @@ func (h *ErrorHandler) HandlePanic(
 	panicVal any,
 	trace string,
 ) *river.ErrorHandlerResult {
-	h.capture(ctx, job, fmt.Errorf("job panic: %v", panicVal), trace)
+	h.capture(ctx, job, errs.With("panic", panicVal).Errorf("job panic"), trace)
 	return nil
 }
 

@@ -10,7 +10,6 @@ package coursepage
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"path"
 	"slices"
@@ -100,7 +99,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 		return nil, ErrNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load landing page %q: %w", slug, err)
+		return nil, errs.With("slug", slug).Wrapf(err, "load landing page")
 	}
 	crs := landing.Edges.Course
 
@@ -134,7 +133,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 		Order(landingpageqnaitem.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load landing page questions: %w", err)
+		return nil, errs.Wrapf(err, "load landing page questions")
 	}
 
 	page := &CoursePage{
@@ -156,7 +155,7 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 	case ent.IsNotFound(err):
 		return page, nil
 	case err != nil:
-		return nil, fmt.Errorf("load enrollment: %w", err)
+		return nil, errs.Wrapf(err, "load enrollment")
 	}
 	page.Enrollment = enrolled
 	return page, nil
@@ -178,7 +177,7 @@ func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage,
 			return nil, ErrNotFound
 		}
 		if err != nil {
-			return nil, fmt.Errorf("load redirect target: %w", err)
+			return nil, errs.Wrapf(err, "load redirect target")
 		}
 		target = named
 	} else {
@@ -221,7 +220,7 @@ func (p *Pages) lessonInfos(
 		Order(courselessontranslation.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("load lesson translations: %w", err)
+		return nil, errs.Wrapf(err, "load lesson translations")
 	}
 
 	position := make(map[string]int, len(state.Lessons))
@@ -286,7 +285,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		return nil, ErrNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load lesson %q of %q: %w", lessonSlug, courseSlug, err)
+		return nil, errs.With("lesson_slug", lessonSlug, "course_slug", courseSlug).Wrapf(err, "load lesson")
 	}
 	if translation.Edges.Lesson == nil || translation.Edges.Version == nil {
 		return nil, ErrNotFound
@@ -300,7 +299,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		return nil, ErrNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load course %q: %w", courseSlug, err)
+		return nil, errs.With("course_slug", courseSlug).Wrapf(err, "load course")
 	}
 
 	state, err := p.progress.CourseState(ctx, learner, crs.ID)

@@ -22,7 +22,7 @@ func success[T any](response any, err error) (*T, error) {
 	if value, ok := response.(*T); ok {
 		return value, nil
 	}
-	return nil, fmt.Errorf("unexpected API response %T", response)
+	return nil, errs.With("type", fmt.Sprintf("%T", response)).Errorf("unexpected API response")
 }
 
 func noContent[T any](response any, err error) error {

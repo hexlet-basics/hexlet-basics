@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
 
@@ -54,7 +53,7 @@ func (s *Security) authorizeMCP(ctx context.Context, operation api.OperationName
 		return ctx, errUnauthenticated
 	}
 	if err != nil {
-		return ctx, withHTTPStatus(http.StatusInternalServerError, fmt.Errorf("load authenticated user: %w", err))
+		return ctx, withHTTPStatus(http.StatusInternalServerError, errs.Wrapf(err, "load authenticated user"))
 	}
 	ctx = context.WithValue(ctx, authenticatedUserContextKey{}, u)
 
@@ -94,7 +93,7 @@ func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, 
 		return nil, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("load user for capabilities: %w", err)
+		return nil, errs.Wrapf(err, "load user for capabilities")
 	}
 	held := []string{}
 	for _, entry := range permissioncatalog.Catalog() {
@@ -106,7 +105,7 @@ func (s *Security) HeldCapabilities(ctx context.Context, userID int) ([]string, 
 			continue
 		}
 		if err != nil {
-			return nil, fmt.Errorf("check capability %s: %w", entry.Name, err)
+			return nil, errs.With("capability", entry.Name).Wrapf(err, "check capability")
 		}
 		held = append(held, entry.Name)
 	}

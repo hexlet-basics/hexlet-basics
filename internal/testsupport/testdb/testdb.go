@@ -127,7 +127,7 @@ func requireServer(conf pgtestdb.Config) error {
 	addr := net.JoinHostPort(conf.Host, conf.Port)
 	c, err := net.DialTimeout("tcp", addr, 2*time.Second)
 	if err != nil {
-		return fmt.Errorf("no Postgres on %s (start it with `mise run db:up`, or set TEST_DB_HOST/TEST_DB_PORT): %w", addr, err)
+		return errs.With("addr", addr).Wrapf(err, "no Postgres (start it with `mise run db:up`, or set TEST_DB_HOST/TEST_DB_PORT)")
 	}
 	return c.Close()
 }
@@ -174,10 +174,10 @@ type migrator struct {
 func (mg migrator) Hash() (string, error) {
 	h := common.NewRecursiveHash()
 	if err := h.AddDirs(nil, "*.sql", filepath.Join(mg.root, "migrations")); err != nil {
-		return "", fmt.Errorf("hash migrations: %w", err)
+		return "", errs.Wrapf(err, "hash migrations")
 	}
 	if err := h.AddDirs(nil, "*.yml", filepath.Join(mg.root, "fixtures")); err != nil {
-		return "", fmt.Errorf("hash fixtures: %w", err)
+		return "", errs.Wrapf(err, "hash fixtures")
 	}
 	return h.String(), nil
 }
@@ -190,7 +190,7 @@ func (mg migrator) Migrate(ctx context.Context, db *sql.DB, template pgtestdb.Co
 	admin.Database = template.Database
 	adminDB, err := admin.Connect()
 	if err != nil {
-		return fmt.Errorf("connect to the template as admin: %w", err)
+		return errs.Wrapf(err, "connect to the template as admin")
 	}
 	defer func() { _ = adminDB.Close() }()
 	return loadFixtures(adminDB, filepath.Join(mg.root, "fixtures"))
@@ -199,25 +199,25 @@ func (mg migrator) Migrate(ctx context.Context, db *sql.DB, template pgtestdb.Co
 func applyMigrations(ctx context.Context, db *sql.DB, path string) error {
 	dir, err := migrate.NewLocalDir(path)
 	if err != nil {
-		return fmt.Errorf("open migration directory: %w", err)
+		return errs.Wrapf(err, "open migration directory")
 	}
 	if err := migrate.Validate(dir); err != nil {
-		return fmt.Errorf("validate migration directory: %w", err)
+		return errs.Wrapf(err, "validate migration directory")
 	}
 	files, err := dir.Files()
 	if err != nil {
-		return fmt.Errorf("read migration files: %w", err)
+		return errs.Wrapf(err, "read migration files")
 	}
 	driver, err := atlaspostgres.Open(db)
 	if err != nil {
-		return fmt.Errorf("open Atlas Postgres driver: %w", err)
+		return errs.Wrapf(err, "open Atlas Postgres driver")
 	}
 	executor, err := migrate.NewExecutor(driver, dir, migrate.NopRevisionReadWriter{})
 	if err != nil {
-		return fmt.Errorf("create migration executor: %w", err)
+		return errs.Wrapf(err, "create migration executor")
 	}
 	if err := executor.ExecuteFiles(ctx, files); err != nil {
-		return fmt.Errorf("apply test migrations: %w", err)
+		return errs.Wrapf(err, "apply test migrations")
 	}
 	return nil
 }
@@ -229,17 +229,17 @@ func loadFixtures(db *sql.DB, path string) error {
 func repositoryRoot() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", fmt.Errorf("get working directory: %w", err)
+		return "", errs.Wrapf(err, "get working directory")
 	}
 	for {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
 			return dir, nil
 		} else if !os.IsNotExist(err) {
-			return "", fmt.Errorf("inspect repository root: %w", err)
+			return "", errs.Wrapf(err, "inspect repository root")
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", fmt.Errorf("find repository root from %q: go.mod not found", dir)
+			return "", errs.With("dir", dir).Errorf("find repository root: go.mod not found")
 		}
 		dir = parent
 	}
@@ -279,7 +279,7 @@ func (b *mainTB) Failed() bool        { return b.err != nil }
 func (b *mainTB) Helper()             {}
 func (b *mainTB) Logf(string, ...any) {}
 func (b *mainTB) Fatalf(format string, args ...any) {
-	b.err = errors.Join(b.err, fmt.Errorf(format, args...))
+	b.err = errors.Join(b.err, errs.Errorf(format, args...))
 }
 
 // close drops the package's database. Cleanups run last-in first-out, as in
@@ -289,7 +289,7 @@ func (b *mainTB) close() {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					b.err = errors.Join(b.err, fmt.Errorf("cleanup panicked: %v", r))
+					b.err = errors.Join(b.err, errs.With("panic", r).Errorf("cleanup panicked"))
 				}
 			}()
 			b.cleanups[i]()
