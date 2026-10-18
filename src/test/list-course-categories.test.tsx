@@ -10,7 +10,7 @@ import { renderRoute } from "@/test/renderRoute";
 // server-paginated page and the mantine-datatable table renders its rows and
 // pager.
 describe("list course categories", () => {
-  it("renders a server-paginated list through the CRUD engine", async () => {
+  it("renders a server-paginated list", async () => {
     expect.hasAssertions();
     worker.use(
       http.get("*/admin/course_categories", () =>
