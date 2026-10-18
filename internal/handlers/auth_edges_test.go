@@ -63,7 +63,7 @@ func TestMustAuthenticatedUserPanicsWithoutOne(t *testing.T) {
 func TestAGarbledSessionCookieIsNoSession(t *testing.T) {
 	t.Parallel()
 	router := newAuthRouter(t)
-	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"}
+	garbled := &http.Cookie{Name: auth.CookieName, Value: "not-a-token"} //nolint:gosec // G124: a request cookie in a test, the attributes belong to Set-Cookie
 
 	me := do(t, router, http.MethodGet, "/api/me", "", garbled)
 	require.Equal(t, http.StatusOK, me.StatusCode)

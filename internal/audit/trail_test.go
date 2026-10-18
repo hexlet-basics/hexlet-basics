@@ -18,8 +18,6 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-func ptr[T any](v T) *T { return &v }
-
 func TestTheWindowDefaultsToThirtyDaysBackFromNow(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 
@@ -44,21 +42,21 @@ func TestTheWindowCountsBackFromAGivenEnd(t *testing.T) {
 func TestTheWindowIsRefusedWhenReversedOrTooWide(t *testing.T) {
 	now := time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)
 
-	_, _, err := audit.Filter{From: ptr(now), To: ptr(now.Add(-time.Hour))}.Window(now)
+	_, _, err := audit.Filter{From: new(now), To: new(now.Add(-time.Hour))}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowReversed)
 
-	_, _, err = audit.Filter{From: ptr(now), To: ptr(now)}.Window(now)
+	_, _, err = audit.Filter{From: new(now), To: new(now)}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowReversed, "an empty window reads nothing")
 
-	_, _, err = audit.Filter{From: ptr(now.Add(-audit.MaxWindow - time.Second)), To: ptr(now)}.Window(now)
+	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow - time.Second)), To: new(now)}.Window(now)
 	require.ErrorIs(t, err, audit.ErrWindowTooWide)
 
-	_, _, err = audit.Filter{From: ptr(now.Add(-audit.MaxWindow)), To: ptr(now)}.Window(now)
+	_, _, err = audit.Filter{From: new(now.Add(-audit.MaxWindow)), To: new(now)}.Window(now)
 	assert.NoError(t, err, "exactly the maximum is allowed")
 }
 
 func TestAnEntityIdNeedsItsType(t *testing.T) {
-	_, err := audit.Filter{EntityID: ptr("5")}.Query(nil, time.Now())
+	_, err := audit.Filter{EntityID: new("5")}.Query(nil, time.Now())
 
 	require.ErrorIs(t, err, audit.ErrEntityIDWithoutType)
 }
@@ -119,17 +117,17 @@ func TestAFilteredQueryReadsOnlyThePartitionsOfItsWindow(t *testing.T) {
 	rec := &recorder{tx: tx}
 	client := ent.NewClient(ent.Driver(entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: rec})))
 	window := audit.Filter{
-		From: ptr(time.Date(2024, 9, 5, 0, 0, 0, 0, time.UTC)),
-		To:   ptr(time.Date(2024, 9, 20, 0, 0, 0, 0, time.UTC)),
+		From: new(time.Date(2024, 9, 5, 0, 0, 0, 0, time.UTC)),
+		To:   new(time.Date(2024, 9, 20, 0, 0, 0, 0, time.UTC)),
 	}
 
 	filters := map[string]audit.Filter{
 		"window only": window,
-		"by actor":    {From: window.From, To: window.To, ActorUserID: ptr(7)},
-		"by entity":   {From: window.From, To: window.To, EntityType: ptr("BlogPost"), EntityID: ptr("3")},
+		"by actor":    {From: window.From, To: window.To, ActorUserID: new(7)},
+		"by entity":   {From: window.From, To: window.To, EntityType: new("BlogPost"), EntityID: new("3")},
 		"by channel and operation": {
 			From: window.From, To: window.To,
-			Channel: ptr(audit.ChannelMCP), Operation: ptr("AdminUpdateBlogPost"),
+			Channel: new(audit.ChannelMCP), Operation: new("AdminUpdateBlogPost"),
 		},
 	}
 	for name, filter := range filters {

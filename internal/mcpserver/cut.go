@@ -3,6 +3,8 @@ package mcpserver
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -30,14 +32,10 @@ var truncationSchema = map[string]any{"type": "object"}
 // property its schema does not declare would fail a client's validation.
 func withTruncation(schema map[string]any) map[string]any {
 	out := make(map[string]any, len(schema)+1)
-	for k, v := range schema {
-		out[k] = v
-	}
+	maps.Copy(out, schema)
 	properties := map[string]any{}
 	if existing, ok := schema["properties"].(map[string]any); ok {
-		for k, v := range existing {
-			properties[k] = v
-		}
+		maps.Copy(properties, existing)
 	}
 	properties[truncationKey] = truncationSchema
 	out["properties"] = properties
@@ -107,7 +105,7 @@ func fit(data map[string]any, textLen, limit int, list *listInfo) bool {
 		described[i] = map[string]any{"path": c.path, "kept": c.kept, "total": c.total, "unit": c.unit}
 	}
 	hint["cuts"] = described
-	hint["hint"] = "The response was cut to stay within " + fmt.Sprint(limit) + " bytes. " + continuation(data, cuts, list, hint)
+	hint["hint"] = "The response was cut to stay within " + strconv.Itoa(limit) + " bytes. " + continuation(data, cuts, list, hint)
 	data[truncationKey] = hint
 	return true
 }

@@ -2,6 +2,7 @@ package mcpserver_test
 
 import (
 	"encoding/json"
+	"maps"
 	"slices"
 	"strings"
 	"testing"
@@ -97,9 +98,7 @@ func exampleOf(schema map[string]any) any {
 				// A scalar branch (a named enum) is the value itself.
 				return example
 			}
-			for k, v := range m {
-				merged[k] = v
-			}
+			maps.Copy(merged, m)
 		}
 		return merged
 	}

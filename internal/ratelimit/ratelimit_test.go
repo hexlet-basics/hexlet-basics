@@ -1,7 +1,7 @@
 package ratelimit
 
 import (
-	"fmt"
+	"strconv"
 	"testing"
 	"testing/synctest"
 	"time"
@@ -52,7 +52,7 @@ func TestTheLimiterStopsTrackingNewKeysAtItsCapUntilWindowsExpire(t *testing.T) 
 	now := time.Now()
 	l := New(time.Hour, func() time.Time { return now })
 	for i := range maxTracked {
-		ok, _ := l.Allow(Charge{fmt.Sprint(i), 1})
+		ok, _ := l.Allow(Charge{strconv.Itoa(i), 1})
 		require.True(t, ok)
 	}
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"log/slog"
+	"slices"
 	"testing"
 	"time"
 
@@ -74,8 +75,8 @@ func deliverReporting(t *testing.T, sentryClient *sentry.Client, handler message
 	require.NoError(t, err)
 	chain, err := deliveryMiddleware(logger, poison, sentryClient)
 	require.NoError(t, err)
-	for i := len(chain) - 1; i >= 0; i-- {
-		handler = chain[i](handler)
+	for _, c := range slices.Backward(chain) {
+		handler = c(handler)
 	}
 	_, err = handler(message.NewMessage("event-1", nil))
 	return poisoned, err

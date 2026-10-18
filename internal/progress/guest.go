@@ -156,6 +156,7 @@ func (c *GuestCodec) Cookie(progress GuestProgress, secure bool) (*http.Cookie, 
 	if err != nil {
 		return nil, err
 	}
+	//nolint:gosec // G124: HttpOnly and SameSite are set; Secure is the caller's flag, false only for plain-HTTP local development
 	return &http.Cookie{
 		Name:     GuestCookieName,
 		Value:    value,
@@ -171,6 +172,7 @@ func (c *GuestCodec) Cookie(progress GuestProgress, secure bool) (*http.Cookie, 
 // with the same attributes Cookie sets so the browser matches it to the one it
 // holds. It is sent once the progress has been credited to an account.
 func (c *GuestCodec) ClearedCookie(secure bool) *http.Cookie {
+	//nolint:gosec // G124: same attributes as Cookie, Secure is the caller's flag
 	return &http.Cookie{
 		Name:     GuestCookieName,
 		Path:     "/",

@@ -388,12 +388,10 @@ func (d *Docker) hostConfig() *container.HostConfig {
 		Tmpfs:          tmpfs,
 		CapDrop:        []string{"ALL"},
 		SecurityOpt:    []string{"no-new-privileges"},
-		Resources: container.Resources{
-			Memory:     d.opts.MemoryBytes,
-			MemorySwap: d.opts.SwapBytes,
-			PidsLimit:  &pidsLimit,
-			NanoCPUs:   d.opts.NanoCPUs,
-		},
+		Memory:         d.opts.MemoryBytes,
+		MemorySwap:     d.opts.SwapBytes,
+		PidsLimit:      &pidsLimit,
+		NanoCPUs:       d.opts.NanoCPUs,
 	}
 }
 

@@ -355,6 +355,7 @@ func operations() []operation {
 		{
 			name: "starting a lesson",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				blankUser, lesson := r.learner(t, fixture.UserBlank), r.lesson(t, firstLesson)
 				return func() error {
 					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID, locale)
@@ -367,6 +368,7 @@ func operations() []operation {
 		{
 			name: "checking a solution",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				check := r.check(t, r.learner(t, fixture.UserBlank), firstLesson)
 				return func() error {
 					_, err := r.progress.CheckSolution(t.Context(), check)
@@ -379,6 +381,7 @@ func operations() []operation {
 		{
 			name: "checking the last lesson of a course",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				r.dropLessonsAfterTheFirst(t)
 				check := r.check(t, r.learner(t, fixture.UserAdminLearner), firstLesson)
 				return func() error {
@@ -392,6 +395,7 @@ func operations() []operation {
 		{
 			name: "reading a learner's courses",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				adminLearner, courseID := r.learner(t, fixture.UserAdminLearner), r.course(t, jsSlug).ID
 				return func() error {
 					_, err := r.progress.CourseStates(t.Context(), adminLearner.UserID, []int{courseID})
@@ -403,6 +407,7 @@ func operations() []operation {
 		{
 			name: "reading a guest's course",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				courseID := r.course(t, jsSlug).ID
 				return func() error {
 					_, err := r.progress.CourseState(t.Context(), guestWith(secondLesson), courseID)
@@ -414,6 +419,7 @@ func operations() []operation {
 		{
 			name: "merging a guest's progress",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				staffEditor := r.learner(t, fixture.UserStaffEditor)
 				return func() error {
 					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest, locale)
@@ -425,6 +431,7 @@ func operations() []operation {
 		{
 			name: "re-evaluating completion",
 			prepare: func(t *testing.T, r *rig) func() error {
+				t.Helper()
 				r.dropLessonsAfterTheFirst(t)
 				courseID := r.course(t, jsSlug).ID
 				return func() error {

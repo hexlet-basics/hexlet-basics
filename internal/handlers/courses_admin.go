@@ -29,7 +29,7 @@ func (s *Server) AdminListCourseOptions(ctx context.Context) ([]api.CourseOption
 
 	options := make([]api.CourseOption, 0, len(rows))
 	for _, row := range rows {
-		options = append(options, api.CourseOption{ID: int32(row.ID), Name: row.Name})
+		options = append(options, api.CourseOption{ID: apiconv.Int32FromInt(row.ID), Name: row.Name})
 	}
 	return options, nil
 }
@@ -74,7 +74,7 @@ func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminM
 // getAdminCourse is the admin course view a readiness move echoes back, the one
 // the update gives.
 func (s *Server) getAdminCourse(ctx context.Context, id int) (*api.Course, error) {
-	return s.db.Course.AdminGet(ctx, int32(id), s.conv.ToCourse)
+	return s.db.Course.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToCourse)
 }
 
 // AdminCreateCourseVersion starts a build of a new course version: it creates the

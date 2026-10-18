@@ -120,7 +120,7 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{id: 316_927, code: "REFERRER", value: event.Referrer},
 			customField{id: 316_937, code: "FROM", value: landing("from")},
 			customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
-			customField{id: 316_943, code: "_YM_COUNTER", value: lo.ToPtr(b.ymCounter)},
+			customField{id: 316_943, code: "_YM_COUNTER", value: new(b.ymCounter)},
 			customField{id: 316_945, code: "GCLID", value: landing("gclid")},
 			// Legacy sent the Metrika client id here ahead of the landing
 			// page's yclid; kept as is, since amoCRM reports are built on it.
@@ -128,7 +128,7 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{id: 316_949, code: "FBCLID", value: landing("fbclid")},
 			customField{id: 957_711, code: "GA_UTM", value: landing("ga_utm")},
 			// The source-form field has no code in amoCRM, only an id.
-			customField{id: 936_587, value: lo.ToPtr(source)},
+			customField{id: 936_587, value: new(source)},
 		),
 	}
 	return generated.UnsortedFormCreateItem{
@@ -171,7 +171,7 @@ func ipv4(ip *string) *string {
 	if err != nil || !addr.Unmap().Is4() {
 		return nil
 	}
-	return lo.ToPtr(addr.Unmap().String())
+	return new(addr.Unmap().String())
 }
 
 type customField struct {
@@ -224,7 +224,7 @@ type statusClient struct {
 // errors, so the only errors left for the generated decoder to produce come
 // from responses amoCRM accepted.
 func (c statusClient) Do(request *http.Request) (*http.Response, error) {
-	response, err := c.http.Do(request)
+	response, err := c.http.Do(request) //nolint:gosec // G704: the host is the configured amoCRM subdomain, never request input
 	if err != nil {
 		return nil, newRequestError(0, "send amoCRM lead", err, true)
 	}
@@ -287,12 +287,10 @@ func (e *requestError) Retryable() bool {
 // decision. Transport and undescribed-status errors were already classified by
 // statusClient.
 func classifyRequestError(err error) error {
-	var classified *requestError
-	if errors.As(err, &classified) {
+	if classified, ok := errors.AsType[*requestError](err); ok {
 		return classified
 	}
-	var problem *generated.ProblemDetailsStatusCode
-	if errors.As(err, &problem) {
+	if problem, ok := errors.AsType[*generated.ProblemDetailsStatusCode](err); ok {
 		return newRequestError(
 			problem.StatusCode,
 			joinProblem(problem.Response.Title, problem.Response.Detail),

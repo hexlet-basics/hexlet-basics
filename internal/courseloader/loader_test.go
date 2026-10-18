@@ -273,7 +273,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 	require.NoError(t, err)
 
 	externalImagePath := filepath.Join(t.TempDir(), "external.png")
-	require.NoError(t, os.WriteFile(externalImagePath, image, 0o644))
+	require.NoError(t, os.WriteFile(externalImagePath, image, 0o644)) //nolint:gosec // G703: path is under t.TempDir
 	require.NoError(t, os.Remove(imagePath))
 	require.NoError(t, os.Symlink(externalImagePath, imagePath))
 
@@ -301,7 +301,7 @@ func TestLoaderUploadsTheoryImagesFromTheLessonAssetsDir(t *testing.T) {
 	readme := filepath.Join(lesson, "en", "README.md")
 	body, err := os.ReadFile(readme)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644))
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/", "../assets/")), 0o644)) //nolint:gosec // G703: path is under t.TempDir
 
 	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 
@@ -323,11 +323,11 @@ func TestLoaderRejectsTheoryImageClimbingOutOfTheLesson(t *testing.T) {
 	picture, err := os.ReadFile(filepath.Join(lesson, "en", "assets", "dart.png"))
 	require.NoError(t, err)
 	// A real image, but outside the lesson: only the reference's path is at fault.
-	require.NoError(t, os.WriteFile(filepath.Join(repo, "outside.png"), picture, 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(repo, "outside.png"), picture, 0o644)) //nolint:gosec // G703: path is under t.TempDir
 	readme := filepath.Join(lesson, "en", "README.md")
 	body, err := os.ReadFile(readme)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644))
+	require.NoError(t, os.WriteFile(readme, []byte(strings.ReplaceAll(string(body), "./assets/dart.png", "../../../../outside.png")), 0o644)) //nolint:gosec // G703: path is under t.TempDir
 
 	version := db.CourseVersion.GetX(ctx, fixture.ID(fixture.VersionLoadableCreated))
 

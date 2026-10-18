@@ -144,8 +144,8 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
 	request := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/languages/missing", nil).WithContext(ctx)
 	handler.Write(request.Context(), recorder, request, &ogenerrors.DecodeParamsError{
-		OperationContext: ogenerrors.OperationContext{Name: "ListCourses", ID: "listCourses"},
-		Err:              errors.New("invalid query"),
+		Name: "ListCourses", ID: "listCourses",
+		Err: errors.New("invalid query"),
 	})
 
 	assert.Equal(t, http.StatusBadRequest, recorder.Code)

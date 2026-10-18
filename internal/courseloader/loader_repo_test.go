@@ -22,7 +22,7 @@ func miniRepo(t *testing.T, data, theory string) string {
 	put := func(rel, content string) {
 		path := filepath.Join(dir, rel)
 		require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o755))
-		require.NoError(t, os.WriteFile(path, []byte(content), 0o644))
+		require.NoError(t, os.WriteFile(path, []byte(content), 0o644)) //nolint:gosec // G703: path is under t.TempDir
 	}
 	put("spec.yml", `language:
   name: Mini

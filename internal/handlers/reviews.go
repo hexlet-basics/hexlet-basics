@@ -5,6 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 )
 
@@ -80,5 +81,5 @@ func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchive
 
 // getAdminReview is the read model a state move echoes back.
 func (s *Server) getAdminReview(ctx context.Context, id int) (*api.Review, error) {
-	return s.db.Review.AdminGet(ctx, int32(id), s.conv.ToReview)
+	return s.db.Review.AdminGet(ctx, apiconv.Int32FromInt(id), s.conv.ToReview)
 }

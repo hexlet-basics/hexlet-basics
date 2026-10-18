@@ -144,7 +144,7 @@ func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
 // line per turn, so a test reads the prompt through the response.
 func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
 	for _, turn := range turns {
-		if err := onDelta(string(turn.Role) + ": " + turn.Content + "\n"); err != nil {
+		if err := onDelta(turn.Role + ": " + turn.Content + "\n"); err != nil {
 			return assistant.Usage{}, err
 		}
 	}

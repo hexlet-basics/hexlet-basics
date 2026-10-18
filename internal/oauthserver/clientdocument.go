@@ -222,7 +222,7 @@ func checkClientIDURL(clientID string) error {
 	if u.Path == "" || u.Path == "/" {
 		return errors.New("the client_id URL must have a path")
 	}
-	for _, segment := range strings.Split(u.Path, "/") {
+	for segment := range strings.SplitSeq(u.Path, "/") {
 		if segment == "." || segment == ".." {
 			return errors.New("the client_id URL must not contain dot segments")
 		}
@@ -270,8 +270,7 @@ func (d *documentClients) ensure(ctx context.Context, clientID, address string) 
 	}
 	_, err, _ = d.flight.Do(clientID, func() (any, error) { return nil, d.refresh(ctx, clientID) })
 	if err != nil {
-		var de *documentError
-		if errors.As(err, &de) {
+		if de, ok := errors.AsType[*documentError](err); ok {
 			d.remember(clientID, now)
 			return de
 		}
@@ -343,12 +342,12 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 // registration. The reason for a refusal is shown to the caller, who chose the
 // URL and can see the document, and carries nothing from our side.
 func (d *documentClients) fetch(ctx context.Context, clientID string) (registration, time.Duration, *documentError) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, clientID, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, clientID, nil) //nolint:gosec // G704: the client_id URL is caller input by design; the client dials through the private-address-refusing Control hook, see the file comment
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client_id URL could not be requested")
 	}
 	req.Header.Set("Accept", "application/json")
-	res, err := d.client.Do(req)
+	res, err := d.client.Do(req) //nolint:gosec // G704: guarded by the dialer Control hook that refuses private, loopback and link-local addresses
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client metadata document could not be fetched")
 	}
@@ -398,7 +397,7 @@ func (d *documentClients) cacheTTL(h http.Header) time.Duration {
 	ttl := defaultDocumentTTL
 	var maxAge, sMaxAge *time.Duration
 	immediate := false
-	for _, directive := range strings.Split(h.Get("Cache-Control"), ",") {
+	for directive := range strings.SplitSeq(h.Get("Cache-Control"), ",") {
 		name, value, _ := strings.Cut(strings.ToLower(strings.TrimSpace(directive)), "=")
 		switch name {
 		case "no-store", "no-cache":

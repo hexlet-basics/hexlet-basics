@@ -237,9 +237,9 @@ func TestSelfProtectionHoldsOverMCP(t *testing.T) {
 		o.DB.User.Update().Where(user.IDNEQ(adminStaff)).SetAdmin(false).ExecX(t.Context())
 		session, _ := admin(t, o, adminStaff)
 
-		clear := call(t, session, "adminUpdateUser", map[string]any{
+		demoted := call(t, session, "adminUpdateUser", map[string]any{
 			"locale": "en", "id": adminStaff, "body": userBody("admin-staff@example.com", false)})
-		assertRefusedWith(t, clear, "HTTP 409")
+		assertRefusedWith(t, demoted, "HTTP 409")
 		assert.True(t, o.DB.User.GetX(t.Context(), adminStaff).Admin != nil && *o.DB.User.GetX(t.Context(), adminStaff).Admin)
 
 		// A staff member who may delete users cannot delete the last administrator.

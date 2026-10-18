@@ -27,7 +27,7 @@ type OpenAI struct {
 func NewOpenAI(token, model string, opts ...option.RequestOption) *OpenAI {
 	return &OpenAI{
 		client: openai.NewClient(append([]option.RequestOption{option.WithAPIKey(token)}, opts...)...),
-		model:  openai.ChatModel(model),
+		model:  model,
 	}
 }
 

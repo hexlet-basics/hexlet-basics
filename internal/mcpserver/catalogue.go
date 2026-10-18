@@ -8,6 +8,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/oauthserver"
 )
@@ -280,7 +281,7 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	}
 	// The handler pages in SQL; the clamped page size goes to it, not the
 	// agent's.
-	params := api.ListBlogPostsParams{Page: api.NewOptInt32(int32(page)), PerPage: api.NewOptInt32(int32(perPage))}
+	params := api.ListBlogPostsParams{Page: api.NewOptInt32(apiconv.Int32FromInt(page)), PerPage: api.NewOptInt32(apiconv.Int32FromInt(perPage))}
 	posts, err := s.deps.Catalogue.ListBlogPosts(ctx, params)
 	if err != nil {
 		return result{}, errs.Wrapf(err, "list blog posts")
@@ -306,7 +307,7 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 		return result{}, notFoundOf(err, "blog post")
 	}
 	return result{
-		text: fmt.Sprintf("Blog post %s", args.Slug),
+		text: "Blog post " + args.Slug,
 		data: view,
 	}, nil
 }

@@ -14,6 +14,7 @@ import (
 
 	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/selfprotection"
@@ -130,7 +131,7 @@ func (h *APIErrorHandler) problem(ctx context.Context, status int, err error) ap
 	problem := api.ProblemDetails{
 		Type:   "about:blank",
 		Title:  h.translator.StatusText(ctx, status),
-		Status: int32(status),
+		Status: apiconv.Int32FromInt(status),
 	}
 	if message, data, ok := detailFor(err); ok {
 		translated := make(map[string]any, len(data))

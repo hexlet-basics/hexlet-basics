@@ -44,7 +44,7 @@ const (
 	// (ADR-0022). The consent screen is the SSR route /connect, outside the prefix.
 	authorizePath     = "/oauth/authorize"
 	callbackPath      = "/oauth/authorize/callback"
-	tokenPath         = "/oauth/token"
+	tokenPath         = "/oauth/token" //nolint:gosec // G101: a URL path named token, not a credential
 	revokePath        = "/oauth/revoke"
 	userinfoPath      = "/oauth/userinfo"
 	endSessionPath    = "/oauth/end_session"
