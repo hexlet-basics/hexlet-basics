@@ -76,7 +76,8 @@ const filtersOf = (search: AuditSearch): Filters => ({
 // A blank input is no filter: it stays out of the address and the request.
 const searchOf = (filters: Filters): AuditSearch => ({
   actorUserId: filters.actorUserId === "" ? undefined : Number(filters.actorUserId),
-  channel: filters.channel === "" ? undefined : (filters.channel as AuditSearch["channel"]),
+  // "" (any channel) is no member of the enum, so it parses to nothing.
+  channel: zAdminListAuditRecordsQuery.shape.channel.safeParse(filters.channel).data,
   operation: filters.operation || undefined,
   entityType: filters.entityType || undefined,
   entityId: filters.entityId || undefined,

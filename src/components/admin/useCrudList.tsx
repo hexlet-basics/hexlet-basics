@@ -103,7 +103,7 @@ export function useCrudList<
   const search: ListQuery = useSearch({ strict: false });
   const navigate = useNavigate();
   const setSearch = (patch: Partial<ListQuery>) =>
-    navigate({ search: ((prev: ListQuery) => ({ ...prev, ...patch })) as never });
+    navigate({ to: ".", search: (prev) => ({ ...prev, ...patch }) });
 
   // What the box shows follows the keystrokes; the address (and so the query)
   // follows it a beat later. A new term starts from the first page: the old page
@@ -165,8 +165,7 @@ export function useCrudList<
               onClick={() =>
                 confirmDelete({
                   description: describe(row.original),
-                  onConfirm: () =>
-                    deleteMutation.mutate({ path: { id: row.original.id } } as TDeleteVars),
+                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
                 })
               }
             >
