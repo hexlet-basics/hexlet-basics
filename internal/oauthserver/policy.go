@@ -61,7 +61,10 @@ func (a authorizer) ValidateAuthRequest(
 ) (string, error) {
 	oauthClient, err := storage.GetClientByClientID(ctx, req.ClientID)
 	if err != nil {
-		return "", oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err)
+		return "", errs.Wrapf(
+			oidc.ErrInvalidRequestRedirectURI().WithDescription("unable to retrieve client by id").WithParent(err),
+			"get client",
+		)
 	}
 
 	err = op.ValidateAuthReqRedirectURI(oauthClient, req.RedirectURI, req.ResponseType)
@@ -74,8 +77,11 @@ func (a authorizer) ValidateAuthRequest(
 		case slices.Contains(standardScopes(), scope):
 		case slices.Contains(customScopes(), scope) && oauthClient.IsScopeAllowed(scope):
 		default:
-			return "", oidc.ErrInvalidScope().WithDescription("The scope %q is not available to this client. "+
-				"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes()), standardScopes()...), ", "))
+			return "", errs.Wrapf(
+				oidc.ErrInvalidScope().WithDescription("The scope %q is not available to this client. "+
+					"Supported scopes: %s.", scope, strings.Join(append(slices.Clone(customScopes()), standardScopes()...), ", ")),
+				"validate scope",
+			)
 		}
 	}
 

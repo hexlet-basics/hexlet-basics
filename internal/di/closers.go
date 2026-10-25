@@ -134,5 +134,5 @@ func shutdown(ctx context.Context, injector do.Injector) error {
 		return nil
 	}
 
-	return report
+	return errs.Wrapf(report, "shut down the injector")
 }

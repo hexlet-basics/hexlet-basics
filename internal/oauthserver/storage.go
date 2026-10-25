@@ -105,12 +105,15 @@ func digest(secret string) string {
 // S256 is mandatory for every client (ADR-0022).
 func (s *storage) CreateAuthRequest(ctx context.Context, req *oidc.AuthRequest, _ string) (op.AuthRequest, error) {
 	if req.CodeChallenge == "" || req.CodeChallengeMethod != oidc.CodeChallengeMethodS256 {
-		return nil, oidc.ErrInvalidRequest().WithDescription("PKCE is required: send code_challenge with code_challenge_method=S256")
+		return nil, errs.Wrapf(
+			oidc.ErrInvalidRequest().WithDescription("PKCE is required: send code_challenge with code_challenge_method=S256"),
+			"require pkce",
+		)
 	}
 
 	if len(req.Prompt) == 1 && req.Prompt[0] == oidc.PromptNone {
 		// Nobody can sign in without a screen, so there is no silent grant.
-		return nil, oidc.ErrLoginRequired()
+		return nil, errs.Wrapf(oidc.ErrLoginRequired(), "refuse silent grant")
 	}
 
 	id, err := randomToken(idBytes)
@@ -643,7 +646,7 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 		Only(ctx)
 	switch {
 	case ent.IsNotFound(err):
-		return oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired")
+		return errs.Wrapf(oidc.ErrInvalidGrant().WithDescription("refresh token is invalid or expired"), "refresh token")
 	case err != nil:
 		return errs.Wrapf(err, "refresh token")
 	}
@@ -658,10 +661,13 @@ func (s *storage) refuseUnspendable(ctx context.Context, refresh string) error {
 func (s *storage) refuseReuse(ctx context.Context, row *ent.OAuthRefreshToken) error {
 	err := s.revokeFamily(ctx, row.FamilyID)
 	if err != nil {
-		return oidc.ErrServerError().WithParent(err)
+		return errs.Wrapf(oidc.ErrServerError().WithParent(err), "revoke family")
 	}
 
-	return oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again")
+	return errs.Wrapf(
+		oidc.ErrInvalidGrant().WithDescription("refresh token was already used: the authorization is revoked, sign in again"),
+		"refuse reused refresh token",
+	)
 }
 
 // revokeFamily deletes every access and refresh token descended from one
