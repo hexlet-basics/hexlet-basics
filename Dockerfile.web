@@ -6,10 +6,10 @@
 #
 # node and pnpm must match mise.toml; move them together.
 
-FROM node:26.11.1-slim AS base
+FROM node:26.12.1-slim AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
 # Node 25+ no longer bundles corepack, so pnpm comes from the registry.
-RUN npm install --global pnpm@12.11.2
+RUN npm install --global pnpm@12.15.0
 WORKDIR /app
 
 FROM base AS build
@@ -32,7 +32,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN mkdir -p .agents/skills
 RUN --mount=type=cache,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
-FROM node:26.11.1-slim
+FROM node:26.12.1-slim
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
