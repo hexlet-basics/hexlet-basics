@@ -1,5 +1,5 @@
 # Values for the Go stack. Secrets are not here: `helm secrets` layers the
-# sops-encrypted legacy/k8s/secrets.yaml on top (see k8s/Makefile), and its
+# sops-encrypted secrets file (k8s/secrets.yaml) on top (see k8s/Makefile), and its
 # secrets.code_basics.env map becomes the Opaque Secret every Go pod reads with
 # envFrom. Plain settings live below and render as `env:`, which wins over a
 # stale key of the same name left in the secret.
@@ -21,7 +21,7 @@ images:
 # OAUTH_ENCRYPTION_KEY (at least 32 random characters; required only once
 # OAUTH_ENABLED is "true"; rotating it invalidates every issued access token).
 # OAUTH_ENCRYPTION_KEY is NOT in the sops file yet: add it to
-# secrets.code_basics.env in legacy/k8s/secrets.yaml (`sops` edit) before
+# secrets.code_basics.env in k8s/secrets.yaml (`sops` edit) before
 # switching the OAuth server on.
 goEnv:
   # `production` also switches on config.validateProduction: the committed

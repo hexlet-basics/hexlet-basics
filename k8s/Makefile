@@ -2,12 +2,11 @@
 # it: after a release is merged, `git pull` the bumped Chart.yaml and run
 # `make helm-upgrade-app` here.
 #
-# Secrets stay in the sops-encrypted legacy/k8s/secrets.yaml (age recipient in
-# legacy/k8s/.sops.yaml): legacy/terraform reads the same file by relative
-# path, so it moves when legacy/ is retired, not before.
+# Secrets stay in a sops-encrypted file, k8s/secrets.yaml by default (age
+# recipient in k8s/.sops.yaml); SECRETS=<path> points the targets elsewhere.
 CURRENT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 NAMESPACE := codebasics
-SECRETS := $(CURRENT_DIR)/../legacy/k8s/secrets.yaml
+SECRETS ?= $(CURRENT_DIR)/secrets.yaml
 
 k8s-utils-install:
 	brew install helm kubectl sops age

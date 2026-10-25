@@ -2,7 +2,7 @@
 -- stack stores and serves plain trusted HTML, so an <action-text-attachment>
 -- (an sgid only Rails can resolve) renders as nothing: those bodies need a hand
 -- fix after the copy. img/iframe/table are the other tags legacy's own check
--- (legacy/app/models/blog_post.rb) singles out.
+-- (app/models/blog_post.rb of the Rails app) singles out.
 SELECT bp.slug,
        bp.state,
        bp.locale,

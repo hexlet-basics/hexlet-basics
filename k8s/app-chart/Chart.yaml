@@ -1,5 +1,5 @@
 apiVersion: v2
-# Same chart and release name as the legacy chart (legacy/k8s/app-chart): the
+# Same chart and release name as the legacy chart: the
 # cutover is `helm upgrade codebasics` over the running release, so Helm
 # replaces the Rails workloads in place and `helm rollback` restores them for
 # the rollback window (ADR-0015). Renaming it would mean a second release

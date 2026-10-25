@@ -498,9 +498,8 @@ are committed on `main`, anything bigger is done in a worktree. See
 - The Go stack deploys with `k8s/app-chart` (Helm, `k8s/Makefile`) from the
   images built by `Dockerfile` (server, worker, atlas) and `Dockerfile.web`
   (SSR); `release-please.yml` publishes them to GHCR on release. The sops secrets
-  file and `terraform/` left with `legacy/`; `k8s/Makefile` still points at
-  `../legacy/k8s/secrets.yaml`. If you touch any of it, call out the change
-  clearly in handoff notes. Never commit secrets.
+  file is `k8s/secrets.yaml` (`SECRETS=` overrides it in `k8s/Makefile`). If you
+  touch any of it, call out the change clearly in handoff notes. Never commit secrets.
 - Handed-off chart changes (the chart is not edited by the Go work): HTTP probes
   on `/healthz` and `/readyz` for the API and the worker (`HEALTH_ADDR`), and
   `APP_ENV=production` plus the required variables of ADR-0024 on both workloads.

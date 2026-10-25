@@ -341,13 +341,14 @@ s_preflight() {
 
   CHART_VERSION=$(yq '.version' "$REPO_ROOT/k8s/app-chart/Chart.yaml")
   write_env CUTOVER_CHART_VERSION "$CHART_VERSION"
-  LEGACY_CHART_VERSION=$(yq '.version' "$REPO_ROOT/legacy/k8s/app-chart/Chart.yaml")
+  # The legacy chart is no longer in this tree: read it off the running release.
+  LEGACY_CHART_VERSION=$(helm list -n "$NAMESPACE" -f "^$RELEASE\$" -o json | yq -p json '.[0].chart')
   write_env LEGACY_CHART_VERSION "$LEGACY_CHART_VERSION"
   say "Go chart/image version: $CHART_VERSION · legacy chart: $LEGACY_CHART_VERSION"
   # The sops file is expected to be dirty from the secrets stage on (it is
   # committed after the night), so a re-run must not trip over it.
-  verify "working tree is clean (apart from legacy/k8s/secrets.yaml)" bash -c \
-    "[[ -z \"\$(git -C '$REPO_ROOT' status --porcelain | grep -v 'legacy/k8s/secrets.yaml')\" ]]"
+  verify "working tree is clean (apart from k8s/secrets.yaml)" bash -c \
+    "[[ -z \"\$(git -C '$REPO_ROOT' status --porcelain | grep -v 'k8s/secrets.yaml')\" ]]"
   if ! git -C "$REPO_ROOT" describe --tags --exact-match >/dev/null 2>&1; then
     warn "HEAD is not a release tag. The migrations and chart must be the release's."
     human_check "Continue on $(git -C "$REPO_ROOT" rev-parse --short HEAD) anyway?"
@@ -399,7 +400,7 @@ s_postbox() {
   say "Yandex Cloud console → the production folder → Cloud Postbox."
   open_url "https://console.yandex.cloud/"
   step "Addresses: support@hexlet.io's domain shows Verified (DKIM and SPF)."
-  note "DKIM records live in Cloudflare (legacy/terraform/cloudflare.tf, _domainkey)."
+  note "DKIM records live in Cloudflare (the _domainkey records)."
   step "IAM → the Postbox service account → a static access key exists."
   note "You will paste its id and secret into the sops file in the next stage."
   human_check "Domain verified and a static key in hand?"
@@ -407,7 +408,7 @@ s_postbox() {
 
 s_secrets() {
   stage "Cluster secrets: the Go keys in the sops file"
-  say "The editor opens legacy/k8s/secrets.yaml decrypted (in memory, re-encrypted on save)."
+  say "The editor opens k8s/secrets.yaml decrypted (in memory, re-encrypted on save)."
   say "Under secrets.code_basics.env make sure these keys exist:"
   note "${REQUIRED_SECRET_KEYS[*]}"
   step "GUEST_COOKIE_SECRET, EMAIL_TOKEN_SECRET: fresh random values (e.g. in vim: :r !openssl rand -hex 32)."
@@ -430,7 +431,7 @@ s_secrets() {
     "[[ \$(yq '.goEnv.SITE_URL' '$REPO_ROOT/k8s/app-chart/values.yaml') == '$SITE' && \$(yq '.goEnv.PUBLIC_URL' '$REPO_ROOT/k8s/app-chart/values.yaml') == '$SITE' ]]"
   verify "the web deployment gets SITE_URL (#808)" bash -c \
     "make -s --no-print-directory -C '$REPO_ROOT/k8s' helm-template-app 2>/dev/null | yq 'select(.kind == \"Deployment\" and .metadata.name == \"$RELEASE-web-deployment\") | .spec.template.spec.containers[].env[] | select(.name == \"SITE_URL\") | .value' | grep -qx '$SITE'"
-  say "Commit the re-encrypted legacy/k8s/secrets.yaml after the night (values stay ENC[...])."
+  say "Commit the re-encrypted k8s/secrets.yaml after the night (values stay ENC[...])."
 }
 
 s_db() {
@@ -554,8 +555,9 @@ s_legacy_on_new_schema() {
 s_rehearse_apps() {
   stage "Both apps on the migrated copy (rehearsal only)"
   say "In another terminal, legacy against the copy (this is the rollback proof):"
-  note "  cd legacy && DATABASE_URL=<copy> bin/rails db:prepare   # must be a no-op"
-  note "  cd legacy && DATABASE_URL=<copy> bin/dev                 # browse, open a lesson, a blog post"
+  note "  git worktree add /tmp/legacy ce412127f   # the last commit that still has the Rails app"
+  note "  cd /tmp/legacy/legacy && DATABASE_URL=<copy> bin/rails db:prepare   # must be a no-op"
+  note "  cd /tmp/legacy/legacy && DATABASE_URL=<copy> bin/dev                 # browse, open a lesson, a blog post"
   human_check "db:prepare changed nothing and legacy pages render?"
   say "Then the Go stack against the copy:"
   note "  DATABASE_URL=<copy> mise run dev   # browse the web port from: mise env | grep WEB_PORT"
@@ -568,7 +570,7 @@ s_book() {
   stage "The free book PDF in the bucket (#804)"
   say "Yandex Cloud console → Object Storage → the bucket in BLOB_BUCKET_URL."
   open_url "https://console.yandex.cloud/"
-  step "Upload $REPO_ROOT/legacy/public/book.pdf (~28 MB) at the bucket root as book.pdf."
+  step "Upload the book (~28 MB) at the bucket root as book.pdf: git show ce412127f:legacy/public/book.pdf > book.pdf"
   step "Object → Edit metadata: Content-Type = application/pdf."
   note "A different key needs BOOK_BLOB_KEY in goEnv. Download is checked after the switch."
   human_check "book.pdf uploaded with Content-Type application/pdf?"
