@@ -1,6 +1,0 @@
-# vite-test: bin/vite dev --mode=test
-webserver: make services-webserver-run
-frontend: make services-frontend-run
-app: make services-app-run
-jobs: make services-jobs-run
-cable: make services-cable-run
