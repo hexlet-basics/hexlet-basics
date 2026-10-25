@@ -1,8 +1,5 @@
 version: 2
 
-# The root stack only: legacy/ is the Rails app being retired (hard cutover), so
-# its Gemfile and package.json are deliberately not tracked here.
-#
 # cooldown: a release must be a week old before a PR is opened, the same
 # supply-chain delay the pnpm minimumReleaseAge setting applies locally.
 updates:

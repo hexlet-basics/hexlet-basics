@@ -1,7 +1,6 @@
 amends "package://github.com/jdx/hk/releases/download/v2.8.1/hk@2.8.1#/Config.pkl"
 
 // Git hooks managed by hk (installed by `mise run setup`, and by mise's postinstall hook, via `hk install --mise`).
-// Rails/legacy keeps its own hooks under legacy/.
 hooks {
   ["pre-commit"] {
     steps {
@@ -43,12 +42,6 @@ hooks {
       ["jactionlint"] {
         glob = List(".github/workflows/*.yml")
         check = "jactionlint {{files}}"
-      }
-      // Terraform under legacy/terraform: fmt and validate without the backend.
-      ["terraform"] {
-        glob = List("legacy/terraform/**/*.tf")
-        check = "mise run lint:infra"
-        exclusive = true
       }
       ["helm"] {
         glob = List("k8s/app-chart/**")

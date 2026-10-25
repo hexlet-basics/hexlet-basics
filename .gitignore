@@ -1,6 +1,5 @@
-# Root ignore for the new stack. Go-centric root: Go project (go.mod, cmd/,
-# internal/) + Vite/React frontend (package.json, vite.config.ts, index.html,
-# src/) both live at the root. The legacy Rails app has its own legacy/.gitignore.
+# Go project (go.mod, cmd/, internal/) and Vite/React frontend (package.json,
+# vite.config.ts, index.html, src/), both at the root.
 
 # Dependencies
 node_modules/

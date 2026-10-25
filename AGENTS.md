@@ -1,20 +1,15 @@
 # AGENTS Guide
 
-This file is for coding agents working at the **root** of `hexlet-basics`. The
-root is the Go rewrite; the original Rails app lives in `legacy/` with its own
-`AGENTS.md`.
+This file is for coding agents working in `hexlet-basics`, the Go rewrite of the
+original Rails app (retired and removed from the repository).
 Prefer these instructions over generic Go or React defaults.
 
 ## What This Repo Is (Read First)
 
-`hexlet-basics` is mid-migration from Rails to Go. Two apps coexist in one repo:
-
-- **Root = the new stack.** A Go API (`cmd/`, `internal/`, `ent/`) whose HTTP
-  contract is generated from a TypeSpec definition (`api-spec/`), plus a
-  TanStack Start (React 19 + TypeScript) frontend in `src/`.
-- **`legacy/` = the Rails app** being replaced (Rails + Inertia + React). It has
-  its own Makefile, package.json, and agent guide. When your work is inside
-  `legacy/`, follow `legacy/AGENTS.md`, not this file.
+`hexlet-basics` is the Go replacement of the Rails app. It is one stack: a Go API
+(`cmd/`, `internal/`, `ent/`) whose HTTP contract is generated from a TypeSpec
+definition (`api-spec/`), plus a TanStack Start (React 19 + TypeScript) frontend
+in `src/`.
 
 The plan of record is **hard cutover at parity** (no long side-by-side run),
 keeping backward-compat only on bcrypt passwords and URL routes. See
@@ -204,14 +199,12 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
   from a locale catalog) + `lint:helm` (helm lint, render, kubeconform) +
-  `lint:infra` (terraform fmt and validate for `legacy/terraform`) + `lint:migrations`
-  (shipped migrations stay immutable and new ones pass squawk; a deliberate edit
-  carries a `Migration-Edit: <why>` line in its commit message) + `lint:contract`
-  (vacuum) + `lint:agents` (agnix). `lint:contract-breaking` (oasdiff against
-  `origin/main`) is manual and not part of `lint`. CI runs the
+  `lint:migrations` (shipped migrations immutable, new ones squawk-clean; an edit
+  needs a `Migration-Edit: <why>` line in its commit) + `lint:contract` (vacuum) +
+  `lint:agents` (agnix); `lint:contract-breaking` (oasdiff) is manual. CI runs the
   same task. The pre-push hook runs the Go, frontend and ADR checks; the
   pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
-  shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
+  shellcheck, zizmor, jactionlint and helm on the staged files.
   Pushes need them clean.
 - **golangci-lint** (`.golangci.yml`) enables, beyond the standard set,
   `gosec` (tests exempt from G115, G304, G306, G301, G101 only; a production
@@ -284,74 +277,15 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   db:up`) and `pnpm exec playwright install chromium` once; never part of
   `mise run test`. It asserts on what pages show, mocks nothing, and does not run
   lesson code (that needs an environment the stack lacks).
-  A spec only says what a person does and sees: it takes `test` from
-  `e2e/support/test.ts`, gets the `site` fixture and calls steps on it
-  (`site.session.signInAs(learner)`, `site.lesson.open(path)`), never `page`, a
-  selector or a wait. Three things hold that line: that `test` hands a scenario
-  no `page` (destructuring it fails `tsc -b`), `Site` keeps its browser in a
-  `#private` field (`site.page` fails `tsc -b`), and oxlint rejects importing
-  `@playwright/test` under `e2e/tests`. Steps live in a file per concept under
-  `e2e/support/` (`session.ts`, `catalog.ts`, `lesson.ts`, `admin.ts`,
-  `locale.ts`), and a scenario that needs a step the site does not have adds it
-  there.
+  A spec only says what a person does and sees, through the `site` fixture of
+  `e2e/support/test.ts`; see `docs/agents/testing.md`, "End-to-end specs".
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
-- **A test never creates the data it arranges: it reads it from `fixtures/`.**
-  Every row there is named for the case it exists for, with a label:
-  `{{ id "user_removed" }}` in the YAML (primary keys and references alike), and
-  `fixture.ID(fixture.UserRemoved)` (`fixture.ID32` for the contract's int32)
-  in a test: every label has a generated `fixture.Label` variable (the
-  `snake_case` label in `PascalCase`), and `ID` takes a `Label`, not a string, so
-  a typo or a removed row fails the build. `NewHarnessAs(t,
-  fixture.UserLearnerWithAGap)` signs a request in as that user. Add the row,
-  then run `mise run gen:fixtures`; `fixture.LabelOf(name)` is only for a label
-  read at run time (a request path). Ids count up in the order rows are written
-  (the application reads "oldest first" off the id, so write older rows first);
-  a label no row defines panics in the YAML, and `LabelOf` of one panics in
-  `ID`. A case a test needs and no row has becomes a new row, with a comment
-  above it saying what it is for, never an
-  `.Create()` in the test: `forbidigo` rejects `.Create()`, `.CreateBulk()`,
-  `sql.Open` and `store.NewDB` in `_test.go`, and a test whose creation is the
-  act under test (a sign-up, a concurrent request that wins a race, a database
-  constraint) says so with a `//nolint:forbidigo // why`. Flipping one flag on a
-  fixture row (`admin=false`, `ClearCurrentVersionID`) or deleting a row is fine;
-  a state two tests share is a row of its own. Do not assert how many rows a
-  table holds (a new fixture breaks that) or a raw id; count the rows you start
-  from, and assert on business facts (slug, order, label). A test that depends on
-  today's date does not read the wall clock: the harness's clock is
-  `testsupport.Today` (`assistant.WithClock`, `courseloader.WithClock`,
-  `account.WithClock`) and the fixtures are written relative to it.
-  The fixtures were exported once from the legacy Rails set and have been edited
-  by hand since; `mise run fixtures:import` skips every file that exists, and
-  `mise run db:fixtures` and the e2e database load them through `cmd/fixtures`,
-  the same loader the test template database uses.
-- A test owns no connection and cleans nothing up: it gets a transaction that is
-  rolled back (`testsupport.NewClient*`, `NewHarness*`), the way a Rails test does.
-  Jobs are worked in it with `rivertest.Worker` (`jobs.<Kind>Worker`), and what
-  was queued or published is read back through the same transaction
-  (`rivertest.RequireInsertedTx`, `testsupport.PublishedEvents`). Nothing runs a
-  live River client or Watermill router against the shared database.
-- Tests use `stretchr/testify` (`require` for preconditions, `assert` for the
-  checks after them; `testifylint` enforces the idioms); each handler test gets an
-  explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
-  tests, and builds a `Server` through `testsupport`. Why these rules: ADR-0019.
-- **Parallel and leaks** (ADR-0019): a package with no database uses
-  `t.Parallel()`; `handlers` runs its tests in parallel, which is safe only
-  because no two tests touch the same fixture row (two transactions updating one
-  row block each other, so a test that needs a row to itself gets its own
-  fixture row). Adopt `t.Parallel()` in another DB-backed package only after
-  that is true and measured. `goleak.VerifyTestMain` guards the
-  goroutine-spawning packages (assistant, exercise runner, events), and
-  `testing/synctest` is for in-memory timing, never for a query's `NOW()`.
-  Table-driven subtests for pure functions with three or more cases, scenario
-  tests for handlers.
-  The harness runs the real event publisher and job enqueuers over the test
-  transaction, so a test asserts on what an operation left behind
-  (`testsupport.PublishedEvents`, `testsupport.EnqueuedJobs`, DB rows), never on
-  what was called, how often or with which arguments: no call-verification
-  tests. Only the LLM and the Docker runner are mocks (`testsupport.NewMocks`,
-  moq): set a mock's `…Func` for what the boundary answers, and read the prompt
-  back through the response.
+- **Writing a test: read `docs/agents/testing.md` first.** Its rules are enforced
+  by `forbidigo` and review: a test reads the data it arranges from `fixtures/`
+  (never `.Create()`), runs in a rolled-back transaction, asserts on what an
+  operation left behind and not on calls, and mocks only the LLM and the Docker
+  runner (ADR-0019).
 
 ## Build
 
@@ -514,7 +448,7 @@ with us, the rule below wins, for the reason in the linked ADR.
   (`<type>(<scope>?): <description>`); `commitlint` (commit-msg hook) enforces
   types. Commit messages are in English; the body explains *why*, not *what*.
 - Releases are cut by `release-please` (config `release-please-config.json`,
-  same type→bump rules as legacy). It maintains a release PR bumping
+  same type→bump rules as before). It maintains a release PR bumping
   `package.json` and `CHANGELOG.md`; merging it tags `vX.Y.Z`.
 - Type → bump (pre-1.0, so bumps shift down one level): `feat` → patch,
   `fix`/`perf`/`revert` → patch, `chore`/`build` → patch (via
@@ -548,8 +482,6 @@ are committed on `main`, anything bigger is done in a worktree. See
 
 ## High-Value Agent Workflow
 
-- Confirm you're working at the root (Go) vs `legacy/` (Rails) and follow the
-  right guide.
 - To change the API: edit TypeSpec → `mise run gen` → implement/adjust the Go
   handler and, if needed, the frontend client usage → run the narrowest Go test.
 - After Go changes: `go build ./...`, then `go test ./...` (or a single package);
@@ -565,10 +497,10 @@ are committed on `main`, anything bigger is done in a worktree. See
 
 - The Go stack deploys with `k8s/app-chart` (Helm, `k8s/Makefile`) from the
   images built by `Dockerfile` (server, worker, atlas) and `Dockerfile.web`
-  (SSR); `release-please.yml` publishes them to GHCR on release. The sops
-  secrets file and `terraform/` still live under `legacy/k8s` and
-  `legacy/terraform`. If you touch any of it, call out the change clearly in
-  handoff notes. Never commit secrets.
+  (SSR); `release-please.yml` publishes them to GHCR on release. The sops secrets
+  file and `terraform/` left with `legacy/`; `k8s/Makefile` still points at
+  `../legacy/k8s/secrets.yaml`. If you touch any of it, call out the change
+  clearly in handoff notes. Never commit secrets.
 - Handed-off chart changes (the chart is not edited by the Go work): HTTP probes
   on `/healthz` and `/readyz` for the API and the worker (`HEALTH_ADDR`), and
   `APP_ENV=production` plus the required variables of ADR-0024 on both workloads.

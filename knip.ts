@@ -1,10 +1,10 @@
 import type { KnipConfig } from "knip";
 
 // Unused files, exports and dependencies of the frontend and the TypeSpec
-// tooling. legacy/ is the Rails app being retired and has its own package.json.
+// tooling.
 const config: KnipConfig = {
   entry: ["i18next.config.ts", "src/routes/**/*.{ts,tsx}"],
-  ignore: ["legacy/**", "src/client/**", "src/types/**"],
+  ignore: ["src/client/**", "src/types/**"],
   ignoreDependencies: [
     // Run by name from the SSR image (Dockerfile.web), never imported.
     "srvx",

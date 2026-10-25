@@ -15,7 +15,6 @@ export default defineConfig({
     suspicious: "error",
   },
   ignorePatterns: [
-    "legacy/**/*",
     "src/client/**",
     // The sample course the loader test reads: course content, not our source.
     "internal/courseloader/testdata/**",

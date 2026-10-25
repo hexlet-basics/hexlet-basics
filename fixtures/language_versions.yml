@@ -1,6 +1,5 @@
 # Fixtures for `language_versions`, exported once from the legacy Rails fixtures and then
-# given labels (internal/fixture): edit it by hand, `mise run fixtures:import`
-# skips a file that exists.
+# given labels (internal/fixture): edit it by hand.
 - id: {{ id "version_ruby_current" }}
   created_at: '2026-07-27 09:59:18'
   docker_image: hexletbasics/exercises-ruby

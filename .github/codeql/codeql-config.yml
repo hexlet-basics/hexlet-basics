@@ -1,8 +1,6 @@
 name: hexlet-basics CodeQL
-# Generated code is owned by the generators, not reviewed by hand; legacy/ is
-# the Rails app being retired.
+# Generated code is owned by the generators, not reviewed by hand.
 paths-ignore:
-  - legacy
   - ent/*.go
   - ent/*/
   - internal/api

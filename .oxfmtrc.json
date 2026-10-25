@@ -8,7 +8,6 @@
     "docs/**",
     "fixtures/**",
     "internal/courseloader/testdata/**",
-    "legacy/**",
     ".air.toml",
     "pnpm-lock.yaml",
     "public/**",

@@ -2,7 +2,6 @@
 #   mise tasks          list them
 #   mise run <task>     run one
 # Replaces the old Makefile; the dev stack itself is the [daemons] table in mise.toml.
-# The Rails app in legacy/ keeps its own Makefile.
 #
 # Ordering: `depends` runs in parallel in mise, unlike Make prerequisites. Where
 # order matters (the codegen pipeline), steps are a `run` list, which is sequential.
@@ -164,12 +163,6 @@ run = [
 description = "Prune/sync go.mod after generation or dep changes"
 run = "go mod tidy"
 
-["fixtures:import"]
-description = "Convert legacy Rails fixtures into Go testfixtures YAML in fixtures/ (non-destructive; FORCE=1 overwrites, ONLY=t1,t2 scopes). Borrows the Rails runtime; adds no files to legacy/"
-dir = "legacy"
-env = { RAILS_ENV = "test" }
-run = "bin/rails runner ../scripts/export_fixtures.rb"
-
 # --- lint & typecheck ---------------------------------------------------------------
 
 [lint]
@@ -313,28 +306,12 @@ got=$(awk '$1 == "code-basics.ru" { print $2, $3 }' <<<"$paths" | paste -sd' ' -
 [ "$got" = "/ web-service" ] || { echo "code-basics.ru must route only / to web, got: $got"; exit 1; }
 '''
 
-["lint:infra"]
-description = "Terraform (legacy/terraform): fmt --check, then init without the backend and validate in a scratch copy, so no credentials, state or yc_config.json are needed"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-tf=legacy/terraform
-terraform -chdir="$tf" fmt -check -diff -recursive
-scratch=$(mktemp -d)
-trap 'rm -rf "$scratch"' EXIT
-cp -R "$tf/." "$scratch"
-# The yandex provider reads this key file while validating its configuration.
-echo '{}' > "$scratch/yc_config.json"
-terraform -chdir="$scratch" init -backend=false -input=false -lockfile=readonly
-terraform -chdir="$scratch" validate
-'''
-
 ["lint:size"]
 description = "Client bundle budgets (size-limit config in package.json); builds the web app first"
 run = ["scripts/heavy pnpm build", "scripts/heavy pnpm exec size-limit"]
 
 ["lint:shell"]
-description = "shellcheck the scripts under scripts/ (the legacy and third-party skill scripts are not ours)"
+description = "shellcheck the scripts under scripts/ (third-party skill scripts are not ours)"
 run = ["shellcheck -x scripts/heavy scripts/*.sh scripts/oneoff/*/*.sh", "sh scripts/heavy_test.sh"]
 
 ["lint:workflows"]
