@@ -227,13 +227,14 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 
 - **Heavy tasks are serialized.** Several sessions and worktrees share one machine, so the
   leaf tasks that saturate it (`go test`, `go vet`, `golangci-lint`, `tsc -b`, vitest, builds,
-  e2e, `gen:check`, the pre-commit golangci-lint) run through `scripts/heavy`, which takes one
-  lock shared by every worktree and prints `waiting for the heavy-task lock held by ...` when
-  it queues. Use the mise tasks; when you must run one of these commands by hand, prefix it
-  with `scripts/heavy` and never start them in parallel yourself. `HEAVY_LOCK_TIMEOUT`
-  (seconds, default 1800) bounds the wait (exit 75); the lock is re-entrant
-  (`HEAVY_LOCK_HELD`) and off under `CI`. Wrap leaf tasks only, never a parent such as
-  `lint`, or it would hold the lock for children that wait on it.
+  e2e, `gen:check`, the pre-commit golangci-lint) run through
+  [`heavy`](https://github.com/mokevnin/heavy) (`"github:mokevnin/heavy"` in `mise.toml`), which
+  holds one of a few machine-wide slots for the command's duration and prints
+  `all N slots of pool 'default' are busy, waiting for one` when it queues. Use the mise tasks;
+  when you must run one of these commands by hand, prefix it with `heavy --` and never start
+  them in parallel yourself. `HEAVY_SLOTS` sets how many run at once, `heavy --status` shows who
+  holds them; a nested call (`HEAVY_HELD`) and `CI` run at once. Wrap leaf tasks only, never a
+  parent such as `lint`, or it would hold a slot for children that wait on it.
 
 - `mise run test` — the Go suite (`go test -race ./...`, plus `-shuffle=on` when `CI` is set: a
   shuffle disables go's result cache, so locally unchanged packages show `(cached)`). In CI tests run in a random

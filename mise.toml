@@ -12,6 +12,9 @@ pnpm = "12.15.0"
 # tree from source (~590 lines of go.mod/go.sum, a multi-minute cold build)
 # where mise just fetches the released binary.
 golangci-lint = "2.15.0"
+# heavy: machine-wide slot queue for the CPU-heavy commands (`heavy -- <command>`);
+# `heavy --status` shows who holds the slots.
+"github:mokevnin/heavy" = "0.1.1"
 # atlas: owns the DB schema going forward (versioned migrations). Tests apply
 # migrations through the Atlas Go library; new changes = atlas migrate new.
 # Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is
