@@ -1,5 +1,6 @@
 # typos: spelling in code, docs and comments. Generated code, vendored trees,
-# lockfiles and the translated catalogs (ru/es are not English) are skipped.
+# lockfiles, the translated catalogs and the sample course (ru/es are not English)
+# are skipped.
 [files]
 extend-exclude = [
   "legacy",
@@ -22,6 +23,7 @@ extend-exclude = [
   "!ent/schema",
   "migrations",
   "fixtures",
+  "internal/courseloader/testdata",
   "docs/research",
   "k8s/app-chart/secrets",
   "public/mockServiceWorker.js",
