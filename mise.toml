@@ -47,7 +47,7 @@ kubeconform = "0.8.0"
 # Terraform under terraform/ (mise run lint:infra); the pin follows
 # required_version in versions.tf.
 terraform = "1.17.0"
-# Guardrails from github.com/mokevnin/dev-guardrails. squawk lints the migrations a
+# Guardrails from github.com/mokevnin/dev-quality-gates. squawk lints the migrations a
 # change adds (lint:migrations), oasdiff compares the OpenAPI contract with the base
 # branch (lint:contract-breaking), vacuum lints the generated contract
 # (lint:contract) and agnix the agent instruction files (lint:agents).
