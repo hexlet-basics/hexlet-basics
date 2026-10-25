@@ -36,7 +36,7 @@ jobs:
       # Installs the toolchain pinned in mise.toml (go, node, pnpm,
       # golangci-lint — single source of truth with local dev), and caches it
       # between runs.
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       # mise-action does not cache the pnpm store (setup-node used to); keyed on
       # the lockfile the same way the Go cache is keyed on go.sum.
@@ -88,7 +88,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - id: pnpm-store
         run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
@@ -122,7 +122,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - run: pnpm install --frozen-lockfile
 
@@ -143,7 +143,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - name: Scan the pull request's commits
         env:
@@ -160,7 +160,7 @@ jobs:
           persist-credentials: false
 
       # node + pnpm pinned in mise.toml, same as local dev.
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       # mise-action does not cache the pnpm store (setup-node used to); keyed on
       # the lockfile the same way the Go cache is keyed on go.sum.
@@ -207,7 +207,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - id: pnpm-store
         run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
@@ -265,7 +265,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       # Keyed on go.sum: a dependency bump invalidates it, the restore-key still
       # seeds the next run from the previous tree.
@@ -322,7 +322,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - run: mise run lint:helm
 
@@ -335,7 +335,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
 
       - run: pnpm install --frozen-lockfile
 
