@@ -43,6 +43,12 @@ hooks {
         glob = List(".github/workflows/*.yml")
         check = "jactionlint {{files}}"
       }
+      // Terraform under terraform/: fmt and validate without the backend.
+      ["terraform"] {
+        glob = List("terraform/**/*.tf")
+        check = "mise run lint:infra"
+        exclusive = true
+      }
       ["helm"] {
         glob = List("k8s/app-chart/**")
         check = "mise run lint:helm"

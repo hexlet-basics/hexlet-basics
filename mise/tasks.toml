@@ -306,6 +306,22 @@ got=$(awk '$1 == "code-basics.ru" { print $2, $3 }' <<<"$paths" | paste -sd' ' -
 [ "$got" = "/ web-service" ] || { echo "code-basics.ru must route only / to web, got: $got"; exit 1; }
 '''
 
+["lint:infra"]
+description = "Terraform (terraform/): fmt --check, then init without the backend and validate in a scratch copy, so no credentials, state or yc_config.json are needed. Not part of lint: init downloads the providers, so the pre-commit hook runs it on a changed .tf"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+tf=terraform
+terraform -chdir="$tf" fmt -check -diff -recursive
+scratch=$(mktemp -d)
+trap 'rm -rf "$scratch"' EXIT
+cp -R "$tf/." "$scratch"
+# The yandex provider reads this key file while validating its configuration.
+echo '{}' > "$scratch/yc_config.json"
+terraform -chdir="$scratch" init -backend=false -input=false -lockfile=readonly
+terraform -chdir="$scratch" validate
+'''
+
 ["lint:size"]
 description = "Client bundle budgets (size-limit config in package.json); builds the web app first"
 run = ["scripts/heavy pnpm build", "scripts/heavy pnpm exec size-limit"]

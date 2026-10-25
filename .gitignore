@@ -1,6 +1,11 @@
 # Go project (go.mod, cmd/, internal/) and Vite/React frontend (package.json,
 # vite.config.ts, index.html, src/), both at the root.
 
+# Terraform: provider cache, and the backend key and provider config it writes
+.terraform/
+terraform/*.tfvars
+terraform/*.json
+
 # Dependencies
 node_modules/
 .pnpm-store/

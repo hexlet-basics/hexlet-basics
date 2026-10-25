@@ -204,7 +204,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   `lint:agents` (agnix); `lint:contract-breaking` (oasdiff) is manual. CI runs the
   same task. The pre-push hook runs the Go, frontend and ADR checks; the
   pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
-  shellcheck, zizmor, jactionlint and helm on the staged files.
+  shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
   Pushes need them clean.
 - **golangci-lint** (`.golangci.yml`) enables, beyond the standard set,
   `gosec` (tests exempt from G115, G304, G306, G301, G101 only; a production
@@ -498,7 +498,8 @@ are committed on `main`, anything bigger is done in a worktree. See
 - The Go stack deploys with `k8s/app-chart` (Helm, `k8s/Makefile`) from the
   images built by `Dockerfile` (server, worker, atlas) and `Dockerfile.web`
   (SSR); `release-please.yml` publishes them to GHCR on release. The sops secrets
-  file is `k8s/secrets.yaml` (`SECRETS=` overrides it in `k8s/Makefile`). If you
+  file is `k8s/secrets.yaml` (`SECRETS=` overrides it in `k8s/Makefile`) and
+  `terraform/` reads it (`mise run lint:infra` checks the Terraform). If you
   touch any of it, call out the change clearly in handoff notes. Never commit secrets.
 - Handed-off chart changes (the chart is not edited by the Go work): HTTP probes
   on `/healthz` and `/readyz` for the API and the worker (`HEALTH_ADDR`), and

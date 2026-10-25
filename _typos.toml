@@ -44,3 +44,8 @@ localed = "localed"
 curso = "curso"
 inicial = "inicial"
 autor = "autor"
+
+[default]
+# The name of the live ingress address in Yandex Cloud (terraform/vpc.tf): renaming
+# it would change the resource, so the misspelling stays.
+extend-ignore-re = ["code-basics-ingress-adress-1"]
