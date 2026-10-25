@@ -23,7 +23,7 @@ XSRF support to copy that value into `X-XSRF-TOKEN`; go-pkgz/auth's
 `GET`, `HEAD`, and `OPTIONS` requests are exempt. `SameSite=Lax` remains
 defense-in-depth rather than the primary CSRF control.
 
-**How each legacy sign-in method maps**
+## How each legacy sign-in method maps
 
 - **Email + password** — the auth module loads the user through ent, verifies
   the existing bcrypt hash, and passes that same user to `token.Service` for JWT

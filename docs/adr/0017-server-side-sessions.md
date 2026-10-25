@@ -19,7 +19,7 @@ that doubled as the XSRF token. We paid for a library whose HTTP-only API forced
 and got no revocation in return. Nothing has been deployed, so there is no live
 session to migrate.
 
-**The session**
+## The session
 
 - [`alexedwards/scs`](https://github.com/alexedwards/scs) owns the cookie, the
   token rotation, the idle and absolute timeouts and the middleware. The token is

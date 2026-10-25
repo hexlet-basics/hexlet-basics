@@ -365,7 +365,7 @@ cannot be read off an operation, so the TypeSpec service lists them under a
 root-level extension on the `HexletBasics` namespace, emitted at the root of
 `openapi.yaml`:
 
-```
+```text
 @extension("x-capabilities", #[#{ name: "mcp.read", kind: "read" }, ...])
 ```
 
@@ -725,7 +725,6 @@ with these settled in the slice:
   twice. The fixtures gained an updater and a publisher role per resource to test
   the split: a role that edits cannot publish, one that publishes can neither
   edit nor unpublish nor archive.
-
 
 ### Course Readiness (#863)
 

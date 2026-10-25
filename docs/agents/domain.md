@@ -14,7 +14,7 @@ If any of these files don't exist, **proceed silently**. Don't flag their absenc
 
 This repo is **single-context**: one glossary and one ADR set at the root.
 
-```
+```text
 /
 ├── GLOSSARY.md                         ← domain glossary
 ├── docs/adr/                          ← 0001-… binding architecture decisions

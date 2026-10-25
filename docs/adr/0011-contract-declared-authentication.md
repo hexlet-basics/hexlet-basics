@@ -52,7 +52,7 @@ The multipart attachment upload is a generated operation too: its file part is
 declared as `HttpPart<bytes>`, which omits the OpenAPI encoding block ogen
 cannot generate, so no operation sits outside the generated security layer.
 
-**Optional identity on public operations**
+## Optional identity on public operations
 
 Some public operations answer a visitor and a signed-in learner differently:
 the course read returns a learner's position, and starting or checking a lesson

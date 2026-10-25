@@ -10,7 +10,7 @@ with its own README and Makefile.
 - Go API: `cmd/`, `internal/`, `ent/`
 - API contract (source of truth): `api-spec/*.tsp` → `api-spec/dist/openapi.yaml`
 - Frontend: `src/`
-- Architecture decisions: [`docs/STACK.md`](./docs/STACK.md), [`docs/adr/`](./docs/adr)
+- Architecture decisions: [`docs/adr/`](./docs/adr)
 
 ## Setup
 

@@ -465,6 +465,7 @@ learner, `findTools`) is 88 KB, and a test fails past 100 KB; the admin tools
 alone are held to 90 KB. The budget is a decision to make on purpose.
 
 **What was cut.**
+
 - *Output schemas* are advertised as a shape (`shape.go`): the result's own
   fields by type, one level (`items: array`, `id: integer`), without prose,
   enums, formats or `required`. A client reads values and does not validate

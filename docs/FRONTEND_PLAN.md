@@ -21,6 +21,7 @@ Order is deliberate: **admin first** (large but self-contained, no SEO, pure
 generation), then the value spine, then the public/SEO surface last.
 
 ### Wave 0 — SSR foundation
+
 - Migrate the current Vite SPA to TanStack Start; wire SSR + Query dehydration.
 - Locale routing: optional prefix (`en` bare, `ru`/`es` prefixed) + root
   auto-detect (session → Accept-Language → country-by-IP).
@@ -29,32 +30,38 @@ generation), then the value spine, then the public/SEO surface last.
 - Run the existing catalog/course slice through SSR as the proof.
 
 ### Wave 1 — admin contract + CRUD engine
+
 - Author admin resources in TypeSpec **regularly**: `list/get/create/update/
   delete` with consistent models per resource.
 - Enable the hey-api **zod plugin**; regenerate the client.
 - Build the engine: `<CrudList>` (TanStack Table) + `<CrudForm>` (TanStack Form
-  + generated Zod + Mantine field wrappers) + admin route guard in `beforeLoad`.
+  - generated Zod + Mantine field wrappers) + admin route guard in `beforeLoad`.
 
 ### Wave 2 — admin screens
+
 - Drive the ~40 CRUD screens through the engine: banners, blog_posts,
   language_categories, language_landing_pages, languages/lessons,
   lesson_members, reviews, roles, staff_members, users, leads, messages.
 - Hand-build the non-standard ones: admin home/dashboard, role_permissions.
 
 ### Wave 3 — auth
+
 - login, signup, passwords/edit, remind_passwords, magic_links, phone_auth.
 - Cookie-JWT end-to-end; guards enforced via `beforeLoad`.
 
 ### Wave 4 — lesson player (spike + phase)
+
 - Its own contract design done early even though built here: run code / stream
   output / submit solution is the hardest part of the API.
 - Editor, code-run (river Docker jobs), SSE output streaming (generated
   `serverSentEvents.gen.ts`), multi-tab, zustand store.
 
 ### Wave 5 — user area
+
 - `my` dashboard, account profile, course progress.
 
 ### Wave 6 — marketing / public (SEO)
+
 - home, language_categories, blog_posts, cases, books, reviews, `/pages`
   (about/authors/privacy/tos/cookie), sitemap, error pages.
 - SSR/SEO exercised fully here: hreflang across locales, canonical URLs, meta.

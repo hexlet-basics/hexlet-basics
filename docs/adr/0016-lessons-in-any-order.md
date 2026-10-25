@@ -18,7 +18,7 @@ only to render that lock. Product-wise nobody asked for it: the legacy
 application, which production runs, has no such rule, so removing it restores
 parity rather than adding a feature.
 
-**What goes away**
+## What goes away
 
 - The gate: `ErrLessonNotAvailable`, the 409 `LessonNotAvailableError` on
   `startLesson`, `checkLesson` and `createAssistantMessage`, and
@@ -26,7 +26,7 @@ parity rather than adding a feature.
   that is always true is not kept for symmetry.
 - The lock mark and its string in the player and the Course page.
 
-**What stays**
+## What stays
 
 - Theory is public and indexed, as before. Starting is still an explicit command
   and a read still never enrolls (ADR-0012).
@@ -35,7 +35,7 @@ parity rather than adding a feature.
   Lesson first is sent back to the first gap, which is where "continue" should go.
 - A Course is finished when every Current Lesson is finished, in whatever order.
 
-**Guest progress becomes a set**
+## Guest progress becomes a set
 
 A guest's state was one entry per Course, the slug of the furthest Lesson they
 finished, and was exact only because the gate made gaps unrepresentable. Without
@@ -56,7 +56,7 @@ over, and legacy's guest progress lived in the Rails session. An old-format
 cookie, were one presented, fails to decode into the new shape and is treated as
 no cookie.
 
-**Consequences**
+## Consequences
 
 The server no longer refuses a Lesson for progress reasons, so the client has
 nothing to branch on and nothing to explain. A visitor can open and submit any

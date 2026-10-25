@@ -16,7 +16,7 @@ break a link someone else holds:
 - **column names** (`members_count`, `progress`, `language_id`, …),
 - **public URLs** (`/languages/:slug`, `/languages/:slug/lessons/:slug`).
 
-An ent field or edge name is *not* a column name — `field.Int("course_id").StorageKey("language_id")`
+An ent field or edge name is _not_ a column name — `field.Int("course_id").StorageKey("language_id")`
 renames the Go identifier and leaves storage untouched, so ent names follow the
 glossary like everything else. The legacy identifier behind each term is listed
 in [Storage mapping](#storage-mapping).

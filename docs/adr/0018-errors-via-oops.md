@@ -16,7 +16,7 @@ and `assistant` on `oops`, `progress` and `exerciserunner` on `fmt.Errorf`), and
 (stack trace, attributes) but its main benefit, data that travels with the error,
 was not used.
 
-**The rules**
+## The rules
 
 - Only `In`, `With`, `Wrapf` and `Errorf`. No `Code`, because nothing maps a code
   to a status here (that is what the `ErrX` values are for). No `Public`:
@@ -52,7 +52,7 @@ was not used.
   net, the assistant stream. HTTP (`sentryhttp` with `Repanic`), Watermill
   (`middleware.Recoverer`) and River (its job executor) already recover.
 
-**What reaches the tools**
+## What reaches the tools
 
 `telemetry.NewSentryClient` installs that `BeforeSend` (the `oops.domain` tag and
 an `oops` context holding the attributes). It reads the error from

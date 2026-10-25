@@ -124,7 +124,7 @@ goose, fx), по этому критерию проигрывают: они тр
 Запуск `openapi-ts` на `api-spec/dist/openapi.yaml` (вывод в scratch-каталог)
 падает так:
 
-```
+```text
 TypeError: Cannot read properties of undefined (reading 'AnyKeyword')
     at .../@hey-api+openapi-ts@0.99.0_typescript@7.0.2/.../init-D6Y8JFUS.mjs:4017:21
 ```

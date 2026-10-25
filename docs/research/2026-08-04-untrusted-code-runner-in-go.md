@@ -67,7 +67,7 @@ shows `github.com/moby/moby/client@v0.5.1` and `github.com/moby/moby/api@v1.55.0
 present as indirect dependencies, and `github.com/docker/docker@...` appearing
 **zero** times:
 
-```
+```text
 $ go mod why github.com/moby/moby/client
 hexletbasics/internal/testsupport/testdb
 github.com/testcontainers/testcontainers-go
@@ -78,13 +78,13 @@ Promoting it to a direct dependency therefore costs nothing new.
 (`github.com/moby/moby/client` is its own module; the older client lives at
 `github.com/docker/docker/client` inside the monolithic module. pkg.go.dev
 reports the new package's purpose as "Package client is a Go client for the
-Docker Engine API" — https://pkg.go.dev/github.com/moby/moby/client.)
+Docker Engine API" — <https://pkg.go.dev/github.com/moby/moby/client>.)
 
 **The API shape is new.** v0.5.1 takes one options struct per call and returns a
 result struct — it is *not* the positional-argument API of
 `docker/docker/client`, and `NewClientWithOpts` / `WithAPIVersionNegotiation`
 are marked deprecated in favour of `client.New`
-(https://pkg.go.dev/github.com/moby/moby/client). Verbatim from the module
+(<https://pkg.go.dev/github.com/moby/moby/client>). Verbatim from the module
 source (`github.com/moby/moby/client@v0.5.1`):
 
 ```go
@@ -152,7 +152,7 @@ matter which option you pick.
 
 Field names below are from `github.com/moby/moby/api@v1.55.0`
 (`types/container.HostConfig` and its embedded `Resources`;
-https://pkg.go.dev/github.com/moby/moby/api/types/container).
+<https://pkg.go.dev/github.com/moby/moby/api/types/container>).
 
 Legacy flag → API field:
 
@@ -167,9 +167,9 @@ Legacy flag → API field:
 On `--memory-swap`, docs.docker.com is explicit: set to `-1`, "the container is
 allowed to use unlimited swap, up to the amount available on the host system";
 set equal to `--memory`, "the container doesn't have access to swap"
-(https://docs.docker.com/engine/containers/resource_constraints/, corroborated
+(<https://docs.docker.com/engine/containers/resource_constraints/>, corroborated
 by the CLI reference: "Swap limit equal to memory plus swap: '-1' to enable
-unlimited swap", https://docs.docker.com/reference/cli/docker/container/run/).
+unlimited swap", <https://docs.docker.com/reference/cli/docker/container/run/>).
 
 **So the legacy runner deliberately lets a runaway exercise consume all host
 swap.** That is the opposite of a limit. Unless there is a forgotten reason for
@@ -191,7 +191,7 @@ Not set by legacy, worth setting:
 | pid-1 reaping | `HostConfig.Init *bool` | "Run an init inside the container that forwards signals and reaps processes" |
 | alt. runtime | `HostConfig.Runtime string` | "Runtime to use for this container" |
 
-(CLI descriptions: https://docs.docker.com/reference/cli/docker/container/run/ —
+(CLI descriptions: <https://docs.docker.com/reference/cli/docker/container/run/> —
 note `--pids-limit` is documented there but *not* on the resource-constraints
 page.)
 
@@ -212,7 +212,7 @@ else `failed` (`legacy/app/lib/lesson_tester.rb:43-49`).
 documents `timeout`'s exit status as "124 if command times out, and
 `--preserve-status` is not specified"; 125 if `timeout` itself fails, 126 if the
 command cannot be invoked, 127 if not found, 137 if KILLed (128+9)
-(https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html).
+(<https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html>).
 Two consequences:
 
 - It requires `timeout` **in the exercise image**. Legacy relies on this today
@@ -358,7 +358,7 @@ separate processes, ADR-0010) — three candidates:
   (`internal/jobs/jobs.go`, `NewInsertOnlyClient`). It cannot bridge processes.
 - **LISTEN/NOTIFY** fits the semantics: output chunks are worthless once the
   viewer is gone. Constraints from the PostgreSQL docs
-  (https://www.postgresql.org/docs/current/sql-notify.html): payload "must be
+  (<https://www.postgresql.org/docs/current/sql-notify.html>): payload "must be
   shorter than 8000 bytes"; "the notify events are not delivered until and
   unless the transaction is committed"; identical channel+payload within one
   transaction is **deduplicated** to a single delivery (so chunks must carry a

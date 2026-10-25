@@ -38,7 +38,7 @@ Both replacements are expensive to reverse once learners are living under them:
 the first changes what the marketing funnel measures, the second writes rows
 into real accounts from state a client held.
 
-**Sequential progression**
+## Sequential progression
 
 A Lesson is **available** when its position within the Course's current Version
 is at most one greater than the highest position the learner has finished.
@@ -76,7 +76,7 @@ Theory stays fully public and indexed. On a Lesson the visitor cannot yet take,
 the page renders in full and the editor stays usable; its actions lead to
 sign-in, and an already-signed-in learner is sent to their dashboard.
 
-**Guest progress in a signed cookie**
+## Guest progress in a signed cookie
 
 A visitor without an account progresses under the same rule. Their entire state
 is one entry per Course: the **slug of the furthest Lesson they finished**.

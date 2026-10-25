@@ -8,7 +8,7 @@ The test rules in `AGENTS.md` were reviewed against common Go practice and kept,
 with three additions (parallelism for pure packages, `goleak`, `synctest`). Each
 kept rule has a reason; a rule without one would have lost to practice.
 
-**Kept, with the reason**
+## Kept, with the reason
 
 - **Real PostgreSQL, one rolled-back transaction per test.** Each package's
   database is cloned by [pgtestdb](https://github.com/peterldowns/pgtestdb) on the
@@ -46,7 +46,7 @@ kept rule has a reason; a rule without one would have lost to practice.
   the database: PostgreSQL runs on real time, so `testing/synctest` cannot fake
   the `NOW()` in a query.
 
-**Added**
+## Added
 
 - **`t.Parallel()` is not the default for DB-backed tests.** Transactions do not
   share state, but two of them updating the same fixture row block each other
