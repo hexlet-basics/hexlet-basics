@@ -22,7 +22,6 @@ const (
 // The legal moves of a Publication State, one per operation (publish,
 // unpublish, archive). Each names the states it may start from; repeating the
 // current state is not among them, so it is refused like any illegal move.
-var ()
 
 // CurrentOf reads the state column of a row. A row with no state (the column is
 // nullable in the legacy schema) counts as a draft, which is what the public

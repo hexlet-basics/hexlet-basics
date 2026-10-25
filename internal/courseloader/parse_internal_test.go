@@ -101,7 +101,7 @@ func openRepo(t *testing.T, dir string) repository {
 
 	root, err := os.OpenRoot(dir)
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = root.Close() })
+	t.Cleanup(func() { require.NoError(t, root.Close()) })
 
 	return repository{fsys: root.FS(), dir: dir}
 }

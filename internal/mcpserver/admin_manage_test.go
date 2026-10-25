@@ -15,8 +15,6 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-var ()
-
 func userBody(email string, admin any) map[string]any {
 	return map[string]any{"email": email, "firstName": nil, "lastName": nil, "admin": admin}
 }

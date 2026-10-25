@@ -290,12 +290,14 @@ func (c statusClient) Do(request *http.Request) (*http.Response, error) {
 	}
 	defer func() { _ = response.Body.Close() }()
 
-	body, _ := io.ReadAll(io.LimitReader(response.Body, maxErrorMessageBytes))
+	// A failed read leaves a truncated message; the status still classifies the
+	// error, and the read failure rides along as its cause.
+	body, readErr := io.ReadAll(io.LimitReader(response.Body, maxErrorMessageBytes))
 
 	return nil, newRequestError(
 		response.StatusCode,
 		strings.ToValidUTF8(string(body), ""),
-		nil,
+		readErr,
 		isRetryableStatus(response.StatusCode),
 	)
 }

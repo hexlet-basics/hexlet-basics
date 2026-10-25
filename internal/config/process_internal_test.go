@@ -17,7 +17,7 @@ func dotenvDir(t *testing.T) {
 	t.Setenv("DOTENV_PROBE", "")
 	require.NoError(t, os.Unsetenv("DOTENV_PROBE"))
 	// godotenv sets the variable with os.Setenv, which t.Setenv does not undo.
-	t.Cleanup(func() { _ = os.Unsetenv("DOTENV_PROBE") })
+	t.Cleanup(func() { require.NoError(t, os.Unsetenv("DOTENV_PROBE")) })
 }
 
 func TestLoadDotenvReadsTheFileInDevelopment(t *testing.T) {

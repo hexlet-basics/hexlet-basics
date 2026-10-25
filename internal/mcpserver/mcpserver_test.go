@@ -85,16 +85,18 @@ func TestResourceMetadataIsServedAtBothWellKnownLocations(t *testing.T) {
 		"/.well-known/oauth-protected-resource",
 		"/.well-known/oauth-protected-resource/mcp",
 	} {
-		res := o.Do(http.MethodGet, path, nil)
-		defer func() { _ = res.Body.Close() }()
+		func() {
+			res := o.Do(http.MethodGet, path, nil)
+			defer func() { _ = res.Body.Close() }()
 
-		require.Equal(t, http.StatusOK, res.StatusCode, path)
+			require.Equal(t, http.StatusOK, res.StatusCode, path)
 
-		var doc map[string]any
-		require.NoError(t, json.Unmarshal([]byte(body(t, res)), &doc))
-		assert.Equal(t, testsupport.MCPEndpoint, doc["resource"], path)
-		assert.Equal(t, []any{testsupport.OAuthIssuer}, doc["authorization_servers"], path)
-		assert.Equal(t, []any{"header"}, doc["bearer_methods_supported"], path)
+			var doc map[string]any
+			require.NoError(t, json.Unmarshal([]byte(body(t, res)), &doc))
+			assert.Equal(t, testsupport.MCPEndpoint, doc["resource"], path)
+			assert.Equal(t, []any{testsupport.OAuthIssuer}, doc["authorization_servers"], path)
+			assert.Equal(t, []any{"header"}, doc["bearer_methods_supported"], path)
+		}()
 	}
 }
 

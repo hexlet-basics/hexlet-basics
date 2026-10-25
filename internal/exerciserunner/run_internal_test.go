@@ -101,7 +101,7 @@ func TestNewRunsOneSubmissionAtATimeUnlessToldOtherwise(t *testing.T) {
 		ImageTag:       "",
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = runner.Close() })
+	t.Cleanup(func() { assert.NoError(t, runner.Close()) })
 
 	assert.True(t, runner.slots.TryAcquire(1))
 	assert.False(t, runner.slots.TryAcquire(1), "the second run has to wait")

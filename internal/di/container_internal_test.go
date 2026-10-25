@@ -49,7 +49,7 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 
 	injector := newServerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	srv, err := do.Invoke[*http.Server](injector)
 	require.NoError(t, err)
@@ -64,7 +64,7 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 
 	injector := newWorkerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
 	require.NoError(t, err)
@@ -90,7 +90,7 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 
 	injector := newServerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 	do.OverrideValue(injector, client)
 	do.OverrideNamedValue[http.Handler](injector, routerServiceName, http.HandlerFunc(
 		func(http.ResponseWriter, *http.Request) {
@@ -105,10 +105,10 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 		handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/panic", nil))
 	})
 
-	events := transport.Events()
-	require.Len(t, events, 1)
-	assert.Equal(t, "router panic", events[0].Message)
-	assert.Equal(t, "http://example.com/panic", events[0].Request.URL)
+	sent := transport.Events()
+	require.Len(t, sent, 1)
+	assert.Equal(t, "router panic", sent[0].Message)
+	assert.Equal(t, "http://example.com/panic", sent[0].Request.URL)
 }
 
 func TestServerProviderReturnsDependencyError(t *testing.T) {

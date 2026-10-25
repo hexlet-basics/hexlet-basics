@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/samber/do/v2"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,7 +20,7 @@ func directDependencies(t *testing.T, newContainer func() *do.RootScope) map[str
 
 	injector := newContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	deps := map[string][]string{}
 
@@ -52,7 +53,7 @@ func testProvidersReportFailingDependency(t *testing.T, newContainer func() *do.
 			t.Run(service+" without "+dependency, func(t *testing.T) {
 				injector := newContainer()
 
-				t.Cleanup(func() { _ = injector.Shutdown() })
+				t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 				do.OverrideNamed(injector, dependency, func(do.Injector) (any, error) {
 					return nil, errPoisoned
 				})

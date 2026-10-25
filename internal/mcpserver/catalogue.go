@@ -235,8 +235,8 @@ func (s *Server) listCourses(ctx context.Context, c call) (result, error) {
 	items := slicePage(all, page, perPage)
 
 	slugs := make([]string, len(items))
-	for i, course := range items {
-		slugs[i] = course.Slug
+	for i := range items {
+		slugs[i] = items[i].Slug
 	}
 
 	return result{
@@ -267,8 +267,8 @@ func (s *Server) listCategories(ctx context.Context, c call) (result, error) {
 	items := slicePage(all, page, perPage)
 
 	slugs := make([]string, len(items))
-	for i, category := range items {
-		slugs[i] = category.Slug.Value
+	for i := range items {
+		slugs[i] = items[i].Slug.Value
 	}
 
 	return result{
@@ -369,8 +369,8 @@ func (s *Server) listBlogPosts(ctx context.Context, c call) (result, error) {
 	}
 
 	slugs := make([]string, len(posts.Items))
-	for i, post := range posts.Items {
-		slugs[i] = post.Slug.Value
+	for i := range posts.Items {
+		slugs[i] = posts.Items[i].Slug.Value
 	}
 
 	return result{

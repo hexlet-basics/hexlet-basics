@@ -44,7 +44,7 @@ func loopbackServer(t *testing.T, h http.HandlerFunc) (*httptest.Server, *tls.Co
 }
 
 func get(ctx context.Context, httpClient *http.Client, target string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, http.NoBody)
 	if err != nil {
 		return nil, errs.Wrapf(err, "build request")
 	}

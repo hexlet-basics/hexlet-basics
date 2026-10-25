@@ -263,7 +263,7 @@ func TestTimeoutCancelsTheHandlersContext(t *testing.T) {
 		MaxRetries:           -1,
 	}, nil)
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = session.Close() })
+	t.Cleanup(func() { require.NoError(t, session.Close()) })
 
 	result := callTool(t, session, "listCourses", nil)
 

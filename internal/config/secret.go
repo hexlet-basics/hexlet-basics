@@ -29,7 +29,9 @@ func (Secret) GoString() string { return redacted }
 
 // Format covers every verb (%q, %x, %d...), which would otherwise fall back to
 // the underlying string.
-func (Secret) Format(f fmt.State, _ rune) { _, _ = f.Write([]byte(redacted)) }
+// A fmt.State write error has nowhere to go (fmt itself drops it), so it is
+// written with fmt.Fprint rather than the State's Write.
+func (Secret) Format(f fmt.State, _ rune) { fmt.Fprint(f, redacted) }
 
 // LogValue implements slog.LogValuer, so a Secret in a structured log field is
 // redacted too.

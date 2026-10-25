@@ -131,7 +131,7 @@ func TestAPIErrorHandlerSendsOopsAttributesOfHandlerErrors(t *testing.T) {
 
 	handler := handlers.NewAPIErrorHandler(translator, slog.New(slog.DiscardHandler))
 	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
-	_ = handler.NewError(ctx, oops.In("courses").With("course_id", 3).Wrapf(errBoom, "load course"))
+	require.NotNil(t, handler.NewError(ctx, oops.In("courses").With("course_id", 3).Wrapf(errBoom, "load course")))
 
 	events := transport.Events()
 	require.Len(t, events, 1)

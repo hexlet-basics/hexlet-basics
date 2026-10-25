@@ -61,7 +61,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	bucket := memblob.OpenBucket(nil)
 
-	t.Cleanup(func() { _ = bucket.Close() })
+	t.Cleanup(func() { require.NoError(t, bucket.Close()) })
 
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)

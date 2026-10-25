@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"hexletbasics/internal/api"
@@ -73,7 +74,14 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-	defer func() { _ = reader.Close() }()
+	// The response is already on its way when Close runs, so a failure can only
+	// be reported, not returned.
+	defer func() {
+		closeErr := reader.Close()
+		if closeErr != nil {
+			slog.WarnContext(ctx, "close stored attachment", "err", closeErr, "key", key)
+		}
+	}()
 
 	if reader.ContentType != "" {
 		ct := reader.ContentType

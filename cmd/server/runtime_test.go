@@ -60,7 +60,7 @@ func freeAddr(t *testing.T) string {
 }
 
 func get(ctx context.Context, url string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, errs.Wrapf(err, "build request")
 	}
@@ -139,7 +139,7 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 		close(inFlight)
 		<-release
 	})}
-	go func() { _ = server.Serve(listener) }()
+	go func() { assert.ErrorIs(t, server.Serve(listener), http.ErrServerClosed) }()
 
 	app := application{
 		http:            server,

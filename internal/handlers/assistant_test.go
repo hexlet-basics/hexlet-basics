@@ -313,7 +313,8 @@ func TestAskAssistantSurvivesAPanicMidStream(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	_, _ = io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
+	_, err = io.ReadAll(as[*api.CreateAssistantMessageOK](t, res))
+	require.NoError(t, err)
 
 	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chatFor(t, h, lesson).ID)).AllX(ctx)
 	require.Len(t, stored, 1, "the question is spent, the broken answer is not stored")
@@ -337,10 +338,11 @@ func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
 		return assistant.Usage{}, io.ErrUnexpectedEOF
 	}
 
-	_, _ = h.Client.CreateAssistantMessage(ctx,
+	_, err := h.Client.CreateAssistantMessage(ctx,
 		&api.AssistantMessageInput{Message: "How do I declare a variable?"},
 		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
 	)
+	require.NoError(t, err)
 
 	chat := chatFor(t, h, lesson)
 	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chat.ID)).AllX(ctx)

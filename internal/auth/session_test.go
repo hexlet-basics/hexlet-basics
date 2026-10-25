@@ -51,6 +51,8 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		err := manager.Begin(r.Context(), u)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
 		}
 	})
 	mux.HandleFunc("GET /me", func(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +69,8 @@ func newApp(t *testing.T, clk *clock, opts ...auth.Option) *app {
 		err := manager.End(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
 		}
 	})
 	application.handler = manager.Middleware(mux)

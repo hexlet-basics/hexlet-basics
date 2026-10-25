@@ -15,11 +15,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"path"
 	"strconv"
 	"strings"
 	"time"
 
+	cerrdefs "github.com/containerd/errdefs"
 	"github.com/distribution/reference"
 	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/api/types/container"
@@ -320,7 +322,12 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	// AutoRemove cleans up after a normal exit; this covers the paths where the
 	// container never starts, and is harmless once it is already gone.
 	defer func() {
-		_, _ = d.docker.ContainerRemove(context.WithoutCancel(ctx), created.ID, client.ContainerRemoveOptions{Force: true})
+		_, removeErr := d.docker.ContainerRemove(context.WithoutCancel(ctx), created.ID, client.ContainerRemoveOptions{Force: true})
+		if removeErr != nil && !cerrdefs.IsNotFound(removeErr) {
+			// The check's verdict is already decided; a leaked container is for
+			// the operator to sweep, not for the learner to be told about.
+			slog.WarnContext(ctx, "remove exercise container", "err", removeErr, "container_id", created.ID)
+		}
 	}()
 
 	archive, err := tarFile(submission.ExerciseFile, submission.Code)

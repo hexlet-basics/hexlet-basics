@@ -126,10 +126,11 @@ func TestEndingTheSessionRevokesTheClientsGrants(t *testing.T) {
 	tokens := o.Connect(alice(), "openid", oauthserver.ScopeCatalogRead)
 
 	res := o.Do(http.MethodGet, "/oauth/end_session?"+url.Values{"id_token_hint": {tokens.IDToken}}.Encode(), nil)
-	body, _ := io.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
+	require.NoError(t, err)
 	require.Less(t, res.StatusCode, 400, "end_session answered %d: %s", res.StatusCode, body)
 
-	_, err := o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
+	_, err = o.Server.VerifyAccessToken(t.Context(), tokens.AccessToken)
 	require.ErrorIs(t, err, oauthserver.ErrInvalidToken)
 }
 

@@ -24,9 +24,9 @@ func bannerByBody(t *testing.T, h *testsupport.Harness, body string) api.Banner 
 	})
 	require.NoError(t, err)
 
-	for _, it := range page.Items {
-		if it.Body == body {
-			return it
+	for i := range page.Items {
+		if page.Items[i].Body == body {
+			return page.Items[i]
 		}
 	}
 

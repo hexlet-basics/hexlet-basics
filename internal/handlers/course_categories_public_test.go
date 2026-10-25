@@ -27,8 +27,8 @@ func getCategoryView(t *testing.T, h *testsupport.Harness, slug string) *api.Cou
 
 func categoryLandingSlugs(view *api.CourseCategoryView) []string {
 	slugs := make([]string, len(view.LandingPages))
-	for i, lp := range view.LandingPages {
-		slugs[i] = lp.Slug
+	for i := range view.LandingPages {
+		slugs[i] = view.LandingPages[i].Slug
 	}
 
 	return slugs

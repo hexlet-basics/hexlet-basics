@@ -78,7 +78,7 @@ func newLoaderWithCompletion(
 
 	bucket := memblob.OpenBucket(nil)
 
-	t.Cleanup(func() { _ = bucket.Close() })
+	t.Cleanup(func() { require.NoError(t, bucket.Close()) })
 
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
 

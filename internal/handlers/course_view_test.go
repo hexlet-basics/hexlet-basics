@@ -31,11 +31,11 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	require.False(t, view.Enrollment.Null)
-	progress := view.Progress.Value
+	learned := view.Progress.Value
 
-	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value)
-	assert.Equal(t, int32(33), progress.Completion, "one of three current lessons")
-	assert.Equal(t, secondLessonSlug, progress.NextLesson.Value.Slug, "resume at the first unfinished lesson")
+	assert.Equal(t, api.EnrollmentStateStarted, learned.State.Value)
+	assert.Equal(t, int32(33), learned.Completion, "one of three current lessons")
+	assert.Equal(t, secondLessonSlug, learned.NextLesson.Value.Slug, "resume at the first unfinished lesson")
 
 	require.Len(t, view.Lessons, 3)
 	assert.Equal(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug},
@@ -58,13 +58,13 @@ func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 	require.NoError(t, err)
 
 	view := res
-	progress := view.Progress.Value
+	learned := view.Progress.Value
 
-	assert.Equal(t, int32(66), progress.Completion, "two of three, never clamped")
-	assert.Equal(t, secondLessonSlug, progress.NextLesson.Value.Slug, "the gap is where they resume")
+	assert.Equal(t, int32(66), learned.Completion, "two of three, never clamped")
+	assert.Equal(t, secondLessonSlug, learned.NextLesson.Value.Slug, "the gap is where they resume")
 	assert.False(t, view.Lessons[1].Finished)
 	assert.True(t, view.Lessons[2].Finished)
-	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value, "a gap leaves the course unfinished")
+	assert.Equal(t, api.EnrollmentStateStarted, learned.State.Value, "a gap leaves the course unfinished")
 }
 
 // A visitor with no session and no cookie has a standing too: the beginning,
@@ -90,10 +90,10 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	assert.Equal(t, jsEnglishLandingSlug, view.LandingPage.Value.Slug, "the page the URL names")
 
 	require.False(t, view.Progress.Null)
-	progress := view.Progress.Value
-	assert.True(t, progress.State.Null, "nothing started")
-	assert.Equal(t, int32(0), progress.Completion)
-	assert.Equal(t, firstLessonSlug, progress.NextLesson.Value.Slug)
+	learned := view.Progress.Value
+	assert.True(t, learned.State.Null, "nothing started")
+	assert.Equal(t, int32(0), learned.Completion)
+	assert.Equal(t, firstLessonSlug, learned.NextLesson.Value.Slug)
 	assert.False(t, view.Lessons[0].Finished)
 	assert.False(t, view.Lessons[1].Finished)
 }
@@ -163,11 +163,11 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 
 	require.True(t, view.Enrollment.Null, "a guest has no enrollment")
 	require.False(t, view.Progress.Null)
-	progress := view.Progress.Value
+	learned := view.Progress.Value
 
-	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value)
-	assert.Equal(t, int32(66), progress.Completion, "two of three")
-	assert.Equal(t, thirdLessonSlug, progress.NextLesson.Value.Slug)
+	assert.Equal(t, api.EnrollmentStateStarted, learned.State.Value)
+	assert.Equal(t, int32(66), learned.Completion, "two of three")
+	assert.Equal(t, thirdLessonSlug, learned.NextLesson.Value.Slug)
 	assert.True(t, view.Lessons[0].Finished)
 	assert.True(t, view.Lessons[1].Finished)
 	assert.False(t, view.Lessons[2].Finished)
@@ -183,10 +183,10 @@ func TestGetCourseMarksOnlyTheLessonsAGuestFinished(t *testing.T) {
 	require.NoError(t, err)
 
 	view := res
-	progress := view.Progress.Value
+	learned := view.Progress.Value
 
-	assert.Equal(t, int32(33), progress.Completion)
-	assert.Equal(t, firstLessonSlug, progress.NextLesson.Value.Slug)
+	assert.Equal(t, int32(33), learned.Completion)
+	assert.Equal(t, firstLessonSlug, learned.NextLesson.Value.Slug)
 	assert.False(t, view.Lessons[0].Finished)
 	assert.False(t, view.Lessons[1].Finished)
 	assert.True(t, view.Lessons[2].Finished)

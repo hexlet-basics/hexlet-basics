@@ -6,6 +6,7 @@ package assistant
 
 import (
 	"context"
+	"errors"
 
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
@@ -98,7 +99,7 @@ func (c *OpenAI) CompleteJSON(ctx context.Context, instructions, prompt, name st
 // its first token, and a learner watching an empty bubble feels every second
 // of it. The batch jobs (Complete) keep the model's default, where latency
 // costs nothing.
-func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error) {
+func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (_ Usage, err error) {
 	messages := make([]openai.ChatCompletionMessageParamUnion, len(turns))
 	for i, turn := range turns {
 		switch turn.Role {
@@ -118,8 +119,13 @@ func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) 
 		ReasoningEffort: shared.ReasoningEffortLow,
 	})
 	// Close only releases the response body; the stream's own error is what
-	// reports a failed answer.
-	defer func() { _ = stream.Close() }()
+	// reports a failed answer, so a close failure is joined behind it.
+	defer func() {
+		closeErr := stream.Close()
+		if closeErr != nil {
+			err = errors.Join(err, errs.Wrapf(closeErr, "close openai chat completion stream"))
+		}
+	}()
 
 	acc := openai.ChatCompletionAccumulator{}
 
@@ -137,7 +143,7 @@ func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) 
 		}
 	}
 
-	err := stream.Err()
+	err = stream.Err()
 	if err != nil {
 		return Usage{}, oops.Wrapf(err, "openai chat completion stream")
 	}

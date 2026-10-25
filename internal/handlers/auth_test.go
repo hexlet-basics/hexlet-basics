@@ -147,7 +147,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	if resp.StatusCode != http.StatusCreated {
 		var failure any
 
-		_ = json.NewDecoder(resp.Body).Decode(&failure)
+		require.NoError(t, json.NewDecoder(resp.Body).Decode(&failure))
 		t.Fatalf("register returned %d: %#v", resp.StatusCode, failure)
 	}
 

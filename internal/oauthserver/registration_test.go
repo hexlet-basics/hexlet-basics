@@ -231,7 +231,7 @@ func TestRegistrationRefusals(t *testing.T) {
 func TestAnOversizedBodyIsRefusedWithoutBeingRead(t *testing.T) {
 	o := testsupport.NewOAuth(t)
 	before := clientCount(t, o)
-	body := fmt.Sprintf(`{"redirect_uris":["https://app.example.com/cb"],"client_name":"%s"}`, strings.Repeat("a", 1<<20))
+	body := fmt.Sprintf(`{"redirect_uris":["https://app.example.com/cb"],"client_name":%q}`, strings.Repeat("a", 1<<20))
 
 	res := o.Register(body)
 

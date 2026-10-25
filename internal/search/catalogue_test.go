@@ -583,8 +583,8 @@ func TestAnEditorFetchesWhatIsNotPublic(t *testing.T) {
 	assert.NotEmpty(t, lesson.Build)
 	assert.NotNil(t, lesson.Position)
 
-	course := fetch("course:ruby-ru", "ru")
-	assert.Contains(t, course.Text, "lesson:ruby/hello-world-ruby", "the lessons, with the ids that fetch them")
+	courseDoc := fetch("course:ruby-ru", "ru")
+	assert.Contains(t, courseDoc.Text, "lesson:ruby/hello-world-ruby", "the lessons, with the ids that fetch them")
 }
 
 func TestFetchOfWhatIsNotThereIsNotFound(t *testing.T) {

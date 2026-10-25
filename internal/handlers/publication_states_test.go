@@ -45,8 +45,6 @@ type stateSubject struct {
 	visible func(t *testing.T, h *testsupport.Harness) bool
 }
 
-var ()
-
 // legalMoves is the table as the issue states it; every other pair of (operation,
 // current state) is refused, repeating the current state included.
 func legalMoves() map[string][]string {

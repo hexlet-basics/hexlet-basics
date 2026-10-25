@@ -88,9 +88,9 @@ func TestWithinTxRollsBackPanic(t *testing.T) {
 	txStore := New(openTransactionDB(t, state))
 
 	assert.PanicsWithValue(t, "boom", func() {
-		_ = txStore.WithinTx(t.Context(), func(*sql.Tx, *ent.Client) error {
+		assert.NoError(t, txStore.WithinTx(t.Context(), func(*sql.Tx, *ent.Client) error {
 			panic("boom")
-		})
+		}))
 	})
 	assert.Zero(t, state.commits)
 	assert.Equal(t, 1, state.rollbacks)
@@ -212,7 +212,7 @@ func openTransactionDB(t *testing.T, state *transactionState) *sql.DB {
 
 	db := sql.OpenDB(transactionConnector{state: state})
 
-	t.Cleanup(func() { _ = db.Close() })
+	t.Cleanup(func() { require.NoError(t, db.Close()) })
 
 	return db
 }

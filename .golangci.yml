@@ -1,5 +1,11 @@
 version: "2"
 
+run:
+  # The tests that need a Docker daemon are behind this tag (mise run test:docker);
+  # lint them too.
+  build-tags:
+    - docker
+
 linters:
   default: all
   # Policy (AGENTS.md, "Lint & Typecheck"): every linter is on; one is off only
@@ -16,6 +22,55 @@ linters:
     - paralleltest
     - tparallel
   settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+        - opinionated
+        - experimental
+      disabled-checks:
+        # Contradicts nonamedreturns, which is on: one asks for names on a result
+        # list of the same type, the other forbids named results. The code has no
+        # named results, so the signature's doc comment names what is returned.
+        - unnamedResult
+      settings:
+        hugeParam:
+          # A copy of up to half a kilobyte next to a database round trip costs
+          # nothing worth a pointer; the 80-byte default flags the by-value
+          # parameters that ogen, goverter and the contract's commands fix.
+          sizeThreshold: 512
+    staticcheck:
+      checks:
+        - all
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment # struct layout is for readers, not for padding
+        - shadow # `err` is shadowed on purpose in if-initialisers
+    errcheck:
+      # `_ = f()` is how an error is ignored on purpose, so it is checked too.
+      check-blank: true
+      # The calls whose error nobody can act on; every other ignored error is handled.
+      exclude-functions:
+        # The status line is sent; when the client is gone the body write fails and
+        # there is nobody to tell.
+        - (net/http.ResponseWriter).Write
+        # Closing what was only read (a response body, a row set) cannot lose data.
+        - (io.ReadCloser).Close
+        - (*database/sql.Rows).Close
+        # The deferred rollback of a transaction that was committed returns
+        # sql.ErrTxDone by design.
+        - (*database/sql.Tx).Rollback
+        - (*hexletbasics/ent.Tx).Rollback
+        # Terminal output of the command line tools: a write to a closed terminal
+        # has no recovery.
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    nolintlint:
+      require-specific: true
+      require-explanation: true
     cyclop:
       # The default of 10 flags a function the size of a plain parse or a retry
       # loop; 15 is where a function has real branching worth splitting.
@@ -229,6 +284,12 @@ linters:
       - path: ^internal/handlers/
         linters: [revive]
         text: 'exported method Server\.\w+ should have comment'
+      # ST1003 wants initialisms upper-case; these two names are fixed by others: the
+      # operation name comes from the contract (ogen spells Xml), the method from
+      # the zitadel op.Client interface (IdToken).
+      - path: ^internal/(handlers/feeds|oauthserver/client)\.go$
+        linters: [staticcheck]
+        text: ST1003
       # A test spells its inputs and expectations out where they are read: a
       # constant for "draft" or a status string would send the reader to another
       # file for what the case says, and the repeat is the point of a table.
@@ -272,3 +333,8 @@ linters:
       # nothing to close.
       - path: internal/(handlers|oauthserver)/.*_test\.go
         linters: [bodyclose]
+
+issues:
+  # Show every finding: a cap of 50 per linter and 3 of the same message hides debt.
+  max-issues-per-linter: 0
+  max-same-issues: 0

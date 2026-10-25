@@ -110,12 +110,17 @@ type Definition struct {
 // Parse walks the repo rooted at dir and returns the parsed course. courseSlug is
 // the DB course's slug (not derivable from the repo alone) and is only used to
 // build each lesson's path_to_code, matching legacy exactly.
-func Parse(dir, courseSlug string) (*Course, error) {
+func Parse(dir, courseSlug string) (_ *Course, err error) {
 	root, err := os.OpenRoot(dir)
 	if err != nil {
 		return nil, oops.Wrapf(err, "open course repo %s", dir)
 	}
-	defer func() { _ = root.Close() }()
+	defer func() {
+		closeErr := root.Close()
+		if closeErr != nil {
+			err = errors.Join(err, oops.Wrapf(closeErr, "close course repo %s", dir))
+		}
+	}()
 
 	repo := repository{fsys: root.FS(), dir: dir}
 
@@ -402,7 +407,7 @@ func assignNaturalOrder(modules []Module) {
 // a line containing END. `(?s)` lets `.` span newlines (Ruby's /m); `(?m)` makes
 // ^/$ match line boundaries. Lazy quantifiers keep the region minimal, so nested
 // BEGIN/END blocks each collapse independently.
-var prepareCodeRe = regexp.MustCompile(`(?sm)(?P<begin>^[^\n]*?BEGIN.*?$\s*)(?P<content>.+?)(?P<end>^[^\n]*?END.*?$)`)
+var prepareCodeRe = regexp.MustCompile(`(?sm)(?P<begin>^[^\n]*?BEGIN.*?$\s*)(?P<content>.+?\n)(?P<end>[^\n]*?END.*?$)`)
 
 // prepareCode derives the student template from the reference solution: it blanks
 // out everything between BEGIN and END and relabels the BEGIN marker. If the code

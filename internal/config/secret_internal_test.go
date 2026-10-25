@@ -24,14 +24,14 @@ func TestSecretNeverPrintsItsValue(t *testing.T) {
 	require.NoError(t, err)
 
 	outputs := map[string]string{
-		"%s":        fmt.Sprintf("%s", secret),
-		"%v":        fmt.Sprintf("%v", secret),
+		"%s":        secret.String(),
+		"%v":        secret.String(),
 		"%+v":       fmt.Sprintf("%+v", secret),
 		"%#v":       fmt.Sprintf("%#v", secret),
 		"%q":        fmt.Sprintf("%q", secret),
 		"%x":        fmt.Sprintf("%x", secret),
 		"struct %v": fmt.Sprintf("%v", holder),
-		"Sprint":    fmt.Sprint(secret),
+		"Sprint":    secret.String(),
 		"slog":      logs.String(),
 		"json":      string(asJSON),
 	}

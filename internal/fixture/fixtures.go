@@ -81,12 +81,17 @@ func scan(dir string) (labels, error) {
 }
 
 // scanFile numbers the rows of one file, continuing from next.
-func scanFile(path string, found labels, next *int) error {
+func scanFile(path string, found labels, next *int) (err error) {
 	file, err := os.Open(path) //nolint:gosec // G304: path is a file of the committed fixtures directory, listed by the loader
 	if err != nil {
 		return errs.Wrapf(err, "open fixture file")
 	}
-	defer func() { _ = file.Close() }()
+	defer func() {
+		closeErr := file.Close()
+		if closeErr != nil {
+			err = errors.Join(err, errs.With("file", filepath.Base(path)).Wrapf(closeErr, "close fixture file"))
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	scanner.Buffer(make([]byte, 0, scannerStartBytes), scannerMaxLineBytes)

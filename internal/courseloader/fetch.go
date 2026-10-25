@@ -2,6 +2,7 @@ package courseloader
 
 import (
 	"context"
+	"log/slog"
 	"os"
 
 	git "github.com/go-git/go-git/v5"
@@ -50,7 +51,14 @@ func (f *GitFetcher) Fetch(ctx context.Context, slug string) (string, func(), er
 		return "", func() {}, oops.Wrapf(err, "create temp dir for %s", slug)
 	}
 
-	cleanup := func() { _ = os.RemoveAll(dir) }
+	// Nobody downstream can act on a failed removal (the caller is already past
+	// the build), so it is logged rather than returned.
+	cleanup := func() {
+		removeErr := os.RemoveAll(dir)
+		if removeErr != nil {
+			slog.WarnContext(ctx, "remove course checkout", "err", removeErr, "dir", dir)
+		}
+	}
 
 	opts := &git.CloneOptions{
 		URL:          f.RepoURL(slug),

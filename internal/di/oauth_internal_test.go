@@ -15,7 +15,7 @@ func serveRouter(t *testing.T, path string) *httptest.ResponseRecorder {
 
 	injector := newServerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	router, err := do.InvokeNamed[http.Handler](injector, routerServiceName)
 	require.NoError(t, err)

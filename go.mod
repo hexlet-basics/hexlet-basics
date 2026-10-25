@@ -19,6 +19,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.114.5
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.79.3
 	github.com/caarlos0/env/v11 v11.4.1
+	github.com/containerd/errdefs v1.0.0
 	github.com/distribution/reference v0.6.0
 	github.com/getsentry/sentry-go v0.50.0
 	github.com/go-faster/errors v0.8.0
@@ -112,7 +113,6 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/cloudflare/circl v1.6.5 // indirect
 	github.com/coder/websocket v1.8.15 // indirect
-	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
 	github.com/dave/jennifer v1.7.1 // indirect

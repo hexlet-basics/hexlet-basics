@@ -24,9 +24,9 @@ func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review 
 	})
 	require.NoError(t, err)
 
-	for _, it := range page.Items {
-		if it.Body.Value == body {
-			return it
+	for i := range page.Items {
+		if page.Items[i].Body.Value == body {
+			return page.Items[i]
 		}
 	}
 

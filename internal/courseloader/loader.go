@@ -5,6 +5,8 @@ import (
 	"cmp"
 	"context"
 	"database/sql"
+	"errors"
+	"log/slog"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -179,10 +181,15 @@ func (l *Loader) claim(ctx context.Context, versionID int) (bool, error) {
 // uses the passed context; a cancelled job leaves the version `building` for the
 // reaper, which is the correct fallback.
 func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause error) error {
-	_, _ = l.db.CourseVersion.UpdateOne(version).
+	_, err := l.db.CourseVersion.UpdateOne(version).
 		SetState(stateFailed).
 		SetResult("Error: " + cause.Error()).
 		Save(ctx)
+	if err != nil {
+		// The cause is what the worker surfaces; the failed write only costs the
+		// version its `failed` marker, which the reaper covers.
+		slog.ErrorContext(ctx, "record course version failure", "err", err, "version_id", version.ID)
+	}
 
 	return cause
 }
@@ -262,8 +269,8 @@ func buildModule(ctx context.Context, tx *ent.Client, courseID, versionID int, m
 			return 0, oops.Wrapf(err, "create lesson version %q", lesson.Slug)
 		}
 
-		for _, info := range lesson.Infos {
-			create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, info)
+		for i := range lesson.Infos {
+			create, err := lessonInfoCreate(tx, courseID, versionID, lessonID, courseLessonVersion.ID, lesson.Infos[i])
 			if err != nil {
 				return 0, err
 			}
@@ -573,7 +580,7 @@ func isRemoteRef(ref string) bool {
 // lesson dir, the locale dir's parent, not the locale dir: OpenInRoot still stops
 // both lexical traversal and symlinks from leaving the lesson, and a reference
 // that climbs out of it fails the build.
-func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
+func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (_ string, err error) {
 	lessonDir := filepath.Dir(localeDir)
 
 	file, err := os.OpenInRoot(lessonDir, filepath.Join(filepath.Base(localeDir), ref))
@@ -581,7 +588,12 @@ func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string
 		return "", oops.Wrapf(err, "open image %q", ref)
 	}
 
-	defer func() { _ = file.Close() }()
+	defer func() {
+		closeErr := file.Close()
+		if closeErr != nil {
+			err = errors.Join(err, oops.Wrapf(closeErr, "close image %q", ref))
+		}
+	}()
 
 	attachment, err := l.assets.Put(ctx, assetstore.Upload{
 		Filename: filepath.Base(ref),

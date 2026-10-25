@@ -2,6 +2,7 @@ package audit
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"entgo.io/ent/dialect"
@@ -89,7 +90,7 @@ func firstOfMonth(t time.Time) time.Time {
 // call runs one of the two maintenance functions, named by a constant of this
 // file and given the month as a bound argument, and collects the text it
 // returns (the partition names created or dropped).
-func (p *Partitions) call(ctx context.Context, function string, month time.Time) ([]string, error) {
+func (p *Partitions) call(ctx context.Context, function string, month time.Time) (_ []string, err error) {
 	query, args := entsql.Dialect(dialect.Postgres).
 		Select().
 		AppendSelectExprAs(entsql.ExprFunc(func(b *entsql.Builder) {
@@ -99,19 +100,24 @@ func (p *Partitions) call(ctx context.Context, function string, month time.Time)
 
 	rows := &entsql.Rows{}
 
-	err := p.db.Query(ctx, query, args, rows)
+	err = p.db.Query(ctx, query, args, rows)
 	if err != nil {
 		return nil, err
 	}
 
-	defer func() { _ = rows.Close() }()
+	defer func() {
+		closeErr := rows.Close()
+		if closeErr != nil {
+			err = errors.Join(err, errs.Wrapf(closeErr, "close partition names"))
+		}
+	}()
 
 	var names []string
 
 	for rows.Next() {
 		var name string
 
-		err := rows.Scan(&name)
+		err = rows.Scan(&name)
 		if err != nil {
 			return nil, errs.Wrapf(err, "scan partition name")
 		}

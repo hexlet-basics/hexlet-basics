@@ -72,7 +72,7 @@ func TestRunFailsWhenTheAddressIsTaken(t *testing.T) {
 	taken, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 
-	defer func() { _ = taken.Close() }()
+	defer func() { assert.NoError(t, taken.Close()) }()
 
 	serverEnv(t, taken.Addr().String())
 

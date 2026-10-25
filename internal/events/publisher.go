@@ -3,6 +3,7 @@ package events
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 
 	"github.com/ThreeDotsLabs/watermill"
@@ -45,7 +46,7 @@ func (p *Publisher) PublishStandalone(ctx context.Context, event Event) error {
 
 // Publish inserts the event into the outbox transaction. Atlas owns the
 // Watermill schema, so runtime auto-initialization remains disabled.
-func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error {
+func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) (err error) {
 	sqlPublisher, err := wmsql.NewPublisher(
 		wmsql.TxFromStdSQL(tx),
 		wmsql.PublisherConfig{SchemaAdapter: wmsql.DefaultPostgreSQLSchema{}},
@@ -54,7 +55,12 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 	if err != nil {
 		return errs.Wrapf(err, "create Watermill transaction publisher")
 	}
-	defer func() { _ = sqlPublisher.Close() }()
+	defer func() {
+		closeErr := sqlPublisher.Close()
+		if closeErr != nil {
+			err = errors.Join(err, errs.Wrapf(closeErr, "close Watermill transaction publisher"))
+		}
+	}()
 
 	bus, err := cqrs.NewEventBusWithConfig(sqlPublisher, busConfig(p.logger))
 	if err != nil {

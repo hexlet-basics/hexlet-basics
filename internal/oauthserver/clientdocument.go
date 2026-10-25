@@ -416,7 +416,7 @@ func (d *documentClients) refresh(ctx context.Context, clientID string) error {
 // URL and can see the document, and carries nothing from our side.
 func (d *documentClients) fetch(ctx context.Context, clientID string) (registration, time.Duration, *documentError) {
 	//nolint:gosec // G704: the client_id URL is caller input by design; the client dials through the private-address-refusing Control hook, see the file comment
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, clientID, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, clientID, http.NoBody)
 	if err != nil {
 		return registration{}, 0, invalidDocument("the client_id URL could not be requested")
 	}

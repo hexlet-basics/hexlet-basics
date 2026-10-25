@@ -44,14 +44,6 @@ func defaultRegistrationScopes() []string {
 	return []string{ScopeCatalogRead, ScopeProgressRead}
 }
 
-// registrationFields are the metadata (RFC 7591) a registration is judged on;
-// ignoredRegistrationFields are harmless descriptive metadata that is accepted
-// and dropped. Every other field is refused rather than ignored: this endpoint
-// is anonymous, and a field it does not understand (an audience, a secret,
-// skip_consent) is exactly what an attacker would try, so silence would let a
-// future change give one of them meaning by accident.
-var ()
-
 // refusal is a validation failure whose text is the answer to the client (the
 // error_description of an RFC 7591 response), so it is a message built for the
 // reader rather than an error message with data in attributes (ADR-0018).
@@ -179,7 +171,10 @@ func (s *Server) readRegistration(w http.ResponseWriter, r *http.Request) (regis
 
 	raw, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxRegistrationBody))
 	if err != nil {
-		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
+		// A typed nil cannot come out of ReadAll; naming the value keeps the error
+		// result of AsType from being discarded.
+		limit, found := errors.AsType[*http.MaxBytesError](err)
+		if found && limit != nil {
 			return registration{}, &registrationError{
 				http.StatusRequestEntityTooLarge, errInvalidClientMetadata, "the request is larger than it may be",
 			}
@@ -457,6 +452,12 @@ func isLoopbackHost(host string) bool {
 	return ip != nil && ip.IsLoopback()
 }
 
+// registrationFields are the metadata (RFC 7591) a registration is judged on;
+// ignoredRegistrationFields are harmless descriptive metadata that is accepted
+// and dropped. Every other field is refused rather than ignored: this endpoint
+// is anonymous, and a field it does not understand (an audience, a secret,
+// skip_consent) is exactly what an attacker would try, so silence would let a
+// future change give one of them meaning by accident.
 func registrationFields() []string {
 	return []string{
 		"redirect_uris", "client_name", "grant_types", "response_types",

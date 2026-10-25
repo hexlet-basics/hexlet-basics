@@ -16,8 +16,6 @@ import (
 // language_landing_pages.yml (exported from legacy) seeds this many rows.
 
 // go-ru landing page and its course, ruby course — all present in the fixtures.
-var ()
-
 // fullLandingInput returns a complete CourseLandingPageInput with every nullable
 // field set to null. The contract fields are required-nullable, so the client
 // always sends them all (an omitted enum would serialize as "" and 400; an
@@ -54,9 +52,9 @@ func landingBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Course
 	})
 	require.NoError(t, err)
 
-	for _, it := range page.Items {
-		if it.Slug == slug {
-			return it
+	for i := range page.Items {
+		if page.Items[i].Slug == slug {
+			return page.Items[i]
 		}
 	}
 

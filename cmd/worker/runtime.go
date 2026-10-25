@@ -248,7 +248,11 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 		if err != nil {
 			stopErr := errs.Wrapf(err, "stop health listener")
 			shutdownErrors = append(shutdownErrors, stopErr)
-			_ = a.health.Close()
+
+			closeErr := a.health.Close()
+			if closeErr != nil {
+				shutdownErrors = append(shutdownErrors, errs.Wrapf(closeErr, "close health listener"))
+			}
 		}
 	}
 

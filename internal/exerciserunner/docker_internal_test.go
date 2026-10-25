@@ -119,7 +119,7 @@ func dockerRunner(t *testing.T) *Docker {
 		t.Fatalf("no docker client: %v", err)
 	}
 
-	t.Cleanup(func() { _ = runner.Close() })
+	t.Cleanup(func() { assert.NoError(t, runner.Close()) })
 
 	_, err = runner.docker.Ping(context.Background(), client.PingOptions{})
 	if err != nil {
@@ -223,7 +223,8 @@ func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
 	pinned, _ := runner.imageRefs(submission)
 
 	t.Cleanup(func() {
-		_, _ = runner.docker.ImageRemove(context.Background(), pinned, client.ImageRemoveOptions{})
+		_, err := runner.docker.ImageRemove(context.Background(), pinned, client.ImageRemoveOptions{})
+		assert.NoError(t, err)
 	})
 
 	resolved, err := runner.ensureImage(t.Context(), submission)

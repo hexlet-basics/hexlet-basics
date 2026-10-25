@@ -33,10 +33,12 @@ func TestAnUnknownStateIsRefused(t *testing.T) {
 
 	archive := transition.Transition[state]{To: "archived", From: []state{"draft"}}
 
-	_, ok := transition.IsIllegal(archive.Check("something"))
+	illegal, ok := transition.IsIllegal(archive.Check("something"))
 	assert.True(t, ok)
-	_, ok = transition.IsIllegal(nil)
+	assert.NotNil(t, illegal)
+	illegal, ok = transition.IsIllegal(nil)
 	assert.False(t, ok)
+	assert.Nil(t, illegal)
 }
 
 func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {

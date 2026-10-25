@@ -23,9 +23,9 @@ func categoryBySlug(t *testing.T, h *testsupport.Harness, slug string) api.Cours
 	})
 	require.NoError(t, err)
 
-	for _, it := range page.Items {
-		if it.Slug.Value == slug {
-			return it
+	for i := range page.Items {
+		if page.Items[i].Slug.Value == slug {
+			return page.Items[i]
 		}
 	}
 

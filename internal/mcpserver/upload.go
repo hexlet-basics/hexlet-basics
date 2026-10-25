@@ -69,6 +69,9 @@ func uploadSchema(file *multipartFile) map[string]any {
 // bytesPerMiB turns the upload limit into the MiB the message names.
 const bytesPerMiB = 1 << 20
 
+// problemRequestBuild is the tool error for a file the multipart writer refuses.
+const problemRequestBuild = "the file does not make a request"
+
 // multipartBody builds the form body and its Content-Type from the tool's
 // `body` argument. A problem is the caller's mistake, reported as a tool error;
 // whether the bytes are an allowed image is for the generated server to answer,
@@ -117,11 +120,20 @@ func multipartBody(file *multipartFile, raw json.RawMessage) ([]byte, string, st
 
 	part, err := writer.CreatePart(header)
 	if err != nil {
-		return nil, "", "the file does not make a request"
+		return nil, "", problemRequestBuild
 	}
-	// Writes to a bytes.Buffer cannot fail.
-	_, _ = part.Write(content)
-	_ = writer.Close()
+
+	// The part writes into a bytes.Buffer, which cannot fail; the checks keep
+	// that assumption from being silent.
+	_, err = part.Write(content)
+	if err != nil {
+		return nil, "", problemRequestBuild
+	}
+
+	err = writer.Close()
+	if err != nil {
+		return nil, "", problemRequestBuild
+	}
 
 	return buf.Bytes(), writer.FormDataContentType(), ""
 }

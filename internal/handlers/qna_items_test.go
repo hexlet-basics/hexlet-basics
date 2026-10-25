@@ -14,8 +14,6 @@ import (
 )
 
 // Parent ids seeded by the qna fixtures.
-var ()
-
 func TestAdminListCategoryQnaItems(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)

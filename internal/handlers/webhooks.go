@@ -63,7 +63,10 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxWebhookBytes))
 	if err != nil {
 		status := http.StatusBadRequest
-		if _, tooLarge := errors.AsType[*http.MaxBytesError](err); tooLarge {
+		// A typed nil cannot come out of ReadAll; naming the value keeps the error
+		// result of AsType from being discarded.
+		limit, found := errors.AsType[*http.MaxBytesError](err)
+		if found && limit != nil {
 			status = http.StatusRequestEntityTooLarge
 		}
 

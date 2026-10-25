@@ -71,7 +71,14 @@ func newRouter(t *testing.T) watermillRouter {
 	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: time.Second}, logger)
 	require.NoError(t, err)
 	router.AddConsumerHandler("test_consumer", "test_topic", pubsub, func(*message.Message) error { return nil })
-	t.Cleanup(func() { _ = router.Close() })
+	t.Cleanup(func() {
+		// Close of a router that never ran waits out its close timeout.
+		select {
+		case <-router.Running():
+			require.NoError(t, router.Close())
+		default:
+		}
+	})
 
 	return watermillRouter{router}
 }
@@ -126,7 +133,7 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 	jobQueue := newJobs()
 	router := newRouter(t)
 	// A router that is already running cannot be run again, so Run fails.
-	go func() { _ = router.Run(t.Context()) }()
+	go func() { assert.NoError(t, router.Run(t.Context())) }()
 
 	select {
 	case <-router.Running():

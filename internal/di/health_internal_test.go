@@ -35,7 +35,7 @@ func builtHandler(t *testing.T) (do.Injector, http.Handler) {
 
 	injector := newServerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	handler, err := do.InvokeNamed[http.Handler](injector, httpHandlerServiceName)
 	require.NoError(t, err)
@@ -88,7 +88,7 @@ func TestWorkerHealthServerIsReadyOnlyAfterStartAndWhileTheDatabaseWorks(t *test
 
 	injector := newWorkerContainer()
 
-	t.Cleanup(func() { _ = injector.Shutdown() })
+	t.Cleanup(func() { assert.Empty(t, injector.Shutdown().Errors) })
 
 	server, err := do.InvokeNamed[*http.Server](injector, healthServerServiceName)
 	require.NoError(t, err)

@@ -87,7 +87,7 @@ func TestRuntimeAnnouncesItsAddressAndTheShutdown(t *testing.T) {
 func TestRuntimeReportsAnAddressThatCannotBeServed(t *testing.T) {
 	taken, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = taken.Close() })
+	t.Cleanup(func() { require.NoError(t, taken.Close()) })
 
 	addr := taken.Addr().String()
 	app := application{

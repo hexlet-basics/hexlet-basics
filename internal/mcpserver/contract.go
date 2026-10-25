@@ -33,7 +33,11 @@ func responseSchema(operationID string) (map[string]any, error) {
 	}
 
 	for _, methods := range doc.Paths {
-		for _, node := range methods {
+		// A map value is not addressable and Decode has a pointer receiver, so
+		// each node is copied once by key rather than once per range step.
+		for key := range methods {
+			node := methods[key]
+
 			var op struct {
 				OperationID string `yaml:"operationId"` //nolint:tagliatelle // OpenAPI document key
 				Responses   map[string]struct {

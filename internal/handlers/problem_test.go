@@ -13,7 +13,7 @@ import (
 // the operation declared.
 func requireProblem(t *testing.T, err error, status int) {
 	t.Helper()
-	_ = problemWithStatus(t, err, status)
+	require.NotNil(t, problemWithStatus(t, err, status))
 }
 
 // problemWithStatus is requireProblem for a test that reads the rest of the

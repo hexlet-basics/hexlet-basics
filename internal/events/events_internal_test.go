@@ -175,7 +175,7 @@ func deliverReporting(t *testing.T, sentryClient *sentry.Client, handler message
 	logger := watermill.NopLogger{}
 	poison := gochannel.NewGoChannel(gochannel.Config{}, logger)
 
-	t.Cleanup(func() { _ = poison.Close() })
+	t.Cleanup(func() { require.NoError(t, poison.Close()) })
 	poisoned, err := poison.Subscribe(t.Context(), PoisonTopic)
 	require.NoError(t, err)
 	chain, err := deliveryMiddleware(logger, poison, sentryClient)

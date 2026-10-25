@@ -193,8 +193,8 @@ func typeOrder(t Type) int { return slices.Index(Types(), t) }
 // for the ids it contributed.
 func withSnippets(ctx context.Context, matcher match, kinds []kind, candidates []candidate) ([]Hit, error) {
 	byType := map[Type][]int{}
-	for _, cand := range candidates {
-		byType[cand.typ] = append(byType[cand.typ], cand.id)
+	for i := range candidates {
+		byType[candidates[i].typ] = append(byType[candidates[i].typ], candidates[i].id)
 	}
 
 	snippets := map[Type]map[int]string{}
@@ -213,7 +213,8 @@ func withSnippets(ctx context.Context, matcher match, kinds []kind, candidates [
 	}
 
 	hits := make([]Hit, len(candidates))
-	for i, cand := range candidates {
+	for i := range candidates {
+		cand := &candidates[i]
 		hit := cand.hit
 		hit.Snippet = tidy(snippets[cand.typ][cand.id])
 		hits[i] = hit

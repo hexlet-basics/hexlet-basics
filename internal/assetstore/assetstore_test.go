@@ -15,6 +15,7 @@ import (
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/memblob"
 	_ "gocloud.dev/blob/s3blob"
+	"gocloud.dev/gcerrors"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/assetstore"
@@ -38,7 +39,13 @@ func newStore(t *testing.T) (*assetstore.Store, *ent.Client, *blob.Bucket) {
 	db := testsupport.NewClient(t)
 	bucket := memblob.OpenBucket(nil)
 
-	t.Cleanup(func() { _ = bucket.Close() })
+	t.Cleanup(func() {
+		// A test that makes the bucket fail closes it itself.
+		err := bucket.Close()
+		if err != nil {
+			require.Equal(t, gcerrors.FailedPrecondition, gcerrors.Code(err))
+		}
+	})
 
 	return assetstore.New(db, bucket, "https://assets.example.test/"), db, bucket
 }
@@ -47,7 +54,7 @@ func TestPutAndOpen(t *testing.T) {
 	store, db, _ := newStore(t)
 	ctx := context.Background()
 
-	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), make([]byte, 600)...)
 
 	got, err := store.Put(ctx, assetstore.Upload{
 		Filename: "course-cover.anything",
@@ -70,7 +77,7 @@ func TestPutAndOpen(t *testing.T) {
 	reader, err := store.Open(ctx, record.StorageKey)
 	require.NoError(t, err)
 
-	defer func() { _ = reader.Close() }()
+	defer func() { assert.NoError(t, reader.Close()) }()
 
 	assert.Equal(t, "image/png", reader.ContentType)
 	assert.False(t, reader.ModTime.IsZero())
@@ -129,7 +136,7 @@ func TestPutCleansUpOversizedBlob(t *testing.T) {
 func TestPutCleansUpAfterReaderFailure(t *testing.T) {
 	store, _, bucket := newStore(t)
 
-	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 1016)...)
+	data := append(append([]byte{}, pngHeader()...), make([]byte, 1016)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "broken.png",
@@ -152,7 +159,7 @@ func TestPutCleansUpAfterAttachmentFailure(t *testing.T) {
 		})
 	})
 
-	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), make([]byte, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "orphan.png",
@@ -220,7 +227,7 @@ func TestDownloadURLPresignsAnS3ObjectWithTheDeliveryHeaders(t *testing.T) {
 	bucket, err := blob.OpenBucket(ctx,
 		"s3://books?region=us-east-1&endpoint=http://127.0.0.1:1&use_path_style=true&disable_https=true")
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = bucket.Close() })
+	t.Cleanup(func() { require.NoError(t, bucket.Close()) })
 	store := assetstore.New(testsupport.NewClient(t), bucket, "https://assets.example.test")
 
 	got, err := store.DownloadURL(ctx, "book.pdf", assetstore.Delivery{
@@ -276,7 +283,7 @@ func TestPutAndOpenReportABucketThatFails(t *testing.T) {
 	store, db, bucket := newStore(t)
 	require.NoError(t, bucket.Close())
 
-	data := append(append([]byte{}, pngHeader()...), bytes.Repeat([]byte{0}, 600)...)
+	data := append(append([]byte{}, pngHeader()...), make([]byte, 600)...)
 
 	_, err := store.Put(context.Background(), assetstore.Upload{
 		Filename: "x.png",

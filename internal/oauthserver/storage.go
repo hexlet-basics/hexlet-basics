@@ -388,7 +388,7 @@ var errRefreshNotSpendable = errors.New("refresh token cannot be spent")
 
 // GetRefreshTokenInfo lets the revocation endpoint tell a refresh token from an
 // access token.
-func (s *storage) GetRefreshTokenInfo(ctx context.Context, _ string, token string) (string, string, error) {
+func (s *storage) GetRefreshTokenInfo(ctx context.Context, _, token string) (string, string, error) {
 	row, err := s.db.OAuthRefreshToken.Query().
 		Where(oauthrefreshtoken.TokenHash(digest(token))).Only(ctx)
 	if ent.IsNotFound(err) {

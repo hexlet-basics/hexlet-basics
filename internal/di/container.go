@@ -4,6 +4,7 @@ package di
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -73,7 +74,8 @@ func BuildServer() (ServerDependencies, error) {
 	}
 
 	if err != nil {
-		_ = injector.Shutdown()
+		// A failed build reports its own cause; a failed release joins behind it.
+		err = errors.Join(err, release(injector))
 
 		return ServerDependencies{}, err
 	}
@@ -96,7 +98,8 @@ func BuildWorker() (WorkerDependencies, error) {
 	}
 
 	if err != nil {
-		_ = injector.Shutdown()
+		// A failed build reports its own cause; a failed release joins behind it.
+		err = errors.Join(err, release(injector))
 
 		return WorkerDependencies{}, err
 	}
@@ -112,4 +115,16 @@ func newServerContainer() *do.RootScope {
 
 func newWorkerContainer() *do.RootScope {
 	return do.New(commonPackage, closersPackage, workerPackage)
+}
+
+// release shuts the injector down for a build that failed, where there is no
+// caller context to bound it; the report is an error only when a service failed
+// to stop.
+func release(injector do.Injector) error {
+	report := injector.Shutdown()
+	if report == nil || report.Succeed {
+		return nil
+	}
+
+	return errs.Wrapf(report, "shut down the injector")
 }

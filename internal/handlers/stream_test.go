@@ -25,11 +25,11 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 
 	release := make(chan struct{})
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		_, _ = io.WriteString(w, "first\n")
+		writeBody(t, w, "first\n")
 
 		<-release
 
-		_, _ = io.WriteString(w, "second\n")
+		writeBody(t, w, "second\n")
 	})
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
@@ -57,7 +57,7 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	arrived := make(chan firstChunk, 1)
 
 	go func() {
-		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, http.NoBody)
 		if err != nil {
 			arrived <- firstChunk{
 				err:  err,
@@ -116,15 +116,15 @@ func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
 	t.Parallel()
 
 	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		_, _ = io.WriteString(w, "partial ")
+		writeBody(t, w, "partial ")
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = io.WriteString(w, `{"status":500}`)
+		writeBody(t, w, `{"status":500}`)
 	})
 	server := httptest.NewServer(handlers.StreamResponses(inner))
 	t.Cleanup(server.Close)
 
-	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
+	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, http.NoBody)
 	require.NoError(t, err)
 	res, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
@@ -134,4 +134,13 @@ func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
 	body, err := io.ReadAll(res.Body)
 	require.Error(t, err, "the stream is cut, not ended")
 	assert.Equal(t, "partial ", string(body))
+}
+
+// writeBody writes a chunk from a handler stub: a failed write is a test failure,
+// not something to ignore.
+func writeBody(t *testing.T, w io.Writer, body string) {
+	t.Helper()
+
+	_, err := io.WriteString(w, body)
+	assert.NoError(t, err)
 }

@@ -88,10 +88,8 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 func reviewPrompt(info *ent.CourseLessonTranslation, questions []*ent.AiMessage) string {
 	contents := lo.Map(questions, func(q *ent.AiMessage, _ int) string { return lo.FromPtr(q.Content) })
 
-	return strings.Join([]string{
-		"Урок (теория и упражнение): " + lo.FromPtr(info.Theory) + "\n\n" + lo.FromPtr(info.Instructions),
-		"Вопросы пользователей: " + strings.Join(contents, "\n\n"),
-	}, "\n\n")
+	return "Урок (теория и упражнение): " + lo.FromPtr(info.Theory) + "\n\n" + lo.FromPtr(info.Instructions) +
+		"\n\n" + "Вопросы пользователей: " + strings.Join(contents, "\n\n")
 }
 
 // upsertReview writes the summary keyed by (course, lesson, locale) — the

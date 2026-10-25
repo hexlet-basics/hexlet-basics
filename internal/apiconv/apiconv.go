@@ -7,6 +7,7 @@
 package apiconv
 
 import (
+	"log/slog"
 	"math"
 	"path/filepath"
 	"slices"
@@ -537,7 +538,12 @@ func decodeLessonYAML(raw *string, into any) {
 		return
 	}
 
-	_ = yaml.Unmarshal([]byte(*raw), into)
+	err := yaml.Unmarshal([]byte(*raw), into)
+	if err != nil {
+		// The column is content, so the defect is reported where someone can fix
+		// it (the logs) without failing the read; the raw text stays out of them.
+		slog.Warn("decoding lesson yaml column", "err", err)
+	}
 }
 
 // NilEnrollmentStateFromPtr resolves the nullable legacy column to the contract's

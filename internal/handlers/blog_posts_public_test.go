@@ -21,8 +21,8 @@ import (
 // assertions compare (fixture ids are opaque).
 func blogSlugs(posts []api.BlogPost) []string {
 	slugs := make([]string, len(posts))
-	for i, p := range posts {
-		slugs[i] = p.Slug.Value
+	for i := range posts {
+		slugs[i] = posts[i].Slug.Value
 	}
 
 	return slugs
@@ -225,7 +225,8 @@ func TestLikeBlogPostRequiresSignIn(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	id := blogPostID(t, h, "learning-ruby")
 
-	_, _ = h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
+	_, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: id})
+	require.Error(t, err)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
 
 	likes, err := h.DB.BlogPostLike.Query().

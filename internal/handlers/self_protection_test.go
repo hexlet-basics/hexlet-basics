@@ -17,8 +17,6 @@ import (
 // The fixtures: alice is the first administrator (the harness user), dana the second, bob the editor
 // (role staff_role_editor), carol a plain user, and the moderator role holds no grants. A third
 // administrator, user_admin_staff, is also a staff member (staff_member_admin_staff).
-var ()
-
 // delegate gives the editor role Permissions it does not hold in the fixtures,
 // the way an administrator delegating staff management would.
 func delegate(t *testing.T, h *testsupport.Harness, permissions ...string) {

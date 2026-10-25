@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -98,7 +99,13 @@ func NewRouter(
 func StreamResponses(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		controller := http.NewResponseController(w)
-		_ = controller.SetWriteDeadline(time.Time{})
+
+		err := controller.SetWriteDeadline(time.Time{})
+		if err != nil && !errors.Is(err, http.ErrNotSupported) {
+			// A writer that cannot move its deadline (a test recorder) is served
+			// anyway, as documented above; any other failure is worth a line.
+			slog.WarnContext(r.Context(), "clear write deadline for streamed response", "err", err)
+		}
 
 		w.Header().Set("X-Accel-Buffering", "no")
 		next.ServeHTTP(&flushingWriter{

@@ -16,8 +16,8 @@ import (
 // fact the order assertions compare (fixture ids are opaque).
 func reviewNames(reviews []api.Review) []string {
 	names := make([]string, len(reviews))
-	for i, r := range reviews {
-		names[i] = r.FullName.Value
+	for i := range reviews {
+		names[i] = reviews[i].FullName.Value
 	}
 
 	return names

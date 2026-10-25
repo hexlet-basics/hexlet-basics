@@ -296,10 +296,11 @@ func detailFor(err error) (detail, bool) {
 		return detail{message: localization.IllegalStateTransition, move: illegal}, true
 	}
 
-	for _, row := range details() {
-		if errors.Is(err, row.err) {
+	rows := details()
+	for i := range rows {
+		if errors.Is(err, rows[i].err) {
 			return detail{
-				message: row.message,
+				message: rows[i].message,
 				move:    nil,
 			}, true
 		}

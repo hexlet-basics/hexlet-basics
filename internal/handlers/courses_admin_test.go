@@ -14,8 +14,6 @@ import (
 )
 
 // languages.yml seeds this many courses; ruby is one of them.
-var ()
-
 func TestAdminListCourses(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)

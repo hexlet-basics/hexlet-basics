@@ -24,7 +24,6 @@ const (
 // development, a draft may be declared completed). Each names the two values it
 // may start from; repeating the current one is not among them, so it is refused
 // like any illegal move.
-var ()
 
 // ReadinessOf reads the readiness column of a Course. A Course with none (the
 // column is nullable in the legacy schema) counts as a draft, which is how the

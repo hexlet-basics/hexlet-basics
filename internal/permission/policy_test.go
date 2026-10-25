@@ -21,7 +21,6 @@ import (
 // The fixtures seed user_staff_editor as an editor holding the blog_posts.read,
 // banners.read and banners.create grants, in ru and en; user_admin_learner is an administrator
 // without a staff record, user_admin_staff one with it.
-var ()
 
 func TestPolicyFollowsTheRolesGrants(t *testing.T) {
 	db := testsupport.NewClient(t)
