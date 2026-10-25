@@ -17,6 +17,8 @@ export default defineConfig({
   ignorePatterns: [
     "legacy/**/*",
     "src/client/**",
+    // The sample course the loader test reads: course content, not our source.
+    "internal/courseloader/testdata/**",
     "src/routeTree.gen.ts",
     "src/types/resources.d.ts",
     // Written by `msw init`, not by us.
