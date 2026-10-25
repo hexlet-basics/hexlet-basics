@@ -46,7 +46,7 @@ helm = "4.3.1"
 kubeconform = "0.8.0"
 # Terraform under legacy/terraform (mise run lint:infra); the pin follows
 # required_version in versions.tf.
-terraform = "1.16.5"
+terraform = "1.17.0"
 # Install the git hooks (hk.pkl) once the toolchain is in place.
 [hooks]
 postinstall = "hk install --mise"
