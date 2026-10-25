@@ -86,7 +86,6 @@ hooks {
       ["lint-packages"] {
         check = "mise run lint:packages"
       }
-      // Network, so not on every commit.
       ["lint-links"] {
         check = "mise run lint:links"
       }

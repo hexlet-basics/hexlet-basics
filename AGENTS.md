@@ -210,7 +210,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   `lint:migrations` (shipped migrations immutable, new ones squawk-clean; an edit
   needs a `Migration-Edit: <why>` line in its commit) + `lint:contract` (vacuum) +
   `lint:agents` (agnix); `lint:contract-breaking` (oasdiff) is manual. CI runs the
-  same task. The pre-push hook runs the Go, frontend, ADR and link checks (`lint:links`, lychee); the
+  same task. The pre-push hook runs the Go, frontend, ADR and offline link checks (`lint:links`, lychee); the
   pre-commit hook runs betterleaks, rumdl, oxlint, oxfmt, golangci-lint, typos,
   shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
   Pushes need them clean.
@@ -269,10 +269,11 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   with the thresholds in `vite.config.ts`. Raise a floor when coverage rises;
   never lower it.
 - **Nightly, not per PR.** `.github/workflows/nightly.yml` runs both coverage
-  gates, `mise run lint:vulns` (govulncheck) and `mise run lint:atlas-retention`
+  gates, `mise run lint:vulns` (govulncheck), `mise run lint:links:remote` (the
+  external links of the Markdown files) and `mise run lint:atlas-retention`
   (the pinned Atlas binary is still downloadable) once a night and on demand
-  (`workflow_dispatch`). A new advisory can fail `lint:vulns` with no change
-  on our side, so it is deliberately not part of `lint`. Put a check there
+  (`workflow_dispatch`). A new advisory or a site that is down can fail them
+  with no change on our side, so they are deliberately not part of `lint`. Put a check there
   when its result does not depend on the diff under review.
 - DB-dependent packages clone their database with
   [pgtestdb](https://github.com/peterldowns/pgtestdb) on the `db` daemon

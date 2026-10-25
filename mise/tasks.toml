@@ -178,6 +178,7 @@ depends = [
   "lint:atlas-pin",
   "lint:typos",
   "lint:markdown",
+  "lint:links",
   "lint:workflows",
   "lint:shell",
   "lint:migrations",
@@ -261,7 +262,11 @@ description = "Markdown style (.rumdl.toml)"
 run = "rumdl check ."
 
 ["lint:links"]
-description = "Links in the Markdown files (lychee.toml); needs the network"
+description = "Links between the Markdown files of the repository and their #fragments resolve (lychee --offline, lychee.toml)"
+run = "lychee --config lychee.toml --offline --no-progress '**/*.md'"
+
+["lint:links:remote"]
+description = "External links in the Markdown files answer (network: not part of lint, a site can be down with no change on our side, so the nightly workflow runs it)"
 run = "lychee --config lychee.toml --no-progress '**/*.md'"
 
 ["lint:i18n"]
