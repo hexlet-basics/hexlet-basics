@@ -186,6 +186,9 @@ depends = [
   "lint:typos",
   "lint:workflows",
   "lint:shell",
+  "lint:migrations",
+  "lint:contract",
+  "lint:agents",
 ]
 
 ["lint:atlas-pin"]
@@ -203,6 +206,30 @@ if [ "$status" != "200" ]; then
   exit 1
 fi
 '''
+
+["lint:migrations"]
+description = "Shipped migrations are immutable and the ones a change adds are safe for PostgreSQL locking (squawk, .squawk.toml), against MIGRATIONS_BASE (default origin/main)"
+run = "scripts/lint_migrations.sh"
+
+["lint:contract"]
+description = "The generated OpenAPI contract (api-spec/dist) has no vacuum errors; its warnings are style findings of a generated file and do not fail"
+run = "vacuum lint --no-style --fail-severity error api-spec/dist/openapi.yaml"
+
+["lint:contract-breaking"]
+description = "The OpenAPI contract has no breaking change against MIGRATIONS_BASE (default origin/main) (oasdiff). Manual: a deliberate break during the cutover is allowed, so it informs and is not part of lint"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+base=$(git merge-base "${MIGRATIONS_BASE:-origin/main}" HEAD)
+old=$(mktemp)
+trap 'rm -f "$old"' EXIT
+git show "$base:api-spec/dist/openapi.yaml" > "$old"
+oasdiff breaking "$old" api-spec/dist/openapi.yaml --fail-on ERR
+'''
+
+["lint:agents"]
+description = "AGENTS.md and the agent configuration parse and follow the vendors' formats (agnix, .agnix.toml)"
+run = "agnix ."
 
 ["lint:triggers"]
 description = "No database triggers of our own (river's are the only ones); the two audit migrations are the history of one that was dropped"

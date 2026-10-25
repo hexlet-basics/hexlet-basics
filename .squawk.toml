@@ -1,0 +1,3 @@
+# Migration safety (mise run lint:migrations): squawk lints the migrations a change
+# adds, never the shipped ones. Atlas wraps each file in a transaction.
+assume_in_transaction = true

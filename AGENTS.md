@@ -204,7 +204,11 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
   from a locale catalog) + `lint:helm` (helm lint, render, kubeconform) +
-  `lint:infra` (terraform fmt and validate for `legacy/terraform`). CI runs the
+  `lint:infra` (terraform fmt and validate for `legacy/terraform`) + `lint:migrations`
+  (shipped migrations stay immutable and new ones pass squawk; a deliberate edit
+  carries a `Migration-Edit: <why>` line in its commit message) + `lint:contract`
+  (vacuum) + `lint:agents` (agnix). `lint:contract-breaking` (oasdiff against
+  `origin/main`) is manual and not part of `lint`. CI runs the
   same task. The pre-push hook runs the Go, frontend and ADR checks; the
   pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
   shellcheck, zizmor, jactionlint, terraform and helm on the staged files.

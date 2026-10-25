@@ -47,6 +47,14 @@ kubeconform = "0.8.0"
 # Terraform under legacy/terraform (mise run lint:infra); the pin follows
 # required_version in versions.tf.
 terraform = "1.17.0"
+# Guardrails from github.com/mokevnin/dev-guardrails. squawk lints the migrations a
+# change adds (lint:migrations), oasdiff compares the OpenAPI contract with the base
+# branch (lint:contract-breaking), vacuum lints the generated contract
+# (lint:contract) and agnix the agent instruction files (lint:agents).
+"github:sbdchd/squawk" = "2.70.0"
+"github:oasdiff/oasdiff" = "1.34.1"
+vacuum = "0.35.1"
+"github:agent-sh/agnix" = "0.59.3"
 # Install the git hooks (hk.pkl) once the toolchain is in place.
 [hooks]
 postinstall = "hk install --mise"

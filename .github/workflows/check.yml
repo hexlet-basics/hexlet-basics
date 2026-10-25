@@ -30,6 +30,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # lint:migrations compares with the merge base of origin/main.
+          fetch-depth: 0
 
       # Installs the toolchain pinned in mise.toml (go, node, pnpm,
       # golangci-lint — single source of truth with local dev), and caches it

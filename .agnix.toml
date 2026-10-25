@@ -1,0 +1,4 @@
+# Agent instruction files (mise run lint:agents). The skills under .agents/skills are
+# vendored, so they are not ours to fix here.
+severity = "Warning"
+exclude = ["node_modules/**", ".git/**", ".claude/worktrees/**", ".agents/skills/**"]
