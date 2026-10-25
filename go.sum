@@ -421,8 +421,8 @@ github.com/moby/moby/client v0.6.2 h1:ekSPlMccrZGcw6Scb8T9D39qE0mB+XupU/yS0zNw9N
 github.com/moby/moby/client v0.6.2/go.mod h1:DGcnO7qmPJrqobx/ggQgQ/AUk+2wgVdQv7uxB0/mEsc=
 github.com/modelcontextprotocol/go-sdk v1.8.0 h1:KIvahhYqwtbeniWVPs3TcXEA7b8jEtwfBpOTAI+Urx4=
 github.com/modelcontextprotocol/go-sdk v1.8.0/go.mod h1:dL7u98E/zjJTGzEq+j30jQ8K2k1mb6LeAH4inEcSGts=
-github.com/mokevnin/pgcleaner v0.2.0 h1:yAmmfY3QWjymysJqsl7kxM7QbOc52HNTpkq+RhR8KHA=
-github.com/mokevnin/pgcleaner v0.2.0/go.mod h1:u5lx+jegDP742k+/wcOw0m4I2H+EKy0Qb9EijGKVYfs=
+github.com/mokevnin/dbcleaner v1.0.0 h1:jSWT4B3bWeZ6OX8IwP7FpZFC7wcDRat5KW/kvItBBEg=
+github.com/mokevnin/dbcleaner v1.0.0/go.mod h1:cp/E9aKtgx0sly/P1DsEW7GlXvj2qtIJ6jZ5tAiuysM=
 github.com/muesli/smartcrop v0.3.0 h1:JTlSkmxWg/oQ1TcLDoypuirdE8Y/jzNirQeLkxpA6Oc=
 github.com/muesli/smartcrop v0.3.0/go.mod h1:i2fCI/UorTfgEpPPLWiFBv4pye+YAG78RwcQLUkocpI=
 github.com/muhlemmer/gu v0.3.1 h1:7EAqmFrW7n3hETvuAdmFmn4hS8W+z3LgKtrnow+YzNM=

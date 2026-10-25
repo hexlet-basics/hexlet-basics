@@ -15,7 +15,7 @@ kept rule has a reason; a rule without one would have lost to practice.
   development PostgreSQL 18 daemon (a service container in CI) from a template
   holding the Atlas migrations and `fixtures/`; a test gets a transaction
   (`testsupport.NewClient*`, `NewHarness*`) on a handle from
-  [pgcleaner](https://github.com/mokevnin/pgcleaner)'s `Transaction` strategy
+  [dbcleaner](https://github.com/mokevnin/dbcleaner)'s `Transaction` strategy
   (`testdb.DB(t)`), so it is rolled back. No database
   mocks. Code that needs commit semantics goes through the savepoint transactor
   in `testsupport`, or carries a `//nolint:forbidigo // why`. The savepoint
