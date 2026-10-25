@@ -5,8 +5,13 @@ hooks {
   ["pre-commit"] {
     steps {
       // Staged content only: the builtin scans the whole directory, ignored files included.
-      ["gitleaks"] {
-        check = "gitleaks git --staged --redact --no-banner"
+      ["betterleaks"] {
+        check = "betterleaks git --staged --redact --no-banner"
+      }
+      ["rumdl"] {
+        glob = List("**/*.md")
+        check = "rumdl check {{files}}"
+        fix = "rumdl fmt {{files}}"
       }
       // Fast checks on the staged files only; whole-project ones (tsc, knip,
       // govulncheck, go test) run in the pre-push hook and in CI.
@@ -80,6 +85,10 @@ hooks {
       }
       ["lint-packages"] {
         check = "mise run lint:packages"
+      }
+      // Network, so not on every commit.
+      ["lint-links"] {
+        check = "mise run lint:links"
       }
     }
   }

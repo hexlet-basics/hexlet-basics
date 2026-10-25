@@ -24,7 +24,7 @@ This is the single most important thing to understand (ADR-0001). The HTTP
 contract is the source of truth, and both the Go server and the TS client are
 **generated** from it. The flow is one-directional:
 
-```
+```text
 api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──ogen──▶  internal/api/   (Go server: routing, validation, types)
   (you edit)                    (generated)             └──hey-api▶  src/client/     (TS client + TanStack Query hooks)
 ```
@@ -193,17 +193,17 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 - `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint`: see below) +
   frontend (`oxlint`, `oxfmt --check`, `tsc -b`) + ADR number uniqueness
   (`lint:adr`) + `lint:packages` (internal package names are singular, ADR-0025)
-  + `lint:config` (ADR-0024) + `lint:atlas-pin` (Atlas version in `mise.toml`
+  - `lint:config` (ADR-0024) + `lint:atlas-pin` (Atlas version in `mise.toml`
   and `Dockerfile` agree, ADR-0014) + `lint:triggers` + `lint:deps` (`go mod tidy
   -diff`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
-  + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
+  - `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
   from a locale catalog) + `lint:helm` (helm lint, render, kubeconform) +
   `lint:migrations` (shipped migrations immutable, new ones squawk-clean; an edit
   needs a `Migration-Edit: <why>` line in its commit) + `lint:contract` (vacuum) +
   `lint:agents` (agnix); `lint:contract-breaking` (oasdiff) is manual. CI runs the
-  same task. The pre-push hook runs the Go, frontend and ADR checks; the
-  pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
+  same task. The pre-push hook runs the Go, frontend, ADR and link checks (`lint:links`, lychee); the
+  pre-commit hook runs betterleaks, rumdl, oxlint, oxfmt, golangci-lint, typos,
   shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
   Pushes need them clean.
 - **golangci-lint** (`.golangci.yml`) enables, beyond the standard set,
@@ -235,7 +235,6 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   them in parallel yourself. `HEAVY_SLOTS` sets how many run at once, `heavy --status` shows who
   holds them; a nested call (`HEAVY_HELD`) and `CI` run at once. Wrap leaf tasks only, never a
   parent such as `lint`, or it would hold a slot for children that wait on it.
-
 - `mise run test` — the Go suite (`go test -race ./...`, plus `-shuffle=on` when `CI` is set: a
   shuffle disables go's result cache, so locally unchanged packages show `(cached)`). In CI tests run in a random
   order and `go` prints the seed, so a test must not depend on another's side

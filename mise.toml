@@ -33,8 +33,12 @@ pkl = "0.32.2"
 pitchfork = "2.32.2"
 # Structural code search for agents (see AGENTS.md, "Code search").
 ast-grep = "0.51.0"
-# Secret scan on staged changes (pre-commit hook in hk.pkl).
-gitleaks = "8.30.1"
+# Secret scan on staged changes (pre-commit hook in hk.pkl) and on the commits of a push
+# (check.yml). Betterleaks reads the .gitleaks.toml rule format.
+betterleaks = "1.9.0"
+# Markdown lint (rumdl) and link check (lychee, pre-push and CI).
+rumdl = "0.3.0"
+lychee = "0.24.2"
 # Workflow linters (mise run lint:workflows), the spelling check (lint:typos) and
 # pinact, which pins a workflow's actions to commit SHAs (`pinact run`).
 zizmor = "1.31.1"

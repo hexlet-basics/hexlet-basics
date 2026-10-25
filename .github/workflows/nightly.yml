@@ -94,6 +94,22 @@ jobs:
 
       - run: mise run lint:vulns
 
+  # Links rot without a change in this repository, so the check runs on a schedule
+  # and not on a pull request. GITHUB_TOKEN lifts the github.com rate limit.
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+
+      - run: mise run lint:links
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # The Atlas retention canary (ADR-0014): Ariga deletes Community binaries after
   # ~6 months, so the pin in mise.toml must keep moving. This fails the night the
   # pinned version stops downloading, before a new machine or a CI run finds out.

@@ -1,0 +1,5 @@
+# Paragraphs are not wrapped to a width (MD013); CHANGELOG is written by release-please.
+# .agents holds vendored skills and testdata holds fixtures that tests compare byte for byte.
+[global]
+disable = ["MD013", "MD033", "MD041"]
+exclude = ["CHANGELOG.md", "node_modules", ".agents", "**/testdata/**"]

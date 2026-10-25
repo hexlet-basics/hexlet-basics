@@ -177,6 +177,7 @@ depends = [
   "lint:config",
   "lint:atlas-pin",
   "lint:typos",
+  "lint:markdown",
   "lint:workflows",
   "lint:shell",
   "lint:migrations",
@@ -254,6 +255,14 @@ exit $status
 ["lint:typos"]
 description = "Spelling in code, docs and comments (_typos.toml)"
 run = "typos"
+
+["lint:markdown"]
+description = "Markdown style (.rumdl.toml)"
+run = "rumdl check ."
+
+["lint:links"]
+description = "Links in the Markdown files (lychee.toml); needs the network"
+run = "lychee --config lychee.toml --no-progress '**/*.md'"
 
 ["lint:i18n"]
 description = "i18n: resources.d.ts is current, no hardcoded strings outside the per-language pages, no key missing from a locale catalog (i18next.config.ts)"

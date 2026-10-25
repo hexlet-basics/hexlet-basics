@@ -62,3 +62,4 @@ stats.html
 
 # go test -coverprofile output
 /cover.out
+.lycheecache

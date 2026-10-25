@@ -1,0 +1,11 @@
+# GITHUB_TOKEN is read from the environment and lifts the github.com rate limit.
+max_concurrency = 8
+max_retries = 3
+retry_wait_time = 5
+timeout = 30
+cache = true
+max_cache_age = "1d"
+accept = ["200..=204", "429"]
+exclude_path = ["CHANGELOG.md", "node_modules", ".agents", "testdata"]
+# npmjs.com answers CI with 403 (bot protection); the links are fine in a browser.
+exclude = ["^https://www.npmjs.com/", "^https?://localhost", "^https?://127\\.0\\.0\\.1"]

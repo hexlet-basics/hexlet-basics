@@ -1,4 +1,4 @@
-# Default gitleaks rules, plus the few files whose content only looks like a
+# Default Betterleaks rules, plus the few files whose content only looks like a
 # secret.
 [extend]
 useDefault = true
