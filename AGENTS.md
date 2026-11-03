@@ -142,6 +142,14 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   seed `.env`, then the separate `install` task (dependencies) and `db:fixtures`
   (db daemon, migrations, `fixtures/`) and `dev`: after a clone, `mise setup`
   alone brings the whole project up with a populated site.
+- `mise run update` — bump the Go and frontend dependencies and the vendored
+  skills (`update:go`, `update:npm`, `update:skills`); verify with `gen:all`, `lint`
+  and `test` afterwards. `update:npm` leaves `@hey-api/*` alone (see the pin above).
+  `mise run upgrade` bumps the mise tools pinned in `mise.toml` (`--no-global
+  --bump`); a weekly `tools.yml` workflow keeps one issue open while a pin is
+  behind. Dependabot covers the rest (npm, gomod, docker, terraform, actions).
+  mise links the agent skills of the pinned tools into `.claude/skills`
+  (`[settings.skills]`).
 - `mise run install` — only the dependencies: `go mod download` + `pnpm install`
   (root package.json is shared by the frontend and the api-spec tooling).
 - `mise run db:up` — start the Postgres daemon; idempotently creates the
@@ -206,6 +214,19 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   pre-commit hook runs betterleaks, rumdl, oxlint, oxfmt, golangci-lint, typos,
   shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
   Pushes need them clean.
+- **Quality gates with a baseline.** `mise run lint:arch` (easement, `easement.yml`: the
+  layers of this file as components, one rule each with its `because`) and
+  `mise run lint:schema` (schemalens: the migrated e2e database against the ent schema)
+  were switched on over existing debt, which sits in `easement.baseline.yml` and
+  `schemalens.yml`. This is a deliberate, temporary exception to "no baseline" above: the
+  debt is paid down after the cutover deploy, an entry is deleted in the commit that
+  fixes it, and none is ever added for new code. CI runs them as the `arch` job and as a
+  step of `test-e2e`; neither is part of `mise run lint`.
+- **CI** (`.github/workflows/check.yml`) runs on pull requests and on every push to
+  `main` (agent work lands there directly; that run also seeds the Go caches, which
+  pull requests only restore: `.github/actions/go-cache`). The `ci` job is the one
+  check a ruleset requires: it fails if any other job does. `nightly.yml` holds what
+  does not depend on the diff, `tools.yml` the weekly mise-pin issue.
 - **golangci-lint** (`.golangci.yml`) enables, beyond the standard set,
   `gosec` (tests exempt from G115, G304, G306, G301, G101 only; a production
   finding is fixed or carries a `//nolint:gosec // why`), `modernize`,

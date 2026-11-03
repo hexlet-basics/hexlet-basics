@@ -1,0 +1,176 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mokevnin/easement/main/easement.schema.json
+# Architecture gate (https://github.com/mokevnin/easement): `mise run lint:arch`.
+# The boundaries are the ones AGENTS.md and the ADRs state (ADR-0001 contract-first, ADR-0025 module
+# layout); a violation names the rule's `because`, so read it before reaching for a baseline entry.
+# easement.baseline.yml holds the debt found when the gate was switched on, to be paid down after
+# the cutover deploy. It only shrinks: delete an entry in the commit that fixes it, add none.
+version: 1
+
+x-no-container: &no-container
+  - name: github.com/samber/do/v2
+    because: only internal/di and cmd see the DI container; a new dependency is a provider in internal/di (AGENTS.md, "Handlers, DI, and Data")
+
+components:
+  # ---- Go --------------------------------------------------------------------------------------
+  # Packages every other one may use: configuration, logging, ids, domain errors and small pure helpers.
+  foundation:
+    in:
+      [
+        internal/config,
+        internal/logging,
+        internal/ident,
+        internal/domain,
+        internal/htmltext,
+        internal/localization,
+        internal/telemetry,
+        internal/transition,
+        internal/health,
+        internal/ratelimit,
+      ]
+  # The ent client and its generated code (schema in ent/schema).
+  ent: { in: ent }
+  # Persistence, messaging and the adapters to external systems.
+  infra:
+    in:
+      [
+        internal/store,
+        internal/events,
+        internal/jobs,
+        internal/eventhandler,
+        internal/mailer,
+        internal/amocrm,
+        internal/exerciserunner,
+        internal/assetstore,
+        internal/audit,
+      ]
+  # The use-case modules: the business rules, named for the concept (ADR-0025).
+  modules:
+    in:
+      [
+        internal/account,
+        internal/accountemail,
+        internal/assistant,
+        internal/auth,
+        internal/blog,
+        internal/book,
+        internal/catalog,
+        internal/courseloader,
+        internal/coursepage,
+        internal/coursereview,
+        internal/curriculum,
+        internal/dashboard,
+        internal/emailtoken,
+        internal/feed,
+        internal/landingpage,
+        internal/leadcapture,
+        internal/lessonreview,
+        internal/oauthserver,
+        internal/permission,
+        internal/permissioncatalog,
+        internal/progress,
+        internal/qnaitem,
+        internal/relatedcourse,
+        internal/search,
+        internal/selfprotection,
+        internal/sitebanner,
+        internal/sitemap,
+        internal/versionbuild,
+      ]
+  # The ogen server and its generation directive: generated from the TypeSpec contract (ADR-0001).
+  api-gen: { in: [internal/api, internal/apigen] }
+  # The adapters that translate the contract (HTTP, MCP) into module calls.
+  adapters:
+    in:
+      [
+        internal/handlers,
+        internal/apiconv,
+        internal/inputconv,
+        internal/paging,
+        internal/mcpserver,
+      ]
+  # The composition roots: the places that may build the whole program.
+  wiring: { in: [internal/di, 'cmd/server', 'cmd/worker'] }
+  # What tests and tooling share; production code never imports it.
+  test-helpers: { in: [internal/testsupport, internal/fixture, cmd/fixtures, cmd/fixturelabels] }
+
+  # ---- Frontend (src/) -------------------------------------------------------------------------
+  web-client: { in: src/client }
+  web-lib: { in: [src/lib, src/types, src/locales, src/assets] }
+  web-ui: { in: [src/components, src/hooks] }
+  web-routes: { in: src/routes }
+  # The files directly under src/: router, theme, entry points.
+  web-app: { in: 'src/*' }
+
+# Tests drive whole programs and may import across layers; the gate is about the code they test.
+exclude: ['**/*_test.go', '**/*.test.ts', '**/*.test.tsx', 'src/test/**', '**/testdata/**']
+
+# Generated code stays in the graph as a target but its own imports are not checked.
+target_only:
+  ['internal/api/oas_*_gen.go', 'ent/**', 'src/client/**', 'src/routeTree.gen.ts', '**/*.gen.go', '**/*.gen.ts']
+
+# Tooling and separately built trees with no layer of their own.
+unowned: ['e2e/**', '*.ts', 'scripts/**', 'api-spec/**', 'terraform/**', 'k8s/**', 'migrations/**', 'docs/**']
+
+# Tooling configs at the root and the vendored service worker: the indexer reads the app, not these.
+uncovered_ok:
+  - name: ['*.config.ts', 'knip.ts', 'commitlint.config.js', 'public/**']
+    because: tool configuration and a vendored browser script, outside the application's imports
+
+common: [foundation, ent]
+
+rules:
+  foundation:
+    may_depend_on: []
+    because: foundation sits below everything; the packages in it may use each other
+  infra:
+    may_depend_on: [modules]
+    must_not_depend_on: [api-gen, adapters, wiring, test-helpers]
+    forbid_external: *no-container
+    because: infra serves the modules and never reaches up to an adapter or the wiring; the few modules a job or handler calls are the ones listed in this rule's baseline
+  modules:
+    may_depend_on: [infra]
+    must_not_depend_on:
+      - name: api-gen
+        because: an operation takes plain Go values or a command struct and never an internal/api type (ADR-0001); adapters convert in both directions
+      - name: adapters
+        because: a module is called by adapters and never calls one
+      - wiring
+      - test-helpers
+    forbid_external: *no-container
+    because: the rules live in modules; they depend on infra and foundation only
+  api-gen:
+    may_depend_on: []
+    because: the generated server imports nothing of ours
+  adapters:
+    may_depend_on: [modules, infra, api-gen]
+    must_not_depend_on: [wiring, test-helpers]
+    forbid_external: *no-container
+    because: an adapter translates the contract and calls modules; it holds the concrete module types from handlers.Deps
+  wiring:
+    may_depend_on: [modules, infra, adapters, api-gen]
+    must_not_depend_on: [test-helpers]
+    because: wiring is where the program is assembled
+  test-helpers:
+    may_depend_on: [modules, infra, adapters, api-gen]
+    because: test helpers build real graphs from the modules
+  web-client:
+    may_depend_on: []
+    because: the generated client comes from the OpenAPI contract and imports nothing of ours
+  web-lib:
+    # The router instance and the generated route tree are imported for their types (auth guards, error mapping).
+    may_depend_on: [web-client, web-routes, web-app]
+    must_not_depend_on: [web-ui]
+    because: lib and types sit below the components; the call goes one way
+  web-ui:
+    may_depend_on: [web-client, web-lib, web-routes, web-app]
+    because: components and hooks sit below the routes; a route binds them, never the reverse
+  web-routes:
+    may_depend_on: [web-client, web-lib, web-ui, web-app]
+    because: a route file binds components to a path
+  web-app:
+    may_depend_on: [web-lib, web-ui, web-routes]
+    because: the files directly under src/ assemble the application
+
+# Every external module a file imports is declared in the nearest package.json or go.mod.
+manifests: true
+strict: true

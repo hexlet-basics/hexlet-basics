@@ -1,0 +1,71 @@
+# schemalens (mise run lint:schema). Every exclusion below is baseline debt found when the check
+# was switched on, to be fixed after the cutover deploy: index the foreign keys, make the booleans
+# not null, drop the redundant indexes and add the missing foreign key (a migration each). Delete
+# an entry in the commit that fixes it; add none for new code.
+exclusions:
+  - rule: fk-without-index
+    object: public.language_module_descriptions.foreign_key:fk_rails_1cc3025f38
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.language_module_version_infos.foreign_key:fk_rails_9c7b71797b
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.oauth_access_tokens.foreign_key:oauth_access_tokens_client_id_fkey
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.oauth_authorization_requests.foreign_key:oauth_authorization_requests_client_id_fkey
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.oauth_authorization_requests.foreign_key:oauth_authorization_requests_user_id_fkey
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.oauth_refresh_tokens.foreign_key:oauth_refresh_tokens_client_id_fkey
+    reason: baseline, fix after the cutover deploy
+  - rule: fk-without-index
+    object: public.user_accounts.foreign_key:fk_rails_d64ac9bcc2
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.language_landing_pages.column:footer
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.language_landing_pages.column:listed
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.language_landing_pages.column:main
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.reviews.column:pinned
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.surveys.column:run_always
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.users.column:admin
+    reason: baseline, fix after the cutover deploy
+  - rule: nullable-boolean
+    object: public.users.column:help
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.blog_post_likes.index:index_blog_post_likes_on_blog_post_id
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.language_members.index:index_language_members_on_user_id
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.language_modules.index:language_modules_language_id_index
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.taggings.index:index_taggings_on_tag_id
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.taggings.index:index_taggings_on_taggable_id
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.taggings.index:index_taggings_on_taggable_type
+    reason: baseline, fix after the cutover deploy
+  - rule: prefix-redundant-index
+    object: public.taggings.index:index_taggings_on_tagger_id
+    reason: baseline, fix after the cutover deploy
+  - rule: relation-without-foreign-key
+    object: public.language_lesson_members.column:language_id
+    reason: baseline, fix after the cutover deploy
