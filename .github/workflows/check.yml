@@ -222,27 +222,11 @@ jobs:
       - run: mise run test:web
 
   # The end-to-end suite: Chromium against the built Go API and SSR frontend on
-  # a PostgreSQL service container loaded with the committed fixtures
-  # (mise run test:e2e). It needs no Docker of its own, unlike the Go suite.
+  # the `db` mise daemon (PostgreSQL, :54330) loaded with the committed fixtures
+  # (mise run test:e2e starts the daemon itself). It needs no Docker of its own, unlike the Go suite.
   test-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    services:
-      postgres:
-        # Pinned by digest (jactionlint); move it with the postgres service of
-        # the test job below and of nightly.yml.
-        image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      E2E_DB_PORT: '5432'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -284,21 +268,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    services:
-      postgres:
-        # Pinned by digest (jactionlint); the e2e job above and nightly.yml use the same image.
-        image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      TEST_DB_PORT: '5432'
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

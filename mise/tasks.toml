@@ -417,7 +417,8 @@ run = [
 # --- test --------------------------------------------------------------------------
 
 [test]
-description = "Run the Go suite; DB packages clone their database on the db daemon (needs `mise run db:up`). Shuffles only under CI: a fixed shuffle disables go's result cache. Pass packages/flags after `--`"
+depends = ["db:up"]
+description = "Run the Go suite; DB packages clone their database on the db daemon, which the task starts. Shuffles only under CI: a fixed shuffle disables go's result cache. Pass packages/flags after `--`"
 usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
 run = 'eval "set -- $usage_go_test_args"; heavy -- go test -race ${CI:+-shuffle=on} "$@"'
 
@@ -426,7 +427,8 @@ description = "Run the tests that need a real Docker daemon (build tag `docker`:
 run = "heavy -- go test -tags=docker ./internal/exerciserunner"
 
 ["test:cover"]
-description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml (needs `mise run db:up`)"
+depends = ["db:up"]
+description = "Run the Go suite with coverage over cmd/ and internal/ and fail under the total threshold in .testcoverage.yml"
 run = [
   "heavy -- go test -race -tags=docker -shuffle=on ./... -coverpkg=./cmd/...,./internal/... -coverprofile=cover.out -covermode=atomic",
   "go tool go-test-coverage --config=.testcoverage.yml",
@@ -437,6 +439,7 @@ description = "Run the frontend suite (Vitest Browser Mode via Playwright; needs
 run = "heavy -- pnpm test"
 
 ["test:e2e:db"]
+depends = ["db:up"]
 description = "Recreate the end-to-end database code_basics_e2e_test: atlas migrations + the committed fixtures (E2E_DB_HOST/E2E_DB_PORT, default the db daemon on :54330)"
 run = "scripts/e2e_db.sh"
 

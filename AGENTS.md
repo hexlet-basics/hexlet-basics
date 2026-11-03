@@ -280,8 +280,8 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   Atlas migrations and the committed `fixtures/`, is built once per content hash
   of both and shared by every package, and each package (`testdb.Run` in its
   `TestMain`) clones it in milliseconds and drops the clone at exit. No Docker and
-  no test DB preparation. CI points `TEST_DB_HOST`/`TEST_DB_PORT` at its
-  PostgreSQL service. The clients keep the server's time zone on purpose: a
+  no test DB preparation. CI runs the same `db` daemon (the test and
+  e2e tasks start it); `TEST_DB_HOST`/`TEST_DB_PORT` point at another server. The clients keep the server's time zone on purpose: a
   migration or function that depends on the session zone (month arithmetic on a
   `timestamptz` across a DST change) must fail here, on a developer's machine,
   not in production. Do such arithmetic on UTC timestamps without a zone.
