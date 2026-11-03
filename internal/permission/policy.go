@@ -9,7 +9,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/permissioncatalog"
 )
@@ -132,7 +131,8 @@ func IsClassified(operation string) bool {
 }
 
 // OperationName turns an OpenAPI operationId (adminListBanners) into the ogen
-// name (AdminListBanners) the security handler receives.
-func OperationName(operationID string) api.OperationName {
+// name (AdminListBanners) the security handler receives. A plain string, so the
+// module needs no contract type (ADR-0001).
+func OperationName(operationID string) string {
 	return strings.ToUpper(operationID[:1]) + operationID[1:]
 }
