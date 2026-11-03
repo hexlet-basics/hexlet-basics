@@ -4,14 +4,17 @@ on:
   pull_request:
     branches:
       - main
-  # Deliberately no `push` trigger. Everything that reaches main either arrived
-  # through a PR (already checked here) or was pushed directly by a maintainer,
-  # whose pre-push hook runs `mise run lint` locally. Re-running on the merge commit
-  # would only duplicate the PR's run.
+  # Agent work lands on main directly, with no pull request (docs/agents/git-workflow.md), and its
+  # only gate before the push is the pre-push hook, which a bypass skips. This run checks what
+  # landed. It also seeds the caches: a pull request restores caches saved on its own branch or on
+  # the default one and saves none of the Go ones (.github/actions/go-cache), so main's run is what
+  # every pull request starts from.
   #
-  # Adding `push` for the release-please branch would not help either: refs
-  # pushed with GITHUB_TOKEN do not start workflow runs at all, so that branch
-  # is covered by its PR's run and nothing else.
+  # The release-please branch is covered by its pull request's run: refs pushed with
+  # GITHUB_TOKEN do not start workflow runs.
+  push:
+    branches:
+      - main
 
 # Read-only everywhere: no job in this workflow writes to the repository.
 permissions:
@@ -20,7 +23,8 @@ permissions:
 # Cancel superseded runs on the same ref (e.g. rapid pushes to a PR).
 concurrency:
   group: check-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # A run on main is never cancelled: it seeds the caches and checks a landed commit.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint:
@@ -48,16 +52,10 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
 
-      # Neither job had a Go cache, so every run recompiled the dependency tree
-      # from scratch. Keyed on go.sum: a dependency bump invalidates it, the
-      # restore-key still seeds the next run from the previous tree.
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: ./.github/actions/go-cache # zizmor: ignore[self-repository]
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          scope: lint
+          save-modules: 'true'
 
       # golangci-lint keeps its own analysis cache, separate from go-build; with
       # none, every run re-analyzed all packages with type information (~2 min).
@@ -76,6 +74,43 @@ jobs:
 
       # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
       - run: mise run lint
+
+  # Package boundaries (easement.yml). Its indexers, scip-go and scip-typescript, type-check both
+  # code bases: on the lint runner they would compete with golangci-lint and tsc for the cores.
+  arch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - uses: ./.github/actions/go-cache # zizmor: ignore[self-repository]
+        with:
+          scope: arch
+
+      # scip-typescript type-checks the frontend against its dependencies.
+      - run: pnpm install --frozen-lockfile
+
+      # easement keeps each SCIP index under a key of the files its indexer reads, so a run that
+      # changes no Go file reads scip-go's output from an earlier one instead of running it.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/easement
+          key: easement-${{ runner.os }}-${{ github.sha }}
+          restore-keys: easement-${{ runner.os }}-
+
+      - run: mise run lint:arch
 
   # Regenerates every committed generated file (ent, ogen, hey-api, goverter,
   # locales, amoCRM client) and fails if the tree changes, so a schema or
@@ -98,13 +133,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
 
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: ./.github/actions/go-cache # zizmor: ignore[self-repository]
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          scope: gen-check
 
       - run: pnpm install
 
@@ -128,9 +159,14 @@ jobs:
 
       - name: Lint commit messages
         env:
-          FROM: ${{ github.event.pull_request.base.sha }}
-          TO: ${{ github.event.pull_request.head.sha }}
-        run: pnpm exec commitlint --from "$FROM" --to "$TO"
+          FROM: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          TO: ${{ github.sha }}
+        run: |
+          if [ -z "$FROM" ] || [ "$FROM" = "0000000000000000000000000000000000000000" ]; then
+            echo "no base commit to compare against; skipping"
+          else
+            pnpm exec commitlint --from "$FROM" --to "$TO"
+          fi
 
   # The pre-commit hook scans the staged changes; this scans the commits the pull
   # request adds, so a bypassed hook does not let a secret through.
@@ -147,9 +183,14 @@ jobs:
 
       - name: Scan the pull request's commits
         env:
-          FROM: ${{ github.event.pull_request.base.sha }}
-          TO: ${{ github.event.pull_request.head.sha }}
-        run: betterleaks git --log-opts="$FROM..$TO" --redact --no-banner .
+          FROM: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          TO: ${{ github.sha }}
+        run: |
+          if [ -z "$FROM" ] || [ "$FROM" = "0000000000000000000000000000000000000000" ]; then
+            echo "no base commit to compare against; skipping"
+          else
+            betterleaks git --log-opts="$FROM..$TO" --redact --no-banner .
+          fi
 
   test-web:
     runs-on: ubuntu-latest
@@ -217,19 +258,18 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
 
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: ./.github/actions/go-cache # zizmor: ignore[self-repository]
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          scope: e2e
 
       - run: pnpm install
 
       - run: pnpm exec playwright install --with-deps chromium
 
       - run: mise run test:e2e
+
+      # The e2e database is migrated and loaded; schemalens checks it against the ent schema.
+      - run: mise run lint:schema
 
       # The HTML report and the traces of the failing tests, only when there are some.
       - if: failure()
@@ -267,15 +307,9 @@ jobs:
 
       - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
 
-      # Keyed on go.sum: a dependency bump invalidates it, the restore-key still
-      # seeds the next run from the previous tree.
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: ./.github/actions/go-cache # zizmor: ignore[self-repository]
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          scope: test
 
       # DB packages clone their databases with pgtestdb on the service above,
       # from a template of the Atlas migrations and the committed fixtures.
@@ -340,3 +374,22 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: mise run lint:size
+
+  # The one check branch protection requires of this workflow: jobs can be split, merged or renamed
+  # without touching the ruleset. `always()` makes it report a failure rather than be skipped.
+  ci:
+    if: always()
+    needs: [lint, arch, gen-check, commits, secrets, test-web, test-e2e, test, build-images, helm-template, bundle-size]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every job passed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            if [ "$result" != success ] && [ "$result" != skipped ]; then
+              echo "a required job ended in: $result"
+              exit 1
+            fi
+          done
