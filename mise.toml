@@ -62,6 +62,32 @@ terraform = "1.17.0"
 "github:oasdiff/oasdiff" = "1.34.1"
 vacuum = "0.35.1"
 "github:agent-sh/agnix" = "0.59.3"
+# easement: the package-boundary gate (easement.yml, mise run lint:arch). It reads SCIP indexes:
+# scip-go for the Go code, scip-typescript for the frontend (it type-checks against node_modules).
+"github:mokevnin/easement" = "0.4.7"
+"go:github.com/scip-code/scip-go/cmd/scip-go" = "0.2.9"
+"npm:@sourcegraph/scip-typescript" = "0.6.1"
+# schemalens ships its CLI and each adapter as separate archives of one release: the CLI is the
+# primary asset and the ent adapter is extracted into the same install directory, so both are on
+# PATH. The patterns are per platform because mise resolves a templated pattern for the host, which
+# would write the wrong URLs into mise.lock.
+[tools."github:mokevnin/schemalens"]
+version = "0.1.3"
+
+[tools."github:mokevnin/schemalens".platforms]
+macos-arm64 = { asset_pattern = "schemalens_*_darwin_arm64.tar.gz", additional_asset_patterns = [
+  "schemalens-adapter-ent_*_darwin_arm64.tar.gz",
+] }
+macos-x64 = { asset_pattern = "schemalens_*_darwin_amd64.tar.gz", additional_asset_patterns = [
+  "schemalens-adapter-ent_*_darwin_amd64.tar.gz",
+] }
+linux-x64 = { asset_pattern = "schemalens_*_linux_amd64.tar.gz", additional_asset_patterns = [
+  "schemalens-adapter-ent_*_linux_amd64.tar.gz",
+] }
+linux-arm64 = { asset_pattern = "schemalens_*_linux_arm64.tar.gz", additional_asset_patterns = [
+  "schemalens-adapter-ent_*_linux_arm64.tar.gz",
+] }
+
 # Install the git hooks (hk.pkl) once the toolchain is in place.
 [hooks]
 postinstall = "hk install --mise"
@@ -78,6 +104,12 @@ run = "go mod download"
 # `daemons` and `watch_files` are experimental in mise.
 [settings]
 experimental = true
+
+# Resources shipped by the pinned tools (hk, pitchfork, ...): agent skills are linked into
+# .claude/skills and kept in sync with the pinned tool versions.
+[settings.skills]
+auto_sync = true
+prune = true
 
 # Real environment variables win over .env, so these steer the dev stack's ports without
 # touching the committed .env.example.

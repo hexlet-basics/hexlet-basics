@@ -1,0 +1,37 @@
+name: Tools
+
+# Dependabot has no mise ecosystem, so the pins of mise.toml move only when someone bumps them.
+# This keeps one issue open while a tool is behind its newest release, and closes it when the
+# pins catch up.
+on:
+  schedule:
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  outdated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup mise
+        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+
+      - name: Update the issue
+        run: scripts/outdated_issue.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

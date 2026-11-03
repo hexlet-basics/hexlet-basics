@@ -395,6 +395,15 @@ run = "heavy -- golangci-lint run"
 description = "oxlint, oxfmt check, and the TypeScript project build"
 run = ["pnpm lint", "pnpm format:check", "heavy -- pnpm check"]
 
+["lint:arch"]
+description = "easement: package boundaries in easement.yml, Go and frontend (the layers of AGENTS.md; easement.baseline.yml holds the debt found when the gate was switched on). Not part of `lint`: CI runs it as a job of its own, as its indexers would share the lint runner's cores with golangci-lint and tsc"
+run = ["heavy -- easement check", "heavy -- easement suggest --check"]
+
+["lint:schema"]
+description = "schemalens: the migrated database agrees with the ent schema and passes its rules (schemalens.yml holds the baseline). Rebuilds the e2e database first (needs the db daemon, or E2E_DB_HOST/E2E_DB_PORT)"
+depends = ["test:e2e:db"]
+run = 'schemalens check --dsn "postgres://postgres:${E2E_DB_PASSWORD:-postgres}@${E2E_DB_HOST:-127.0.0.1}:${E2E_DB_PORT:-54330}/${E2E_DB_NAME:-code_basics_e2e_test}?sslmode=disable" --adapter ent'
+
 ["lint:fix"]
 description = "Auto-fix Go and frontend formatting and lint findings"
 run = [
@@ -465,16 +474,30 @@ run = "rm -rf bin dist"
 
 # --- maintenance -------------------------------------------------------------------
 
-["deps:update"]
-description = "Bump Go + frontend (incl. api-spec) dependencies to latest; then run gen:all, lint and test"
-run = [
-  "go get -u ./...",
-  "go mod tidy",
-  "pnpm dlx npm-check-updates -u",
-  "pnpm install",
-  "echo '>> deps bumped: run `mise run gen:all`, then `mise run lint` and `mise run test` to verify'",
-]
+[update]
+description = "Update npm, Go and skills dependencies; then run gen:all, lint and test"
+depends = ["update:npm", "update:go", "update:skills"]
+run = "echo '>> bumped: run `mise run gen:all`, then `mise run lint` and `mise run test` to verify'"
 
-["skills:update"]
-description = "Update the project's agent skills"
-run = "pnpm dlx skills update --project --yes"
+["update:npm"]
+# @hey-api/* stays on its pinned `next` channel: stable needs the TypeScript compiler API, which
+# TS 7 no longer exposes (AGENTS.md); the pin moves by hand in package.json and pnpm-workspace.yaml.
+description = "Bump the frontend and api-spec dependencies (not @hey-api/*)"
+run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*' && pnpm install"
+
+["update:go"]
+description = "Bump the Go dependencies"
+run = "go get -u ./... && go mod tidy"
+
+["update:skills"]
+# No --yes: in a terminal skills asks whether to remove the skills their upstream deleted, and it
+# only warns in a run without a TTY. --project picks the project scope so nothing else is asked.
+description = "Update the vendored skills; in a terminal it offers to remove the ones their upstream deleted"
+run = "pnpm dlx skills update --project"
+
+# Named like a personal global `upgrade` task a developer may have, so that inside the repository
+# `mise run upgrade` resolves to this one. --no-global: a bare `mise upgrade` also upgrades every
+# tool of ~/.config/mise/config.toml. --bump rewrites the exact pins of mise.toml.
+[upgrade]
+description = "Upgrade the mise tools pinned in mise.toml, not the global ones"
+run = "mise upgrade --no-global --bump"
