@@ -58,7 +58,7 @@
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "shiki": "^4.5.0",
-    "srvx": "1.0.5",
+    "srvx": "1.0.6",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "web-tree-sitter": "^0.27.1",
