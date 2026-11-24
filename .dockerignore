@@ -6,6 +6,7 @@
 .github
 .agents
 .claude
+.worktrees
 legacy/
 k8s/
 docs/

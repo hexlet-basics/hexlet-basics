@@ -39,7 +39,13 @@ mise.local.toml
 
 # OS / editor / tooling caches
 .DS_Store
-.claude/
+# Claude Code: local state stays out, the shared settings and hooks are tracked.
+/.claude/*
+!/.claude/settings.json
+!/.claude/hooks/
+# Git worktrees of this repository (the WorktreeCreate hook, `git worktree add .worktrees/<name>`).
+# Older trees still live in .claude/worktrees, ignored above.
+/.worktrees/
 .playwright-cli/
 .ruby-lsp/
 .tanstack/

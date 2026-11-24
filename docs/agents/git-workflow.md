@@ -15,9 +15,10 @@ is committed directly on `main` in the main checkout.
 If the work goes beyond trivial (several files, a feature, a refactor, anything
 you would want to test or iterate on), do it in its own worktree:
 
-- Create it with the `EnterWorktree` tool, or
-  `git worktree add .claude/worktrees/<topic> -b <topic> origin/main`.
-  Worktrees live in `.claude/worktrees/` (gitignored), never in a sibling
+- Create it with the `EnterWorktree` tool (the `WorktreeCreate` hook in
+  `.claude/settings.json` puts it in `.worktrees/`), or
+  `git worktree add .worktrees/<topic> -b <topic> origin/main`.
+  Worktrees live in `.worktrees/` (gitignored), never in a sibling
   directory next to the main checkout.
 - Work, run the checks and commit there, on its branch.
 - Land it on `main`: `git fetch`, `git rebase origin/main`, then
