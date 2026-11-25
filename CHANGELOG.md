@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.4-main2.3](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.4-main2.2...hexlet_basics-v0.1.4-main2.3) (2026-11-25)
+
+
+### Miscellaneous
+
+* **infra:** add a replica host to the Yandex Cloud KZ code-basics postgresql ([28a6af5](https://github.com/hexlet-basics/hexlet-basics/commit/28a6af5eb1ea34fc1f673587c0b377c70819cb0d))
+* **infra:** drop the RU certificate left over after the move to KZ ([48dfba4](https://github.com/hexlet-basics/hexlet-basics/commit/48dfba4456db3baf2610b0ca4aaafc3ba462e095))
+* **infra:** drop unused Yandex Cloud RU kubernetes and postgresql from terraform ([e6e8787](https://github.com/hexlet-basics/hexlet-basics/commit/e6e8787fb52e4ab7e435aad79ceb9fcdb5b2098a))
+* **infra:** move production to Yandex Cloud KZ ([eec2e89](https://github.com/hexlet-basics/hexlet-basics/commit/eec2e8971582159bf3fe3838785ff5eb974d8e1b))
+
 ## [0.1.4-main2.2](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.4-main2.1...hexlet_basics-v0.1.4-main2.2) (2026-09-28)
 
 
