@@ -18,6 +18,6 @@ output "ingress_ipv4" {
   value = yandex_vpc_address.code_basics_ingress_address_1.external_ipv4_address.0.address
 }
 
-output "cert_code_basics_com_name" {
-  value = "yc-certmgr-cert-id-${yandex_cm_certificate.code_basics_com.id}"
-}
+# output "cert_code_basics_com_name" {
+#   value = "yc-certmgr-cert-id-${yandex_cm_certificate.code_basics_com.id}"
+# }
