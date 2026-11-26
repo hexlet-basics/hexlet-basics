@@ -194,6 +194,12 @@ run = "go generate ./ent"
 description = "Generate the fixture label variables (internal/fixture/labels_gen.go) from fixtures/*.yml"
 run = "go generate ./internal/fixture"
 
+["gen:msw"]
+# msw 3 has no postinstall that refreshes the worker, so a bump left public/ on the old one (the
+# browser tests then warned about a worker from another version). Here gen:check catches it.
+description = "Copy the installed msw's service worker into public/ (package.json msw.workerDirectory)"
+run = "pnpm exec msw init </dev/null >/dev/null"
+
 ["gen:mocks"]
 description = "Generate the harness mocks (moq) from the production interfaces they replace"
 run = "go generate ./internal/testsupport"
@@ -203,7 +209,7 @@ description = "Full contract pipeline: TypeSpec -> OpenAPI -> ogen server + hey-
 run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }]
 
 ["gen:all"]
-description = "Regenerate everything: ent + contracts + locales + external clients + test mocks + fixture labels"
+description = "Regenerate everything: ent + contracts + locales + external clients + test mocks + fixture labels + the msw worker"
 run = [
   { task = "gen:ent" },
   { task = "gen" },
@@ -211,6 +217,7 @@ run = [
   { task = "gen:amocrm" },
   { task = "gen:mocks" },
   { task = "gen:fixtures" },
+  { task = "gen:msw" },
 ]
 
 ["gen:check"]

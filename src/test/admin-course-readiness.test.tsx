@@ -77,7 +77,7 @@ describe("the course admin screens", () => {
     await edit();
     await page.getByRole("button", { name: "Save" }).click();
 
-    await expect.poll(() => sent).toBeDefined();
+    await expect.poll(() => sent).not.toBeNull();
     expect(sent).not.toHaveProperty("readiness");
   }, 60_000);
 

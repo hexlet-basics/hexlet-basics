@@ -27,6 +27,8 @@ const user: User = {
 
 function openLink(token: string): Promise<RenderedRoute> {
   return renderRoute(consumeRoute, {
+    // A refused link goes on to the request form, which `/magic_links/$token` would match too.
+    also: [{ path: "/{-$locale}/magic_links/new", route: requestRoute }],
     initialPath: `/ru/magic_links/${token}`,
     path: "/{-$locale}/magic_links/$token",
   });

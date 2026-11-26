@@ -14,7 +14,6 @@ overrides:
   js-yaml@5: ^5.2.3
 allowBuilds:
   '@swc/core': true
-  msw: true
   # Only the grammar sources are used (the lesson editor loads their wasm builds); no node-gyp build.
   tree-sitter-c: false
   tree-sitter-cpp: false

@@ -101,6 +101,7 @@ describe("home", () => {
 
   it("answers a page that cannot be loaded with the server error page", async () => {
     expect.hasAssertions();
+    serveHome();
     worker.use(http.get("*/languages", () => HttpResponse.json({ status: 500 }, { status: 500 })));
 
     await renderRoute(homeRoute, { initialPath: "/", path: "/{-$locale}/" });

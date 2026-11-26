@@ -207,7 +207,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
 - `mise run gen` — full contract pipeline (spec → ogen server → hey-api client).
 - `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
 - `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
-- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks` + `gen:fixtures`.
+- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks` + `gen:fixtures` + `gen:msw` (the msw worker in `public/`).
 - `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run gen:fixtures` — regenerate `internal/fixture/labels_gen.go`, one `fixtures.Label` variable per label in `fixtures/*.yml` (directive in `internal/fixture/gen.go`, generator in `cmd/fixturelabels`). `mise run tidy` — `go mod tidy`.
 - `mise run gen:check` — runs `gen:all` and fails if the tree changes; the CI `gen-check` job runs it, so generated output must be committed with its source.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
