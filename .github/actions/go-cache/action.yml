@@ -70,9 +70,9 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.paths.outputs.build }}
-        key: gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.toml') }}-${{ github.sha }}
+        key: gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.lock') }}-${{ github.sha }}
         restore-keys: |
-          gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.toml') }}-
+          gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.lock') }}-
           gobuild-${{ inputs.scope }}-${{ runner.os }}-
           gobuild-${{ inputs.fallback || inputs.scope }}-${{ runner.os }}-
 
@@ -81,8 +81,8 @@ runs:
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.paths.outputs.build }}
-        key: gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.toml') }}-${{ github.sha }}
+        key: gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.lock') }}-${{ github.sha }}
         restore-keys: |
-          gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.toml') }}-
+          gobuild-${{ inputs.scope }}-${{ runner.os }}-${{ hashFiles('go.mod', 'go.sum', 'mise.lock') }}-
           gobuild-${{ inputs.scope }}-${{ runner.os }}-
           gobuild-${{ inputs.fallback || inputs.scope }}-${{ runner.os }}-

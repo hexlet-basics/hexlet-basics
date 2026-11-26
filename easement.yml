@@ -112,8 +112,9 @@ target_only:
 unowned: ['e2e/**', '*.ts', 'scripts/**', 'api-spec/**', 'terraform/**', 'k8s/**', 'migrations/**', 'docs/**']
 
 # Tooling configs at the root and the vendored service worker: the indexer reads the app, not these.
-uncovered_ok:
-  - name: ['*.config.ts', 'knip.ts', 'commitlint.config.js', 'public/**']
+accepted_gaps:
+  - kind: uncovered
+    files: ['*.config.ts', 'knip.ts', 'commitlint.config.js', 'public/**']
     because: tool configuration and a vendored browser script, outside the application's imports
 
 common: [foundation, ent]
@@ -157,18 +158,17 @@ rules:
     may_depend_on: []
     because: the generated client comes from the OpenAPI contract and imports nothing of ours
   web-lib:
-    # The router instance and the generated route tree are imported for their types (auth guards, error mapping).
-    may_depend_on: [web-client, web-routes, web-app]
+    may_depend_on: [web-client]
     must_not_depend_on: [web-ui]
     because: lib and types sit below the components; the call goes one way
   web-ui:
-    may_depend_on: [web-client, web-lib, web-routes, web-app]
+    may_depend_on: [web-client, web-lib, web-routes]
     because: components and hooks sit below the routes; a route binds them, never the reverse
   web-routes:
     may_depend_on: [web-client, web-lib, web-ui, web-app]
     because: a route file binds components to a path
   web-app:
-    may_depend_on: [web-lib, web-ui, web-routes]
+    may_depend_on: [web-lib, web-ui]
     because: the files directly under src/ assemble the application
 
 # Every external module a file imports is declared in the nearest package.json or go.mod.

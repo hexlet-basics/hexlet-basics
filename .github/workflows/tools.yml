@@ -1,8 +1,8 @@
 name: Tools
 
-# Dependabot has no mise ecosystem, so the pins of mise.toml move only when someone bumps them.
-# This keeps one issue open while a tool is behind its newest release, and closes it when the
-# pins catch up.
+# Dependabot has no mise ecosystem, so mise.lock (and the exact pins of mise.toml) move only when
+# someone bumps them. This keeps one issue open while a tool is behind its newest release, and
+# closes it when the lock catches up.
 on:
   schedule:
     - cron: '41 5 * * 1'

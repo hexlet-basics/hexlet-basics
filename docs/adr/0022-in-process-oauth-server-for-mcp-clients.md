@@ -109,6 +109,7 @@ may actually do comes from the user's Permissions at the moment of the call
   The fixes are a registration gateway and our own metadata in front of it,
   plus a third runtime with its own database, which is what ADR-0010 avoided.
   Rejected.
+
 - **Keycloak, Zitadel, Authentik, Dex.** Read from vendor documentation and
   repositories on 2026-10-16, not tested. Keycloak has the most MCP
   documentation but its Client ID Metadata and resource-indicator support is
@@ -116,11 +117,13 @@ may actually do comes from the user's Permissions at the moment of the call
   brokering, and it is the heaviest to run. Zitadel is AGPL-3.0 and keeps its
   own users. Authentik and Dex lacked the needed registration and metadata
   support.
+
 - **fosite.** The standalone repository has had no release since v0.49.0
   (December 2024); development continues inside the Hydra repository. It is a
   toolkit, so the storage and endpoints we must write are the same. Importing
   the copy inside Hydra was not attempted: its `go.mod` uses `replace`
   directives, which a consumer does not inherit.
+
 - **zitadel/oidc v3.51.16 (chosen).** Active, Apache-2.0, and spiked through its
   example server: the authorization-code flow with S256-only PKCE, refresh
   rotation, introspection and revocation all work without the `openid` scope.

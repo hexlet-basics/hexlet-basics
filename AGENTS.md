@@ -142,16 +142,33 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   seed `.env`, then the separate `install` task (dependencies) and `db:fixtures`
   (db daemon, migrations, `fixtures/`) and `dev`: after a clone, `mise setup`
   alone brings the whole project up with a populated site.
-- `mise run update` — bump the Go and frontend dependencies and the vendored
-  skills (`update:go`, `update:npm`, `update:skills`); verify with `gen:all`, `lint`
-  and `test` afterwards. `update:npm` leaves `@hey-api/*` alone (see the pin above).
-  `mise run upgrade` bumps the mise tools pinned in `mise.toml` (`--no-global
-  --bump`); a weekly `tools.yml` workflow keeps one issue open while a pin is
-  behind. Dependabot covers the rest (npm, gomod, docker, terraform, actions).
-  mise links the agent skills of the pinned tools into `.claude/skills`
-  (`[settings.skills]`).
-- `mise run install` — only the dependencies: `go mod download` + `pnpm install`
-  (root package.json is shared by the frontend and the api-spec tooling).
+- **Tool versions live in `mise.lock`.** `mise.toml` asks for `latest` (or a
+  prefix) and the lock holds the version, URL and checksum per platform
+  (`lockfile_platforms`), so dev and CI install the same build. A tool is pinned
+  exactly in `mise.toml` only when another file names the same version: go, node
+  and pnpm (the Dockerfiles), atlas (`Dockerfile`, `lint:atlas-pin`), easement
+  and schemalens (their configs and baselines); such a pin moves by hand with
+  that file.
+- `mise run upgrade` — move the tools to their newest releases by rewriting
+  `mise.lock` (`mise upgrade --no-global`), then recopy the skills; commit the
+  lock. A weekly `tools.yml` workflow keeps one issue open while a tool is behind.
+  `mise run update` — bump the Go and frontend dependencies (`update:go` moves
+  only direct and `tool` modules, `update:npm`); verify with `gen:all`, `lint`
+  and `test` afterwards. `update:npm` leaves `@hey-api/*` alone (see the pin
+  above). Dependabot covers the rest (npm, gomod, docker, terraform, actions).
+- **Agent skills are not committed.** The skill repositories are `http:` tools in
+  `mise.toml`, locked in `mise.lock`; `mise run skills` (part of `install`)
+  copies the listed skills into `.agents/skills`, and `.claude/skills` is a link
+  to it. mise links the skills of its packslip tools (hk, pitchfork) and pnpm
+  those of the approved packages (`pnpm-workspace.yaml`) into the same
+  directory. Add a skill to the list in the `skills` task, a source as an
+  `http:` tool.
+- `mise run install` — the skills, then the dependencies: `go mod download` +
+  `pnpm install` (root package.json is shared by the frontend and the api-spec
+  tooling).
+- `mise run worktrees:prune` — list the clean worktrees whose branch is already
+  on `origin/main`; `-- --apply` removes them, their branches and the daemon
+  state of deleted ones. `mise run loc` — lines of hand-written code (scc).
 - `mise run db:up` — start the Postgres daemon; idempotently creates the
   development database.
 - `mise run dev` — start the API, async worker (both air live-reload), and Vite
@@ -172,13 +189,13 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   one version, and the nightly `lint:atlas-retention` fails before the pinned
   binary ages out; the ent/atlas exit plan, sqlc, is in ADR-0014), and golangci-lint (a tool directive would drag its whole
   analyzer tree into go.mod to rebuild what mise fetches as a binary).
-  Git hooks are hk (`hk.pkl`, pinned in `mise.toml` with pkl), installed
+  Git hooks are hk (`hk.pkl`, in `mise.toml` with pkl), installed
   by `mise run setup` (and mise's postinstall hook) via `hk install --mise`.
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
 ## Code search
 
-`ast-grep` is installed (pinned in `mise.toml`). For any search that depends on
+`ast-grep` is installed (a tool of `mise.toml`). For any search that depends on
 syntax or code structure (calls, declarations, a method on a type, JSX props),
 default to `ast-grep --lang <go|tsx|typescript> -p '<pattern>'` and adjust
 `--lang` per file type. Use `rg`/grep only for plain-text searches (strings,
@@ -269,7 +286,8 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   with the thresholds in `vite.config.ts`. Raise a floor when coverage rises;
   never lower it.
 - **Nightly, not per PR.** `.github/workflows/nightly.yml` runs both coverage
-  gates, `mise run lint:vulns` (govulncheck), `mise run lint:links:remote` (the
+  gates, `mise run lint:vulns` (govulncheck), `mise run lint:osv` (osv-scanner over
+  the lockfiles), `mise run lint:links:remote` (the
   external links of the Markdown files) and `mise run lint:atlas-retention`
   (the pinned Atlas binary is still downloadable) once a night and on demand
   (`workflow_dispatch`). A new advisory or a site that is down can fail them

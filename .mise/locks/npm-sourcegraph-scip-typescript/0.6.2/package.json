@@ -1,0 +1,7 @@
+{
+  "name": "mise-npm-install",
+  "private": true,
+  "dependencies": {
+    "@sourcegraph/scip-typescript": "0.6.2"
+  }
+}

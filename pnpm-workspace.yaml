@@ -166,7 +166,15 @@ minimumReleaseAgeExclude:
 permissions:
   '@tanstack/cli':
     skills: true
+  '@tanstack/react-router':
+    skills: true
   '@tanstack/react-start':
     skills: true
   '@tanstack/react-table':
     skills: true
+# Where pnpm links the approved packages' skills: the directory mise links its tools' skills into
+# (.claude/skills links to it), and only there. Unset, pnpm links into every `.<name>/skills` of
+# the root and fails the install when there is none; named, it is created if missing.
+skills:
+  dirs:
+    - .agents/skills

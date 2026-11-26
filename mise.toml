@@ -1,20 +1,28 @@
+# Every tool of this file is locked in mise.lock (version, URL and checksum per platform), so
+# local dev and CI install the same build. A tool is "latest" (or a major or minor prefix) unless
+# another file must name the same version: then the pin is exact and moves together with that
+# file. `mise run upgrade` moves the rest by rewriting mise.lock, not this file.
+# A task's `lock` (mise/tasks.toml) needs this version or newer.
+min_version = "2026.11.0"
+
 # Tools distributed as ready-made binaries. Go tooling that is cheap to build
 # lives in go.mod as a `tool` directive instead (air, ent, ogen, goverter,
 # goi18n) and is invoked as `go tool <name>`.
 [tools]
-go = "1.27.3"
-# node + pnpm: the frontend and the TypeSpec/openapi-ts tooling share the root
-# package.json. Pinned here so local dev and CI run the same versions.
-node = "26.12.1"
-pnpm = "12.15.0"
+# go, node and pnpm are exact: the Dockerfile builder (go) and Dockerfile.web (node, pnpm) name
+# the same versions; move them together.
+go = "1.27.4"
+# node + pnpm: the frontend and the TypeSpec/openapi-ts tooling share the root package.json.
+node = "26.13.1"
+pnpm = "12.23.0"
 # golangci-lint: deliberately NOT a `go tool`. It is a Go module and works that
 # way, but a tool directive means building the linter and its whole analyzer
 # tree from source (~590 lines of go.mod/go.sum, a multi-minute cold build)
 # where mise just fetches the released binary.
-golangci-lint = "2.15.0"
+golangci-lint = "2"
 # heavy: machine-wide slot queue for the CPU-heavy commands (`heavy -- <command>`);
 # `heavy --status` shows who holds the slots.
-"github:mokevnin/heavy" = "0.1.1"
+"github:mokevnin/heavy" = "0.1.2"
 # atlas: owns the DB schema going forward (versioned migrations). Tests apply
 # migrations through the Atlas Go library; new changes = atlas migrate new.
 # Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is
@@ -22,57 +30,114 @@ golangci-lint = "2.15.0"
 # 1.x), and even that snapshot refuses to install because its go.mod carries
 # replace directives. Community build (Apache-2.0, built from the OSS repo)
 # rather than the default MSA-licensed one: `migrate new/hash/apply/diff` are all
-# there and no Pro feature is used — see docs/adr/0014. Ariga drops release
-# binaries after ~6 months, so this pin must keep moving or `mise install` breaks.
+# there and no Pro feature is used — see docs/adr/0014. Exact, because the
+# Dockerfile copies the same version (lint:atlas-pin). Ariga drops release
+# binaries after ~6 months, so this pin must keep moving or `mise install` breaks
+# (lint:atlas-retention, nightly).
 atlas-community = "1.3.0"
-# hk: git hooks (hk.pkl); pkl evaluates that config. hk's version must match the
-# package:// import at the top of hk.pkl.
-hk = "2.8.1"
-pkl = "0.32.2"
+# hk: git hooks (hk.pkl); pkl evaluates that config. The package:// import at the top of hk.pkl
+# names the hk release whose Config.pkl it amends; it moves on its own (`mise run upgrade` does not
+# touch it).
+hk = "latest"
+pkl = "latest"
 # pitchfork runs the [daemons] below (`mise daemons ...`).
-pitchfork = "2.32.2"
+pitchfork = "latest"
 # Structural code search for agents (see AGENTS.md, "Code search").
-ast-grep = "0.51.0"
+ast-grep = "latest"
 # Secret scan on staged changes (pre-commit hook in hk.pkl) and on the commits of a push
 # (check.yml). Betterleaks reads the .gitleaks.toml rule format.
-betterleaks = "1.9.0"
+betterleaks = "latest"
 # Markdown lint (rumdl) and link check (lychee, pre-push and CI).
-rumdl = "0.3.0"
-lychee = "0.24.2"
+rumdl = "latest"
+lychee = "latest"
 # Workflow linters (mise run lint:workflows), the spelling check (lint:typos) and
 # pinact, which pins a workflow's actions to commit SHAs (`pinact run`).
-zizmor = "1.31.1"
-jactionlint = "2.3.0"
-typos = "1.51.1"
-pinact = "5.0.1"
+zizmor = "latest"
+jactionlint = "latest"
+typos = "latest"
+pinact = "latest"
 # Shell scripts under scripts/ (mise run lint:shell).
-shellcheck = "0.11.0"
+shellcheck = "latest"
+# JSON in the tasks (update:go) and scripts (outdated_issue.sh).
+jq = "latest"
+# Known vulnerabilities in the lockfiles (mise run lint:osv, nightly) and a lines-of-code report
+# (mise run loc).
+"github:google/osv-scanner" = "latest"
+"aqua:boyter/scc" = "latest"
 # Helm chart checks (mise run lint:helm): helm renders the chart, kubeconform
 # validates the manifests against the Kubernetes schemas.
-helm = "4.3.1"
-kubeconform = "0.8.0"
-# Terraform under terraform/ (mise run lint:infra); the pin follows
-# required_version in versions.tf.
-terraform = "1.17.0"
+helm = "latest"
+kubeconform = "latest"
+# Terraform under terraform/ (mise run lint:infra); the prefix follows
+# required_version (~> 1.17.0) in versions.tf.
+terraform = "1.17"
 # Guardrails from github.com/mokevnin/dev-quality-gates. squawk lints the migrations a
 # change adds (lint:migrations), oasdiff compares the OpenAPI contract with the base
 # branch (lint:contract-breaking), vacuum lints the generated contract
 # (lint:contract) and agnix the agent instruction files (lint:agents).
-"github:sbdchd/squawk" = "2.70.0"
-"github:oasdiff/oasdiff" = "1.34.1"
-vacuum = "0.35.1"
-"github:agent-sh/agnix" = "0.59.3"
+"github:sbdchd/squawk" = "latest"
+"github:oasdiff/oasdiff" = "latest"
+vacuum = "latest"
+"github:agent-sh/agnix" = "latest"
 # easement: the package-boundary gate (easement.yml, mise run lint:arch). It reads SCIP indexes:
 # scip-go for the Go code, scip-typescript for the frontend (it type-checks against node_modules).
-"github:mokevnin/easement" = "0.4.7"
-"go:github.com/scip-code/scip-go/cmd/scip-go" = "0.2.9"
-"npm:@sourcegraph/scip-typescript" = "0.6.1"
+# easement and schemalens are exact: their releases change the config and the baselines.
+"github:mokevnin/easement" = "0.11.1"
+"go:github.com/scip-code/scip-go/cmd/scip-go" = "latest"
+"npm:@sourcegraph/scip-typescript" = "latest"
+
+# Agent skills: releases (or, where a repository has none, commits) of the skill repositories,
+# locked in mise.lock and copied into .agents/skills by `mise run skills`. mise links only the
+# skills of tools that publish a packslip manifest, which these repositories do not. The tags API
+# lists the newest first and mise takes the last version as the latest, so the expression reverses
+# them.
+[tools."http:mattpocock-skills"]
+version = "latest"
+url = "https://github.com/mattpocock/skills/archive/refs/tags/v{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/mattpocock/skills/tags"
+version_expr = 'reverse(map(filter(fromJSON(body), hasPrefix(#.name, "v")), trimPrefix(#.name, "v")))'
+
+[tools."http:samber-golang-skills"]
+version = "latest"
+url = "https://github.com/samber/cc-skills-golang/archive/refs/tags/v{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/samber/cc-skills-golang/tags"
+version_expr = 'reverse(map(filter(fromJSON(body), hasPrefix(#.name, "v")), trimPrefix(#.name, "v")))'
+
+# Its tags include prereleases (v0.1.0-dev.1), which the expression leaves out.
+[tools."http:jetbrains-go-modern-guidelines"]
+version = "latest"
+url = "https://github.com/JetBrains/go-modern-guidelines/archive/refs/tags/v{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/JetBrains/go-modern-guidelines/tags"
+version_expr = 'reverse(map(filter(fromJSON(body), hasPrefix(#.name, "v") && !(#.name contains "-")), trimPrefix(#.name, "v")))'
+
+# Besides the repository's releases (v0.1.9) it tags each skill on its own
+# (supabase-postgres-best-practices-v1.6.0), which the "v" prefix leaves out.
+[tools."http:supabase-agent-skills"]
+version = "latest"
+url = "https://github.com/supabase/agent-skills/archive/refs/tags/v{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/supabase/agent-skills/tags?per_page=100"
+version_expr = 'reverse(map(filter(fromJSON(body), hasPrefix(#.name, "v")), trimPrefix(#.name, "v")))'
+
+# These repositories have no tags or releases: a version is a commit, the latest is the newest on
+# the default branch, and mise.lock pins the one installed.
+[tools."http:trailofbits-skills"]
+version = "latest"
+url = "https://github.com/trailofbits/skills/archive/{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/trailofbits/skills/commits?per_page=1"
+version_expr = 'map(fromJSON(body), #.sha)'
+
+[tools."http:jakubkrehel-skills"]
+version = "latest"
+url = "https://github.com/jakubkrehel/skills/archive/{{version}}.tar.gz"
+version_list_url = "https://api.github.com/repos/jakubkrehel/skills/commits?per_page=1"
+version_expr = 'map(fromJSON(body), #.sha)'
+
 # schemalens ships its CLI and each adapter as separate archives of one release: the CLI is the
 # primary asset and the ent adapter is extracted into the same install directory, so both are on
 # PATH. The patterns are per platform because mise resolves a templated pattern for the host, which
 # would write the wrong URLs into mise.lock.
 [tools."github:mokevnin/schemalens"]
-version = "0.1.3"
+version = "0.1.7"
 
 [tools."github:mokevnin/schemalens".platforms]
 macos-arm64 = { asset_pattern = "schemalens_*_darwin_arm64.tar.gz", additional_asset_patterns = [
@@ -88,7 +153,8 @@ linux-arm64 = { asset_pattern = "schemalens_*_linux_arm64.tar.gz", additional_as
   "schemalens-adapter-ent_*_linux_arm64.tar.gz",
 ] }
 
-# Install the git hooks (hk.pkl) once the toolchain is in place.
+# Install the git hooks (hk.pkl) once the toolchain is in place. `--mise` runs hk through
+# `mise x`, so a hook needs no shim on PATH.
 [hooks]
 postinstall = "hk install --mise"
 
@@ -104,10 +170,16 @@ run = "go mod download"
 # `daemons` and `watch_files` are experimental in mise.
 [settings]
 experimental = true
+# mise.lock covers the machines that install the tools: CI (linux-x64) and the developers' Macs.
+# A wider set fails: Ariga publishes no atlas-community build for linux-arm64.
+lockfile_platforms = ["linux-x64", "macos-arm64", "macos-x64"]
 
-# Resources shipped by the pinned tools (hk, pitchfork, ...): agent skills are linked into
-# .claude/skills and kept in sync with the pinned tool versions.
+# Resources shipped by packslip tools (hk, pitchfork, ...): agent skills are linked into
+# .agents/skills, next to the ones `mise run skills` copies and the ones pnpm links
+# (pnpm-workspace.yaml), and kept in sync with the locked tool versions. .claude/skills is a link to
+# it, so Claude Code reads all three.
 [settings.skills]
+dir = ".agents/skills"
 auto_sync = true
 prune = true
 

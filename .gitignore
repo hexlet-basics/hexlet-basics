@@ -36,6 +36,12 @@ dist/
 .env
 .env.local
 mise.local.toml
+.mise-skills.json
+.mise-packslip/
+
+# Agent skills copied by `mise run skills` and linked by mise and pnpm; .claude/skills is a link
+# to .agents/skills (ignored with the rest of .claude below).
+.agents/
 
 # OS / editor / tooling caches
 .DS_Store

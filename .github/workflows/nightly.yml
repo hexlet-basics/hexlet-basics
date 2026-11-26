@@ -65,8 +65,8 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:coverage
 
-  # govulncheck. A new advisory can fail this with no change on our side, which
-  # is why it runs here and not on a pull request.
+  # govulncheck and osv-scanner. A new advisory can fail this with no change on
+  # our side, which is why it runs here and not on a pull request.
   vulnerabilities:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -78,6 +78,9 @@ jobs:
       - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
 
       - run: mise run lint:vulns
+      # Runs even when govulncheck fails, so one night reports both.
+      - if: ${{ !cancelled() }}
+        run: mise run lint:osv
 
   # External links in the Markdown files: a site that is down or moves a page fails
   # this with no change on our side, which is why it runs here and not on a pull

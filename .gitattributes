@@ -1,9 +1,20 @@
 # See https://git-scm.com/docs/gitattributes for more about git attribute files.
 
-# Mark the database schema as having been generated.
-db/schema.rb linguist-generated
-
-# Mark any vendored files as having been vendored.
-vendor/* linguist-vendored
-config/credentials/*.yml.enc diff=rails_credentials
-config/credentials.yml.enc diff=rails_credentials
+# Generated files (AGENTS.md, "Generated / Do-Not-Edit Files"): GitHub collapses them in diffs and
+# leaves them out of the language stats, and `mise run loc` counts only the files not marked here.
+ent/** linguist-generated=true
+ent/schema/** linguist-generated=false
+api-spec/dist/** linguist-generated=true
+internal/api/oas_*_gen.go linguist-generated=true
+internal/amocrm/generated/** linguist-generated=true
+internal/apiconv/apiconv.gen.go linguist-generated=true
+internal/fixture/labels_gen.go linguist-generated=true
+internal/testsupport/mock_*_gen.go linguist-generated=true
+internal/localization/locales/active.en.json linguist-generated=true
+src/client/** linguist-generated=true
+src/routeTree.gen.ts linguist-generated=true
+src/types/resources.d.ts linguist-generated=true
+CHANGELOG.md linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
+mise.lock linguist-generated=true
+.mise/locks/** linguist-generated=true

@@ -9,8 +9,69 @@
 # --- setup -----------------------------------------------------------------------
 
 [install]
-description = "Install project dependencies (go modules + frontend/api-spec via the root package.json)"
+description = "Install project dependencies: the agent skills, go modules and frontend/api-spec via the root package.json"
+depends = ["skills"]
 run = ["go mod download", "pnpm install"]
+
+["skills"]
+# The skills are copied, not linked: mise prunes the links into its installs that it did not make.
+# A skill dropped from the list, or from its release, is removed on the next run (.copied lists
+# what the previous one copied). The older layout made .claude/skills a directory of links; it is
+# replaced by a link to .agents/skills. Then mise links its tools' skills next to the copies.
+# A worktree that has not run it has no .claude/skills, and Claude Code loads the primary
+# checkout's skills there instead.
+description = "Copy the agent skills of the releases locked in mise.lock into .agents/skills"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+matt="$(mise where http:mattpocock-skills)/skills"
+samber="$(mise where http:samber-golang-skills)/skills"
+jetbrains="$(mise where http:jetbrains-go-modern-guidelines)/plugin/skills"
+supabase="$(mise where http:supabase-agent-skills)/skills"
+tob="$(mise where http:trailofbits-skills)/plugins"
+jk="$(mise where http:jakubkrehel-skills)/skills"
+skills=(
+  "$matt/engineering/ask-matt" "$matt/engineering/code-review" "$matt/engineering/codebase-design"
+  "$matt/engineering/diagnosing-bugs" "$matt/engineering/domain-modeling"
+  "$matt/engineering/grill-with-docs" "$matt/engineering/implement" "$matt/engineering/implement-spec"
+  "$matt/engineering/improve-codebase-architecture" "$matt/engineering/pr"
+  "$matt/engineering/prototype" "$matt/engineering/research" "$matt/engineering/retro"
+  "$matt/engineering/setup-matt-pocock-skills" "$matt/engineering/tdd" "$matt/engineering/to-spec"
+  "$matt/engineering/to-tickets" "$matt/engineering/triage" "$matt/engineering/wayfinder"
+  "$matt/engineering/wizard"
+  "$matt/productivity/grill-me" "$matt/productivity/grilling" "$matt/productivity/handoff"
+  "$matt/productivity/teach" "$matt/productivity/to-questionnaire" "$matt/productivity/wait-what"
+  "$matt/productivity/writing-for-agents"
+  "$matt/in-progress/claude-handoff" "$matt/in-progress/loop-me"
+  "$samber/golang-safety" "$samber/golang-samber-do" "$samber/golang-samber-lo"
+  "$samber/golang-samber-oops" "$samber/golang-stretchr-testify"
+  "$jetbrains/use-modern-go"
+  "$supabase/supabase-postgres-best-practices" "$tob/sharp-edges/skills/sharp-edges"
+  "$jk/better-accessibility"
+)
+dest=.agents/skills
+mkdir -p "$dest"
+if [ -f "$dest/.copied" ]; then
+  while read -r name; do rm -rf "${dest:?}/$name"; done < "$dest/.copied"
+fi
+: > "$dest/.copied"
+for src in "${skills[@]}"; do
+  name="$(basename "$src")"
+  rm -rf "${dest:?}/$name"
+  cp -R "$src" "$dest/$name"
+  echo "$name" >> "$dest/.copied"
+done
+mkdir -p .claude
+if [ -d .claude/skills ] && [ ! -L .claude/skills ]; then
+  if [ -n "$(find .claude/skills -mindepth 1 -maxdepth 1 ! -type l ! -name .gitignore ! -name .mise-skills.json)" ]; then
+    echo ".claude/skills holds more than links; move its contents into .agents/skills" >&2
+    exit 1
+  fi
+  rm -r .claude/skills
+fi
+[ -L .claude/skills ] || ln -s ../.agents/skills .claude/skills
+mise skills sync --quiet
+"""
 
 [setup]
 description = "Full local bootstrap from scratch: toolchain + git hooks, seed .env, then the `install` task (dependencies), `db:fixtures` (db daemon, migrations, starting data) and `dev` (API, worker and Vite daemons)"
@@ -356,6 +417,29 @@ run = "go mod tidy -diff"
 description = "The code calls no known-vulnerable dependency or stdlib function (network: the vulnerability database). Not part of lint: a new advisory fails it with no change on our side, so the nightly workflow runs it"
 run = "go tool govulncheck ./..."
 
+# osv-scanner is given the files git lists (tracked, and untracked but not ignored), not
+# `--recursive .`: it applies every .gitignore from / down, past the repository's boundary
+# (google/osv-scalibr#902), so in a linked worktree the primary checkout's `/.worktrees/`
+# ignores the whole tree and it finds no package sources. git already left the ignored files out,
+# hence --no-ignore. osv-scanner picks the lockfiles from the list itself (go.mod, pnpm-lock.yaml),
+# so a new one is scanned without a change here.
+["lint:osv"]
+description = "osv-scanner over the lockfiles among the files git lists (go.mod, pnpm-lock.yaml). Not part of lint: its answer changes with the advisory database, not with the diff, so the nightly workflow runs it"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+files=()
+n=0
+while IFS= read -r -d '' f; do
+  # A tracked file deleted in the working tree is still listed, and osv-scanner fails on it.
+  if [ -e "$f" ]; then files+=("$f"); n=$((n + 1)); fi
+done < <(git ls-files -z --cached --others --exclude-standard)
+# The count, not the array: bash 3.2 (macOS) fails on an empty "${files[@]}" under set -u.
+[ "$n" -gt 0 ] || { echo "lint:osv: git listed no files" >&2; exit 1; }
+# It prints a "Scanning dir" line for each path it is given; pipefail keeps its exit status.
+osv-scanner scan source --no-ignore "${files[@]}" | grep -v '^Scanning dir '
+'''
+
 ["lint:adr"]
 description = "ADR numbers are unique (a merge of main can bring a second ADR with the same number)"
 run = '''
@@ -402,7 +486,8 @@ run = ["pnpm lint", "pnpm format:check", "heavy -- pnpm check"]
 
 ["lint:arch"]
 description = "easement: package boundaries in easement.yml, Go and frontend (the layers of AGENTS.md; easement.baseline.yml holds the debt found when the gate was switched on). Not part of `lint`: CI runs it as a job of its own, as its indexers would share the lint runner's cores with golangci-lint and tsc"
-run = ["heavy -- easement check", "heavy -- easement suggest --check"]
+# --suggest also fails on a may_depend_on entry no import uses.
+run = "heavy -- easement check --suggest"
 
 ["lint:schema"]
 description = "schemalens: the migrated database agrees with the ent schema and passes its rules (schemalens.yml holds the baseline). Rebuilds the e2e database first (needs the db daemon, or E2E_DB_HOST/E2E_DB_PORT)"
@@ -483,8 +568,8 @@ run = "rm -rf bin dist"
 # --- maintenance -------------------------------------------------------------------
 
 [update]
-description = "Update npm, Go and skills dependencies; then run gen:all, lint and test"
-depends = ["update:npm", "update:go", "update:skills"]
+description = "Update npm and Go dependencies; then run gen:all, lint and test"
+depends = ["update:npm", "update:go"]
 run = "echo '>> bumped: run `mise run gen:all`, then `mise run lint` and `mise run test` to verify'"
 
 ["update:npm"]
@@ -494,18 +579,67 @@ description = "Bump the frontend and api-spec dependencies (not @hey-api/*)"
 run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*' && pnpm install"
 
 ["update:go"]
-description = "Bump the Go dependencies"
-run = "go get -u ./... && go mod tidy"
-
-["update:skills"]
-# No --yes: in a terminal skills asks whether to remove the skills their upstream deleted, and it
-# only warns in a run without a TTY. --project picks the project scope so nothing else is asked.
-description = "Update the vendored skills; in a terminal it offers to remove the ones their upstream deleted"
-run = "pnpm dlx skills update --project"
+# Only the modules go.mod requires directly and the `tool` directives' modules (go.mod marks those
+# indirect) move to their latest release; @upgrade keeps one a dependency already needs past it,
+# such as a pseudo-version. Any other indirect module takes the version its dependents ask for:
+# `go get -u ./...` moved those too, past what they were built against.
+description = "Bump the direct Go dependencies and the modules of the go tool directives"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+{
+  go list -m -json all | jq -r 'select((.Main or .Indirect) | not) | .Path + "@upgrade"'
+  go list -json tool | jq -r '.Module.Path + "@upgrade"' | sort -u
+} | xargs go get
+go mod tidy
+'''
 
 # Named like a personal global `upgrade` task a developer may have, so that inside the repository
 # `mise run upgrade` resolves to this one. --no-global: a bare `mise upgrade` also upgrades every
-# tool of ~/.config/mise/config.toml. --bump rewrites the exact pins of mise.toml.
+# tool of ~/.config/mise/config.toml, which is part of any project's toolset. The tools of mise.toml
+# are "latest" or a prefix wherever no other file names the version, so this moves them by
+# rewriting mise.lock; the exact pins (go, node, pnpm, atlas, easement, schemalens) move by hand,
+# together with the file that names the same version. The agent skills are releases among those
+# tools, so they are recopied after.
 [upgrade]
-description = "Upgrade the mise tools pinned in mise.toml, not the global ones"
-run = "mise upgrade --no-global --bump"
+description = "Upgrade the mise tools of mise.toml (in mise.lock), not the global ones, and recopy the agent skills"
+run = ["mise upgrade --no-global", { task = "skills" }]
+
+# --- worktrees ---------------------------------------------------------------------
+
+# Agent work lands on main as a rebased push (docs/agents/git-workflow.md), so a worktree whose
+# branch is an ancestor of origin/main is done. `lock` keeps two checkouts from pruning at once.
+["worktrees:prune"]
+description = "Remove the clean worktrees whose branch is already on origin/main, with their branches, then the daemon state of deleted worktrees; dry run unless --apply"
+lock = "hexlet-basics-worktrees"
+usage = 'flag "--apply" help="actually remove, instead of listing"'
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+git fetch -q --prune origin
+# Merged: in origin/main, or its remote branch is gone (deleted after the push to main).
+merged() { git merge-base --is-ancestor "$1" origin/main 2>/dev/null || [ "$(git for-each-ref --format='%(upstream:track)' "refs/heads/$1")" = "[gone]" ]; }
+main_wt=$(git worktree list --porcelain | sed -n '1s/^worktree //p')
+git worktree list --porcelain | awk '/^worktree /{p=substr($0,10)} /^branch /{b=substr($0,8)} /^$/{if(p&&b)print p"\t"b; p="";b=""} END{if(p&&b)print p"\t"b}' |
+while IFS=$'\t' read -r path ref; do
+  [ "$path" = "$main_wt" ] && continue
+  branch=${ref#refs/heads/}
+  [ -n "$(git -C "$path" status --porcelain)" ] && { echo "keep    $path ($branch): uncommitted changes"; continue; }
+  merged "$branch" || { echo "keep    $path ($branch): not merged"; continue; }
+  if [ -z "${usage_apply:-}" ]; then echo "would remove $path ($branch)"; continue; fi
+  git worktree unlock "$path" 2>/dev/null || true
+  git worktree remove "$path" && git branch -D "$branch" >/dev/null && echo "removed $path ($branch)"
+done
+# The daemons and state that deleted worktrees left; live checkouts (the db daemon too) stay.
+if [ -z "${usage_apply:-}" ]; then mise daemons prune --dry-run; else mise daemons prune --yes; fi
+'''
+
+# --- reports -----------------------------------------------------------------------
+
+[loc]
+description = "Lines-of-code report (scc) over hand-written files only"
+# The generated files are the ones .gitattributes marks linguist-generated, so only the tracked
+# files git sees as hand-written are fed to scc.
+run = '''
+git ls-files | git check-attr --stdin linguist-generated | awk -F': ' '$3!="true"{print $1}' | xargs scc
+'''
