@@ -1,7 +1,8 @@
 import { Group, Stack, TextInput, Title } from "@mantine/core";
+import { listSearchDefaults } from "@/lib/list-search";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { DataTable } from "mantine-datatable";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,7 @@ import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
   component: BannersList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListBannersQuery,
 });
 

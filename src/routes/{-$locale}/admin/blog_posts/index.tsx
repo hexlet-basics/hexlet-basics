@@ -1,5 +1,6 @@
 import { Button, Group, Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteBlogPostMutation,
@@ -23,6 +24,7 @@ import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/blog_posts/")({
   component: BlogPostsList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListBlogPostsQuery,
 });
 

@@ -1,5 +1,6 @@
 import { Button, Group, Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   adminCreateCourseVersionMutation,
@@ -27,6 +28,7 @@ import type { ReactElement } from "react";
 // enqueue AI review of every current lesson.
 export const Route = createFileRoute("/{-$locale}/admin/courses/")({
   component: CoursesList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListCoursesQuery,
 });
 

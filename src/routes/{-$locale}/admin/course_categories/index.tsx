@@ -1,5 +1,6 @@
 import { Group, Stack, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteCourseCategoryMutation,
@@ -20,6 +21,7 @@ import type { ReactElement } from "react";
 // (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
 export const Route = createFileRoute("/{-$locale}/admin/course_categories/")({
   component: CourseCategoriesList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListCourseCategoriesQuery,
 });
 

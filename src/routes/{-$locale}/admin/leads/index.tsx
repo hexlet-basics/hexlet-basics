@@ -1,5 +1,6 @@
 import { Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListLeadsOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListLeadsQuery } from "@/client/zod.gen";
@@ -16,6 +17,7 @@ import type { ReactElement } from "react";
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
   component: LeadsList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListLeadsQuery,
 });
 

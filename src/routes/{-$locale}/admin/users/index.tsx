@@ -1,5 +1,6 @@
 import { Group, Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteUserMutation,
@@ -24,6 +25,7 @@ import type { ReactElement } from "react";
 // list's own `q` filter, so a search pages and totals like the list does.
 export const Route = createFileRoute("/{-$locale}/admin/users/")({
   component: UsersList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListUsersQuery,
 });
 

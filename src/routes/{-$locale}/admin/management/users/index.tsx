@@ -1,5 +1,6 @@
 import { Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListManagementUsersOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListManagementUsersQuery } from "@/client/zod.gen";
@@ -18,6 +19,7 @@ import type { ReactElement } from "react";
 // no create/delete (parity with legacy: accounts are self-registered).
 export const Route = createFileRoute("/{-$locale}/admin/management/users/")({
   component: ManagementUsersList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListManagementUsersQuery,
 });
 

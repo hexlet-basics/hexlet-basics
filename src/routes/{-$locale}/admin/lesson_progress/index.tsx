@@ -1,5 +1,6 @@
 import { Stack, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListLessonProgressOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListLessonProgressQuery } from "@/client/zod.gen";
@@ -13,6 +14,7 @@ import type { ReactElement } from "react";
 // Per-lesson progress (route keeps the legacy table name) — read-only.
 export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
   component: LessonProgressList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListLessonProgressQuery,
 });
 

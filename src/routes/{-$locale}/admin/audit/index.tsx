@@ -12,7 +12,8 @@ import {
   Title,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
 import { useState } from "react";
 import type { ReactElement } from "react";
 import type { z } from "zod";
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/{-$locale}/admin/audit/")({
   // the window live in the address, so a filtered view can be shared and survives
   // a reload.
   component: AuditTrail,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListAuditRecordsQuery,
 });
 

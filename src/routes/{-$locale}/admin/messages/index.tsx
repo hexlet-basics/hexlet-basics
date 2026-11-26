@@ -1,5 +1,6 @@
 import { Stack, Text, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListMessagesOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListMessagesQuery } from "@/client/zod.gen";
@@ -17,6 +18,7 @@ import type { ReactElement } from "react";
 // mining student questions; the per-lesson summaries live under lesson reviews.
 export const Route = createFileRoute("/{-$locale}/admin/messages/")({
   component: MessagesList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListMessagesQuery,
 });
 

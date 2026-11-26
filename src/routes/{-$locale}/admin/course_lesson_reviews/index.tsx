@@ -1,5 +1,6 @@
 import { Stack, Text, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { adminListCourseLessonReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import { zAdminListCourseLessonReviewsQuery } from "@/client/zod.gen";
@@ -14,6 +15,7 @@ import type { ReactElement } from "react";
 // read-only; new summaries are produced by the course/lesson review actions.
 export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")({
   component: LessonReviewsList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListCourseLessonReviewsQuery,
 });
 

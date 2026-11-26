@@ -1,5 +1,6 @@
 import { Group, Stack, TextInput, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
+import { listSearchDefaults } from "@/lib/list-search";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   adminDeleteReviewMutation,
@@ -21,6 +22,7 @@ import type { ReactElement } from "react";
 
 export const Route = createFileRoute("/{-$locale}/admin/reviews/")({
   component: ReviewsList,
+  search: { middlewares: [stripSearchParams(listSearchDefaults)] },
   validateSearch: zAdminListReviewsQuery,
 });
 
