@@ -22,7 +22,7 @@ pnpm = "12.23.0"
 golangci-lint = "2"
 # heavy: machine-wide slot queue for the CPU-heavy commands (`heavy -- <command>`);
 # `heavy --status` shows who holds the slots.
-"github:mokevnin/heavy" = "0.1.2"
+"github:mokevnin/heavy" = "latest"
 # atlas: owns the DB schema going forward (versioned migrations). Tests apply
 # migrations through the Atlas Go library; new changes = atlas migrate new.
 # Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is

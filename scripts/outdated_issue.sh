@@ -10,7 +10,9 @@ label='ready-for-agent'
 # --bump: an exact pin of mise.toml counts as satisfied without it, so a tool pinned exactly (go,
 # node, pnpm, atlas, ...) would never show as behind.
 outdated=$(mise outdated --local --bump --json)
-rows=$(jq -r 'to_entries | sort_by(.key)[] | .value
+# postgres is the db daemon's (mise.toml [daemons.db]): a new major needs the cluster's data moved,
+# so it is a decision of its own, not a row that would keep this issue open.
+rows=$(jq -r 'del(.postgres) | to_entries | sort_by(.key)[] | .value
   | "| \(.name) | \(.current) | " + (if .release_url then "[\(.latest)](\(.release_url))" else .latest end) + " |"' <<<"$outdated")
 
 # The search matches on words, not exactly, so filter on the exact title.

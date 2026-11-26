@@ -443,7 +443,7 @@ url_api = "https://api.github.com/repos/mokevnin/easement/releases/assets/783841
 [[tools."github:mokevnin/heavy"]]
 version = "0.1.2"
 backend = "github:mokevnin/heavy"
-specifiers = ["0.1.2"]
+specifiers = ["latest"]
 
 [tools."github:mokevnin/heavy"."platforms.linux-x64"]
 checksum = "sha256:93929e20003a47b77a9c3bdd29a57cbeff85a90af536db8fbd8a1ae63e5cc0ca"
