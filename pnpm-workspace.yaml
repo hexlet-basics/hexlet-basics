@@ -41,7 +41,7 @@ minimumReleaseAgeExclude:
   - '@types/react@19.2.18'
   - playwright-core@1.62.1
   - playwright@1.62.1
-  - vite@8.2.0 || 8.3.1
+  - vite@8.2.0 || 8.3.1 || 8.4.0
   - '@mantine/core@9.5.1'
   - '@mantine/dates@9.5.1'
   - '@mantine/hooks@9.5.1'
@@ -97,7 +97,7 @@ minimumReleaseAgeExclude:
   - '@tanstack/react-router@1.170.23 || 1.170.45'
   - '@tanstack/react-start-client@1.168.21 || 1.168.43'
   - '@tanstack/start-client-core@1.170.19 || 1.170.38'
-  - '@types/node@26.2.0'
+  - '@types/node@26.2.0 || 26.6.11'
   - '@commitlint/cli@21.2.2'
   - '@commitlint/config-conventional@21.2.2'
   - '@commitlint/format@21.2.2'
@@ -137,11 +137,11 @@ minimumReleaseAgeExclude:
   - '@tiptap/starter-kit@3.30.1'
   - zustand@5.0.15
   - monaco-editor@0.57.0
-  - '@ai-sdk/gateway@4.0.111 || 4.0.116'
-  - '@ai-sdk/mcp@2.0.74 || 2.0.78'
-  - '@ai-sdk/provider-utils@5.0.59 || 5.0.62'
+  - '@ai-sdk/gateway@4.0.111 || 4.0.116 || 4.0.156'
+  - '@ai-sdk/mcp@2.0.74 || 2.0.78 || 2.0.106'
+  - '@ai-sdk/provider-utils@5.0.59 || 5.0.62 || 5.0.85'
   - '@ai-sdk/provider@4.0.27 || 4.0.29'
-  - '@ai-sdk/react@4.0.141 || 4.0.147'
+  - '@ai-sdk/react@4.0.141 || 4.0.147 || 4.0.188'
   - '@tanstack/query-core@5.104.2'
   - '@tanstack/react-query@5.104.2'
   - '@vitest/browser-playwright@5.0.4'
@@ -151,7 +151,7 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.0.4'
   - '@vitest/ui@5.0.4'
   - '@vitest/utils@5.0.4'
-  - ai@7.0.138 || 7.0.143
+  - ai@7.0.138 || 7.0.143 || 7.0.183
   - i18next@26.4.4 || 26.4.7
   - vitest@5.0.4
   - zod@4.6.7
@@ -163,7 +163,19 @@ minimumReleaseAgeExclude:
   - '@tanstack/router-generator@1.167.45'
   - '@tanstack/router-plugin@1.168.47'
   - '@tanstack/start-storage-context@1.167.40'
+  - '@oxlint-tsgolint/darwin-arm64@7.0.2009'
+  - '@oxlint-tsgolint/darwin-x64@7.0.2009'
+  - '@oxlint-tsgolint/linux-arm64@7.0.2009'
+  - '@oxlint-tsgolint/linux-x64@7.0.2009'
+  - '@oxlint-tsgolint/win32-arm64@7.0.2009'
+  - '@oxlint-tsgolint/win32-x64@7.0.2009'
+  - '@tanstack/form-core@1.33.6'
+  - '@tanstack/react-form@1.33.6'
+  - msw@3.0.8
+  - oxlint-tsgolint@7.0.2009
 permissions:
+  ai:
+    skills: true
   '@tanstack/cli':
     skills: true
   '@tanstack/react-router':

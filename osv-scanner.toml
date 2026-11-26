@@ -1,0 +1,33 @@
+# The advisories that stand (mise run lint:osv). Each entry says why it does not apply or why it
+# waits, and expires: on that date the nightly run reports it again, to be judged afresh.
+
+# @hey-api/openapi-ts stays on the `next` channel (AGENTS.md). Its builds are versioned
+# 0.0.0-next-<date>, which sorts below the fixed 0.97.3, but the pinned build (2026-09-30) was cut
+# four months after that fix (2026-05-25).
+[[IgnoredVulns]]
+id = "GHSA-hhx9-57xq-r5rw"
+ignoreUntil = 2027-02-26
+reason = "false positive: the pinned next-channel build postdates the 0.97.3 fix"
+
+# The rest come in through @tanstack/cli (and its @tanstack/create), a dev-only tool for searching
+# the TanStack docs that never handles untrusted input and ships nothing to the build. The fixes are
+# new majors (diff 8, glob 14, minimatch 11, zod 4) that the CLI does not declare support for.
+[[IgnoredVulns]]
+id = "GHSA-73rr-hh4g-fpgx"
+ignoreUntil = 2027-02-26
+reason = "diff 7 only in the dev-only @tanstack/cli; the fix is diff 8"
+
+[[IgnoredVulns]]
+id = "GHSA-3g3m-2fjr-6pw4"
+ignoreUntil = 2027-02-26
+reason = "glob 13 only in the dev-only @tanstack/cli (rimraf); the fix is glob 14"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-26
+reason = "minimatch 10 only in the dev-only @tanstack/cli (glob); the fix is minimatch 11"
+
+[[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5"
+ignoreUntil = 2027-02-26
+reason = "zod 3 only in the dev-only @tanstack/cli; the fix is zod 4"

@@ -424,7 +424,7 @@ run = "go tool govulncheck ./..."
 # hence --no-ignore. osv-scanner picks the lockfiles from the list itself (go.mod, pnpm-lock.yaml),
 # so a new one is scanned without a change here.
 ["lint:osv"]
-description = "osv-scanner over the lockfiles among the files git lists (go.mod, pnpm-lock.yaml). Not part of lint: its answer changes with the advisory database, not with the diff, so the nightly workflow runs it"
+description = "osv-scanner over the lockfiles among the files git lists (go.mod, pnpm-lock.yaml); the advisories that stand are in osv-scanner.toml. Not part of lint: its answer changes with the advisory database, not with the diff, so the nightly workflow runs it"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -437,7 +437,7 @@ done < <(git ls-files -z --cached --others --exclude-standard)
 # The count, not the array: bash 3.2 (macOS) fails on an empty "${files[@]}" under set -u.
 [ "$n" -gt 0 ] || { echo "lint:osv: git listed no files" >&2; exit 1; }
 # It prints a "Scanning dir" line for each path it is given; pipefail keeps its exit status.
-osv-scanner scan source --no-ignore "${files[@]}" | grep -v '^Scanning dir '
+osv-scanner scan source --no-ignore --config osv-scanner.toml "${files[@]}" | grep -v '^Scanning dir '
 '''
 
 ["lint:adr"]
@@ -575,8 +575,10 @@ run = "echo '>> bumped: run `mise run gen:all`, then `mise run lint` and `mise r
 ["update:npm"]
 # @hey-api/* stays on its pinned `next` channel: stable needs the TypeScript compiler API, which
 # TS 7 no longer exposes (AGENTS.md); the pin moves by hand in package.json and pnpm-workspace.yaml.
-description = "Bump the frontend and api-spec dependencies (not @hey-api/*)"
-run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*' && pnpm install"
+# playwright and @playwright/test stay on 1.65.0: 1.65.1's Chromium crashes the browser tests partway
+# through a run (VITEST_BROWSER_CONNECTION_CLOSED), seen in sphericon locally and in CI.
+description = "Bump the frontend and api-spec dependencies (not @hey-api/*, not playwright)"
+run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*,playwright,@playwright/test' && pnpm install"
 
 ["update:go"]
 # Only the modules go.mod requires directly and the `tool` directives' modules (go.mod marks those
