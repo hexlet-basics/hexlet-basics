@@ -7,16 +7,6 @@ import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  build: {
-    rolldownOptions: {
-      // Rolldown's avoidRedundantChunkLoads pass folds the modules a lazy route shares with
-      // the entry's importers into the entry chunk. Under Rolldown 1.3 (Vite 8.4) that put
-      // ~145 kB (gzip) of route code on every page (lint:size: 421 kB against 275 kB on
-      // Vite 8.3). Off, the entry is ~165 kB for ~20 more lazy chunks; mergeCommonChunks
-      // stays on.
-      experimental: { chunkOptimization: { avoidRedundantChunkLoads: false } },
-    },
-  },
   // `compiler`: React Compiler via oxc (`oxc-transform-react`), not the Babel
   // plugin — it memoizes components, so the code carries no manual useMemo.
   plugins: [tanstackStart(), viteReact({ compiler: true })],

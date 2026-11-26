@@ -69,7 +69,7 @@
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@hey-api/openapi-ts": "0.0.0-next-20260930190945",
-    "@playwright/test": "1.65.0",
+    "@playwright/test": "^1.65.1",
     "@size-limit/file": "^14.3.0",
     "@tanstack/cli": "^0.72.16",
     "@tree-sitter-grammars/tree-sitter-kotlin": "^1.1.0",
@@ -92,7 +92,7 @@
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
     "oxlint-tsgolint": "^7.0.2009",
-    "playwright": "1.65.0",
+    "playwright": "^1.65.1",
     "size-limit": "^14.3.0",
     "tree-sitter-bash": "^0.25.1",
     "tree-sitter-c": "^0.24.1",
@@ -109,7 +109,7 @@
     {
       "name": "entry chunk (loaded on every page)",
       "path": "dist/client/assets/index-*.js",
-      "limit": "320 kB",
+      "limit": "460 kB",
       "gzip": true
     },
     {

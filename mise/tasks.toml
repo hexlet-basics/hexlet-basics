@@ -575,10 +575,8 @@ run = "echo '>> bumped: run `mise run gen:all`, then `mise run lint` and `mise r
 ["update:npm"]
 # @hey-api/* stays on its pinned `next` channel: stable needs the TypeScript compiler API, which
 # TS 7 no longer exposes (AGENTS.md); the pin moves by hand in package.json and pnpm-workspace.yaml.
-# playwright and @playwright/test stay on 1.65.0: 1.65.1's Chromium crashes the browser tests partway
-# through a run (VITEST_BROWSER_CONNECTION_CLOSED), seen in sphericon locally and in CI.
-description = "Bump the frontend and api-spec dependencies (not @hey-api/*, not playwright)"
-run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*,playwright,@playwright/test' && pnpm install"
+description = "Bump the frontend and api-spec dependencies (not @hey-api/*)"
+run = "pnpm dlx npm-check-updates -u --reject '@hey-api/*' && pnpm install"
 
 ["update:go"]
 # Only the modules go.mod requires directly and the `tool` directives' modules (go.mod marks those
