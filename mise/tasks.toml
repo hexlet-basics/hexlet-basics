@@ -607,10 +607,15 @@ go mod tidy
 # are "latest" or a prefix wherever no other file names the version, so this moves them by
 # rewriting mise.lock; the exact pins (go, node, pnpm, atlas, easement, schemalens) move by hand,
 # together with the file that names the same version. The agent skills are releases among those
-# tools, so they are recopied after.
+# tools, so they are recopied after. hk.pkl amends the Config.pkl of one hk release; it follows the
+# hk that mise.lock now holds.
 [upgrade]
-description = "Upgrade the mise tools of mise.toml (in mise.lock), not the global ones, and recopy the agent skills"
-run = ["mise upgrade --no-global", { task = "skills" }]
+description = "Upgrade the mise tools of mise.toml (in mise.lock), not the global ones, move hk.pkl to the locked hk, and recopy the agent skills"
+run = [
+  "mise upgrade --no-global",
+  '''v=$(mise current hk) && perl -pi -e "s{/v[0-9.]+/hk\@[0-9.]+#}{/v$v/hk\@$v#}g" hk.pkl''',
+  { task = "skills" },
+]
 
 # --- worktrees ---------------------------------------------------------------------
 
