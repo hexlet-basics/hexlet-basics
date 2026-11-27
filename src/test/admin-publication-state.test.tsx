@@ -234,7 +234,9 @@ describe.each(subjects)("the $name admin screens", (subject) => {
     await button("Unpublish").click();
     await expect.element(button("Publish")).toBeVisible();
     await button("Archive").click();
-    await expect.element(button("Unpublish")).not.toBeInTheDocument();
+    // Archived offers only Publish: the Archive button going away is the
+    // answer to the click, where Unpublish was already gone after the first one.
+    await expect.element(button("Archive")).not.toBeInTheDocument();
 
     expect(called).toStrictEqual(["unpublish", "archive"]);
   }, 60_000);
