@@ -8,8 +8,8 @@ import (
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselandingpage"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/landingpage"
+	"hexletbasics/internal/store"
 )
 
 // CategoryDirectory is the public read side of the categories (legacy
@@ -42,7 +42,7 @@ func (d *CategoryDirectory) Index(ctx context.Context, locale string) ([]*ent.Co
 		Order(coursecategory.ByID()).
 		All(ctx)
 
-	return rows, domain.FromStore(err)
+	return rows, store.ToDomain(err)
 }
 
 // View is the page of one category by slug. A miss is domain.ErrNotFound.
@@ -51,7 +51,7 @@ func (d *CategoryDirectory) View(ctx context.Context, locale, slug string) (*Vie
 		Where(coursecategory.LocaleEQ(locale), coursecategory.SlugEQ(slug)).
 		Only(ctx)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	// Legacy `category.language_landing_pages.web.where(listed: true)
@@ -60,7 +60,7 @@ func (d *CategoryDirectory) View(ctx context.Context, locale, slug string) (*Vie
 	pages, err := d.catalog.Pages(ctx, locale,
 		courselandingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)))
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	// Legacy read the association unordered; id ascending is oldest first.
@@ -69,7 +69,7 @@ func (d *CategoryDirectory) View(ctx context.Context, locale, slug string) (*Vie
 		Order(categoryqnaitem.ByID()).
 		All(ctx)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	return &View{Category: category, LandingPages: pages, QnaItems: qnaItems}, nil

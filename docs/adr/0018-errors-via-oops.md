@@ -37,7 +37,7 @@ was not used.
   `errors.As` with a declared target variable.
 - Domain errors (`domain.ErrNotFound`, `ErrConflict`, `ErrInvalid`,
   `ErrForbidden`, and the module's own such as `ErrLastAdmin`, which wrap one of
-  them) stay plain values checked with `errors.Is`. `domain.FromStore` is the
+  them) stay plain values checked with `errors.Is`. `store.ToDomain` is the
   only translator of ent's errors, and `errorStatus` in `handlers/errors.go` is
   the one table from a domain error to a status; handlers never read ent errors
   (`forbidigo` rejects `ent.Is*` there).

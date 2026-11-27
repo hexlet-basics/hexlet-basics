@@ -9,7 +9,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/banner"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // Directory is the public read side of the banners.
@@ -44,5 +44,5 @@ func (d *Directory) Active(ctx context.Context, locale string, now time.Time) (*
 		).
 		First(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }

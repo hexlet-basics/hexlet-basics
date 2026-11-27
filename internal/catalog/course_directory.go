@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // CourseDirectory is the administrators' read side of the courses.
@@ -34,7 +34,7 @@ func (d *CourseDirectory) Options(ctx context.Context) ([]Option, error) {
 		Order(ent.Asc(course.FieldID)).
 		All(ctx)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	options := make([]Option, 0, len(rows))

@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/transition"
 )
 
@@ -54,7 +54,7 @@ func (r *Readiness) MarkCompleted(ctx context.Context, id int) error {
 func (r *Readiness) move(ctx context.Context, id int, move transition.Transition[transition.Readiness]) error {
 	row, err := r.db.Course.Get(ctx, id)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	err = move.Check(transition.ReadinessOf(row.Readiness))
@@ -62,5 +62,5 @@ func (r *Readiness) move(ctx context.Context, id int, move transition.Transition
 		return err
 	}
 
-	return domain.FromStore(r.db.Course.UpdateOneID(id).SetReadiness(string(move.To)).Exec(ctx))
+	return store.ToDomain(r.db.Course.UpdateOneID(id).SetReadiness(string(move.To)).Exec(ctx))
 }

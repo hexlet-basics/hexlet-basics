@@ -12,8 +12,8 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/store"
 )
 
 // Learner is who is submitting. A signed-in learner's position is rows; a
@@ -68,17 +68,17 @@ type CheckResult struct {
 func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult, error) {
 	open, err := p.resolveLesson(ctx, p.db, check.LessonID)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	version, err := p.submittedVersion(ctx, open.course, check)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	submission, err := p.submissionFor(ctx, version, check)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	outcome, err := p.runner.Run(ctx, submission)

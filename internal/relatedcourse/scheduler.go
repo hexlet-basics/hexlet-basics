@@ -5,8 +5,8 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/store"
 )
 
 // Scheduler asks for the AI pick of a post's related courses. The worker
@@ -28,7 +28,7 @@ func NewScheduler(db *ent.Client, enqueuer *jobs.Enqueuer) *Scheduler {
 func (s *Scheduler) Suggest(ctx context.Context, postID int) error {
 	_, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(postID)).Only(ctx)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	return s.jobs.Enqueue(ctx, jobs.SuggestRelatedCoursesArgs{BlogPostID: postID})

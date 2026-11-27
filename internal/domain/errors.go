@@ -1,15 +1,13 @@
 // Package domain holds the failures every use-case module answers with, so each
 // adapter (HTTP, MCP) maps one small set of errors to its own wire format and
-// never has to know which ent error means what.
+// never has to know which ent error means what. It imports nothing of ours:
+// the translation from ent's errors lives with the client, in store.ToDomain,
+// so a package the generated ent code imports (transition) may use these.
 package domain
 
 import (
 	"errors"
 	"fmt"
-
-	"github.com/jackc/pgx/v5/pgconn"
-
-	"hexletbasics/ent"
 )
 
 var (
@@ -25,23 +23,6 @@ var (
 	ErrForbidden = errors.New("forbidden")
 )
 
-// uniqueViolation is PostgreSQL's SQLSTATE for a unique index refusing a row.
-const uniqueViolation = "23505"
-
-// Unique names the field behind a unique index, so a violation of it is the
-// person's input being invalid (ErrInvalid, field named) instead of a bare
-// conflict. A module declares the indexes of its own table; the translator
-// stays one, here.
-type Unique struct {
-	Constraint string
-	Field      string
-}
-
-// UniqueOn declares that the unique index named constraint guards field.
-func UniqueOn(constraint, field string) Unique {
-	return Unique{Constraint: constraint, Field: field}
-}
-
 // FieldError is an ErrInvalid that says which field the input broke.
 type FieldError struct {
 	Field string
@@ -50,6 +31,12 @@ type FieldError struct {
 
 func (e *FieldError) Error() string {
 	return fmt.Sprintf("%s: field %s: %s", ErrInvalid, e.Field, e.cause)
+}
+
+// InvalidField is an ErrInvalid naming the field the input broke, with the
+// store's failure kept in the chain as its cause.
+func InvalidField(field string, cause error) error {
+	return &FieldError{Field: field, cause: cause}
 }
 
 // Unwrap keeps both the domain class and the store's cause in the chain.
@@ -65,37 +52,8 @@ func FieldOf(err error) (string, bool) {
 	return fieldErr.Field, true
 }
 
-// FromStore turns ent's failures into the domain's. The cause stays in the
-// chain, so logs keep the detail and code that still looks for ent's own error
-// finds it. A unique violation on one of the declared indexes is ErrInvalid
-// naming its field; any other constraint is ErrConflict. It is the one place
-// ent's errors are classified, and it is idempotent: an error already in the
-// domain's terms passes through unchanged.
-func FromStore(err error, uniques ...Unique) error {
-	switch {
-	case err == nil:
-		return nil
-	case isDomain(err):
-		return err
-	case ent.IsNotFound(err):
-		return errors.Join(ErrNotFound, err)
-	case ent.IsConstraintError(err):
-		pgErr, ok := errors.AsType[*pgconn.PgError](err)
-		if ok && pgErr.Code == uniqueViolation {
-			for _, unique := range uniques {
-				if unique.Constraint == pgErr.ConstraintName {
-					return &FieldError{Field: unique.Field, cause: err}
-				}
-			}
-		}
-
-		return errors.Join(ErrConflict, err)
-	default:
-		return err
-	}
-}
-
-func isDomain(err error) bool {
+// IsDomain reports whether err is already in the domain's terms.
+func IsDomain(err error) bool {
 	return errors.Is(err, ErrNotFound) || errors.Is(err, ErrConflict) ||
 		errors.Is(err, ErrInvalid) || errors.Is(err, ErrForbidden)
 }

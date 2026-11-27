@@ -12,7 +12,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/store"
 )
@@ -86,7 +85,7 @@ func (p *Permissions) Apply(ctx context.Context, roleID int, grants []string) er
 func (p *Permissions) requireRole(ctx context.Context, roleID int) error {
 	_, err := p.db.StaffRole.Query().Where(staffrole.ID(roleID)).Only(ctx)
 
-	return domain.FromStore(err)
+	return store.ToDomain(err)
 }
 
 // replaceGrants makes the role hold exactly grants. Rows already held are left

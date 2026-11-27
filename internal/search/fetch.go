@@ -15,8 +15,8 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessontranslation"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/htmltext"
+	"hexletbasics/internal/store"
 )
 
 // FetchRecord is the read of one record an editor's search found, by the id the
@@ -78,7 +78,7 @@ func (c *Catalogue) Fetch(ctx context.Context, cmd FetchRecord) (*Record, error)
 	}
 
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	return rec, nil

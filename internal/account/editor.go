@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // UserFields is what an administrator can set on a user record. A nil name or
@@ -43,7 +43,7 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 		SetNillableAdmin(fields.Admin).
 		Save(ctx)
 
-	return u, domain.FromStore(err, userUniques()...)
+	return u, store.ToDomain(err, userUniques()...)
 }
 
 // Update replaces a user's editable fields. A missing id is domain.ErrNotFound;
@@ -52,7 +52,7 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	if fields.Admin == nil || !*fields.Admin {
 		err := EnsureAnotherAdmin(ctx, e.db, id)
 		if err != nil {
-			return nil, domain.FromStore(err)
+			return nil, store.ToDomain(err)
 		}
 	}
 
@@ -77,7 +77,7 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 
 	u, err := update.Save(ctx)
 
-	return u, domain.FromStore(err, userUniques()...)
+	return u, store.ToDomain(err, userUniques()...)
 }
 
 // Delete removes a user. A missing id is domain.ErrNotFound; the last
@@ -85,8 +85,8 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 func (e *Editor) Delete(ctx context.Context, id int) error {
 	err := EnsureAnotherAdmin(ctx, e.db, id)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
-	return domain.FromStore(e.db.User.DeleteOneID(id).Exec(ctx))
+	return store.ToDomain(e.db.User.DeleteOneID(id).Exec(ctx))
 }

@@ -31,9 +31,9 @@ call, and every handler repeated how to word a not-found.
   `errorStatus` table maps `domain.ErrNotFound`, `ErrConflict`, `ErrInvalid` and
   `ErrForbidden` to 404, 409, 422 and 403; security failures keep ogen's own
   401. `ent.Is*` is not used in a handler or in `errorStatus`: ent's errors reach
-  the table already translated by `domain.FromStore`.
+  the table already translated by `store.ToDomain`.
 - **Unique violations.** A module names the field behind a unique index with
-  `domain.UniqueOn`; a violation of it is `ErrInvalid` naming that field (422),
+  `store.UniqueOn`; a violation of it is `ErrInvalid` naming that field (422),
   any other constraint violation is `ErrConflict` (409). The account editor and
   the registrar declare the email index; other tables stay 409 until a module
   declares its fields.
@@ -46,7 +46,7 @@ call, and every handler repeated how to word a not-found.
   field and message the handler knows is `invalid(field, message)`, an
   `ErrInvalid`.
 - **Validation in three layers.** The contract (ogen, a 400 as generated), module
-  rules returning `ErrInvalid`, and database constraints through `FromStore`;
+  rules returning `ErrInvalid`, and database constraints through `store.ToDomain`;
   a handler validates nothing.
 - **Audit.** A failed admin call is recognised by its error return, so the
   middleware no longer inspects a response type. A failure leaves an Audit

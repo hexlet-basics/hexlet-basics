@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/transition"
 )
 
@@ -49,7 +49,7 @@ func (e *Editor) Archive(ctx context.Context, id int) error {
 func (e *Editor) move(ctx context.Context, id int, move transition.Transition[transition.PublicationState]) error {
 	row, err := e.db.Review.Get(ctx, id)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	err = move.Check(transition.CurrentOf(row.State))
@@ -57,5 +57,5 @@ func (e *Editor) move(ctx context.Context, id int, move transition.Transition[tr
 		return err
 	}
 
-	return domain.FromStore(e.db.Review.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))
+	return store.ToDomain(e.db.Review.UpdateOneID(id).SetState(string(move.To)).Exec(ctx))
 }

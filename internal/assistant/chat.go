@@ -19,7 +19,6 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/predicate"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -116,7 +115,7 @@ type History struct {
 func (c *Chat) History(ctx context.Context, userID, lessonID int) (*History, error) {
 	_, err := c.db.CourseLesson.Get(ctx, lessonID)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	locale := c.i18n.Locale(ctx)
@@ -206,7 +205,7 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 
 	turns, lessonProgressID, err := c.turns(ctx, question, locale)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	// Rows are written without the request's cancellation: once written to,

@@ -286,5 +286,5 @@ func (d *Directory) List(ctx context.Context, search string, page domain.Page) (
 		))
 	}
 
-	return domain.Paged(ctx, query, page)
+	return store.Paged(ctx, query, page)
 }

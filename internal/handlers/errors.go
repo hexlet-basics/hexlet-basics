@@ -17,6 +17,7 @@ import (
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/transition"
 )
 
@@ -102,7 +103,7 @@ const statusClientClosedRequest = 499
 // adapter-specific failure joins it by wrapping one of these (a self-protection
 // refusal wraps ErrForbidden, the asset store's missing key wraps ErrNotFound) instead of
 // carrying a status of its own, and ent's errors reach it already translated
-// by domain.FromStore.
+// by store.ToDomain.
 func domainStatus() []struct {
 	err    error
 	status int
@@ -122,7 +123,7 @@ func errorStatus(err error) int {
 	// The domain's classes come first: ogen wraps what a security handler
 	// returns in its own 401, and a refusal of a signed-in caller (ErrForbidden)
 	// must stay a 403.
-	translated := domain.FromStore(err)
+	translated := store.ToDomain(err)
 	for _, row := range domainStatus() {
 		if errors.Is(translated, row.err) {
 			return row.status

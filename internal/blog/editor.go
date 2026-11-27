@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/transition"
 )
 
@@ -44,7 +44,7 @@ func (e *Editor) Create(ctx context.Context, creatorID int, locale string, field
 		SetLocale(locale).
 		Save(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }
 
 // Update replaces a post's fields; a nil one clears its column. The stored
@@ -73,5 +73,5 @@ func (e *Editor) Update(ctx context.Context, id int, fields PostFields) (*ent.Bl
 
 	row, err := update.Save(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }

@@ -79,8 +79,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `mise run gen:ent` (`go generate ./ent`) after editing a schema.
 - Other `internal/` packages: `config/` (env config), `logging/` (`slog`),
-  `store/` (ent client, `Transactor`, ambient transaction), `domain/` (domain
-  errors, `FromStore`, `Page`), `health/` (`/healthz`, `/readyz`), `jobs/`
+  `store/` (ent client, `Transactor`, ambient transaction, `ToDomain`, `Paged`),
+  `domain/` (domain errors, `Page`), `health/` (`/healthz`, `/readyz`), `jobs/`
   (River), `events/` (Watermill), `ident/`, `apiconv/`, `fixture/`,
   `testsupport/`.
 - **Configuration** (ADR-0024): `APP_ENV` (`development` default, `production`,
@@ -396,8 +396,8 @@ Change the source, run the generator, commit the output. Never hand-edit or
 - Domain errors are plain `errors.New` values named `ErrX` (`domain.ErrNotFound`,
   `ErrConflict`, `ErrInvalid`, `ErrForbidden`, and a module's own, such as
   `account.ErrLastAdmin`, which wraps one of them), checked with `errors.Is`.
-  `domain.FromStore` is the only translator of ent's errors (a module names the
-  field behind a unique index with `domain.UniqueOn`); a handler never reads an
+  `store.ToDomain` is the only translator of ent's errors (a module names the
+  field behind a unique index with `store.UniqueOn`); a handler never reads an
   ent error (`forbidigo` rejects `ent.Is*`).
 - HTTP: every non-2xx is RFC 9457 Problem Details, a 422 adds `errors:
   {field: [messages]}`. A handler returns the success variant and reports a
@@ -434,7 +434,7 @@ other adapter (MCP) call the same code. There is no umbrella `usecases` or
   struct named for the operation, and never an `internal/api` type (ADR-0001);
   adapters convert in both directions.
 - **Pages:** a module's list takes a `domain.Page` and answers rows and a total;
-  `domain.Paged` runs the count and the window over one scoped, ordered query.
+  `store.Paged` runs the count and the window over one scoped, ordered query.
   The handler wraps them with `listFrom`.
 - **Resources with no rules** (a plain create, read, update, delete of one
   entity) need no module: annotate the ent schema with `AdminCRUD` and the

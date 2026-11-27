@@ -11,6 +11,7 @@ import (
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/store"
 )
 
 // AdminListAuditRecords lists the audit trail, newest first. Who may call it is
@@ -36,7 +37,7 @@ func (s *Server) AdminListAuditRecords(ctx context.Context, params api.AdminList
 
 	page, err := listFromWith(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, window domain.Page) ([]*ent.AuditRecord, int, error) {
-			return domain.Paged(ctx, query, window)
+			return store.Paged(ctx, query, window)
 		},
 		func(_ context.Context, rows []*ent.AuditRecord) ([]api.AuditRecord, error) {
 			items := make([]api.AuditRecord, 0, len(rows))

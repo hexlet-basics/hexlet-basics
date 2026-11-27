@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // Directory is the administrators' read side of the assistant's conversations.
@@ -45,5 +46,5 @@ func (d *Directory) Messages(ctx context.Context, locale, search string, page do
 		query = query.Where(aimessage.ContentContainsFold(term))
 	}
 
-	return domain.Paged(ctx, query, page)
+	return store.Paged(ctx, query, page)
 }

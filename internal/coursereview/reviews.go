@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/review"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // StatePublished is the `state` of a review open to readers; the ent field is a
@@ -49,5 +50,5 @@ func NewDirectory(db *ent.Client) *Directory {
 // Public returns one page of the published reviews of the locale, newest
 // first, and how many there are in all.
 func (d *Directory) Public(ctx context.Context, locale string, page domain.Page) ([]*ent.Review, int, error) {
-	return domain.Paged(ctx, Public(d.db, locale), page)
+	return store.Paged(ctx, Public(d.db, locale), page)
 }

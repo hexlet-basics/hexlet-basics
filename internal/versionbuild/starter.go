@@ -38,7 +38,7 @@ func (s *Starter) Start(ctx context.Context, courseID int) (*ent.CourseVersion, 
 			return 0, domain.ErrNotFound
 		}
 
-		return courseID, domain.FromStore(err)
+		return courseID, store.ToDomain(err)
 	})
 }
 
@@ -48,7 +48,7 @@ func (s *Starter) StartBySlug(ctx context.Context, slug string) (*ent.CourseVers
 	return s.start(ctx, func(c *ent.Client) (int, error) {
 		id, err := c.Course.Query().Where(course.Slug(slug)).OnlyID(ctx)
 
-		return id, domain.FromStore(err)
+		return id, store.ToDomain(err)
 	})
 }
 

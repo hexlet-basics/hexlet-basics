@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // searchLimit mirrors the legacy typeahead cap (`.limit(20)`).
@@ -36,7 +37,7 @@ func (d *Directory) List(ctx context.Context, search string, page domain.Page) (
 		query = query.Where(matches(term))
 	}
 
-	return domain.Paged(ctx, query, page)
+	return store.Paged(ctx, query, page)
 }
 
 // matches is the one definition of "a user the term finds", shared by the
@@ -64,12 +65,12 @@ func (d *Directory) Search(ctx context.Context, term string) ([]*ent.User, error
 		Limit(searchLimit).
 		All(ctx)
 
-	return rows, domain.FromStore(err)
+	return rows, store.ToDomain(err)
 }
 
 // Get returns one user. A missing id is domain.ErrNotFound.
 func (d *Directory) Get(ctx context.Context, id int) (*ent.User, error) {
 	u, err := d.db.User.Get(ctx, id)
 
-	return u, domain.FromStore(err)
+	return u, store.ToDomain(err)
 }

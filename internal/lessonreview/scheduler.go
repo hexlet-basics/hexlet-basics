@@ -8,8 +8,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/predicate"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/store"
 )
 
 // Scheduler asks for AI reviews of lessons: it picks the translations to
@@ -34,7 +34,7 @@ func NewScheduler(db *ent.Client, enqueuer *jobs.Enqueuer) *Scheduler {
 func (s *Scheduler) ReviewCourse(ctx context.Context, courseID int) error {
 	course, err := s.db.Course.Get(ctx, courseID)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	if course.CurrentVersionID == nil {
@@ -51,7 +51,7 @@ func (s *Scheduler) ReviewCourse(ctx context.Context, courseID int) error {
 func (s *Scheduler) ReviewLesson(ctx context.Context, lessonID int) error {
 	lesson, err := s.db.CourseLesson.Get(ctx, lessonID)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	return s.review(ctx, courselessontranslation.CourseLessonID(lesson.ID))
@@ -64,7 +64,7 @@ func (s *Scheduler) review(ctx context.Context, within ...predicate.CourseLesson
 		Order(ent.Asc(courselessontranslation.FieldID)).
 		IDs(ctx)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	args := make([]river.JobArgs, len(ids))

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
@@ -18,10 +17,10 @@ var ErrPasswordProcessing = errors.New("password processing failed")
 
 // userUniques names the field behind each unique index of the users table, so a
 // taken email is an invalid input naming "email" rather than a bare conflict.
-func userUniques() []domain.Unique {
-	return []domain.Unique{
-		domain.UniqueOn("index_users_on_email", "email"),
-		domain.UniqueOn("index_users_on_LOWER_email", "email"),
+func userUniques() []store.Unique {
+	return []store.Unique{
+		store.UniqueOn("index_users_on_email", "email"),
+		store.UniqueOn("index_users_on_LOWER_email", "email"),
 	}
 }
 
@@ -76,7 +75,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {
-			return errs.Wrapf(domain.FromStore(err, userUniques()...), "create user")
+			return errs.Wrapf(store.ToDomain(err, userUniques()...), "create user")
 		}
 
 		err := r.publisher.Publish(ctx, tx, events.UserSignedUp{

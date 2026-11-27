@@ -10,7 +10,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // ErrInvalidCredentials is the one answer for an unknown email, a removed
@@ -31,7 +31,7 @@ func NormalizeEmail(email string) string {
 func ActiveUserByID(ctx context.Context, db *ent.Client, id int) (*ent.User, error) {
 	u, err := db.User.Query().Where(user.ID(id), NotRemoved()).WithStaffMember().Only(ctx)
 
-	return u, domain.FromStore(err)
+	return u, store.ToDomain(err)
 }
 
 // ActiveUserByEmail loads the user registered under email, normalized the way
@@ -39,7 +39,7 @@ func ActiveUserByID(ctx context.Context, db *ent.Client, id int) (*ent.User, err
 func ActiveUserByEmail(ctx context.Context, db *ent.Client, email string) (*ent.User, error) {
 	u, err := db.User.Query().Where(user.Email(NormalizeEmail(email)), NotRemoved()).WithStaffMember().Only(ctx)
 
-	return u, domain.FromStore(err)
+	return u, store.ToDomain(err)
 }
 
 // Credentials owns who a person is by what they know: the password digest, how

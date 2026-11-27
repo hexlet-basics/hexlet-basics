@@ -13,7 +13,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/landingpageqnaitem"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // Fields is what an administrator writes on an item.
@@ -39,7 +39,7 @@ func (c *Category) List(ctx context.Context, categoryID int) ([]*ent.CategoryQna
 		Order(ent.Asc(categoryqnaitem.FieldID)).
 		All(ctx)
 
-	return rows, domain.FromStore(err)
+	return rows, store.ToDomain(err)
 }
 
 // Create adds an item to the category.
@@ -50,7 +50,7 @@ func (c *Category) Create(ctx context.Context, categoryID int, fields Fields) (*
 		SetAnswer(fields.Answer).
 		Save(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }
 
 // Update rewrites an item of the category; an id that is missing or under
@@ -63,7 +63,7 @@ func (c *Category) Update(ctx context.Context, categoryID, id int, fields Fields
 
 	updated, err := row.Update().SetQuestion(fields.Question).SetAnswer(fields.Answer).Save(ctx)
 
-	return updated, domain.FromStore(err)
+	return updated, store.ToDomain(err)
 }
 
 // Delete removes an item of the category, with the same scoping as Update.
@@ -73,7 +73,7 @@ func (c *Category) Delete(ctx context.Context, categoryID, id int) error {
 		return err
 	}
 
-	return domain.FromStore(c.db.CategoryQnaItem.DeleteOne(row).Exec(ctx))
+	return store.ToDomain(c.db.CategoryQnaItem.DeleteOne(row).Exec(ctx))
 }
 
 func (c *Category) find(ctx context.Context, categoryID, id int) (*ent.CategoryQnaItem, error) {
@@ -81,7 +81,7 @@ func (c *Category) find(ctx context.Context, categoryID, id int) (*ent.CategoryQ
 		Where(categoryqnaitem.ID(id), categoryqnaitem.CourseCategoryID(categoryID)).
 		Only(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }
 
 // LandingPage edits the items of a course landing page.
@@ -101,7 +101,7 @@ func (l *LandingPage) List(ctx context.Context, landingPageID int) ([]*ent.Landi
 		Order(ent.Asc(landingpageqnaitem.FieldID)).
 		All(ctx)
 
-	return rows, domain.FromStore(err)
+	return rows, store.ToDomain(err)
 }
 
 // Create adds an item to the landing page.
@@ -112,7 +112,7 @@ func (l *LandingPage) Create(ctx context.Context, landingPageID int, fields Fiel
 		SetAnswer(fields.Answer).
 		Save(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }
 
 // Update rewrites an item of the landing page; an id that is missing or under
@@ -125,7 +125,7 @@ func (l *LandingPage) Update(ctx context.Context, landingPageID, id int, fields 
 
 	updated, err := row.Update().SetQuestion(fields.Question).SetAnswer(fields.Answer).Save(ctx)
 
-	return updated, domain.FromStore(err)
+	return updated, store.ToDomain(err)
 }
 
 // Delete removes an item of the landing page, with the same scoping as Update.
@@ -135,7 +135,7 @@ func (l *LandingPage) Delete(ctx context.Context, landingPageID, id int) error {
 		return err
 	}
 
-	return domain.FromStore(l.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx))
+	return store.ToDomain(l.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx))
 }
 
 func (l *LandingPage) find(ctx context.Context, landingPageID, id int) (*ent.LandingPageQnaItem, error) {
@@ -143,5 +143,5 @@ func (l *LandingPage) find(ctx context.Context, landingPageID, id int) (*ent.Lan
 		Where(landingpageqnaitem.ID(id), landingpageqnaitem.CourseLandingPageID(landingPageID)).
 		Only(ctx)
 
-	return row, domain.FromStore(err)
+	return row, store.ToDomain(err)
 }

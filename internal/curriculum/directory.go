@@ -12,6 +12,7 @@ import (
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/landingpage"
+	"hexletbasics/internal/store"
 )
 
 // Directory is the read side of the lesson graph. Every list is in the locale it
@@ -57,14 +58,14 @@ func (d *Directory) Lessons(ctx context.Context, locale, search string, page dom
 		))
 	}
 
-	return domain.Paged(ctx, query, page)
+	return store.Paged(ctx, query, page)
 }
 
 // Progress lists learners' per-lesson progress rows, newest first (legacy
 // `admin/lesson_progress`). The course and the lesson, with its translation in
 // the locale, come with each row.
 func (d *Directory) Progress(ctx context.Context, locale string, page domain.Page) ([]*ent.LessonProgress, int, error) {
-	return domain.Paged(ctx,
+	return store.Paged(ctx,
 		d.db.LessonProgress.Query().
 			WithCourse().
 			WithLesson(func(q *ent.CourseLessonQuery) {
@@ -83,7 +84,7 @@ func (d *Directory) Progress(ctx context.Context, locale string, page domain.Pag
 // skips it, and it must not inflate the total, so the filter is on the one query
 // the count and the page share.
 func (d *Directory) Reviews(ctx context.Context, locale string, page domain.Page) ([]*ent.CourseLessonReview, int, error) {
-	return domain.Paged(ctx,
+	return store.Paged(ctx,
 		d.db.CourseLessonReview.Query().
 			Where(
 				courselessonreview.LocaleEQ(locale),

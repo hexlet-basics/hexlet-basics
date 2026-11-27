@@ -11,6 +11,7 @@ import (
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/oauthserver"
+	"hexletbasics/internal/store"
 )
 
 // The catalogue tools, named after the operationId they mirror. All of them
@@ -403,7 +404,7 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 // notFoundOf is the answer for a failed read of one record: a missing one is
 // the tool's own not-found, anything else is the failure itself.
 func notFoundOf(err error, what string) error {
-	if errors.Is(domain.FromStore(err), domain.ErrNotFound) {
+	if errors.Is(store.ToDomain(err), domain.ErrNotFound) {
 		return errNotFound(what)
 	}
 

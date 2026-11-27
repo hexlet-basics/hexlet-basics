@@ -25,7 +25,6 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
@@ -93,12 +92,12 @@ func (p *Progress) StartLesson(
 ) (*CourseState, error) {
 	courseID, err := p.startLesson(ctx, learner, lessonID, locale)
 	if err != nil {
-		return nil, domain.FromStore(err)
+		return nil, store.ToDomain(err)
 	}
 
 	state, err := p.CourseState(ctx, learner, courseID)
 
-	return state, domain.FromStore(err)
+	return state, store.ToDomain(err)
 }
 
 // CourseState answers where the learner stands. A learner with no Enrollment

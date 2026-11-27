@@ -10,7 +10,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffmember"
-	"hexletbasics/internal/domain"
+	"hexletbasics/internal/store"
 )
 
 // Actor is the signed-in user an admin operation acts as.
@@ -40,7 +40,7 @@ func (g *Guard) StaffRecordChange(ctx context.Context, actor Actor, recordID, ne
 	if recordID != 0 {
 		record, err := g.db.StaffMember.Get(ctx, recordID)
 		if err != nil {
-			return domain.FromStore(err)
+			return store.ToDomain(err)
 		}
 
 		owner = record.UserID
@@ -66,7 +66,7 @@ func (g *Guard) OwnRoleGrants(ctx context.Context, actor Actor, roleID int) erro
 		Where(staffmember.UserID(actor.ID), staffmember.RoleID(roleID)).
 		Exist(ctx)
 	if err != nil {
-		return domain.FromStore(err)
+		return store.ToDomain(err)
 	}
 
 	if holds {

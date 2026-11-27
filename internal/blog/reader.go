@@ -18,6 +18,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/htmltext"
+	"hexletbasics/internal/store"
 )
 
 const (
@@ -92,7 +93,7 @@ func (r *Reader) List(ctx context.Context, search string, page domain.Page) ([]P
 		))
 	}
 
-	rows, total, err := domain.Paged(ctx, query, page)
+	rows, total, err := store.Paged(ctx, query, page)
 	if err != nil {
 		return nil, 0, err
 	}

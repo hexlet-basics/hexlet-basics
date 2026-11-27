@@ -23,8 +23,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/store"
 )
 
 // maxWindow is how deep into the answer a page may reach: the first thousand
@@ -122,7 +122,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	for _, src := range sources {
 		n, err := src.count(ctx, matcher)
 		if err != nil {
-			return nil, 0, domain.FromStore(err)
+			return nil, 0, store.ToDomain(err)
 		}
 
 		total += n
@@ -138,7 +138,7 @@ func (c *Catalogue) Search(ctx context.Context, cmd Query) ([]Hit, int, error) {
 	for _, src := range sources {
 		found, err := src.top(ctx, matcher, window)
 		if err != nil {
-			return nil, 0, domain.FromStore(err)
+			return nil, 0, store.ToDomain(err)
 		}
 
 		candidates = append(candidates, found...)
@@ -206,7 +206,7 @@ func withSnippets(ctx context.Context, matcher match, kinds []kind, candidates [
 
 		found, err := entry.snippets(ctx, matcher, byType[entry.typ])
 		if err != nil {
-			return nil, domain.FromStore(err)
+			return nil, store.ToDomain(err)
 		}
 
 		snippets[entry.typ] = found
