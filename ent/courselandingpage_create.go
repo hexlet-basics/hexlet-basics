@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselandingpage"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -143,13 +144,13 @@ func (_c *CourseLandingPageCreate) SetNillableMain(v *bool) *CourseLandingPageCr
 }
 
 // SetState sets the "state" field.
-func (_c *CourseLandingPageCreate) SetState(v string) *CourseLandingPageCreate {
+func (_c *CourseLandingPageCreate) SetState(v transition.PublicationState) *CourseLandingPageCreate {
 	_c.mutation.SetState(v)
 	return _c
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_c *CourseLandingPageCreate) SetNillableState(v *string) *CourseLandingPageCreate {
+func (_c *CourseLandingPageCreate) SetNillableState(v *transition.PublicationState) *CourseLandingPageCreate {
 	if v != nil {
 		_c.SetState(*v)
 	}
@@ -404,6 +405,14 @@ func (_c *CourseLandingPageCreate) check() error {
 	if _, ok := _c.mutation.CourseID(); !ok {
 		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "CourseLandingPage.course_id"`)}
 	}
+	if _, ok := _c.mutation.State(); !ok {
+		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "CourseLandingPage.state"`)}
+	}
+	if v, ok := _c.mutation.State(); ok {
+		if err := courselandingpage.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "CourseLandingPage.state": %w`, err)}
+		}
+	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "CourseLandingPage.course"`)}
 	}
@@ -467,8 +476,8 @@ func (_c *CourseLandingPageCreate) createSpec() (*CourseLandingPage, *sqlgraph.C
 		_node.Main = &value
 	}
 	if value, ok := _c.mutation.State(); ok {
-		_spec.SetField(courselandingpage.FieldState, field.TypeString, value)
-		_node.State = &value
+		_spec.SetField(courselandingpage.FieldState, field.TypeEnum, value)
+		_node.State = value
 	}
 	if value, ok := _c.mutation.Order(); ok {
 		_spec.SetField(courselandingpage.FieldOrder, field.TypeString, value)
@@ -736,7 +745,7 @@ func (u *CourseLandingPageUpsert) ClearMain() *CourseLandingPageUpsert {
 }
 
 // SetState sets the "state" field.
-func (u *CourseLandingPageUpsert) SetState(v string) *CourseLandingPageUpsert {
+func (u *CourseLandingPageUpsert) SetState(v transition.PublicationState) *CourseLandingPageUpsert {
 	u.Set(courselandingpage.FieldState, v)
 	return u
 }
@@ -744,12 +753,6 @@ func (u *CourseLandingPageUpsert) SetState(v string) *CourseLandingPageUpsert {
 // UpdateState sets the "state" field to the value that was provided on create.
 func (u *CourseLandingPageUpsert) UpdateState() *CourseLandingPageUpsert {
 	u.SetExcluded(courselandingpage.FieldState)
-	return u
-}
-
-// ClearState clears the value of the "state" field.
-func (u *CourseLandingPageUpsert) ClearState() *CourseLandingPageUpsert {
-	u.SetNull(courselandingpage.FieldState)
 	return u
 }
 
@@ -1181,7 +1184,7 @@ func (u *CourseLandingPageUpsertOne) ClearMain() *CourseLandingPageUpsertOne {
 }
 
 // SetState sets the "state" field.
-func (u *CourseLandingPageUpsertOne) SetState(v string) *CourseLandingPageUpsertOne {
+func (u *CourseLandingPageUpsertOne) SetState(v transition.PublicationState) *CourseLandingPageUpsertOne {
 	return u.Update(func(s *CourseLandingPageUpsert) {
 		s.SetState(v)
 	})
@@ -1191,13 +1194,6 @@ func (u *CourseLandingPageUpsertOne) SetState(v string) *CourseLandingPageUpsert
 func (u *CourseLandingPageUpsertOne) UpdateState() *CourseLandingPageUpsertOne {
 	return u.Update(func(s *CourseLandingPageUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *CourseLandingPageUpsertOne) ClearState() *CourseLandingPageUpsertOne {
-	return u.Update(func(s *CourseLandingPageUpsert) {
-		s.ClearState()
 	})
 }
 
@@ -1833,7 +1829,7 @@ func (u *CourseLandingPageUpsertBulk) ClearMain() *CourseLandingPageUpsertBulk {
 }
 
 // SetState sets the "state" field.
-func (u *CourseLandingPageUpsertBulk) SetState(v string) *CourseLandingPageUpsertBulk {
+func (u *CourseLandingPageUpsertBulk) SetState(v transition.PublicationState) *CourseLandingPageUpsertBulk {
 	return u.Update(func(s *CourseLandingPageUpsert) {
 		s.SetState(v)
 	})
@@ -1843,13 +1839,6 @@ func (u *CourseLandingPageUpsertBulk) SetState(v string) *CourseLandingPageUpser
 func (u *CourseLandingPageUpsertBulk) UpdateState() *CourseLandingPageUpsertBulk {
 	return u.Update(func(s *CourseLandingPageUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *CourseLandingPageUpsertBulk) ClearState() *CourseLandingPageUpsertBulk {
-	return u.Update(func(s *CourseLandingPageUpsert) {
-		s.ClearState()
 	})
 }
 

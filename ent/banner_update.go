@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -77,13 +78,13 @@ func (_u *BannerUpdate) SetNillableLocale(v *string) *BannerUpdate {
 }
 
 // SetState sets the "state" field.
-func (_u *BannerUpdate) SetState(v string) *BannerUpdate {
+func (_u *BannerUpdate) SetState(v transition.PublicationState) *BannerUpdate {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *BannerUpdate) SetNillableState(v *string) *BannerUpdate {
+func (_u *BannerUpdate) SetNillableState(v *transition.PublicationState) *BannerUpdate {
 	if v != nil {
 		_u.SetState(*v)
 	}
@@ -191,7 +192,20 @@ func (_u *BannerUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *BannerUpdate) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := banner.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Banner.state": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *BannerUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(banner.Table, banner.Columns, sqlgraph.NewFieldSpec(banner.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -213,7 +227,7 @@ func (_u *BannerUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.SetField(banner.FieldLocale, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(banner.FieldState, field.TypeString, value)
+		_spec.SetField(banner.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(banner.FieldURL, field.TypeString, value)
@@ -302,13 +316,13 @@ func (_u *BannerUpdateOne) SetNillableLocale(v *string) *BannerUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (_u *BannerUpdateOne) SetState(v string) *BannerUpdateOne {
+func (_u *BannerUpdateOne) SetState(v transition.PublicationState) *BannerUpdateOne {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *BannerUpdateOne) SetNillableState(v *string) *BannerUpdateOne {
+func (_u *BannerUpdateOne) SetNillableState(v *transition.PublicationState) *BannerUpdateOne {
 	if v != nil {
 		_u.SetState(*v)
 	}
@@ -429,7 +443,20 @@ func (_u *BannerUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *BannerUpdateOne) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := banner.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Banner.state": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *BannerUpdateOne) sqlSave(ctx context.Context) (_node *Banner, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(banner.Table, banner.Columns, sqlgraph.NewFieldSpec(banner.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -468,7 +495,7 @@ func (_u *BannerUpdateOne) sqlSave(ctx context.Context) (_node *Banner, err erro
 		_spec.SetField(banner.FieldLocale, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(banner.FieldState, field.TypeString, value)
+		_spec.SetField(banner.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(banner.FieldURL, field.TypeString, value)

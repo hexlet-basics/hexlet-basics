@@ -7,6 +7,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"strings"
 	"time"
 
@@ -36,7 +37,7 @@ type Review struct {
 	// Locale holds the value of the "locale" field.
 	Locale *string `json:"locale,omitempty"`
 	// State holds the value of the "state" field.
-	State *string `json:"state,omitempty"`
+	State transition.PublicationState `json:"state,omitempty"`
 	// Pinned holds the value of the "pinned" field.
 	Pinned *bool `json:"pinned,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -168,8 +169,7 @@ func (_m *Review) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
-				_m.State = new(string)
-				*_m.State = value.String
+				_m.State = transition.PublicationState(value.String)
 			}
 		case review.FieldPinned:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -256,10 +256,8 @@ func (_m *Review) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.State; v != nil {
-		builder.WriteString("state=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.State))
 	builder.WriteString(", ")
 	if v := _m.Pinned; v != nil {
 		builder.WriteString("pinned=")

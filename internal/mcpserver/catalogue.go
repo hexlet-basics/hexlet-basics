@@ -7,11 +7,11 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/oauthserver"
-	"hexletbasics/internal/store"
 )
 
 // The catalogue tools, named after the operationId they mirror. All of them
@@ -404,9 +404,17 @@ func (s *Server) getBlogPost(ctx context.Context, c call) (result, error) {
 // notFoundOf is the answer for a failed read of one record: a missing one is
 // the tool's own not-found, anything else is the failure itself.
 func notFoundOf(err error, what string) error {
-	if errors.Is(store.ToDomain(err), domain.ErrNotFound) {
+	if isNotFound(err) {
 		return errNotFound(what)
 	}
 
 	return err
+}
+
+// isNotFound reads a missing record in both forms a handler answers with: a
+// module's domain.ErrNotFound and ent's own not-found from a generated helper.
+// The package may not import store (architecture_test.go), so it does not
+// translate the error, it only asks.
+func isNotFound(err error) bool {
+	return errors.Is(err, domain.ErrNotFound) || ent.IsNotFound(err)
 }

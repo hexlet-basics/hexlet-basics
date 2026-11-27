@@ -1045,7 +1045,7 @@ type Banner struct {
 	Body       string           `json:"body"`
 	URL        NilString        `json:"url"`
 	Background BannerBackground `json:"background"`
-	State      BannerState      `json:"state"`
+	State      PublicationState `json:"state"`
 	StartsAt   NilDateTime      `json:"startsAt"`
 	FinishesAt NilDateTime      `json:"finishesAt"`
 	CreatedAt  time.Time        `json:"createdAt"`
@@ -1077,7 +1077,7 @@ func (s *Banner) GetBackground() BannerBackground {
 }
 
 // GetState returns the value of State.
-func (s *Banner) GetState() BannerState {
+func (s *Banner) GetState() PublicationState {
 	return s.State
 }
 
@@ -1122,7 +1122,7 @@ func (s *Banner) SetBackground(val BannerBackground) {
 }
 
 // SetState sets the value of State.
-func (s *Banner) SetState(val BannerState) {
+func (s *Banner) SetState(val PublicationState) {
 	s.State = val
 }
 
@@ -1359,56 +1359,6 @@ func (s *BannerPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
-// Banner publication state.
-// Ref: #/components/schemas/BannerState
-type BannerState string
-
-const (
-	BannerStateDraft     BannerState = "draft"
-	BannerStatePublished BannerState = "published"
-	BannerStateArchived  BannerState = "archived"
-)
-
-// AllValues returns all BannerState values.
-func (BannerState) AllValues() []BannerState {
-	return []BannerState{
-		BannerStateDraft,
-		BannerStatePublished,
-		BannerStateArchived,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s BannerState) MarshalText() ([]byte, error) {
-	switch s {
-	case BannerStateDraft:
-		return []byte(s), nil
-	case BannerStatePublished:
-		return []byte(s), nil
-	case BannerStateArchived:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *BannerState) UnmarshalText(data []byte) error {
-	switch BannerState(data) {
-	case BannerStateDraft:
-		*s = BannerStateDraft
-		return nil
-	case BannerStatePublished:
-		*s = BannerStatePublished
-		return nil
-	case BannerStateArchived:
-		*s = BannerStateArchived
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
 // A blog post (legacy: `BlogPost`).
 // Ref: #/components/schemas/BlogPost
 type BlogPost struct {
@@ -1417,7 +1367,7 @@ type BlogPost struct {
 	Name         NilString        `json:"name"`
 	Slug         NilString        `json:"slug"`
 	Description  NilString        `json:"description"`
-	State        NilBlogPostState `json:"state"`
+	State        PublicationState `json:"state"`
 	Locale       NilString        `json:"locale"`
 	RichBodyHtml string           `json:"richBodyHtml"`
 	ReadingTime  int32            `json:"readingTime"`
@@ -1456,7 +1406,7 @@ func (s *BlogPost) GetDescription() NilString {
 }
 
 // GetState returns the value of State.
-func (s *BlogPost) GetState() NilBlogPostState {
+func (s *BlogPost) GetState() PublicationState {
 	return s.State
 }
 
@@ -1521,7 +1471,7 @@ func (s *BlogPost) SetDescription(val NilString) {
 }
 
 // SetState sets the value of State.
-func (s *BlogPost) SetState(val NilBlogPostState) {
+func (s *BlogPost) SetState(val PublicationState) {
 	s.State = val
 }
 
@@ -1690,56 +1640,6 @@ func (s *BlogPostRelatedCoursesInput) GetCourseIds() []int32 {
 // SetCourseIds sets the value of CourseIds.
 func (s *BlogPostRelatedCoursesInput) SetCourseIds(val []int32) {
 	s.CourseIds = val
-}
-
-// Blog post publication state.
-// Ref: #/components/schemas/BlogPostState
-type BlogPostState string
-
-const (
-	BlogPostStateDraft     BlogPostState = "draft"
-	BlogPostStatePublished BlogPostState = "published"
-	BlogPostStateArchived  BlogPostState = "archived"
-)
-
-// AllValues returns all BlogPostState values.
-func (BlogPostState) AllValues() []BlogPostState {
-	return []BlogPostState{
-		BlogPostStateDraft,
-		BlogPostStatePublished,
-		BlogPostStateArchived,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s BlogPostState) MarshalText() ([]byte, error) {
-	switch s {
-	case BlogPostStateDraft:
-		return []byte(s), nil
-	case BlogPostStatePublished:
-		return []byte(s), nil
-	case BlogPostStateArchived:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *BlogPostState) UnmarshalText(data []byte) error {
-	switch BlogPostState(data) {
-	case BlogPostStateDraft:
-		*s = BlogPostStateDraft
-		return nil
-	case BlogPostStatePublished:
-		*s = BlogPostStatePublished
-		return nil
-	case BlogPostStateArchived:
-		*s = BlogPostStateArchived
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
 }
 
 // A blog post page: the post plus what the page shows under it.
@@ -1916,23 +1816,23 @@ func (s *ConnectedApps) SetItems(val []ConnectedApp) {
 // screens read the full shape.
 // Ref: #/components/schemas/Course
 type Course struct {
-	ID                       int32              `json:"id"`
-	Slug                     string             `json:"slug"`
-	Name                     NilString          `json:"name"`
-	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
-	Readiness                NilCourseReadiness `json:"readiness"`
-	CategoryId               NilInt32           `json:"categoryId"`
-	CurrentVersionId         NilInt32           `json:"currentVersionId"`
-	CurrentVersion           NilCourseVersion   `json:"currentVersion"`
-	CreatedAt                time.Time          `json:"createdAt"`
-	EnrollmentsCount         int32              `json:"enrollmentsCount"`
-	LessonsCount             int32              `json:"lessonsCount"`
-	RatingCount              int32              `json:"ratingCount"`
-	RatingValue              float64            `json:"ratingValue"`
-	RepositoryUrl            NilString          `json:"repositoryUrl"`
-	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
-	CoverListVariant         NilString          `json:"coverListVariant"`
-	CoverThumbVariant        NilString          `json:"coverThumbVariant"`
+	ID                       int32            `json:"id"`
+	Slug                     string           `json:"slug"`
+	Name                     NilString        `json:"name"`
+	LearnAs                  NilCourseLearnAs `json:"learnAs"`
+	Readiness                CourseReadiness  `json:"readiness"`
+	CategoryId               NilInt32         `json:"categoryId"`
+	CurrentVersionId         NilInt32         `json:"currentVersionId"`
+	CurrentVersion           NilCourseVersion `json:"currentVersion"`
+	CreatedAt                time.Time        `json:"createdAt"`
+	EnrollmentsCount         int32            `json:"enrollmentsCount"`
+	LessonsCount             int32            `json:"lessonsCount"`
+	RatingCount              int32            `json:"ratingCount"`
+	RatingValue              float64          `json:"ratingValue"`
+	RepositoryUrl            NilString        `json:"repositoryUrl"`
+	HexletProgramLandingPage NilString        `json:"hexletProgramLandingPage"`
+	CoverListVariant         NilString        `json:"coverListVariant"`
+	CoverThumbVariant        NilString        `json:"coverThumbVariant"`
 }
 
 // GetID returns the value of ID.
@@ -1956,7 +1856,7 @@ func (s *Course) GetLearnAs() NilCourseLearnAs {
 }
 
 // GetReadiness returns the value of Readiness.
-func (s *Course) GetReadiness() NilCourseReadiness {
+func (s *Course) GetReadiness() CourseReadiness {
 	return s.Readiness
 }
 
@@ -2041,7 +1941,7 @@ func (s *Course) SetLearnAs(val NilCourseLearnAs) {
 }
 
 // SetReadiness sets the value of Readiness.
-func (s *Course) SetReadiness(val NilCourseReadiness) {
+func (s *Course) SetReadiness(val CourseReadiness) {
 	s.Readiness = val
 }
 
@@ -2502,15 +2402,15 @@ func (s *CourseInput) SetCoverAttachmentId(val NilInt32) {
 // A marketing landing page for a course (legacy: `LanguageLandingPage`).
 // Ref: #/components/schemas/CourseLandingPage
 type CourseLandingPage struct {
-	ID         int32               `json:"id"`
-	CourseId   int32               `json:"courseId"`
-	CourseSlug string              `json:"courseSlug"`
-	CreatedAt  time.Time           `json:"createdAt"`
-	Slug       string              `json:"slug"`
-	Name       string              `json:"name"`
-	Main       NilBool             `json:"main"`
-	Listed     NilBool             `json:"listed"`
-	State      NilLandingPageState `json:"state"`
+	ID         int32            `json:"id"`
+	CourseId   int32            `json:"courseId"`
+	CourseSlug string           `json:"courseSlug"`
+	CreatedAt  time.Time        `json:"createdAt"`
+	Slug       string           `json:"slug"`
+	Name       string           `json:"name"`
+	Main       NilBool          `json:"main"`
+	Listed     NilBool          `json:"listed"`
+	State      PublicationState `json:"state"`
 	// Free-form ordering key (legacy stores it as a string).
 	Order NilString `json:"order"`
 	// Footer visibility + link caption. Part of the read model so the admin edit form can round-trip the
@@ -2573,7 +2473,7 @@ func (s *CourseLandingPage) GetListed() NilBool {
 }
 
 // GetState returns the value of State.
-func (s *CourseLandingPage) GetState() NilLandingPageState {
+func (s *CourseLandingPage) GetState() PublicationState {
 	return s.State
 }
 
@@ -2693,7 +2593,7 @@ func (s *CourseLandingPage) SetListed(val NilBool) {
 }
 
 // SetState sets the value of State.
-func (s *CourseLandingPage) SetState(val NilLandingPageState) {
+func (s *CourseLandingPage) SetState(val PublicationState) {
 	s.State = val
 }
 
@@ -3836,7 +3736,8 @@ func (s *CourseProgress) SetNextLesson(val NilLessonRef) {
 	s.NextLesson = val
 }
 
-// Publication/readiness state of a course.
+// Course Readiness (GLOSSARY): how finished the Course itself is. Not a Publication State: any change
+// between two distinct values is legal.
 // Ref: #/components/schemas/CourseReadiness
 type CourseReadiness string
 
@@ -4374,56 +4275,6 @@ func (s GetYandexCoursesFeedXmlOK) Read(p []byte) (n int, err error) {
 		return 0, io.EOF
 	}
 	return s.Data.Read(p)
-}
-
-// Publication state shared by landing pages.
-// Ref: #/components/schemas/LandingPageState
-type LandingPageState string
-
-const (
-	LandingPageStateDraft     LandingPageState = "draft"
-	LandingPageStateArchived  LandingPageState = "archived"
-	LandingPageStatePublished LandingPageState = "published"
-)
-
-// AllValues returns all LandingPageState values.
-func (LandingPageState) AllValues() []LandingPageState {
-	return []LandingPageState{
-		LandingPageStateDraft,
-		LandingPageStateArchived,
-		LandingPageStatePublished,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s LandingPageState) MarshalText() ([]byte, error) {
-	switch s {
-	case LandingPageStateDraft:
-		return []byte(s), nil
-	case LandingPageStateArchived:
-		return []byte(s), nil
-	case LandingPageStatePublished:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *LandingPageState) UnmarshalText(data []byte) error {
-	switch LandingPageState(data) {
-	case LandingPageStateDraft:
-		*s = LandingPageStateDraft
-		return nil
-	case LandingPageStateArchived:
-		*s = LandingPageStateArchived
-		return nil
-	case LandingPageStatePublished:
-		*s = LandingPageStatePublished
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
 }
 
 // A sales lead (legacy: `Lead`).
@@ -5490,51 +5341,6 @@ func (o NilBanner) Or(d Banner) Banner {
 	return d
 }
 
-// NewNilBlogPostState returns new NilBlogPostState with value set to v.
-func NewNilBlogPostState(v BlogPostState) NilBlogPostState {
-	return NilBlogPostState{
-		Value: v,
-	}
-}
-
-// NilBlogPostState is nullable BlogPostState.
-type NilBlogPostState struct {
-	Value BlogPostState
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilBlogPostState) SetTo(v BlogPostState) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilBlogPostState) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilBlogPostState) SetToNull() {
-	o.Null = true
-	var v BlogPostState
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilBlogPostState) Get() (v BlogPostState, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilBlogPostState) Or(d BlogPostState) BlogPostState {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewNilBool returns new NilBool with value set to v.
 func NewNilBool(v bool) NilBool {
 	return NilBool{
@@ -5709,51 +5515,6 @@ func (o NilCourseProgress) Get() (v CourseProgress, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilCourseProgress) Or(d CourseProgress) CourseProgress {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewNilCourseReadiness returns new NilCourseReadiness with value set to v.
-func NewNilCourseReadiness(v CourseReadiness) NilCourseReadiness {
-	return NilCourseReadiness{
-		Value: v,
-	}
-}
-
-// NilCourseReadiness is nullable CourseReadiness.
-type NilCourseReadiness struct {
-	Value CourseReadiness
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilCourseReadiness) SetTo(v CourseReadiness) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilCourseReadiness) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilCourseReadiness) SetToNull() {
-	o.Null = true
-	var v CourseReadiness
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilCourseReadiness) Get() (v CourseReadiness, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilCourseReadiness) Or(d CourseReadiness) CourseReadiness {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -6030,51 +5791,6 @@ func (o NilInt64) Or(d int64) int64 {
 	return d
 }
 
-// NewNilLandingPageState returns new NilLandingPageState with value set to v.
-func NewNilLandingPageState(v LandingPageState) NilLandingPageState {
-	return NilLandingPageState{
-		Value: v,
-	}
-}
-
-// NilLandingPageState is nullable LandingPageState.
-type NilLandingPageState struct {
-	Value LandingPageState
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilLandingPageState) SetTo(v LandingPageState) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilLandingPageState) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilLandingPageState) SetToNull() {
-	o.Null = true
-	var v LandingPageState
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilLandingPageState) Get() (v LandingPageState, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewNilLessonRef returns new NilLessonRef with value set to v.
 func NewNilLessonRef(v LessonRef) NilLessonRef {
 	return NilLessonRef{
@@ -6204,51 +5920,6 @@ func (o NilReviewLocale) Get() (v ReviewLocale, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilReviewLocale) Or(d ReviewLocale) ReviewLocale {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewNilReviewState returns new NilReviewState with value set to v.
-func NewNilReviewState(v ReviewState) NilReviewState {
-	return NilReviewState{
-		Value: v,
-	}
-}
-
-// NilReviewState is nullable ReviewState.
-type NilReviewState struct {
-	Value ReviewState
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilReviewState) SetTo(v ReviewState) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilReviewState) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilReviewState) SetToNull() {
-	o.Null = true
-	var v ReviewState
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilReviewState) Get() (v ReviewState, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilReviewState) Or(d ReviewState) ReviewState {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7110,6 +6781,58 @@ func (s *PublicUser) SetName(val NilString) {
 	s.Name = val
 }
 
+// Publication State (GLOSSARY): where a piece of content stands in its life. One vocabulary for every
+// resource that has one: banners, blog posts, reviews and course landing pages. It changes only
+// through the publish, unpublish and archive operations, never through an update.
+// Ref: #/components/schemas/PublicationState
+type PublicationState string
+
+const (
+	PublicationStateDraft     PublicationState = "draft"
+	PublicationStatePublished PublicationState = "published"
+	PublicationStateArchived  PublicationState = "archived"
+)
+
+// AllValues returns all PublicationState values.
+func (PublicationState) AllValues() []PublicationState {
+	return []PublicationState{
+		PublicationStateDraft,
+		PublicationStatePublished,
+		PublicationStateArchived,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s PublicationState) MarshalText() ([]byte, error) {
+	switch s {
+	case PublicationStateDraft:
+		return []byte(s), nil
+	case PublicationStatePublished:
+		return []byte(s), nil
+	case PublicationStateArchived:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *PublicationState) UnmarshalText(data []byte) error {
+	switch PublicationState(data) {
+	case PublicationStateDraft:
+		*s = PublicationStateDraft
+		return nil
+	case PublicationStatePublished:
+		*s = PublicationStatePublished
+		return nil
+	case PublicationStateArchived:
+		*s = PublicationStateArchived
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // A Q&A entry attached to a category or landing page (legacy QnA item).
 // Ref: #/components/schemas/QnaItem
 type QnaItem struct {
@@ -7193,17 +6916,17 @@ func (s *ResetPasswordInput) SetPassword(val string) {
 // A student review/testimonial (legacy: `Review`).
 // Ref: #/components/schemas/Review
 type Review struct {
-	ID        int32           `json:"id"`
-	User      PublicUser      `json:"user"`
-	Course    Course          `json:"course"`
-	UserId    int32           `json:"userId"`
-	CourseId  int32           `json:"courseId"`
-	Body      NilString       `json:"body"`
-	FirstName NilString       `json:"firstName"`
-	LastName  NilString       `json:"lastName"`
-	FullName  NilString       `json:"fullName"`
-	State     NilReviewState  `json:"state"`
-	Locale    NilReviewLocale `json:"locale"`
+	ID        int32            `json:"id"`
+	User      PublicUser       `json:"user"`
+	Course    Course           `json:"course"`
+	UserId    int32            `json:"userId"`
+	CourseId  int32            `json:"courseId"`
+	Body      NilString        `json:"body"`
+	FirstName NilString        `json:"firstName"`
+	LastName  NilString        `json:"lastName"`
+	FullName  NilString        `json:"fullName"`
+	State     PublicationState `json:"state"`
+	Locale    NilReviewLocale  `json:"locale"`
 	// Stored for the admin edit form to round-trip; it does not affect the public list, which legacy
 	// ordered newest first only.
 	Pinned    NilBool   `json:"pinned"`
@@ -7256,7 +6979,7 @@ func (s *Review) GetFullName() NilString {
 }
 
 // GetState returns the value of State.
-func (s *Review) GetState() NilReviewState {
+func (s *Review) GetState() PublicationState {
 	return s.State
 }
 
@@ -7321,7 +7044,7 @@ func (s *Review) SetFullName(val NilString) {
 }
 
 // SetState sets the value of State.
-func (s *Review) SetState(val NilReviewState) {
+func (s *Review) SetState(val PublicationState) {
 	s.State = val
 }
 
@@ -7505,56 +7228,6 @@ func (s *ReviewPage) SetPage(val int32) {
 // SetPerPage sets the value of PerPage.
 func (s *ReviewPage) SetPerPage(val int32) {
 	s.PerPage = val
-}
-
-// Review publication state.
-// Ref: #/components/schemas/ReviewState
-type ReviewState string
-
-const (
-	ReviewStateDraft     ReviewState = "draft"
-	ReviewStatePublished ReviewState = "published"
-	ReviewStateArchived  ReviewState = "archived"
-)
-
-// AllValues returns all ReviewState values.
-func (ReviewState) AllValues() []ReviewState {
-	return []ReviewState{
-		ReviewStateDraft,
-		ReviewStatePublished,
-		ReviewStateArchived,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s ReviewState) MarshalText() ([]byte, error) {
-	switch s {
-	case ReviewStateDraft:
-		return []byte(s), nil
-	case ReviewStatePublished:
-		return []byte(s), nil
-	case ReviewStateArchived:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ReviewState) UnmarshalText(data []byte) error {
-	switch ReviewState(data) {
-	case ReviewStateDraft:
-		*s = ReviewStateDraft
-		return nil
-	case ReviewStatePublished:
-		*s = ReviewStatePublished
-		return nil
-	case ReviewStateArchived:
-		*s = ReviewStateArchived
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
 }
 
 // RevokeConnectedAppNoContent is response for RevokeConnectedApp operation.

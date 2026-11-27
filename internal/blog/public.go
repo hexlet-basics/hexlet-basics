@@ -8,12 +8,8 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/transition"
 )
-
-// StatePublished is the `state` of a post open to readers. The ent field is a
-// plain string, so the value queries compare against is named here, apart from
-// the contract's enum.
-const StatePublished = "published"
 
 // RecommendedLimit is how many other posts the post page offers (legacy
 // `.limit(2)`).
@@ -23,7 +19,7 @@ const RecommendedLimit = 2
 // see in locale. A draft, an archived post or a post in another language is
 // simply not found.
 func Published(locale string) predicate.BlogPost {
-	return blogpost.And(blogpost.StateEQ(StatePublished), blogpost.LocaleEQ(locale))
+	return blogpost.And(blogpost.StateEQ(transition.Published), blogpost.LocaleEQ(locale))
 }
 
 // Public reads the posts a visitor may open, newest (highest id) first.

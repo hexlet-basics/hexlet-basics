@@ -10,6 +10,7 @@ import (
 	"hexletbasics/internal/blog"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/inputconv"
+	"hexletbasics/internal/transition"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
@@ -86,17 +87,17 @@ func postFieldsOf(in *api.BlogPostInput) blog.PostFields {
 // are the editor's: an illegal one, repeating the current state included, is a
 // 409 with a localized detail (moveState).
 func (s *Server) AdminPublishBlogPost(ctx context.Context, params api.AdminPublishBlogPostParams) (*api.BlogPost, error) {
-	return moveState(ctx, int(params.ID), s.postEditor.Publish, s.getAdminBlogPost)
+	return moveState(ctx, int(params.ID), s.db.BlogPost.MoveState, transition.Publish(), s.getAdminBlogPost)
 }
 
 // AdminUnpublishBlogPost takes a published post back to draft.
 func (s *Server) AdminUnpublishBlogPost(ctx context.Context, params api.AdminUnpublishBlogPostParams) (*api.BlogPost, error) {
-	return moveState(ctx, int(params.ID), s.postEditor.Unpublish, s.getAdminBlogPost)
+	return moveState(ctx, int(params.ID), s.db.BlogPost.MoveState, transition.Unpublish(), s.getAdminBlogPost)
 }
 
 // AdminArchiveBlogPost archives a draft or published post.
 func (s *Server) AdminArchiveBlogPost(ctx context.Context, params api.AdminArchiveBlogPostParams) (*api.BlogPost, error) {
-	return moveState(ctx, int(params.ID), s.postEditor.Archive, s.getAdminBlogPost)
+	return moveState(ctx, int(params.ID), s.db.BlogPost.MoveState, transition.Archive(), s.getAdminBlogPost)
 }
 
 // AdminDeleteBlogPost removes a post with its dependents (the likes and related

@@ -7,6 +7,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/transition"
 )
 
 // Admin course endpoints. The API embeds the current version, so the generated
@@ -79,17 +80,17 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 
 // AdminMarkCourseDraft takes a course back to a draft.
 func (s *Server) AdminMarkCourseDraft(ctx context.Context, params api.AdminMarkCourseDraftParams) (*api.Course, error) {
-	return moveState(ctx, int(params.ID), s.courseReadiness.MarkDraft, s.getAdminCourse)
+	return moveState(ctx, int(params.ID), s.db.Course.MoveReadiness, transition.MarkDraft(), s.getAdminCourse)
 }
 
 // AdminMarkCourseInDevelopment marks a course as being developed.
 func (s *Server) AdminMarkCourseInDevelopment(ctx context.Context, params api.AdminMarkCourseInDevelopmentParams) (*api.Course, error) {
-	return moveState(ctx, int(params.ID), s.courseReadiness.MarkInDevelopment, s.getAdminCourse)
+	return moveState(ctx, int(params.ID), s.db.Course.MoveReadiness, transition.MarkInDevelopment(), s.getAdminCourse)
 }
 
 // AdminMarkCourseCompleted marks a course as finished, which lists it publicly.
 func (s *Server) AdminMarkCourseCompleted(ctx context.Context, params api.AdminMarkCourseCompletedParams) (*api.Course, error) {
-	return moveState(ctx, int(params.ID), s.courseReadiness.MarkCompleted, s.getAdminCourse)
+	return moveState(ctx, int(params.ID), s.db.Course.MoveReadiness, transition.MarkCompleted(), s.getAdminCourse)
 }
 
 // getAdminCourse is the admin course view a readiness move echoes back, the one

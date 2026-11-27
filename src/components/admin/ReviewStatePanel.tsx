@@ -24,7 +24,7 @@ export function ReviewStatePanel({ review }: { review: Review }): ReactElement {
   const publish = useResourceMutation({ mutation: adminPublishReviewMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishReviewMutation(), ...options });
   const archive = useResourceMutation({ mutation: adminArchiveReviewMutation(), ...options });
-  const state = review.state ?? "draft";
+  const { state } = review;
 
   return (
     <PublicationStatePanel

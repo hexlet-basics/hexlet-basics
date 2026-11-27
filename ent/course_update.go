@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -97,22 +98,16 @@ func (_u *CourseUpdate) ClearLearnAs() *CourseUpdate {
 }
 
 // SetReadiness sets the "readiness" field.
-func (_u *CourseUpdate) SetReadiness(v string) *CourseUpdate {
+func (_u *CourseUpdate) SetReadiness(v transition.Readiness) *CourseUpdate {
 	_u.mutation.SetReadiness(v)
 	return _u
 }
 
 // SetNillableReadiness sets the "readiness" field if the given value is not nil.
-func (_u *CourseUpdate) SetNillableReadiness(v *string) *CourseUpdate {
+func (_u *CourseUpdate) SetNillableReadiness(v *transition.Readiness) *CourseUpdate {
 	if v != nil {
 		_u.SetReadiness(*v)
 	}
-	return _u
-}
-
-// ClearReadiness clears the value of the "readiness" field.
-func (_u *CourseUpdate) ClearReadiness() *CourseUpdate {
-	_u.mutation.ClearReadiness()
 	return _u
 }
 
@@ -340,7 +335,20 @@ func (_u *CourseUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *CourseUpdate) check() error {
+	if v, ok := _u.mutation.Readiness(); ok {
+		if err := course.ReadinessValidator(v); err != nil {
+			return &ValidationError{Name: "readiness", err: fmt.Errorf(`ent: validator failed for field "Course.readiness": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(course.Table, course.Columns, sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -371,10 +379,7 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(course.FieldLearnAs, field.TypeString)
 	}
 	if value, ok := _u.mutation.Readiness(); ok {
-		_spec.SetField(course.FieldReadiness, field.TypeString, value)
-	}
-	if _u.mutation.ReadinessCleared() {
-		_spec.ClearField(course.FieldReadiness, field.TypeString)
+		_spec.SetField(course.FieldReadiness, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
@@ -573,22 +578,16 @@ func (_u *CourseUpdateOne) ClearLearnAs() *CourseUpdateOne {
 }
 
 // SetReadiness sets the "readiness" field.
-func (_u *CourseUpdateOne) SetReadiness(v string) *CourseUpdateOne {
+func (_u *CourseUpdateOne) SetReadiness(v transition.Readiness) *CourseUpdateOne {
 	_u.mutation.SetReadiness(v)
 	return _u
 }
 
 // SetNillableReadiness sets the "readiness" field if the given value is not nil.
-func (_u *CourseUpdateOne) SetNillableReadiness(v *string) *CourseUpdateOne {
+func (_u *CourseUpdateOne) SetNillableReadiness(v *transition.Readiness) *CourseUpdateOne {
 	if v != nil {
 		_u.SetReadiness(*v)
 	}
-	return _u
-}
-
-// ClearReadiness clears the value of the "readiness" field.
-func (_u *CourseUpdateOne) ClearReadiness() *CourseUpdateOne {
-	_u.mutation.ClearReadiness()
 	return _u
 }
 
@@ -829,7 +828,20 @@ func (_u *CourseUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *CourseUpdateOne) check() error {
+	if v, ok := _u.mutation.Readiness(); ok {
+		if err := course.ReadinessValidator(v); err != nil {
+			return &ValidationError{Name: "readiness", err: fmt.Errorf(`ent: validator failed for field "Course.readiness": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(course.Table, course.Columns, sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -877,10 +889,7 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 		_spec.ClearField(course.FieldLearnAs, field.TypeString)
 	}
 	if value, ok := _u.mutation.Readiness(); ok {
-		_spec.SetField(course.FieldReadiness, field.TypeString, value)
-	}
-	if _u.mutation.ReadinessCleared() {
-		_spec.ClearField(course.FieldReadiness, field.TypeString)
+		_spec.SetField(course.FieldReadiness, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)

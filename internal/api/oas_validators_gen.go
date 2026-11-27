@@ -469,19 +469,6 @@ func (s *BannerPage) Validate() error {
 	return nil
 }
 
-func (s BannerState) Validate() error {
-	switch s {
-	case "draft":
-		return nil
-	case "published":
-		return nil
-	case "archived":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
-}
-
 func (s *BlogPost) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -489,15 +476,8 @@ func (s *BlogPost) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if value, ok := s.State.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.State.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -584,19 +564,6 @@ func (s *BlogPostRelatedCoursesInput) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s BlogPostState) Validate() error {
-	switch s {
-	case "draft":
-		return nil
-	case "published":
-		return nil
-	case "archived":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
 }
 
 func (s *BlogPostView) Validate() error {
@@ -801,15 +768,8 @@ func (s *Course) Validate() error {
 		})
 	}
 	if err := func() error {
-		if value, ok := s.Readiness.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.Readiness.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -1050,15 +1010,8 @@ func (s *CourseLandingPage) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if value, ok := s.State.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.State.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -1669,19 +1622,6 @@ func (s EnrollmentState) Validate() error {
 	}
 }
 
-func (s LandingPageState) Validate() error {
-	switch s {
-	case "draft":
-		return nil
-	case "archived":
-		return nil
-	case "published":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
-}
-
 func (s *LeadInput) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -2276,6 +2216,19 @@ func (s ProfileName) Validate() error {
 	return nil
 }
 
+func (s PublicationState) Validate() error {
+	switch s {
+	case "draft":
+		return nil
+	case "published":
+		return nil
+	case "archived":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
 func (s *QnaItemInput) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -2387,15 +2340,8 @@ func (s *Review) Validate() error {
 		})
 	}
 	if err := func() error {
-		if value, ok := s.State.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.State.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -2477,19 +2423,6 @@ func (s *ReviewPage) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s ReviewState) Validate() error {
-	switch s {
-	case "draft":
-		return nil
-	case "published":
-		return nil
-	case "archived":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
 }
 
 func (s *RoleInput) Validate() error {

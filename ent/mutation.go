@@ -49,6 +49,7 @@ import (
 	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
+	"hexletbasics/internal/transition"
 	"sync"
 	"time"
 
@@ -4677,7 +4678,7 @@ type BannerMutation struct {
 	background    *string
 	body          *string
 	locale        *string
-	state         *string
+	state         *transition.PublicationState
 	url           *string
 	starts_at     *time.Time
 	finishes_at   *time.Time
@@ -4966,12 +4967,12 @@ func (m *BannerMutation) ResetLocale() {
 }
 
 // SetState sets the "state" field.
-func (m *BannerMutation) SetState(s string) {
-	m.state = &s
+func (m *BannerMutation) SetState(ts transition.PublicationState) {
+	m.state = &ts
 }
 
 // State returns the value of the "state" field in the mutation.
-func (m *BannerMutation) State() (r string, exists bool) {
+func (m *BannerMutation) State() (r transition.PublicationState, exists bool) {
 	v := m.state
 	if v == nil {
 		return
@@ -4982,7 +4983,7 @@ func (m *BannerMutation) State() (r string, exists bool) {
 // OldState returns the old "state" field's value of the Banner entity.
 // If the Banner object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BannerMutation) OldState(ctx context.Context) (v string, err error) {
+func (m *BannerMutation) OldState(ctx context.Context) (v transition.PublicationState, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
@@ -5308,7 +5309,7 @@ func (m *BannerMutation) SetField(name string, value ent.Value) error {
 		m.SetLocale(v)
 		return nil
 	case banner.FieldState:
-		v, ok := value.(string)
+		v, ok := value.(transition.PublicationState)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -5496,7 +5497,7 @@ type BlogPostMutation struct {
 	slug                          *string
 	description                   *string
 	locale                        *string
-	state                         *string
+	state                         *transition.PublicationState
 	rich_body                     *string
 	course_id                     *int
 	addcourse_id                  *int
@@ -5877,12 +5878,12 @@ func (m *BlogPostMutation) ResetLocale() {
 }
 
 // SetState sets the "state" field.
-func (m *BlogPostMutation) SetState(s string) {
-	m.state = &s
+func (m *BlogPostMutation) SetState(ts transition.PublicationState) {
+	m.state = &ts
 }
 
 // State returns the value of the "state" field in the mutation.
-func (m *BlogPostMutation) State() (r string, exists bool) {
+func (m *BlogPostMutation) State() (r transition.PublicationState, exists bool) {
 	v := m.state
 	if v == nil {
 		return
@@ -5893,7 +5894,7 @@ func (m *BlogPostMutation) State() (r string, exists bool) {
 // OldState returns the old "state" field's value of the BlogPost entity.
 // If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlogPostMutation) OldState(ctx context.Context) (v *string, err error) {
+func (m *BlogPostMutation) OldState(ctx context.Context) (v transition.PublicationState, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
@@ -5907,22 +5908,9 @@ func (m *BlogPostMutation) OldState(ctx context.Context) (v *string, err error) 
 	return oldValue.State, nil
 }
 
-// ClearState clears the value of the "state" field.
-func (m *BlogPostMutation) ClearState() {
-	m.state = nil
-	m.clearedFields[blogpost.FieldState] = struct{}{}
-}
-
-// StateCleared returns if the "state" field was cleared in this mutation.
-func (m *BlogPostMutation) StateCleared() bool {
-	_, ok := m.clearedFields[blogpost.FieldState]
-	return ok
-}
-
 // ResetState resets all changes to the "state" field.
 func (m *BlogPostMutation) ResetState() {
 	m.state = nil
-	delete(m.clearedFields, blogpost.FieldState)
 }
 
 // SetRichBody sets the "rich_body" field.
@@ -6331,7 +6319,7 @@ func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 		m.SetLocale(v)
 		return nil
 	case blogpost.FieldState:
-		v, ok := value.(string)
+		v, ok := value.(transition.PublicationState)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -6434,9 +6422,6 @@ func (m *BlogPostMutation) ClearedFields() []string {
 	if m.FieldCleared(blogpost.FieldLocale) {
 		fields = append(fields, blogpost.FieldLocale)
 	}
-	if m.FieldCleared(blogpost.FieldState) {
-		fields = append(fields, blogpost.FieldState)
-	}
 	if m.FieldCleared(blogpost.FieldCourseID) {
 		fields = append(fields, blogpost.FieldCourseID)
 	}
@@ -6465,9 +6450,6 @@ func (m *BlogPostMutation) ClearField(name string) error {
 		return nil
 	case blogpost.FieldLocale:
 		m.ClearLocale()
-		return nil
-	case blogpost.FieldState:
-		m.ClearState()
 		return nil
 	case blogpost.FieldCourseID:
 		m.ClearCourseID()
@@ -9061,7 +9043,7 @@ type CourseMutation struct {
 	slug                        *string
 	name                        *string
 	learn_as                    *string
-	readiness                   *string
+	readiness                   *transition.Readiness
 	hexlet_program_landing_page *string
 	enrollments_count           *int
 	addenrollments_count        *int
@@ -9400,12 +9382,12 @@ func (m *CourseMutation) ResetLearnAs() {
 }
 
 // SetReadiness sets the "readiness" field.
-func (m *CourseMutation) SetReadiness(s string) {
-	m.readiness = &s
+func (m *CourseMutation) SetReadiness(t transition.Readiness) {
+	m.readiness = &t
 }
 
 // Readiness returns the value of the "readiness" field in the mutation.
-func (m *CourseMutation) Readiness() (r string, exists bool) {
+func (m *CourseMutation) Readiness() (r transition.Readiness, exists bool) {
 	v := m.readiness
 	if v == nil {
 		return
@@ -9416,7 +9398,7 @@ func (m *CourseMutation) Readiness() (r string, exists bool) {
 // OldReadiness returns the old "readiness" field's value of the Course entity.
 // If the Course object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseMutation) OldReadiness(ctx context.Context) (v *string, err error) {
+func (m *CourseMutation) OldReadiness(ctx context.Context) (v transition.Readiness, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReadiness is only allowed on UpdateOne operations")
 	}
@@ -9430,22 +9412,9 @@ func (m *CourseMutation) OldReadiness(ctx context.Context) (v *string, err error
 	return oldValue.Readiness, nil
 }
 
-// ClearReadiness clears the value of the "readiness" field.
-func (m *CourseMutation) ClearReadiness() {
-	m.readiness = nil
-	m.clearedFields[course.FieldReadiness] = struct{}{}
-}
-
-// ReadinessCleared returns if the "readiness" field was cleared in this mutation.
-func (m *CourseMutation) ReadinessCleared() bool {
-	_, ok := m.clearedFields[course.FieldReadiness]
-	return ok
-}
-
 // ResetReadiness resets all changes to the "readiness" field.
 func (m *CourseMutation) ResetReadiness() {
 	m.readiness = nil
-	delete(m.clearedFields, course.FieldReadiness)
 }
 
 // SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
@@ -10060,7 +10029,7 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 		m.SetLearnAs(v)
 		return nil
 	case course.FieldReadiness:
-		v, ok := value.(string)
+		v, ok := value.(transition.Readiness)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -10198,9 +10167,6 @@ func (m *CourseMutation) ClearedFields() []string {
 	if m.FieldCleared(course.FieldLearnAs) {
 		fields = append(fields, course.FieldLearnAs)
 	}
-	if m.FieldCleared(course.FieldReadiness) {
-		fields = append(fields, course.FieldReadiness)
-	}
 	if m.FieldCleared(course.FieldHexletProgramLandingPage) {
 		fields = append(fields, course.FieldHexletProgramLandingPage)
 	}
@@ -10235,9 +10201,6 @@ func (m *CourseMutation) ClearField(name string) error {
 		return nil
 	case course.FieldLearnAs:
 		m.ClearLearnAs()
-		return nil
-	case course.FieldReadiness:
-		m.ClearReadiness()
 		return nil
 	case course.FieldHexletProgramLandingPage:
 		m.ClearHexletProgramLandingPage()
@@ -11767,7 +11730,7 @@ type CourseLandingPageMutation struct {
 	locale                         *string
 	listed                         *bool
 	main                           *bool
-	state                          *string
+	state                          *transition.PublicationState
 	_order                         *string
 	meta_title                     *string
 	meta_description               *string
@@ -12294,12 +12257,12 @@ func (m *CourseLandingPageMutation) ResetMain() {
 }
 
 // SetState sets the "state" field.
-func (m *CourseLandingPageMutation) SetState(s string) {
-	m.state = &s
+func (m *CourseLandingPageMutation) SetState(ts transition.PublicationState) {
+	m.state = &ts
 }
 
 // State returns the value of the "state" field in the mutation.
-func (m *CourseLandingPageMutation) State() (r string, exists bool) {
+func (m *CourseLandingPageMutation) State() (r transition.PublicationState, exists bool) {
 	v := m.state
 	if v == nil {
 		return
@@ -12310,7 +12273,7 @@ func (m *CourseLandingPageMutation) State() (r string, exists bool) {
 // OldState returns the old "state" field's value of the CourseLandingPage entity.
 // If the CourseLandingPage object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLandingPageMutation) OldState(ctx context.Context) (v *string, err error) {
+func (m *CourseLandingPageMutation) OldState(ctx context.Context) (v transition.PublicationState, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
@@ -12324,22 +12287,9 @@ func (m *CourseLandingPageMutation) OldState(ctx context.Context) (v *string, er
 	return oldValue.State, nil
 }
 
-// ClearState clears the value of the "state" field.
-func (m *CourseLandingPageMutation) ClearState() {
-	m.state = nil
-	m.clearedFields[courselandingpage.FieldState] = struct{}{}
-}
-
-// StateCleared returns if the "state" field was cleared in this mutation.
-func (m *CourseLandingPageMutation) StateCleared() bool {
-	_, ok := m.clearedFields[courselandingpage.FieldState]
-	return ok
-}
-
 // ResetState resets all changes to the "state" field.
 func (m *CourseLandingPageMutation) ResetState() {
 	m.state = nil
-	delete(m.clearedFields, courselandingpage.FieldState)
 }
 
 // SetOrder sets the "order" field.
@@ -13332,7 +13282,7 @@ func (m *CourseLandingPageMutation) SetField(name string, value ent.Value) error
 		m.SetMain(v)
 		return nil
 	case courselandingpage.FieldState:
-		v, ok := value.(string)
+		v, ok := value.(transition.PublicationState)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -13497,9 +13447,6 @@ func (m *CourseLandingPageMutation) ClearedFields() []string {
 	if m.FieldCleared(courselandingpage.FieldMain) {
 		fields = append(fields, courselandingpage.FieldMain)
 	}
-	if m.FieldCleared(courselandingpage.FieldState) {
-		fields = append(fields, courselandingpage.FieldState)
-	}
 	if m.FieldCleared(courselandingpage.FieldOrder) {
 		fields = append(fields, courselandingpage.FieldOrder)
 	}
@@ -13567,9 +13514,6 @@ func (m *CourseLandingPageMutation) ClearField(name string) error {
 		return nil
 	case courselandingpage.FieldMain:
 		m.ClearMain()
-		return nil
-	case courselandingpage.FieldState:
-		m.ClearState()
 		return nil
 	case courselandingpage.FieldOrder:
 		m.ClearOrder()
@@ -29060,7 +29004,7 @@ type ReviewMutation struct {
 	first_name    *string
 	last_name     *string
 	locale        *string
-	state         *string
+	state         *transition.PublicationState
 	pinned        *bool
 	clearedFields map[string]struct{}
 	course        *int
@@ -29511,12 +29455,12 @@ func (m *ReviewMutation) ResetLocale() {
 }
 
 // SetState sets the "state" field.
-func (m *ReviewMutation) SetState(s string) {
-	m.state = &s
+func (m *ReviewMutation) SetState(ts transition.PublicationState) {
+	m.state = &ts
 }
 
 // State returns the value of the "state" field in the mutation.
-func (m *ReviewMutation) State() (r string, exists bool) {
+func (m *ReviewMutation) State() (r transition.PublicationState, exists bool) {
 	v := m.state
 	if v == nil {
 		return
@@ -29527,7 +29471,7 @@ func (m *ReviewMutation) State() (r string, exists bool) {
 // OldState returns the old "state" field's value of the Review entity.
 // If the Review object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReviewMutation) OldState(ctx context.Context) (v *string, err error) {
+func (m *ReviewMutation) OldState(ctx context.Context) (v transition.PublicationState, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
@@ -29541,22 +29485,9 @@ func (m *ReviewMutation) OldState(ctx context.Context) (v *string, err error) {
 	return oldValue.State, nil
 }
 
-// ClearState clears the value of the "state" field.
-func (m *ReviewMutation) ClearState() {
-	m.state = nil
-	m.clearedFields[review.FieldState] = struct{}{}
-}
-
-// StateCleared returns if the "state" field was cleared in this mutation.
-func (m *ReviewMutation) StateCleared() bool {
-	_, ok := m.clearedFields[review.FieldState]
-	return ok
-}
-
 // ResetState resets all changes to the "state" field.
 func (m *ReviewMutation) ResetState() {
 	m.state = nil
-	delete(m.clearedFields, review.FieldState)
 }
 
 // SetPinned sets the "pinned" field.
@@ -29850,7 +29781,7 @@ func (m *ReviewMutation) SetField(name string, value ent.Value) error {
 		m.SetLocale(v)
 		return nil
 	case review.FieldState:
-		v, ok := value.(string)
+		v, ok := value.(transition.PublicationState)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -29908,9 +29839,6 @@ func (m *ReviewMutation) ClearedFields() []string {
 	if m.FieldCleared(review.FieldLocale) {
 		fields = append(fields, review.FieldLocale)
 	}
-	if m.FieldCleared(review.FieldState) {
-		fields = append(fields, review.FieldState)
-	}
 	if m.FieldCleared(review.FieldPinned) {
 		fields = append(fields, review.FieldPinned)
 	}
@@ -29939,9 +29867,6 @@ func (m *ReviewMutation) ClearField(name string) error {
 		return nil
 	case review.FieldLocale:
 		m.ClearLocale()
-		return nil
-	case review.FieldState:
-		m.ClearState()
 		return nil
 	case review.FieldPinned:
 		m.ClearPinned()

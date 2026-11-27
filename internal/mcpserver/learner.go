@@ -8,7 +8,6 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/progress"
 )
@@ -216,7 +215,7 @@ func (s *Server) learnerCourse(ctx context.Context, userID int, slug string) (*p
 	}
 
 	course, err := s.deps.MyCourseProgress(ctx, userID, slug)
-	if ent.IsNotFound(err) {
+	if isNotFound(err) {
 		return nil, errNotFound("course " + strconv.Quote(slug))
 	}
 

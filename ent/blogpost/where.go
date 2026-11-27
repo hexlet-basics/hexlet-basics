@@ -4,6 +4,7 @@ package blogpost
 
 import (
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -83,11 +84,6 @@ func Description(v string) predicate.BlogPost {
 // Locale applies equality check predicate on the "locale" field. It's identical to LocaleEQ.
 func Locale(v string) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldEQ(FieldLocale, v))
-}
-
-// State applies equality check predicate on the "state" field. It's identical to StateEQ.
-func State(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldState, v))
 }
 
 // RichBody applies equality check predicate on the "rich_body" field. It's identical to RichBodyEQ.
@@ -491,78 +487,33 @@ func LocaleContainsFold(v string) predicate.BlogPost {
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
-func StateEQ(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldState, v))
+func StateEQ(v transition.PublicationState) predicate.BlogPost {
+	vc := v
+	return predicate.BlogPost(sql.FieldEQ(FieldState, vc))
 }
 
 // StateNEQ applies the NEQ predicate on the "state" field.
-func StateNEQ(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNEQ(FieldState, v))
+func StateNEQ(v transition.PublicationState) predicate.BlogPost {
+	vc := v
+	return predicate.BlogPost(sql.FieldNEQ(FieldState, vc))
 }
 
 // StateIn applies the In predicate on the "state" field.
-func StateIn(vs ...string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldIn(FieldState, vs...))
+func StateIn(vs ...transition.PublicationState) predicate.BlogPost {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.BlogPost(sql.FieldIn(FieldState, v...))
 }
 
 // StateNotIn applies the NotIn predicate on the "state" field.
-func StateNotIn(vs ...string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNotIn(FieldState, vs...))
-}
-
-// StateGT applies the GT predicate on the "state" field.
-func StateGT(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGT(FieldState, v))
-}
-
-// StateGTE applies the GTE predicate on the "state" field.
-func StateGTE(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGTE(FieldState, v))
-}
-
-// StateLT applies the LT predicate on the "state" field.
-func StateLT(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLT(FieldState, v))
-}
-
-// StateLTE applies the LTE predicate on the "state" field.
-func StateLTE(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLTE(FieldState, v))
-}
-
-// StateContains applies the Contains predicate on the "state" field.
-func StateContains(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldContains(FieldState, v))
-}
-
-// StateHasPrefix applies the HasPrefix predicate on the "state" field.
-func StateHasPrefix(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldHasPrefix(FieldState, v))
-}
-
-// StateHasSuffix applies the HasSuffix predicate on the "state" field.
-func StateHasSuffix(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldHasSuffix(FieldState, v))
-}
-
-// StateIsNil applies the IsNil predicate on the "state" field.
-func StateIsNil() predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldIsNull(FieldState))
-}
-
-// StateNotNil applies the NotNil predicate on the "state" field.
-func StateNotNil() predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNotNull(FieldState))
-}
-
-// StateEqualFold applies the EqualFold predicate on the "state" field.
-func StateEqualFold(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEqualFold(FieldState, v))
-}
-
-// StateContainsFold applies the ContainsFold predicate on the "state" field.
-func StateContainsFold(v string) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldContainsFold(FieldState, v))
+func StateNotIn(vs ...transition.PublicationState) predicate.BlogPost {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.BlogPost(sql.FieldNotIn(FieldState, v...))
 }
 
 // RichBodyEQ applies the EQ predicate on the "rich_body" field.

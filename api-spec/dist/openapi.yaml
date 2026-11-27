@@ -5040,7 +5040,7 @@ components:
         background:
           $ref: '#/components/schemas/BannerBackground'
         state:
-          $ref: '#/components/schemas/BannerState'
+          $ref: '#/components/schemas/PublicationState'
         startsAt:
           type: string
           format: date-time
@@ -5124,13 +5124,6 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    BannerState:
-      type: string
-      enum:
-        - draft
-        - published
-        - archived
-      description: Banner publication state.
     BlogPost:
       type: object
       required:
@@ -5163,9 +5156,7 @@ components:
           type: string
           nullable: true
         state:
-          allOf:
-            - $ref: '#/components/schemas/BlogPostState'
-          nullable: true
+          $ref: '#/components/schemas/PublicationState'
         locale:
           type: string
           nullable: true
@@ -5260,13 +5251,6 @@ components:
             type: integer
             format: int32
       description: The set of courses promoted on a blog post.
-    BlogPostState:
-      type: string
-      enum:
-        - draft
-        - published
-        - archived
-      description: Blog post publication state.
     BlogPostView:
       type: object
       required:
@@ -5384,9 +5368,7 @@ components:
             - $ref: '#/components/schemas/CourseLearnAs'
           nullable: true
         readiness:
-          allOf:
-            - $ref: '#/components/schemas/CourseReadiness'
-          nullable: true
+          $ref: '#/components/schemas/CourseReadiness'
         categoryId:
           type: integer
           format: int32
@@ -5656,9 +5638,7 @@ components:
           type: boolean
           nullable: true
         state:
-          allOf:
-            - $ref: '#/components/schemas/LandingPageState'
-          nullable: true
+          $ref: '#/components/schemas/PublicationState'
         order:
           type: string
           nullable: true
@@ -6184,7 +6164,9 @@ components:
         - completed
         - in_development
         - draft
-      description: Publication/readiness state of a course.
+      description: |-
+        Course Readiness (GLOSSARY): how finished the Course itself is. Not a Publication
+            State: any change between two distinct values is legal.
     CourseVersion:
       type: object
       required:
@@ -6380,13 +6362,6 @@ components:
           type: string
           nullable: true
       description: The first visit's traffic source, as recorded by the browser.
-    LandingPageState:
-      type: string
-      enum:
-        - draft
-        - archived
-        - published
-      description: Publication state shared by landing pages.
     Lead:
       type: object
       required:
@@ -6910,6 +6885,17 @@ components:
         The part of a user that is safe to show anonymous visitors: the display
             name only, never the email or the admin flag. Embedded in public review and
             blog responses in place of `User`.
+    PublicationState:
+      type: string
+      enum:
+        - draft
+        - published
+        - archived
+      description: |-
+        Publication State (GLOSSARY): where a piece of content stands in its life. One
+            vocabulary for every resource that has one: banners, blog posts, reviews and
+            course landing pages. It changes only through the publish, unpublish and archive
+            operations, never through an update.
     QnaItem:
       type: object
       required:
@@ -6989,9 +6975,7 @@ components:
           type: string
           nullable: true
         state:
-          allOf:
-            - $ref: '#/components/schemas/ReviewState'
-          nullable: true
+          $ref: '#/components/schemas/PublicationState'
         locale:
           allOf:
             - $ref: '#/components/schemas/ReviewLocale'
@@ -7070,13 +7054,6 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    ReviewState:
-      type: string
-      enum:
-        - draft
-        - published
-        - archived
-      description: Review publication state.
     RoleInput:
       type: object
       required:

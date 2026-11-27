@@ -13,6 +13,7 @@ import (
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
+	"hexletbasics/internal/transition"
 )
 
 // A state is not an update (ADR-0020, state transitions addendum), for a
@@ -52,17 +53,17 @@ func markCourse(h *testsupport.Harness, to string) (string, error) {
 		return "", err
 	}
 
-	return string(course.Readiness.Value), nil
+	return string(course.Readiness), nil
 }
 
 func setReadiness(h *testsupport.Harness, readiness string) {
-	h.DB.Course.UpdateOneID(readinessCourseID()).SetReadiness(readiness).ExecX(context.Background())
+	h.DB.Course.UpdateOneID(readinessCourseID()).SetReadiness(transition.Readiness(readiness)).ExecX(context.Background())
 }
 
-func readinessOf(t *testing.T, h *testsupport.Harness) *string {
+func readinessOf(t *testing.T, h *testsupport.Harness) string {
 	t.Helper()
 
-	return h.DB.Course.GetX(t.Context(), readinessCourseID()).Readiness
+	return string(h.DB.Course.GetX(t.Context(), readinessCourseID()).Readiness)
 }
 
 func TestEveryChangeOfReadinessBetweenDistinctValuesWorksAndRepeatingIs409(t *testing.T) {
@@ -79,14 +80,14 @@ func TestEveryChangeOfReadinessBetweenDistinctValuesWorksAndRepeatingIs409(t *te
 				if from != to {
 					require.NoError(t, err)
 					assert.Equal(t, to, shown, "the answer shows the new readiness")
-					assert.Equal(t, to, *readinessOf(t, h))
+					assert.Equal(t, to, readinessOf(t, h))
 
 					return
 				}
 
 				require.Error(t, err)
 				assert.Equal(t, http.StatusConflict, h.LastStatus())
-				assert.Equal(t, from, *readinessOf(t, h), "a refused move changes nothing")
+				assert.Equal(t, from, readinessOf(t, h), "a refused move changes nothing")
 				assert.NotEmpty(t, problemOf(t, err).Detail.Value, "the refusal explains itself")
 			})
 		}
@@ -112,20 +113,6 @@ func TestARefusedReadinessChangeExplainsItselfInTheCallersLanguage(t *testing.T)
 			assert.Contains(t, problemOf(t, err).Detail.Value, want)
 		})
 	}
-}
-
-func TestACourseWithoutReadinessCountsAsADraft(t *testing.T) {
-	t.Parallel()
-	h := testsupport.NewHarness(t)
-	h.DB.Course.UpdateOneID(readinessCourseID()).ClearReadiness().ExecX(t.Context())
-
-	_, err := markCourse(h, "draft")
-	require.Error(t, err, "it already is a draft")
-	assert.Equal(t, http.StatusConflict, h.LastStatus())
-
-	shown, err := markCourse(h, "completed")
-	require.NoError(t, err)
-	assert.Equal(t, "completed", shown)
 }
 
 func TestEachReadinessChangeDeclaresItsOwnWritePermission(t *testing.T) {
@@ -193,7 +180,7 @@ func TestCreateMakesADraftAndUpdateKeepsTheReadiness(t *testing.T) {
 		CoverAttachmentId:        api.NilInt32{Null: true},
 	}, api.AdminUpdateCourseParams{ID: int32(readinessCourseID())})
 	require.NoError(t, err)
-	assert.Equal(t, "in_development", *readinessOf(t, h))
+	assert.Equal(t, "in_development", readinessOf(t, h))
 
 	created, err := h.Client.AdminCreateCourse(t.Context(), &api.CourseInput{
 		Slug:                     api.NewNilString("haskell"),
@@ -203,7 +190,7 @@ func TestCreateMakesADraftAndUpdateKeepsTheReadiness(t *testing.T) {
 		CoverAttachmentId:        api.NilInt32{Null: true},
 	})
 	require.NoError(t, err)
-	assert.Equal(t, "draft", *h.DB.Course.GetX(t.Context(), int(created.ID)).Readiness)
+	assert.Equal(t, transition.ReadinessDraft, h.DB.Course.GetX(t.Context(), int(created.ID)).Readiness)
 }
 
 // A role that may edit a course may not change its readiness, and the reverse:
@@ -236,7 +223,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 			assert.Equal(t, http.StatusForbidden, h.LastStatus(), to)
 		}
 
-		assert.Equal(t, "completed", *readinessOf(t, h))
+		assert.Equal(t, "completed", readinessOf(t, h))
 	})
 
 	t.Run("readiness only", func(t *testing.T) {
@@ -253,7 +240,7 @@ func TestUpdateAndTheReadinessChangesArePermissionsOfTheirOwn(t *testing.T) {
 		_, err = markCourse(h, "in_development")
 		require.Error(t, err, "the role holds mark_draft and mark_completed, not mark_in_development")
 		assert.Equal(t, http.StatusForbidden, h.LastStatus())
-		assert.Equal(t, "draft", *readinessOf(t, h))
+		assert.Equal(t, "draft", readinessOf(t, h))
 	})
 }
 

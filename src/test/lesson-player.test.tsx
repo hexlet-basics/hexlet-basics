@@ -59,7 +59,7 @@ const course: Course = {
   name: "javascript",
   ratingCount: 0,
   ratingValue: 0,
-  readiness: null,
+  readiness: "completed",
   repositoryUrl: null,
   slug: "javascript",
 };

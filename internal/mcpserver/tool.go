@@ -8,9 +8,6 @@ import (
 	"fmt"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-
-	"hexletbasics/internal/domain"
-	"hexletbasics/internal/store"
 )
 
 // toolSpec is what a tool declares; the rest of a call (scope, rate limit,
@@ -118,7 +115,7 @@ func (s *Server) addTool(server *mcp.Server, spec toolSpec, run func(ctx context
 		switch {
 		case errors.As(err, &user):
 			return toolError(user.Error()), nil
-		case errors.Is(store.ToDomain(err), domain.ErrNotFound):
+		case isNotFound(err):
 			return toolError("not found"), nil
 		case err != nil:
 			return nil, errs.With("tool", spec.name).Wrapf(err, "run tool")

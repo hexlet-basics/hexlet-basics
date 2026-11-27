@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -171,22 +172,16 @@ func (_u *CourseLandingPageUpdate) ClearMain() *CourseLandingPageUpdate {
 }
 
 // SetState sets the "state" field.
-func (_u *CourseLandingPageUpdate) SetState(v string) *CourseLandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetState(v transition.PublicationState) *CourseLandingPageUpdate {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *CourseLandingPageUpdate) SetNillableState(v *string) *CourseLandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableState(v *transition.PublicationState) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *CourseLandingPageUpdate) ClearState() *CourseLandingPageUpdate {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -534,6 +529,11 @@ func (_u *CourseLandingPageUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *CourseLandingPageUpdate) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := courselandingpage.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "CourseLandingPage.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "CourseLandingPage.course"`)
 	}
@@ -592,10 +592,7 @@ func (_u *CourseLandingPageUpdate) sqlSave(ctx context.Context) (_node int, err 
 		_spec.ClearField(courselandingpage.FieldMain, field.TypeBool)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(courselandingpage.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(courselandingpage.FieldState, field.TypeString)
+		_spec.SetField(courselandingpage.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.Order(); ok {
 		_spec.SetField(courselandingpage.FieldOrder, field.TypeString, value)
@@ -910,22 +907,16 @@ func (_u *CourseLandingPageUpdateOne) ClearMain() *CourseLandingPageUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (_u *CourseLandingPageUpdateOne) SetState(v string) *CourseLandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetState(v transition.PublicationState) *CourseLandingPageUpdateOne {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *CourseLandingPageUpdateOne) SetNillableState(v *string) *CourseLandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableState(v *transition.PublicationState) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *CourseLandingPageUpdateOne) ClearState() *CourseLandingPageUpdateOne {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -1286,6 +1277,11 @@ func (_u *CourseLandingPageUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *CourseLandingPageUpdateOne) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := courselandingpage.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "CourseLandingPage.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "CourseLandingPage.course"`)
 	}
@@ -1361,10 +1357,7 @@ func (_u *CourseLandingPageUpdateOne) sqlSave(ctx context.Context) (_node *Cours
 		_spec.ClearField(courselandingpage.FieldMain, field.TypeBool)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(courselandingpage.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(courselandingpage.FieldState, field.TypeString)
+		_spec.SetField(courselandingpage.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.Order(); ok {
 		_spec.SetField(courselandingpage.FieldOrder, field.TypeString, value)

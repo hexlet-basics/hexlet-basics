@@ -9,6 +9,9 @@ type Readiness string
 // Vocabulary names this set of states for an adapter that words a refused move.
 func (Readiness) Vocabulary() Vocabulary { return CourseReadiness }
 
+// Values lists the readiness values, for ent's enum validation of the column.
+func (Readiness) Values() []string { return values(CourseReadiness) }
+
 const (
 	// ReadinessDraft is a Course whose content is not started or not usable.
 	ReadinessDraft Readiness = "draft"
@@ -24,17 +27,6 @@ const (
 // development, a draft may be declared completed). Each names the two values it
 // may start from; repeating the current one is not among them, so it is refused
 // like any illegal move.
-
-// ReadinessOf reads the readiness column of a Course. A Course with none (the
-// column is nullable in the legacy schema) counts as a draft, which is how the
-// public queries treat it: not completed, so off the public lists.
-func ReadinessOf(column *string) Readiness {
-	if column == nil {
-		return ReadinessDraft
-	}
-
-	return Readiness(*column)
-}
 
 // MarkDraft sends a Course back to draft from any other readiness.
 func MarkDraft() Transition[Readiness] {

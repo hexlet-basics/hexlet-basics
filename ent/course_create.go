@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -95,13 +96,13 @@ func (_c *CourseCreate) SetNillableLearnAs(v *string) *CourseCreate {
 }
 
 // SetReadiness sets the "readiness" field.
-func (_c *CourseCreate) SetReadiness(v string) *CourseCreate {
+func (_c *CourseCreate) SetReadiness(v transition.Readiness) *CourseCreate {
 	_c.mutation.SetReadiness(v)
 	return _c
 }
 
 // SetNillableReadiness sets the "readiness" field if the given value is not nil.
-func (_c *CourseCreate) SetNillableReadiness(v *string) *CourseCreate {
+func (_c *CourseCreate) SetNillableReadiness(v *transition.Readiness) *CourseCreate {
 	if v != nil {
 		_c.SetReadiness(*v)
 	}
@@ -277,6 +278,14 @@ func (_c *CourseCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Course.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Readiness(); !ok {
+		return &ValidationError{Name: "readiness", err: errors.New(`ent: missing required field "Course.readiness"`)}
+	}
+	if v, ok := _c.mutation.Readiness(); ok {
+		if err := course.ReadinessValidator(v); err != nil {
+			return &ValidationError{Name: "readiness", err: fmt.Errorf(`ent: validator failed for field "Course.readiness": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.EnrollmentsCount(); !ok {
 		return &ValidationError{Name: "enrollments_count", err: errors.New(`ent: missing required field "Course.enrollments_count"`)}
 	}
@@ -331,8 +340,8 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_node.LearnAs = &value
 	}
 	if value, ok := _c.mutation.Readiness(); ok {
-		_spec.SetField(course.FieldReadiness, field.TypeString, value)
-		_node.Readiness = &value
+		_spec.SetField(course.FieldReadiness, field.TypeEnum, value)
+		_node.Readiness = value
 	}
 	if value, ok := _c.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
@@ -506,7 +515,7 @@ func (u *CourseUpsert) ClearLearnAs() *CourseUpsert {
 }
 
 // SetReadiness sets the "readiness" field.
-func (u *CourseUpsert) SetReadiness(v string) *CourseUpsert {
+func (u *CourseUpsert) SetReadiness(v transition.Readiness) *CourseUpsert {
 	u.Set(course.FieldReadiness, v)
 	return u
 }
@@ -514,12 +523,6 @@ func (u *CourseUpsert) SetReadiness(v string) *CourseUpsert {
 // UpdateReadiness sets the "readiness" field to the value that was provided on create.
 func (u *CourseUpsert) UpdateReadiness() *CourseUpsert {
 	u.SetExcluded(course.FieldReadiness)
-	return u
-}
-
-// ClearReadiness clears the value of the "readiness" field.
-func (u *CourseUpsert) ClearReadiness() *CourseUpsert {
-	u.SetNull(course.FieldReadiness)
 	return u
 }
 
@@ -766,7 +769,7 @@ func (u *CourseUpsertOne) ClearLearnAs() *CourseUpsertOne {
 }
 
 // SetReadiness sets the "readiness" field.
-func (u *CourseUpsertOne) SetReadiness(v string) *CourseUpsertOne {
+func (u *CourseUpsertOne) SetReadiness(v transition.Readiness) *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
 		s.SetReadiness(v)
 	})
@@ -776,13 +779,6 @@ func (u *CourseUpsertOne) SetReadiness(v string) *CourseUpsertOne {
 func (u *CourseUpsertOne) UpdateReadiness() *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
 		s.UpdateReadiness()
-	})
-}
-
-// ClearReadiness clears the value of the "readiness" field.
-func (u *CourseUpsertOne) ClearReadiness() *CourseUpsertOne {
-	return u.Update(func(s *CourseUpsert) {
-		s.ClearReadiness()
 	})
 }
 
@@ -1215,7 +1211,7 @@ func (u *CourseUpsertBulk) ClearLearnAs() *CourseUpsertBulk {
 }
 
 // SetReadiness sets the "readiness" field.
-func (u *CourseUpsertBulk) SetReadiness(v string) *CourseUpsertBulk {
+func (u *CourseUpsertBulk) SetReadiness(v transition.Readiness) *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
 		s.SetReadiness(v)
 	})
@@ -1225,13 +1221,6 @@ func (u *CourseUpsertBulk) SetReadiness(v string) *CourseUpsertBulk {
 func (u *CourseUpsertBulk) UpdateReadiness() *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
 		s.UpdateReadiness()
-	})
-}
-
-// ClearReadiness clears the value of the "readiness" field.
-func (u *CourseUpsertBulk) ClearReadiness() *CourseUpsertBulk {
-	return u.Update(func(s *CourseUpsert) {
-		s.ClearReadiness()
 	})
 }
 

@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
+	"hexletbasics/internal/transition"
 )
 
 // A state is not an update (ADR-0020, state transitions addendum), for banners,
@@ -31,12 +32,9 @@ type stateSubject struct {
 	id int
 	// updaterRole may update the resource and not publish it; publisherRole the reverse.
 	updaterRole, publisherRole fixture.Label
-	// nullable says the legacy column may hold no state (counts as a draft).
-	nullable bool
 
-	setState   func(h *testsupport.Harness, state string)
-	clearState func(h *testsupport.Harness)
-	stateOf    func(t *testing.T, h *testsupport.Harness) *string
+	setState func(h *testsupport.Harness, state string)
+	stateOf  func(t *testing.T, h *testsupport.Harness) string
 	// move calls publish, unpublish or archive on the row and returns the state the answer shows.
 	move func(h *testsupport.Harness, verb string, id int) (string, error)
 	// update calls the resource's update operation with an input that changes nothing that matters.
@@ -78,14 +76,14 @@ func TestEveryLegalMoveOfBannersReviewsAndLandingPagesWorksAndEveryOtherIs409(t 
 					if slices.Contains(legal, from) {
 						require.NoError(t, err)
 						assert.Equal(t, movesTo()[verb], shown, "the answer shows the new state")
-						assert.Equal(t, movesTo()[verb], *subject.stateOf(t, h))
+						assert.Equal(t, movesTo()[verb], subject.stateOf(t, h))
 
 						return
 					}
 
 					require.Error(t, err)
 					assert.Equal(t, http.StatusConflict, h.LastStatus())
-					assert.Equal(t, from, *subject.stateOf(t, h), "a refused move changes nothing")
+					assert.Equal(t, from, subject.stateOf(t, h), "a refused move changes nothing")
 					assert.NotEmpty(t, problemOf(t, err).Detail.Value, "the refusal explains itself")
 				})
 			}
@@ -113,26 +111,6 @@ func TestARefusedMoveExplainsItselfInTheCallersLanguage(t *testing.T) {
 				assert.Contains(t, problemOf(t, err).Detail.Value, want)
 			})
 		}
-	}
-}
-
-func TestARowWithoutAStateCountsAsADraft(t *testing.T) {
-	t.Parallel()
-
-	for _, subject := range stateSubjects() {
-		if !subject.nullable {
-			continue
-		}
-
-		t.Run(subject.name, func(t *testing.T) {
-			h := testsupport.NewHarness(t)
-			subject.clearState(h)
-
-			shown, err := subject.move(h, "publish", subject.id)
-
-			require.NoError(t, err)
-			assert.Equal(t, "published", shown)
-		})
 	}
 }
 
@@ -207,7 +185,7 @@ func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 			_, err := subject.move(h, "publish", subject.id)
 			require.Error(t, err)
 			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-			assert.Equal(t, "draft", *subject.stateOf(t, h))
+			assert.Equal(t, "draft", subject.stateOf(t, h))
 		})
 		t.Run(subject.name+" publish only", func(t *testing.T) {
 			h := testsupport.NewHarnessAs(t, editorLabel())
@@ -226,7 +204,7 @@ func TestUpdatePublishAndTheOtherMovesArePermissionsOfTheirOwn(t *testing.T) {
 			_, err = subject.move(h, "archive", subject.id)
 			require.Error(t, err, "publishing does not include archiving")
 			assert.Equal(t, http.StatusForbidden, h.LastStatus())
-			assert.Equal(t, "published", *subject.stateOf(t, h))
+			assert.Equal(t, "published", subject.stateOf(t, h))
 		})
 	}
 }
@@ -262,13 +240,12 @@ func bannerSubject() stateSubject {
 		name: "banner", operation: "Banner", id: fixture.ID(fixture.BannerEnPublished),
 		updaterRole: fixture.StaffRoleBannerUpdater, publisherRole: fixture.StaffRoleBannerPublisher,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Banner.UpdateOneID(fixture.ID(fixture.BannerEnPublished)).SetState(state).ExecX(context.Background())
+			h.DB.Banner.UpdateOneID(fixture.ID(fixture.BannerEnPublished)).SetState(transition.PublicationState(state)).ExecX(context.Background())
 		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+		stateOf: func(t *testing.T, h *testsupport.Harness) string {
 			t.Helper()
-			state := h.DB.Banner.GetX(t.Context(), fixture.ID(fixture.BannerEnPublished)).State
 
-			return &state
+			return string(h.DB.Banner.GetX(t.Context(), fixture.ID(fixture.BannerEnPublished)).State)
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
 			var (
@@ -314,8 +291,6 @@ func bannerSubject() stateSubject {
 
 			return ok && banner.Body == "Free programming courses — start learning today"
 		},
-		nullable:   false,
-		clearState: nil,
 	}
 }
 
@@ -323,17 +298,13 @@ func reviewSubject() stateSubject {
 	return stateSubject{
 		name: "review", operation: "Review", id: fixture.ID(fixture.ReviewAdminLearnerRubyPublished),
 		updaterRole: fixture.StaffRoleReviewUpdater, publisherRole: fixture.StaffRoleReviewPublisher,
-		nullable: true,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).SetState(state).ExecX(context.Background())
+			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).SetState(transition.PublicationState(state)).ExecX(context.Background())
 		},
-		clearState: func(h *testsupport.Harness) {
-			h.DB.Review.UpdateOneID(fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).ClearState().ExecX(context.Background())
-		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+		stateOf: func(t *testing.T, h *testsupport.Harness) string {
 			t.Helper()
 
-			return h.DB.Review.GetX(t.Context(), fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).State
+			return string(h.DB.Review.GetX(t.Context(), fixture.ID(fixture.ReviewAdminLearnerRubyPublished)).State)
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
 			var (
@@ -354,7 +325,7 @@ func reviewSubject() stateSubject {
 				return "", err
 			}
 
-			return string(review.State.Value), nil
+			return string(review.State), nil
 		},
 		update: func(h *testsupport.Harness) error {
 			_, err := h.Client.AdminUpdateReview(context.Background(), &api.ReviewInput{
@@ -384,17 +355,13 @@ func landingSubject() stateSubject {
 	return stateSubject{
 		name: "landing page", operation: "CourseLandingPage", id: fixture.ID(fixture.LandingPageGoRu),
 		updaterRole: fixture.StaffRoleLandingPageUpdater, publisherRole: fixture.StaffRoleLandingPagePublisher,
-		nullable: true,
 		setState: func(h *testsupport.Harness, state string) {
-			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).SetState(state).ExecX(context.Background())
+			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).SetState(transition.PublicationState(state)).ExecX(context.Background())
 		},
-		clearState: func(h *testsupport.Harness) {
-			h.DB.CourseLandingPage.UpdateOneID(fixture.ID(fixture.LandingPageGoRu)).ClearState().ExecX(context.Background())
-		},
-		stateOf: func(t *testing.T, h *testsupport.Harness) *string {
+		stateOf: func(t *testing.T, h *testsupport.Harness) string {
 			t.Helper()
 
-			return h.DB.CourseLandingPage.GetX(t.Context(), fixture.ID(fixture.LandingPageGoRu)).State
+			return string(h.DB.CourseLandingPage.GetX(t.Context(), fixture.ID(fixture.LandingPageGoRu)).State)
 		},
 		move: func(h *testsupport.Harness, verb string, id int) (string, error) {
 			var (
@@ -415,7 +382,7 @@ func landingSubject() stateSubject {
 				return "", err
 			}
 
-			return string(page.State.Value), nil
+			return string(page.State), nil
 		},
 		update: func(h *testsupport.Harness) error {
 			in := fullLandingInput(int32(courseGoID()))

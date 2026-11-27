@@ -249,6 +249,13 @@ linters:
         # errors.Is(err, domain.ErrNotFound) and the like, never ent.Is*.
         - pattern: '^ent\.Is\w+$'
           msg: a handler does not read ent errors; the module returns domain errors (store.ToDomain) and the handler checks them with errors.Is
+        # ADR-0029: a state column (schema.StateMove) has one writer, the generated
+        # Move<Field>, which checks the transition table and writes conditionally.
+        # A direct setter would skip both. Tests arrange a state through it (below).
+        - pattern: '^ent\.(Banner|BlogPost|Review|CourseLandingPage)(Create|Update|UpdateOne|Mutation)\.(SetState|SetNillableState)$'
+          msg: a state moves only through the generated MoveState with a transition (ADR-0029)
+        - pattern: '^ent\.Course(Create|Update|UpdateOne|Mutation)\.(SetReadiness|SetNillableReadiness)$'
+          msg: a state moves only through the generated MoveReadiness with a transition (ADR-0029)
         # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
         # may use it (see the exclusion below); production code may not.
         - pattern: '^fmt\.Errorf$'
@@ -317,6 +324,10 @@ linters:
       - path: _test\.go
         linters: [forbidigo]
         text: a handler does not read ent errors
+      # A test arranges the state it starts from by writing it directly.
+      - path: _test\.go
+        linters: [forbidigo]
+        text: a state moves only through
       # fmt.Errorf is allowed in tests.
       - path: _test\.go
         linters: [forbidigo]

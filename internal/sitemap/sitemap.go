@@ -11,8 +11,8 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/internal/blog"
 	"hexletbasics/internal/landingpage"
+	"hexletbasics/internal/transition"
 )
 
 // Locales are the locales the sitemap lists, in page order (legacy
@@ -78,7 +78,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 	// Legacy `BlogPost.published_state.order(id: :desc)`, every locale; the page
 	// renders only the sitemap locales' groups.
 	posts, err := s.db.BlogPost.Query().
-		Where(blogpost.StateEQ(blog.StatePublished)).
+		Where(blogpost.StateEQ(transition.Published)).
 		Order(ent.Desc(blogpost.FieldID)).
 		// Skip the post bodies; the page shows only titles.
 		Select(blogpost.FieldID, blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldLocale).

@@ -238,7 +238,7 @@ export type Banner = {
   body: string;
   url: string | null;
   background: BannerBackground;
-  state: BannerState;
+  state: PublicationState;
   startsAt: string | null;
   finishesAt: string | null;
   createdAt: string;
@@ -288,11 +288,6 @@ export type BannerPage = {
 };
 
 /**
- * Banner publication state.
- */
-export type BannerState = 'draft' | 'published' | 'archived';
-
-/**
  * A blog post (legacy: `BlogPost`).
  */
 export type BlogPost = {
@@ -301,7 +296,7 @@ export type BlogPost = {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
+  state: PublicationState;
   locale: string | null;
   richBodyHtml: string;
   readingTime: number;
@@ -362,11 +357,6 @@ export type BlogPostPage = {
 export type BlogPostRelatedCoursesInput = {
   courseIds: Array<number>;
 };
-
-/**
- * Blog post publication state.
- */
-export type BlogPostState = 'draft' | 'published' | 'archived';
 
 /**
  * A blog post page: the post plus what the page shows under it.
@@ -447,7 +437,7 @@ export type Course = {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
+  readiness: CourseReadiness;
   categoryId: number | null;
   currentVersionId: number | null;
   currentVersion: CourseVersion | null;
@@ -570,7 +560,7 @@ export type CourseLandingPage = {
   name: string;
   main: boolean | null;
   listed: boolean | null;
-  state: LandingPageState | null;
+  state: PublicationState;
   /**
    * Free-form ordering key (legacy stores it as a string).
    */
@@ -859,7 +849,8 @@ export type CourseProgress = {
 };
 
 /**
- * Publication/readiness state of a course.
+ * Course Readiness (GLOSSARY): how finished the Course itself is. Not a Publication
+ *     State: any change between two distinct values is legal.
  */
 export type CourseReadiness = 'completed' | 'in_development' | 'draft';
 
@@ -975,11 +966,6 @@ export type FirstVisit = {
   landingPage: string | null;
   referrer: string | null;
 };
-
-/**
- * Publication state shared by landing pages.
- */
-export type LandingPageState = 'draft' | 'archived' | 'published';
 
 /**
  * A sales lead (legacy: `Lead`).
@@ -1319,6 +1305,14 @@ export type PublicUser = {
 };
 
 /**
+ * Publication State (GLOSSARY): where a piece of content stands in its life. One
+ *     vocabulary for every resource that has one: banners, blog posts, reviews and
+ *     course landing pages. It changes only through the publish, unpublish and archive
+ *     operations, never through an update.
+ */
+export type PublicationState = 'draft' | 'published' | 'archived';
+
+/**
  * A Q&A entry attached to a category or landing page (legacy QnA item).
  */
 export type QnaItem = {
@@ -1352,7 +1346,7 @@ export type Review = {
   firstName: string | null;
   lastName: string | null;
   fullName: string | null;
-  state: ReviewState | null;
+  state: PublicationState;
   locale: ReviewLocale | null;
   /**
    * Stored for the admin edit form to round-trip; it does not affect the
@@ -1398,11 +1392,6 @@ export type ReviewPage = {
    */
   perPage: number;
 };
-
-/**
- * Review publication state.
- */
-export type ReviewState = 'draft' | 'published' | 'archived';
 
 export type RoleInput = {
   name: string;

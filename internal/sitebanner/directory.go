@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/transition"
 )
 
 // Directory is the public read side of the banners.
@@ -32,7 +33,7 @@ func NewDirectory(db *ent.Client) *Directory {
 func (d *Directory) Active(ctx context.Context, locale string, now time.Time) (*ent.Banner, error) {
 	row, err := d.db.Banner.Query().
 		Where(
-			banner.StateEQ("published"),
+			banner.StateEQ(transition.Published),
 			banner.LocaleEQ(locale),
 			banner.Or(banner.StartsAtIsNil(), banner.StartsAtLTE(now)),
 			banner.Or(banner.FinishesAtIsNil(), banner.FinishesAtGTE(now)),

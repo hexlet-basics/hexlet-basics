@@ -74,7 +74,7 @@ func TestAdminCreateCourse(t *testing.T) {
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "haskell", created.Slug)
 	assert.Equal(t, api.CourseLearnAsSecondLanguage, created.LearnAs.Value)
-	assert.Equal(t, api.CourseReadinessDraft, created.Readiness.Value, "a new course is a draft")
+	assert.Equal(t, api.CourseReadinessDraft, created.Readiness, "a new course is a draft")
 	// repositoryUrl derives from the new slug.
 	assert.Equal(t, "https://github.com/hexlet-basics/exercises-haskell", created.RepositoryUrl.Value)
 
@@ -115,7 +115,7 @@ func TestAdminUpdateCourse(t *testing.T) {
 	}, api.AdminUpdateCourseParams{ID: int32(courseRubyIDA())})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
-	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness.Value, "update never changes the readiness")
+	assert.Equal(t, api.CourseReadinessCompleted, updated.Readiness, "update never changes the readiness")
 	assert.Equal(t, api.CourseLearnAsFirstLanguage, updated.LearnAs.Value)
 
 	row, err := h.DB.Course.Get(ctx, courseRubyIDA())

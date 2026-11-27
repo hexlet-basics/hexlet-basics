@@ -1,7 +1,7 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
-import type { BlogPost, BlogPostState } from "@/client/types.gen";
+import type { BlogPost, PublicationState } from "@/client/types.gen";
 import { Route as listRoute } from "@/routes/{-$locale}/admin/blog_posts/index";
 import { Route as editRoute } from "@/routes/{-$locale}/admin/blog_posts/$id";
 import { admin } from "@/test/fixtures";
@@ -14,7 +14,7 @@ import type { RenderedRoute } from "@/test/renderRoute";
 // guard: the buttons offered follow the current state, a click calls that
 // operation and the post shown is the one it answered with.
 
-function post(state: BlogPostState): BlogPost {
+function post(state: PublicationState): BlogPost {
   return {
     coverUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
@@ -45,7 +45,7 @@ const noCourses = http.get("*/admin/courses", () =>
 );
 
 describe("admin blog post state", () => {
-  it.each<[BlogPostState, string[], string[]]>([
+  it.each<[PublicationState, string[], string[]]>([
     ["draft", ["Publish", "Archive"], ["Unpublish"]],
     ["published", ["Unpublish", "Archive"], ["Publish"]],
     ["archived", ["Publish"], ["Unpublish", "Archive"]],
@@ -89,7 +89,7 @@ describe("admin blog post state", () => {
 
   it("publishing calls the publish operation and shows the new state", async () => {
     expect.hasAssertions();
-    let state: BlogPostState = "draft";
+    let state: PublicationState = "draft";
     let published = false;
     worker.use(
       noCourses,
@@ -117,7 +117,7 @@ describe("admin blog post state", () => {
   it("archiving and unpublishing call their own operations", async () => {
     expect.hasAssertions();
     const called: string[] = [];
-    let state: BlogPostState = "published";
+    let state: PublicationState = "published";
     worker.use(
       noCourses,
       http.get("*/admin/blog_posts/7", () => HttpResponse.json(post(state))),

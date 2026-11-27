@@ -64,10 +64,8 @@ func TestThePublicationStatesHaveOneTableForEveryResource(t *testing.T) {
 	}
 }
 
-func TestARowWithoutAStateIsADraft(t *testing.T) {
+func TestTheColumnValuesAreTheVocabulary(t *testing.T) {
 	t.Parallel()
-	assert.Equal(t, transition.Draft, transition.CurrentOf(nil))
-
-	published := "published"
-	assert.Equal(t, transition.Published, transition.CurrentOf(&published))
+	assert.Equal(t, []string{"draft", "published", "archived"}, transition.PublicationState("").Values())
+	assert.Equal(t, []string{"draft", "in_development", "completed"}, transition.Readiness("").Values())
 }

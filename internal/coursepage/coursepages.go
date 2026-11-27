@@ -29,9 +29,8 @@ import (
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/transition"
 )
-
-const stateArchived = "archived"
 
 // progressReader is what the pages need from the progress module: where a
 // learner stands in a course, in the order the course gives its lessons.
@@ -250,7 +249,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 // that is not archived (moved is false). An archived page with neither has
 // nowhere to go.
 func (p *Pages) archivedTarget(ctx context.Context, page *ent.CourseLandingPage, locale string) (string, bool, error) {
-	if page.State == nil || *page.State != stateArchived {
+	if page.State != transition.Archived {
 		return "", false, nil
 	}
 

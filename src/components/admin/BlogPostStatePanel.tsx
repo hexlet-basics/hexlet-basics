@@ -23,7 +23,7 @@ export function BlogPostStatePanel({ post }: { post: BlogPost }): ReactElement {
   const publish = useResourceMutation({ mutation: adminPublishBlogPostMutation(), ...options });
   const unpublish = useResourceMutation({ mutation: adminUnpublishBlogPostMutation(), ...options });
   const archive = useResourceMutation({ mutation: adminArchiveBlogPostMutation(), ...options });
-  const state = post.state ?? "draft";
+  const { state } = post;
 
   return (
     <PublicationStatePanel

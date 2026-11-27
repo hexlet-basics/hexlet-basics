@@ -4,6 +4,7 @@ package course
 
 import (
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -78,11 +79,6 @@ func Name(v string) predicate.Course {
 // LearnAs applies equality check predicate on the "learn_as" field. It's identical to LearnAsEQ.
 func LearnAs(v string) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldLearnAs, v))
-}
-
-// Readiness applies equality check predicate on the "readiness" field. It's identical to ReadinessEQ.
-func Readiness(v string) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldReadiness, v))
 }
 
 // HexletProgramLandingPage applies equality check predicate on the "hexlet_program_landing_page" field. It's identical to HexletProgramLandingPageEQ.
@@ -421,78 +417,33 @@ func LearnAsContainsFold(v string) predicate.Course {
 }
 
 // ReadinessEQ applies the EQ predicate on the "readiness" field.
-func ReadinessEQ(v string) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldReadiness, v))
+func ReadinessEQ(v transition.Readiness) predicate.Course {
+	vc := v
+	return predicate.Course(sql.FieldEQ(FieldReadiness, vc))
 }
 
 // ReadinessNEQ applies the NEQ predicate on the "readiness" field.
-func ReadinessNEQ(v string) predicate.Course {
-	return predicate.Course(sql.FieldNEQ(FieldReadiness, v))
+func ReadinessNEQ(v transition.Readiness) predicate.Course {
+	vc := v
+	return predicate.Course(sql.FieldNEQ(FieldReadiness, vc))
 }
 
 // ReadinessIn applies the In predicate on the "readiness" field.
-func ReadinessIn(vs ...string) predicate.Course {
-	return predicate.Course(sql.FieldIn(FieldReadiness, vs...))
+func ReadinessIn(vs ...transition.Readiness) predicate.Course {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(sql.FieldIn(FieldReadiness, v...))
 }
 
 // ReadinessNotIn applies the NotIn predicate on the "readiness" field.
-func ReadinessNotIn(vs ...string) predicate.Course {
-	return predicate.Course(sql.FieldNotIn(FieldReadiness, vs...))
-}
-
-// ReadinessGT applies the GT predicate on the "readiness" field.
-func ReadinessGT(v string) predicate.Course {
-	return predicate.Course(sql.FieldGT(FieldReadiness, v))
-}
-
-// ReadinessGTE applies the GTE predicate on the "readiness" field.
-func ReadinessGTE(v string) predicate.Course {
-	return predicate.Course(sql.FieldGTE(FieldReadiness, v))
-}
-
-// ReadinessLT applies the LT predicate on the "readiness" field.
-func ReadinessLT(v string) predicate.Course {
-	return predicate.Course(sql.FieldLT(FieldReadiness, v))
-}
-
-// ReadinessLTE applies the LTE predicate on the "readiness" field.
-func ReadinessLTE(v string) predicate.Course {
-	return predicate.Course(sql.FieldLTE(FieldReadiness, v))
-}
-
-// ReadinessContains applies the Contains predicate on the "readiness" field.
-func ReadinessContains(v string) predicate.Course {
-	return predicate.Course(sql.FieldContains(FieldReadiness, v))
-}
-
-// ReadinessHasPrefix applies the HasPrefix predicate on the "readiness" field.
-func ReadinessHasPrefix(v string) predicate.Course {
-	return predicate.Course(sql.FieldHasPrefix(FieldReadiness, v))
-}
-
-// ReadinessHasSuffix applies the HasSuffix predicate on the "readiness" field.
-func ReadinessHasSuffix(v string) predicate.Course {
-	return predicate.Course(sql.FieldHasSuffix(FieldReadiness, v))
-}
-
-// ReadinessIsNil applies the IsNil predicate on the "readiness" field.
-func ReadinessIsNil() predicate.Course {
-	return predicate.Course(sql.FieldIsNull(FieldReadiness))
-}
-
-// ReadinessNotNil applies the NotNil predicate on the "readiness" field.
-func ReadinessNotNil() predicate.Course {
-	return predicate.Course(sql.FieldNotNull(FieldReadiness))
-}
-
-// ReadinessEqualFold applies the EqualFold predicate on the "readiness" field.
-func ReadinessEqualFold(v string) predicate.Course {
-	return predicate.Course(sql.FieldEqualFold(FieldReadiness, v))
-}
-
-// ReadinessContainsFold applies the ContainsFold predicate on the "readiness" field.
-func ReadinessContainsFold(v string) predicate.Course {
-	return predicate.Course(sql.FieldContainsFold(FieldReadiness, v))
+func ReadinessNotIn(vs ...transition.Readiness) predicate.Course {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(sql.FieldNotIn(FieldReadiness, v...))
 }
 
 // HexletProgramLandingPageEQ applies the EQ predicate on the "hexlet_program_landing_page" field.

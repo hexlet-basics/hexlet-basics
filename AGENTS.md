@@ -443,6 +443,9 @@ other adapter (MCP) call the same code. There is no umbrella `usecases` or
   input type, because the generated `SetInput` does). The moment an operation
   has a rule of its own (a creator, a scope, a guard, a job to schedule), it
   moves to a module.
+- **State moves** (Publication State, Course Readiness) are one shared rule: a
+  `schema.StateMove` field gets a generated `Move<Field>` (ADR-0029), the only
+  writer of the column; the handler passes it a `transition`.
 - **Enforced:** `forbidigo` rejects an ent query builder (`Query`, `Create`,
   `Update*`, `Delete*`, `Get`) in `internal/handlers`, so a rule cannot slip
   back into a handler; the generated `Admin*` helpers pass. Keeping writes and

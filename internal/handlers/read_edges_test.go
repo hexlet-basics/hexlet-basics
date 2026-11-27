@@ -8,12 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -31,18 +29,6 @@ func TestAdminListBlogPostsPastTheLastPage(t *testing.T) {
 	assert.Empty(t, page.Items)
 	assert.Positive(t, page.Total)
 	assert.Equal(t, int32(999), page.Page)
-}
-
-// A post whose state was never set reads as null, not as a made-up state.
-func TestAdminGetBlogPostWithoutAState(t *testing.T) {
-	t.Parallel()
-	h := testsupport.NewHarness(t)
-	h.DB.BlogPost.Update().Where(blogpost.ID(fixture.ID(fixture.BlogPostHelloWorld))).ClearState().ExecX(t.Context())
-
-	post, err := h.Client.AdminGetBlogPost(t.Context(), api.AdminGetBlogPostParams{ID: fixture.ID32(fixture.BlogPostHelloWorld)})
-	require.NoError(t, err)
-
-	assert.True(t, post.State.Null)
 }
 
 // A course with no built version is still a page: no lessons, no modules and no

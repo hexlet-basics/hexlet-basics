@@ -17,8 +17,6 @@ export const readinessTarget: Record<ReadinessTransition, CourseReadiness> = {
   markInDevelopment: "in_development",
 };
 
-// A Course with no readiness (nullable in the legacy schema) counts as a draft,
-// as it does on the server.
-export function transitionsFromReadiness(current: CourseReadiness | null): ReadinessTransition[] {
-  return READINESS_TRANSITIONS.filter((name) => readinessTarget[name] !== (current ?? "draft"));
+export function transitionsFromReadiness(current: CourseReadiness): ReadinessTransition[] {
+  return READINESS_TRANSITIONS.filter((name) => readinessTarget[name] !== current);
 }

@@ -4,6 +4,7 @@ package banner
 
 import (
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -77,11 +78,6 @@ func Body(v string) predicate.Banner {
 // Locale applies equality check predicate on the "locale" field. It's identical to LocaleEQ.
 func Locale(v string) predicate.Banner {
 	return predicate.Banner(sql.FieldEQ(FieldLocale, v))
-}
-
-// State applies equality check predicate on the "state" field. It's identical to StateEQ.
-func State(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldEQ(FieldState, v))
 }
 
 // URL applies equality check predicate on the "url" field. It's identical to URLEQ.
@@ -375,68 +371,33 @@ func LocaleContainsFold(v string) predicate.Banner {
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
-func StateEQ(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldEQ(FieldState, v))
+func StateEQ(v transition.PublicationState) predicate.Banner {
+	vc := v
+	return predicate.Banner(sql.FieldEQ(FieldState, vc))
 }
 
 // StateNEQ applies the NEQ predicate on the "state" field.
-func StateNEQ(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldNEQ(FieldState, v))
+func StateNEQ(v transition.PublicationState) predicate.Banner {
+	vc := v
+	return predicate.Banner(sql.FieldNEQ(FieldState, vc))
 }
 
 // StateIn applies the In predicate on the "state" field.
-func StateIn(vs ...string) predicate.Banner {
-	return predicate.Banner(sql.FieldIn(FieldState, vs...))
+func StateIn(vs ...transition.PublicationState) predicate.Banner {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Banner(sql.FieldIn(FieldState, v...))
 }
 
 // StateNotIn applies the NotIn predicate on the "state" field.
-func StateNotIn(vs ...string) predicate.Banner {
-	return predicate.Banner(sql.FieldNotIn(FieldState, vs...))
-}
-
-// StateGT applies the GT predicate on the "state" field.
-func StateGT(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldGT(FieldState, v))
-}
-
-// StateGTE applies the GTE predicate on the "state" field.
-func StateGTE(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldGTE(FieldState, v))
-}
-
-// StateLT applies the LT predicate on the "state" field.
-func StateLT(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldLT(FieldState, v))
-}
-
-// StateLTE applies the LTE predicate on the "state" field.
-func StateLTE(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldLTE(FieldState, v))
-}
-
-// StateContains applies the Contains predicate on the "state" field.
-func StateContains(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldContains(FieldState, v))
-}
-
-// StateHasPrefix applies the HasPrefix predicate on the "state" field.
-func StateHasPrefix(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldHasPrefix(FieldState, v))
-}
-
-// StateHasSuffix applies the HasSuffix predicate on the "state" field.
-func StateHasSuffix(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldHasSuffix(FieldState, v))
-}
-
-// StateEqualFold applies the EqualFold predicate on the "state" field.
-func StateEqualFold(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldEqualFold(FieldState, v))
-}
-
-// StateContainsFold applies the ContainsFold predicate on the "state" field.
-func StateContainsFold(v string) predicate.Banner {
-	return predicate.Banner(sql.FieldContainsFold(FieldState, v))
+func StateNotIn(vs ...transition.PublicationState) predicate.Banner {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Banner(sql.FieldNotIn(FieldState, v...))
 }
 
 // URLEQ applies the EQ predicate on the "url" field.

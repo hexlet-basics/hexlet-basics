@@ -7,6 +7,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/transition"
 )
 
 // ListPublicReviews is the public reviews page (legacy `Web::ReviewsController
@@ -89,17 +90,17 @@ func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteRe
 
 // AdminPublishReview makes a draft or archived review public.
 func (s *Server) AdminPublishReview(ctx context.Context, params api.AdminPublishReviewParams) (*api.Review, error) {
-	return moveState(ctx, int(params.ID), s.reviewStates.Publish, s.getAdminReview)
+	return moveState(ctx, int(params.ID), s.db.Review.MoveState, transition.Publish(), s.getAdminReview)
 }
 
 // AdminUnpublishReview takes a published review back to draft.
 func (s *Server) AdminUnpublishReview(ctx context.Context, params api.AdminUnpublishReviewParams) (*api.Review, error) {
-	return moveState(ctx, int(params.ID), s.reviewStates.Unpublish, s.getAdminReview)
+	return moveState(ctx, int(params.ID), s.db.Review.MoveState, transition.Unpublish(), s.getAdminReview)
 }
 
 // AdminArchiveReview archives a draft or published review.
 func (s *Server) AdminArchiveReview(ctx context.Context, params api.AdminArchiveReviewParams) (*api.Review, error) {
-	return moveState(ctx, int(params.ID), s.reviewStates.Archive, s.getAdminReview)
+	return moveState(ctx, int(params.ID), s.db.Review.MoveState, transition.Archive(), s.getAdminReview)
 }
 
 // getAdminReview is the read model a state move echoes back.

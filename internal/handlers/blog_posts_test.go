@@ -47,7 +47,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	full, ok := bySlug["hello-world"]
 	require.True(t, ok, "post hello-world not found")
 	assert.Equal(t, "Hello world", full.Name.Value)
-	assert.Equal(t, api.BlogPostStatePublished, full.State.Value)
+	assert.Equal(t, api.PublicationStatePublished, full.State)
 	assert.Equal(t, "<p>Hello <strong>world</strong> from the blog</p>", full.RichBodyHtml)
 	// Reading time rounds up: a short post reads in a minute, not none.
 	assert.Equal(t, int32(1), full.ReadingTime)
@@ -60,7 +60,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	// The "empty" post: no rich body, no cover, no likes, en locale (no prefix).
 	empty, ok := bySlug["second-post"]
 	require.True(t, ok, "post second-post not found")
-	assert.Equal(t, api.BlogPostStateDraft, empty.State.Value)
+	assert.Equal(t, api.PublicationStateDraft, empty.State)
 	assert.Empty(t, empty.RichBodyHtml)
 	assert.Equal(t, int32(0), empty.ReadingTime)
 	assert.Equal(t, int32(0), empty.LikesCount)
@@ -127,7 +127,7 @@ func TestAdminCreateBlogPost(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 
 	assert.Equal(t, "go-rewrite-notes", post.Slug.Value)
-	assert.Equal(t, api.BlogPostStateDraft, post.State.Value, "a new post is always a draft")
+	assert.Equal(t, api.PublicationStateDraft, post.State, "a new post is always a draft")
 	assert.Equal(t, "<p>We moved to Go.</p>", post.RichBodyHtml)
 	// The creator is the authenticated admin (the harness signs in as the
 	// fixture admin), and the locale is the request's (English without a header).
@@ -169,7 +169,7 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	assert.Equal(t, "Second post, renamed", post.Name.Value)
-	assert.Equal(t, api.BlogPostStateDraft, post.State.Value, "update never changes the state")
+	assert.Equal(t, api.PublicationStateDraft, post.State, "update never changes the state")
 	assert.Equal(t, "<p>Now with a body.</p>", post.RichBodyHtml)
 	// Legacy assign_attributes semantics: a null nullable field clears the column.
 	assert.True(t, post.Description.Null)

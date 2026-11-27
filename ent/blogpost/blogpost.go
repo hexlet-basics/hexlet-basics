@@ -3,6 +3,8 @@
 package blogpost
 
 import (
+	"fmt"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -87,6 +89,18 @@ var (
 	// DefaultRelatedCourseItemsCount holds the default value on creation for the "related_course_items_count" field.
 	DefaultRelatedCourseItemsCount int
 )
+
+const DefaultState transition.PublicationState = "draft"
+
+// StateValidator is a validator for the "state" field enum values. It is called by the builders before save.
+func StateValidator(s transition.PublicationState) error {
+	switch s {
+	case "draft", "published", "archived":
+		return nil
+	default:
+		return fmt.Errorf("blogpost: invalid enum value for state field: %q", s)
+	}
+}
 
 // OrderOption defines the ordering options for the BlogPost queries.
 type OrderOption func(*sql.Selector)

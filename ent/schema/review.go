@@ -5,6 +5,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+
+	"hexletbasics/internal/transition"
 )
 
 // Review maps the legacy `reviews` table — a student testimonial for a course.
@@ -49,10 +51,9 @@ func (Review) Fields() []ent.Field {
 		field.String("locale").Optional().Nillable().
 			Annotations(AdminInputField{Skip: true}),
 		// state is not an input: a review is created as a draft (the default) and
-		// the state moves only through the publish, unpublish and archive
-		// operations.
-		field.String("state").Optional().Nillable().Default("draft").
-			Annotations(AdminInputField{Skip: true}),
+		// the state moves only through the generated MoveState (StateMove).
+		field.Enum("state").GoType(transition.PublicationState("")).Default(string(transition.Draft)).
+			Annotations(AdminInputField{Skip: true}, StateMove{}),
 		field.Bool("pinned").Optional().Nillable(),
 	}
 }

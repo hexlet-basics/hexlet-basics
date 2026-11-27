@@ -19,8 +19,8 @@ import (
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/htmltext"
-	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/transition"
 )
 
 // maxTextLength caps the post text in the prompt, counted in runes with the
@@ -202,7 +202,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]candidate, error) {
 	pages, err := db.CourseLandingPage.Query().
 		Where(
-			courselandingpage.StateEQ(landingpage.StatePublished),
+			courselandingpage.StateEQ(transition.Published),
 			courselandingpage.Main(true),
 			courselandingpage.LocaleEQ(locale),
 		).

@@ -19,6 +19,7 @@ import (
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/transition"
 )
 
 const (
@@ -40,7 +41,7 @@ type Post struct {
 	Name        *string
 	Slug        *string
 	Description *string
-	State       *string
+	State       transition.PublicationState
 	Locale      *string
 	RichBody    string
 	CreatedAt   time.Time

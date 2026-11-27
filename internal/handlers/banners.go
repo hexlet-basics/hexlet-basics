@@ -8,6 +8,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
+	"hexletbasics/internal/transition"
 )
 
 // GetActiveBanner is the banner the pages that carry one show: the published
@@ -91,17 +92,17 @@ func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBa
 
 // AdminPublishBanner makes a draft or archived banner eligible for the pages.
 func (s *Server) AdminPublishBanner(ctx context.Context, params api.AdminPublishBannerParams) (*api.Banner, error) {
-	return moveState(ctx, int(params.ID), s.bannerStates.Publish, s.getAdminBanner)
+	return moveState(ctx, int(params.ID), s.db.Banner.MoveState, transition.Publish(), s.getAdminBanner)
 }
 
 // AdminUnpublishBanner takes a published banner back to draft.
 func (s *Server) AdminUnpublishBanner(ctx context.Context, params api.AdminUnpublishBannerParams) (*api.Banner, error) {
-	return moveState(ctx, int(params.ID), s.bannerStates.Unpublish, s.getAdminBanner)
+	return moveState(ctx, int(params.ID), s.db.Banner.MoveState, transition.Unpublish(), s.getAdminBanner)
 }
 
 // AdminArchiveBanner archives a draft or published banner.
 func (s *Server) AdminArchiveBanner(ctx context.Context, params api.AdminArchiveBannerParams) (*api.Banner, error) {
-	return moveState(ctx, int(params.ID), s.bannerStates.Archive, s.getAdminBanner)
+	return moveState(ctx, int(params.ID), s.db.Banner.MoveState, transition.Archive(), s.getAdminBanner)
 }
 
 // getAdminBanner is the read model a state move echoes back.

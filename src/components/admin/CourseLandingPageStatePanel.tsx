@@ -36,7 +36,7 @@ export function CourseLandingPageStatePanel({ page }: { page: CourseLandingPage 
     mutation: adminArchiveCourseLandingPageMutation(),
     ...options,
   });
-  const state = page.state ?? "draft";
+  const { state } = page;
 
   return (
     <PublicationStatePanel

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/banner"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -77,13 +78,13 @@ func (_c *BannerCreate) SetLocale(v string) *BannerCreate {
 }
 
 // SetState sets the "state" field.
-func (_c *BannerCreate) SetState(v string) *BannerCreate {
+func (_c *BannerCreate) SetState(v transition.PublicationState) *BannerCreate {
 	_c.mutation.SetState(v)
 	return _c
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_c *BannerCreate) SetNillableState(v *string) *BannerCreate {
+func (_c *BannerCreate) SetNillableState(v *transition.PublicationState) *BannerCreate {
 	if v != nil {
 		_c.SetState(*v)
 	}
@@ -205,6 +206,11 @@ func (_c *BannerCreate) check() error {
 	if _, ok := _c.mutation.State(); !ok {
 		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "Banner.state"`)}
 	}
+	if v, ok := _c.mutation.State(); ok {
+		if err := banner.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Banner.state": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -253,7 +259,7 @@ func (_c *BannerCreate) createSpec() (*Banner, *sqlgraph.CreateSpec) {
 		_node.Locale = value
 	}
 	if value, ok := _c.mutation.State(); ok {
-		_spec.SetField(banner.FieldState, field.TypeString, value)
+		_spec.SetField(banner.FieldState, field.TypeEnum, value)
 		_node.State = value
 	}
 	if value, ok := _c.mutation.URL(); ok {
@@ -369,7 +375,7 @@ func (u *BannerUpsert) UpdateLocale() *BannerUpsert {
 }
 
 // SetState sets the "state" field.
-func (u *BannerUpsert) SetState(v string) *BannerUpsert {
+func (u *BannerUpsert) SetState(v transition.PublicationState) *BannerUpsert {
 	u.Set(banner.FieldState, v)
 	return u
 }
@@ -536,7 +542,7 @@ func (u *BannerUpsertOne) UpdateLocale() *BannerUpsertOne {
 }
 
 // SetState sets the "state" field.
-func (u *BannerUpsertOne) SetState(v string) *BannerUpsertOne {
+func (u *BannerUpsertOne) SetState(v transition.PublicationState) *BannerUpsertOne {
 	return u.Update(func(s *BannerUpsert) {
 		s.SetState(v)
 	})
@@ -880,7 +886,7 @@ func (u *BannerUpsertBulk) UpdateLocale() *BannerUpsertBulk {
 }
 
 // SetState sets the "state" field.
-func (u *BannerUpsertBulk) SetState(v string) *BannerUpsertBulk {
+func (u *BannerUpsertBulk) SetState(v transition.PublicationState) *BannerUpsertBulk {
 	return u.Update(func(s *BannerUpsert) {
 		s.SetState(v)
 	})

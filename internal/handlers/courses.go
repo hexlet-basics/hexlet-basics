@@ -109,12 +109,8 @@ type Server struct {
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover *blog.Remover
 	// permissions writes a role's grants.
-	permissions       *permission.Permissions
-	selfProtection    *selfprotection.Guard
-	bannerStates      *sitebanner.Editor
-	reviewStates      *coursereview.Editor
-	landingPageStates *landingpage.Editor
-	courseReadiness   *catalog.Readiness
+	permissions    *permission.Permissions
+	selfProtection *selfprotection.Guard
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard *dashboard.Dashboard
 	// sitemap reads the rows behind the sitemap page.
@@ -166,10 +162,6 @@ type Deps struct {
 	PostRemover       *blog.Remover
 	Permissions       *permission.Permissions
 	SelfProtection    *selfprotection.Guard
-	BannerStates      *sitebanner.Editor
-	ReviewStates      *coursereview.Editor
-	LandingPageStates *landingpage.Editor
-	CourseReadiness   *catalog.Readiness
 	Dashboard         *dashboard.Dashboard
 	Sitemap           *sitemap.Sitemap
 	Search            *search.Catalogue
@@ -226,10 +218,6 @@ func NewServer(deps Deps) *Server {
 		blogLikes:            blog.NewLiker(deps.DB),
 		permissions:          deps.Permissions,
 		selfProtection:       deps.SelfProtection,
-		bannerStates:         deps.BannerStates,
-		reviewStates:         deps.ReviewStates,
-		landingPageStates:    deps.LandingPageStates,
-		courseReadiness:      deps.CourseReadiness,
 		dashboard:            deps.Dashboard,
 		sitemap:              deps.Sitemap,
 		searcher:             deps.Search,

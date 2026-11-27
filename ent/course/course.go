@@ -3,6 +3,8 @@
 package course
 
 import (
+	"fmt"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -94,13 +96,23 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// DefaultReadiness holds the default value on creation for the "readiness" field.
-	DefaultReadiness string
 	// DefaultEnrollmentsCount holds the default value on creation for the "enrollments_count" field.
 	DefaultEnrollmentsCount int
 	// DefaultLessonsCount holds the default value on creation for the "lessons_count" field.
 	DefaultLessonsCount int
 )
+
+const DefaultReadiness transition.Readiness = "draft"
+
+// ReadinessValidator is a validator for the "readiness" field enum values. It is called by the builders before save.
+func ReadinessValidator(r transition.Readiness) error {
+	switch r {
+	case "draft", "in_development", "completed":
+		return nil
+	default:
+		return fmt.Errorf("course: invalid enum value for readiness field: %q", r)
+	}
+}
 
 // OrderOption defines the ordering options for the Course queries.
 type OrderOption func(*sql.Selector)

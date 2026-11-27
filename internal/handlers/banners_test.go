@@ -85,7 +85,7 @@ func TestAdminGetBanner(t *testing.T) {
 
 	assert.Equal(t, want.ID, got.ID)
 	assert.Equal(t, api.BannerLocaleRu, got.Locale)
-	assert.Equal(t, api.BannerStatePublished, got.State)
+	assert.Equal(t, api.PublicationStatePublished, got.State)
 	assert.Equal(t, "https://ru.hexlet.io/pricing", got.URL.Value)
 }
 
@@ -119,7 +119,7 @@ func TestAdminCreateBanner(t *testing.T) {
 
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "New course launch", created.Body)
-	assert.Equal(t, api.BannerStateDraft, created.State, "a new banner is always a draft")
+	assert.Equal(t, api.PublicationStateDraft, created.State, "a new banner is always a draft")
 	assert.Equal(t, api.BannerBackgroundBlue, created.Background)
 	assert.True(t, created.FinishesAt.Null, "unset finishesAt should stay null")
 	assert.False(t, created.CreatedAt.IsZero())
@@ -169,7 +169,7 @@ func TestAdminUpdateBanner(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Промоакция завершена", updated.Body)
-	assert.Equal(t, api.BannerStatePublished, updated.State, "update never changes the state")
+	assert.Equal(t, api.PublicationStatePublished, updated.State, "update never changes the state")
 	assert.True(t, updated.URL.Null)
 
 	// A null url clears the column in the database.

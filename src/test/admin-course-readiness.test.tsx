@@ -17,7 +17,7 @@ import { z } from "zod";
 // guard: the buttons offered are the values other than the current one, a click
 // calls that operation and the course shown is the one it answered with.
 
-const course = (readiness: CourseReadiness | null): Course => ({ ...ruby, readiness });
+const course = (readiness: CourseReadiness): Course => ({ ...ruby, readiness });
 
 const edit = (): Promise<RenderedRoute> =>
   renderRoute(courseEditRoute, {

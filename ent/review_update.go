@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -145,22 +146,16 @@ func (_u *ReviewUpdate) ClearLocale() *ReviewUpdate {
 }
 
 // SetState sets the "state" field.
-func (_u *ReviewUpdate) SetState(v string) *ReviewUpdate {
+func (_u *ReviewUpdate) SetState(v transition.PublicationState) *ReviewUpdate {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *ReviewUpdate) SetNillableState(v *string) *ReviewUpdate {
+func (_u *ReviewUpdate) SetNillableState(v *transition.PublicationState) *ReviewUpdate {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *ReviewUpdate) ClearState() *ReviewUpdate {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -249,6 +244,11 @@ func (_u *ReviewUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ReviewUpdate) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := review.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Review.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Review.course"`)
 	}
@@ -298,10 +298,7 @@ func (_u *ReviewUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(review.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(review.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(review.FieldState, field.TypeString)
+		_spec.SetField(review.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.Pinned(); ok {
 		_spec.SetField(review.FieldPinned, field.TypeBool, value)
@@ -502,22 +499,16 @@ func (_u *ReviewUpdateOne) ClearLocale() *ReviewUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (_u *ReviewUpdateOne) SetState(v string) *ReviewUpdateOne {
+func (_u *ReviewUpdateOne) SetState(v transition.PublicationState) *ReviewUpdateOne {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *ReviewUpdateOne) SetNillableState(v *string) *ReviewUpdateOne {
+func (_u *ReviewUpdateOne) SetNillableState(v *transition.PublicationState) *ReviewUpdateOne {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *ReviewUpdateOne) ClearState() *ReviewUpdateOne {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -619,6 +610,11 @@ func (_u *ReviewUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ReviewUpdateOne) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := review.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Review.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Review.course"`)
 	}
@@ -685,10 +681,7 @@ func (_u *ReviewUpdateOne) sqlSave(ctx context.Context) (_node *Review, err erro
 		_spec.ClearField(review.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(review.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(review.FieldState, field.TypeString)
+		_spec.SetField(review.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.Pinned(); ok {
 		_spec.SetField(review.FieldPinned, field.TypeBool, value)

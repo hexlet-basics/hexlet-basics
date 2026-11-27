@@ -6,6 +6,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+
+	"hexletbasics/internal/transition"
 )
 
 // CourseLandingPage maps the legacy `language_landing_pages` table — a localized
@@ -42,10 +44,10 @@ func (CourseLandingPage) Fields() []ent.Field {
 		field.Bool("listed").Optional().Nillable(),
 		field.Bool("main").Optional().Nillable(),
 		// state is not an input: a landing page is created as a draft (the
-		// default) and the state moves only through the publish, unpublish and
-		// archive operations.
-		field.String("state").Optional().Nillable().Default("draft").
-			Annotations(AdminInputField{Skip: true}),
+		// default) and the state moves only through the generated MoveState
+		// (StateMove).
+		field.Enum("state").GoType(transition.PublicationState("")).Default(string(transition.Draft)).
+			Annotations(AdminInputField{Skip: true}, StateMove{}),
 		// `order` is a free-form string key in the legacy schema, not an int.
 		field.String("order").Optional().Nillable(),
 		field.String("meta_title").Optional().Nillable(),

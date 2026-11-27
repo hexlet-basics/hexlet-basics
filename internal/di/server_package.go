@@ -94,10 +94,6 @@ type handlerServices struct {
 	PostRemover       *blog.Remover              `do:""`
 	Permissions       *permission.Permissions    `do:""`
 	SelfProtection    *selfprotection.Guard      `do:""`
-	BannerStates      *sitebanner.Editor         `do:""`
-	ReviewStates      *coursereview.Editor       `do:""`
-	LandingPageStates *landingpage.Editor        `do:""`
-	CourseReadiness   *catalog.Readiness         `do:""`
 	Dashboard         *dashboard.Dashboard       `do:""`
 	Sitemap           *sitemap.Sitemap           `do:""`
 	Search            *search.Catalogue          `do:""`
@@ -215,38 +211,6 @@ var serverPackage = do.Package(
 		}
 
 		return blog.NewRemover(db), nil
-	}),
-	do.Lazy[*sitebanner.Editor](func(i do.Injector) (*sitebanner.Editor, error) {
-		db, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return sitebanner.NewEditor(db), nil
-	}),
-	do.Lazy[*coursereview.Editor](func(i do.Injector) (*coursereview.Editor, error) {
-		db, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return coursereview.NewEditor(db), nil
-	}),
-	do.Lazy[*landingpage.Editor](func(i do.Injector) (*landingpage.Editor, error) {
-		db, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return landingpage.NewEditor(db), nil
-	}),
-	do.Lazy[*catalog.Readiness](func(i do.Injector) (*catalog.Readiness, error) {
-		db, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return catalog.NewReadiness(db), nil
 	}),
 	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -538,10 +502,6 @@ var serverPackage = do.Package(
 			PostRemover:       services.PostRemover,
 			Permissions:       services.Permissions,
 			SelfProtection:    services.SelfProtection,
-			BannerStates:      services.BannerStates,
-			ReviewStates:      services.ReviewStates,
-			LandingPageStates: services.LandingPageStates,
-			CourseReadiness:   services.CourseReadiness,
 			Dashboard:         services.Dashboard,
 			Sitemap:           services.Sitemap,
 			Search:            services.Search,

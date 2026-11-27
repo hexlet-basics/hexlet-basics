@@ -13,6 +13,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
+	"hexletbasics/internal/transition"
 )
 
 // A state is not an update: the Publication State of a blog post moves only
@@ -45,15 +46,14 @@ func transitionCalls() []transitionCall {
 }
 
 func setState(h *testsupport.Harness, state string) {
-	h.DB.BlogPost.UpdateOneID(statePostID()).SetState(state).ExecX(context.Background())
+	h.DB.BlogPost.UpdateOneID(statePostID()).SetState(transition.PublicationState(state)).ExecX(context.Background())
 }
 
 func stateOf(t *testing.T, h *testsupport.Harness) string {
 	t.Helper()
 	row := h.DB.BlogPost.Query().Where(blogpost.IDEQ(statePostID())).OnlyX(t.Context())
-	require.NotNil(t, row.State)
 
-	return *row.State
+	return string(row.State)
 }
 
 // legal is the transition table as the issue states it; every other pair of
@@ -84,7 +84,7 @@ func TestEveryLegalTransitionMovesThePostAndEveryOtherIsRefusedWith409(t *testin
 
 				if allowed {
 					require.NoError(t, err)
-					assert.Equal(t, call.to, string(post.State.Value))
+					assert.Equal(t, call.to, string(post.State))
 					assert.Equal(t, call.to, stateOf(t, h))
 
 					return
@@ -120,17 +120,6 @@ func TestARefusedTransitionExplainsItselfInTheCallersLanguage(t *testing.T) {
 	}
 }
 
-func TestAPostWithoutAStateCountsAsADraft(t *testing.T) {
-	t.Parallel()
-	h := testsupport.NewHarness(t)
-	h.DB.BlogPost.UpdateOneID(statePostID()).ClearState().ExecX(t.Context())
-
-	post, err := h.Client.AdminPublishBlogPost(t.Context(), api.AdminPublishBlogPostParams{ID: int32(statePostID())})
-
-	require.NoError(t, err)
-	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
-}
-
 func TestATransitionOfAMissingPostIs404(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
@@ -160,7 +149,7 @@ func TestPublishingMakesAPostPublicAndUnpublishingHidesIt(t *testing.T) {
 	locale := *h.DB.BlogPost.GetX(t.Context(), statePostID()).Locale
 	visible := func() bool {
 		return h.DB.BlogPost.Query().
-			Where(blogpost.IDEQ(statePostID()), blogpost.State("published"), blogpost.Locale(locale), blogpost.Slug(slug)).
+			Where(blogpost.IDEQ(statePostID()), blogpost.StateEQ(transition.Published), blogpost.Locale(locale), blogpost.Slug(slug)).
 			ExistX(t.Context())
 	}
 	require.False(t, visible())

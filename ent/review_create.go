@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -121,13 +122,13 @@ func (_c *ReviewCreate) SetNillableLocale(v *string) *ReviewCreate {
 }
 
 // SetState sets the "state" field.
-func (_c *ReviewCreate) SetState(v string) *ReviewCreate {
+func (_c *ReviewCreate) SetState(v transition.PublicationState) *ReviewCreate {
 	_c.mutation.SetState(v)
 	return _c
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_c *ReviewCreate) SetNillableState(v *string) *ReviewCreate {
+func (_c *ReviewCreate) SetNillableState(v *transition.PublicationState) *ReviewCreate {
 	if v != nil {
 		_c.SetState(*v)
 	}
@@ -221,6 +222,14 @@ func (_c *ReviewCreate) check() error {
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Review.user_id"`)}
 	}
+	if _, ok := _c.mutation.State(); !ok {
+		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "Review.state"`)}
+	}
+	if v, ok := _c.mutation.State(); ok {
+		if err := review.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "Review.state": %w`, err)}
+		}
+	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "Review.course"`)}
 	}
@@ -279,8 +288,8 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 		_node.Locale = &value
 	}
 	if value, ok := _c.mutation.State(); ok {
-		_spec.SetField(review.FieldState, field.TypeString, value)
-		_node.State = &value
+		_spec.SetField(review.FieldState, field.TypeEnum, value)
+		_node.State = value
 	}
 	if value, ok := _c.mutation.Pinned(); ok {
 		_spec.SetField(review.FieldPinned, field.TypeBool, value)
@@ -481,7 +490,7 @@ func (u *ReviewUpsert) ClearLocale() *ReviewUpsert {
 }
 
 // SetState sets the "state" field.
-func (u *ReviewUpsert) SetState(v string) *ReviewUpsert {
+func (u *ReviewUpsert) SetState(v transition.PublicationState) *ReviewUpsert {
 	u.Set(review.FieldState, v)
 	return u
 }
@@ -489,12 +498,6 @@ func (u *ReviewUpsert) SetState(v string) *ReviewUpsert {
 // UpdateState sets the "state" field to the value that was provided on create.
 func (u *ReviewUpsert) UpdateState() *ReviewUpsert {
 	u.SetExcluded(review.FieldState)
-	return u
-}
-
-// ClearState clears the value of the "state" field.
-func (u *ReviewUpsert) ClearState() *ReviewUpsert {
-	u.SetNull(review.FieldState)
 	return u
 }
 
@@ -688,7 +691,7 @@ func (u *ReviewUpsertOne) ClearLocale() *ReviewUpsertOne {
 }
 
 // SetState sets the "state" field.
-func (u *ReviewUpsertOne) SetState(v string) *ReviewUpsertOne {
+func (u *ReviewUpsertOne) SetState(v transition.PublicationState) *ReviewUpsertOne {
 	return u.Update(func(s *ReviewUpsert) {
 		s.SetState(v)
 	})
@@ -698,13 +701,6 @@ func (u *ReviewUpsertOne) SetState(v string) *ReviewUpsertOne {
 func (u *ReviewUpsertOne) UpdateState() *ReviewUpsertOne {
 	return u.Update(func(s *ReviewUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *ReviewUpsertOne) ClearState() *ReviewUpsertOne {
-	return u.Update(func(s *ReviewUpsert) {
-		s.ClearState()
 	})
 }
 
@@ -1067,7 +1063,7 @@ func (u *ReviewUpsertBulk) ClearLocale() *ReviewUpsertBulk {
 }
 
 // SetState sets the "state" field.
-func (u *ReviewUpsertBulk) SetState(v string) *ReviewUpsertBulk {
+func (u *ReviewUpsertBulk) SetState(v transition.PublicationState) *ReviewUpsertBulk {
 	return u.Update(func(s *ReviewUpsert) {
 		s.SetState(v)
 	})
@@ -1077,13 +1073,6 @@ func (u *ReviewUpsertBulk) SetState(v string) *ReviewUpsertBulk {
 func (u *ReviewUpsertBulk) UpdateState() *ReviewUpsertBulk {
 	return u.Update(func(s *ReviewUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *ReviewUpsertBulk) ClearState() *ReviewUpsertBulk {
-	return u.Update(func(s *ReviewUpsert) {
-		s.ClearState()
 	})
 }
 

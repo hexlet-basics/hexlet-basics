@@ -3,6 +3,8 @@
 package review
 
 import (
+	"fmt"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -88,9 +90,19 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// DefaultState holds the default value on creation for the "state" field.
-	DefaultState string
 )
+
+const DefaultState transition.PublicationState = "draft"
+
+// StateValidator is a validator for the "state" field enum values. It is called by the builders before save.
+func StateValidator(s transition.PublicationState) error {
+	switch s {
+	case "draft", "published", "archived":
+		return nil
+	default:
+		return fmt.Errorf("review: invalid enum value for state field: %q", s)
+	}
+}
 
 // OrderOption defines the ordering options for the Review queries.
 type OrderOption func(*sql.Selector)

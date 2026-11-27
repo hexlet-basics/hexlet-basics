@@ -22,7 +22,8 @@ enum CourseLearnAs {
   secondLanguage: "second_language",
 }
 
-/** Publication/readiness state of a course. */
+/** Course Readiness (GLOSSARY): how finished the Course itself is. Not a Publication
+    State: any change between two distinct values is legal. */
 enum CourseReadiness {
   completed: "completed",
   inDevelopment: "in_development",
@@ -35,11 +36,14 @@ enum EnrollmentState {
   finished: "finished",
 }
 
-/** Publication state shared by landing pages. */
-enum LandingPageState {
+/** Publication State (GLOSSARY): where a piece of content stands in its life. One
+    vocabulary for every resource that has one: banners, blog posts, reviews and
+    course landing pages. It changes only through the publish, unpublish and archive
+    operations, never through an update. */
+enum PublicationState {
   draft: "draft",
-  archived: "archived",
   published: "published",
+  archived: "archived",
 }
 
 /** Banner display background. */
@@ -55,31 +59,10 @@ enum BannerLocale {
   en: "en",
 }
 
-/** Banner publication state. */
-enum BannerState {
-  draft: "draft",
-  published: "published",
-  archived: "archived",
-}
-
-/** Blog post publication state. */
-enum BlogPostState {
-  draft: "draft",
-  published: "published",
-  archived: "archived",
-}
-
 /** Reviews only target ru/en today (legacy `ReviewLocale`). */
 enum ReviewLocale {
   ru: "ru",
   en: "en",
-}
-
-/** Review publication state. */
-enum ReviewState {
-  draft: "draft",
-  published: "published",
-  archived: "archived",
 }
 
 // ---- Course core ----------------------------------------------------------
@@ -108,7 +91,7 @@ model Course {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
+  readiness: CourseReadiness;
   categoryId: int32 | null;
   currentVersionId: int32 | null;
   currentVersion: CourseVersion | null;
@@ -239,7 +222,7 @@ model CourseLandingPage {
   name: string;
   main: boolean | null;
   listed: boolean | null;
-  state: LandingPageState | null;
+  state: PublicationState;
 
   /** Free-form ordering key (legacy stores it as a string). */
   order: string | null;
@@ -452,7 +435,7 @@ model Banner {
   body: string;
   url: string | null;
   background: BannerBackground;
-  state: BannerState;
+  state: PublicationState;
   startsAt: utcDateTime | null;
   finishesAt: utcDateTime | null;
   createdAt: utcDateTime;
@@ -465,7 +448,7 @@ model BlogPost {
   name: string | null;
   slug: string | null;
   description: string | null;
-  state: BlogPostState | null;
+  state: PublicationState;
   locale: string | null;
   richBodyHtml: string;
   readingTime: int32;
@@ -491,7 +474,7 @@ model Review {
   firstName: string | null;
   lastName: string | null;
   fullName: string | null;
-  state: ReviewState | null;
+  state: PublicationState;
   locale: ReviewLocale | null;
 
   /** Stored for the admin edit form to round-trip; it does not affect the

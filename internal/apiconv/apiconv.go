@@ -24,6 +24,7 @@ import (
 	"hexletbasics/internal/blog"
 	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/transition"
 )
 
 //go:generate go tool goverter gen hexletbasics/internal/apiconv
@@ -41,10 +42,9 @@ import (
 // goverter:extend NilBoolFromPtr
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
-// goverter:extend NilReadinessFromPtr
-// goverter:extend NilReviewStateFromPtr
+// goverter:extend ReadinessOf
+// goverter:extend PublicationStateOf
 // goverter:extend NilReviewLocaleFromPtr
-// goverter:extend NilLandingPageStateFromPtr
 // goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend NilEnrollmentStateFromPtr
@@ -52,7 +52,6 @@ import (
 // goverter:extend TimeIdentity
 // goverter:extend EnrollmentStateFromPtr
 // goverter:extend LocaleFromPtr
-// goverter:extend NilBlogPostStateFromPtr
 // goverter:extend NilStringFromEmpty
 type Converter interface { //nolint:interfacebloat // goverter generates the implementation of this one interface, one method per mapping
 	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
@@ -702,9 +701,17 @@ func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {
 	return nilEnumOf[api.CourseLearnAs, api.NilCourseLearnAs](v)
 }
 
-// NilReadinessFromPtr bridges a nullable ent string to ogen's NilCourseReadiness.
-func NilReadinessFromPtr(v *string) api.NilCourseReadiness {
-	return nilEnumOf[api.CourseReadiness, api.NilCourseReadiness](v)
+// ReadinessOf names a Course's Readiness in the contract's enum: the column is
+// typed by transition.Readiness and required, so the value is always one of
+// the enum's.
+func ReadinessOf(v transition.Readiness) api.CourseReadiness {
+	return api.CourseReadiness(v)
+}
+
+// PublicationStateOf names a Publication State in the contract's one enum for
+// it, shared by banners, blog posts, reviews and course landing pages.
+func PublicationStateOf(v transition.PublicationState) api.PublicationState {
+	return api.PublicationState(v)
 }
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.
@@ -716,17 +723,6 @@ func coverURLNull(*ent.CourseLandingPage) api.NilString {
 // name can be derived from the associated user (legacy serializer behavior).
 func leadFullNameNull(*ent.Lead) api.NilString {
 	return api.NilString{Null: true}
-}
-
-// NilReviewStateFromPtr bridges a nullable ent string to ogen's NilReviewState.
-func NilReviewStateFromPtr(v *string) api.NilReviewState {
-	return nilEnumOf[api.ReviewState, api.NilReviewState](v)
-}
-
-// NilBlogPostStateFromPtr bridges a nullable ent state string to the contract's
-// BlogPostState.
-func NilBlogPostStateFromPtr(v *string) api.NilBlogPostState {
-	return nilEnumOf[api.BlogPostState, api.NilBlogPostState](v)
 }
 
 // NilStringFromEmpty is a string that is null when empty: a post without a
@@ -783,12 +779,6 @@ func userType(*ent.User) api.UserType {
 // name (the reviewer's display name, not the associated user's).
 func reviewFullName(r *ent.Review) api.NilString {
 	return api.NewNilString(joinName(r.FirstName, r.LastName))
-}
-
-// NilLandingPageStateFromPtr bridges a nullable ent string to ogen's
-// NilLandingPageState.
-func NilLandingPageStateFromPtr(v *string) api.NilLandingPageState {
-	return nilEnumOf[api.LandingPageState, api.NilLandingPageState](v)
 }
 
 // minutesPerLesson is the legacy estimate of a lesson's length.

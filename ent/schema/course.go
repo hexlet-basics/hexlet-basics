@@ -6,6 +6,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+
+	"hexletbasics/internal/transition"
 )
 
 // Course maps the legacy `languages` table (the domain concept is Course).
@@ -37,9 +39,9 @@ func (Course) Fields() []ent.Field {
 			Annotations(AdminInputField{}),
 		// Course Readiness; the column keeps the retired name. Not an input: a state
 		// is not an update, so a course starts as a draft (the default) and the
-		// value moves only through the mark-as operations.
-		field.String("readiness").StorageKey("progress").Optional().Nillable().Default("draft").
-			Annotations(AdminInputField{Skip: true}),
+		// value moves only through the generated MoveReadiness (StateMove).
+		field.Enum("readiness").StorageKey("progress").GoType(transition.Readiness("")).Default(string(transition.ReadinessDraft)).
+			Annotations(AdminInputField{Skip: true}, StateMove{}),
 		field.String("hexlet_program_landing_page").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		// Counters maintained by the app; the baseline columns are NOT NULL

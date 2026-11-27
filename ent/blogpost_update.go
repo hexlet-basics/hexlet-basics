@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -116,22 +117,16 @@ func (_u *BlogPostUpdate) ClearLocale() *BlogPostUpdate {
 }
 
 // SetState sets the "state" field.
-func (_u *BlogPostUpdate) SetState(v string) *BlogPostUpdate {
+func (_u *BlogPostUpdate) SetState(v transition.PublicationState) *BlogPostUpdate {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *BlogPostUpdate) SetNillableState(v *string) *BlogPostUpdate {
+func (_u *BlogPostUpdate) SetNillableState(v *transition.PublicationState) *BlogPostUpdate {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *BlogPostUpdate) ClearState() *BlogPostUpdate {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -265,6 +260,11 @@ func (_u *BlogPostUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *BlogPostUpdate) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := blogpost.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "BlogPost.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CreatorCleared() && len(_u.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BlogPost.creator"`)
 	}
@@ -311,10 +311,7 @@ func (_u *BlogPostUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(blogpost.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(blogpost.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(blogpost.FieldState, field.TypeString)
+		_spec.SetField(blogpost.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.RichBody(); ok {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
@@ -470,22 +467,16 @@ func (_u *BlogPostUpdateOne) ClearLocale() *BlogPostUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (_u *BlogPostUpdateOne) SetState(v string) *BlogPostUpdateOne {
+func (_u *BlogPostUpdateOne) SetState(v transition.PublicationState) *BlogPostUpdateOne {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *BlogPostUpdateOne) SetNillableState(v *string) *BlogPostUpdateOne {
+func (_u *BlogPostUpdateOne) SetNillableState(v *transition.PublicationState) *BlogPostUpdateOne {
 	if v != nil {
 		_u.SetState(*v)
 	}
-	return _u
-}
-
-// ClearState clears the value of the "state" field.
-func (_u *BlogPostUpdateOne) ClearState() *BlogPostUpdateOne {
-	_u.mutation.ClearState()
 	return _u
 }
 
@@ -632,6 +623,11 @@ func (_u *BlogPostUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *BlogPostUpdateOne) check() error {
+	if v, ok := _u.mutation.State(); ok {
+		if err := blogpost.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "BlogPost.state": %w`, err)}
+		}
+	}
 	if _u.mutation.CreatorCleared() && len(_u.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BlogPost.creator"`)
 	}
@@ -695,10 +691,7 @@ func (_u *BlogPostUpdateOne) sqlSave(ctx context.Context) (_node *BlogPost, err 
 		_spec.ClearField(blogpost.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(blogpost.FieldState, field.TypeString, value)
-	}
-	if _u.mutation.StateCleared() {
-		_spec.ClearField(blogpost.FieldState, field.TypeString)
+		_spec.SetField(blogpost.FieldState, field.TypeEnum, value)
 	}
 	if value, ok := _u.mutation.RichBody(); ok {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)

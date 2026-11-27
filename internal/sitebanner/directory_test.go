@@ -9,6 +9,7 @@ import (
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/testsupport"
+	"hexletbasics/internal/transition"
 )
 
 func TestActiveIsAPublishedBannerOfTheLocaleWhoseWindowIsOpen(t *testing.T) {
@@ -17,7 +18,7 @@ func TestActiveIsAPublishedBannerOfTheLocaleWhoseWindowIsOpen(t *testing.T) {
 	row, err := directory.Active(t.Context(), "ru", testsupport.Today)
 
 	require.NoError(t, err)
-	assert.Equal(t, "published", row.State)
+	assert.Equal(t, transition.Published, row.State)
 	assert.Equal(t, "ru", row.Locale)
 
 	if row.StartsAt != nil {

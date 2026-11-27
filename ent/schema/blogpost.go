@@ -5,6 +5,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+
+	"hexletbasics/internal/transition"
 )
 
 // BlogPost maps the legacy `blog_posts` table plus the Go-stack `rich_body`
@@ -38,8 +40,9 @@ func (BlogPost) Fields() []ent.Field {
 			Annotations(AdminInputField{}),
 		field.String("locale").Optional().Nillable(),
 		// state is not an input: a post is created as a draft and the state moves
-		// only through the publish, unpublish and archive operations.
-		field.String("state").Optional().Nillable(),
+		// only through the generated MoveState (StateMove).
+		field.Enum("state").GoType(transition.PublicationState("")).Default(string(transition.Draft)).
+			Annotations(AdminInputField{Skip: true}, StateMove{}),
 		field.Text("rich_body").Default("").
 			Annotations(AdminInputField{}),
 		// creator_id is NOT NULL (FK to users); the read model embeds the creator.

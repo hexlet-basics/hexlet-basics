@@ -1,8 +1,7 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
-import type { Banner, CourseLandingPage, Review } from "@/client/types.gen";
-import type { PublicationState } from "@/lib/publicationState";
+import type { Banner, CourseLandingPage, PublicationState, Review } from "@/client/types.gen";
 import { Route as bannerEditRoute } from "@/routes/{-$locale}/admin/banners/$id";
 import { Route as bannerListRoute } from "@/routes/{-$locale}/admin/banners/index";
 import { Route as landingEditRoute } from "@/routes/{-$locale}/admin/course_landing_pages/$id";

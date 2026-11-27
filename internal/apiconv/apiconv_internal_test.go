@@ -5,9 +5,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/transition"
 )
 
 // The hand-written bridges between nullable legacy columns and the contract's
@@ -21,17 +23,16 @@ func TestEnrollmentStateOfARowWithoutOneIsStarted(t *testing.T) {
 	assert.Equal(t, api.EnrollmentState("finished"), EnrollmentStateFromPtr(new("finished")))
 }
 
-func TestNullableColumnsBecomeNullOrTheirValue(t *testing.T) {
+func TestTheStateVocabulariesAreTheContractsEnums(t *testing.T) {
 	t.Parallel()
-	assert.True(t, NilReadinessFromPtr(nil).Null)
-	readiness := NilReadinessFromPtr(new("completed"))
-	assert.False(t, readiness.Null)
-	assert.Equal(t, api.CourseReadiness("completed"), readiness.Value)
 
-	assert.True(t, NilReviewStateFromPtr(nil).Null)
-	state := NilReviewStateFromPtr(new("published"))
-	assert.False(t, state.Null)
-	assert.Equal(t, api.ReviewState("published"), state.Value)
+	for _, state := range transition.PublicationStates.States() {
+		require.NoError(t, PublicationStateOf(transition.PublicationState(state)).Validate(), state)
+	}
+
+	for _, readiness := range transition.CourseReadiness.States() {
+		require.NoError(t, ReadinessOf(transition.Readiness(readiness)).Validate(), readiness)
+	}
 }
 
 func TestModuleLessonSlugsKeepOrderAndSkipLessonsWithoutAUrl(t *testing.T) {

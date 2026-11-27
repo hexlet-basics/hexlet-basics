@@ -93,3 +93,15 @@ const fieldName = "Name"
 
 // varcharArray is the PostgreSQL column type of a string list.
 const varcharArray = "varchar[]"
+
+// StateMove marks a state field: an enum whose GoType is a state of
+// internal/transition (a Publication State, a Course Readiness). The statemove
+// template (ent/template/statemove.tmpl) generates Move<Field> on the schema's
+// client, the one writer of the field: it takes a transition.Transition and
+// writes the new value only where the current one is a state the move starts
+// from. A state is not an update (ADR-0020), so a StateMove field is skipped in
+// SetInput, and forbidigo rejects its setters outside the generated code.
+type StateMove struct{}
+
+// Name implements schema.Annotation.
+func (StateMove) Name() string { return "StateMove" }

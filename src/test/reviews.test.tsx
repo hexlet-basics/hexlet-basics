@@ -39,7 +39,7 @@ const course: Course = {
   name: "ruby",
   ratingCount: 0,
   ratingValue: 0,
-  readiness: null,
+  readiness: "completed",
   repositoryUrl: null,
   slug: "ruby",
 };

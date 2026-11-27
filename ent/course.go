@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/internal/transition"
 	"strings"
 	"time"
 
@@ -29,7 +30,7 @@ type Course struct {
 	// LearnAs holds the value of the "learn_as" field.
 	LearnAs *string `json:"learn_as,omitempty"`
 	// Readiness holds the value of the "readiness" field.
-	Readiness *string `json:"readiness,omitempty"`
+	Readiness transition.Readiness `json:"readiness,omitempty"`
 	// HexletProgramLandingPage holds the value of the "hexlet_program_landing_page" field.
 	HexletProgramLandingPage *string `json:"hexlet_program_landing_page,omitempty"`
 	// EnrollmentsCount holds the value of the "enrollments_count" field.
@@ -148,8 +149,7 @@ func (_m *Course) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field readiness", values[i])
 			} else if value.Valid {
-				_m.Readiness = new(string)
-				*_m.Readiness = value.String
+				_m.Readiness = transition.Readiness(value.String)
 			}
 		case course.FieldHexletProgramLandingPage:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -258,10 +258,8 @@ func (_m *Course) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.Readiness; v != nil {
-		builder.WriteString("readiness=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("readiness=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Readiness))
 	builder.WriteString(", ")
 	if v := _m.HexletProgramLandingPage; v != nil {
 		builder.WriteString("hexlet_program_landing_page=")

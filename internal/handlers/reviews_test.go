@@ -66,7 +66,7 @@ func TestAdminListReviewsEmbedsCourseAndUser(t *testing.T) {
 	assert.Equal(t, "Admin Learner", r.User.Name.Value)
 	// Review's own display name (not the user's).
 	assert.Equal(t, "Ivan Petrov", r.FullName.Value)
-	assert.Equal(t, api.ReviewStatePublished, r.State.Value)
+	assert.Equal(t, api.PublicationStatePublished, r.State)
 	assert.Equal(t, api.ReviewLocaleRu, r.Locale.Value)
 }
 
@@ -81,7 +81,7 @@ func TestAdminGetReview(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "John Doe", got.FullName.Value)
-	assert.Equal(t, api.ReviewStateDraft, got.State.Value)
+	assert.Equal(t, api.PublicationStateDraft, got.State)
 	assert.Equal(t, "Staff Editor", got.User.Name.Value)
 }
 
@@ -113,7 +113,7 @@ func TestAdminCreateReview(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, h.LastStatus())
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "New review", created.Body.Value)
-	assert.Equal(t, api.ReviewStateDraft, created.State.Value, "a new review is always a draft")
+	assert.Equal(t, api.PublicationStateDraft, created.State, "a new review is always a draft")
 	assert.Equal(t, "Carol Clark", created.FullName.Value)
 	// The response reloads the embedded associations.
 	assert.Equal(t, "ruby", created.Course.Slug)
@@ -142,7 +142,7 @@ func TestAdminUpdateReview(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Edited body", updated.Body.Value)
-	assert.Equal(t, api.ReviewStateDraft, updated.State.Value, "update never changes the state")
+	assert.Equal(t, api.PublicationStateDraft, updated.State, "update never changes the state")
 	assert.Equal(t, "Jonathan ", updated.FullName.Value) // last name cleared -> trailing space (Ruby join parity)
 
 	row, err := h.DB.Review.Get(ctx, int(target.ID))

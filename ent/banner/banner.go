@@ -3,6 +3,8 @@
 package banner
 
 import (
+	"fmt"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -68,9 +70,19 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultBackground holds the default value on creation for the "background" field.
 	DefaultBackground string
-	// DefaultState holds the default value on creation for the "state" field.
-	DefaultState string
 )
+
+const DefaultState transition.PublicationState = "draft"
+
+// StateValidator is a validator for the "state" field enum values. It is called by the builders before save.
+func StateValidator(s transition.PublicationState) error {
+	switch s {
+	case "draft", "published", "archived":
+		return nil
+	default:
+		return fmt.Errorf("banner: invalid enum value for state field: %q", s)
+	}
+}
 
 // OrderOption defines the ordering options for the Banner queries.
 type OrderOption func(*sql.Selector)

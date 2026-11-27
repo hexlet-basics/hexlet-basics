@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -108,13 +109,13 @@ func (_c *BlogPostCreate) SetNillableLocale(v *string) *BlogPostCreate {
 }
 
 // SetState sets the "state" field.
-func (_c *BlogPostCreate) SetState(v string) *BlogPostCreate {
+func (_c *BlogPostCreate) SetState(v transition.PublicationState) *BlogPostCreate {
 	_c.mutation.SetState(v)
 	return _c
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_c *BlogPostCreate) SetNillableState(v *string) *BlogPostCreate {
+func (_c *BlogPostCreate) SetNillableState(v *transition.PublicationState) *BlogPostCreate {
 	if v != nil {
 		_c.SetState(*v)
 	}
@@ -217,6 +218,10 @@ func (_c *BlogPostCreate) defaults() {
 		v := blogpost.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.State(); !ok {
+		v := blogpost.DefaultState
+		_c.mutation.SetState(v)
+	}
 	if _, ok := _c.mutation.RichBody(); !ok {
 		v := blogpost.DefaultRichBody
 		_c.mutation.SetRichBody(v)
@@ -234,6 +239,14 @@ func (_c *BlogPostCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "BlogPost.updated_at"`)}
+	}
+	if _, ok := _c.mutation.State(); !ok {
+		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "BlogPost.state"`)}
+	}
+	if v, ok := _c.mutation.State(); ok {
+		if err := blogpost.StateValidator(v); err != nil {
+			return &ValidationError{Name: "state", err: fmt.Errorf(`ent: validator failed for field "BlogPost.state": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.RichBody(); !ok {
 		return &ValidationError{Name: "rich_body", err: errors.New(`ent: missing required field "BlogPost.rich_body"`)}
@@ -299,8 +312,8 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 		_node.Locale = &value
 	}
 	if value, ok := _c.mutation.State(); ok {
-		_spec.SetField(blogpost.FieldState, field.TypeString, value)
-		_node.State = &value
+		_spec.SetField(blogpost.FieldState, field.TypeEnum, value)
+		_node.State = value
 	}
 	if value, ok := _c.mutation.RichBody(); ok {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
@@ -468,7 +481,7 @@ func (u *BlogPostUpsert) ClearLocale() *BlogPostUpsert {
 }
 
 // SetState sets the "state" field.
-func (u *BlogPostUpsert) SetState(v string) *BlogPostUpsert {
+func (u *BlogPostUpsert) SetState(v transition.PublicationState) *BlogPostUpsert {
 	u.Set(blogpost.FieldState, v)
 	return u
 }
@@ -476,12 +489,6 @@ func (u *BlogPostUpsert) SetState(v string) *BlogPostUpsert {
 // UpdateState sets the "state" field to the value that was provided on create.
 func (u *BlogPostUpsert) UpdateState() *BlogPostUpsert {
 	u.SetExcluded(blogpost.FieldState)
-	return u
-}
-
-// ClearState clears the value of the "state" field.
-func (u *BlogPostUpsert) ClearState() *BlogPostUpsert {
-	u.SetNull(blogpost.FieldState)
 	return u
 }
 
@@ -695,7 +702,7 @@ func (u *BlogPostUpsertOne) ClearLocale() *BlogPostUpsertOne {
 }
 
 // SetState sets the "state" field.
-func (u *BlogPostUpsertOne) SetState(v string) *BlogPostUpsertOne {
+func (u *BlogPostUpsertOne) SetState(v transition.PublicationState) *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.SetState(v)
 	})
@@ -705,13 +712,6 @@ func (u *BlogPostUpsertOne) SetState(v string) *BlogPostUpsertOne {
 func (u *BlogPostUpsertOne) UpdateState() *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *BlogPostUpsertOne) ClearState() *BlogPostUpsertOne {
-	return u.Update(func(s *BlogPostUpsert) {
-		s.ClearState()
 	})
 }
 
@@ -1102,7 +1102,7 @@ func (u *BlogPostUpsertBulk) ClearLocale() *BlogPostUpsertBulk {
 }
 
 // SetState sets the "state" field.
-func (u *BlogPostUpsertBulk) SetState(v string) *BlogPostUpsertBulk {
+func (u *BlogPostUpsertBulk) SetState(v transition.PublicationState) *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.SetState(v)
 	})
@@ -1112,13 +1112,6 @@ func (u *BlogPostUpsertBulk) SetState(v string) *BlogPostUpsertBulk {
 func (u *BlogPostUpsertBulk) UpdateState() *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.UpdateState()
-	})
-}
-
-// ClearState clears the value of the "state" field.
-func (u *BlogPostUpsertBulk) ClearState() *BlogPostUpsertBulk {
-	return u.Update(func(s *BlogPostUpsert) {
-		s.ClearState()
 	})
 }
 

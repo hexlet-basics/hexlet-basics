@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"hexletbasics/ent/banner"
+	"hexletbasics/internal/transition"
 	"strings"
 	"time"
 
@@ -28,7 +29,7 @@ type Banner struct {
 	// Locale holds the value of the "locale" field.
 	Locale string `json:"locale,omitempty"`
 	// State holds the value of the "state" field.
-	State string `json:"state,omitempty"`
+	State transition.PublicationState `json:"state,omitempty"`
 	// URL holds the value of the "url" field.
 	URL *string `json:"url,omitempty"`
 	// StartsAt holds the value of the "starts_at" field.
@@ -104,7 +105,7 @@ func (_m *Banner) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
-				_m.State = value.String
+				_m.State = transition.PublicationState(value.String)
 			}
 		case banner.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -179,7 +180,7 @@ func (_m *Banner) String() string {
 	builder.WriteString(_m.Locale)
 	builder.WriteString(", ")
 	builder.WriteString("state=")
-	builder.WriteString(_m.State)
+	builder.WriteString(fmt.Sprintf("%v", _m.State))
 	builder.WriteString(", ")
 	if v := _m.URL; v != nil {
 		builder.WriteString("url=")

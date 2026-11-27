@@ -9,16 +9,13 @@ import (
 	"hexletbasics/ent/review"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/transition"
 )
-
-// StatePublished is the `state` of a review open to readers; the ent field is a
-// plain string, so the value is named here, apart from the contract's enum.
-const StatePublished = "published"
 
 // Published is legacy `Review.published_state.with_locale`. Review locales are
 // ru/en only, so another locale gets no rows, not an error.
 func Published(locale string) predicate.Review {
-	return review.And(review.StateEQ(StatePublished), review.LocaleEQ(locale))
+	return review.And(review.StateEQ(transition.Published), review.LocaleEQ(locale))
 }
 
 // WithEdges loads the course (with its current version, which the API model

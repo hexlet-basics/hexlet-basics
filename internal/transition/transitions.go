@@ -98,3 +98,16 @@ func (t Transition[S]) Check(current S) error {
 
 	return illegal
 }
+
+// values is a vocabulary's states as strings, the shape ent's enum GoType asks
+// for in Values.
+func values(v Vocabulary) []string {
+	states := vocabularyStates()[v]
+
+	out := make([]string, len(states))
+	for i, state := range states {
+		out[i] = string(state)
+	}
+
+	return out
+}

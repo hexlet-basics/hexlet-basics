@@ -1,7 +1,8 @@
 import { Badge, Button, Card, Group, Title } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { transitionsFrom } from "@/lib/publicationState";
-import type { PublicationState, StateTransition } from "@/lib/publicationState";
+import type { PublicationState } from "@/client/types.gen";
+import type { StateTransition } from "@/lib/publicationState";
 import type { ReactElement } from "react";
 
 // What the panel needs of one transition's mutation: the generated mutation of

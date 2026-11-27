@@ -13,23 +13,14 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 )
-
-// StatePublished is the `state` of a landing page open to visitors
-// (legacy `Language::LandingPage` aasm state). The ent field is a plain string,
-// so the values the queries compare against are named here once.
-const StatePublished = "published"
-
-// CourseCompleted is the `progress` of a Course whose content is
-// finished (legacy `Language` enumerize progress); in-development and draft
-// courses stay off the public lists.
-const CourseCompleted = "completed"
 
 // Completed is a Course whose content is finished (legacy `Language.completed`):
 // in-development and draft courses stay off public lists and out of the admin's
 // current lesson views.
 func Completed() predicate.Course {
-	return course.ReadinessEQ(CourseCompleted)
+	return course.ReadinessEQ(transition.ReadinessCompleted)
 }
 
 // Published is the part of the public scope that does not look at the Course:
@@ -37,7 +28,7 @@ func Completed() predicate.Course {
 // pages of courses that are not completed yet, builds on it directly.
 func Published(locale string) predicate.CourseLandingPage {
 	return courselandingpage.And(
-		courselandingpage.StateEQ(StatePublished),
+		courselandingpage.StateEQ(transition.Published),
 		courselandingpage.LocaleEQ(locale),
 	)
 }

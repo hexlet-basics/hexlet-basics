@@ -4,6 +4,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+
+	"hexletbasics/internal/transition"
 )
 
 // Banner maps the legacy `banners` table (site promo banners shown to visitors).
@@ -33,9 +35,9 @@ func (Banner) Fields() []ent.Field {
 		field.String("body"),
 		field.String("locale"),
 		// state is not an input: a banner is created as a draft and the state moves
-		// only through the publish, unpublish and archive operations.
-		field.String("state").Default("draft").
-			Annotations(AdminInputField{Skip: true}),
+		// only through the generated MoveState (StateMove).
+		field.Enum("state").GoType(transition.PublicationState("")).Default(string(transition.Draft)).
+			Annotations(AdminInputField{Skip: true}, StateMove{}),
 		field.String("url").Optional().Nillable(),
 		field.Time("starts_at").Optional().Nillable(),
 		field.Time("finishes_at").Optional().Nillable(),

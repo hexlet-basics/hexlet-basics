@@ -4,6 +4,7 @@ package courselandingpage
 
 import (
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -98,11 +99,6 @@ func Listed(v bool) predicate.CourseLandingPage {
 // Main applies equality check predicate on the "main" field. It's identical to MainEQ.
 func Main(v bool) predicate.CourseLandingPage {
 	return predicate.CourseLandingPage(sql.FieldEQ(FieldMain, v))
-}
-
-// State applies equality check predicate on the "state" field. It's identical to StateEQ.
-func State(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldEQ(FieldState, v))
 }
 
 // Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
@@ -606,78 +602,33 @@ func MainNotNil() predicate.CourseLandingPage {
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
-func StateEQ(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldEQ(FieldState, v))
+func StateEQ(v transition.PublicationState) predicate.CourseLandingPage {
+	vc := v
+	return predicate.CourseLandingPage(sql.FieldEQ(FieldState, vc))
 }
 
 // StateNEQ applies the NEQ predicate on the "state" field.
-func StateNEQ(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldNEQ(FieldState, v))
+func StateNEQ(v transition.PublicationState) predicate.CourseLandingPage {
+	vc := v
+	return predicate.CourseLandingPage(sql.FieldNEQ(FieldState, vc))
 }
 
 // StateIn applies the In predicate on the "state" field.
-func StateIn(vs ...string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldIn(FieldState, vs...))
+func StateIn(vs ...transition.PublicationState) predicate.CourseLandingPage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CourseLandingPage(sql.FieldIn(FieldState, v...))
 }
 
 // StateNotIn applies the NotIn predicate on the "state" field.
-func StateNotIn(vs ...string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldNotIn(FieldState, vs...))
-}
-
-// StateGT applies the GT predicate on the "state" field.
-func StateGT(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldGT(FieldState, v))
-}
-
-// StateGTE applies the GTE predicate on the "state" field.
-func StateGTE(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldGTE(FieldState, v))
-}
-
-// StateLT applies the LT predicate on the "state" field.
-func StateLT(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldLT(FieldState, v))
-}
-
-// StateLTE applies the LTE predicate on the "state" field.
-func StateLTE(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldLTE(FieldState, v))
-}
-
-// StateContains applies the Contains predicate on the "state" field.
-func StateContains(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldContains(FieldState, v))
-}
-
-// StateHasPrefix applies the HasPrefix predicate on the "state" field.
-func StateHasPrefix(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldHasPrefix(FieldState, v))
-}
-
-// StateHasSuffix applies the HasSuffix predicate on the "state" field.
-func StateHasSuffix(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldHasSuffix(FieldState, v))
-}
-
-// StateIsNil applies the IsNil predicate on the "state" field.
-func StateIsNil() predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldIsNull(FieldState))
-}
-
-// StateNotNil applies the NotNil predicate on the "state" field.
-func StateNotNil() predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldNotNull(FieldState))
-}
-
-// StateEqualFold applies the EqualFold predicate on the "state" field.
-func StateEqualFold(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldEqualFold(FieldState, v))
-}
-
-// StateContainsFold applies the ContainsFold predicate on the "state" field.
-func StateContainsFold(v string) predicate.CourseLandingPage {
-	return predicate.CourseLandingPage(sql.FieldContainsFold(FieldState, v))
+func StateNotIn(vs ...transition.PublicationState) predicate.CourseLandingPage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CourseLandingPage(sql.FieldNotIn(FieldState, v...))
 }
 
 // OrderEQ applies the EQ predicate on the "order" field.

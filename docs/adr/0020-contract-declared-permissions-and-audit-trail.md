@@ -640,8 +640,8 @@ while the response models keep showing it.
   the answer is the resource;
 - Permission: `<resource>.<verb>` in the glossary's resource term, kind `write`
   (`blog_posts.publish`, `blog_posts.unpublish`, `blog_posts.archive`);
-- handler: the operation names its `transition.Transition` and runs it; the blog
-  post version is `blog.Editor.move` in `internal/blog/states.go`.
+- handler: the operation names its `transition.Transition` and runs it through
+  the generated `MoveState` of the resource (ADR-0029; it was `blog.Editor.move`).
 
 **The table is code, written once.** `internal/transition` holds the generic
 `Transition[S]{To, From}`: `Check(current)` returns a typed `*transition.IllegalError`
@@ -661,8 +661,8 @@ table:
 
 **Repeating the current state is refused**, with the same 409, not a no-op: `To`
 is never in `From`. A client retrying after a lost answer learns the state is
-already there, and an Audit Record never claims a change that did not happen. A
-row with no state (the column is nullable in the legacy schema) counts as a draft.
+already there, and an Audit Record never claims a change that did not happen. The
+state column is required since ADR-0029 (it was nullable, a NULL counting as a draft).
 
 **Side effects.** Reading the handler and the legacy code found none to carry: the
 state column is all there is (no published-at stamp, no feed, cache or search
@@ -692,8 +692,9 @@ with these settled in the slice:
 - **One table.** The legal moves are no longer written per resource: `Publish`,
   `Unpublish` and `Archive` live once in `internal/transition` over a
   `PublicationState` (`draft`, `published`, `archived`, the string column every
-  one of these resources stores), with `CurrentOf` reading a nullable column as a
-  draft. Blog posts use them too. The frontend mirrors them once in
+  one of these resources stores; since ADR-0029 the typed, required column every
+  one of them has, written only by the generated `MoveState`). Blog posts use
+  them too. The frontend mirrors them once in
   `src/lib/publicationState.ts`, and one `PublicationStatePanel` renders the
   badge and the legal buttons for all four resources; each resource's own panel
   only binds its three generated mutations.

@@ -172,7 +172,7 @@ func (l landingPages) top(ctx context.Context, matching match, n int) ([]candida
 			ID:    CourseID(slug),
 			Title: titleOf(slug, row.Name, row.Header),
 			Path:  pagePath(matching.locale, "/languages/"+slug),
-			State: lo.FromPtr(row.State),
+			State: string(row.State),
 			// The course's own readiness, which says whether the page is a course
 			// that can be learned yet.
 			Readiness: readinessOf(row.Edges.Course),
@@ -309,7 +309,7 @@ func (l lessons) top(ctx context.Context, matching match, n int) ([]candidate, e
 	for _, row := range courseRows {
 		if row.Slug != nil {
 			courseSlugs[row.ID] = *row.Slug
-			courseReadiness[row.ID] = lo.FromPtr(row.Readiness)
+			courseReadiness[row.ID] = string(row.Readiness)
 		}
 	}
 
@@ -414,7 +414,7 @@ func (p posts) top(ctx context.Context, matching match, n int) ([]candidate, err
 			ID:        PostID(slug),
 			Title:     titleOf(slug, row.Name),
 			Path:      pagePath(matching.locale, "/blog_posts/"+slug),
-			State:     lo.FromPtr(row.State),
+			State:     string(row.State),
 			Snippet:   "",
 			Readiness: "",
 		}})
@@ -464,5 +464,5 @@ func readinessOf(c *ent.Course) string {
 		return ""
 	}
 
-	return lo.FromPtr(c.Readiness)
+	return string(c.Readiness)
 }

@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/testsupport"
+	"hexletbasics/internal/transition"
 )
 
 func newCatalog(t *testing.T) *landingpage.Catalog {
@@ -30,7 +31,7 @@ func TestCatalogServesOnlyPublishedPagesOfTheLocale(t *testing.T) {
 
 		for _, page := range pages {
 			assert.Equal(t, locale, *page.Locale, *page.Slug)
-			assert.Equal(t, landingpage.StatePublished, *page.State, *page.Slug)
+			assert.Equal(t, transition.Published, page.State, *page.Slug)
 			assert.NotEqual(t, "nodejs-ru", *page.Slug, "draft")
 			assert.NotEqual(t, "javascript-ru-archived", *page.Slug, "archived")
 		}
@@ -96,7 +97,7 @@ func TestMainPagesKeyedByCourseWithoutDraftsOrForeignLocales(t *testing.T) {
 		assert.Equal(t, courseID, page.CourseID)
 		assert.True(t, *page.Main, *page.Slug)
 		assert.Equal(t, "ru", *page.Locale)
-		assert.Equal(t, landingpage.StatePublished, *page.State)
+		assert.Equal(t, transition.Published, page.State)
 		require.NotNil(t, page.Edges.Course)
 	}
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/transition"
 	"strings"
 	"time"
 
@@ -31,7 +32,7 @@ type BlogPost struct {
 	// Locale holds the value of the "locale" field.
 	Locale *string `json:"locale,omitempty"`
 	// State holds the value of the "state" field.
-	State *string `json:"state,omitempty"`
+	State transition.PublicationState `json:"state,omitempty"`
 	// RichBody holds the value of the "rich_body" field.
 	RichBody string `json:"rich_body,omitempty"`
 	// CreatorID holds the value of the "creator_id" field.
@@ -142,8 +143,7 @@ func (_m *BlogPost) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
-				_m.State = new(string)
-				*_m.State = value.String
+				_m.State = transition.PublicationState(value.String)
 			}
 		case blogpost.FieldRichBody:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -237,10 +237,8 @@ func (_m *BlogPost) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.State; v != nil {
-		builder.WriteString("state=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.State))
 	builder.WriteString(", ")
 	builder.WriteString("rich_body=")
 	builder.WriteString(_m.RichBody)

@@ -80,7 +80,7 @@ func TestAdminListCourseLandingPages(t *testing.T) {
 	goRu := landingBySlug(t, h, "go-ru")
 	assert.Equal(t, "go", goRu.CourseSlug)
 	assert.Equal(t, int32(courseGoID()), goRu.CourseId)
-	assert.Equal(t, api.LandingPageStatePublished, goRu.State.Value)
+	assert.Equal(t, api.PublicationStatePublished, goRu.State)
 	assert.True(t, goRu.Main.Value)
 	assert.Equal(t, "Курс Go", goRu.Header)
 }
@@ -131,7 +131,7 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 	assert.NotZero(t, created.ID)
 	assert.Equal(t, "ruby-extra", created.Slug)
 	assert.Equal(t, "ruby", created.CourseSlug) // embedded course reloaded
-	assert.Equal(t, api.LandingPageStateDraft, created.State.Value, "a new landing page is always a draft")
+	assert.Equal(t, api.PublicationStateDraft, created.State, "a new landing page is always a draft")
 
 	total, err := h.DB.CourseLandingPage.Query().Count(ctx)
 	require.NoError(t, err)
@@ -156,7 +156,7 @@ func TestAdminUpdateCourseLandingPage(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "Новый заголовок", updated.Header)
-	assert.Equal(t, api.LandingPageStatePublished, updated.State.Value, "update never changes the state")
+	assert.Equal(t, api.PublicationStatePublished, updated.State, "update never changes the state")
 	assert.True(t, updated.Order.Null)
 
 	row, err := h.DB.CourseLandingPage.Get(ctx, int(target.ID))

@@ -4,6 +4,7 @@ package review
 
 import (
 	"hexletbasics/ent/predicate"
+	"hexletbasics/internal/transition"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -93,11 +94,6 @@ func LastName(v string) predicate.Review {
 // Locale applies equality check predicate on the "locale" field. It's identical to LocaleEQ.
 func Locale(v string) predicate.Review {
 	return predicate.Review(sql.FieldEQ(FieldLocale, v))
-}
-
-// State applies equality check predicate on the "state" field. It's identical to StateEQ.
-func State(v string) predicate.Review {
-	return predicate.Review(sql.FieldEQ(FieldState, v))
 }
 
 // Pinned applies equality check predicate on the "pinned" field. It's identical to PinnedEQ.
@@ -526,78 +522,33 @@ func LocaleContainsFold(v string) predicate.Review {
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
-func StateEQ(v string) predicate.Review {
-	return predicate.Review(sql.FieldEQ(FieldState, v))
+func StateEQ(v transition.PublicationState) predicate.Review {
+	vc := v
+	return predicate.Review(sql.FieldEQ(FieldState, vc))
 }
 
 // StateNEQ applies the NEQ predicate on the "state" field.
-func StateNEQ(v string) predicate.Review {
-	return predicate.Review(sql.FieldNEQ(FieldState, v))
+func StateNEQ(v transition.PublicationState) predicate.Review {
+	vc := v
+	return predicate.Review(sql.FieldNEQ(FieldState, vc))
 }
 
 // StateIn applies the In predicate on the "state" field.
-func StateIn(vs ...string) predicate.Review {
-	return predicate.Review(sql.FieldIn(FieldState, vs...))
+func StateIn(vs ...transition.PublicationState) predicate.Review {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Review(sql.FieldIn(FieldState, v...))
 }
 
 // StateNotIn applies the NotIn predicate on the "state" field.
-func StateNotIn(vs ...string) predicate.Review {
-	return predicate.Review(sql.FieldNotIn(FieldState, vs...))
-}
-
-// StateGT applies the GT predicate on the "state" field.
-func StateGT(v string) predicate.Review {
-	return predicate.Review(sql.FieldGT(FieldState, v))
-}
-
-// StateGTE applies the GTE predicate on the "state" field.
-func StateGTE(v string) predicate.Review {
-	return predicate.Review(sql.FieldGTE(FieldState, v))
-}
-
-// StateLT applies the LT predicate on the "state" field.
-func StateLT(v string) predicate.Review {
-	return predicate.Review(sql.FieldLT(FieldState, v))
-}
-
-// StateLTE applies the LTE predicate on the "state" field.
-func StateLTE(v string) predicate.Review {
-	return predicate.Review(sql.FieldLTE(FieldState, v))
-}
-
-// StateContains applies the Contains predicate on the "state" field.
-func StateContains(v string) predicate.Review {
-	return predicate.Review(sql.FieldContains(FieldState, v))
-}
-
-// StateHasPrefix applies the HasPrefix predicate on the "state" field.
-func StateHasPrefix(v string) predicate.Review {
-	return predicate.Review(sql.FieldHasPrefix(FieldState, v))
-}
-
-// StateHasSuffix applies the HasSuffix predicate on the "state" field.
-func StateHasSuffix(v string) predicate.Review {
-	return predicate.Review(sql.FieldHasSuffix(FieldState, v))
-}
-
-// StateIsNil applies the IsNil predicate on the "state" field.
-func StateIsNil() predicate.Review {
-	return predicate.Review(sql.FieldIsNull(FieldState))
-}
-
-// StateNotNil applies the NotNil predicate on the "state" field.
-func StateNotNil() predicate.Review {
-	return predicate.Review(sql.FieldNotNull(FieldState))
-}
-
-// StateEqualFold applies the EqualFold predicate on the "state" field.
-func StateEqualFold(v string) predicate.Review {
-	return predicate.Review(sql.FieldEqualFold(FieldState, v))
-}
-
-// StateContainsFold applies the ContainsFold predicate on the "state" field.
-func StateContainsFold(v string) predicate.Review {
-	return predicate.Review(sql.FieldContainsFold(FieldState, v))
+func StateNotIn(vs ...transition.PublicationState) predicate.Review {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Review(sql.FieldNotIn(FieldState, v...))
 }
 
 // PinnedEQ applies the EQ predicate on the "pinned" field.

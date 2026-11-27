@@ -36,7 +36,7 @@ func TestStringPtr(t *testing.T) {
 	})
 
 	t.Run("null", func(t *testing.T) {
-		got := inputconv.StringPtr(api.NilReviewState{Null: true})
+		got := inputconv.StringPtr(api.NilCourseLearnAs{Null: true})
 
 		assert.Nil(t, got)
 	})

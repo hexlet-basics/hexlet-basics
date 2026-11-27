@@ -5,6 +5,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/transition"
 )
 
 // The route is `/admin/course_landing_pages`; the domain concept is a course
@@ -72,17 +73,17 @@ func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.Ad
 
 // AdminPublishCourseLandingPage makes a draft or archived landing page public.
 func (s *Server) AdminPublishCourseLandingPage(ctx context.Context, params api.AdminPublishCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return moveState(ctx, int(params.ID), s.landingPageStates.Publish, s.getAdminCourseLandingPage)
+	return moveState(ctx, int(params.ID), s.db.CourseLandingPage.MoveState, transition.Publish(), s.getAdminCourseLandingPage)
 }
 
 // AdminUnpublishCourseLandingPage takes a published landing page back to draft.
 func (s *Server) AdminUnpublishCourseLandingPage(ctx context.Context, params api.AdminUnpublishCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return moveState(ctx, int(params.ID), s.landingPageStates.Unpublish, s.getAdminCourseLandingPage)
+	return moveState(ctx, int(params.ID), s.db.CourseLandingPage.MoveState, transition.Unpublish(), s.getAdminCourseLandingPage)
 }
 
 // AdminArchiveCourseLandingPage archives a draft or published landing page.
 func (s *Server) AdminArchiveCourseLandingPage(ctx context.Context, params api.AdminArchiveCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return moveState(ctx, int(params.ID), s.landingPageStates.Archive, s.getAdminCourseLandingPage)
+	return moveState(ctx, int(params.ID), s.db.CourseLandingPage.MoveState, transition.Archive(), s.getAdminCourseLandingPage)
 }
 
 // getAdminCourseLandingPage is the read model a state move echoes back.
