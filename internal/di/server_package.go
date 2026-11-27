@@ -28,6 +28,7 @@ import (
 	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
 	"hexletbasics/internal/feed"
@@ -46,6 +47,7 @@ import (
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/store"
@@ -80,7 +82,7 @@ type handlerServices struct {
 	Progress          *progress.Progress         `do:""`
 	Assets            *assetstore.Store          `do:""`
 	Sessions          *auth.Authenticator        `do:""`
-	Registrar         *account.Registrar         `do:""`
+	SignIn            *signin.Gate               `do:""`
 	Remover           *account.Remover           `do:""`
 	UserEditor        *account.Editor            `do:""`
 	UserDirectory     *account.Directory         `do:""`
@@ -163,6 +165,50 @@ var serverPackage = do.Package(
 			auth.WithErrorFunc(func(w http.ResponseWriter, r *http.Request, err error) {
 				errorHandler.Write(r.Context(), w, r, err)
 			}),
+		), nil
+	}),
+	// Every way into an account ends in the gate: it is built from the
+	// collaborators each step needs (ADR-0017 sessions, the registrar, the
+	// emailed-link tokens, the guest progress merge, the sign-in fact).
+	do.Lazy[*signin.Gate](func(i do.Injector) (*signin.Gate, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+
+		cfg, err := do.Invoke[*config.Server](i)
+		if err != nil {
+			return nil, err
+		}
+
+		registrar, err := do.Invoke[*account.Registrar](i)
+		if err != nil {
+			return nil, err
+		}
+
+		sessions, err := do.Invoke[*auth.Authenticator](i)
+		if err != nil {
+			return nil, err
+		}
+
+		tracker, err := do.Invoke[*progress.Progress](i)
+		if err != nil {
+			return nil, err
+		}
+
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+
+		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
+		if err != nil {
+			return nil, err
+		}
+
+		return signin.New(
+			db, account.NewCredentials(db), registrar, emailtoken.New(cfg.EmailTokenSecret.Reveal()),
+			sessions, tracker, publisher, enqueuer,
 		), nil
 	}),
 	do.Lazy[*account.Registrar](func(i do.Injector) (*account.Registrar, error) {
@@ -488,11 +534,10 @@ var serverPackage = do.Package(
 			Progress:          services.Progress,
 			Assets:            services.Assets,
 			Sessions:          services.Sessions,
-			Registrar:         services.Registrar,
+			SignIn:            services.SignIn,
 			Remover:           services.Remover,
 			UserEditor:        services.UserEditor,
 			UserDirectory:     services.UserDirectory,
-			Events:            services.Events,
 			Leads:             services.Leads,
 			Books:             services.Books,
 			I18n:              services.I18n,
@@ -912,7 +957,6 @@ func handlerSettings(cfg *config.Server) handlers.Settings {
 		SiteURL:           cfg.SiteURL,
 		SecureCookies:     cfg.SecureCookies(),
 		GuestCookieSecret: cfg.GuestCookieSecret.Reveal(),
-		EmailTokenSecret:  cfg.EmailTokenSecret.Reveal(),
 		CourseRepoBaseURL: cfg.CourseRepoBaseURL,
 		BookBlobKey:       cfg.BookBlobKey,
 	}

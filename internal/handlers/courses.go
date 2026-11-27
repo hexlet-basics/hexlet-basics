@@ -20,8 +20,6 @@ import (
 	"hexletbasics/internal/coursereview"
 	"hexletbasics/internal/curriculum"
 	"hexletbasics/internal/dashboard"
-	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/feed"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/landingpage"
@@ -35,6 +33,7 @@ import (
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/versionbuild"
@@ -72,18 +71,13 @@ type Server struct {
 	// security is the seam that recognises a request by it.
 	sessions *auth.Authenticator
 	security *Security
-	// credentials checks and changes passwords; registrar creates accounts and
-	// remover removes them.
-	credentials *account.Credentials
-	registrar   *account.Registrar
-	remover     *account.Remover
+	// signIn is where every way into an account ends; remover removes one.
+	signIn  *signin.Gate
+	remover *account.Remover
 	// userEditor and userDirectory are the administrators' write and read side of
 	// user records.
 	userEditor    *account.Editor
 	userDirectory *account.Directory
-	events        events.StandalonePublisher
-	// emailTokens verifies the Magic Link and Password Reset links.
-	emailTokens *emailtoken.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
 	// leads stores a lead and raises LeadCreated in one transaction.
@@ -148,11 +142,10 @@ type Deps struct {
 	Progress          *progress.Progress
 	Assets            *assetstore.Store
 	Sessions          *auth.Authenticator
-	Registrar         *account.Registrar
+	SignIn            *signin.Gate
 	Remover           *account.Remover
 	UserEditor        *account.Editor
 	UserDirectory     *account.Directory
-	Events            events.StandalonePublisher
 	Leads             *leadcapture.Recorder
 	Books             *book.Recorder
 	I18n              *localization.Translator
@@ -196,13 +189,10 @@ func NewServer(deps Deps) *Server {
 		assets:               deps.Assets,
 		sessions:             deps.Sessions,
 		security:             newSecurity(deps.DB, deps.Sessions, permission.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
-		credentials:          account.NewCredentials(deps.DB),
-		registrar:            deps.Registrar,
+		signIn:               deps.SignIn,
 		remover:              deps.Remover,
 		userEditor:           deps.UserEditor,
 		userDirectory:        deps.UserDirectory,
-		events:               deps.Events,
-		emailTokens:          emailtoken.New(deps.Settings.EmailTokenSecret),
 		guests:               guests,
 		i18n:                 deps.I18n,
 		leads:                deps.Leads,

@@ -18,6 +18,7 @@ import (
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/signin"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
@@ -37,11 +38,12 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
+	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
+	sessions := auth.New(db)
 	handler := handlers.NewServer(handlers.Deps{
 		DB: db,
 		Settings: handlers.Settings{
 			GuestCookieSecret: "test-secret",
-			EmailTokenSecret:  "test-email-secret",
 			PublicURL:         "",
 			SiteURL:           "",
 			SecureCookies:     false,
@@ -52,11 +54,11 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		Jobs:    services.Jobs,
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
-		Progress:          progress.New(db, transactor, services.Events, mocks.Runner),
-		Sessions:          auth.New(db),
-		Registrar:         account.NewRegistrar(transactor, services.Events),
+		Progress: tracker,
+		Sessions: sessions,
+		SignIn: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor, services.Events),
+			testsupport.EmailTokens(), sessions, tracker, services.Events, services.Jobs),
 		Remover:           account.NewRemover(transactor),
-		Events:            services.Events,
 		I18n:              translator,
 		Errors:            errorHandler,
 		RelatedCoursesSet: nil,

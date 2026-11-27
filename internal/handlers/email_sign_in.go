@@ -2,60 +2,34 @@ package handlers
 
 import (
 	"context"
-	"errors"
 
-	"hexletbasics/internal/account"
-	"hexletbasics/internal/accountemail"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/domain"
-	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/localization"
 )
 
 // CreateMagicLink emails a Magic Link to the User with this email. It answers
 // the same whether or not one exists, so the form cannot be used to learn which
 // emails are registered, and it never creates an account.
 func (s *Server) CreateMagicLink(ctx context.Context, req *api.EmailInput) error {
-	err := s.requestAccountEmail(ctx, emailtoken.MagicLink, req.Email)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.signIn.RequestMagicLink(ctx, req.Email, s.i18n.Locale(ctx))
 }
 
-// ConsumeMagicLink signs in the User the link was issued to. The link may be
-// followed again while it lives, as in legacy.
+// ConsumeMagicLink signs in the User the link was issued to.
 func (s *Server) ConsumeMagicLink(
 	ctx context.Context,
 	params api.ConsumeMagicLinkParams,
 ) (*api.UserHeaders, error) {
-	u, err := s.emailTokens.Verify(ctx, s.db, emailtoken.MagicLink, params.Token)
-	if errors.Is(err, emailtoken.ErrInvalid) {
-		return nil, errEmailLinkInvalid
-	}
+	entered, err := s.signIn.WithMagicLink(ctx, params.Token, s.visitor(ctx))
 
-	if err != nil {
-		return nil, err
-	}
-
-	return s.signIn(ctx, u)
+	return s.entered(entered, err)
 }
 
-// CreatePasswordReminder emails a Password Reset link. Unlike legacy it no
-// longer says that an email is unknown: that would undo the Magic Link form's
-// protection against learning which emails are registered.
+// CreatePasswordReminder emails a Password Reset link, answering the same for
+// an unknown email.
 func (s *Server) CreatePasswordReminder(
 	ctx context.Context,
 	req *api.EmailInput,
 ) error {
-	err := s.requestAccountEmail(ctx, emailtoken.PasswordReset, req.Email)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.signIn.RequestPasswordReset(ctx, req.Email, s.i18n.Locale(ctx))
 }
 
 // CheckPasswordResetToken lets the reset page refuse a dead link before the
@@ -64,64 +38,21 @@ func (s *Server) CheckPasswordResetToken(
 	ctx context.Context,
 	params api.CheckPasswordResetTokenParams,
 ) error {
-	_, err := s.emailTokens.Verify(ctx, s.db, emailtoken.PasswordReset, params.Token)
-	if errors.Is(err, emailtoken.ErrInvalid) {
-		return errEmailLinkInvalid
-	}
-
+	err := s.signIn.CheckPasswordReset(ctx, params.Token)
 	if err != nil {
-		return err
+		return signInRefusal(err)
 	}
 
 	return nil
 }
 
-// UpdatePassword replaces the password and signs the User in: they have just
-// proved they own the email, so asking for the new password again adds
-// nothing. Changing the digest is what kills the link — its fingerprint no
-// longer matches — so the link cannot be used twice.
+// UpdatePassword replaces the password and signs the User in.
 func (s *Server) UpdatePassword(
 	ctx context.Context,
 	req *api.ResetPasswordInput,
 	params api.UpdatePasswordParams,
 ) (*api.UserHeaders, error) {
-	u, err := s.emailTokens.Verify(ctx, s.db, emailtoken.PasswordReset, params.Token)
-	if errors.Is(err, emailtoken.ErrInvalid) {
-		return nil, errEmailLinkInvalid
-	}
+	entered, err := s.signIn.ResetPassword(ctx, params.Token, req.Password, s.visitor(ctx))
 
-	if err != nil {
-		return nil, err
-	}
-
-	u, err = s.credentials.SetPassword(ctx, u, req.Password)
-	if errors.Is(err, account.ErrPasswordProcessing) {
-		return nil, invalid("password", localization.PasswordProcessingFailed)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return s.signIn(ctx, u)
-}
-
-// requestAccountEmail enqueues the email for a registered address and does
-// nothing for an unknown one. The lookup normalizes the email the way registration
-// stores it, as legacy's did.
-func (s *Server) requestAccountEmail(ctx context.Context, purpose emailtoken.Purpose, email string) error {
-	u, err := account.ActiveUserByEmail(ctx, s.db, email)
-	if errors.Is(err, domain.ErrNotFound) {
-		return nil
-	}
-
-	if err != nil {
-		return err
-	}
-
-	return s.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
-		Purpose: purpose,
-		UserID:  u.ID,
-		Locale:  accountemail.Locale(s.i18n.Locale(ctx)),
-	})
+	return s.entered(entered, err)
 }

@@ -3,88 +3,23 @@ package handlers
 import (
 	"context"
 	"errors"
-	"time"
 
-	"hexletbasics/ent"
 	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/domain"
-	"hexletbasics/internal/events"
+	"hexletbasics/internal/emailtoken"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/signin"
 )
 
-// CreateSession authenticates once and reuses the loaded user for both the
-// session and the response, keeping password login free of duplicate database
-// queries.
+// The ways into an account. What each one does is signin.Gate's; a handler
+// reads the request, words the refusals and sets the cookies.
+
+// CreateSession signs in with an email and a password.
 func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (*api.UserHeaders, error) {
-	u, err := s.credentials.Authenticate(ctx, req.Email, req.Password)
-	if errors.Is(err, account.ErrInvalidCredentials) {
-		return nil, invalid("password", localization.WrongCredentials)
-	}
+	entered, err := s.signIn.WithPassword(ctx, req.Email, req.Password, s.visitor(ctx))
 
-	if err != nil {
-		return nil, err
-	}
-
-	return s.signIn(ctx, u)
-}
-
-// signIn is what every way of proving who you are ends in for an account that
-// already exists — password, Magic Link, Password Reset — so none of them can
-// skip recording the sign-in. It then starts the session like sign-up does.
-func (s *Server) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	err := s.events.PublishStandalone(ctx, events.UserSignedIn{
-		UserID:          u.ID,
-		OccurrenceCount: -1,
-		Email:           u.Email,
-		Locale:          s.i18n.Locale(ctx),
-		OccurredAt:      time.Now().UTC(),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return s.startSession(ctx, u)
-}
-
-// startSession is the tail every way in shares, sign-up included: the session
-// begins and the visitor's guest progress is credited to the account. Keeping it
-// in one place is what stops sign-in and sign-up from issuing different
-// sessions.
-func (s *Server) startSession(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
-	err := s.sessions.Begin(ctx, u)
-	if err != nil {
-		return nil, err
-	}
-
-	cookies, err := s.mergeGuestProgress(ctx, u.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.UserHeaders{SetCookie: cookies, Response: s.conv.ToUser(u)}, nil
-}
-
-// mergeGuestProgress credits the visitor's cookie progress to the account that
-// just signed in or signed up, and returns the cookie that clears it.
-//
-// The merge runs in its own transaction rather than the one that begins the
-// session: beginning a session writes nothing the merge must be atomic with, and
-// sign-up owns its transaction inside the registrar. The merge itself is atomic,
-// and the cookie is cleared only after it succeeds, so a failed merge leaves
-// the visitor's progress intact to be retried on the next sign-in.
-func (s *Server) mergeGuestProgress(ctx context.Context, userID int) ([]string, error) {
-	guest, ok := GuestProgress(ctx)
-	if !ok || len(guest.Entries) == 0 {
-		return nil, nil
-	}
-
-	err := s.progress.MergeGuest(ctx, userID, guest, s.i18n.Locale(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	return []string{s.guests.cleared()}, nil
+	return s.entered(entered, err)
 }
 
 // CreateUser creates an account and signs it in.
@@ -94,25 +29,9 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (*api.Use
 		firstName = &value
 	}
 
-	u, err := s.registrar.Register(ctx, account.Registration{
-		Email:     req.Email,
-		Password:  req.Password,
-		FirstName: firstName,
-		Locale:    s.i18n.Locale(ctx),
-	})
-	if err != nil {
-		if errors.Is(err, account.ErrPasswordProcessing) {
-			return nil, invalid("password", localization.PasswordProcessingFailed)
-		}
+	entered, err := s.signIn.SignUp(ctx, req.Email, req.Password, firstName, s.visitor(ctx))
 
-		if field, ok := domain.FieldOf(err); ok && field == "email" {
-			return nil, invalid("email", localization.EmailTaken)
-		}
-
-		return nil, err
-	}
-
-	return s.startSession(ctx, u)
+	return s.entered(entered, err)
 }
 
 // DeleteSession ends the session; the session middleware expires its cookie.
@@ -142,4 +61,47 @@ func anonymousCurrentUser() *api.CurrentUser {
 	user.SetToNull()
 
 	return &api.CurrentUser{User: user}
+}
+
+// visitor is who the request is: its locale and the Guest progress its cookie
+// carried.
+func (s *Server) visitor(ctx context.Context) signin.Visitor {
+	guest, _ := GuestProgress(ctx)
+
+	return signin.Visitor{Locale: s.i18n.Locale(ctx), Guest: guest}
+}
+
+// entered answers a way in: the account, and the cookie that clears the Guest
+// progress once the gate has credited it to the account. A refusal is worded
+// for the form it came from.
+func (s *Server) entered(entered signin.Entered, err error) (*api.UserHeaders, error) {
+	if err != nil {
+		return nil, signInRefusal(err)
+	}
+
+	var cookies []string
+	if entered.GuestMerged {
+		cookies = []string{s.guests.cleared()}
+	}
+
+	return &api.UserHeaders{SetCookie: cookies, Response: s.conv.ToUser(entered.User)}, nil
+}
+
+// signInRefusal words the gate's refusals: on the form field they belong to,
+// or as the dead-link answer of the emailed links. Anything else is a failure.
+func signInRefusal(err error) error {
+	switch {
+	case errors.Is(err, account.ErrInvalidCredentials):
+		return invalid("password", localization.WrongCredentials)
+	case errors.Is(err, account.ErrPasswordProcessing):
+		return invalid("password", localization.PasswordProcessingFailed)
+	case errors.Is(err, emailtoken.ErrInvalid):
+		return errEmailLinkInvalid
+	}
+
+	if field, ok := domain.FieldOf(err); ok && field == "email" {
+		return invalid("email", localization.EmailTaken)
+	}
+
+	return err
 }

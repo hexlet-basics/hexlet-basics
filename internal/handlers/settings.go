@@ -14,8 +14,6 @@ type Settings struct {
 	SecureCookies bool
 	// GuestCookieSecret signs the visitor-progress cookie.
 	GuestCookieSecret string
-	// EmailTokenSecret verifies Magic Link and Password Reset tokens.
-	EmailTokenSecret string
 	// CourseRepoBaseURL is the GitHub org base of the exercises repositories.
 	CourseRepoBaseURL string
 	// BookBlobKey is the bucket key of the free book's PDF.

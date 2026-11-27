@@ -24,6 +24,7 @@ import (
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/signin"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -68,7 +69,6 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	settings := handlers.Settings{
 		GuestCookieSecret: "test-secret",
-		EmailTokenSecret:  "test-email-secret",
 		PublicURL:         "",
 		SiteURL:           "",
 		SecureCookies:     false,
@@ -78,17 +78,18 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	manager := auth.New(db)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
+	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
 	handler := handlers.NewServer(handlers.Deps{
-		DB:                db,
-		Settings:          settings,
-		Starter:           services.Starter,
-		Jobs:              services.Jobs,
-		Progress:          progress.New(db, transactor, services.Events, mocks.Runner),
-		Assets:            assets,
-		Sessions:          manager,
-		Registrar:         account.NewRegistrar(transactor, services.Events),
+		DB:       db,
+		Settings: settings,
+		Starter:  services.Starter,
+		Jobs:     services.Jobs,
+		Progress: tracker,
+		Assets:   assets,
+		Sessions: manager,
+		SignIn: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor, services.Events),
+			testsupport.EmailTokens(), manager, tracker, services.Events, services.Jobs),
 		Remover:           account.NewRemover(transactor),
-		Events:            services.Events,
 		I18n:              translator,
 		Errors:            errorHandler,
 		RelatedCoursesSet: nil,

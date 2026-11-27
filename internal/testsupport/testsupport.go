@@ -48,6 +48,7 @@ import (
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
 	"hexletbasics/internal/store"
@@ -67,7 +68,6 @@ var testConfig = struct {
 	settings: handlers.Settings{
 		PublicURL:         "http://localhost:3001",
 		GuestCookieSecret: "test-secret",
-		EmailTokenSecret:  "test-email-secret",
 		CourseRepoBaseURL: "https://github.com/hexlet-basics",
 		SiteURL:           "https://code-basics.com",
 		BookBlobKey:       "book.pdf",
@@ -373,13 +373,13 @@ func handlerDeps(
 		Progress:          tracker,
 		Assets:            assets,
 		Sessions:          manager,
-		Registrar:         registrar,
+		SignIn: signin.New(db, account.NewCredentials(db), registrar, EmailTokens(),
+			manager, tracker, services.Events, services.Jobs),
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
 		Remover:       account.NewRemover(transactor),
 		UserEditor:    account.NewEditor(db),
 		UserDirectory: account.NewDirectory(db),
-		Events:        services.Events,
 		Leads:         leadRecorder,
 		Books:         book.NewRecorder(transactor, services.Events),
 		I18n:          translator,
